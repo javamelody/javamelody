@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright 2008-2009 by Emeric Vernat, Bull
+ *
+ *     This file is part of Java Melody.
+ *
+ * Java Melody is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Java Melody is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Auteur: Emeric Vernat -->
+<project basedir="." default="all" name="JavaMelody">
+	<!-- Initialisation des tâches -->
+	<target name="init">
+		<echo message="-- Script Ant JavaMelody --" level="info" />
+		<echo message="Basedir: ${basedir}" level="info" />
+		<echo message="Ant file: ${ant.file}" level="info" />
+		<echo message="Ant home: ${ant.home}" level="info" />
+		<echo message="${ant.version}" level="info" />
+		<echo message="${java.runtime.name}, ${java.runtime.version}" level="info" />
+		<echo message="${os.name} ${sun.os.patch.level}, ${os.arch}/${sun.arch.data.model}" level="info" />
+		<tstamp>
+			<format property="TODAY_FR" pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
+		</tstamp>
+		<echo message="${TODAY_FR}" level="info" />
+
+		<pathconvert property="class.path">
+			<path>
+				<fileset dir="src/main/lib">
+					<include name="servlet-api-2.5.jar" />
+					<include name="mail-1.4.1.jar" />
+					<include name="activation.jar" />
+					<include name="ejb-api-3.0.jar" />
+					<include name="dbcp-6.0.18.jar" />
+				</fileset>
+				<fileset dir="src/main/test-webapp/WEB-INF/lib">
+					<include name="jrobin-1.5.9.1.jar" />
+					<include name="itext-2.1.7.jar" />
+					<include name="spring-aop-2.5.6.jar" />
+					<include name="aopalliance-1.0.jar" />
+					<include name="xstream-1.3.1.jar" />
+					<include name="log4j-1.2.15.jar" />
+					<include name="ehcache-1.6.0.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+	</target>
+
+	<!-- Compilation -->
+	<target name="build" depends="init">
+		<echo message="Compilation" level="info" />
+		<mkdir dir="build/classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/main/java" destdir="build/classes" classpath="${class.path}">
+				<compilerarg value="-Xlint" />
+		</javac>
+	</target>
+
+	<!-- Nettoyage du répertoire de compilation, de documentation, du jar et du war -->
+	<target name="clean" depends="init">
+		<echo message="Nettoyage du répertoire de compilation, de documentation, du jar et du war" level="info" />
+		<delete dir="build" />
+		<delete dir="doc" />
+		<delete file="javamelody.jar" />
+		<delete file="javamelody.war" />
+	</target>
+
+	<!-- Construction du jar -->
+	<target name="jar" depends="build">
+		<echo message="Construction du jar" level="info" />
+		<delete file="javamelody.jar" />
+		<jar destfile="javamelody.jar">
+			<zipfileset dir="build/classes" />
+			<zipfileset dir="src/main/resources" excludes="**/Thumbs.db" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<zipfileset file="src/site/apt/user_guide.apt" />
+			<zipfileset file="src/site/apt/user_guide_en.apt" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat, Bull" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du war -->
+	<target name="war" depends="build">
+		<echo message="Construction du war" level="info" />
+		<delete file="javamelody.war" />
+		<jar destfile="javamelody.war">
+			<!-- classes de la webapp -->
+			<zipfileset dir="build/classes" prefix="WEB-INF/classes" />
+			<!-- Main-Class et dépendances pour "java -jar javamelody.war" -->
+			<zipfileset file="build/classes/net/bull/javamelody/Main.class" prefix="net/bull/javamelody" />
+			<zipfileset file="src/main/lib/winstone-hudson.jar" />
+			<!-- ressources de la webapp -->
+			<zipfileset dir="src/main/resources" prefix="WEB-INF/classes" excludes="**/Thumbs.db,META-INF/web-fragment.xml" />
+			<!-- dépendances de la webapp -->
+			<zipfileset file="src/main/test-webapp/WEB-INF/lib/*.jar" prefix="WEB-INF/lib" />
+			<!-- web.xml -->
+			<zipfileset file="src/main/collector-webapp/**" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<zipfileset file="src/site/apt/user_guide.apt" />
+			<zipfileset file="src/site/apt/user_guide_en.apt" />
+			<manifest>
+				<attribute name="Main-Class" value="net.bull.javamelody.Main" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat, Bull" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction de la javadoc (api public) -->
+	<target name="javadoc" depends="init,build">
+		<echo message="Construction de la javadoc" level="info" />
+		<macrodef name="myjavadoc">
+			<attribute name="destdir" />
+			<attribute name="windowtitle" />
+			<attribute name="classpath" />
+			<element name="javadoc-elements" implicit="true" />
+			<sequential>
+				<echo message="@{windowtitle}" level="info" />
+				<delete dir="@{destdir}" />
+				<javadoc destdir="@{destdir}" windowtitle="@{windowtitle}" classpath="@{classpath}" 
+					encoding="UTF-8" charset="UTF-8" access="public" 
+					author="on" version="on" use="on" maxmemory="128m">
+					<link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistloc="./j2se/" />
+					<link offline="true" href="http://java.sun.com/javaee/5/docs/api/" packagelistloc="./j2ee/" />
+					<doctitle>
+						<![CDATA[@{windowtitle}]]>
+					</doctitle>
+					<javadoc-elements />
+				</javadoc>
+			</sequential>
+		</macrodef>
+
+		<myjavadoc destdir="doc" windowtitle="Java Melody" classpath="${class.path}">
+			<packageset dir="src/main/java" />
+		</myjavadoc>
+	</target>
+
+	<!-- Compilation et exécution des tests unitaires -->
+	<target name="test" depends="build">
+		<!-- Doit être exécuté avec un jdk et non un jre pour TestHtmlHeapHistogramReport -->
+		<echo message="Compilation et exécution des tests unitaires" level="info" />
+		<mkdir dir="build/test-classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="off" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/test/java" destdir="build/test-classes">
+			<classpath>
+				<path path="build/classes" />
+				<path path="${class.path}" />
+				<pathelement location="src/main/lib/junit-4.5.jar" />
+			</classpath>
+		</javac>
+		<junit printsummary="true" showoutput="false">
+			<formatter type="plain" usefile="false" />
+			<classpath>
+				<path path="build/test-classes" />
+				<path path="build/classes" />
+				<path path="src/test/resources" />
+				<path path="src/main/resources" />
+				<path path="${class.path}" />
+				<pathelement location="src/main/lib/junit-4.5.jar" />
+				<pathelement location="src/main/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" />
+			</classpath>
+			<batchtest haltonerror="false" haltonfailure="false"
+				errorProperty="test.failed" failureProperty="test.failed">
+				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class" />
+			</batchtest>
+		</junit>
+		<fail message="Tests failed: check test reports." if="test.failed" />
+	</target>
+
+	<!-- Construction du zip -->
+	<target name="zip" depends="clean,jar,war,javadoc">
+		<echo message="Construction du zip" level="info" />
+		<delete file="javamelody.zip" />
+		<zip destfile="javamelody.zip">
+			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,**/Fonctions.odt,javamelody.zip" />
+			<!-- jar jrobin copié selon indication du user_guide -->
+			<zipfileset file="src/main/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
+		</zip>
+	</target>
+
+	<!-- Tout (zip, clean) -->
+	<target name="all" depends="zip">
+		<antcall target="clean" />
+	</target>
+</project>
