@@ -1,0 +1,549 @@
+	-----
+	Description and documentation of Java Melody : monitoring of Java EE applications
+	-----
+	Author : Emeric Vernat, Bull (emeric.vernat@bull.net)
+	-----
+	2009-01-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Description and documentation of Java Melody : monitoring of Java EE applications
+
+	({{{user_guide.html} Français }})
+
+	The goal of this monitoring tool is to monitor Java or Java EE applications servers in QA and production environments.
+	
+	It is not a tool to simulate requests from users,
+	it is a tool to measure and calculate statistics on real operation of an application
+	depending on the usage of the application by users.
+	
+	Monitoring is mainly based on statistics of requests and on evolution charts.
+	
+	It allows to improve applications in QA and production and helps to:
+	
+	* give facts about the average response times and number of executions
+	
+	* make decisions when trends are bad, before problems become too serious
+	
+	* optimize based on the more limiting response times
+	
+	* find the root causes of response times
+	
+	* verify the real improvement after optimizations
+
+	[]
+
+	License: LGPL
+
+	URL : http://javamelody.googlecode.com/
+
+	Java version required for execution:
+
+	* 1.5 at least
+
+	* 1.6 recommended for following functions: heap dump, memory histogram, stack traces and
+	system load average
+	
+	* JDK or JRE from Sun or JRockit from Oracle/BEA
+
+	[]
+
+	Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
+		like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, WebLogic 9 or 10
+
+	Required dependency: JRobin (LGPL) for evolution charts
+	
+	Optional dependency: iText (LGPL ou MPL) for reports in pdf format in addition to html
+
+	Language: English and French
+
+* Setup
+
+	An important value of the monitoring is a very simple and fast installation process.
+	And in general, integration is done by the software provider without any intervention from the client.
+	
+	This integration can be done in less than 10 minutes, by automatic discovery of environment:
+	it only requires to copy 2 jar files and to add 10 lines in a xml file.
+	
+	Then this integration can be completed later by configuration as needed.
+
+** 1. Jar files
+
+	Copy the files <<<monitoring.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied monitoring.zip file,
+	to the WEB-INF/lib directory of the war of the webapp to monitor.
+
+** 2. <<<web.xml>>> file
+
+	If your application server is compatible with Servlet API 3.0 (like tomcat 7 or glassfish v3),
+	this paragraphe is not needed, you can skip it and launch the server as in the next paragraph.
+	Add the following lines in the file <<<WEB-INF/web.xml>>> of the war of the webapp,
+	before the description of your servlet :
+
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
++-------------------------------+
+
+** 3. First results
+
+	You can now view the monitoring: open the following page in a web navigator after starting the server:
+
+	<<<http://<host>/<context>/monitoring>>>
+	
+	where <host> is the name of the server where the webapp is deployed, followed possibly by the port (for example localhost:8080)
+	and where <context> is the name of the context of the webapp which you have configured during the deployment thereof.
+	
+	Then you can complete the settings as below according to your needs.
+
+** 4. Complements <<<web.xml>>>
+
+	<<<url-pattern>>> in <<<web.xml>>> file above can be adapted in order not to monitor some urls,
+	possibly with several mappings on the same filter
+	(for example <<<filter-mapping>>>s with <<<url-pattern>>>s /servlet/* and /monitoring, but not /static/*,
+	with the same <<<filter-name>>> monitoring, but <<<url-pattern>>> must "contain" /monitoring),
+
+	or, a filter parameter can be added before <<< </filter> >>> in order to exclude some urls, for example:
+
++-------------------------------+
+	<init-param>
+		<param-name>url-exclude-pattern</param-name>
+		<param-value>/static/.*</param-value>
+	</init-param>
++-------------------------------+
+
+** 5. Optional parameters
+
+	It is possible to configure some settings. These parameters can be defined in priority order:
+
+	* in initialisation parameters of the filter
+
+	  (<<<web.xml>>> file in the webapp)
+
+	* in context parameters of the webapp with prefix <<<monitoring.>>>
+
+	  (context xml file in Tomcat)
+
+	* in system properties with prefix <<<monitoring.>>>
+
+	  (java launch command or administration user interface)
+
+	[]
+
+	The parameter <<<url-exclude-pattern>>> is a
+	{{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} regular expression}}
+	to exclude some urls from monitoring as written above.
+
+	The parameter <<<http-transform-pattern>>> is a
+	{{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} regular expression}}
+	to transform descriptions of http requests and to delete dynamic parts (identifiers of objects for example)
+	in order to be able to aggregate on these requests
+
+	Similarly, the parameter <<<sql-transform-pattern>>> is a
+	{{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} regular expression}}
+	to transform descriptions of sql requests (not binded identifiers for a "in" clause for example)
+	in order to be able to aggregate on these requests.
+
+	And the parameters <<<ejb-transform-pattern>>>, <<<spring-transform-pattern>>>,
+	<<<error-transform-pattern>>> and <<<log-transform-pattern>>> can transform descriptions of
+	ejb3 methods, spring methods, of http system errors or system error logs (in order to aggregate
+	by ejb components and not by ejb methods for example)
+
+	The parameter <<<log>>> can activate logs of http requests (<<<false>>> by default).
+	The http request will be logged with duration and size of the response
+	in the log category corresponding to the name of the filter set in <<<web.xml>>> file,
+	using Log4J if it is present in your application, or using java.util.logging otherwise.
+
+	The parameter <<<storage-directory>>> is the name of the directory of storage (monitoring by default).
+	If the name of the directory starts with '/', it is considered as an absolute path,
+	otherwise it is considered as relative to the temporary directory
+	(<temp> in <<<TOMCAT_HOME>>> for tomcat).
+	If this parameter is changed it is recommended to rename the physical directory at the same time.
+
+	The parameter <<<resolution-seconds>>> is the resolution of charts in seconds (60 by default).
+	A resolution between 60 and 600 is recommended (ie 1 to 10 minutes).
+	If this parameter is decreased, stored <<<*.rrd>>> files should be deleted for the parameter to be taken into account.
+
+	The parameters <<<warning-threshold-millis>>> and <<<severe-threshold-millis>>> are the thresholds in milliseconds
+	(global mean + 1 standard deviation and global mean + 2 * standard deviation by default,
+	this default setting gives dynamic thresholds which indicate the requests with unusual mean times regardless of the
+	application).
+	Beyond the thresholds the mean times are displayed in orange or in red and are separately counted in summary tables
+	with their average times percentages, hits, etc.
+	These threshold parameters can serve as a basis for a SLA (service level) of an application, for which
+	constraints can be defined such as "response time less than 2s for 90% of http requests".
+
+	The parameter <<<system-actions-enabled>>> (<<<false>>> by default for security) enables the system actions
+	<Ramasse-miettes>, <sessions http>, <heap dump>, <histogramme mémoire> (near the bottom of reports).
+	These actions have confirmations when necessary.
+
+	The parameter <<<disabled>>> (<<<false>>> by default) just disables the monitoring.
+	This allows for example to disable the monitoring temporarily or only on some servers,
+	from the tomcat context or from system properties without modifying the <<<web.xml>>> file
+	neither the war file of the monitored webapp.
+
+	The monitoring page is only in consultation and does not contain data such as login or password,
+	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
+	its access by a regular expression on ip address of client with the parameter <<<allowed-addr-pattern>>>
+	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
+
+	If some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
+	you can also restrict in the <<<web.xml>>> file the access to the monitoring page to "admin" role
+	for example (except if a collect server is used as written in the following chapter, in which case
+	the parameter <<<allowed-addr-pattern>>> could be used).
+
+** 6. JDBC
+
+	If a DataSource which JNDI name starts with "jdbc/" is configured in the application server
+	(xml context of the webapp in Tomcat for example), the sql requests will be automically monitored
+	without requiring any parameters (tested on Tomcat 5.5 and 6).
+
+	If a jdbc driver is used directly without DataSource, "net.bull.javamelody.JdbcDriver" should be defined
+	as class of driver and the jdbc property "driver" should be added with the class of the real driver for value.
+	For example, if you use a hibernate.cfg.xml file and mysql (without hibernate.connection.datasource):
+
++-------------------------------+
+	<property name="hibernate.connection.driver_class">net.bull.javamelody.JdbcDriver</property>
+	<property name="hibernate.connection.driver">com.mysql.jdbc.Driver</property>
+	<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/myschema</property>
+	<property name="hibernate.connection.username">myuser</property>
+	<property name="hibernate.connection.password">mypassword</property>
++-------------------------------+
+
+	If a DataSource is used but its JNDI name does not start with "jdbc/" or if this DataSource
+	is not in the usual JNDI context java:comp/env/, then you can add the optional parameter
+	<<<datasources>>> (with a system property, a parameter of the context or of the filter) to define the JNDI name
+	of the datasource used by the application. If there are several datasources, this parameter can contain
+	the JNDI name of the datasources separated by commas. If a jonas v5 server is used, datasources can be monitored
+	but it appears that the parameter <<<datasources>>> must be used to declare them.
+	
+	For example, for a system property in server launch command:
+	
+	<<<-Dmonitoring.datasources=myapp/mydatasource>>>
+
+** 7. Business façades (ejb-jar.xml file if EJB3)
+
+	If the application to monitor contains some business façades in EJB3 (Java EE 5) with annotations <<<@Stateless>>>,
+	<<<@Stateful>>> or <<<@MessageDriven>>>, a counter can be created for statistics of execution of methods.
+	For this, declare in your <<<ejb-jar.xml>>> file the ejb3 interceptor as in the following example:
+
++-------------------------------+
+	<ejb-jar
+		xmlns = "http://java.sun.com/xml/ns/javaee"
+		version = "3.0"
+		xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+	>
+		<interceptors>
+			<interceptor>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor>
+		</interceptors>
+		<assembly-descriptor>
+			<interceptor-binding>
+				<ejb-name>*</ejb-name>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor-binding>
+		</assembly-descriptor>
+	</ejb-jar>
++-------------------------------+
+
+	In this file, it is possible to use * for all ejb or to list names of ejb which should be monitored.
+	Or without modifying the ejb-jar.xml file, it is possible to add the annotation @Interceptor in java sources
+	of ejb implementations.
+
+	Moreover, it is necessary to define the parameter <<<displayed-counters>>>, as the optional parameters above,
+	and with value "http,sql,error,log,ejb".
+
+** 8. Business façades (if Spring)
+
+	If the application to monitor contains some business façades or other objects initialized with Spring,
+	a counter can be created for statistics of execution of methods. But it is not recommended for response time
+	to monitor execution of all methodes of Spring beans, for example the methods of low granularity as getters of entities.
+
+	Step 1: Add the jar dependency spring-aop to you project (in pom.xml if maven).
+
+	Step 2: Make sure the Spring configuration file (<<fr/bull/monitoring/monitoring-spring.xml>>>,
+	included in the provided jar) is loaded as one of the first configuration files.
+
+	For example, if you use the <<<org.springframework.web.context.ContextLoaderListener>>> in your
+	<<<web.xml>>> the <<<contextConfigLocation>>> context parameter will look something like this:
+
++-------------------------------+
+	<context-param>
+	  <param-name>contextConfigLocation</param-name>
+	  <param-value>
+		classpath:fr/bull/monitoring/monitoring-spring.xml
+		classpath:context/services.xml
+		classpath:context/data-access-layer.xml
+		/WEB-INF/applicationContext.xml
+	  </param-value>
+	</context-param>
++-------------------------------+
+
+	Step 3: Add the annotation <<<@net.bull.javamelody.MonitoredWithSpring>>> to all classes and/or methods you want to monitor.
+	As step 1 configured annotation detection only for spring beans, make sure these classes are
+	instantiated through Spring (i.e. declare them as a bean in a Spring configuration file).
+
+	Step 4: Moreover, it is necessary to define the parameter <<<displayed-counters>>>, 
+	as the optional parameters above, and with value "http,sql,error,log,spring" 
+	or "http,sql,error,log,ejb,spring".
+
+	Note : The {{{http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying} documentation }}
+	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
+	facades with separate interfaces and implementations. If the name displayed by the monitoring
+	for the class or the method does not please you, you can add (name="ma classe") between
+	parentheses after the annotation on your class or on your method.
+
+** 9. Weekly reports by mail
+
+	A weekly report in pdf format can be sent by mail to one or several people.
+	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
+	alone is enough, without the other dependencies like iText-rtf). And this needs to have JavaMail and Activation
+	from Sun in the libraries of the server for the mail session.
+
+	For this, if the webapp is in tomcat, download the jar files
+	http://repo1.maven.org/maven2/javax/mail/mail/1.4.1/mail-1.4.1.jar
+	and http://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1.jar.
+	Then if it is tomcat 5.x, move the 2 jar files in <tomcat_home>/common/lib
+	and if it is tomcat 6.x, move the 2 jar files in <tomcat_home>/lib
+
+	And add a mail session in the configuration of the application server with the name of your smtp server.
+	For example, add the following in the tomcat context of your webapp (xml sile located in
+	<tomcat_home>/conf/Catalina/localhost/ or in <tomcat_home>/conf/server.xml):
+
++-------------------------------+
+	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="<smtp server>"
+		mail.smtp.user="<login>"
+		mail.from="MyApplication"
+	/>
++-------------------------------+
+
+	where the name of the session is of your choice and where the properties depend on your mail server.
+	If the mail server needs an authentication, it is possible to add in the properties:
+
++-------------------------------+
+	mail.smtp.auth=true
+	mail.smtp.password=<password>
++-------------------------------+
+
+	If the mail server needs ssl, replace mail.smtp by mail.smtps in all lines above and add a line
+	
+	<<<mail.transport.protocol=smtps>>>
+	
+	Other configuration parameters can be added if necessary for the 
+	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }} session
+
+	Then it is necessary to add the list of mail addresses separated by commas to the parameter
+	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in system properties like the optional parameters
+	above.
+	
+	And the name of the mail session should also be added in the parameter <<<mail-session>>>.
+	For example, for the tomcat context of your webapp :
+
++-------------------------------+
+	<Parameter name='monitoring.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
+	<Parameter name='monitoring.mail-session' value='mail/MySession' override='false'/>
++-------------------------------+
+
+** 10. Full results
+
+	To view the monitoring: open the following page in a web navigator after starting the server:
+
+	<<<http://<host>/<context>/monitoring>>>
+	
+	where <host> is the name of the server where the webapp is deployed, followed possibly by the port (for example localhost:8080)
+	and where <context> is the name of the context of the webapp which you have configured during the deployment thereof.
+
+* Optional centralization server setup
+
+	A centralized collect server can be used optionally.
+	This server can centralize in a same user interface and with a unique storage
+	the monitoring of several applications (QA and production for example)
+	and / or the monitoring of an application with several instances of servers (a cluster for example).
+	So the reports, the storage and the charts are moved out of the application to the collect server.
+
+** 1. War file of the webapp of monitoring
+
+	Copy the monitoring.war file, located at the root of the supplied monitoring.zip file, to the centralized server
+	(NovaForge for example). The monitoring.war file should be in general of the same version of monitoring
+	as the version of the monitoring.jar file in the monitored application.
+
+** 2. Deployment of the webapp of monitoring
+
+	Note : An alternative which does not need an application server is described in the following chapter.
+
+	Deploy the monitoring.war file in the application server of the centralized server.
+	If it is Tomcat, you can write a xml context file named 'monitoring.xml' in the directory
+	conf/Catalina/localhost of Tomcat as the following example:
+
++-------------------------------+
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<Context docBase="<pathto>/monitoring.war" path="monitoring" reloadable="false" >
+		<Parameter name='monitoring.resolution-seconds' value='120' override='false'/>
+	</Context>
++-------------------------------+
+
+	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
+	<<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>> can be added in the xml context file of the collect
+	server with the prefix <<<monitoring>>>. They have the same effects on the collect server 
+	than those of a monitored application as written in the chapter above. In particular the parameter
+	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
+	of charts in the monitoring.
+
+	If xml format is desired instead of java serialization as transport format between a collect server
+	and a monitored application, a parameter <<<transport-format>>> which is specific 
+	to the collect server can be added with 'xml' for value. The java serialization is the transport format by default
+	and it is recommended for best performances (75% more performance for response time,
+	according to this {{{http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking}benchmark}}).
+	The xml transport format needs a dependency on libraries xstream (BSD) and xpp3 (Public Domain).
+
+** 3. Alternative of deployment of the webapp of monitoring
+
+	As an alternative to the deployment described in the last chapter for the webapp of monitoring in a java application
+	server, it is possible to launch the {{{http://winstone.sourceforge.net} winstone}} (LGPL) servlet container
+	already included in the monitoring.war file.
+	You only need to use the launch command "java -jar monitoring.war" and to specify in system properties each
+	of the monitoring parameters detailed in the last chapter.
+	
+	Examples:
+	
++-------------------------------+
+	java -jar monitoring.war
+	java -Dmonitoring.resolution-seconds=120 -jar monitoring.war
++-------------------------------+
+	
+	The settings of http ports, server mode, memory and logs can be done like this:
+	
++-------------------------------+
+	java -server -Xmx128m -jar monitoring.war --httpPort=8080 --ajp13Port=8009 2>&1 >>monitoring.log
++-------------------------------+
+	
+	Other parameters exist for the servlet container. You can read them with:
+
++-------------------------------+
+	java -jar monitoring.war --usage
++-------------------------------+
+
+	On Linux and Unix, it is possible to launch this server as a daemon (in background) and with logs like this
+	({{{http://fr.wikipedia.org/wiki/Nohup} wikipedia}}):
+
++-------------------------------+
+	nohup java -server -jar monitoring.war 0</dev/null 2>&1 >>monitoring.log &
++-------------------------------+
+
+
+** 4. Results with a collect server
+	
+	To view the monitoring: open the following page in a web navigator after starting the servers:
+
+	<<<http://<host>/monitoring>>>
+	
+	where <host> is the name of the collect server, followed possibly by the port (for example localhost:8080)
+	and where 'monitoring' is the name of the context of the webapp as the name of the 'monitoring.xml' file.
+
+	<<<http://<host>/monitoring/>>>
+
+	With links by application in reports, you can choose the application that you want to monitor.
+
+
+	In the web page, you can add an application to monitor and its access url
+	(for example "http://<host_qa>/myapp/" for "qa" and "http://<host_production>/myapp/" for "production").
+	If an application to monitor is deployed on several instances of servers (in a cluster or in a farm),
+	urls should be separated by ','
+	(for example "http://<host1>/myapp/,http://<host2>/myapp/" for "cluster").
+	Note: it is not possible to monitor one application in several collect servers.
+
+	In order for a webapp of monitoring to monitor an application, the monitoring should be setup in this application
+	as written at the start of this document.
+	When the monitoring is setup in the application, it is not compulsory to include the jrobin-*.jar file in the
+	WEB-INF/lib directory of the application, as only the collect server will handle the charts for this application.
+	And with this setup again, it is possible to restrict access to the monitoring of the application only to the
+	collect server by its ip address, forbidding access to the monitoring of the application to any others.
+	For example, if the monitored application is on the same server as the collect server, the following parameter
+	can be added in the <<<web.xml>>> file to restrict access and to allow only the local collect server:
+
++-------------------------------+
+	<init-param>
+		<param-name>allowed-addr-pattern</param-name>
+		<param-value>127\.0\.0\.1</param-value>
+	</init-param>
++-------------------------------+
+
+* Development
+
+	The development is done with Eclipse in its latest version and with the jdk 1.6 at least for compilation.
+	
+	The manager of sources is Subversion at
+	
+	{{{http://javamelody.googlecode.com/svn/trunk/}http://javamelody.googlecode.com/svn/trunk/}}
+
+	The charset of files is UTF-8. The Eclipse configuration is supplied in sources with the configuration of
+	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
+	The infinitest eclipse plugin is also recommended.
+
+	A Maven2 pom and an ant script are provided to compile and build the jar and the war.
+
+	If you don't have Maven2, the jar files can be found in directories
+	<<<novamonitor/novamonitor-core/src/main/test-webapp/WEB-INF/lib>>>
+	and <<<novamonitor/novamonitor-core/src/main/lib>>>
+	
+	If you have Maven2, you can use the dependencies <<<jrobin>>>, <<<itext>>> and if you wish <<<xstream>>>
+	in you <<<pom.xml>>> like this:
+
++-------------------------------+
+	<dependency>
+		<groupId>org.jrobin</groupId>
+		<artifactId>jrobin</artifactId>
+		<version>1.5.9</version>
+	</dependency>
+	<dependency>
+		<groupId>com.lowagie</groupId>
+		<artifactId>itext</artifactId>
+		<version>2.1.4</version>
+		<exclusions>
+			<exclusion>
+				<artifactId>bcmail-jdk14</artifactId>
+				<groupId>bouncycastle</groupId>
+			</exclusion>
+			<exclusion>
+				<artifactId>bcprov-jdk14</artifactId>
+				<groupId>bouncycastle</groupId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+	<dependency>
+		<groupId>com.thoughtworks.xstream</groupId>
+		<artifactId>xstream</artifactId>
+		<version>1.3.1</version>
+	</dependency>
+	...
+	<repositories>
+		<!-- for jrobin -->
+		<repository>
+			<id>opennms-repo</id>
+			<name>OpenNMS Repository</name>
+			<url>http://repo.opennms.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
++-------------------------------+
+
+* Format of RRD files
+	
+	Values of charts are stored in RRD (Round Robin Database) standard format.
+	Many tools exist for this format like {{{http://oss.oetiker.ch/rrdtool/}RRDtool}},
+	close relative of {{{http://oss.oetiker.ch/mrtg/}MRTG}}, or {{{http://www.jrobin.org/}JRobin}} in Java.
+	
