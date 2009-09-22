@@ -1,0 +1,83 @@
+	-----
+	Java Melody : monitoring of Java EE applications
+	-----
+	Auteur : Emeric Vernat, Bull (emeric.vernat@bull.net)
+	-----
+	2009-05-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Java Melody : monitoring of Java applications
+
+[screenshots/graphs_small.PNG]
+
+	License : {{{license.html} LGPL }}
+
+	URL : http://javamelody.googlecode.com/
+
+	( {{{screenshots.html}Screenshots}}, {{{user_guide_en.html}User guide}}, {{{index.html}Français}} )
+	
+	The goal of this monitoring tool is to monitor Java or Java EE applications servers in QA and production environments.
+	It is not a tool to simulate requests from users,
+	it is a tool to measure and calculate statistics on real operation of an application
+	depending on the usage of the application by users.
+	
+	Monitoring is mainly based on statistics of requests and on evolution charts.
+	
+	It allows to improve applications in QA and production and help to:
+	
+	* give facts about the average response times and number of executions
+	
+	* make decisions when trends are bad, before problems become too serious
+	
+	* optimize based on the more limiting response times
+	
+	* find the root causes of response times
+	
+	* verify the real improvement after optimizations
+
+	[]
+
+	The monitoring includes summary charts showing the evolution over time of the following indicators:
+
+	* Number of executions, mean execution times and percentage of errors of http requests,
+	sql requests or methods of business façades (if EJB3 or if Spring)
+	
+	* Java memory
+
+	* Java CPU
+
+	* Number of user sessions
+
+	* Number of jdbc connections
+
+	[]
+	
+	These charts can be viewed on the current day, week, month or year.
+
+	The monitoring includes statistics of predefined counters (as of today http requests, sql requests
+	and methods of business façades if EJB3 or if Spring) with, for each counter :
+
+	* A summary indicating the overall number of executions, the average execution time, the cpu time and the percentage of errors. 
+
+	* And the percentage of time spent in the requests for which the average time exceeds a configurable threshold.
+
+	* And the complete list of requests, aggregated without dynamic parameters with, for each, the number of executions,
+	the mean execution time, the mean cpu time, the percentage of errors and an evolution chart of execution time over time. 
+
+	* Furthermore, each http request indicates the size of the flow response, the mean number of sql executions and the mean sql time. 
+	
+	[]
+	
+	The monitoring also includes statistics on http errors, on warnings and errors in logs
+	and on data caches if ehcache.
+
+	An optional and independent collect server may be used if necessary to unload the application of storage management,
+	and of reports generation and to centralize the data of clustered applications or of several applications.
+
+	With its low-intrusive technology and if necessary with the collect server, the monitoring is designed to be used
+	on applications in production environment even with heavy loads
+	(ie loads of more than 20 transactional http requests per second).
+	If you're not convinced, imagine that your database will stop well before the monitoring, and that you earn more to
+	optimize some sql or http requests based on real usage in production than what you lose with the monitoring.
