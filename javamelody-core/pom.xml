@@ -317,9 +317,9 @@
 						<configuration>
 							<tasks>
 								<ant antfile="build.xml" target="zip" />
-								<copy file="monitoring.zip" tofile="target/site/monitoring.zip" />
-								<copy file="monitoring.jar" tofile="target/site/monitoring.jar" />
-								<copy file="monitoring.war" tofile="target/site/monitoring.war" />
+								<copy file="javamelody.zip" tofile="target/site/javamelody.zip" />
+								<copy file="javamelody.jar" tofile="target/site/javamelody.jar" />
+								<copy file="javamelody.war" tofile="target/site/javamelody.war" />
 								<ant antfile="build.xml" target="clean" />
 							</tasks>
 						</configuration>
