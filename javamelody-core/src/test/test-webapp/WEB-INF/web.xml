@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>test monitoring</display-name>
+	<distributable />
+	<filter>
+		<filter-name>javamelody</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<!-- pour mettre des paramètres pour le filtre, voir fichier user_guide.apt -->
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>log</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>displayed-counters</param-name>
+			<param-value>http,sql,error,log,spring,services</param-value>
+		</init-param>
+		<!--
+		<init-param>
+			<param-name>analytics-id</param-name>
+			<param-value>UA-1335263-5</param-value>
+		</init-param>
+		-->
+	</filter>
+	<filter-mapping>
+		<filter-name>javamelody</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+	
+	<!-- normalement cette servlet est utilisée dans un serveur de collecte séparé de l'application monitorée -->
+	<servlet>
+		<servlet-name>monitoringServer</servlet-name>
+		<servlet-class>net.bull.javamelody.CollectorServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>monitoringServer</servlet-name>
+		<url-pattern>/monitoringServer</url-pattern>
+	</servlet-mapping>
+</web-app>
