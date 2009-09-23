@@ -1,2 +1,1 @@
-
-= Screenshots =
+http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/site/resources/screenshots/aide_en_ligne.png
