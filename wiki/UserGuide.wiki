@@ -21,7 +21,10 @@ It allows to improve applications in QA and production and helps to:
 
 License: LGPL
 
-URL : http://javamelody.googlecode.com/
+URL: http://javamelody.googlecode.com/   
+
+[http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
+
 
 Java version required for execution:
 
