@@ -24,7 +24,7 @@ Threads
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' width='50%' alt='Caches de données' /></a><br/>
 Caches de données
 
-<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/sessions.png' width='50%' alt='Sessions' /></a><br/>
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' width='50%' alt='Sessions' /></a><br/>
 Sessions
 
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' width='50%' alt='Histogramme mémoire' /></a><br/>
