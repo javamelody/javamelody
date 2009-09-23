@@ -1,47 +1,47 @@
 <div align='center'>
-<br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/graphs.png' width='50%' alt='Courbes' /></a><br/>
+<br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' width='50%' alt='Courbes' /></a><br/>
 Courbes
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/english.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/english.png' width='50%' alt='Anglais' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/english.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/english.png' width='50%' alt='Anglais' /></a><br/>
 Anglais
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/statistiques.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/statistiques.png' width='50%' alt='Statistiques requêtes' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/statistiques.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/statistiques.png' width='50%' alt='Statistiques requêtes' /></a><br/>
 Statistiques requêtes
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/erreurs_http_et_logs_erreurs.png' width='50%' alt="Erreurs http et logs d'erreurs" /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' width='50%' alt="Erreurs http et logs d'erreurs" /></a><br/>
 Erreurs http et logs d'erreurs
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/requetes_en_cours.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/requetes_en_cours.png' width='50%' alt='Requête en cours' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/requetes_en_cours.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/requetes_en_cours.png' width='50%' alt='Requête en cours' /></a><br/>
 Requête en cours
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/infos_systemes.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/infos_systemes.png' width='50%' alt='Informations systèmes' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/infos_systemes.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/infos_systemes.png' width='50%' alt='Informations systèmes' /></a><br/>
 Informations systèmes
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/threads.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/threads.png' width='50%' alt='Threads' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/threads.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/threads.png' width='50%' alt='Threads' /></a><br/>
 Threads
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/caches.png' width='50%' alt='Caches de données' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' width='50%' alt='Caches de données' /></a><br/>
 Caches de données
 
 <br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/sessions.png' width='50%' alt='Sessions' /></a><br/>
 Sessions
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/heaphisto.png' width='50%' alt='Histogramme mémoire' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' width='50%' alt='Histogramme mémoire' /></a><br/>
 Histogramme mémoire
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/processus.png' width='50%' alt='Processus' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' width='50%' alt='Processus' /></a><br/>
 Processus
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/drill-down.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/drill-down.png' width='50%' alt='Drill-down (et composants ejb/spring/autres)' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/drill-down.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/drill-down.png' width='50%' alt='Drill-down (et composants ejb/spring/autres)' /></a><br/>
 Drill-down (et composants ejb/spring/autres)
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/zoom.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/zoom.png' width='50%' alt='Zoom sur graph' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/zoom.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/zoom.png' width='50%' alt='Zoom sur graph' /></a><br/>
 Zoom sur graph
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/pdf.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/pdf.png' width='50%' alt='Pdf' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/pdf.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/pdf.png' width='50%' alt='Pdf' /></a><br/>
 Pdf
 
-<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/aide_en_ligne.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/screenshots/aide_en_ligne.png' width='50%' alt='Aide en ligne' /></a><br/>
+<br/><br/><a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/aide_en_ligne.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/aide_en_ligne.png' width='50%' alt='Aide en ligne' /></a><br/>
 Aide en ligne
 
 </div>
