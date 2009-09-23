@@ -23,9 +23,6 @@ License: LGPL
 
 URL: http://javamelody.googlecode.com/   
 
-[http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
-
-
 Java version required for execution:
 
 	* 1.5 at least
@@ -43,6 +40,9 @@ Required dependency: JRobin (LGPL) for evolution charts
 Optional dependency: iText (LGPL ou MPL) for reports in pdf format in addition to html
 
 Language: English and French
+
+[http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
+
 
 == Setup ==
 
