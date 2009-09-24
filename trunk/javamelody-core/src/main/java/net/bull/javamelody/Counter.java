@@ -750,12 +750,6 @@ class Counter implements Cloneable, Serializable {
 		}
 	}
 
-	void migrate() {
-		for (final CounterRequest request : requests.values()) {
-			request.migrate();
-		}
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

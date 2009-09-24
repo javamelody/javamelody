@@ -395,18 +395,6 @@ class CounterRequest implements Cloneable, Serializable {
 		}
 	}
 
-	void migrate() {
-		// TODO uniquement pour compatibilité ascendante (Long était Integer avant début sept 2009)
-		final Map<String, Long> map = childRequestsExecutionsByRequestId;
-		if (map != null && !map.isEmpty()) {
-			for (final Map.Entry<String, ?> entry : map.entrySet()) {
-				if (entry.getValue() instanceof Integer) {
-					map.put(entry.getKey(), Long.valueOf(((Integer) entry.getValue()).longValue()));
-				}
-			}
-		}
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
