@@ -27,10 +27,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import net.bull.javamelody.MonitoringFilter;
-import net.bull.javamelody.Parameter;
-import net.bull.javamelody.Parameters;
-
 import org.junit.Test;
 
 /**
@@ -38,7 +34,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringFilter {
-	/** Test. 
+	/** Test.
 	 * @throws ServletException e */
 	@Test
 	public void testInit() throws ServletException {

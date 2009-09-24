@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.bull.javamelody.HtmlSessionInformationsReport;
-import net.bull.javamelody.SessionInformations;
-
 import org.junit.Test;
 
 /**

@@ -22,8 +22,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import net.bull.javamelody.CounterResponseStream;
-import net.bull.javamelody.CounterServletResponseWrapper;
 import net.bull.javamelody.TestCompressionServletResponseWrapper.HttpResponse;
 
 import org.junit.Test;

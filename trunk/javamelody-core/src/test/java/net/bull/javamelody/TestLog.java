@@ -24,10 +24,6 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Collections;
 
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.Log4JAppender;
-import net.bull.javamelody.LoggingHandler;
-
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;

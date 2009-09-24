@@ -25,9 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.LabradorRetriever;
-
 import org.junit.Test;
 
 /**

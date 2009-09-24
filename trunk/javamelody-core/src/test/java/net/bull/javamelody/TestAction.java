@@ -28,12 +28,6 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Timer;
 
-import net.bull.javamelody.Action;
-import net.bull.javamelody.Collector;
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.Parameter;
-import net.bull.javamelody.Parameters;
-
 import org.junit.Test;
 
 /**

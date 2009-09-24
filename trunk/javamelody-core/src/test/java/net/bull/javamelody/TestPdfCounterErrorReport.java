@@ -25,13 +25,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Timer;
 
-import net.bull.javamelody.Collector;
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.CounterError;
-import net.bull.javamelody.JavaInformations;
-import net.bull.javamelody.PdfReport;
-import net.bull.javamelody.Period;
-
 import org.junit.Test;
 
 /**

@@ -28,9 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.TransportFormat;
-
 import org.junit.Test;
 
 /**

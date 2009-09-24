@@ -32,11 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.CounterError;
-import net.bull.javamelody.CounterRequest;
-import net.bull.javamelody.CounterRequestContext;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

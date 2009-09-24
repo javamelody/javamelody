@@ -23,10 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collections;
 import java.util.Timer;
 
-import net.bull.javamelody.Collector;
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.MailReport;
-
 import org.junit.Test;
 
 /**

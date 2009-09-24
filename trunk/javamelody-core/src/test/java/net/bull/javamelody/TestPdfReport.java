@@ -29,16 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 
-import net.bull.javamelody.Collector;
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.CounterRequestContext;
-import net.bull.javamelody.JavaInformations;
-import net.bull.javamelody.PdfCounterReport;
-import net.bull.javamelody.PdfCounterRequestContextReport;
-import net.bull.javamelody.PdfDocumentFactory;
-import net.bull.javamelody.PdfReport;
-import net.bull.javamelody.Period;
-import net.bull.javamelody.ThreadInformations;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
