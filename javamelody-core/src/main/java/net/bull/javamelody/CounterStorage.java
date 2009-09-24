@@ -93,9 +93,7 @@ class CounterStorage {
 						new BufferedInputStream(in)));
 				try {
 					// on retourne l'instance du counter lue
-					final Counter readCounter = (Counter) input.readObject();
-					readCounter.migrate();
-					return readCounter;
+					return (Counter) input.readObject();
 				} finally {
 					// ce close libère les ressources du ObjectInputStream et du GZIPInputStream
 					input.close();
