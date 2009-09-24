@@ -335,7 +335,7 @@ class PdfReport {
 				.createAnnotation("http://www.bull.com/fr/services/novaforge.php"));
 		imageNovaforge.scalePercent(50);
 		paragraph.add(new Chunk(imageNovaforge, 0, 0));
-		add(paragraph);
+		//		add(paragraph);
 	}
 
 	private void writeDuration() throws DocumentException {
