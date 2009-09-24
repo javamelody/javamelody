@@ -27,7 +27,6 @@ import java.util.Set;
 
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
-
 /**
  * Rapport html.
  * @author Emeric Vernat
@@ -509,12 +508,13 @@ class HtmlReport {
 	}
 
 	private void writePoweredBy() throws IOException {
-		writeln("<div align='center'><font size='-1' face='Helvetica'>Powered by</font>&nbsp;&nbsp;&nbsp;");
-		writeln("<a href='http://www.bull.com/fr/'>");
-		writeln("<img src='?resource=logobull.png' alt='Bull' title='Bull' /></a>");
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<a href='http://www.bull.com/fr/services/novaforge.php'>");
-		writeln("<img src='?resource=Novaforge2.png' alt='Novaforge' title='Novaforge' /></a></div>");
+		writeln("");
+		//		writeln("<div align='center'><font size='-1' face='Helvetica'>Powered by</font>&nbsp;&nbsp;&nbsp;");
+		//		writeln("<a href='http://www.bull.com/fr/'>");
+		//		writeln("<img src='?resource=logobull.png' alt='Bull' title='Bull' /></a>");
+		//		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		//		writeln("<a href='http://www.bull.com/fr/services/novaforge.php'>");
+		//		writeln("<img src='?resource=Novaforge2.png' alt='Novaforge' title='Novaforge' /></a></div>");
 	}
 
 	void writeRequestAndGraphDetail(String graphName) throws IOException {
