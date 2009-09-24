@@ -34,7 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.bull.javamelody.Counter.CounterRequestContextComparator;
 
-
 /**
  * Collecteur de données sur les compteurs, avec son propre thread, pour remplir les courbes.
  * @author Emeric Vernat

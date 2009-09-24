@@ -23,7 +23,6 @@ import java.util.Date;
 
 import net.bull.javamelody.MonitoredWithSpring;
 
-
 /**
  * Implémentation test de bean Spring.
  * (implémente une interface pour permettre l'AOP Spring car sinon il faut CGLIB)

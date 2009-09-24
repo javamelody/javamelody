@@ -26,7 +26,6 @@ import java.util.Map;
 
 import net.bull.javamelody.CounterRequest.ICounterRequestContext;
 
-
 /**
  * Contexte d'une requête pour un compteur (non synchronisé).
  * Le contexte sera initialisé dans un ThreadLocal puis sera utilisé à l'enregistrement de la requête parente.

@@ -37,7 +37,6 @@ import net.bull.javamelody.FilterServletOutputStream;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire des classes CompressionServletResponseWrapper, CompressionResponseStream
  * et FilterServletOutputStream.

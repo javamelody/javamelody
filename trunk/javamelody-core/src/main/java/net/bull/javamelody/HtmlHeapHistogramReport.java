@@ -25,7 +25,6 @@ import java.util.List;
 
 import net.bull.javamelody.HeapHistogram.ClassInfo;
 
-
 /**
  * Partie du rapport html pour l'histogramme mémoire.
  * @author Emeric Vernat

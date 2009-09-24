@@ -30,7 +30,6 @@ import net.bull.javamelody.ProcessInformations;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe ProcessInformations.
  * @author Emeric Vernat

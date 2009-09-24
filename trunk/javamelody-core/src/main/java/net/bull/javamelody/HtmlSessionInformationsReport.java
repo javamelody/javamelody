@@ -29,7 +29,6 @@ import java.util.TimeZone;
 
 import net.bull.javamelody.SessionInformations.SessionAttribute;
 
-
 /**
  * Partie du rapport html pour les sessions http.
  * @author Emeric Vernat

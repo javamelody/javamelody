@@ -45,7 +45,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe HtmlHeapHistogramReport.
  * @author Emeric Vernat
