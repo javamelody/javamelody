@@ -31,10 +31,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import net.bull.javamelody.CompressionResponseStream;
-import net.bull.javamelody.CompressionServletResponseWrapper;
-import net.bull.javamelody.FilterServletOutputStream;
-
 import org.junit.Test;
 
 /**

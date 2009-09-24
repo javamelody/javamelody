@@ -30,15 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 
-import net.bull.javamelody.Collector;
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.HeapHistogram;
-import net.bull.javamelody.HtmlHeapHistogramReport;
-import net.bull.javamelody.HtmlReport;
-import net.bull.javamelody.JavaInformations;
-import net.bull.javamelody.MonitoringController;
-import net.bull.javamelody.Period;
-import net.bull.javamelody.VirtualMachine;
 import net.bull.javamelody.HeapHistogram.ClassInfo;
 
 import org.junit.After;

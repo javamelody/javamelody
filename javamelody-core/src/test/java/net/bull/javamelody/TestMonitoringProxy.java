@@ -21,9 +21,6 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.MonitoringProxy;
-
 import org.junit.Test;
 
 /**

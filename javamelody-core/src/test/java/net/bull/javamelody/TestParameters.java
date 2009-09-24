@@ -29,11 +29,6 @@ import java.net.MalformedURLException;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
-import net.bull.javamelody.Parameter;
-import net.bull.javamelody.Parameters;
-import net.bull.javamelody.Period;
-import net.bull.javamelody.TransportFormat;
-
 import org.junit.Test;
 
 /**

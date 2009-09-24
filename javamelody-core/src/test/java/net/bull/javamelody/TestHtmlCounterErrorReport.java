@@ -24,10 +24,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 
-import net.bull.javamelody.Counter;
-import net.bull.javamelody.CounterError;
-import net.bull.javamelody.HtmlCounterErrorReport;
-
 import org.junit.Test;
 
 /**

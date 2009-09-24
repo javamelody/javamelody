@@ -27,9 +27,6 @@ import static org.junit.Assert.fail;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
-import net.bull.javamelody.SessionInformations;
-import net.bull.javamelody.SessionListener;
-
 import org.junit.Before;
 import org.junit.Test;
 

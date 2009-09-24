@@ -26,8 +26,6 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import net.bull.javamelody.SessionInformations;
-
 /**
  * Implementation test de HttpSession.
  * @author Emeric Vernat

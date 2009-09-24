@@ -35,9 +35,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import net.bull.javamelody.JdbcDriver;
-import net.bull.javamelody.JdbcWrapper;
-
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;

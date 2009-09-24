@@ -20,8 +20,6 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
 
-import net.bull.javamelody.MonitoringInterceptor;
-
 import org.junit.Test;
 
 /**
