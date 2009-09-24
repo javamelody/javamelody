@@ -30,7 +30,9 @@
 	</body>
 	<poweredBy>
 		<logo name="Download" href="monitoring.zip" img="images/download.gif" />
+<!--
 		<logo name="Bull" href="http://www.bull.com/fr/" img="images/logobull.png" />
 		<logo name="Novaforge" href="http://www.bull.com/fr/services/novaforge.php" img="images/Novaforge2.png" />
+		-->
 	</poweredBy>
 </project>
