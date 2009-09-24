@@ -33,7 +33,6 @@ import net.bull.javamelody.Parameters;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe MonitoringFilter.
  * @author Emeric Vernat

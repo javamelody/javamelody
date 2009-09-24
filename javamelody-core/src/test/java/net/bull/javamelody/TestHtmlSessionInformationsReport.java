@@ -31,7 +31,6 @@ import net.bull.javamelody.SessionInformations;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe HtmlSessionInformationsReport.
  * @author Emeric Vernat

@@ -30,7 +30,6 @@ import net.bull.javamelody.HtmlCounterErrorReport;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe HtmlCounterErrorReport.
  * @author Emeric Vernat

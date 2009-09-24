@@ -47,7 +47,6 @@ import org.junit.Test;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 
-
 /**
  * Test unitaire de la classe PdfReport.
  * @author Emeric Vernat

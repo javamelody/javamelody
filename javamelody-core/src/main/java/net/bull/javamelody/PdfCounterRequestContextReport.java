@@ -40,7 +40,6 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
-
 /**
  * Partie du rapport pdf pour les contextes de requêtes en cours.
  * @author Emeric Vernat

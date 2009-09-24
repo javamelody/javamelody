@@ -42,7 +42,6 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe JdbcDriver.
  * @author Emeric Vernat

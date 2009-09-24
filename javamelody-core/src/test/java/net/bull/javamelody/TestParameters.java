@@ -36,7 +36,6 @@ import net.bull.javamelody.TransportFormat;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe Parameters.
  * @author Emeric Vernat

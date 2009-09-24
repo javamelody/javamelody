@@ -26,7 +26,6 @@ import net.bull.javamelody.MonitoringProxy;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe MonitoringProxy.
  * @author Emeric Vernat

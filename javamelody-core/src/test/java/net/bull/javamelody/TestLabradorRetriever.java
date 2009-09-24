@@ -30,7 +30,6 @@ import net.bull.javamelody.LabradorRetriever;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe LabradorRetriever.
  * @author Emeric Vernat

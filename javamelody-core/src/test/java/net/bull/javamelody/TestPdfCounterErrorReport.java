@@ -34,7 +34,6 @@ import net.bull.javamelody.Period;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe PdfCounterErrorReport.
  * @author Emeric Vernat

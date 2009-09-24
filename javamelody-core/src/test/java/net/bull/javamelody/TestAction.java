@@ -36,7 +36,6 @@ import net.bull.javamelody.Parameters;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe Action.
  * @author Emeric Vernat

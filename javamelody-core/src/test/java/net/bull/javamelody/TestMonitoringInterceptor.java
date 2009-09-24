@@ -24,7 +24,6 @@ import net.bull.javamelody.MonitoringInterceptor;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe MonitoringInterceptor.
  * @author Emeric Vernat

@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Test unitaire des classes Log4JAppender et LoggingHandler.
  * @author Emeric Vernat

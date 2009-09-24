@@ -33,7 +33,6 @@ import net.bull.javamelody.TransportFormat;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe TransportFormat.
  * @author Emeric Vernat

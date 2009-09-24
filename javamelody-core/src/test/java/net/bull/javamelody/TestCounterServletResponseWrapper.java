@@ -28,7 +28,6 @@ import net.bull.javamelody.TestCompressionServletResponseWrapper.HttpResponse;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire des classes CounterServletResponseWrapper et CounterResponseStream.
  * @author Emeric Vernat

@@ -33,7 +33,6 @@ import net.bull.javamelody.SessionListener;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe SessionListener.
  * @author Emeric Vernat

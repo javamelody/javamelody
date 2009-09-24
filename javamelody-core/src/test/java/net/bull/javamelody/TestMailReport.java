@@ -29,7 +29,6 @@ import net.bull.javamelody.MailReport;
 
 import org.junit.Test;
 
-
 /**
  * Test unitaire de la classe MailReport.
  * @author Emeric Vernat
