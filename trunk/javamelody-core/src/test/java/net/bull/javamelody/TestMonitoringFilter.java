@@ -41,10 +41,11 @@ public class TestMonitoringFilter {
 		final FilterConfig config = createNiceMock(FilterConfig.class);
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
+		// anyTimes sur getInitParameter car TestJdbcDriver a pu fixer la propriété système à false
 		expect(
 				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.DISABLED.getCode())).andReturn(null);
-		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null);
+						+ Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
+		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
