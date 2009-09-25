@@ -162,11 +162,13 @@ public class TestJdbcDriver {
 			driver.getJdbcWrapper().getSqlCounter().setDisplayed(false);
 			connection = driver.getJdbcWrapper().createConnectionProxy(connection);
 			driver.getJdbcWrapper().getSqlCounter().setDisplayed(true);
-			System.setProperty("monitoring.disabled", "true");
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode(),
+					"true");
 			try {
 				connection = driver.getJdbcWrapper().createConnectionProxy(connection);
 			} finally {
-				System.setProperty("monitoring.disabled", "false");
+				System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
+						+ Parameter.DISABLED.getCode(), "false");
 			}
 		} finally {
 			connection.close();
