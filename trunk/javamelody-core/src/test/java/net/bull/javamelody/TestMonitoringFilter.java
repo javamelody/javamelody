@@ -26,10 +26,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.Timer;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -107,7 +111,7 @@ public class TestMonitoringFilter {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testdoFilter() throws ServletException, IOException {
+	public void testDoFilter() throws ServletException, IOException {
 		setUp();
 
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
@@ -167,6 +171,8 @@ public class TestMonitoringFilter {
 		parameters.put("width", "800");
 		parameters.put("height", "600");
 		monitoring(parameters);
+		parameters.put("graph", "unknown");
+		monitoring(parameters, false);
 	}
 
 	/** Test.
@@ -198,6 +204,15 @@ public class TestMonitoringFilter {
 		parameters.put(MonitoringController.PART_PARAMETER, "graph");
 		parameters.put("graph", "usedMemory");
 		monitoring(parameters);
+
+		parameters.put(MonitoringController.PART_PARAMETER, "unknown part");
+		boolean exception = false;
+		try {
+			monitoring(parameters);
+		} catch (final IllegalArgumentException e) {
+			exception = true;
+		}
+		assertTrue("exception if unknown part", exception);
 	}
 
 	/** Test.
@@ -240,9 +255,16 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
 		monitoring(parameters);
+		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
+		parameters.put(MonitoringController.SESSION_ID_PARAMETER, "expired session");
+		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
 		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		monitoring(parameters);
+		parameters.put(MonitoringController.PART_PARAMETER, null);
+		parameters.put("format", TransportFormat.SERIALIZED.getCode());
+		parameters.put(MonitoringController.COLLECTOR_PARAMETER, "stop");
 		monitoring(parameters);
 	}
 
@@ -291,8 +313,14 @@ public class TestMonitoringFilter {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		expect(request.getContextPath()).andReturn("/test").anyTimes();
-		expect(request.getHeaders("Accept-Encoding")).andReturn(
-				Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+		final Random random = new Random();
+		if (random.nextBoolean()) {
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+		} else {
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+		}
 		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
 			expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 		}
@@ -300,6 +328,8 @@ public class TestMonitoringFilter {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
 				.anyTimes();
+		final StringWriter stringWriter = new StringWriter();
+		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
 		final FilterChain chain = createNiceMock(FilterChain.class);
 
 		replay(config);
@@ -316,8 +346,26 @@ public class TestMonitoringFilter {
 		verify(chain);
 
 		if (checkResultContent) {
-			assertTrue("result", output.size() != 0);
+			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
+	}
+
+	/** Test.
+	 * @throws ServletException e */
+	@Test
+	public void testWriteHtmlToLastShutdownFile() throws ServletException {
+		setUp();
+
+		replay(config);
+		replay(context);
+		monitoringFilter.init(config);
+		final Timer timer = new Timer("test timer", true);
+		final Counter sqlCounter = new Counter("sql", "db.png");
+		final Collector collector = new Collector("test", Arrays
+				.asList(new Counter[] { sqlCounter, }), timer);
+		new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
+		verify(config);
+		verify(context);
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
