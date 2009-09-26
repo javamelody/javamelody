@@ -104,7 +104,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testdoFilter() throws ServletException, IOException {
@@ -133,7 +133,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoring() throws ServletException, IOException {
@@ -141,7 +141,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
@@ -149,7 +149,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithResource() throws ServletException, IOException {
@@ -157,7 +157,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithGraph() throws ServletException, IOException {
@@ -169,7 +169,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithParts() throws ServletException, IOException {
@@ -200,7 +200,27 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoMonitoringWithActions() throws ServletException, IOException {
+		final Map<String, String> parameters = new HashMap<String, String>();
+
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		parameters.put(MonitoringController.ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
+		monitoring(parameters);
+		parameters.put(MonitoringController.ACTION_PARAMETER, Action.GC.toString());
+		monitoring(parameters);
+		parameters
+				.put(MonitoringController.ACTION_PARAMETER, Action.INVALIDATE_SESSIONS.toString());
+		monitoring(parameters);
+		parameters.put(MonitoringController.ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
+		parameters.put(MonitoringController.SESSION_ID_PARAMETER, "123456789");
+		monitoring(parameters);
+	}
+
+	/** Test.
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
@@ -208,7 +228,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
@@ -225,7 +245,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
@@ -242,7 +262,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
