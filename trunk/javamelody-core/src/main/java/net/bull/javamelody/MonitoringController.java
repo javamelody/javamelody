@@ -299,6 +299,8 @@ class MonitoringController {
 			doHeapHisto(htmlReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			doProcesses(htmlReport);
+		} else {
+			throw new IllegalArgumentException(part);
 		}
 	}
 
@@ -368,6 +370,9 @@ class MonitoringController {
 	void writeHtmlToLastShutdownFile() {
 		try {
 			final File dir = Parameters.getStorageDirectory(collector.getApplication());
+			if (!dir.mkdirs() && !dir.exists()) {
+				throw new IOException("Monitoring directory can't be created: " + dir.getPath());
+			}
 			final File lastShutdownFile = new File(dir, "last_shutdown.html");
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(lastShutdownFile));
 			try {
