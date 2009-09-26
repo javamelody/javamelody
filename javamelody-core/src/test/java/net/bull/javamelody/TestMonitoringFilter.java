@@ -208,8 +208,6 @@ public class TestMonitoringFilter {
 		final Map<String, String> parameters = new HashMap<String, String>();
 
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
-		parameters.put(MonitoringController.ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
-		monitoring(parameters);
 		parameters.put(MonitoringController.ACTION_PARAMETER, Action.GC.toString());
 		monitoring(parameters);
 		parameters
@@ -217,6 +215,9 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(MonitoringController.ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
 		parameters.put(MonitoringController.SESSION_ID_PARAMETER, "123456789");
+		monitoring(parameters);
+		parameters.put(MonitoringController.ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
+		parameters.put("counter", "all");
 		monitoring(parameters);
 	}
 
