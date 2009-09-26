@@ -138,6 +138,7 @@ public class TestMonitoringFilter {
 	@Test
 	public void testDoMonitoring() throws ServletException, IOException {
 		monitoring(Collections.<String, String> emptyMap());
+		monitoring(Collections.<String, String> singletonMap("format", "html"));
 	}
 
 	/** Test.
