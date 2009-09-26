@@ -87,6 +87,9 @@ public class TestAction {
 	/** Test. */
 	@Test
 	public void testCheckSystemActionsEnabled() {
+		// remove pour être sûr par rapport aux autres tests unitaires
+		System.getProperties().remove(
+				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.SYSTEM_ACTIONS_ENABLED.getCode());
 		boolean systemActionsEnabled = true;
 		try {
 			Action.checkSystemActionsEnabled();
