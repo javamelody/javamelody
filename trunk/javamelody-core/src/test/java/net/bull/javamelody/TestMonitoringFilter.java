@@ -77,8 +77,6 @@ public class TestMonitoringFilter {
 	 * @throws ServletException e */
 	@Test
 	public void testInit() throws ServletException {
-		setUp();
-
 		replay(config);
 		replay(context);
 		monitoringFilter.init(config);
@@ -90,8 +88,6 @@ public class TestMonitoringFilter {
 	 * @throws ServletException e */
 	@Test
 	public void testLog() throws ServletException {
-		setUp();
-
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRemoteAddr()).andReturn("127.0.0.1");
 		expect(request.getRequestURI()).andReturn("/test/request");
@@ -112,8 +108,6 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoFilter() throws ServletException, IOException {
-		setUp();
-
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		expect(request.getContextPath()).andReturn("/test").anyTimes();
@@ -354,8 +348,6 @@ public class TestMonitoringFilter {
 	 * @throws ServletException e */
 	@Test
 	public void testWriteHtmlToLastShutdownFile() throws ServletException {
-		setUp();
-
 		replay(config);
 		replay(context);
 		monitoringFilter.init(config);
