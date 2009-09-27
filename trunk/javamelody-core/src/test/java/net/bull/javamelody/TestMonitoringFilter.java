@@ -360,12 +360,17 @@ public class TestMonitoringFilter {
 		replay(context);
 		monitoringFilter.init(config);
 		final Timer timer = new Timer("test timer", true);
-		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test", Arrays
-				.asList(new Counter[] { sqlCounter, }), timer);
-		new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
-		verify(config);
-		verify(context);
+		try {
+			final Counter sqlCounter = new Counter("sql", "db.png");
+			final Collector collector = new Collector("test", Arrays
+					.asList(new Counter[] { sqlCounter, }), timer);
+			timer.cancel();
+			new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
+			verify(config);
+			verify(context);
+		} finally {
+			timer.cancel();
+		}
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
