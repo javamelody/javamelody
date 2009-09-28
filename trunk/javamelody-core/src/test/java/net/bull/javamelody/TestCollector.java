@@ -61,7 +61,7 @@ public class TestCollector {
 		timer = new Timer("test timer", true);
 	}
 
-	/** Test. */
+	/** Finalisation. */
 	@After
 	public void tearDown() {
 		timer.cancel();
@@ -359,21 +359,25 @@ public class TestCollector {
 			Parameters.addCollectorApplication(application, urls);
 
 			final CollectorServer collectorServer = new CollectorServer();
-			collectorServer.collectWithoutErrors();
-			Parameters.removeCollectorApplication(application);
 			try {
-				collectorServer.addCollectorApplication(application, urls);
-			} catch (final Exception e) {
-				// exception car il n'y a pas de serveur à cette adresse
-				assertNotNull("exception", e);
+				collectorServer.collectWithoutErrors();
+				Parameters.removeCollectorApplication(application);
+				try {
+					collectorServer.addCollectorApplication(application, urls);
+				} catch (final Exception e) {
+					// exception car il n'y a pas de serveur à cette adresse
+					assertNotNull("exception", e);
+				}
+				collectorServer.getCollectorByApplication(application);
+				collectorServer.getJavaInformationsByApplication(application);
+				collectorServer.isApplicationDataAvailable(application);
+				collectorServer.getFirstApplication();
+				collectorServer.scheduleReportMailForCollectorServer(application);
+				collectorServer.removeCollectorApplication(application);
+				Parameters.addCollectorApplication(application, urls);
+			} finally {
+				collectorServer.stop();
 			}
-			collectorServer.getCollectorByApplication(application);
-			collectorServer.getJavaInformationsByApplication(application);
-			collectorServer.isApplicationDataAvailable(application);
-			collectorServer.getFirstApplication();
-			collectorServer.scheduleReportMailForCollectorServer(application);
-			collectorServer.removeCollectorApplication(application);
-			Parameters.addCollectorApplication(application, urls);
 		} finally {
 			timer.cancel();
 		}
