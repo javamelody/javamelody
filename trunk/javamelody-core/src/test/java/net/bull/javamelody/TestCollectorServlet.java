@@ -137,7 +137,6 @@ public class TestCollectorServlet {
 		replay(request);
 		replay(response);
 		collectorServlet.init(config);
-		// TODO
 		collectorServlet.doPost(request, response);
 		verify(config);
 		verify(context);
