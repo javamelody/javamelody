@@ -60,6 +60,7 @@ public class TestMonitoringFilter {
 	 */
 	@Before
 	public void setUp() {
+		tearDown();
 		config = createNiceMock(FilterConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -96,14 +97,32 @@ public class TestMonitoringFilter {
 	@Test
 	public void testInit() throws ServletException {
 		try {
-			replay(config);
-			replay(context);
-			monitoringFilter.init(config);
-			verify(config);
-			verify(context);
+			init();
+			setUp();
+			expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode())).andReturn(
+					"http,sql").anyTimes();
+			expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode())).andReturn(
+					"[0-9]").anyTimes();
+			init();
+			setUp();
+			expect(config.getInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode())).andReturn(
+					"/static/*").anyTimes();
+			init();
+			setUp();
+			expect(config.getInitParameter(Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(
+					"127\\.0\\.0\\.1").anyTimes();
+			init();
 		} finally {
 			destroy();
 		}
+	}
+
+	private void init() throws ServletException {
+		replay(config);
+		replay(context);
+		monitoringFilter.init(config);
+		verify(config);
+		verify(context);
 	}
 
 	/** Test.
@@ -336,7 +355,6 @@ public class TestMonitoringFilter {
 
 	private void monitoring(Map<String, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
-		destroy();
 		setUp();
 
 		try {

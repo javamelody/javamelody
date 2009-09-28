@@ -52,6 +52,7 @@ public class TestCollectorServlet {
 	 */
 	@Before
 	public void setUp() {
+		tearDown();
 		config = createNiceMock(ServletConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -101,11 +102,24 @@ public class TestCollectorServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoGet() throws ServletException, IOException {
+		doGet(false);
+		setUp();
+		doGet(true);
+	}
+
+	private void doGet(boolean allowed) throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final StringWriter stringWriter = new StringWriter();
 		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
+		if (!allowed) {
+			expect(
+					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
+							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("none")
+					.anyTimes();
+			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
+		}
 		replay(config);
 		replay(context);
 		replay(request);
@@ -117,7 +131,9 @@ public class TestCollectorServlet {
 		verify(context);
 		verify(request);
 		verify(response);
-		assertTrue("result", stringWriter.getBuffer().length() != 0);
+		if (allowed) {
+			assertTrue("result", stringWriter.getBuffer().length() != 0);
+		}
 	}
 
 	/** Test.
@@ -125,13 +141,33 @@ public class TestCollectorServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoPost() throws ServletException, IOException {
+		doPost(null, null, false);
+		setUp();
+		doPost(null, null, true);
+		setUp();
+		doPost("test", "http://localhost:8090/test", true);
+		setUp();
+		doPost("test", "https://localhost:8090/test", true);
+		setUp();
+		doPost("test", "ftp://localhost:8090/test", true);
+	}
+
+	private void doPost(String appName, String appUrls, boolean allowed) throws IOException,
+			ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final StringWriter stringWriter = new StringWriter();
 		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
-		expect(request.getParameter("appName")).andReturn("test");
-		expect(request.getParameter("appUrls")).andReturn("http://localhost:8090/test");
+		expect(request.getParameter("appName")).andReturn(appName).anyTimes();
+		expect(request.getParameter("appUrls")).andReturn(appUrls).anyTimes();
+		if (!allowed) {
+			expect(
+					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
+							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("none")
+					.anyTimes();
+			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
+		}
 		replay(config);
 		replay(context);
 		replay(request);
@@ -142,7 +178,8 @@ public class TestCollectorServlet {
 		verify(context);
 		verify(request);
 		verify(response);
-		assertTrue("result", stringWriter.getBuffer().length() != 0);
-		System.out.println(stringWriter.getBuffer());
+		if (allowed) {
+			assertTrue("result", stringWriter.getBuffer().length() != 0);
+		}
 	}
 }
