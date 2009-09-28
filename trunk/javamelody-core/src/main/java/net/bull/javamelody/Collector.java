@@ -564,6 +564,10 @@ final class Collector {
 	}
 
 	static void stopJRobin() {
+		if (Boolean.parseBoolean(System.getProperty(Parameters.PARAMETER_SYSTEM_PREFIX
+				+ "jrobinStopDisabled"))) {
+			return;
+		}
 		try {
 			JRobin.stop();
 		} catch (final Throwable t) { // NOPMD
