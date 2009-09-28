@@ -485,6 +485,7 @@ public class CollectorServlet extends HttpServlet {
 	public void destroy() {
 		LOGGER.info("servlet de collecte en phase d'arrêt");
 		collectorServer.stop();
+		Collector.stopJRobin();
 		LOGGER.info("servlet de collecte arrêtée");
 		super.destroy();
 	}

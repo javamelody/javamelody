@@ -247,7 +247,6 @@ class CollectorServer {
 			collector.stop();
 		}
 		timer.cancel();
-		Collector.stopJRobin();
 
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		collectorsByApplication.clear();
