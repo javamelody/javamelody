@@ -164,6 +164,11 @@ class MonitoringController {
 				final Serializable serializable = createSerializable(httpRequest,
 						javaInformationsList);
 				httpResponse.setContentType(transportFormat.getMimeType());
+				final String fileName = "Monitoring_"
+						+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
+						+ I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
+				httpResponse.addHeader("Content-Disposition", "inline;filename=" + fileName);
+
 				transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 
 				if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
