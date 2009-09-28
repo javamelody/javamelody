@@ -383,7 +383,7 @@ public class CollectorServlet extends HttpServlet {
 		return collectorServer.getJavaInformationsByApplication(application);
 	}
 
-	static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
+	private static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
 			throws IOException {
 		MonitoringController.noCache(httpResponse);
 		httpResponse.setContentType(MonitoringController.HTML_CONTENT_TYPE);
@@ -484,7 +484,9 @@ public class CollectorServlet extends HttpServlet {
 	@Override
 	public void destroy() {
 		LOGGER.info("servlet de collecte en phase d'arrêt");
-		collectorServer.stop();
+		if (collectorServer != null) {
+			collectorServer.stop();
+		}
 		Collector.stopJRobin();
 		LOGGER.info("servlet de collecte arrêtée");
 		super.destroy();
