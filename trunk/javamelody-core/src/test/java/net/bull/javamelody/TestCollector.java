@@ -102,9 +102,13 @@ public class TestCollector {
 				fail("toString session vide");
 			}
 			CacheManager.getInstance().addCache("testToString");
-			if (new CacheInformations(CacheManager.getInstance().getEhcache("testToString"))
-					.toString().isEmpty()) {
-				fail("toString cache vide");
+			try {
+				if (new CacheInformations(CacheManager.getInstance().getEhcache("testToString"))
+						.toString().isEmpty()) {
+					fail("toString cache vide");
+				}
+			} finally {
+				CacheManager.getInstance().shutdown();
 			}
 		} finally {
 			timer.cancel();
