@@ -42,6 +42,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,34 +74,59 @@ public class TestMonitoringFilter {
 		monitoringFilter = new MonitoringFilter();
 	}
 
+	/**
+	 * Finalisation.
+	 */
+	@After
+	public void tearDown() {
+		destroy();
+	}
+
+	private void destroy() {
+		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
+		// plus si ils utilisent JRobin
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", "true");
+		if (monitoringFilter != null) {
+			monitoringFilter.destroy();
+		}
+	}
+
 	/** Test.
 	 * @throws ServletException e */
 	@Test
 	public void testInit() throws ServletException {
-		replay(config);
-		replay(context);
-		monitoringFilter.init(config);
-		verify(config);
-		verify(context);
+		try {
+			replay(config);
+			replay(context);
+			monitoringFilter.init(config);
+			verify(config);
+			verify(context);
+		} finally {
+			destroy();
+		}
 	}
 
 	/** Test.
 	 * @throws ServletException e */
 	@Test
 	public void testLog() throws ServletException {
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		expect(request.getRemoteAddr()).andReturn("127.0.0.1");
-		expect(request.getRequestURI()).andReturn("/test/request");
-		expect(request.getContextPath()).andReturn("/test");
-		expect(request.getQueryString()).andReturn("param1=1");
-		expect(request.getMethod()).andReturn("GET");
+		try {
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
+			expect(request.getRequestURI()).andReturn("/test/request");
+			expect(request.getContextPath()).andReturn("/test");
+			expect(request.getQueryString()).andReturn("param1=1");
+			expect(request.getMethod()).andReturn("GET");
 
-		replay(config);
-		replay(context);
-		monitoringFilter.init(config);
-		monitoringFilter.log(request, "test", 1000, false, 10000);
-		verify(config);
-		verify(context);
+			replay(config);
+			replay(context);
+			monitoringFilter.init(config);
+			monitoringFilter.log(request, "test", 1000, false, 10000);
+			verify(config);
+			verify(context);
+		} finally {
+			destroy();
+		}
 	}
 
 	/** Test.
@@ -108,26 +134,30 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoFilter() throws ServletException, IOException {
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
-		expect(request.getContextPath()).andReturn("/test").anyTimes();
-		expect(request.getQueryString()).andReturn("param1=1");
-		expect(request.getMethod()).andReturn("GET");
-		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-		final FilterChain chain = createNiceMock(FilterChain.class);
+		try {
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+			expect(request.getContextPath()).andReturn("/test").anyTimes();
+			expect(request.getQueryString()).andReturn("param1=1");
+			expect(request.getMethod()).andReturn("GET");
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			final FilterChain chain = createNiceMock(FilterChain.class);
 
-		replay(config);
-		replay(context);
-		replay(request);
-		replay(response);
-		replay(chain);
-		monitoringFilter.init(config);
-		monitoringFilter.doFilter(request, response, chain);
-		verify(config);
-		verify(context);
-		verify(request);
-		verify(response);
-		verify(chain);
+			replay(config);
+			replay(context);
+			replay(request);
+			replay(response);
+			replay(chain);
+			monitoringFilter.init(config);
+			monitoringFilter.doFilter(request, response, chain);
+			verify(config);
+			verify(context);
+			verify(request);
+			verify(response);
+			verify(chain);
+		} finally {
+			destroy();
+		}
 	}
 
 	/** Test.
@@ -183,8 +213,9 @@ public class TestMonitoringFilter {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
-		monitoring(parameters);
+		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
+		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
 		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
@@ -254,8 +285,9 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
-		monitoring(parameters);
+		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
+		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, null);
 		parameters.put("format", TransportFormat.SERIALIZED.getCode());
 		parameters.put(MonitoringController.COLLECTOR_PARAMETER, "stop");
@@ -275,8 +307,9 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
-		monitoring(parameters);
+		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
+		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		monitoring(parameters);
 	}
 
 	/** Test.
@@ -292,8 +325,9 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
-		monitoring(parameters);
+		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
+		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		monitoring(parameters);
 	}
 
 	private void monitoring(Map<String, String> parameters) throws IOException, ServletException {
@@ -302,45 +336,50 @@ public class TestMonitoringFilter {
 
 	private void monitoring(Map<String, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
+		destroy();
 		setUp();
 
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
-		expect(request.getContextPath()).andReturn("/test").anyTimes();
-		final Random random = new Random();
-		if (random.nextBoolean()) {
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
-		} else {
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
-		}
-		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-			expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
-		}
-		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
-				.anyTimes();
-		final StringWriter stringWriter = new StringWriter();
-		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
-		final FilterChain chain = createNiceMock(FilterChain.class);
+		try {
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
+			expect(request.getContextPath()).andReturn("/test").anyTimes();
+			final Random random = new Random();
+			if (random.nextBoolean()) {
+				expect(request.getHeaders("Accept-Encoding")).andReturn(
+						Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+			} else {
+				expect(request.getHeaders("Accept-Encoding")).andReturn(
+						Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+			}
+			for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+			}
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
+					.anyTimes();
+			final StringWriter stringWriter = new StringWriter();
+			expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
+			final FilterChain chain = createNiceMock(FilterChain.class);
 
-		replay(config);
-		replay(context);
-		replay(request);
-		replay(response);
-		replay(chain);
-		monitoringFilter.init(config);
-		monitoringFilter.doFilter(request, response, chain);
-		verify(config);
-		verify(context);
-		verify(request);
-		verify(response);
-		verify(chain);
+			replay(config);
+			replay(context);
+			replay(request);
+			replay(response);
+			replay(chain);
+			monitoringFilter.init(config);
+			monitoringFilter.doFilter(request, response, chain);
+			verify(config);
+			verify(context);
+			verify(request);
+			verify(response);
+			verify(chain);
 
-		if (checkResultContent) {
-			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
+			if (checkResultContent) {
+				assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
+			}
+		} finally {
+			destroy();
 		}
 	}
 
@@ -348,27 +387,28 @@ public class TestMonitoringFilter {
 	 * @throws ServletException e */
 	@Test
 	public void testWriteHtmlToLastShutdownFile() throws ServletException {
-		replay(config);
-		replay(context);
-		monitoringFilter.init(config);
-		final Timer timer = new Timer("test timer", true);
 		try {
-			final Counter sqlCounter = new Counter("sql", "db.png");
-			final Collector collector = new Collector("test", Arrays
-					.asList(new Counter[] { sqlCounter, }), timer);
-			timer.cancel();
-			new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
-			verify(config);
-			verify(context);
+			replay(config);
+			replay(context);
+			monitoringFilter.init(config);
+			final Timer timer = new Timer("test timer", true);
+			try {
+				final Counter sqlCounter = new Counter("sql", "db.png");
+				final Collector collector = new Collector("test", Arrays
+						.asList(new Counter[] { sqlCounter, }), timer);
+				timer.cancel();
+				new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
+				verify(config);
+				verify(context);
+			} finally {
+				timer.cancel();
+			}
 		} finally {
-			timer.cancel();
+			destroy();
 		}
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
 	}
-
-	// on ne teste pas MonitoringFilter.destroy car si le timer de JRobin est arrêté,
-	// on ne peut plus faire les autres tests
 }
