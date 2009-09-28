@@ -176,7 +176,16 @@
 			<classpath>
 				<path path="build/classes" />
 				<path path="${class.path}" />
-				<pathelement location="src/main/lib/junit-4.5.jar" />
+				<fileset dir="src/main/lib">
+					<include name="junit-4.5.jar" />
+					<include name="h2-1.1.118.jar" />
+					<include name="easymock-2.0.jar" />
+				</fileset>
+				<fileset dir="src/test/test-webapp/WEB-INF/lib">
+					<include name="spring-context-2.5.6.jar" />
+					<include name="spring-beans-2.5.6.jar" />
+					<include name="spring-core-2.5.6.jar" />
+				</fileset>
 			</classpath>
 		</javac>
 		<junit printsummary="true" showoutput="false">
@@ -187,12 +196,21 @@
 				<path path="src/test/resources" />
 				<path path="src/main/resources" />
 				<path path="${class.path}" />
-				<pathelement location="src/main/lib/junit-4.5.jar" />
-				<pathelement location="src/main/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" />
+				<fileset dir="src/main/lib">
+					<include name="junit-4.5.jar" />
+					<include name="h2-1.1.118.jar" />
+					<include name="easymock-2.0.jar" />
+				</fileset>
+				<fileset dir="src/test/test-webapp/WEB-INF/lib">
+					<include name="spring-context-2.5.6.jar" />
+					<include name="spring-beans-2.5.6.jar" />
+					<include name="spring-core-2.5.6.jar" />
+					<include name="xpp3_min-1.1.4c.jar" />
+				</fileset>
 			</classpath>
 			<batchtest haltonerror="false" haltonfailure="false"
 				errorProperty="test.failed" failureProperty="test.failed">
-				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class" />
+				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/SpringTestFacade*.class" />
 			</batchtest>
 		</junit>
 		<fail message="Tests failed: check test reports." if="test.failed" />
