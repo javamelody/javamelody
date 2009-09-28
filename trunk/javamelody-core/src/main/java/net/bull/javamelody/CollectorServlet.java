@@ -87,6 +87,10 @@ public class CollectorServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
 			IOException {
 		final long start = System.currentTimeMillis();
+		if (isAddressAllowed(req)) {
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès interdit");
+			return;
+		}
 		final String application = getApplication(req, resp);
 		I18N.bindLocale(req.getLocale());
 		try {
@@ -97,10 +101,6 @@ public class CollectorServlet extends HttpServlet {
 			if (!collectorServer.isApplicationDataAvailable(application)) {
 				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Données non disponibles pour l'application " + application);
-				return;
-			}
-			if (isAddressAllowed(req)) {
-				resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès interdit");
 				return;
 			}
 			doMonitoring(req, resp, application);
