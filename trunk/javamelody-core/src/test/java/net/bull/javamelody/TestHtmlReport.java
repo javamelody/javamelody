@@ -52,7 +52,7 @@ public class TestHtmlReport {
 	private Collector collector;
 	private StringWriter writer;
 
-	/** Test. */
+	/** Initialisation. */
 	@Before
 	public void setUp() {
 		timer = new Timer("test timer", true);
@@ -68,7 +68,7 @@ public class TestHtmlReport {
 		writer = new StringWriter();
 	}
 
-	/** Test. */
+	/** Finalisation. */
 	@After
 	public void tearDown() {
 		timer.cancel();
