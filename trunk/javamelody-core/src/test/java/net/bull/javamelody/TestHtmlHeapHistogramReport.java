@@ -43,16 +43,18 @@ import org.junit.Test;
 public class TestHtmlHeapHistogramReport {
 	private Timer timer;
 
-	/** Test. */
+	/** Initialisation. */
 	@Before
 	public void setUp() {
 		timer = new Timer("test timer", true);
 	}
 
-	/** Test. */
+	/** Finalisation.
+	 * @throws Exception e */
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
 		timer.cancel();
+		VirtualMachine.detach();
 	}
 
 	private static List<JavaInformations> createJavaInformationsList() {
@@ -133,7 +135,7 @@ public class TestHtmlHeapHistogramReport {
 			}
 		};
 
-		final Thread thread = new Thread(runnable, "test");
+		final Thread thread = new Thread(runnable, getClass().getSimpleName());
 		thread.setDaemon(true);
 		thread.start();
 		try {
