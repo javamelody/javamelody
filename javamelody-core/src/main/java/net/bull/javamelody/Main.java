@@ -40,8 +40,8 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
 /**
- * Launcher class for stand-alone execution of Monitoring as
- * <tt>java -jar monitoring.war</tt>.
+ * Launcher class for stand-alone execution of JavaMelody Monitoring as
+ * <tt>java -jar javamelody.war</tt>.
  *
  * @author Kohsuke Kawaguchi, extracted (and simplified) from hudson.dev.java.net by Emeric Vernat
  * 	licence MIT (alias X11, donc compatible GPL et LGPL : http://www.fsf.org/licensing/licenses/#GPLCompatibleLicenses)
@@ -132,9 +132,9 @@ public final class Main {
 		usage
 				.set(
 						null,
-						"Monitoring Collect Server "
+						"JavaMelody Monitoring Collect Server "
 								+ "\n"
-								+ "Usage: java -jar monitoring.war [--option=value] [--option=value]\n"
+								+ "Usage: java -jar javamelody.war [--option=value] [--option=value]\n"
 								+ "\n"
 								+ "Options:\n"
 								+ "   --config                 = load configuration properties from here. Default is ./winstone.properties\n"
@@ -184,7 +184,7 @@ public final class Main {
 		mainMethod.invoke(null, new Object[] { arguments.toArray(new String[arguments.size()]) });
 	}
 
-	// Figures out the location of <tt>monitoring.war</tt>.
+	// Figures out the location of <tt>javamelody.war</tt>.
 	private static File whoAmI() throws IOException {
 		// JNLP returns the URL where the jar was originally placed (like http://hudson.dev.java.net/...)
 		// not the local cached file. So we need a rather round about approach to get to
@@ -197,7 +197,7 @@ public final class Main {
 			System.err.println("INFO: ZipFile.name trick did not work (" + x.toString()
 					+ "), using fallback");
 		}
-		final File myself = File.createTempFile("monitoring", ".jar");
+		final File myself = File.createTempFile("javamelody", ".jar");
 		myself.deleteOnExit();
 		final InputStream is = Main.class.getProtectionDomain().getCodeSource().getLocation()
 				.openStream();
@@ -241,7 +241,7 @@ public final class Main {
 			tmp = File.createTempFile(fileName, suffix);
 		} catch (final IOException e) {
 			final String tmpdir = System.getProperty("java.io.tmpdir");
-			throw new IllegalStateException("Monitoring has failed to create a temporary file in "
+			throw new IllegalStateException("JavaMelody has failed to create a temporary file in "
 					+ tmpdir, e);
 		}
 		final InputStream is = res.openStream();

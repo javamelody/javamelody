@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * @author Emeric Vernat
  */
 class CollectorServer {
-	private static final Logger LOGGER = Logger.getLogger("monitoring");
+	private static final Logger LOGGER = Logger.getLogger("javamelody");
 
 	private final Map<String, Collector> collectorsByApplication = new LinkedHashMap<String, Collector>();
 	private final Map<String, List<JavaInformations>> javaInformationsByApplication = new LinkedHashMap<String, List<JavaInformations>>();

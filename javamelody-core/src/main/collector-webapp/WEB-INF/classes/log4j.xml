@@ -49,7 +49,7 @@
 	<!-- Limit categories -->
 	<!-- ================ -->
 	
-	<category name="monitoring">
+	<category name="javamelody">
 		<priority value="debug" />
 	</category>		
 	

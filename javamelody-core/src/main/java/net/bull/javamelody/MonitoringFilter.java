@@ -85,7 +85,7 @@ public class MonitoringFilter implements Filter {
 		if (monitoringDisabled) {
 			return;
 		}
-		this.timer = new Timer("monitoring"
+		this.timer = new Timer("javamelody"
 				+ Parameters.getContextPath(config.getServletContext()).replace('/', ' '), true);
 
 		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));

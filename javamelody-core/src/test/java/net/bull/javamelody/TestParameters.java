@@ -105,7 +105,7 @@ public class TestParameters {
 		assertNotNull("getStorageDirectory", Parameters.getStorageDirectory("test"));
 		setProperty(Parameter.STORAGE_DIRECTORY, "/");
 		assertNotNull("getStorageDirectory", Parameters.getStorageDirectory("test"));
-		setProperty(Parameter.STORAGE_DIRECTORY, "monitoring");
+		setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
 	}
 
 	/** Test. */

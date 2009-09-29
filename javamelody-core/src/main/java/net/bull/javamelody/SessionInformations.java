@@ -39,9 +39,9 @@ import javax.servlet.http.HttpSession;
  * @author Emeric Vernat
  */
 class SessionInformations implements Serializable {
-	static final String SESSION_COUNTRY_KEY = "monitoring.country";
-	static final String SESSION_REMOTE_ADDR = "monitoring.remoteAddr";
-	static final String SESSION_REMOTE_USER = "monitoring.remoteUser";
+	static final String SESSION_COUNTRY_KEY = "javamelody.country";
+	static final String SESSION_REMOTE_ADDR = "javamelody.remoteAddr";
+	static final String SESSION_REMOTE_USER = "javamelody.remoteUser";
 	private static final long serialVersionUID = -2689338895804445093L;
 	// on utilise ce ByteArrayOutputStream pour calculer les tailles sérialisées,
 	// on n'a qu'une instance pour éviter d'instancier un gros tableau d'octets à chaque session

@@ -70,7 +70,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 1. Jar files
 
-	Copy the files <<<monitoring.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied monitoring.zip file,
+	Copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied javamelody.zip file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor.
 
 ** 2. <<<web.xml>>> file
@@ -129,11 +129,11 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	  (<<<web.xml>>> file in the webapp)
 
-	* in context parameters of the webapp with prefix <<<monitoring.>>>
+	* in context parameters of the webapp with prefix <<<javamelody.>>>
 
 	  (context xml file in Tomcat)
 
-	* in system properties with prefix <<<monitoring.>>>
+	* in system properties with prefix <<<javamelody.>>>
 
 	  (java launch command or administration user interface)
 
@@ -228,7 +228,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	For example, for a system property in server launch command:
 	
-	<<<-Dmonitoring.datasources=myapp/mydatasource>>>
+	<<<-Djavamelody.datasources=myapp/mydatasource>>>
 
 ** 7. Business façades (ejb-jar.xml file if EJB3)
 
@@ -352,8 +352,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	For example, for the tomcat context of your webapp :
 
 +-------------------------------+
-	<Parameter name='monitoring.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
-	<Parameter name='monitoring.mail-session' value='mail/MySession' override='false'/>
+	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
+	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
 +-------------------------------+
 
 ** 10. Full results
@@ -375,22 +375,22 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 1. War file of the webapp of monitoring
 
-	Copy the monitoring.war file, located at the root of the supplied monitoring.zip file, to the centralized server
-	(NovaForge for example). The monitoring.war file should be in general of the same version of monitoring
-	as the version of the monitoring.jar file in the monitored application.
+	Copy the javamelody.war file, located at the root of the supplied javamelody.zip file, to the centralized server
+	(NovaForge for example). The javamelody.war file should be in general of the same version of monitoring
+	as the version of the javamelody.jar file in the monitored application.
 
 ** 2. Deployment of the webapp of monitoring
 
 	Note : An alternative which does not need an application server is described in the following chapter.
 
-	Deploy the monitoring.war file in the application server of the centralized server.
-	If it is Tomcat, you can write a xml context file named 'monitoring.xml' in the directory
+	Deploy the javamelody.war file in the application server of the centralized server.
+	If it is Tomcat, you can write a xml context file named 'javamelody.xml' in the directory
 	conf/Catalina/localhost of Tomcat as the following example:
 
 +-------------------------------+
 	<?xml version="1.0" encoding="UTF-8" ?>
-	<Context docBase="<pathto>/monitoring.war" path="monitoring" reloadable="false" >
-		<Parameter name='monitoring.resolution-seconds' value='120' override='false'/>
+	<Context docBase="<pathto>/javamelody.war" path="javamelody" reloadable="false" >
+		<Parameter name='javamelody.resolution-seconds' value='120' override='false'/>
 	</Context>
 +-------------------------------+
 
@@ -412,34 +412,34 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	As an alternative to the deployment described in the last chapter for the webapp of monitoring in a java application
 	server, it is possible to launch the {{{http://winstone.sourceforge.net} winstone}} (LGPL) servlet container
-	already included in the monitoring.war file.
-	You only need to use the launch command "java -jar monitoring.war" and to specify in system properties each
+	already included in the javamelody.war file.
+	You only need to use the launch command "java -jar javamelody.war" and to specify in system properties each
 	of the monitoring parameters detailed in the last chapter.
 	
 	Examples:
 	
 +-------------------------------+
-	java -jar monitoring.war
-	java -Dmonitoring.resolution-seconds=120 -jar monitoring.war
+	java -jar javamelody.war
+	java -Djavamelody.resolution-seconds=120 -jar javamelody.war
 +-------------------------------+
 	
 	The settings of http ports, server mode, memory and logs can be done like this:
 	
 +-------------------------------+
-	java -server -Xmx128m -jar monitoring.war --httpPort=8080 --ajp13Port=8009 2>&1 >>monitoring.log
+	java -server -Xmx128m -jar javamelody.war --httpPort=8080 --ajp13Port=8009 2>&1 >>javamelody.log
 +-------------------------------+
 	
 	Other parameters exist for the servlet container. You can read them with:
 
 +-------------------------------+
-	java -jar monitoring.war --usage
+	java -jar javamelody.war --usage
 +-------------------------------+
 
 	On Linux and Unix, it is possible to launch this server as a daemon (in background) and with logs like this
 	({{{http://fr.wikipedia.org/wiki/Nohup} wikipedia}}):
 
 +-------------------------------+
-	nohup java -server -jar monitoring.war 0</dev/null 2>&1 >>monitoring.log &
+	nohup java -server -jar javamelody.war 0</dev/null 2>&1 >>javamelody.log &
 +-------------------------------+
 
 
@@ -447,12 +447,12 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	To view the monitoring: open the following page in a web navigator after starting the servers:
 
-	<<<http://<host>/monitoring>>>
+	<<<http://<host>/javamelody>>>
 	
 	where <host> is the name of the collect server, followed possibly by the port (for example localhost:8080)
-	and where 'monitoring' is the name of the context of the webapp as the name of the 'monitoring.xml' file.
+	and where 'javamelody' is the name of the context of the webapp as the name of the 'javamelody.xml' file.
 
-	<<<http://<host>/monitoring/>>>
+	<<<http://<host>/javamelody/>>>
 
 	With links by application in reports, you can choose the application that you want to monitor.
 

@@ -164,7 +164,7 @@ class MonitoringController {
 				final Serializable serializable = createSerializable(httpRequest,
 						javaInformationsList);
 				httpResponse.setContentType(transportFormat.getMimeType());
-				final String fileName = "Monitoring_"
+				final String fileName = "JavaMelody_"
 						+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
 						+ I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
 				httpResponse.addHeader("Content-Disposition", "inline;filename=" + fileName);
@@ -376,7 +376,7 @@ class MonitoringController {
 		try {
 			final File dir = Parameters.getStorageDirectory(collector.getApplication());
 			if (!dir.mkdirs() && !dir.exists()) {
-				throw new IOException("Monitoring directory can't be created: " + dir.getPath());
+				throw new IOException("JavaMelody directory can't be created: " + dir.getPath());
 			}
 			final File lastShutdownFile = new File(dir, "last_shutdown.html");
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(lastShutdownFile));

@@ -154,12 +154,12 @@ class PdfDocumentFactory {
 		// mais marge de 40 en bas pour ne pas empiéter sur les numéros de pages
 		final Document document = new Document(pageSize, 20, 20, 20, 40);
 
-		final String title = "Monitoring sur " + application;
+		final String title = I18N.getString("Monitoring_sur") + ' ' + application;
 		createWriter(document, title);
 
 		// we add some meta information to the document (after writer)
 		document.addAuthor(application);
-		document.addCreator("JavaMelody par E. Vernat, www.bull.com/fr");
+		document.addCreator("JavaMelody par E. Vernat");
 		document.addTitle(title);
 		return document;
 	}
