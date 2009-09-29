@@ -73,7 +73,7 @@ class PdfReport {
 	}
 
 	static String getFileName(String application) {
-		return "Monitoring_" + application.replace(' ', '_').replace("/", "") + '_'
+		return "JavaMelody_" + application.replace(' ', '_').replace("/", "") + '_'
 				+ I18N.getCurrentDate().replace('/', '_') + ".pdf";
 	}
 

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Emeric Vernat
  */
 class CounterError implements Serializable {
-	static final String REQUEST_KEY = "monitoring.request";
+	static final String REQUEST_KEY = "javamelody.request";
 	private static final long serialVersionUID = 5690702786722045646L;
 	@SuppressWarnings("all")
 	private static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_CONTEXT = new ThreadLocal<HttpServletRequest>();

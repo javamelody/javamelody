@@ -41,13 +41,13 @@ import javax.servlet.ServletContext;
  * @author Emeric Vernat
  */
 final class Parameters {
-	static final String PARAMETER_SYSTEM_PREFIX = "monitoring.";
+	static final String PARAMETER_SYSTEM_PREFIX = "javamelody.";
 	static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
 	static final String JAVA_VERSION = System.getProperty("java.version");
 	// résolution (ou pas) par défaut en s de stockage des valeurs dans les fichiers RRD
 	private static final int DEFAULT_RESOLUTION_SECONDS = 60;
 	// stockage des fichiers RRD de JRobin dans le répertoire temp/monitoring/<context> par défaut
-	private static final String DEFAULT_DIRECTORY = "monitoring";
+	private static final String DEFAULT_DIRECTORY = "javamelody";
 	// nom du fichier stockant les applications et leurs urls dans le répertoire de stockage
 	private static final String APPLICATIONS_FILENAME = "applications.properties";
 	private static Map<String, List<URL>> urlsByApplications;
@@ -300,8 +300,8 @@ final class Parameters {
 	/**
 	 * Recherche la valeur d'un paramètre qui peut être défini par ordre de priorité croissant :
 	 * - dans les paramètres d'initialisation du filtre (fichier web.xml dans la webapp)
-	 * - dans les paramètres du contexte de la webapp avec le préfixe "monitoring." (fichier xml de contexte dans Tomcat)
-	 * - dans les propriétés systèmes avec le préfixe "monitoring." (commande de lancement java)
+	 * - dans les paramètres du contexte de la webapp avec le préfixe "javamelody." (fichier xml de contexte dans Tomcat)
+	 * - dans les propriétés systèmes avec le préfixe "javamelody." (commande de lancement java)
 	 * @param parameter Enum du paramètre
 	 * @return valeur du paramètre ou null si pas de paramètre défini
 	 */

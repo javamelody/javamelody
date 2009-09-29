@@ -120,7 +120,7 @@ final class JRobin {
 		final File rrdFile = new File(rrdFileName);
 		final File rrdDirectory = rrdFile.getParentFile();
 		if (!rrdDirectory.mkdirs() && !rrdDirectory.exists()) {
-			throw new IOException("Monitoring directory can't be created: "
+			throw new IOException("JavaMelody directory can't be created: "
 					+ rrdDirectory.getPath());
 		}
 		if (!rrdFile.exists()) {

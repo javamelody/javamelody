@@ -60,7 +60,7 @@ class CounterStorage {
 		}
 		final File directory = file.getParentFile();
 		if (!directory.mkdirs() && !directory.exists()) {
-			throw new IOException("Monitoring directory can't be created: " + directory.getPath());
+			throw new IOException("JavaMelody directory can't be created: " + directory.getPath());
 		}
 		final FileOutputStream out = new FileOutputStream(file);
 		try {

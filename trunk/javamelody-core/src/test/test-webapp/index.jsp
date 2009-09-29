@@ -12,6 +12,6 @@
 <a href="jsp/spring.jsp">spring</a><br/>
 <a href="jsp/proxy.jsp">proxy</a><br/>
 <br/>
-<a href="monitoring">monitoring</a><br/>
-<a href="monitoringServer">monitoring par serveur de collecte</a><br/>
+<a href="monitoring">javamelody</a><br/>
+<a href="monitoringServer">javamelody par serveur de collecte</a><br/>
 </body></html>

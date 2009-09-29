@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.5.0</version>
+	<version>1.6.0</version>
 	<packaging>jar</packaging>
 	<name>Java Melody</name>
 	<description>Monitoring d'applications java EE</description>

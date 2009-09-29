@@ -319,7 +319,7 @@ public class TestCollector {
 			collector2.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
 					true)));
 			collector2.stop();
-			setProperty(Parameter.STORAGE_DIRECTORY, "monitoring");
+			setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
 		} finally {
 			timer.cancel();
 		}

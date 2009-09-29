@@ -44,7 +44,7 @@ import javax.servlet.http.HttpSessionListener;
  */
 public class SessionListener implements HttpSessionListener, HttpSessionActivationListener,
 		ServletContextListener, Serializable {
-	private static final String SESSION_ACTIVATION_KEY = "monitoring.sessionActivation";
+	private static final String SESSION_ACTIVATION_KEY = "javamelody.sessionActivation";
 	private static final long serialVersionUID = -1624944319058843901L;
 	// au lieu d'utiliser un int avec des synchronized partout, on utilise un AtomicInteger
 	private static final AtomicInteger SESSION_COUNT = new AtomicInteger();

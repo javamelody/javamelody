@@ -181,7 +181,7 @@ public final class VirtualMachine {
 	// ou loadAgent("aspectjweaver.jar") par exemple).
 	// Voir http://java.sun.com/javase/6/docs/api/java/lang/instrument/package-summary.html?is-external=true
 
-	//	private static final String MONITORING_INSTRUMENTATION_KEY = "monitoring.instrumentation";
+	//	private static final String MONITORING_INSTRUMENTATION_KEY = "javamelody.instrumentation";
 	//	private static Instrumentation instrumentation;
 	//
 	//	public void loadAgent(String jarFile) throws AgentLoadException, AgentInitializationException,

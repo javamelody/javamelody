@@ -46,12 +46,12 @@ import org.apache.log4j.Logger;
 public class CollectorServlet extends HttpServlet {
 	private static final String BACK_LINK = "<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
-	private static final String COOKIE_NAME = "monitoring";
+	private static final String COOKIE_NAME = "javamelody";
 
 	private static final long serialVersionUID = -2070469677921953224L;
 
 	@SuppressWarnings("all")
-	private static final Logger LOGGER = Logger.getLogger("monitoring");
+	private static final Logger LOGGER = Logger.getLogger("javamelody");
 
 	private Pattern allowedAddrPattern;
 

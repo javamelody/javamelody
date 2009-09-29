@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  */
 class LabradorRetriever {
 	@SuppressWarnings("all")
-	private static final Logger LOGGER = Logger.getLogger("monitoring");
+	private static final Logger LOGGER = Logger.getLogger("javamelody");
 
 	/** Timeout des connections serveur en millisecondes (0 : pas de timeout). */
 	private static final int CONNECTION_TIMEOUT = 20000;
