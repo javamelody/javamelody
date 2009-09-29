@@ -45,7 +45,7 @@ public class TestJdbcWrapper {
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;
 
-	/** Test. 
+	/** Test.
 	 * @throws SQLException e */
 	@Before
 	public void setUp() throws SQLException {

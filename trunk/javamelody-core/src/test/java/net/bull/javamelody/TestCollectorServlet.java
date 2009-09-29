@@ -98,7 +98,7 @@ public class TestCollectorServlet {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoGet() throws ServletException, IOException {
@@ -137,7 +137,7 @@ public class TestCollectorServlet {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testDoPost() throws ServletException, IOException {
