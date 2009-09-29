@@ -510,8 +510,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Un pom Maven2 est fourni ainsi qu'un script ant pour compiler et construire le jar et le war.
 
 	Si vous n'avez pas Maven2, les fichiers jar peuvent être trouvés avec les sources
-	dans les répertoires <<<novamonitor/novamonitor-core/src/main/test-webapp/WEB-INF/lib>>>
-	et <<<novamonitor/novamonitor-core/src/main/lib>>>
+	dans les répertoires <<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
+	et <<<javamelody/javamelody-core/src/main/lib>>>
 	
 	Si vous avez Maven2, vous pouvez utiliser les dépendances <<<jrobin>>>, <<<itext>>> et si souhaité <<<xstream>>>
 	ainsi que le dépôt suivants dans votre fichier <<<pom.xml>>> :
