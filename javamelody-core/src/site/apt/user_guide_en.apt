@@ -272,7 +272,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	Step 1: Add the jar dependency spring-aop to you project (in pom.xml if maven).
 
-	Step 2: Make sure the Spring configuration file (<<fr/bull/monitoring/monitoring-spring.xml>>>,
+	Step 2: Make sure the Spring configuration file (<<net/bull/javamelody/monitoring-spring.xml>>>,
 	included in the provided jar) is loaded as one of the first configuration files.
 
 	For example, if you use the <<<org.springframework.web.context.ContextLoaderListener>>> in your
@@ -282,7 +282,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	<context-param>
 	  <param-name>contextConfigLocation</param-name>
 	  <param-value>
-		classpath:fr/bull/monitoring/monitoring-spring.xml
+		classpath:net/bull/javamelody/monitoring-spring.xml
 		classpath:context/services.xml
 		classpath:context/data-access-layer.xml
 		/WEB-INF/applicationContext.xml
@@ -452,8 +452,6 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	where <host> is the name of the collect server, followed possibly by the port (for example localhost:8080)
 	and where 'javamelody' is the name of the context of the webapp as the name of the 'javamelody.xml' file.
 
-	<<<http://<host>/javamelody/>>>
-
 	With links by application in reports, you can choose the application that you want to monitor.
 
 
@@ -495,8 +493,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	A Maven2 pom and an ant script are provided to compile and build the jar and the war.
 
 	If you don't have Maven2, the jar files can be found in directories
-	<<<novamonitor/novamonitor-core/src/main/test-webapp/WEB-INF/lib>>>
-	and <<<novamonitor/novamonitor-core/src/main/lib>>>
+	<<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
+	and <<<javamelody/javamelody-core/src/main/lib>>>
 	
 	If you have Maven2, you can use the dependencies <<<jrobin>>>, <<<itext>>> and if you wish <<<xstream>>>
 	in you <<<pom.xml>>> like this:
