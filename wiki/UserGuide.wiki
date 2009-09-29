@@ -251,7 +251,7 @@ Language: English and French
 
 	Step 1: Add the jar dependency spring-aop to you project (in pom.xml if maven).
 
-	Step 2: Make sure the Spring configuration file (<<fr/bull/monitoring/monitoring-spring.xml}}},
+	Step 2: Make sure the Spring configuration file (<<net/bull/javamelody/monitoring-spring.xml}}},
 	included in the provided jar) is loaded as one of the first configuration files.
 
 	For example, if you use the {{{org.springframework.web.context.ContextLoaderListener}}} in your
@@ -261,7 +261,7 @@ Language: English and French
 	<context-param>
 	  <param-name>contextConfigLocation</param-name>
 	  <param-value>
-		classpath:fr/bull/monitoring/monitoring-spring.xml
+		classpath:net/bull/javamelody/monitoring-spring.xml
 		classpath:context/services.xml
 		classpath:context/data-access-layer.xml
 		/WEB-INF/applicationContext.xml
