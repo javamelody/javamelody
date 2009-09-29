@@ -459,6 +459,7 @@ class HtmlReport {
 		writeln("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 		writeln("<html><head><title>#Monitoring_sur# " + collector.getApplication() + "</title>");
 		writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
 		writeln("<script type='text/javascript' src='?resource=resizable_tables.js'></script>");
 		writeln("<script type='text/javascript' src='?resource=sorttable.js'></script>");
 		if (includeSlider) {
