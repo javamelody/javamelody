@@ -429,9 +429,7 @@ Language: English and French
 	{{{http://<host>/javamelody}}}
 	
 	where {{{<host>}}} is the name of the collect server, followed possibly by the port (for example localhost:8080)
-	and where 'monitoring' is the name of the context of the webapp as the name of the 'javamelody.xml' file.
-
-	{{{http://<host>/javamelody/}}}
+	and where 'javamelody' is the name of the context of the webapp as the name of the 'javamelody.xml' file.
 
 	With links by application in reports, you can choose the application that you want to monitor.
 
@@ -474,7 +472,7 @@ Language: English and French
 	A Maven2 pom and an ant script are provided to compile and build the jar and the war.
 
 	If you don't have Maven2, the jar files can be found in directories
-	{{{javamelody/javamelody-core/src/main/test-webapp/WEB-INF/lib}}}
+	{{{javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib}}}
 	and {{{javamelody/javamelody-core/src/main/lib}}}
 	
 	If you have Maven2, you can use the dependencies {{{jrobin}}}, {{{itext}}} and if you wish {{{xstream}}}
