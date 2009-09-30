@@ -16,10 +16,14 @@
 			<url>LICENSE</url>
 		</license>
 	</licenses>
+	<issueManagement>
+		<system>google</system>
+		<url>http://code.google.com/p/javamelody/issues/list</url>
+	</issueManagement>
 	<developers>
 		<developer>
 			<name>Emeric Vernat</name>
-			<email>emeric.vernat@bull.net</email>
+			<email>evernat@free.fr</email>
 		</developer>
 	</developers>
 	<scm>
@@ -28,9 +32,16 @@
 		<url>http://javamelody.googlecode.com/svn/trunk/</url>
 	</scm>
 	<organization>
-		<name>Emeric Vernat, Bull</name>
-		<url>http://www.bull.com/fr/</url>
+		<name>Emeric Vernat</name>
 	</organization>
+	<mailingLists>
+		<mailingList>
+			<name>User List</name>
+			<subscribe>http://groups.google.com/group/javamelody/subscribe</subscribe>
+			<post>javamelody@googlegroups.com</post>
+			<archive>http://groups.google.com/group/javamelody</archive>
+		</mailingList>
+	</mailingLists>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
