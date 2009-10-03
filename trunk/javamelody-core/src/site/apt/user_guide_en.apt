@@ -329,6 +329,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	* Use of JdkRegexpMethodPointcut.
 	Assuming that the business façades can be found with a regular expression,
 	add the following lines in your applicationContext.xml file and adapt the value of the regular expression pattern:
+	
 +-------------------------------+
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
@@ -344,6 +345,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	provided by Spring or you can write your own one.
 	For example, you can create a classe <<<com.xyz.someapp.service.MonitoringPointcut>>>
 	which implements org.springframework.aop.Pointcut and add the following lines in your applicationContext.xml file:
+	
 +-------------------------------+
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
