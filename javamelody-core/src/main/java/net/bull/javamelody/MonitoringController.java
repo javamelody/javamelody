@@ -54,6 +54,7 @@ class MonitoringController {
 	static final String WEB_XML_PART = "web.xml";
 	static final String POM_XML_PART = "pom.xml";
 	static final String SESSIONS_PART = "sessions";
+	static final String GRAPH_PART = "graph";
 	private static final String COUNTER_PARAMETER = "counter";
 	private static final String GRAPH_PARAMETER = "graph";
 	private static final String RESOURCE_PARAMETER = "resource";
@@ -268,9 +269,10 @@ class MonitoringController {
 	private void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList, Period period, String part)
 			throws IOException {
-		if (!collectorServer && !SESSIONS_PART.equalsIgnoreCase(part)
-				&& !HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			// avant de faire l'affichage on fait une collecte,  pour que les courbes
+		if (!collectorServer
+				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
+						.equalsIgnoreCase(part))) {
+			// avant de faire l'affichage on fait une collecte, pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
 			collector.collectLocalContextWithoutErrors();
 		}
@@ -293,7 +295,7 @@ class MonitoringController {
 
 	private void doHtmlPart(HttpServletRequest httpRequest, String part, HtmlReport htmlReport)
 			throws IOException {
-		if ("graph".equalsIgnoreCase(part)) {
+		if (GRAPH_PART.equalsIgnoreCase(part)) {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestAndGraphDetail(graphName);
 		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
