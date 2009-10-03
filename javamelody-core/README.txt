@@ -15,7 +15,7 @@ Il permet ainsi d'améliorer les applications en recette et en production et d'a
 	- trouver les causes à l'origine des temps de réponse
 	- vérifier l'amélioration réelle après des optimisations
 
-Auteur : Emeric Vernat, Bull (emeric.vernat@bull.net)
+Auteur : Emeric Vernat (evernat@free.fr)
 Licence : LGPL
 URL : http://javamelody.googlecode.com/
 Version Java requise en exécution : 1.5 minimum,
