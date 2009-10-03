@@ -26,7 +26,8 @@ import java.util.Date;
  * (implémente une interface pour permettre l'AOP Spring car sinon il faut CGLIB)
  * @author Emeric Vernat
  */
-@MonitoredWithSpring
+// on pourrait utiliser l'annotation @MonitoredWithSpring,
+// mais MonitoredWithInterfacePointcut suffit dans spring-context.xml
 public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}

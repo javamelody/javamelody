@@ -5,5 +5,13 @@
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 	
 	<bean name="springTestFacade" class="net.bull.javamelody.SpringTestFacadeImpl" />
+
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+				<property name="interfaceName" value="net.bull.javamelody.SpringTestFacade" />
+			</bean>
+		</property>
+	</bean>
   
 </beans>

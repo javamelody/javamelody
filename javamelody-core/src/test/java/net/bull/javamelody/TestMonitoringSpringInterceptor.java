@@ -44,9 +44,9 @@ public class TestMonitoringSpringInterceptor {
 
 	/** Test. */
 	@Test
-	public void testMonitoredMeasuringPointcut() {
-		final MonitoredMeasuringPointcut pointcut = new MonitoredMeasuringPointcut();
-		assertNotNull("new MonitoredMeasuringPointcut", pointcut);
+	public void testMonitoredWithAnnotationPointcut() {
+		final MonitoredWithAnnotationPointcut pointcut = new MonitoredWithAnnotationPointcut();
+		assertNotNull("new MonitoredWithAnnotationPointcut", pointcut);
 		assertNotNull("classFilter", pointcut.getClassFilter());
 		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
 	}
