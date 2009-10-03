@@ -1,7 +1,7 @@
 	-----
 	Description et documentation de Java Melody : monitoring d'applications Java EE
 	-----
-	Auteur : Emeric Vernat, Bull (emeric.vernat@bull.net)
+	Auteur : Emeric Vernat (evernat@free.fr)
 	-----
 	2009-01-01
 	-----
@@ -294,22 +294,76 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</context-param>
 +-------------------------------+
 
-	Etape 3 : Puis ajouter l'annotation <<<@net.bull.javamelody.MonitoredWithSpring>>> à toutes les
-	classes et/ou méthodes que vous voulez monitorer. Comme le fichier xml ci-dessus ne configure
-	la détection des annotations que pour les beans spring, assurez vous que ces classes sont
-	instanciés par l'intermédiaire de Spring
+	Etape 3 : En supposant que les façades métiers possèdent une interface commune 
+	<<<com.xyz.someapp.service.Facade>>> et que vous voules monitorer toutes les méthodes
+	de ces façades, ajouter les lignes suivantes dans votre fichier applicationContext.xml :
+	
++-------------------------------+
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+				<property name="interfaceName" value="com.xyz.someapp.service.Facade" />
+			</bean>
+		</property>
+	</bean>
++-------------------------------+
+	
+	Comme Spring ne configure le monitoring que pour les beans spring, assurez vous que ces classes
+	sont instanciés par l'intermédiaire de Spring
 	(c'est-à-dire déclarez les en tant que bean dans un fichier de configuration Spring)
+	
+	Note : Si vous n'avez pas d'interface commune pour les façades ou si vous ne souhaitez pas monitorer
+	toutes les façades, vous pouvez créer et ajouter à vos façades une interface
+	<<<com.xyz.someapp.service.Monitored>>> avant de l'utiliser dans votre fichier xml comme
+	ci-dessus, ou bien vous pouvez utiliser une des alternatives ci-dessous.
 
-	Etape 4 ; De plus, il est nécessaire de définir le paramètre <<<displayed-counters>>>, comme les
+	Etape 4 : De plus, il est nécessaire de définir le paramètre <<<displayed-counters>>>, comme les
 	paramètres optionnels ci-dessus, et avec pour valeur "http,sql,error,log,spring" ou
 	"http,sql,error,log,ejb,spring".
+	
+	Selon vos préférences, vous avez le choix avec d'autres alternatives à la place de l'étape 3 ci-dessus.
+	Ces alternatives ne sont pas exclusives : vous pouvez en utiliser une et la compléter par une autre.
+
+	* Utilisation d'une annotation de JavaMelody.
+	(implique que la librairie javamelody.jar soit inclus dans le classpath à la compilation)
+	Ajouter simplement l'annotation <<<@net.bull.javamelody.MonitoredWithSpring>>> à toutes les
+	classes et/ou méthodes que vous voulez monitorer (sans modifier votre fichier applicationContext.xml).
+	Cette alternative avec annotation permet aussi de changer les noms des classes affichées dans le
+	monitoring. Si le nom affiché par le monitoring pour la classe ou la méthode ne vous convient
+	pas, vous pouvez ajouter (name="ma classe") entre parenthèses après l'annotation sur votre
+	classe ou sur votre méthode.
+
+	* Utilisation de JdkRegexpMethodPointcut.
+	En supposant que les façades métiers puissent être déterminées par une expression régulière,
+	ajouter les lignes suivantes dans votre fichier applicationContext.xml en adaptant la valeur
+	du pattern de l'expression régulière :
++-------------------------------+
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+				<property name="pattern" value=".*Facade.*" />
+			</bean>
+		</property>
+	</bean>
++-------------------------------+
+	
+	* Utilisation de tout autre pointcut fourni par Spring ou écriture de votre propre pointcut.
+	Vous pouvez aussi utiliser tout autre {{{http://static.springsource.org/spring/docs/2.5.x/api/index.html}pointcut}}
+	fourni par Spring ou écrire le votre.
+	Par exemple, vous pouvez créer une classe <<<com.xyz.someapp.service.MonitoringPointcut>>>
+	implémentant org.springframework.aop.Pointcut et ajouter les lignes suivantes dans votre fichier
+	applicationContext.xml :
++-------------------------------+
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="com.xyz.someapp.service.MonitoringPointcut" />
+		</property>
+	</bean>
++-------------------------------+
 
 	Note : La {{{http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying} documentation }}
 	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB ce qui ne devrait
-	pas poser de problème pour des façades avec interfaces et implémentations séparées. Si le nom
-	affiché par le monitoring pour la classe ou la méthode ne vous convient pas, vous pouvez
-	ajouter (name="ma classe") entre parenthèses après l'annotation sur votre classe ou sur votre
-	méthode.
+	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
 ** 9. Rapports hebdomadaires par mail
 

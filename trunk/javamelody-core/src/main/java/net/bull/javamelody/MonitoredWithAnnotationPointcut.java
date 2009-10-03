@@ -11,7 +11,7 @@ import org.springframework.aop.Pointcut;
  *
  * @author Erik van Oosten (Java Simon, Licence LGPL)
  */
-public class MonitoredMeasuringPointcut implements Pointcut {
+public class MonitoredWithAnnotationPointcut implements Pointcut {
 	/**
 	 * @return a class filter that lets all class through.
 	 */
