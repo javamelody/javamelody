@@ -276,7 +276,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	(dans pom.xml si maven).
 	
 	Etape 2 : Assurez-vous que le fichier de configuration Spring 
-	(<<<fr/bull/monitoring/monitoring-spring.xml>>>, inclus dans le jar fourni) est chargé parmi un
+	(<<<net/bull/javamelody/monitoring-spring.xml>>>, inclus dans le jar fourni) est chargé parmi un
 	des premiers fichiers de configuration.
 
 	Par exemple, si vous utilisez <<<org.springframework.web.context.ContextLoaderListener>>> dans
@@ -286,7 +286,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<context-param>
 	  <param-name>contextConfigLocation</param-name>
 	  <param-value>
-		classpath:fr/bull/monitoring/monitoring-spring.xml
+		classpath:net/bull/javamelody/monitoring-spring.xml
 		classpath:context/services.xml
 		classpath:context/data-access-layer.xml
 		/WEB-INF/applicationContext.xml
