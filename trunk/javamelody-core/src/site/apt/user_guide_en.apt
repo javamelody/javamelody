@@ -272,7 +272,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	Step 1: Add the jar dependency spring-aop to you project (in pom.xml if maven).
 
-	Step 2: Make sure the Spring configuration file (<<net/bull/javamelody/monitoring-spring.xml>>>,
+	Step 2: Make sure the Spring configuration file (<<<net/bull/javamelody/monitoring-spring.xml>>>,
 	included in the provided jar) is loaded as one of the first configuration files.
 
 	For example, if you use the <<<org.springframework.web.context.ContextLoaderListener>>> in your
