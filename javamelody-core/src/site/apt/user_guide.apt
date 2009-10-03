@@ -337,6 +337,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	En supposant que les façades métiers puissent être déterminées par une expression régulière,
 	ajouter les lignes suivantes dans votre fichier applicationContext.xml en adaptant la valeur
 	du pattern de l'expression régulière :
+	
 +-------------------------------+
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
@@ -353,6 +354,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Par exemple, vous pouvez créer une classe <<<com.xyz.someapp.service.MonitoringPointcut>>>
 	implémentant org.springframework.aop.Pointcut et ajouter les lignes suivantes dans votre fichier
 	applicationContext.xml :
+	
 +-------------------------------+
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
