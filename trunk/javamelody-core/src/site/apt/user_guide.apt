@@ -420,7 +420,24 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
 +-------------------------------+
 
-** 10. Résultat complet
+** 10. Utilisateur base de données
+
+	Depuis la page html du monitoring, il est possible d'accéder à des informations et à des
+	statistiques sur la base de données (si postgresql, mysql ou oracle),
+	comme par exemple les requêtes sql en cours ou si oracle, les requêtes les plus longues en temps cumulé
+	avec indication du temps cpu et du coût élémentaire (en buffer gets).
+	
+	Pour cela l'utilisateur en base de données configuré dans l'application monitorée doit avoir
+	les droits nécessaires pour lire ces informations et statistiques. C'est-à-dire le droit
+	d'exécuter la requête <<<select * from pg_stat_activity>>> dans postgresql, ou la requête
+	<<<show full processlist>>> dans mysql ou la requête <<<select * from v$session>>> dans oracle.
+	
+	L'utilisateur en base de données utilisé dans l'application monitorée doit se voir accordé les
+	droits nécessaires s'il ne les a pas déjà. Par exemple, sous oracle vous pouvez exécuter la requête
+	sql suivante en tant qu'utilisateur 'system' pour accorder le droit à l'utilisateur 'myapplication' :
+	<<<grant select any dictionary to myapplication>>>
+
+** 11. Résultat complet
 
 	Pour consulter le monitoring, ouvrir la page suivante dans un navigateur web après avoir démarré le serveur :
 

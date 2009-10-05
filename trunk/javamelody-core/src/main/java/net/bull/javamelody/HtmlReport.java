@@ -404,6 +404,12 @@ class HtmlReport {
 		writeln("<a href='?part=processes" + periodParameter + "'>");
 		writeln("<img src='?resource=threads.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
+		if (!collectorServer) {
+			writeln(separator);
+			writeln("<a href='?part=database" + periodParameter + "'>");
+			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#database#\" /> #database#</a>");
+		}
+
 		writeln("<br/></div>");
 	}
 
@@ -562,6 +568,13 @@ class HtmlReport {
 		assert processInformationsList != null;
 		writeHtmlHeader(false);
 		new HtmlProcessInformationsReport(processInformationsList, writer).toHtml();
+		writeHtmlFooter();
+	}
+
+	void writeDatabase(DatabaseInformations databaseInformations) throws IOException {
+		assert databaseInformations != null;
+		writeHtmlHeader(false);
+		new HtmlDatabaseInformationsReport(databaseInformations, writer).toHtml();
 		writeHtmlFooter();
 	}
 

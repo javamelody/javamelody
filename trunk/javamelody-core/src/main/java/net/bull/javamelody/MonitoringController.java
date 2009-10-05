@@ -54,6 +54,7 @@ class MonitoringController {
 	static final String WEB_XML_PART = "web.xml";
 	static final String POM_XML_PART = "pom.xml";
 	static final String SESSIONS_PART = "sessions";
+	static final String DATABASE_PART = "database";
 	static final String GRAPH_PART = "graph";
 	private static final String COUNTER_PARAMETER = "counter";
 	private static final String GRAPH_PARAMETER = "graph";
@@ -306,6 +307,14 @@ class MonitoringController {
 			doHeapHisto(htmlReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			doProcesses(htmlReport);
+		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+			final int requestIndex;
+			if (httpRequest.getParameter("request") != null) {
+				requestIndex = Integer.parseInt(httpRequest.getParameter("request"));
+			} else {
+				requestIndex = 0;
+			}
+			doDatabase(htmlReport, requestIndex);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -368,6 +377,17 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		try {
 			htmlReport.writeProcesses(ProcessInformations.buildProcessInformations());
+		} catch (final Exception e) {
+			Collector.printStackTrace(e);
+			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
+		}
+	}
+
+	private void doDatabase(HtmlReport htmlReport, int requestIndex) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		try {
+			htmlReport.writeDatabase(new DatabaseInformations(requestIndex));
 		} catch (final Exception e) {
 			Collector.printStackTrace(e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
