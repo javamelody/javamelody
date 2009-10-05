@@ -47,12 +47,22 @@ final class JdbcWrapperHelper {
 		final String datasourcesParameter = Parameters.getParameter(Parameter.DATASOURCES);
 		if (datasourcesParameter == null) {
 			for (final NameClassPair nameClassPair : Collections.list(initialContext
-					.list("java:comp/env/jdbc/"))) {
+					.list("java:comp/env/jdbc"))) {
 				if (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName()))) {
 					final String jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
 					final DataSource dataSource = (DataSource) initialContext.lookup(jndiName);
 					dataSources.put(jndiName, dataSource);
 				}
+				// TODO datasource en jboss
+				// le test suivant fonctionne en tomcat et en jonas mais pas en jboss
+				// car getClassName() vaut "javax.naming.LinkRef" sous jboss 5.0.0.GA
+				// mais heureusement car le rebinding dans jboss 5.0.0.GA provoque
+				// " java.lang.ClassCastException: org.jnp.interfaces.MarshalledValuePair cannot be cast to javax.sql.DataSource"
+				// final String jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
+				// final Object value = initialContext.lookup(jndiName);
+				// if (value instanceof DataSource) {
+				// 	dataSources.put(jndiName, (DataSource) value);
+				// }
 			}
 		} else {
 			for (final String datasource : datasourcesParameter.split(",")) {
