@@ -45,4 +45,15 @@
 		<servlet-name>monitoringServer</servlet-name>
 		<url-pattern>/monitoringServer</url-pattern>
 	</servlet-mapping>
+	<resource-ref>
+		<description>
+			Resource reference to a factory for java.sql.Connection
+			instances that may be used for talking to a particular
+			database that is configured in the server.xml file.
+		</description>
+		<res-ref-name>jdbc/TestDB</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
 </web-app>

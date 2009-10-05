@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<jonas-web-app xmlns="http://www.objectweb.org/jonas/ns"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.objectweb.org/jonas/ns
+                http://www.objectweb.org/jonas/ns/jonas-web-app_4_1_2.xsd" > 
+<jonas-resource>
+<res-ref-name>jdbc/TestDB</res-ref-name>
+<jndi-name>jdbc_1</jndi-name>
+</jonas-resource>
+</jonas-web-app>
