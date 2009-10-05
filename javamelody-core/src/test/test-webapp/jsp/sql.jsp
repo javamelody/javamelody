@@ -3,6 +3,7 @@
 	final javax.sql.DataSource ds = (javax.sql.DataSource) new javax.naming.InitialContext()
 			.lookup("java:comp/env/jdbc/TestDB");
 	final java.sql.Connection connection = ds.getConnection();
+	connection.setAutoCommit(false);
 	try {
 		// 1 seconde pour avoir une 1ère requête
 		connection.createStatement().executeQuery("select sleep(1)");

@@ -36,6 +36,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 		final javax.sql.DataSource ds = (javax.sql.DataSource) new javax.naming.InitialContext()
 				.lookup("java:comp/env/jdbc/TestDB");
 		final java.sql.Connection connection = ds.getConnection();
+		connection.setAutoCommit(false);
 		try {
 			final Statement statement = connection.createStatement();
 			try {
