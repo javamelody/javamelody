@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <jboss-web>
+	<!-- le déploiement dans jboss avec eclipse ne copie pas ce fichier -->
 	<resource-ref>
 		<res-ref-name>jdbc/TestDB</res-ref-name>
 		<jndi-name>java:MySqlDS</jndi-name>
