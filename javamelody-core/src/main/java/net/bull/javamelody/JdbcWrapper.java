@@ -454,7 +454,10 @@ class JdbcWrapper {
 				.getInterfaces()));
 		Class classe = object.getClass().getSuperclass();
 		while (classe != null) {
-			interfaces.addAll(Arrays.asList(classe.getInterfaces()));
+			final List<Class> superInterfaces = Arrays.asList(classe.getInterfaces());
+			// removeAll d'abord car il ne faut pas de doublon dans la liste
+			interfaces.removeAll(superInterfaces);
+			interfaces.addAll(superInterfaces);
 			classe = classe.getSuperclass();
 		}
 		final Class[] interfacesArray = interfaces.toArray(new Class[interfaces.size()]);
