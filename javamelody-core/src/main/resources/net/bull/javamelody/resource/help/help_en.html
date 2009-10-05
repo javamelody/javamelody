@@ -237,6 +237,13 @@ If jdk 1.6, 'view memory histogram', to display the number of instances in memor
 'View OS processes' : list of processes of the operating system (linux with
 <a href='http://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> or windows with tasklist)
 and for each process: user, memory and cpu</li>
+<li><img src='?resource=db.png' width='20' height='20' alt='Database' />
+'Database' : Informations and statistics on the database (if postgresql, mysql or oracle),
+like for example the current sql requests or if oracle, the longest requests in cumulative time with
+display of the cpu time and of the elementary cost (of buffer gets).
+This function will display an error if the user configured in the application to connect to the
+database does not have the necessary rights. With oracle, the following request grants this right:
+"grant select any dictionary to myuser".</li>
 </ul>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
 the system informations of each server are displayed (aggregated for the list of sessions and for

@@ -410,7 +410,24 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
 +-------------------------------+
 
-** 10. Full results
+** 10. Database user
+
+	From the html page of the monitoring, it is possible to display informations and statistics
+	on the database (if postgresql, mysql or oracle),
+	like for example the current sql requests or if oracle, the longest requests in cumulative time with
+	display of the cpu time and of the elementary cost (of buffer gets).
+	
+	For that, the user in the database used by the monitored application must have the necessary
+	rights to read those informations and statistics. For example the right to execute the request
+	<<<select * from pg_stat_activity>>> in postgresql, or the request <<<show full processlist>>>
+	in mysql or the request <<<select * from v$session>>> in oracle.
+	
+	If the user in the database does not have already the necessary rights, you should grant them.
+	For example, in oracle you can execute as a 'system' user the following sql request
+	in order to grant the right to the user 'myapplication':
+	<<<grant select any dictionary to myapplication>>>
+
+** 11. Full results
 
 	To view the monitoring: open the following page in a web navigator after starting the server:
 

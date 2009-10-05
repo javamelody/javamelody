@@ -237,6 +237,13 @@ Si jdk 1.6, 'voir l'histogramme mémoire', pour afficher le nombre d'instances en
 'Voir les processus de l'OS' : liste des processus du système d'exploitation (linux avec
 <a href='http://fr.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> ou windows avec tasklist) avec pour chaque
 processus : utilisateur, mémoire et cpu</li>
+<li><img src='?resource=db.png' width='20' height='20' alt='Base de données' />
+'Base de données' : Informations et statistiques sur la base de données (si postgresql, mysql ou oracle),
+comme par exemple les requêtes sql en cours ou si oracle, les requêtes les plus longues en temps cumulé
+avec indication du temps cpu et du coût élémentaire (en buffer gets).
+Cette fonction affichera une erreur si l'utilisateur configuré dans l'application pour accéder à la
+base de données n'a pas les droits nécessaires. Sous oracle, la requête suivante accorde ce droit:
+"grant select any dictionary to monutilisateur".</li>
 </ul> 
 Si un serveur de collecte est utilisé pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
 les informations systèmes de chaque serveur sont affichées (agrégées pour ce qui est de la liste des sessions
