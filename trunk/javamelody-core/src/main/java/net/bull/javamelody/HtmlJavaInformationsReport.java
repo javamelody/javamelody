@@ -163,9 +163,11 @@ class HtmlJavaInformationsReport {
 					+ " #Mo# " + columnEnd);
 		}
 
-		writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>"
-				+ replaceEolWithBr(javaInformations.getDataBaseVersion())
-						.replaceAll("[&]", "&amp;") + columnEnd);
+		if (javaInformations.getDataBaseVersion() != null) {
+			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>"
+					+ replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
+							"&amp;") + columnEnd);
+		}
 		if (javaInformations.getTomcatDataSourceDetails() != null) {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>"
 					+ replaceEolWithBr(javaInformations.getTomcatDataSourceDetails())
