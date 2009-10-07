@@ -265,19 +265,6 @@ class HtmlReport {
 		}
 	}
 
-	private boolean isJRobinDisplayed(String jrobinName) {
-		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
-		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
-		//			return false;
-		//		}
-		for (final Counter counter : collector.getCounters()) {
-			if (jrobinName.startsWith(counter.getName())) {
-				return counter.isDisplayed();
-			}
-		}
-		return true;
-	}
-
 	private void writeCurrentRequests(JavaInformations javaInformations,
 			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
 		final List<ThreadInformations> threadInformationsList = javaInformations
@@ -322,6 +309,15 @@ class HtmlReport {
 		}
 	}
 
+	private boolean isDatabaseEnabled() {
+		return !collectorServer && !javaInformationsList.isEmpty()
+				&& javaInformationsList.get(0).getDataBaseVersion() != null;
+	}
+
+	private boolean doesWebXmlExists() {
+		return !javaInformationsList.isEmpty() && javaInformationsList.get(0).doesWebXmlExists();
+	}
+
 	private boolean isCacheEnabled() {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (javaInformations.isCacheEnabled()) {
@@ -329,6 +325,19 @@ class HtmlReport {
 			}
 		}
 		return false;
+	}
+
+	private boolean isJRobinDisplayed(String jrobinName) {
+		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
+		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
+		//			return false;
+		//		}
+		for (final Counter counter : collector.getCounters()) {
+			if (jrobinName.startsWith(counter.getName())) {
+				return counter.isDisplayed();
+			}
+		}
+		return true;
 	}
 
 	private void writeCaches() throws IOException {
@@ -393,7 +402,7 @@ class HtmlReport {
 			writeln("<a href='?part=heaphisto" + periodParameter + "'>");
 			writeln("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
 		}
-		if (!javaInformationsList.isEmpty() && javaInformationsList.get(0).doesWebXmlExists()) {
+		if (doesWebXmlExists()) {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
 			writeln(separator);
 			writeln("<a href='?part=web.xml" + periodParameter + "'>");
@@ -404,7 +413,7 @@ class HtmlReport {
 		writeln("<a href='?part=processes" + periodParameter + "'>");
 		writeln("<img src='?resource=threads.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
-		if (!collectorServer) {
+		if (isDatabaseEnabled()) {
 			writeln(separator);
 			writeln("<a href='?part=database" + periodParameter + "'>");
 			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#database#\" /> #database#</a>");
