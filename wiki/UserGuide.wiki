@@ -35,6 +35,8 @@ Java version required for execution:
 Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
 like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, WebLogic 9 or 10
 
+TODO: SQL requests are not monitored in JBoss if a datasource is used whereas they are monitored in Tomcat. The workaround is to use net.bull.javamelody.JdbcDriver as described below and no datasoure, in your hibernate.cfg.xml for example if you use hibernate.
+
 Required dependency: JRobin (LGPL) for evolution charts
 	
 Optional dependency: iText (LGPL ou MPL) for reports in pdf format in addition to html
