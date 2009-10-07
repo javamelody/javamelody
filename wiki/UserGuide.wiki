@@ -269,19 +269,73 @@ Language: English and French
 	</context-param>
 }}}
 
-	Step 3: Add the annotation {{{@net.bull.javamelody.MonitoredWithSpring}}} to all classes and/or methods you want to monitor.
-	As step 1 configured annotation detection only for spring beans, make sure these classes are
+	Step 3: Assuming that the business façades have a common interface 
+	{{{com.xyz.someapp.service.Facade}}} and that you want to monitor all methods of those façades,
+	add the following lines in your applicationContext.xml file:
+	
+{{{
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+				<property name="interfaceName" value="com.xyz.someapp.service.Facade" />
+			</bean>
+		</property>
+	</bean>
+}}}
+	
+	As the Spring configuration of the monitoring is only for spring beans, make sure these classes are
 	instantiated through Spring (i.e. declare them as a bean in a Spring configuration file).
+	
+	Note: If you don't have a common interface for façades or if you don't want to monitor all façades,
+	you can create and add to your façades an interface {{{com.xyz.someapp.service.Monitored}}}
+	and then use it in your xml file like above, otherwise you can use an alternative like below.
 
 	Step 4: Moreover, it is necessary to define the parameter {{{displayed-counters}}}, 
 	as the optional parameters above, and with value "http,sql,error,log,spring" 
 	or "http,sql,error,log,ejb,spring".
 
+	If you prefer, you have the choice with other alternatives for step 3 above.
+	These alternatives are not exclusives: you can use one and complete it with another.
+
+	* Alternative to step 3: Use of an annotation of JavaMelody.
+	(implies that the library javamelody.jar is included in your classpath for compilation)
+	Just add the annotation {{{@net.bull.javamelody.MonitoredWithSpring}}} to all classes and/or methods you want to monitor.
+	(without modification of your applicationContext.xml file).
+	This alternative with annotation also let you change the names of displayed classes in the monitoring.
+	If the name displayed by the monitoring for the class or the method does not please you,
+	you can add (name="ma classe") between parentheses after the annotation on your class or on your method.
+
+	* Alternative to step 3: Use of JdkRegexpMethodPointcut.
+	Assuming that the business façades can be found with a regular expression,
+	add the following lines in your applicationContext.xml file and adapt the value of the regular expression pattern:
+	
+{{{
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+				<property name="pattern" value=".*Facade.*" />
+			</bean>
+		</property>
+	</bean>
+}}}
+	
+	* Alternative to step 3: Use of any pointcut provided by Spring or writing of your own pointcut.
+	You can use any [http://static.springsource.org/spring/docs/2.5.x/api/index.html pointcut]
+	provided by Spring or you can write your own one.
+	For example, you can create a classe {{{com.xyz.someapp.service.MonitoringPointcut}}}
+	which implements org.springframework.aop.Pointcut and add the following lines in your applicationContext.xml file:
+	
+{{{
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="com.xyz.someapp.service.MonitoringPointcut" />
+		</property>
+	</bean>
+}}}
+
 	Note : The [http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying documentation]
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
-	facades with separate interfaces and implementations. If the name displayed by the monitoring
-	for the class or the method does not please you, you can add (name="ma classe") between
-	parentheses after the annotation on your class or on your method.
+	facades with separate interfaces and implementations. 
 
 === 9. Weekly reports by mail ===
 
@@ -335,7 +389,24 @@ Language: English and French
 	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
 }}}
 
-=== 10. Full results ===
+=== 10. Database user ===
+
+	From the html page of the monitoring, it is possible to display informations and statistics
+	on the database (if postgresql, mysql or oracle),
+	like for example the current sql requests or if oracle, the longest requests in cumulative time with
+	display of the cpu time and of the elementary cost (of buffer gets).
+	
+	For that, the user in the database used by the monitored application must have the necessary
+	rights to read those informations and statistics. For example the right to execute the request
+	{{{select * from pg_stat_activity}}} in postgresql, or the request {{{show full processlist}}}
+	in mysql or the request {{{select * from v$session}}} in oracle.
+	
+	If the user in the database does not have already the necessary rights, you should grant them.
+	For example, in oracle you can execute as a 'system' user the following sql request
+	in order to grant the right to the user 'myapplication':
+	{{{grant select any dictionary to myapplication}}}
+
+=== 11. Full results ===
 
 	To view the monitoring: open the following page in a web navigator after starting the server:
 
