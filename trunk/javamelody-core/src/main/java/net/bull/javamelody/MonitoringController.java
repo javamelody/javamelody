@@ -48,6 +48,7 @@ class MonitoringController {
 	static final String PERIOD_PARAMETER = "period";
 	static final String SESSION_ID_PARAMETER = "sessionId";
 	static final String COLLECTOR_PARAMETER = "collector";
+	static final String REQUEST_PARAMETER = "request";
 	static final String HEAP_HISTO_PART = "heaphisto";
 	static final String PROCESSES_PART = "processes";
 	static final String CURRENT_REQUESTS_PART = "currentRequests";
@@ -224,34 +225,36 @@ class MonitoringController {
 	private Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList) {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			try {
+		try {
+			if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+				// par sécurité
+				Action.checkSystemActionsEnabled();
 				return VirtualMachine.createHeapHistogram();
-			} catch (final Exception e) {
-				return e;
-			}
-		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-			if (sessionId == null) {
-				final List<SessionInformations> sessionsInformations = SessionListener
-						.getAllSessionsInformations();
-				return (Serializable) sessionsInformations;
-			}
-			final SessionInformations sessionInformations = SessionListener
-					.getSessionInformationsBySessionId(sessionId);
-			return sessionInformations;
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			try {
+			} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
+				// par sécurité
+				Action.checkSystemActionsEnabled();
+				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
+				if (sessionId == null) {
+					final List<SessionInformations> sessionsInformations = SessionListener
+							.getAllSessionsInformations();
+					return (Serializable) sessionsInformations;
+				}
+				final SessionInformations sessionInformations = SessionListener
+						.getSessionInformationsBySessionId(sessionId);
+				return sessionInformations;
+			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+				// par sécurité
+				Action.checkSystemActionsEnabled();
 				return (Serializable) ProcessInformations.buildProcessInformations();
-			} catch (final Exception e) {
-				return e;
+			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+				// par sécurité
+				Action.checkSystemActionsEnabled();
+				final int requestIndex = Integer.parseInt(httpRequest
+						.getParameter(REQUEST_PARAMETER));
+				return new DatabaseInformations(requestIndex);
 			}
+		} catch (final Exception e) {
+			return e;
 		}
 
 		final List<Counter> counters = collector.getCounters();
@@ -309,8 +312,8 @@ class MonitoringController {
 			doProcesses(htmlReport);
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			final int requestIndex;
-			if (httpRequest.getParameter("request") != null) {
-				requestIndex = Integer.parseInt(httpRequest.getParameter("request"));
+			if (httpRequest.getParameter(REQUEST_PARAMETER) != null) {
+				requestIndex = Integer.parseInt(httpRequest.getParameter(REQUEST_PARAMETER));
 			} else {
 				requestIndex = 0;
 			}
