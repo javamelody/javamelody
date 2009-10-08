@@ -199,10 +199,12 @@ public class CollectorServlet extends HttpServlet {
 			ClassNotFoundException {
 		if (MonitoringController.WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
-			doProxy(req, resp, application, "part=web.xml");
+			doProxy(req, resp, application, MonitoringController.PART_PARAMETER + '='
+					+ MonitoringController.WEB_XML_PART);
 		} else if (MonitoringController.POM_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
-			doProxy(req, resp, application, "part=pom.xml");
+			doProxy(req, resp, application, MonitoringController.PART_PARAMETER + '='
+					+ MonitoringController.POM_XML_PART);
 		} else if (MonitoringController.SESSIONS_PART.equalsIgnoreCase(partParameter)) {
 			doSessions(req, resp, application, monitoringController);
 		} else if (MonitoringController.CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
@@ -211,6 +213,8 @@ public class CollectorServlet extends HttpServlet {
 			doHeapHisto(req, resp, application, monitoringController);
 		} else if (MonitoringController.PROCESSES_PART.equalsIgnoreCase(partParameter)) {
 			doProcesses(req, resp, application);
+		} else if (MonitoringController.DATABASE_PART.equalsIgnoreCase(partParameter)) {
+			doDatabase(req, resp, application);
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 			monitoringController.doReport(req, resp, javaInformationsList);
@@ -234,7 +238,9 @@ public class CollectorServlet extends HttpServlet {
 		// récupération à la demande des HeapHistogram
 		HeapHistogram heapHistoTotal = null;
 		for (final URL url : getUrlsByApplication(application)) {
-			final URL heapHistoUrl = new URL(url.toString() + "&part=heaphisto");
+			final URL heapHistoUrl = new URL(url.toString() + '&'
+					+ MonitoringController.PART_PARAMETER + '='
+					+ MonitoringController.HEAP_HISTO_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(heapHistoUrl);
 			final HeapHistogram heapHisto = labradorRetriever.call();
 			if (heapHistoTotal == null) {
@@ -255,7 +261,9 @@ public class CollectorServlet extends HttpServlet {
 			// récupération à la demande des sessions
 			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
 			for (final URL url : getUrlsByApplication(application)) {
-				final URL sessionsUrl = new URL(url.toString() + "&part=sessions");
+				final URL sessionsUrl = new URL(url.toString() + '&'
+						+ MonitoringController.PART_PARAMETER + '='
+						+ MonitoringController.SESSIONS_PART);
 				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
 				final List<SessionInformations> sessions = labradorRetriever.call();
 				sessionsInformations.addAll(sessions);
@@ -267,8 +275,10 @@ public class CollectorServlet extends HttpServlet {
 		} else {
 			SessionInformations found = null;
 			for (final URL url : getUrlsByApplication(application)) {
-				final URL sessionsUrl = new URL(url.toString() + "&part=sessions&sessionId="
-						+ sessionId);
+				final URL sessionsUrl = new URL(url.toString() + '&'
+						+ MonitoringController.PART_PARAMETER + '='
+						+ MonitoringController.SESSIONS_PART + '&'
+						+ MonitoringController.SESSION_ID_PARAMETER + '=' + sessionId);
 				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
 				final SessionInformations session = (SessionInformations) labradorRetriever.call();
 				if (session != null) {
@@ -290,7 +300,9 @@ public class CollectorServlet extends HttpServlet {
 		htmlReport.writeHtmlHeader(false);
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
-		writer.write("<a href='?part=currentRequests&amp;period=");
+		writer.write("<a href='?part=");
+		writer.write(MonitoringController.CURRENT_REQUESTS_PART);
+		writer.write("&amp;period=");
 		writer.write(MonitoringController.getPeriod(req).getCode());
 		writer.write("'>");
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
@@ -305,7 +317,10 @@ public class CollectorServlet extends HttpServlet {
 			final URL currentRequestsUrl = new URL(url.toString().replace(
 					TransportFormat.SERIALIZED.getCode(), "html").replace(
 					TransportFormat.XML.getCode(), "html")
-					+ "&part=currentRequests");
+					+ '&'
+					+ MonitoringController.PART_PARAMETER
+					+ '='
+					+ MonitoringController.CURRENT_REQUESTS_PART);
 			new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 		}
 		htmlReport.writeHtmlFooter();
@@ -319,7 +334,9 @@ public class CollectorServlet extends HttpServlet {
 		htmlReport.writeHtmlHeader(false);
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
-		writer.write("<a href='?part=processes'>");
+		writer.write("<a href='?part=");
+		writer.write(MonitoringController.PROCESSES_PART);
+		writer.write("'>");
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
 		writer.write("</a></div>");
@@ -328,12 +345,35 @@ public class CollectorServlet extends HttpServlet {
 			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=threads.png' alt='"
 					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
-			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL processesUrl = new URL(url.toString() + "&part=processes");
+			writer.flush();
+			final URL processesUrl = new URL(url.toString() + '&'
+					+ MonitoringController.PART_PARAMETER + '='
+					+ MonitoringController.PROCESSES_PART);
 			final List<ProcessInformations> processes = new LabradorRetriever(processesUrl).call();
 			new HtmlProcessInformationsReport(processes, writer).writeTable();
 		}
 		htmlReport.writeHtmlFooter();
+		writer.close();
+	}
+
+	private void doDatabase(HttpServletRequest req, HttpServletResponse resp, String application)
+			throws IOException, ClassNotFoundException {
+		final int requestIndex;
+		if (req.getParameter(MonitoringController.REQUEST_PARAMETER) != null) {
+			requestIndex = Integer.parseInt(req
+					.getParameter(MonitoringController.REQUEST_PARAMETER));
+		} else {
+			requestIndex = 0;
+		}
+		final PrintWriter writer = createWriterFromOutputStream(resp);
+		final HtmlReport htmlReport = createHtmlReport(req, writer, application);
+		final URL url = getUrlsByApplication(application).get(0);
+		final URL processesUrl = new URL(url.toString() + '&' + MonitoringController.PART_PARAMETER
+				+ '=' + MonitoringController.DATABASE_PART + '&'
+				+ MonitoringController.REQUEST_PARAMETER + '=' + requestIndex);
+		final DatabaseInformations databaseInformations = new LabradorRetriever(processesUrl)
+				.call();
+		htmlReport.writeDatabase(databaseInformations);
 		writer.close();
 	}
 

@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,12 +38,13 @@ import javax.sql.DataSource;
  * Informations sur la base de données.
  * @author Emeric Vernat
  */
-class DatabaseInformations {
+class DatabaseInformations implements Serializable {
 	// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 	// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
 	// (Parameters.getResourcePath("databaseInformations") seul ne fonctionne pas si on est dans un jar/war)
 	static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
 			"databaseInformations").replace('/', '.').substring(1);
+	private static final long serialVersionUID = -6105478981257689782L;
 
 	private static enum Database {
 		POSTGRESQL, MYSQL, ORACLE;
@@ -94,6 +96,7 @@ class DatabaseInformations {
 	}
 
 	private final int requestIndex;
+	@SuppressWarnings("all")
 	private final List<String> requestNames;
 	private final String[][] result;
 

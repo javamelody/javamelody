@@ -310,7 +310,7 @@ class HtmlReport {
 	}
 
 	private boolean isDatabaseEnabled() {
-		return !collectorServer && !javaInformationsList.isEmpty()
+		return !javaInformationsList.isEmpty()
 				&& javaInformationsList.get(0).getDataBaseVersion() != null;
 	}
 
