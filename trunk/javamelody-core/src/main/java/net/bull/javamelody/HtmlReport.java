@@ -393,10 +393,10 @@ class HtmlReport {
 				+ "' onclick=\"javascript:return confirm('"
 				+ I18N.getStringForJavascript("confirm_invalidate_sessions") + "');\">");
 		writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
-		writeln("<br />");
 		writeln(separator);
 		writeln("<a href='?part=sessions" + periodParameter + "'>");
 		writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
+		writeln("<br />");
 		if (collectorServer || VirtualMachine.isEnabled()) {
 			writeln(separator);
 			writeln("<a href='?part=heaphisto" + periodParameter + "'>");
