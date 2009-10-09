@@ -139,9 +139,11 @@ class HtmlReport {
 		}
 
 		writeln("<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
-		writeln(I18N.getFormattedString("Statistiques", I18N.getCurrentDateAndTime(), I18N
-				.createDateAndTimeFormat().format(collector.getCounters().get(0).getStartDate()),
-				collector.getApplication()));
+		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
+		final String startDate = I18N.createDateAndTimeFormat().format(
+				collector.getCounters().get(0).getStartDate());
+		writeln(I18N.getFormattedString("Statistiques", javaMelodyUrl,
+				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
 			writeln(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
 		}
