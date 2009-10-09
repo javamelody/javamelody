@@ -39,6 +39,12 @@ Drill-down (and ejb/spring/services components)
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/zoom.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/zoom.png' width='50%' alt='Zoom sur graph' /></a><br/>
 Zoom on chart
 
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/process_mysql.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/process_mysql.png' width='50%' alt='Processus mysql' /></a><br/>
+Mysql process
+
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/top_sql_oracle.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/top_sql_oracle.png' width='50%' alt='Requêtes longues oracle' /></a><br/>
+Oracle long requests
+
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/pdf.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/pdf.png' width='50%' alt='Pdf' /></a><br/>
 Pdf
 
