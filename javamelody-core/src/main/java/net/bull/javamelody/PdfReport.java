@@ -178,10 +178,10 @@ class PdfReport {
 	}
 
 	private String buildSummary() {
-		final String tmp = I18N.getFormattedString("Statistiques", I18N.getCurrentDateAndTime(),
-				I18N.createDateAndTimeFormat()
-						.format(collector.getCounters().get(0).getStartDate()), collector
-						.getApplication());
+		final String startDate = I18N.createDateAndTimeFormat().format(
+				collector.getCounters().get(0).getStartDate());
+		final String tmp = I18N.getFormattedString("Statistiques", "JavaMelody", I18N
+				.getCurrentDateAndTime(), startDate, collector.getApplication());
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
 			return tmp + " (" + javaInformationsList.get(0).getContextDisplayName() + ')';
 		}
