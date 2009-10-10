@@ -417,7 +417,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in order to grant the right to the user 'myapplication':
 	<<<grant select any dictionary to myapplication>>>
 
-** 11. Sécurité
+** 11. Security
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
