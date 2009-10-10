@@ -191,16 +191,6 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	from the tomcat context or from system properties without modifying the <<<web.xml>>> file
 	neither the war file of the monitored webapp.
 
-	The monitoring page is only in consultation and does not contain data such as login or password,
-	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
-	its access by a regular expression on ip address of client with the parameter <<<allowed-addr-pattern>>>
-	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
-
-	If some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
-	you can also restrict in the <<<web.xml>>> file the access to the monitoring page to "admin" role
-	for example (except if a collect server is used as written in the following chapter, in which case
-	the parameter <<<allowed-addr-pattern>>> could be used).
-
 ** 6. JDBC
 
 	If a DataSource which JNDI name starts with "jdbc/" is configured in the application server
@@ -427,7 +417,57 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in order to grant the right to the user 'myapplication':
 	<<<grant select any dictionary to myapplication>>>
 
-** 11. Full results
+** 11. Sécurité
+
+	The monitoring page is only in consultation and does not contain data such as login or password,
+	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
+	its access by a regular expression on ip address of client with the parameter <<<allowed-addr-pattern>>>
+	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
+
+	If some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
+	you can also restrict in the <<<web.xml>>> file the access to the monitoring page to "monitoring" role
+	for example (except if a collect server is used as written in the following chapter, in which case
+	the parameter <<<allowed-addr-pattern>>> could be used).
+
+	Example of content of the web.xml file for authentication by login and password:
+	
++-------------------------------+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Monitoring</realm-name>
+	</login-config>
+	<security-role>
+		<role-name>monitoring</role-name>
+	</security-role>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Monitoring</web-resource-name>
+			<url-pattern>/monitoring</url-pattern>
+		</web-resource-collection>
+		<!-- if SSL enabled (SSL and certificate must then be configured in the server)
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint> 
+		-->
+		<auth-constraint>
+			<role-name>monitoring</role-name>
+		</auth-constraint>
+	</security-constraint>
++-------------------------------+
+
+	The realm and the users must be defined in the application server,
+	and the users must have the "monitoring" role to have access to the reports.
+	For example, if tomcat is used with the default realm, modify the content of the conf/tomcat-users.xml file as following:
+	
++-------------------------------+
+<?xml version='1.0' encoding='utf-8'?>
+<tomcat-users>
+  <role rolename="monitoring"/>
+  <user username="monitoring" password="monitoring" roles="monitoring"/>
+</tomcat-users>
++-------------------------------+
+
+** 12. Full results
 
 	To view the monitoring: open the following page in a web navigator after starting the server:
 

@@ -45,6 +45,24 @@
 		<servlet-name>monitoringServer</servlet-name>
 		<url-pattern>/monitoringServer</url-pattern>
 	</servlet-mapping>
+	<!-- exemple d'authentification par identifiant et mot de passe:
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Monitoring</realm-name>
+	</login-config>
+	<security-role>
+		<role-name>monitoring</role-name>
+	</security-role>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Monitoring</web-resource-name>
+			<url-pattern>/monitoring</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>monitoring</role-name>
+		</auth-constraint>
+	</security-constraint>
+	-->
 	<resource-ref>
 		<description>
 			Resource reference to a factory for java.sql.Connection
