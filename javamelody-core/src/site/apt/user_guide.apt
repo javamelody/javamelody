@@ -499,8 +499,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 ** 1. Fichier war de la webapp de monitoring
 
-	Copier le fichier javamelody.war situé à la racine du fichier javamelody.zip fourni, vers le serveur centralisé
-	(NovaForge par exemple). Le fichier javamelody.war doit correspondre en général à la même version du monitoring
+	Copier le fichier javamelody.war situé à la racine du fichier javamelody.zip fourni, vers le serveur centralisé.
+	Le fichier javamelody.war doit correspondre en général à la même version du monitoring
 	que le fichier javamelody.jar dans l'application monitorée.
 
 ** 2. Déploiement de la webapp de monitoring

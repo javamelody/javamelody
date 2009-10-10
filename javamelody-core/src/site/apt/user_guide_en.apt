@@ -486,8 +486,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 1. War file of the webapp of monitoring
 
-	Copy the javamelody.war file, located at the root of the supplied javamelody.zip file, to the centralized server
-	(NovaForge for example). The javamelody.war file should be in general of the same version of monitoring
+	Copy the javamelody.war file, located at the root of the supplied javamelody.zip file, to the centralized server.
+	The javamelody.war file should be in general of the same version of monitoring
 	as the version of the javamelody.jar file in the monitored application.
 
 ** 2. Deployment of the webapp of monitoring
