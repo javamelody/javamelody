@@ -86,12 +86,13 @@ class DatabaseInformations implements Serializable {
 			final String url = connection.getMetaData().getURL();
 			if (url.contains("postgres")) {
 				return POSTGRESQL;
-			} else if (url.contains("mysql")) {
+			} else if (url.contains("mysql2")) {
 				return MYSQL;
 			} else if (url.contains("oracle")) {
 				return ORACLE;
 			}
-			throw new IllegalArgumentException("Type de connexion inconnu: " + url);
+			throw new IllegalArgumentException(I18N.getFormattedString(
+					"type_base_de_donnees_inconnu", url));
 		}
 	}
 
