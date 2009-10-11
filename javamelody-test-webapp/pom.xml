@@ -35,8 +35,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- Dépendance optionnelle spring aop
-		     (qui inclus spring core, spring beans, aop alliance et commons-logging) -->
+		<!--
+			Dépendance optionnelle spring aop (qui inclus spring core, spring
+			beans, aop alliance et commons-logging)
+		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -46,6 +48,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>2.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.0.5</version>
 		</dependency>
 	</dependencies>
 	<build>
