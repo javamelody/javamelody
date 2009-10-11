@@ -313,7 +313,8 @@ class HtmlReport {
 
 	private boolean isDatabaseEnabled() {
 		return !javaInformationsList.isEmpty()
-				&& javaInformationsList.get(0).getDataBaseVersion() != null;
+				&& javaInformationsList.get(0).getDataBaseVersion() != null
+				&& !javaInformationsList.get(0).getDataBaseVersion().contains("Exception");
 	}
 
 	private boolean doesWebXmlExists() {
