@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,6 +55,7 @@ class JdbcWrapper {
 
 	private static final Map<String, Object> TOMCAT_BASIC_DATASOURCE_PROPERTIES = new LinkedHashMap<String, Object>();
 
+	boolean jboss;
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	private final Counter sqlCounter;
 	private ServletContext servletContext;
@@ -195,11 +197,13 @@ class JdbcWrapper {
 		this.sqlCounter = sqlCounter;
 		// servletContext est null pour un simple JdbcDriver
 		this.servletContext = servletContext;
+		jboss = servletContext != null && servletContext.getServerInfo().contains("JBoss");
 	}
 
 	void initServletContext(ServletContext context) {
 		assert context != null;
 		this.servletContext = context;
+		jboss = servletContext.getServerInfo().contains("JBoss");
 	}
 
 	static int getUsedConnectionCount() {
@@ -286,7 +290,22 @@ class JdbcWrapper {
 					.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				if (!isProxyAlready(dataSource)) {
+				if (jboss
+						&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSource
+								.getClass().getName())) {
+					// le rebind de la datasource dans le JNDI JBoss ne fonctionne pas
+					// (car tous les lookup renverraient alors une instance de MarshalledValuePair
+					// ou une instance javax.naming.Reference selon comment cela est fait),
+					// donc on modifie directement l'instance de WrapperDataSource déjà présente dans le JNDI
+					final Field connectionManagerField = dataSource.getClass().getDeclaredField(
+							"cm");
+					JdbcWrapperHelper.setFieldAccessible(connectionManagerField);
+					Object javaxConnectionManager = connectionManagerField.get(dataSource);
+					if (!isProxyAlready(javaxConnectionManager)) {
+						javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
+						connectionManagerField.set(dataSource, javaxConnectionManager);
+					}
+				} else if (!isProxyAlready(dataSource)) {
 					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
 					final DataSource dataSourceProxy = createDataSourceProxy(dataSource);
 					final Object tomcatSecurityToken = JdbcWrapperHelper
@@ -317,6 +336,7 @@ class JdbcWrapper {
 				initialContext.rebind(jndiName, dataSource);
 				JdbcWrapperHelper.changeTomcatContextWritable(servletContext, tomcatSecurityToken);
 			}
+			// TODO si jboss avec datasource, il faudrait aussi désencapsuler javaxConnectionManager
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
@@ -339,6 +359,40 @@ class JdbcWrapper {
 			}
 		};
 		return createProxy(context, invocationHandler);
+	}
+
+	// pour jboss
+	Object createJavaxConnectionManagerProxy(final Object javaxConnectionManager) {
+		assert javaxConnectionManager != null;
+		final InvocationHandler invocationHandler = new InvocationHandler() {
+			/** {@inheritDoc} */
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+				final Object result = method.invoke(javaxConnectionManager, args);
+				if (jboss && result != null
+						&& result.getClass().getSimpleName().startsWith("WrappedConnection")) {
+					rewrapJBossConnection(result);
+				}
+				return result;
+			}
+
+		};
+		return createProxy(javaxConnectionManager, invocationHandler);
+	}
+
+	void rewrapJBossConnection(Object result) throws NoSuchFieldException, IllegalAccessException {
+		// result instance de jboss WrappedConnectionJDK6 ou WrappedConnectionJDK5
+		final Field baseWrapperManagedConnectionField = result.getClass().getSuperclass()
+				.getDeclaredField("mc");
+		JdbcWrapperHelper.setFieldAccessible(baseWrapperManagedConnectionField);
+		final Object baseWrapperManagedConnection = baseWrapperManagedConnectionField.get(result);
+		final Field connectionField = baseWrapperManagedConnection.getClass().getSuperclass()
+				.getDeclaredField("con");
+		JdbcWrapperHelper.setFieldAccessible(connectionField);
+		Connection connection = (Connection) connectionField.get(baseWrapperManagedConnection);
+		if (!isProxyAlready(connection)) {
+			connection = createConnectionProxy(connection);
+			connectionField.set(baseWrapperManagedConnection, connection);
+		}
 	}
 
 	DataSource createDataSourceProxy(final DataSource dataSource) {
