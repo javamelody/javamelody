@@ -346,8 +346,6 @@ class JavaInformations implements Serializable { // NOPMD
 			}
 		} catch (final NamingException e) {
 			result.append(e.toString());
-		} catch (final ClassNotFoundException e) {
-			result.append(e.toString());
 		} catch (final SQLException e) {
 			result.append(e.toString());
 		}

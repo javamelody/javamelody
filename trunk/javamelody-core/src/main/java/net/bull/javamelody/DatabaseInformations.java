@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /**
@@ -174,7 +175,7 @@ class DatabaseInformations implements Serializable {
 		}
 	}
 
-	private static Connection getConnection() throws Exception {
+	private static Connection getConnection() throws SQLException, NamingException {
 		// on commence par voir si le driver jdbc a été utilisé
 		// car s'il n'y a pas de datasource une exception est déclenchée
 		final JdbcDriver jdbcDriver = JdbcDriver.SINGLETON;

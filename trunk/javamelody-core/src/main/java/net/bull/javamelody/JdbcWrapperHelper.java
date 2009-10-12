@@ -41,28 +41,22 @@ final class JdbcWrapperHelper {
 		super();
 	}
 
-	static Map<String, DataSource> getDataSources() throws NamingException, ClassNotFoundException {
+	static Map<String, DataSource> getDataSources() throws NamingException {
 		final Map<String, DataSource> dataSources = new HashMap<String, DataSource>(2);
 		final InitialContext initialContext = new InitialContext();
 		final String datasourcesParameter = Parameters.getParameter(Parameter.DATASOURCES);
 		if (datasourcesParameter == null) {
 			for (final NameClassPair nameClassPair : Collections.list(initialContext
 					.list("java:comp/env/jdbc"))) {
-				if (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName()))) {
-					final String jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
-					final DataSource dataSource = (DataSource) initialContext.lookup(jndiName);
-					dataSources.put(jndiName, dataSource);
+				// note: il ne suffit pas de tester 
+				// (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName())))
+				// car nameClassPair.getClassName() vaut "javax.naming.LinkRef" sous jboss 5.1.0.GA
+				// par exemple, donc on fait le lookup pour voir
+				final String jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
+				final Object value = initialContext.lookup(jndiName);
+				if (value instanceof DataSource) {
+					dataSources.put(jndiName, (DataSource) value);
 				}
-				// TODO datasource en jboss
-				// le test suivant fonctionne en tomcat et en jonas mais pas en jboss
-				// car getClassName() vaut "javax.naming.LinkRef" sous jboss 5.0.0.GA
-				// mais heureusement car le rebinding dans jboss 5.0.0.GA provoque
-				// " java.lang.ClassCastException: org.jnp.interfaces.MarshalledValuePair cannot be cast to javax.sql.DataSource"
-				// final String jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
-				// final Object value = initialContext.lookup(jndiName);
-				// if (value instanceof DataSource) {
-				// 	dataSources.put(jndiName, (DataSource) value);
-				// }
 			}
 		} else {
 			for (final String datasource : datasourcesParameter.split(",")) {
@@ -108,7 +102,7 @@ final class JdbcWrapperHelper {
 		return null;
 	}
 
-	private static void setFieldAccessible(final Field field) {
+	static void setFieldAccessible(final Field field) {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
 					/** {@inheritDoc} */
 					public Object run() {
