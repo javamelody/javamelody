@@ -48,7 +48,7 @@ final class JdbcWrapperHelper {
 		if (datasourcesParameter == null) {
 			for (final NameClassPair nameClassPair : Collections.list(initialContext
 					.list("java:comp/env/jdbc"))) {
-				// note: il ne suffit pas de tester 
+				// note: il ne suffit pas de tester
 				// (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName())))
 				// car nameClassPair.getClassName() vaut "javax.naming.LinkRef" sous jboss 5.1.0.GA
 				// par exemple, donc on fait le lookup pour voir
