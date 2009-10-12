@@ -71,6 +71,7 @@ public class TestMonitoringFilter {
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getServerInfo()).andReturn("EasyMock").anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
 		monitoringFilter = new MonitoringFilter();
 	}
