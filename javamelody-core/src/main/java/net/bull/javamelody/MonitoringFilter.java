@@ -60,6 +60,7 @@ public class MonitoringFilter implements Filter {
 	private Pattern urlExcludePattern;
 	private Pattern allowedAddrPattern;
 	private FilterConfig filterConfig;
+	private String monitoringUrl;
 	private Timer timer;
 
 	private static final class CollectTimerTask extends TimerTask {
@@ -276,7 +277,7 @@ public class MonitoringFilter implements Filter {
 			chain.doFilter(request, response);
 			return;
 		}
-		if (httpRequest.getRequestURI().endsWith("monitoring")) {
+		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
 			doMonitoring(httpRequest, httpResponse);
 			return;
 		}
@@ -353,6 +354,13 @@ public class MonitoringFilter implements Filter {
 				CounterError.unbindRequest();
 			}
 		}
+	}
+
+	private String getMonitoringUrl(HttpServletRequest httpRequest) {
+		if (monitoringUrl == null) {
+			monitoringUrl = httpRequest.getContextPath() + "/monitoring";
+		}
+		return monitoringUrl;
 	}
 
 	private void putUserInfoInSession(HttpServletRequest httpRequest) {
