@@ -52,7 +52,13 @@ final class JdbcWrapperHelper {
 				// (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName())))
 				// car nameClassPair.getClassName() vaut "javax.naming.LinkRef" sous jboss 5.1.0.GA
 				// par exemple, donc on fait le lookup pour voir
-				final String jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
+				final String jndiName;
+				if (nameClassPair.getName().startsWith("java:")) {
+					// pour glassfish v3
+					jndiName = nameClassPair.getName();
+				} else {
+					jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
+				}
 				final Object value = initialContext.lookup(jndiName);
 				if (value instanceof DataSource) {
 					dataSources.put(jndiName, (DataSource) value);
