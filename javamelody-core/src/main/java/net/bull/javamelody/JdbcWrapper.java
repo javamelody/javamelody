@@ -56,6 +56,7 @@ class JdbcWrapper {
 	private static final Map<String, Object> TOMCAT_BASIC_DATASOURCE_PROPERTIES = new LinkedHashMap<String, Object>();
 
 	boolean jboss;
+	private boolean glassfish;
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	private final Counter sqlCounter;
 	private ServletContext servletContext;
@@ -198,12 +199,14 @@ class JdbcWrapper {
 		// servletContext est null pour un simple JdbcDriver
 		this.servletContext = servletContext;
 		jboss = servletContext != null && servletContext.getServerInfo().contains("JBoss");
+		glassfish = servletContext != null && servletContext.getServerInfo().contains("GlassFish");
 	}
 
 	void initServletContext(ServletContext context) {
 		assert context != null;
 		this.servletContext = context;
 		jboss = servletContext.getServerInfo().contains("JBoss");
+		glassfish = servletContext.getServerInfo().contains("GlassFish");
 	}
 
 	static int getUsedConnectionCount() {
@@ -290,16 +293,26 @@ class JdbcWrapper {
 					.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				if (jboss
-						&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSource
+				if (jboss && "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSource
+						.getClass().getName())
+						|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSource
 								.getClass().getName())) {
-					// le rebind de la datasource dans le JNDI JBoss ne fonctionne pas
-					// (car tous les lookup renverraient alors une instance de MarshalledValuePair
-					// ou une instance javax.naming.Reference selon comment cela est fait),
-					// donc on modifie directement l'instance de WrapperDataSource déjà présente dans le JNDI
-					final Field connectionManagerField = dataSource.getClass().getDeclaredField(
-							"cm");
-					JdbcWrapperHelper.setFieldAccessible(connectionManagerField);
+					// JBOSS: le rebind de la datasource dans le JNDI JBoss est possible mais ne
+					// fonctionne pas (car tous les lookup renverraient alors une instance de
+					// MarshalledValuePair ou une instance javax.naming.Reference selon comment cela
+					// est fait), donc on modifie directement l'instance de WrapperDataSource déjà
+					// présente dans le JNDI
+					// GLASSFISH, le contexte JNDI commençant par "java:" est en lecture seule
+					// dans glassfish (comme dit dans la spec et comme implémenté dans
+					// http://kickjava.com/src/com/sun/enterprise/naming/java/javaURLContext.java.htm),
+					// donc on modifie directement l'instance de DataSource40 déjà présente dans le
+					// JNDI.
+					// Par "chance", la classe org.jboss.resource.adapter.jdbc.WrapperDataSource et
+					// la super-classe de com.sun.gjc.spi.jdbc40.DataSource40 contiennent toutes les
+					// deux un attribut de nom "cm" et de type javax.resource.spi.ConnectionManager
+					// dont on veut faire un proxy.
+					final Field connectionManagerField = JdbcWrapperHelper.getAccessibleField(
+							dataSource, "cm");
 					Object javaxConnectionManager = connectionManagerField.get(dataSource);
 					if (!isProxyAlready(javaxConnectionManager)) {
 						javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
@@ -336,7 +349,7 @@ class JdbcWrapper {
 				initialContext.rebind(jndiName, dataSource);
 				JdbcWrapperHelper.changeTomcatContextWritable(servletContext, tomcatSecurityToken);
 			}
-			// TODO si jboss avec datasource, il faudrait aussi désencapsuler javaxConnectionManager
+			// TODO si jboss ou glassfish avec datasource, il faudrait aussi désencapsuler javaxConnectionManager
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
@@ -368,9 +381,8 @@ class JdbcWrapper {
 			/** {@inheritDoc} */
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				final Object result = method.invoke(javaxConnectionManager, args);
-				if (jboss && result != null
-						&& result.getClass().getSimpleName().startsWith("WrappedConnection")) {
-					rewrapJBossConnection(result);
+				if (result instanceof Connection) {
+					rewrapConnection(result);
 				}
 				return result;
 			}
@@ -379,19 +391,34 @@ class JdbcWrapper {
 		return createProxy(javaxConnectionManager, invocationHandler);
 	}
 
-	void rewrapJBossConnection(Object result) throws NoSuchFieldException, IllegalAccessException {
-		// result instance de jboss WrappedConnectionJDK6 ou WrappedConnectionJDK5
-		final Field baseWrapperManagedConnectionField = result.getClass().getSuperclass()
-				.getDeclaredField("mc");
-		JdbcWrapperHelper.setFieldAccessible(baseWrapperManagedConnectionField);
-		final Object baseWrapperManagedConnection = baseWrapperManagedConnectionField.get(result);
-		final Field connectionField = baseWrapperManagedConnection.getClass().getSuperclass()
-				.getDeclaredField("con");
-		JdbcWrapperHelper.setFieldAccessible(connectionField);
-		Connection connection = (Connection) connectionField.get(baseWrapperManagedConnection);
-		if (!isProxyAlready(connection)) {
-			connection = createConnectionProxy(connection);
-			connectionField.set(baseWrapperManagedConnection, connection);
+	void rewrapConnection(Object result) throws IllegalAccessException {
+		if (jboss && result != null
+				&& result.getClass().getSimpleName().startsWith("WrappedConnection")) {
+			// pour jboss,
+			// result instance de WrappedConnectionJDK6 ou WrappedConnectionJDK5
+			// (attribut "mc" sur classe parente)
+			final Field baseWrapperManagedConnectionField = JdbcWrapperHelper.getAccessibleField(
+					result, "mc");
+			final Object baseWrapperManagedConnection = baseWrapperManagedConnectionField
+					.get(result);
+			final Field connectionField = JdbcWrapperHelper.getAccessibleField(
+					baseWrapperManagedConnection, "con");
+			Connection connection = (Connection) connectionField.get(baseWrapperManagedConnection);
+			if (!isProxyAlready(connection)) {
+				connection = createConnectionProxy(connection);
+				connectionField.set(baseWrapperManagedConnection, connection);
+			}
+		} else if (glassfish && result != null
+				&& "com.sun.gjc.spi.jdbc40.ConnectionHolder40".equals(result.getClass().getName())) {
+			// pour glassfish,
+			// result instance de com.sun.gjc.spi.jdbc40.ConnectionHolder40
+			// (attribut "con" sur classe parente)
+			final Field connectionHolderField = JdbcWrapperHelper.getAccessibleField(result, "con");
+			Connection connection = (Connection) connectionHolderField.get(result);
+			if (!isProxyAlready(connection)) {
+				connection = createConnectionProxy(connection);
+				connectionHolderField.set(result, connection);
+			}
 		}
 	}
 

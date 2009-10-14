@@ -108,7 +108,26 @@ final class JdbcWrapperHelper {
 		return null;
 	}
 
-	static void setFieldAccessible(final Field field) {
+	static Field getAccessibleField(Object object, String fieldName) {
+		assert fieldName != null;
+		Class<?> classe = object.getClass();
+		Field result = null;
+		do {
+			for (final Field field : classe.getDeclaredFields()) {
+				if (fieldName.equals(field.getName())) {
+					result = field;
+					break;
+				}
+			}
+			classe = classe.getSuperclass();
+		} while (result == null && classe != null);
+
+		assert result != null;
+		setFieldAccessible(result);
+		return result;
+	}
+
+	private static void setFieldAccessible(final Field field) {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
 					/** {@inheritDoc} */
 					public Object run() {
