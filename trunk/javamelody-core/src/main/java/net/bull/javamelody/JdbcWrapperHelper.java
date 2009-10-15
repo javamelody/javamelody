@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingException;
@@ -78,33 +79,48 @@ final class JdbcWrapperHelper {
 
 	@SuppressWarnings("all")
 	// CHECKSTYLE:OFF
-	static Object changeTomcatContextWritable(ServletContext servletContext,
-			Object tomcatSecurityToken) throws NoSuchFieldException, ClassNotFoundException,
-			IllegalAccessException {
+	static Object changeContextWritable(ServletContext servletContext, Object securityToken)
+			throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException,
+			NamingException {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
 		assert servletContext != null;
-		if (!servletContext.getServerInfo().contains("Tomcat")
-				|| System.getProperty("jonas.name") != null) {
-			// on n'exécute cette méthode que si c'est tomcat
+		if (servletContext.getServerInfo().contains("Tomcat")
+				&& System.getProperty("jonas.name") == null) {
+			// on n'exécute cela que si c'est tomcat
 			// et si ce n'est pas tomcat dans jonas
+			final Field field = Class.forName("org.apache.naming.ContextAccessController")
+					.getDeclaredField("readOnlyContexts");
+			setFieldAccessible(field);
+			@SuppressWarnings("unchecked")
+			final Hashtable<String, Object> readOnlyContexts = (Hashtable<String, Object>) field
+					.get(null);
+			// contextPath vaut /myapp par exemple
+			final String contextName = "/Catalina/localhost"
+					+ Parameters.getContextPath(servletContext);
+			if (securityToken == null) {
+				// on rend le contexte writable
+				return readOnlyContexts.remove(contextName);
+			}
+			// on remet le contexte not writable comme avant
+			readOnlyContexts.put(contextName, securityToken);
+
+			return null;
+		} else if (servletContext.getServerInfo().contains("jetty")) {
+			// on n'exécute cela que si c'est jetty
+			final Context jdbcContext = (Context) new InitialContext().lookup("java:comp");
+			final Field field = getAccessibleField(jdbcContext, "_env");
+			@SuppressWarnings("unchecked")
+			final Hashtable<Object, Object> env = (Hashtable<Object, Object>) field
+					.get(jdbcContext);
+			if (securityToken == null) {
+				// on rend le contexte writable
+				return env.remove("org.mortbay.jndi.lock");
+			}
+			// on remet le contexte not writable comme avant
+			env.put("org.mortbay.jndi.lock", securityToken);
+
 			return null;
 		}
-		final Field field = Class.forName("org.apache.naming.ContextAccessController")
-				.getDeclaredField("readOnlyContexts");
-		setFieldAccessible(field);
-		@SuppressWarnings("unchecked")
-		final Hashtable<String, Object> readOnlyContexts = (Hashtable<String, Object>) field
-				.get(null);
-		// contextPath vaut /myapp par exemple
-		final String contextName = "/Catalina/localhost"
-				+ Parameters.getContextPath(servletContext);
-		if (tomcatSecurityToken == null) {
-			// on rend le contexte writable
-			return readOnlyContexts.remove(contextName);
-		}
-		// on remet le contexte not writable comme avant
-		readOnlyContexts.put(contextName, tomcatSecurityToken);
-
 		return null;
 	}
 
