@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.Referenceable;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
@@ -306,12 +307,11 @@ class JdbcWrapper {
 				} else if (!isProxyAlready(dataSource)) {
 					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
 					final DataSource dataSourceProxy = createDataSourceProxy(dataSource);
-					final Object tomcatSecurityToken = JdbcWrapperHelper
-							.changeTomcatContextWritable(servletContext, null);
+					final Object securityToken = JdbcWrapperHelper.changeContextWritable(
+							servletContext, null);
 					initialContext.rebind(jndiName, dataSourceProxy);
 					dataSourcesBackup.put(jndiName, dataSource);
-					JdbcWrapperHelper.changeTomcatContextWritable(servletContext,
-							tomcatSecurityToken);
+					JdbcWrapperHelper.changeContextWritable(servletContext, securityToken);
 				}
 			}
 			ok = true;
@@ -373,10 +373,10 @@ class JdbcWrapper {
 			for (final Map.Entry<String, DataSource> entry : dataSourcesBackup.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				final Object tomcatSecurityToken = JdbcWrapperHelper.changeTomcatContextWritable(
+				final Object securityToken = JdbcWrapperHelper.changeContextWritable(
 						servletContext, null);
 				initialContext.rebind(jndiName, dataSource);
-				JdbcWrapperHelper.changeTomcatContextWritable(servletContext, tomcatSecurityToken);
+				JdbcWrapperHelper.changeContextWritable(servletContext, securityToken);
 			}
 			// TODO si jboss, glassfish ou weblogic avec datasource, il faudrait aussi désencapsuler
 			ok = true;
@@ -591,6 +591,9 @@ class JdbcWrapper {
 			interfaces.addAll(superInterfaces);
 			classe = classe.getSuperclass();
 		}
+		// on ignore l'interface javax.naming.Referenceable car sinon le rebind sous jetty appelle
+		// referenceable.getReference() et devient inutile
+		interfaces.remove(Referenceable.class);
 		final Class[] interfacesArray = interfaces.toArray(new Class[interfaces.size()]);
 
 		// ce handler désencapsule les InvocationTargetException des 3 proxy
