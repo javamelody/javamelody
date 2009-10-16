@@ -33,7 +33,7 @@ Java version required for execution:
 	* JDK or JRE from Sun or JRockit from Oracle/BEA
 
 Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
-like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, WebLogic 9, 10 or 11
+like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, Jetty 6, WebLogic 9, 10 or 11
 
 Required dependency: JRobin (LGPL) for evolution charts
 	
