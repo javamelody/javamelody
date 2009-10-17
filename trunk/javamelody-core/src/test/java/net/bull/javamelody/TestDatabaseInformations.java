@@ -32,17 +32,15 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestDatabaseInformations {
-	private static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
-
 	static void initH2() {
 		// nécessite la dépendance vers la base de données H2
 		final Properties info = new Properties();
 		info.put("driver", "org.h2.Driver");
 		try {
-			JdbcDriver.SINGLETON.connect(H2_DATABASE_URL, info);
+			JdbcDriver.SINGLETON.connect(TestJdbcWrapper.H2_DATABASE_URL, info);
 		} catch (final SQLException e) {
 			throw new IllegalStateException(e);
-		} 
+		}
 	}
 
 	/** Test. */
