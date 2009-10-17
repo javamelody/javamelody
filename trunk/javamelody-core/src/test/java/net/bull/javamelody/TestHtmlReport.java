@@ -144,9 +144,9 @@ public class TestHtmlReport {
 	}
 
 	/** Test.
-	 * @throws IOException e */
+	 * @throws Exception e */
 	@Test
-	public void testAllWrite() throws IOException {
+	public void testAllWrite() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.writeRequestAndGraphDetail("httpHitsRate");
@@ -177,6 +177,8 @@ public class TestHtmlReport {
 		final String fileName = ProcessInformations.WINDOWS ? "/tasklist.txt" : "/ps.txt";
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));
+		TestDatabaseInformations.initH2();
+		htmlReport.writeDatabase(new DatabaseInformations(0));
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, Period.JOUR, writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks("test", Period.JOUR, writer);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
