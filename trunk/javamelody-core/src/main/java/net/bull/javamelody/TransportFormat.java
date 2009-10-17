@@ -61,6 +61,8 @@ enum TransportFormat {
 	 */
 	JSON("application/json");
 
+	private static final String NULL_VALUE = "null";
+
 	// classe interne pour qu'elle ne soit pas chargée avec la classe TransportFormat
 	// et qu'ainsi on ne dépende pas de XStream si on ne se sert pas du format xml
 	private static final class XmlIO {
@@ -171,12 +173,18 @@ enum TransportFormat {
 	}
 
 	void writeSerializableTo(Serializable serializable, OutputStream output) throws IOException {
+		final Serializable nonNullSerializable;
+		if (serializable == null) {
+			nonNullSerializable = NULL_VALUE;
+		} else {
+			nonNullSerializable = serializable;
+		}
 		final BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);
 		switch (this) {
 		case SERIALIZED:
 			final ObjectOutputStream out = new ObjectOutputStream(bufferedOutput);
 			try {
-				out.writeObject(serializable);
+				out.writeObject(nonNullSerializable);
 			} finally {
 				out.close();
 			}
@@ -184,10 +192,10 @@ enum TransportFormat {
 		case XML:
 			// Rq : sans xstream et si jdk 1.6, on pourrait sinon utiliser
 			// XMLStreamWriter et XMLStreamReader ou JAXB avec des annotations
-			XmlIO.writeToXml(serializable, bufferedOutput);
+			XmlIO.writeToXml(nonNullSerializable, bufferedOutput);
 			break;
 		case JSON:
-			XmlIO.writeToJson(serializable, bufferedOutput);
+			XmlIO.writeToJson(nonNullSerializable, bufferedOutput);
 			break;
 		default:
 			throw new IllegalStateException(toString());
@@ -216,7 +224,7 @@ enum TransportFormat {
 		default:
 			throw new IllegalStateException(toString());
 		}
-		if ("null".equals(result)) {
+		if (NULL_VALUE.equals(result)) {
 			result = null;
 		}
 		// c'est un Serializable que l'on a écrit
