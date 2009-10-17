@@ -98,6 +98,28 @@ class PdfThreadInformationsReport {
 		//		}
 	}
 
+	void writeDeadlocks() throws DocumentException {
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		for (final ThreadInformations thread : threadInformationsList) {
+			if (thread.isDeadlocked()) {
+				deadlockedThreads.add(thread);
+			}
+		}
+		if (!deadlockedThreads.isEmpty()) {
+			final StringBuilder sb = new StringBuilder();
+			sb.append('\n');
+			sb.append(I18N.getString("Threads_deadlocks"));
+			String separator = " ";
+			for (final ThreadInformations thread : deadlockedThreads) {
+				sb.append(separator);
+				sb.append(thread.getName());
+				separator = ", ";
+			}
+			sb.append('\n');
+			document.add(new Phrase(sb.toString(), PdfDocumentFactory.SEVERE_CELL_FONT));
+		}
+	}
+
 	private void writeHeader() throws DocumentException {
 		final List<String> headers = createHeaders();
 		final int[] relativeWidths = new int[headers.size()];

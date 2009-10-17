@@ -54,6 +54,7 @@ class JavaInformations implements Serializable { // NOPMD
 	// pour éviter la fuite mémoire du bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6434648
 	private static final boolean STACK_TRACES_ENABLED = "1.6.0_01"
 			.compareTo(Parameters.JAVA_VERSION) <= 0;
+	private static final boolean SYNCHRONIZER_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 	private static final boolean SYSTEM_LOAD_AVERAGE_ENABLED = "1.6"
 			.compareTo(Parameters.JAVA_VERSION) < 0;
 	private static final boolean FREE_DISK_SPACE_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
@@ -258,6 +259,7 @@ class JavaInformations implements Serializable { // NOPMD
 
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
 				&& threadBean.isThreadCpuTimeEnabled();
+		final long[] deadlockedThreads = getDeadlockedThreads(threadBean);
 		final List<ThreadInformations> threadInfosList = new ArrayList<ThreadInformations>(threads
 				.size());
 		for (final Thread thread : threads) {
@@ -273,12 +275,27 @@ class JavaInformations implements Serializable { // NOPMD
 				cpuTimeMillis = -1;
 				userTimeMillis = -1;
 			}
+			final boolean deadlocked = deadlockedThreads != null
+					&& Arrays.binarySearch(deadlockedThreads, thread.getId()) >= 0;
 			// stackTraceElementList est une ArrayList et non unmodifiableList pour lisiblité xml
 			threadInfosList.add(new ThreadInformations(thread, stackTraceElementList,
-					cpuTimeMillis, userTimeMillis));
+					cpuTimeMillis, userTimeMillis, deadlocked));
 		}
 		// on retourne ArrayList et non unmodifiableList pour lisibilité du xml par xstream
 		return threadInfosList;
+	}
+
+	private static long[] getDeadlockedThreads(ThreadMXBean threadBean) {
+		final long[] deadlockedThreads;
+		if (SYNCHRONIZER_ENABLED && threadBean.isSynchronizerUsageSupported()) {
+			deadlockedThreads = threadBean.findDeadlockedThreads();
+		} else {
+			deadlockedThreads = threadBean.findMonitorDeadlockedThreads();
+		}
+		if (deadlockedThreads != null) {
+			Arrays.sort(deadlockedThreads);
+		}
+		return deadlockedThreads;
 	}
 
 	private static boolean isEhcacheAvailable() {

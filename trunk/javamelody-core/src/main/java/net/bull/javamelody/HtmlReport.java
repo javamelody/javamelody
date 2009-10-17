@@ -297,10 +297,13 @@ class HtmlReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "threads_" + i;
 			writeShowHideLink(id, "#Details#");
+			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
+					javaInformations.getThreadInformationsList(), javaInformations
+							.isStackTraceEnabled(), writer);
+			htmlThreadInformationsReport.writeDeadlocks();
 			writeln("<br/><br/>");
 			writeln("<div id='" + id + "' style='display: none;'>");
-			new HtmlThreadInformationsReport(javaInformations.getThreadInformationsList(),
-					javaInformations.isStackTraceEnabled(), writer).toHtml();
+			htmlThreadInformationsReport.toHtml();
 			// plus nécessaire, car il y a caches et logos après:
 			//			if (JavaInformations.STACK_TRACES_ENABLED) {
 			//				// pour que les tooltips des stack traces s'affichent dans le scroll
