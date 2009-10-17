@@ -44,7 +44,7 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 		initialContext = new InitialContext();
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws NamingException e */
 	@Test
 	public void test() throws NamingException {

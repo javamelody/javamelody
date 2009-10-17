@@ -164,7 +164,7 @@ public class TestJdbcWrapper {
 	}
 
 	/** Test.
-	 * @throws SQLException e 
+	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
 	public void testRewrapConnection() throws SQLException, IllegalAccessException {
