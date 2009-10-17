@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -33,11 +34,21 @@ import org.junit.Test;
  */
 public class TestMonitoringInterceptor {
 	static class InvokeContext implements InvocationContext {
+		private final boolean throwError;
+
+		InvokeContext(boolean throwError) {
+			super();
+			this.throwError = throwError;
+		}
+
 		public void setParameters(Object[] params) {
 			// rien
 		}
 
 		public Object proceed() throws Exception {
+			if (throwError) {
+				throw new Error("test");
+			}
 			return null;
 		}
 
@@ -74,7 +85,24 @@ public class TestMonitoringInterceptor {
 	 * @throws Exception e */
 	@Test
 	public void testInvoke() throws Exception {
-		new MonitoringInterceptor().intercept(new InvokeContext());
+		final Counter ejbCounter = MonitoringInterceptor.getEjbCounter();
+		ejbCounter.clear();
+		final MonitoringInterceptor interceptor = new MonitoringInterceptor();
+
+		ejbCounter.setDisplayed(false);
+		interceptor.intercept(new InvokeContext(false));
+		assertTrue("requestsCount", ejbCounter.getRequestsCount() == 0);
+
+		ejbCounter.setDisplayed(true);
+		interceptor.intercept(new InvokeContext(false));
+		assertTrue("requestsCount", ejbCounter.getRequestsCount() == 1);
+
+		ejbCounter.clear();
+		try {
+			interceptor.intercept(new InvokeContext(true));
+		} catch (final Error e) {
+			assertTrue("requestsCount", ejbCounter.getRequestsCount() == 1);
+		}
 	}
 
 	/** Test. */
