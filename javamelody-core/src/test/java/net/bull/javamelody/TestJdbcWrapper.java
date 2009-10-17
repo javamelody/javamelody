@@ -41,7 +41,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
-	private static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
+	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;
 
@@ -161,6 +161,17 @@ public class TestJdbcWrapper {
 		} finally {
 			connection.close();
 		}
+	}
+
+	/** Test.
+	 * @throws SQLException e 
+	 * @throws IllegalAccessException e */
+	@Test
+	public void testRewrapConnection() throws SQLException, IllegalAccessException {
+		DriverManager.registerDriver(driver);
+		// nécessite la dépendance vers la base de données H2
+		final Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
+		jdbcWrapper.rewrapConnection(connection);
 	}
 
 	/** Test.
