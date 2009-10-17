@@ -20,6 +20,11 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import javax.interceptor.InvocationContext;
+
 import org.junit.Test;
 
 /**
@@ -27,10 +32,49 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringInterceptor {
+	static class InvokeContext implements InvocationContext {
+		public void setParameters(Object[] params) {
+			// rien
+		}
+
+		public Object proceed() throws Exception {
+			return null;
+		}
+
+		public Object getTarget() {
+			return null;
+		}
+
+		public Object[] getParameters() {
+			return null;
+		}
+
+		public Method getMethod() {
+			try {
+				return TestMonitoringInterceptor.class.getMethod("testInvoke", new Class[0]);
+			} catch (SecurityException e) {
+				throw new IllegalStateException(e);
+			} catch (NoSuchMethodException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+		public Map<String, Object> getContextData() {
+			return null;
+		}
+	}
+
 	/** Test. */
 	@Test
 	public void testNewInstance() {
 		assertNotNull("new MonitoringInterceptor", new MonitoringInterceptor());
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testInvoke() throws Exception {
+		new MonitoringInterceptor().intercept(new InvokeContext());
 	}
 
 	/** Test. */
