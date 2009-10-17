@@ -1,0 +1,39 @@
+	-----
+	Compilation and development of Java Melody : monitoring d'applications Java EE
+	-----
+	Auteur : Emeric Vernat (evernat@free.fr)
+	-----
+	2009-01-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Compilation and development of Java Melody : monitoring d'applications Java EE
+
+	({{{dev_guide_en.html} English }})
+
+* Building from sources
+
+	The zip file available in "Download" contains the java sources with an ant script build.xml and a pom.xml file for maven
+	and contains also the javadoc, the eclipse project, the jar files.
+	If you want to rebuild the development version, you have to do an anonymous checkout from 
+	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (with Eclipse or with TortoiseSVN if Windows)
+
+	You can use the "all" target of the ant script (without maven) to recompile from sources
+	and to build the javamelody.jar and javamelody.war files which are those available in "Download".
+	You must use a JDK 1.6 to compile the sources.
+
+	You can also use the maven goals "clean site" to build a maven site with documentations and reports on analysis of sources
+	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura).
+
+* Development
+
+	The development is done with Eclipse in its latest version and with the jdk 1.6 at least for compilation.
+	
+	The manager of sources is Subversion at
+	
+	{{{http://javamelody.googlecode.com/svn/trunk/}http://javamelody.googlecode.com/svn/trunk/}}
+
+	The charset of files is UTF-8. The Eclipse configuration is supplied in sources with the configuration of
+	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
+	The infinitest eclipse plugin is also recommended.
