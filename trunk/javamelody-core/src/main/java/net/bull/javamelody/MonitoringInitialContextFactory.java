@@ -38,24 +38,24 @@ public class MonitoringInitialContextFactory implements InitialContextFactory {
 	// on sauvegarde la factory initiale
 	// (org.apache.naming.java.javaURLContextFactory dans Tomcat6
 	// avec un scheme "java" tel que défini dans NamingManager.getURLContext)
-	private static final String INITIAL_CONTEXT_FACTORY = System
-			.getProperty(Context.INITIAL_CONTEXT_FACTORY);
+	private static String initialContextFactory;
 
 	// et on la remplace par la nôtre
 	static void init() {
+		initialContextFactory = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, MonitoringInitialContextFactory.class
 				.getName());
 	}
 
 	static void stop() {
 		// on remet l'ancienne valeur
-		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
+		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
 	}
 
 	/** {@inheritDoc} */
 	public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException { // NOPMD
 		try {
-			final Class<?> clazz = Class.forName(INITIAL_CONTEXT_FACTORY);
+			final Class<?> clazz = Class.forName(initialContextFactory);
 			final InitialContextFactory icf = (InitialContextFactory) clazz.newInstance();
 			final Context context = icf.getInitialContext(environment);
 			final JdbcWrapper jdbcWrapper = JdbcDriver.SINGLETON.getJdbcWrapper();
