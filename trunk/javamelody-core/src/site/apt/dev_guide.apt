@@ -38,3 +38,6 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	les sources avec la configuration du formatage de code, du clean-up, des
 	warnings et des plugins checkstyle, pmd, findbugs et lint4j.
 	Le plugin eclipse infinitest est également recommandé.
+
+	Les langages officiels du projet sont le français pour la javadoc mais l'anglais pour les termes techniques.
+	
