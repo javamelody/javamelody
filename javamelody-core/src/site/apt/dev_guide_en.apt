@@ -37,3 +37,5 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	The charset of files is UTF-8. The Eclipse configuration is supplied in sources with the configuration of
 	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
 	The infinitest eclipse plugin is also recommended.
+
+    The official languages of the project is french for javadoc but english for technical terms.
