@@ -48,7 +48,7 @@ class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
 	private static enum Database {
-		POSTGRESQL, MYSQL, ORACLE, DB2;
+		POSTGRESQL, MYSQL, ORACLE, DB2, H2;
 
 		List<String> getRequestNames() {
 			final List<String> tmp;
@@ -71,6 +71,9 @@ class DatabaseInformations implements Serializable {
 			case DB2:
 				tmp = Arrays.asList("current_queries");
 				break;
+			case H2:
+				tmp = Arrays.asList("memory");
+				break;
 			default:
 				throw new IllegalStateException();
 			}
@@ -88,14 +91,10 @@ class DatabaseInformations implements Serializable {
 
 		static Database getDatabaseForConnection(Connection connection) throws SQLException {
 			final String url = connection.getMetaData().getURL();
-			if (url.contains("postgres")) {
-				return POSTGRESQL;
-			} else if (url.contains("mysql")) {
-				return MYSQL;
-			} else if (url.contains("oracle")) {
-				return ORACLE;
-			} else if (url.contains("db2")) {
-				return DB2;
+			for (final Database database : Database.values()) {
+				if (url.contains(database.toString().toLowerCase(Locale.getDefault()))) {
+					return database;
+				}
 			}
 			throw new IllegalArgumentException(I18N.getFormattedString(
 					"type_base_de_donnees_inconnu", url));
