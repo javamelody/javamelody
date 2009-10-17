@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +74,25 @@ class HtmlThreadInformationsReport {
 		writeln("<div align='right'>");
 		writeln("#Temps_threads#");
 		writeln("</div>");
+	}
+
+	void writeDeadlocks() throws IOException {
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		for (final ThreadInformations thread : threadInformationsList) {
+			if (thread.isDeadlocked()) {
+				deadlockedThreads.add(thread);
+			}
+		}
+		if (!deadlockedThreads.isEmpty()) {
+			write("<div class='severe'>#Threads_deadlocks#");
+			String separator = " ";
+			for (final ThreadInformations thread : deadlockedThreads) {
+				writer.write(separator);
+				writer.write(thread.getName());
+				separator = ", ";
+			}
+			write("</div>");
+		}
 	}
 
 	private void writeThreadInformations(ThreadInformations threadInformations) throws IOException {

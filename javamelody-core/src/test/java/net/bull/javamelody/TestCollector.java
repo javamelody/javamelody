@@ -95,7 +95,7 @@ public class TestCollector {
 				fail("toString java vide");
 			}
 			if (new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread.currentThread()
-					.getStackTrace()), 100, 1000).toString().isEmpty()) {
+					.getStackTrace()), 100, 1000, false).toString().isEmpty()) {
 				fail("toString thread vide");
 			}
 			if (new SessionInformations(new SessionTestImpl(true), true).toString().isEmpty()) {

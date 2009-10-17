@@ -45,12 +45,13 @@ class ThreadInformations implements Serializable {
 	private final Thread.State state;
 	private final long cpuTimeMillis;
 	private final long userTimeMillis;
+	private final boolean deadlocked;
 	@SuppressWarnings("all")
 	private final List<StackTraceElement> stackTrace;
 
 	@SuppressWarnings("all")
 	ThreadInformations(Thread thread, List<StackTraceElement> stackTrace, long cpuTimeMillis,
-			long userTimeMillis) {
+			long userTimeMillis, boolean deadlocked) {
 		super();
 		assert thread != null;
 		assert stackTrace == null || stackTrace instanceof Serializable;
@@ -63,6 +64,7 @@ class ThreadInformations implements Serializable {
 		this.stackTrace = stackTrace;
 		this.cpuTimeMillis = cpuTimeMillis;
 		this.userTimeMillis = userTimeMillis;
+		this.deadlocked = deadlocked;
 	}
 
 	static long getCurrentThreadCpuTime() {
@@ -118,6 +120,10 @@ class ThreadInformations implements Serializable {
 
 	long getUserTimeMillis() {
 		return userTimeMillis;
+	}
+
+	boolean isDeadlocked() {
+		return deadlocked;
 	}
 
 	/** {@inheritDoc} */

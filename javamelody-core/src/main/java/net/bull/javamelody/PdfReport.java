@@ -285,10 +285,13 @@ class PdfReport {
 					.getThreadCount(), javaInformations.getPeakThreadCount(), javaInformations
 					.getTotalStartedThreadCount()), normalFont));
 
+			final PdfThreadInformationsReport pdfThreadInformationsReport = new PdfThreadInformationsReport(
+					javaInformations.getThreadInformationsList(), javaInformations
+							.isStackTraceEnabled(), pdfDocumentFactory, document);
+			pdfThreadInformationsReport.writeDeadlocks();
+
 			if (includeDetails) {
-				new PdfThreadInformationsReport(javaInformations.getThreadInformationsList(),
-						javaInformations.isStackTraceEnabled(), pdfDocumentFactory, document)
-						.toPdf();
+				pdfThreadInformationsReport.toPdf();
 			}
 			eol = "\n";
 		}
