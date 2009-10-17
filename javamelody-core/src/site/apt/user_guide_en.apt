@@ -589,22 +589,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</init-param>
 +-------------------------------+
 
-* Development
+* Dependencies
 
-	The development is done with Eclipse in its latest version and with the jdk 1.6 at least for compilation.
-	
-	The manager of sources is Subversion at
-	
-	{{{http://javamelody.googlecode.com/svn/trunk/}http://javamelody.googlecode.com/svn/trunk/}}
-
-	The charset of files is UTF-8. The Eclipse configuration is supplied in sources with the configuration of
-	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
-	The infinitest eclipse plugin is also recommended.
-
-	A Maven2 pom and an ant script are provided to compile and build the jar and the war.
-
-	If you don't have Maven2, the jar files can be found in directories
-	<<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
+	If you don't have Maven2, the jar files can be found in the zip file in "Dowload"
+	inside the directories <<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
 	and <<<javamelody/javamelody-core/src/main/lib>>>
 	
 	If you have Maven2, you can use the dependencies <<<jrobin>>>, <<<itext>>> and if you wish <<<xstream>>>
@@ -655,4 +643,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Values of charts are stored in RRD (Round Robin Database) standard format.
 	Many tools exist for this format like {{{http://oss.oetiker.ch/rrdtool/}RRDtool}},
 	close relative of {{{http://oss.oetiker.ch/mrtg/}MRTG}}, or {{{http://www.jrobin.org/}JRobin}} in Java.
-	
+
+* Compilation and development
+
+	{{{dev_guide_en.html} Developer guide}}

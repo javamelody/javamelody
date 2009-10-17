@@ -608,23 +608,11 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</init-param>
 +-------------------------------+
 
-* Développement
-
-	Le développement se fait avec Eclipse dans sa dernière version et avec le jdk 1.6 au minimum pour la compilation.
+* Dépendances
 	
-	Le gestionnaire de sources est Subversion accessible par
-	
-	{{{http://javamelody.googlecode.com/svn/trunk/}http://javamelody.googlecode.com/svn/trunk/}}
-
-	Le charset des fichiers est UTF-8. La configuration d'Eclipse est fournie dans
-	les sources avec la configuration du formatage de code, du clean-up, des
-	warnings et des plugins checkstyle, pmd, findbugs et lint4j. Le plugin eclipse infinitest est
-	également recommandé.
-
-	Un pom Maven2 est fourni ainsi qu'un script ant pour compiler et construire le jar et le war.
-
-	Si vous n'avez pas Maven2, les fichiers jar peuvent être trouvés avec les sources
-	dans les répertoires <<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
+	Si vous n'avez pas Maven2, les fichiers jar peuvent être trouvés dans le fichier zip,
+	disponible dans la partie "Download, à l'intérieur des répertoires 
+	<<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
 	et <<<javamelody/javamelody-core/src/main/lib>>>
 	
 	Si vous avez Maven2, vous pouvez utiliser les dépendances <<<jrobin>>>, <<<itext>>> et si souhaité <<<xstream>>>
@@ -675,4 +663,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Les valeurs des courbes sont stockées au format standard RRD (Round Robin Database).
 	De nombreux outils existent pour ce format dont {{{http://oss.oetiker.ch/rrdtool/}RRDtool}},
 	proche parent de {{{http://oss.oetiker.ch/mrtg/}MRTG}}, ou {{{http://www.jrobin.org/}JRobin}} en Java.
-	
+
+* Compilation et développement
+
+	{{{dev_guide.html} Guide du dévelopeur}}

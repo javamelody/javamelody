@@ -1,0 +1,40 @@
+	-----
+	Compilation et développement de Java Melody : monitoring d'applications Java EE
+	-----
+	Auteur : Emeric Vernat (evernat@free.fr)
+	-----
+	2009-01-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Compilation et développement de Java Melody : monitoring d'applications Java EE
+
+	({{{dev_guide_en.html} English }})
+
+* Reconstruire à partir des sources
+
+	Le fichier zip dans la partie "Download" contient les sources java avec un script ant build.xml et un fichier pom.xml pour maven
+	ainsi que la javadoc, le projet eclipse, les fichiers jars.
+	Si vous souhaitez recompiler la version en cours de développement, il vous faire un checkout anonyme depuis 
+	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (avec Eclipse ou bien TortoiseSVN si Windows)
+
+	Vous pouvez utiliser le target "all" du script ant (sans maven) pour recompiler à partir des sources
+	et produire les fichiers javamelody.jar et javamelody.war qui sont ceux également disponibles dans la partie "Download".
+	Vous devez utilisez un JDK v1.6 pour compiler les sources.
+
+	Vous pouvez aussi utiliser les goals maven "clean site" pour produire un site maven contenant des documentations
+	et des rapports sur l'analyse du code ou les tests unitaires (checkstyle, findbugs, pmd, cpd, junit, cobertura).
+
+* Développement
+
+	Le développement se fait avec Eclipse dans sa dernière version et avec le jdk 1.6 au minimum pour la compilation.
+	
+	Le gestionnaire de sources est Subversion accessible par
+	
+	{{{http://javamelody.googlecode.com/svn/trunk/}http://javamelody.googlecode.com/svn/trunk/}}
+
+	Le charset des fichiers est UTF-8. La configuration d'Eclipse est fournie dans
+	les sources avec la configuration du formatage de code, du clean-up, des
+	warnings et des plugins checkstyle, pmd, findbugs et lint4j.
+	Le plugin eclipse infinitest est également recommandé.
