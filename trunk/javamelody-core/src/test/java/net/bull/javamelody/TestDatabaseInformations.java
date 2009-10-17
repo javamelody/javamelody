@@ -49,7 +49,7 @@ public class TestDatabaseInformations {
 		initH2();
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws Exception e */
 	@Test
 	public void testDatabaseInformations() throws Exception {
