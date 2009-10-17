@@ -18,9 +18,7 @@
 
 	The development is done with Eclipse in its latest version and with the jdk 1.6 at least for compilation.
 	
-	The manager of sources is Subversion at
-	
-	[http://javamelody.googlecode.com/svn/trunk/]
+	The manager of sources is Subversion at	[http://javamelody.googlecode.com/svn/trunk/]
 
 	The charset of files is UTF-8. The Eclipse configuration is supplied in sources with the configuration of
 	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
