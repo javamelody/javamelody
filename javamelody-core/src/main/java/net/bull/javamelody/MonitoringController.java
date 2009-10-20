@@ -110,8 +110,10 @@ class MonitoringController {
 				// langue préférée du navigateur, getLocale ne peut être null
 				I18N.bindLocale(httpRequest.getLocale());
 				// par sécurité
-				Action.checkSystemActionsEnabled();
 				final Action action = Action.valueOfIgnoreCase(actionParameter);
+				if (action != Action.CLEAR_COUNTER) {
+					Action.checkSystemActionsEnabled();
+				}
 				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 				messageForReport = action.execute(collector, counterName, sessionId);
