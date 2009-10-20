@@ -65,7 +65,7 @@ final class JdbcWrapperHelper {
 					dataSources.put(jndiName, (DataSource) value);
 				}
 			}
-		} else {
+		} else if (!datasourcesParameter.trim().isEmpty()) {
 			for (final String datasource : datasourcesParameter.split(",")) {
 				final String jndiName = datasource.trim();
 				// ici, on n'ajoute pas java:/comp/env
