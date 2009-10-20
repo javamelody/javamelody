@@ -93,7 +93,7 @@
 				<attribute name="Build-Jdk" value="${java.version}" />
 				<section name="javamelody">
 					<attribute name="Implementation-Title" value="Java Melody" />
-					<attribute name="Implementation-Vendor" value="Emeric Vernat, Bull" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
 				</section>
 			</manifest>
 		</jar>
@@ -132,7 +132,7 @@
 				<attribute name="Build-Jdk" value="${java.version}" />
 				<section name="javamelody">
 					<attribute name="Implementation-Title" value="Java Melody" />
-					<attribute name="Implementation-Vendor" value="Emeric Vernat, Bull" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
 				</section>
 			</manifest>
 		</jar>

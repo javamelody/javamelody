@@ -275,7 +275,7 @@
 						<manifestEntries>
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
-							<Implementation-Vendor>Emeric Vernat, Bull</Implementation-Vendor>
+							<Implementation-Vendor>Emeric Vernat</Implementation-Vendor>
 						</manifestEntries>
 					</archive>
 				</configuration>
