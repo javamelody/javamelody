@@ -106,7 +106,6 @@ enum Action {
 				}
 				messageForReport = I18N.getFormattedString("Toutes_statistiques_reinitialisees",
 						counterName);
-
 			} else {
 				// l'action Réinitialiser a été appelée pour un compteur
 				collector.clearCounter(counterName);
