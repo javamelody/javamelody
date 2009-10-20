@@ -77,7 +77,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Si votre serveur d'application est compatible avec l'API Servlet 3.0 (comme tomcat 7 ou glassfish v3),
 	ce paragraphe est inutile, vous pouvez passer de suite au démarrage du serveur dans le paragraphe suivant.
-	Ajouter les lignes suivantes dans le fichier <<<WEB-INF/web.xml>>> du war de la webapp,
+	Sinon ajouter les lignes suivantes dans le fichier <<<WEB-INF/web.xml>>> du war de la webapp,
 	avant la description de votre servlet :
 
 +-------------------------------+
