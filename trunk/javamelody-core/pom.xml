@@ -221,7 +221,9 @@
 	<distributionManagement>
 		<!--
 			"mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn,
-			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit
+			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy"
+			suffit, https://maven2-repository.dev.java.net/
+			http://wiki.hudson-ci.org/display/HUDSON/Hosting+Plugins
 		-->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
