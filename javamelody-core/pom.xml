@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.8.1-SNAPSHOT</version>
+	<version>1.8.1</version>
 	<packaging>jar</packaging>
 	<name>Java Melody</name>
 	<description>Monitoring d'applications java EE</description>
@@ -219,6 +219,10 @@
 	</repositories>
 
 	<distributionManagement>
+		<!--
+			"mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn,
+			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit
+		-->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>java.net-m2-repository</id>
