@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.8.0</version>
+	<version>1.8.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Java Melody</name>
 	<description>Monitoring d'applications java EE</description>
@@ -14,6 +14,7 @@
 		<license>
 			<name>LGPL</name>
 			<url>LICENSE</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
 	<issueManagement>
@@ -128,8 +129,10 @@
 			<version>6.0.18</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Dépendance optionnelle spring aop
-		     (qui inclus spring core, spring beans, aop alliance et commons-logging) -->
+		<!--
+			Dépendance optionnelle spring aop (qui inclus spring core, spring
+			beans, aop alliance et commons-logging)
+		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -208,12 +211,42 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>java.net-m2-repository</id>
+			<!--
+				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url
+			-->
+			<url>java-net:/maven2-repository/trunk/repository/</url>
+		</repository>
+		<snapshotRepository>
+			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
+			<id>local</id>
+			<url>file:.</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<!-- For some reason RELEASE doesn't work in Netbeans -->
+				<version>1.9</version>
+			</extension>
+		</extensions>
 		<!--
 			/!\ Maven >= 3.0 :
 			http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
