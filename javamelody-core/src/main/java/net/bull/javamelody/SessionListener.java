@@ -53,6 +53,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	@SuppressWarnings("all")
 	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<String, HttpSession>();
 
+	private static boolean enabled;
+
 	static final class SessionInformationsComparator implements Comparator<SessionInformations>,
 			Serializable {
 		private static final long serialVersionUID = 1L;
@@ -67,6 +69,22 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 				return 0;
 			}
 		}
+	}
+
+	/**
+	 * Constructeur.
+	 */
+	public SessionListener() {
+		super();
+		setEnabled(true);
+	}
+
+	static boolean isEnabled() {
+		return enabled;
+	}
+
+	private static void setEnabled(boolean newEnabled) {
+		enabled = newEnabled;
 	}
 
 	static int getSessionCount() {

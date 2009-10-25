@@ -258,6 +258,14 @@ final class Parameters {
 	}
 
 	/**
+	 * Booléen selon que le paramètre no-database vaut true.
+	 * @return boolean
+	 */
+	static boolean isNoDatabase() {
+		return Boolean.parseBoolean(Parameters.getParameter(Parameter.NO_DATABASE));
+	}
+
+	/**
 	 * @return Nom de l'application courante et nom du sous-répertoire de stockage dans une application monitorée.
 	 */
 	static String getCurrentApplication() {

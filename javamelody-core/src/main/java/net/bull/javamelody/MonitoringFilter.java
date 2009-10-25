@@ -107,6 +107,7 @@ public class MonitoringFilter implements Filter {
 			MonitoringInitialContextFactory.init();
 		}
 
+		final boolean noDatabase = Parameters.isNoDatabase();
 		final JdbcWrapper jdbcWrapper = JdbcDriver.SINGLETON.getJdbcWrapper();
 		// si l'application a utilisé JdbcDriver avant d'initialiser ce filtre
 		// (par exemple dans un listener de contexte), on doit récupérer son sqlCounter
@@ -115,7 +116,9 @@ public class MonitoringFilter implements Filter {
 		final Counter sqlCounter = jdbcWrapper.getSqlCounter();
 		// sqlCounter dans JdbcWrapper peut être alimenté soit par une datasource soit par un driver
 		jdbcWrapper.initServletContext(config.getServletContext());
-		jdbcWrapper.rebindDataSources();
+		if (!noDatabase) {
+			jdbcWrapper.rebindDataSources();
+		}
 
 		// liaison des compteurs : les contextes par thread du sqlCounter ont pour parent le httpCounter
 		this.httpCounter = new Counter("http", "dbweb.png", sqlCounter);
@@ -137,7 +140,7 @@ public class MonitoringFilter implements Filter {
 		if (displayedCounters == null) {
 			// par défaut, tous les compteurs sont affichés sauf ejb
 			httpCounter.setDisplayed(true);
-			sqlCounter.setDisplayed(true);
+			sqlCounter.setDisplayed(!noDatabase);
 			errorCounter.setDisplayed(true);
 			logCounter.setDisplayed(true);
 			ejbCounter.setDisplayed(false);

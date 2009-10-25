@@ -57,6 +57,7 @@ final class Collector {
 	private long cpuTimeMillis;
 	private long gcTimeMillis;
 	private long lastCollectDuration;
+	private final boolean noDatabase = Parameters.isNoDatabase();
 
 	/**
 	 * Constructeur.
@@ -204,8 +205,10 @@ final class Collector {
 
 	private void collect(List<JavaInformations> javaInformationsList) throws IOException {
 		synchronized (this) {
-			collectJavaInformations(javaInformationsList);
-
+			// si pas d'informations, on ne met pas 0 : on ne met rien
+			if (!javaInformationsList.isEmpty()) {
+				collectJavaInformations(javaInformationsList);
+			}
 			for (final Counter counter : counters) {
 				// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
 				// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
@@ -221,10 +224,6 @@ final class Collector {
 
 	private void collectJavaInformations(List<JavaInformations> javaInformationsList)
 			throws IOException {
-		if (javaInformationsList.isEmpty()) {
-			// si pas d'informations, on ne met pas 0 : on ne met rien
-			return;
-		}
 		long usedMemory = 0;
 		long processesCpuTimeMillis = 0;
 		long garbageCollectionTimeMillis = 0;
@@ -238,7 +237,9 @@ final class Collector {
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			usedMemory += javaInformations.getMemoryInformations().getUsedMemory();
-			sessionCount += javaInformations.getSessionCount();
+			if (javaInformations.getSessionCount() >= 0) {
+				sessionCount += javaInformations.getSessionCount();
+			}
 			activeThreadCount += javaInformations.getActiveThreadCount();
 			activeConnectionCount += javaInformations.getActiveConnectionCount();
 			usedConnectionCount += javaInformations.getUsedConnectionCount();
@@ -272,13 +273,14 @@ final class Collector {
 		// collecte de la mémoire java
 		getCounterJRobin("usedMemory").addValue(usedMemory);
 
-		if (availableProcessors == 0) {
-			availableProcessors = 1; // il y a au moins 1 coeur
-		}
+		// il y a au moins 1 coeur
+		availableProcessors = Math.max(availableProcessors, 1);
 		// collecte du pourcentage d'utilisation cpu
 		collectCpu(processesCpuTimeMillis, availableProcessors);
 		// collecte du nombre de sessions http
-		getCounterJRobin("httpSessions").addValue(sessionCount);
+		if (sessionCount >= 0) {
+			getCounterJRobin("httpSessions").addValue(sessionCount);
+		}
 		// collecte de la charge système, du pourcentage de temps en ramasse-miette et des descripteurs de fichiers
 		collectForNix(systemLoadAverage, garbageCollectionTimeMillis, availableProcessors,
 				unixOpenFileDescriptorCount);
@@ -286,8 +288,10 @@ final class Collector {
 		// collecte du nombre de threads actifs (requêtes http en cours), du nombre de connexions jdbc actives
 		// et du nombre de connexions jdbc ouvertes
 		getCounterJRobin("activeThreads").addValue(activeThreadCount);
-		getCounterJRobin("activeConnections").addValue(activeConnectionCount);
-		getCounterJRobin("usedConnections").addValue(usedConnectionCount);
+		if (!noDatabase) {
+			getCounterJRobin("activeConnections").addValue(activeConnectionCount);
+			getCounterJRobin("usedConnections").addValue(usedConnectionCount);
+		}
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
