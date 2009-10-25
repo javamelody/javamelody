@@ -104,6 +104,11 @@ public class TestHtmlReport {
 				Period.TOUT, writer);
 		htmlReport.toHtml("message 2");
 		assertNotEmptyAndClear(writer);
+
+		setProperty(Parameter.NO_DATABASE, "true");
+		collector.collectWithoutErrors(javaInformationsList);
+		htmlReport.toHtml("message 2");
+		assertNotEmptyAndClear(writer);
 	}
 
 	/** Test.
