@@ -38,6 +38,7 @@ class HtmlJavaInformationsReport {
 			/ (FULL_BLOCKS * PARTIAL_BLOCKS);
 	private static int uniqueByPageSequence;
 
+	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final List<JavaInformations> javaInformationsList;
@@ -60,13 +61,20 @@ class HtmlJavaInformationsReport {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			writeSummary(javaInformations);
 		}
+		// sinon le tableau est décalé
+		if (!noDatabase) {
+			write("<br/><br/>");
+		}
+		if (!javaInformationsList.isEmpty() && javaInformationsList.get(0).getSessionCount() >= 0) {
+			write("<br/>");
+		}
 		if (!javaInformationsList.isEmpty()
 				&& javaInformationsList.get(0).getSystemLoadAverage() >= 0) {
 			// sinon le tableau est décalé vers la droite sous unix
 			write("<br/>");
 		}
 		// pour l'alignement le nb de br doit correspondre au nb de lignes dans le résumé ci-dessus
-		writeln("<br/><br/><br/><br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeShowHideLink("detailsJava", "#Details#");
 		writeln("<br/><br/>");
 		writeln("<div id='detailsJava' style='display: none;'>");
@@ -91,26 +99,30 @@ class HtmlJavaInformationsReport {
 				+ " #Mo#&nbsp;&nbsp;&nbsp;</td><td>");
 		writeln(toBar(100d * usedMemory / maxMemory));
 		writeln(lineEnd);
-		write("<tr><td>#nb_sessions_http#: </td><td>");
-		writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
-		writeln(columnAndLineEnd);
+		if (javaInformations.getSessionCount() >= 0) {
+			write("<tr><td>#nb_sessions_http#: </td><td>");
+			writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
+			writeln(columnAndLineEnd);
+		}
 		write("<tr><td>#nb_threads_actifs#<br/>(#Requetes_http_en_cours#): </td><td>");
 		writeGraph("activeThreads", integerFormat.format(javaInformations.getActiveThreadCount()));
 		writeln(columnAndLineEnd);
-		write("<tr><td>#nb_connexions_actives#: </td><td>");
-		writeGraph("activeConnections", integerFormat.format(javaInformations
-				.getActiveConnectionCount()));
-		writeln(columnAndLineEnd);
-		final int usedConnectionCount = javaInformations.getUsedConnectionCount();
-		final int maxConnectionCount = javaInformations.getMaxConnectionCount();
-		write("<tr><td>#nb_connexions_utilisees#<br/>(#ouvertes#): </td><td>");
-		writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
-		if (maxConnectionCount >= 0) {
-			writeln(" / " + integerFormat.format(maxConnectionCount)
-					+ "&nbsp;&nbsp;&nbsp;</td><td>");
-			writeln(toBar(100d * usedConnectionCount / maxConnectionCount));
+		if (!noDatabase) {
+			write("<tr><td>#nb_connexions_actives#: </td><td>");
+			writeGraph("activeConnections", integerFormat.format(javaInformations
+					.getActiveConnectionCount()));
+			writeln(columnAndLineEnd);
+			final int usedConnectionCount = javaInformations.getUsedConnectionCount();
+			final int maxConnectionCount = javaInformations.getMaxConnectionCount();
+			write("<tr><td>#nb_connexions_utilisees#<br/>(#ouvertes#): </td><td>");
+			writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
+			if (maxConnectionCount >= 0) {
+				writeln(" / " + integerFormat.format(maxConnectionCount)
+						+ "&nbsp;&nbsp;&nbsp;</td><td>");
+				writeln(toBar(100d * usedConnectionCount / maxConnectionCount));
+			}
+			writeln(lineEnd);
 		}
-		writeln(lineEnd);
 		if (javaInformations.getSystemLoadAverage() >= 0) {
 			write("<tr><td>#Charge_systeme#</td><td>");
 			writeGraph("systemLoad", decimalFormat.format(javaInformations.getSystemLoadAverage()));
@@ -163,7 +175,7 @@ class HtmlJavaInformationsReport {
 					+ " #Mo# " + columnEnd);
 		}
 
-		if (javaInformations.getDataBaseVersion() != null) {
+		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
 			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>"
 					+ replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
 							"&amp;") + columnEnd);

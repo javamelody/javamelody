@@ -100,9 +100,16 @@ public enum Parameter {
 	LOG_TRANSFORM_PATTERN("log-transform-pattern"),
 
 	/**
-	 * Compteurs affichés: mettre "http,sql,ejb" pour afficher les ejb3 ("http,sql" par défaut).
+	 * Compteurs affichés: mettre "http,sql,error,log,ejb" pour afficher les ejb3
+	 * ou "http,sql,error,log,spring" pour afficher les beans spring ("http,sql,error,log" par défaut).
 	 */
 	DISPLAYED_COUNTERS("displayed-counters"),
+
+	/**
+	 * Paramètre pour désactiver les graphiques jdbc, le compteur sql et le monitoring de base de
+	 * données ("false" par défaut).
+	 */
+	NO_DATABASE("no-database"),
 
 	/**
 	 * Active les actions Ramasse-miettes, Invalidation sessions et Heap-dump (false par défaut).

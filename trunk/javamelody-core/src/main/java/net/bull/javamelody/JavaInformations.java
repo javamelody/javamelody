@@ -124,7 +124,11 @@ class JavaInformations implements Serializable { // NOPMD
 		// CHECKSTYLE:ON
 		super();
 		memoryInformations = new MemoryInformations();
-		sessionCount = SessionListener.getSessionCount();
+		if (SessionListener.isEnabled()) {
+			sessionCount = SessionListener.getSessionCount();
+		} else {
+			sessionCount = -1;
+		}
 		activeThreadCount = JdbcWrapper.getActiveThreadCount();
 		usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		activeConnectionCount = JdbcWrapper.getActiveConnectionCount();

@@ -315,13 +315,18 @@ class HtmlReport {
 	}
 
 	private boolean isDatabaseEnabled() {
-		return !javaInformationsList.isEmpty()
+		return !Parameters.isNoDatabase() && !javaInformationsList.isEmpty()
 				&& javaInformationsList.get(0).getDataBaseVersion() != null
 				&& !javaInformationsList.get(0).getDataBaseVersion().contains("Exception");
 	}
 
 	private boolean doesWebXmlExists() {
 		return !javaInformationsList.isEmpty() && javaInformationsList.get(0).doesWebXmlExists();
+	}
+
+	private boolean isSessionsEnabled() {
+		return !javaInformationsList.isEmpty()
+				&& javaInformationsList.get(0).getSessionCount() >= 0;
 	}
 
 	private boolean isCacheEnabled() {
@@ -395,13 +400,15 @@ class HtmlReport {
 			writeln("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 			writeln(separator);
 		}
-		writeln("<a href='?action=invalidate_sessions" + periodParameter
-				+ "' onclick=\"javascript:return confirm('"
-				+ I18N.getStringForJavascript("confirm_invalidate_sessions") + "');\">");
-		writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
-		writeln(separator);
-		writeln("<a href='?part=sessions" + periodParameter + "'>");
-		writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
+		if (isSessionsEnabled()) {
+			writeln("<a href='?action=invalidate_sessions" + periodParameter
+					+ "' onclick=\"javascript:return confirm('"
+					+ I18N.getStringForJavascript("confirm_invalidate_sessions") + "');\">");
+			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
+			writeln(separator);
+			writeln("<a href='?part=sessions" + periodParameter + "'>");
+			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
+		}
 		writeln("<br />");
 		if (collectorServer || VirtualMachine.isEnabled()) {
 			writeln(separator);
