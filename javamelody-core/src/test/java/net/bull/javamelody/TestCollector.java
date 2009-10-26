@@ -154,8 +154,8 @@ public class TestCollector {
 	public void testCollectWithoutErrors() throws IOException {
 		try {
 			final Counter counter = createCounter();
-			final Collector collector = new Collector("test remove", Collections
-					.singletonList(counter), timer);
+			final Collector collector = new Collector("test", Collections.singletonList(counter),
+					timer);
 			if (collector.getCounters().size() == 0) {
 				fail("getCounters");
 			}

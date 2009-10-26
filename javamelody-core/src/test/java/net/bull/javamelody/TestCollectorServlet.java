@@ -102,21 +102,29 @@ public class TestCollectorServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoGet() throws ServletException, IOException {
-		doGet(false);
+		doGet("a", null);
 		setUp();
-		doGet(true);
+		doGet(null, null);
+		setUp();
+		doGet(".*", null);
+		setUp();
+		doGet(null, "test");
+		// TODO tester les cookies dans getApplication
 	}
 
-	private void doGet(boolean allowed) throws IOException, ServletException {
+	private void doGet(String pattern, String application) throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final StringWriter stringWriter = new StringWriter();
 		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
-		if (!allowed) {
+		if (application != null) {
+			expect(request.getParameter("application")).andReturn(application).anyTimes();
+		}
+		if (pattern != null) {
 			expect(
 					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("none")
+							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(pattern)
 					.anyTimes();
 			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
 		}
@@ -131,9 +139,6 @@ public class TestCollectorServlet {
 		verify(context);
 		verify(request);
 		verify(response);
-		if (allowed) {
-			assertTrue("result", stringWriter.getBuffer().length() != 0);
-		}
 	}
 
 	/** Test.
@@ -144,6 +149,8 @@ public class TestCollectorServlet {
 		doPost(null, null, false);
 		setUp();
 		doPost(null, null, true);
+		setUp();
+		doPost("test", null, true);
 		setUp();
 		doPost("test", "http://localhost:8090/test", true);
 		setUp();
