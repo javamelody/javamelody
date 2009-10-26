@@ -51,8 +51,7 @@ class CounterStorage {
 	 * @throws IOException Exception d'entrée/sortie
 	 */
 	void writeToFile() throws IOException {
-		final File file = new File(Parameters.getStorageDirectory(counter.getApplication()),
-				counter.getStorageName() + ".ser.gz");
+		final File file = getFile();
 		if (counter.getRequestsCount() == 0 && counter.getErrorsCount() == 0 && !file.exists()) {
 			// s'il n'y a pas de requête, inutile d'écrire des fichiers de compteurs vides
 			// (par exemple pour le compteur ejb s'il n'y a pas d'ejb)
@@ -84,8 +83,7 @@ class CounterStorage {
 	 * @throws IOException e
 	 */
 	Counter readFromFile() throws IOException {
-		final File file = new File(Parameters.getStorageDirectory(counter.getApplication()),
-				counter.getStorageName() + ".ser.gz");
+		final File file = getFile();
 		if (file.exists()) {
 			final FileInputStream in = new FileInputStream(file);
 			try {
@@ -106,6 +104,11 @@ class CounterStorage {
 		}
 		// ou on retourne null si le fichier n'existe pas
 		return null;
+	}
+
+	private File getFile() {
+		final File storageDirectory = Parameters.getStorageDirectory(counter.getApplication());
+		return new File(storageDirectory, counter.getStorageName() + ".ser.gz");
 	}
 
 	private static IOException createIOException(Exception e) {
