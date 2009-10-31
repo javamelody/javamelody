@@ -38,6 +38,7 @@ class CacheInformations implements Serializable {
 	private static final long serialVersionUID = -3025833425994923286L;
 	private static final boolean EHCACHE_1_6 = isEhcache16();
 	private static final boolean EHCACHE_1_2 = isEhcache12();
+	private static final boolean EHCACHE_1_2_X = isEhcache12x();
 	private final String name;
 	private final long inMemoryObjectCount;
 	private final long onDiskObjectCount;
@@ -72,12 +73,19 @@ class CacheInformations implements Serializable {
 		long tmpCacheHits;
 		long tmpCacheMisses;
 		String tmpConfiguration;
-		if (EHCACHE_1_2) {
-			// getInMemoryHits, getCacheHits et getCacheMisses existent en echache 1.2 mais pas avec la même signature
+		if (EHCACHE_1_2_X) {
+			// getInMemoryHits, getCacheHits et getCacheMisses n'existent pas en echache v1.2
+			// mais existent en v1.2.1 et v1.2.3 (présent dans hibernate v?) mais avec int comme résultat
+			// et existent depuis v1.2.4 mais avec long comme résultat
 			tmpInMemoryHits = invokeStatisticsMethod(statistics, "getInMemoryHits");
 			tmpCacheHits = invokeStatisticsMethod(statistics, "getCacheHits");
 			tmpCacheMisses = invokeStatisticsMethod(statistics, "getCacheMisses");
 			// getCacheConfiguration et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
+			tmpConfiguration = null;
+		} else if (EHCACHE_1_2) {
+			tmpInMemoryHits = -1;
+			tmpCacheHits = -1;
+			tmpCacheMisses = -1;
 			tmpConfiguration = null;
 		} else {
 			tmpInMemoryHits = statistics.getInMemoryHits();
@@ -93,8 +101,11 @@ class CacheInformations implements Serializable {
 
 	private static long invokeStatisticsMethod(Statistics statistics, String methodName) {
 		try {
-			final Integer result = (Integer) Statistics.class.getMethod(methodName,
-					(Class<?>[]) null).invoke(statistics, (Object[]) null);
+			// getInMemoryHits, getCacheHits et getCacheMisses existent en v1.2.1 et v1.2.3
+			// mais avec int comme résultat et existent depuis v1.2.4 avec long comme résultat
+			// donc on cast en Number et non en Integer ou en Long
+			final Number result = (Number) Statistics.class
+					.getMethod(methodName, (Class<?>[]) null).invoke(statistics, (Object[]) null);
 			return result.longValue();
 		} catch (final NoSuchMethodException e) {
 			throw new IllegalArgumentException(e);
@@ -122,6 +133,16 @@ class CacheInformations implements Serializable {
 			return false;
 		} catch (final NoSuchMethodException e) {
 			return true;
+		}
+	}
+
+	private static boolean isEhcache12x() {
+		try {
+			// Statistics existe à partir d'ehcache 1.2.1
+			Class.forName("net.sf.ehcache.Statistics");
+			return isEhcache12();
+		} catch (final ClassNotFoundException e) {
+			return false;
 		}
 	}
 
