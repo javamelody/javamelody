@@ -1,0 +1,537 @@
+/*
+ * Copyright 2008-2009 by Emeric Vernat, Bull
+ *
+ *     This file is part of Java Melody.
+ *
+ * Java Melody is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Java Melody is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package net.bull.javamelody;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Partie du rapport html pour un compteur.
+ * @author Emeric Vernat
+ */
+class HtmlCounterReport {
+	private final Counter counter;
+	private final Period period;
+	private final Writer writer;
+	private final CounterRequestAggregation counterRequestAggregation;
+	private final HtmlCounterRequestGraphReport htmlCounterRequestGraphReport;
+	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
+	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
+
+	static class HtmlCounterRequestGraphReport {
+		private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
+		private static final String SCRIPT_END = "</script>";
+		private static int uniqueByPageAndGraphSequence;
+		private final Period period;
+		private final Writer writer;
+		private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
+		private final DecimalFormat nbExecutionsFormat = I18N.createPercentFormat();
+		private final DecimalFormat integerFormat = I18N.createIntegerFormat();
+		private List<Counter> counters;
+		private Map<String, CounterRequest> requestsById;
+
+		HtmlCounterRequestGraphReport(Period period, Writer writer) {
+			super();
+			assert period != null;
+			assert writer != null;
+			this.period = period;
+			this.writer = writer;
+		}
+
+		void writeRequestGraph(String requestId, String requestName) throws IOException {
+			uniqueByPageAndGraphSequence++;
+			// la classe tooltip est configurée dans la css de HtmlReport
+			write("<a class='tooltip' href='?part=graph&amp;graph=");
+			write(requestId);
+			write("&amp;period=");
+			write(period.getCode());
+			write("'");
+			// ce onmouseover sert à charger les graphs par requête un par un et à la demande
+			// sans les charger tous au chargement de la page.
+			// le onmouseover se désactive après chargement pour ne pas recharger une image déjà chargée
+			write(" onmouseover=\"document.getElementById('");
+			final String id = "id" + uniqueByPageAndGraphSequence;
+			write(id);
+			write("').src='?graph=");
+			write(requestId);
+			write("&amp;period=");
+			write(period.getCode());
+			write("&amp;width=100&amp;height=50'; this.onmouseover=null;\" >");
+			// avant mouseover on prend une image qui sera mise en cache
+			write("<em><img src='?resource=db.png' id='");
+			write(id);
+			write("' alt='graph'/></em>");
+			// writer.write pour ne pas gérer de traductions si le nom contient '#'
+			writer.write(htmlEncode(requestName));
+			write("</a>");
+		}
+
+		void writeRequestAndGraphDetail(Collector collector, String graphName) throws IOException {
+			counters = collector.getPeriodCountersToBeDisplayed(period);
+			requestsById = new HashMap<String, CounterRequest>();
+			for (final Counter counter : counters) {
+				for (final CounterRequest request : counter.getRequests()) {
+					requestsById.put(request.getId(), request);
+				}
+			}
+			final CounterRequest request = requestsById.get(graphName);
+			if (request != null) {
+				writeRequest(request);
+			}
+
+			writeln("<div id='track'>");
+			writeln("<div class='selected' id='handle'>");
+			writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
+			writeln("</div></div>");
+
+			writeln("<div align='center'><img class='synthèse' id='img' src='"
+					+ "?width=960&amp;height=400&amp;graph=" + graphName + "&amp;" + "period="
+					+ period.getCode() + "' alt='zoom'/></div>");
+
+			if (request != null && request.getStackTrace() != null) {
+				writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
+				// writer.write pour ne pas gérer de traductions si la stack-trace contient '#'
+				writer.write(htmlEncode(request.getStackTrace()).replaceAll("\t",
+						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+				writeln("</font></blockquote></blockquote>");
+			}
+
+			writeGraphDetailScript(graphName);
+		}
+
+		private void writeRequest(CounterRequest request) throws IOException {
+			final Map<String, Long> childRequests = request.getChildRequestsExecutionsByRequestId();
+			writeln("<br/>");
+			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Drill_down#'>");
+			writeln("<thead><tr><th>#Requete#</th>");
+			final boolean hasChildren = childRequests != null && !childRequests.isEmpty();
+			if (hasChildren) {
+				writeln("<th class='sorttable_numeric'>#Hits_par_requete#</th>");
+			}
+			writeln("<th class='sorttable_numeric'>#Temps_moyen#</th><th class='sorttable_numeric'>#Temps_max#</th>");
+			writeln("<th class='sorttable_numeric'>#Ecart_type#</th><th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
+			writeln("<th class='sorttable_numeric'>#erreur_systeme#</th>");
+			final Counter parentCounter = getCounterByRequestId(request.getId());
+			if (parentCounter != null && parentCounter.getChildCounterName() != null) {
+				final String childCounterName = parentCounter.getChildCounterName();
+				writeln("<th class='sorttable_numeric'>"
+						+ I18N.getFormattedString("hits_fils_moyens", childCounterName));
+				writeln("</th><th class='sorttable_numeric'>"
+						+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
+			}
+			writeln("</tr></thead><tbody>");
+			writeln("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+			writeln("<td>");
+			writeCounterIcon(request);
+			writer.write(htmlEncode(request.getName()));
+			if (hasChildren) {
+				writeln("</td><td>&nbsp;");
+			}
+			writeRequestValues(request);
+			writeln("</td></tr>");
+
+			if (hasChildren) {
+				writeChildRequests(request, childRequests);
+			}
+			writeln("</tbody></table>");
+			writeln("<br/>");
+		}
+
+		private void writeChildRequests(CounterRequest request, Map<String, Long> childRequests)
+				throws IOException {
+			boolean odd = true;
+			for (final Map.Entry<String, Long> entry : childRequests.entrySet()) {
+				final CounterRequest childRequest = requestsById.get(entry.getKey());
+				if (childRequest != null) {
+					if (odd) {
+						writeln("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+					} else {
+						writeln("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+					}
+					odd = !odd; // NOPMD
+					final Long nbExecutions = entry.getValue();
+					final float executionsByRequest = (float) nbExecutions / request.getHits();
+					writeChildRequest(childRequest, executionsByRequest);
+					writeln("</tr>");
+				}
+			}
+		}
+
+		private void writeChildRequest(CounterRequest childRequest, float executionsByRequest)
+				throws IOException {
+			writeln("<td>");
+			writeln("<div style='margin-left: 10px;'>");
+			writeCounterIcon(childRequest);
+			writeRequestGraph(childRequest.getId(), childRequest.getName());
+			writeln("</div>");
+			writeln("</td><td align='right'>");
+			writer.write(nbExecutionsFormat.format(executionsByRequest));
+			writeRequestValues(childRequest);
+			writeln("</td>");
+		}
+
+		private void writeRequestValues(CounterRequest request) throws IOException {
+			final String nextColumn = "</td><td align='right'>";
+			writeln(nextColumn);
+			writeln(integerFormat.format(request.getMean()));
+			writeln(nextColumn);
+			writeln(integerFormat.format(request.getMaximum()));
+			writeln(nextColumn);
+			writeln(integerFormat.format(request.getStandardDeviation()));
+			writeln(nextColumn);
+			if (request.getCpuTimeMean() >= 0) {
+				writeln(systemErrorFormat.format(request.getCpuTimeMean()));
+			}
+			writeln(nextColumn);
+			writeln(systemErrorFormat.format(request.getSystemErrorPercentage()));
+			writeln(nextColumn);
+			final boolean childHitsDisplayed = request.getChildHitsMean() > 0;
+			if (childHitsDisplayed) {
+				writeln(systemErrorFormat.format(request.getChildHitsMean()));
+			}
+			writeln(nextColumn);
+			if (childHitsDisplayed) {
+				writeln(systemErrorFormat.format(request.getChildDurationsMean()));
+			}
+		}
+
+		private void writeCounterIcon(CounterRequest request) throws IOException {
+			final Counter parentCounter = getCounterByRequestId(request.getId());
+			if (parentCounter != null && parentCounter.getIconName() != null) {
+				writeln("<img src='?resource=" + parentCounter.getIconName() + "' alt='"
+						+ parentCounter.getName() + "' width='16' height='16' />&nbsp;");
+			}
+		}
+
+		private void writeGraphDetailScript(String graphName) throws IOException {
+			writeln(SCRIPT_BEGIN);
+			writeln("function scaleImage(v, min, max) {");
+			writeln("    var images = document.getElementsByClassName('synthèse');");
+			writeln("    w = (max - min) * v + min;");
+			writeln("    for (i = 0; i < images.length; i++) {");
+			writeln("        images[i].style.width = w + 'px';");
+			writeln("    }");
+			writeln("}");
+
+			// 'animate' our slider
+			writeln("var slider = new Control.Slider('handle', 'track', {axis:'horizontal', alignX: 0, increment: 2});");
+
+			// resize the image as the slider moves. The image quality would deteriorate, but it
+			// would not be final anyway. Once slider is released the image is re-requested from the server, where
+			// it is rebuilt from vector format
+			writeln("slider.options.onSlide = function(value) {");
+			writeln("  scaleImage(value, initialWidth, initialWidth / 2 * 3);");
+			writeln("}");
+
+			// this is where the slider is released and the image is reloaded
+			// we use current style settings to work the required image dimensions
+			writeln("slider.options.onChange = function(value) {");
+			// chop off "px" and round up float values
+			writeln("  width = Math.round(Element.getStyle('img','width').replace('px','')) - 80;");
+			writeln("  height = Math.round(width * initialHeight / initialWidth) - 48;");
+			// reload the images
+			// rq : on utilise des caractères unicode pour éviter des warnings
+			writeln("  document.getElementById('img').src = '?graph=" + graphName
+					+ "\\u0026period=" + period.getCode()
+					+ "\\u0026width=' + width + '\\u0026height=' + height;");
+			writeln("  document.getElementById('img').style.width = '';");
+			writeln("}");
+			writeln("window.onload = function() {");
+			writeln("  if (navigator.appName == 'Microsoft Internet Explorer') {");
+			writeln("    initialWidth = document.getElementById('img').width;");
+			writeln("    initialHeight = document.getElementById('img').height;");
+			writeln("  } else {");
+			writeln("    initialWidth = Math.round(Element.getStyle('img','width').replace('px',''));");
+			writeln("    initialHeight = Math.round(Element.getStyle('img','height').replace('px',''));");
+			writeln("  }");
+			writeln("}");
+			writeln(SCRIPT_END);
+		}
+
+		private Counter getCounterByRequestId(String requestId) {
+			for (final Counter counter : counters) {
+				// cela marche car requestId commence par counter.getName() selon CounterRequest.buildId
+				if (requestId.startsWith(counter.getName())) {
+					return counter;
+				}
+			}
+			return null;
+		}
+
+		private static String htmlEncode(String text) {
+			return I18N.htmlEncode(text, false);
+		}
+
+		private void write(String html) throws IOException {
+			I18N.writeTo(html, writer);
+		}
+
+		private void writeln(String html) throws IOException {
+			I18N.writelnTo(html, writer);
+		}
+	}
+
+	HtmlCounterReport(Counter counter, Period period, Writer writer) {
+		super();
+		assert counter != null;
+		assert period != null;
+		assert writer != null;
+		this.counter = counter;
+		this.period = period;
+		this.writer = writer;
+		this.counterRequestAggregation = new CounterRequestAggregation(counter);
+		this.htmlCounterRequestGraphReport = new HtmlCounterRequestGraphReport(period, writer);
+	}
+
+	void toHtml() throws IOException {
+		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
+		if (requests.isEmpty()) {
+			if (isErrorCounter()) {
+				writeln("#Aucune_erreur#");
+			} else {
+				writeln("#Aucune_requete#");
+			}
+			return;
+		}
+		final String counterName = counter.getName();
+		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
+		// 1. synthèse
+		if (isErrorCounter()) {
+			// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
+			assert !requests.isEmpty();
+			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
+			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, true);
+		} else {
+			final List<CounterRequest> summaryRequests = Arrays.asList(new CounterRequest[] {
+					globalRequest, counterRequestAggregation.getWarningRequest(),
+					counterRequestAggregation.getSevereRequest(), });
+			writeRequests(globalRequest.getName(), counter.getChildCounterName(), summaryRequests,
+					false);
+		}
+
+		// 2. débit et liens
+		// delta ni négatif ni à 0
+		final long deltaMillis = Math.max(System.currentTimeMillis()
+				- counter.getStartDate().getTime(), 1);
+		final long hitsParMinute = 60 * 1000 * globalRequest.getHits() / deltaMillis;
+		writeln("<div align='right'>");
+		// Rq : si serveur utilisé de 8h à 20h (soit 12h) on peut multiplier par 2 ces hits par minute indiqués
+		// pour avoir une moyenne sur les heures d'activité sans la nuit
+		if (isErrorCounter()) {
+			writeln(I18N.getFormattedString("nb_erreurs", integerFormat.format(hitsParMinute),
+					integerFormat.format(requests.size())));
+		} else {
+			writeln(I18N.getFormattedString("nb_requetes", integerFormat.format(hitsParMinute),
+					integerFormat.format(requests.size())));
+		}
+		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		writeln(separator);
+		writeShowHideLink("details" + counterName, "#Details#");
+		if (isErrorCounter()) {
+			writeln(separator);
+			writeShowHideLink("logs" + counterName, "#Dernieres_erreurs#");
+		}
+		writeln(separator);
+		if (period == Period.TOUT) {
+			writeln("<a href='?period=tout&amp;action=clear_counter&amp;counter=" + counterName
+					+ "' title='" + I18N.getFormattedString("Vider_stats", counterName) + '\'');
+			writeln("class='noPrint' onclick=\"javascript:return confirm('"
+					+ I18N.javascriptEncode(I18N.getFormattedString("confirm_vider_stats",
+							counterName)) + "');\">#Reinitialiser#</a>");
+		}
+		writeln("</div>");
+
+		// 3. détails par requêtes (non visible par défaut)
+		writeln("<div id='details" + counterName + "' style='display: none;'>");
+		writeRequests(counterName, counter.getChildCounterName(), requests, true);
+		writeln("</div>");
+
+		// 4. logs (non visible par défaut)
+		if (isErrorCounter()) {
+			writeln("<div id='logs" + counterName + "' style='display: none;'>");
+			new HtmlCounterErrorReport(counter, writer).toHtml();
+			writeln("</div>");
+		}
+	}
+
+	private boolean isErrorCounter() {
+		return counter.isErrorCounter();
+	}
+
+	private void writeRequests(String tableName, String childCounterName,
+			List<CounterRequest> requestList, boolean includeGraph) throws IOException {
+		assert requestList != null;
+		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='"
+				+ tableName + "'>");
+		if (isErrorCounter()) {
+			write("<thead><tr><th>#Erreur#</th>");
+		} else {
+			write("<thead><tr><th>#Requete#</th>");
+		}
+		if (counterRequestAggregation.isTimesDisplayed()) {
+			write("<th class='sorttable_numeric'>#temps_cumule#</th>");
+			write("<th class='sorttable_numeric'>#Hits#</th>");
+			write("<th class='sorttable_numeric'>#Temps_moyen#</th>");
+			write("<th class='sorttable_numeric'>#Temps_max#</th>");
+			write("<th class='sorttable_numeric'>#Ecart_type#</th>");
+		} else {
+			write("<th class='sorttable_numeric'>#Hits#</th>");
+		}
+		if (counterRequestAggregation.isCpuTimesDisplayed()) {
+			write("<th class='sorttable_numeric'>#temps_cpu_cumule#</th>");
+			write("<th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
+		}
+		if (!isErrorCounter()) {
+			write("<th class='sorttable_numeric'>#erreur_systeme#</th>");
+		}
+		if (counterRequestAggregation.isResponseSizeDisplayed()) {
+			write("<th class='sorttable_numeric'>#Taille_moyenne#</th>");
+		}
+		if (counterRequestAggregation.isChildHitsDisplayed()) {
+			write("<th class='sorttable_numeric'>"
+					+ I18N.getFormattedString("hits_fils_moyens", childCounterName));
+			write("</th><th class='sorttable_numeric'>"
+					+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
+		}
+		writeln("</tr></thead><tbody>");
+		boolean odd = false;
+		for (final CounterRequest request : requestList) {
+			if (odd) {
+				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+			} else {
+				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+			}
+			odd = !odd; // NOPMD
+			writeRequest(request, includeGraph);
+			writeln("</tr>");
+		}
+		writeln("</tbody></table>");
+	}
+
+	private void writeRequest(CounterRequest request, boolean includeGraph) throws IOException {
+		final String nextColumn = "</td> <td align='right'>";
+		write("<td>");
+		if (includeGraph) {
+			htmlCounterRequestGraphReport.writeRequestGraph(request.getId(), request.getName());
+		} else {
+			// writer.write pour ne pas gérer de traductions si le nom contient '#'
+			writer.write(htmlEncode(request.getName()));
+		}
+		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
+		if (counterRequestAggregation.isTimesDisplayed()) {
+			write(nextColumn);
+			writePercentage(request.getDurationsSum(), globalRequest.getDurationsSum());
+			write(nextColumn);
+			write(integerFormat.format(request.getHits()));
+			write(nextColumn);
+			final int mean = request.getMean();
+			write("<span class='");
+			write(getSlaHtmlClass(mean));
+			write("'>");
+			write(integerFormat.format(mean));
+			write("</span>");
+			write(nextColumn);
+			write(integerFormat.format(request.getMaximum()));
+			write(nextColumn);
+			write(integerFormat.format(request.getStandardDeviation()));
+		} else {
+			write(nextColumn);
+			write(integerFormat.format(request.getHits()));
+		}
+		if (counterRequestAggregation.isCpuTimesDisplayed()) {
+			write(nextColumn);
+			writePercentage(request.getCpuTimeSum(), globalRequest.getCpuTimeSum());
+			write(nextColumn);
+			final int cpuTimeMean = request.getCpuTimeMean();
+			write("<span class='");
+			write(getSlaHtmlClass(cpuTimeMean));
+			write("'>");
+			write(integerFormat.format(cpuTimeMean));
+			write("</span>");
+		}
+		if (!isErrorCounter()) {
+			write(nextColumn);
+			write(systemErrorFormat.format(request.getSystemErrorPercentage()));
+		}
+		if (counterRequestAggregation.isResponseSizeDisplayed()) {
+			write(nextColumn);
+			write(integerFormat.format(request.getResponseSizeMean() / 1024));
+		}
+		if (counterRequestAggregation.isChildHitsDisplayed()) {
+			write(nextColumn);
+			write(integerFormat.format(request.getChildHitsMean()));
+			write(nextColumn);
+			write(integerFormat.format(request.getChildDurationsMean()));
+		}
+		write("</td>");
+	}
+
+	void writeRequestGraph(String requestId, String requestName) throws IOException {
+		htmlCounterRequestGraphReport.writeRequestGraph(requestId, requestName);
+	}
+
+	String getSlaHtmlClass(int mean) {
+		final String color;
+		if (mean < counterRequestAggregation.getWarningThreshold()) {
+			// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
+			color = "info";
+		} else if (mean < counterRequestAggregation.getSevereThreshold()) {
+			// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
+			// attention à cette requête qui est plus longue que les autres
+			color = "warning";
+		} else {
+			// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
+			// cette requête est très longue par rapport aux autres ;
+			// il peut être opportun de l'optimiser si possible
+			color = "severe";
+		}
+		return color;
+	}
+
+	private static String htmlEncode(String text) {
+		return I18N.htmlEncode(text, false);
+	}
+
+	private void writeShowHideLink(String idToShow, String label) throws IOException {
+		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
+				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
+	}
+
+	private void writePercentage(long dividende, long diviseur) throws IOException {
+		if (diviseur == 0) {
+			write("0");
+		} else {
+			write(integerFormat.format(100 * dividende / diviseur));
+		}
+	}
+
+	private void write(String html) throws IOException {
+		I18N.writeTo(html, writer);
+	}
+
+	private void writeln(String html) throws IOException {
+		I18N.writelnTo(html, writer);
+	}
+}
