@@ -58,6 +58,13 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Langage : français et anglais
 
+* Plugin Hudson
+
+	Si vous voulez monitorer un serveur {{{http://hudson-ci.org/}Hudson}}, vous pouvez installer JavaMelody en quelques cliques
+	par l'intermédiaire d'un plugin Hudson. Pour cela, ouvrer Hudson et cliquer "Administrer Hudson", "Gestion des plugins", "Disponibles"
+	puis cocher le plugin appelé "Monitoring" et cliquer le bouton "Installer" en bas de la page. Redémarrer Hudson après l'installation du plugin.
+	Vous pouvez alors ouvrir le rapport à partir de la page "Administrer Hudson" ou à partir de l'adresse <<<http://host/monitoring>>>. C'est tout.
+
 * Mise en oeuvre
 
 	Une valeur importante du monitoring est une installation très simple et rapide.
