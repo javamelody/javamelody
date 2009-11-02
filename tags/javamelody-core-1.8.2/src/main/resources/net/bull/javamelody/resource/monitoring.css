@@ -1,0 +1,64 @@
+/* style sheet */
+
+body {
+background-color:white;
+background: url(?resource=backgroundGradient.png) bottom left fixed repeat-x;
+}
+
+a {text-decoration:none; color:#0000BB;}
+a:hover {text-decoration:underline; color:#0000BB;}
+a:visited {color: #6600BB;}
+
+img {border : 0px; vertical-align : middle;}
+.synthese {filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);}
+
+th {background-color:#F0F0F0; font-size: 10pt;}
+table {border-color:gray;}
+table tr.odd td {background-color: #F5F5F5;}
+table tr.highlight td {background-color: #E0E0E0;}
+td {font-size: 10pt;}
+
+.tooltip em {
+    display:none;
+}
+.tooltip:hover {
+    border: 0;
+    position: relative;
+/* marche pas avec texte long qui se wrappe: z-index: 500; */
+    text-decoration:none;
+}
+.tooltip:hover em {
+    font-style: normal;
+    display: block;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 5px;
+    color: #000;
+    border: 1px solid #bbb;
+    background: #ffc;
+}
+
+div#track, div#handle {
+    height: 18px;
+}
+
+div#track {
+	width: 200px;
+	margin-left: 300px;
+    background: url( '?resource=scaler_slider_track.gif' ) center left repeat-x;
+}
+
+div#handle {
+    width: 18px;
+    cursor: col-resize;
+}
+
+.info {color:green;}
+.warning {color:orange; font-weight:bold;}
+.severe {color:red; font-weight:bold;}
+
+form {background-color:#F5F5F5; font-size: 10pt;}
+
+@media print { .noPrint { display: none; } }
+
