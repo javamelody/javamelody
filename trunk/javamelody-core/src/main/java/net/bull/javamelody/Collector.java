@@ -239,6 +239,8 @@ final class Collector {
 			usedMemory += javaInformations.getMemoryInformations().getUsedMemory();
 			if (javaInformations.getSessionCount() >= 0) {
 				sessionCount += javaInformations.getSessionCount();
+			} else {
+				sessionCount = -1;
 			}
 			activeThreadCount += javaInformations.getActiveThreadCount();
 			activeConnectionCount += javaInformations.getActiveConnectionCount();
