@@ -246,13 +246,11 @@ class HtmlReport {
 
 	private void writeGraphs() throws IOException {
 		final String periodParameter = buildPeriodParameter();
+		int i = 0;
 		for (final JRobin jrobin : collector.getCounterJRobins()) {
 			// les jrobin de compteurs (qui commencent par le jrobin xxxHitsRate)
 			// doivent être sur une même ligne donc on met un <br/> si c'est le premier
 			final String jrobinName = jrobin.getName();
-			if (jrobinName.endsWith("HitsRate")) {
-				writeln("<br/>");
-			}
 			if (isJRobinDisplayed(jrobinName)) {
 				writeln("<a href='?part=graph&amp;graph=" + jrobinName + periodParameter
 						+ "'><img class='synthese' src='?width=200&amp;height="
@@ -260,7 +258,8 @@ class HtmlReport {
 						+ "' alt=\"" + jrobin.getLabel() + "\" title=\"" + jrobin.getLabel()
 						+ "\"/></a>");
 			}
-			if ("httpSessions".equals(jrobinName) || "fileDescriptors".equals(jrobinName)) {
+			i++;
+			if (i % 3 == 0) {
 				// un <br/> après httpSessions et avant activeThreads pour l'alignement
 				writeln("<br/>");
 			}
