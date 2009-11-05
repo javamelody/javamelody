@@ -5,7 +5,7 @@
   * fix: c:\... is now an absolute path for parameter "storage-directory" (and not relative to temp)
   * sql monitoring by jdbc datasource can now be disabled by an empty "datasources" parameter
   * added display of deadlocks between threads if there are
-
+This is the same version of JavaMelody as in the hudson plugin available in hudson.
 
 === 1.8.0 ===
 
