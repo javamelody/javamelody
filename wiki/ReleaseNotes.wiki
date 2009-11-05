@@ -1,4 +1,12 @@
 #labels Featured
+=== 1.8.2 ===
+
+  * fix ClassCastException for ehcache v1.2.1 to v1.2.4 (thanks hl)
+  * fix: c:\... is now an absolute path for parameter "storage-directory" (and not relative to temp)
+  * sql monitoring by jdbc datasource can now be disabled by an empty "datasources" parameter
+  * added display of deadlocks between threads if there are
+
+
 === 1.8.0 ===
 
   * fix for sql monitoring : the sql requests were monitored only in tomcat when a jdbc datasource was used. Fix tested with tomcat v5.5 & v6, glassfish v3, jboss v5, weblogic v11g, jetty v6, jonas v5
