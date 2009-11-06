@@ -512,7 +512,7 @@ Language: English and French
 
 == Advanced documentation (centralized collect server...) ==
 
-See [AdvancedUserGuide]
+See [UserGuideAdvanced]
 
 == Compilation and development ==
 
