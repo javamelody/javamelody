@@ -494,131 +494,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	où <host> est le nom du serveur où la webapp est déployée, suivi éventuellement du port (par exemple localhost:8080)
 	et où <context> est le nom du contexte de la webapp que vous avez configuré au moment du déploiement de celle-ci.
 
-
-* Mise en oeuvre optionnelle d'un serveur de centralisation
-
-	Un serveur de collecte centralisé peut être mis en oeuvre optionnellement.
-	Ce serveur permet de centraliser dans une même interface et avec un stockage unique
-	le monitoring de plusieurs applications (recette et production par exemple)
-	et / ou le monitoring d'une application avec plusieurs instances de serveurs (cluster par exemple).
-	Ainsi les rapports, le stockage et les courbes sont déportées de l'application
-	vers le serveur de collecte.
-
-** 1. Fichier war de la webapp de monitoring
-
-	Copier le fichier javamelody.war situé à la racine du fichier javamelody.zip fourni, vers le serveur centralisé.
-	Le fichier javamelody.war doit correspondre en général à la même version du monitoring
-	que le fichier javamelody.jar dans l'application monitorée.
-
-** 2. Déploiement de la webapp de monitoring
-
-	Note : Une alternative ne nécessitant pas de serveur d'application java est décrite dans le chapitre suivant.
-
-	Déployer le fichier javamelody.war dans le serveur d'application Java du serveur centralisé.
-	Si Tomcat, en écrivant un fichier xml de contexte nommé 'javamelody.xml' dans le répertoire
-	conf/Catalina/localhost de Tomcat comme celui de l'exemple suivant :
-
-+-------------------------------+
-	<?xml version="1.0" encoding="UTF-8" ?>
-	<Context docBase="<pathto>/javamelody.war" path="javamelody" reloadable="false" >
-		<Parameter name='javamelody.resolution-seconds' value='120' override='false'/>
-	</Context>
-+-------------------------------+
-
-	Les applications à monitorer seront ajoutées par la suite en accédant au serveur de collecte par un navigateur web.
-	
-	Des paramètres <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
-	<<<severe-threshold-millis>>> et <<<allowed-addr-pattern>>> optionnels peuvent être ajoutés dans le fichier de
-	contexte xml du serveur de collecte en indiquant le préfixe <<<monitoring>>>. Ils ont les mêmes effets sur le
-	serveur de collecte que dans le cas du paramétrage du monitoring d'une application indiqué dans le chapitre
-	précédent. En particulier le paramètre <<<resolution-seconds>>> définit la période d'appels des urls d'applications
-	depuis le serveur de collecte et la résolution des courbes dans le monitoring.
-
-	Si un format xml est souhaité à la place de la sérialisation java comme format de transport entre un serveur
-	de collecte et une application monitorée, il peut être ajouté un paramètre <<<transport-format>>> spécifique
-	au serveur de collecte avec comme valeur xml. La sérialisation java est le format de transport par défaut et
-	est recommandée pour de meilleures performances (75% plus performante en temps,
-	selon ce {{{http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking}benchmark}}).
-	Le format de transport xml nécessite par contre une dépendance vers les librairies xstream (BSD) et xpp3 (Public Domain).
-
-** 3. Alternative de déploiement de la webapp de monitoring
-
-	En alternative au déploiement ci-dessus de la webapp de monitoring dans un serveur d'application java,
-	il est possible de lancer le moteur de servlet {{{http://winstone.sourceforge.net} winstone}} (LGPL) déjà inclus
-	dans le fichier javamelody.war.
-	Il suffit pour cela d'utiliser la commande "java -jar javamelody.war" en précisant en propriétés systèmes
-	chacun des paramètres du monitoring détaillés ci-dessus.
-	
-	Exemples :
-	
-+-------------------------------+
-	java -jar javamelody.war
-	java -Djavamelody.resolution-seconds=120 -jar javamelody.war
-+-------------------------------+
-	
-	Le paramétrage des ports http, du mode serveur, de la mémoire et des logs peut se faire comme ceci :
-	
-+-------------------------------+
-	java -server -Xmx128m -jar javamelody.war --httpPort=8080 --ajp13Port=8009 2>&1 >>javamelody.log
-+-------------------------------+
-	
-	D'autres paramètres pour le moteur de servlet sont possibles, pour les voir :
-
-+-------------------------------+
-	java -jar javamelody.war --usage
-+-------------------------------+
-
-	Sur Linux et Unix, il est possible de lancer ce serveur en démon (tâche de fond) avec des logs comme ceci
-	({{{http://fr.wikipedia.org/wiki/Nohup} wikipedia}}) :
-
-+-------------------------------+
-	nohup java -server -jar javamelody.war 0</dev/null 2>&1 >>javamelody.log &
-+-------------------------------+
-
-
-** 4. Résultat avec un serveur de collecte
-	
-	Pour consulter le monitoring sur le serveur de collecte, ouvrir la page suivante dans un navigateur web après avoir
-	démarré les serveurs :
-
-	<<<http://<host>/javamelody/>>>
-
-	où <host> est le nom du serveur de collecte, suivi éventuellement du port (par exemple localhost:8080)
-	et où 'javamelody' est le nom du contexte de la webapp comme le nom du fichier 'javamelody.xml'.
-
-	Des liens par application vous permettront de choisir l'application que vous souhaitez monitorer.
-	
-	
-	Dans la page web, il est possible d'ajouter une application à monitorer en saisissant son nom et son url d'accès
-	(par exemple "http://<host_recette>/myapp/" pour "recette" et "http://<host_production>/myapp/" pour "production").
-	Si l'application est déployée sur plusieurs instances de serveurs (en cluster ou en ferme),
-	il faut séparer les urls d'accès aux serveurs de l'application par une ','
-	(par exemple "http://<host1>/myapp/,http://<host2>/myapp/" pour "cluster").
-	En remarque, il n'est pas possible de monitorer plusieurs fois une même application,
-	par exemple dans plusieurs serveurs de collecte.
-	
-	Pour que la webapp de monitoring puisse monitorer une application,
-	il est nécessaire de mettre en oeuvre le monitoring dans cette application comme indiqué au début de ce document.
-	Lors de cette mise en oeuvre dans l'application, il n'est alors pas obligatoire d'inclure le fichier
-	jrobin-*.jar dans le répertoire WEB-INF/lib de l'application, car seul le serveur de collecte gérera les courbes
-	pour cette application.
-	Toujours lors de cette mise en oeuvre dans l'application, il est possible de restreindre l'accès au monitoring
-	de l'application au seul serveur de collecte selon son adresse ip, en interdisant ainsi l'accès au monitoring
-	de l'application aux utilisateurs ou autres. Par exemple, si l'application monitorée est sur le même serveur
-	que le serveur de collecte, l'ajout du paramètre suivant dans le fichier <<<web.xml>>> restreint l'accès et autorise
-	seulement le serveur de collecte local :
-
-+-------------------------------+
-	<init-param>
-		<param-name>allowed-addr-pattern</param-name>
-		<param-value>127\.0\.0\.1</param-value>
-	</init-param>
-+-------------------------------+
-
 * Dépendances
 	
 	Si vous n'avez pas Maven2, les fichiers jar peuvent être trouvés dans le fichier zip,
-	disponible dans la partie "Download, à l'intérieur des répertoires 
+	disponible dans la partie "Download", à l'intérieur des répertoires 
 	<<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
 	et <<<javamelody/javamelody-core/src/main/lib>>>
 	
@@ -665,12 +544,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</repositories>
 +-------------------------------+
 
-* Format des fichiers RRD
-	
-	Les valeurs des courbes sont stockées au format standard RRD (Round Robin Database).
-	De nombreux outils existent pour ce format dont {{{http://oss.oetiker.ch/rrdtool/}RRDtool}},
-	proche parent de {{{http://oss.oetiker.ch/mrtg/}MRTG}}, ou {{{http://www.jrobin.org/}JRobin}} en Java.
+* Documentation avancée (serveur de collecte centralisé...)
 
+	Pour déployer un serveur de collecte centralisé, consulter la {{{user_guide_advanced.html} documentation avancée}}
+	
 * Compilation et développement
 
 	{{{dev_guide.html} Guide du dévelopeur}}

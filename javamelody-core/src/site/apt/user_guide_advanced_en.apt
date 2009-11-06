@@ -1,0 +1,137 @@
+	-----
+	Description and documentation of Java Melody : monitoring of Java EE applications
+	-----
+	Author : Emeric Vernat (evernat@free.fr)
+	-----
+	2009-01-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Advanced documentation of Java Melody
+
+	({{{user_guide_advanced.html} Français }}, {{{user_guide.html} User guide }})
+
+* Optional centralization server setup
+
+	A centralized collect server can be used optionally.
+	This server can centralize in a same user interface and with a unique storage
+	the monitoring of several applications (QA and production for example)
+	and / or the monitoring of an application with several instances of servers (a cluster for example).
+	So the reports, the storage and the charts are moved out of the application to the collect server.
+
+** 1. War file of the webapp of monitoring
+
+	Copy the javamelody.war file, located at the root of the supplied javamelody.zip file, to the centralized server.
+	The javamelody.war file should be in general of the same version of monitoring
+	as the version of the javamelody.jar file in the monitored application.
+
+** 2. Deployment of the webapp of monitoring
+
+	Note : An alternative which does not need an application server is described in the following chapter.
+
+	Deploy the javamelody.war file in the application server of the centralized server.
+	If it is Tomcat, you can write a xml context file named 'javamelody.xml' in the directory
+	conf/Catalina/localhost of Tomcat as the following example:
+
++-------------------------------+
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<Context docBase="<pathto>/javamelody.war" path="javamelody" reloadable="false" >
+		<Parameter name='javamelody.resolution-seconds' value='120' override='false'/>
+	</Context>
++-------------------------------+
+
+	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
+	<<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>> can be added in the xml context file of the collect
+	server with the prefix <<<monitoring>>>. They have the same effects on the collect server 
+	than those of a monitored application as written in the chapter above. In particular the parameter
+	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
+	of charts in the monitoring.
+
+	If xml format is desired instead of java serialization as transport format between a collect server
+	and a monitored application, a parameter <<<transport-format>>> which is specific 
+	to the collect server can be added with 'xml' for value. The java serialization is the transport format by default
+	and it is recommended for best performances (75% more performance for response time,
+	according to this {{{http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking}benchmark}}).
+	The xml transport format needs a dependency on libraries xstream (BSD) and xpp3 (Public Domain).
+
+** 3. Alternative of deployment of the webapp of monitoring
+
+	As an alternative to the deployment described in the last chapter for the webapp of monitoring in a java application
+	server, it is possible to launch the {{{http://winstone.sourceforge.net} winstone}} (LGPL) servlet container
+	already included in the javamelody.war file.
+	You only need to use the launch command "java -jar javamelody.war" and to specify in system properties each
+	of the monitoring parameters detailed in the last chapter.
+	
+	Examples:
+	
++-------------------------------+
+	java -jar javamelody.war
+	java -Djavamelody.resolution-seconds=120 -jar javamelody.war
++-------------------------------+
+	
+	The settings of http ports, server mode, memory and logs can be done like this:
+	
++-------------------------------+
+	java -server -Xmx128m -jar javamelody.war --httpPort=8080 --ajp13Port=8009 2>&1 >>javamelody.log
++-------------------------------+
+	
+	Other parameters exist for the servlet container. You can read them with:
+
++-------------------------------+
+	java -jar javamelody.war --usage
++-------------------------------+
+
+	On Linux and Unix, it is possible to launch this server as a daemon (in background) and with logs like this
+	({{{http://fr.wikipedia.org/wiki/Nohup} wikipedia}}):
+
++-------------------------------+
+	nohup java -server -jar javamelody.war 0</dev/null 2>&1 >>javamelody.log &
++-------------------------------+
+
+
+** 4. Results with a collect server
+	
+	To view the monitoring: open the following page in a web navigator after starting the servers:
+
+	<<<http://<host>/javamelody>>>
+	
+	where <host> is the name of the collect server, followed possibly by the port (for example localhost:8080)
+	and where 'javamelody' is the name of the context of the webapp as the name of the 'javamelody.xml' file.
+
+	With links by application in reports, you can choose the application that you want to monitor.
+
+
+	In the web page, you can add an application to monitor and its access url
+	(for example "http://<host_qa>/myapp/" for "qa" and "http://<host_production>/myapp/" for "production").
+	If an application to monitor is deployed on several instances of servers (in a cluster or in a farm),
+	urls should be separated by ','
+	(for example "http://<host1>/myapp/,http://<host2>/myapp/" for "cluster").
+	Note: it is not possible to monitor one application in several collect servers.
+
+	In order for a webapp of monitoring to monitor an application, the monitoring should be setup in this application
+	as written at the start of this document.
+	When the monitoring is setup in the application, it is not compulsory to include the jrobin-*.jar file in the
+	WEB-INF/lib directory of the application, as only the collect server will handle the charts for this application.
+	And with this setup again, it is possible to restrict access to the monitoring of the application only to the
+	collect server by its ip address, forbidding access to the monitoring of the application to any others.
+	For example, if the monitored application is on the same server as the collect server, the following parameter
+	can be added in the <<<web.xml>>> file to restrict access and to allow only the local collect server:
+
++-------------------------------+
+	<init-param>
+		<param-name>allowed-addr-pattern</param-name>
+		<param-value>127\.0\.0\.1</param-value>
+	</init-param>
++-------------------------------+
+
+* Format of RRD files
+	
+	Values of charts are stored in RRD (Round Robin Database) format.
+	Many tools exist for this format like {{{http://oss.oetiker.ch/rrdtool/}RRDtool}},
+	close relative of {{{http://oss.oetiker.ch/mrtg/}MRTG}}, or {{{http://www.jrobin.org/}JRobin}} in Java.
+
+* Compilation and development
+
+	{{{dev_guide_en.html} Developer guide}}
+	
