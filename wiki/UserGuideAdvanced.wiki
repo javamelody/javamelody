@@ -1,5 +1,8 @@
 = Advanced documentation of Java Melody =
 
+For standard documentation, see [UserGuide]
+
+
 == Optional centralization server setup ==
 
 	A centralized collect server can be used optionally.
