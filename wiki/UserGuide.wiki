@@ -1,6 +1,16 @@
 #labels Featured
 = Description and documentation of Java Melody : monitoring of Java EE applications =
 
+== Table of contents ==
+  * [#Introduction Introduction]
+  * [#Plugin_Hudson Plugin Hudson]
+  * [#Setup Setup]
+  * [#Dependencies Dependencies]
+  * [#Advanced_documentation_(centralized_collect_server...) Advanced documentation (centralized collect server...)]
+  * [#Compilation_and_development Compilation and development]
+
+== Introduction ==
+
 The goal of this monitoring tool is to monitor Java or Java EE applications servers in QA and production environments.
 	
 It is not a tool to simulate requests from users, it is a tool to measure and calculate statistics on real operation of an application depending on the usage of the application by users.
@@ -44,7 +54,7 @@ Language: English and French
 [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
 
 
-=== Plugin Hudson ===
+== Plugin Hudson ==
 
 	If you want to monitor a [http://hudson-ci.org/ Hudson] server, you can install JavaMelody by point and click with a Hudson plugin. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page or from the address {{{http://yourhost/monitoring}}}. That's it.
 
