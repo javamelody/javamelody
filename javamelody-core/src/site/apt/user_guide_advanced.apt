@@ -58,7 +58,7 @@ Documentation avancée de Java Melody
 	selon ce {{{http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking}benchmark}}).
 	Le format de transport xml nécessite par contre une dépendance vers les librairies xstream (BSD) et xpp3 (Public Domain).
 
-** 3. Alternative de déploiement de la webapp de monitoring
+** 3. Alternative plus simple de déploiement de la webapp de monitoring
 
 	En alternative au déploiement ci-dessus de la webapp de monitoring dans un serveur d'application java,
 	il est possible de lancer le moteur de servlet {{{http://winstone.sourceforge.net} winstone}} (LGPL) déjà inclus
