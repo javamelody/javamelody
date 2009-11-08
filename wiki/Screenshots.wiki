@@ -1,6 +1,6 @@
 #labels Featured
 === Table of contents ===
-<a href='#Charts'>Charts</a>
+[#Charts Charts]
 <a href="#English/French">English/French</a>
 <a href="#"></a>
 <a href="#"></a>
