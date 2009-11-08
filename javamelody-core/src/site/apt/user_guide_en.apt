@@ -113,7 +113,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Then you can complete the settings as below according to your needs.
 
-** 4. Complements <<<web.xml>>>
+** 4. Supplements in <<<web.xml>>>
 
 	<<<url-pattern>>> in <<<web.xml>>> file above can be adapted in order not to monitor some urls,
 	possibly with several mappings on the same filter
