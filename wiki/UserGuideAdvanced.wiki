@@ -2,6 +2,15 @@
 
 For standard documentation, see [UserGuide]
 
+== Table of contents ==
+
+  * [#Optional_centralization_server_setup Optional centralization server setup]
+    * [#1._War_file_of_the_webapp_of_monitoring 1. War file of the webapp of monitoring]
+    * [#2._Deployment_of_the_webapp_of_monitoring 2. Deployment of the webapp of monitoring]
+    * [#3._Simpler_alternative_of_deployment_of_the_webapp_of_monitoring 3. Simpler alternative of deployment of the webapp of monitoring]
+    * [#4._Results_with_a_collect_server 4. Results with a collect server]
+  * [#Format_of_RRD_files Format of RRD files]
+  * [#Compilation_and_development Compilation and development]
 
 == Optional centralization server setup ==
 
@@ -46,7 +55,7 @@ For standard documentation, see [UserGuide]
 	according to this [http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking benchmark]).
 	The xml transport format needs a dependency on libraries xstream (BSD) and xpp3 (Public Domain).
 
-=== 3. Alternative of deployment of the webapp of monitoring ===
+=== 3. Simpler alternative of deployment of the webapp of monitoring ===
 
 	As an alternative to the deployment described in the last chapter for the webapp of monitoring in a java application
 	server, it is possible to launch the [http://winstone.sourceforge.net winstone] (LGPL) servlet container
