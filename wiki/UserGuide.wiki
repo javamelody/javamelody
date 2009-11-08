@@ -11,8 +11,8 @@
     * [#4._Complements_web.xml 4. Complements web.xml]
     * [#5._Optional_parameters 5. Optional parameters]
     * [#6._JDBC 6. JDBC]
-    * [#7._Business_façades_(ejb-jar.xml_file_if_EJB3) 7. Business façades (ejb-jar.xml file if EJB3)]
-    * [#8._Business_façades_(if_Spring) 8. Business façades (if Spring)]
+    * [#7._Business_facades_(ejb-jar.xml_file_if_EJB3) 7. Business facades (ejb-jar.xml file if EJB3)]
+    * [#8._Business_facades_(if_Spring) 8. Business facades (if Spring)]
     * [#9._Weekly_reports_by_mail 9. Weekly reports by mail]
     * [#10._Database_user 10. Database user]
     * [#11._Security 11. Security]
@@ -225,7 +225,7 @@ Language: English and French
 	
 	{{{-Djavamelody.datasources=myapp/mydatasource}}}
 
-=== 7. Business façades (ejb-jar.xml file if EJB3) ===
+=== 7. Business facades (ejb-jar.xml file if EJB3) ===
 
 	If the application to monitor contains some business façades in EJB3 (Java EE 5) with annotations {{{@Stateless}}},
 	{{{@Stateful}}} or {{{@MessageDriven}}}, a counter can be created for statistics of execution of methods.
@@ -259,7 +259,7 @@ Language: English and French
 	Moreover, it is necessary to define the parameter {{{displayed-counters}}}, as the optional parameters above,
 	and with value "http,sql,error,log,ejb".
 
-=== 8. Business façades (if Spring) ===
+=== 8. Business facades (if Spring) ===
 
 	If the application to monitor contains some business façades or other objects initialized with Spring,
 	a counter can be created for statistics of execution of methods. But it is not recommended for response time
