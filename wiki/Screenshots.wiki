@@ -1,4 +1,19 @@
 #labels Featured
+=== Table of contents ===
+<a href="#Charts">Charts</a>
+<a href="#English/French">English/French</a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+<a href="#"></a>
+
 <div align='center'>
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' width='50%' alt='Courbes' /></a>
 === Charts ===
