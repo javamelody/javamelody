@@ -1,7 +1,7 @@
 #labels Featured
 === Table of contents ===
 [#Charts Charts]
-[English/French English/French]
+[#English/French English/French]
 
 <div align='center'>
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' width='50%' alt='Courbes' /></a>
