@@ -8,7 +8,7 @@
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
-    * [#4._Complements_web.xml 4. Complements web.xml]
+    * [#4._Supplements_web.xml 4. Supplements web.xml]
     * [#5._Optional_parameters 5. Optional parameters]
     * [#6._JDBC 6. JDBC]
     * [#7._Business_facades_(ejb-jar.xml_file_if_EJB3) 7. Business facades (ejb-jar.xml file if EJB3)]
@@ -117,7 +117,7 @@ Language: English and French
 	
 	Then you can complete the settings as below according to your needs.
 
-=== 4. Complements {{{web.xml}}} ===
+=== 4. Supplements {{{web.xml}}} ===
 
 	{{{url-pattern}}} in {{{web.xml}}} file above can be adapted in order not to monitor some urls,
 	possibly with several mappings on the same filter
