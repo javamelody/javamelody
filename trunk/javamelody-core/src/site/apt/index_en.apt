@@ -12,7 +12,7 @@ Java Melody : monitoring of Java applications
 
 [screenshots/graphs_small.PNG]
 
-	License : {{{license.html} LGPL }}
+	License : {{{license.html} LGPL (opensource) }}
 
 	URL : http://javamelody.googlecode.com/
 
@@ -23,6 +23,9 @@ Java Melody : monitoring of Java applications
 	it is a tool to measure and calculate statistics on real operation of an application
 	depending on the usage of the application by users.
 	
+	JavaMelody is opensource (LGPL) and production ready: in production in an application of 25 person years.
+	JavaMelody is easy to integrate in most applications and is lightweight (no profiling and no database).
+
 	Monitoring is mainly based on statistics of requests and on evolution charts.
 	
 	It allows to improve applications in QA and production and help to:
