@@ -64,7 +64,7 @@ Documentation avancée de Java Melody
 	il est possible de lancer le moteur de servlet {{{http://winstone.sourceforge.net} winstone}} (LGPL) déjà inclus
 	dans le fichier javamelody.war.
 	Il suffit pour cela d'utiliser la commande "java -jar javamelody.war" en précisant en propriétés systèmes
-	chacun des paramètres du monitoring détaillés ci-dessus.
+	chacun des paramètres du monitoring détaillés dans le guide d'utilisation.
 	
 	Exemples :
 	
@@ -131,6 +131,47 @@ Documentation avancée de Java Melody
 		<param-value>127\.0\.0\.1</param-value>
 	</init-param>
 +-------------------------------+
+
+
+* Façades métiers (sans EJB3 ni Spring)
+
+	Si l'application à monitorer contient des façades métiers avec des interfaces Java,
+	un compteur peut être créé pour les statistiques d'exécution de méthodes sur ces façades même si ces interfaces ne sont ni EJB3 ni Spring.
+
+	Tout d'abord si ces façades sont EJB3 ou Spring, alors il est plus simple d'utiliser la configuration décrite dans le guide d'utilisation. 
+	Sinon imaginons qu'une des façades métiers ait une interface avec une implémentation, laquelle est instanciée par exemple dans une factory
+	comme ci-dessous :
+
++-------------------------------+
+	public interface MaFacade { ...	}
+	
+	public class MaFacadeImpl implements MaFacade { ... }
+
+	public class Factory {
+		public static MaFacade createMaFacade() {
+			final MaFacade maFacade = new MaFacadeImpl();
+			return maFacade;
+		}
+	}
++-------------------------------+
+
+	Il s'agit donc d'une interface Java standard (c'est-à-dire POJI ou Plain Old Java Interface).
+	Il suffit alors simplement de modifier le code l'instanciation ainsi :
+
++-------------------------------+
+	public class Factory {
+		public static MaFacade createMaFacade() {
+			final MaFacade maFacade = net.bull.javamelody.MonitoringProxy.createProxy(new MaFacadeImpl());
+			return maFacade;
+		}
+	}
++-------------------------------+
+
+	En pré-requis, il est donc nécessaire dans ce cas que le jar de javamelody soit disponible dans le classpath lors de la compilation
+	et il est nécessaire d'avoir des interfaces pour les façades et pas seulement des implémentations.
+	Et pour que ces statistiques soient affichées, il est nécessaire de définir le paramètre <<<displayed-counters>>> dans la configuration,
+	comme les paramètres optionnels dans le guide d'utilisation, et avec pour valeur "http,sql,error,log,services" par exemple.
+
 
 * Format des fichiers RRD
 	

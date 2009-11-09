@@ -44,7 +44,7 @@ Advanced documentation of Java Melody
 	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
 	<<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>> can be added in the xml context file of the collect
 	server with the prefix <<<monitoring>>>. They have the same effects on the collect server 
-	than those of a monitored application as written in the chapter above. In particular the parameter
+	than those of a monitored application as written in the user guide. In particular the parameter
 	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
 	of charts in the monitoring.
 
@@ -124,6 +124,47 @@ Advanced documentation of Java Melody
 		<param-value>127\.0\.0\.1</param-value>
 	</init-param>
 +-------------------------------+
+
+
+* Business façades (without EJB3 and without Spring)
+
+	If the application to monitor contains some business façades with Java interfaces, a counter can be created for statistics of execution
+	of methods on these façades even if these interfaces are neither EJB3 nor Spring.
+
+	First, if these façades are EJB3 or Spring, then it is simpler to use the configuration described in the user guide. 
+	Otherwise let's say that a business façade has an interface with an implementation, which is instanciated in a factory for example as below:
+
++-------------------------------+
+	public interface MyFacade { ...	}
+	
+	public class MyFacadeImpl implements MyFacade { ... }
+
+	public class Factory {
+		public static MyFacade createMyFacade() {
+			final MyFacade myFacade = new MyFacadeImpl();
+			return myFacade;
+		}
+	}
++-------------------------------+
+
+	So it is a standard Java interface (ie POJI or Plain Old Java Interface).
+	Then you just need to modify the code of the instanciation like this:
+
++-------------------------------+
+	public class Factory {
+		public static MyFacade createMyFacade() {
+			final MyFacade myFacade = net.bull.javamelody.MonitoringProxy.createProxy(new MyFacadeImpl());
+			return myFacade;
+		}
+	}
++-------------------------------+
+
+	As pre-requisites for this, the jar of javamelody must be available in the classpath used to compile sources
+	and façades must have interfaces and not only implementations.
+
+	And in order to display the statistics, it is necessary to define the parameter <<<displayed-counters>>>,
+	as the optional parameters in the user guide, and with value "http,sql,error,log,services" for example.
+
 
 * Format of RRD files
 	
