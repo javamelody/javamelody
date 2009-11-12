@@ -222,7 +222,7 @@ public class MonitoringFilter implements Filter {
 		try {
 			try {
 				if (collector != null) {
-					new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
+					new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
 				}
 			} finally {
 				//on rebind les dataSources initiales à la place des proxy
@@ -406,7 +406,7 @@ public class MonitoringFilter implements Filter {
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès interdit");
 			return;
 		}
-		final MonitoringController monitoringController = new MonitoringController(collector, false);
+		final MonitoringController monitoringController = new MonitoringController(collector, null);
 		monitoringController.executeActionIfNeeded(httpRequest);
 		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
 		// pour avoir des informations à jour

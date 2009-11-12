@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -161,7 +160,7 @@ public class CollectorServlet extends HttpServlet {
 		try {
 			final Collector collector = getCollectorByApplication(application);
 			final MonitoringController monitoringController = new MonitoringController(collector,
-					true);
+					collectorServer);
 			final String actionParameter = req.getParameter(MonitoringController.ACTION_PARAMETER);
 			if ("remove_application".equalsIgnoreCase(actionParameter)) {
 				collectorServer.removeCollectorApplication(application);
@@ -195,8 +194,7 @@ public class CollectorServlet extends HttpServlet {
 	}
 
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController, String partParameter) throws IOException,
-			ClassNotFoundException {
+			MonitoringController monitoringController, String partParameter) throws IOException {
 		if (MonitoringController.WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
 			doProxy(req, resp, application, MonitoringController.PART_PARAMETER + '='
@@ -205,12 +203,8 @@ public class CollectorServlet extends HttpServlet {
 			MonitoringController.noCache(resp);
 			doProxy(req, resp, application, MonitoringController.PART_PARAMETER + '='
 					+ MonitoringController.POM_XML_PART);
-		} else if (MonitoringController.SESSIONS_PART.equalsIgnoreCase(partParameter)) {
-			doSessions(req, resp, application, monitoringController);
 		} else if (MonitoringController.CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
 			doCurrentRequests(req, resp, application);
-		} else if (MonitoringController.HEAP_HISTO_PART.equalsIgnoreCase(partParameter)) {
-			doHeapHisto(req, resp, application, monitoringController);
 		} else if (MonitoringController.PROCESSES_PART.equalsIgnoreCase(partParameter)) {
 			doProcesses(req, resp, application);
 		} else if (MonitoringController.DATABASE_PART.equalsIgnoreCase(partParameter)) {
@@ -231,66 +225,6 @@ public class CollectorServlet extends HttpServlet {
 		// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
 		final URL webXmlUrl = new URL(url.toString() + '&' + urlParameter);
 		new LabradorRetriever(webXmlUrl).copyTo(req, resp);
-	}
-
-	private void doHeapHisto(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController) throws IOException, ClassNotFoundException {
-		// récupération à la demande des HeapHistogram
-		HeapHistogram heapHistoTotal = null;
-		for (final URL url : getUrlsByApplication(application)) {
-			final URL heapHistoUrl = new URL(url.toString() + '&'
-					+ MonitoringController.PART_PARAMETER + '='
-					+ MonitoringController.HEAP_HISTO_PART);
-			final LabradorRetriever labradorRetriever = new LabradorRetriever(heapHistoUrl);
-			final HeapHistogram heapHisto = labradorRetriever.call();
-			if (heapHistoTotal == null) {
-				heapHistoTotal = heapHisto;
-			} else {
-				heapHistoTotal.add(heapHisto);
-			}
-		}
-		monitoringController.setHeapHistogramIfCollectServer(heapHistoTotal);
-		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		monitoringController.doReport(req, resp, javaInformationsList);
-	}
-
-	private void doSessions(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController) throws IOException, ClassNotFoundException {
-		final String sessionId = req.getParameter(MonitoringController.SESSION_ID_PARAMETER);
-		if (sessionId == null) {
-			// récupération à la demande des sessions
-			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
-			for (final URL url : getUrlsByApplication(application)) {
-				final URL sessionsUrl = new URL(url.toString() + '&'
-						+ MonitoringController.PART_PARAMETER + '='
-						+ MonitoringController.SESSIONS_PART);
-				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
-				final List<SessionInformations> sessions = labradorRetriever.call();
-				sessionsInformations.addAll(sessions);
-			}
-			SessionListener.sortSessions(sessionsInformations);
-			monitoringController.setSessionsInformations(sessionsInformations);
-			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-			monitoringController.doReport(req, resp, javaInformationsList);
-		} else {
-			SessionInformations found = null;
-			for (final URL url : getUrlsByApplication(application)) {
-				final URL sessionsUrl = new URL(url.toString() + '&'
-						+ MonitoringController.PART_PARAMETER + '='
-						+ MonitoringController.SESSIONS_PART + '&'
-						+ MonitoringController.SESSION_ID_PARAMETER + '=' + sessionId);
-				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
-				final SessionInformations session = (SessionInformations) labradorRetriever.call();
-				if (session != null) {
-					found = session;
-					break;
-				}
-			}
-			// si found est toujours null, alors la session a été invalidée
-			monitoringController.setSessionsInformations(Collections.singletonList(found));
-			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-			monitoringController.doReport(req, resp, javaInformationsList);
-		}
 	}
 
 	private void doCurrentRequests(HttpServletRequest req, HttpServletResponse resp,
@@ -328,7 +262,7 @@ public class CollectorServlet extends HttpServlet {
 	}
 
 	private void doProcesses(HttpServletRequest req, HttpServletResponse resp, String application)
-			throws IOException, ClassNotFoundException {
+			throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, writer, application);
 		htmlReport.writeHtmlHeader(false);
@@ -357,7 +291,7 @@ public class CollectorServlet extends HttpServlet {
 	}
 
 	private void doDatabase(HttpServletRequest req, HttpServletResponse resp, String application)
-			throws IOException, ClassNotFoundException {
+			throws IOException {
 		final int requestIndex;
 		if (req.getParameter(MonitoringController.REQUEST_PARAMETER) != null) {
 			requestIndex = Integer.parseInt(req
@@ -382,7 +316,7 @@ public class CollectorServlet extends HttpServlet {
 		final Period period = MonitoringController.getPeriod(req);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		return new HtmlReport(collector, true, javaInformationsList, period, writer);
+		return new HtmlReport(collector, collectorServer, javaInformationsList, period, writer);
 	}
 
 	private static String getHostAndPort(URL url) {
@@ -409,7 +343,7 @@ public class CollectorServlet extends HttpServlet {
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {
 			final Period period = MonitoringController.getPeriod(req);
-			new HtmlReport(collector, true, javaInformationsList, period, writer)
+			new HtmlReport(collector, collectorServer, javaInformationsList, period, writer)
 					.writeMessageIfNotNull(message, null);
 		}
 		writer.close();
@@ -473,11 +407,7 @@ public class CollectorServlet extends HttpServlet {
 			}
 			actionUrls.add(new URL(actionUrl));
 		}
-		try {
-			collectorServer.collectForApplication(application, actionUrls);
-		} catch (final ClassNotFoundException e) {
-			throw new IllegalStateException(e);
-		}
+		collectorServer.collectForApplication(application, actionUrls);
 	}
 
 	private String getApplication(HttpServletRequest req, HttpServletResponse resp) {
@@ -516,8 +446,7 @@ public class CollectorServlet extends HttpServlet {
 	}
 
 	private static List<URL> getUrlsByApplication(String application) throws IOException {
-		assert application != null;
-		return Parameters.getCollectorUrlsByApplications().get(application);
+		return CollectorServer.getUrlsByApplication(application);
 	}
 
 	/** {@inheritDoc} */

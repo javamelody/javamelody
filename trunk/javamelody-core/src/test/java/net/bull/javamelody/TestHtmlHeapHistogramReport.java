@@ -101,8 +101,8 @@ public class TestHtmlHeapHistogramReport {
 		final Counter counter = new Counter("test html report", null);
 		final Collector collector = new Collector("test", Collections.singletonList(counter), timer);
 		final Period period = Period.TOUT;
-		final HtmlReport htmlReport = new HtmlReport(collector, false,
-				createJavaInformationsList(), period, writer);
+		final HtmlReport htmlReport = new HtmlReport(collector, null, createJavaInformationsList(),
+				period, writer);
 		htmlReport.writeHeapHistogram(heapHistogram, "message",
 				MonitoringController.HEAP_HISTO_PART);
 		assertNotEmptyAndClear(writer);

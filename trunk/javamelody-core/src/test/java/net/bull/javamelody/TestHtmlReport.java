@@ -78,7 +78,7 @@ public class TestHtmlReport {
 	 * @throws IOException e */
 	@Test
 	public void testEmptyCounter() throws IOException {
-		final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		// rapport avec counter sans requête
 		counter.clear();
@@ -100,7 +100,7 @@ public class TestHtmlReport {
 		counter.addRequest("test3", 100000, 50000, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
 
-		final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml("message 2");
 		assertNotEmptyAndClear(writer);
@@ -119,7 +119,7 @@ public class TestHtmlReport {
 		errorCounter.addRequestForSystemError("error", -1, -1, null);
 		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
 		collector.collectWithoutErrors(javaInformationsList);
-		final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml("message 3");
 		assertNotEmptyAndClear(writer);
@@ -142,7 +142,7 @@ public class TestHtmlReport {
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
-		final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.toHtml("message 6");
 		assertNotEmptyAndClear(writer);
@@ -152,7 +152,7 @@ public class TestHtmlReport {
 	 * @throws Exception e */
 	@Test
 	public void testAllWrite() throws Exception {
-		final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.writeRequestAndGraphDetail("httpHitsRate");
 
@@ -201,7 +201,7 @@ public class TestHtmlReport {
 		counter.addRequest("first request", 100, 100, false, 1000);
 		TestCounter.bindRootContexts("first request", counter, 3);
 		sqlCounter.bindContext("sql", "sql");
-		htmlReport = new HtmlReport(collector, false, javaInformationsList, Period.TOUT, writer);
+		htmlReport = new HtmlReport(collector, null, javaInformationsList, Period.TOUT, writer);
 		htmlReport.toHtml("message a");
 		assertNotEmptyAndClear(writer);
 
@@ -209,7 +209,7 @@ public class TestHtmlReport {
 		final Collector collector2 = new Collector("test 2", Arrays
 				.asList(new Counter[] { myCounter }), timer);
 		myCounter.bindContext("my context", "my context");
-		htmlReport = new HtmlReport(collector2, false, javaInformationsList, Period.SEMAINE, writer);
+		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b");
 		assertNotEmptyAndClear(writer);
 	}
@@ -235,7 +235,7 @@ public class TestHtmlReport {
 			// JavaInformations doit être réinstancié pour récupérer les caches
 			final List<JavaInformations> javaInformationsList2 = Collections
 					.singletonList(new JavaInformations(null, true));
-			final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList2,
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
 					Period.TOUT, writer);
 			htmlReport.toHtml(null);
 			assertNotEmptyAndClear(writer);
@@ -280,7 +280,7 @@ public class TestHtmlReport {
 			counter.addRequest("test1", 0, 0, false, 1000);
 			counter.addRequest("test2", 1000, 500, false, 1000);
 			counter.addRequest("test3", 10000, 5000, true, 10000);
-			final HtmlReport htmlReport = new HtmlReport(collector, false, javaInformationsList,
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 					Period.TOUT, writer);
 			htmlReport.toHtml("message");
 			assertNotEmptyAndClear(writer);

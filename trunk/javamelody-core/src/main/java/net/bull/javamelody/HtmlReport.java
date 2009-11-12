@@ -40,7 +40,7 @@ class HtmlReport {
 	private final List<JavaInformations> javaInformationsList;
 	private final Period period;
 	private final Writer writer;
-	private final boolean collectorServer;
+	private final CollectorServer collectorServer;
 
 	private static class HtmlAddAndRemoveApplications {
 		private final Writer writer;
@@ -104,7 +104,7 @@ class HtmlReport {
 		}
 	}
 
-	HtmlReport(Collector collector, boolean collectorServer,
+	HtmlReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Period period, Writer writer) {
 		super();
 		assert collector != null;
@@ -131,7 +131,7 @@ class HtmlReport {
 	void toHtml(String message) throws IOException {
 		final long start = System.currentTimeMillis();
 		writeHtmlHeader(false);
-		if (collectorServer) {
+		if (collectorServer != null) {
 			writeln("<div align='center'>");
 			writeApplicationsLinks(buildPeriodParameter());
 			writeAddAndRemoveApplicationLinks(collector.getApplication(), period, writer);
@@ -163,7 +163,7 @@ class HtmlReport {
 			writeln("</div>");
 		}
 
-		if (!collectorServer) {
+		if (collectorServer == null) {
 			writeln("<h3><img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>#Requetes_en_cours#</h3>");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
 			writeCurrentRequests(javaInformationsList.get(0), counterReportsByCounterName);
@@ -171,7 +171,7 @@ class HtmlReport {
 
 		writeln("<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
 		writeln("#Informations_systemes#</h3>");
-		if (collectorServer) {
+		if (collectorServer != null) {
 			writeln("<div align='center' class='noPrint'><a href='?part=currentRequests"
 					+ buildPeriodParameter() + "'>");
 			writeln("<img src='?resource=hourglass.png' width='20' height='20' alt=\"#Voir_requetes_en_cours#\" /> #Voir_requetes_en_cours#</a>");
@@ -376,7 +376,7 @@ class HtmlReport {
 		final String periodParameter = buildPeriodParameter();
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
-		if (Action.GC_ENABLED || collectorServer) {
+		if (Action.GC_ENABLED || collectorServer != null) {
 			writeln("<a href='?action=gc" + periodParameter
 					+ "' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_ramasse_miette") + "');\">");
@@ -389,7 +389,7 @@ class HtmlReport {
 			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
-		if (Action.HEAP_DUMP_ENABLED || collectorServer) {
+		if (Action.HEAP_DUMP_ENABLED || collectorServer != null) {
 			// si serveur de collecte, on suppose que si la version de java est la bonne
 			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
 			// des webapps monitorées
@@ -409,7 +409,7 @@ class HtmlReport {
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
 		writeln("<br />");
-		if (collectorServer || VirtualMachine.isEnabled()) {
+		if (collectorServer != null || VirtualMachine.isEnabled()) {
 			writeln(separator);
 			writeln("<a href='?part=heaphisto" + periodParameter + "'>");
 			writeln("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
@@ -436,6 +436,10 @@ class HtmlReport {
 
 	private void writeApplicationsLinks(String periodParameter) throws IOException {
 		final Set<String> applications = Parameters.getCollectorUrlsByApplications().keySet();
+		// TODO disponibilité des applications dans serveur de collecte
+		// if (collectorServer != null)
+		//		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
+		//				.getLastCollectExceptionsByApplication();
 		if (applications.size() > 1) {
 			writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
 			for (final String application : applications) {
