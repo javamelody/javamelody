@@ -84,12 +84,10 @@ class MonitoringController {
 		JavaInformations.setWebXmlExistsAndPomXmlExists(webXmlExists, pomXmlExists);
 	}
 	private final Collector collector;
-	private final boolean collectorServer;
-	private HeapHistogram heapHistogramIfCollectServer;
-	private List<SessionInformations> sessionsInformationsIfCollectServer;
+	private final CollectorServer collectorServer;
 	private String messageForReport;
 
-	MonitoringController(Collector collector, boolean collectorServer) {
+	MonitoringController(Collector collector, CollectorServer collectorServer) {
 		super();
 		assert collector != null;
 		this.collector = collector;
@@ -275,7 +273,7 @@ class MonitoringController {
 	private void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList, Period period, String part)
 			throws IOException {
-		if (!collectorServer
+		if (collectorServer == null
 				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
 						.equalsIgnoreCase(part))) {
 			// avant de faire l'affichage on fait une collecte, pour que les courbes
@@ -306,7 +304,7 @@ class MonitoringController {
 			htmlReport.writeRequestAndGraphDetail(graphName);
 		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			doSessions(httpRequest, htmlReport);
-		} else if (!collectorServer && CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+		} else if (collectorServer == null && CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			doCurrentRequests(htmlReport);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			doHeapHisto(htmlReport);
@@ -329,30 +327,30 @@ class MonitoringController {
 			throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		List<SessionInformations> sessionsInformations = sessionsInformationsIfCollectServer;
-		// sessionsInformations null si pas serveur de collecte
-		assert sessionsInformations == null && !collectorServer || sessionsInformations != null
-				&& collectorServer;
 		final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-		if (sessionId == null) {
-			if (sessionsInformations == null) {
+		final List<SessionInformations> sessionsInformations;
+		if (collectorServer == null) {
+			if (sessionId == null) {
 				sessionsInformations = SessionListener.getAllSessionsInformations();
+			} else {
+				sessionsInformations = Collections.singletonList(SessionListener
+						.getSessionInformationsBySessionId(sessionId));
 			}
+		} else {
+			sessionsInformations = collectorServer.collectSessionInformations(collector
+					.getApplication(), sessionId);
+		}
+		if (sessionId == null || sessionsInformations.isEmpty()) {
 			htmlReport.writeSessions(sessionsInformations, messageForReport,
 					MonitoringController.SESSIONS_PART);
 		} else {
-			final SessionInformations sessionInformation;
-			if (sessionsInformations == null) {
-				sessionInformation = SessionListener.getSessionInformationsBySessionId(sessionId);
-			} else {
-				sessionInformation = sessionsInformations.get(0);
-			}
+			final SessionInformations sessionInformation = sessionsInformations.get(0);
 			htmlReport.writeSessionDetail(sessionId, sessionInformation);
 		}
 	}
 
 	private void doCurrentRequests(HtmlReport htmlReport) throws IOException {
-		assert !collectorServer;
+		assert collectorServer == null;
 		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true,
 				new HashMap<String, HtmlCounterReport>());
 	}
@@ -360,18 +358,17 @@ class MonitoringController {
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		HeapHistogram heapHistogram = heapHistogramIfCollectServer;
-		// heapHistogram null si pas serveur de collecte
-		assert heapHistogram == null && !collectorServer || heapHistogram != null
-				&& collectorServer;
-		if (heapHistogram == null) {
-			try {
+		final HeapHistogram heapHistogram;
+		try {
+			if (collectorServer == null) {
 				heapHistogram = VirtualMachine.createHeapHistogram();
-			} catch (final Exception e) {
-				Collector.printStackTrace(e);
-				htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
-				return;
+			} else {
+				heapHistogram = collectorServer.collectHeapHistogram(collector.getApplication());
 			}
+		} catch (final Exception e) {
+			Collector.printStackTrace(e);
+			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
+			return;
 		}
 		htmlReport.writeHeapHistogram(heapHistogram, messageForReport,
 				MonitoringController.HEAP_HISTO_PART);
@@ -424,7 +421,7 @@ class MonitoringController {
 
 	private void doPdf(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			Period period, List<JavaInformations> javaInformationsList) throws IOException {
-		if (!collectorServer) {
+		if (collectorServer == null) {
 			// avant de faire l'affichage on fait une collecte,  pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
 			collector.collectLocalContextWithoutErrors();
@@ -435,7 +432,7 @@ class MonitoringController {
 		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(
 				httpRequest, PdfReport.getFileName(collector.getApplication())));
 		try {
-			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
+			final PdfReport pdfReport = new PdfReport(collector, collectorServer != null,
 					javaInformationsList, period, httpResponse.getOutputStream());
 			pdfReport.toPdf();
 		} finally {
@@ -593,15 +590,5 @@ class MonitoringController {
 			}
 		}
 		return supportCompression;
-	}
-
-	void setHeapHistogramIfCollectServer(HeapHistogram heapHistogram) {
-		assert collectorServer;
-		this.heapHistogramIfCollectServer = heapHistogram;
-	}
-
-	void setSessionsInformations(List<SessionInformations> sessionsInformations) {
-		assert collectorServer;
-		this.sessionsInformationsIfCollectServer = sessionsInformations;
 	}
 }

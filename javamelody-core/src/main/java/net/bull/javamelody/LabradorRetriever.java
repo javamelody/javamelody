@@ -58,7 +58,7 @@ class LabradorRetriever {
 		this.url = url;
 	}
 
-	<T> T call() throws IOException, ClassNotFoundException {
+	<T> T call() throws IOException {
 		final long start = System.currentTimeMillis();
 		try {
 			final URLConnection connection = openConnection(url);
@@ -82,20 +82,23 @@ class LabradorRetriever {
 				throw (Error) result;
 			} else if (result instanceof IOException) {
 				throw (IOException) result;
-			} else if (result instanceof ClassNotFoundException) {
-				throw (ClassNotFoundException) result;
 			} else if (result instanceof Exception) {
-				final Exception e = (Exception) result;
-				// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
-				final IOException ex = new IOException(e.getMessage());
-				ex.initCause(e);
-				throw ex;
+				throw createIOException((Exception) result);
 			}
 			return result;
+		} catch (final ClassNotFoundException e) {
+			throw createIOException(e);
 		} finally {
 			LOGGER.info("appel http effectué en " + (System.currentTimeMillis() - start)
 					+ " ms pour " + url);
 		}
+	}
+
+	private static IOException createIOException(Exception e) {
+		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
+		final IOException ex = new IOException(e.getMessage());
+		ex.initCause(e);
+		return ex;
 	}
 
 	void copyTo(HttpServletRequest httpRequest, HttpServletResponse httpResponse)

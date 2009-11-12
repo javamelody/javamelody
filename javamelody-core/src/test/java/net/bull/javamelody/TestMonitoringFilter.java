@@ -416,7 +416,7 @@ public class TestMonitoringFilter {
 				final Collector collector = new Collector("test", Arrays
 						.asList(new Counter[] { sqlCounter, }), timer);
 				timer.cancel();
-				new MonitoringController(collector, false).writeHtmlToLastShutdownFile();
+				new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
 				verify(config);
 				verify(context);
 			} finally {

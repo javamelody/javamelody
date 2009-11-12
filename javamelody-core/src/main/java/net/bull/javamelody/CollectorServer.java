@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ class CollectorServer {
 
 	private final Map<String, Collector> collectorsByApplication = new LinkedHashMap<String, Collector>();
 	private final Map<String, List<JavaInformations>> javaInformationsByApplication = new LinkedHashMap<String, List<JavaInformations>>();
+	private final Map<String, Throwable> lastCollectExceptionsByApplication = new LinkedHashMap<String, Throwable>();
 
 	private final Timer timer;
 
@@ -89,16 +91,17 @@ class CollectorServer {
 			try {
 				collectForApplication(application, urls);
 				assert collectorsByApplication.size() == javaInformationsByApplication.size();
+				lastCollectExceptionsByApplication.remove(application);
 			} catch (final Throwable e) { // NOPMD
 				// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
 				// et il ne doit y avoir aucune erreur dans cette task
 				LOGGER.warn(e.getMessage(), e);
+				lastCollectExceptionsByApplication.put(application, e);
 			}
 		}
 	}
 
-	void collectForApplication(String application, List<URL> urls) throws IOException,
-			ClassNotFoundException {
+	void collectForApplication(String application, List<URL> urls) throws IOException {
 		LOGGER.info("collecte pour l'application " + application + " sur " + urls);
 		assert application != null;
 		assert urls != null;
@@ -138,6 +141,60 @@ class CollectorServer {
 		}
 	}
 
+	List<SessionInformations> collectSessionInformations(String application, String sessionId)
+			throws IOException {
+		assert application != null;
+		// sessionId est null si on veut toutes les sessions
+		if (sessionId == null) {
+			// récupération à la demande des sessions
+			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
+			for (final URL url : getUrlsByApplication(application)) {
+				final URL sessionsUrl = new URL(url.toString() + '&'
+						+ MonitoringController.PART_PARAMETER + '='
+						+ MonitoringController.SESSIONS_PART);
+				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
+				final List<SessionInformations> sessions = labradorRetriever.call();
+				sessionsInformations.addAll(sessions);
+			}
+			SessionListener.sortSessions(sessionsInformations);
+			return sessionsInformations;
+		}
+		SessionInformations found = null;
+		for (final URL url : getUrlsByApplication(application)) {
+			final URL sessionsUrl = new URL(url.toString() + '&'
+					+ MonitoringController.PART_PARAMETER + '='
+					+ MonitoringController.SESSIONS_PART + '&'
+					+ MonitoringController.SESSION_ID_PARAMETER + '=' + sessionId);
+			final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
+			final SessionInformations session = (SessionInformations) labradorRetriever.call();
+			if (session != null) {
+				found = session;
+				break;
+			}
+		}
+		// si found est toujours null, alors la session a été invalidée
+		return Collections.singletonList(found);
+	}
+
+	HeapHistogram collectHeapHistogram(String application) throws IOException {
+		assert application != null;
+		// récupération à la demande des HeapHistogram
+		HeapHistogram heapHistoTotal = null;
+		for (final URL url : getUrlsByApplication(application)) {
+			final URL heapHistoUrl = new URL(url.toString() + '&'
+					+ MonitoringController.PART_PARAMETER + '='
+					+ MonitoringController.HEAP_HISTO_PART);
+			final LabradorRetriever labradorRetriever = new LabradorRetriever(heapHistoUrl);
+			final HeapHistogram heapHisto = labradorRetriever.call();
+			if (heapHistoTotal == null) {
+				heapHistoTotal = heapHisto;
+			} else {
+				heapHistoTotal.add(heapHisto);
+			}
+		}
+		return heapHistoTotal;
+	}
+
 	private void addRequestsAndErrors(Collector collector, List<Counter> counters) {
 		for (final Counter newCounter : counters) {
 			for (final Counter counter : collector.getCounters()) {
@@ -160,8 +217,7 @@ class CollectorServer {
 		return collector;
 	}
 
-	void addCollectorApplication(String application, List<URL> urls) throws IOException,
-			ClassNotFoundException {
+	void addCollectorApplication(String application, List<URL> urls) throws IOException {
 		collectForApplication(application, urls);
 		Parameters.addCollectorApplication(application, urls);
 	}
@@ -182,12 +238,21 @@ class CollectorServer {
 	}
 
 	/**
-	 * Retourne la liste des informations java à partir du code l'application.
+	 * Retourne la liste des informations java à partir du code de l'application.
 	 * @param application Code de l'application
 	 * @return Liste de JavaInformations
 	 */
 	List<JavaInformations> getJavaInformationsByApplication(String application) {
 		return javaInformationsByApplication.get(application);
+	}
+
+	/**
+	 * Retourne la map des dernières erreurs de collecte par codes d'applications ou null
+	 * si la dernière collecte pour l'application s'est exécutée sans exception.
+	 * @return Map
+	 */
+	Map<String, Throwable> getLastCollectExceptionsByApplication() {
+		return Collections.unmodifiableMap(lastCollectExceptionsByApplication);
 	}
 
 	/**
@@ -251,5 +316,10 @@ class CollectorServer {
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		collectorsByApplication.clear();
 		javaInformationsByApplication.clear();
+	}
+
+	static List<URL> getUrlsByApplication(String application) throws IOException {
+		assert application != null;
+		return Parameters.getCollectorUrlsByApplications().get(application);
 	}
 }
