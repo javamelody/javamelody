@@ -18,6 +18,15 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.POM_XML_PART;
+import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
+import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -226,31 +235,30 @@ public class TestMonitoringFilter {
 	public void testDoMonitoringWithParts() throws ServletException, IOException {
 		final Map<String, String> parameters = new HashMap<String, String>();
 
-		parameters.put(MonitoringController.PART_PARAMETER,
-				MonitoringController.CURRENT_REQUESTS_PART);
+		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		monitoring(parameters);
 
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
-		parameters.put(MonitoringController.SESSION_ID_PARAMETER, "expired session");
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(SESSION_ID_PARAMETER, "expired session");
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.WEB_XML_PART);
+		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		monitoring(parameters, false);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.POM_XML_PART);
+		parameters.put(PART_PARAMETER, POM_XML_PART);
 		monitoring(parameters, false);
 
-		parameters.put(MonitoringController.PART_PARAMETER, "graph");
+		parameters.put(PART_PARAMETER, "graph");
 		parameters.put("graph", "usedMemory");
 		monitoring(parameters);
 
-		parameters.put(MonitoringController.PART_PARAMETER, "unknown part");
+		parameters.put(PART_PARAMETER, "unknown part");
 		boolean exception = false;
 		try {
 			monitoring(parameters);
@@ -268,15 +276,14 @@ public class TestMonitoringFilter {
 		final Map<String, String> parameters = new HashMap<String, String>();
 
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
-		parameters.put(MonitoringController.ACTION_PARAMETER, Action.GC.toString());
+		parameters.put(ACTION_PARAMETER, Action.GC.toString());
 		monitoring(parameters);
-		parameters
-				.put(MonitoringController.ACTION_PARAMETER, Action.INVALIDATE_SESSIONS.toString());
+		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSIONS.toString());
 		monitoring(parameters);
-		parameters.put(MonitoringController.ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
-		parameters.put(MonitoringController.SESSION_ID_PARAMETER, "123456789");
+		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
+		parameters.put(SESSION_ID_PARAMETER, "123456789");
 		monitoring(parameters);
-		parameters.put(MonitoringController.ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
+		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
 		parameters.put("counter", "all");
 		monitoring(parameters);
 	}
@@ -298,19 +305,19 @@ public class TestMonitoringFilter {
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("format", TransportFormat.SERIALIZED.getCode());
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
-		parameters.put(MonitoringController.SESSION_ID_PARAMETER, "expired session");
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(SESSION_ID_PARAMETER, "expired session");
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, null);
+		parameters.put(PART_PARAMETER, null);
 		parameters.put("format", TransportFormat.SERIALIZED.getCode());
-		parameters.put(MonitoringController.COLLECTOR_PARAMETER, "stop");
+		parameters.put(COLLECTOR_PARAMETER, "stop");
 		monitoring(parameters);
 	}
 
@@ -323,12 +330,12 @@ public class TestMonitoringFilter {
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("format", TransportFormat.XML.getCode());
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
 	}
 
@@ -341,12 +348,12 @@ public class TestMonitoringFilter {
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("format", TransportFormat.JSON.getCode());
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.SESSIONS_PART);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
-		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.PROCESSES_PART);
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(MonitoringController.PART_PARAMETER, MonitoringController.HEAP_HISTO_PART);
+		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
 	}
 

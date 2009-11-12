@@ -18,6 +18,28 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PART;
+import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
+import static net.bull.javamelody.HttpParameters.POM_XML_PART;
+import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
+import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
+import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,29 +63,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author Emeric Vernat
  */
 class MonitoringController {
-	static final String HTML_CHARSET = "ISO-8859-1";
-	static final String HTML_CONTENT_TYPE = "text/html; charset=ISO-8859-1";
-	static final String ACTION_PARAMETER = "action";
-	static final String PART_PARAMETER = "part";
-	static final String PERIOD_PARAMETER = "period";
-	static final String SESSION_ID_PARAMETER = "sessionId";
-	static final String COLLECTOR_PARAMETER = "collector";
-	static final String REQUEST_PARAMETER = "request";
-	static final String HEAP_HISTO_PART = "heaphisto";
-	static final String PROCESSES_PART = "processes";
-	static final String CURRENT_REQUESTS_PART = "currentRequests";
-	static final String WEB_XML_PART = "web.xml";
-	static final String POM_XML_PART = "pom.xml";
-	static final String SESSIONS_PART = "sessions";
-	static final String DATABASE_PART = "database";
-	static final String GRAPH_PART = "graph";
-	private static final String COUNTER_PARAMETER = "counter";
-	private static final String GRAPH_PARAMETER = "graph";
-	private static final String RESOURCE_PARAMETER = "resource";
-	private static final String FORMAT_PARAMETER = "format";
-	private static final String WIDTH_PARAMETER = "width";
-	private static final String HEIGHT_PARAMETER = "height";
-
 	static {
 		boolean webXmlExists = false;
 		boolean pomXmlExists = false;
@@ -194,11 +193,10 @@ class MonitoringController {
 
 	static Period getPeriod(HttpServletRequest req) {
 		final Period period;
-		if (req.getParameter(MonitoringController.PERIOD_PARAMETER) == null) {
+		if (req.getParameter(PERIOD_PARAMETER) == null) {
 			period = Period.JOUR;
 		} else {
-			period = Period.valueOfIgnoreCase(req
-					.getParameter(MonitoringController.PERIOD_PARAMETER));
+			period = Period.valueOfIgnoreCase(req.getParameter(PERIOD_PARAMETER));
 		}
 		return period;
 	}
@@ -341,8 +339,7 @@ class MonitoringController {
 					.getApplication(), sessionId);
 		}
 		if (sessionId == null || sessionsInformations.isEmpty()) {
-			htmlReport.writeSessions(sessionsInformations, messageForReport,
-					MonitoringController.SESSIONS_PART);
+			htmlReport.writeSessions(sessionsInformations, messageForReport, SESSIONS_PART);
 		} else {
 			final SessionInformations sessionInformation = sessionsInformations.get(0);
 			htmlReport.writeSessionDetail(sessionId, sessionInformation);
@@ -370,8 +367,7 @@ class MonitoringController {
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 			return;
 		}
-		htmlReport.writeHeapHistogram(heapHistogram, messageForReport,
-				MonitoringController.HEAP_HISTO_PART);
+		htmlReport.writeHeapHistogram(heapHistogram, messageForReport, HEAP_HISTO_PART);
 	}
 
 	private void doProcesses(HtmlReport htmlReport) throws IOException {
