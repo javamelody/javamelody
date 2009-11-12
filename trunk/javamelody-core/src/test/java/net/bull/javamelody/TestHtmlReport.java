@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -176,9 +177,9 @@ public class TestHtmlReport {
 
 		htmlReport.writeSessionDetail("", null);
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
-				MonitoringController.SESSIONS_PART);
-		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), null,
-				MonitoringController.SESSIONS_PART);
+				SESSIONS_PART);
+		htmlReport
+				.writeSessions(Collections.<SessionInformations> emptyList(), null, SESSIONS_PART);
 		final String fileName = ProcessInformations.WINDOWS ? "/tasklist.txt" : "/ps.txt";
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));

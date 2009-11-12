@@ -18,6 +18,18 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
+import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.POM_XML_PART;
+import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -161,7 +173,7 @@ public class CollectorServlet extends HttpServlet {
 			final Collector collector = getCollectorByApplication(application);
 			final MonitoringController monitoringController = new MonitoringController(collector,
 					collectorServer);
-			final String actionParameter = req.getParameter(MonitoringController.ACTION_PARAMETER);
+			final String actionParameter = req.getParameter(ACTION_PARAMETER);
 			if ("remove_application".equalsIgnoreCase(actionParameter)) {
 				collectorServer.removeCollectorApplication(application);
 				final String message = I18N.getFormattedString("application_enlevee", application);
@@ -176,7 +188,7 @@ public class CollectorServlet extends HttpServlet {
 				// nécessaire si action clear_counter
 				monitoringController.executeActionIfNeeded(req);
 			}
-			final String partParameter = req.getParameter(MonitoringController.PART_PARAMETER);
+			final String partParameter = req.getParameter(PART_PARAMETER);
 			if (partParameter == null) {
 				// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
 				// pour être à jour
@@ -195,19 +207,17 @@ public class CollectorServlet extends HttpServlet {
 
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
 			MonitoringController monitoringController, String partParameter) throws IOException {
-		if (MonitoringController.WEB_XML_PART.equalsIgnoreCase(partParameter)) {
+		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
-			doProxy(req, resp, application, MonitoringController.PART_PARAMETER + '='
-					+ MonitoringController.WEB_XML_PART);
-		} else if (MonitoringController.POM_XML_PART.equalsIgnoreCase(partParameter)) {
+			doProxy(req, resp, application, PART_PARAMETER + '=' + WEB_XML_PART);
+		} else if (POM_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
-			doProxy(req, resp, application, MonitoringController.PART_PARAMETER + '='
-					+ MonitoringController.POM_XML_PART);
-		} else if (MonitoringController.CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
+			doProxy(req, resp, application, PART_PARAMETER + '=' + POM_XML_PART);
+		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
 			doCurrentRequests(req, resp, application);
-		} else if (MonitoringController.PROCESSES_PART.equalsIgnoreCase(partParameter)) {
+		} else if (PROCESSES_PART.equalsIgnoreCase(partParameter)) {
 			doProcesses(req, resp, application);
-		} else if (MonitoringController.DATABASE_PART.equalsIgnoreCase(partParameter)) {
+		} else if (DATABASE_PART.equalsIgnoreCase(partParameter)) {
 			doDatabase(req, resp, application);
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
@@ -235,7 +245,7 @@ public class CollectorServlet extends HttpServlet {
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
 		writer.write("<a href='?part=");
-		writer.write(MonitoringController.CURRENT_REQUESTS_PART);
+		writer.write(CURRENT_REQUESTS_PART);
 		writer.write("&amp;period=");
 		writer.write(MonitoringController.getPeriod(req).getCode());
 		writer.write("'>");
@@ -251,10 +261,7 @@ public class CollectorServlet extends HttpServlet {
 			final URL currentRequestsUrl = new URL(url.toString().replace(
 					TransportFormat.SERIALIZED.getCode(), "html").replace(
 					TransportFormat.XML.getCode(), "html")
-					+ '&'
-					+ MonitoringController.PART_PARAMETER
-					+ '='
-					+ MonitoringController.CURRENT_REQUESTS_PART);
+					+ '&' + PART_PARAMETER + '=' + CURRENT_REQUESTS_PART);
 			new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 		}
 		htmlReport.writeHtmlFooter();
@@ -269,7 +276,7 @@ public class CollectorServlet extends HttpServlet {
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
 		writer.write("<a href='?part=");
-		writer.write(MonitoringController.PROCESSES_PART);
+		writer.write(PROCESSES_PART);
 		writer.write("'>");
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
@@ -280,9 +287,8 @@ public class CollectorServlet extends HttpServlet {
 					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush();
-			final URL processesUrl = new URL(url.toString() + '&'
-					+ MonitoringController.PART_PARAMETER + '='
-					+ MonitoringController.PROCESSES_PART);
+			final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ PROCESSES_PART);
 			final List<ProcessInformations> processes = new LabradorRetriever(processesUrl).call();
 			new HtmlProcessInformationsReport(processes, writer).writeTable();
 		}
@@ -293,18 +299,16 @@ public class CollectorServlet extends HttpServlet {
 	private void doDatabase(HttpServletRequest req, HttpServletResponse resp, String application)
 			throws IOException {
 		final int requestIndex;
-		if (req.getParameter(MonitoringController.REQUEST_PARAMETER) != null) {
-			requestIndex = Integer.parseInt(req
-					.getParameter(MonitoringController.REQUEST_PARAMETER));
+		if (req.getParameter(REQUEST_PARAMETER) != null) {
+			requestIndex = Integer.parseInt(req.getParameter(REQUEST_PARAMETER));
 		} else {
 			requestIndex = 0;
 		}
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, writer, application);
 		final URL url = getUrlsByApplication(application).get(0);
-		final URL processesUrl = new URL(url.toString() + '&' + MonitoringController.PART_PARAMETER
-				+ '=' + MonitoringController.DATABASE_PART + '&'
-				+ MonitoringController.REQUEST_PARAMETER + '=' + requestIndex);
+		final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+				+ DATABASE_PART + '&' + REQUEST_PARAMETER + '=' + requestIndex);
 		final DatabaseInformations databaseInformations = new LabradorRetriever(processesUrl)
 				.call();
 		htmlReport.writeDatabase(databaseInformations);
@@ -360,14 +364,13 @@ public class CollectorServlet extends HttpServlet {
 	private static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
 			throws IOException {
 		MonitoringController.noCache(httpResponse);
-		httpResponse.setContentType(MonitoringController.HTML_CONTENT_TYPE);
-		return new PrintWriter(new OutputStreamWriter(httpResponse.getOutputStream(),
-				MonitoringController.HTML_CHARSET));
+		httpResponse.setContentType(HTML_CONTENT_TYPE);
+		return new PrintWriter(new OutputStreamWriter(httpResponse.getOutputStream(), HTML_CHARSET));
 	}
 
 	private static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
 		MonitoringController.noCache(resp);
-		resp.setContentType(MonitoringController.HTML_CONTENT_TYPE);
+		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = resp.getWriter();
 		writer.write("<html><head><title>Monitoring</title></head><body>");
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, Period.JOUR, writer);
@@ -376,7 +379,7 @@ public class CollectorServlet extends HttpServlet {
 
 	private static void showAlertAndRedirectTo(HttpServletResponse resp, String message,
 			String redirectTo) throws IOException {
-		resp.setContentType(MonitoringController.HTML_CONTENT_TYPE);
+		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = resp.getWriter();
 		writer.write("<script type='text/javascript'>alert('");
 		writer.write(I18N.javascriptEncode(message));
@@ -392,9 +395,8 @@ public class CollectorServlet extends HttpServlet {
 
 	private void forwardActionAndUpdateData(HttpServletRequest req, String application)
 			throws IOException {
-		final String actionParameter = req.getParameter(MonitoringController.ACTION_PARAMETER);
-		final String sessionIdParameter = req
-				.getParameter(MonitoringController.SESSION_ID_PARAMETER);
+		final String actionParameter = req.getParameter(ACTION_PARAMETER);
+		final String sessionIdParameter = req.getParameter(SESSION_ID_PARAMETER);
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {

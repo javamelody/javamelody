@@ -150,8 +150,7 @@ class CollectorServer {
 			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
 			for (final URL url : getUrlsByApplication(application)) {
 				final URL sessionsUrl = new URL(url.toString() + '&'
-						+ MonitoringController.PART_PARAMETER + '='
-						+ MonitoringController.SESSIONS_PART);
+						+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.SESSIONS_PART);
 				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
 				final List<SessionInformations> sessions = labradorRetriever.call();
 				sessionsInformations.addAll(sessions);
@@ -161,10 +160,9 @@ class CollectorServer {
 		}
 		SessionInformations found = null;
 		for (final URL url : getUrlsByApplication(application)) {
-			final URL sessionsUrl = new URL(url.toString() + '&'
-					+ MonitoringController.PART_PARAMETER + '='
-					+ MonitoringController.SESSIONS_PART + '&'
-					+ MonitoringController.SESSION_ID_PARAMETER + '=' + sessionId);
+			final URL sessionsUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
+					+ '=' + HttpParameters.SESSIONS_PART + '&'
+					+ HttpParameters.SESSION_ID_PARAMETER + '=' + sessionId);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
 			final SessionInformations session = (SessionInformations) labradorRetriever.call();
 			if (session != null) {
@@ -181,9 +179,8 @@ class CollectorServer {
 		// récupération à la demande des HeapHistogram
 		HeapHistogram heapHistoTotal = null;
 		for (final URL url : getUrlsByApplication(application)) {
-			final URL heapHistoUrl = new URL(url.toString() + '&'
-					+ MonitoringController.PART_PARAMETER + '='
-					+ MonitoringController.HEAP_HISTO_PART);
+			final URL heapHistoUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
+					+ '=' + HttpParameters.HEAP_HISTO_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(heapHistoUrl);
 			final HeapHistogram heapHisto = labradorRetriever.call();
 			if (heapHistoTotal == null) {
