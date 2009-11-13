@@ -448,19 +448,19 @@ class HtmlReport {
 						.get(application);
 				if (lastCollectException == null) {
 					writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
-					writeln("<em><div style='text-align: left; font-size: 10pt;'>");
+					writeln("<em style='text-align: left; font-size: 10pt;'>");
 					writeln("#Application_disponible#");
-					writeln("</div></em>");
+					writeln("</em>");
 				} else {
 					writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
-					writeln("<em><div style='text-align: left; font-size: 10pt;'>");
+					writeln("<em style='text-align: left; font-size: 10pt;'>");
 					writeln("#Application_indisponible#:<br/>");
 					for (final StackTraceElement stackTraceElement : lastCollectException
 							.getStackTrace()) {
 						writeln(I18N.htmlEncode(stackTraceElement.toString(), true));
 						writeln("<br/>");
 					}
-					writeln("</div></em>");
+					writeln("</em>");
 				}
 				writeln(application + "</a>&nbsp;&nbsp;&nbsp;");
 			}
