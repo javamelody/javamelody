@@ -435,15 +435,33 @@ class HtmlReport {
 	}
 
 	private void writeApplicationsLinks(String periodParameter) throws IOException {
+		assert collectorServer != null;
 		final Set<String> applications = Parameters.getCollectorUrlsByApplications().keySet();
-		// TODO disponibilité des applications dans serveur de collecte
-		// if (collectorServer != null)
-		//		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
-		//				.getLastCollectExceptionsByApplication();
+		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
+				.getLastCollectExceptionsByApplication();
 		if (applications.size() > 1) {
 			writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
 			for (final String application : applications) {
-				writeln("<a href='?application=" + application + periodParameter + "'>");
+				writeln("<a href='?application=" + application + periodParameter
+						+ "' class='tooltip'>");
+				final Throwable lastCollectException = lastCollectExceptionsByApplication
+						.get(application);
+				if (lastCollectException == null) {
+					writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
+					writeln("<em><div style='text-align: left; font-size: 10pt;'>");
+					writeln("#Application_disponible#");
+					writeln("</div></em>");
+				} else {
+					writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
+					writeln("<em><div style='text-align: left; font-size: 10pt;'>");
+					writeln("#Application_indisponible#:<br/>");
+					for (final StackTraceElement stackTraceElement : lastCollectException
+							.getStackTrace()) {
+						writeln(I18N.htmlEncode(stackTraceElement.toString(), true));
+						writeln("<br/>");
+					}
+					writeln("</div></em>");
+				}
 				writeln(application + "</a>&nbsp;&nbsp;&nbsp;");
 			}
 		}
