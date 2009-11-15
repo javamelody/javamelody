@@ -58,7 +58,7 @@ public class MonitoringInitialContextFactory implements InitialContextFactory {
 			final Class<?> clazz = Class.forName(initialContextFactory);
 			final InitialContextFactory icf = (InitialContextFactory) clazz.newInstance();
 			final Context context = icf.getInitialContext(environment);
-			final JdbcWrapper jdbcWrapper = JdbcDriver.SINGLETON.getJdbcWrapper();
+			final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
 			return jdbcWrapper.createContextProxy(context);
 		} catch (final ClassNotFoundException e) {
 			throw createNamingException(e);

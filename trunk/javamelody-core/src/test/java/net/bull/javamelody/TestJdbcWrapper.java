@@ -51,7 +51,7 @@ public class TestJdbcWrapper {
 	public void setUp() throws SQLException {
 		driver = new JdbcDriver();
 		DriverManager.registerDriver(driver);
-		jdbcWrapper = driver.getJdbcWrapper();
+		jdbcWrapper = JdbcWrapper.SINGLETON;
 	}
 
 	/** Test. */

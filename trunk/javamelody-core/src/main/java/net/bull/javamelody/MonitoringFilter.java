@@ -108,7 +108,7 @@ public class MonitoringFilter implements Filter {
 		}
 
 		final boolean noDatabase = Parameters.isNoDatabase();
-		final JdbcWrapper jdbcWrapper = JdbcDriver.SINGLETON.getJdbcWrapper();
+		final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
 		// si l'application a utilisé JdbcDriver avant d'initialiser ce filtre
 		// (par exemple dans un listener de contexte), on doit récupérer son sqlCounter
 		// car il est lié à une connexion jdbc qui est certainement conservée dans un pool
@@ -226,7 +226,7 @@ public class MonitoringFilter implements Filter {
 				}
 			} finally {
 				//on rebind les dataSources initiales à la place des proxy
-				JdbcDriver.SINGLETON.getJdbcWrapper().stop();
+				JdbcWrapper.SINGLETON.stop();
 				JdbcDriver.SINGLETON.deregister();
 
 				// on enlève l'appender de log4j et le handler de java.util.logging

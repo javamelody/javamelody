@@ -55,6 +55,9 @@ class JdbcWrapper {
 	static final AtomicInteger USED_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger ACTIVE_THREAD_COUNT = new AtomicInteger();
 
+	// instance de JdbcWrapper (ici on ne connaît pas le ServletContext)
+	static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"), null);
+
 	private static final Map<String, Object> TOMCAT_BASIC_DATASOURCE_PROPERTIES = new LinkedHashMap<String, Object>();
 
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).

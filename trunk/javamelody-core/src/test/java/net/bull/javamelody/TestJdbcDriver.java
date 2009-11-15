@@ -57,12 +57,6 @@ public class TestJdbcDriver {
 
 	/** Test. */
 	@Test
-	public void testGetJdbcWrapper() {
-		assertNotNull("getJdbcWrapper", driver.getJdbcWrapper());
-	}
-
-	/** Test. */
-	@Test
 	public void testGetLastConnectUrl() {
 		assertNull("getLastConnectUrl", driver.getLastConnectUrl());
 	}
