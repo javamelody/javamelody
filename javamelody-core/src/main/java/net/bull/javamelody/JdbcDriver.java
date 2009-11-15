@@ -36,8 +36,6 @@ public class JdbcDriver implements Driver {
 	// cette classe est publique pour être déclarée dans une configuration jdbc
 	static final JdbcDriver SINGLETON = new JdbcDriver();
 
-	// instance temporaire de JdbcWrapper (ici on ne connaît pas le ServletContext)
-	private final JdbcWrapper jdbcWrapper = new JdbcWrapper(new Counter("sql", "db.png"), null);
 	private String lastConnectUrl;
 	private Properties lastConnectInfo;
 
@@ -58,10 +56,6 @@ public class JdbcDriver implements Driver {
 			// ne peut arriver
 			throw new IllegalStateException(e);
 		}
-	}
-
-	JdbcWrapper getJdbcWrapper() {
-		return jdbcWrapper;
 	}
 
 	String getLastConnectUrl() {
@@ -92,11 +86,16 @@ public class JdbcDriver implements Driver {
 		tmp.remove("driver");
 		lastConnectUrl = url;
 		lastConnectInfo = tmp;
-		return jdbcWrapper.createConnectionProxy(DriverManager.getConnection(url, tmp));
+		return JdbcWrapper.SINGLETON.createConnectionProxy(DriverManager.getConnection(url, tmp));
 	}
 
 	/** {@inheritDoc} */
 	public boolean acceptsURL(String url) throws SQLException {
+		for (final StackTraceElement element : Thread.currentThread().getStackTrace()) {
+			if (element.getClassName().endsWith("dbcp.BasicDataSource")) {
+				return false;
+			}
+		}
 		return true;
 	}
 

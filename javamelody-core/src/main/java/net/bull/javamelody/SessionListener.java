@@ -140,7 +140,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 		// on initialise le monitoring des DataSource jdbc même si cette initialisation
 		// sera refaite dans MonitoringFilter au cas où ce listener ait été oublié dans web.xml
-		final JdbcWrapper jdbcWrapper = JdbcDriver.SINGLETON.getJdbcWrapper();
+		final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
 		jdbcWrapper.initServletContext(event.getServletContext());
 		jdbcWrapper.rebindDataSources();
 	}

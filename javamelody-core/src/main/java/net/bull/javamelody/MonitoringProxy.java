@@ -35,7 +35,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	// pour qu'un proxy soit sérialisable si la façade est sérialisable
 	private static final long serialVersionUID = 1882880665014391301L;
 	private static final Counter SERVICES_COUNTER = new Counter("services", "beans.png",
-			JdbcDriver.SINGLETON.getJdbcWrapper().getSqlCounter());
+			JdbcWrapper.SINGLETON.getSqlCounter());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
 	@SuppressWarnings("all")
