@@ -134,7 +134,9 @@ class HtmlCounterReport {
 			writeln("<th class='sorttable_numeric'>#Ecart_type#</th><th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
 			writeln("<th class='sorttable_numeric'>#erreur_systeme#</th>");
 			final Counter parentCounter = getCounterByRequestId(request.getId());
-			if (parentCounter != null && parentCounter.getChildCounterName() != null) {
+			final boolean allChildHitsDisplayed = parentCounter != null
+					&& parentCounter.getChildCounterName() != null;
+			if (allChildHitsDisplayed) {
 				final String childCounterName = parentCounter.getChildCounterName();
 				writeln("<th class='sorttable_numeric'>"
 						+ I18N.getFormattedString("hits_fils_moyens", childCounterName));
@@ -149,18 +151,18 @@ class HtmlCounterReport {
 			if (hasChildren) {
 				writeln("</td><td>&nbsp;");
 			}
-			writeRequestValues(request);
+			writeRequestValues(request, allChildHitsDisplayed);
 			writeln("</td></tr>");
 
 			if (hasChildren) {
-				writeChildRequests(request, childRequests);
+				writeChildRequests(request, childRequests, allChildHitsDisplayed);
 			}
 			writeln("</tbody></table>");
 			writeln("<br/>");
 		}
 
-		private void writeChildRequests(CounterRequest request, Map<String, Long> childRequests)
-				throws IOException {
+		private void writeChildRequests(CounterRequest request, Map<String, Long> childRequests,
+				boolean allChildHitsDisplayed) throws IOException {
 			boolean odd = true;
 			for (final Map.Entry<String, Long> entry : childRequests.entrySet()) {
 				final CounterRequest childRequest = requestsById.get(entry.getKey());
@@ -173,14 +175,14 @@ class HtmlCounterReport {
 					odd = !odd; // NOPMD
 					final Long nbExecutions = entry.getValue();
 					final float executionsByRequest = (float) nbExecutions / request.getHits();
-					writeChildRequest(childRequest, executionsByRequest);
+					writeChildRequest(childRequest, executionsByRequest, allChildHitsDisplayed);
 					writeln("</tr>");
 				}
 			}
 		}
 
-		private void writeChildRequest(CounterRequest childRequest, float executionsByRequest)
-				throws IOException {
+		private void writeChildRequest(CounterRequest childRequest, float executionsByRequest,
+				boolean allChildHitsDisplayed) throws IOException {
 			writeln("<td>");
 			writeln("<div style='margin-left: 10px;'>");
 			writeCounterIcon(childRequest);
@@ -188,11 +190,12 @@ class HtmlCounterReport {
 			writeln("</div>");
 			writeln("</td><td align='right'>");
 			writer.write(nbExecutionsFormat.format(executionsByRequest));
-			writeRequestValues(childRequest);
+			writeRequestValues(childRequest, allChildHitsDisplayed);
 			writeln("</td>");
 		}
 
-		private void writeRequestValues(CounterRequest request) throws IOException {
+		private void writeRequestValues(CounterRequest request, boolean allChildHitsDisplayed)
+				throws IOException {
 			final String nextColumn = "</td><td align='right'>";
 			writeln(nextColumn);
 			writeln(integerFormat.format(request.getMean()));
@@ -206,14 +209,16 @@ class HtmlCounterReport {
 			}
 			writeln(nextColumn);
 			writeln(systemErrorFormat.format(request.getSystemErrorPercentage()));
-			writeln(nextColumn);
-			final boolean childHitsDisplayed = request.getChildHitsMean() > 0;
-			if (childHitsDisplayed) {
-				writeln(systemErrorFormat.format(request.getChildHitsMean()));
-			}
-			writeln(nextColumn);
-			if (childHitsDisplayed) {
-				writeln(systemErrorFormat.format(request.getChildDurationsMean()));
+			if (allChildHitsDisplayed) {
+				writeln(nextColumn);
+				final boolean childHitsDisplayed = request.getChildHitsMean() > 0;
+				if (childHitsDisplayed) {
+					writeln(systemErrorFormat.format(request.getChildHitsMean()));
+				}
+				writeln(nextColumn);
+				if (childHitsDisplayed) {
+					writeln(systemErrorFormat.format(request.getChildDurationsMean()));
+				}
 			}
 		}
 
