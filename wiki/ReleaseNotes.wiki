@@ -1,10 +1,15 @@
 #labels Featured
+=== trunk (future release) ===
+
+  * added: display of availability or unavailability of applications in the collect server
+  * added: [UserGuideAdvanced documentation] for monitoring of services without ejb3 and without spring
+
 === 1.8.2 ===
 
   * fix ClassCastException for ehcache v1.2.1 to v1.2.4 (thanks hl)
   * fix: c:\... is now an absolute path for parameter "storage-directory" (and not relative to temp)
   * sql monitoring by jdbc datasource can now be disabled by an empty "datasources" parameter
-  * added display of deadlocks between threads if there are
+  * added: display of deadlocks between threads if there are
 This is the same version of JavaMelody as in the hudson plugin "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" available in [http://hudson-ci.org/ hudson].
 
 === 1.8.0 ===
