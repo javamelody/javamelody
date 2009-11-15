@@ -59,7 +59,8 @@ class DatabaseInformations implements Serializable {
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
-				tmp = Arrays.asList("processlist", "databases", "status", "innodb_status");
+				tmp = Arrays.asList("processlist", "databases", "variables", "status",
+						"innodb_status");
 				break;
 			case ORACLE:
 				tmp = Arrays
