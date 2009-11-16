@@ -91,6 +91,8 @@ public class JdbcDriver implements Driver {
 
 	/** {@inheritDoc} */
 	public boolean acceptsURL(String url) throws SQLException {
+		// test sur dbcp nécessaire pour le cas où le monitoring est utilisé avec le web.xml global
+		// et le répertoire lib global de tomcat et également pour les anomalies 1&2 (sonar, grails)
 		for (final StackTraceElement element : Thread.currentThread().getStackTrace()) {
 			if (element.getClassName().endsWith("dbcp.BasicDataSource")) {
 				return false;
