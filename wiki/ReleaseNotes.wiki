@@ -1,6 +1,12 @@
 #labels Featured
 === trunk (future release) ===
 
+  * more to come
+
+=== 1.9.0 ===
+
+  * fix issue 3 "http status 500" : NoSuchElementException in getPID on Solaris 10
+  * fix for use of JavaMelody in tomcat's lib directory (NullPointerException in dbcp datasource), documentation to come
   * added: display of availability or unavailability of applications in the collect server
   * added: [UserGuideAdvanced documentation] for monitoring of services without ejb3 and without spring
 
