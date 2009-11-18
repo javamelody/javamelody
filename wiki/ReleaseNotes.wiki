@@ -6,7 +6,7 @@
 === 1.9.0 ===
 
   * fix issue 3 "http status 500" : NoSuchElementException in getPID on Solaris 10
-  * fix for use of JavaMelody in tomcat's lib directory (NullPointerException in dbcp datasource), documentation to come
+  * fix for use of JavaMelody in tomcat's lib directory without modification of monitored webapps (fix NullPointerException in dbcp datasource), [UserGuideAdvanced#Deployment_on_Tomcat_without_modification_of_monitored_webapps documentation] added
   * added: display of availability or unavailability of applications in the collect server
   * added: [UserGuideAdvanced documentation] for monitoring of services without ejb3 and without spring
 
