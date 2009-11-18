@@ -173,6 +173,45 @@ Documentation avancée de Java Melody
 	comme les paramètres optionnels dans le guide d'utilisation, et avec pour valeur "http,sql,error,log,services" par exemple.
 
 
+* Déploiement de JavaMelody sur Tomcat sans modification des webapps monitorées (bêta)
+
+	Si il y a une ou plusieurs webapp(s) à monitorer qui sont déployées sur Tomcat 6,
+	il est possible de monitorer cette ou ces webapp(s) sans modification de cette ou ces webapp(s).
+	C'est-à-dire sans modifier le fichier war ou le répertoire de ces webapps.
+	
+	Pour cela, copier les fichiers <<<javamelody.jar>>> et <<<jrobin-x.jar>>> et éventuellement <<<itext-x.jar>>> dans le répertoire lib de Tomcat 6 (et non dans les répertoires WEB-INF/lib des webapps).
+	
+	Puis ajouter les lignes suivantes dans le fichier web.xml du répertoire conf de Tomcat (et non dans les fichiers WEB-INF/web.xml des webapps).
+	
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
++-------------------------------+
+
+	Dans ce fichier conf/web.xml de tomcat, il peut aussi être ajouté des paramètres comme indiqué dans le guide d'utilisation.
+	
+	Ainsi et sans modification des webapps, toutes les webapps déployées dans cette instance de Tomcat seront monitorées
+	(et il n'est alors pas possible de choisir lesquelles, autrement que par le paramètre url-exclude-pattern décrit dans le guide d'utilisation).
+	Cette technique est spécifique à Tomcat 6 et ne s'applique pas aux autres implémentations JavaEE.
+
+	Le <<<ClassLoader>>> dans les serveurs d'applications est un sujet complexe. En conséquences :
+	
+	* Cette fonctionnalité est pour l'instant considérée en phase bêta
+	
+	* Elle fonctionne uniquement en Tomcat 6 (Tomcat 5.5 n'est donc pas supporté)
+	
+	* Il ne paraît pas conseillé d'utiliser le monitoring par Spring AOP dans ce cas
+	
+	
 * Format des fichiers RRD
 	
 	Les valeurs des courbes sont stockées au format RRD (Round Robin Database).
