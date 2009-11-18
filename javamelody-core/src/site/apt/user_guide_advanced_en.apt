@@ -166,6 +166,45 @@ Advanced documentation of Java Melody
 	as the optional parameters in the user guide, and with value "http,sql,error,log,services" for example.
 
 
+* Deployment of JavaMelody on Tomcat without modification of monitored webapps (beta)
+
+	If there is one or several webapp(s) to monitor which are deployed on Tomcat 6,
+	it is possible to monitor this or these webapp(s) without modification of this or these webapp(s).
+	That is to say without modification of the war file or of the directory of these webapps.
+	
+	For this, copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>> and optionally <<<itext-x.jar>>> in the lib directory of Tomcat 6 (and not in the WEB-INF/lib directories of the webapps).
+	
+	Then add the following lines in the web.xml file of the conf directory of Tomcat (and not in the WEB-INF/web.xml files of the webapps).
+	
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
++-------------------------------+
+
+	In this conf/web.xml file of tomcat, it can be added some parameters as written in the user guide.
+	
+	So and without modification of the webapps, all webapps deployed in this Tomcat instance are monitored
+	(and it is then not possible to choose which, otherwise than with the url-exclude-pattern parameter described in the user guide).
+	This technique is specific to Tomcat 6 and does not apply to other JavaEE implementations.
+
+	The <<<ClassLoader>>> in applications servers is a complex subject. In consequence :
+	
+	* This feature is considered as beta for now
+	
+	* It works only in Tomcat 6 (Tomcat 5.5 is not supported)
+	
+	* It does not seem advisable to use the monitoring by Spring AOP in this case
+	
+	
 * Format of RRD files
 	
 	Values of charts are stored in RRD (Round Robin Database) format.
