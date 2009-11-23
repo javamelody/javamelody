@@ -33,10 +33,9 @@ import org.junit.Test;
  */
 public class TestLabradorRetriever {
 	/** Test.
-	 * @throws ClassNotFoundException e
 	 * @throws IOException e */
 	@Test
-	public void testCall() throws IOException, ClassNotFoundException {
+	public void testCall() throws IOException {
 		final File file = File.createTempFile("test", ".ser");
 		try {
 			final ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(file));
