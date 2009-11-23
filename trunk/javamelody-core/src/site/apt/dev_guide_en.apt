@@ -27,6 +27,52 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	You can also use the maven goals "clean site" to build a maven site with documentations and reports on analysis of sources
 	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura).
 
+
+* Import in Eclipse the sources of current development version
+
+	To import from the SVN server the sources of the version currently in development, with Eclipse 3.5 using a JDK 1.6 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
+	
+	* Click the task Import in File menu
+	
+	* Choose SVN, Project from SVN
+	
+	* To create a SVN repository, write the URL http://javamelody.googlecode.com/svn/trunk/javamelody-core (no authentication) then click Next
+	
+	* Choose the resource of URL http://javamelody.googlecode.com/svn/trunk/javamelody-core (Select again the URL in the combo-box if needed)
+	
+	* Click Finish
+	
+	* Eclipse imports the project javamelody-core with the sources, then it compiles all
+	(maven must works and be connected to download the dependencies,
+	otherwise add them manually in the Build-Path from src/main/lib and src/test/test-webapp/WEB-INF/lib))
+	
+	* It is also possible to import the projects javamelody-test-webapp and javamelody-collector-server which are next to javamelody-core in SVN
+
+	[]
+
+	
+	To rebuild the jar and the war of JavaMelody:
+	
+	* Do a right-click on the build.xml file in the project javamelody-core, then select Run As, Ant Build
+	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" lauches the unit tests.)
+	
+	* Wait about 10 seconds for the end of the execution of the script
+	
+	* Do a Refresh (F5) on the project javamelody-core
+	
+	* In the files of the project, the javamelody.zip file appears and contains the rebuilt jar and war of javamelody
+
+	[]
+
+	
+	After some weeks for example, in order to update your sources with the new developments:
+	
+	* Do a right-click on the project javamelody-core, then select Team, Update
+	(note: I use Native JavaHL and not SVN Kit in Window, Preferences, Team, SVN, tab SVN Connector)
+
+	[]
+
+
 * Development
 
 	The development is done with {{{http://www.eclipse.org}Eclipse}} in its latest version and with the jdk 1.6 at least for compilation.

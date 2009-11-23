@@ -23,10 +23,56 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Vous pouvez utiliser le target "all" du script ant (sans maven) pour recompiler à partir des sources
 	et produire les fichiers javamelody.jar et javamelody.war qui sont ceux également disponibles dans la partie "Download".
 	Vous devez utilisez un JDK v1.6 pour compiler les sources.
-
+	
 	Vous pouvez aussi utiliser les goals maven "clean site" pour produire un site maven contenant des documentations
 	et des rapports sur l'analyse du code ou les tests unitaires (checkstyle, findbugs, pmd, cpd, junit, cobertura).
 
+
+* Importer dans Eclipse les sources de la version en cours de développement
+
+	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.5 utilisant un JDK 1.6 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
+	
+	* Lancer la tâche Import dans le menu File
+	
+	* Choisir SVN, Project from SVN
+	
+	* Pour créer un repository SVN, saisir l'URL http://javamelody.googlecode.com/svn/trunk/javamelody-core (pas d'authentification) puis cliquer Next
+	
+	* Choisir la resource d'URL http://javamelody.googlecode.com/svn/trunk/javamelody-core (cela peut nécessiter de la resélectionner dans la liste déroulante)
+	
+	* Cliquer Finish
+	
+	* Eclipse importe le projet javamelody-core avec les sources, puis compile le tout
+	(maven doit fonctionner et être connecté pour télécharger les dépendances,
+	sinon les ajouter à la main dans le Build-Path à partir de src/main/lib et src/test/test-webapp/WEB-INF/lib)
+	
+	* Il est possible également d'importer les projets javamelody-test-webapp et javamelody-collector-server situés à côté de javamelody-core dans SVN
+
+	[]
+
+
+	Pour reconstruire le jar et le war de JavaMelody :
+	
+	* Faire un clique-droit sur le fichier build.xml dans le projet javamelody-core, puis sélectionner Run As, Ant Build
+	ce qui lancera la tâche par défaut "all" du script ant. (En remarque, la tâche "test" dans ce même script lance les tests unitaires.)
+	
+	* Attendre environ 10 secondes la fin de l'exécution du script
+	
+	* Faire un Refresh (F5) sur le projet javamelody-core
+	
+	* Dans l'arborescence du projet, il apparait le fichier javamelody.zip, contenant le jar et le war recompilés de javamelody
+
+	[]
+
+	
+	Après quelques semaines par exemple, pour mettre à jour vos sources avec les nouveaux développements :
+	
+	* Faire un clique-droit sur le projet javamelody-core, puis sélectionner Team, Update
+	(note : j'utilise Native JavaHL et non SVN Kit dans Window, Preferences, Team, SVN, onglet SVN Connector)
+	
+	[]
+
+	
 * Développement
 
 	Le développement se fait avec {{{http://www.eclipse.org}Eclipse}} dans sa dernière version et avec le jdk 1.6 au minimum pour la compilation.
