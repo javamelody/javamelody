@@ -232,7 +232,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If the application to monitor contains some business façades in EJB3 (Java EE 5) with annotations <<<@Stateless>>>,
 	<<<@Stateful>>> or <<<@MessageDriven>>>, a counter can be created for statistics of execution of methods.
-	For this, declare in your <<<ejb-jar.xml>>> file the ejb3 interceptor as in the following example:
+	But it is not recommended for response time to monitor execution of all the methods of EJB3 beans,
+	for example the methods of low granularity as getters of entities.
+
+	To configure this, declare in your <<<ejb-jar.xml>>> file the ejb3 interceptor as in the following example:
 
 +-------------------------------+
 	<ejb-jar
@@ -249,6 +252,33 @@ Description and documentation of Java Melody : monitoring of Java EE application
 		<assembly-descriptor>
 			<interceptor-binding>
 				<ejb-name>*</ejb-name>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor-binding>
+		</assembly-descriptor>
+	</ejb-jar>
++-------------------------------+
+
+or
+
++-------------------------------+
+	<ejb-jar
+		xmlns = "http://java.sun.com/xml/ns/javaee"
+		version = "3.0"
+		xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+	>
+		<interceptors>
+			<interceptor>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor>
+		</interceptors>
+		<assembly-descriptor>
+			<interceptor-binding>
+				<ejb-name>FacadeBean1</ejb-name>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor-binding>
+			<interceptor-binding>
+				<ejb-name>FacadeBean2</ejb-name>
 				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
 			</interceptor-binding>
 		</assembly-descriptor>

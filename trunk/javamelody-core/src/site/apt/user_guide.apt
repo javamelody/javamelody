@@ -232,7 +232,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Si l'application à monitorer contient des façades métiers en EJB3 (Java EE 5) avec des annotations <<<@Stateless>>>,
 	<<<@Stateful>>> ou <<<@MessageDriven>>>, un compteur peut être créé pour les statistiques d'exécution de méthodes.
-	Pour cela, déclarer dans votre fichier <<<ejb-jar.xml>>> l'intercepteur ejb3 comme dans l'exemple suivant :
+	Il n'est pas conseillé pour autant de monitorer les exécutions de toutes les méthodes des beans EJB3 et en particulier
+	les méthodes de très faible granularité comme les getters d'entités, au risque d'introduire un surcoût en temps de réponse.
+	Pour configurer cela, déclarer dans votre fichier <<<ejb-jar.xml>>> l'intercepteur ejb3 comme dans l'exemple suivant :
 
 +-------------------------------+
 	<ejb-jar
@@ -249,6 +251,33 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 		<assembly-descriptor>
 			<interceptor-binding>
 				<ejb-name>*</ejb-name>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor-binding>
+		</assembly-descriptor>
+	</ejb-jar>
++-------------------------------+
+
+ou
+
++-------------------------------+
+	<ejb-jar
+		xmlns = "http://java.sun.com/xml/ns/javaee"
+		version = "3.0"
+		xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+	>
+		<interceptors>
+			<interceptor>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor>
+		</interceptors>
+		<assembly-descriptor>
+			<interceptor-binding>
+				<ejb-name>FacadeBean1</ejb-name>
+				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
+			</interceptor-binding>
+			<interceptor-binding>
+				<ejb-name>FacadeBean2</ejb-name>
 				<interceptor-class>net.bull.javamelody.MonitoringInterceptor</interceptor-class>
 			</interceptor-binding>
 		</assembly-descriptor>
