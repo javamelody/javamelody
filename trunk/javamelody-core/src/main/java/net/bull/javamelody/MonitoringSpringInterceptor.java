@@ -13,7 +13,7 @@ import org.springframework.aop.support.AopUtils;
  */
 public class MonitoringSpringInterceptor implements MethodInterceptor, Serializable {
 	private static final long serialVersionUID = -6594338383847482623L;
-	private static final Counter SPRING_COUNTER = MonitoringInterceptor.getSpringCounter();
+	private static final Counter SPRING_COUNTER = MonitoringProxy.getSpringCounter();
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
 

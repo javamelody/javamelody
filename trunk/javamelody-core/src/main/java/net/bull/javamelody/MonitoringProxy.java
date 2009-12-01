@@ -34,8 +34,18 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	// cette classe ainsi que JdbcWrapper.DelegatingInvocationHandler sont sérialisables
 	// pour qu'un proxy soit sérialisable si la façade est sérialisable
 	private static final long serialVersionUID = 1882880665014391301L;
+
 	private static final Counter SERVICES_COUNTER = new Counter("services", "beans.png",
 			JdbcWrapper.SINGLETON.getSqlCounter());
+	// EJB_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
+	// ClassNotFoundException si les classes javax.interceptor ne sont pas présentes
+	private static final Counter EJB_COUNTER = new Counter("ejb", "beans.png",
+			JdbcWrapper.SINGLETON.getSqlCounter());
+	// SPRING_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
+	// ClassNotFoundException si les classes Spring et AOP alliance ne sont pas présentes
+	private static final Counter SPRING_COUNTER = new Counter("spring", "beans.png",
+			JdbcWrapper.SINGLETON.getSqlCounter());
+
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
 	@SuppressWarnings("all")
@@ -62,6 +72,14 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 
 	static Counter getServicesCounter() {
 		return SERVICES_COUNTER;
+	}
+
+	static Counter getEjbCounter() {
+		return EJB_COUNTER;
+	}
+
+	static Counter getSpringCounter() {
+		return SPRING_COUNTER;
 	}
 
 	/**

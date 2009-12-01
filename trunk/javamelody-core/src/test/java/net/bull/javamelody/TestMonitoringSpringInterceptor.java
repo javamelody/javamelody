@@ -39,7 +39,7 @@ public class TestMonitoringSpringInterceptor {
 	/** Test. */
 	@Test
 	public void testGetSpringCounter() {
-		assertNotNull("getSpringCounter", MonitoringInterceptor.getSpringCounter());
+		assertNotNull("getSpringCounter", MonitoringProxy.getSpringCounter());
 	}
 
 	/** Test. */
@@ -55,7 +55,7 @@ public class TestMonitoringSpringInterceptor {
 	 * @throws Exception e */
 	@Test
 	public void testSpringAOP() throws Exception {
-		final Counter springCounter = MonitoringInterceptor.getSpringCounter();
+		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
 		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
 				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", });

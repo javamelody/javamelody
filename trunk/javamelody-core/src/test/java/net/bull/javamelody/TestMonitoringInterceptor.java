@@ -85,7 +85,7 @@ public class TestMonitoringInterceptor {
 	 * @throws Exception e */
 	@Test
 	public void testInvoke() throws Exception {
-		final Counter ejbCounter = MonitoringInterceptor.getEjbCounter();
+		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringInterceptor interceptor = new MonitoringInterceptor();
 
@@ -108,6 +108,6 @@ public class TestMonitoringInterceptor {
 	/** Test. */
 	@Test
 	public void testGetEjbCounter() {
-		assertNotNull("getEjbCounter", MonitoringInterceptor.getEjbCounter());
+		assertNotNull("getEjbCounter", MonitoringProxy.getEjbCounter());
 	}
 }
