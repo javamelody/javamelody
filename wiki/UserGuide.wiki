@@ -121,7 +121,7 @@ Language: English and French
 
 	{{{url-pattern}}} in {{{web.xml}}} file above can be adapted in order not to monitor some urls,
 	possibly with several mappings on the same filter
-	(for example {{{filter-mapping}}}s with {{{url-pattern}}}s {{{/servlet/* and {{{/monitoring}}}, but not {{{/static/*}}},
+	(for example {{{filter-mapping}}}s with {{{url-pattern}}}s {{{/servlet/*}}} and {{{/monitoring}}}, but not {{{/static/*}}},
 	with the same {{{filter-name}}} monitoring, but {{{url-pattern}}} must "contain" {{{/monitoring}}}),
 
 	or, a filter parameter can be added before {{{ </filter> }}} in order to exclude some urls, for example:
@@ -143,6 +143,10 @@ Language: English and French
 	  (context xml file in Tomcat)
 	# in system properties with prefix {{{javamelody.}}}
 	  (java launch command or administration user interface)
+
+	The parameter {{{system-actions-enabled}}} ({{{false}}} by default for security) enables the system actions
+	garbage collector, http sessions, heap dump, memory histogram, process list, database (near the bottom of reports).
+	These actions have confirmations when necessary.
 
 	The parameter {{{url-exclude-pattern}}} is a
 	[http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html regular expression]
@@ -186,10 +190,6 @@ Language: English and French
 	with their average times percentages, hits, etc.
 	These threshold parameters can serve as a basis for a SLA (service level) of an application, for which
 	constraints can be defined such as "response time less than 2s for 90% of http requests".
-
-	The parameter {{{system-actions-enabled}}} ({{{false}}} by default for security) enables the system actions
-	Garbage collector, http sessions, heap dump, memory histogram (near the bottom of reports).
-	These actions have confirmations when necessary.
 
 	The parameter {{{disabled}}} ({{{false}}} by default) just disables the monitoring.
 	This allows for example to disable the monitoring temporarily or only on some servers,
