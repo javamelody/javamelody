@@ -147,6 +147,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	[]
 
+	The parameter <<<system-actions-enabled>>> (<<<false>>> by default for security) enables the system actions
+	<garbage collector>, <http sessions>, <heap dump>, <memory histogram>, <process list>, <database> (near the bottom of reports).
+	These actions have confirmations when necessary.
+
 	The parameter <<<url-exclude-pattern>>> is a
 	{{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} regular expression}}
 	to exclude some urls from monitoring as written above.
@@ -189,10 +193,6 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	with their average times percentages, hits, etc.
 	These threshold parameters can serve as a basis for a SLA (service level) of an application, for which
 	constraints can be defined such as "response time less than 2s for 90% of http requests".
-
-	The parameter <<<system-actions-enabled>>> (<<<false>>> by default for security) enables the system actions
-	<Ramasse-miettes>, <sessions http>, <heap dump>, <histogramme mémoire> (near the bottom of reports).
-	These actions have confirmations when necessary.
 
 	The parameter <<<disabled>>> (<<<false>>> by default) just disables the monitoring.
 	This allows for example to disable the monitoring temporarily or only on some servers,
