@@ -126,8 +126,8 @@ public class MonitoringFilter implements Filter {
 		this.errorCounter.setMaxRequestsCount(250);
 
 		final String application = Parameters.getCurrentApplication();
-		final Counter ejbCounter = MonitoringInterceptor.getEjbCounter();
-		final Counter springCounter = MonitoringInterceptor.getSpringCounter();
+		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
+		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
 

@@ -32,22 +32,9 @@ import javax.interceptor.InvocationContext;
  * @author Emeric Vernat
  */
 public class MonitoringInterceptor {
-	private static final Counter EJB_COUNTER = new Counter("ejb", "beans.png",
-			JdbcWrapper.SINGLETON.getSqlCounter());
-	// SPRING_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
-	// ClassNotFoundException si les classes Spring et AOP alliance ne sont pas présentes
-	private static final Counter SPRING_COUNTER = new Counter("spring", "beans.png",
-			JdbcWrapper.SINGLETON.getSqlCounter());
+	private static final Counter EJB_COUNTER = MonitoringProxy.getEjbCounter();
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
-
-	static Counter getEjbCounter() {
-		return EJB_COUNTER;
-	}
-
-	static Counter getSpringCounter() {
-		return SPRING_COUNTER;
-	}
 
 	/**
 	 * Intercepte une exécution de méthode sur un ejb.
