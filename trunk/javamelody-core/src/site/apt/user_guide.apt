@@ -147,6 +147,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	[]
 
+	Le paramètre <<<system-actions-enabled>>> (<<<false>>> par défaut pour sécurité) permet d'activer les actions systèmes
+	telles que <ramasse-miettes>, <sessions http>, <heap dump>, <histogramme mémoire>, <processus>, <base de données> en bas du rapport.
+	Ces actions ont des confirmations quand nécessaire.
+
 	Le paramètre <<<url-exclude-pattern>>> est une
 	{{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} expression régulière}}
 	pour exclure certaines urls du monitoring comme indiqué ci-dessus.
@@ -189,10 +193,6 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	de synthèse avec leurs pourcentages par temps moyens, hits, etc.
 	Ces paramétrages de seuil peuvent servir de base pour un SLA (niveau de service) d'une application, dans lequel
 	des contraintes peuvent être définies telles que "temps de traitement inférieurs à 2s pour 90% des requêtes http".
-
-	Le paramètre <<<system-actions-enabled>>> (<<<false>>> par défaut pour sécurité) permet d'activer les actions systèmes
-	<Ramasse-miettes>, <sessions http>, <heap dump>, <histogramme mémoire> en bas du rapport.
-	Ces actions ont des confirmations quand nécessaire.
 
 	Le paramètre <<<disabled>>> (<<<false>>> par défaut) permet de désactiver le monitoring.
 	Cela permet par exemple de désactiver le monitoring temporairement ou sur certains serveurs,
