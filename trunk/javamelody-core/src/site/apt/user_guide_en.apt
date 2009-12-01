@@ -258,7 +258,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</ejb-jar>
 +-------------------------------+
 
-or
+	or
 
 +-------------------------------+
 	<ejb-jar
