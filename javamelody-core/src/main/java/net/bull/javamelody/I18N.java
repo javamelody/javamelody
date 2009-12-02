@@ -27,7 +27,6 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.ResourceBundle.Control;
 
 /**
  * Classe de gestion des traductions et de l'internationalisation (formats de dates et de nombre).
@@ -37,15 +36,11 @@ import java.util.ResourceBundle.Control;
 final class I18N {
 	// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.translations"
 	// ce qui charge net.bull.javamelody.resource.translations.properties
-	// et net.bull.javamelody.resource.translations_en.properties
+	// et net.bull.javamelody.resource.translations_fr.properties
 	// (Parameters.getResourcePath("translations") seul ne fonctionne pas si on est dans un jar/war)
 	private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
 			"translations").replace('/', '.').substring(1);
 	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<Locale>();
-	// la classe Control n'existe qu'à partir de java 1.6
-	private static final boolean CONTROL_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
-	private static final Object NO_FALLBACK_CONTROL = CONTROL_ENABLED ? Control
-			.getNoFallbackControl(Control.FORMAT_DEFAULT) : null;
 
 	private I18N() {
 		super();
@@ -76,15 +71,6 @@ final class I18N {
 	 * @return Locale
 	 */
 	private static ResourceBundle getResourceBundle() {
-		// si java 1.6, on utilise NO_FALLBACK_CONTROL qui est un contrôle renvoyant une fallbackLocale nulle
-		// pour que l'on trouve le ResourceBundle par défaut "translations.properties" (en français)
-		// au lieu du ResourceBundle "translations_en.properties" (en anglais), dans le cas où le
-		// serveur est en Locale par défaut en_US (par exemple linux) pour un navigateur en fr ou es,
-		// ie on se préoccupe plus du ResourceBundle par défaut que de la Locale par défaut du serveur
-		if (CONTROL_ENABLED) {
-			return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, getCurrentLocale(),
-					(Control) NO_FALLBACK_CONTROL);
-		}
 		return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, getCurrentLocale());
 	}
 
