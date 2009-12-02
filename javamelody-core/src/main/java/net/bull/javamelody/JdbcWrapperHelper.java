@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -44,11 +45,31 @@ final class JdbcWrapperHelper {
 
 	static Map<String, DataSource> getDataSources() throws NamingException {
 		final Map<String, DataSource> dataSources = new HashMap<String, DataSource>(2);
-		final InitialContext initialContext = new InitialContext();
 		final String datasourcesParameter = Parameters.getParameter(Parameter.DATASOURCES);
 		if (datasourcesParameter == null) {
+			dataSources.putAll(getDataSourcesAt("java:comp/env/jdbc"));
+			// pour jboss sans jboss-env.xml ou sans resource-ref dans web.xml
+			dataSources.putAll(getDataSourcesAt("java:/jdbc"));
+		} else if (datasourcesParameter.trim().length() != 0) {
+			for (final String datasource : datasourcesParameter.split(",")) {
+				final String jndiName = datasource.trim();
+				// ici, on n'ajoute pas java:/comp/env
+				// et on suppose qu'il n'en faut pas ou que cela a été ajouté dans le paramétrage
+				final InitialContext initialContext = new InitialContext();
+				final DataSource dataSource = (DataSource) initialContext.lookup(jndiName);
+				dataSources.put(jndiName, dataSource);
+			}
+		}
+		return Collections.unmodifiableMap(dataSources);
+	}
+
+	private static Map<String, DataSource> getDataSourcesAt(String jndiPrefix)
+			throws NamingException {
+		final InitialContext initialContext = new InitialContext();
+		final Map<String, DataSource> dataSources = new HashMap<String, DataSource>(2);
+		try {
 			for (final NameClassPair nameClassPair : Collections.list(initialContext
-					.list("java:comp/env/jdbc"))) {
+					.list(jndiPrefix))) {
 				// note: il ne suffit pas de tester
 				// (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName())))
 				// car nameClassPair.getClassName() vaut "javax.naming.LinkRef" sous jboss 5.1.0.GA
@@ -58,23 +79,18 @@ final class JdbcWrapperHelper {
 					// pour glassfish v3
 					jndiName = nameClassPair.getName();
 				} else {
-					jndiName = "java:comp/env/jdbc/" + nameClassPair.getName();
+					jndiName = jndiPrefix + '/' + nameClassPair.getName();
 				}
 				final Object value = initialContext.lookup(jndiName);
 				if (value instanceof DataSource) {
 					dataSources.put(jndiName, (DataSource) value);
 				}
 			}
-		} else if (datasourcesParameter.trim().length() != 0) {
-			for (final String datasource : datasourcesParameter.split(",")) {
-				final String jndiName = datasource.trim();
-				// ici, on n'ajoute pas java:/comp/env
-				// et on suppose qu'il n'en faut pas ou que cela a été ajouté dans le paramétrage
-				final DataSource dataSource = (DataSource) initialContext.lookup(jndiName);
-				dataSources.put(jndiName, dataSource);
-			}
+		} catch (final NameNotFoundException e) {
+			return dataSources;
+			// le préfixe "comp/env/jdbc" ou "/jdbc" n'existe pas dans jndi
 		}
-		return Collections.unmodifiableMap(dataSources);
+		return dataSources;
 	}
 
 	@SuppressWarnings("all")
