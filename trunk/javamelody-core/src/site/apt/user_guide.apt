@@ -218,7 +218,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 
 	Si une DataSource est utilisée mais que son nom JNDI ne commence pas par "jdbc/" ou que celle-ci
-	n'est pas dans le contexte JNDI java:comp/env/ habituel, alors vous pouvez ajouter le paramètre optionnel
+	n'est pas dans un des contextes JNDI "java:comp/env/" ou "java:/" habituels, alors vous pouvez ajouter le paramètre optionnel
 	<<<datasources>>> (par une propriété système, un paramètre du contexte ou du filtre) pour définir le nom JNDI
 	de la datasource utilisée par l'application. S'il y a plusieurs datasources, ce paramètre peut contenir
 	les noms JNDI des datasources séparés par des virgules. Si un serveur Jonas v5 est utilisé, le monitoring
@@ -226,7 +226,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	
 	Par exemple, pour une propriété système au lancement du serveur:
 	
-	<<<-Djavamelody.datasources=myapp/mydatasource>>>
+	<<<-Djavamelody.datasources=java:comp/env/myapp/mydatasource>>>
 
 ** 7. Façades métiers (fichier ejb-jar.xml si EJB3)
 
