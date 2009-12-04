@@ -76,6 +76,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Then this integration can be completed later by configuration as needed.
 
+	If you deploy your application with a war file or with an equivalent directory, follow the following chapters.
+	
+	But if you deploy your application with an ear file, probably because you use EJBs, follow the {{{user_guide_advanced_en.html} advanced documentation}}.
+	
 ** 1. Jar files
 
 	Copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied javamelody.zip file,
@@ -104,7 +108,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 3. First results
 
-	You can now view the monitoring: open the following page in a web navigator after starting the server:
+	You can now view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
 	<<<http://<host>/<context>/monitoring>>>
 	
@@ -286,6 +290,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 	In this file, it is possible to use * for all ejb or to list names of ejb which should be monitored.
+	If you have several ejb-jar.xml files, configure the interceptor in each of them accordingly. 
 	Or without modifying the ejb-jar.xml file, it is possible to add the annotation @Interceptor in java sources
 	of ejb implementations.
 
@@ -507,7 +512,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 12. Full results
 
-	To view the monitoring: open the following page in a web navigator after starting the server:
+	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
 	<<<http://<host>/<context>/monitoring>>>
 	
@@ -564,9 +569,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 
-* Documentation avancée (centralized collect server...)
+* Documentation avancée (setup with an ear, centralized collect server...)
 
-	To deploy a centralized collect server, see the {{{user_guide_advanced_en.html} advanced documentation}}
+	To setup with an ear or to deploy a centralized collect server, see the {{{user_guide_advanced_en.html} advanced documentation}}
 	
 * Compilation and development
 

@@ -10,8 +10,73 @@
 
 Advanced documentation of Java Melody
 
-	({{{user_guide_advanced.html} Français }}, {{{user_guide.html} User guide }})
+	({{{user_guide_advanced.html} Français }}, {{{user_guide_en.html} User guide }})
 
+* Setup of JavaMelody in an ear file in place of a war file
+
+	(Written based on a contribution by 'dhartford')
+
+	If you deploy your application with a war file or with an equivalent directory, just follow the {{{user_guide_en.html} user guide}}.
+	
+	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup of JavaMelody in your ear.
+	
+	** 1. Jar files
+
+	Copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied javamelody.zip file,
+	to the root directory of the ear of the application to monitor.
+	If you want to have reports in PDF format or weekly reports by mail, copy also the <<<itext-x.jar>>> file to the same location.
+	
+	To declare the jar files in the ear, modify the <<</META-INF/application.xml>>> file in your ear like this:
+	
++-------------------------------+
+	<application version="5"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd">
+		....
+		<module>
+			<java>javamelody.jar</java>
+		</module>
+		<module>
+			<java>jrobin-x.jar</java>
+		</module>
+		<module>
+			<java>itext-x.jar</java>
+		</module>
+		<module>
+			<web>
+				<web-uri>mywebapp.war</web-uri>
+				<context-root>mycontext</context-root>
+			</web>
+		</module>
+		....
+	</application>
++-------------------------------+
+
+	You can put the jar files in a "lib" directory in the ear as long as you add "lib/" before the names of the jar files in the <<<application.xml>>> file.
+	If you use Maven, you may want to use the maven ear plugin and the <<<includeInApplicationXml>>> flag to make this file.
+	
+	** 2. <<<web.xml>>> file
+
+	You need to have the war of a single monitored webapp in your ear.
+	If you do not have a war, create it with a simple <<<web.xml>>> file in the WEB-INF directory of the war.
+	And modify the <<<web.xml>>> file of this war like written in chapter "<<<web.xml>>> file" of the {{{user_guide_en.html} user guide}}.
+	
+	** 3. First results
+	
+	You can now view the monitoring: deploy your ear and open the following page in a web navigator after starting the server:
+
+	<<<http://<host>/<context>/monitoring>>>
+	
+	where <host> is the name of the server where the application is deployed, followed possibly by the port (for example localhost:8080)
+	and where <context> is the name of the context of the webapp which you have configured in the ear.
+	
+	Then you can complete the settings as below according to your needs.
+
+	** 4 to 12. Other settings (optional parameters, JDBC, EJB3, Spring, etc)
+
+	To complete the settings, just follow the chapters 4 to 12 of the {{{user_guide_en.html} user guide}}.
+	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
+	
+	
 * Optional centralization server setup
 
 	A centralized collect server can be used optionally.
@@ -43,8 +108,8 @@ Advanced documentation of Java Melody
 
 	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
 	<<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>> can be added in the xml context file of the collect
-	server with the prefix <<<monitoring>>>. They have the same effects on the collect server 
-	than those of a monitored application as written in the user guide. In particular the parameter
+	server with the prefix <<<javamelody>>>. They have the same effects on the collect server 
+	than those of a monitored application as written in the {{{user_guide_en.html} user guide}}. In particular the parameter
 	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
 	of charts in the monitoring.
 
@@ -61,7 +126,7 @@ Advanced documentation of Java Melody
 	server, it is possible to launch the {{{http://winstone.sourceforge.net} winstone}} (LGPL) servlet container
 	already included in the javamelody.war file.
 	You only need to use the launch command "java -jar javamelody.war" and to specify in system properties each
-	of the monitoring parameters detailed in the last chapter.
+	of the monitoring parameters detailed in the {{{user_guide_en.html} user guide}}.
 	
 	Examples:
 	

@@ -75,6 +75,12 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	
 	Puis cette intégration pourra être complétée par du paramétrage en fonction des besoins.
 
+	Si vous déployez votre application avec un fichier war ou avec un répertoire équivalent,
+	suivez les chapitres suivants.
+	
+	Mais si vous déployez votre application avec un fichier ear, probablement parce que vous utilisez des EJBs,
+	suivez la {{{user_guide_advanced.html} documentation avancée}}.
+
 ** 1. Fichiers Jar
 
 	Copier les fichiers <<<javamelody.jar>>> et <<<jrobin-x.jar>>>, situés à la racine du fichier javamelody.zip fourni,
@@ -103,7 +109,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 ** 3. Premiers résultats
 
-	Vous pouvez dès à présent consulter le monitoring : ouvrir la page suivante dans un navigateur web après avoir
+	Vous pouvez dès à présent consulter le monitoring : déployer le war et ouvrir la page suivante dans un navigateur web après avoir
 	démarré le serveur :
 
 	<<<http://<host>/<context>/monitoring>>>
@@ -257,7 +263,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</ejb-jar>
 +-------------------------------+
 
-ou
+	ou
 
 +-------------------------------+
 	<ejb-jar
@@ -285,6 +291,7 @@ ou
 +-------------------------------+
 
 	Dans ce fichier, il est possible d'utiliser * pour tous les ejb ou bien de lister les ejb qui doivent être monitorés.
+	Si vous avez plusieurs fichiers ejb-jar.xml, configurer l'intercepteur dans chacun d'eux en conséquence.
 	Ou alors, sans modifier le fichier ejb-jar.xml, il est possible d'ajouter l'annotation @Interceptor dans les sources
 	java des implémentations d'ejb.
 
@@ -516,7 +523,7 @@ ou
 
 ** 12. Résultat complet
 
-	Pour consulter le monitoring, ouvrir la page suivante dans un navigateur web après avoir démarré le serveur :
+	Pour consulter le monitoring, déployer le war et ouvrir la page suivante dans un navigateur web après avoir démarré le serveur :
 
 	<<<http://<host>/<context>/monitoring>>>
 	
@@ -573,9 +580,9 @@ ou
 	</repositories>
 +-------------------------------+
 
-* Documentation avancée (serveur de collecte centralisé...)
+* Documentation avancée (mise en oeuvre avec un ear, serveur de collecte centralisé...)
 
-	Pour déployer un serveur de collecte centralisé, consulter la {{{user_guide_advanced.html} documentation avancée}}
+	Pour mettre en oeuvre JavaMelody avec un ear ou pour déployer un serveur de collecte centralisé, consulter la {{{user_guide_advanced.html} documentation avancée}}
 	
 * Compilation et développement
 
