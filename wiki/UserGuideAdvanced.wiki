@@ -63,7 +63,7 @@ For standard documentation, see [UserGuide]
 	server, it is possible to launch the [http://winstone.sourceforge.net winstone] (LGPL) servlet container
 	already included in the javamelody.war file.
 	You only need to use the launch command "java -jar javamelody.war" and to specify in system properties each
-	of the monitoring parameters detailed in the last chapter.
+	of the monitoring parameters detailed in the [UserGuide].
 	
 	Examples:
 	
