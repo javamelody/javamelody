@@ -108,7 +108,7 @@ Language: English and French
 
 === 3. First results ===
 
-	You can now view the monitoring: open the following page in a web navigator after starting the server:
+	You can now view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
 	{{{http://<host>/<context>/monitoring}}}
 	
@@ -504,7 +504,7 @@ or
 
 === 12. Full results ===
 
-	To view the monitoring: open the following page in a web navigator after starting the server:
+	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
 	{{{http://<host>/<context>/monitoring}}}
 	
