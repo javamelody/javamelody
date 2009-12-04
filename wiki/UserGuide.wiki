@@ -283,6 +283,7 @@ or
 }}}
 
 	In this file, it is possible to use {{{*}}} for all ejb or to list names of ejb which should be monitored.
+	If you have several ejb-jar.xml files, configure the interceptor in each of them accordingly. 
 	Or without modifying the ejb-jar.xml file, it is possible to add the annotation @Interceptor in java sources
 	of ejb implementations.
 
