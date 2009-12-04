@@ -46,7 +46,7 @@ For standard documentation, see [UserGuide]
 	The optional parameters {{{resolution-seconds}}}, {{{storage-directory}}}, {{{warning-threshold-millis}}},
 	{{{severe-threshold-millis}}} and {{{allowed-addr-pattern}}} can be added in the xml context file of the collect
 	server with the prefix {{{javamelody}}}. They have the same effects on the collect server 
-	than those of a monitored application as written in the chapter above. In particular the parameter
+	than those of a monitored application as written in the [UserGuide]. In particular the parameter
 	{{{resolution-seconds}}} defines the period of calls to urls of applications from collect server and the resolution
 	of charts in the monitoring.
 
