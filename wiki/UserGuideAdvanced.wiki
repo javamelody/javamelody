@@ -4,7 +4,7 @@ For standard documentation, see [UserGuide]
 
 == Table of contents ==
 
-  * [#Setup_of_JavaMelody_in_an_ear_file Setup of JavaMelody in an ear file]
+  * [#Setup_of_in_an_ear_file Setup of JavaMelody in an ear file]
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
