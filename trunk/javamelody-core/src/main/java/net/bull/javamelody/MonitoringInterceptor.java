@@ -44,12 +44,10 @@ public class MonitoringInterceptor {
 	 */
 	@AroundInvoke
 	public Object intercept(InvocationContext context) throws Exception { // NOPMD
+		// cette méthode est appelée par le conteneur ejb grâce à l'annotation AroundInvoke
 		if (DISABLED || !EJB_COUNTER.isDisplayed()) {
 			return context.proceed();
 		}
-		// cette méthode est appelée par le conteneur ejb grâce à l'annotation AroundInvoke
-		final long start = System.currentTimeMillis();
-		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		// nom identifiant la requête
 		final Method method = context.getMethod();
 		final String requestName = method.getDeclaringClass().getSimpleName() + '.'
@@ -57,7 +55,7 @@ public class MonitoringInterceptor {
 
 		boolean systemError = false;
 		try {
-			EJB_COUNTER.bindContext(requestName, requestName, null, startCpuTime);
+			EJB_COUNTER.bindContextIncludingCpu(requestName);
 			return context.proceed();
 		} catch (final Error e) {
 			// on catche Error pour avoir les erreurs systèmes
@@ -65,11 +63,8 @@ public class MonitoringInterceptor {
 			systemError = true;
 			throw e;
 		} finally {
-			final long duration = Math.max(System.currentTimeMillis() - start, 0);
-			final long cpuUsedMillis = (ThreadInformations.getCurrentThreadCpuTime() - startCpuTime) / 1000000;
-
 			// on enregistre la requête dans les statistiques
-			EJB_COUNTER.addRequest(requestName, duration, cpuUsedMillis, systemError, -1);
+			EJB_COUNTER.addRequestForCurrentContext(systemError);
 		}
 	}
 }

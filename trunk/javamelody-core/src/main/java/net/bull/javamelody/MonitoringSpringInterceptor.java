@@ -26,18 +26,16 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 	 * @throws Throwable anything thrown by the method
 	 */
 	public Object invoke(MethodInvocation invocation) throws Throwable {
+		// cette méthode est appelée par spring aop
 		if (DISABLED || !SPRING_COUNTER.isDisplayed()) {
 			return invocation.proceed();
 		}
-		// cette méthode est appelée par le conteneur ejb grâce à l'annotation AroundInvoke
-		final long start = System.currentTimeMillis();
-		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		// nom identifiant la requête
 		final String requestName = getMonitorName(invocation);
 
 		boolean systemError = false;
 		try {
-			SPRING_COUNTER.bindContext(requestName, requestName, null, startCpuTime);
+			SPRING_COUNTER.bindContextIncludingCpu(requestName);
 			return invocation.proceed();
 		} catch (final Error e) {
 			// on catche Error pour avoir les erreurs systèmes
@@ -45,11 +43,8 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 			systemError = true;
 			throw e;
 		} finally {
-			final long duration = Math.max(System.currentTimeMillis() - start, 0);
-			final long cpuUsedMillis = (ThreadInformations.getCurrentThreadCpuTime() - startCpuTime) / 1000000;
-
 			// on enregistre la requête dans les statistiques
-			SPRING_COUNTER.addRequest(requestName, duration, cpuUsedMillis, systemError, -1);
+			SPRING_COUNTER.addRequestForCurrentContext(systemError);
 		}
 	}
 

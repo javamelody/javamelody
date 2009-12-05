@@ -330,6 +330,10 @@ class Counter implements Cloneable, Serializable {
 		bindContext(requestName, completeRequestName, null, -1);
 	}
 
+	void bindContextIncludingCpu(String requestName) {
+		bindContext(requestName, requestName, null, ThreadInformations.getCurrentThreadCpuTime());
+	}
+
 	void bindContext(String requestName, String completeRequestName, String remoteUser,
 			long startCpuTime) {
 		// requestName est la même chose que ce qui sera utilisée dans addRequest,
@@ -350,6 +354,14 @@ class Counter implements Cloneable, Serializable {
 		} finally {
 			rootCurrentContextsByThreadId.remove(Thread.currentThread().getId());
 		}
+	}
+
+	void addRequestForCurrentContext(boolean systemError) {
+		final CounterRequestContext context = contextThreadLocal.get();
+		assert context != null;
+		final long duration = context.getDuration(System.currentTimeMillis());
+		final long cpuUsedMillis = context.getCpuTime();
+		addRequest(context.getRequestName(), duration, cpuUsedMillis, systemError, -1);
 	}
 
 	void addRequest(String requestName, long duration, long cpuTime, boolean systemError,

@@ -94,15 +94,13 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 		if (DISABLED || !SERVICES_COUNTER.isDisplayed()) {
 			return method.invoke(facade, args);
 		}
-		final long start = System.currentTimeMillis();
-		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		// nom identifiant la requête
 		final String requestName = method.getDeclaringClass().getSimpleName() + '.'
 				+ method.getName();
 
 		boolean systemError = false;
 		try {
-			SERVICES_COUNTER.bindContext(requestName, requestName, null, startCpuTime);
+			SERVICES_COUNTER.bindContextIncludingCpu(requestName);
 			return method.invoke(facade, args);
 		} catch (final Error e) {
 			// on catche Error pour avoir les erreurs systèmes
@@ -110,11 +108,8 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 			systemError = true;
 			throw e;
 		} finally {
-			final long duration = Math.max(System.currentTimeMillis() - start, 0);
-			final long cpuUsedMillis = (ThreadInformations.getCurrentThreadCpuTime() - startCpuTime) / 1000000;
-
 			// on enregistre la requête dans les statistiques
-			SERVICES_COUNTER.addRequest(requestName, duration, cpuUsedMillis, systemError, -1);
+			SERVICES_COUNTER.addRequestForCurrentContext(systemError);
 		}
 	}
 }
