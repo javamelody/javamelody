@@ -64,8 +64,8 @@ public class TestHtmlReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		counter = new Counter("http", "dbweb.png", sqlCounter);
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		collector = new Collector("test", Arrays.asList(new Counter[] { counter, sqlCounter,
-				servicesCounter, errorCounter, }), timer);
+		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
+				errorCounter), timer);
 		writer = new StringWriter();
 	}
 
@@ -207,8 +207,7 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays
-				.asList(new Counter[] { myCounter }), timer);
+		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter), timer);
 		myCounter.bindContext("my context", "my context");
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b");

@@ -237,9 +237,7 @@ class MonitoringController {
 							.getAllSessionsInformations();
 					return (Serializable) sessionsInformations;
 				}
-				final SessionInformations sessionInformations = SessionListener
-						.getSessionInformationsBySessionId(sessionId);
-				return sessionInformations;
+				return SessionListener.getSessionInformationsBySessionId(sessionId);
 			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();

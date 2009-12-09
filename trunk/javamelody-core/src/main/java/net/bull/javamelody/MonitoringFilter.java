@@ -131,8 +131,8 @@ public class MonitoringFilter implements Filter {
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
 
-		final List<Counter> counters = Arrays.asList(new Counter[] { httpCounter, sqlCounter,
-				ejbCounter, springCounter, servicesCounter, errorCounter, logCounter, });
+		final List<Counter> counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter,
+				springCounter, servicesCounter, errorCounter, logCounter);
 		setRequestTransformPatterns(counters);
 		final String displayedCounters = Parameters.getParameter(Parameter.DISPLAYED_COUNTERS);
 		// displayedCounters doit être traité avant l'initialisation du collector

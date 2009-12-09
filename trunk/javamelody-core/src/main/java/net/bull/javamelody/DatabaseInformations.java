@@ -40,15 +40,16 @@ import javax.sql.DataSource;
  * @author Emeric Vernat
  */
 class DatabaseInformations implements Serializable {
-	// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
-	// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
-	// (Parameters.getResourcePath("databaseInformations") seul ne fonctionne pas si on est dans un jar/war)
-	static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
-			"databaseInformations").replace('/', '.').substring(1);
 	private static final long serialVersionUID = -6105478981257689782L;
 
 	private static enum Database {
 		POSTGRESQL, MYSQL, ORACLE, DB2, H2;
+
+		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
+		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
+		// (Parameters.getResourcePath("databaseInformations") seul ne fonctionne pas si on est dans un jar/war)
+		private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
+				"databaseInformations").replace('/', '.').substring(1);
 
 		List<String> getRequestNames() {
 			final List<String> tmp;
