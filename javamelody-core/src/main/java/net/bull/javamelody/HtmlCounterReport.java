@@ -99,6 +99,11 @@ class HtmlCounterReport {
 			final CounterRequest request = requestsById.get(graphName);
 			if (request != null) {
 				writeRequest(request);
+
+				// TODO explain plan
+				//				if (graphName.startsWith(JdbcWrapper.SINGLETON.getSqlCounter().getName())) {
+				//					writeSqlRequestExplainPlan(request.getName());
+				//				}
 			}
 
 			writeln("<div id='track'>");
@@ -120,6 +125,22 @@ class HtmlCounterReport {
 
 			writeGraphDetailScript(graphName);
 		}
+
+		// TODO explain plan
+		//		private void writeSqlRequestExplainPlan(String sqlRequest) throws IOException {
+		//			try {
+		//				final String[][] explainPlan = DatabaseInformations.explainPlanFor(sqlRequest);
+		//				if (explainPlan != null) {
+		//					writeln("<b>#Plan_d_execution#</b>");
+		//					new HtmlDatabaseInformationsReport.TableReport(writer).toHtml(explainPlan);
+		//					writeln("<br/>");
+		//				}
+		//			} catch (final Exception e) {
+		//				writeln("<b>#Plan_d_execution#</b> ");
+		//				writeln(e.toString());
+		//				writeln("<br/>");
+		//			}
+		//		}
 
 		private void writeRequest(CounterRequest request) throws IOException {
 			final Map<String, Long> childRequests = request.getChildRequestsExecutionsByRequestId();

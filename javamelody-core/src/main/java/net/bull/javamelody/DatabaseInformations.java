@@ -196,4 +196,41 @@ class DatabaseInformations implements Serializable {
 		}
 		return null;
 	}
+
+	// TODO explain plan
+	//	static String[][] explainPlanFor(String request) throws SQLException, NamingException {
+	//		final Connection connection = getConnection();
+	//		if (connection != null) {
+	//			final Database database = Database.getDatabaseForConnection(connection);
+	//			if (database == Database.ORACLE || database == Database.DB2) {
+	//				// Si oracle ou db2, on demande le plan d'exécution (explain plan)
+	//				// par "explain plan for ..."
+	//				// (si mysql ou postgresql on pourrait faire "explain ...",
+	//				// sauf que les paramètres bindés ne seraient pas acceptés
+	//				// et les requêtes update/insert/delete non plus).
+	//
+	//				// Si mysql il suffit de lire le ResultSet de executeQuery("explain ...")
+	//				// mais en oracle il faut aller lire la table plan_table ou autre
+	//				// (http://www.java2s.com/Open-Source/Java-Document/Database-Client/squirrel-sql-2.6.5a/net/sourceforge/squirrel_sql/plugins/oracle/explainplan/ExplainPlanExecuter.java.htm)
+	//				try {
+	//					int i = 1;
+	//					String explainRequest = "explain plan for " + request;
+	//					// on remplace les paramètres bindés "?" par ":n"
+	//					int index = explainRequest.indexOf('?');
+	//					while (index != -1) {
+	//						explainRequest = explainRequest.substring(0, index) + ':' + i
+	//								+ explainRequest.substring(index + 1);
+	//						i++;
+	//						index = explainRequest.indexOf('?');
+	//					}
+	//					// exécution de la demande (sans types des colonnes)
+	//					return executeRequest(connection, explainRequest, false);
+	//				} finally {
+	//					connection.rollback();
+	//					connection.close();
+	//				}
+	//			}
+	//		}
+	//		return null;
+	//	}
 }
