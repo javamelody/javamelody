@@ -142,13 +142,13 @@ enum Action {
 		case INVALIDATE_SESSIONS:
 			// invalidation des sessions http
 			SessionListener.invalidateAllSessions();
-			messageForReport = I18N.getString("sessions_invalidees");
+			messageForReport = I18N.getString("sessions_http_invalidees");
 			break;
 		case INVALIDATE_SESSION:
 			// invalidation d'une session http
 			assert sessionId != null;
 			SessionListener.invalidateSession(sessionId);
-			messageForReport = I18N.getString("session_invalidee");
+			messageForReport = I18N.getString("session_http_invalidee");
 			break;
 		default:
 			throw new IllegalStateException(toString());
