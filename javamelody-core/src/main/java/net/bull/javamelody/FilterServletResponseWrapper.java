@@ -40,7 +40,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	 * Constructeur.
 	 * @param response HttpServletResponse
 	 */
-	protected FilterServletResponseWrapper(HttpServletResponse response) {
+	FilterServletResponseWrapper(HttpServletResponse response) {
 		super(response);
 		assert response != null;
 	}
@@ -48,7 +48,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	/**
 	 * @return ServletOutputStream
 	 */
-	protected ServletOutputStream getStream() {
+	ServletOutputStream getStream() {
 		return stream;
 	}
 
@@ -86,7 +86,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	 * @return ServletOutputStream
 	 * @throws IOException   Erreur d'entrée/sortie
 	 */
-	public abstract ServletOutputStream createOutputStream() throws IOException;
+	protected abstract ServletOutputStream createOutputStream() throws IOException;
 
 	/** {@inheritDoc} */
 	@Override
@@ -140,7 +140,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	 * Ferme le flux.
 	 * @throws IOException e
 	 */
-	protected void close() throws IOException {
+	void close() throws IOException {
 		if (writer != null) {
 			writer.close();
 		} else if (stream != null) {

@@ -135,8 +135,7 @@ public class TestPdfReport {
 		assertNotEmptyAndClear(output);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays
-				.asList(new Counter[] { myCounter }), timer);
+		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter), timer);
 		myCounter.bindContext("my context", "my context");
 		pdfReport = new PdfReport(collector2, false, Collections.singletonList(javaInformations),
 				Period.TOUT, output);
@@ -168,7 +167,7 @@ public class TestPdfReport {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Timer timer = new Timer("test timer", true);
 		try {
-			final List<Counter> counters = Arrays.asList(new Counter[] { counter, errorCounter, });
+			final List<Counter> counters = Arrays.asList(counter, errorCounter);
 			final Collector collector = new Collector("test app", counters, timer);
 			final JavaInformations javaInformations = new JavaInformations(null, true);
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();

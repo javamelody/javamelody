@@ -420,8 +420,7 @@ public class TestMonitoringFilter {
 			final Timer timer = new Timer("test timer", true);
 			try {
 				final Counter sqlCounter = new Counter("sql", "db.png");
-				final Collector collector = new Collector("test", Arrays
-						.asList(new Counter[] { sqlCounter, }), timer);
+				final Collector collector = new Collector("test", Arrays.asList(sqlCounter), timer);
 				timer.cancel();
 				new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
 				verify(config);

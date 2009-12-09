@@ -83,9 +83,9 @@ class PdfCounterReport {
 		} else {
 			// 1. synthèse
 			final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
-			final List<CounterRequest> summaryRequests = Arrays.asList(new CounterRequest[] {
-					globalRequest, counterRequestAggregation.getWarningRequest(),
-					counterRequestAggregation.getSevereRequest(), });
+			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
+					counterRequestAggregation.getWarningRequest(), counterRequestAggregation
+							.getSevereRequest());
 			writeRequests(counter.getChildCounterName(), summaryRequests);
 		}
 	}

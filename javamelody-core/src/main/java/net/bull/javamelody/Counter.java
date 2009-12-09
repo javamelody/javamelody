@@ -49,13 +49,13 @@ class Counter implements Cloneable, Serializable {
 	 */
 	static final String ERROR_COUNTER_NAME = "error";
 	/**
-	 * Nom du counter des logs d'erreurs systèmes.
-	 */
-	static final String LOG_COUNTER_NAME = "log";
-	/**
 	 * Nombre max d'erreurs conservées par le counter (si counter d'erreurs http ou de log d'erreurs).
 	 */
 	static final int MAX_ERRORS_COUNT = 100;
+	/**
+	 * Nom du counter des logs d'erreurs systèmes.
+	 */
+	private static final String LOG_COUNTER_NAME = "log";
 	/**
 	 * Nombre max de requêtes conservées par counter.
 	 */

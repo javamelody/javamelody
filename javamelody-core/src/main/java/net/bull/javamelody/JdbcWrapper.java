@@ -198,7 +198,7 @@ class JdbcWrapper {
 		}
 	}
 
-	JdbcWrapper(Counter sqlCounter, ServletContext servletContext) {
+	private JdbcWrapper(Counter sqlCounter, ServletContext servletContext) {
 		super();
 		assert sqlCounter != null;
 		this.sqlCounter = sqlCounter;

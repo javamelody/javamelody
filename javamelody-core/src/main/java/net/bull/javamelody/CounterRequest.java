@@ -331,7 +331,7 @@ class CounterRequest implements Cloneable, Serializable {
 					Long nbExecutions = childRequestsExecutionsByRequestId.get(requestId);
 					if (nbExecutions != null) {
 						nbExecutions = Math.max(nbExecutions - entry.getValue(), 0);
-						if (nbExecutions.longValue() == 0) {
+						if (nbExecutions == 0) {
 							childRequestsExecutionsByRequestId.remove(requestId);
 							if (childRequestsExecutionsByRequestId.isEmpty()) {
 								childRequestsExecutionsByRequestId = null;

@@ -350,9 +350,9 @@ class HtmlCounterReport {
 			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
 			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, true);
 		} else {
-			final List<CounterRequest> summaryRequests = Arrays.asList(new CounterRequest[] {
-					globalRequest, counterRequestAggregation.getWarningRequest(),
-					counterRequestAggregation.getSevereRequest(), });
+			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
+					counterRequestAggregation.getWarningRequest(), counterRequestAggregation
+							.getSevereRequest());
 			writeRequests(globalRequest.getName(), counter.getChildCounterName(), summaryRequests,
 					false);
 		}

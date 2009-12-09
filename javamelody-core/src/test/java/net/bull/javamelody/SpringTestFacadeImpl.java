@@ -59,7 +59,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Date now() throws Exception {
+	public Date now() {
 		return new Date();
 	}
 

@@ -35,9 +35,8 @@ public interface SpringTestFacade {
 	/**
 	 * Méthode test de service sur la façade.
 	 * @return Date
-	 * @throws Exception e
 	 */
-	Date now() throws Exception;
+	Date now();
 
 	/**
 	 * Méthode test de service sur la façade.
