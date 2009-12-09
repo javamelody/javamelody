@@ -29,6 +29,76 @@ class HtmlDatabaseInformationsReport {
 	private final DatabaseInformations databaseInformations;
 	private final Writer writer;
 
+	static class TableReport {
+		private final Writer writer;
+
+		TableReport(Writer writer) {
+			super();
+			assert writer != null;
+			this.writer = writer;
+		}
+
+		void toHtml(String[][] values) throws IOException {
+			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#database#'>");
+			write("<thead><tr>");
+			for (final String value : values[0]) {
+				write("<th>");
+				writer.write(value.replace("\n", "<br/>"));
+				write("</th>");
+			}
+			writeln("</tr></thead><tbody>");
+			boolean first = true;
+			boolean odd = false;
+			for (final String[] row : values) {
+				if (first) {
+					first = false;
+					continue;
+				}
+				if (odd) {
+					write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+				} else {
+					write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+				}
+				odd = !odd; // NOPMD
+				for (final String value : row) {
+					if (value == null || value.length() == 0) {
+						write("<td>&nbsp;</td>");
+					} else {
+						if (isNumber(value)) {
+							write("<td align='right' valign='top'>");
+							writer.write(value);
+						} else {
+							write("<td valign='top'>");
+							writer.write(value.replace("\n", "<br/>"));
+						}
+						write("</td>");
+					}
+				}
+				writeln("</tr>");
+			}
+			writeln("</tbody></table>");
+		}
+
+		private static boolean isNumber(String text) {
+			final int length = text.length();
+			for (int i = 0; i < length; i++) {
+				final char c = text.charAt(i);
+				if (!Character.isDigit(c) && c != '.') {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		private void write(String html) throws IOException {
+			I18N.writeTo(html, writer);
+		}
+
+		private void writeln(String html) throws IOException {
+			I18N.writelnTo(html, writer);
+		}
+	}
+
 	HtmlDatabaseInformationsReport(DatabaseInformations databaseInformations, Writer writer) {
 		super();
 		assert databaseInformations != null;
@@ -47,55 +117,7 @@ class HtmlDatabaseInformationsReport {
 		writeln("<b>#database# : #" + selectedRequestName + "#</b>");
 
 		final String[][] values = databaseInformations.getResult();
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#database#'>");
-		write("<thead><tr>");
-		for (final String value : values[0]) {
-			write("<th>");
-			writer.write(value.replace("\n", "<br/>"));
-			write("</th>");
-		}
-		writeln("</tr></thead><tbody>");
-		boolean first = true;
-		boolean odd = false;
-		for (final String[] row : values) {
-			if (first) {
-				first = false;
-				continue;
-			}
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
-			for (final String value : row) {
-				if (value == null || value.length() == 0) {
-					write("<td>&nbsp;</td>");
-				} else {
-					if (isNumber(value)) {
-						write("<td align='right' valign='top'>");
-						writer.write(value);
-					} else {
-						write("<td valign='top'>");
-						writer.write(value.replace("\n", "<br/>"));
-					}
-					write("</td>");
-				}
-			}
-			writeln("</tr>");
-		}
-		writeln("</tbody></table>");
-	}
-
-	private static boolean isNumber(String text) {
-		final int length = text.length();
-		for (int i = 0; i < length; i++) {
-			final char c = text.charAt(i);
-			if (!Character.isDigit(c) && c != '.') {
-				return false;
-			}
-		}
-		return true;
+		new TableReport(writer).toHtml(values);
 	}
 
 	private void writeLinks() throws IOException {
