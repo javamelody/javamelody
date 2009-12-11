@@ -356,7 +356,7 @@ class JavaInformations implements Serializable { // NOPMD
 				connection.setAutoCommit(false);
 				try {
 					if (result.length() > 0) {
-						result.append('\n');
+						result.append("\n\n");
 					}
 					result.append(jndiName).append(":\n");
 					appendDataBaseVersion(result, connection);
