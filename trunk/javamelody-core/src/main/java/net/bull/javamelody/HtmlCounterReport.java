@@ -520,8 +520,9 @@ class HtmlCounterReport {
 
 	String getSlaHtmlClass(int mean) {
 		final String color;
-		if (mean < counterRequestAggregation.getWarningThreshold()) {
+		if (mean < counterRequestAggregation.getWarningThreshold() || mean == 0) {
 			// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
+			// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
 			color = "info";
 		} else if (mean < counterRequestAggregation.getSevereThreshold()) {
 			// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
