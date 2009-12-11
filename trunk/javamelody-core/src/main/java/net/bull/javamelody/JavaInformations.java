@@ -388,14 +388,28 @@ class JavaInformations implements Serializable { // NOPMD
 	}
 
 	private static String buildTomcatDataSourceDetails() {
-		final Map<String, Object> dataSourceProperties = JdbcWrapper
+		final Map<String, Map<String, Object>> dataSourcesProperties = JdbcWrapper
 				.getTomcatBasicDataSourceProperties();
-		if (dataSourceProperties.isEmpty()) {
-			return null;
-		}
 		final StringBuilder sb = new StringBuilder();
-		for (final Map.Entry<String, Object> entry : dataSourceProperties.entrySet()) {
-			sb.append(entry.getKey()).append(" = ").append(entry.getValue()).append('\n');
+		for (final Map.Entry<String, Map<String, Object>> entry : dataSourcesProperties.entrySet()) {
+			final Map<String, Object> dataSourceProperties = entry.getValue();
+			if (dataSourceProperties.isEmpty()) {
+				continue;
+			}
+			if (sb.length() > 0) {
+				sb.append('\n');
+			}
+			final String name = entry.getKey();
+			if (name != null) {
+				sb.append(name).append(":\n");
+			}
+			for (final Map.Entry<String, Object> propertyEntry : dataSourceProperties.entrySet()) {
+				sb.append(propertyEntry.getKey()).append(" = ").append(propertyEntry.getValue())
+						.append('\n');
+			}
+		}
+		if (sb.length() == 0) {
+			return null;
 		}
 		return sb.toString();
 	}
