@@ -49,7 +49,7 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
  * par un proxy de monitoring.
  * @author Emeric Vernat
  */
-class JdbcWrapper {
+final class JdbcWrapper {
 	// au lieu d'utiliser int avec des synchronized partout, on utilise AtomicInteger
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger USED_CONNECTION_COUNT = new AtomicInteger();
