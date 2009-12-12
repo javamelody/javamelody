@@ -300,6 +300,12 @@ public class TestCollector {
 
 	/** Test. */
 	@Test
+	public void testPrintStackTrace() {
+		Collector.printStackTrace(new Exception("test"));
+	}
+
+	/** Test. */
+	@Test
 	public void testStop() {
 		try {
 			final Collector collector = createCollectorWithOneCounter();
