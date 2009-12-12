@@ -5,7 +5,7 @@
   * change: default language is now English. To help people outside US, UK and France: the language of the UI is always based on the language of the browser if a translation is found (just 'fr' for now), or now on the language of the java server if a translation is found, or to the default translation (that is now English). 
   * added: [UserGuideAdvanced documentation] to setup JavaMelody in an EAR file (based on a contribution by 'dhartford')
   * added: [DevGuide documentation] to import current development sources in eclipse
-  * more to come
+  * added: memory overhead estimated in reports
 
 === 1.9.0 ===
 
