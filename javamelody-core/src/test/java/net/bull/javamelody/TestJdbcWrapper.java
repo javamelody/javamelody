@@ -28,6 +28,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -66,21 +67,27 @@ public class TestJdbcWrapper {
 	 * @throws NamingException e */
 	@Test
 	public void testCreateContextProxy() throws NamingException {
-		assertNotNull("createContextProxy", jdbcWrapper.createContextProxy(new InitialContext()));
-		jdbcWrapper.createContextProxy(new InitialContext()).close();
+		final Context context = jdbcWrapper.createContextProxy(new InitialContext());
+		assertNotNull("createContextProxy", context);
+		context.close();
 	}
 
 	/** Test.
 	 * @throws SQLException e */
 	@Test
 	public void testCreateDataSourceProxy() throws SQLException {
+		assertTrue("getTomcatBasicDataSourceProperties", JdbcWrapper
+				.getTomcatBasicDataSourceProperties().isEmpty());
+		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == -1);
 		final BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setUrl("jdbc:h2:~/.h2/test");
 		final DataSource proxy = jdbcWrapper.createDataSourceProxy(dataSource);
 		assertNotNull("createDataSourceProxy", proxy);
 		assertNotNull("getLogWriter", proxy.getLogWriter());
 		proxy.getConnection().close();
-		JdbcWrapper.getTomcatBasicDataSourceProperties();
+		assertTrue("getTomcatBasicDataSourceProperties", !JdbcWrapper
+				.getTomcatBasicDataSourceProperties().isEmpty());
+		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() != -1);
 
 		final DataSource dataSource2 = new DataSource() {
 			/** {@inheritDoc} */
@@ -127,13 +134,15 @@ public class TestJdbcWrapper {
 	}
 
 	/** Test.
-	 * @throws SQLException e */
+	 * @throws SQLException e 
+	 * @throws IllegalAccessException e */
 	@Test
-	public void testCreateConnectionProxy() throws SQLException {
+	public void testCreateConnectionProxy() throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
 		try {
+			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
 			assertNotNull("createConnectionProxy", connection);
 			assertFalse("equals", connection.equals(connection));
@@ -206,5 +215,25 @@ public class TestJdbcWrapper {
 	@Test
 	public void testGetSqlCounter() {
 		assertNotNull("getSqlCounter", jdbcWrapper.getSqlCounter());
+	}
+
+	/** Test. */
+	@Test
+	public void testIsEqualsMethod() {
+		assertTrue("isEqualsMethod", JdbcWrapper.isEqualsMethod("equals", new Object[] { "" }));
+		assertFalse("isEqualsMethod", JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }));
+		assertFalse("isEqualsMethod", JdbcWrapper.isEqualsMethod("equals", null));
+		assertFalse("isEqualsMethod", JdbcWrapper.isEqualsMethod("equals", new Object[] { "", "" }));
+	}
+
+	/** Test. */
+	@Test
+	public void testIsHashCodeMethod() {
+		assertTrue("isHashCodeMethod", JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}));
+		assertTrue("isHashCodeMethod", JdbcWrapper.isHashCodeMethod("hashCode", null));
+		assertFalse("isHashCodeMethod", JdbcWrapper
+				.isHashCodeMethod("nothashCode", new Object[] {}));
+		assertFalse("isHashCodeMethod", JdbcWrapper.isHashCodeMethod("hashCode",
+				new Object[] { "" }));
 	}
 }
