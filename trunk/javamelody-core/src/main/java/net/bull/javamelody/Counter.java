@@ -78,6 +78,7 @@ class Counter implements Cloneable, Serializable {
 	//CHECKSTYLE:ON
 	private Date startDate = new Date();
 	private int maxRequestsCount = MAX_REQUESTS_COUNT;
+	private long estimatedMemorySize;
 	// Pour les contextes, on utilise un ThreadLocal et pas un InheritableThreadLocal
 	// puisque si on crée des threads alors la requête parente peut se terminer avant les threads
 	// et le contexte serait incomplet.
@@ -324,6 +325,15 @@ class Counter implements Cloneable, Serializable {
 	void setMaxRequestsCount(int maxRequestsCount) {
 		assert maxRequestsCount > 0;
 		this.maxRequestsCount = maxRequestsCount;
+	}
+
+	/**
+	 * Retourne l'estimation pessimiste de l'occupation mémoire de counter
+	 * (c'est-à-dire la dernère taille sérialisée non compressée de ce counter)
+	 * @return long
+	 */
+	long getEstimatedMemorySize() {
+		return estimatedMemorySize;
 	}
 
 	void bindContext(String requestName, String completeRequestName) {
@@ -724,7 +734,7 @@ class Counter implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Enregustre le counter.
+	 * Enregistre le counter.
 	 * @throws IOException e
 	 */
 	void writeToFile() throws IOException {
@@ -733,7 +743,7 @@ class Counter implements Cloneable, Serializable {
 		// on n'écrit pas rootCurrentContextsByThreadId en fichier
 		// puisque ces données ne seront plus vrais dans quelques secondes (clear pour être sûr ici)
 		counter.rootCurrentContextsByThreadId.clear();
-		new CounterStorage(counter).writeToFile();
+		estimatedMemorySize = new CounterStorage(counter).writeToFile();
 	}
 
 	/**

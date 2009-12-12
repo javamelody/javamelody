@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +37,14 @@ class CounterResponseStream extends FilterServletOutputStream {
 	 */
 	CounterResponseStream(HttpServletResponse response) throws IOException {
 		super(response.getOutputStream());
+	}
+
+	/**
+	 * Construit un servlet output stream associé avec l'output stream spécifiée.
+	 * @param output OutputStream
+	 */
+	CounterResponseStream(OutputStream output) {
+		super(output);
 	}
 
 	/**

@@ -57,6 +57,7 @@ final class Collector {
 	private long cpuTimeMillis;
 	private long gcTimeMillis;
 	private long lastCollectDuration;
+	private long estimatedMemorySize;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 
 	/**
@@ -138,6 +139,10 @@ final class Collector {
 		return lastCollectDuration;
 	}
 
+	long getEstimatedMemorySize() {
+		return estimatedMemorySize;
+	}
+
 	private List<Counter> getPeriodCounters(Period period) throws IOException {
 		final Collection<Counter> currentDayCounters = dayCountersByCounter.values();
 		final List<Counter> result = new ArrayList<Counter>(currentDayCounters.size());
@@ -194,7 +199,7 @@ final class Collector {
 		assert javaInformationsList != null;
 		final long start = System.currentTimeMillis();
 		try {
-			collect(javaInformationsList);
+			estimatedMemorySize = collect(javaInformationsList);
 		} catch (final Throwable t) { // NOPMD
 			printStackTrace(t);
 		}
@@ -203,12 +208,13 @@ final class Collector {
 		lastCollectDuration = Math.max(0, System.currentTimeMillis() - start);
 	}
 
-	private void collect(List<JavaInformations> javaInformationsList) throws IOException {
+	private long collect(List<JavaInformations> javaInformationsList) throws IOException {
 		synchronized (this) {
 			// si pas d'informations, on ne met pas 0 : on ne met rien
 			if (!javaInformationsList.isEmpty()) {
 				collectJavaInformations(javaInformationsList);
 			}
+			long memorySize = 0;
 			for (final Counter counter : counters) {
 				// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
 				// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
@@ -216,9 +222,10 @@ final class Collector {
 				if (counter.isDisplayed()) {
 					// si le compteur n'est pas affiché (par ex ejb), pas de collecte
 					// et pas de persistance de fichiers jrobin ou du compteur
-					collectCounterData(counter);
+					memorySize += collectCounterData(counter);
 				}
 			}
+			return memorySize;
 		}
 	}
 
@@ -339,7 +346,7 @@ final class Collector {
 		}
 	}
 
-	private void collectCounterData(Counter counter) throws IOException {
+	private long collectCounterData(Counter counter) throws IOException {
 		// counterName vaut http, sql ou ws par exemple
 		final String counterName = counter.getName();
 		final boolean errorCounter = counter.isErrorCounter();
@@ -392,10 +399,12 @@ final class Collector {
 		}
 
 		// données de temps moyen pour les courbes par requête
-		collectCounterRequestsAndErrorsData(counter, requests);
+		final long dayCounterEstimatedMemorySize = collectCounterRequestsAndErrorsData(counter,
+				requests);
+		return counter.getEstimatedMemorySize() + dayCounterEstimatedMemorySize;
 	}
 
-	private void collectCounterRequestsAndErrorsData(Counter counter, List<CounterRequest> requests)
+	private long collectCounterRequestsAndErrorsData(Counter counter, List<CounterRequest> requests)
 			throws IOException {
 		final boolean errorCounter = counter.isErrorCounter();
 		int size = requests.size();
@@ -441,6 +450,7 @@ final class Collector {
 			dayCounter.addErrors(getDeltaOfErrors(counter, dayCounter));
 		}
 		dayCounter.writeToFile();
+		return dayCounter.getEstimatedMemorySize();
 	}
 
 	private List<CounterError> getDeltaOfErrors(Counter counter, Counter dayCounter) {

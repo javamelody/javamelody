@@ -270,11 +270,12 @@ class HtmlJavaInformationsReport {
 
 	// méthode inspirée de VisualScoreTag dans LambdaProbe/JStripe (Licence GPL)
 	private static String toBar(double percentValue) { // NOPMD
+		final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
 		final StringBuilder sb = new StringBuilder();
 		final String body = "<img src=''?resource=bar/rb_{0}.gif'' alt=''+'' title=''"
-				+ I18N.createPercentFormat().format(percentValue) + "%'' />";
-		final int fullBlockCount = (int) Math.floor(percentValue / (UNIT_SIZE * PARTIAL_BLOCKS));
-		final int partialBlockIndex = (int) Math.floor((percentValue - fullBlockCount * UNIT_SIZE
+				+ I18N.createPercentFormat().format(myPercent) + "%'' />";
+		final int fullBlockCount = (int) Math.floor(myPercent / (UNIT_SIZE * PARTIAL_BLOCKS));
+		final int partialBlockIndex = (int) Math.floor((myPercent - fullBlockCount * UNIT_SIZE
 				* PARTIAL_BLOCKS)
 				/ UNIT_SIZE);
 
