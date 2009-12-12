@@ -1,5 +1,5 @@
 #labels Featured
-=== trunk (future release) ===
+=== 1.10.0 ===
 
   * fix: added automatic monitoring of jdbc datasources when their jndi names starts with java:/jdbc like when they starts with java:comp/env/jdbc (for jboss for example)
   * change: default language is now English. To help people outside US, UK and France: the language of the UI is always based on the language of the browser if a translation is found (just 'fr' for now), or now on the language of the java server if a translation is found, or to the default translation (that is now English). 
