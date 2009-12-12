@@ -234,6 +234,9 @@ final class JdbcWrapper {
 	}
 
 	static int getMaxConnectionCount() {
+		if (TOMCAT_BASIC_DATASOURCES_PROPERTIES.isEmpty()) {
+			return -1;
+		}
 		int result = 0;
 		for (final Map<String, Object> dataSourceProperties : TOMCAT_BASIC_DATASOURCES_PROPERTIES
 				.values()) {

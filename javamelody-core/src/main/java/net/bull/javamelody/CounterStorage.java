@@ -48,14 +48,15 @@ class CounterStorage {
 
 	/**
 	 * Enregistre le counter.
+	 * @return Taille sérialisée non compressée du counter (estimation pessimite de l'occupation mémoire)
 	 * @throws IOException Exception d'entrée/sortie
 	 */
-	void writeToFile() throws IOException {
+	int writeToFile() throws IOException {
 		final File file = getFile();
 		if (counter.getRequestsCount() == 0 && counter.getErrorsCount() == 0 && !file.exists()) {
 			// s'il n'y a pas de requête, inutile d'écrire des fichiers de compteurs vides
 			// (par exemple pour le compteur ejb s'il n'y a pas d'ejb)
-			return;
+			return -1;
 		}
 		final File directory = file.getParentFile();
 		if (!directory.mkdirs() && !directory.exists()) {
@@ -63,8 +64,9 @@ class CounterStorage {
 		}
 		final FileOutputStream out = new FileOutputStream(file);
 		try {
-			final ObjectOutputStream output = new ObjectOutputStream(new GZIPOutputStream(
-					new BufferedOutputStream(out)));
+			final CounterResponseStream counterOutput = new CounterResponseStream(
+					new GZIPOutputStream(new BufferedOutputStream(out)));
+			final ObjectOutputStream output = new ObjectOutputStream(counterOutput);
 			try {
 				// on clone le counter avant de le sérialiser pour ne pas avoir de problèmes de concurrences d'accès
 				output.writeObject(counter);
@@ -72,6 +74,9 @@ class CounterStorage {
 				// ce close libère les ressources du ObjectOutputStream et du GZIPOutputStream
 				output.close();
 			}
+			// retourne la taille sérialisée non compressée,
+			// qui est une estimation pessimite de l'occupation mémoire
+			return counterOutput.getDataLength();
 		} finally {
 			out.close();
 		}

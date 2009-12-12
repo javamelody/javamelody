@@ -198,7 +198,8 @@ class HtmlReport {
 		final long displayDuration = System.currentTimeMillis() - start;
 		writeln("<div style='font-size:10pt;'>#temps_derniere_collecte#: "
 				+ collector.getLastCollectDuration() + " #ms#<br/>#temps_affichage#: "
-				+ displayDuration + " #ms#</div>");
+				+ displayDuration + " #ms#<br/>#Estimation_overhead_memoire#: < "
+				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + " #Mo#</div>");
 
 		writeHtmlFooter();
 	}
