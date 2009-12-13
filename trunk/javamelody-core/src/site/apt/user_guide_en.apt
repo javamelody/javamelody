@@ -58,13 +58,19 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	Language: English and French
 
-* Plugin Hudson
+* Hudson Plugin
 
 	If you want to monitor a {{{http://hudson-ci.org/}Hudson}} server, you can install JavaMelody by point and click
 	with a Hudson plugin. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available"
 	then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page.
 	Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page
 	or from the address <<<http://yourhost/monitoring>>>. That's it.
+
+* Grails Plugin
+
+	If you want to monitor an application developed with {{{http://www.grails.org}Grails}}, you can install JavaMelody in just one command
+	with a Grails plugin: {{{http://www.grails.org/plugin/grails-melody}JavaMelody Grails plugin}}.
+	You just need to execute the command given in the Install tab of the plugin.
 
 * Setup
 
