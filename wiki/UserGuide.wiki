@@ -5,7 +5,7 @@
   * [#Introduction Introduction]
   * [#Hudson_Plugin Hudson Plugin]
   * [#Grails_Plugin Grails Plugin]
-  * [#JavaMelody_Setup JavaMelody Setup]
+  * [#Setup JavaMelody Setup]
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
