@@ -65,6 +65,12 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	puis cocher le plugin appelé "Monitoring" et cliquer le bouton "Installer" en bas de la page. Redémarrer Hudson après l'installation du plugin.
 	Vous pouvez alors ouvrir le rapport à partir de la page "Administrer Hudson" ou à partir de l'adresse <<<http://host/monitoring>>>. C'est tout.
 
+* Plugin Grails
+
+	Si vous voulez monitorer une application développée avec {{{http://www.grails.org}Grails}}, vous pouvez installer JavaMelody en une commande
+	par l'intermédiaire d'un plugin Grails : {{{http://www.grails.org/plugin/grails-melody}JavaMelody Grails plugin}}.
+	Pour cela, il suffit d'exécuter la commande indiquée dans l'onglet Installation du plugin.
+
 * Mise en oeuvre
 
 	Une valeur importante du monitoring est une installation très simple et rapide.
