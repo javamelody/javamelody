@@ -3,8 +3,9 @@
 
 == Table of contents ==
   * [#Introduction Introduction]
-  * [#Plugin_Hudson Plugin Hudson]
-  * [#Setup Setup]
+  * [#Hudson_Plugin Hudson Plugin]
+  * [#Grails_Plugin Grails Plugin]
+  * [#JavaMelody_Setup JavaMelody Setup]
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
@@ -66,11 +67,16 @@ Language: English and French
 [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
 
 
-== Plugin Hudson ==
+== Hudson Plugin ==
 
 	If you want to monitor a [http://hudson-ci.org/ Hudson] server, you can install JavaMelody by point and click with a Hudson plugin. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page or from the address {{{http://yourhost/monitoring}}}. That's it.
 
-== Setup ==
+== Grails Plugin ==
+
+	If you want to monitor an application developed with [http://www.grails.org Grails], you can install JavaMelody in just one command with a Grails plugin: [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin].
+	You just need to execute the command given in the Install tab of the plugin.
+
+== JavaMelody Setup ==
 
 	An important value of the monitoring is a very simple and fast installation process.
 	And in general, integration is done by the software provider without any intervention from the client.
