@@ -22,7 +22,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
+
+import net.bull.javamelody.DatabaseInformations.Database;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,5 +61,18 @@ public class TestDatabaseInformations {
 		assertTrue("getRequestIndex", databaseInformations.getRequestIndex() == requestIndex);
 		assertNotNull("getResult", databaseInformations.getResult());
 		assertNotNull("getResult", databaseInformations.getRequestNames());
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testDatabase() throws Exception {
+		for (final Database database : Database.values()) {
+			final List<String> requestNames = database.getRequestNames();
+			assertTrue("getRequestNames", requestNames != null && !requestNames.isEmpty());
+			for (final String requestName : requestNames) {
+				assertNotNull("getRequestByName", database.getRequestByName(requestName));
+			}
+		}
 	}
 }

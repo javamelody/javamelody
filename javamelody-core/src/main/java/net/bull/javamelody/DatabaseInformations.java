@@ -42,7 +42,7 @@ import javax.sql.DataSource;
 class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
-	private static enum Database {
+	static enum Database {
 		POSTGRESQL, MYSQL, ORACLE, DB2, H2;
 
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
