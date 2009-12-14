@@ -31,6 +31,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -184,6 +185,40 @@ public class TestMonitoringFilter {
 			verify(request);
 			verify(response);
 			verify(chain);
+		} finally {
+			destroy();
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testFilterServletResponseWrapper() throws IOException {
+		try {
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			expect(response.getOutputStream()).andReturn(
+					new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
+			expect(response.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
+			final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
+					response);
+			replay(response);
+			assertNotNull("getOutputStream", wrappedResponse.getOutputStream());
+			assertNotNull("getOutputStream bis", wrappedResponse.getOutputStream());
+			assertNotNull("getOutputStream", wrappedResponse.getCharacterEncoding());
+			wrappedResponse.close();
+			verify(response);
+
+			final HttpServletResponse response2 = createNiceMock(HttpServletResponse.class);
+			expect(response2.getOutputStream()).andReturn(
+					new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
+			expect(response2.getCharacterEncoding()).andReturn(null).anyTimes();
+			final CounterServletResponseWrapper wrappedResponse2 = new CounterServletResponseWrapper(
+					response);
+			replay(response2);
+			assertNotNull("getWriter", wrappedResponse2.getWriter());
+			assertNotNull("getWriter bis", wrappedResponse2.getWriter());
+			wrappedResponse2.close();
+			verify(response2);
 		} finally {
 			destroy();
 		}
