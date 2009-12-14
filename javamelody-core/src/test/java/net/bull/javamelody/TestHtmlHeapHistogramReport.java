@@ -93,6 +93,13 @@ public class TestHtmlHeapHistogramReport {
 		}
 	}
 
+	/** Test. */
+	@Test
+	public void testHeapHistoClassInfoParseLong() {
+		assertTrue("parseLongWithK", HeapHistogram.ClassInfo.parseLongWithK("100k") == 100 * 1024);
+		assertTrue("parseLongWithK", HeapHistogram.ClassInfo.parseLongWithK("100") == 100);
+	}
+
 	private void report(HeapHistogram heapHistogram) throws IOException {
 		heapHistogram.add(heapHistogram);
 		final StringWriter writer = new StringWriter();
