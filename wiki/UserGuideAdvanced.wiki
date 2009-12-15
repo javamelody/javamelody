@@ -16,6 +16,7 @@ For standard documentation, see [UserGuide]
     * [#4._Results_with_a_collect_server 4. Results with a collect server]
   * [#Business_facades_(without_EJB3_and_without_Spring) Business facades (without EJB3 and without Spring)]
   * [#Deployment_on_Tomcat_without_modification_of_monitored_webapps Deployment on Tomcat without modification of monitored webapps]
+  * [#Clearing_all_statistics_and_all_graphs Clearing all statistics and all graphs]  
   * [#Format_of_RRD_files Format of RRD files]
   * [#Compilation_and_development Compilation and development]
 
@@ -201,9 +202,9 @@ For standard documentation, see [UserGuide]
 
 == Business facades (without EJB3 and without Spring) ==
 
-If the application to monitor contains some business façades with Java interfaces, a counter can be created for statistics of execution of methods on these façades even if these interfaces are neither EJB3 nor Spring.
+	If the application to monitor contains some business façades with Java interfaces, a counter can be created for statistics of execution of methods on these façades even if these interfaces are neither EJB3 nor Spring.
 
-First, if these façades are EJB3 or Spring, then it is simpler to use the configuration described in the user guide. Otherwise let's say that a business façade has an interface with an implementation, which is instanciated in a factory for example as below:
+	First, if these façades are EJB3 or Spring, then it is simpler to use the configuration described in the user guide. Otherwise let's say that a business façade has an interface with an implementation, which is instanciated in a factory for example as below:
 
 {{{
         public interface MyFacade { ... }
@@ -218,7 +219,7 @@ First, if these façades are EJB3 or Spring, then it is simpler to use the confi
         }
 }}}
 
-So it is a standard Java interface (ie POJI or Plain Old Java Interface). Then you just need to modify the code of the instanciation like this:
+	So it is a standard Java interface (ie POJI or Plain Old Java Interface). Then you just need to modify the code of the instanciation like this:
 
 {{{
         public class Factory {
@@ -229,9 +230,9 @@ So it is a standard Java interface (ie POJI or Plain Old Java Interface). Then y
         }
 }}}
 
-As pre-requisites for this, the jar of javamelody must be available in the classpath used to compile sources and façades must have interfaces and not only implementations.
+	As pre-requisites for this, the jar of javamelody must be available in the classpath used to compile sources and façades must have interfaces and not only implementations.
 
-And in order to display the statistics, it is necessary to define the parameter displayed-counters, as the optional parameters in the user guide, and with value "http,sql,error,log,services" for example.
+	And in order to display the statistics, it is necessary to define the parameter displayed-counters, as the optional parameters in the user guide, and with value "http,sql,error,log,services" for example.
 
 
 == Deployment on Tomcat without modification of monitored webapps ==
@@ -271,7 +272,25 @@ And in order to display the statistics, it is necessary to define the parameter 
 	* It works only in Tomcat 6 (Tomcat 5.5 is not supported)
 	
 	* It does not seem advisable to use the monitoring by Spring AOP in this case
+
+== Clearing all statistics and all graphs ==
 	
+	The storage files of statistics and of graphs are stored in the temporary directory of the server, unless if you have defined the "storage-directory" parameter. And there is a sub directory for each application.
+	
+	For example, with tomcat it is the directory {{{<TOMCAT_HOME>/temp/javamelody/}}}.
+	With some others servers on linux, it is the directory {{{/tmp/javamelody/}}}.
+	And for the hudson plugin, it is the directory {{{<HUDSON_HOME>/javamelody/}}}.
+	
+	To clear all statistics and all graphs:
+	
+	* Stop the server
+	
+	* Delete the storage directory : javamelody in the temporary directory of the server
+	
+	* Restart the server. You can then open the report of the monitoring which is now empty.
+	
+	But if you want to clear only the statistics, delete the {{{*.gz}}} files in the subdirectories of the storage directory.
+	And if you want to clear only the graphs, delete the {{{*.rrd}}} files in the subdirectories of the storage directory.
 
 == Format of RRD files ==
 	
@@ -281,4 +300,4 @@ And in order to display the statistics, it is necessary to define the parameter 
 
 == Compilation and development ==
 
-See [DevGuide]
+	See [DevGuide]
