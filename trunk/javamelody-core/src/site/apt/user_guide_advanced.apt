@@ -279,8 +279,29 @@ Documentation avancée de Java Melody
 	* Elle fonctionne uniquement en Tomcat 6 (Tomcat 5.5 n'est donc pas supporté)
 	
 	* Il ne paraît pas conseillé d'utiliser le monitoring par Spring AOP dans ce cas
+
+* Réinitialisation de toutes les statistiques et de toutes les courbes
 	
+	Les fichiers de sauvegarde des statistiques et des courbes sont stockés dans le répertoire temporaire du serveur,
+	à moins que vous n'ayez défini le paramètre "storage-directory". Et il y a un sous répertoire pour chaque application.
 	
+	Par exemple, avec tomcat c'est le répertoire <<< <TOMCAT_HOME>/temp/javamelody/ >>>.
+	Avec certains autres serveurs sous linux, c'est le répertoire <<< /tmp/javamelody/>>>.
+	Et pour le plugin hudson, c'est le répertoire <<< <HUDSON_HOME>/javamelody/ >>>.
+	
+	Pour réinitialiser toutes les statistiques et toutes les courbes :
+	
+	* Arrêter le serveur
+	
+	* Supprimer le répertoire de stockage : javamelody dans le répertoire temporaire du serveur
+	
+	* Redémarrer le serveur. Vous pouvez ensuite ouvrir le rapport du monitoring qui est désormais vide.
+	
+	[]
+	
+	Mais pour réinitialiser seulement les statistiques, supprimer les fichiers *.gz dans les sous-répertoires du répertoire de stockage.
+	Et pour réinitialiser seulement les courbes, supprimer les fichiers *.rrd dans les sous-répertoires du répertoire de stockage.
+
 * Format des fichiers RRD
 	
 	Les valeurs des courbes sont stockées au format RRD (Round Robin Database).
