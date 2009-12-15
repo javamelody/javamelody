@@ -269,7 +269,28 @@ Advanced documentation of Java Melody
 	
 	* It does not seem advisable to use the monitoring by Spring AOP in this case
 	
+* Clearing all statistics and all graphs
 	
+	The storage files of statistics and of graphs are stored in the temporary directory of the server,
+	unless if you have defined the "storage-directory" parameter. And there is a sub directory for each application.
+	
+	For example, with tomcat it is the directory <<< <TOMCAT_HOME>/temp/javamelody/ >>>.
+	With some others servers on linux, it is the directory <<</tmp/javamelody/>>>.
+	And for the hudson plugin, it is the directory <<< <HUDSON_HOME>/javamelody/ >>>.
+	
+	To clear all statistics and all graphs:
+	
+	* Stop the server
+	
+	* Delete the storage directory : javamelody in the temporary directory of the server
+	
+	* Restart the server. You can then open the report of the monitoring which is now empty.
+	
+	[]
+	
+	But if you want to clear only the statistics, delete the *.gz files in the subdirectories of the storage directory.
+	And if you want to clear only the graphs, delete the *.rrd files in the subdirectories of the storage directory.
+
 * Format of RRD files
 	
 	Values of charts are stored in RRD (Round Robin Database) format.
