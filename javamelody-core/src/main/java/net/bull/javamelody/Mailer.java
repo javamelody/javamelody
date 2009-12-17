@@ -81,6 +81,7 @@ class Mailer {
 					// puis on recrée une session mail locale avec les jars de la webapp.
 					session = Session.getInstance(getPropertiesFromSession(ctx.lookup(jndiName)));
 				}
+				ctx.close();
 			}
 			fromAddress = InternetAddress.getLocalAddress(session);
 		}

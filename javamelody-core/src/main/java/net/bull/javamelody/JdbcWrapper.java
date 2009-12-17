@@ -330,6 +330,7 @@ final class JdbcWrapper {
 					JdbcWrapperHelper.changeContextWritable(servletContext, securityToken);
 				}
 			}
+			initialContext.close();
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
@@ -394,6 +395,7 @@ final class JdbcWrapper {
 				initialContext.rebind(jndiName, dataSource);
 				JdbcWrapperHelper.changeContextWritable(servletContext, securityToken);
 			}
+			initialContext.close();
 			// TODO si jboss, glassfish ou weblogic avec datasource, il faudrait aussi désencapsuler
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
