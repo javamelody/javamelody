@@ -311,12 +311,18 @@ class JavaInformations implements Serializable { // NOPMD
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static List<CacheInformations> buildCacheInformationsList() {
 		if (!EHCACHE_AVAILABLE) {
 			return Collections.emptyList();
 		}
-		@SuppressWarnings("unchecked")
-		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
+		final List<CacheManager> allCacheManagers;
+		try {
+			allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
+		} catch (final NoSuchFieldError e) {
+			// nécessaire pour ehcache 1.2 ou avant
+			return Collections.emptyList();
+		}
 		final List<CacheInformations> result = new ArrayList<CacheInformations>();
 		for (final CacheManager cacheManager : allCacheManagers) {
 			final String[] cacheNames = cacheManager.getCacheNames();
