@@ -91,6 +91,18 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
+	public void testDoubleJavaInformations() throws IOException {
+		final List<JavaInformations> myJavaInformationsList = Arrays.asList(new JavaInformations(
+				null, true), new JavaInformations(null, true));
+		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
+				Period.TOUT, writer);
+		htmlReport.toHtml(null);
+		assertNotEmptyAndClear(writer);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
 	public void testCounter() throws IOException {
 		// counter avec 3 requêtes
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, "500");
