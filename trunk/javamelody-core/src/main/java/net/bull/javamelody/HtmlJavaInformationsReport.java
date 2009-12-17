@@ -48,7 +48,7 @@ class HtmlJavaInformationsReport {
 	HtmlJavaInformationsReport(List<JavaInformations> javaInformationsList, Period period,
 			Writer writer) {
 		super();
-		assert javaInformationsList != null;
+		assert javaInformationsList != null && !javaInformationsList.isEmpty();
 		assert period != null;
 		assert writer != null;
 
@@ -65,11 +65,10 @@ class HtmlJavaInformationsReport {
 		if (!noDatabase) {
 			write("<br/><br/>");
 		}
-		if (!javaInformationsList.isEmpty() && javaInformationsList.get(0).getSessionCount() >= 0) {
+		if (javaInformationsList.get(0).getSessionCount() >= 0) {
 			write("<br/>");
 		}
-		if (!javaInformationsList.isEmpty()
-				&& javaInformationsList.get(0).getSystemLoadAverage() >= 0) {
+		if (javaInformationsList.get(0).getSystemLoadAverage() >= 0) {
 			// sinon le tableau est décalé vers la droite sous unix
 			write("<br/>");
 		}
