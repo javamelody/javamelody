@@ -51,14 +51,15 @@ final class JdbcWrapperHelper {
 			// pour jboss sans jboss-env.xml ou sans resource-ref dans web.xml
 			dataSources.putAll(getDataSourcesAt("java:/jdbc"));
 		} else if (datasourcesParameter.trim().length() != 0) {
+			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
 				final String jndiName = datasource.trim();
 				// ici, on n'ajoute pas java:/comp/env
 				// et on suppose qu'il n'en faut pas ou que cela a été ajouté dans le paramétrage
-				final InitialContext initialContext = new InitialContext();
 				final DataSource dataSource = (DataSource) initialContext.lookup(jndiName);
 				dataSources.put(jndiName, dataSource);
 			}
+			initialContext.close();
 		}
 		return Collections.unmodifiableMap(dataSources);
 	}
@@ -90,6 +91,7 @@ final class JdbcWrapperHelper {
 			return dataSources;
 			// le préfixe "comp/env/jdbc" ou "/jdbc" n'existe pas dans jndi
 		}
+		initialContext.close();
 		return dataSources;
 	}
 
