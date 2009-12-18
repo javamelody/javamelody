@@ -42,7 +42,7 @@ public class TestHtmlThreadInformationsReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testSessionsInformations() throws IOException {
+	public void testThreadInformations() throws IOException {
 		final StringWriter writer = new StringWriter();
 		new HtmlThreadInformationsReport(Collections.<ThreadInformations> emptyList(), true, writer)
 				.toHtml();
@@ -50,12 +50,21 @@ public class TestHtmlThreadInformationsReport {
 		new HtmlThreadInformationsReport(JavaInformations.buildThreadInformationsList(), true,
 				writer).toHtml();
 		assertNotEmptyAndClear(writer);
+		new HtmlThreadInformationsReport(JavaInformations.buildThreadInformationsList(), false,
+				writer).toHtml();
+		assertNotEmptyAndClear(writer);
 
 		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
 		final Thread thread = Thread.currentThread();
 		final List<StackTraceElement> stackTrace = Arrays.asList(thread.getStackTrace());
+		threads.add(new ThreadInformations(thread, null, 10, 10, false));
+		threads.add(new ThreadInformations(thread, Collections.<StackTraceElement> emptyList(), 10,
+				10, false));
 		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, true));
 		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, false));
+		new HtmlThreadInformationsReport(threads, true, writer).toHtml();
+		assertNotEmptyAndClear(writer);
+
 		new HtmlThreadInformationsReport(threads, true, writer).writeDeadlocks();
 		assertNotEmptyAndClear(writer);
 	}

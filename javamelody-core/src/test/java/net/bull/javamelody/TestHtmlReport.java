@@ -122,6 +122,7 @@ public class TestHtmlReport {
 		collector.collectWithoutErrors(javaInformationsList);
 		htmlReport.toHtml("message 2");
 		assertNotEmptyAndClear(writer);
+		setProperty(Parameter.NO_DATABASE, "false");
 	}
 
 	/** Test.
@@ -202,7 +203,11 @@ public class TestHtmlReport {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 		htmlReport.toHtml(null); // writeSystemActionsLinks
 		assertNotEmptyAndClear(writer);
+		setProperty(Parameter.NO_DATABASE, "true");
+		htmlReport.toHtml(null); // writeSystemActionsLinks
+		assertNotEmptyAndClear(writer);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+		setProperty(Parameter.NO_DATABASE, "false");
 	}
 
 	/** Test.
@@ -255,6 +260,31 @@ public class TestHtmlReport {
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache(cacheName2);
 		}
+	}
+
+	/** Test. 
+	 * @throws IOException e */
+	@Test
+	public void testWithCollectorServer() throws IOException {
+		final CollectorServer collectorServer = new CollectorServer();
+		final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
+				javaInformationsList, Period.TOUT, writer);
+		htmlReport.toHtml(null);
+		assertNotEmptyAndClear(writer);
+
+		collectorServer.collectWithoutErrors();
+		htmlReport.toHtml(null);
+		assertNotEmptyAndClear(writer);
+	}
+
+	/** Test. 
+	 * @throws IOException e */
+	@Test
+	public void testWithNoDatabase() throws IOException {
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+				Period.TOUT, writer);
+		htmlReport.toHtml(null);
+		assertNotEmptyAndClear(writer);
 	}
 
 	/** Test.
