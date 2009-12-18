@@ -315,18 +315,17 @@ class HtmlReport {
 	}
 
 	private boolean isDatabaseEnabled() {
-		return !Parameters.isNoDatabase() && !javaInformationsList.isEmpty()
+		return !Parameters.isNoDatabase()
 				&& javaInformationsList.get(0).getDataBaseVersion() != null
 				&& !javaInformationsList.get(0).getDataBaseVersion().contains("Exception");
 	}
 
 	private boolean doesWebXmlExists() {
-		return !javaInformationsList.isEmpty() && javaInformationsList.get(0).doesWebXmlExists();
+		return javaInformationsList.get(0).doesWebXmlExists();
 	}
 
 	private boolean isSessionsEnabled() {
-		return !javaInformationsList.isEmpty()
-				&& javaInformationsList.get(0).getSessionCount() >= 0;
+		return javaInformationsList.get(0).getSessionCount() >= 0;
 	}
 
 	private boolean isCacheEnabled() {
