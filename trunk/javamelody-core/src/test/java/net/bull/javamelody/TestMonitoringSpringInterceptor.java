@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
+
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -32,6 +34,45 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Emeric Vernat
  */
 public class TestMonitoringSpringInterceptor {
+	/**
+	 * Test.
+	 */
+	public static interface AnnotatedTest {
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		@MonitoredWithSpring(name = "test method")
+		Date test();
+	}
+
+	/**
+	 * Test.
+	 */
+	@MonitoredWithSpring(name = "test class")
+	public static class AnnotatedTestClassSpring implements AnnotatedTest {
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		public Date test() {
+			return new Date();
+		}
+	}
+
+	/**
+	 * Test.
+	 */
+	public static class AnnotatedTestMethodSpring implements AnnotatedTest {
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		public Date test() {
+			return new Date();
+		}
+	}
+
 	/** Test. */
 	@Test
 	public void testNewInstance() {
@@ -97,5 +138,15 @@ public class TestMonitoringSpringInterceptor {
 		} catch (final Error e) {
 			assertTrue("requestsCount", springCounter.getRequestsCount() == 2);
 		}
+
+		final AnnotatedTest annotatedTestClassSpring = (AnnotatedTest) context
+				.getBean("annotatedTestClassSpring");
+		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.test());
+		assertTrue("requestsCount", springCounter.getRequestsCount() == 3);
+
+		final AnnotatedTest annotatedTestMethodSpring = (AnnotatedTest) context
+				.getBean("annotatedTestMethodSpring");
+		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.test());
+		assertTrue("requestsCount", springCounter.getRequestsCount() == 4);
 	}
 }
