@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -50,6 +51,13 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("new MonitoredWithAnnotationPointcut", pointcut);
 		assertNotNull("classFilter", pointcut.getClassFilter());
 		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
+		assertFalse("methodMatcher.isRuntime", pointcut.getMethodMatcher().isRuntime());
+		try {
+			assertFalse("methodMatcher.matches", pointcut.getMethodMatcher().matches(null, null,
+					null));
+		} catch (final UnsupportedOperationException e) {
+			assertNotNull("ok", e);
+		}
 	}
 
 	/** Test. 
