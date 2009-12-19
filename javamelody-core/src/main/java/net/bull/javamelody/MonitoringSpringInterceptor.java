@@ -19,7 +19,7 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 
 	/**
 	 * Performs method invocation.
-	 * Autor: Emeric Vernat
+	 * Auteur: Emeric Vernat
 	 *
 	 * @param invocation method invocation
 	 * @return return object from the method
