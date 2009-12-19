@@ -5,6 +5,8 @@
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 	
 	<bean name="springTestFacade" class="net.bull.javamelody.SpringTestFacadeImpl" />
+	<bean name="annotatedTestClassSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestClassSpring" />
+	<bean name="annotatedTestMethodSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestMethodSpring" />
 
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
