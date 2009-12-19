@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -49,6 +50,19 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("new MonitoredWithAnnotationPointcut", pointcut);
 		assertNotNull("classFilter", pointcut.getClassFilter());
 		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
+	}
+
+	/** Test. 
+	 * @throws ClassNotFoundException e */
+	@Test
+	public void testMonitoredWithInterfacePointcut() throws ClassNotFoundException {
+		final MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
+		assertNotNull("new MonitoredWithInterfacePointcut", pointcut);
+		assertNotNull("classFilter", pointcut.getClassFilter());
+		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
+		assertNull("interfaceName", pointcut.getInterfaceName());
+		pointcut.setInterfaceName(SpringTestFacade.class.getName());
+		assertNotNull("interfaceName", pointcut.getInterfaceName());
 	}
 
 	/** Test.
