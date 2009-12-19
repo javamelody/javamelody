@@ -22,6 +22,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -187,6 +188,18 @@ public class TestCollectorServlet {
 		verify(response);
 		if (allowed) {
 			assertTrue("result", stringWriter.getBuffer().length() != 0);
+		}
+	}
+
+	/** Test. 
+	 * @throws Exception e */
+	@Test
+	public void testMainWinstone() throws Exception {
+		try {
+			Main.main(new String[] { "--help" });
+		} catch (final NullPointerException e) {
+			// cela s'arrête sur le jar winstone qui n'est pas disponible en tests unitaires
+			assertNotNull("ok", e);
 		}
 	}
 }

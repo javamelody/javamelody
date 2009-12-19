@@ -21,7 +21,10 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
+
+import javax.naming.NoInitialContextException;
 
 import org.junit.Test;
 
@@ -44,5 +47,35 @@ public class TestMailReport {
 		}
 		// n'importe
 		assertNotNull("MailReport", timer.purge());
+	}
+
+	/** Test. 
+	 * @throws Exception e */
+	@Test
+	public void testSendReportMail() throws Exception {
+		final Timer timer = new Timer("test timer", true);
+		try {
+			final Counter counter = new Counter("http", null);
+			final Collector collector = new Collector("test", Collections.singletonList(counter),
+					timer);
+			final List<JavaInformations> javaInformationslist = Collections
+					.singletonList(new JavaInformations(null, true));
+			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
+			new MailReport().sendReportMail(collector, false, javaInformationslist);
+		} catch (final NoInitialContextException e) {
+			assertNotNull("ok", e);
+		} finally {
+			timer.cancel();
+		}
+	}
+
+	/** Test. */
+	@Test
+	public void testGetNextExecutionDate() {
+		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate());
+	}
+
+	private static void setProperty(Parameter parameter, String value) {
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
 	}
 }
