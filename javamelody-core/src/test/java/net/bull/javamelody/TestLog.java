@@ -117,8 +117,9 @@ public class TestLog {
 			final Counter logCounter = LoggingHandler.getLogCounter();
 			logCounter.clear();
 			final int requestsCountBefore = logCounter.getRequestsCount();
-			Logger.getRootLogger().warn("test 1");
-			Logger.getRootLogger().warn("test 1", new IllegalStateException("test"));
+			Logger.getRootLogger().info("test info");
+			Logger.getRootLogger().warn("test warn");
+			Logger.getRootLogger().warn("test warn", new IllegalStateException("test"));
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME)
 					.warning("test 2");
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME).info(

@@ -342,6 +342,8 @@ public class TestCollector {
 		javaInformations.getDependencies();
 		javaInformations.isStackTraceEnabled();
 		javaInformations.isCacheEnabled();
+		javaInformations.doesWebXmlExists();
+		javaInformations.doesPomXmlExists();
 		assertNotNull("JavaInformations", javaInformations);
 	}
 
