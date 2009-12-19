@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
@@ -276,6 +277,8 @@ public class TestMonitoringFilter {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DATABASE_PART);
+		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
@@ -284,6 +287,7 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		parameters.put(SESSION_ID_PARAMETER, "expired session");
 		monitoring(parameters);
+		parameters.remove(SESSION_ID_PARAMETER);
 		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		monitoring(parameters, false);
 		parameters.put(PART_PARAMETER, POM_XML_PART);
@@ -345,7 +349,10 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		parameters.put(SESSION_ID_PARAMETER, "expired session");
 		monitoring(parameters);
+		parameters.remove(SESSION_ID_PARAMETER);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
@@ -368,6 +375,8 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
