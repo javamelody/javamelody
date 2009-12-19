@@ -101,6 +101,9 @@ public class TestCollector {
 			if (new SessionInformations(new SessionTestImpl(true), true).toString().isEmpty()) {
 				fail("toString session vide");
 			}
+			if (new MemoryInformations().toString().isEmpty()) {
+				fail("toString memory vide");
+			}
 			CacheManager.getInstance().addCache("testToString");
 			try {
 				if (new CacheInformations(CacheManager.getInstance().getEhcache("testToString"))
