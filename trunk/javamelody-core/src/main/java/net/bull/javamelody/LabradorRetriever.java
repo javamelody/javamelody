@@ -103,6 +103,7 @@ class LabradorRetriever {
 
 	void copyTo(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
+		assert httpRequest != null;
 		assert httpResponse != null;
 		final long start = System.currentTimeMillis();
 		try {
