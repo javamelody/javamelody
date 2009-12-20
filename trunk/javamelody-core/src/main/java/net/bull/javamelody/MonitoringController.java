@@ -245,8 +245,12 @@ class MonitoringController {
 			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
-				final int requestIndex = Integer.parseInt(httpRequest
-						.getParameter(REQUEST_PARAMETER));
+				final int requestIndex;
+				if (httpRequest.getParameter(REQUEST_PARAMETER) != null) {
+					requestIndex = Integer.parseInt(httpRequest.getParameter(REQUEST_PARAMETER));
+				} else {
+					requestIndex = 0;
+				}
 				return new DatabaseInformations(requestIndex);
 			}
 		} catch (final Exception e) {
