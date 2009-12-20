@@ -214,6 +214,33 @@ public class TestPdfReport {
 		assertNotNull("PdfCounterRequestContextReport", report);
 	}
 
+	/** Test.
+	 * @throws IOException e
+	 * @throws DocumentException e */
+	@Test
+	public void testPdfThreadInformationsReport() throws IOException, DocumentException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory("test app", output);
+		final Document document = pdfDocumentFactory.createDocument();
+		document.open();
+		boolean stackTraceEnabled = true;
+		final PdfThreadInformationsReport report = new PdfThreadInformationsReport(JavaInformations
+				.buildThreadInformationsList(), stackTraceEnabled, pdfDocumentFactory, document);
+		report.toPdf();
+		document.close();
+		assertNotEmptyAndClear(output);
+
+		final Document document2 = pdfDocumentFactory.createDocument();
+		document2.open();
+		stackTraceEnabled = false;
+		final PdfThreadInformationsReport report2 = new PdfThreadInformationsReport(
+				JavaInformations.buildThreadInformationsList(), stackTraceEnabled,
+				pdfDocumentFactory, document2);
+		report2.toPdf();
+		document2.close();
+		assertNotEmptyAndClear(output);
+	}
+
 	/** Test. */
 	@Test
 	public void testGetFileName() {
