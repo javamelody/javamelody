@@ -25,6 +25,7 @@ import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -279,6 +280,9 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
+		parameters.put(REQUEST_PARAMETER, "0");
+		monitoring(parameters);
+		parameters.remove(REQUEST_PARAMETER);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
@@ -354,6 +358,9 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
+		parameters.put(REQUEST_PARAMETER, "0");
+		monitoring(parameters);
+		parameters.remove(REQUEST_PARAMETER);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
