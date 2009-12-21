@@ -55,8 +55,9 @@ class DatabaseInformations implements Serializable {
 			final List<String> tmp;
 			switch (this) {
 			case POSTGRESQL:
-				tmp = Arrays.asList("pg_stat_activity", "pg_stat_database", "pg_stat_user_tables",
-						"pg_stat_user_indexes", "pg_statio_user_tables", "pg_statio_user_indexes",
+				tmp = Arrays.asList("pg_stat_activity", "pg_locks", "pg_database", "pg_tablespace",
+						"pg_stat_database", "pg_stat_user_tables", "pg_stat_user_indexes",
+						"pg_statio_user_tables", "pg_statio_user_indexes",
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
