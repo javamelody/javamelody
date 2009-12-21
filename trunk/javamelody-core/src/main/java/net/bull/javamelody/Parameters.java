@@ -50,6 +50,8 @@ final class Parameters {
 	private static final String DEFAULT_DIRECTORY = "javamelody";
 	// nom du fichier stockant les applications et leurs urls dans le répertoire de stockage
 	private static final String APPLICATIONS_FILENAME = "applications.properties";
+	// variables d'environnement
+	private static final Map<String, String> ENVIRONMENT_VARIABLES = System.getenv();
 	private static Map<String, List<URL>> urlsByApplications;
 
 	private static FilterConfig filterConfig;
@@ -318,6 +320,10 @@ final class Parameters {
 		final String name = parameter.getCode();
 		final String globalName = PARAMETER_SYSTEM_PREFIX + name;
 		String result = System.getProperty(globalName);
+		if (result != null) {
+			return result;
+		}
+		result = ENVIRONMENT_VARIABLES.get(globalName);
 		if (result != null) {
 			return result;
 		}
