@@ -24,12 +24,15 @@ import java.lang.management.ManagementFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+
+import net.sf.ehcache.CacheManager;
 
 /**
  * Énumération des actions possibles dans l'IHM.
@@ -55,7 +58,11 @@ enum Action {
 	/**
 	 * Heap dump.
 	 */
-	HEAP_DUMP;
+	HEAP_DUMP,
+	/**
+	 * Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()})
+	 */
+	CLEAR_CACHES;
 
 	/**
 	 * Booléen selon que l'action 'Garbage collector' est possible.
@@ -101,9 +108,7 @@ enum Action {
 			assert collector != null;
 			assert counterName != null;
 			if ("all".equalsIgnoreCase(counterName)) {
-				for (final Counter counter : collector.getCounters()) {
-					collector.clearCounter(counter.getName());
-				}
+				clearCounters(collector);
 				messageForReport = I18N.getFormattedString("Toutes_statistiques_reinitialisees",
 						counterName);
 			} else {
@@ -150,10 +155,20 @@ enum Action {
 			SessionListener.invalidateSession(sessionId);
 			messageForReport = I18N.getString("session_http_invalidee");
 			break;
+		case CLEAR_CACHES:
+			clearCaches();
+			messageForReport = I18N.getString("caches_purges");
+			break;
 		default:
 			throw new IllegalStateException(toString());
 		}
 		return messageForReport;
+	}
+
+	private void clearCounters(Collector collector) {
+		for (final Counter counter : collector.getCounters()) {
+			collector.clearCounter(counter.getName());
+		}
 	}
 
 	private File heapDump() throws IOException {
@@ -186,5 +201,13 @@ enum Action {
 	@SuppressWarnings("all")
 	private void gc() {
 		Runtime.getRuntime().gc();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void clearCaches() {
+		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
+		for (final CacheManager cacheManager : allCacheManagers) {
+			cacheManager.clearAll();
+		}
 	}
 }

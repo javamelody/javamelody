@@ -365,8 +365,8 @@ class HtmlReport {
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/>");
 			writeln("<div id='" + id + "' style='display: none;'>");
-			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
-					.toHtml();
+			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), period,
+					writer).toHtml();
 			writeln("</div><br/>");
 			i++;
 		}
