@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Timer;
 
+import net.sf.ehcache.CacheManager;
+
 import org.junit.Test;
 
 /**
@@ -61,6 +63,11 @@ public class TestAction {
 
 			assertNotNull("message GC", Action.GC.execute(collector, counterName, sessionId));
 			assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector,
+					counterName, sessionId));
+			if (CacheManager.getInstance().getCache("test clear") == null) {
+				CacheManager.getInstance().addCache("test clear");
+			}
+			assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector,
 					counterName, sessionId));
 			final String heapDump1 = Action.HEAP_DUMP.execute(collector, counterName, sessionId);
 			assertNotNull("message HEAP_DUMP", heapDump1);

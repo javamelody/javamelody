@@ -54,6 +54,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.ehcache.CacheManager;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -325,6 +327,12 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
 		parameters.put(SESSION_ID_PARAMETER, "123456789");
+		monitoring(parameters);
+		parameters.put(ACTION_PARAMETER, Action.CLEAR_CACHES.toString());
+		monitoring(parameters);
+		if (CacheManager.getInstance().getCache("test clear") == null) {
+			CacheManager.getInstance().addCache("test clear");
+		}
 		monitoring(parameters);
 		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
 		parameters.put("counter", "all");
