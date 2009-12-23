@@ -2,8 +2,14 @@
 
 Here is a list of wishes of features
 
-  # Option in the UI to change from cumulative times (http times include sql) to non-cumulative times, or at least a parameter
-  # Parameter (or UI option) to change the period of mail reports from weekly to daily or monthly or all these
+  # Fix [http://code.google.com/p/javamelody/issues/list issues]
+  # Unit tests
+  # Integration tests (all JDK and versions, all OS, all application servers and versions)
+  # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, or at least a parameter (from user group)
+  # Parameter (or UI option) to change the *period of mail reports* from weekly to daily or monthly or all these (from user group)
+  # UI option to display graphs and statistics for yesterday or for the day before, via fields of *custom start and end dates of period to display* for example (from user group)
+  # In sql detail, display of *sql explain plan* if Oracle (seems not doable if postgresql or mysql, without particular parameter values)
+  # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
   # more to come...
 
 JavaMelody is opensource:
