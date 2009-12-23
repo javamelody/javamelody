@@ -10,8 +10,15 @@ Here is a list of wishes of features
   # UI option to display graphs and statistics for yesterday or for the day before, via fields of *custom start and end dates of period to display* for example (from user group)
   # In sql detail, display of *sql explain plan* if Oracle (seems not doable if postgresql or mysql, without particular parameter values)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
+  # If quartz is available in classpath, display of the *list of the quartz jobs* with if possible date and hour of last execution, date and hour of next execution, frequency, mean execution times, mean cpu times, mean sql hits and times, buttons to launch and to freeze executions)
+  # Why the *maven site* does not include findbugs and checkstyle in the dashboard ? (or why the findbugs and checkstyle plugins are executed after the dashboard plugin ?)
+  # Display the *version* of JavaMelody (from pom.xml) in the html and pdf reports (from user group)
+  # In sql or spring or ejb request detail, link to display the *reversed call-tree* (i.e. usages) of the request
+  # *Alerts* based on thresholds, with mails to administrators
+  # *CSV* exports of tables
+  # Munin plugin to display some graphs in *Nagios*
   # More to come...
 
 JavaMelody is opensource:
-Priority and todos may change any time.
+Priorities and todos may change any time.
 There is no promise of dates or that a particular feature will ever be done.
