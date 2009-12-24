@@ -5,17 +5,20 @@ Here is a list of wishes of features
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
   # More unit tests
   # More integration tests (all JDK and versions, all OS, all application servers and versions)
+  # Translations (German, Italian, Spanish...)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, or at least a parameter (from user group)
   # Parameter (or UI option) to change the *period of mail reports* from weekly to daily or monthly or all these (from user group)
   # UI option to display graphs and statistics for yesterday or for the day before, via fields of *custom start and end dates of period to display* for example (from user group)
+  # In sql or spring or ejb request detail, link to display the *reversed call-tree* (i.e. usages) of the request
   # In sql detail, display of *sql explain plan* if Oracle (seems not doable if postgresql or mysql, without particular parameter values)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
   # If quartz is available in classpath, display of the *list of the [http://www.quartz-scheduler.org/ quartz] jobs* with if possible date and hour of last execution, date and hour of next execution, frequency, mean execution times, mean cpu times, mean sql hits and times, buttons to launch and to freeze executions)
+  # Display of graphs with *percentages of navigators, of OS, of countries/languages* based on user-agent and main locale, with jrobin and percentage one above the others up to 100%, and idem with types of requests (get,post,ajax,gwt or perhaps select/update/insert/delete)
   # Why the *[http://maven.apache.org/guides/mini/guide-site.html maven site]* of javamelody does not include findbugs and checkstyle in the [http://mojo.codehaus.org/dashboard-maven-plugin/ dashboard] ? (or why the findbugs and checkstyle plugins are executed after the dashboard plugin ?)
   # Display the *version* of JavaMelody (from [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/pom.xml pom.xml]) in the html and pdf reports (from user group)
-  # In sql or spring or ejb request detail, link to display the *reversed call-tree* (i.e. usages) of the request
   # *Alerts* based on thresholds, with mails to administrators
   # *CSV* exports of tables
+  # Rich *desktop UI* able to connect to multiple servers via CollectorServer and to centralized collect servers, with [http://java.sun.com/docs/books/tutorial/uiswing/ swing] and [http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp java web start]
   # [http://munin.projects.linpro.no/ Munin] plugin to display some graphs in *[http://www.nagios.org/ Nagios]*
   # More to come...
 
