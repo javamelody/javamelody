@@ -13,6 +13,7 @@ Here is a list of wishes of features
   # In sql detail, display of *sql explain plan* if Oracle (seems not doable if postgresql or mysql, without particular parameter values)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
   # If quartz is available in classpath, display of the *list of the [http://www.quartz-scheduler.org/ quartz] jobs* with if possible date and hour of last execution, date and hour of next execution, frequency, mean execution times, mean cpu times, mean sql hits and times, buttons to launch and to freeze executions)
+  # Simplify UI with [http://groups.google.fr/group/javamelody/browse_thread/thread/d4ac1b796e366852 user feedback]
   # Display of graphs with *percentages of navigators, of OS, of countries/languages* based on user-agent and main locale, with jrobin and percentage one above the others up to 100%, and idem with types of requests (get,post,ajax,gwt or perhaps select/update/insert/delete)
   # Why the *[http://maven.apache.org/guides/mini/guide-site.html maven site]* of javamelody does not include findbugs and checkstyle in the [http://mojo.codehaus.org/dashboard-maven-plugin/ dashboard] ? (or why the findbugs and checkstyle plugins are executed after the dashboard plugin ?)
   # Display the *version* of JavaMelody (from [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/pom.xml pom.xml]) in the html and pdf reports (from user group)
