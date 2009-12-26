@@ -179,14 +179,23 @@ public class CollectorServlet extends HttpServlet {
 				final String message = I18N.getFormattedString("application_enlevee", application);
 				showAlertAndRedirectTo(resp, message, "?");
 				return;
-			} else if (actionParameter != null
-					&& Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER) {
-				// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
-				// et on récupère les informations à jour (notamment mémoire et nb de sessions)
-				forwardActionAndUpdateData(req, application);
-			} else {
-				// nécessaire si action clear_counter
-				monitoringController.executeActionIfNeeded(req);
+			} else if (actionParameter != null) {
+				if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER) {
+					// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
+					// et on récupère les informations à jour (notamment mémoire et nb de sessions)
+					forwardActionAndUpdateData(req, application);
+				} else {
+					// nécessaire si action clear_counter
+					monitoringController.executeActionIfNeeded(req);
+				}
+
+				resp.setContentType(HTML_CONTENT_TYPE);
+				final Period period = MonitoringController.getPeriod(req);
+				final PrintWriter writer = getWriter(resp);
+				writer.write("<script type='text/javascript'>location.href='?period=");
+				writer.write(period.getCode());
+				writer.write("\';</script>");
+				writer.close();
 			}
 			final String partParameter = req.getParameter(PART_PARAMETER);
 			if (partParameter == null) {
@@ -336,21 +345,15 @@ public class CollectorServlet extends HttpServlet {
 		MonitoringController.noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		PrintWriter writer;
-		try {
-			writer = resp.getWriter();
-		} catch (final Exception e) {
-			writer = createWriterFromOutputStream(resp);
-		}
-
 		if (application == null) {
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {
+			final PrintWriter writer = getWriter(resp);
 			final Period period = MonitoringController.getPeriod(req);
 			new HtmlReport(collector, collectorServer, javaInformationsList, period, writer)
 					.writeMessageIfNotNull(message, null);
+			writer.close();
 		}
-		writer.close();
 	}
 
 	private Collector getCollectorByApplication(String application) {
@@ -359,6 +362,16 @@ public class CollectorServlet extends HttpServlet {
 
 	private List<JavaInformations> getJavaInformationsByApplication(String application) {
 		return collectorServer.getJavaInformationsByApplication(application);
+	}
+
+	private static PrintWriter getWriter(HttpServletResponse resp) throws IOException {
+		PrintWriter writer;
+		try {
+			writer = resp.getWriter();
+		} catch (final Exception e) {
+			writer = createWriterFromOutputStream(resp);
+		}
+		return writer;
 	}
 
 	private static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
