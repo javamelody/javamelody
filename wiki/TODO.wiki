@@ -7,7 +7,7 @@ Here is a list of wishes of features
   # More integration tests (all JDK and versions, all OS, all application servers and versions)
   # Translations (German, Italian, Spanish...)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, or at least a parameter (from user group)
-  # Extract connection pool values from org.apache.commons.dbcp.BasicDataSource (apache dbcp) like what is already extracted from org.apache.tomcat.dbcp.dbcp.BasicDataSource (apache tomcat)
+  # Extract connection pool values from org.apache.commons.dbcp.BasicDataSource (apache dbcp) like what is already extracted from org.apache.tomcat.dbcp.dbcp.BasicDataSource (apache tomcat), (from user group)
   # Parameter (or UI option) to change the *period of mail reports* from weekly to daily or monthly or all these (from user group)
   # UI option to display graphs and statistics for yesterday or for the day before, via fields of *custom start and end dates of period to display* for example (from user group)
   # In sql or spring or ejb request detail, link to display the *reversed call-tree* (i.e. usages) of the request
