@@ -101,12 +101,13 @@ class CollectorServer {
 		}
 	}
 
-	void collectForApplication(String application, List<URL> urls) throws IOException {
+	String collectForApplication(String application, List<URL> urls) throws IOException {
 		LOGGER.info("collecte pour l'application " + application + " sur " + urls);
 		assert application != null;
 		assert urls != null;
 		final long start = System.currentTimeMillis();
 		final List<JavaInformations> javaInformationsList = new ArrayList<JavaInformations>();
+		final StringBuilder sb = new StringBuilder();
 		Collector collector = collectorsByApplication.get(application);
 		for (final URL url : urls) {
 			final List<Serializable> serialized = new LabradorRetriever(url).call();
@@ -119,6 +120,8 @@ class CollectorServer {
 				} else if (serializable instanceof JavaInformations) {
 					final JavaInformations newJavaInformations = (JavaInformations) serializable;
 					javaInformationsList.add(newJavaInformations);
+				} else if (serializable instanceof String) {
+					sb.append(serializable).append('\n');
 				}
 			}
 			if (collector == null) {
@@ -133,12 +136,23 @@ class CollectorServer {
 		}
 		javaInformationsByApplication.put(application, javaInformationsList);
 		collector.collectWithoutErrors(javaInformationsList);
+		final String messageForReport;
+		if (sb.length() == 0) {
+			messageForReport = null;
+		} else {
+			messageForReport = sb.toString();
+		}
 		LOGGER.info("collecte pour l'application " + application + " effectuée en "
 				+ (System.currentTimeMillis() - start) + "ms");
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("counters " + application + " : " + collector.getCounters());
 			LOGGER.debug("javaInformations " + application + " : " + javaInformationsList);
+			if (messageForReport != null) {
+				LOGGER.debug("message " + application + " : "
+						+ messageForReport.replace("\n", ", "));
+			}
 		}
+		return messageForReport;
 	}
 
 	List<SessionInformations> collectSessionInformations(String application, String sessionId)

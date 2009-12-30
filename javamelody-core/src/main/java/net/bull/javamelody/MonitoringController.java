@@ -99,7 +99,7 @@ class MonitoringController {
 				&& httpRequest.getParameter(PART_PARAMETER) == null;
 	}
 
-	void executeActionIfNeeded(HttpServletRequest httpRequest) throws IOException {
+	String executeActionIfNeeded(HttpServletRequest httpRequest) throws IOException {
 		assert httpRequest != null;
 		final String actionParameter = httpRequest.getParameter(ACTION_PARAMETER);
 		if (actionParameter != null) {
@@ -114,10 +114,12 @@ class MonitoringController {
 				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 				messageForReport = action.execute(collector, counterName, sessionId);
+				return messageForReport;
 			} finally {
 				I18N.unbindLocale();
 			}
 		}
+		return null;
 	}
 
 	void doReport(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -264,8 +266,9 @@ class MonitoringController {
 		for (final Counter counter : counters) {
 			serialized.add(counter.clone());
 		}
-		for (final JavaInformations javaInformations : javaInformationsList) {
-			serialized.add(javaInformations);
+		serialized.addAll(javaInformationsList);
+		if (messageForReport != null) {
+			serialized.add(messageForReport);
 		}
 		return (Serializable) serialized;
 	}

@@ -174,29 +174,26 @@ public class CollectorServlet extends HttpServlet {
 			final MonitoringController monitoringController = new MonitoringController(collector,
 					collectorServer);
 			final String actionParameter = req.getParameter(ACTION_PARAMETER);
-			if ("remove_application".equalsIgnoreCase(actionParameter)) {
-				collectorServer.removeCollectorApplication(application);
-				final String message = I18N.getFormattedString("application_enlevee", application);
-				showAlertAndRedirectTo(resp, message, "?");
-				return;
-			} else if (actionParameter != null) {
-				if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER) {
+			if (actionParameter != null) {
+				final String messageForReport;
+				if ("remove_application".equalsIgnoreCase(actionParameter)) {
+					collectorServer.removeCollectorApplication(application);
+					messageForReport = I18N.getFormattedString("application_enlevee", application);
+					final Period period = MonitoringController.getPeriod(req);
+					showAlertAndRedirectTo(resp, messageForReport, "?period=" + period.getCode());
+				} else if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER) {
 					// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
 					// et on récupère les informations à jour (notamment mémoire et nb de sessions)
-					forwardActionAndUpdateData(req, application);
+					messageForReport = forwardActionAndUpdateData(req, application);
+					writeMessage(req, resp, application, messageForReport);
 				} else {
 					// nécessaire si action clear_counter
-					monitoringController.executeActionIfNeeded(req);
+					messageForReport = monitoringController.executeActionIfNeeded(req);
+					writeMessage(req, resp, application, messageForReport);
 				}
-
-				resp.setContentType(HTML_CONTENT_TYPE);
-				final Period period = MonitoringController.getPeriod(req);
-				final PrintWriter writer = getWriter(resp);
-				writer.write("<script type='text/javascript'>location.href='?period=");
-				writer.write(period.getCode());
-				writer.write("\';</script>");
-				writer.close();
+				return;
 			}
+
 			final String partParameter = req.getParameter(PART_PARAMETER);
 			if (partParameter == null) {
 				// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
@@ -345,13 +342,19 @@ public class CollectorServlet extends HttpServlet {
 		MonitoringController.noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+		final Period period = MonitoringController.getPeriod(req);
 		if (application == null) {
-			showAlertAndRedirectTo(resp, message, "?");
+			showAlertAndRedirectTo(resp, message, "?period=" + period.getCode());
 		} else {
-			final PrintWriter writer = getWriter(resp);
-			final Period period = MonitoringController.getPeriod(req);
+			PrintWriter writer;
+			try {
+				writer = resp.getWriter();
+			} catch (final Exception e) {
+				writer = createWriterFromOutputStream(resp);
+			}
+			final String partParameter = req.getParameter(PART_PARAMETER);
 			new HtmlReport(collector, collectorServer, javaInformationsList, period, writer)
-					.writeMessageIfNotNull(message, null);
+					.writeMessageIfNotNull(message, partParameter);
 			writer.close();
 		}
 	}
@@ -362,16 +365,6 @@ public class CollectorServlet extends HttpServlet {
 
 	private List<JavaInformations> getJavaInformationsByApplication(String application) {
 		return collectorServer.getJavaInformationsByApplication(application);
-	}
-
-	private static PrintWriter getWriter(HttpServletResponse resp) throws IOException {
-		PrintWriter writer;
-		try {
-			writer = resp.getWriter();
-		} catch (final Exception e) {
-			writer = createWriterFromOutputStream(resp);
-		}
-		return writer;
 	}
 
 	private static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
@@ -406,7 +399,7 @@ public class CollectorServlet extends HttpServlet {
 				&& !allowedAddrPattern.matcher(req.getRemoteAddr()).matches();
 	}
 
-	private void forwardActionAndUpdateData(HttpServletRequest req, String application)
+	private String forwardActionAndUpdateData(HttpServletRequest req, String application)
 			throws IOException {
 		final String actionParameter = req.getParameter(ACTION_PARAMETER);
 		final String sessionIdParameter = req.getParameter(SESSION_ID_PARAMETER);
@@ -422,7 +415,7 @@ public class CollectorServlet extends HttpServlet {
 			}
 			actionUrls.add(new URL(actionUrl));
 		}
-		collectorServer.collectForApplication(application, actionUrls);
+		return collectorServer.collectForApplication(application, actionUrls);
 	}
 
 	private String getApplication(HttpServletRequest req, HttpServletResponse resp) {
