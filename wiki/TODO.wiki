@@ -4,7 +4,7 @@ Here is a list of wishes of features
 
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
   # More unit tests
-  # More integration tests (all JDK and versions, all OS, all application servers and versions)
+  # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # Translations (German, Italian, Spanish...)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, or at least a parameter (from user group)
   # Extract connection pool values from org.apache.commons.dbcp.BasicDataSource (apache dbcp) like what is already extracted from org.apache.tomcat.dbcp.dbcp.BasicDataSource (apache tomcat), (from user group)
