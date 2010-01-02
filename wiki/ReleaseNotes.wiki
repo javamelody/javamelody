@@ -1,4 +1,8 @@
 #labels Featured
+=== Grails Melody plugin ===
+
+A Grails Melody plugin was released by Liu Chao at http://www.grails.org/plugin/grails-melody to integrate JavaMelody in Grails (Groovy on rails). 
+
 === 1.10.0 ===
 
   * fix: added automatic monitoring of jdbc datasources when their jndi names starts with java:/jdbc like when they starts with java:comp/env/jdbc (for jboss for example)
