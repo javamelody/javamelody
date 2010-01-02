@@ -29,6 +29,7 @@ There is no promise of dates or that a particular feature will ever be done.
     # Why the dependencies part when building the maven site is so long when online ?
     # Why maven plugins (pmd, checkstyle, findbugs...) are often years late ?
     # Why editing apt files in eclipse always freezes Eclipse ? (Eclipse 3.5, m2eclipse 0.9.8, maven embedded)
+    # Why maven waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?
     # Display the *version* of JavaMelody (from [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/pom.xml pom.xml]) in the html and pdf reports (from user group)
     # Publish JavaMelody in maven central repository (seems not doable without jrobin in central repo and without renaming package to googlecode)
   # More to come...
