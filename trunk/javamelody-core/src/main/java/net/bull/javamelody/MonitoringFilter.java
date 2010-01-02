@@ -121,7 +121,7 @@ public class MonitoringFilter implements Filter {
 		}
 
 		// liaison des compteurs : les contextes par thread du sqlCounter ont pour parent le httpCounter
-		this.httpCounter = new Counter("http", "dbweb.png", sqlCounter);
+		this.httpCounter = new Counter(Counter.HTTP_COUNTER_NAME, "dbweb.png", sqlCounter);
 		this.errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, "error.png");
 		this.errorCounter.setMaxRequestsCount(250);
 
