@@ -149,7 +149,7 @@ class HtmlReport {
 		}
 		writeln("</h3>");
 		writeln("<div align='center'>");
-		writeRefreshAndPeriodLinks(null);
+		writeRefreshAndPeriodLinks(null, null);
 		writeGraphs();
 		writeln("</div>");
 
@@ -467,7 +467,7 @@ class HtmlReport {
 		}
 	}
 
-	private void writeRefreshAndPeriodLinks(String graphName) throws IOException {
+	private void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {
 		writeln("<div class='noPrint'>");
 		final String start;
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -476,7 +476,7 @@ class HtmlReport {
 		} else {
 			writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 			writeln(separator);
-			start = "<a href='?part=graph&amp;graph=" + graphName + "&amp;period=";
+			start = "<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period=";
 		}
 		writeln(start + period.getCode() + "' title='#Rafraichir#'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
@@ -571,11 +571,23 @@ class HtmlReport {
 		writeHtmlHeader(true);
 
 		writeln("<div align='center'>");
-		writeRefreshAndPeriodLinks(graphName);
+		writeRefreshAndPeriodLinks(graphName, "graph");
 		writeln("</div>");
 
 		new HtmlCounterRequestGraphReport(period, writer).writeRequestAndGraphDetail(collector,
 				graphName);
+
+		writeHtmlFooter();
+	}
+
+	void writeRequestUsages(String graphName) throws IOException {
+		writeHtmlHeader(true);
+
+		writeln("<div align='center'>");
+		writeRefreshAndPeriodLinks(graphName, "usages");
+		writeln("</div>");
+
+		new HtmlCounterRequestGraphReport(period, writer).writeRequestUsages(collector, graphName);
 
 		writeHtmlFooter();
 	}

@@ -233,6 +233,15 @@ class CounterRequest implements Cloneable, Serializable {
 		}
 	}
 
+	boolean containsChildRequest(String requestId) {
+		if (childRequestsExecutionsByRequestId == null) {
+			return false;
+		}
+		synchronized (this) {
+			return childRequestsExecutionsByRequestId.containsKey(requestId);
+		}
+	}
+
 	/**
 	 * @return Dernière stack trace
 	 */

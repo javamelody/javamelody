@@ -45,6 +45,10 @@ import java.util.regex.Pattern;
  */
 class Counter implements Cloneable, Serializable {
 	/**
+	 * Nom du counter des requêtes http.
+	 */
+	static final String HTTP_COUNTER_NAME = "http";
+	/**
 	 * Nom du counter des erreurs systèmes http.
 	 */
 	static final String ERROR_COUNTER_NAME = "error";

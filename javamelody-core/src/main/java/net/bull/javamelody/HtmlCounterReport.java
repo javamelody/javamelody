@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -142,6 +143,76 @@ class HtmlCounterReport {
 		//			}
 		//		}
 
+		void writeRequestUsages(Collector collector, String requestId) throws IOException {
+			assert requestId != null;
+			counters = collector.getPeriodCountersToBeDisplayed(period);
+			CounterRequest myRequest = null;
+			final List<CounterRequest> requests = new ArrayList<CounterRequest>();
+			for (final Counter counter : counters) {
+				for (final CounterRequest request : counter.getOrderedRequests()) {
+					if (myRequest == null && request.getId().equals(requestId)) {
+						myRequest = request;
+					}
+					if (request.containsChildRequest(requestId)) {
+						requests.add(request);
+					}
+				}
+			}
+			writeln("<br/><b>#Utilisations_de#</b>");
+			writer.write(htmlEncode(myRequest.getName()));
+			writeln("<br/><br/>");
+			if (requests.isEmpty()) {
+				writeln("#Aucune_requete#");
+				return;
+			}
+			final boolean someUsagesDisplayed = getUsagesDisplayed(requests);
+			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Utilisations_de#'>");
+			write("<thead><tr><th>#Requete#</th>");
+			if (someUsagesDisplayed) {
+				write("<th class='noPrint'>#Chercher_utilisations#</th>");
+			}
+			writeln("</tr></thead><tbody>");
+			boolean odd = false;
+			for (final CounterRequest request : requests) {
+				if (odd) {
+					write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+				} else {
+					write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+				}
+				odd = !odd; // NOPMD
+				writeUsedRequest(request, someUsagesDisplayed);
+				writeln("</tr>");
+			}
+			writeln("</tbody></table>");
+		}
+
+		private void writeUsedRequest(CounterRequest request, boolean someUsageDisplayed)
+				throws IOException {
+			writeln("<td>");
+			writeCounterIcon(request);
+			writeRequestGraph(request.getId(), request.getName());
+			if (someUsageDisplayed) {
+				writeln("</td><td align='center' class='noPrint'>");
+				if (doesRequestDisplayUsages(request)) {
+					writeln("<a href='?part=usages&amp;period=" + period.getCode() + "&amp;graph="
+							+ request.getId() + "'>");
+					writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' title='#Chercher_utilisations#'/></a>");
+				} else {
+					writeln("&nbsp;");
+				}
+			}
+			writeln("</td>");
+		}
+
+		private boolean getUsagesDisplayed(List<CounterRequest> requests) {
+			for (final CounterRequest request : requests) {
+				if (doesRequestDisplayUsages(request)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		private void writeRequest(CounterRequest request) throws IOException {
 			final Map<String, Long> childRequests = request.getChildRequestsExecutionsByRequestId();
 			writeln("<br/>");
@@ -154,7 +225,7 @@ class HtmlCounterReport {
 			writeln("<th class='sorttable_numeric'>#Temps_moyen#</th><th class='sorttable_numeric'>#Temps_max#</th>");
 			writeln("<th class='sorttable_numeric'>#Ecart_type#</th><th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
 			writeln("<th class='sorttable_numeric'>#erreur_systeme#</th>");
-			final Counter parentCounter = getCounterByRequestId(request.getId());
+			final Counter parentCounter = getCounterByRequestId(request);
 			final boolean allChildHitsDisplayed = parentCounter != null
 					&& parentCounter.getChildCounterName() != null;
 			if (allChildHitsDisplayed) {
@@ -179,7 +250,21 @@ class HtmlCounterReport {
 				writeChildRequests(request, childRequests, allChildHitsDisplayed);
 			}
 			writeln("</tbody></table>");
-			writeln("<br/>");
+			if (doesRequestDisplayUsages(request)) {
+				writeln("<div align='right' class='noPrint'>");
+				writeln("<a href='?part=usages&amp;period=" + period.getCode() + "&amp;graph="
+						+ request.getId() + "'>");
+				writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' title='#Chercher_utilisations#'/> #Chercher_utilisations#</a>");
+				writeln("</div>");
+			} else {
+				writeln("<br/>");
+			}
+		}
+
+		private boolean doesRequestDisplayUsages(CounterRequest request) {
+			final Counter parentCounter = getCounterByRequestId(request);
+			return parentCounter != null && !parentCounter.isErrorCounter()
+					&& !Counter.HTTP_COUNTER_NAME.equals(parentCounter.getName());
 		}
 
 		private void writeChildRequests(CounterRequest request, Map<String, Long> childRequests,
@@ -244,7 +329,7 @@ class HtmlCounterReport {
 		}
 
 		private void writeCounterIcon(CounterRequest request) throws IOException {
-			final Counter parentCounter = getCounterByRequestId(request.getId());
+			final Counter parentCounter = getCounterByRequestId(request);
 			if (parentCounter != null && parentCounter.getIconName() != null) {
 				writeln("<img src='?resource=" + parentCounter.getIconName() + "' alt='"
 						+ parentCounter.getName() + "' width='16' height='16' />&nbsp;");
@@ -296,7 +381,8 @@ class HtmlCounterReport {
 			writeln(SCRIPT_END);
 		}
 
-		private Counter getCounterByRequestId(String requestId) {
+		private Counter getCounterByRequestId(CounterRequest request) {
+			final String requestId = request.getId();
 			for (final Counter counter : counters) {
 				// cela marche car requestId commence par counter.getName() selon CounterRequest.buildId
 				if (requestId.startsWith(counter.getName())) {
