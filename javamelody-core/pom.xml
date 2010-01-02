@@ -336,19 +336,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Pour corriger http://jira.codehaus.org/browse/MJNCSS-16 -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>javancss-maven-plugin</artifactId>
-				<version>2.0-beta-2</version>
-				<dependencies>
-					<dependency>
-						<groupId>javancss</groupId>
-						<artifactId>javancss</artifactId>
-						<version>29.50</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 			<!--
 				Pour corriger
 				http://sourceforge.net/tracker/index.php?func=detail&aid=2230809&group_id=56262&atid=479921
@@ -443,7 +430,7 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<configuration>
 					<enableRSS>false</enableRSS>
-					<configLocation>checkstyle-4.4.xml</configLocation>
+					<configLocation>.checkstyle.xml</configLocation>
 				</configuration>
 			</plugin>
 			<plugin>
