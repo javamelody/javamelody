@@ -1,6 +1,10 @@
 == TODO list of features ==
 
-Here is a list of wishes of features
+Here is a list of wishes of features.
+
+JavaMelody is opensource:
+Priorities and todos may change any time.
+There is no promise of dates or that a particular feature will ever be done.
 
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
   # More unit tests
@@ -23,7 +27,3 @@ Here is a list of wishes of features
   # Rich *desktop UI* able to connect to multiple servers via CollectorServer and to centralized collect servers, with [http://java.sun.com/docs/books/tutorial/uiswing/ swing] and [http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp java web start]
   # [http://munin.projects.linpro.no/ Munin] plugin to display some graphs in *[http://www.nagios.org/ Nagios]*
   # More to come...
-
-JavaMelody is opensource:
-Priorities and todos may change any time.
-There is no promise of dates or that a particular feature will ever be done.
