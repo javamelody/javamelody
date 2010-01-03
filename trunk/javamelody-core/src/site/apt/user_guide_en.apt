@@ -151,6 +151,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	  (context xml file in Tomcat)
 
+	* in environment variables of the OS with prefix <<<javamelody.>>>
+
+	  (OS specific or java launch command)
+
 	* in system properties with prefix <<<javamelody.>>>
 
 	  (java launch command or administration user interface)
