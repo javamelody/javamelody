@@ -153,6 +153,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	  (fichier xml de contexte dans Tomcat)
 
+	* dans les variables d'environnement du système d'exploitation avec le préfixe <<<javamelody.>>>
+
+	  (dépendant du système d'exploitation ou bien commande de lancement java)
+
 	* dans les propriétés systèmes avec le préfixe <<<javamelody.>>>
 
 	  (commande de lancement java ou selon le cas interface d'administration)
