@@ -21,7 +21,7 @@ package net.bull.javamelody;
 import java.util.Locale;
 
 /**
- * Liste des paramètres, tous optionnels; voir fichier README.txt pour plus de détails.
+ * Liste des paramètres, tous optionnels.
  * @author Emeric Vernat
  */
 public enum Parameter {

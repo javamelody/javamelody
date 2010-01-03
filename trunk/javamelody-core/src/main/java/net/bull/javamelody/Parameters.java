@@ -311,6 +311,7 @@ final class Parameters {
 	 * Recherche la valeur d'un paramètre qui peut être défini par ordre de priorité croissant :
 	 * - dans les paramètres d'initialisation du filtre (fichier web.xml dans la webapp)
 	 * - dans les paramètres du contexte de la webapp avec le préfixe "javamelody." (fichier xml de contexte dans Tomcat)
+	 * - dans les variables d'environnement du système d'exploitation avec le préfixe "javamelody."
 	 * - dans les propriétés systèmes avec le préfixe "javamelody." (commande de lancement java)
 	 * @param parameter Enum du paramètre
 	 * @return valeur du paramètre ou null si pas de paramètre défini
