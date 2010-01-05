@@ -9,6 +9,7 @@
   * added: parameters can now be specified in environment variables like in system properties, webapp context or as init-param of MonitoringFilter
   * added: if postgresql, display of pg_locks, pg_tablespace, pg_database and of cachehitratio in pg_stat_database
   * added: if ehcache, an action is available to clear all caches of all cache managers
+  * added: extraction of "maxActive" and other properties from apache dbcp BasicDataSource like what is already extracted from apache tomcat BasicDataSource (as discussed in user group)
   * more to come...
 
 === Grails Melody plugin ===
