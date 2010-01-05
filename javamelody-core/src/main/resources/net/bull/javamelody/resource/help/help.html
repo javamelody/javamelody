@@ -142,12 +142,14 @@ Each statistic of request shows:<ul>
 <li>the content of the request</li>
 <li>an evolution chart for mean times of this request in tooltip for the same period as the statistics;
 this chart can be zoomed by clicking on the content of the request</li>
-<li>the percentage of cumulated time (mean time * nb of hits) compared to other requests</li>
+<li>the percentage of cumulative time (mean time * nb of hits) compared to other requests</li>
 <li>the number of hits (or number of executions)</li>
 <li>the mean time in milliseconds</li>
 <li>the maximum time in milliseconds</li>
 <li>the standard deviation between execution times:
 if it is high, the execution times are varied, and if it is low the execution times are closed to one another</li>
+<li>the percentage of cumulative cpu time (mean cpu time * nb of hits) compared to other requests</li>
+<li>the mean cpu time in milliseconds</li>
 <li>the percentage of system errors</li>
 </ul>
 and if it is an http statistic:<ul>
@@ -156,6 +158,10 @@ and if it is an http statistic:<ul>
 <li>the mean time executing sql requests, by execution of http request</li>
 </ul>
 
+The mean times, the maximum times and the mean cpu times are cumulative: for example, the http mean times include
+the ejb mean times and the sql mean times ; moreover the http mean cpu times include the ejb mean cpu time and the sql mean cpu times.
+But wait times like sleeping or waiting for I/O do not consume cpu, so they are included in mean times but not in mean cpu times.
+<br/>
 Like all tables of the report, the tables of statistics can be ordered in ascending or descending order by clicking on headers of columns.<br/>
 The statistics are persisted for each counter: a restart of the application server has no influence on them.<br/>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
