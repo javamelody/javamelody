@@ -89,7 +89,7 @@ class JavaInformations implements Serializable { // NOPMD
 	private final int peakThreadCount;
 	private final long totalStartedThreadCount;
 	private final String dataBaseVersion;
-	private final String tomcatDataSourceDetails;
+	private final String dataSourceDetails;
 	@SuppressWarnings("all")
 	private final List<ThreadInformations> threadInformationsList;
 	@SuppressWarnings("all")
@@ -179,13 +179,13 @@ class JavaInformations implements Serializable { // NOPMD
 
 		if (includeDetails) {
 			dataBaseVersion = buildDataBaseVersion();
-			tomcatDataSourceDetails = buildTomcatDataSourceDetails();
+			dataSourceDetails = buildDataSourceDetails();
 			threadInformationsList = buildThreadInformationsList();
 			cacheInformationsList = buildCacheInformationsList();
 			pid = PID.getPID();
 		} else {
 			dataBaseVersion = null;
-			tomcatDataSourceDetails = null;
+			dataSourceDetails = null;
 			threadInformationsList = null;
 			cacheInformationsList = null;
 			pid = null;
@@ -393,9 +393,9 @@ class JavaInformations implements Serializable { // NOPMD
 				metaData.getDriverVersion());
 	}
 
-	private static String buildTomcatDataSourceDetails() {
+	private static String buildDataSourceDetails() {
 		final Map<String, Map<String, Object>> dataSourcesProperties = JdbcWrapper
-				.getTomcatBasicDataSourceProperties();
+				.getBasicDataSourceProperties();
 		final StringBuilder sb = new StringBuilder();
 		for (final Map.Entry<String, Map<String, Object>> entry : dataSourcesProperties.entrySet()) {
 			final Map<String, Object> dataSourceProperties = entry.getValue();
@@ -547,8 +547,8 @@ class JavaInformations implements Serializable { // NOPMD
 		return dataBaseVersion;
 	}
 
-	String getTomcatDataSourceDetails() {
-		return tomcatDataSourceDetails;
+	String getDataSourceDetails() {
+		return dataSourceDetails;
 	}
 
 	List<ThreadInformations> getThreadInformationsList() {

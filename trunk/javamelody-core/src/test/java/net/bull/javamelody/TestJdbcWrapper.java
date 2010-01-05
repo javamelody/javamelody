@@ -76,8 +76,8 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e */
 	@Test
 	public void testCreateDataSourceProxy() throws SQLException {
-		assertTrue("getTomcatBasicDataSourceProperties", JdbcWrapper
-				.getTomcatBasicDataSourceProperties().isEmpty());
+		assertTrue("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
+				.isEmpty());
 		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == -1);
 		final BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setUrl("jdbc:h2:~/.h2/test");
@@ -85,8 +85,8 @@ public class TestJdbcWrapper {
 		assertNotNull("createDataSourceProxy", proxy);
 		assertNotNull("getLogWriter", proxy.getLogWriter());
 		proxy.getConnection().close();
-		assertTrue("getTomcatBasicDataSourceProperties", !JdbcWrapper
-				.getTomcatBasicDataSourceProperties().isEmpty());
+		assertTrue("getBasicDataSourceProperties", !JdbcWrapper.getBasicDataSourceProperties()
+				.isEmpty());
 		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() != -1);
 
 		final DataSource dataSource2 = new DataSource() {

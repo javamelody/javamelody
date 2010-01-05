@@ -146,9 +146,9 @@ class PdfJavaInformationsReport {
 		}
 		addCell(getI18nString("Base_de_donnees") + ':');
 		addCell(javaInformations.getDataBaseVersion());
-		if (javaInformations.getTomcatDataSourceDetails() != null) {
+		if (javaInformations.getDataSourceDetails() != null) {
 			addCell(getI18nString("DataSource_jdbc") + ':');
-			addCell(javaInformations.getTomcatDataSourceDetails());
+			addCell(javaInformations.getDataSourceDetails());
 			addCell("");
 			final Anchor anchor = new Anchor("DataSource reference", PdfDocumentFactory.BLUE_FONT);
 			anchor.setName("DataSource reference");
