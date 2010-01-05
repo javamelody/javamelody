@@ -48,8 +48,11 @@ final class JdbcWrapperHelper {
 		final String datasourcesParameter = Parameters.getParameter(Parameter.DATASOURCES);
 		if (datasourcesParameter == null) {
 			dataSources.putAll(getDataSourcesAt("java:comp/env/jdbc"));
-			// pour jboss sans jboss-env.xml ou sans resource-ref dans web.xml
+			// pour jboss sans jboss-env.xml ou sans resource-ref dans web.xml :
 			dataSources.putAll(getDataSourcesAt("java:/jdbc"));
+			// pour JavaEE 6 :
+			// (voir par exemple http://smokeandice.blogspot.com/2009/12/datasourcedefinition-hidden-gem-from.html)
+			dataSources.putAll(getDataSourcesAt("java:global/jdbc"));
 		} else if (datasourcesParameter.trim().length() != 0) {
 			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
