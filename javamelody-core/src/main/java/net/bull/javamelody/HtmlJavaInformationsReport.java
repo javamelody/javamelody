@@ -179,9 +179,9 @@ class HtmlJavaInformationsReport {
 					+ replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
 							"&amp;") + columnEnd);
 		}
-		if (javaInformations.getTomcatDataSourceDetails() != null) {
+		if (javaInformations.getDataSourceDetails() != null) {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>"
-					+ replaceEolWithBr(javaInformations.getTomcatDataSourceDetails())
+					+ replaceEolWithBr(javaInformations.getDataSourceDetails())
 					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
 					+ " target='_blank'>DataSource reference</a>" + columnEnd);
 		}

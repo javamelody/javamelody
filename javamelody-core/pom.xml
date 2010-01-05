@@ -128,6 +128,12 @@
 			<version>6.0.18</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
+		</dependency>
 		<!--
 			Dépendance optionnelle spring aop (qui inclus spring core, spring
 			beans, aop alliance et commons-logging)
