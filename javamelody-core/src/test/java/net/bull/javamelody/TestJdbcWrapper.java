@@ -79,15 +79,26 @@ public class TestJdbcWrapper {
 		assertTrue("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
 		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == -1);
-		final BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setUrl("jdbc:h2:~/.h2/test");
-		final DataSource proxy = jdbcWrapper.createDataSourceProxy(dataSource);
-		assertNotNull("createDataSourceProxy", proxy);
-		assertNotNull("getLogWriter", proxy.getLogWriter());
-		proxy.getConnection().close();
+
+		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
+		dbcpDataSource.setUrl("jdbc:h2:~/.h2/test");
+		dbcpDataSource.setMaxActive(123);
+		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
+		assertNotNull("createDataSourceProxy", dbcpProxy);
 		assertTrue("getBasicDataSourceProperties", !JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
-		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() != -1);
+		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == 123);
+
+		final BasicDataSource tomcatDataSource = new BasicDataSource();
+		tomcatDataSource.setUrl("jdbc:h2:~/.h2/test");
+		tomcatDataSource.setMaxActive(456);
+		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy(tomcatDataSource);
+		assertNotNull("createDataSourceProxy", tomcatProxy);
+		assertNotNull("getLogWriter", tomcatProxy.getLogWriter());
+		tomcatProxy.getConnection().close();
+		assertTrue("getBasicDataSourceProperties", !JdbcWrapper.getBasicDataSourceProperties()
+				.isEmpty());
+		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == 456);
 
 		final DataSource dataSource2 = new DataSource() {
 			/** {@inheritDoc} */
@@ -102,32 +113,32 @@ public class TestJdbcWrapper {
 
 			/** {@inheritDoc} */
 			public void setLoginTimeout(int seconds) throws SQLException {
-				dataSource.setLoginTimeout(seconds);
+				tomcatDataSource.setLoginTimeout(seconds);
 			}
 
 			/** {@inheritDoc} */
 			public void setLogWriter(PrintWriter out) throws SQLException {
-				dataSource.setLogWriter(out);
+				tomcatDataSource.setLogWriter(out);
 			}
 
 			/** {@inheritDoc} */
 			public int getLoginTimeout() throws SQLException {
-				return dataSource.getLoginTimeout();
+				return tomcatDataSource.getLoginTimeout();
 			}
 
 			/** {@inheritDoc} */
 			public PrintWriter getLogWriter() throws SQLException {
-				return dataSource.getLogWriter();
+				return tomcatDataSource.getLogWriter();
 			}
 
 			/** {@inheritDoc} */
 			public Connection getConnection(String username, String password) throws SQLException {
-				return dataSource.getConnection();
+				return tomcatDataSource.getConnection();
 			}
 
 			/** {@inheritDoc} */
 			public Connection getConnection() throws SQLException {
-				return dataSource.getConnection();
+				return tomcatDataSource.getConnection();
 			}
 		};
 		jdbcWrapper.createDataSourceProxy(dataSource2);
