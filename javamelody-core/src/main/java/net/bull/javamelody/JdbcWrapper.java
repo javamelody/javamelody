@@ -592,7 +592,7 @@ final class JdbcWrapper {
 
 	private void pullDbcpDataSourceProperties(String name, DataSource dataSource) {
 		// si dbcp et si dataSource standard, alors on récupère des infos
-		final BasicDataSource basicDataSource = (BasicDataSource) dataSource;
+		final org.apache.commons.dbcp.BasicDataSource basicDataSource = (org.apache.commons.dbcp.BasicDataSource) dataSource;
 		final BasicDataSourcesProperties properties = DBCP_BASIC_DATASOURCES_PROPERTIES;
 		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
 		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
