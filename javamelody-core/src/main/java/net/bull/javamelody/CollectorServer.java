@@ -289,9 +289,16 @@ class CollectorServer {
 				&& javaInformationsByApplication.containsKey(application);
 	}
 
-	void scheduleReportMailForCollectorServer(final String application) {
+	void scheduleReportMailForCollectorServer(String application) {
 		assert application != null;
-		final MailReport mailReport = new MailReport();
+		for (final Period period : MailReport.getMailPeriods()) {
+			scheduleReportMailForCollectorServer(application, period);
+		}
+	}
+
+	void scheduleReportMailForCollectorServer(final String application, final Period period) {
+		assert application != null;
+		assert period != null;
 		final TimerTask task = new TimerTask() {
 			/** {@inheritDoc} */
 			@Override
@@ -300,19 +307,19 @@ class CollectorServer {
 					// envoi du rapport
 					final Collector collector = getCollectorByApplication(application);
 					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-					mailReport.sendReportMail(collector, true, javaInformationsList);
+					new MailReport().sendReportMail(collector, true, javaInformationsList, period);
 				} catch (final Throwable t) { // NOPMD
 					// pas d'erreur dans cette task
 					Collector.printStackTrace(t);
 				}
 				// on reschedule à la même heure la semaine suivante sans utiliser de période de 24h*7
 				// car certains jours font 23h ou 25h et on ne veut pas introduire de décalage
-				scheduleReportMailForCollectorServer(application);
+				scheduleReportMailForCollectorServer(application, period);
 			}
 		};
 
 		// schedule 1 fois la tâche
-		timer.schedule(task, MailReport.getNextExecutionDate());
+		timer.schedule(task, MailReport.getNextExecutionDate(period));
 	}
 
 	/**

@@ -22,6 +22,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -34,61 +35,106 @@ import java.util.TimerTask;
  * @author Emeric Vernat
  */
 class MailReport {
-	static void scheduleReportMailForLocalServer(final Collector collector, final Timer timer) {
+	static void scheduleReportMailForLocalServer(Collector collector, Timer timer) {
 		assert collector != null;
 		assert timer != null;
-		final MailReport mailReport = new MailReport();
+		for (final Period period : getMailPeriods()) {
+			scheduleReportMailForLocalServer(collector, timer, period);
+		}
+	}
+
+	static void scheduleReportMailForLocalServer(final Collector collector, final Timer timer,
+			final Period period) {
+		assert collector != null;
+		assert timer != null;
+		assert period != null;
 		final TimerTask task = new TimerTask() {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
 				try {
 					// envoi du rapport
-					mailReport.sendReportMailForLocalServer(collector);
+					new MailReport().sendReportMailForLocalServer(collector, period);
 				} catch (final Throwable t) { // NOPMD
 					// pas d'erreur dans cette task
 					Collector.printStackTrace(t);
 				}
-				// on reschedule à la même heure la semaine suivante sans utiliser de période de 24h*7
-				// car certains jours font 23h ou 25h et on ne veut pas introduire de décalage
-				scheduleReportMailForLocalServer(collector, timer);
+				// si rapport à la semaine, on reschedule à la même heure la semaine suivante
+				// sans utiliser de période de 24h*7 car certains jours font 23h ou 25h
+				// et on ne veut pas introduire de décalage,
+				// et idem pour jour suivant au lieu de 24h ou pour mois suivant
+				scheduleReportMailForLocalServer(collector, timer, period);
 			}
 		};
 
 		// schedule 1 fois la tâche
-		timer.schedule(task, getNextExecutionDate());
+		timer.schedule(task, getNextExecutionDate(period));
 	}
 
-	static Date getNextExecutionDate() {
+	static List<Period> getMailPeriods() {
+		final List<Period> mailPeriods;
+		if (Parameters.getParameter(Parameter.MAIL_PERIODS) == null) {
+			mailPeriods = Collections.singletonList(Period.SEMAINE);
+		} else {
+			final String mailPeriodsParameter = Parameters.getParameter(Parameter.MAIL_PERIODS);
+			mailPeriods = new ArrayList<Period>();
+			for (final String mailPeriod : mailPeriodsParameter.split(",")) {
+				mailPeriods.add(Period.valueOfByMailCode(mailPeriod));
+			}
+		}
+		return mailPeriods;
+	}
+
+	static Date getNextExecutionDate(Period period) {
 		// calcule de la date de prochaine exécution (le dimanche à minuit)
 		final Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-			// on utilise add et non roll pour ne pas tourner en boucle le 31/12
-			calendar.add(Calendar.DAY_OF_YEAR, 7);
+		switch (period) {
+		case JOUR:
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+			break;
+		case SEMAINE:
+			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			// pour le cas où est déjà dimanche, alors on prend dimanche prochain
+			if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+				// on utilise add et non roll pour ne pas tourner en boucle le 31/12
+				calendar.add(Calendar.DAY_OF_YEAR, 7);
+			}
+			break;
+		case MOIS:
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+			// pour le cas où est déjà le premier du mois, alors on prend le mois prochain
+			if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+				// on utilise add et non roll pour ne pas tourner en boucle le 31/12
+				calendar.add(Calendar.MONTH, 1);
+			}
+			break;
+		case TOUT:
+			throw new IllegalArgumentException(String.valueOf(period));
+		default:
+			throw new IllegalArgumentException(String.valueOf(period));
 		}
 		return calendar.getTime();
 	}
 
-	void sendReportMailForLocalServer(Collector collector) throws Exception { // NOPMD
+	void sendReportMailForLocalServer(Collector collector, Period period) throws Exception { // NOPMD
 		final JavaInformations javaInformations = new JavaInformations(Parameters
 				.getServletContext(), true);
-		sendReportMail(collector, false, Collections.singletonList(javaInformations));
+		sendReportMail(collector, false, Collections.singletonList(javaInformations), period);
 	}
 
 	void sendReportMail(Collector collector, boolean collectorServer,
-			List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
+			List<JavaInformations> javaInformationsList, Period period) throws Exception { // NOPMD
 		final File tmpFile = new File(Parameters.TEMPORARY_DIRECTORY, PdfReport
 				.getFileName(collector.getApplication()));
 		try {
 			final OutputStream output = new BufferedOutputStream(new FileOutputStream(tmpFile));
 			try {
 				final PdfReport pdfReport = new PdfReport(collector, collectorServer,
-						javaInformationsList, Period.SEMAINE, output);
+						javaInformationsList, period, output);
 				pdfReport.toPdf();
 			} finally {
 				output.close();

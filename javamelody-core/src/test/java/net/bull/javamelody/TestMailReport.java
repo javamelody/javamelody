@@ -61,7 +61,7 @@ public class TestMailReport {
 			final List<JavaInformations> javaInformationslist = Collections
 					.singletonList(new JavaInformations(null, true));
 			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
-			new MailReport().sendReportMail(collector, false, javaInformationslist);
+			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
 		} catch (final NoInitialContextException e) {
 			assertNotNull("ok", e);
 		} finally {
@@ -72,7 +72,9 @@ public class TestMailReport {
 	/** Test. */
 	@Test
 	public void testGetNextExecutionDate() {
-		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate());
+		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.JOUR));
+		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.SEMAINE));
+		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.MOIS));
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
