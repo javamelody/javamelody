@@ -410,9 +410,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB ce qui ne devrait
 	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
-** 9. Rapports hebdomadaires par mail
+** 9. Rapports hebdomadaires, quotidiens ou mensuels par mail
 
-	Un rapport hebdomadaire au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
+	Un rapport hebdomadaire, quotidien ou mensuel au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
 	Cette fonctionnalité nécessite la librairie iText dans votre webapp (licence LGPL ou MPL, le fichier jar iText
 	seul suffit, sans les autres dépendances comme iText-rtf). Et cela nécessite d'avoir JavaMail et Activation
 	de Sun dans les librairies du serveur pour la session mail.
@@ -452,8 +452,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }}
 
 	Puis il est nécessaire d'ajouter la liste des adresses mails séparées par des virgules dans le paramètre
-	<<<admin-emails>>>, dans le fichier <<<web.xml>>> ou dans le contexte tomcat ou en propriété système comme pour les
-	paramètres optionnels ci-dessus.
+	<<<admin-emails>>>, dans le fichier <<<web.xml>>> ou dans le contexte tomcat ou en propriété système ou en variable d'environnement
+	comme pour les paramètres optionnels ci-dessus.
 	
 	Et il faut ajouter également le nom de la session mail dans le paramètre <<<mail-session>>>.
 	Par exemple, pour le contexte tomcat de votre webapp :
@@ -461,6 +461,24 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
 	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
++-------------------------------+
+
+	Par défaut, le rapport est envoyé hebdomadairement (une fois par semaine).
+	Il est possible d'adapter cela au niveau de supervision qui est souhaité.
+	Par exemple, il est possible de l'envoyer quotidiennement (tous les jours),
+	mensuellement, ou une combinaison entre quotidiennement, hebdomadairement et mensuellement.
+	
+	Pour cela, ajouter le paramètre <<<mail-periods>>> avec les périodes "day", "week" ou "month" séparées par des virgules.
+	Par exemple, pour le contexte tomcat de votre webapp avec une période quotidienne :
+
++-------------------------------+
+	<Parameter name='javamelody.mail-periods' value='day' override='false'/>
++-------------------------------+
+
+	Ou pour des périodes quotidienne, hebdomadaire et mensuelle :
+
++-------------------------------+
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 +-------------------------------+
 
 ** 10. Utilisateur base de données

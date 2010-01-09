@@ -401,9 +401,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
 	facades with separate interfaces and implementations. 
 
-** 9. Weekly reports by mail
+** 9. Weekly, daily or monthly reports by mail
 
-	A weekly report in pdf format can be sent by mail to one or several people.
+	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
 	alone is enough, without the other dependencies like iText-rtf). And this needs to have JavaMail and Activation
 	from Sun in the libraries of the server for the mail session.
@@ -442,16 +442,35 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }} session
 
 	Then it is necessary to add the list of mail addresses separated by commas to the parameter
-	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in system properties like the optional parameters
-	above.
+	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in system properties or in environment variables
+	like the optional parameters above.
 	
 	And the name of the mail session should also be added in the parameter <<<mail-session>>>.
-	For example, for the tomcat context of your webapp :
+	For example, for the tomcat context of your webapp:
 
 +-------------------------------+
 	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
 	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
 +-------------------------------+
+
+	By default, the report is sent weekly (once a week).
+	It is possible to adapt that to the desired level of supervision.
+	For example, it is possible to send it daily (every days),
+	monthly, or a combination of daily, weekly and monthly.
+	
+	For that, add the parameter <<<mail-periods>>> with the periods "day", "week" or "month" separated by commas.
+	For example, for the tomcat context of your webapp with a daily period:
+
++-------------------------------+
+	<Parameter name='javamelody.mail-periods' value='day' override='false'/>
++-------------------------------+
+
+	Or for daily, weekly and monthly periods:
+
++-------------------------------+
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
++-------------------------------+
+
 
 ** 10. Database user
 

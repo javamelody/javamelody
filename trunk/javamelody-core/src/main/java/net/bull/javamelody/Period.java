@@ -26,33 +26,49 @@ import java.util.Locale;
  */
 enum Period {
 	/** Jour. */
-	JOUR(24 * 60 * 60, "calendar_view_day.png"),
+	JOUR(24 * 60 * 60, "calendar_view_day.png", "day"),
 	/** Semaine. */
-	SEMAINE(7 * 24 * 60 * 60, "calendar_view_week.png"),
+	SEMAINE(7 * 24 * 60 * 60, "calendar_view_week.png", "week"),
 	/** Mois. */
-	MOIS(31 * 24 * 60 * 60, "calendar_view_month.png"),
+	MOIS(31 * 24 * 60 * 60, "calendar_view_month.png", "month"),
 	/** Année. */
-	ANNEE(366 * 24 * 60 * 60, "calendar.png"),
+	ANNEE(366 * 24 * 60 * 60, "calendar.png", "year"),
 	/** Tout.
 	 * (affiche les graphs sur 2 ans et toutes les requêtes y compris les dernières minutes) */
-	TOUT(2 * 366 * 24 * 60 * 60, "calendar.png");
+	TOUT(2 * 366 * 24 * 60 * 60, "calendar.png", "all");
 
 	private final String code;
+	private final String mailCode;
 	private final int durationSeconds;
 	private final String iconName;
 
-	private Period(int durationSeconds, String iconName) {
+	private Period(int durationSeconds, String iconName, String mailCode) {
 		this.durationSeconds = durationSeconds;
-		this.code = this.toString().toLowerCase(Locale.getDefault());
 		this.iconName = iconName;
+		this.mailCode = mailCode;
+		this.code = this.toString().toLowerCase(Locale.getDefault());
 	}
 
 	static Period valueOfIgnoreCase(String period) {
 		return valueOf(period.toUpperCase(Locale.getDefault()).trim());
 	}
 
+	static Period valueOfByMailCode(String mailPeriod) {
+		final String mailCode = mailPeriod.toLowerCase(Locale.getDefault()).trim();
+		for (final Period period : values()) {
+			if (period.mailCode.equals(mailCode)) {
+				return period;
+			}
+		}
+		throw new IllegalArgumentException(mailPeriod);
+	}
+
 	String getCode() {
 		return code;
+	}
+
+	String getMailCode() {
+		return mailCode;
 	}
 
 	String getLabel() {
