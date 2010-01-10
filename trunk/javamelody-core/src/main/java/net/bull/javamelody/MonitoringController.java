@@ -29,6 +29,7 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -149,6 +150,9 @@ class MonitoringController {
 			if (part == null && graph != null) {
 				doGraph(httpRequest, httpResponse, period, graph);
 				return;
+			} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
+				doLastValue(httpResponse, graph);
+				return;
 			} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
 				doWebXml(httpResponse);
 				return;
@@ -162,26 +166,7 @@ class MonitoringController {
 			} else if ("pdf".equalsIgnoreCase(format)) {
 				doPdf(httpRequest, httpResponse, period, javaInformationsList);
 			} else {
-				// l'appelant (un serveur d'agrégation par exemple) peut appeler
-				// la page monitoring avec un format "serialized" ou "xml" en paramètre
-				// pour avoir les données au format sérialisé java ou xml
-				final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
-				final Serializable serializable = createSerializable(httpRequest,
-						javaInformationsList);
-				httpResponse.setContentType(transportFormat.getMimeType());
-				final String fileName = "JavaMelody_"
-						+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
-						+ I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
-				httpResponse.addHeader("Content-Disposition", "inline;filename=" + fileName);
-
-				transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
-
-				if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
-					// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
-					// le stockage et les courbes, donc on arrête le timer s'il est démarré
-					// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
-					collector.stop();
-				}
+				doSerializable(httpRequest, httpResponse, javaInformationsList, format);
 			}
 		} finally {
 			I18N.unbindLocale();
@@ -220,6 +205,29 @@ class MonitoringController {
 			}
 		} else {
 			doHtml(httpRequest, httpResponse, javaInformationsList, period, part);
+		}
+	}
+
+	private void doSerializable(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			List<JavaInformations> javaInformationsList, String format) throws IOException {
+		// l'appelant (un serveur d'agrégation par exemple) peut appeler
+		// la page monitoring avec un format "serialized" ou "xml" en paramètre
+		// pour avoir les données au format sérialisé java ou xml
+		final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
+		final Serializable serializable = createSerializable(httpRequest, javaInformationsList);
+		httpResponse.setContentType(transportFormat.getMimeType());
+		final String fileName = "JavaMelody_"
+				+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
+				+ I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
+		httpResponse.addHeader("Content-Disposition", "inline;filename=" + fileName);
+
+		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
+
+		if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
+			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
+			// le stockage et les courbes, donc on arrête le timer s'il est démarré
+			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
+			collector.stop();
 		}
 	}
 
@@ -479,6 +487,28 @@ class MonitoringController {
 			httpResponse.getOutputStream().write(img);
 			httpResponse.flushBuffer();
 		}
+	}
+
+	// part=lastValue&graph=x,y,z sera utilisé par munin notamment
+	private void doLastValue(HttpServletResponse httpResponse, String graphName) throws IOException {
+		httpResponse.setContentType("text/plain");
+		boolean first = true;
+		for (final String graph : graphName.split(",")) {
+			final JRobin jrobin = collector.getJRobin(graph);
+			final double lastValue;
+			if (jrobin == null) {
+				lastValue = -1;
+			} else {
+				lastValue = jrobin.getLastValue();
+			}
+			if (first) {
+				first = false;
+			} else {
+				httpResponse.getWriter().write(",");
+			}
+			httpResponse.getWriter().write(String.valueOf(lastValue));
+		}
+		httpResponse.flushBuffer();
 	}
 
 	private void doWebXml(HttpServletResponse httpResponse) throws IOException {

@@ -45,6 +45,7 @@ final class HttpParameters {
 	static final String SESSIONS_PART = "sessions";
 	static final String DATABASE_PART = "database";
 	static final String GRAPH_PART = "graph";
+	static final String LAST_VALUE_PART = "lastValue";
 	static final String USAGES_PART = "usages";
 
 	/**
