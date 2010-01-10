@@ -264,6 +264,21 @@ final class JRobin {
 		}
 	}
 
+	double getLastValue() throws IOException {
+		try {
+			// request RRD database reference from the pool
+			final RrdDb rrdDb = rrdPool.requestRrdDb(rrdFileName);
+			try {
+				return rrdDb.getLastDatasourceValue(getDataSourceName());
+			} finally {
+				// release RRD database reference
+				rrdPool.release(rrdDb);
+			}
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+	}
+
 	boolean deleteFile() {
 		return new File(rrdFileName).delete();
 	}
