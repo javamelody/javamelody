@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +45,7 @@ final class Parameters {
 	static final String PARAMETER_SYSTEM_PREFIX = "javamelody.";
 	static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
 	static final String JAVA_VERSION = System.getProperty("java.version");
+	static final String JAVAMELODY_VERSION = getJavaMelodyVersion();
 	// résolution (ou pas) par défaut en s de stockage des valeurs dans les fichiers RRD
 	private static final int DEFAULT_RESOLUTION_SECONDS = 60;
 	// stockage des fichiers RRD de JRobin dans le répertoire temp/monitoring/<context> par défaut
@@ -305,6 +307,25 @@ final class Parameters {
 		}
 		contextPath = contextPath.substring(contextPath.lastIndexOf('/'));
 		return contextPath;
+	}
+
+	private static String getJavaMelodyVersion() {
+		final Properties properties = new Properties();
+		final InputStream inputStream = Parameters.class.getResourceAsStream("/VERSION.properties");
+		if (inputStream == null) {
+			return null;
+		}
+
+		try {
+			try {
+				properties.load(inputStream);
+				return properties.getProperty("version");
+			} finally {
+				inputStream.close();
+			}
+		} catch (final IOException e) {
+			return e.toString();
+		}
 	}
 
 	/**
