@@ -41,6 +41,7 @@ class HtmlReport {
 	private final Period period;
 	private final Writer writer;
 	private final CollectorServer collectorServer;
+	private final long start = System.currentTimeMillis();
 
 	private static class HtmlAddAndRemoveApplications {
 		private final Writer writer;
@@ -129,7 +130,6 @@ class HtmlReport {
 	}
 
 	void toHtml(String message) throws IOException {
-		final long start = System.currentTimeMillis();
 		writeHtmlHeader(false);
 		if (collectorServer != null) {
 			writeln("<div align='center'>");
@@ -195,11 +195,7 @@ class HtmlReport {
 
 		writeMessageIfNotNull(message, null);
 		writePoweredBy();
-		final long displayDuration = System.currentTimeMillis() - start;
-		writeln("<div style='font-size:10pt;'>#temps_derniere_collecte#: "
-				+ collector.getLastCollectDuration() + " #ms#<br/>#temps_affichage#: "
-				+ displayDuration + " #ms#<br/>#Estimation_overhead_memoire#: < "
-				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + " #Mo#</div>");
+		writeDurationAndOverhead();
 
 		writeHtmlFooter();
 	}
@@ -469,20 +465,20 @@ class HtmlReport {
 
 	private void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {
 		writeln("<div class='noPrint'>");
-		final String start;
+		final String linkStart;
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (graphName == null) {
-			start = "<a href='?period=";
+			linkStart = "<a href='?period=";
 		} else {
 			writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 			writeln(separator);
-			start = "<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period=";
+			linkStart = "<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period=";
 		}
-		writeln(start + period.getCode() + "' title='#Rafraichir#'>");
+		writeln(linkStart + period.getCode() + "' title='#Rafraichir#'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (graphName == null && PDF_ENABLED) {
 			writeln(separator);
-			writeln(start + period.getCode() + "&amp;format=pdf' title='#afficher_PDF#'>");
+			writeln(linkStart + period.getCode() + "&amp;format=pdf' title='#afficher_PDF#'>");
 			writeln("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln(separator);
@@ -494,7 +490,7 @@ class HtmlReport {
 		// Rq : il n'y a pas de période ni de graph sur la dernière heure puisque
 		// si la résolution des données est de 5 min, on ne verra alors presque rien
 		for (final Period myPeriod : Period.values()) {
-			writeln(start + myPeriod.getCode() + "' ");
+			writeln(linkStart + myPeriod.getCode() + "' ");
 			writeln("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
 					+ "'>");
 			writeln("<img src='?resource=" + myPeriod.getIconName() + "' alt='"
@@ -517,6 +513,19 @@ class HtmlReport {
 		}
 		writeJavaScript();
 		writeln("</head><body>");
+	}
+
+	private void writeDurationAndOverhead() throws IOException {
+		final long displayDuration = System.currentTimeMillis() - start;
+		writeln("<div style='font-size:10pt;'>");
+		writeln("#temps_derniere_collecte#: " + collector.getLastCollectDuration() + " #ms#<br/>");
+		writeln("#temps_affichage#: " + displayDuration + " #ms#<br/>");
+		writeln("#Estimation_overhead_memoire#: < "
+				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + " #Mo#");
+		if (Parameters.JAVAMELODY_VERSION != null) {
+			writeln("<br/><br/>JavaMelody " + Parameters.JAVAMELODY_VERSION);
+		}
+		writeln("</div>");
 	}
 
 	void writeHtmlFooter() throws IOException {

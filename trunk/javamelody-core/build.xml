@@ -84,6 +84,7 @@
 		<jar destfile="javamelody.jar">
 			<zipfileset dir="build/classes" />
 			<zipfileset dir="src/main/resources" excludes="**/Thumbs.db" />
+			<zipfileset file="VERSION.properties" />
 			<zipfileset file="LICENSE" />
 			<zipfileset file="LICENSE.GPL" />
 			<zipfileset file="src/site/apt/user_guide*.apt" />
@@ -121,6 +122,7 @@
 			</zipfileset>
 			<!-- web.xml -->
 			<zipfileset file="src/main/collector-webapp/**" />
+			<zipfileset file="VERSION.properties" />
 			<zipfileset file="LICENSE" />
 			<zipfileset file="LICENSE.GPL" />
 			<zipfileset file="src/site/apt/user_guide*.apt" />
