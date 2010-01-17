@@ -407,6 +407,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 
 	Note : La {{{http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying} documentation }}
+	et {{{http://blog.springsource.com/2007/07/19/debunking-myths-proxies-impact-performance/} blog }}
 	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB ce qui ne devrait
 	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
