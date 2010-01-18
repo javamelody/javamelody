@@ -209,7 +209,7 @@ Language: English and French
 
 	If a DataSource which JNDI name starts with "jdbc/" is configured in the application server
 	(xml context of the webapp in Tomcat for example), the sql requests will be automically monitored
-	without requiring any parameters (tested on Tomcat 5.5 and 6).
+	without requiring any parameters (tested on Tomcat 5.5 and 6, glassfish 3, jboss 5, weblogic 11g, jetty 6, jonas 5).
 
 	If a jdbc driver is used directly without DataSource, "net.bull.javamelody.JdbcDriver" should be defined
 	as class of driver and the jdbc property "driver" should be added with the class of the real driver for value.
