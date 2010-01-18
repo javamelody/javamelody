@@ -217,7 +217,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If a DataSource which JNDI name starts with "jdbc/" is configured in the application server
 	(xml context of the webapp in Tomcat for example), the sql requests will be automically monitored
-	without requiring any parameters (tested on Tomcat 5.5 and 6).
+	without requiring any parameters (tested on Tomcat 5.5 and 6, glassfish 3, jboss 5, weblogic 11g, jetty 6).
 
 	If a jdbc driver is used directly without DataSource, "net.bull.javamelody.JdbcDriver" should be defined
 	as class of driver and the jdbc property "driver" should be added with the class of the real driver for value.
@@ -367,7 +367,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	(without modification of your applicationContext.xml file).
 	This alternative with annotation also let you change the names of displayed classes in the monitoring.
 	If the name displayed by the monitoring for the class or the method does not please you,
-	you can add (name="ma classe") between parentheses after the annotation on your class or on your method.
+	you can add (name="my business use case") between parentheses after the annotation on your class or on your method.
 
 	* Use of JdkRegexpMethodPointcut.
 	Assuming that the business façades can be found with a regular expression,
@@ -386,7 +386,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	* Use of any pointcut provided by Spring or writing of your own pointcut.
 	You can use any {{{http://static.springsource.org/spring/docs/2.5.x/api/index.html}pointcut}}
 	provided by Spring or you can write your own one.
-	For example, you can create a classe <<<com.xyz.someapp.service.MonitoringPointcut>>>
+	For example, you can create a class <<<com.xyz.someapp.service.MonitoringPointcut>>>
 	which implements org.springframework.aop.Pointcut and add the following lines in your applicationContext.xml file:
 	
 +-------------------------------+
@@ -416,7 +416,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	and if it is tomcat 6.x, move the 2 jar files in <tomcat_home>/lib
 
 	And add a mail session in the configuration of the application server with the name of your smtp server.
-	For example, add the following in the tomcat context of your webapp (xml sile located in
+	For example, add the following in the tomcat context of your webapp (xml file located in
 	<tomcat_home>/conf/Catalina/localhost/ or in <tomcat_home>/conf/server.xml):
 
 +-------------------------------+
@@ -599,7 +599,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 
-* Documentation avancée (setup with an ear, centralized collect server...)
+* Documentation avancée (setup with an ear, centralized collect server, JonAS 5...)
 
 	To setup with an ear or to deploy a centralized collect server, see the {{{user_guide_advanced_en.html} advanced documentation}}
 	

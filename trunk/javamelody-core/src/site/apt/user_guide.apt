@@ -219,7 +219,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Si une DataSource dont le nom JNDI commence par "jdbc/" est configurée dans le serveur d'application
 	(contexte xml de la webapp dans Tomcat par exemple), les requêtes sql seront automatiquement monitorées en plus des requêtes http
-	sans nécessiter de paramétrage (testé en Tomcat 5.5 et 6).
+	sans nécessiter de paramétrage (testé en Tomcat 5.5 et 6, glassfish 3, jboss 5, weblogic 11g, jetty 6).
 
 	Si un driver jdbc est utilisé directement sans DataSource, il faut déclarer 'net.bull.javamelody.JdbcDriver'
 	comme classe de driver et il faut ajouter la propriété jdbc 'driver' avec pour valeur la classe du vrai driver.
@@ -373,7 +373,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	classes et/ou méthodes que vous voulez monitorer (sans modifier votre fichier applicationContext.xml).
 	Cette alternative avec annotation permet aussi de changer les noms des classes affichées dans le
 	monitoring. Si le nom affiché par le monitoring pour la classe ou la méthode ne vous convient
-	pas, vous pouvez ajouter (name="ma classe") entre parenthèses après l'annotation sur votre
+	pas, vous pouvez ajouter (name="mon use case") entre parenthèses après l'annotation sur votre
 	classe ou sur votre méthode.
 
 	* Utilisation de JdkRegexpMethodPointcut.
@@ -609,7 +609,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</repositories>
 +-------------------------------+
 
-* Documentation avancée (mise en oeuvre avec un ear, serveur de collecte centralisé...)
+* Documentation avancée (mise en oeuvre avec un ear, serveur de collecte centralisé, JonAS 5...)
 
 	Pour mettre en oeuvre JavaMelody avec un ear ou pour déployer un serveur de collecte centralisé, consulter la {{{user_guide_advanced.html} documentation avancée}}
 	
