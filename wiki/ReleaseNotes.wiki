@@ -12,7 +12,7 @@
   * added: extraction of "maxActive" and other properties from apache dbcp BasicDataSource like what is already extracted from apache tomcat BasicDataSource (as discussed in user group)
   * added: new parameter "mail-periods" to change the period of mail reports from weekly to daily or monthly or a combination of the 3 (as suggested in user group)
   * added: display the version of JavaMelody at the bottom of the html and pdf reports (as suggested in user group)
-  * added: [UserGuideAdvanced#Usage_of_in_JonAS_5_(which_uses_OSGI)documentation] to use JavaMelody in JonAS 5
+  * added: [UserGuideAdvanced#Usage_of_in_JonAS_5_(which_uses_OSGI) documentation] to use JavaMelody in JonAS 5
   * more to come...
 
 === Grails Melody plugin ===
