@@ -242,6 +242,28 @@ Documentation avancée de Java Melody
 	comme les paramètres optionnels dans le guide d'utilisation, et avec pour valeur "http,sql,error,log,services" par exemple.
 
 
+* Utilisation de JavaMelody dans JonAS 5 (qui utilise OSGI)
+
+JonAS 5 utilise OSGI et il est nécessaire d'ajouter une configuration de felix dans JonAS pour utiliser JavaMelody.
+
+Copier le contenu du dernier {{{http://websvn.ow2.org/filedetails.php?repname=jonas&path=%2Fjonas%2Ftrunk%2Fjonas%2Fmodules%2Ftools%2Flaunchers%2Ffelix-launcher%2Fsrc%2Fmain%2Fresources%2Forg%2Fow2%2Fjonas%2Flauncher%2Ffelix%2Fdefault-config.properties}
+felix-config.properties}} pour JonAS dans un fichier nommé "felix-config.properties" et écrit dans le répertoire "conf" de votre serveur JonAS.
+Si le contenu de ce dernier fichier ne convient pas pour votre version de JonAS, vous pouvez trouver le fichier "felix-config.properties" adapté à votre version dans le fichier jar felix de votre serveur.
+
+Dans votre fichier "felix-config.properties", ajouter les packages systèmes suivants après la déclaration existante "org.osgi.framework.system.packages" :
+	"com.sun.management" et "sun.nio.ch".
+
+Par exemple:
+
++-------------------------------+
+org.osgi.framework.system.packages com.sun.management; \
+				   sun.nio.ch; \
+				   org.osgi.framework; version=1.5.0, \
++-------------------------------+
+
+Puis ajouter une propriété système dans votre fichier de lancement : -Djonas.felix.configuration.file=$JONAS_BASE/conf/felix-config.properties
+
+
 * Déploiement de JavaMelody sur Tomcat sans modification des webapps monitorées (bêta)
 
 	Si il y a une ou plusieurs webapp(s) à monitorer qui sont déployées sur Tomcat 6,
