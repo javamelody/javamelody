@@ -407,7 +407,7 @@ or
 	and if it is tomcat 6.x, move the 2 jar files in {{{<tomcat_home>/lib}}}
 
 	And add a mail session in the configuration of the application server with the name of your smtp server.
-	For example, add the following in the tomcat context of your webapp (xml sile located in
+	For example, add the following in the tomcat context of your webapp (xml file located in
 	{{{<tomcat_home>/conf/Catalina/localhost/}}} or in {{{<tomcat_home>/conf/server.xml}}}):
 
 {{{
