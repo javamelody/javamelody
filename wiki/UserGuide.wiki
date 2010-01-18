@@ -573,7 +573,7 @@ or
 }}}
 
 
-== Advanced documentation (centralized collect server...) ==
+== Advanced documentation (setup with an ear, centralized collect server...) ==
 
 See [UserGuideAdvanced]
 
