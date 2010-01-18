@@ -235,7 +235,7 @@ For standard documentation, see [UserGuide]
 	And in order to display the statistics, it is necessary to define the parameter displayed-counters, as the optional parameters in the user guide, and with value "http,sql,error,log,services" for example.
 
 
-== Deployment on Tomcat without modification of monitored webapps ==
+== Deployment on Tomcat without modification of monitored webapps (beta) ==
 
 	If there is one or several webapp(s) to monitor which are deployed on Tomcat 6,
 	it is possible to monitor this or these webapp(s) without modification of this or these webapp(s).
