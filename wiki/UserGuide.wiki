@@ -359,7 +359,7 @@ or
 	(without modification of your applicationContext.xml file).
 	This alternative with annotation also let you change the names of displayed classes in the monitoring.
 	If the name displayed by the monitoring for the class or the method does not please you,
-	you can add (name="ma classe") between parentheses after the annotation on your class or on your method.
+	you can add (name="my business use case") between parentheses after the annotation on your class or on your method.
 
 	* Alternative to step 3: Use of JdkRegexpMethodPointcut.
 	Assuming that the business façades can be found with a regular expression,
@@ -378,7 +378,7 @@ or
 	* Alternative to step 3: Use of any pointcut provided by Spring or writing of your own pointcut.
 	You can use any [http://static.springsource.org/spring/docs/2.5.x/api/index.html pointcut]
 	provided by Spring or you can write your own one.
-	For example, you can create a classe {{{com.xyz.someapp.service.MonitoringPointcut}}}
+	For example, you can create a class {{{com.xyz.someapp.service.MonitoringPointcut}}}
 	which implements org.springframework.aop.Pointcut and add the following lines in your applicationContext.xml file:
 	
 {{{
