@@ -23,7 +23,7 @@ Advanced documentation of Java Melody
 	** 1. Jar files
 
 	Copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied javamelody.zip file,
-	to the root directory of the ear of the application to monitor.
+	to the lib directory of the ear of the application to monitor (lib directory is "required" by the JavaEE 5 specification).
 	If you want to have reports in PDF format or weekly reports by mail, copy also the <<<itext-x.jar>>> file to the same location.
 	
 	To declare the jar files in the ear, modify the <<</META-INF/application.xml>>> file in your ear like this:
@@ -33,13 +33,13 @@ Advanced documentation of Java Melody
 		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd">
 		....
 		<module>
-			<java>javamelody.jar</java>
+			<java>lib/javamelody.jar</java>
 		</module>
 		<module>
-			<java>jrobin-x.jar</java>
+			<java>lib/jrobin-x.jar</java>
 		</module>
 		<module>
-			<java>itext-x.jar</java>
+			<java>lib/itext-x.jar</java>
 		</module>
 		<module>
 			<web>
@@ -51,7 +51,6 @@ Advanced documentation of Java Melody
 	</application>
 +-------------------------------+
 
-	You can put the jar files in a "lib" directory in the ear as long as you add "lib/" before the names of the jar files in the <<<application.xml>>> file.
 	If you use Maven, you may want to use the maven ear plugin and the <<<includeInApplicationXml>>> flag to make this file.
 	
 	** 2. <<<web.xml>>> file
