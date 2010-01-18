@@ -19,7 +19,7 @@
     * [#11._Security 11. Security]
     * [#12._Full_results 12. Full results]
   * [#Dependencies Dependencies]
-  * [#Advanced_documentation_(centralized_collect_server...) Advanced documentation (centralized collect server...)]
+  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (centralized collect server...)]
   * [#Compilation_and_development Compilation and development]
 
 == Introduction ==
