@@ -50,8 +50,7 @@ Java version required for execution:
 
 	* 1.5 at least
 
-	* 1.6 recommended for following functions: heap dump, memory histogram, stack traces and
-	system load average
+	* 1.6 recommended for following functions: heap dump, memory histogram, stack traces and system load average
 	
 	* JDK or JRE from Sun or JRockit from Oracle/BEA
 
