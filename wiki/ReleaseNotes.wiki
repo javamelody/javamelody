@@ -1,5 +1,5 @@
 #labels Featured
-=== Future release (trunk) ===
+=== 1.11.0 ===
 
   * fix for AssertionError in sql counter when assertions are enabled (in maven surefire for example)
   * if a centralized collect server is used:
