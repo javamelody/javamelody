@@ -257,6 +257,7 @@
 				<directory>${project.basedir}</directory>
 				<includes>
 					<include>LICENSE*</include>
+					<include>VERSION.properties</include>
 				</includes>
 			</resource>
 			<resource>
