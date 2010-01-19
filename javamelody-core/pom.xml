@@ -336,7 +336,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>pre-site</phase>
+						<phase>prepare-package</phase>
 						<configuration>
 							<tasks>
 								<!-- écrit la version du pom dans VERSION.properties -->
