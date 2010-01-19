@@ -453,7 +453,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }}
 
 	Puis il est nécessaire d'ajouter la liste des adresses mails séparées par des virgules dans le paramètre
-	<<<admin-emails>>>, dans le fichier <<<web.xml>>> ou dans le contexte tomcat ou en propriété système ou en variable d'environnement
+	<<<admin-emails>>>, dans le fichier <<<web.xml>>> ou dans le contexte tomcat ou en variable d'environnement ou en propriété système
 	comme pour les paramètres optionnels ci-dessus.
 	
 	Et il faut ajouter également le nom de la session mail dans le paramètre <<<mail-session>>>.
