@@ -112,6 +112,7 @@
 			<zipfileset file="src/main/lib/winstone-hudson.jar" />
 			<!-- ressources de la webapp -->
 			<zipfileset dir="src/main/resources" prefix="WEB-INF/classes" excludes="**/Thumbs.db,META-INF/web-fragment.xml" />
+			<zipfileset file="VERSION.properties" prefix="WEB-INF/classes" />
 			<!-- dépendances de la webapp -->
 			<zipfileset dir="src/test/test-webapp/WEB-INF/lib" prefix="WEB-INF/lib">
 				<include name="jrobin-1.5.9.1.jar" />
