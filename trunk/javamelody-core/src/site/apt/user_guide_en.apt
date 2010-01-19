@@ -443,7 +443,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }} session
 
 	Then it is necessary to add the list of mail addresses separated by commas to the parameter
-	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in system properties or in environment variables
+	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in environment variables or in system properties
 	like the optional parameters above.
 	
 	And the name of the mail session should also be added in the parameter <<<mail-session>>>.
