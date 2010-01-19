@@ -14,12 +14,12 @@
     * [#6._JDBC 6. JDBC]
     * [#7._Business_facades_(ejb-jar.xml_file_if_EJB3) 7. Business facades (ejb-jar.xml file if EJB3)]
     * [#8._Business_facades_(if_Spring) 8. Business facades (if Spring)]
-    * [#9._Weekly_reports_by_mail 9. Weekly reports by mail]
+    * [#9._Weekly,_daily_or_monthly_reports_by_mail 9. Weekly, daily or monthly reports by mail]
     * [#10._Database_user 10. Database user]
     * [#11._Security 11. Security]
     * [#12._Full_results 12. Full results]
   * [#Dependencies Dependencies]
-  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (centralized collect server...)]
+  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
   * [#Compilation_and_development Compilation and development]
 
 == Introduction ==
