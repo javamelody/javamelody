@@ -62,6 +62,9 @@ class LabradorRetriever {
 		final long start = System.currentTimeMillis();
 		try {
 			final URLConnection connection = openConnection(url);
+			// pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
+			// cela permet d'avoir les messages dans la bonne langue)
+			connection.setRequestProperty("Accept-Language", I18N.getCurrentLocale().toString());
 			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
 			// puisque le filtre de monitoring n'est pas censé créer des sessions
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }

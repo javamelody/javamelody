@@ -107,7 +107,8 @@ final class I18N {
 	 */
 	static String getFormattedString(String key, Object... arguments) {
 		// échappement des quotes qui sont des caractères spéciaux pour MessageFormat
-		return MessageFormat.format(getString(key).replace("'", "''"), arguments);
+		final String string = getString(key).replace("'", "''");
+		return new MessageFormat(string, getCurrentLocale()).format(arguments);
 	}
 
 	/**
