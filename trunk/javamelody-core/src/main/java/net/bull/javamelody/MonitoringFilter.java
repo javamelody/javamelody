@@ -428,14 +428,18 @@ public class MonitoringFilter implements Filter {
 		// pathInfo ne contient pas l'indication utile de la servlet
 		final String tmp = httpRequest.getRequestURI().substring(
 				httpRequest.getContextPath().length());
+		String method = httpRequest.getMethod();
+		if ("XMLHttpRequest".equals(httpRequest.getHeader("X-Requested-With"))) {
+			method = "ajax " + method;
+		}
 		if (!includeQueryString) {
-			return tmp + ' ' + httpRequest.getMethod();
+			return tmp + ' ' + method;
 		}
 		final String queryString = httpRequest.getQueryString();
 		if (queryString == null) {
-			return tmp + ' ' + httpRequest.getMethod();
+			return tmp + ' ' + method;
 		}
-		return tmp + '?' + queryString + ' ' + httpRequest.getMethod();
+		return tmp + '?' + queryString + ' ' + method;
 	}
 
 	private static String getRequestName(HttpServletRequest httpRequest,
