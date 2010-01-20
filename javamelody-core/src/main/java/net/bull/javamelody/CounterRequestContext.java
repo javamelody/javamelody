@@ -115,7 +115,9 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable {
 		if (startCpuTime < 0) {
 			return -1;
 		}
-		return (int) (ThreadInformations.getThreadCpuTime(getThreadId()) - startCpuTime) / 1000000;
+		final int cpuTime = (int) (ThreadInformations.getThreadCpuTime(getThreadId()) - startCpuTime) / 1000000;
+		// pas de négatif ici sinon on peut avoir une assertion si elles sont activées
+		return Math.max(cpuTime, 0);
 	}
 
 	/** {@inheritDoc} */
