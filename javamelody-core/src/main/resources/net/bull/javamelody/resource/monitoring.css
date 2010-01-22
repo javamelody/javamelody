@@ -54,6 +54,10 @@ div#handle {
     cursor: col-resize;
 }
 
+.explainPlan {
+	font-size:8pt; font-family:monospace;
+}
+
 .info {color:green;}
 .warning {color:orange; font-weight:bold;}
 .severe {color:red; font-weight:bold;}
