@@ -307,7 +307,8 @@ final class JdbcWrapper {
 		assert statement != null;
 		assert method != null;
 
-		if (!sqlCounter.isDisplayed()) {
+		// on ignore les requêtes explain exécutées par DatabaseInformations
+		if (!sqlCounter.isDisplayed() || requestName.startsWith("explain ")) {
 			return method.invoke(statement, args);
 		}
 

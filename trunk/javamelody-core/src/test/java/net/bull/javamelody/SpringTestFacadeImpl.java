@@ -38,8 +38,14 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 		final java.sql.Connection connection = ds.getConnection();
 		connection.setAutoCommit(false);
 		try {
+			// test pour explain plan en oracle
+			//			final PreparedStatement statement = connection
+			//					.prepareStatement("select * from v$session where user# = ?");
 			final Statement statement = connection.createStatement();
 			try {
+				//				statement.setInt(1, 36);
+				//				statement.executeQuery();
+
 				// 1 seconde pour avoir une requête sql
 				statement.executeQuery("select sleep(.01)");
 				for (int i = 0; i < 5; i++) {

@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -117,7 +119,7 @@ class DatabaseInformations implements Serializable {
 			final Database database = Database.getDatabaseForConnection(connection);
 			requestNames = database.getRequestNames();
 			final String request = database.getRequestByName(requestNames.get(requestIndex));
-			result = executeRequest(connection, request);
+			result = executeRequest(connection, request, null);
 		} finally {
 			connection.close();
 		}
@@ -135,11 +137,18 @@ class DatabaseInformations implements Serializable {
 		return requestNames;
 	}
 
-	private static String[][] executeRequest(Connection connection, String request)
-			throws SQLException {
-		final Statement statement = connection.createStatement();
+	private static String[][] executeRequest(Connection connection, String request,
+			List<?> parametersValues) throws SQLException {
+		final PreparedStatement statement = connection.prepareStatement(request);
 		try {
-			final ResultSet resultSet = statement.executeQuery(request);
+			if (parametersValues != null) {
+				int i = 1;
+				for (final Object parameterValue : parametersValues) {
+					statement.setObject(i, parameterValue);
+					i++;
+				}
+			}
+			final ResultSet resultSet = statement.executeQuery();
 			try {
 				final ResultSetMetaData metaData = resultSet.getMetaData();
 				final int columnCount = metaData.getColumnCount();
@@ -199,40 +208,84 @@ class DatabaseInformations implements Serializable {
 		return null;
 	}
 
-	// TODO explain plan
-	//	static String[][] explainPlanFor(String request) throws SQLException, NamingException {
-	//		final Connection connection = getConnection();
-	//		if (connection != null) {
-	//			final Database database = Database.getDatabaseForConnection(connection);
-	//			if (database == Database.ORACLE || database == Database.DB2) {
-	//				// Si oracle ou db2, on demande le plan d'exécution (explain plan)
-	//				// par "explain plan for ..."
-	//				// (si mysql ou postgresql on pourrait faire "explain ...",
-	//				// sauf que les paramètres bindés ne seraient pas acceptés
-	//				// et les requêtes update/insert/delete non plus).
-	//
-	//				// Si mysql il suffit de lire le ResultSet de executeQuery("explain ...")
-	//				// mais en oracle il faut aller lire la table plan_table ou autre
-	//				// (http://www.java2s.com/Open-Source/Java-Document/Database-Client/squirrel-sql-2.6.5a/net/sourceforge/squirrel_sql/plugins/oracle/explainplan/ExplainPlanExecuter.java.htm)
-	//				try {
-	//					int i = 1;
-	//					String explainRequest = "explain plan for " + request;
-	//					// on remplace les paramètres bindés "?" par ":n"
-	//					int index = explainRequest.indexOf('?');
-	//					while (index != -1) {
-	//						explainRequest = explainRequest.substring(0, index) + ':' + i
-	//								+ explainRequest.substring(index + 1);
-	//						i++;
-	//						index = explainRequest.indexOf('?');
-	//					}
-	//					// exécution de la demande (sans types des colonnes)
-	//					return executeRequest(connection, explainRequest, false);
-	//				} finally {
-	//					connection.rollback();
-	//					connection.close();
-	//				}
-	//			}
-	//		}
-	//		return null;
-	//	}
+	static String explainPlanFor(String sqlRequest) throws SQLException, NamingException {
+		final Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				final Database database = Database.getDatabaseForConnection(connection);
+				if (database == Database.ORACLE) {
+					// Si oracle, on demande le plan d'exécution avec la table PLAN_TABLE par défaut
+					// avec "explain plan set statement_id = <statement_id> for ..."
+					// (si mysql ou postgresql on pourrait faire "explain ...",
+					// sauf que les paramètres bindés ne seraient pas acceptés
+					// et les requêtes update/insert/delete non plus).
+					// (si db2, la syntaxe serait "explain plan for ...")
+
+					// Si mysql il suffit de lire le ResultSet de executeQuery("explain ...")
+					// qui pourrait être affiché en tableau à partir de String[][],
+					// mais en oracle il faut aller lire la table plan_table
+					// (http://www.java2s.com/Open-Source/Java-Document/Database-Client/squirrel-sql-2.6.5a/net/sourceforge/squirrel_sql/plugins/oracle/explainplan/ExplainPlanExecuter.java.htm)
+					// le hashCode est une clé suffisamment unique car il y a peu de plans d'exécution
+					// affichés simultanément, et en tout cas CounterRequest.getId() est trop long
+					// pour la table oracle par défaut (SYS.PLAN_TABLE$.STATEMENT_ID a une longueur de 30)
+					final String statementId = String.valueOf(sqlRequest.hashCode());
+					final String explainRequest = buildExplainRequest(sqlRequest, statementId);
+					// exécution de la demande
+					final Statement statement = connection.createStatement();
+					try {
+						statement.execute(explainRequest);
+					} finally {
+						statement.close();
+					}
+
+					// récupération du résultat
+					return getPlanOutput(connection, statementId);
+				}
+			} finally {
+				connection.rollback();
+				connection.close();
+			}
+		}
+		return null;
+	}
+
+	private static String buildExplainRequest(String sqlRequest, String statementId) {
+		// rq : il semble qu'une requête explain plan ne puisse avoir la requête en paramètre bindé
+		// (donc les requêtes "explain ..." seront ignorées dans JdbcWrapper)
+		int i = 1;
+		// table PLAN_TABLE par défaut
+		// (il faut que cette table soit créée auparavant dans oracle
+		// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
+		// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
+		String explainRequest = "explain plan set statement_id = '" + statementId + "' for "
+				+ sqlRequest;
+		// on remplace les paramètres bindés "?" par ":n"
+		int index = explainRequest.indexOf('?');
+		while (index != -1) {
+			explainRequest = explainRequest.substring(0, index) + ':' + i
+					+ explainRequest.substring(index + 1);
+			i++;
+			index = explainRequest.indexOf('?');
+		}
+		return explainRequest;
+	}
+
+	private static String getPlanOutput(Connection connection, String statementId)
+			throws SQLException {
+		// table PLAN_TABLE par défaut et format par défaut
+		final String planTableRequest = "select * from table(dbms_xplan.display(null,?, null))";
+		final String[][] planTableOutput = executeRequest(connection, planTableRequest, Collections
+				.singletonList(statementId));
+		final StringBuilder sb = new StringBuilder();
+		for (final String[] row : planTableOutput) {
+			for (final String value : row) {
+				sb.append(value);
+			}
+			sb.append('\n');
+		}
+		if (sb.indexOf("-") != -1) {
+			sb.delete(0, sb.indexOf("-"));
+		}
+		return sb.toString();
+	}
 }
