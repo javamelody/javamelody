@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * added: If Oracle database, display of sql execution plan in sql request detail (seems not doable if postgresql or mysql, without particular parameter values)
+
 === 1.11.1 ===
 
   * fix for AssertionError in sql counter when assertions are enabled (in maven surefire for example)
