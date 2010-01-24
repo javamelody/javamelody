@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * added: If Oracle database, display of sql execution plan in sql request detail (seems not doable if postgresql or mysql, without particular parameter values)
+  * added: New charts "Threads count", "Loaded classes count", "Used non heap memory", "Used physical memory", "Used swap space" (displayed with the new link "Other charts")
 
 === 1.11.1 ===
 
