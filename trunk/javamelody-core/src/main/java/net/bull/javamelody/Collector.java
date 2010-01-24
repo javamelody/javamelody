@@ -47,6 +47,7 @@ final class Collector {
 	private final Map<String, JRobin> requestJRobinsById = new ConcurrentHashMap<String, JRobin>();
 	// les instances jrobins des compteurs sont créées à l'initialisation
 	private final Map<String, JRobin> counterJRobins = new LinkedHashMap<String, JRobin>();
+	private final Map<String, JRobin> otherJRobins = new LinkedHashMap<String, JRobin>();
 	// globalRequestsByCounter, requestsById, dayCountersByCounter et cpuTimeMillis
 	// sont utilisés par un seul thread lors des collectes,
 	// (et la méthode centrale "collect" est synchronisée pour éviter un accès concurrent
@@ -233,9 +234,14 @@ final class Collector {
 			throws IOException {
 		long usedMemory = 0;
 		long processesCpuTimeMillis = 0;
+		long usedNonHeapMemory = 0;
+		int loadedClassesCount = 0;
 		long garbageCollectionTimeMillis = 0;
+		long usedPhysicalMemorySize = 0;
+		long usedSwapSpaceSize = 0;
 		int availableProcessors = 0;
 		long sessionCount = 0;
+		long threadCount = 0;
 		long activeThreadCount = 0;
 		long activeConnectionCount = 0;
 		long usedConnectionCount = 0;
@@ -243,57 +249,61 @@ final class Collector {
 		long unixOpenFileDescriptorCount = 0;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			usedMemory += javaInformations.getMemoryInformations().getUsedMemory();
-			if (javaInformations.getSessionCount() >= 0) {
-				sessionCount += javaInformations.getSessionCount();
-			} else {
-				sessionCount = -1;
-			}
+			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
+			usedMemory += memoryInformations.getUsedMemory();
+			sessionCount += javaInformations.getSessionCount();
+			threadCount += javaInformations.getThreadCount();
 			activeThreadCount += javaInformations.getActiveThreadCount();
 			activeConnectionCount += javaInformations.getActiveConnectionCount();
 			usedConnectionCount += javaInformations.getUsedConnectionCount();
 			availableProcessors += javaInformations.getAvailableProcessors();
-
-			if (javaInformations.getProcessCpuTimeMillis() >= 0) {
-				// processesCpuTime n'est supporté que par le jdk sun
-				processesCpuTimeMillis += javaInformations.getProcessCpuTimeMillis();
-			} else {
-				processesCpuTimeMillis = -1;
-			}
-			if (javaInformations.getMemoryInformations().getGarbageCollectionTimeMillis() >= 0) {
-				garbageCollectionTimeMillis += javaInformations.getMemoryInformations()
-						.getGarbageCollectionTimeMillis();
-			} else {
-				garbageCollectionTimeMillis = -1;
-			}
-			if (javaInformations.getSystemLoadAverage() >= 0) {
-				// systemLoadAverage n'est supporté qu'à partir du jdk 1.6 sur linux ou unix
-				systemLoadAverage += javaInformations.getSystemLoadAverage();
-			} else {
-				systemLoadAverage = -1;
-			}
-			if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
-				// que sur linx ou unix
-				unixOpenFileDescriptorCount += javaInformations.getUnixOpenFileDescriptorCount();
-			} else {
-				unixOpenFileDescriptorCount = -1;
-			}
+			// processesCpuTime n'est supporté que par le jdk sun
+			processesCpuTimeMillis += javaInformations.getProcessCpuTimeMillis();
+			usedNonHeapMemory += memoryInformations.getUsedNonHeapMemory();
+			loadedClassesCount += memoryInformations.getLoadedClassesCount();
+			usedPhysicalMemorySize += memoryInformations.getUsedPhysicalMemorySize();
+			usedSwapSpaceSize += memoryInformations.getUsedSwapSpaceSize();
+			garbageCollectionTimeMillis += memoryInformations.getGarbageCollectionTimeMillis();
+			// systemLoadAverage n'est supporté qu'à partir du jdk 1.6 sur linux ou unix
+			systemLoadAverage += javaInformations.getSystemLoadAverage();
+			// que sur linx ou unix
+			unixOpenFileDescriptorCount += javaInformations.getUnixOpenFileDescriptorCount();
 		}
+		// il y a au moins 1 coeur
+		availableProcessors = Math.max(availableProcessors, 1);
+		collectJRobinValues(usedMemory, processesCpuTimeMillis, availableProcessors, sessionCount,
+				activeThreadCount, activeConnectionCount, usedConnectionCount);
+
+		// collecte du pourcentage de temps en ramasse-miette
+		collectGcTime(garbageCollectionTimeMillis, availableProcessors);
+
+		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
+		otherJRobinsValues.put("threadCount", (double) threadCount);
+		otherJRobinsValues.put("loadedClassesCount", (double) loadedClassesCount);
+		otherJRobinsValues.put("usedNonHeapMemory", (double) usedNonHeapMemory);
+		otherJRobinsValues.put("usedPhysicalMemorySize", (double) usedPhysicalMemorySize);
+		otherJRobinsValues.put("usedSwapSpaceSize", (double) usedSwapSpaceSize);
+		otherJRobinsValues.put("systemLoad", systemLoadAverage);
+		otherJRobinsValues.put("fileDescriptors", (double) unixOpenFileDescriptorCount);
+		collectorOtherJRobinsValues(otherJRobinsValues);
+
+		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
+		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
+		// différenciation des indisponibilités prévues de celles non prévues
+	}
+
+	private void collectJRobinValues(long usedMemory, long processesCpuTimeMillis,
+			int availableProcessors, long sessionCount, long activeThreadCount,
+			long activeConnectionCount, long usedConnectionCount) throws IOException {
 		// collecte de la mémoire java
 		getCounterJRobin("usedMemory").addValue(usedMemory);
 
-		// il y a au moins 1 coeur
-		availableProcessors = Math.max(availableProcessors, 1);
 		// collecte du pourcentage d'utilisation cpu
 		collectCpu(processesCpuTimeMillis, availableProcessors);
 		// collecte du nombre de sessions http
 		if (sessionCount >= 0) {
 			getCounterJRobin("httpSessions").addValue(sessionCount);
 		}
-		// collecte de la charge système, du pourcentage de temps en ramasse-miette et des descripteurs de fichiers
-		collectForNix(systemLoadAverage, garbageCollectionTimeMillis, availableProcessors,
-				unixOpenFileDescriptorCount);
-
 		// collecte du nombre de threads actifs (requêtes http en cours), du nombre de connexions jdbc actives
 		// et du nombre de connexions jdbc ouvertes
 		getCounterJRobin("activeThreads").addValue(activeThreadCount);
@@ -301,10 +311,6 @@ final class Collector {
 			getCounterJRobin("activeConnections").addValue(activeConnectionCount);
 			getCounterJRobin("usedConnections").addValue(usedConnectionCount);
 		}
-
-		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
-		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
-		// différenciation des indisponibilités prévues de celles non prévues
 	}
 
 	private void collectCpu(long processesCpuTimeMillis, int availableProcessors)
@@ -326,22 +332,23 @@ final class Collector {
 		}
 	}
 
-	private void collectForNix(double systemLoadAverage, long garbageCollectionTimeMillis,
-			int availableProcessors, long unixOpenFileDescriptorCount) throws IOException {
-		if (systemLoadAverage >= 0) {
-			getCounterJRobin("systemLoad").addValue(systemLoadAverage);
-			// on ne collecte le temps gc et le nombre de file descriptors
-			// que si on a systemLoadAverage (linux ou unix) pour faire une ligne
-			if (garbageCollectionTimeMillis >= 0) {
-				// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
-				final int gcPercentage = Math.min(
-						(int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
-								/ periodMillis / availableProcessors), 100);
-				getCounterJRobin("gc").addValue(gcPercentage);
-				this.gcTimeMillis = garbageCollectionTimeMillis;
-			}
-			if (unixOpenFileDescriptorCount >= 0) {
-				getCounterJRobin("fileDescriptors").addValue(unixOpenFileDescriptorCount);
+	private void collectGcTime(long garbageCollectionTimeMillis, int availableProcessors)
+			throws IOException {
+		if (garbageCollectionTimeMillis >= 0) {
+			// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
+			final int gcPercentage = Math
+					.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
+							/ periodMillis / availableProcessors), 100);
+			getOtherJRobin("gc").addValue(gcPercentage);
+			this.gcTimeMillis = garbageCollectionTimeMillis;
+		}
+	}
+
+	private void collectorOtherJRobinsValues(Map<String, Double> otherJRobinsValues)
+			throws IOException {
+		for (final Map.Entry<String, Double> entry : otherJRobinsValues.entrySet()) {
+			if (entry.getValue() >= 0) {
+				getOtherJRobin(entry.getKey()).addValue(entry.getValue());
 			}
 		}
 	}
@@ -517,13 +524,25 @@ final class Collector {
 		return jrobin;
 	}
 
+	private JRobin getOtherJRobin(String name) throws IOException {
+		JRobin jrobin = otherJRobins.get(name);
+		if (jrobin == null) {
+			jrobin = JRobin.createInstance(getApplication(), name, null);
+			otherJRobins.put(name, jrobin);
+		}
+		return jrobin;
+	}
+
 	JRobin getJRobin(String graphName) {
 		JRobin jrobin = counterJRobins.get(graphName);
 		if (jrobin == null) {
-			jrobin = requestJRobinsById.get(graphName);
+			jrobin = otherJRobins.get(graphName);
 			if (jrobin == null) {
-				// un graph n'est pas toujours de suite dans jrobin
-				return null;
+				jrobin = requestJRobinsById.get(graphName);
+				if (jrobin == null) {
+					// un graph n'est pas toujours de suite dans jrobin
+					return null;
+				}
 			}
 		}
 		return jrobin;
@@ -531,6 +550,10 @@ final class Collector {
 
 	Collection<JRobin> getCounterJRobins() {
 		return Collections.unmodifiableCollection(counterJRobins.values());
+	}
+
+	Collection<JRobin> getOtherJRobins() {
+		return Collections.unmodifiableCollection(otherJRobins.values());
 	}
 
 	/**
