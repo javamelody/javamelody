@@ -140,6 +140,7 @@ class PdfReport {
 
 		document.newPage();
 		addParagraph(getI18nString("Statistiques_detaillees"), "systemmonitor.png");
+		writeOtherGraphs();
 		writeGraphDetails();
 
 		for (final PdfCounterReport pdfCounterReport : pdfCounterReports) {
@@ -193,21 +194,42 @@ class PdfReport {
 				Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
+		int i = 0;
 		for (final JRobin jrobin : collector.getCounterJRobins()) {
-			// les jrobin de compteurs (qui commencent par le jrobin xxxHitsRate)
-			// doivent être sur une même ligne donc on met un <br/> si c'est le premier
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
-				if (jrobinName.endsWith("HitsRate")) {
-					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
-				}
 				final Image image = Image.getInstance(jrobin.graph(period, 200, 50));
 				image.scalePercent(50);
 				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
 				jrobinParagraph.add(new Phrase(" "));
 			}
-			if ("httpSessions".equals(jrobinName) || "fileDescriptors".equals(jrobinName)) {
-				// un <br/> après httpSessions et avant activeThreads pour l'alignement
+			i++;
+			if (i % 3 == 0) {
+				// un retour après httpSessions et avant activeThreads pour l'alignement
+				jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
+			}
+		}
+		jrobinParagraph.add(new Phrase("\n"));
+		add(jrobinParagraph);
+	}
+
+	private void writeOtherGraphs() throws IOException, DocumentException {
+		final Paragraph jrobinParagraph = new Paragraph("", PdfDocumentFactory.getFont(9f,
+				Font.NORMAL));
+		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
+		jrobinParagraph.add(new Phrase("\n\n\n\n"));
+		int i = 0;
+		for (final JRobin jrobin : collector.getOtherJRobins()) {
+			final String jrobinName = jrobin.getName();
+			if (isJRobinDisplayed(jrobinName)) {
+				final Image image = Image.getInstance(jrobin.graph(period, 200, 50));
+				image.scalePercent(50);
+				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
+				jrobinParagraph.add(new Phrase(" "));
+			}
+			i++;
+			if (i % 3 == 0) {
+				// un retour après httpSessions et avant activeThreads pour l'alignement
 				jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
 			}
 		}

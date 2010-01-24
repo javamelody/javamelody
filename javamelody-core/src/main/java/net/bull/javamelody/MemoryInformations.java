@@ -46,12 +46,14 @@ class MemoryInformations implements Serializable {
 	private final long usedPermGen;
 	// maxPermGen est la mémoire maximum pour "Perm Gen" (paramètre -XX:MaxPermSize=128m par exemple)
 	private final long maxPermGen;
+	private final long usedNonHeapMemory;
+	private final int loadedClassesCount;
 	private final long garbageCollectionTimeMillis;
+	private final long usedPhysicalMemorySize;
+	private final long usedSwapSpaceSize;
 	private final String memoryDetails;
 
-	// CHECKSTYLE:OFF
 	MemoryInformations() {
-		// CHECKSTYLE:ON
 		super();
 		usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		maxMemory = Runtime.getRuntime().maxMemory();
@@ -64,7 +66,21 @@ class MemoryInformations implements Serializable {
 			usedPermGen = -1;
 			maxPermGen = -1;
 		}
+		usedNonHeapMemory = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
+		loadedClassesCount = ManagementFactory.getClassLoadingMXBean().getLoadedClassCount();
 		garbageCollectionTimeMillis = buildGarbageCollectionTimeMillis();
+
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (isSunOsMBean(operatingSystem)) {
+			final com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) operatingSystem;
+			usedPhysicalMemorySize = osBean.getTotalPhysicalMemorySize()
+					- osBean.getFreePhysicalMemorySize();
+			usedSwapSpaceSize = osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize();
+		} else {
+			usedPhysicalMemorySize = -1;
+			usedSwapSpaceSize = -1;
+		}
+
 		memoryDetails = buildMemoryDetails();
 	}
 
@@ -86,17 +102,14 @@ class MemoryInformations implements Serializable {
 		return garbageCollectionTime;
 	}
 
-	private static String buildMemoryDetails() {
+	private String buildMemoryDetails() {
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
 		final String nonHeapMemory = "Non heap memory = "
-				+ integerFormat.format(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage()
-						.getUsed() / 1024 / 1024) + MO;
+				+ integerFormat.format(usedNonHeapMemory / 1024 / 1024) + MO;
 		// classes actuellement chargées
-		final String classLoading = "Loaded classes = "
-				+ integerFormat.format(ManagementFactory.getClassLoadingMXBean()
-						.getLoadedClassCount());
+		final String classLoading = "Loaded classes = " + integerFormat.format(loadedClassesCount);
 		final String gc = "Garbage collection time = "
-				+ integerFormat.format(buildGarbageCollectionTimeMillis()) + " ms";
+				+ integerFormat.format(garbageCollectionTimeMillis) + " ms";
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 		String osInfo = "";
 		if (isSunOsMBean(operatingSystem)) {
@@ -142,8 +155,24 @@ class MemoryInformations implements Serializable {
 		return maxPermGen;
 	}
 
+	long getUsedNonHeapMemory() {
+		return usedNonHeapMemory;
+	}
+
+	int getLoadedClassesCount() {
+		return loadedClassesCount;
+	}
+
 	long getGarbageCollectionTimeMillis() {
 		return garbageCollectionTimeMillis;
+	}
+
+	long getUsedPhysicalMemorySize() {
+		return usedPhysicalMemorySize;
+	}
+
+	long getUsedSwapSpaceSize() {
+		return usedSwapSpaceSize;
 	}
 
 	String getMemoryDetails() {
