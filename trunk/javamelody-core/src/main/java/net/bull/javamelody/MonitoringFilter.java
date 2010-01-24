@@ -388,8 +388,14 @@ public class MonitoringFilter implements Filter {
 		}
 		if (session.getAttribute(SessionInformations.SESSION_REMOTE_ADDR) == null) {
 			// adresse ip
-			session.setAttribute(SessionInformations.SESSION_REMOTE_ADDR, httpRequest
-					.getRemoteAddr());
+			final String forwardedFor = httpRequest.getHeader("X-Forwarded-For");
+			final String remoteAddr;
+			if (forwardedFor == null) {
+				remoteAddr = httpRequest.getRemoteAddr();
+			} else {
+				remoteAddr = httpRequest.getRemoteAddr() + " forwarded for " + forwardedFor;
+			}
+			session.setAttribute(SessionInformations.SESSION_REMOTE_ADDR, remoteAddr);
 		}
 		if (session.getAttribute(SessionInformations.SESSION_REMOTE_USER) == null) {
 			// login utilisateur, peut être null
@@ -505,6 +511,10 @@ public class MonitoringFilter implements Filter {
 			boolean systemError, int responseSize) {
 		final StringBuilder msg = new StringBuilder();
 		msg.append("remoteAddr = ").append(httpRequest.getRemoteAddr());
+		final String forwardedFor = httpRequest.getHeader("X-Forwarded-For");
+		if (forwardedFor != null) {
+			msg.append(", forwardedFor = ").append(forwardedFor);
+		}
 		msg.append(", request = ").append(
 				httpRequest.getRequestURI().substring(httpRequest.getContextPath().length()));
 		if (httpRequest.getQueryString() != null) {
