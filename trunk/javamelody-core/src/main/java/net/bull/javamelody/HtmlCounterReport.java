@@ -160,8 +160,15 @@ class HtmlCounterReport {
 					}
 				}
 			}
+			writeRequestUsages(myRequest, requests);
+		}
+
+		private void writeRequestUsages(CounterRequest myRequest, List<CounterRequest> requests)
+				throws IOException {
 			writeln("<br/><b>#Utilisations_de#</b>");
-			writer.write(htmlEncode(myRequest.getName()));
+			if (myRequest != null) {
+				writer.write(htmlEncode(myRequest.getName()));
+			}
 			writeln("<br/><br/>");
 			if (requests.isEmpty()) {
 				writeln("#Aucune_requete#");
