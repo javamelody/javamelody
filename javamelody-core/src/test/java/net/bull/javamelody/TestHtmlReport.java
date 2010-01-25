@@ -184,6 +184,7 @@ public class TestHtmlReport {
 		for (final CounterRequest request : counter.getRequests()) {
 			if ("test 1".equals(request.getName())) {
 				htmlReport.writeRequestAndGraphDetail(request.getId());
+				htmlReport.writeRequestUsages(request.getId());
 				break;
 			}
 		}
