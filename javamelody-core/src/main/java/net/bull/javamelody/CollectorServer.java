@@ -135,6 +135,7 @@ class CollectorServer {
 			}
 		}
 		javaInformationsByApplication.put(application, javaInformationsList);
+		assert collector != null;
 		collector.collectWithoutErrors(javaInformationsList);
 		final String messageForReport;
 		if (sb.length() == 0) {
