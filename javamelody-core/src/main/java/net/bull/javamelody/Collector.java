@@ -453,6 +453,12 @@ final class Collector {
 			}
 			requestsById.put(requestStorageId, newRequest);
 		}
+		while (size > maxRequestsCount && !requests.isEmpty()) {
+			// cas extrême: si le nombre de requêtes est encore trop grand,
+			// on enlève n'importe quelle requête
+			removeRequest(counter, requests.get(0));
+			size--;
+		}
 		if (dayCounter.isErrorCounter()) {
 			dayCounter.addErrors(getDeltaOfErrors(counter, dayCounter));
 		}
