@@ -372,16 +372,37 @@ public class TestCollector {
 			// car sans serveur d'application monitoré il ne peut rien faire d'autre
 			final String application = "testapp";
 			Parameters.removeCollectorApplication(application);
+
+			final CollectorServer collectorServer = new CollectorServer();
+			collectorServer.collectWithoutErrors();
+
 			// pour être sûr qu'il y a une application
 			final List<URL> urls = Parameters.parseUrl("http://localhost:8090/test");
 			Parameters.addCollectorApplication(application, urls);
 
-			final CollectorServer collectorServer = new CollectorServer();
 			try {
 				collectorServer.collectWithoutErrors();
 				Parameters.removeCollectorApplication(application);
 				try {
 					collectorServer.addCollectorApplication(application, urls);
+				} catch (final Exception e) {
+					// exception car il n'y a pas de serveur à cette adresse
+					assertNotNull("exception", e);
+				}
+				try {
+					collectorServer.collectSessionInformations(application, null);
+				} catch (final Exception e) {
+					// exception car il n'y a pas de serveur à cette adresse
+					assertNotNull("exception", e);
+				}
+				try {
+					collectorServer.collectSessionInformations(application, "sessionId");
+				} catch (final Exception e) {
+					// exception car il n'y a pas de serveur à cette adresse
+					assertNotNull("exception", e);
+				}
+				try {
+					collectorServer.collectHeapHistogram(application);
 				} catch (final Exception e) {
 					// exception car il n'y a pas de serveur à cette adresse
 					assertNotNull("exception", e);

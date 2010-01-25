@@ -28,6 +28,7 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
@@ -301,6 +302,10 @@ public class TestMonitoringFilter {
 
 		parameters.put(PART_PARAMETER, "graph");
 		parameters.put("graph", "usedMemory");
+		monitoring(parameters);
+
+		parameters.put(PART_PARAMETER, USAGES_PART);
+		parameters.put("graph", "unknown");
 		monitoring(parameters);
 
 		parameters.put(PART_PARAMETER, "unknown part");
