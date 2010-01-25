@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -242,9 +243,19 @@ class HtmlReport {
 	}
 
 	private void writeGraphs() throws IOException {
+		writeGraphs(collector.getCounterJRobins());
+		writeln("<div align='right'>");
+		writeShowHideLink("detailsGraphs", "#Autres_courbes#");
+		writeln("</div>");
+		writeln("<div id='detailsGraphs' style='display: none;'>");
+		writeGraphs(collector.getOtherJRobins());
+		writeln("</div>");
+	}
+
+	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
 		final String periodParameter = buildPeriodParameter();
 		int i = 0;
-		for (final JRobin jrobin : collector.getCounterJRobins()) {
+		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
 				writeln("<a href='?part=graph&amp;graph=" + jrobinName + periodParameter
@@ -259,25 +270,6 @@ class HtmlReport {
 				writeln("<br/>");
 			}
 		}
-		writeln("<div align='right'>");
-		writeShowHideLink("detailsGraphs", "#Autres_courbes#");
-		writeln("</div>");
-		writeln("<div id='detailsGraphs' style='display: none;'>");
-		for (final JRobin jrobin : collector.getOtherJRobins()) {
-			final String jrobinName = jrobin.getName();
-			if (isJRobinDisplayed(jrobinName)) {
-				writeln("<a href='?part=graph&amp;graph=" + jrobinName + periodParameter
-						+ "'><img class='synthese' src='?width=200&amp;height="
-						+ JRobin.SMALL_HEIGHT + "&amp;graph=" + jrobinName + periodParameter
-						+ "' alt=\"" + jrobin.getLabel() + "\" title=\"" + jrobin.getLabel()
-						+ "\"/></a>");
-			}
-			i++;
-			if (i % 3 == 0) {
-				writeln("<br/>");
-			}
-		}
-		writeln("</div>");
 	}
 
 	private void writeCurrentRequests(JavaInformations javaInformations,
