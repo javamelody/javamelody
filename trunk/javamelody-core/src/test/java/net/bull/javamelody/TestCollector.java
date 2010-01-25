@@ -183,6 +183,10 @@ public class TestCollector {
 				jrobin.graph(Period.JOUR, 500, 200);
 				jrobin.graph(Period.JOUR, 80, 80);
 			}
+			for (final JRobin jrobin : collector.getOtherJRobins()) {
+				final JRobin robin = collector.getJRobin(jrobin.getName());
+				assertNotNull("getJRobin non null", robin);
+			}
 			for (final CounterRequest request : counter.getRequests()) {
 				assertNotNull("getJRobin non null", collector.getJRobin(request.getId()));
 			}
@@ -204,6 +208,9 @@ public class TestCollector {
 			// test removeRequest dans collectCounterData
 			counter.addRequest("test 1", 0, 0, false, 1000);
 			counter.addRequest("test 2", 0, 0, false, 1000);
+			for (int i = 0; i < 50; i++) {
+				counter.addRequest("test 3", 0, 0, false, 1000);
+			}
 			collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
 			if (counter.getRequestsCount() > 1) {
 				fail("removeRequest");
