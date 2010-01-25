@@ -111,6 +111,10 @@ To find the cause:<ul>
  in the detailed tables of '<img width='16' height='16' src='?resource=dbweb.png' alt='http'/> Http (and sql) statistics',
  except if the application server has been stopped before the end of these requests.</li>
 <li>The drill-down display in the detail of an http request can help you to find the root cause in the façades or the sql requests.</li>
+<li>If an Oracle database is used, the display of the execution plan in the detail of the sql request can help you to find the cause of the time of this request
+<br/>(if the display of the execution plan says that a table "plan_table" must be created: 
+you can use the script @$ORACLE_HOME/rdbms/admin/catplan.sql as user SYS if v10g or above
+and otherwise @$ORACLE_HOME/rdbms/admin/utlxplan.sql and "grant all on plan_table to public" if v9i or less).</li>
 <li>It can be useful to check with the monitoring the state of the memory and the cpu used by the application server.
  It can also be useful to check on your own the state of the memory, of the cpu and of disk access of your database.</li>
 </ul>

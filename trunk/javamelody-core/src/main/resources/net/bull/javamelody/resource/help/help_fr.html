@@ -113,6 +113,10 @@ Pour trouver la cause :<ul>
  dans les tableaux détaillés de '<img width='16' height='16' src='?resource=dbweb.png' alt='http'/> Statistiques http' (et sql),
  sauf si le serveur d'application a été arrêté avant la fin des requêtes en cause.</li>
 <li>L'ouverture du "drill-down" dans le détail d'une requête http peut vous permettre de trouver les façades ou requêtes sql en cause.</li>
+<li>Si une base de données Oracle est utilisée, l'affichage du plan d'exécution dans le détail de la requête sql peut vous aider à trouver la cause du temps de cette requête
+<br/>(si l'affichage du plan d'exécution indique qu'une table "plan_table" doit être créée : 
+vous pouvez utiliser le script @$ORACLE_HOME/rdbms/admin/catplan.sql en tant qu'utilisateur SYS si v10g ou plus
+et sinon @$ORACLE_HOME/rdbms/admin/utlxplan.sql et "grant all on plan_table to public" si v9i ou moins).</li>
 <li>Il peut être utile de vérifier avec le monitoring l'état de la mémoire et de l'utilisation cpu du serveur d'application.
  Il peut être utile également de vérifier par vos propres moyens l'état de la mémoire, du cpu et des accès disques de la base de données.</li>
 </ul>
