@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.lowagie.text.ChapterAutoNumber;
@@ -103,7 +104,7 @@ class PdfReport {
 
 	private void writeContent() throws IOException, DocumentException {
 		addParagraph(buildSummary(), "systemmonitor.png");
-		writeGraphs();
+		writeGraphs(collector.getCounterJRobins());
 
 		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
 		for (final Counter counter : collector.getPeriodCountersToBeDisplayed(period)) {
@@ -140,7 +141,7 @@ class PdfReport {
 
 		document.newPage();
 		addParagraph(getI18nString("Statistiques_detaillees"), "systemmonitor.png");
-		writeOtherGraphs();
+		writeGraphs(collector.getOtherJRobins());
 		writeGraphDetails();
 
 		for (final PdfCounterReport pdfCounterReport : pdfCounterReports) {
@@ -189,37 +190,13 @@ class PdfReport {
 		return tmp;
 	}
 
-	private void writeGraphs() throws IOException, DocumentException {
+	private void writeGraphs(Collection<JRobin> jrobins) throws IOException, DocumentException {
 		final Paragraph jrobinParagraph = new Paragraph("", PdfDocumentFactory.getFont(9f,
 				Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
 		int i = 0;
-		for (final JRobin jrobin : collector.getCounterJRobins()) {
-			final String jrobinName = jrobin.getName();
-			if (isJRobinDisplayed(jrobinName)) {
-				final Image image = Image.getInstance(jrobin.graph(period, 200, 50));
-				image.scalePercent(50);
-				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
-				jrobinParagraph.add(new Phrase(" "));
-			}
-			i++;
-			if (i % 3 == 0) {
-				// un retour après httpSessions et avant activeThreads pour l'alignement
-				jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
-			}
-		}
-		jrobinParagraph.add(new Phrase("\n"));
-		add(jrobinParagraph);
-	}
-
-	private void writeOtherGraphs() throws IOException, DocumentException {
-		final Paragraph jrobinParagraph = new Paragraph("", PdfDocumentFactory.getFont(9f,
-				Font.NORMAL));
-		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
-		jrobinParagraph.add(new Phrase("\n\n\n\n"));
-		int i = 0;
-		for (final JRobin jrobin : collector.getOtherJRobins()) {
+		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
 				final Image image = Image.getInstance(jrobin.graph(period, 200, 50));
