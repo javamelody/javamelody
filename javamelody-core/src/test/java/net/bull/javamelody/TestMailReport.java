@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
@@ -75,6 +76,16 @@ public class TestMailReport {
 		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.JOUR));
 		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.SEMAINE));
 		assertNotNull("getNextExecutionDate", MailReport.getNextExecutionDate(Period.MOIS));
+	}
+
+	/** Test. */
+	@Test
+	public void testGetMailPeriod() {
+		for (final Period period : Period.values()) {
+			assertNotNull("getMailCode", period.getMailCode());
+			assertEquals("valueOfByMailCode", period, Period
+					.valueOfByMailCode(period.getMailCode()));
+		}
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
