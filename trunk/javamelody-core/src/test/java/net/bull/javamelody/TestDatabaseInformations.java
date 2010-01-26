@@ -75,4 +75,11 @@ public class TestDatabaseInformations {
 			}
 		}
 	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testExplainPlanFor() throws Exception {
+		DatabaseInformations.explainPlanFor("select 1");
+	}
 }
