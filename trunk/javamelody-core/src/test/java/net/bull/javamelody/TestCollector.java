@@ -182,6 +182,8 @@ public class TestCollector {
 				assertNotNull("getJRobin non null", robin);
 				jrobin.graph(Period.JOUR, 500, 200);
 				jrobin.graph(Period.JOUR, 80, 80);
+
+				jrobin.getLastValue();
 			}
 			for (final JRobin jrobin : collector.getOtherJRobins()) {
 				final JRobin robin = collector.getJRobin(jrobin.getName());
