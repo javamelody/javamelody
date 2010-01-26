@@ -172,6 +172,9 @@ public class TestHtmlReport {
 
 		// writeRequestAndGraphDetail avec drill-down
 		collector.collectWithoutErrors(javaInformationsList);
+		// si sqlCounter reste à displayed=false,
+		// il ne sera pas utilisé dans writeRequestAndGraphDetail
+		sqlCounter.setDisplayed(true);
 		counter.bindContext("test 1", "complete test 1");
 		servicesCounter.bindContext("service1", "service1");
 		sqlCounter.bindContext("sql1", "sql1");
@@ -181,13 +184,15 @@ public class TestHtmlReport {
 		servicesCounter.addRequest("service2", 10, 10, false, -1);
 		counter.addRequest("test 1", 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
-		for (final CounterRequest request : counter.getRequests()) {
-			if ("test 1".equals(request.getName())) {
-				htmlReport.writeRequestAndGraphDetail(request.getId());
-				htmlReport.writeRequestUsages(request.getId());
-				break;
+		final HtmlReport toutHtmlReport = new HtmlReport(collector, null, javaInformationsList,
+				Period.TOUT, writer);
+		for (final Counter collectorCounter : collector.getCounters()) {
+			for (final CounterRequest request : collectorCounter.getRequests()) {
+				toutHtmlReport.writeRequestAndGraphDetail(request.getId());
+				toutHtmlReport.writeRequestUsages(request.getId());
 			}
 		}
+		sqlCounter.setDisplayed(false);
 
 		htmlReport.writeSessionDetail("", null);
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
