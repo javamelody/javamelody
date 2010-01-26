@@ -101,7 +101,7 @@ public class TestMonitoringSpringInterceptor {
 		}
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws ClassNotFoundException e */
 	@Test
 	public void testMonitoredWithInterfacePointcut() throws ClassNotFoundException {

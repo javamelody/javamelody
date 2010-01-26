@@ -49,7 +49,7 @@ public class TestMailReport {
 		assertNotNull("MailReport", timer.purge());
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws Exception e */
 	@Test
 	public void testSendReportMail() throws Exception {
