@@ -191,7 +191,7 @@ public class TestCollectorServlet {
 		}
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws Exception e */
 	@Test
 	public void testMainWinstone() throws Exception {

@@ -43,7 +43,7 @@ public class TestJdbcWrapperHelper {
 	private void getDataSources() {
 		try {
 			JdbcWrapperHelper.getDataSources();
-		} catch (NamingException e) {
+		} catch (final NamingException e) {
 			assertNotNull("ok", e);
 		}
 	}

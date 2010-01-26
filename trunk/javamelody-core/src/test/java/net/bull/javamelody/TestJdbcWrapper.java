@@ -145,7 +145,7 @@ public class TestJdbcWrapper {
 	}
 
 	/** Test.
-	 * @throws SQLException e 
+	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
 	public void testCreateConnectionProxy() throws SQLException, IllegalAccessException {

@@ -268,7 +268,7 @@ public class TestHtmlReport {
 		}
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testWithCollectorServer() throws IOException {
@@ -283,7 +283,7 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testWithNoDatabase() throws IOException {
