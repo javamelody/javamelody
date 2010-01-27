@@ -3,6 +3,11 @@
 
   * added: If Oracle database, display of sql execution plan in sql request detail (seems not doable if postgresql or mysql, without particular parameter values)
   * added: New charts "Threads count", "Loaded classes count", "Used non heap memory", "Used physical memory", "Used swap space" (displayed with the new link "Other charts")
+  * added: spring post-processor in net/bull/javamelody/monitoring-spring.xml to auto-detect datasources defined in a spring xml file.
+
+So your test will be easier and the way you want.
+
+bye, Emeric
 
 === 1.11.1 ===
 
