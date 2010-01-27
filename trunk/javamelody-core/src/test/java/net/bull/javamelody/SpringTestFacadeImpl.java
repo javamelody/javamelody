@@ -21,6 +21,9 @@ package net.bull.javamelody;
 import java.sql.Statement;
 import java.util.Date;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 /**
  * Implémentation test de bean Spring.
  * (implémente une interface pour permettre l'AOP Spring car sinon il faut CGLIB)
@@ -33,9 +36,13 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	 * {@inheritDoc}
 	 */
 	public Date nowWithSql() throws Exception {
-		final javax.sql.DataSource ds = (javax.sql.DataSource) new javax.naming.InitialContext()
-				.lookup("java:comp/env/jdbc/TestDB");
-		final java.sql.Connection connection = ds.getConnection();
+		//		final javax.sql.DataSource dataSource = (javax.sql.DataSource) new javax.naming.InitialContext()
+		//				.lookup("java:comp/env/jdbc/TestDB");
+		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
+				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", });
+		final javax.sql.DataSource dataSource = (javax.sql.DataSource) context
+				.getBean("dataSource");
+		final java.sql.Connection connection = dataSource.getConnection();
 		connection.setAutoCommit(false);
 		try {
 			// test pour explain plan en oracle
