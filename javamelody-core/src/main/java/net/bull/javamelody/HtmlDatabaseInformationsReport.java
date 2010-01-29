@@ -70,7 +70,9 @@ class HtmlDatabaseInformationsReport {
 				}
 			}
 			writeln("</tbody></table>");
-			writeln("</td></tr></table>");
+			if (nbColumns > 1) {
+				writeln("</td></tr></table>");
+			}
 		}
 
 		private void writeTableHeaders(String[] headerValues) throws IOException {
