@@ -106,10 +106,10 @@ class DatabaseInformations implements Serializable {
 		}
 	}
 
-	private final int selectedRequestIndex;
 	private final Database database;
 	@SuppressWarnings("all")
 	private final List<String> requestNames;
+	private final int selectedRequestIndex;
 	private final String[][] result;
 
 	DatabaseInformations(int selectedRequestIndex) throws Exception {

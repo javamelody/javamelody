@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -132,7 +133,7 @@ final class ProcessInformations implements Serializable {
 			final ProcessInformations processInfo = new ProcessInformations(sc, windows);
 			processInfos.add(processInfo);
 		}
-		return processInfos;
+		return Collections.unmodifiableList(processInfos);
 	}
 
 	static List<ProcessInformations> buildProcessInformations() throws IOException {
