@@ -58,9 +58,12 @@ public class TestDatabaseInformations {
 	public void testDatabaseInformations() throws Exception {
 		final int requestIndex = 0;
 		final DatabaseInformations databaseInformations = new DatabaseInformations(requestIndex);
-		assertTrue("getRequestIndex", databaseInformations.getRequestIndex() == requestIndex);
+		assertTrue("getSelectedRequestIndex",
+				databaseInformations.getSelectedRequestIndex() == requestIndex);
+		assertNotNull("getSelectedRequestName", databaseInformations.getSelectedRequestName());
+		assertNotNull("getNbColumns", databaseInformations.getNbColumns());
 		assertNotNull("getResult", databaseInformations.getResult());
-		assertNotNull("getResult", databaseInformations.getRequestNames());
+		assertNotNull("getRequestNames", databaseInformations.getRequestNames());
 	}
 
 	/** Test.

@@ -106,27 +106,43 @@ class DatabaseInformations implements Serializable {
 		}
 	}
 
-	private final int requestIndex;
+	private final int selectedRequestIndex;
+	private final Database database;
 	@SuppressWarnings("all")
 	private final List<String> requestNames;
 	private final String[][] result;
 
-	DatabaseInformations(int requestIndex) throws Exception {
+	DatabaseInformations(int selectedRequestIndex) throws Exception {
 		super();
-		this.requestIndex = requestIndex;
+		this.selectedRequestIndex = selectedRequestIndex;
 		final Connection connection = getConnection();
 		try {
-			final Database database = Database.getDatabaseForConnection(connection);
+			database = Database.getDatabaseForConnection(connection);
 			requestNames = database.getRequestNames();
-			final String request = database.getRequestByName(requestNames.get(requestIndex));
+			final String request = database
+					.getRequestByName(requestNames.get(selectedRequestIndex));
 			result = executeRequest(connection, request, null);
 		} finally {
 			connection.close();
 		}
 	}
 
-	int getRequestIndex() {
-		return requestIndex;
+	int getNbColumns() {
+		final String selectedRequestName = getSelectedRequestName();
+		if (database == Database.MYSQL && "mysql.variables".equals(selectedRequestName)) {
+			return 2;
+		} else if (database == Database.MYSQL && "mysql.global_status".equals(selectedRequestName)) {
+			return 4;
+		}
+		return 1;
+	}
+
+	int getSelectedRequestIndex() {
+		return selectedRequestIndex;
+	}
+
+	String getSelectedRequestName() {
+		return requestNames.get(getSelectedRequestIndex());
 	}
 
 	String[][] getResult() {

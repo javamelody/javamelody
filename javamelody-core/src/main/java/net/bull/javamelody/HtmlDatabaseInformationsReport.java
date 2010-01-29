@@ -38,20 +38,21 @@ class HtmlDatabaseInformationsReport {
 			this.writer = writer;
 		}
 
-		void toHtml(String[][] values) throws IOException {
-			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#database#'>");
-			write("<thead><tr>");
-			for (final String value : values[0]) {
-				write("<th>");
-				writer.write(value.replace("\n", "<br/>"));
-				write("</th>");
+		void toHtml(String[][] values, int nbColumns) throws IOException {
+			final int rowsByColumn;
+			if (nbColumns > 1) {
+				rowsByColumn = values.length / nbColumns + 1;
+				writeln("<table width='100%' cellspacing='0' cellpadding='2' summary=''><tr><td valign='top'>");
+			} else {
+				rowsByColumn = -1;
 			}
-			writeln("</tr></thead><tbody>");
-			boolean first = true;
+			final String[] headerValues = values[0];
+			writeTableHeaders(headerValues);
+			int index = 0;
 			boolean odd = false;
 			for (final String[] row : values) {
-				if (first) {
-					first = false;
+				if (index == 0) {
+					index++;
 					continue;
 				}
 				if (odd) {
@@ -60,23 +61,44 @@ class HtmlDatabaseInformationsReport {
 					write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
 				}
 				odd = !odd; // NOPMD
-				for (final String value : row) {
-					if (value == null || value.length() == 0) {
-						write("<td>&nbsp;</td>");
-					} else {
-						if (isNumber(value)) {
-							write("<td align='right' valign='top'>");
-							writer.write(value);
-						} else {
-							write("<td valign='top'>");
-							writer.write(value.replace("\n", "<br/>"));
-						}
-						write("</td>");
-					}
-				}
+				writeRow(row);
 				writeln("</tr>");
+				index++;
+				if (rowsByColumn > 0 && (index - 1) % rowsByColumn == 0) {
+					writeln("</tbody></table></td><td valign='top'>");
+					writeTableHeaders(headerValues);
+				}
 			}
 			writeln("</tbody></table>");
+			writeln("</td></tr></table>");
+		}
+
+		private void writeTableHeaders(String[] headerValues) throws IOException {
+			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#database#'>");
+			write("<thead><tr>");
+			for (final String value : headerValues) {
+				write("<th>");
+				writer.write(value.replace("\n", "<br/>"));
+				write("</th>");
+			}
+			writeln("</tr></thead><tbody>");
+		}
+
+		private void writeRow(String[] row) throws IOException {
+			for (final String value : row) {
+				if (value == null || value.length() == 0) {
+					write("<td>&nbsp;</td>");
+				} else {
+					if (isNumber(value)) {
+						write("<td align='right' valign='top'>");
+						writer.write(value);
+					} else {
+						write("<td valign='top'>");
+						writer.write(value.replace("\n", "<br/>"));
+					}
+					write("</td>");
+				}
+			}
 		}
 
 		private static boolean isNumber(String text) {
@@ -112,12 +134,12 @@ class HtmlDatabaseInformationsReport {
 		writeln("<br/>");
 
 		writeln("<img src='?resource=db.png' width='24' height='24' alt='#database#' />&nbsp;");
-		final String selectedRequestName = databaseInformations.getRequestNames().get(
-				databaseInformations.getRequestIndex());
+		final String selectedRequestName = databaseInformations.getSelectedRequestName();
 		writeln("<b>#database# : #" + selectedRequestName + "#</b>");
 
 		final String[][] values = databaseInformations.getResult();
-		new TableReport(writer).toHtml(values);
+		final int nbColumns = databaseInformations.getNbColumns();
+		new TableReport(writer).toHtml(values, nbColumns);
 	}
 
 	private void writeLinks() throws IOException {
@@ -125,7 +147,8 @@ class HtmlDatabaseInformationsReport {
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
-		writeln("<a href='?part=database&amp;request=" + databaseInformations.getRequestIndex()
+		writeln("<a href='?part=database&amp;request="
+				+ databaseInformations.getSelectedRequestIndex()
 				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln(separator);
 		writeln("<select name='request' onchange=\"location.href='?part=database&amp;request='+options.selectedIndex;\">");
@@ -134,7 +157,7 @@ class HtmlDatabaseInformationsReport {
 			write("<option value='");
 			write(String.valueOf(index));
 			write("'");
-			if (index == databaseInformations.getRequestIndex()) {
+			if (index == databaseInformations.getSelectedRequestIndex()) {
 				write(" selected='selected'");
 			}
 			write(">");
