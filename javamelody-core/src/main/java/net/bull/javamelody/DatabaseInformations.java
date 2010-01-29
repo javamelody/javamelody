@@ -119,8 +119,7 @@ class DatabaseInformations implements Serializable {
 		try {
 			database = Database.getDatabaseForConnection(connection);
 			requestNames = database.getRequestNames();
-			final String request = database
-					.getRequestByName(requestNames.get(selectedRequestIndex));
+			final String request = database.getRequestByName(getSelectedRequestName());
 			result = executeRequest(connection, request, null);
 		} finally {
 			connection.close();
@@ -129,7 +128,11 @@ class DatabaseInformations implements Serializable {
 
 	int getNbColumns() {
 		final String selectedRequestName = getSelectedRequestName();
-		if (database == Database.MYSQL && "mysql.variables".equals(selectedRequestName)) {
+		if (database == Database.ORACLE && "oracle.statistics".equals(selectedRequestName)) {
+			return 2;
+		} else if (database == Database.ORACLE && "oracle.events".equals(selectedRequestName)) {
+			return 2;
+		} else if (database == Database.MYSQL && "mysql.variables".equals(selectedRequestName)) {
 			return 2;
 		} else if (database == Database.MYSQL && "mysql.global_status".equals(selectedRequestName)) {
 			return 4;
