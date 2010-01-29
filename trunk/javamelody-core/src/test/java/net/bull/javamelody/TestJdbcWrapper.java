@@ -23,10 +23,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -73,9 +75,12 @@ public class TestJdbcWrapper {
 	}
 
 	/** Test.
-	 * @throws SQLException e */
+	 * @throws Exception e */
 	@Test
-	public void testCreateDataSourceProxy() throws SQLException {
+	public void testCreateDataSourceProxy() throws Exception {
+		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
+		cleanUp();
+
 		assertTrue("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
 		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == -1);
@@ -142,6 +147,21 @@ public class TestJdbcWrapper {
 			}
 		};
 		jdbcWrapper.createDataSourceProxy(dataSource2);
+	}
+
+	private static void cleanUp() throws NoSuchFieldException, IllegalAccessException {
+		final Field tomcatField = JdbcWrapper.class
+				.getDeclaredField("TOMCAT_BASIC_DATASOURCES_PROPERTIES");
+		tomcatField.setAccessible(true);
+		Object dsProperties = tomcatField.get(null);
+		final Field propertiesField = dsProperties.getClass().getDeclaredField("properties");
+		propertiesField.setAccessible(true);
+		((Map<?, ?>) propertiesField.get(dsProperties)).clear();
+		final Field dbcpField = JdbcWrapper.class
+				.getDeclaredField("DBCP_BASIC_DATASOURCES_PROPERTIES");
+		dbcpField.setAccessible(true);
+		dsProperties = dbcpField.get(null);
+		((Map<?, ?>) propertiesField.get(dsProperties)).clear();
 	}
 
 	/** Test.
