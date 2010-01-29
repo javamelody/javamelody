@@ -246,13 +246,14 @@ class MonitoringController {
 				if (sessionId == null) {
 					final List<SessionInformations> sessionsInformations = SessionListener
 							.getAllSessionsInformations();
-					return (Serializable) sessionsInformations;
+					return new ArrayList<SessionInformations>(sessionsInformations);
 				}
 				return SessionListener.getSessionInformationsBySessionId(sessionId);
 			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
-				return (Serializable) ProcessInformations.buildProcessInformations();
+				return new ArrayList<ProcessInformations>(ProcessInformations
+						.buildProcessInformations());
 			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();

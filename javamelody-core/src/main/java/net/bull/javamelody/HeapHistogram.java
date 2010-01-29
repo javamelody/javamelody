@@ -177,7 +177,7 @@ public class HeapHistogram implements Serializable {
 	}
 
 	List<ClassInfo> getHeapHistogram() {
-		return classes;
+		return Collections.unmodifiableList(classes);
 	}
 
 	//	long getTotalInstances() {
@@ -197,7 +197,7 @@ public class HeapHistogram implements Serializable {
 	}
 
 	List<ClassInfo> getPermGenHistogram() {
-		return permGenClasses;
+		return Collections.unmodifiableList(permGenClasses);
 	}
 
 	long getTotalPermGenInstances() {
