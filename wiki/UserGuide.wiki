@@ -150,7 +150,7 @@ Language: English and French
 	  ({{{web.xml}}} file in the webapp)
 	# in context parameters of the webapp with prefix {{{javamelody.}}}
 	  (context xml file in Tomcat)
-	# in environment variables of the OS with prefix <<<javamelody.>>>
+	# in environment variables of the OS with prefix {{{javamelody.}}}
 	  (OS specific or java launch command)
 	# in system properties with prefix {{{javamelody.}}}
 	  (java launch command or administration user interface)
