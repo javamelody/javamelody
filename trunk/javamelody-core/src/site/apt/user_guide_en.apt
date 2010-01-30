@@ -246,7 +246,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If a DataSource is defined in a xml file of a Spring context,
 	like for example <<< <bean class="org.apache.commons.dbcp.BasicDataSource">...</bean> >>>,
-	the DataSource can also be monitored with a Spring post-processor.
+	the DataSource can also be monitored, with a Spring post-processor.
 	Make sure the Spring configuration file (<<<net/bull/javamelody/monitoring-spring.xml>>>,
 	included in the provided jar) is loaded as one of the first configuration files.
 	For example, if you use the <<<org.springframework.web.context.ContextLoaderListener>>> in your
