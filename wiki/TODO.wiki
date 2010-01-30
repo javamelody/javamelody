@@ -23,8 +23,8 @@ There is no promise of dates or that a particular feature will ever be done.
   # Rich *desktop UI* able to connect to multiple servers via CollectorServer and to centralized collect servers, with [http://java.sun.com/docs/books/tutorial/uiswing/ swing] and [http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp java web start]
   # *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]* plugin to display some graphs in those tools
   # Maven:
-    # Why the *[http://maven.apache.org/guides/mini/guide-site.html maven site]* of javamelody does not include findbugs and checkstyle in the [http://mojo.codehaus.org/dashboard-maven-plugin/ dashboard] ? (or why the findbugs and checkstyle plugins are executed after the dashboard plugin, if not with the looooonger "site dashboard:dashboard site" ?)
-    # Why the dependencies part when building the maven site is so long when online ?
+    # Why the *[http://maven.apache.org/guides/mini/guide-site.html maven site]* of javamelody does not include findbugs and checkstyle in the [http://mojo.codehaus.org/dashboard-maven-plugin/ dashboard] ? (or why the findbugs and checkstyle plugins are executed after the dashboard plugin, if not with the looooonger "site dashboard:dashboard site" ?) (maven 2.2)
+    # Why the dependencies part when building the maven site is so long (in minutes) when online ?
     # Why maven plugins (pmd, checkstyle, findbugs, dashboard...) are often years late ?
     # Why editing apt files in eclipse always freezes Eclipse ? (Eclipse 3.5, m2eclipse 0.9.8, maven embedded)
     # Why maven waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?
