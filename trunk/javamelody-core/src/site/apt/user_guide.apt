@@ -245,6 +245,26 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Par exemple, pour une propriété système au lancement du serveur:
 	
 	<<<-Djavamelody.datasources=java:comp/env/myapp/mydatasource>>>
+	
+	Si une DataSource est définie par l'intermédiaire d'un fichier xml de contexte Spring,
+	comme par exemple <<< <bean class="org.apache.commons.dbcp.BasicDataSource">...</bean> >>>,
+	la DataSource peut être monitorée également avec un post-processor Spring.
+	Assurez-vous que le fichier de configuration Spring (<<<net/bull/javamelody/monitoring-spring.xml>>>,
+	inclus dans le jar fourni) est chargé parmi un des premiers fichiers de configuration.
+	Par exemple, si vous utilisez <<<org.springframework.web.context.ContextLoaderListener>>> dans
+	votre fichier <<<web.xml>>>, le paramètre de contexte <<<contextConfigLocation>>> ressemblera à :
+
++-------------------------------+
+	<context-param>
+	  <param-name>contextConfigLocation</param-name>
+	  <param-value>
+		classpath:net/bull/javamelody/monitoring-spring.xml
+		classpath:context/services.xml
+		classpath:context/data-access-layer.xml
+		/WEB-INF/applicationContext.xml
+	  </param-value>
+	</context-param>
++-------------------------------+
 
 ** 7. Façades métiers (fichier ejb-jar.xml si EJB3)
 
