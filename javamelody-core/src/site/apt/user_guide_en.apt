@@ -327,7 +327,14 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	of ejb implementations.
 
 	Moreover, it is necessary to define the parameter <<<displayed-counters>>>, as the optional parameters above,
-	and with value "http,sql,error,log,ejb".
+	and with value "http,sql,error,log,ejb". For example, in the filter of the web.xml file:
+	
++-------------------------------+
+	<init-param>
+		<param-name>displayed-counters</param-name>
+		<param-value>http,sql,error,log,ejb</param-value>
+	</init-param>
++-------------------------------+
 
 ** 8. Business façades (if Spring)
 
@@ -378,7 +385,14 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	Step 4: Moreover, it is necessary to define the parameter <<<displayed-counters>>>, 
 	as the optional parameters above, and with value "http,sql,error,log,spring" 
-	or "http,sql,error,log,ejb,spring".
+	or "http,sql,error,log,ejb,spring". For example, in the filter of the web.xml file:
+	
++-------------------------------+
+	<init-param>
+		<param-name>displayed-counters</param-name>
+		<param-value>http,sql,error,log,spring</param-value>
+	</init-param>
++-------------------------------+
 
 	If you prefer, you have the choice with other alternatives for step 3 above.
 	These alternatives are not exclusives: you can use one and complete it with another.
