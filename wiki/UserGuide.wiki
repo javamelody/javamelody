@@ -75,7 +75,7 @@ Language: English and French
 
 	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA] server, you can install JavaMelody easily
 	with a JIRA plugin. For this, [http://code.google.com/p/javamelody/downloads/list download] the jar file of the plugin
-	and copy the file in the {{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}} directory. Restart JIRA.
+	and copy the file in the "{{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}}" directory. Restart JIRA.
 	Then you can open the report from the address {{{http://host:8080/monitoring}}}. That's it.
 	Note: It does not seem possible to monitor sql requests at the moment.
 	
