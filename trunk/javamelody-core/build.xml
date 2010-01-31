@@ -65,7 +65,7 @@
 		<mkdir dir="build/classes" />
 		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
 			srcdir="src/main/java" destdir="build/classes" classpath="${class.path}">
-				<compilerarg value="-Xlint" />
+			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
 
@@ -76,6 +76,7 @@
 		<delete dir="doc" />
 		<delete file="javamelody.jar" />
 		<delete file="javamelody.war" />
+		<delete file="jira-javamelody.jar" />
 	</target>
 
 	<!-- Construction du jar -->
@@ -130,6 +131,28 @@
 			<zipfileset file="src/site/apt/user_guide*.apt" />
 			<manifest>
 				<attribute name="Main-Class" value="net.bull.javamelody.Main" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du jar du plugin Jira -->
+	<target name="jira-jar" depends="jar">
+		<echo message="Construction du jar pour le plugin Jira" level="info" />
+		<delete file="jira-javamelody.jar" />
+		<jar destfile="jira-javamelody.jar">
+			<zipfileset src="javamelody.jar" excludes="META-INF/web-fragment.xml" />
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" />
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
+			<!-- Description Jira pour le plugin -->
+			<zipfileset dir="src/main/jira" />
+			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${TODAY_FR}" />
 				<attribute name="Build-Jdk" value="${java.version}" />

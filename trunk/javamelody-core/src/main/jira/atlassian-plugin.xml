@@ -1,0 +1,29 @@
+<atlassian-plugin key="net.bull.javamelody" name="JavaMelody Monitoring JIRA Plugin" pluginsVersion="1">
+    <plugin-info>
+        <description>Monitoring of JIRA server with JavaMelody.</description>
+        <version>1.12</version>
+        <application-version min="4.0"/>
+        <vendor name="Emeric Vernat" url="http://javamelody.googlecode.com/"/>
+    </plugin-info>
+
+	<servlet-filter name="MonitoringFilter" key="MonitoringFilter" class="net.bull.javamelody.MonitoringFilter" location="before-decoration" weight="200">
+        <description>Monitoring Filter.</description>
+        <url-pattern>/*</url-pattern>
+        <init-param>
+            <param-name>http-transform-pattern</param-name>
+            <param-value>-\d+</param-value>
+        </init-param>
+        <init-param>
+            <param-name>system-actions-enabled</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>analytics-id</param-name>
+            <param-value>UA-1335263-8</param-value>
+        </init-param>
+    </servlet-filter>
+
+	<servlet-context-listener name="SessionListener" key="SessionListener" class="net.bull.javamelody.SessionListener">
+		<description>Monitoring Session Listener.</description>
+	</servlet-context-listener>
+</atlassian-plugin>
