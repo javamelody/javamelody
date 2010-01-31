@@ -246,7 +246,7 @@
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody.zip" />
 		<zip destfile="javamelody.zip">
-			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,**/Fonctions.odt,javamelody.zip" />
+			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,**/Fonctions.odt,javamelody.zip,jira-javamelody.jar" />
 			<!-- jar jrobin copié selon indication du user_guide -->
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
 		</zip>
