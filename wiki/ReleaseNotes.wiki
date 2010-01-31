@@ -4,6 +4,14 @@
   * added: If Oracle database, display of sql execution plan in sql request detail (seems not doable if postgresql or mysql, without particular parameter values)
   * added: New charts "Threads count", "Loaded classes count", "Used non heap memory", "Used physical memory", "Used swap space" (displayed with the new link "Other charts")
   * added: spring post-processor in net/bull/javamelody/monitoring-spring.xml to auto-detect datasources defined in a spring xml file.
+  * More to come...
+
+=== Atlassian JIRA plugin ===
+
+A beta version of a JIRA plugin is released now to integrate JavaMelody in Atlassian JIRA.
+See [UserGuide] for installation.
+
+This plugin has been tested with a JIRA 4.0.1 server, but it certainly works with Confluence and Bamboo.
 
 === 1.11.1 ===
 
