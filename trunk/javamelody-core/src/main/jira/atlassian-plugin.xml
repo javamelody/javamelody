@@ -1,29 +1,47 @@
-<atlassian-plugin key="net.bull.javamelody" name="JavaMelody Monitoring JIRA Plugin" pluginsVersion="1">
-    <plugin-info>
-        <description>Monitoring of JIRA server with JavaMelody.</description>
-        <version>1.12</version>
-        <application-version min="4.0"/>
-        <vendor name="Emeric Vernat" url="http://javamelody.googlecode.com/"/>
-    </plugin-info>
+<atlassian-plugin key="net.bull.javamelody"
+	name="JavaMelody Monitoring JIRA Plugin" pluginsVersion="1">
+	<plugin-info>
+		<description>Monitoring of JIRA server with JavaMelody.</description>
+		<version>1.12</version>
+		<application-version min="4.0" />
+		<vendor name="Emeric Vernat" url="http://javamelody.googlecode.com/" />
+	</plugin-info>
 
-	<servlet-filter name="MonitoringFilter" key="MonitoringFilter" class="net.bull.javamelody.MonitoringFilter" location="before-decoration" weight="200">
-        <description>Monitoring Filter.</description>
-        <url-pattern>/*</url-pattern>
-        <init-param>
-            <param-name>http-transform-pattern</param-name>
-            <param-value>-\d+</param-value>
-        </init-param>
-        <init-param>
-            <param-name>system-actions-enabled</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>analytics-id</param-name>
-            <param-value>UA-1335263-8</param-value>
-        </init-param>
-    </servlet-filter>
+	<servlet-filter name="MonitoringFilter" key="MonitoringFilter"
+		class="net.bull.javamelody.MonitoringFilter" location="before-decoration"
+		weight="200">
+		<description>Monitoring Filter.</description>
+		<url-pattern>/*</url-pattern>
+		<init-param>
+			<param-name>http-transform-pattern</param-name>
+			<param-value>-\d+</param-value>
+		</init-param>
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>analytics-id</param-name>
+			<param-value>UA-1335263-8</param-value>
+		</init-param>
+	</servlet-filter>
 
-	<servlet-context-listener name="SessionListener" key="SessionListener" class="net.bull.javamelody.SessionListener">
+	<servlet-context-listener name="SessionListener"
+		key="SessionListener" class="net.bull.javamelody.SessionListener">
 		<description>Monitoring Session Listener.</description>
 	</servlet-context-listener>
+
+	<resource type="i18n" name="i18n" location="javamelody_i18n" />
+
+	<web-item key="net.bull.javamelody.web-item" name="Monitoring"
+		section="system.top.navigation.bar" i18n-name-key="net.bull.javamelody.web-item"
+		weight="10">
+		<icon height="16" width="16">
+			<link>/monitoring?resource=systemmonitor.png</link>
+		</icon>
+		<label key="net.bull.javamelody.label">Monitoring</label>
+		<link linkId="net.bull.javamelody.link">/monitoring</link>
+		<condition
+			class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition" />
+	</web-item>
 </atlassian-plugin>
