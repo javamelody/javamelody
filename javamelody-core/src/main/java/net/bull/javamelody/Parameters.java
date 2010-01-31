@@ -301,11 +301,19 @@ final class Parameters {
 		}
 		String contextPath = webXmlUrl.toExternalForm();
 		contextPath = contextPath.substring(0, contextPath.indexOf("/WEB-INF/web.xml"));
-		final int index = contextPath.indexOf(".war");
-		if (index > 0) {
-			contextPath = contextPath.substring(0, index);
+		final int indexOfWar = contextPath.indexOf(".war");
+		if (indexOfWar > 0) {
+			contextPath = contextPath.substring(0, indexOfWar);
 		}
-		contextPath = contextPath.substring(contextPath.lastIndexOf('/'));
+		// tomcat peut renvoyer une url commençant pas "jndi:/localhost"
+		// (v5.5.28, webapp dans un répertoire)
+		if (contextPath.startsWith("jndi:/localhost")) {
+			contextPath = contextPath.substring("jndi:/localhost".length());
+		}
+		final int lastIndexOfSlash = contextPath.lastIndexOf('/');
+		if (lastIndexOfSlash != -1) {
+			contextPath = contextPath.substring(lastIndexOfSlash);
+		}
 		return contextPath;
 	}
 
