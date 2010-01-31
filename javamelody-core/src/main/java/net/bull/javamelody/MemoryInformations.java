@@ -105,7 +105,8 @@ class MemoryInformations implements Serializable {
 	private String buildMemoryDetails() {
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
 		final String nonHeapMemory = "Non heap memory = "
-				+ integerFormat.format(usedNonHeapMemory / 1024 / 1024) + MO;
+				+ integerFormat.format(usedNonHeapMemory / 1024 / 1024) + MO
+				+ " (Perm Gen, Code Cache)";
 		// classes actuellement chargées
 		final String classLoading = "Loaded classes = " + integerFormat.format(loadedClassesCount);
 		final String gc = "Garbage collection time = "
