@@ -82,7 +82,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	with a Grails plugin: {{{http://www.grails.org/plugin/grails-melody}JavaMelody Grails plugin}}.
 	You just need to execute the command given in the Install tab of the plugin.
 
-* Setup
+* JavaMelody Setup
 
 	An important value of the monitoring is a very simple and fast installation process.
 	And in general, integration is done by the software provider without any intervention from the client.
@@ -133,7 +133,15 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Then you can complete the settings as below according to your needs.
 
-** 4. Supplements in <<<web.xml>>>
+** 4. PDF reports generation
+
+	To generate PDF reports as well as html reports, it is needed to add the library iText
+	(licence LGPL or MPL, the iText jar file alone is enough, without the other dependencies like iText-rtf).
+	
+	Copy the file <<<itext-2.1.7.jar>>>, located in the directory <<<src/test/test-webapp/WEB-INF/lib/>>> of the supplied javamelody.zip file,
+	to the WEB-INF/lib directory of the war of the webapp to monitor. The PDF link will be available at the top of the html report.
+
+** 5. Supplements in <<<web.xml>>>
 
 	<<<url-pattern>>> in <<<web.xml>>> file above can be adapted in order not to monitor some urls,
 	possibly with several mappings on the same filter
@@ -149,7 +157,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</init-param>
 +-------------------------------+
 
-** 5. Optional parameters
+** 6. Optional parameters
 
 	It is possible to configure some settings. These parameters can be defined in priority order:
 
@@ -223,7 +231,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	from the tomcat context or from system properties without modifying the <<<web.xml>>> file
 	neither the war file of the monitored webapp.
 
-** 6. JDBC
+** 7. JDBC
 
 	If a DataSource which JNDI name starts with "jdbc/" is configured in the application server
 	(xml context of the webapp in Tomcat for example), the sql requests will be automically monitored
@@ -274,7 +282,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</context-param>
 +-------------------------------+
 
-** 7. Business façades (ejb-jar.xml file if EJB3)
+** 8. Business façades (ejb-jar.xml file if EJB3)
 
 	If the application to monitor contains some business façades in EJB3 (Java EE 5) with annotations <<<@Stateless>>>,
 	<<<@Stateful>>> or <<<@MessageDriven>>>, a counter can be created for statistics of execution of methods.
@@ -346,7 +354,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</init-param>
 +-------------------------------+
 
-** 8. Business façades (if Spring)
+** 9. Business façades (if Spring)
 
 	If the application to monitor contains some business façades or other objects initialized with Spring,
 	a counter can be created for statistics of execution of methods. But it is not recommended for response time
@@ -448,7 +456,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
 	facades with separate interfaces and implementations. 
 
-** 9. Weekly, daily or monthly reports by mail
+** 10. Weekly, daily or monthly reports by mail
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -519,7 +527,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 
-** 10. Database user
+** 11. Database user
 
 	From the html page of the monitoring, it is possible to display informations and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -536,7 +544,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in order to grant the right to the user 'myapplication':
 	<<<grant select any dictionary to myapplication>>>
 
-** 11. Security
+** 12. Security
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -586,7 +594,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 </tomcat-users>
 +-------------------------------+
 
-** 12. Full results
+** 13. Full results
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
