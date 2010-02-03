@@ -10,15 +10,16 @@
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
-    * [#4._Supplements_in_web.xml 4. Supplements in web.xml]
-    * [#5._Optional_parameters 5. Optional parameters]
-    * [#6._JDBC 6. JDBC]
-    * [#7._Business_facades_(ejb-jar.xml_file_if_EJB3) 7. Business facades (ejb-jar.xml file if EJB3)]
-    * [#8._Business_facades_(if_Spring) 8. Business facades (if Spring)]
-    * [#9._Weekly,_daily_or_monthly_reports_by_mail 9. Weekly, daily or monthly reports by mail]
-    * [#10._Database_user 10. Database user]
-    * [#11._Security 11. Security]
-    * [#12._Full_results 12. Full results]
+    * [#4._PDF_reports_generation 4. PDF reports generation]
+    * [#5._Supplements_in_web.xml 4. Supplements in web.xml]
+    * [#6._Optional_parameters 5. Optional parameters]
+    * [#7._JDBC 6. JDBC]
+    * [#8._Business_facades_(ejb-jar.xml_file_if_EJB3) 7. Business facades (ejb-jar.xml file if EJB3)]
+    * [#9._Business_facades_(if_Spring) 8. Business facades (if Spring)]
+    * [#10._Weekly,_daily_or_monthly_reports_by_mail 9. Weekly, daily or monthly reports by mail]
+    * [#11._Database_user 10. Database user]
+    * [#12._Security 11. Security]
+    * [#13._Full_results 12. Full results]
   * [#Dependencies Dependencies]
   * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
   * [#Compilation_and_development Compilation and development]
@@ -138,7 +139,15 @@ Language: English and French
 	
 	Then you can complete the settings as below according to your needs.
 
-=== 4. Supplements in {{{web.xml}}} ===
+=== 4. PDF reports generation ===
+
+	To generate PDF reports as well as html reports, it is needed to add the library iText
+	(licence LGPL or MPL, the iText jar file alone is enough, without the other dependencies like iText-rtf).
+	
+	Copy the file {{{itext-2.1.7.jar}}}, located in the directory {{{src/test/test-webapp/WEB-INF/lib/}}} of the supplied javamelody.zip file,
+	to the WEB-INF/lib directory of the war of the webapp to monitor. The PDF link will be available at the top of the html report.
+
+=== 5. Supplements in {{{web.xml}}} ===
 
 	{{{url-pattern}}} in {{{web.xml}}} file above can be adapted in order not to monitor some urls,
 	possibly with several mappings on the same filter
@@ -154,7 +163,7 @@ Language: English and French
 	</init-param>
 }}}
 
-=== 5. Optional parameters ===
+=== 6. Optional parameters ===
 
 	It is possible to configure some settings. These parameters can be defined in priority order:
 
@@ -219,7 +228,7 @@ Language: English and French
 	from the tomcat context or from system properties without modifying the {{{web.xml}}} file
 	neither the war file of the monitored webapp.
 
-=== 6. JDBC ===
+=== 7. JDBC ===
 
 	If a DataSource which JNDI name starts with "jdbc/" is configured in the application server
 	(xml context of the webapp in Tomcat for example), the sql requests will be automically monitored
@@ -248,7 +257,7 @@ Language: English and French
 	
 	{{{-Djavamelody.datasources=java:comp/env/myapp/mydatasource}}}
 
-=== 7. Business facades (ejb-jar.xml file if EJB3) ===
+=== 8. Business facades (ejb-jar.xml file if EJB3) ===
 
 	If the application to monitor contains some business façades in EJB3 (Java EE 5) with annotations {{{@Stateless}}},
 	{{{@Stateful}}} or {{{@MessageDriven}}}, a counter can be created for statistics of execution of methods.
@@ -320,7 +329,7 @@ or
     </init-param>
 }}}
 
-=== 8. Business facades (if Spring) ===
+=== 9. Business facades (if Spring) ===
 
 	If the application to monitor contains some business façades or other objects initialized with Spring,
 	a counter can be created for statistics of execution of methods. But it is not recommended for response time
@@ -421,7 +430,7 @@ or
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
 	facades with separate interfaces and implementations. 
 
-=== 9. Weekly, daily or monthly reports by mail ===
+=== 10. Weekly, daily or monthly reports by mail ===
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -491,7 +500,7 @@ or
 <Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 }}}
 
-=== 10. Database user ===
+=== 11. Database user ===
 
 	From the html page of the monitoring, it is possible to display informations and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -508,7 +517,7 @@ or
 	in order to grant the right to the user 'myapplication':
 	{{{grant select any dictionary to myapplication}}}
 
-=== 11. Security ===
+=== 12. Security ===
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -558,7 +567,7 @@ or
 </tomcat-users>
 }}}
 
-=== 12. Full results ===
+=== 13. Full results ===
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
