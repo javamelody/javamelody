@@ -63,7 +63,7 @@ class Counter implements Cloneable, Serializable {
 	/**
 	 * Nombre max de requêtes conservées par counter.
 	 */
-	private static final int MAX_REQUESTS_COUNT = 20000;
+	private static final int MAX_REQUESTS_COUNT = 10000;
 	private static final long serialVersionUID = 6759729262180992976L;
 	private String application;
 	private boolean displayed = true;
