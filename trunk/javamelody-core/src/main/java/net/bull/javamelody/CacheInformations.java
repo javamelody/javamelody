@@ -118,9 +118,13 @@ class CacheInformations implements Serializable {
 
 	private static boolean isEhcache16() {
 		try {
+			// ce Class.forName est nécessaire sur le serveur de collecte
+			Class.forName("net.sf.ehcache.Statistics");
 			// getMemoryStoreObjectCount n'existe que depuis ehcache 1.6
 			Statistics.class.getMethod("getMemoryStoreObjectCount");
 			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
 		} catch (final NoSuchMethodException e) {
 			return false;
 		}
@@ -128,8 +132,12 @@ class CacheInformations implements Serializable {
 
 	private static boolean isEhcache12() {
 		try {
+			// ce Class.forName est nécessaire sur le serveur de collecte
+			Class.forName("net.sf.ehcache.Ehcache");
 			// getCacheConfiguration n'existe pas en ehcache 1.2
 			Ehcache.class.getMethod("getCacheConfiguration");
+			return false;
+		} catch (final ClassNotFoundException e) {
 			return false;
 		} catch (final NoSuchMethodException e) {
 			return true;
