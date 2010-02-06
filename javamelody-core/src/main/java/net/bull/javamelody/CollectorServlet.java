@@ -346,12 +346,7 @@ public class CollectorServlet extends HttpServlet {
 		if (application == null) {
 			showAlertAndRedirectTo(resp, message, "?period=" + period.getCode());
 		} else {
-			PrintWriter writer;
-			try {
-				writer = resp.getWriter();
-			} catch (final Exception e) {
-				writer = createWriterFromOutputStream(resp);
-			}
+			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partParameter = req.getParameter(PART_PARAMETER);
 			new HtmlReport(collector, collectorServer, javaInformationsList, period, writer)
 					.writeMessageIfNotNull(message, partParameter);
@@ -377,21 +372,23 @@ public class CollectorServlet extends HttpServlet {
 	private static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
 		MonitoringController.noCache(resp);
 		resp.setContentType(HTML_CONTENT_TYPE);
-		final PrintWriter writer = resp.getWriter();
+		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<html><head><title>Monitoring</title></head><body>");
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, Period.JOUR, writer);
 		writer.write("</body></html>");
+		writer.close();
 	}
 
 	private static void showAlertAndRedirectTo(HttpServletResponse resp, String message,
 			String redirectTo) throws IOException {
 		resp.setContentType(HTML_CONTENT_TYPE);
-		final PrintWriter writer = resp.getWriter();
+		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<script type='text/javascript'>alert('");
 		writer.write(I18N.javascriptEncode(message));
 		writer.write("');location.href='");
 		writer.write(redirectTo);
 		writer.write("';</script>");
+		writer.close();
 	}
 
 	private boolean isAddressAllowed(HttpServletRequest req) {
