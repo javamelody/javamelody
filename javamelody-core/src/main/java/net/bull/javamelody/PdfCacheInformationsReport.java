@@ -74,15 +74,20 @@ class PdfCacheInformationsReport {
 			writeCacheInformations(cacheInformations);
 		}
 		document.add(currentTable);
-		final Anchor anchor = new Anchor("Configuration reference", PdfDocumentFactory.BLUE_FONT);
-		anchor.setName("Ehcache configuration reference");
-		anchor
+		addConfigurationReference();
+	}
+
+	private void addConfigurationReference() throws DocumentException {
+		final Anchor ehcacheAnchor = new Anchor("Configuration reference",
+				PdfDocumentFactory.BLUE_FONT);
+		ehcacheAnchor.setName("Ehcache configuration reference");
+		ehcacheAnchor
 				.setReference("http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary");
-		anchor.setFont(PdfDocumentFactory.BLUE_FONT);
-		final Paragraph paragraph = new Paragraph();
-		paragraph.add(anchor);
-		paragraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(paragraph);
+		ehcacheAnchor.setFont(PdfDocumentFactory.BLUE_FONT);
+		final Paragraph ehcacheParagraph = new Paragraph();
+		ehcacheParagraph.add(ehcacheAnchor);
+		ehcacheParagraph.setAlignment(Element.ALIGN_RIGHT);
+		document.add(ehcacheParagraph);
 	}
 
 	private void writeHeader() throws DocumentException {

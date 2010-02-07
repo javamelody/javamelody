@@ -69,14 +69,19 @@ class PdfJobInformationsReport {
 			writeJobInformations(jobInformations);
 		}
 		document.add(currentTable);
-		final Anchor anchor = new Anchor("Configuration reference", PdfDocumentFactory.BLUE_FONT);
-		anchor.setName("Quartz configuration reference");
-		anchor.setReference("http://www.quartz-scheduler.org/docs/index.html");
-		anchor.setFont(PdfDocumentFactory.BLUE_FONT);
-		final Paragraph paragraph = new Paragraph();
-		paragraph.add(anchor);
-		paragraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(paragraph);
+		addConfigurationReference();
+	}
+
+	private void addConfigurationReference() throws DocumentException {
+		final Anchor quartzAnchor = new Anchor("Configuration reference",
+				PdfDocumentFactory.BLUE_FONT);
+		quartzAnchor.setName("Quartz configuration reference");
+		quartzAnchor.setReference("http://www.quartz-scheduler.org/docs/index.html");
+		quartzAnchor.setFont(PdfDocumentFactory.BLUE_FONT);
+		final Paragraph quartzParagraph = new Paragraph();
+		quartzParagraph.add(quartzAnchor);
+		quartzParagraph.setAlignment(Element.ALIGN_RIGHT);
+		document.add(quartzParagraph);
 	}
 
 	private void writeHeader() throws DocumentException {
