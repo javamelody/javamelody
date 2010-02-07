@@ -12,6 +12,7 @@
 <a href="jsp/spring.jsp">spring</a><br/>
 <a href="jsp/proxy.jsp">proxy</a><br/>
 <a href="jsp/cache.jsp">cache</a><br/>
+<a href="jsp/job.jsp">job</a><br/>
 <br/>
 <a href="monitoring">javamelody</a><br/>
 <a href="monitoringServer">javamelody par serveur de collecte</a><br/>
