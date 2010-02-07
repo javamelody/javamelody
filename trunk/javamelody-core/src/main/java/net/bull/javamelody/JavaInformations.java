@@ -39,8 +39,6 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import net.sf.ehcache.CacheManager;
-
 /**
  * Informations systèmes sur le serveur, sans code html de présentation.
  * L'état d'une instance est initialisé à son instanciation et non mutable;
@@ -60,7 +58,6 @@ class JavaInformations implements Serializable { // NOPMD
 	private static final boolean FREE_DISK_SPACE_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final Date START_DATE = new Date();
-	private static final boolean EHCACHE_AVAILABLE = isEhcacheAvailable();
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
 	private final MemoryInformations memoryInformations;
@@ -95,6 +92,8 @@ class JavaInformations implements Serializable { // NOPMD
 	@SuppressWarnings("all")
 	private final List<CacheInformations> cacheInformationsList;
 	@SuppressWarnings("all")
+	private final List<JobInformations> jobInformationsList;
+	@SuppressWarnings("all")
 	private final List<String> dependenciesList;
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
@@ -116,6 +115,16 @@ class JavaInformations implements Serializable { // NOPMD
 		/** {@inheritDoc} */
 		public int compare(CacheInformations cache1, CacheInformations cache2) {
 			return cache1.getName().compareToIgnoreCase(cache2.getName());
+		}
+	}
+
+	static final class JobInformationsComparator implements Comparator<JobInformations>,
+			Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		public int compare(JobInformations job1, JobInformations job2) {
+			return job1.getName().compareToIgnoreCase(job2.getName());
 		}
 	}
 
@@ -181,13 +190,15 @@ class JavaInformations implements Serializable { // NOPMD
 			dataBaseVersion = buildDataBaseVersion();
 			dataSourceDetails = buildDataSourceDetails();
 			threadInformationsList = buildThreadInformationsList();
-			cacheInformationsList = buildCacheInformationsList();
+			cacheInformationsList = CacheInformations.buildCacheInformationsList();
+			jobInformationsList = JobInformations.buildJobInformationsList();
 			pid = PID.getPID();
 		} else {
 			dataBaseVersion = null;
 			dataSourceDetails = null;
 			threadInformationsList = null;
 			cacheInformationsList = null;
+			jobInformationsList = null;
 			pid = null;
 		}
 	}
@@ -300,37 +311,6 @@ class JavaInformations implements Serializable { // NOPMD
 			Arrays.sort(deadlockedThreads);
 		}
 		return deadlockedThreads;
-	}
-
-	private static boolean isEhcacheAvailable() {
-		try {
-			Class.forName("net.sf.ehcache.Cache");
-			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static List<CacheInformations> buildCacheInformationsList() {
-		if (!EHCACHE_AVAILABLE) {
-			return Collections.emptyList();
-		}
-		final List<CacheManager> allCacheManagers;
-		try {
-			allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
-		} catch (final NoSuchFieldError e) {
-			// nécessaire pour ehcache 1.2 ou avant
-			return Collections.emptyList();
-		}
-		final List<CacheInformations> result = new ArrayList<CacheInformations>();
-		for (final CacheManager cacheManager : allCacheManagers) {
-			final String[] cacheNames = cacheManager.getCacheNames();
-			for (final String cacheName : cacheNames) {
-				result.add(new CacheInformations(cacheManager.getEhcache(cacheName)));
-			}
-		}
-		return result;
 	}
 
 	private static String buildDataBaseVersion() {
@@ -567,6 +547,23 @@ class JavaInformations implements Serializable { // NOPMD
 		return Collections.unmodifiableList(result);
 	}
 
+	List<JobInformations> getJobInformationsList() {
+		// on trie sur demande (si affichage)
+		final List<JobInformations> result = new ArrayList<JobInformations>(jobInformationsList);
+		Collections.sort(result, new JobInformationsComparator());
+		return Collections.unmodifiableList(result);
+	}
+
+	int getCurrentlyExecutingJobCount() {
+		int result = 0;
+		for (final JobInformations jobInformations : jobInformationsList) {
+			if (jobInformations.isCurrentlyExecuting()) {
+				result++;
+			}
+		}
+		return result;
+	}
+
 	boolean isDependenciesEnabled() {
 		return dependenciesList != null && !dependenciesList.isEmpty();
 	}
@@ -607,6 +604,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 	boolean isCacheEnabled() {
 		return cacheInformationsList != null && !cacheInformationsList.isEmpty();
+	}
+
+	boolean isJobEnabled() {
+		return jobInformationsList != null && !jobInformationsList.isEmpty();
 	}
 
 	/** {@inheritDoc} */

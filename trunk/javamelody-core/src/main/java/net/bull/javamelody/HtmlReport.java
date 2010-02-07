@@ -140,14 +140,7 @@ class HtmlReport {
 		}
 
 		writeln("<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
-		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
-		final String startDate = I18N.createDateAndTimeFormat().format(
-				collector.getCounters().get(0).getStartDate());
-		writeln(I18N.getFormattedString("Statistiques", javaMelodyUrl,
-				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
-		if (javaInformationsList.get(0).getContextDisplayName() != null) {
-			writeln(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
-		}
+		writeSummary();
 		writeln("</h3>");
 		writeln("<div align='center'>");
 		writeRefreshAndPeriodLinks(null, null);
@@ -194,11 +187,28 @@ class HtmlReport {
 			writeCaches();
 		}
 
+		if (isJobEnabled()) {
+			writeln("<h3><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
+			writeln("#Jobs#</h3>");
+			writeJobs();
+		}
+
 		writeMessageIfNotNull(message, null);
 		writePoweredBy();
 		writeDurationAndOverhead();
 
 		writeHtmlFooter();
+	}
+
+	private void writeSummary() throws IOException {
+		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
+		final String startDate = I18N.createDateAndTimeFormat().format(
+				collector.getCounters().get(0).getStartDate());
+		writeln(I18N.getFormattedString("Statistiques", javaMelodyUrl,
+				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
+		if (javaInformationsList.get(0).getContextDisplayName() != null) {
+			writeln(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
+		}
 	}
 
 	private Map<String, HtmlCounterReport> writeCounters() throws IOException {
@@ -342,6 +352,15 @@ class HtmlReport {
 		return false;
 	}
 
+	private boolean isJobEnabled() {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isJobEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean isJRobinDisplayed(String jrobinName) {
 		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
 		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
@@ -363,8 +382,10 @@ class HtmlReport {
 			}
 			final List<CacheInformations> cacheInformationsList = javaInformations
 					.getCacheInformationsList();
-			writeln("<b>" + cacheInformationsList.size() + " #caches_sur# "
-					+ javaInformations.getHost() + "</b>");
+			writeln("<b>");
+			writeln(I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
+					javaInformations.getHost()));
+			writeln("</b>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
@@ -372,6 +393,30 @@ class HtmlReport {
 			writeln("<div id='" + id + "' style='display: none;'>");
 			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), period,
 					writer).toHtml();
+			writeln("</div><br/>");
+			i++;
+		}
+	}
+
+	private void writeJobs() throws IOException {
+		int i = 0;
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (!javaInformations.isJobEnabled()) {
+				continue;
+			}
+			final List<JobInformations> jobInformationsList = javaInformations
+					.getJobInformationsList();
+			writeln("<b>");
+			writeln(I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
+					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount()));
+			writeln("</b>");
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			final String id = "job_" + i;
+			writeShowHideLink(id, "#Details#");
+			writeln("<br/><br/>");
+			writeln("<div id='" + id + "' style='display: none;'>");
+			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), writer)
+					.toHtml();
 			writeln("</div><br/>");
 			i++;
 		}

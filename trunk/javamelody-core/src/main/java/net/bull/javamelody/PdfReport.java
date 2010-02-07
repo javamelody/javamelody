@@ -106,16 +106,7 @@ class PdfReport {
 		addParagraph(buildSummary(), "systemmonitor.png");
 		writeGraphs(collector.getCounterJRobins());
 
-		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
-		for (final Counter counter : collector.getPeriodCountersToBeDisplayed(period)) {
-			final String counterLabel = I18N.getString(counter.getName() + "Label");
-			addParagraph(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
-					+ period.getLabel(), counter.getIconName());
-			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
-					period, false, document);
-			pdfCounterReport.toPdf();
-			pdfCounterReports.add(pdfCounterReport);
-		}
+		final List<PdfCounterReport> pdfCounterReports = writeCounters();
 
 		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<PdfCounterRequestContextReport>();
 		if (!collectorServer) {
@@ -139,22 +130,18 @@ class PdfReport {
 			writeCaches(false);
 		}
 
+		if (isJobEnabled()) {
+			add(new Phrase("\n", normalFont));
+			addParagraph(getI18nString("Jobs"), "jobs.png");
+			writeJobs(false);
+		}
+
 		document.newPage();
 		addParagraph(getI18nString("Statistiques_detaillees"), "systemmonitor.png");
 		writeGraphs(collector.getOtherJRobins());
 		writeGraphDetails();
 
-		for (final PdfCounterReport pdfCounterReport : pdfCounterReports) {
-			final String counterLabel = I18N.getString(pdfCounterReport.getCounterName() + "Label");
-			addParagraph(I18N.getFormattedString("Statistiques_compteur_detaillees", counterLabel)
-					+ " - " + period.getLabel(), pdfCounterReport.getCounterIconName());
-			pdfCounterReport.writeRequestDetails();
-			if (pdfCounterReport.isErrorCounter()) {
-				addParagraph(I18N.getString(pdfCounterReport.getCounterName() + "ErrorLabel")
-						+ " - " + period.getLabel(), pdfCounterReport.getCounterIconName());
-				pdfCounterReport.writeErrorDetails();
-			}
-		}
+		writeCounterDetails(pdfCounterReports);
 
 		if (!collectorServer) {
 			addParagraph(getI18nString("Requetes_en_cours_detaillees"), "hourglass.png");
@@ -172,6 +159,12 @@ class PdfReport {
 			add(new Phrase("\n", normalFont));
 			addParagraph(getI18nString("Caches_detailles"), "caches.png");
 			writeCaches(true);
+		}
+
+		if (isJobEnabled()) {
+			add(new Phrase("\n", normalFont));
+			addParagraph(getI18nString("Jobs_detailles"), "jobs.png");
+			writeJobs(true);
 		}
 
 		writePoweredBy();
@@ -231,6 +224,35 @@ class PdfReport {
 		}
 		document.add(jrobinTable);
 		document.newPage();
+	}
+
+	private List<PdfCounterReport> writeCounters() throws IOException, DocumentException {
+		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
+		for (final Counter counter : collector.getPeriodCountersToBeDisplayed(period)) {
+			final String counterLabel = I18N.getString(counter.getName() + "Label");
+			addParagraph(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
+					+ period.getLabel(), counter.getIconName());
+			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
+					period, false, document);
+			pdfCounterReport.toPdf();
+			pdfCounterReports.add(pdfCounterReport);
+		}
+		return pdfCounterReports;
+	}
+
+	private void writeCounterDetails(List<PdfCounterReport> pdfCounterReports)
+			throws DocumentException, IOException {
+		for (final PdfCounterReport pdfCounterReport : pdfCounterReports) {
+			final String counterLabel = I18N.getString(pdfCounterReport.getCounterName() + "Label");
+			addParagraph(I18N.getFormattedString("Statistiques_compteur_detaillees", counterLabel)
+					+ " - " + period.getLabel(), pdfCounterReport.getCounterIconName());
+			pdfCounterReport.writeRequestDetails();
+			if (pdfCounterReport.isErrorCounter()) {
+				addParagraph(I18N.getString(pdfCounterReport.getCounterName() + "ErrorLabel")
+						+ " - " + period.getLabel(), pdfCounterReport.getCounterIconName());
+				pdfCounterReport.writeErrorDetails();
+			}
+		}
 	}
 
 	private boolean isJRobinDisplayed(String jrobinName) {
@@ -304,8 +326,9 @@ class PdfReport {
 			}
 			final List<CacheInformations> cacheInformationsList = javaInformations
 					.getCacheInformationsList();
-			add(new Phrase(eol + cacheInformationsList.size() + ' ' + getI18nString("caches_sur")
-					+ ' ' + javaInformations.getHost(), PdfDocumentFactory.BOLD_FONT));
+			final String msg = I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
+					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount());
+			add(new Phrase(eol + msg, PdfDocumentFactory.BOLD_FONT));
 
 			if (includeDetails) {
 				new PdfCacheInformationsReport(cacheInformationsList, document).toPdf();
@@ -317,6 +340,34 @@ class PdfReport {
 	private boolean isCacheEnabled() {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (javaInformations.isCacheEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void writeJobs(boolean includeDetails) throws DocumentException {
+		String eol = "";
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (!javaInformations.isJobEnabled()) {
+				continue;
+			}
+			final List<JobInformations> jobInformationsList = javaInformations
+					.getJobInformationsList();
+			final String msg = I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
+					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount());
+			add(new Phrase(eol + msg, PdfDocumentFactory.BOLD_FONT));
+
+			if (includeDetails) {
+				new PdfJobInformationsReport(jobInformationsList, document).toPdf();
+			}
+			eol = "\n";
+		}
+	}
+
+	private boolean isJobEnabled() {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isJobEnabled()) {
 				return true;
 			}
 		}

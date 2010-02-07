@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Timer;
 
 import net.sf.ehcache.Cache;
@@ -38,6 +40,12 @@ import net.sf.ehcache.Element;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * Test unitaire de la classe HtmlReport.
@@ -265,6 +273,46 @@ public class TestHtmlReport {
 		} finally {
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache(cacheName2);
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e
+	 * @throws SchedulerException e */
+	@Test
+	public void testJob() throws IOException, SchedulerException {
+		//Grab the Scheduler instance from the Factory
+		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+
+		try {
+			// and start it off
+			scheduler.start();
+
+			//Define job instance
+			final Random random = new Random();
+			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+
+			//Define a Trigger that will fire "now"
+			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date());
+			//Schedule the job with the trigger
+			scheduler.scheduleJob(job, trigger);
+
+			//Define a Trigger that will fire "later"
+			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date(System.currentTimeMillis() + random.nextInt(60000)));
+			scheduler.scheduleJob(job2, trigger2);
+
+			// JavaInformations doit être réinstancié pour récupérer les caches
+			final List<JavaInformations> javaInformationsList2 = Collections
+					.singletonList(new JavaInformations(null, true));
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
+					Period.TOUT, writer);
+			htmlReport.toHtml(null);
+			assertNotEmptyAndClear(writer);
+		} finally {
+			scheduler.shutdown();
 		}
 	}
 
