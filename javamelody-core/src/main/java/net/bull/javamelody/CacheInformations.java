@@ -20,7 +20,11 @@ package net.bull.javamelody;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Statistics;
 import net.sf.ehcache.config.CacheConfiguration;
@@ -36,6 +40,7 @@ import net.sf.ehcache.config.CacheConfiguration;
  */
 class CacheInformations implements Serializable {
 	private static final long serialVersionUID = -3025833425994923286L;
+	private static final boolean EHCACHE_AVAILABLE = isEhcacheAvailable();
 	private static final boolean EHCACHE_1_6 = isEhcache16();
 	private static final boolean EHCACHE_1_2 = isEhcache12();
 	private static final boolean EHCACHE_1_2_X = isEhcache12x();
@@ -114,6 +119,37 @@ class CacheInformations implements Serializable {
 		} catch (final IllegalAccessException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private static boolean isEhcacheAvailable() {
+		try {
+			Class.forName("net.sf.ehcache.Cache");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	static List<CacheInformations> buildCacheInformationsList() {
+		if (!EHCACHE_AVAILABLE) {
+			return Collections.emptyList();
+		}
+		final List<CacheManager> allCacheManagers;
+		try {
+			allCacheManagers = new ArrayList<CacheManager>(CacheManager.ALL_CACHE_MANAGERS);
+		} catch (final NoSuchFieldError e) {
+			// nécessaire pour ehcache 1.2 ou avant
+			return Collections.emptyList();
+		}
+		final List<CacheInformations> result = new ArrayList<CacheInformations>();
+		for (final CacheManager cacheManager : allCacheManagers) {
+			final String[] cacheNames = cacheManager.getCacheNames();
+			for (final String cacheName : cacheNames) {
+				result.add(new CacheInformations(cacheManager.getEhcache(cacheName)));
+			}
+		}
+		return result;
 	}
 
 	private static boolean isEhcache16() {
