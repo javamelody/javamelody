@@ -15,7 +15,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # Help to find *jdbc connection leaks* : add a parameter to enable display of the list of stack-traces to know where were opened jdbc connections
   # Replace "POST" in http requests names by *"GWT-RPC"* and extract class and method names from the gwt payload for gwt-rpc requests (from user group)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
-  # If *quartz*, add display of frequency/cron expressions of jobs, mean execution times, mean cpu times, mean sql hits and times, buttons to launch and to freeze executions)
+  # If *quartz*, add display of frequency/cron expressions of jobs, mean execution times, mean cpu times, mean sql hits and times, buttons to launch and to freeze executions
   # Simplify UI with [http://groups.google.fr/group/javamelody/browse_thread/thread/d4ac1b796e366852 user feedback]
   # Display of graphs with *percentages of navigators, of OS, of countries/languages* based on user-agent and main locale, with jrobin and percentage one above the others up to 100%, and idem with types of requests (get,post,ajax,gwt or perhaps select/update/insert/delete)
   # *Alerts* based on thresholds, with mails to administrators
