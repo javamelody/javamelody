@@ -34,7 +34,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 /**
- * Partie du rapport pdf pour le cache de données.
+ * Partie du rapport pdf pour les caches de données.
  * @author Emeric Vernat
  */
 class PdfCacheInformationsReport {
