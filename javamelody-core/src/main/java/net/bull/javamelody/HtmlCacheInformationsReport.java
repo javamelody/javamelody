@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 /**
- * Partie du rapport html pour le cache de données.
+ * Partie du rapport html pour les caches de données.
  * @author Emeric Vernat
  */
 class HtmlCacheInformationsReport {
