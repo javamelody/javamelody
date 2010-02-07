@@ -27,6 +27,7 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 /**
  * Classe de gestion des traductions et de l'internationalisation (formats de dates et de nombre).
@@ -196,6 +197,16 @@ final class I18N {
 	static DateFormat createDateAndTimeFormat() {
 		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT,
 				getCurrentLocale());
+	}
+
+	static DateFormat createDurationFormat() {
+		// Locale.FRENCH et non getCurrentLocale() car pour une durée on veut
+		// "00:01:02" (1min 02s) et non "12:01:02 AM"
+		final DateFormat durationFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM,
+				Locale.FRENCH);
+		// une durée ne dépend pas de l'horaire été/hiver du fuseau horaire de Paris
+		durationFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return durationFormat;
 	}
 
 	static String getCurrentDate() {
