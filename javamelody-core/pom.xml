@@ -118,9 +118,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
+			<groupId>quartz</groupId>
 			<artifactId>quartz</artifactId>
-			<version>1.7.1</version>
+			<version>1.5.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -204,19 +204,6 @@
 			<id>opennms-repo</id>
 			<name>OpenNMS Repository</name>
 			<url>http://repo.opennms.org/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<!-- pour quartz, TODO à enlever quand Quartz sera publié dans le maven central -->
-			<id>terracotta-repo</id>
-			<name>Terracotta Repository</name>
-			<url>http://www.terracotta.org/download/reflector/maven2</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
