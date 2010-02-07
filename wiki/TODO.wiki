@@ -9,11 +9,11 @@ There is no promise of dates or that a particular feature will ever be done.
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
-  # Translations (German, Italian, Spanish...)
+  # *Translations* (German, Italian, Spanish...)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, or at least a parameter (from user group)
   # UI option to display graphs and statistics for yesterday or for the day before, via fields of *custom start and end dates of period to display* for example (from user group)
-  # Help to find jdbc connection leaks : add a parameter to enable display of the list of stack-traces to know where were opened jdbc connections
-  # Replace "POST" in http requests names by "GWT-RPC" and extract class and method names from the gwt payload for gwt-rpc requests (from user group)
+  # Help to find *jdbc connection leaks* : add a parameter to enable display of the list of stack-traces to know where were opened jdbc connections
+  # Replace "POST" in http requests names by *"GWT-RPC"* and extract class and method names from the gwt payload for gwt-rpc requests (from user group)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
   # If quartz is available in classpath, display of the *list of the [http://www.quartz-scheduler.org/ quartz] jobs* with if possible date and hour of last execution, date and hour of next execution, frequency, mean execution times, mean cpu times, mean sql hits and times, buttons to launch and to freeze executions)
   # Simplify UI with [http://groups.google.fr/group/javamelody/browse_thread/thread/d4ac1b796e366852 user feedback]
