@@ -38,6 +38,9 @@ import net.sf.ehcache.CacheManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * Test unitaire de la classe Collector.
@@ -82,9 +85,10 @@ public class TestCollector {
 		}
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws Exception e */
 	@Test
-	public void testToString() {
+	public void testToString() throws Exception {
 		try {
 			final Collector collector = createCollectorWithOneCounter();
 			final String toString = collector.toString();
@@ -112,6 +116,11 @@ public class TestCollector {
 				}
 			} finally {
 				CacheManager.getInstance().shutdown();
+			}
+			final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+			final JobDetail job = new JobDetail("job", null, JobTestImpl.class);
+			if (new JobInformations(job, null, scheduler).toString().isEmpty()) {
+				fail("toString job vide");
 			}
 		} finally {
 			timer.cancel();
