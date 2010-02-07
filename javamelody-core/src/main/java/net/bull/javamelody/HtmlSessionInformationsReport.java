@@ -24,8 +24,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import net.bull.javamelody.SessionInformations.SessionAttribute;
 
@@ -37,18 +35,13 @@ class HtmlSessionInformationsReport {
 	private static final String A_HREF_PART_SESSIONS = "<a href='?part=sessions";
 	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	// Locale.FRENCH et non I18N.getCurrentLocale() car pour une durée on veut
-	// "00:01:02" (1min 02s) et non "12:01:02 AM"
-	private final DateFormat durationFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM,
-			Locale.FRENCH);
+	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 
 	HtmlSessionInformationsReport(Writer writer) {
 		super();
 		assert writer != null;
 		this.writer = writer;
-		// une durée ne dépend pas de l'horaire été/hiver du fuseau horaire de Paris
-		durationFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	void toHtml(List<SessionInformations> sessionsInformations) throws IOException {
