@@ -304,7 +304,7 @@ public class TestHtmlReport {
 					new Date(System.currentTimeMillis() + random.nextInt(60000)));
 			scheduler.scheduleJob(job2, trigger2);
 
-			// JavaInformations doit être réinstancié pour récupérer les caches
+			// JavaInformations doit être réinstancié pour récupérer les jobs
 			final List<JavaInformations> javaInformationsList2 = Collections
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,

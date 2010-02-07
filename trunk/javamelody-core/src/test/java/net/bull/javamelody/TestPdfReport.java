@@ -26,13 +26,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.junit.Test;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -41,11 +49,14 @@ import com.lowagie.text.DocumentException;
  * Test unitaire de la classe PdfReport.
  * @author Emeric Vernat
  */
+//CHECKSTYLE:OFF
 public class TestPdfReport {
+	//CHECKSTYLE:ON
 	/** Test.
-	 * @throws IOException e */
+	 * @throws IOException e
+	 * @throws SchedulerException e */
 	@Test
-	public void testToPdf() throws IOException {
+	public void testToPdf() throws IOException, SchedulerException {
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setDisplayed(false);
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
@@ -98,6 +109,8 @@ public class TestPdfReport {
 			rootContexts(counter, collector, timer, javaInformations, output);
 
 			cache(collector, output);
+
+			job(collector, output);
 		} finally {
 			timer.cancel();
 		}
@@ -122,6 +135,43 @@ public class TestPdfReport {
 		} finally {
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache("testcache2");
+		}
+	}
+
+	private void job(Collector collector, ByteArrayOutputStream output) throws IOException,
+			SchedulerException {
+		//Grab the Scheduler instance from the Factory
+		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+
+		try {
+			// and start it off
+			scheduler.start();
+
+			//Define job instance
+			final Random random = new Random();
+			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+
+			//Define a Trigger that will fire "now"
+			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date());
+			//Schedule the job with the trigger
+			scheduler.scheduleJob(job, trigger);
+
+			//Define a Trigger that will fire "later"
+			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date(System.currentTimeMillis() + random.nextInt(60000)));
+			scheduler.scheduleJob(job2, trigger2);
+
+			// JavaInformations doit être réinstancié pour récupérer les jobs
+			final List<JavaInformations> javaInformationsList = Collections
+					.singletonList(new JavaInformations(null, true));
+			final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList,
+					Period.TOUT, output);
+			pdfReport.toPdf();
+			assertNotEmptyAndClear(output);
+		} finally {
+			scheduler.shutdown();
 		}
 	}
 
