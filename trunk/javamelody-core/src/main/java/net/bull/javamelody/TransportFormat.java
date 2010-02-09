@@ -126,8 +126,10 @@ enum TransportFormat {
 			xstream.alias("sessionInformations", SessionInformations.class);
 			xstream.alias("attribute", SessionInformations.SessionAttribute.class);
 			xstream.alias("cacheInformations", CacheInformations.class);
+			xstream.alias("jobInformations", JobInformations.class);
 			xstream.alias("counterError", CounterError.class);
 			xstream.alias("processInformations", ProcessInformations.class);
+			xstream.alias("databaseInformations", DatabaseInformations.class);
 			final MapConverter mapConverter = new MapConverter(xstream.getMapper()) {
 				/** {@inheritDoc} */
 				@SuppressWarnings("unchecked")
