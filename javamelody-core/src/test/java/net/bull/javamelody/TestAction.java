@@ -99,7 +99,17 @@ public class TestAction {
 			}
 			assertNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
 					sessionId, "pid_ip_id"));
-			final Thread myThread = new Thread("thread test");
+			final Thread myThread = new Thread(new Runnable() {
+				/** {@inheritDoc} */
+				public void run() {
+					try {
+						Thread.sleep(10000);
+					} catch (final InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
+			myThread.setName("thread test");
 			myThread.start();
 			final String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
 					+ myThread.getId();
