@@ -183,7 +183,7 @@ class HtmlJavaInformationsReport {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>"
 					+ replaceEolWithBr(javaInformations.getDataSourceDetails())
 					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
-					+ " target='_blank'>DataSource reference</a>" + columnEnd);
+					+ " class='noPrint' target='_blank'>DataSource reference</a>" + columnEnd);
 		}
 		if (javaInformations.isDependenciesEnabled()) {
 			writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
