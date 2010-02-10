@@ -62,7 +62,11 @@ enum Action {
 	/**
 	 * Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()})
 	 */
-	CLEAR_CACHES;
+	CLEAR_CACHES,
+	/**
+	 * Tue un thread java.
+	 */
+	KILL_THREAD;
 
 	/**
 	 * Booléen selon que l'action 'Garbage collector' est possible.
@@ -98,25 +102,18 @@ enum Action {
 	 * @param collector Collector pour une réinitialisation
 	 * @param counterName Nom du compteur pour une réinitialisation
 	 * @param sessionId Identifiant de session pourr invalidation (null sinon)
+	 * @param threadId Identifiant du thread sous la forme pid_ip_id
 	 * @return Message de résultat
 	 * @throws IOException e
 	 */
-	String execute(Collector collector, String counterName, String sessionId) throws IOException {
+	String execute(Collector collector, String counterName, String sessionId, String threadId)
+			throws IOException {
 		String messageForReport;
 		switch (this) {
 		case CLEAR_COUNTER:
 			assert collector != null;
 			assert counterName != null;
-			if ("all".equalsIgnoreCase(counterName)) {
-				clearCounters(collector);
-				messageForReport = I18N.getFormattedString("Toutes_statistiques_reinitialisees",
-						counterName);
-			} else {
-				// l'action Réinitialiser a été appelée pour un compteur
-				collector.clearCounter(counterName);
-				messageForReport = I18N.getFormattedString("Statistiques_reinitialisees",
-						counterName);
-			}
+			messageForReport = clearCounter(collector, counterName);
 			break;
 		case GC:
 			if (GC_ENABLED) {
@@ -159,8 +156,26 @@ enum Action {
 			clearCaches();
 			messageForReport = I18N.getString("caches_purges");
 			break;
+		case KILL_THREAD:
+			assert threadId != null;
+			messageForReport = killThread(threadId);
+			break;
 		default:
 			throw new IllegalStateException(toString());
+		}
+		return messageForReport;
+	}
+
+	private String clearCounter(Collector collector, String counterName) {
+		String messageForReport;
+		if ("all".equalsIgnoreCase(counterName)) {
+			clearCounters(collector);
+			messageForReport = I18N.getFormattedString("Toutes_statistiques_reinitialisees",
+					counterName);
+		} else {
+			// l'action Réinitialiser a été appelée pour un compteur
+			collector.clearCounter(counterName);
+			messageForReport = I18N.getFormattedString("Statistiques_reinitialisees", counterName);
 		}
 		return messageForReport;
 	}
@@ -209,5 +224,38 @@ enum Action {
 		for (final CacheManager cacheManager : allCacheManagers) {
 			cacheManager.clearAll();
 		}
+	}
+
+	private String killThread(String threadId) {
+		final String[] values = threadId.split("_");
+		if (values.length != 3) {
+			throw new IllegalArgumentException(threadId);
+		}
+		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
+		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
+			final long myThreadId = Long.parseLong(values[2]);
+			ThreadGroup group = Thread.currentThread().getThreadGroup();
+			while (group.getParent() != null) {
+				group = group.getParent();
+			}
+			final Thread[] threadsArray = new Thread[group.activeCount()];
+			group.enumerate(threadsArray, true);
+			for (final Thread thread : threadsArray) {
+				if (thread.getId() == myThreadId) {
+					stopThread(thread);
+					return I18N.getFormattedString("Thread_tue", thread.getName());
+				}
+			}
+			return I18N.getString("Thread_non_trouve");
+		}
+
+		// cette action ne concernait pas cette JVM, donc on ne fait rien
+		return null;
+	}
+
+	@SuppressWarnings("deprecation")
+	private void stopThread(final Thread thread) {
+		// I know that it is unsafe and the user has been warned
+		thread.stop();
 	}
 }

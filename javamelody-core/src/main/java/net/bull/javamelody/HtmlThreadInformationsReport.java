@@ -34,6 +34,8 @@ class HtmlThreadInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean stackTraceEnabled;
 	private final boolean cpuTimeEnabled;
+	private final boolean systemActionsEnabled = Boolean.parseBoolean(Parameters
+			.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
 
 	HtmlThreadInformationsReport(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled, Writer writer) {
@@ -57,6 +59,9 @@ class HtmlThreadInformationsReport {
 		}
 		if (cpuTimeEnabled) {
 			write("<th class='sorttable_numeric'>#Temps_cpu#</th><th class='sorttable_numeric'>#Temps_user#</th>");
+		}
+		if (systemActionsEnabled) {
+			writeln("<th class='noPrint'>#Tuer#</th>");
 		}
 		writeln("</tr></thead><tbody>");
 		boolean odd = false;
@@ -122,6 +127,19 @@ class HtmlThreadInformationsReport {
 			write(integerFormat.format(threadInformations.getCpuTimeMillis()));
 			write("</td> <td align='right'>");
 			write(integerFormat.format(threadInformations.getUserTimeMillis()));
+		}
+		if (systemActionsEnabled) {
+			write("</td> <td align='center' class='noPrint'>");
+			write("<a href='?action=kill_thread&amp;threadId=");
+			write(threadInformations.getGlobalThreadId());
+			final String confirmKillThread = I18N.javascriptEncode(I18N.getFormattedString(
+					"confirm_kill_thread", threadInformations.getName()));
+			write("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
+			final String title = I18N.getFormattedString("kill_thread", threadInformations
+					.getName());
+			write("<img width='16' height='16' src='?resource=action_stop.png' alt='" + title
+					+ "' title='" + title + "' />");
+			write("</a>");
 		}
 		write("</td>");
 	}
