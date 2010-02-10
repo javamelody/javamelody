@@ -28,6 +28,7 @@ import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 
 import java.io.FileNotFoundException;
@@ -400,15 +401,16 @@ public class CollectorServlet extends HttpServlet {
 			throws IOException {
 		final String actionParameter = req.getParameter(ACTION_PARAMETER);
 		final String sessionIdParameter = req.getParameter(SESSION_ID_PARAMETER);
+		final String threadIdParameter = req.getParameter(THREAD_ID_PARAMETER);
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
-			final String tmp = url.toString() + "&action=" + actionParameter;
-			final String actionUrl;
-			if (sessionIdParameter == null) {
-				actionUrl = tmp;
-			} else {
-				actionUrl = tmp + "&sessionId=" + sessionIdParameter;
+			String actionUrl = url.toString() + "&action=" + actionParameter;
+			if (sessionIdParameter != null) {
+				actionUrl += "&sessionId=" + sessionIdParameter;
+			}
+			if (threadIdParameter != null) {
+				actionUrl += "&threadId=" + threadIdParameter;
 			}
 			actionUrls.add(new URL(actionUrl));
 		}

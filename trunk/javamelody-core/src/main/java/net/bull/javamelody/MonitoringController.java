@@ -38,6 +38,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
@@ -115,7 +116,8 @@ class MonitoringController {
 				}
 				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-				messageForReport = action.execute(collector, counterName, sessionId);
+				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
+				messageForReport = action.execute(collector, counterName, sessionId, threadId);
 				return messageForReport;
 			} finally {
 				I18N.unbindLocale();
