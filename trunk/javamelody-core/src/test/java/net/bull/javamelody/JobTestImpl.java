@@ -31,7 +31,7 @@ public class JobTestImpl implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
 			Thread.sleep(5000);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			throw new JobExecutionException(e);
 		}
 	}
