@@ -111,8 +111,11 @@ public class TestAction {
 			});
 			myThread.setName("thread test");
 			myThread.start();
-			final String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+			String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
 					+ myThread.getId();
+			assertNotNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
+					sessionId, globalThreadId));
+			globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
 			assertNotNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
 					sessionId, globalThreadId));
 		} finally {
