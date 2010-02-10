@@ -93,7 +93,7 @@ class HtmlSessionInformationsReport {
 		if (displayUser) {
 			write("<th>#Utilisateur#</th>");
 		}
-		write("<th>#Invalider#</th>");
+		write("<th class='noPrint'>#Invalider#</th>");
 		writeln("</tr></thead><tbody>");
 		boolean odd = false;
 		for (final SessionInformations session : sessionsInformations) {
@@ -176,7 +176,7 @@ class HtmlSessionInformationsReport {
 				write(remoteUser);
 			}
 		}
-		write(nextColumnAlignCenter);
+		write("</td><td align='center' class='noPrint'>");
 		write(A_HREF_PART_SESSIONS);
 		write("&amp;action=invalidate_session&amp;sessionId=");
 		write(session.getId());
