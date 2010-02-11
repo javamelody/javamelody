@@ -30,16 +30,20 @@ import java.util.List;
  */
 class HtmlJobInformationsReport {
 	private final List<JobInformations> jobInformationsList;
+	private final Period period;
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
 
-	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Writer writer) {
+	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Period period,
+			Writer writer) {
 		super();
 		assert jobInformationsList != null;
+		assert period != null;
 		assert writer != null;
 
 		this.jobInformationsList = jobInformationsList;
+		this.period = period;
 		this.writer = writer;
 	}
 
@@ -66,10 +70,18 @@ class HtmlJobInformationsReport {
 		}
 		writeln("</tbody></table>");
 		write("<div align='right' class='noPrint'>");
-		// TODO ajout pause all et resume all
-		//		if (Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
-		//        writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		//		}
+		if (Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
+			writeln("<a href='?action=pause_job&amp;period=" + period.getCode()
+					+ "' onclick=\"javascript:return confirm('"
+					+ I18N.getStringForJavascript("confirm_pause_all_jobs") + "');\">");
+			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_all_jobs#\" /> #Pause_all_jobs#</a>");
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writeln("<a href='?action=resume_job&amp;period=" + period.getCode()
+					+ "' onclick=\"javascript:return confirm('"
+					+ I18N.getStringForJavascript("confirm_resume_all_jobs") + "');\">");
+			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_all_jobs#\" /> #Resume_all_jobs#</a>");
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		}
 
 		// writer.write pour éviter traduction car # dans l'url
 		writer.write("<a href='http://www.quartz-scheduler.org/docs/index.html'");

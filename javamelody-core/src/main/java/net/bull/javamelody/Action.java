@@ -34,6 +34,9 @@ import javax.management.ObjectName;
 
 import net.sf.ehcache.CacheManager;
 
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+
 /**
  * Énumération des actions possibles dans l'IHM.
  * @author Emeric Vernat
@@ -66,7 +69,15 @@ enum Action {
 	/**
 	 * Tue un thread java.
 	 */
-	KILL_THREAD;
+	KILL_THREAD,
+	/**
+	 * Met un job quartz en pause.
+	 */
+	PAUSE_JOB,
+	/**
+	 * Enlève la pause d'un job quartz.
+	 */
+	RESUME_JOB;
 
 	/**
 	 * Booléen selon que l'action 'Garbage collector' est possible.
@@ -106,8 +117,10 @@ enum Action {
 	 * @return Message de résultat
 	 * @throws IOException e
 	 */
+	// CHECKSTYLE:OFF
 	String execute(Collector collector, String counterName, String sessionId, String threadId)
 			throws IOException {
+		// CHECKSTYLE:ON
 		String messageForReport;
 		switch (this) {
 		case CLEAR_COUNTER:
@@ -159,6 +172,14 @@ enum Action {
 		case KILL_THREAD:
 			assert threadId != null;
 			messageForReport = killThread(threadId);
+			break;
+		case PAUSE_JOB:
+			pauseAllJobs();
+			messageForReport = I18N.getString("all_jobs_paused");
+			break;
+		case RESUME_JOB:
+			resumeAllJobs();
+			messageForReport = I18N.getString("all_jobs_resumed");
 			break;
 		default:
 			throw new IllegalStateException(toString());
@@ -257,5 +278,25 @@ enum Action {
 	private void stopThread(final Thread thread) {
 		// I know that it is unsafe and the user has been warned
 		thread.stop();
+	}
+
+	private void pauseAllJobs() {
+		try {
+			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+				scheduler.pauseAll();
+			}
+		} catch (final SchedulerException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void resumeAllJobs() {
+		try {
+			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+				scheduler.resumeAll();
+			}
+		} catch (final SchedulerException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
