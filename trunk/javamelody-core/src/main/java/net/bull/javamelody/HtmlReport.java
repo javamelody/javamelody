@@ -415,7 +415,7 @@ class HtmlReport {
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/>");
 			writeln("<div id='" + id + "' style='display: none;'>");
-			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), writer)
+			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), period, writer)
 					.toHtml();
 			writeln("</div><br/>");
 			i++;

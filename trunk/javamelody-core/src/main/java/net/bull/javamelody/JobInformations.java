@@ -103,11 +103,9 @@ class JobInformations implements Serializable {
 		if (!QUARTZ_AVAILABLE) {
 			return Collections.emptyList();
 		}
-		final List<Scheduler> schedulers = new ArrayList<Scheduler>(SchedulerRepository
-				.getInstance().lookupAll());
 		final List<JobInformations> result = new ArrayList<JobInformations>();
 		try {
-			for (final Scheduler scheduler : schedulers) {
+			for (final Scheduler scheduler : getAllSchedulers()) {
 				final Map<String, JobExecutionContext> currentlyExecutingJobsByFullName = new LinkedHashMap<String, JobExecutionContext>();
 				for (final JobExecutionContext currentlyExecutingJob : (List<JobExecutionContext>) scheduler
 						.getCurrentlyExecutingJobs()) {
@@ -127,6 +125,11 @@ class JobInformations implements Serializable {
 			throw new RuntimeException(e);
 		}
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	static List<Scheduler> getAllSchedulers() {
+		return new ArrayList<Scheduler>(SchedulerRepository.getInstance().lookupAll());
 	}
 
 	String getName() {
