@@ -58,6 +58,7 @@ final class JRobin {
 	private final String application;
 	private final String name;
 	private final String rrdFileName;
+	private final int step;
 	private final String requestName;
 
 	private JRobin(String application, String name, File rrdFile, int step, String requestName)
@@ -72,9 +73,10 @@ final class JRobin {
 		this.application = application;
 		this.name = name;
 		this.rrdFileName = rrdFile.getPath();
+		this.step = step;
 		this.requestName = requestName;
 
-		init(step);
+		init();
 	}
 
 	static void stop() throws IOException {
@@ -116,7 +118,7 @@ final class JRobin {
 		}
 	}
 
-	private void init(int step) throws IOException, RrdException {
+	private void init() throws IOException, RrdException {
 		final File rrdFile = new File(rrdFileName);
 		final File rrdDirectory = rrdFile.getParentFile();
 		if (!rrdDirectory.mkdirs() && !rrdDirectory.exists()) {
@@ -153,6 +155,15 @@ final class JRobin {
 			// create RRD file in the pool
 			final RrdDb rrdDb = rrdPool.requestRrdDb(rrdDef);
 			rrdPool.release(rrdDb);
+		}
+	}
+
+	private void resetFile() throws IOException {
+		deleteFile();
+		try {
+			init();
+		} catch (final RrdException e) {
+			throw createIOException(e);
 		}
 	}
 
@@ -260,6 +271,13 @@ final class JRobin {
 				rrdPool.release(rrdDb);
 			}
 		} catch (final RrdException e) {
+			if (e.getMessage() != null && e.getMessage().startsWith("Invalid file header")) {
+				// le fichier RRD a été corrompu, par exemple en tuant le process java au milieu
+				// d'un write, donc on efface le fichier corrompu et on le recrée pour corriger
+				// le problème
+				resetFile();
+				addValue(value);
+			}
 			throw createIOException(e);
 		}
 	}
