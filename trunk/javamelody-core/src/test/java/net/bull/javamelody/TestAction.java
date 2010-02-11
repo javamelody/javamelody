@@ -98,7 +98,9 @@ public class TestAction {
 				assertNotNull(e.toString(), e);
 			}
 			assertNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
-					sessionId, "pid_ip_id"));
+					sessionId, "nopid_noip_id"));
+			assertNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
+					sessionId, PID.getPID() + "_noip_id"));
 			final Thread myThread = new Thread(new Runnable() {
 				/** {@inheritDoc} */
 				public void run() {
