@@ -226,6 +226,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	These threshold parameters can serve as a basis for a SLA (service level) of an application, for which
 	constraints can be defined such as "response time less than 2s for 90% of http requests".
 
+	The parameter <<<monitoring-path>>> (<<</monitoring>>> by default) is used to change the path in the URL to open
+	the report of the monitoring. For example, <<<http://.../admin/performance>>> in place of <<<http://.../monitoring>>>
+	
 	The parameter <<<disabled>>> (<<<false>>> by default) just disables the monitoring.
 	This allows for example to disable the monitoring temporarily or only on some servers,
 	from the tomcat context or from system properties without modifying the <<<web.xml>>> file

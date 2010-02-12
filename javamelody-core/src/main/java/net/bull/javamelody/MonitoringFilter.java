@@ -361,7 +361,12 @@ public class MonitoringFilter implements Filter {
 
 	protected final String getMonitoringUrl(HttpServletRequest httpRequest) {
 		if (monitoringUrl == null) {
-			monitoringUrl = httpRequest.getContextPath() + "/monitoring";
+			final String parameterValue = Parameters.getParameter(Parameter.MONITORING_PATH);
+			if (parameterValue == null) {
+				monitoringUrl = httpRequest.getContextPath() + "/monitoring";
+			} else {
+				monitoringUrl = httpRequest.getContextPath() + parameterValue;
+			}
 		}
 		return monitoringUrl;
 	}

@@ -159,6 +159,11 @@ public enum Parameter {
 	TRANSPORT_FORMAT("transport-format"),
 
 	/**
+	 * URL du rapport de monitoring (/monitoring par défaut).
+	 */
+	MONITORING_PATH("monitoring-path"),
+
+	/**
 	 * Identifiant de suivi google analytics s'il y a lieu (désactivé par défaut).
 	 */
 	ANALYTICS_ID("analytics-id"),

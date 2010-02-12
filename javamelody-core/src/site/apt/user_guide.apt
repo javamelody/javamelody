@@ -228,6 +228,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Ces paramétrages de seuil peuvent servir de base pour un SLA (niveau de service) d'une application, dans lequel
 	des contraintes peuvent être définies telles que "temps de traitement inférieurs à 2s pour 90% des requêtes http".
 
+	Le paramètre <<<monitoring-path>>> (<<</monitoring>>> par défaut) permet de changer le chemin dans l'URL d'accès
+	au rapport du monitoring. Par exemple, <<<http://.../admin/performance>>> au lieu de <<<http://.../monitoring>>>
+	
 	Le paramètre <<<disabled>>> (<<<false>>> par défaut) permet de désactiver le monitoring.
 	Cela permet par exemple de désactiver le monitoring temporairement ou sur certains serveurs,
 	à partir du contexte Tomcat ou des propriétés systèmes sans modifier le fichier <<<web.xml>>>
