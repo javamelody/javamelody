@@ -7,8 +7,9 @@
   * added: If Oracle database, display of *sql execution plan* in sql request detail (seems not doable if postgresql or mysql, without particular parameter values)
   * added: *New charts* "Threads count", "Loaded classes count", "Used non heap memory", "Used physical memory", "Used swap space" (displayed with the new link "Other charts")
   * added: spring post-processor in net/bull/javamelody/monitoring-spring.xml to auto-detect datasources defined in a spring xml file.
-  * added: If quartz is available in classpath, display of the *list of the [http://www.quartz-scheduler.org/ quartz] jobs* with date and hour of previous execution, date and hour of next execution, duration of running jobs and buttons to pause and to resume all jobs 
+  * added: If quartz is available in classpath, display of the *list of the [http://www.quartz-scheduler.org/ quartz] jobs* with date and hour of previous execution, date and hour of next execution, duration of running jobs and buttons to pause and to resume all jobs
   * added: Button to kill a java thread
+  * added: Parameter {{{monitoring-path}}} to change the url "/monitoring" of the report to "/admin/monitoring" for example (from user group)
   * More to come...
 
 === Atlassian JIRA plugin ===
