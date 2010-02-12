@@ -12,7 +12,6 @@ There is no promise of dates or that a particular feature will ever be done.
   # *Translations* (German, Italian, Spanish...)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, or at least a parameter (from user group)
   # UI option to display graphs and statistics for yesterday or for the day before, via fields of *custom start and end dates of period to display* for example (from user group)
-  # Parameter to change the url "/monitoring" of the report to /admin/monitoring for example (from user group)
   # Help to find *jdbc connection leaks* : add a parameter to enable display of the list of stack-traces to know where were opened jdbc connections
   # Replace "POST" in http requests names by *"GWT-RPC"* and extract class and method names from the gwt payload for gwt-rpc requests (from user group)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
