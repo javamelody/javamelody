@@ -29,6 +29,7 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
@@ -117,7 +118,9 @@ class MonitoringController {
 				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
-				messageForReport = action.execute(collector, counterName, sessionId, threadId);
+				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
+				messageForReport = action.execute(collector, counterName, sessionId, threadId,
+						jobId);
 				return messageForReport;
 			} finally {
 				I18N.unbindLocale();

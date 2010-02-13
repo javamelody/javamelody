@@ -62,23 +62,25 @@ public class TestAction {
 			final String counterName = counter.getName();
 			final String sessionId = "sessionId";
 			final String threadId = "threadId";
+			final String jobId = "jobId";
 
 			assertNotNull("message GC", Action.GC.execute(collector, counterName, sessionId,
-					threadId));
+					threadId, jobId));
 			assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector,
-					counterName, sessionId, threadId));
+					counterName, sessionId, threadId, jobId));
 			if (CacheManager.getInstance().getCache("test clear") == null) {
 				CacheManager.getInstance().addCache("test clear");
 			}
 			assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector,
-					counterName, sessionId, threadId));
+					counterName, sessionId, threadId, jobId));
 			final String heapDump1 = Action.HEAP_DUMP.execute(collector, counterName, sessionId,
-					threadId);
+					threadId, jobId);
 			assertNotNull("message HEAP_DUMP", heapDump1);
 			String heapDump2;
 			// on le refait une deuxième fois dans la même seconde pour tester le nom du fichier
 			do {
-				heapDump2 = Action.HEAP_DUMP.execute(collector, counterName, sessionId, threadId);
+				heapDump2 = Action.HEAP_DUMP.execute(collector, counterName, sessionId, threadId,
+						jobId);
 				assertNotNull("message HEAP_DUMP", heapDump2);
 			} while (heapDump1.equals(heapDump2));
 			for (final File file : Parameters.TEMPORARY_DIRECTORY.listFiles()) {
@@ -87,20 +89,20 @@ public class TestAction {
 				}
 			}
 			assertNotNull("message INVALIDATE_SESSIONS", Action.INVALIDATE_SESSIONS.execute(
-					collector, counterName, sessionId, threadId));
+					collector, counterName, sessionId, threadId, jobId));
 			assertNotNull("message INVALIDATE_SESSION", Action.INVALIDATE_SESSION.execute(
-					collector, counterName, sessionId, threadId));
+					collector, counterName, sessionId, threadId, jobId));
 
 			try {
 				assertNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector,
-						counterName, sessionId, threadId));
+						counterName, sessionId, threadId, jobId));
 			} catch (final IllegalArgumentException e) {
 				assertNotNull(e.toString(), e);
 			}
 			assertNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
-					sessionId, "nopid_noip_id"));
+					sessionId, "nopid_noip_id", jobId));
 			assertNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
-					sessionId, PID.getPID() + "_noip_id"));
+					sessionId, PID.getPID() + "_noip_id", jobId));
 			final Thread myThread = new Thread(new Runnable() {
 				/** {@inheritDoc} */
 				public void run() {
@@ -116,10 +118,10 @@ public class TestAction {
 			String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
 					+ myThread.getId();
 			assertNotNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
-					sessionId, globalThreadId));
+					sessionId, globalThreadId, jobId));
 			globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
 			assertNotNull("message KILL_THREAD", Action.KILL_THREAD.execute(collector, counterName,
-					sessionId, globalThreadId));
+					sessionId, globalThreadId, jobId));
 		} finally {
 			timer.cancel();
 		}

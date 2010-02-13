@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
@@ -402,6 +403,7 @@ public class CollectorServlet extends HttpServlet {
 		final String actionParameter = req.getParameter(ACTION_PARAMETER);
 		final String sessionIdParameter = req.getParameter(SESSION_ID_PARAMETER);
 		final String threadIdParameter = req.getParameter(THREAD_ID_PARAMETER);
+		final String jobIdParameter = req.getParameter(JOB_ID_PARAMETER);
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
@@ -411,6 +413,9 @@ public class CollectorServlet extends HttpServlet {
 			}
 			if (threadIdParameter != null) {
 				actionUrl += "&threadId=" + threadIdParameter;
+			}
+			if (jobIdParameter != null) {
+				actionUrl += "&jobId=" + jobIdParameter;
 			}
 			actionUrls.add(new URL(actionUrl));
 		}

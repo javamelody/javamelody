@@ -30,6 +30,7 @@ final class HttpParameters {
 	static final String PERIOD_PARAMETER = "period";
 	static final String SESSION_ID_PARAMETER = "sessionId";
 	static final String THREAD_ID_PARAMETER = "threadId";
+	static final String JOB_ID_PARAMETER = "jobId";
 	static final String COLLECTOR_PARAMETER = "collector";
 	static final String REQUEST_PARAMETER = "request";
 	static final String COUNTER_PARAMETER = "counter";
