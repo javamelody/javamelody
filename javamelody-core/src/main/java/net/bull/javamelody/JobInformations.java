@@ -52,6 +52,7 @@ class JobInformations implements Serializable {
 	private final Date nextFireTime;
 	private final long elapsedTime;
 	private final boolean paused;
+	private final String globalJobId;
 
 	JobInformations(JobDetail jobDetail, JobExecutionContext jobExecutionContext,
 			Scheduler scheduler) throws Exception {
@@ -91,6 +92,7 @@ class JobInformations implements Serializable {
 		this.nextFireTime = triggerNextFireTime;
 		this.previousFireTime = triggerPreviousFireTime;
 		this.paused = jobPaused;
+		this.globalJobId = buildGlobalJobId(jobDetail);
 	}
 
 	private static boolean isQuartzAvailable() {
@@ -136,6 +138,10 @@ class JobInformations implements Serializable {
 		return new ArrayList<Scheduler>(SchedulerRepository.getInstance().lookupAll());
 	}
 
+	String getGlobalJobId() {
+		return globalJobId;
+	}
+
 	String getName() {
 		return name;
 	}
@@ -170,6 +176,11 @@ class JobInformations implements Serializable {
 
 	boolean isPaused() {
 		return paused;
+	}
+
+	private static String buildGlobalJobId(JobDetail jobDetail) {
+		return PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ jobDetail.getFullName().hashCode();
 	}
 
 	/** {@inheritDoc} */
