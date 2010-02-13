@@ -56,6 +56,7 @@ class HtmlJobInformationsReport {
 		write("<th class='sorttable_date'>#JobPreviousFireTime#</th>");
 		write("<th class='sorttable_date'>#JobNextFireTime#</th>");
 		write("<th class='sorttable_date'>#JobElapsedTime#</th>");
+		write("<th>#JobPaused#</th>");
 		writeln("</tr></thead><tbody>");
 		boolean odd = false;
 		for (final JobInformations jobInformations : jobInformationsList) {
@@ -120,6 +121,12 @@ class HtmlJobInformationsReport {
 			write(elapsedTimeFormat.format(new Date(jobInformations.getElapsedTime())));
 		} else {
 			write("&nbsp;");
+		}
+		write("</td> <td align='center'>");
+		if (jobInformations.isPaused()) {
+			write("#oui#");
+		} else {
+			write("#non#");
 		}
 		write("</td>");
 	}

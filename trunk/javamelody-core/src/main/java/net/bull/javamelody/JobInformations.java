@@ -51,6 +51,7 @@ class JobInformations implements Serializable {
 	private final Date previousFireTime;
 	private final Date nextFireTime;
 	private final long elapsedTime;
+	private final boolean paused;
 
 	JobInformations(JobDetail jobDetail, JobExecutionContext jobExecutionContext,
 			Scheduler scheduler) throws Exception {
@@ -71,6 +72,7 @@ class JobInformations implements Serializable {
 
 		Date triggerNextFireTime = null;
 		Date triggerPreviousFireTime = null;
+		boolean jobPaused = true;
 		for (final Trigger trigger : scheduler.getTriggersOfJob(name, group)) {
 			if (triggerNextFireTime == null || triggerNextFireTime.after(trigger.getNextFireTime())) {
 				triggerNextFireTime = trigger.getNextFireTime();
@@ -79,14 +81,16 @@ class JobInformations implements Serializable {
 					|| triggerPreviousFireTime.before(trigger.getPreviousFireTime())) {
 				triggerPreviousFireTime = trigger.getPreviousFireTime();
 			}
-			// TODO récupérer état en pause si tous ses triggers sont en pause
 			//						if (trigger instanceof CronTrigger) {
 			//							((CronTrigger) trigger).getCronExpression();
 			//						}
-			//					scheduler.getTriggerState(trigger.getName(), trigger.getGroup());
+			if (scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) != Trigger.STATE_PAUSED) {
+				jobPaused = false;
+			}
 		}
 		this.nextFireTime = triggerNextFireTime;
 		this.previousFireTime = triggerPreviousFireTime;
+		this.paused = jobPaused;
 	}
 
 	private static boolean isQuartzAvailable() {
@@ -162,6 +166,10 @@ class JobInformations implements Serializable {
 
 	Date getPreviousFireTime() {
 		return previousFireTime;
+	}
+
+	boolean isPaused() {
+		return paused;
 	}
 
 	/** {@inheritDoc} */
