@@ -104,6 +104,7 @@ class PdfJobInformationsReport {
 		headers.add(getI18nString("JobPreviousFireTime"));
 		headers.add(getI18nString("JobNextFireTime"));
 		headers.add(getI18nString("JobElapsedTime"));
+		headers.add(getI18nString("JobPaused"));
 		return headers;
 	}
 
@@ -133,6 +134,12 @@ class PdfJobInformationsReport {
 			addCell(elapsedTimeFormat.format(jobInformations.getElapsedTime()));
 		} else {
 			addCell("");
+		}
+		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		if (jobInformations.isPaused()) {
+			addCell(getI18nString("oui"));
+		} else {
+			addCell(getI18nString("non"));
 		}
 	}
 
