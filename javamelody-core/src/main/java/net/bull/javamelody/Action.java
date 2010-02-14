@@ -294,14 +294,8 @@ enum Action {
 			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 				final int myJobId = Integer.parseInt(values[2]);
-				for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-					for (final JobDetail jobDetail : JobInformations
-							.getAllJobsOfScheduler(scheduler)) {
-						if (jobDetail.getFullName().hashCode() == myJobId) {
-							scheduler.pauseJob(jobDetail.getName(), jobDetail.getGroup());
-							return I18N.getString("job_paused");
-						}
-					}
+				if (pauseJob(myJobId)) {
+					return I18N.getString("job_paused");
 				}
 				return I18N.getString("job_notfound");
 			}
@@ -313,6 +307,18 @@ enum Action {
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private boolean pauseJob(final int myJobId) throws Exception {
+		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
+				if (jobDetail.getFullName().hashCode() == myJobId) {
+					scheduler.pauseJob(jobDetail.getName(), jobDetail.getGroup());
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void pauseAllJobs() throws Exception {
@@ -334,14 +340,8 @@ enum Action {
 			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 				final int myJobId = Integer.parseInt(values[2]);
-				for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-					for (final JobDetail jobDetail : JobInformations
-							.getAllJobsOfScheduler(scheduler)) {
-						if (jobDetail.getFullName().hashCode() == myJobId) {
-							scheduler.resumeJob(jobDetail.getName(), jobDetail.getGroup());
-							return I18N.getString("job_resumed");
-						}
-					}
+				if (resumeJob(myJobId)) {
+					return I18N.getString("job_resumed");
 				}
 				return I18N.getString("job_notfound");
 			}
@@ -353,6 +353,18 @@ enum Action {
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private boolean resumeJob(final int myJobId) throws Exception {
+		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
+				if (jobDetail.getFullName().hashCode() == myJobId) {
+					scheduler.resumeJob(jobDetail.getName(), jobDetail.getGroup());
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void resumeAllJobs() throws Exception {
