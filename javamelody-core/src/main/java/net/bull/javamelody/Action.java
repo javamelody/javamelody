@@ -296,14 +296,11 @@ enum Action {
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 				final int myJobId = Integer.parseInt(values[2]);
 				for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-					for (final String jobGroupName : scheduler.getJobGroupNames()) {
-						for (final String jobName : scheduler.getJobNames(jobGroupName)) {
-							final JobDetail jobDetail = scheduler.getJobDetail(jobName,
-									jobGroupName);
-							if (jobDetail.getFullName().hashCode() == myJobId) {
-								scheduler.pauseJob(jobName, jobGroupName);
-								return I18N.getString("job_paused");
-							}
+					for (final JobDetail jobDetail : JobInformations
+							.getAllJobsOfScheduler(scheduler)) {
+						if (jobDetail.getFullName().hashCode() == myJobId) {
+							scheduler.pauseJob(jobDetail.getName(), jobDetail.getGroup());
+							return I18N.getString("job_paused");
 						}
 					}
 				}
@@ -312,7 +309,7 @@ enum Action {
 
 			// cette action ne concernait pas cette JVM, donc on ne fait rien
 			return null;
-		} catch (final SchedulerException e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -337,14 +334,11 @@ enum Action {
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 				final int myJobId = Integer.parseInt(values[2]);
 				for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-					for (final String jobGroupName : scheduler.getJobGroupNames()) {
-						for (final String jobName : scheduler.getJobNames(jobGroupName)) {
-							final JobDetail jobDetail = scheduler.getJobDetail(jobName,
-									jobGroupName);
-							if (jobDetail.getFullName().hashCode() == myJobId) {
-								scheduler.resumeJob(jobName, jobGroupName);
-								return I18N.getString("job_resumed");
-							}
+					for (final JobDetail jobDetail : JobInformations
+							.getAllJobsOfScheduler(scheduler)) {
+						if (jobDetail.getFullName().hashCode() == myJobId) {
+							scheduler.resumeJob(jobDetail.getName(), jobDetail.getGroup());
+							return I18N.getString("job_resumed");
 						}
 					}
 				}
@@ -353,7 +347,7 @@ enum Action {
 
 			// cette action ne concernait pas cette JVM, donc on ne fait rien
 			return null;
-		} catch (final SchedulerException e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
