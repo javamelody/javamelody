@@ -121,9 +121,12 @@ class JobInformations implements Serializable {
 				for (final String jobGroupName : scheduler.getJobGroupNames()) {
 					for (final String jobName : scheduler.getJobNames(jobGroupName)) {
 						final JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
-						final JobExecutionContext jobExecutionContext = currentlyExecutingJobsByFullName
-								.get(jobDetail.getFullName());
-						result.add(new JobInformations(jobDetail, jobExecutionContext, scheduler));
+						if (jobDetail != null) {
+							final JobExecutionContext jobExecutionContext = currentlyExecutingJobsByFullName
+									.get(jobDetail.getFullName());
+							result.add(new JobInformations(jobDetail, jobExecutionContext,
+									scheduler));
+						}
 					}
 				}
 			}
