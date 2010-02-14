@@ -36,7 +36,6 @@ import net.sf.ehcache.CacheManager;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 
 /**
  * Énumération des actions possibles dans l'IHM.
@@ -309,12 +308,14 @@ enum Action {
 
 			// cette action ne concernait pas cette JVM, donc on ne fait rien
 			return null;
+		} catch (final IllegalArgumentException e) {
+			throw e;
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void pauseAllJobs() throws SchedulerException {
+	private void pauseAllJobs() throws Exception {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			scheduler.pauseAll();
 		}
@@ -347,12 +348,14 @@ enum Action {
 
 			// cette action ne concernait pas cette JVM, donc on ne fait rien
 			return null;
+		} catch (final IllegalArgumentException e) {
+			throw e;
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void resumeAllJobs() throws SchedulerException {
+	private void resumeAllJobs() throws Exception {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			scheduler.resumeAll();
 		}
