@@ -118,16 +118,10 @@ class JobInformations implements Serializable {
 					currentlyExecutingJobsByFullName.put(currentlyExecutingJob.getJobDetail()
 							.getFullName(), currentlyExecutingJob);
 				}
-				for (final String jobGroupName : scheduler.getJobGroupNames()) {
-					for (final String jobName : scheduler.getJobNames(jobGroupName)) {
-						final JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
-						if (jobDetail != null) {
-							final JobExecutionContext jobExecutionContext = currentlyExecutingJobsByFullName
-									.get(jobDetail.getFullName());
-							result.add(new JobInformations(jobDetail, jobExecutionContext,
-									scheduler));
-						}
-					}
+				for (final JobDetail jobDetail : getAllJobsOfScheduler(scheduler)) {
+					final JobExecutionContext jobExecutionContext = currentlyExecutingJobsByFullName
+							.get(jobDetail.getFullName());
+					result.add(new JobInformations(jobDetail, jobExecutionContext, scheduler));
 				}
 			}
 		} catch (final Exception e) {
@@ -139,6 +133,20 @@ class JobInformations implements Serializable {
 	@SuppressWarnings("unchecked")
 	static List<Scheduler> getAllSchedulers() {
 		return new ArrayList<Scheduler>(SchedulerRepository.getInstance().lookupAll());
+	}
+
+	static List<JobDetail> getAllJobsOfScheduler(Scheduler scheduler) throws Exception {
+		final List<JobDetail> result = new ArrayList<JobDetail>();
+		for (final String jobGroupName : scheduler.getJobGroupNames()) {
+			for (final String jobName : scheduler.getJobNames(jobGroupName)) {
+				final JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
+				// le job peut être terminé et supprimé depuis la ligne ci-dessus
+				if (jobDetail != null) {
+					result.add(jobDetail);
+				}
+			}
+		}
+		return result;
 	}
 
 	String getGlobalJobId() {
