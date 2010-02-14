@@ -293,8 +293,7 @@ enum Action {
 			}
 			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
-				final int myJobId = Integer.parseInt(values[2]);
-				if (pauseJob(myJobId)) {
+				if (pauseJobById(Integer.parseInt(values[2]))) {
 					return I18N.getString("job_paused");
 				}
 				return I18N.getString("job_notfound");
@@ -309,7 +308,7 @@ enum Action {
 		}
 	}
 
-	private boolean pauseJob(final int myJobId) throws Exception {
+	private boolean pauseJobById(int myJobId) throws Exception {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
 				if (jobDetail.getFullName().hashCode() == myJobId) {
@@ -339,8 +338,7 @@ enum Action {
 			}
 			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
-				final int myJobId = Integer.parseInt(values[2]);
-				if (resumeJob(myJobId)) {
+				if (resumeJobById(Integer.parseInt(values[2]))) {
 					return I18N.getString("job_resumed");
 				}
 				return I18N.getString("job_notfound");
@@ -355,7 +353,7 @@ enum Action {
 		}
 	}
 
-	private boolean resumeJob(final int myJobId) throws Exception {
+	private boolean resumeJobById(int myJobId) throws Exception {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
 				if (jobDetail.getFullName().hashCode() == myJobId) {
