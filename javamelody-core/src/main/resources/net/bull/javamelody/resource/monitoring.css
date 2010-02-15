@@ -33,6 +33,9 @@ td {font-size: 10pt;}
     position: absolute;
     top: 20px;
     left: 20px;
+	/* une width fixe est nécessaire pour MSIE 7,
+	mais cela gâcherait tout sur firefox, chrome ou MSIE8 qui n'en ont pas besoin
+    width: 800px; */
     padding: 5px;
     color: #000;
     border: 1px solid #bbb;
