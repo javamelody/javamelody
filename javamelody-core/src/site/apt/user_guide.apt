@@ -58,6 +58,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Langage : français et anglais
 
+	Navigateur : Le rapport html de JavaMelody est optimisé pour {{{http://www.mozilla.com}Firefox}},
+	{{{http://www.google.com/chrome}Chrome}} ou MSIE8 (MSIE7 non recommandé).
+
+
 * Plugin Hudson
 
 	Si vous voulez monitorer un serveur {{{http://hudson-ci.org/}Hudson}}, vous pouvez installer JavaMelody en quelques cliques
