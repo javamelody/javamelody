@@ -321,6 +321,8 @@ class HtmlCounterReport {
 			writeln(nextColumn);
 			if (request.getCpuTimeMean() >= 0) {
 				writeln(systemErrorFormat.format(request.getCpuTimeMean()));
+			} else {
+				writeln("&nbsp;");
 			}
 			writeln(nextColumn);
 			writeln(systemErrorFormat.format(request.getSystemErrorPercentage()));
@@ -329,10 +331,14 @@ class HtmlCounterReport {
 				final boolean childHitsDisplayed = request.getChildHitsMean() > 0;
 				if (childHitsDisplayed) {
 					writeln(systemErrorFormat.format(request.getChildHitsMean()));
+				} else {
+					writeln("&nbsp;");
 				}
 				writeln(nextColumn);
 				if (childHitsDisplayed) {
 					writeln(systemErrorFormat.format(request.getChildDurationsMean()));
+				} else {
+					writeln("&nbsp;");
 				}
 			}
 		}
