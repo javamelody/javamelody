@@ -433,7 +433,7 @@ class HtmlReport {
 			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
-			writeln("<a href='_' onclick=\"javascript:alert('"
+			writeln("<a href='' onclick=\"javascript:alert('"
 					+ I18N.getStringForJavascript("ramasse_miette_desactive")
 					+ "');return false;\">");
 			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
