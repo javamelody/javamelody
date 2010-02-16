@@ -188,7 +188,7 @@ class HtmlHeapHistogramReport {
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
-			writeln("<a href='#' onclick=\"javascript:alert('"
+			writeln("<a href='' onclick=\"javascript:alert('"
 					+ I18N.getStringForJavascript("ramasse_miette_desactive")
 					+ "');return false;\">");
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
