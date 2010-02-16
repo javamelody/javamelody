@@ -108,8 +108,8 @@
   		if (!dragColumns) return;
 
   		// restore handlers & cursor
-  		document.removeEventListener("mouseup", stopColumnDrag, false);
-  		document.removeEventListener("mousemove", columnDrag, false);
+  		myRemoveEventListener(document, "mouseup", stopColumnDrag);
+  		myRemoveEventListener(document, "mousemove", columnDrag);
   		document.body.style.cursor = saveBodyCursor;
 
   		preventEvent(e);
@@ -135,14 +135,14 @@
   		}
 
   		// saveOnmouseup       = document.onmouseup;
-  		document.addEventListener("mouseup", stopColumnDrag, false);
+  		myAddEventListener(document, "mouseup", stopColumnDrag);
 
   		saveBodyCursor             = document.body.style.cursor;
   		document.body.style.cursor = 'w-resize';
 
   		// fire!
   		// saveOnmousemove      = document.onmousemove;
-  		document.addEventListener("mousemove", columnDrag, false);
+  		myAddEventListener(document, "mousemove", columnDrag);
 
   		preventEvent(e);
   	}
@@ -158,9 +158,28 @@
   			dragColumns[i].innerHTML+
   			"</div>";
   			// BUGBUG: calculate real border width instead of 5px!!!
-  			dragColumns[i].firstChild.firstChild.addEventListener("mousedown", startColumnDrag, false);;
+  			tmp = dragColumns[i].firstChild.firstChild;
+  			myAddEventListener(tmp, "mousedown", startColumnDrag);
   		}
   }
+  
+  function myAddEventListener(target, event, handler) {
+		if (target.addEventListener) {
+			target.addEventListener(event, handler, false);
+		} else if (tmp.attachEvent) {
+			// pour MSIE
+			target.attachEvent("on" + event, handler);
+		}
+  }
+
+  function myRemoveEventListener(target, event, handler) {
+		if (target.removeEventListener) {
+			target.removeEventListener(event, handler, false);
+		} else if (tmp.attachEvent) {
+			// pour MSIE
+			target.detachEvent("on" + event, handler);
+		}
+}
 
   // select all tables and make resizable those that have 'sortable' class
   var resizableTables = new Array();
