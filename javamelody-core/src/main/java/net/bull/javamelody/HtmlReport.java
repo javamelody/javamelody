@@ -236,7 +236,9 @@ class HtmlReport {
 	void writeMessageIfNotNull(String message, String partToRedirectTo) throws IOException {
 		if (message != null) {
 			writeln(SCRIPT_BEGIN);
-			writeln("alert(\"" + I18N.javascriptEncode(message) + "\");");
+			// writer.write pour ne pas gérer de traductions si le message contient '#'
+			writer.write("alert(\"" + I18N.javascriptEncode(message) + "\");");
+			writeln("");
 			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
 			if (partToRedirectTo == null) {
 				writeln("location.href = '?period=" + period.getCode() + '\'');
