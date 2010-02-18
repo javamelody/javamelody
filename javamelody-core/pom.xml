@@ -435,11 +435,9 @@
 			<!-- Vérification des règles de codage -->
 			<plugin>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<!-- TODO pour éviter v2.5 qui ne trouve pas .checkstyle.xml -->
-				<version>2.4</version>
 				<configuration>
 					<enableRSS>false</enableRSS>
-					<configLocation>.checkstyle.xml</configLocation>
+					<configLocation>${basedir}/.checkstyle.xml</configLocation>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -460,7 +458,7 @@
 					<minimumPriority>4</minimumPriority>
 					<minimumTokens>75</minimumTokens>
 					<rulesets>
-						<ruleset>.pmd</ruleset>
+						<ruleset>${basedir}/.pmd</ruleset>
 					</rulesets>
 				</configuration>
 			</plugin>
