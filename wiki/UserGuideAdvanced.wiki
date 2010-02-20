@@ -323,7 +323,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 
 == Format of RRD files ==
 	
-	Values of charts are stored in RRD (Round Robin Database) standard format.
+	Values of charts are stored in RRD (Round Robin Database) format.
 	Many tools exist for this format like [http://oss.oetiker.ch/rrdtool/ RRDtool],
 	close relative of [http://oss.oetiker.ch/mrtg/ MRTG], or [http://www.jrobin.org/ JRobin] in Java.
 
