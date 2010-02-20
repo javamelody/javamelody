@@ -256,7 +256,7 @@ or MSIE8 (MSIE7 not recommended).
 
 	If a DataSource is used but its JNDI name does not start with "jdbc/" or if this DataSource
 	is not in one of the usual JNDI contexts "java:comp/env/" or "java:/", then you can add the optional parameter
-	{{{datasources}}} (with a system property, a parameter of the context or of the filter) to define the JNDI name
+	{{{datasources}}} (with a system property, an environment variable, a parameter of the context or of the filter) to define the JNDI name
 	of the datasource used by the application. If there are several datasources, this parameter can contain
 	the JNDI name of the datasources separated by commas. If a jonas v5 server is used, datasources can be monitored
 	but it appears that the parameter {{{datasources}}} must be used to declare them.
@@ -264,6 +264,26 @@ or MSIE8 (MSIE7 not recommended).
 	For example, for a system property in server launch command:
 	
 	{{{-Djavamelody.datasources=java:comp/env/myapp/mydatasource}}}
+
+	If a DataSource is defined in a xml file of a Spring context,
+	like for example {{{ <bean class="org.apache.commons.dbcp.BasicDataSource">...</bean> }}},
+	the DataSource can also be monitored, with a Spring post-processor.
+	Make sure the Spring configuration file ({{{net/bull/javamelody/monitoring-spring.xml}}},
+	included in the provided jar) is loaded as one of the first configuration files.
+	For example, if you use the {{{org.springframework.web.context.ContextLoaderListener}}} in your
+	{{{web.xml}}}, the {{{contextConfigLocation}}} context parameter will look something like this:
+
+{{{
+	<context-param>
+	  <param-name>contextConfigLocation</param-name>
+	  <param-value>
+		classpath:net/bull/javamelody/monitoring-spring.xml
+		classpath:context/services.xml
+		classpath:context/data-access-layer.xml
+		/WEB-INF/applicationContext.xml
+	  </param-value>
+	</context-param>
+}}}
 
 === 8. Business facades (ejb-jar.xml file if EJB3) ===
 
