@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.12.0 ===
 
   * if a centralized collect server is used:
     * fix issue 12: workaround for a bug in Winstone (standalone mode)
@@ -10,7 +10,6 @@
   * added: If quartz is available in classpath, display of the *list of the [http://www.quartz-scheduler.org/ quartz] jobs* with date and hour of previous execution, date and hour of next execution, duration of running jobs and buttons to pause and to resume all jobs or each job
   * added: Button to kill a java thread
   * added: Parameter {{{monitoring-path}}} to change the url "/monitoring" of the report to "/admin/monitoring" for example (from user group)
-  * More to come...
 
 === Atlassian JIRA plugin ===
 
