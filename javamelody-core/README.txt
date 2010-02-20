@@ -27,6 +27,7 @@ Dépendance requise : JRobin (LGPL) pour les courbes d'évolution
 Dépendances optionnelles : iText (LGPL ou MPL) pour les rapports au format pdf en plus de html,
 	Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring
 Langage : français et anglais
+Navigateur : Le rapport html de JavaMelody est optimisé pour Firefox, Chrome ou MSIE8 (MSIE7 non recommandé).
 
 Pour le guide d'installation et le guide développeur voir le fichier texte src/site/apt/user_guide.apt
 Pour d'autres guides voir le répertoire src/site/resources/
