@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.12.0-SNAPSHOT</version>
+	<version>1.12.0</version>
 	<packaging>jar</packaging>
 	<name>Java Melody</name>
 	<description>Monitoring of JavaEE applications</description>
@@ -28,9 +27,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://javamelody.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://javamelody.googlecode.com/svn/tags/javamelody-core-1.12.0</connection>
+		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/tags/javamelody-core-1.12.0</developerConnection>
+		<url>http://javamelody.googlecode.com/svn/tags/javamelody-core-1.12.0</url>
 	</scm>
 	<organization>
 		<name>Emeric Vernat</name>
@@ -225,8 +224,7 @@
 			<uniqueVersion>false</uniqueVersion>
 			<id>java.net-m2-repository</id>
 			<!--
-				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url
-			-->
+				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url -->
 			<url>java-net:/maven2-repository/trunk/repository/</url>
 		</repository>
 		<snapshotRepository>
@@ -351,10 +349,8 @@
 						<configuration>
 							<tasks>
 								<!-- écrit la version du pom dans VERSION.properties -->
-								<echo message="# Version of JavaMelody${line.separator}"
-									file="VERSION.properties" />
-								<echo message="version=${project.version}${line.separator}"
-									append="true" file="VERSION.properties" />
+								<echo message="# Version of JavaMelody${line.separator}" file="VERSION.properties" />
+								<echo message="version=${project.version}${line.separator}" append="true" file="VERSION.properties" />
 								<copy file="VERSION.properties" tofile="target/classes/VERSION.properties" />
 
 								<!-- appel de Ant et copie du résultat dans le site -->
