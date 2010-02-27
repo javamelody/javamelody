@@ -28,6 +28,7 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
@@ -51,6 +52,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -301,7 +302,7 @@ class MonitoringController {
 
 		// simple appel de monitoring sans format
 		httpResponse.setContentType(HTML_CONTENT_TYPE);
-		final BufferedWriter writer = new BufferedWriter(httpResponse.getWriter());
+		final BufferedWriter writer = getWriter(httpResponse);
 		try {
 			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
 					javaInformationsList, period, writer);
@@ -313,6 +314,11 @@ class MonitoringController {
 		} finally {
 			writer.close();
 		}
+	}
+
+	static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
+		return new BufferedWriter(new OutputStreamWriter(httpResponse.getOutputStream(),
+				HTML_CHARSET));
 	}
 
 	private void doHtmlPart(HttpServletRequest httpRequest, String part, HtmlReport htmlReport)
@@ -560,17 +566,17 @@ class MonitoringController {
 
 	@SuppressWarnings("unchecked")
 	private static InputStream getPomXmlAsStream() {
-		final ServletContext servletContext = Parameters.getServletContext();
-		final Set mavenDir = servletContext.getResourcePaths("/META-INF/maven/");
+		final Set mavenDir = Parameters.getServletContext().getResourcePaths("/META-INF/maven/");
 		if (mavenDir == null || mavenDir.isEmpty()) {
 			return null;
 		}
-		final Set groupDir = servletContext.getResourcePaths((String) mavenDir.iterator().next());
+		final Set groupDir = Parameters.getServletContext().getResourcePaths(
+				(String) mavenDir.iterator().next());
 		if (groupDir == null || groupDir.isEmpty()) {
 			return null;
 		}
-		final InputStream pomXml = servletContext.getResourceAsStream(groupDir.iterator().next()
-				+ "pom.xml");
+		final InputStream pomXml = Parameters.getServletContext().getResourceAsStream(
+				groupDir.iterator().next() + "pom.xml");
 		if (pomXml == null) {
 			return null;
 		}
