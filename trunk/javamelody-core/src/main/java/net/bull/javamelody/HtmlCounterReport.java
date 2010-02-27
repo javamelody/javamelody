@@ -223,8 +223,7 @@ class HtmlCounterReport {
 
 		private void writeRequest(CounterRequest request) throws IOException {
 			final Map<String, Long> childRequests = request.getChildRequestsExecutionsByRequestId();
-			writeln("<br/>");
-			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Drill_down#'>");
+			writeln("<br/><table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Drill_down#'>");
 			writeln("<thead><tr><th>#Requete#</th>");
 			final boolean hasChildren = childRequests != null && !childRequests.isEmpty();
 			if (hasChildren) {
@@ -244,8 +243,7 @@ class HtmlCounterReport {
 						+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
 			}
 			writeln("</tr></thead><tbody>");
-			writeln("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			writeln("<td>");
+			writeln("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\"><td>");
 			writeCounterIcon(request);
 			writer.write(htmlEncode(request.getName()));
 			if (hasChildren) {
@@ -262,8 +260,8 @@ class HtmlCounterReport {
 				writeln("<div align='right' class='noPrint'>");
 				writeln("<a href='?part=usages&amp;period=" + period.getCode() + "&amp;graph="
 						+ request.getId() + "'>");
-				writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' title='#Chercher_utilisations#'/> #Chercher_utilisations#</a>");
-				writeln("</div>");
+				writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' ");
+				writeln("title='#Chercher_utilisations#'/> #Chercher_utilisations#</a></div>");
 			} else {
 				writeln("<br/>");
 			}

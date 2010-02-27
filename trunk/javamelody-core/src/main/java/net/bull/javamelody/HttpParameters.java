@@ -25,6 +25,7 @@ package net.bull.javamelody;
 final class HttpParameters {
 	static final String HTML_CHARSET = "UTF-8";
 	static final String HTML_CONTENT_TYPE = "text/html; charset=" + HTML_CHARSET;
+	static final String CONTENT_DISPOSITION = "Content-Disposition";
 	static final String ACTION_PARAMETER = "action";
 	static final String PART_PARAMETER = "part";
 	static final String PERIOD_PARAMETER = "period";

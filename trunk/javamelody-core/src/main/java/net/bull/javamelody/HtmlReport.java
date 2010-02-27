@@ -33,6 +33,8 @@ import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
  * @author Emeric Vernat
  */
 class HtmlReport {
+	private static final String DIV_ALIGN_CENTER = "<div align='center'>";
+	private static final String END_DIV = "</div>";
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
 	private static final boolean PDF_ENABLED = isPdfEnabled();
@@ -133,19 +135,19 @@ class HtmlReport {
 	void toHtml(String message) throws IOException {
 		writeHtmlHeader(false);
 		if (collectorServer != null) {
-			writeln("<div align='center'>");
+			writeln(DIV_ALIGN_CENTER);
 			writeApplicationsLinks(buildPeriodParameter());
 			writeAddAndRemoveApplicationLinks(collector.getApplication(), period, writer);
-			writeln("</div>\n");
+			writeln(END_DIV);
 		}
 
 		writeln("<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
 		writeSummary();
 		writeln("</h3>");
-		writeln("<div align='center'>");
+		writeln(DIV_ALIGN_CENTER);
 		writeRefreshAndPeriodLinks(null, null);
 		writeGraphs();
-		writeln("</div>");
+		writeln(END_DIV);
 
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters();
 		if (period == Period.TOUT) {
@@ -154,7 +156,7 @@ class HtmlReport {
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
 					+ I18N.javascriptEncode(I18N.getString("confirm_vider_toutes_stats"))
 					+ "');\">#Reinitialiser_toutes_stats#</a>");
-			writeln("</div>");
+			writeln(END_DIV);
 		}
 
 		if (collectorServer == null) {
@@ -169,7 +171,8 @@ class HtmlReport {
 			writeln("<div align='center' class='noPrint'><a href='?part=currentRequests"
 					+ buildPeriodParameter() + "'>");
 			writeln("<img src='?resource=hourglass.png' width='20' height='20' alt=\"#Voir_requetes_en_cours#\" /> #Voir_requetes_en_cours#</a>");
-			writeln("</div><br/>");
+			writeln(END_DIV);
+			writeln("<br/>");
 		}
 		if (Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
 			writeSystemActionsLinks();
@@ -258,10 +261,10 @@ class HtmlReport {
 		writeGraphs(collector.getCounterJRobins());
 		writeln("<div align='right'>");
 		writeShowHideLink("detailsGraphs", "#Autres_courbes#");
-		writeln("</div>");
+		writeln(END_DIV);
 		writeln("<div id='detailsGraphs' style='display: none;'>");
 		writeGraphs(collector.getOtherJRobins());
-		writeln("</div>");
+		writeln(END_DIV);
 	}
 
 	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
@@ -553,7 +556,7 @@ class HtmlReport {
 					+ myPeriod.getLinkLabel() + "' /> ");
 			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;&nbsp;&nbsp;");
 		}
-		writeln("</div>");
+		writeln(END_DIV);
 	}
 
 	void writeHtmlHeader(boolean includeSlider) throws IOException {
@@ -581,7 +584,7 @@ class HtmlReport {
 		if (Parameters.JAVAMELODY_VERSION != null) {
 			writeln("<br/><br/>JavaMelody " + Parameters.JAVAMELODY_VERSION);
 		}
-		writeln("</div>");
+		writeln(END_DIV);
 	}
 
 	void writeHtmlFooter() throws IOException {
@@ -635,9 +638,9 @@ class HtmlReport {
 	void writeRequestAndGraphDetail(String graphName) throws IOException {
 		writeHtmlHeader(true);
 
-		writeln("<div align='center'>");
+		writeln(DIV_ALIGN_CENTER);
 		writeRefreshAndPeriodLinks(graphName, "graph");
-		writeln("</div>");
+		writeln(END_DIV);
 
 		new HtmlCounterRequestGraphReport(period, writer).writeRequestAndGraphDetail(collector,
 				graphName);
@@ -648,9 +651,9 @@ class HtmlReport {
 	void writeRequestUsages(String graphName) throws IOException {
 		writeHtmlHeader(true);
 
-		writeln("<div align='center'>");
+		writeln(DIV_ALIGN_CENTER);
 		writeRefreshAndPeriodLinks(graphName, "usages");
-		writeln("</div>");
+		writeln(END_DIV);
 
 		new HtmlCounterRequestGraphReport(period, writer).writeRequestUsages(collector, graphName);
 

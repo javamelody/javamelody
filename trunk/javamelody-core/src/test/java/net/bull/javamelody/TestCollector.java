@@ -292,15 +292,7 @@ public class TestCollector {
 			final File storageDir = Parameters.getStorageDirectory(counter.getApplication());
 			final File obsoleteFile = new File(storageDir, "obsolete.ser.gz");
 			final File notObsoleteFile = new File(storageDir, "notobsolete.ser.gz");
-			if (!storageDir.exists() && !storageDir.mkdirs()) {
-				fail("mkdir");
-			}
-			if (!obsoleteFile.exists() && !obsoleteFile.createNewFile()) {
-				fail("createNewFile");
-			}
-			if (!notObsoleteFile.exists() && !notObsoleteFile.createNewFile()) {
-				fail("createNewFile");
-			}
+			checkSetup(storageDir, obsoleteFile, notObsoleteFile);
 			final Calendar nowMinus1YearAnd2Days = Calendar.getInstance();
 			nowMinus1YearAnd2Days.add(Calendar.YEAR, -1);
 			nowMinus1YearAnd2Days.add(Calendar.DAY_OF_YEAR, -2);
@@ -318,6 +310,19 @@ public class TestCollector {
 			}
 		} finally {
 			timer.cancel();
+		}
+	}
+
+	private void checkSetup(final File storageDir, final File obsoleteFile,
+			final File notObsoleteFile) throws IOException {
+		if (!storageDir.exists() && !storageDir.mkdirs()) {
+			fail("mkdir");
+		}
+		if (!obsoleteFile.exists() && !obsoleteFile.createNewFile()) {
+			fail("createNewFile");
+		}
+		if (!notObsoleteFile.exists() && !notObsoleteFile.createNewFile()) {
+			fail("createNewFile");
 		}
 	}
 
