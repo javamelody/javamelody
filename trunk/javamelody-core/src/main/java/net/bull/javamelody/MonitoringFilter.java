@@ -67,6 +67,7 @@ public class MonitoringFilter implements Filter {
 		private final Collector collector;
 
 		CollectTimerTask(Collector collector) {
+			super();
 			this.collector = collector;
 		}
 

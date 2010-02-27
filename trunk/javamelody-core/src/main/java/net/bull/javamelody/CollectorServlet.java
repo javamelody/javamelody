@@ -405,17 +405,18 @@ public class CollectorServlet extends HttpServlet {
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
-			String actionUrl = url.toString() + "&action=" + actionParameter;
+			final StringBuilder actionUrl = new StringBuilder(url.toString());
+			actionUrl.append("&action=").append(actionParameter);
 			if (sessionIdParameter != null) {
-				actionUrl += "&sessionId=" + sessionIdParameter;
+				actionUrl.append("&sessionId=").append(sessionIdParameter);
 			}
 			if (threadIdParameter != null) {
-				actionUrl += "&threadId=" + threadIdParameter;
+				actionUrl.append("&threadId=").append(threadIdParameter);
 			}
 			if (jobIdParameter != null) {
-				actionUrl += "&jobId=" + jobIdParameter;
+				actionUrl.append("&jobId=").append(jobIdParameter);
 			}
-			actionUrls.add(new URL(actionUrl));
+			actionUrls.add(new URL(actionUrl.toString()));
 		}
 		return collectorServer.collectForApplication(application, actionUrls);
 	}

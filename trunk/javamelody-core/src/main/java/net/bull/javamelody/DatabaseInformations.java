@@ -119,7 +119,8 @@ class DatabaseInformations implements Serializable {
 		try {
 			database = Database.getDatabaseForConnection(connection);
 			requestNames = database.getRequestNames();
-			final String request = database.getRequestByName(getSelectedRequestName());
+			final String request = database
+					.getRequestByName(requestNames.get(selectedRequestIndex));
 			result = executeRequest(connection, request, null);
 		} finally {
 			connection.close();
