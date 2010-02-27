@@ -103,10 +103,11 @@ class HtmlJobInformationsReport {
 		write(nextColumn);
 		writer.write(htmlEncode(jobInformations.getName()));
 		write(nextColumn);
+		final String nbsp = "&nbsp;";
 		if (jobInformations.getDescription() != null) {
 			writer.write(htmlEncode(jobInformations.getDescription()));
 		} else {
-			write("&nbsp;");
+			write(nbsp);
 		}
 		write(nextColumn);
 		writer.write(htmlEncode(jobInformations.getJobClassName()));
@@ -114,19 +115,19 @@ class HtmlJobInformationsReport {
 		if (jobInformations.getPreviousFireTime() != null) {
 			write(fireTimeFormat.format(jobInformations.getPreviousFireTime()));
 		} else {
-			write("&nbsp;");
+			write(nbsp);
 		}
 		write(nextColumnAlignRight);
 		if (jobInformations.getNextFireTime() != null) {
 			write(fireTimeFormat.format(jobInformations.getNextFireTime()));
 		} else {
-			write("&nbsp;");
+			write(nbsp);
 		}
 		write(nextColumnAlignRight);
 		if (jobInformations.getElapsedTime() >= 0) {
 			write(elapsedTimeFormat.format(new Date(jobInformations.getElapsedTime())));
 		} else {
-			write("&nbsp;");
+			write(nbsp);
 		}
 		write("</td> <td align='center'>");
 		if (jobInformations.isPaused()) {
