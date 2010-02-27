@@ -26,6 +26,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+import javax.naming.NamingException;
+
 import net.bull.javamelody.DatabaseInformations.Database;
 
 import org.junit.Before;
@@ -67,10 +69,9 @@ public class TestDatabaseInformations {
 		assertNotNull("getRequestNames", databaseInformations.getRequestNames());
 	}
 
-	/** Test.
-	 * @throws Exception e */
+	/** Test. */
 	@Test
-	public void testDatabase() throws Exception {
+	public void testDatabase() {
 		for (final Database database : Database.values()) {
 			final List<String> requestNames = database.getRequestNames();
 			assertTrue("getRequestNames", requestNames != null && !requestNames.isEmpty());
@@ -81,9 +82,10 @@ public class TestDatabaseInformations {
 	}
 
 	/** Test.
-	 * @throws Exception e */
+	 * @throws NamingException e
+	 * @throws SQLException e */
 	@Test
-	public void testExplainPlanFor() throws Exception {
+	public void testExplainPlanFor() throws SQLException, NamingException {
 		DatabaseInformations.explainPlanFor("select 1");
 	}
 }

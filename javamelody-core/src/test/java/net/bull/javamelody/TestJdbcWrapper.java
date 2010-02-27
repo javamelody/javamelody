@@ -78,9 +78,12 @@ public class TestJdbcWrapper {
 	}
 
 	/** Test.
-	 * @throws Exception e */
+	 * @throws IllegalAccessException e
+	 * @throws NoSuchFieldException e
+	 * @throws SQLException e */
 	@Test
-	public void testCreateDataSourceProxy() throws Exception {
+	public void testCreateDataSourceProxy() throws NoSuchFieldException, IllegalAccessException,
+			SQLException {
 		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
 		cleanUp();
 

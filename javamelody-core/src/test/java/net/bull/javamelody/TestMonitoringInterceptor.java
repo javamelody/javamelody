@@ -45,7 +45,7 @@ public class TestMonitoringInterceptor {
 			// rien
 		}
 
-		public Object proceed() throws Exception {
+		public Object proceed() {
 			if (throwError) {
 				throw new Error("test");
 			}

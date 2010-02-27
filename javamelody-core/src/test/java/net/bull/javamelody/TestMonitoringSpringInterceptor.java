@@ -39,13 +39,13 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public static interface AnnotatedTest {
+	public interface AnnotatedTest {
 		/**
 		 * Test.
 		 * @return Date
 		 */
 		@MonitoredWithSpring(name = "test method")
-		Date test();
+		Date myMethod();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class TestMonitoringSpringInterceptor {
 		 * Test.
 		 * @return Date
 		 */
-		public Date test() {
+		public Date myMethod() {
 			return new Date();
 		}
 	}
@@ -70,7 +70,7 @@ public class TestMonitoringSpringInterceptor {
 		 * Test.
 		 * @return Date
 		 */
-		public Date test() {
+		public Date myMethod() {
 			return new Date();
 		}
 	}
@@ -142,12 +142,12 @@ public class TestMonitoringSpringInterceptor {
 
 		final AnnotatedTest annotatedTestClassSpring = (AnnotatedTest) context
 				.getBean("annotatedTestClassSpring");
-		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.test());
+		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.myMethod());
 		assertSame(REQUESTS_COUNT, 3, springCounter.getRequestsCount());
 
 		final AnnotatedTest annotatedTestMethodSpring = (AnnotatedTest) context
 				.getBean("annotatedTestMethodSpring");
-		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.test());
+		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
 		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
 	}
 }
