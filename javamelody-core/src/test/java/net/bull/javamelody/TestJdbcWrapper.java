@@ -46,6 +46,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
+	private static final String EQUALS = "equals";
 	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;
@@ -178,7 +179,7 @@ public class TestJdbcWrapper {
 			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
 			assertNotNull("createConnectionProxy", connection);
-			assertFalse("equals", connection.equals(connection));
+			assertFalse(EQUALS, connection.equals(connection));
 			connection.hashCode();
 
 			connection.prepareStatement("select 1").close();
@@ -226,7 +227,7 @@ public class TestJdbcWrapper {
 			connection = jdbcWrapper.createConnectionProxy(connection);
 			final Statement statement = connection.createStatement();
 			try {
-				assertFalse("equals", statement.equals(statement));
+				assertFalse(EQUALS, statement.equals(statement));
 				statement.hashCode();
 
 				statement.executeQuery("select 1").close();
@@ -252,20 +253,20 @@ public class TestJdbcWrapper {
 	/** Test. */
 	@Test
 	public void testIsEqualsMethod() {
-		assertTrue("isEqualsMethod", JdbcWrapper.isEqualsMethod("equals", new Object[] { "" }));
-		assertFalse("isEqualsMethod", JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }));
-		assertFalse("isEqualsMethod", JdbcWrapper.isEqualsMethod("equals", null));
-		assertFalse("isEqualsMethod", JdbcWrapper.isEqualsMethod("equals", new Object[] { "", "" }));
+		assertTrue("isEqualsMethod1", JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "" }));
+		assertFalse("isEqualsMethod2", JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }));
+		assertFalse("isEqualsMethod3", JdbcWrapper.isEqualsMethod(EQUALS, null));
+		assertFalse("isEqualsMethod4", JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "", "" }));
 	}
 
 	/** Test. */
 	@Test
 	public void testIsHashCodeMethod() {
-		assertTrue("isHashCodeMethod", JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}));
-		assertTrue("isHashCodeMethod", JdbcWrapper.isHashCodeMethod("hashCode", null));
-		assertFalse("isHashCodeMethod", JdbcWrapper
-				.isHashCodeMethod("nothashCode", new Object[] {}));
-		assertFalse("isHashCodeMethod", JdbcWrapper.isHashCodeMethod("hashCode",
+		assertTrue("isHashCodeMethod1", JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}));
+		assertTrue("isHashCodeMethod2", JdbcWrapper.isHashCodeMethod("hashCode", null));
+		assertFalse("isHashCodeMethod3", JdbcWrapper.isHashCodeMethod("nothashCode",
+				new Object[] {}));
+		assertFalse("isHashCodeMethod4", JdbcWrapper.isHashCodeMethod("hashCode",
 				new Object[] { "" }));
 	}
 }

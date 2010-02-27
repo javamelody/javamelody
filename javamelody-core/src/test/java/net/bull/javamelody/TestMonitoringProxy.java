@@ -19,7 +19,7 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
@@ -34,10 +34,9 @@ public class TestMonitoringProxy {
 		assertNotNull("getServicesCounter", MonitoringProxy.getServicesCounter());
 	}
 
-	/** Test.
-	 * @throws Exception e */
+	/** Test. */
 	@Test
-	public void testProxy() throws Exception {
+	public void testProxy() {
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		servicesCounter.clear();
 		// proxy sans spring aop
@@ -46,16 +45,16 @@ public class TestMonitoringProxy {
 
 		servicesCounter.setDisplayed(false);
 		assertNotNull("now()", springTestFacade.now());
-		assertTrue("requestsCount", servicesCounter.getRequestsCount() == 0);
+		assertSame("requestsCount", 0, servicesCounter.getRequestsCount());
 
 		servicesCounter.setDisplayed(true);
 		assertNotNull("now()", springTestFacade.now());
-		assertTrue("requestsCount", servicesCounter.getRequestsCount() == 1);
+		assertSame("requestsCount", 1, servicesCounter.getRequestsCount());
 
 		try {
 			springTestFacade.throwError();
 		} catch (final Error e) {
-			assertTrue("requestsCount", servicesCounter.getRequestsCount() == 2);
+			assertSame("requestsCount", 2, servicesCounter.getRequestsCount());
 		}
 	}
 }

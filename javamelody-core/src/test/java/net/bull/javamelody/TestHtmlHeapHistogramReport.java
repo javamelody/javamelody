@@ -42,6 +42,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestHtmlHeapHistogramReport {
+	private static final String EXCEPTION = "exception";
 	private Timer timer;
 
 	/** Initialisation. */
@@ -149,7 +150,7 @@ public class TestHtmlHeapHistogramReport {
 			// timeout de 10s pour certains envionnements de tests
 			thread.join(10000);
 		} catch (final InterruptedException e) {
-			assertNotNull("exception", e);
+			assertNotNull(EXCEPTION, e);
 		}
 	}
 
@@ -157,22 +158,22 @@ public class TestHtmlHeapHistogramReport {
 		try {
 			VirtualMachine.getJvmVirtualMachine();
 		} catch (final Exception e) {
-			assertNotNull("exception", e);
+			assertNotNull(EXCEPTION, e);
 		}
 		try {
 			VirtualMachine.heapHisto();
 		} catch (final Exception e) {
-			assertNotNull("exception", e);
+			assertNotNull(EXCEPTION, e);
 		}
 		try {
 			VirtualMachine.createHeapHistogram();
 		} catch (final Exception e) {
-			assertNotNull("exception", e);
+			assertNotNull(EXCEPTION, e);
 		}
 		try {
 			VirtualMachine.detach();
 		} catch (final Exception e) {
-			assertNotNull("exception", e);
+			assertNotNull(EXCEPTION, e);
 		}
 	}
 }

@@ -51,6 +51,8 @@ import com.lowagie.text.DocumentException;
  */
 //CHECKSTYLE:OFF
 public class TestPdfReport {
+	private static final String TEST_APP = "test app";
+
 	//CHECKSTYLE:ON
 	/** Test.
 	 * @throws IOException e
@@ -218,7 +220,7 @@ public class TestPdfReport {
 		final Timer timer = new Timer("test timer", true);
 		try {
 			final List<Counter> counters = Arrays.asList(counter, errorCounter);
-			final Collector collector = new Collector("test app", counters, timer);
+			final Collector collector = new Collector(TEST_APP, counters, timer);
 			final JavaInformations javaInformations = new JavaInformations(null, true);
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
 			final List<JavaInformations> javaInformationsList = Collections
@@ -229,7 +231,7 @@ public class TestPdfReport {
 			counter.addRequest("test include graph", 1, 1, false, 1000);
 			errorCounter.addRequestForSystemError("error", 1, 1, null);
 			collector.collectWithoutErrors(javaInformationsList);
-			final Document document = new PdfDocumentFactory("test app", output).createDocument();
+			final Document document = new PdfDocumentFactory(TEST_APP, output).createDocument();
 			document.open();
 			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
 					Period.TOUT, true, document);
@@ -251,7 +253,7 @@ public class TestPdfReport {
 	@Test
 	public void testEmptyPdfCounterRequestContext() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory("test app", output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
@@ -270,7 +272,7 @@ public class TestPdfReport {
 	@Test
 	public void testPdfThreadInformationsReport() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory("test app", output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		boolean stackTraceEnabled = true;

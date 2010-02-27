@@ -47,12 +47,13 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 public class TestCollector {
+	private static final String TEST = "test";
 	private Timer timer;
 
 	/** Test. */
 	@Before
 	public void setUp() {
-		final File[] files = Parameters.getStorageDirectory("test").listFiles();
+		final File[] files = Parameters.getStorageDirectory(TEST).listFiles();
 		if (files != null) {
 			for (final File file : files) {
 				if ((file.getName().endsWith(".rrd") || file.getName().endsWith(".ser.gz"))
@@ -166,7 +167,7 @@ public class TestCollector {
 	public void testCollectWithoutErrors() throws IOException {
 		try {
 			final Counter counter = createCounter();
-			final Collector collector = new Collector("test", Collections.singletonList(counter),
+			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
 					timer);
 			if (collector.getCounters().size() == 0) {
 				fail("getCounters");
@@ -213,7 +214,7 @@ public class TestCollector {
 		try {
 			final Counter counter = new Counter("error", null);
 			counter.setMaxRequestsCount(1);
-			final Collector collector = new Collector("test", Collections.singletonList(counter),
+			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
 					timer);
 
 			// test removeRequest dans collectCounterData
@@ -255,7 +256,7 @@ public class TestCollector {
 	public void testGetPeriodCountersToBeDisplayed() throws IOException {
 		try {
 			final Counter counter = createCounter();
-			final Collector collector = new Collector("test", Collections.singletonList(counter),
+			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
 					timer);
 			if (collector.getCounters().size() == 0) {
 				fail("getCounters");
@@ -322,7 +323,7 @@ public class TestCollector {
 	/** Test. */
 	@Test
 	public void testPrintStackTrace() {
-		Collector.printStackTrace(new Exception("test"));
+		Collector.printStackTrace(new Exception(TEST));
 	}
 
 	/** Test. */

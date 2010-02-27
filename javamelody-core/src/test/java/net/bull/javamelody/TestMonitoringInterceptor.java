@@ -19,7 +19,7 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -91,17 +91,17 @@ public class TestMonitoringInterceptor {
 
 		ejbCounter.setDisplayed(false);
 		interceptor.intercept(new InvokeContext(false));
-		assertTrue("requestsCount", ejbCounter.getRequestsCount() == 0);
+		assertSame("requestsCount", 0, ejbCounter.getRequestsCount());
 
 		ejbCounter.setDisplayed(true);
 		interceptor.intercept(new InvokeContext(false));
-		assertTrue("requestsCount", ejbCounter.getRequestsCount() == 1);
+		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
 
 		ejbCounter.clear();
 		try {
 			interceptor.intercept(new InvokeContext(true));
 		} catch (final Error e) {
-			assertTrue("requestsCount", ejbCounter.getRequestsCount() == 1);
+			assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
 		}
 	}
 

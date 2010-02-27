@@ -66,6 +66,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringFilter {
+	private static final String TRUE = "true";
 	private FilterConfig config;
 	private ServletContext context;
 	private MonitoringFilter monitoringFilter;
@@ -102,7 +103,7 @@ public class TestMonitoringFilter {
 	private void destroy() {
 		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
 		// plus si ils utilisent JRobin
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", "true");
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
 		}
@@ -278,7 +279,7 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		monitoring(parameters);
 
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, DATABASE_PART);
@@ -325,7 +326,7 @@ public class TestMonitoringFilter {
 	public void testDoMonitoringWithActions() throws ServletException, IOException {
 		final Map<String, String> parameters = new HashMap<String, String>();
 
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(ACTION_PARAMETER, Action.GC.toString());
 		monitoring(parameters);
 		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSIONS.toString());
@@ -357,7 +358,7 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("format", TransportFormat.SERIALIZED.getCode());
 		monitoring(parameters);
@@ -388,7 +389,7 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("format", TransportFormat.XML.getCode());
 		monitoring(parameters);
@@ -408,7 +409,7 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("format", TransportFormat.JSON.getCode());
 		monitoring(parameters);

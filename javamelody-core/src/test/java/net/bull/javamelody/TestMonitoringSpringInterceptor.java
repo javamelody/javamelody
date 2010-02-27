@@ -116,10 +116,9 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("interfaceName", pointcut.getInterfaceName());
 	}
 
-	/** Test.
-	 * @throws Exception e */
+	/** Test. */
 	@Test
-	public void testSpringAOP() throws Exception {
+	public void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
 		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
