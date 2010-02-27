@@ -23,8 +23,8 @@ package net.bull.javamelody;
  * @author Emeric Vernat
  */
 final class HttpParameters {
-	static final String HTML_CHARSET = "ISO-8859-1";
-	static final String HTML_CONTENT_TYPE = "text/html; charset=ISO-8859-1";
+	static final String HTML_CHARSET = "UTF-8";
+	static final String HTML_CONTENT_TYPE = "text/html; charset=UTF-8";
 	static final String ACTION_PARAMETER = "action";
 	static final String PART_PARAMETER = "part";
 	static final String PERIOD_PARAMETER = "period";

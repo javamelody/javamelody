@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -34,7 +33,6 @@ import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -368,7 +366,7 @@ public class CollectorServlet extends HttpServlet {
 			throws IOException {
 		MonitoringController.noCache(httpResponse);
 		httpResponse.setContentType(HTML_CONTENT_TYPE);
-		return new PrintWriter(new OutputStreamWriter(httpResponse.getOutputStream(), HTML_CHARSET));
+		return new PrintWriter(MonitoringController.getWriter(httpResponse));
 	}
 
 	private static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
