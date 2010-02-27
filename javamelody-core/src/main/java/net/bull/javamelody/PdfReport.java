@@ -393,14 +393,17 @@ class PdfReport {
 
 	private void writeDurationAndOverhead() throws DocumentException {
 		final long displayDuration = System.currentTimeMillis() - start;
-		String string = '\n' + getI18nString("temps_derniere_collecte") + ": "
+		final String tmp = '\n' + getI18nString("temps_derniere_collecte") + ": "
 				+ collector.getLastCollectDuration() + ' ' + getI18nString("ms") + '\n'
 				+ getI18nString("temps_affichage") + ": " + displayDuration + ' '
 				+ getI18nString("ms") + '\n' + getI18nString("Estimation_overhead_memoire")
 				+ ": < " + (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
 				+ getI18nString("Mo");
+		final String string;
 		if (Parameters.JAVAMELODY_VERSION != null) {
-			string += "\n\n" + "JavaMelody " + Parameters.JAVAMELODY_VERSION;
+			string = tmp + "\n\n" + "JavaMelody " + Parameters.JAVAMELODY_VERSION;
+		} else {
+			string = tmp;
 		}
 		add(new Phrase(string, cellFont));
 	}

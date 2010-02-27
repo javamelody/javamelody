@@ -440,9 +440,11 @@ public class MonitoringFilter implements Filter {
 		// pathInfo ne contient pas l'indication utile de la servlet
 		final String tmp = httpRequest.getRequestURI().substring(
 				httpRequest.getContextPath().length());
-		String method = httpRequest.getMethod();
+		final String method;
 		if ("XMLHttpRequest".equals(httpRequest.getHeader("X-Requested-With"))) {
-			method = "ajax " + method;
+			method = "ajax " + httpRequest.getMethod();
+		} else {
+			method = httpRequest.getMethod();
 		}
 		if (!includeQueryString) {
 			return tmp + ' ' + method;

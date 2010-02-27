@@ -82,12 +82,7 @@ public class HeapHistogram implements Serializable {
 		time = new Date();
 		final Scanner sc = new Scanner(in, "UTF-8"); // NOI18N
 		sc.useRadix(10);
-		sc.nextLine();
-		sc.nextLine();
-		if (!jrockit) {
-			sc.skip("-+");
-			sc.nextLine();
-		}
+		skipHeader(sc, jrockit);
 
 		final String nextLine;
 		if (jrockit) {
@@ -123,6 +118,15 @@ public class HeapHistogram implements Serializable {
 		classes = new ArrayList<ClassInfo>(classesMap.values());
 		permGenClasses = new ArrayList<ClassInfo>(permGenMap.values());
 		sort();
+	}
+
+	private void skipHeader(Scanner sc, boolean jrockit) {
+		sc.nextLine();
+		sc.nextLine();
+		if (!jrockit) {
+			sc.skip("-+");
+			sc.nextLine();
+		}
 	}
 
 	void add(HeapHistogram second) {
