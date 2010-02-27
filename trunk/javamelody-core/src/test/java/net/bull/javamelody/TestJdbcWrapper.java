@@ -186,7 +186,7 @@ public class TestJdbcWrapper {
 			connection.hashCode();
 
 			connection.prepareStatement("select 1").close();
-			connection.prepareCall("select 1").close();
+			connection.prepareCall("select 2").close();
 
 			connection.rollback();
 
@@ -234,10 +234,10 @@ public class TestJdbcWrapper {
 				statement.hashCode();
 
 				statement.executeQuery("select 1").close();
-				statement.execute("select 1");
-				statement.addBatch("select 1");
+				statement.execute("select 2");
+				statement.addBatch("select 3");
 				jdbcWrapper.getSqlCounter().setDisplayed(false);
-				statement.execute("select 1");
+				statement.execute("select 4");
 				jdbcWrapper.getSqlCounter().setDisplayed(true);
 			} finally {
 				statement.close();

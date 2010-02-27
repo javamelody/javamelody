@@ -88,9 +88,10 @@ public class TestCounter {
 		final Counter sqlCounter = new Counter("sql", null);
 		final Counter httpCounter = new Counter("http", null, sqlCounter);
 		httpCounter.bindContext("http request", "http request");
-		sqlCounter.bindContext("sql request", "sql request");
-		sqlCounter.addRequest("sql request", 0, 0, false, -1); // ici context.addChildRequest
-		sqlCounter.addRequest("sql request", 0, 0, false, -1); // 2ème pour passer dans le else de addChildRequestForDrillDown
+		final String sqlRequest = "sql request";
+		sqlCounter.bindContext(sqlRequest, sqlRequest);
+		sqlCounter.addRequest(sqlRequest, 0, 0, false, -1); // ici context.addChildRequest
+		sqlCounter.addRequest(sqlRequest, 0, 0, false, -1); // 2ème pour passer dans le else de addChildRequestForDrillDown
 		httpCounter.addRequest("http request", 10, 2, false, 100);
 	}
 

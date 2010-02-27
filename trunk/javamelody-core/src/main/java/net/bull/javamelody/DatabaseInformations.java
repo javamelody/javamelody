@@ -168,42 +168,51 @@ class DatabaseInformations implements Serializable {
 					i++;
 				}
 			}
-			final ResultSet resultSet = statement.executeQuery();
-			try {
-				final ResultSetMetaData metaData = resultSet.getMetaData();
-				final int columnCount = metaData.getColumnCount();
-				final List<String[]> list = new ArrayList<String[]>();
-				String[] values = new String[columnCount];
-				for (int i = 1; i <= columnCount; i++) {
-					values[i - 1] = metaData.getColumnName(i) + '\n'
-							+ metaData.getColumnTypeName(i) + '('
-							+ metaData.getColumnDisplaySize(i) + ')';
-				}
-				list.add(values);
-
-				while (resultSet.next()) {
-					values = new String[columnCount];
-					for (int i = 1; i <= columnCount; i++) {
-						values[i - 1] = resultSet.getString(i);
-					}
-					list.add(values);
-				}
-				return list.toArray(new String[list.size()][]);
-			} finally {
-				resultSet.close();
-			}
+			return executeQuery(statement);
 		} catch (final SQLException e) {
 			if (e.getErrorCode() == 942 && e.getMessage() != null
 					&& e.getMessage().startsWith("ORA-")) {
-				final SQLException ex = new SQLException(I18N.getFormattedString(
-						"oracle.grantSelectAnyDictionnary", connection.getMetaData().getUserName()));
-				ex.initCause(e);
+				final String userName = connection.getMetaData().getUserName();
+				final SQLException ex = createGrantException(userName, e);
 				throw ex;
 			}
 			throw e;
 		} finally {
 			statement.close();
 		}
+	}
+
+	private static String[][] executeQuery(PreparedStatement statement) throws SQLException {
+		final ResultSet resultSet = statement.executeQuery();
+		try {
+			final ResultSetMetaData metaData = resultSet.getMetaData();
+			final int columnCount = metaData.getColumnCount();
+			final List<String[]> list = new ArrayList<String[]>();
+			String[] values = new String[columnCount];
+			for (int i = 1; i <= columnCount; i++) {
+				values[i - 1] = metaData.getColumnName(i) + '\n' + metaData.getColumnTypeName(i)
+						+ '(' + metaData.getColumnDisplaySize(i) + ')';
+			}
+			list.add(values);
+
+			while (resultSet.next()) {
+				values = new String[columnCount];
+				for (int i = 1; i <= columnCount; i++) {
+					values[i - 1] = resultSet.getString(i);
+				}
+				list.add(values);
+			}
+			return list.toArray(new String[list.size()][]);
+		} finally {
+			resultSet.close();
+		}
+	}
+
+	private static SQLException createGrantException(String userName, SQLException e) {
+		final SQLException ex = new SQLException(I18N.getFormattedString(
+				"oracle.grantSelectAnyDictionnary", userName));
+		ex.initCause(e);
+		return ex;
 	}
 
 	private static Connection getConnection() throws SQLException, NamingException {
