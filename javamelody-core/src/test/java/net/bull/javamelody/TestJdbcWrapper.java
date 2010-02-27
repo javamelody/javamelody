@@ -18,8 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
@@ -83,16 +85,16 @@ public class TestJdbcWrapper {
 
 		assertTrue("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
-		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == -1);
+		assertSame("getMaxConnectionCount", -1, JdbcWrapper.getMaxConnectionCount());
 
 		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
 		dbcpDataSource.setUrl("jdbc:h2:~/.h2/test");
 		dbcpDataSource.setMaxActive(123);
 		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
 		assertNotNull("createDataSourceProxy", dbcpProxy);
-		assertTrue("getBasicDataSourceProperties", !JdbcWrapper.getBasicDataSourceProperties()
+		assertFalse("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
-		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == 123);
+		assertSame("getMaxConnectionCount", 123, JdbcWrapper.getMaxConnectionCount());
 
 		final BasicDataSource tomcatDataSource = new BasicDataSource();
 		tomcatDataSource.setUrl("jdbc:h2:~/.h2/test");
@@ -101,9 +103,9 @@ public class TestJdbcWrapper {
 		assertNotNull("createDataSourceProxy", tomcatProxy);
 		assertNotNull("getLogWriter", tomcatProxy.getLogWriter());
 		tomcatProxy.getConnection().close();
-		assertTrue("getBasicDataSourceProperties", !JdbcWrapper.getBasicDataSourceProperties()
+		assertFalse("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
-		assertTrue("getMaxConnectionCount", JdbcWrapper.getMaxConnectionCount() == 456);
+		assertEquals("getMaxConnectionCount", 456, JdbcWrapper.getMaxConnectionCount());
 
 		final DataSource dataSource2 = new DataSource() {
 			/** {@inheritDoc} */
@@ -184,8 +186,7 @@ public class TestJdbcWrapper {
 
 			connection.rollback();
 
-			assertTrue("proxy of proxy",
-					jdbcWrapper.createConnectionProxy(connection) == connection);
+			assertSame("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
 
 			jdbcWrapper.getSqlCounter().setDisplayed(false);
 			connection = jdbcWrapper.createConnectionProxy(connection);

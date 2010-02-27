@@ -21,7 +21,7 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
@@ -34,6 +34,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Emeric Vernat
  */
 public class TestMonitoringSpringInterceptor {
+	private static final String REQUESTS_COUNT = "requestsCount";
+
 	/**
 	 * Test.
 	 */
@@ -127,26 +129,26 @@ public class TestMonitoringSpringInterceptor {
 
 		springCounter.setDisplayed(false);
 		assertNotNull("now()", springTestFacade.now());
-		assertTrue("requestsCount", springCounter.getRequestsCount() == 0);
+		assertSame(REQUESTS_COUNT, 0, springCounter.getRequestsCount());
 
 		springCounter.setDisplayed(true);
 		assertNotNull("now()", springTestFacade.now());
-		assertTrue("requestsCount", springCounter.getRequestsCount() == 1);
+		assertSame(REQUESTS_COUNT, 1, springCounter.getRequestsCount());
 
 		try {
 			springTestFacade.throwError();
 		} catch (final Error e) {
-			assertTrue("requestsCount", springCounter.getRequestsCount() == 2);
+			assertSame(REQUESTS_COUNT, 2, springCounter.getRequestsCount());
 		}
 
 		final AnnotatedTest annotatedTestClassSpring = (AnnotatedTest) context
 				.getBean("annotatedTestClassSpring");
 		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.test());
-		assertTrue("requestsCount", springCounter.getRequestsCount() == 3);
+		assertSame(REQUESTS_COUNT, 3, springCounter.getRequestsCount());
 
 		final AnnotatedTest annotatedTestMethodSpring = (AnnotatedTest) context
 				.getBean("annotatedTestMethodSpring");
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.test());
-		assertTrue("requestsCount", springCounter.getRequestsCount() == 4);
+		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
 	}
 }

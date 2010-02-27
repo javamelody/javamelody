@@ -42,6 +42,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestCollectorServlet {
+	private static final String TEST = "test";
 	private ServletConfig config;
 	private ServletContext context;
 	private CollectorServlet collectorServlet;
@@ -107,7 +108,7 @@ public class TestCollectorServlet {
 		setUp();
 		doGet(".*", null);
 		setUp();
-		doGet(null, "test");
+		doGet(null, TEST);
 		// TODO tester les cookies dans getApplication
 	}
 
@@ -150,13 +151,13 @@ public class TestCollectorServlet {
 		setUp();
 		doPost(null, null, true);
 		setUp();
-		doPost("test", null, true);
+		doPost(TEST, null, true);
 		setUp();
-		doPost("test", "http://localhost:8090/test", true);
+		doPost(TEST, "http://localhost:8090/test", true);
 		setUp();
-		doPost("test", "https://localhost:8090/test", true);
+		doPost(TEST, "https://localhost:8090/test", true);
 		setUp();
-		doPost("test", "ftp://localhost:8090/test", true);
+		doPost(TEST, "ftp://localhost:8090/test", true);
 	}
 
 	private void doPost(String appName, String appUrls, boolean allowed) throws IOException,

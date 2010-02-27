@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
@@ -58,8 +59,8 @@ public class TestDatabaseInformations {
 	public void testDatabaseInformations() throws Exception {
 		final int requestIndex = 0;
 		final DatabaseInformations databaseInformations = new DatabaseInformations(requestIndex);
-		assertTrue("getSelectedRequestIndex",
-				databaseInformations.getSelectedRequestIndex() == requestIndex);
+		assertSame("getSelectedRequestIndex", requestIndex, databaseInformations
+				.getSelectedRequestIndex());
 		assertNotNull("getSelectedRequestName", databaseInformations.getSelectedRequestName());
 		assertNotNull("getNbColumns", databaseInformations.getNbColumns());
 		assertNotNull("getResult", databaseInformations.getResult());
