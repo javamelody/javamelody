@@ -47,6 +47,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 public class TestCollector {
+	private static final String EXCEPTION = "exception";
 	private static final String TEST = "test";
 	private Timer timer;
 
@@ -399,25 +400,25 @@ public class TestCollector {
 					collectorServer.addCollectorApplication(application, urls);
 				} catch (final Exception e) {
 					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull("exception", e);
+					assertNotNull(EXCEPTION, e);
 				}
 				try {
 					collectorServer.collectSessionInformations(application, null);
 				} catch (final Exception e) {
 					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull("exception", e);
+					assertNotNull(EXCEPTION, e);
 				}
 				try {
 					collectorServer.collectSessionInformations(application, "sessionId");
 				} catch (final Exception e) {
 					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull("exception", e);
+					assertNotNull(EXCEPTION, e);
 				}
 				try {
 					collectorServer.collectHeapHistogram(application);
 				} catch (final Exception e) {
 					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull("exception", e);
+					assertNotNull(EXCEPTION, e);
 				}
 				collectorServer.getCollectorByApplication(application);
 				collectorServer.getJavaInformationsByApplication(application);
