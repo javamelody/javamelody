@@ -135,8 +135,7 @@ class HtmlCounterReport {
 					writeln("<b>#Plan_d_execution#</b>");
 					writeln("<div class='explainPlan'>");
 					writer.write(explainPlan.replace(" ", "&nbsp;").replace("\n", "<br/>"));
-					writeln("</div>");
-					writeln("<hr/>");
+					writeln("</div><hr/>");
 				}
 			} catch (final Exception e) {
 				writeln("<b>#Plan_d_execution#</b> ");
@@ -302,8 +301,7 @@ class HtmlCounterReport {
 			writeln("<div style='margin-left: 10px;'>");
 			writeCounterIcon(childRequest);
 			writeRequestGraph(childRequest.getId(), childRequest.getName());
-			writeln("</div>");
-			writeln("</td><td align='right'>");
+			writeln("</div></td><td align='right'>");
 			writer.write(nbExecutionsFormat.format(executionsByRequest));
 			writeRequestValues(childRequest, allChildHitsDisplayed);
 			writeln("</td>");
@@ -319,10 +317,11 @@ class HtmlCounterReport {
 			writeln(nextColumn);
 			writeln(integerFormat.format(request.getStandardDeviation()));
 			writeln(nextColumn);
+			final String nbsp = "&nbsp;";
 			if (request.getCpuTimeMean() >= 0) {
 				writeln(systemErrorFormat.format(request.getCpuTimeMean()));
 			} else {
-				writeln("&nbsp;");
+				writeln(nbsp);
 			}
 			writeln(nextColumn);
 			writeln(systemErrorFormat.format(request.getSystemErrorPercentage()));
@@ -332,13 +331,13 @@ class HtmlCounterReport {
 				if (childHitsDisplayed) {
 					writeln(systemErrorFormat.format(request.getChildHitsMean()));
 				} else {
-					writeln("&nbsp;");
+					writeln(nbsp);
 				}
 				writeln(nextColumn);
 				if (childHitsDisplayed) {
 					writeln(systemErrorFormat.format(request.getChildDurationsMean()));
 				} else {
-					writeln("&nbsp;");
+					writeln(nbsp);
 				}
 			}
 		}
