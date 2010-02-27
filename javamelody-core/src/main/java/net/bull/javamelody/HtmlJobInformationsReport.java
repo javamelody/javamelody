@@ -78,14 +78,16 @@ class HtmlJobInformationsReport {
 		writeln("</tbody></table>");
 		write("<div align='right' class='noPrint'>");
 		if (systemActionsEnabled) {
+			final String onClickConfirm = "' onclick=\"javascript:return confirm('";
+			final String endOnClickConfirm = "');\">";
 			writeln("<a href='?action=pause_job&amp;jobId=all&amp;period=" + period.getCode()
-					+ "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_pause_all_jobs") + "');\">");
+					+ onClickConfirm + I18N.getStringForJavascript("confirm_pause_all_jobs")
+					+ endOnClickConfirm);
 			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_all_jobs#\" /> #Pause_all_jobs#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<a href='?action=resume_job&amp;jobId=all&amp;period=" + period.getCode()
-					+ "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_resume_all_jobs") + "');\">");
+					+ onClickConfirm + I18N.getStringForJavascript("confirm_resume_all_jobs")
+					+ endOnClickConfirm);
 			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_all_jobs#\" /> #Resume_all_jobs#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
@@ -137,14 +139,16 @@ class HtmlJobInformationsReport {
 		}
 		if (systemActionsEnabled) {
 			write("</td> <td align='center' class='noPrint'>");
+			final String onClickConfirm = "' onclick=\"javascript:return confirm('";
+			final String endOnClickConfirm = "');\">";
 			writeln("<a href='?action=pause_job&amp;jobId=" + jobInformations.getGlobalJobId()
-					+ "&amp;period=" + period.getCode() + "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_pause_job") + "');\">");
+					+ "&amp;period=" + period.getCode() + onClickConfirm
+					+ I18N.getStringForJavascript("confirm_pause_job") + endOnClickConfirm);
 			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_job#\" title=\"#Pause_job#\" /></a>");
 			write("</td> <td align='center' class='noPrint'>");
 			writeln("<a href='?action=resume_job&amp;jobId=" + jobInformations.getGlobalJobId()
-					+ "&amp;period=" + period.getCode() + "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_resume_job") + "');\">");
+					+ "&amp;period=" + period.getCode() + onClickConfirm
+					+ I18N.getStringForJavascript("confirm_resume_job") + endOnClickConfirm);
 			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_job#\" title=\"#Resume_job#\" /></a>");
 		}
 		write("</td>");

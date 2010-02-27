@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
@@ -225,7 +226,7 @@ class MonitoringController {
 		final String fileName = "JavaMelody_"
 				+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
 				+ I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
-		httpResponse.addHeader("Content-Disposition", "inline;filename=" + fileName);
+		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=" + fileName);
 
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 
@@ -454,8 +455,8 @@ class MonitoringController {
 
 		// simple appel de monitoring sans format
 		httpResponse.setContentType("application/pdf");
-		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(
-				httpRequest, PdfReport.getFileName(collector.getApplication())));
+		httpResponse.addHeader(CONTENT_DISPOSITION, encodeFileNameToContentDisposition(httpRequest,
+				PdfReport.getFileName(collector.getApplication())));
 		try {
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer != null,
 					javaInformationsList, period, httpResponse.getOutputStream());
@@ -495,7 +496,7 @@ class MonitoringController {
 			httpResponse.setContentType("image/png");
 			httpResponse.setContentLength(img.length);
 			final String fileName = graphName + ".png";
-			httpResponse.addHeader("Content-Disposition", "inline;filename=" + fileName);
+			httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=" + fileName);
 			httpResponse.getOutputStream().write(img);
 			httpResponse.flushBuffer();
 		}
@@ -528,7 +529,7 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		final OutputStream out = httpResponse.getOutputStream();
 		httpResponse.setContentType(Parameters.getServletContext().getMimeType("/WEB-INF/web.xml"));
-		httpResponse.addHeader("Content-Disposition", "inline;filename=web.xml");
+		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=web.xml");
 		final InputStream in = getWebXmlAsStream();
 		if (in != null) {
 			try {
@@ -544,7 +545,7 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		final OutputStream out = httpResponse.getOutputStream();
 		httpResponse.setContentType(Parameters.getServletContext().getMimeType("/WEB-INF/web.xml"));
-		httpResponse.addHeader("Content-Disposition", "inline;filename=pom.xml");
+		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=pom.xml");
 		final InputStream in = getPomXmlAsStream();
 		if (in != null) {
 			try {

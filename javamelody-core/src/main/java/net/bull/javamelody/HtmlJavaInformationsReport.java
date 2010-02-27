@@ -65,12 +65,13 @@ class HtmlJavaInformationsReport {
 		if (!noDatabase) {
 			write("<br/><br/>");
 		}
+		final String br = "<br/>";
 		if (javaInformationsList.get(0).getSessionCount() >= 0) {
-			write("<br/>");
+			write(br);
 		}
 		if (javaInformationsList.get(0).getSystemLoadAverage() >= 0) {
 			// sinon le tableau est décalé vers la droite sous unix
-			write("<br/>");
+			write(br);
 		}
 		// pour l'alignement le nb de br doit correspondre au nb de lignes dans le résumé ci-dessus
 		writeln("<br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
