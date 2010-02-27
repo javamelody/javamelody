@@ -66,6 +66,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringFilter {
+	private static final String GRAPH = "graph";
 	private static final String TRUE = "true";
 	private FilterConfig config;
 	private ServletContext context;
@@ -261,11 +262,11 @@ public class TestMonitoringFilter {
 	@Test
 	public void testDoMonitoringWithGraph() throws ServletException, IOException {
 		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("graph", "usedMemory");
+		parameters.put(GRAPH, "usedMemory");
 		parameters.put("width", "800");
 		parameters.put("height", "600");
 		monitoring(parameters);
-		parameters.put("graph", "unknown");
+		parameters.put(GRAPH, "unknown");
 		monitoring(parameters, false);
 	}
 
@@ -301,12 +302,12 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, POM_XML_PART);
 		monitoring(parameters, false);
 
-		parameters.put(PART_PARAMETER, "graph");
-		parameters.put("graph", "usedMemory");
+		parameters.put(PART_PARAMETER, GRAPH);
+		parameters.put(GRAPH, "usedMemory");
 		monitoring(parameters);
 
 		parameters.put(PART_PARAMETER, USAGES_PART);
-		parameters.put("graph", "unknown");
+		parameters.put(GRAPH, "unknown");
 		monitoring(parameters);
 
 		parameters.put(PART_PARAMETER, "unknown part");
