@@ -121,7 +121,7 @@ enum Action {
 	 * @throws IOException e
 	 */
 	// CHECKSTYLE:OFF
-	String execute(Collector collector, String counterName, String sessionId, String threadId,
+	String execute(Collector collector, String counterName, String sessionId, String threadId, // NOPMD
 			String jobId) throws IOException {
 		// CHECKSTYLE:ON
 		String messageForReport;

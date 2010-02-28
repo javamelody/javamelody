@@ -339,7 +339,7 @@ class MonitoringController {
 		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 			doSessions(sessionId, htmlReport);
-		} else if (collectorServer == null && CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			doCurrentRequests(htmlReport);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			doHeapHisto(htmlReport);
@@ -382,7 +382,11 @@ class MonitoringController {
 	}
 
 	private void doCurrentRequests(HtmlReport htmlReport) throws IOException {
-		assert collectorServer == null;
+		if (collectorServer != null) {
+			// la partie html des requêtes html n'est utile que depuis une application monitorée
+			// (suite à l'appel depuis le serveur de collecte qui lui n'a pas les données requises)
+			throw new IllegalStateException();
+		}
 		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true,
 				new HashMap<String, HtmlCounterReport>());
 	}
