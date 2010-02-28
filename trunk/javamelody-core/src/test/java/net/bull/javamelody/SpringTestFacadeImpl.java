@@ -80,6 +80,6 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	 * {@inheritDoc}
 	 */
 	public void throwError() {
-		throw new Error("test");
+		throw new OutOfMemoryError("test");
 	}
 }
