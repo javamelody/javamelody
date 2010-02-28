@@ -413,7 +413,6 @@ final class Collector {
 
 	private long collectCounterRequestsAndErrorsData(Counter counter, List<CounterRequest> requests)
 			throws IOException {
-		final boolean errorCounter = counter.isErrorCounter();
 		int size = requests.size();
 		final Counter dayCounter = getCurrentDayCounter(counter);
 		final int maxRequestsCount = counter.getMaxRequestsCount();
@@ -430,28 +429,7 @@ final class Collector {
 				continue;
 			}
 
-			final String requestStorageId = newRequest.getId();
-			// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
-			final JRobin requestJRobin = getRequestJRobin(requestStorageId, newRequest.getName());
-
-			final CounterRequest request = requestsById.get(requestStorageId);
-			if (request != null) {
-				// idem : on clone et on soustrait les requêtes précédentes
-				// sauf si c'est l'initialisation
-				final CounterRequest lastPeriodRequest = newRequest.clone();
-				lastPeriodRequest.removeHits(request);
-				if (lastPeriodRequest.getHits() > 0) {
-					if (errorCounter) {
-						requestJRobin.addValue(lastPeriodRequest.getHits());
-					} else {
-						// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
-						requestJRobin.addValue(lastPeriodRequest.getMean());
-					}
-					// agrégation de la requête sur le compteur pour le jour courant
-					dayCounter.addHits(lastPeriodRequest);
-				}
-			}
-			requestsById.put(requestStorageId, newRequest);
+			collectCounterRequestData(dayCounter, newRequest);
 		}
 		while (size > maxRequestsCount && !requests.isEmpty()) {
 			// cas extrême: si le nombre de requêtes est encore trop grand,
@@ -464,6 +442,32 @@ final class Collector {
 		}
 		dayCounter.writeToFile();
 		return dayCounter.getEstimatedMemorySize();
+	}
+
+	private void collectCounterRequestData(Counter dayCounter, CounterRequest newRequest)
+			throws IOException {
+		final String requestStorageId = newRequest.getId();
+		// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
+		final JRobin requestJRobin = getRequestJRobin(requestStorageId, newRequest.getName());
+
+		final CounterRequest request = requestsById.get(requestStorageId);
+		if (request != null) {
+			// idem : on clone et on soustrait les requêtes précédentes
+			// sauf si c'est l'initialisation
+			final CounterRequest lastPeriodRequest = newRequest.clone();
+			lastPeriodRequest.removeHits(request);
+			if (lastPeriodRequest.getHits() > 0) {
+				if (dayCounter.isErrorCounter()) {
+					requestJRobin.addValue(lastPeriodRequest.getHits());
+				} else {
+					// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
+					requestJRobin.addValue(lastPeriodRequest.getMean());
+				}
+				// agrégation de la requête sur le compteur pour le jour courant
+				dayCounter.addHits(lastPeriodRequest);
+			}
+		}
+		requestsById.put(requestStorageId, newRequest);
 	}
 
 	private List<CounterError> getDeltaOfErrors(Counter counter, Counter dayCounter) {
