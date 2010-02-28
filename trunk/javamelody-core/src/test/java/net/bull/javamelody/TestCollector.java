@@ -93,9 +93,8 @@ public class TestCollector {
 	public void testToString() throws Exception {
 		try {
 			final Collector collector = createCollectorWithOneCounter();
-			final String toString = collector.toString();
-			if (toString == null || toString.isEmpty()) {
-				fail("toString non null et non vide");
+			if (collector.toString().isEmpty()) {
+				fail("toString collector vide");
 			}
 			if (new JavaInformations(null, false).toString().isEmpty()) {
 				fail("toString java vide");

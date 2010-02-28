@@ -150,7 +150,7 @@ class DatabaseInformations implements Serializable {
 	}
 
 	String[][] getResult() {
-		return result;
+		return result; // NOPMD
 	}
 
 	List<String> getRequestNames() {
