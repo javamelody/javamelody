@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.bull.javamelody.HeapHistogram.ClassInfo;
@@ -60,8 +61,8 @@ class HtmlHeapHistogramReport {
 		writeln("#Instances#: " + integerFormat.format(totalHeapInstances) + ',');
 		writeln(separator);
 		writeln("#Kilo-Octets#: " + integerFormat.format(totalHeapBytes / 1024));
-		writeClassInfo(heap, totalHeapInstances, totalHeapBytes, true, heapHistogram
-				.isSourceDisplayed(), heapHistogram.isDeltaDisplayed());
+		writeClassInfoSummaryAndDetails(heap, totalHeapInstances, totalHeapBytes, true,
+				heapHistogram.isSourceDisplayed(), heapHistogram.isDeltaDisplayed());
 		final List<ClassInfo> permGen = heapHistogram.getPermGenHistogram();
 		if (!permGen.isEmpty()) {
 			// avec jrockit, permGen est vide
@@ -74,36 +75,23 @@ class HtmlHeapHistogramReport {
 			writeln("#Instances#: " + integerFormat.format(totalPermGenInstances) + ',');
 			writeln(separator);
 			writeln("#Kilo-Octets#: " + integerFormat.format(totalPermGenBytes / 1024));
-			writeClassInfo(permGen, totalPermGenInstances, totalPermGenBytes, false, false, false);
+			writeClassInfoSummaryAndDetails(permGen, totalPermGenInstances, totalPermGenBytes,
+					false, false, false);
 		}
 	}
 
-	private void writeClassInfo(List<ClassInfo> classHistogram, long totalInstances,
-			long totalBytes, boolean heap, boolean sourceDisplayed, boolean deltaDisplayed)
-			throws IOException {
-		final String tableTag = "<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#histogramme#'>";
-		final String theadTag = "<thead><tr><th>#Classe#</th><th>#Taille#</th><th>#pct_taille#</th>"
-				+ (deltaDisplayed ? "<th>#Delta#</th>" : "")
-				+ "<th>#Instances#</th><th>#pct_instances#</th>"
-				+ (sourceDisplayed ? "<th>#Source#</th>" : "") + "</tr></thead><tbody>";
-		writeln(tableTag);
-		write(theadTag);
-		boolean odd = false;
+	private void writeClassInfoSummaryAndDetails(List<ClassInfo> classHistogram,
+			long totalInstances, long totalBytes, boolean heap, boolean sourceDisplayed,
+			boolean deltaDisplayed) throws IOException {
+		final List<ClassInfo> summaryClassHistogram = new ArrayList<ClassInfo>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {
 				break;
 			}
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
-			writeClassInfo(classInfo, totalInstances, totalBytes, heap, sourceDisplayed,
-					deltaDisplayed);
-			writeln("</tr>");
+			summaryClassHistogram.add(classInfo);
 		}
-		writeln("</tbody></table>");
+		writeClassInfo(summaryClassHistogram, totalInstances, totalBytes, heap, sourceDisplayed,
+				deltaDisplayed);
 
 		writeln("<div align='right'>");
 		final String id;
@@ -115,26 +103,41 @@ class HtmlHeapHistogramReport {
 		writeShowHideLink(id, "#Details#");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("</div><div id='" + id + "' style='display:none;'>");
-		writeln(tableTag);
-		write(theadTag);
-		odd = false;
+		final List<ClassInfo> detailsClassHistogram = new ArrayList<ClassInfo>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {
-				if (odd) {
-					write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-				} else {
-					write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-				}
-				odd = !odd; // NOPMD
-				writeClassInfo(classInfo, totalInstances, totalBytes, heap, sourceDisplayed,
-						deltaDisplayed);
-				writeln("</tr>");
+				detailsClassHistogram.add(classInfo);
 			}
 		}
-		writeln("</tbody></table></div>");
+		writeClassInfo(detailsClassHistogram, totalInstances, totalBytes, heap, sourceDisplayed,
+				deltaDisplayed);
+		writeln("</div>");
 	}
 
-	private void writeClassInfo(ClassInfo classInfo, long totalInstances, long totalBytes,
+	private void writeClassInfo(List<ClassInfo> classHistogram, long totalInstances,
+			long totalBytes, boolean heap, boolean sourceDisplayed, boolean deltaDisplayed)
+			throws IOException {
+		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#histogramme#'>");
+		write("<thead><tr><th>#Classe#</th><th>#Taille#</th><th>#pct_taille#</th>"
+				+ (deltaDisplayed ? "<th>#Delta#</th>" : "")
+				+ "<th>#Instances#</th><th>#pct_instances#</th>"
+				+ (sourceDisplayed ? "<th>#Source#</th>" : "") + "</tr></thead><tbody>");
+		boolean odd = false;
+		for (final ClassInfo classInfo : classHistogram) {
+			if (odd) {
+				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+			} else {
+				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+			}
+			writeClassInfoRow(classInfo, totalInstances, totalBytes, heap, sourceDisplayed,
+					deltaDisplayed);
+			writeln("</tr>");
+			odd = !odd; // NOPMD
+		}
+		writeln("</tbody></table>");
+	}
+
+	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
 			boolean heap, boolean sourceDisplayed, boolean deltaDisplayed) throws IOException {
 		write("<td>");
 		if (heap) {
