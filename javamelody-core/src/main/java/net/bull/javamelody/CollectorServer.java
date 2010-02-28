@@ -106,6 +106,27 @@ class CollectorServer {
 		assert application != null;
 		assert urls != null;
 		final long start = System.currentTimeMillis();
+		final String messageForReport = collectDataForApplication(application, urls);
+
+		final List<JavaInformations> javaInformationsList = javaInformationsByApplication
+				.get(application);
+		final Collector collector = collectorsByApplication.get(application);
+		assert collector != null;
+		collector.collectWithoutErrors(javaInformationsList);
+		LOGGER.info("collecte pour l'application " + application + " effectuée en "
+				+ (System.currentTimeMillis() - start) + "ms");
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("counters " + application + " : " + collector.getCounters());
+			LOGGER.debug("javaInformations " + application + " : " + javaInformationsList);
+			if (messageForReport != null) {
+				LOGGER.debug("message " + application + " : "
+						+ messageForReport.replace("\n", ", "));
+			}
+		}
+		return messageForReport;
+	}
+
+	private String collectDataForApplication(String application, List<URL> urls) throws IOException {
 		final List<JavaInformations> javaInformationsList = new ArrayList<JavaInformations>();
 		final StringBuilder sb = new StringBuilder();
 		Collector collector = collectorsByApplication.get(application);
@@ -135,23 +156,11 @@ class CollectorServer {
 			}
 		}
 		javaInformationsByApplication.put(application, javaInformationsList);
-		assert collector != null;
-		collector.collectWithoutErrors(javaInformationsList);
 		final String messageForReport;
 		if (sb.length() == 0) {
 			messageForReport = null;
 		} else {
 			messageForReport = sb.toString();
-		}
-		LOGGER.info("collecte pour l'application " + application + " effectuée en "
-				+ (System.currentTimeMillis() - start) + "ms");
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("counters " + application + " : " + collector.getCounters());
-			LOGGER.debug("javaInformations " + application + " : " + javaInformationsList);
-			if (messageForReport != null) {
-				LOGGER.debug("message " + application + " : "
-						+ messageForReport.replace("\n", ", "));
-			}
 		}
 		return messageForReport;
 	}
