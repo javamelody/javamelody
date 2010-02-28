@@ -53,7 +53,7 @@ final class JdbcWrapperHelper {
 			// pour JavaEE 6 :
 			// (voir par exemple http://smokeandice.blogspot.com/2009/12/datasourcedefinition-hidden-gem-from.html)
 			dataSources.putAll(getDataSourcesAt("java:global/jdbc"));
-		} else if (datasourcesParameter.trim().length() != 0) {
+		} else if (datasourcesParameter.trim().length() != 0) { // NOPMD
 			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
 				final String jndiName = datasource.trim();
