@@ -26,7 +26,6 @@ There is no promise of dates or that a particular feature will ever be done.
     # Why the *[http://maven.apache.org/guides/mini/guide-site.html maven site]* of javamelody does not include findbugs and checkstyle in the [http://mojo.codehaus.org/dashboard-maven-plugin/ dashboard] ? (or why the findbugs and checkstyle plugins are executed after the dashboard plugin, if not with the looooonger "site dashboard:dashboard site" ?) (maven 2.2)
     # Why the dependencies part when building the maven site is so long (in minutes) when online ?
     # Regressions with maven checkstyle plugin, [http://jira.codehaus.org/browse/MCHECKSTYLE-133 MCHECKSTYLE-133]
-    # Why maven pmd plugin says 0 warning in the report when there are warnings in pmd.xml ?
     # And why maven plugins (pmd, checkstyle, findbugs, dashboard...) are often years late ?
     # Why editing apt files in eclipse always freezes Eclipse ? (Eclipse 3.5, m2eclipse 0.9.8, maven embedded)
     # Why maven waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?
