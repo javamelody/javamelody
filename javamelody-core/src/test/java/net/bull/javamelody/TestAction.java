@@ -197,7 +197,7 @@ public class TestAction {
 				try {
 					Thread.sleep(10000);
 				} catch (final InterruptedException e) {
-					throw new RuntimeException(e);
+					throw new IllegalStateException(e);
 				}
 			}
 		});

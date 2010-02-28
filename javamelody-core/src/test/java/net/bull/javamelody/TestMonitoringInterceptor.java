@@ -47,7 +47,7 @@ public class TestMonitoringInterceptor {
 
 		public Object proceed() {
 			if (throwError) {
-				throw new Error("test");
+				throw new OutOfMemoryError("test");
 			}
 			return null;
 		}
