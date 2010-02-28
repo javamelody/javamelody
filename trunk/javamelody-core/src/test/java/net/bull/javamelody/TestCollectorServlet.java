@@ -190,13 +190,12 @@ public class TestCollectorServlet {
 		verify(response);
 	}
 
-	/** Test.
-	 * @throws Exception e */
+	/** Test. */
 	@Test
-	public void testMainWinstone() throws Exception {
+	public void testMainWinstone() {
 		try {
 			Main.main(new String[] { "--help" });
-		} catch (final NullPointerException e) {
+		} catch (final Exception e) {
 			// cela s'arrête sur le jar winstone qui n'est pas disponible en tests unitaires
 			assertNotNull("ok", e);
 		}
