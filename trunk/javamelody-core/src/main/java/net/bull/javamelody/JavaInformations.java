@@ -251,7 +251,6 @@ class JavaInformations implements Serializable { // NOPMD
 		return jvmArgs.toString();
 	}
 
-	@SuppressWarnings("all")
 	static List<ThreadInformations> buildThreadInformationsList() {
 		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		final List<Thread> threads;
@@ -261,15 +260,8 @@ class JavaInformations implements Serializable { // NOPMD
 			threads = new ArrayList<Thread>(stackTraces.keySet());
 		} else {
 			// on récupère les threads sans stack trace en contournant bug 6434648 avant 1.6.0_01
-			ThreadGroup group = Thread.currentThread().getThreadGroup();
-			while (group.getParent() != null) {
-				group = group.getParent();
-			}
-			final Thread[] threadsArray = new Thread[group.activeCount()];
-			group.enumerate(threadsArray, true);
-
+			threads = getThreadsFromThreadGroups();
 			stackTraces = Collections.emptyMap();
-			threads = Arrays.asList(threadsArray);
 		}
 
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
@@ -298,6 +290,16 @@ class JavaInformations implements Serializable { // NOPMD
 		}
 		// on retourne ArrayList et non unmodifiableList pour lisibilité du xml par xstream
 		return threadInfosList;
+	}
+
+	static List<Thread> getThreadsFromThreadGroups() {
+		ThreadGroup group = Thread.currentThread().getThreadGroup(); // NOPMD
+		while (group.getParent() != null) {
+			group = group.getParent();
+		}
+		final Thread[] threadsArray = new Thread[group.activeCount()];
+		group.enumerate(threadsArray, true);
+		return Arrays.asList(threadsArray);
 	}
 
 	private static long[] getDeadlockedThreads(ThreadMXBean threadBean) {

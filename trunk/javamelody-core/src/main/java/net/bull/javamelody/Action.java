@@ -256,13 +256,8 @@ enum Action { // NOPMD
 		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
 		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 			final long myThreadId = Long.parseLong(values[2]);
-			ThreadGroup group = Thread.currentThread().getThreadGroup(); // NOPMD
-			while (group.getParent() != null) {
-				group = group.getParent();
-			}
-			final Thread[] threadsArray = new Thread[group.activeCount()];
-			group.enumerate(threadsArray, true);
-			for (final Thread thread : threadsArray) {
+			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
+			for (final Thread thread : threads) {
 				if (thread.getId() == myThreadId) {
 					stopThread(thread);
 					return I18N.getFormattedString("Thread_tue", thread.getName());
