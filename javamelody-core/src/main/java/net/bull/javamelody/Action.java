@@ -36,7 +36,6 @@ import net.sf.ehcache.CacheManager;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 
 /**
  * Énumération des actions possibles dans l'IHM.
@@ -277,97 +276,97 @@ enum Action { // NOPMD
 	}
 
 	private String pauseJob(String jobId) {
-		try {
-			if (ALL.equalsIgnoreCase(jobId)) {
-				pauseAllJobs();
-				return I18N.getString("all_jobs_paused");
-			}
-		} catch (final Exception e) {
-			throw new IllegalStateException(e);
+		if (ALL.equalsIgnoreCase(jobId)) {
+			pauseAllJobs();
+			return I18N.getString("all_jobs_paused");
 		}
 
 		final String[] values = jobId.split("_");
 		if (values.length != 3) {
 			throw new IllegalArgumentException(jobId);
 		}
-		try {
-			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
-			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
-				if (pauseJobById(Integer.parseInt(values[2]))) {
-					return I18N.getString("job_paused");
-				}
-				return I18N.getString("job_notfound");
+		// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
+		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
+			if (pauseJobById(Integer.parseInt(values[2]))) {
+				return I18N.getString("job_paused");
 			}
+			return I18N.getString("job_notfound");
+		}
 
-			// cette action ne concernait pas cette JVM, donc on ne fait rien
-			return null;
+		// cette action ne concernait pas cette JVM, donc on ne fait rien
+		return null;
+	}
+
+	private boolean pauseJobById(int myJobId) {
+		try {
+			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
+					if (jobDetail.getFullName().hashCode() == myJobId) {
+						scheduler.pauseJob(jobDetail.getName(), jobDetail.getGroup());
+						return true;
+					}
+				}
+			}
+			return false;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	private boolean pauseJobById(int myJobId) throws SchedulerException {
-		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-				if (jobDetail.getFullName().hashCode() == myJobId) {
-					scheduler.pauseJob(jobDetail.getName(), jobDetail.getGroup());
-					return true;
-				}
+	private void pauseAllJobs() {
+		try {
+			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+				scheduler.pauseAll();
 			}
-		}
-		return false;
-	}
-
-	private void pauseAllJobs() throws SchedulerException {
-		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-			scheduler.pauseAll();
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
 		}
 	}
 
 	private String resumeJob(String jobId) {
-		try {
-			if (ALL.equalsIgnoreCase(jobId)) {
-				resumeAllJobs();
-				return I18N.getString("all_jobs_resumed");
-			}
-		} catch (final Exception e) {
-			throw new IllegalStateException(e);
+		if (ALL.equalsIgnoreCase(jobId)) {
+			resumeAllJobs();
+			return I18N.getString("all_jobs_resumed");
 		}
 		final String[] values = jobId.split("_");
 		if (values.length != 3) {
 			throw new IllegalArgumentException(jobId);
 		}
-		try {
-			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
-			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
-				if (resumeJobById(Integer.parseInt(values[2]))) {
-					return I18N.getString("job_resumed");
-				}
-				return I18N.getString("job_notfound");
+		// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
+		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
+			if (resumeJobById(Integer.parseInt(values[2]))) {
+				return I18N.getString("job_resumed");
 			}
+			return I18N.getString("job_notfound");
+		}
 
-			// cette action ne concernait pas cette JVM, donc on ne fait rien
-			return null;
+		// cette action ne concernait pas cette JVM, donc on ne fait rien
+		return null;
+	}
+
+	private boolean resumeJobById(int myJobId) {
+		try {
+			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
+					if (jobDetail.getFullName().hashCode() == myJobId) {
+						scheduler.resumeJob(jobDetail.getName(), jobDetail.getGroup());
+						return true;
+					}
+				}
+			}
+			return false;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	private boolean resumeJobById(int myJobId) throws SchedulerException {
-		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-				if (jobDetail.getFullName().hashCode() == myJobId) {
-					scheduler.resumeJob(jobDetail.getName(), jobDetail.getGroup());
-					return true;
-				}
+	private void resumeAllJobs() {
+		try {
+			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
+				scheduler.resumeAll();
 			}
-		}
-		return false;
-	}
-
-	private void resumeAllJobs() throws SchedulerException {
-		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-			scheduler.resumeAll();
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
 		}
 	}
 }
