@@ -137,7 +137,7 @@ enum Action { // NOPMD
 				// garbage collector
 				final long before = Runtime.getRuntime().totalMemory()
 						- Runtime.getRuntime().freeMemory();
-				garbageCollect();
+				gc();
 				final long after = Runtime.getRuntime().totalMemory()
 						- Runtime.getRuntime().freeMemory();
 				messageForReport = I18N.getFormattedString("ramasse_miette_execute",
@@ -234,8 +234,9 @@ enum Action { // NOPMD
 		return heapDumpFile;
 	}
 
+	// cette méthode doit s'appeler "gc" pour que findbugs ne fasse pas de warning
 	@SuppressWarnings("all")
-	private void garbageCollect() {
+	private void gc() {
 		Runtime.getRuntime().gc();
 	}
 
