@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -28,9 +29,9 @@ public interface SpringTestFacade {
 	/**
 	 * Méthode test de service sur la façade.
 	 * @return Date
-	 * @throws Exception e
+	 * @throws SQLException e
 	 */
-	Date nowWithSql() throws Exception;
+	Date nowWithSql() throws SQLException;
 
 	/**
 	 * Méthode test de service sur la façade.

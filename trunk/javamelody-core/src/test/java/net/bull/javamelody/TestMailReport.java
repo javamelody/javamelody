@@ -53,7 +53,7 @@ public class TestMailReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testSendReportMail() throws Exception {
+	public void testSendReportMail() throws Exception { // NOPMD
 		final Timer timer = new Timer("test timer", true);
 		try {
 			final Counter counter = new Counter("http", null);

@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Date nowWithSql() throws Exception {
+	public Date nowWithSql() throws SQLException {
 		//		final javax.sql.DataSource dataSource = (javax.sql.DataSource) new javax.naming.InitialContext()
 		//				.lookup("java:comp/env/jdbc/TestDB");
 		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {

@@ -56,7 +56,7 @@ public class TestAction {
 	}
 
 	/** Test.
-	 * @throws IOException e 
+	 * @throws IOException e
 	 * @throws SchedulerException e */
 	@Test
 	public void testExecute() throws IOException, SchedulerException {
