@@ -29,6 +29,7 @@ import java.util.Map;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.SchedulerRepository;
 
@@ -55,7 +56,7 @@ class JobInformations implements Serializable {
 	private final String globalJobId;
 
 	JobInformations(JobDetail jobDetail, JobExecutionContext jobExecutionContext,
-			Scheduler scheduler) throws Exception {
+			Scheduler scheduler) throws SchedulerException {
 		// pas throws SchedulerException ici sinon NoClassDefFoundError
 		super();
 		assert jobDetail != null;
@@ -125,7 +126,7 @@ class JobInformations implements Serializable {
 				}
 			}
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new IllegalStateException(e);
 		}
 		return result;
 	}
@@ -135,7 +136,7 @@ class JobInformations implements Serializable {
 		return new ArrayList<Scheduler>(SchedulerRepository.getInstance().lookupAll());
 	}
 
-	static List<JobDetail> getAllJobsOfScheduler(Scheduler scheduler) throws Exception {
+	static List<JobDetail> getAllJobsOfScheduler(Scheduler scheduler) throws SchedulerException {
 		final List<JobDetail> result = new ArrayList<JobDetail>();
 		for (final String jobGroupName : scheduler.getJobGroupNames()) {
 			for (final String jobName : scheduler.getJobNames(jobGroupName)) {

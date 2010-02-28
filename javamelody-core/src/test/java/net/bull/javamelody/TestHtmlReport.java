@@ -174,7 +174,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testAllWrite() throws Exception {
+	public void testAllWrite() throws Exception { // NOPMD
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.writeRequestAndGraphDetail("httpHitsRate");

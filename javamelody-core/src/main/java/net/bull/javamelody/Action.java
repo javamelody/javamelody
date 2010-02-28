@@ -36,12 +36,13 @@ import net.sf.ehcache.CacheManager;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 
 /**
  * Énumération des actions possibles dans l'IHM.
  * @author Emeric Vernat
  */
-enum Action {
+enum Action { // NOPMD
 	/**
 	 * Réinitialisation d'un compteur non périodique.
 	 */
@@ -193,7 +194,9 @@ enum Action {
 	private String clearCounter(Collector collector, String counterName) {
 		String messageForReport;
 		if (ALL.equalsIgnoreCase(counterName)) {
-			clearCounters(collector);
+			for (final Counter counter : collector.getCounters()) {
+				collector.clearCounter(counter.getName());
+			}
 			messageForReport = I18N.getFormattedString("Toutes_statistiques_reinitialisees",
 					counterName);
 		} else {
@@ -202,12 +205,6 @@ enum Action {
 			messageForReport = I18N.getFormattedString("Statistiques_reinitialisees", counterName);
 		}
 		return messageForReport;
-	}
-
-	private void clearCounters(Collector collector) {
-		for (final Counter counter : collector.getCounters()) {
-			collector.clearCounter(counter.getName());
-		}
 	}
 
 	private File heapDump() throws IOException {
@@ -278,7 +275,7 @@ enum Action {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void stopThread(final Thread thread) {
+	private void stopThread(Thread thread) {
 		// I know that it is unsafe and the user has been warned
 		thread.stop();
 	}
@@ -289,10 +286,15 @@ enum Action {
 				pauseAllJobs();
 				return I18N.getString("all_jobs_paused");
 			}
-			final String[] values = jobId.split("_");
-			if (values.length != 3) {
-				throw new IllegalArgumentException(jobId);
-			}
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+
+		final String[] values = jobId.split("_");
+		if (values.length != 3) {
+			throw new IllegalArgumentException(jobId);
+		}
+		try {
 			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 				if (pauseJobById(Integer.parseInt(values[2]))) {
@@ -303,14 +305,12 @@ enum Action {
 
 			// cette action ne concernait pas cette JVM, donc on ne fait rien
 			return null;
-		} catch (final IllegalArgumentException e) {
-			throw e;
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new IllegalStateException(e);
 		}
 	}
 
-	private boolean pauseJobById(int myJobId) throws Exception {
+	private boolean pauseJobById(int myJobId) throws SchedulerException {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
 				if (jobDetail.getFullName().hashCode() == myJobId) {
@@ -322,7 +322,7 @@ enum Action {
 		return false;
 	}
 
-	private void pauseAllJobs() throws Exception {
+	private void pauseAllJobs() throws SchedulerException {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			scheduler.pauseAll();
 		}
@@ -334,10 +334,14 @@ enum Action {
 				resumeAllJobs();
 				return I18N.getString("all_jobs_resumed");
 			}
-			final String[] values = jobId.split("_");
-			if (values.length != 3) {
-				throw new IllegalArgumentException(jobId);
-			}
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+		final String[] values = jobId.split("_");
+		if (values.length != 3) {
+			throw new IllegalArgumentException(jobId);
+		}
+		try {
 			// rq : la syntaxe vérifiée ici doit être conforme à JobInformations.buildGlobalJobId
 			if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 				if (resumeJobById(Integer.parseInt(values[2]))) {
@@ -348,14 +352,12 @@ enum Action {
 
 			// cette action ne concernait pas cette JVM, donc on ne fait rien
 			return null;
-		} catch (final IllegalArgumentException e) {
-			throw e;
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new IllegalStateException(e);
 		}
 	}
 
-	private boolean resumeJobById(int myJobId) throws Exception {
+	private boolean resumeJobById(int myJobId) throws SchedulerException {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
 				if (jobDetail.getFullName().hashCode() == myJobId) {
@@ -367,7 +369,7 @@ enum Action {
 		return false;
 	}
 
-	private void resumeAllJobs() throws Exception {
+	private void resumeAllJobs() throws SchedulerException {
 		for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 			scheduler.resumeAll();
 		}

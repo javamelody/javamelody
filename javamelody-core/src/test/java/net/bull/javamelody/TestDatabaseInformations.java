@@ -56,9 +56,10 @@ public class TestDatabaseInformations {
 	}
 
 	/** Test.
-	 * @throws Exception e */
+	 * @throws NamingException e
+	 * @throws SQLException e */
 	@Test
-	public void testDatabaseInformations() throws Exception {
+	public void testDatabaseInformations() throws SQLException, NamingException {
 		final int requestIndex = 0;
 		final DatabaseInformations databaseInformations = new DatabaseInformations(requestIndex);
 		assertSame("getSelectedRequestIndex", requestIndex, databaseInformations

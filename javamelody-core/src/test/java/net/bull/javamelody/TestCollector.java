@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
 /**
@@ -88,9 +89,9 @@ public class TestCollector {
 	}
 
 	/** Test.
-	 * @throws Exception e */
+	 * @throws SchedulerException e */
 	@Test
-	public void testToString() throws Exception {
+	public void testToString() throws SchedulerException {
 		try {
 			final Collector collector = createCollectorWithOneCounter();
 			if (collector.toString().isEmpty()) {

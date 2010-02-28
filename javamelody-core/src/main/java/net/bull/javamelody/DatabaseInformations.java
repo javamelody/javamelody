@@ -112,7 +112,7 @@ class DatabaseInformations implements Serializable {
 	private final int selectedRequestIndex;
 	private final String[][] result;
 
-	DatabaseInformations(int selectedRequestIndex) throws Exception {
+	DatabaseInformations(int selectedRequestIndex) throws SQLException, NamingException {
 		super();
 		this.selectedRequestIndex = selectedRequestIndex;
 		final Connection connection = getConnection();
