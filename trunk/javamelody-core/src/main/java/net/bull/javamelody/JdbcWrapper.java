@@ -656,12 +656,12 @@ final class JdbcWrapper {
 
 	static boolean isEqualsMethod(Object methodName, Object[] args) {
 		// == for perf (strings interned: == is ok)
-		return "equals" == methodName && args != null && args.length == 1;
+		return "equals" == methodName && args != null && args.length == 1; // NOPMD
 	}
 
 	static boolean isHashCodeMethod(Object methodName, Object[] args) {
 		// == for perf (strings interned: == is ok)
-		return "hashCode" == methodName && (args == null || args.length == 0);
+		return "hashCode" == methodName && (args == null || args.length == 0); // NOPMD
 	}
 
 	@SuppressWarnings("unchecked")
