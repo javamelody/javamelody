@@ -123,15 +123,6 @@ class HtmlReport {
 		this.writer = writer;
 	}
 
-	private static boolean isPdfEnabled() {
-		try {
-			Class.forName("com.lowagie.text.Document");
-			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		}
-	}
-
 	void toHtml(String message) throws IOException {
 		writeHtmlHeader(false);
 		if (collectorServer != null) {
@@ -334,6 +325,27 @@ class HtmlReport {
 		}
 	}
 
+	private static boolean isPdfEnabled() {
+		try {
+			Class.forName("com.lowagie.text.Document");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private boolean isGcEnabled() {
+		return Action.GC_ENABLED || collectorServer != null;
+	}
+
+	private boolean isHeapDumpEnabled() {
+		return Action.HEAP_DUMP_ENABLED || collectorServer != null;
+	}
+
+	private boolean isHeapHistoEnabled() {
+		return collectorServer != null || VirtualMachine.isEnabled();
+	}
+
 	private boolean isDatabaseEnabled() {
 		return !Parameters.isNoDatabase()
 				&& javaInformationsList.get(0).getDataBaseVersion() != null
@@ -432,7 +444,7 @@ class HtmlReport {
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		final String endOfOnClickConfirm = "');\">";
-		if (Action.GC_ENABLED || collectorServer != null) {
+		if (isGcEnabled()) {
 			writeln("<a href='?action=gc" + periodParameter
 					+ "' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
@@ -445,7 +457,7 @@ class HtmlReport {
 			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
-		if (Action.HEAP_DUMP_ENABLED || collectorServer != null) {
+		if (isHeapDumpEnabled()) {
 			// si serveur de collecte, on suppose que si la version de java est la bonne
 			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
 			// des webapps monitorées
@@ -458,14 +470,15 @@ class HtmlReport {
 		if (isSessionsEnabled()) {
 			writeln("<a href='?action=invalidate_sessions" + periodParameter
 					+ "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_invalidate_sessions") + endOfOnClickConfirm);
+					+ I18N.getStringForJavascript("confirm_invalidate_sessions")
+					+ endOfOnClickConfirm);
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
 			writeln("<a href='?part=sessions" + periodParameter + "'>");
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
 		writeln("<br />");
-		if (collectorServer != null || VirtualMachine.isEnabled()) {
+		if (isHeapHistoEnabled()) {
 			writeln(separator);
 			writeln("<a href='?part=heaphisto" + periodParameter + "'>");
 			writeln("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");

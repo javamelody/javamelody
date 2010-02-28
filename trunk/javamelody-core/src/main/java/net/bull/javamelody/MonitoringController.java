@@ -151,22 +151,26 @@ class MonitoringController {
 			// langue préférée du navigateur, getLocale ne peut être null
 			I18N.bindLocale(httpRequest.getLocale());
 
-			final Period period = getPeriod(httpRequest);
-			final String part = httpRequest.getParameter(PART_PARAMETER);
-			final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
-			if (part == null && graph != null) {
-				doGraph(httpRequest, httpResponse, period, graph);
-				return;
-			} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
-				doLastValue(httpResponse, graph);
-				return;
-			} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
-				doWebXml(httpResponse);
-				return;
-			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
-				doPomXml(httpResponse);
-				return;
-			}
+			doReportCore(httpRequest, httpResponse, javaInformationsList);
+		} finally {
+			I18N.unbindLocale();
+		}
+	}
+
+	private void doReportCore(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			List<JavaInformations> javaInformationsList) throws IOException {
+		final Period period = getPeriod(httpRequest);
+		final String part = httpRequest.getParameter(PART_PARAMETER);
+		final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
+		if (part == null && graph != null) {
+			doGraph(httpRequest, httpResponse, period, graph);
+		} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
+			doLastValue(httpResponse, graph);
+		} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
+			doWebXml(httpResponse);
+		} else if (POM_XML_PART.equalsIgnoreCase(part)) {
+			doPomXml(httpResponse);
+		} else {
 			final String format = httpRequest.getParameter(FORMAT_PARAMETER);
 			if (format == null || "html".equalsIgnoreCase(format)) {
 				doCompressedHtml(httpRequest, httpResponse, javaInformationsList, period, part);
@@ -175,8 +179,6 @@ class MonitoringController {
 			} else {
 				doSerializable(httpRequest, httpResponse, javaInformationsList, format);
 			}
-		} finally {
-			I18N.unbindLocale();
 		}
 	}
 
@@ -276,6 +278,10 @@ class MonitoringController {
 			return e;
 		}
 
+		return createDefaultSerializable(javaInformationsList);
+	}
+
+	private Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList) {
 		final List<Counter> counters = collector.getCounters();
 		final List<Serializable> serialized = new ArrayList<Serializable>(counters.size()
 				+ javaInformationsList.size());
@@ -331,7 +337,8 @@ class MonitoringController {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestUsages(graphName);
 		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			doSessions(httpRequest, htmlReport);
+			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
+			doSessions(sessionId, htmlReport);
 		} else if (collectorServer == null && CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			doCurrentRequests(htmlReport);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
@@ -351,11 +358,9 @@ class MonitoringController {
 		}
 	}
 
-	private void doSessions(HttpServletRequest httpRequest, HtmlReport htmlReport)
-			throws IOException {
+	private void doSessions(String sessionId, HtmlReport htmlReport) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 		final List<SessionInformations> sessionsInformations;
 		if (collectorServer == null) {
 			if (sessionId == null) {
