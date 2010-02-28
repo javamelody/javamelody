@@ -42,6 +42,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestCollectorServlet {
+	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 	private static final String TEST = "test";
 	private ServletConfig config;
 	private ServletContext context;
@@ -127,7 +128,7 @@ public class TestCollectorServlet {
 					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
 							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(pattern)
 					.anyTimes();
-			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
+			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
 		}
 		replay(config);
 		replay(context);
@@ -175,7 +176,7 @@ public class TestCollectorServlet {
 					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
 							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("none")
 					.anyTimes();
-			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
+			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
 		}
 		replay(config);
 		replay(context);

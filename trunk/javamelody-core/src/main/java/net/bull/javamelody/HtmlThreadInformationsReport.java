@@ -146,7 +146,7 @@ class HtmlThreadInformationsReport {
 	}
 
 	static String getStateIcon(ThreadInformations threadInformations) {
-		switch (threadInformations.getState()) {
+		switch (threadInformations.getState()) { // NOPMD
 		case RUNNABLE:
 			return "green.png";
 		case WAITING:

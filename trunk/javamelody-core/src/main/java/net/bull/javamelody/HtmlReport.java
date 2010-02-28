@@ -431,10 +431,11 @@ class HtmlReport {
 		final String periodParameter = buildPeriodParameter();
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
+		final String endOfOnClickConfirm = "');\">";
 		if (Action.GC_ENABLED || collectorServer != null) {
 			writeln("<a href='?action=gc" + periodParameter
 					+ "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_ramasse_miette") + "');\">");
+					+ I18N.getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
 			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
@@ -450,14 +451,14 @@ class HtmlReport {
 			// des webapps monitorées
 			writeln("<a href='?action=heap_dump" + periodParameter
 					+ "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_heap_dump") + "');\">");
+					+ I18N.getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
 			writeln("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 			writeln(separator);
 		}
 		if (isSessionsEnabled()) {
 			writeln("<a href='?action=invalidate_sessions" + periodParameter
 					+ "' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_invalidate_sessions") + "');\">");
+					+ I18N.getStringForJavascript("confirm_invalidate_sessions") + endOfOnClickConfirm);
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
 			writeln("<a href='?part=sessions" + periodParameter + "'>");
