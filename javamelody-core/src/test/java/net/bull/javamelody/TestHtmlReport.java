@@ -158,9 +158,10 @@ public class TestHtmlReport {
 	public void testPeriodeNonTout() throws IOException {
 		// counter avec période non TOUT et des requêtes
 		collector.collectWithoutErrors(javaInformationsList);
-		counter.bindContext("test 1", "complete test 1");
+		final String requestName = "test 1";
+		counter.bindContext(requestName, "complete test 1");
 		sqlCounter.addRequest("sql1", 10, 10, false, -1);
-		counter.addRequest("test 1", 0, 0, false, 1000);
+		counter.addRequest(requestName, 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
@@ -183,14 +184,15 @@ public class TestHtmlReport {
 		// si sqlCounter reste à displayed=false,
 		// il ne sera pas utilisé dans writeRequestAndGraphDetail
 		sqlCounter.setDisplayed(true);
-		counter.bindContext("test 1", "complete test 1");
+		final String requestName = "test 1";
+		counter.bindContext(requestName, "complete test 1");
 		servicesCounter.bindContext("service1", "service1");
-		sqlCounter.bindContext("sql1", "sql1");
+		sqlCounter.bindContext("sql1", "complete sql1");
 		sqlCounter.addRequest("sql1", 5, -1, false, -1);
 		servicesCounter.addRequest("service1", 10, 10, false, -1);
 		servicesCounter.bindContext("service2", "service2");
 		servicesCounter.addRequest("service2", 10, 10, false, -1);
-		counter.addRequest("test 1", 0, 0, false, 1000);
+		counter.addRequest(requestName, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport toutHtmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);

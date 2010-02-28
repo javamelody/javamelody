@@ -51,10 +51,11 @@ public class TestTransportFormat {
 		final Counter counter = createCounter();
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		TransportFormat.SERIALIZED.writeSerializableTo(counter, output);
-		assertTrue("flux vide", output.size() > 0);
+		final String message = "flux vide";
+		assertTrue(message, output.size() > 0);
 		output.reset();
 		TransportFormat.SERIALIZED.writeSerializableTo(null, output);
-		assertTrue("flux vide", output.size() > 0);
+		assertTrue(message, output.size() > 0);
 	}
 
 	/** Test.

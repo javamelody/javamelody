@@ -22,10 +22,13 @@ import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
@@ -66,6 +69,8 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringFilter {
+	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
+	private static final String CONTEXT_PATH = "/test";
 	private static final String GRAPH = "graph";
 	private static final String TRUE = "true";
 	private FilterConfig config;
@@ -89,7 +94,7 @@ public class TestMonitoringFilter {
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getServerInfo()).andReturn("EasyMock").anyTimes();
-		expect(context.getContextPath()).andReturn("/test").anyTimes();
+		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		monitoringFilter = new MonitoringFilter();
 	}
 
@@ -149,9 +154,9 @@ public class TestMonitoringFilter {
 	public void testLog() throws ServletException {
 		try {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			expect(request.getRemoteAddr()).andReturn("127.0.0.1");
+			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
 			expect(request.getRequestURI()).andReturn("/test/request");
-			expect(request.getContextPath()).andReturn("/test");
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH);
 			expect(request.getQueryString()).andReturn("param1=1");
 			expect(request.getMethod()).andReturn("GET");
 
@@ -174,7 +179,7 @@ public class TestMonitoringFilter {
 		try {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
-			expect(request.getContextPath()).andReturn("/test").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 			expect(request.getQueryString()).andReturn("param1=1");
 			expect(request.getMethod()).andReturn("GET");
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
@@ -237,7 +242,7 @@ public class TestMonitoringFilter {
 	@Test
 	public void testDoMonitoring() throws ServletException, IOException {
 		monitoring(Collections.<String, String> emptyMap());
-		monitoring(Collections.<String, String> singletonMap("format", "html"));
+		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "html"));
 	}
 
 	/** Test.
@@ -245,7 +250,7 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap("period", "jour"));
+		monitoring(Collections.<String, String> singletonMap(PERIOD_PARAMETER, "jour"));
 	}
 
 	/** Test.
@@ -253,7 +258,7 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithResource() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap("resource", "monitoring.css"));
+		monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER, "monitoring.css"));
 	}
 
 	/** Test.
@@ -351,7 +356,7 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap("format", "pdf"));
+		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "pdf"));
 	}
 
 	/** Test.
@@ -361,7 +366,7 @@ public class TestMonitoringFilter {
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("format", TransportFormat.SERIALIZED.getCode());
+		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
@@ -380,7 +385,7 @@ public class TestMonitoringFilter {
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
 		parameters.put(PART_PARAMETER, null);
-		parameters.put("format", TransportFormat.SERIALIZED.getCode());
+		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
 		parameters.put(COLLECTOR_PARAMETER, "stop");
 		monitoring(parameters);
 	}
@@ -392,7 +397,7 @@ public class TestMonitoringFilter {
 	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("format", TransportFormat.XML.getCode());
+		parameters.put(FORMAT_PARAMETER, TransportFormat.XML.getCode());
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
@@ -412,7 +417,7 @@ public class TestMonitoringFilter {
 	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("format", TransportFormat.JSON.getCode());
+		parameters.put(FORMAT_PARAMETER, TransportFormat.JSON.getCode());
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
@@ -434,7 +439,7 @@ public class TestMonitoringFilter {
 		try {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
-			expect(request.getContextPath()).andReturn("/test").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 			final Random random = new Random();
 			if (random.nextBoolean()) {
 				expect(request.getHeaders("Accept-Encoding")).andReturn(

@@ -90,6 +90,8 @@ enum Action {
 	static final boolean HEAP_DUMP_ENABLED = "1.6".compareTo(System.getProperty("java.version")) < 0
 			&& System.getProperty("java.vendor").contains("Sun");
 
+	private static final String ALL = "all";
+
 	/**
 	 * Convertit le code d'une action en énumération de l'action.
 	 * @param action String
@@ -134,7 +136,7 @@ enum Action {
 				// garbage collector
 				final long before = Runtime.getRuntime().totalMemory()
 						- Runtime.getRuntime().freeMemory();
-				gc();
+				garbageCollect();
 				final long after = Runtime.getRuntime().totalMemory()
 						- Runtime.getRuntime().freeMemory();
 				messageForReport = I18N.getFormattedString("ramasse_miette_execute",
@@ -190,7 +192,7 @@ enum Action {
 
 	private String clearCounter(Collector collector, String counterName) {
 		String messageForReport;
-		if ("all".equalsIgnoreCase(counterName)) {
+		if (ALL.equalsIgnoreCase(counterName)) {
 			clearCounters(collector);
 			messageForReport = I18N.getFormattedString("Toutes_statistiques_reinitialisees",
 					counterName);
@@ -236,7 +238,7 @@ enum Action {
 	}
 
 	@SuppressWarnings("all")
-	private void gc() {
+	private void garbageCollect() {
 		Runtime.getRuntime().gc();
 	}
 
@@ -283,7 +285,7 @@ enum Action {
 
 	private String pauseJob(String jobId) {
 		try {
-			if ("all".equalsIgnoreCase(jobId)) {
+			if (ALL.equalsIgnoreCase(jobId)) {
 				pauseAllJobs();
 				return I18N.getString("all_jobs_paused");
 			}
@@ -328,7 +330,7 @@ enum Action {
 
 	private String resumeJob(String jobId) {
 		try {
-			if ("all".equalsIgnoreCase(jobId)) {
+			if (ALL.equalsIgnoreCase(jobId)) {
 				resumeAllJobs();
 				return I18N.getString("all_jobs_resumed");
 			}
