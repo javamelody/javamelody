@@ -258,7 +258,7 @@ enum Action {
 		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
 		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
 			final long myThreadId = Long.parseLong(values[2]);
-			ThreadGroup group = Thread.currentThread().getThreadGroup();
+			ThreadGroup group = Thread.currentThread().getThreadGroup(); // NOPMD
 			while (group.getParent() != null) {
 				group = group.getParent();
 			}
