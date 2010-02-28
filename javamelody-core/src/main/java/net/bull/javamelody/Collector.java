@@ -390,7 +390,7 @@ final class Collector {
 				// on remplit le stockage avec les données
 				hitsJRobin.addValue(hitsParMinute);
 				// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
-				if (hits > 0) {
+				if (hits > 0) { // NOPMD
 					meanTimesJRobin.addValue(lastPeriodGlobalRequest.getMean());
 					systemErrorsJRobin.addValue(lastPeriodGlobalRequest.getSystemErrorPercentage());
 
