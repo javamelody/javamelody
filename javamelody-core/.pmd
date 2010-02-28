@@ -212,10 +212,6 @@
             <ruleset>Clone Implementation Rules</ruleset>
         </rule>
         <rule>
-            <name>CloseResource</name>
-            <ruleset>Design Rules</ruleset>
-        </rule>
-        <rule>
             <name>CollapsibleIfStatements</name>
             <ruleset>Basic Rules</ruleset>
         </rule>
@@ -254,10 +250,6 @@
         <rule>
             <name>DoNotThrowExceptionInFinally</name>
             <ruleset>Strict Exception Rules</ruleset>
-        </rule>
-        <rule>
-            <name>DoNotUseThreads</name>
-            <ruleset>J2EE Rules</ruleset>
         </rule>
         <rule>
             <name>DontImportJavaLang</name>
@@ -449,10 +441,6 @@
         </rule>
         <rule>
             <name>JUnitStaticSuite</name>
-            <ruleset>JUnit Rules</ruleset>
-        </rule>
-        <rule>
-            <name>JUnitTestsShouldIncludeAssert</name>
             <ruleset>JUnit Rules</ruleset>
         </rule>
         <rule>
@@ -861,4 +849,5 @@
         </rule>
     </rules>
     <includeDerivedFiles>false</includeDerivedFiles>
+    <violationsAsErrors>true</violationsAsErrors>
 </pmd>
