@@ -54,7 +54,7 @@ Java version required for execution:
 
 	* 1.6 recommended for following functions: heap dump, memory histogram, stack traces and system load average
 	
-	* JDK or JRE from Sun or JRockit from Oracle/BEA
+	* JDK or JRE from Sun or JRockit from Oracle/BEA or J9 from IBM
 
 Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
 like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, Jetty 6, WebLogic 9, 10 or 11
