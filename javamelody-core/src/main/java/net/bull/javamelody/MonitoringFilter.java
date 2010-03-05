@@ -93,13 +93,10 @@ public class MonitoringFilter implements Filter {
 		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));
 		// on branche le handler java.util.logging pour le counter de logs
 		LoggingHandler.getSingleton().register();
-		try {
-			Class.forName("org.apache.log4j.Logger");
-			log4jEnabled = true;
+		log4jEnabled = isLog4jEnabled();
+		if (log4jEnabled) {
 			// si log4j est disponible on branche aussi l'appender pour le counter de logs
 			Log4JAppender.getSingleton().register();
-		} catch (final ClassNotFoundException e) {
-			log4jEnabled = false;
 		}
 
 		this.contextFactoryEnabled = !monitoringDisabled
@@ -163,6 +160,18 @@ public class MonitoringFilter implements Filter {
 		}
 
 		initCollect();
+	}
+
+	private boolean isLog4jEnabled() {
+		try {
+			Class.forName("org.apache.log4j.Logger");
+			// test avec AppenderSkeleton nécessaire car log4j-over-slf4j contient la classe
+			// org.apache.log4j.Logger mais pas org.apache.log4j.AppenderSkeleton
+			Class.forName("org.apache.log4j.AppenderSkeleton");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	private static void setRequestTransformPatterns(List<Counter> counters) {
