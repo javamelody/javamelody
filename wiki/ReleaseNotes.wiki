@@ -1,4 +1,9 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 14: html reports in utf-8 for cyrillic and other characters
+  * added: remember the last selected period (with a persistent cookie in the browser)
+
 === 1.12.0 ===
 
   * if a centralized collect server is used:
