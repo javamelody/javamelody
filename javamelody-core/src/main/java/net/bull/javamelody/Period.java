@@ -37,6 +37,7 @@ enum Period {
 	 * (affiche les graphs sur 2 ans et toutes les requêtes y compris les dernières minutes) */
 	TOUT(2 * 366 * 24 * 60 * 60, "calendar.png", "all");
 
+	static final Period DEFAULT_PERIOD = Period.JOUR;
 	private final String code;
 	private final String mailCode;
 	private final int durationSeconds;

@@ -54,8 +54,7 @@ class HtmlReport {
 			this.writer = writer;
 		}
 
-		void writeAddAndRemoveApplicationLinks(String currentApplication, Period period)
-				throws IOException {
+		void writeAddAndRemoveApplicationLinks(String currentApplication) throws IOException {
 			if (currentApplication == null) {
 				writeln("<div align='center'><h3>#add_application#</h3>");
 			} else {
@@ -65,7 +64,7 @@ class HtmlReport {
 				writeln(" class='noPrint'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
 				writeln(separator);
 				writeln("<a href='?action=remove_application&amp;application=" + currentApplication
-						+ "&amp;period=" + period.getCode() + "' class='noPrint' ");
+						+ "' class='noPrint' ");
 				final String messageConfirmation = I18N.getFormattedString(
 						"confirm_remove_application", currentApplication);
 				writeln("onclick=\"javascript:return confirm('"
@@ -92,8 +91,7 @@ class HtmlReport {
 			writeln("}");
 			writeln(SCRIPT_END);
 			writeln("<br/> <br/>");
-			writeln("<form name='appForm' method='post' action='?period=" + period.getCode()
-					+ "' onsubmit='return validateAppForm();'>");
+			writeln("<form name='appForm' method='post' action='' onsubmit='return validateAppForm();'>");
 			writeln("<br/><b>#app_name_to_monitor# :</b>&nbsp;&nbsp;<input type='text' size='15' name='appName'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<b>#app_urls# :</b>&nbsp;&nbsp;<input type='text' size='50' name='appUrls'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<input type='submit' value='#add#'/><br/>");
@@ -127,8 +125,8 @@ class HtmlReport {
 		writeHtmlHeader(false);
 		if (collectorServer != null) {
 			writeln(DIV_ALIGN_CENTER);
-			writeApplicationsLinks(buildPeriodParameter());
-			writeAddAndRemoveApplicationLinks(collector.getApplication(), period, writer);
+			writeApplicationsLinks();
+			writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
 			writeln(END_DIV);
 		}
 
@@ -143,7 +141,7 @@ class HtmlReport {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters();
 		if (period == Period.TOUT) {
 			writeln("<div align='right'>");
-			writeln("<a href='?period=tout&amp;action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
+			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
 					+ I18N.javascriptEncode(I18N.getString("confirm_vider_toutes_stats"))
 					+ "');\">#Reinitialiser_toutes_stats#</a>");
@@ -159,8 +157,7 @@ class HtmlReport {
 		writeln("<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
 		writeln("#Informations_systemes#</h3>");
 		if (collectorServer != null) {
-			writeln("<div align='center' class='noPrint'><a href='?part=currentRequests"
-					+ buildPeriodParameter() + "'>");
+			writeln("<div align='center' class='noPrint'><a href='?part=currentRequests'>");
 			writeln("<img src='?resource=hourglass.png' width='20' height='20' alt=\"#Voir_requetes_en_cours#\" /> #Voir_requetes_en_cours#</a>");
 			writeln(END_DIV);
 			writeln("<br/>");
@@ -169,7 +166,7 @@ class HtmlReport {
 			writeSystemActionsLinks();
 		}
 
-		new HtmlJavaInformationsReport(javaInformationsList, period, writer).toHtml();
+		new HtmlJavaInformationsReport(javaInformationsList, writer).toHtml();
 
 		writeln("<h3 style='clear:both;'><img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
 		writeln("#Threads#</h3>");
@@ -221,10 +218,10 @@ class HtmlReport {
 		return counterReportsByCounterName;
 	}
 
-	static void writeAddAndRemoveApplicationLinks(String currentApplication, Period period,
-			Writer writer) throws IOException {
-		new HtmlAddAndRemoveApplications(writer).writeAddAndRemoveApplicationLinks(
-				currentApplication, period);
+	static void writeAddAndRemoveApplicationLinks(String currentApplication, Writer writer)
+			throws IOException {
+		new HtmlAddAndRemoveApplications(writer)
+				.writeAddAndRemoveApplicationLinks(currentApplication);
 	}
 
 	void writeMessageIfNotNull(String message, String partToRedirectTo) throws IOException {
@@ -235,17 +232,12 @@ class HtmlReport {
 			writeln("");
 			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
 			if (partToRedirectTo == null) {
-				writeln("location.href = '?period=" + period.getCode() + '\'');
+				writeln("location.href = '?'");
 			} else {
-				writeln("location.href = '?part=" + partToRedirectTo + "&period="
-						+ period.getCode() + '\'');
+				writeln("location.href = '?part=" + partToRedirectTo + '\'');
 			}
 			writeln(SCRIPT_END);
 		}
-	}
-
-	private String buildPeriodParameter() {
-		return "&amp;period=" + period.getCode();
 	}
 
 	private void writeGraphs() throws IOException {
@@ -259,16 +251,14 @@ class HtmlReport {
 	}
 
 	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
-		final String periodParameter = buildPeriodParameter();
 		int i = 0;
 		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
-				writeln("<a href='?part=graph&amp;graph=" + jrobinName + periodParameter
+				writeln("<a href='?part=graph&amp;graph=" + jrobinName
 						+ "'><img class='synthese' src='?width=200&amp;height="
-						+ JRobin.SMALL_HEIGHT + "&amp;graph=" + jrobinName + periodParameter
-						+ "' alt=\"" + jrobin.getLabel() + "\" title=\"" + jrobin.getLabel()
-						+ "\"/></a>");
+						+ JRobin.SMALL_HEIGHT + "&amp;graph=" + jrobinName + "' alt=\""
+						+ jrobin.getLabel() + "\" title=\"" + jrobin.getLabel() + "\"/></a>");
 			}
 			i++;
 			if (i % 3 == 0) {
@@ -289,6 +279,7 @@ class HtmlReport {
 	void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled, Map<String, HtmlCounterReport> counterReportsByCounterName)
 			throws IOException {
+		// counterReportsByCounterName peut être null
 		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
 		if (rootCurrentContexts.isEmpty()) {
 			writeln("#Aucune_requete_en_cours#");
@@ -408,8 +399,8 @@ class HtmlReport {
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/>");
 			writeln("<div id='" + id + "' style='display: none;'>");
-			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), period,
-					writer).toHtml();
+			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
+					.toHtml();
 			writeln("</div><br/>");
 			i++;
 		}
@@ -432,7 +423,7 @@ class HtmlReport {
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/>");
 			writeln("<div id='" + id + "' style='display: none;'>");
-			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), period, writer)
+			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), writer)
 					.toHtml();
 			writeln("</div><br/>");
 			i++;
@@ -440,13 +431,11 @@ class HtmlReport {
 	}
 
 	private void writeSystemActionsLinks() throws IOException {
-		final String periodParameter = buildPeriodParameter();
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		final String endOfOnClickConfirm = "');\">";
 		if (isGcEnabled()) {
-			writeln("<a href='?action=gc" + periodParameter
-					+ "' onclick=\"javascript:return confirm('"
+			writeln("<a href='?action=gc' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
 			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
@@ -461,49 +450,47 @@ class HtmlReport {
 			// si serveur de collecte, on suppose que si la version de java est la bonne
 			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
 			// des webapps monitorées
-			writeln("<a href='?action=heap_dump" + periodParameter
-					+ "' onclick=\"javascript:return confirm('"
+			writeln("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
 			writeln("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 			writeln(separator);
 		}
 		if (isSessionsEnabled()) {
-			writeln("<a href='?action=invalidate_sessions" + periodParameter
-					+ "' onclick=\"javascript:return confirm('"
+			writeln("<a href='?action=invalidate_sessions' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_invalidate_sessions")
 					+ endOfOnClickConfirm);
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
-			writeln("<a href='?part=sessions" + periodParameter + "'>");
+			writeln("<a href='?part=sessions'>");
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
 		writeln("<br />");
 		if (isHeapHistoEnabled()) {
 			writeln(separator);
-			writeln("<a href='?part=heaphisto" + periodParameter + "'>");
+			writeln("<a href='?part=heaphisto'>");
 			writeln("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
 		}
 		if (doesWebXmlExists()) {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
 			writeln(separator);
-			writeln("<a href='?part=web.xml" + periodParameter + "'>");
+			writeln("<a href='?part=web.xml'>");
 			writeln("<img src='?resource=xml.png' width='20' height='20' alt=\"#web.xml#\" /> #web.xml#</a>");
 		}
 
 		writeln(separator);
-		writeln("<a href='?part=processes" + periodParameter + "'>");
+		writeln("<a href='?part=processes'>");
 		writeln("<img src='?resource=threads.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
 		if (isDatabaseEnabled()) {
 			writeln(separator);
-			writeln("<a href='?part=database" + periodParameter + "'>");
+			writeln("<a href='?part=database'>");
 			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#database#\" /> #database#</a>");
 		}
 
 		writeln("<br/></div>");
 	}
 
-	private void writeApplicationsLinks(String periodParameter) throws IOException {
+	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
 		final Set<String> applications = Parameters.getCollectorUrlsByApplications().keySet();
 		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
@@ -511,8 +498,7 @@ class HtmlReport {
 		if (applications.size() > 1) {
 			writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
 			for (final String application : applications) {
-				writeln("<a href='?application=" + application + periodParameter
-						+ "' class='tooltip'>");
+				writeln("<a href='?application=" + application + "' class='tooltip'>");
 				final Throwable lastCollectException = lastCollectExceptionsByApplication
 						.get(application);
 				if (lastCollectException == null) {
@@ -538,20 +524,19 @@ class HtmlReport {
 
 	private void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {
 		writeln("<div class='noPrint'>");
-		final String linkStart;
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (graphName == null) {
-			linkStart = "<a href='?period=";
+			writeln("<a href='?' title='#Rafraichir#'>");
 		} else {
 			writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 			writeln(separator);
-			linkStart = "<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period=";
+			writeln("<a href='?part=" + part + "&amp;graph=" + graphName
+					+ "' title='#Rafraichir#'>");
 		}
-		writeln(linkStart + period.getCode() + "' title='#Rafraichir#'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (graphName == null && PDF_ENABLED) {
 			writeln(separator);
-			writeln(linkStart + period.getCode() + "&amp;format=pdf' title='#afficher_PDF#'>");
+			writeln("<a href='?format=pdf' title='#afficher_PDF#'>");
 			writeln("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln(separator);
@@ -563,7 +548,12 @@ class HtmlReport {
 		// Rq : il n'y a pas de période ni de graph sur la dernière heure puisque
 		// si la résolution des données est de 5 min, on ne verra alors presque rien
 		for (final Period myPeriod : Period.values()) {
-			writeln(linkStart + myPeriod.getCode() + "' ");
+			if (graphName == null) {
+				writeln("<a href='?period=" + myPeriod.getCode() + "' ");
+			} else {
+				writeln("<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period="
+						+ myPeriod.getCode() + "' ");
+			}
 			writeln("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
 					+ "'>");
 			writeln("<img src='?resource=" + myPeriod.getIconName() + "' alt='"

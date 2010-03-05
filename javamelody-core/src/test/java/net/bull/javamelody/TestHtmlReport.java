@@ -214,8 +214,8 @@ public class TestHtmlReport {
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));
 		TestDatabaseInformations.initH2();
 		htmlReport.writeDatabase(new DatabaseInformations(0));
-		HtmlReport.writeAddAndRemoveApplicationLinks(null, Period.JOUR, writer);
-		HtmlReport.writeAddAndRemoveApplicationLinks("test", Period.JOUR, writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 		htmlReport.toHtml(null); // writeSystemActionsLinks
 		assertNotEmptyAndClear(writer);

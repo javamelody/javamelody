@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -57,7 +56,7 @@ import org.apache.log4j.Logger;
 public class CollectorServlet extends HttpServlet {
 	private static final String BACK_LINK = "<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
-	private static final String COOKIE_NAME = "javamelody";
+	private static final String COOKIE_NAME = "javamelody.application";
 
 	private static final long serialVersionUID = -2070469677921953224L;
 
@@ -179,8 +178,7 @@ public class CollectorServlet extends HttpServlet {
 				if ("remove_application".equalsIgnoreCase(actionParameter)) {
 					collectorServer.removeCollectorApplication(application);
 					messageForReport = I18N.getFormattedString("application_enlevee", application);
-					final Period period = MonitoringController.getPeriod(req);
-					showAlertAndRedirectTo(resp, messageForReport, "?period=" + period.getCode());
+					showAlertAndRedirectTo(resp, messageForReport, "?");
 				} else if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER) {
 					// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
 					// et on récupère les informations à jour (notamment mémoire et nb de sessions)
@@ -246,14 +244,12 @@ public class CollectorServlet extends HttpServlet {
 	private void doCurrentRequests(HttpServletRequest req, HttpServletResponse resp,
 			String application) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		final HtmlReport htmlReport = createHtmlReport(req, writer, application);
+		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		htmlReport.writeHtmlHeader(false);
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
 		writer.write("<a href='?part=");
 		writer.write(CURRENT_REQUESTS_PART);
-		writer.write("&amp;period=");
-		writer.write(MonitoringController.getPeriod(req).getCode());
 		writer.write("'>");
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
@@ -277,7 +273,7 @@ public class CollectorServlet extends HttpServlet {
 	private void doProcesses(HttpServletRequest req, HttpServletResponse resp, String application)
 			throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		final HtmlReport htmlReport = createHtmlReport(req, writer, application);
+		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		htmlReport.writeHtmlHeader(false);
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
@@ -311,7 +307,7 @@ public class CollectorServlet extends HttpServlet {
 			requestIndex = 0;
 		}
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		final HtmlReport htmlReport = createHtmlReport(req, writer, application);
+		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		final URL url = getUrlsByApplication(application).get(0);
 		final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
 				+ DATABASE_PART + '&' + REQUEST_PARAMETER + '=' + requestIndex);
@@ -321,9 +317,9 @@ public class CollectorServlet extends HttpServlet {
 		writer.close();
 	}
 
-	private HtmlReport createHtmlReport(HttpServletRequest req, PrintWriter writer,
-			String application) {
-		final Period period = MonitoringController.getPeriod(req);
+	private HtmlReport createHtmlReport(HttpServletRequest req, HttpServletResponse resp,
+			PrintWriter writer, String application) {
+		final Period period = MonitoringController.getPeriod(req, resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 		return new HtmlReport(collector, collectorServer, javaInformationsList, period, writer);
@@ -342,12 +338,12 @@ public class CollectorServlet extends HttpServlet {
 		MonitoringController.noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		final Period period = MonitoringController.getPeriod(req);
 		if (application == null) {
-			showAlertAndRedirectTo(resp, message, "?period=" + period.getCode());
+			showAlertAndRedirectTo(resp, message, "?");
 		} else {
 			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partParameter = req.getParameter(PART_PARAMETER);
+			final Period period = MonitoringController.getPeriod(req, resp);
 			new HtmlReport(collector, collectorServer, javaInformationsList, period, writer)
 					.writeMessageIfNotNull(message, partParameter);
 			writer.close();
@@ -374,7 +370,7 @@ public class CollectorServlet extends HttpServlet {
 		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<html><head><title>Monitoring</title></head><body>");
-		HtmlReport.writeAddAndRemoveApplicationLinks(null, Period.JOUR, writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 		writer.write("</body></html>");
 		writer.close();
 	}
@@ -428,18 +424,13 @@ public class CollectorServlet extends HttpServlet {
 		String application = req.getParameter("application");
 		if (application == null) {
 			// pas de paramètre application dans la requête, on cherche le cookie
-			final Cookie[] cookies = req.getCookies();
-			if (cookies != null) {
-				for (final Cookie cookie : Arrays.asList(cookies)) {
-					if (COOKIE_NAME.equals(cookie.getName())) {
-						application = cookie.getValue();
-						if (!collectorServer.isApplicationDataAvailable(application)) {
-							cookie.setMaxAge(-1);
-							resp.addCookie(cookie);
-							application = null;
-						}
-						break;
-					}
+			final Cookie cookie = MonitoringController.getCookieByName(req, COOKIE_NAME);
+			if (cookie != null) {
+				application = cookie.getValue();
+				if (!collectorServer.isApplicationDataAvailable(application)) {
+					cookie.setMaxAge(-1);
+					resp.addCookie(cookie);
+					application = null;
 				}
 			}
 			if (application == null) {
@@ -449,9 +440,7 @@ public class CollectorServlet extends HttpServlet {
 		} else if (collectorServer.isApplicationDataAvailable(application)) {
 			// un paramètre application est présent dans la requête: l'utilisateur a choisi une application,
 			// donc on fixe le cookie
-			final Cookie cookie = new Cookie(COOKIE_NAME, String.valueOf(application));
-			cookie.setMaxAge(30 * 24 * 60 * 60); // cookie persistant, valide pendant 30 jours
-			resp.addCookie(cookie);
+			MonitoringController.addCookie(req, resp, COOKIE_NAME, String.valueOf(application));
 		}
 		return application;
 	}

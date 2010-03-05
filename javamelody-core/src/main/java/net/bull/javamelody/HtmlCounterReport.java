@@ -66,8 +66,6 @@ class HtmlCounterReport {
 			// la classe tooltip est configurée dans la css de HtmlReport
 			write("<a class='tooltip' href='?part=graph&amp;graph=");
 			write(requestId);
-			write("&amp;period=");
-			write(period.getCode());
 			write("'");
 			// ce onmouseover sert à charger les graphs par requête un par un et à la demande
 			// sans les charger tous au chargement de la page.
@@ -77,8 +75,6 @@ class HtmlCounterReport {
 			write(id);
 			write("').src='?graph=");
 			write(requestId);
-			write("&amp;period=");
-			write(period.getCode());
 			write("&amp;width=100&amp;height=50'; this.onmouseover=null;\" >");
 			// avant mouseover on prend une image qui sera mise en cache
 			write("<em><img src='?resource=db.png' id='");
@@ -112,8 +108,7 @@ class HtmlCounterReport {
 			writeln("</div></div>");
 
 			writeln("<div align='center'><img class='synthèse' id='img' src='"
-					+ "?width=960&amp;height=400&amp;graph=" + graphName + "&amp;" + "period="
-					+ period.getCode() + "' alt='zoom'/></div>");
+					+ "?width=960&amp;height=400&amp;graph=" + graphName + "' alt='zoom'/></div>");
 
 			if (request != null && request.getStackTrace() != null) {
 				writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
@@ -202,8 +197,7 @@ class HtmlCounterReport {
 			if (someUsageDisplayed) {
 				writeln("</td><td align='center' class='noPrint'>");
 				if (doesRequestDisplayUsages(request)) {
-					writeln("<a href='?part=usages&amp;period=" + period.getCode() + "&amp;graph="
-							+ request.getId() + "'>");
+					writeln("<a href='?part=usages&amp;graph=" + request.getId() + "'>");
 					writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' title='#Chercher_utilisations#'/></a>");
 				} else {
 					writeln("&nbsp;");
@@ -258,8 +252,7 @@ class HtmlCounterReport {
 			writeln("</tbody></table>");
 			if (doesRequestDisplayUsages(request)) {
 				writeln("<div align='right' class='noPrint'>");
-				writeln("<a href='?part=usages&amp;period=" + period.getCode() + "&amp;graph="
-						+ request.getId() + "'>");
+				writeln("<a href='?part=usages&amp;graph=" + request.getId() + "'>");
 				writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' ");
 				writeln("title='#Chercher_utilisations#'/> #Chercher_utilisations#</a></div>");
 			} else {
@@ -377,7 +370,6 @@ class HtmlCounterReport {
 			// reload the images
 			// rq : on utilise des caractères unicode pour éviter des warnings
 			writeln("  document.getElementById('img').src = '?graph=" + graphName
-					+ "\\u0026period=" + period.getCode()
 					+ "\\u0026width=' + width + '\\u0026height=' + height;");
 			writeln("  document.getElementById('img').style.width = '';");
 			writeln("}");
@@ -479,8 +471,8 @@ class HtmlCounterReport {
 		}
 		writeln(separator);
 		if (period == Period.TOUT) {
-			writeln("<a href='?period=tout&amp;action=clear_counter&amp;counter=" + counterName
-					+ "' title='" + I18N.getFormattedString("Vider_stats", counterName) + '\'');
+			writeln("<a href='?action=clear_counter&amp;counter=" + counterName + "' title='"
+					+ I18N.getFormattedString("Vider_stats", counterName) + '\'');
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
 					+ I18N.javascriptEncode(I18N.getFormattedString("confirm_vider_stats",
 							counterName)) + "');\">#Reinitialiser#</a>");

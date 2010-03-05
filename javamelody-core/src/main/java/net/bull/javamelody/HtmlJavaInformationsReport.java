@@ -42,18 +42,14 @@ class HtmlJavaInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final List<JavaInformations> javaInformationsList;
-	private final Period period;
 	private final Writer writer;
 
-	HtmlJavaInformationsReport(List<JavaInformations> javaInformationsList, Period period,
-			Writer writer) {
+	HtmlJavaInformationsReport(List<JavaInformations> javaInformationsList, Writer writer) {
 		super();
 		assert javaInformationsList != null && !javaInformationsList.isEmpty();
-		assert period != null;
 		assert writer != null;
 
 		this.javaInformationsList = javaInformationsList;
-		this.period = period;
 		this.writer = writer;
 	}
 
@@ -225,9 +221,8 @@ class HtmlJavaInformationsReport {
 			if (javaInformations.doesPomXmlExists()
 					&& Boolean.parseBoolean(Parameters
 							.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
-				writeln("&nbsp;&nbsp;&nbsp;<a href='?part=pom.xml&amp;period="
-						+ period.getCode()
-						+ "' class='noPrint'><img src='?resource=xml.png' width='14' height='14' alt=\"#pom.xml#\"/> #pom.xml#</a>");
+				writeln("&nbsp;&nbsp;&nbsp;<a href='?part=pom.xml' class='noPrint'>");
+				writeln("<img src='?resource=xml.png' width='14' height='14' alt=\"#pom.xml#\"/> #pom.xml#</a>");
 			}
 			writeln("<br/>");
 			writeln("<div id='detailsDependencies" + uniqueByPageSequence
@@ -245,8 +240,6 @@ class HtmlJavaInformationsReport {
 		// la classe tooltip est configurée dans la css de HtmlReport
 		write("<a class='tooltip' href='?part=graph&amp;graph=");
 		write(graph);
-		write("&amp;period=");
-		write(period.getCode());
 		write("'");
 		// ce onmouseover sert à charger les graphs par requête un par un et à la demande
 		// sans les charger tous au chargement de la page.
@@ -256,8 +249,6 @@ class HtmlJavaInformationsReport {
 		write(id);
 		write("').src='?graph=");
 		write(graph);
-		write("&amp;period=");
-		write(period.getCode());
 		write("&amp;width=100&amp;height=50'; this.onmouseover=null;\" >");
 		// avant mouseover on prend une image qui sera mise en cache
 		write("<em><img src='?resource=systeminfo.png' id='");

@@ -30,22 +30,18 @@ import java.util.List;
  */
 class HtmlJobInformationsReport {
 	private final List<JobInformations> jobInformationsList;
-	private final Period period;
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
 	private final boolean systemActionsEnabled = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
 
-	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Period period,
-			Writer writer) {
+	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Writer writer) {
 		super();
 		assert jobInformationsList != null;
-		assert period != null;
 		assert writer != null;
 
 		this.jobInformationsList = jobInformationsList;
-		this.period = period;
 		this.writer = writer;
 	}
 
@@ -80,14 +76,12 @@ class HtmlJobInformationsReport {
 		if (systemActionsEnabled) {
 			final String onClickConfirm = "' onclick=\"javascript:return confirm('";
 			final String endOnClickConfirm = "');\">";
-			writeln("<a href='?action=pause_job&amp;jobId=all&amp;period=" + period.getCode()
-					+ onClickConfirm + I18N.getStringForJavascript("confirm_pause_all_jobs")
-					+ endOnClickConfirm);
+			writeln("<a href='?action=pause_job&amp;jobId=all" + onClickConfirm
+					+ I18N.getStringForJavascript("confirm_pause_all_jobs") + endOnClickConfirm);
 			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_all_jobs#\" /> #Pause_all_jobs#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writeln("<a href='?action=resume_job&amp;jobId=all&amp;period=" + period.getCode()
-					+ onClickConfirm + I18N.getStringForJavascript("confirm_resume_all_jobs")
-					+ endOnClickConfirm);
+			writeln("<a href='?action=resume_job&amp;jobId=all" + onClickConfirm
+					+ I18N.getStringForJavascript("confirm_resume_all_jobs") + endOnClickConfirm);
 			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_all_jobs#\" /> #Resume_all_jobs#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
@@ -142,13 +136,13 @@ class HtmlJobInformationsReport {
 			final String onClickConfirm = "' onclick=\"javascript:return confirm('";
 			final String endOnClickConfirm = "');\">";
 			writeln("<a href='?action=pause_job&amp;jobId=" + jobInformations.getGlobalJobId()
-					+ "&amp;period=" + period.getCode() + onClickConfirm
-					+ I18N.getStringForJavascript("confirm_pause_job") + endOnClickConfirm);
+					+ onClickConfirm + I18N.getStringForJavascript("confirm_pause_job")
+					+ endOnClickConfirm);
 			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_job#\" title=\"#Pause_job#\" /></a>");
 			write("</td> <td align='center' class='noPrint'>");
 			writeln("<a href='?action=resume_job&amp;jobId=" + jobInformations.getGlobalJobId()
-					+ "&amp;period=" + period.getCode() + onClickConfirm
-					+ I18N.getStringForJavascript("confirm_resume_job") + endOnClickConfirm);
+					+ onClickConfirm + I18N.getStringForJavascript("confirm_resume_job")
+					+ endOnClickConfirm);
 			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_job#\" title=\"#Resume_job#\" /></a>");
 		}
 		write("</td>");

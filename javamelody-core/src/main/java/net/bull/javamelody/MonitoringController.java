@@ -57,10 +57,10 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -88,6 +88,7 @@ class MonitoringController {
 		}
 		JavaInformations.setWebXmlExistsAndPomXmlExists(webXmlExists, pomXmlExists);
 	}
+	private static final String COOKIE_NAME = "javamelody.period";
 	private final Collector collector;
 	private final CollectorServer collectorServer;
 	private String messageForReport;
@@ -159,7 +160,7 @@ class MonitoringController {
 
 	private void doReportCore(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
-		final Period period = getPeriod(httpRequest);
+		final Period period = getPeriod(httpRequest, httpResponse);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
 		if (part == null && graph != null) {
@@ -188,14 +189,49 @@ class MonitoringController {
 		httpResponse.addHeader("Expires", "-1");
 	}
 
-	static Period getPeriod(HttpServletRequest req) {
+	static Period getPeriod(HttpServletRequest req, HttpServletResponse resp) {
 		final Period period;
 		if (req.getParameter(PERIOD_PARAMETER) == null) {
-			period = Period.JOUR;
+			// pas de paramètre period dans la requête, on cherche le cookie
+			final Cookie cookie = getCookieByName(req, COOKIE_NAME);
+			if (cookie == null) {
+				// pas de cookie, période jour par défaut
+				period = Period.DEFAULT_PERIOD;
+			} else {
+				period = Period.valueOfIgnoreCase(cookie.getValue());
+			}
 		} else {
 			period = Period.valueOfIgnoreCase(req.getParameter(PERIOD_PARAMETER));
+			// un paramètre period est présent dans la requête :
+			// l'utilisateur a choisi une période, donc on fixe le cookie
+			addCookie(req, resp, COOKIE_NAME, period.getCode());
 		}
 		return period;
+	}
+
+	static Cookie getCookieByName(HttpServletRequest req, String cookieName) {
+		final Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+			for (final Cookie cookie : cookies) {
+				if (cookieName.equals(cookie.getName())) {
+					return cookie;
+				}
+			}
+		}
+		return null;
+	}
+
+	static void addCookie(HttpServletRequest req, HttpServletResponse resp, String cookieName,
+			String cookieValue) {
+		if (!"added".equals(req.getAttribute(cookieName))) {
+			final Cookie cookie = new Cookie(cookieName, cookieValue);
+			// cookie persistant, valide pendant 30 jours
+			cookie.setMaxAge(30 * 24 * 60 * 60);
+			// inutile d'envoyer ce cookie aux autres URLs que le monitoring
+			cookie.setPath(req.getRequestURI());
+			resp.addCookie(cookie);
+			req.setAttribute(cookieName, "added");
+		}
 	}
 
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -387,8 +423,7 @@ class MonitoringController {
 			// (suite à l'appel depuis le serveur de collecte qui lui n'a pas les données requises)
 			throw new IllegalStateException();
 		}
-		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true,
-				new HashMap<String, HtmlCounterReport>());
+		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true, null);
 	}
 
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
