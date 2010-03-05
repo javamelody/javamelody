@@ -45,7 +45,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	* 1.6 recommended for following functions: heap dump, memory histogram, stack traces and
 	system load average
 	
-	* JDK or JRE from Sun or JRockit from Oracle/BEA
+	* JDK or JRE from Sun or JRockit from Oracle/BEA or J9 from IBM
 
 	[]
 

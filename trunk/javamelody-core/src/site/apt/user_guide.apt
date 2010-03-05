@@ -45,7 +45,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	* 1.6 recommandé pour fonctions complémentaires (heap dump, histogramme mémoire, stack traces et
 	system load average)
 	
-	* JDK ou JRE de Sun ou bien JRockit d'Oracle/BEA
+	* JDK ou JRE de Sun ou JRockit d'Oracle/BEA ou J9 d'IBM
 
 	[]
 
