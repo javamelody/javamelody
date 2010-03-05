@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 14: html reports in utf-8 for cyrillic and other characters
+  * fix issue 15: support for log4j-over-slf4j 
   * added: remember the last selected period (with a persistent cookie in the browser)
   * More to come...
 
