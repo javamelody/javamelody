@@ -133,13 +133,16 @@ class HtmlCounterRequestContextReport {
 			Period period, Writer writer) {
 		super();
 		assert rootCurrentContexts != null;
-		assert counterReportsByCounterName != null;
 		assert threadInformationsList != null;
 		assert period != null;
 		assert writer != null;
 
 		this.rootCurrentContexts = rootCurrentContexts;
-		this.counterReportsByCounterName = counterReportsByCounterName;
+		if (counterReportsByCounterName == null) {
+			this.counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
+		} else {
+			this.counterReportsByCounterName = counterReportsByCounterName;
+		}
 		this.threadInformationsByThreadId = new HashMap<Long, ThreadInformations>(
 				threadInformationsList.size());
 		for (final ThreadInformations threadInformations : threadInformationsList) {

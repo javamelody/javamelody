@@ -29,21 +29,17 @@ import java.util.List;
  */
 class HtmlCacheInformationsReport {
 	private final List<CacheInformations> cacheInformationsList;
-	private final Period period;
 	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
 
-	HtmlCacheInformationsReport(List<CacheInformations> cacheInformationsList, Period period,
-			Writer writer) {
+	HtmlCacheInformationsReport(List<CacheInformations> cacheInformationsList, Writer writer) {
 		super();
 		assert cacheInformationsList != null;
-		assert period != null;
 		assert writer != null;
 
 		this.cacheInformationsList = cacheInformationsList;
-		this.period = period;
 		this.writer = writer;
 		this.hitsRatioEnabled = isHitsRatioEnabled(cacheInformationsList);
 		this.configurationEnabled = isConfigurationEnabled(cacheInformationsList);
@@ -79,8 +75,7 @@ class HtmlCacheInformationsReport {
 		writeln("</tbody></table>");
 		write("<div align='right' class='noPrint'>");
 		if (Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
-			writeln("<a href='?action=clear_caches&amp;period=" + period.getCode()
-					+ "' onclick=\"javascript:return confirm('"
+			writeln("<a href='?action=clear_caches' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_purge_caches") + "');\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
