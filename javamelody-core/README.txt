@@ -20,7 +20,7 @@ Licence : LGPL
 URL : http://javamelody.googlecode.com/
 Version Java requise en exécution : 1.5 minimum,
 	1.6 recommandé pour fonctions complémentaires (heap dump, histogramme mémoire, stack traces et system load average),
-	JDK ou JRE de Sun ou bien JRockit d'Oracle/BEA
+	JDK ou JRE de Sun ou JRockit d'Oracle/BEA ou J9 d'IBM
 Version de serveur requise en exécution : api servlet 2.4 minimum (ou JavaEE 1.4), 
 	comme Tomcat 5.5 ou 6, GlassFish v2 ou v3, JBoss 4 ou 5, Jonas 4 ou 5, WebLogic 9 ou 10
 Dépendance requise : JRobin (LGPL) pour les courbes d'évolution
