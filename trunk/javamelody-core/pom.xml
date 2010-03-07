@@ -480,6 +480,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
+				<!-- http://jira.codehaus.org/browse/SUREFIRE-257 -->
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report-only</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 			<!-- Couverture de tests -->
 			<plugin>
