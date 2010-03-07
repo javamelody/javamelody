@@ -238,7 +238,7 @@
 			</classpath>
 			<batchtest haltonerror="false" haltonfailure="false"
 				errorProperty="test.failed" failureProperty="test.failed">
-				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/SpringTestFacade*.class" />
+				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/JobTestImpl.class,**/SpringTestFacade*.class" />
 			</batchtest>
 		</junit>
 		<fail message="Tests failed: check test reports." if="test.failed" />
