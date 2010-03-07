@@ -56,7 +56,6 @@ Les courbes présentées sont :<ul>
 <li>la mémoire java utilisée, entre 0 et le maximum paramétré par Xmx dans la configuration du serveur</li>
 <li>le pourcentage cpu utilisé par le processus java, entre 0 et 100 même s'il y a plusieurs coeurs ou plusieurs processeurs</li>
 <li>le nombre de sessions http (ou nombre d'utilisateurs connectés)</li>
-<li>si linux : la charge système, le pourcentage cpu du ramasse-miettes et le nombre de fichiers ouverts</li>
 <li>le nombre de threads actifs (ou nombre de requêtes http en cours)</li>
 <li>le nombre de connexions jdbc actives (ou nombre de requêtes sql en cours)</li>
 <li>le nombre de connexions jdbc utilisées (ou nombre de transactions sql ouvertes);
@@ -66,8 +65,17 @@ Les courbes présentées sont :<ul>
 	<li>le temps moyen en millisecondes</li>
 	<li>le pourcentage d'erreurs systèmes
 	(ces valeurs pour un compteur représente une moyenne pour la dernière période de mesure)</li>
-	</ul>
-</li></ul>
+	</ul></li>
+<li>et aussi dans autres courbes :<ul>
+	<li>le pourcentage cpu du ramasse-miettes</li>
+	<li>le nombre de threads</li>
+	<li>le nombre de classes chargées</li>
+	<li>la mémoire utilisée hors tas</li>
+	<li>la mémoire physique utilisée</li>
+	<li>l'espace swap utilisé</li>
+	<li>si linux : la charge système et le nombre de fichiers ouverts</li>
+	</ul></li>
+</ul>
 
 Le lien '<img width='16' height='16' src='?resource=action_refresh.png' alt='Update'/> Actualiser' permet de rafraîchir la page et les courbes.
 Le lien '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' affiche tout le rapport en format PDF pour Adobe Reader.<br/>

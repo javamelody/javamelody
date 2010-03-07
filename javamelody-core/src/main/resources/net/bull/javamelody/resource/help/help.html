@@ -55,7 +55,6 @@ The charts displayed are:<ul>
 <li>the java memory used, between 0 and the maximum set by Xmx in the server configuration</li>
 <li>the cpu percentage used by the java process, between 0 and 100 even if there are several cores or several processors</li>
 <li>the number of http sessions (or number of connected users)</li>
-<li>if linux: the system load, the cpu percentage of the garbage collector and the number of opened files</li>
 <li>the number of active threads (or number of current http requests)</li>
 <li>the number of active jdbc connections (or number of current sql requests)</li>
 <li>the number of used jdbc connections (or number of opened sql transactions);
@@ -65,8 +64,17 @@ The charts displayed are:<ul>
 	<li>the mean time in milliseconds</li>
 	<li>the percentage of system errors
 	(these values for a counter are a mean for the last period of measure)</li>
-	</ul>
-</li></ul>
+	</ul></li>
+<li>and also in other charts:<ul>
+	<li>the cpu percentage of the garbage collector</li>
+	<li>the number of threads</li>
+	<li>the number of loaded classes</li>
+	<li>the used non heap memory</li>
+	<li>the used physical memory</li>
+	<li>the used swap space</li>
+	<li>if linux: the system load and the number of opened files</li>
+	</ul></li>
+</ul>
 
 The link '<img width='16' height='16' src='?resource=action_refresh.png' alt='Update'/> Update' refreshes the page and the charts.
 The link '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' displays the report in PDF format for Adobe Reader.<br/>
