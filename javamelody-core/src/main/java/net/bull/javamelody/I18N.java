@@ -42,6 +42,7 @@ final class I18N {
 	private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
 			"translations").replace('/', '.').substring(1);
 	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<Locale>();
+	private static final boolean JAVA_16 = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 
 	private I18N() {
 		super();
@@ -179,15 +180,22 @@ final class I18N {
 	static DecimalFormat createIntegerFormat() {
 		// attention ces instances de DecimalFormat ne doivent pas être statiques
 		// car DecimalFormat n'est pas multi-thread-safe,
-		return new DecimalFormat("#,##0", new DecimalFormatSymbols(getCurrentLocale()));
-		// si jdk 1.6, on pourrait faire DecimalFormatSymbols.getInstance(getCurrentLocale())
+		return new DecimalFormat("#,##0", getDecimalFormatSymbols());
 	}
 
 	static DecimalFormat createPercentFormat() {
-		return new DecimalFormat("0.00", new DecimalFormatSymbols(getCurrentLocale()));
+		return new DecimalFormat("0.00", getDecimalFormatSymbols());
 	}
 
-	private static DateFormat createDateFormat() {
+	private static DecimalFormatSymbols getDecimalFormatSymbols() {
+		if (JAVA_16) {
+			// optimisation mémoire si Java 1.6
+			return DecimalFormatSymbols.getInstance(getCurrentLocale());
+		}
+		return new DecimalFormatSymbols(getCurrentLocale());
+	}
+
+	static DateFormat createDateFormat() {
 		// attention ces instances de DateFormat ne doivent pas être statiques
 		// car DateFormat n'est pas multi-thread-safe,
 		// voir http://java.sun.com/javase/6/docs/api/java/text/DateFormat.html#synchronization
