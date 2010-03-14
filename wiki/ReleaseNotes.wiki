@@ -4,7 +4,7 @@
   * fix issue 14: html reports in utf-8 for cyrillic and other characters
   * fix issue 15: support for log4j-over-slf4j 
   * added: remember the last selected period (with a persistent cookie in the browser)
-  * More to come...
+  * added: UI option to display graphs and statistics for custom periods, via fields of start and end dates of period to display (from user group)
 
 === 1.12.0 ===
 
