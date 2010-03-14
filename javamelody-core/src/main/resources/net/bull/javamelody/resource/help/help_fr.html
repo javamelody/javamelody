@@ -46,8 +46,9 @@ Chaque courbe suit l'évolution d'une valeur de mesure sur la période plus ou moi
 par l'intermédiaire des liens au-dessus de la synthèse :
  <img width='16' height='16' src='?resource=calendar_view_day.png' alt='day'/> le jour,
  <img width='16' height='16' src='?resource=calendar_view_week.png' alt='week'/> la semaine,
- <img width='16' height='16' src='?resource=calendar_view_month.png' alt='month'/> le mois ou
- <img width='16' height='16' src='?resource=calendar.png' alt='year'/> l'année.
+ <img width='16' height='16' src='?resource=calendar_view_month.png' alt='month'/> le mois,
+ <img width='16' height='16' src='?resource=calendar.png' alt='year'/> l'année ou
+  <img width='16' height='16' src='?resource=calendar.png' alt='custom'/> une période personnalisée.
 Dans chaque courbe sont suivies et indiquées en chiffres la valeur moyenne en vert et le maximum en bleu.
 Les courbes sont persistées : un redémarrage du serveur d'application n'a pas d'influence sur elles hormis un trou dans les mesures.<br/>
 Chaque courbe peut être affichée en grand et redimensionnée en cliquant sur celle-ci dans la synthèse.<br/><br/>
@@ -136,15 +137,17 @@ et sinon @$ORACLE_HOME/rdbms/admin/utlxplan.sql et "grant all on plan_table to p
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistiques</h3>
 Les statistiques d'un compteur présentent les statistiques des requêtes exécutées sur le serveur d'application.<br/>
-Il existe 4 compteurs de requêtes aujourd'hui :<ul>
+Il existe 5 compteurs de requêtes aujourd'hui :<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Statistiques http</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
 Statistiques sql (jdbc)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='ejb'/>
-Statistiques ejb (si façades ejb3 de JavaEE 5)</li>
+Statistiques ejb (si façades ejb3 de JavaEE 5+)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='spring'/>
 Statistiques spring (si façades spring)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
+Statistiques d'interfaces façades (sans ejb3 ni spring)</li>
 </ul>
 Pour chaque compteur, une requête apparaît dans les statistiques quand elle est terminée;
 pour connaître les requêtes non terminées voir la partie 
