@@ -188,11 +188,12 @@ public class TestCollector {
 			if (collector.getCounterJRobins().size() == 0) {
 				fail("getCounterJRobins");
 			}
+			final Range range = Period.JOUR.getRange();
 			for (final JRobin jrobin : collector.getCounterJRobins()) {
 				final JRobin robin = collector.getJRobin(jrobin.getName());
 				assertNotNull("getJRobin non null", robin);
-				jrobin.graph(Period.JOUR, 500, 200);
-				jrobin.graph(Period.JOUR, 80, 80);
+				jrobin.graph(range, 500, 200);
+				jrobin.graph(range, 80, 80);
 
 				jrobin.getLastValue();
 			}
@@ -271,15 +272,19 @@ public class TestCollector {
 			collector.collectWithoutErrors(javaInformationsList);
 			collector.collectWithoutErrors(javaInformationsList);
 
-			assertEquals("jour", 1, collector.getPeriodCountersToBeDisplayed(Period.JOUR).size());
-			assertEquals("semaine", 1, collector.getPeriodCountersToBeDisplayed(Period.SEMAINE)
-					.size());
-			assertEquals("mois", 1, collector.getPeriodCountersToBeDisplayed(Period.MOIS).size());
-			assertEquals("année", 1, collector.getPeriodCountersToBeDisplayed(Period.ANNEE).size());
-			assertEquals("tout", 1, collector.getPeriodCountersToBeDisplayed(Period.TOUT).size());
+			assertEquals("jour", 1, getSizeOfCountersToBeDisplayed(collector, Period.JOUR));
+			assertEquals("semaine", 1, getSizeOfCountersToBeDisplayed(collector, Period.SEMAINE));
+			assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
+			assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
+			assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
 		} finally {
 			timer.cancel();
 		}
+	}
+
+	private int getSizeOfCountersToBeDisplayed(Collector collector, Period period)
+			throws IOException {
+		return collector.getRangeCountersToBeDisplayed(period.getRange()).size();
 	}
 
 	/** Test.

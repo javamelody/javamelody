@@ -66,6 +66,9 @@ public class CollectorServlet extends HttpServlet {
 	private Pattern allowedAddrPattern;
 
 	@SuppressWarnings("all")
+	private final transient HttpCookieManager httpCookieManager = new HttpCookieManager();
+
+	@SuppressWarnings("all")
 	private transient CollectorServer collectorServer;
 
 	/** {@inheritDoc} */
@@ -319,10 +322,10 @@ public class CollectorServlet extends HttpServlet {
 
 	private HtmlReport createHtmlReport(HttpServletRequest req, HttpServletResponse resp,
 			PrintWriter writer, String application) {
-		final Period period = MonitoringController.getPeriod(req, resp);
+		final Range range = httpCookieManager.getRange(req, resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		return new HtmlReport(collector, collectorServer, javaInformationsList, period, writer);
+		return new HtmlReport(collector, collectorServer, javaInformationsList, range, writer);
 	}
 
 	private static String getHostAndPort(URL url) {
@@ -343,8 +346,8 @@ public class CollectorServlet extends HttpServlet {
 		} else {
 			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partParameter = req.getParameter(PART_PARAMETER);
-			final Period period = MonitoringController.getPeriod(req, resp);
-			new HtmlReport(collector, collectorServer, javaInformationsList, period, writer)
+			// la période n'a pas d'importance pour writeMessageIfNotNull
+			new HtmlReport(collector, collectorServer, javaInformationsList, Period.TOUT, writer)
 					.writeMessageIfNotNull(message, partParameter);
 			writer.close();
 		}
@@ -424,7 +427,7 @@ public class CollectorServlet extends HttpServlet {
 		String application = req.getParameter("application");
 		if (application == null) {
 			// pas de paramètre application dans la requête, on cherche le cookie
-			final Cookie cookie = MonitoringController.getCookieByName(req, COOKIE_NAME);
+			final Cookie cookie = httpCookieManager.getCookieByName(req, COOKIE_NAME);
 			if (cookie != null) {
 				application = cookie.getValue();
 				if (!collectorServer.isApplicationDataAvailable(application)) {
@@ -440,7 +443,7 @@ public class CollectorServlet extends HttpServlet {
 		} else if (collectorServer.isApplicationDataAvailable(application)) {
 			// un paramètre application est présent dans la requête: l'utilisateur a choisi une application,
 			// donc on fixe le cookie
-			MonitoringController.addCookie(req, resp, COOKIE_NAME, String.valueOf(application));
+			httpCookieManager.addCookie(req, resp, COOKIE_NAME, String.valueOf(application));
 		}
 		return application;
 	}

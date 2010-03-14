@@ -73,33 +73,50 @@ class PeriodCounterFactory {
 		return dayCounter;
 	}
 
+	// compteur custom
+	Counter getCustomCounter(Range range) {
+		assert range.getPeriod() == null;
+		final Counter customCounter = createPeriodCounter("yyyy-MM-dd", range.getStartDate());
+		addRequestsAndErrorsForRange(customCounter, range);
+		return customCounter;
+	}
+
+	// compteur du jour courant
+	Counter getDayCounter() {
+		return currentDayCounter;
+	}
+
 	// compteur des 7 derniers jours
 	Counter getWeekCounter() {
 		final Counter weekCounter = createPeriodCounter("yyyyWW", currentDayCounter.getStartDate());
-		weekCounter.addRequestsAndErrors(currentDayCounter);
-		final Calendar dayCalendar = Calendar.getInstance();
-		dayCalendar.setTime(currentDayCounter.getStartDate());
-		for (int i = 1; i < 7; i++) {
-			dayCalendar.add(Calendar.DAY_OF_YEAR, -1);
-			weekCounter.addRequestsAndErrors(getDayCounterAtDate(dayCalendar.getTime()));
-		}
-		weekCounter.setStartDate(dayCalendar.getTime());
+		addRequestsAndErrorsForRange(weekCounter, Period.SEMAINE.getRange());
 		return weekCounter;
 	}
 
-	// compteur des 31 derniers jours
+	// compteur des 31 derniers jours,
+	// ici c'est un mois flottant (ie une durée), et pas un mois entier
 	Counter getMonthCounter() {
 		final Counter monthCounter = createMonthCounterAtDate(currentDayCounter.getStartDate());
-		monthCounter.addRequestsAndErrors(currentDayCounter);
-		final Calendar dayCalendar = Calendar.getInstance();
-		dayCalendar.setTime(currentDayCounter.getStartDate());
-		for (int i = 1; i < 31; i++) {
-			// ici c'est un mois flottant (ie une durée), et pas un mois entier
-			dayCalendar.add(Calendar.DAY_OF_YEAR, -1);
-			monthCounter.addRequestsAndErrors(getDayCounterAtDate(dayCalendar.getTime()));
-		}
-		monthCounter.setStartDate(dayCalendar.getTime());
+		addRequestsAndErrorsForRange(monthCounter, Period.MOIS.getRange());
 		return monthCounter;
+	}
+
+	private void addRequestsAndErrorsForRange(Counter counter, Range range) {
+		final Calendar dayCalendar = Calendar.getInstance();
+		if (range.getPeriod() == null) {
+			counter.addRequestsAndErrors(getDayCounterAtDate(range.getEndDate()));
+			dayCalendar.setTime(range.getEndDate());
+		} else {
+			counter.addRequestsAndErrors(currentDayCounter);
+			dayCalendar.setTime(currentDayCounter.getStartDate());
+		}
+		final int durationDays = range.getDurationDays();
+		for (int i = 1; i < durationDays; i++) {
+			// TODO optimisation avec getMonthCounterAtDate comme getYearCounter() ?
+			dayCalendar.add(Calendar.DAY_OF_YEAR, -1);
+			counter.addRequestsAndErrors(getDayCounterAtDate(dayCalendar.getTime()));
+		}
+		counter.setStartDate(dayCalendar.getTime());
 	}
 
 	// compteur des 366 derniers jours
@@ -109,9 +126,9 @@ class PeriodCounterFactory {
 		final Calendar dayCalendar = Calendar.getInstance();
 		final int currentMonth = dayCalendar.get(Calendar.MONTH);
 		dayCalendar.setTime(currentDayCounter.getStartDate());
-		dayCalendar.add(Calendar.DAY_OF_YEAR, -365);
+		dayCalendar.add(Calendar.DAY_OF_YEAR, -Period.ANNEE.getDurationDays() + 1);
 		yearCounter.setStartDate(dayCalendar.getTime());
-		for (int i = 1; i < 366; i++) {
+		for (int i = 1; i < Period.ANNEE.getDurationDays(); i++) {
 			if (dayCalendar.get(Calendar.DAY_OF_MONTH) == 1
 					&& dayCalendar.get(Calendar.MONTH) != currentMonth) {
 				// optimisation : on récupère les statistiques précédemment calculées pour ce mois entier

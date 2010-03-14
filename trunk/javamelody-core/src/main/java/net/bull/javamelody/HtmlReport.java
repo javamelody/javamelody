@@ -20,11 +20,12 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
@@ -41,17 +42,71 @@ class HtmlReport {
 
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
-	private final Period period;
+	private final Range range;
 	private final Writer writer;
 	private final CollectorServer collectorServer;
 	private final long start = System.currentTimeMillis();
 
-	private static class HtmlAddAndRemoveApplications {
+	private static class HtmlForms {
 		private final Writer writer;
 
-		HtmlAddAndRemoveApplications(Writer writer) {
+		HtmlForms(Writer writer) {
 			super();
 			this.writer = writer;
+		}
+
+		void writeCustomPeriodLink(Range range, String graphName, String part) throws IOException {
+			writeln("<a href=\"javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();\" ");
+			final String linkLabel = I18N.getString("personnalisee");
+			writeln("title='" + I18N.getFormattedString("Choisir_periode", linkLabel) + "'>");
+			writeln("<img src='?resource=calendar.png' alt='" + linkLabel + "' /> ");
+			writeln(linkLabel + "</a>");
+			writeln("<div id='customPeriod' style='display: none;'>");
+			writeln(SCRIPT_BEGIN);
+			writeln("function validateCustomPeriodForm() {");
+			writeln("   periodForm=document.customPeriodForm;");
+			writeln("   if (periodForm.startDate.value.length == 0) {");
+			writeln("      alert('" + I18N.getStringForJavascript("dates_mandatory") + "');");
+			writeln("      periodForm.startDate.focus();");
+			writeln("      return false;");
+			writeln("   }");
+			writeln("   if (periodForm.endDate.value.length == 0) {");
+			writeln("      alert('" + I18N.getStringForJavascript("dates_mandatory") + "');");
+			writeln("      periodForm.endDate.focus();");
+			writeln("      return false;");
+			writeln("   }");
+			writeln("   periodForm.period.value=periodForm.startDate.value + '-' + periodForm.endDate.value;");
+			writeln("   return true;");
+			writeln("}");
+			writeln(SCRIPT_END);
+			writeln("<br/><br/>");
+			final DateFormat dateFormat = I18N.createDateFormat();
+			final String dateFormatPattern;
+			if (I18N.getString("dateFormatPattern").length() == 0) {
+				final String pattern = ((SimpleDateFormat) dateFormat).toPattern();
+				dateFormatPattern = pattern.toLowerCase(I18N.getCurrentLocale());
+			} else {
+				dateFormatPattern = I18N.getString("dateFormatPattern");
+			}
+			writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
+			writeln("<br/><b>#startDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='startDate' ");
+			if (range.getStartDate() != null) {
+				writeln("value='" + dateFormat.format(range.getStartDate()) + '\'');
+			}
+			writeln("/>&nbsp;&nbsp;<b>#endDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='endDate' ");
+			if (range.getEndDate() != null) {
+				writeln("value='" + dateFormat.format(range.getEndDate()) + '\'');
+			}
+			writeln("/>&nbsp;&nbsp;");
+			writer.write('(' + dateFormatPattern + ')');
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' value='#ok#'/><br/><br/>");
+			writeln("<input type='hidden' name='period' value=''/>");
+			if (graphName != null) {
+				writeln("<input type='hidden' name='part' value='" + part + "'/>");
+				writeln("<input type='hidden' name='graph' value='" + graphName + "'/>");
+			}
+			writeln("</form><br/>");
+			writeln(END_DIV);
 		}
 
 		void writeAddAndRemoveApplicationLinks(String currentApplication) throws IOException {
@@ -107,18 +162,23 @@ class HtmlReport {
 	}
 
 	HtmlReport(Collector collector, CollectorServer collectorServer,
-			List<JavaInformations> javaInformationsList, Period period, Writer writer) {
+			List<JavaInformations> javaInformationsList, Range range, Writer writer) {
 		super();
 		assert collector != null;
 		assert javaInformationsList != null && !javaInformationsList.isEmpty();
-		assert period != null;
+		assert range != null;
 		assert writer != null;
 
 		this.collector = collector;
 		this.collectorServer = collectorServer;
 		this.javaInformationsList = javaInformationsList;
-		this.period = period;
+		this.range = range;
 		this.writer = writer;
+	}
+
+	HtmlReport(Collector collector, CollectorServer collectorServer,
+			List<JavaInformations> javaInformationsList, Period period, Writer writer) {
+		this(collector, collectorServer, javaInformationsList, period.getRange(), writer);
 	}
 
 	void toHtml(String message) throws IOException {
@@ -139,7 +199,7 @@ class HtmlReport {
 		writeln(END_DIV);
 
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters();
-		if (period == Period.TOUT) {
+		if (range.getPeriod() == Period.TOUT) {
 			writeln("<div align='right'>");
 			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
@@ -204,13 +264,13 @@ class HtmlReport {
 
 	private Map<String, HtmlCounterReport> writeCounters() throws IOException {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
-		for (final Counter counter : collector.getPeriodCountersToBeDisplayed(period)) {
+		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
 			writeln("<h3><img width='24' height='24' src='?resource=" + counter.getIconName()
 					+ "' alt='" + counter.getName() + "'/>");
 			final String counterLabel = I18N.getString(counter.getName() + "Label");
 			writeln(I18N.getFormattedString("Statistiques_compteur", counterLabel));
-			writeln(" - " + period.getLabel() + "</h3>");
-			final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, period,
+			writeln(" - " + range.getLabel() + "</h3>");
+			final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range,
 					writer);
 			htmlCounterReport.toHtml();
 			counterReportsByCounterName.put(counter.getName(), htmlCounterReport);
@@ -220,8 +280,7 @@ class HtmlReport {
 
 	static void writeAddAndRemoveApplicationLinks(String currentApplication, Writer writer)
 			throws IOException {
-		new HtmlAddAndRemoveApplications(writer)
-				.writeAddAndRemoveApplicationLinks(currentApplication);
+		new HtmlForms(writer).writeAddAndRemoveApplicationLinks(currentApplication);
 	}
 
 	void writeMessageIfNotNull(String message, String partToRedirectTo) throws IOException {
@@ -285,7 +344,7 @@ class HtmlReport {
 			writeln("#Aucune_requete_en_cours#");
 		} else {
 			new HtmlCounterRequestContextReport(rootCurrentContexts, counterReportsByCounterName,
-					threadInformationsList, stackTraceEnabled, period, writer).toHtml();
+					threadInformationsList, stackTraceEnabled, writer).toHtml();
 		}
 	}
 
@@ -492,7 +551,8 @@ class HtmlReport {
 
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
-		final Set<String> applications = Parameters.getCollectorUrlsByApplications().keySet();
+		final Collection<String> applications = Parameters.getCollectorUrlsByApplications()
+				.keySet();
 		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
 				.getLastCollectExceptionsByApplication();
 		if (applications.size() > 1) {
@@ -524,7 +584,7 @@ class HtmlReport {
 
 	private void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {
 		writeln("<div class='noPrint'>");
-		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (graphName == null) {
 			writeln("<a href='?' title='#Rafraichir#'>");
 		} else {
@@ -543,7 +603,7 @@ class HtmlReport {
 		writeln("<a href='?resource=#help_url#' target='_blank'");
 		writeln(" title=\"#Afficher_aide_en_ligne#\"><img src='?resource=action_help.png' alt='#Aide_en_ligne#'/> #Aide_en_ligne#</a>");
 		writeln(separator);
-		writeln("#Choix_periode# :&nbsp;&nbsp;&nbsp;");
+		writeln("#Choix_periode# :&nbsp;");
 		// On affiche des liens vers les périodes.
 		// Rq : il n'y a pas de période ni de graph sur la dernière heure puisque
 		// si la résolution des données est de 5 min, on ne verra alors presque rien
@@ -558,8 +618,10 @@ class HtmlReport {
 					+ "'>");
 			writeln("<img src='?resource=" + myPeriod.getIconName() + "' alt='"
 					+ myPeriod.getLinkLabel() + "' /> ");
-			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;&nbsp;&nbsp;");
+			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;");
 		}
+		new HtmlForms(writer).writeCustomPeriodLink(range, graphName, part);
+
 		writeln(END_DIV);
 	}
 
@@ -646,7 +708,7 @@ class HtmlReport {
 		writeRefreshAndPeriodLinks(graphName, "graph");
 		writeln(END_DIV);
 
-		new HtmlCounterRequestGraphReport(period, writer).writeRequestAndGraphDetail(collector,
+		new HtmlCounterRequestGraphReport(range, writer).writeRequestAndGraphDetail(collector,
 				graphName);
 
 		writeHtmlFooter();
@@ -659,7 +721,7 @@ class HtmlReport {
 		writeRefreshAndPeriodLinks(graphName, "usages");
 		writeln(END_DIV);
 
-		new HtmlCounterRequestGraphReport(period, writer).writeRequestUsages(collector, graphName);
+		new HtmlCounterRequestGraphReport(range, writer).writeRequestUsages(collector, graphName);
 
 		writeHtmlFooter();
 	}

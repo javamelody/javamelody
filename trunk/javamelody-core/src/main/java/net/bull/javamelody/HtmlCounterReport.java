@@ -34,7 +34,7 @@ import java.util.Map;
  */
 class HtmlCounterReport {
 	private final Counter counter;
-	private final Period period;
+	private final Range range;
 	private final Writer writer;
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final HtmlCounterRequestGraphReport htmlCounterRequestGraphReport;
@@ -45,7 +45,7 @@ class HtmlCounterReport {
 		private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 		private static final String SCRIPT_END = "</script>";
 		private static int uniqueByPageAndGraphSequence;
-		private final Period period;
+		private final Range range;
 		private final Writer writer;
 		private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
 		private final DecimalFormat nbExecutionsFormat = I18N.createPercentFormat();
@@ -53,11 +53,11 @@ class HtmlCounterReport {
 		private List<Counter> counters;
 		private Map<String, CounterRequest> requestsById;
 
-		HtmlCounterRequestGraphReport(Period period, Writer writer) {
+		HtmlCounterRequestGraphReport(Range range, Writer writer) {
 			super();
-			assert period != null;
+			assert range != null;
 			assert writer != null;
-			this.period = period;
+			this.range = range;
 			this.writer = writer;
 		}
 
@@ -86,7 +86,7 @@ class HtmlCounterReport {
 		}
 
 		void writeRequestAndGraphDetail(Collector collector, String graphName) throws IOException {
-			counters = collector.getPeriodCountersToBeDisplayed(period);
+			counters = collector.getRangeCountersToBeDisplayed(range);
 			requestsById = new HashMap<String, CounterRequest>();
 			for (final Counter counter : counters) {
 				for (final CounterRequest request : counter.getRequests()) {
@@ -141,7 +141,7 @@ class HtmlCounterReport {
 
 		void writeRequestUsages(Collector collector, String requestId) throws IOException {
 			assert requestId != null;
-			counters = collector.getPeriodCountersToBeDisplayed(period);
+			counters = collector.getRangeCountersToBeDisplayed(range);
 			CounterRequest myRequest = null;
 			final List<CounterRequest> requests = new ArrayList<CounterRequest>();
 			for (final Counter counter : counters) {
@@ -409,16 +409,16 @@ class HtmlCounterReport {
 		}
 	}
 
-	HtmlCounterReport(Counter counter, Period period, Writer writer) {
+	HtmlCounterReport(Counter counter, Range range, Writer writer) {
 		super();
 		assert counter != null;
-		assert period != null;
+		assert range != null;
 		assert writer != null;
 		this.counter = counter;
-		this.period = period;
+		this.range = range;
 		this.writer = writer;
 		this.counterRequestAggregation = new CounterRequestAggregation(counter);
-		this.htmlCounterRequestGraphReport = new HtmlCounterRequestGraphReport(period, writer);
+		this.htmlCounterRequestGraphReport = new HtmlCounterRequestGraphReport(range, writer);
 	}
 
 	void toHtml() throws IOException {
@@ -470,7 +470,7 @@ class HtmlCounterReport {
 			writeShowHideLink("logs" + counterName, "#Dernieres_erreurs#");
 		}
 		writeln(separator);
-		if (period == Period.TOUT) {
+		if (range.getPeriod() == Period.TOUT) {
 			writeln("<a href='?action=clear_counter&amp;counter=" + counterName + "' title='"
 					+ I18N.getFormattedString("Vider_stats", counterName) + '\'');
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
