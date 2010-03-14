@@ -167,7 +167,7 @@ final class JRobin {
 		}
 	}
 
-	byte[] graph(Period period, int width, int height) throws IOException {
+	byte[] graph(Range range, int width, int height) throws IOException {
 		try {
 			// Rq : il pourrait être envisagé de récupérer les données dans les fichiers rrd ou autre stockage
 			// puis de faire des courbes en sparklines html (sauvegardées dans la page html)
@@ -177,7 +177,7 @@ final class JRobin {
 			final RrdGraphDef graphDef = new RrdGraphDef();
 			initGraphSource(graphDef, height);
 
-			initGraphPeriodAndSize(period, width, height, graphDef);
+			initGraphPeriodAndSize(range, width, height, graphDef);
 
 			graphDef.setImageFormat("png");
 			graphDef.setFilename("-");
@@ -191,17 +191,36 @@ final class JRobin {
 		}
 	}
 
-	private void initGraphPeriodAndSize(Period period, int width, int height, RrdGraphDef graphDef) {
-		// ending timestamp is the current timestamp
+	private void initGraphPeriodAndSize(Range range, int width, int height, RrdGraphDef graphDef) {
+		// ending timestamp is the (current) timestamp in seconds
 		// starting timestamp will be adjusted for each graph
-		final long endTime = Util.getTime();
-		final long startTime = endTime - period.getDurationSeconds();
-		final String titleStart = getLabel() + " - " + period.getLabel();
+		final long endTime;
+		final long startTime;
+		if (range.getPeriod() == null) {
+			// si endDate à la date du jour, alors on ne dépasse pas l'heure courante
+			endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
+			startTime = range.getStartDate().getTime() / 1000;
+		} else {
+			endTime = Util.getTime();
+			startTime = endTime - range.getPeriod().getDurationSeconds();
+		}
+		final String titleStart = getLabel() + " - " + range.getLabel();
 		final String titleEnd;
 		if (width > 400) {
-			titleEnd = " - " + I18N.getCurrentDate() + " sur " + getApplication();
+			if (range.getPeriod() == null) {
+				titleEnd = " - " + I18N.getString("sur") + ' ' + getApplication();
+			} else {
+				titleEnd = " - " + I18N.getCurrentDate() + ' ' + I18N.getString("sur") + ' '
+						+ getApplication();
+			}
 		} else {
 			titleEnd = "";
+			if (range.getPeriod() == null) {
+				// si période entre 2 dates et si pas de zoom,
+				// alors on réduit de 2 point la fonte du titre pour qu'il rentre dans le cadre
+				graphDef.setLargeFont(graphDef.getLargeFont().deriveFont(
+						graphDef.getLargeFont().getSize2D() - 2f));
+			}
 		}
 		graphDef.setStartTime(startTime);
 		graphDef.setEndTime(endTime);

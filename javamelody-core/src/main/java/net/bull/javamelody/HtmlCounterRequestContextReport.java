@@ -35,7 +35,6 @@ class HtmlCounterRequestContextReport {
 	private final List<CounterRequestContext> rootCurrentContexts;
 	private final Map<String, HtmlCounterReport> counterReportsByCounterName;
 	private final Map<Long, ThreadInformations> threadInformationsByThreadId;
-	private final Period period;
 	private final Writer writer;
 	private final boolean childHitsDisplayed;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -130,11 +129,10 @@ class HtmlCounterRequestContextReport {
 	HtmlCounterRequestContextReport(List<CounterRequestContext> rootCurrentContexts,
 			Map<String, HtmlCounterReport> counterReportsByCounterName,
 			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled,
-			Period period, Writer writer) {
+			Writer writer) {
 		super();
 		assert rootCurrentContexts != null;
 		assert threadInformationsList != null;
-		assert period != null;
 		assert writer != null;
 
 		this.rootCurrentContexts = rootCurrentContexts;
@@ -148,7 +146,6 @@ class HtmlCounterRequestContextReport {
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			this.threadInformationsByThreadId.put(threadInformations.getId(), threadInformations);
 		}
-		this.period = period;
 		this.writer = writer;
 		boolean oneRootHasChild = false;
 		for (final CounterRequestContext rootCurrentContext : rootCurrentContexts) {
@@ -301,16 +298,17 @@ class HtmlCounterRequestContextReport {
 			write(parentCounter.getName());
 			write("' width='16' height='16' />&nbsp;");
 		}
-		final HtmlCounterReport counterReport = getCounterReport(parentCounter);
+		// la période n'a pas d'importance pour writeRequestGraph
+		final HtmlCounterReport counterReport = getCounterReport(parentCounter, Period.TOUT);
 		final CounterRequest counterRequest = counterRequestContextReportHelper
 				.getCounterRequest(context);
 		counterReport.writeRequestGraph(counterRequest.getId(), context.getCompleteRequestName());
 	}
 
-	private HtmlCounterReport getCounterReport(Counter parentCounter) {
+	private HtmlCounterReport getCounterReport(Counter parentCounter, Period period) {
 		HtmlCounterReport counterReport = counterReportsByCounterName.get(parentCounter.getName());
 		if (counterReport == null) {
-			counterReport = new HtmlCounterReport(parentCounter, period, writer);
+			counterReport = new HtmlCounterReport(parentCounter, period.getRange(), writer);
 			counterReportsByCounterName.put(parentCounter.getName(), counterReport);
 		}
 		return counterReport;

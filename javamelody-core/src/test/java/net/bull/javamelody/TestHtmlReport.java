@@ -350,7 +350,7 @@ public class TestHtmlReport {
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
 				Collections.<CounterRequestContext> emptyList(), Collections
 						.<String, HtmlCounterReport> emptyMap(), Collections
-						.<ThreadInformations> emptyList(), true, Period.TOUT, writer);
+						.<ThreadInformations> emptyList(), true, writer);
 		report.toHtml();
 		if (writer.getBuffer().length() != 0) {
 			fail("HtmlCounterRequestContextReport");

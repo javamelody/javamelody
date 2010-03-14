@@ -26,28 +26,31 @@ import java.util.Locale;
  */
 enum Period {
 	/** Jour. */
-	JOUR(24 * 60 * 60, "calendar_view_day.png", "day"),
+	JOUR(1, "calendar_view_day.png", "day"),
 	/** Semaine. */
-	SEMAINE(7 * 24 * 60 * 60, "calendar_view_week.png", "week"),
+	SEMAINE(7, "calendar_view_week.png", "week"),
 	/** Mois. */
-	MOIS(31 * 24 * 60 * 60, "calendar_view_month.png", "month"),
+	MOIS(31, "calendar_view_month.png", "month"),
 	/** Année. */
-	ANNEE(366 * 24 * 60 * 60, "calendar.png", "year"),
+	ANNEE(366, "calendar.png", "year"),
 	/** Tout.
 	 * (affiche les graphs sur 2 ans et toutes les requêtes y compris les dernières minutes) */
-	TOUT(2 * 366 * 24 * 60 * 60, "calendar.png", "all");
+	TOUT(2 * 366, "calendar.png", "all");
 
-	static final Period DEFAULT_PERIOD = Period.JOUR;
 	private final String code;
 	private final String mailCode;
+	private final int durationDays;
 	private final int durationSeconds;
 	private final String iconName;
+	private final Range range;
 
-	private Period(int durationSeconds, String iconName, String mailCode) {
-		this.durationSeconds = durationSeconds;
+	private Period(int durationDays, String iconName, String mailCode) {
+		this.durationDays = durationDays;
+		this.durationSeconds = durationDays * 24 * 60 * 60;
 		this.iconName = iconName;
 		this.mailCode = mailCode;
 		this.code = this.toString().toLowerCase(Locale.getDefault());
+		this.range = Range.createPeriodRange(this);
 	}
 
 	static Period valueOfIgnoreCase(String period) {
@@ -80,11 +83,19 @@ enum Period {
 		return I18N.getString(code + "_link_label");
 	}
 
+	int getDurationDays() {
+		return durationDays;
+	}
+
 	int getDurationSeconds() {
 		return durationSeconds;
 	}
 
 	String getIconName() {
 		return iconName;
+	}
+
+	Range getRange() {
+		return range;
 	}
 }

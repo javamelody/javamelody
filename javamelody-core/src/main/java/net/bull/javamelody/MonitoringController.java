@@ -34,7 +34,6 @@ import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
@@ -60,7 +59,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -88,7 +86,7 @@ class MonitoringController {
 		}
 		JavaInformations.setWebXmlExistsAndPomXmlExists(webXmlExists, pomXmlExists);
 	}
-	private static final String COOKIE_NAME = "javamelody.period";
+	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;
 	private String messageForReport;
@@ -160,11 +158,11 @@ class MonitoringController {
 
 	private void doReportCore(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
-		final Period period = getPeriod(httpRequest, httpResponse);
+		final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
 		if (part == null && graph != null) {
-			doGraph(httpRequest, httpResponse, period, graph);
+			doGraph(httpRequest, httpResponse, range, graph);
 		} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
 			doLastValue(httpResponse, graph);
 		} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
@@ -174,9 +172,9 @@ class MonitoringController {
 		} else {
 			final String format = httpRequest.getParameter(FORMAT_PARAMETER);
 			if (format == null || "html".equalsIgnoreCase(format)) {
-				doCompressedHtml(httpRequest, httpResponse, javaInformationsList, period, part);
+				doCompressedHtml(httpRequest, httpResponse, javaInformationsList, range, part);
 			} else if ("pdf".equalsIgnoreCase(format)) {
-				doPdf(httpRequest, httpResponse, period, javaInformationsList);
+				doPdf(httpRequest, httpResponse, range, javaInformationsList);
 			} else {
 				doSerializable(httpRequest, httpResponse, javaInformationsList, format);
 			}
@@ -189,53 +187,8 @@ class MonitoringController {
 		httpResponse.addHeader("Expires", "-1");
 	}
 
-	static Period getPeriod(HttpServletRequest req, HttpServletResponse resp) {
-		final Period period;
-		if (req.getParameter(PERIOD_PARAMETER) == null) {
-			// pas de paramètre period dans la requête, on cherche le cookie
-			final Cookie cookie = getCookieByName(req, COOKIE_NAME);
-			if (cookie == null) {
-				// pas de cookie, période jour par défaut
-				period = Period.DEFAULT_PERIOD;
-			} else {
-				period = Period.valueOfIgnoreCase(cookie.getValue());
-			}
-		} else {
-			period = Period.valueOfIgnoreCase(req.getParameter(PERIOD_PARAMETER));
-			// un paramètre period est présent dans la requête :
-			// l'utilisateur a choisi une période, donc on fixe le cookie
-			addCookie(req, resp, COOKIE_NAME, period.getCode());
-		}
-		return period;
-	}
-
-	static Cookie getCookieByName(HttpServletRequest req, String cookieName) {
-		final Cookie[] cookies = req.getCookies();
-		if (cookies != null) {
-			for (final Cookie cookie : cookies) {
-				if (cookieName.equals(cookie.getName())) {
-					return cookie;
-				}
-			}
-		}
-		return null;
-	}
-
-	static void addCookie(HttpServletRequest req, HttpServletResponse resp, String cookieName,
-			String cookieValue) {
-		if (!"added".equals(req.getAttribute(cookieName))) {
-			final Cookie cookie = new Cookie(cookieName, cookieValue);
-			// cookie persistant, valide pendant 30 jours
-			cookie.setMaxAge(30 * 24 * 60 * 60);
-			// inutile d'envoyer ce cookie aux autres URLs que le monitoring
-			cookie.setPath(req.getRequestURI());
-			resp.addCookie(cookie);
-			req.setAttribute(cookieName, "added");
-		}
-	}
-
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList, Period period, String part)
+			List<JavaInformations> javaInformationsList, Range range, String part)
 			throws IOException {
 		if (isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
@@ -244,12 +197,12 @@ class MonitoringController {
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
-				doHtml(httpRequest, wrappedResponse, javaInformationsList, period, part);
+				doHtml(httpRequest, wrappedResponse, javaInformationsList, range, part);
 			} finally {
 				wrappedResponse.finishResponse();
 			}
 		} else {
-			doHtml(httpRequest, httpResponse, javaInformationsList, period, part);
+			doHtml(httpRequest, httpResponse, javaInformationsList, range, part);
 		}
 	}
 
@@ -333,7 +286,7 @@ class MonitoringController {
 	}
 
 	private void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList, Period period, String part)
+			List<JavaInformations> javaInformationsList, Range range, String part)
 			throws IOException {
 		if (collectorServer == null
 				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
@@ -348,7 +301,7 @@ class MonitoringController {
 		final BufferedWriter writer = getWriter(httpResponse);
 		try {
 			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
-					javaInformationsList, period, writer);
+					javaInformationsList, range, writer);
 			if (part == null) {
 				htmlReport.toHtml(messageForReport);
 			} else {
@@ -490,7 +443,7 @@ class MonitoringController {
 	}
 
 	private void doPdf(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			Period period, List<JavaInformations> javaInformationsList) throws IOException {
+			Range range, List<JavaInformations> javaInformationsList) throws IOException {
 		if (collectorServer == null) {
 			// avant de faire l'affichage on fait une collecte,  pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
@@ -503,7 +456,7 @@ class MonitoringController {
 				PdfReport.getFileName(collector.getApplication())));
 		try {
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer != null,
-					javaInformationsList, period, httpResponse.getOutputStream());
+					javaInformationsList, range, httpResponse.getOutputStream());
 			pdfReport.toPdf();
 		} finally {
 			httpResponse.getOutputStream().flush();
@@ -528,14 +481,14 @@ class MonitoringController {
 	}
 
 	private void doGraph(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			Period period, String graphName) throws IOException {
+			Range range, String graphName) throws IOException {
 		final int width = Math.min(Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER)),
 				1600);
 		final int height = Math.min(Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER)),
 				1600);
 		final JRobin jrobin = collector.getJRobin(graphName);
 		if (jrobin != null) {
-			final byte[] img = jrobin.graph(period, width, height);
+			final byte[] img = jrobin.graph(range, width, height);
 			// png comme indiqué dans la classe jrobin
 			httpResponse.setContentType("image/png");
 			httpResponse.setContentLength(img.length);

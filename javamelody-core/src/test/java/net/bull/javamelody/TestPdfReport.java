@@ -234,11 +234,11 @@ public class TestPdfReport {
 			final Document document = new PdfDocumentFactory(TEST_APP, output).createDocument();
 			document.open();
 			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
-					Period.TOUT, true, document);
+					Period.TOUT.getRange(), true, document);
 			pdfCounterReport.toPdf();
 			pdfCounterReport.writeRequestDetails();
 			final PdfCounterReport pdfErrorCounterReport = new PdfCounterReport(collector,
-					errorCounter, Period.TOUT, true, document);
+					errorCounter, Period.TOUT.getRange(), true, document);
 			pdfErrorCounterReport.writeRequestDetails();
 			document.close();
 			assertNotEmptyAndClear(output);

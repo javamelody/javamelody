@@ -43,7 +43,7 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfReport {
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
-	private final Period period;
+	private final Range range;
 	private final Document document;
 	private final boolean collectorServer;
 	private final PdfDocumentFactory pdfDocumentFactory;
@@ -52,18 +52,18 @@ class PdfReport {
 	private final long start = System.currentTimeMillis();
 
 	PdfReport(Collector collector, boolean collectorServer,
-			List<JavaInformations> javaInformationsList, Period period, OutputStream output)
+			List<JavaInformations> javaInformationsList, Range range, OutputStream output)
 			throws IOException {
 		super();
 		assert collector != null;
 		assert javaInformationsList != null && !javaInformationsList.isEmpty();
-		assert period != null;
+		assert range != null;
 		assert output != null;
 
 		this.collector = collector;
 		this.collectorServer = collectorServer;
 		this.javaInformationsList = javaInformationsList;
-		this.period = period;
+		this.range = range;
 
 		try {
 			pdfDocumentFactory = new PdfDocumentFactory(collector.getApplication(), output);
@@ -71,6 +71,12 @@ class PdfReport {
 		} catch (final DocumentException e) {
 			throw createIOException(e);
 		}
+	}
+
+	PdfReport(Collector collector, boolean collectorServer,
+			List<JavaInformations> javaInformationsList, Period period, OutputStream output)
+			throws IOException {
+		this(collector, collectorServer, javaInformationsList, period.getRange(), output);
 	}
 
 	static String getFileName(String application) {
@@ -192,7 +198,7 @@ class PdfReport {
 		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
-				final Image image = Image.getInstance(jrobin.graph(period, 200, 50));
+				final Image image = Image.getInstance(jrobin.graph(range, 200, 50));
 				image.scalePercent(50);
 				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
 				jrobinParagraph.add(new Phrase(" "));
@@ -218,7 +224,7 @@ class PdfReport {
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
 				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
-				final Image image = Image.getInstance(jrobin.graph(period, 960, 370));
+				final Image image = Image.getInstance(jrobin.graph(range, 960, 370));
 				jrobinTable.addCell(image);
 			}
 		}
@@ -228,12 +234,12 @@ class PdfReport {
 
 	private List<PdfCounterReport> writeCounters() throws IOException, DocumentException {
 		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
-		for (final Counter counter : collector.getPeriodCountersToBeDisplayed(period)) {
+		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
 			final String counterLabel = I18N.getString(counter.getName() + "Label");
 			addParagraph(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
-					+ period.getLabel(), counter.getIconName());
+					+ range.getLabel(), counter.getIconName());
 			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
-					period, false, document);
+					range, false, document);
 			pdfCounterReport.toPdf();
 			pdfCounterReports.add(pdfCounterReport);
 		}
@@ -245,11 +251,11 @@ class PdfReport {
 		for (final PdfCounterReport pdfCounterReport : pdfCounterReports) {
 			final String counterLabel = I18N.getString(pdfCounterReport.getCounterName() + "Label");
 			addParagraph(I18N.getFormattedString("Statistiques_compteur_detaillees", counterLabel)
-					+ " - " + period.getLabel(), pdfCounterReport.getCounterIconName());
+					+ " - " + range.getLabel(), pdfCounterReport.getCounterIconName());
 			pdfCounterReport.writeRequestDetails();
 			if (pdfCounterReport.isErrorCounter()) {
 				addParagraph(I18N.getString(pdfCounterReport.getCounterName() + "ErrorLabel")
-						+ " - " + period.getLabel(), pdfCounterReport.getCounterIconName());
+						+ " - " + range.getLabel(), pdfCounterReport.getCounterIconName());
 				pdfCounterReport.writeErrorDetails();
 			}
 		}

@@ -144,39 +144,44 @@ final class Collector {
 		return estimatedMemorySize;
 	}
 
-	private List<Counter> getPeriodCounters(Period period) throws IOException {
+	private List<Counter> getRangeCounters(Range range) throws IOException {
+		if (range.getPeriod() == Period.TOUT) {
+			return new ArrayList<Counter>(counters);
+		}
 		final Collection<Counter> currentDayCounters = dayCountersByCounter.values();
 		final List<Counter> result = new ArrayList<Counter>(currentDayCounters.size());
-		switch (period) {
-		case JOUR:
-			result.addAll(currentDayCounters);
-			break;
-		case SEMAINE:
-			for (final Counter dayCounter : currentDayCounters) {
-				result.add(new PeriodCounterFactory(dayCounter).getWeekCounter());
+		for (final Counter dayCounter : currentDayCounters) {
+			final PeriodCounterFactory periodCounterFactory = new PeriodCounterFactory(dayCounter);
+			final Counter counter;
+			if (range.getPeriod() == null) {
+				counter = periodCounterFactory.getCustomCounter(range);
+			} else {
+				switch (range.getPeriod()) {
+				case JOUR:
+					counter = periodCounterFactory.getDayCounter();
+					break;
+				case SEMAINE:
+					counter = periodCounterFactory.getWeekCounter();
+					break;
+				case MOIS:
+					counter = periodCounterFactory.getMonthCounter();
+					break;
+				case ANNEE:
+					counter = periodCounterFactory.getYearCounter();
+					break;
+				case TOUT:
+					throw new IllegalStateException(range.getPeriod().toString());
+				default:
+					throw new IllegalArgumentException(range.getPeriod().toString());
+				}
 			}
-			break;
-		case MOIS:
-			for (final Counter dayCounter : currentDayCounters) {
-				result.add(new PeriodCounterFactory(dayCounter).getMonthCounter());
-			}
-			break;
-		case ANNEE:
-			for (final Counter dayCounter : currentDayCounters) {
-				result.add(new PeriodCounterFactory(dayCounter).getYearCounter());
-			}
-			break;
-		case TOUT:
-			result.addAll(counters);
-			break;
-		default:
-			throw new IllegalArgumentException(period.toString());
+			result.add(counter);
 		}
 		return result;
 	}
 
-	List<Counter> getPeriodCountersToBeDisplayed(Period period) throws IOException {
-		final List<Counter> result = new ArrayList<Counter>(getPeriodCounters(period));
+	List<Counter> getRangeCountersToBeDisplayed(Range range) throws IOException {
+		final List<Counter> result = new ArrayList<Counter>(getRangeCounters(range));
 		final Iterator<Counter> it = result.iterator();
 		while (it.hasNext()) {
 			final Counter counter = it.next();

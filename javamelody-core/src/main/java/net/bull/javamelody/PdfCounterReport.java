@@ -43,7 +43,7 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfCounterReport {
 	private final Collector collector;
 	private final Counter counter;
-	private final Period period;
+	private final Range range;
 	private final boolean includeGraph;
 	private final Document document;
 	private final CounterRequestAggregation counterRequestAggregation;
@@ -56,16 +56,16 @@ class PdfCounterReport {
 	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
 	private PdfPTable currentTable;
 
-	PdfCounterReport(Collector collector, Counter counter, Period period, boolean includeGraph,
+	PdfCounterReport(Collector collector, Counter counter, Range range, boolean includeGraph,
 			Document document) {
 		super();
 		assert collector != null;
 		assert counter != null;
-		assert period != null;
+		assert range != null;
 		assert document != null;
 		this.collector = collector;
 		this.counter = counter;
-		this.period = period;
+		this.range = range;
 		this.includeGraph = includeGraph;
 		this.document = document;
 		this.counterRequestAggregation = new CounterRequestAggregation(counter);
@@ -266,7 +266,7 @@ class PdfCounterReport {
 		if (jrobin == null) {
 			addCell("");
 		} else {
-			final byte[] img = jrobin.graph(period, 100, 50);
+			final byte[] img = jrobin.graph(range, 100, 50);
 			final Image image = Image.getInstance(img);
 			image.scalePercent(50);
 			currentTable.addCell(image);
