@@ -45,8 +45,9 @@ These measures are taken at a time T, for example every 2 minutes.
 Each chart follows the evolution of a value of measure on the period short or large chosen
 with the links above the summary: <img width='16' height='16' src='?resource=calendar_view_day.png' alt='day'/> the day,
  <img width='16' height='16' src='?resource=calendar_view_week.png' alt='week'/> the week,
- <img width='16' height='16' src='?resource=calendar_view_month.png' alt='month'/> the month or 
- <img width='16' height='16' src='?resource=calendar.png' alt='year'/> the year.
+ <img width='16' height='16' src='?resource=calendar_view_month.png' alt='month'/> the month, 
+ <img width='16' height='16' src='?resource=calendar.png' alt='year'/> the year or
+ <img width='16' height='16' src='?resource=calendar.png' alt='custom'/> a custom period.
 In each chart, the mean value in green and the maximum in blue are displayed with numbers below the chart.
 Charts are persisted: a restart of the application server has no influence on them except of a hole in the measures.<br/>
 Each chart can be zoomed and resized by clicking on them in the summary.<br/><br/>
@@ -134,15 +135,17 @@ and otherwise @$ORACLE_HOME/rdbms/admin/utlxplan.sql and "grant all on plan_tabl
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistics</h3>
 The statistics of a counter shows the statistics of the requests executed on the application server.<br/>
-4 counters of requests exist today:<ul>
+5 counters of requests exist today:<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Http statistics</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
 Sql statistics (jdbc)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='ejb'/>
-Ejb statistics (if ejb3 façades on JavaEE 5)</li>
+Ejb statistics (if ejb3 façades on JavaEE 5+)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='spring'/>
 Spring statistics (if spring façades)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
+Statistics of façades interfaces (without ejb3 and without spring)</li>
 </ul>
 For each counter, a request appears in the statistics when it is finished;
 to know the unfinished requests see the 
