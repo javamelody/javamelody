@@ -178,7 +178,11 @@ final class Parameters {
 		final String[] urlsArray = value.split(",");
 		final List<URL> urls = new ArrayList<URL>(urlsArray.length);
 		for (final String s : urlsArray) {
-			final URL url = new URL(s.trim() + suffix);
+			String s2 = s.trim();
+			while (s2.endsWith("/")) {
+				s2 = s2.substring(0, s2.length() - 1);
+			}
+			final URL url = new URL(s2 + suffix);
 			urls.add(url);
 		}
 		return urls;
