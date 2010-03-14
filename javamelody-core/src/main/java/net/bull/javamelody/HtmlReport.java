@@ -64,17 +64,9 @@ class HtmlReport {
 			writeln("<div id='customPeriod' style='display: none;'>");
 			writeln(SCRIPT_BEGIN);
 			writeln("function validateCustomPeriodForm() {");
-			writeln("   periodForm=document.customPeriodForm;");
-			writeln("   if (periodForm.startDate.value.length == 0) {");
-			writeln("      alert('" + I18N.getStringForJavascript("dates_mandatory") + "');");
-			writeln("      periodForm.startDate.focus();");
-			writeln("      return false;");
-			writeln("   }");
-			writeln("   if (periodForm.endDate.value.length == 0) {");
-			writeln("      alert('" + I18N.getStringForJavascript("dates_mandatory") + "');");
-			writeln("      periodForm.endDate.focus();");
-			writeln("      return false;");
-			writeln("   }");
+			writeln("   periodForm = document.customPeriodForm;");
+			writelnCheckMandatory("periodForm.startDate", "dates_mandatory");
+			writelnCheckMandatory("periodForm.endDate", "dates_mandatory");
 			writeln("   periodForm.period.value=periodForm.startDate.value + '-' + periodForm.endDate.value;");
 			writeln("   return true;");
 			writeln("}");
@@ -132,16 +124,8 @@ class HtmlReport {
 			}
 			writeln(SCRIPT_BEGIN);
 			writeln("function validateAppForm() {");
-			writeln("   if (document.appForm.appName.value.length == 0) {");
-			writeln("      alert('" + I18N.getStringForJavascript("app_name_mandatory") + "');");
-			writeln("      document.appForm.appName.focus();");
-			writeln("      return false;");
-			writeln("   }");
-			writeln("   if (document.appForm.appUrls.value.length == 0) {");
-			writeln("      alert('" + I18N.getStringForJavascript("app_urls_mandatory") + "');");
-			writeln("      document.appForm.appUrls.focus();");
-			writeln("      return false;");
-			writeln("   }");
+			writelnCheckMandatory("document.appForm.appName", "app_name_mandatory");
+			writelnCheckMandatory("document.appForm.appUrls", "app_urls_mandatory");
 			writeln("   return true;");
 			writeln("}");
 			writeln(SCRIPT_END);
@@ -154,6 +138,14 @@ class HtmlReport {
 			writeln("<br/> <br/>");
 			writeln("</form>");
 			writeln("</div>\n");
+		}
+
+		private void writelnCheckMandatory(String fieldFullName, String msgKey) throws IOException {
+			writeln("   if (" + fieldFullName + ".value.length == 0) {");
+			writeln("      alert('" + I18N.getStringForJavascript(msgKey) + "');");
+			writeln("      " + fieldFullName + ".focus();");
+			writeln("      return false;");
+			writeln("   }");
 		}
 
 		private void writeln(String html) throws IOException {
@@ -362,8 +354,7 @@ class HtmlReport {
 					javaInformations.getThreadInformationsList(), javaInformations
 							.isStackTraceEnabled(), writer);
 			htmlThreadInformationsReport.writeDeadlocks();
-			writeln("<br/><br/>");
-			writeln("<div id='" + id + "' style='display: none;'>");
+			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
 			htmlThreadInformationsReport.toHtml();
 			// plus nécessaire, car il y a caches et logos après:
 			//			if (JavaInformations.STACK_TRACES_ENABLED) {
@@ -456,8 +447,7 @@ class HtmlReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/>");
-			writeln("<div id='" + id + "' style='display: none;'>");
+			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
 			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
 					.toHtml();
 			writeln("</div><br/>");
@@ -480,8 +470,7 @@ class HtmlReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "job_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/>");
-			writeln("<div id='" + id + "' style='display: none;'>");
+			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
 			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), writer)
 					.toHtml();
 			writeln("</div><br/>");
