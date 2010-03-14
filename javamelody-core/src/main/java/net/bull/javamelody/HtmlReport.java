@@ -59,8 +59,8 @@ class HtmlReport {
 			writeln("<a href=\"javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();\" ");
 			final String linkLabel = I18N.getString("personnalisee");
 			writeln("title='" + I18N.getFormattedString("Choisir_periode", linkLabel) + "'>");
-			writeln("<img src='?resource=calendar.png' alt='" + linkLabel + "' /> ");
-			writeln(linkLabel + "</a>");
+			writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> ");
+			writeln("#personnalisee#</a>");
 			writeln("<div id='customPeriod' style='display: none;'>");
 			writeln(SCRIPT_BEGIN);
 			writeln("function validateCustomPeriodForm() {");
