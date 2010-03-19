@@ -22,8 +22,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -77,12 +80,34 @@ public class TestRange {
 	/** Test. */
 	@Test
 	public void testParse() {
-		assertNotNull("parse", periodRange.getPeriod() == Range.parse(periodRange.getValue())
+		assertEquals("parse1", periodRange.getPeriod(), Range.parse(periodRange.getValue())
 				.getPeriod());
-		assertNotNull("parse", customRange.getStartDate().equals(
-				Range.parse(customRange.getValue()).getStartDate()));
-		assertNotNull("parse", customRange.getEndDate().equals(
-				Range.parse(customRange.getValue()).getEndDate()));
+		assertEquals("parse2", customRange.getStartDate().getTime() / ONE_DAY_MILLIS, Range.parse(
+				customRange.getValue()).getStartDate().getTime()
+				/ ONE_DAY_MILLIS + 1);
+		assertEquals("parse3", customRange.getEndDate().getTime() / ONE_DAY_MILLIS, Range.parse(
+				customRange.getValue()).getEndDate().getTime()
+				/ ONE_DAY_MILLIS);
+
+		I18N.bindLocale(Locale.FRENCH);
+		try {
+			// on teste le résultat en cas d'erreur de format
+			assertNotNull("parse4", Range.parse("xxxxxx-01/01/2010"));
+			assertNotNull("parse5", Range.parse("01/01/2010-xxxxxx"));
+			// on teste les bornes min et max
+			final Calendar calendar = Calendar.getInstance();
+			final int currentYear = calendar.get(Calendar.YEAR);
+			Range range = Range.parse("01/01/2000-01/01/2030");
+			calendar.setTime(range.getStartDate());
+			assertTrue("parse6", calendar.get(Calendar.YEAR) >= currentYear - 2);
+			calendar.setTime(range.getEndDate());
+			assertTrue("parse6", calendar.get(Calendar.YEAR) <= currentYear);
+			range = Range.parse("01/01/2030-01/01/2030");
+			calendar.setTime(range.getStartDate());
+			assertTrue("parse7", calendar.get(Calendar.YEAR) <= currentYear);
+		} finally {
+			I18N.unbindLocale();
+		}
 	}
 
 	/** Test. */
