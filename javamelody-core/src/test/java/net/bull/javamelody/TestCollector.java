@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
@@ -255,7 +256,7 @@ public class TestCollector {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testGetPeriodCountersToBeDisplayed() throws IOException {
+	public void testGetRangeCountersToBeDisplayed() throws IOException {
 		try {
 			final Counter counter = createCounter();
 			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
@@ -277,6 +278,8 @@ public class TestCollector {
 			assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
 			assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
 			assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
+			assertEquals("custom", 1, collector.getRangeCountersToBeDisplayed(
+					Range.createCustomRange(new Date(), new Date())).size());
 		} finally {
 			timer.cancel();
 		}
