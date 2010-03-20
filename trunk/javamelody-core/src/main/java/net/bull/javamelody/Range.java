@@ -84,7 +84,7 @@ final class Range implements Serializable {
 		}
 
 		Date endDate;
-		if (index < value.length()) {
+		if (index < value.length() - 1) {
 			try {
 				endDate = dateFormat.parse(value.substring(index + 1));
 			} catch (final ParseException e) {
