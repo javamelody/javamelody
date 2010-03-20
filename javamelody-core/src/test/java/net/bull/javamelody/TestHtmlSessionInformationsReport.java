@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -62,6 +63,14 @@ public class TestHtmlSessionInformationsReport {
 		// pays non existant
 		final SessionTestImpl sessionPays = new SessionTestImpl(true);
 		sessionPays.setCountry("nimporte.quoi");
+		htmlSessionInformationsReport.toHtml(Collections.singletonList(new SessionInformations(
+				sessionPays, false)));
+		assertNotEmptyAndClear(writer);
+
+		// pays null
+		sessionPays.setCountry(null);
+		assertNull("countryDisplay null", new SessionInformations(sessionPays, false)
+				.getCountryDisplay());
 		htmlSessionInformationsReport.toHtml(Collections.singletonList(new SessionInformations(
 				sessionPays, false)));
 		assertNotEmptyAndClear(writer);
