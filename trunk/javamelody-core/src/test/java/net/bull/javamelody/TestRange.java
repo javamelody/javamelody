@@ -94,17 +94,18 @@ public class TestRange {
 			// on teste le résultat en cas d'erreur de format
 			assertNotNull("parse4", Range.parse("xxxxxx-01/01/2010"));
 			assertNotNull("parse5", Range.parse("01/01/2010-xxxxxx"));
+			assertNotNull("parse6", Range.parse("01/01/2010-"));
 			// on teste les bornes min et max
 			final Calendar calendar = Calendar.getInstance();
 			final int currentYear = calendar.get(Calendar.YEAR);
 			Range range = Range.parse("01/01/2000-01/01/2030");
 			calendar.setTime(range.getStartDate());
-			assertTrue("parse6", calendar.get(Calendar.YEAR) >= currentYear - 2);
+			assertTrue("parse7", calendar.get(Calendar.YEAR) >= currentYear - 2);
 			calendar.setTime(range.getEndDate());
-			assertTrue("parse6", calendar.get(Calendar.YEAR) <= currentYear);
+			assertTrue("parse7", calendar.get(Calendar.YEAR) <= currentYear);
 			range = Range.parse("01/01/2030-01/01/2030");
 			calendar.setTime(range.getStartDate());
-			assertTrue("parse7", calendar.get(Calendar.YEAR) <= currentYear);
+			assertTrue("parse8", calendar.get(Calendar.YEAR) <= currentYear);
 		} finally {
 			I18N.unbindLocale();
 		}
