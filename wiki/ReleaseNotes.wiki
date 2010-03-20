@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.13.0 ===
 
   * fix issue 14: html reports in utf-8 for cyrillic and other characters
   * fix issue 15: support for log4j-over-slf4j 
