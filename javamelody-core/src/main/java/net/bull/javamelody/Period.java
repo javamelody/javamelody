@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 by Emeric Vernat, Bull
+ * Copyright 2008-2010 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
