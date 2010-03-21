@@ -9,10 +9,10 @@ There is no promise of dates or that a particular feature will ever be done.
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
+  # (done) Monitor *logback* warn logs like for Log4j and java.util.logging, and use logback if available for log of http requests
   # *Translations* (German, Italian, Spanish...)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, via a link and a persistent http cookie or at least a parameter (from user group)
   # Help to find *jdbc connection leaks* : add a parameter to enable display of the list of stack-traces to know where were opened jdbc connections
-  # Monitor *logback* warn logs like for Log4j and java.util.logging, and use logback if available for log of http requests
   # Replace "POST" in http requests names by *"GWT-RPC"* and extract class and method names from the gwt payload for gwt-rpc requests (from user group)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish for example
   # If *quartz*, add display of frequency/cron expressions of jobs, mean execution times, mean cpu times, mean sql hits and times
