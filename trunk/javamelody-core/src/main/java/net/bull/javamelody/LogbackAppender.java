@@ -80,9 +80,8 @@ public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	 */
 	@Override
 	protected void append(ILoggingEvent event) {
-		if (!isStarted()) {
-			return;
-		}
+		// inutile de vérifier que l'appender est bien "started",
+		// car il est démarré dans le constructeur et si cela ne fonctionne pas il n'y a pas d'instance
 		if (event.getLevel().isGreaterOrEqual(MINIMUM_LEVEL)) {
 			final String output = getLayout().doLayout(event);
 			String stackTrace = exceptionLayout.doLayout(event);
