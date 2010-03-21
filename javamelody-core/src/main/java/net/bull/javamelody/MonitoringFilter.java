@@ -56,6 +56,7 @@ public class MonitoringFilter implements Filter {
 	private boolean monitoringDisabled;
 	private boolean logEnabled;
 	private boolean log4jEnabled;
+	private boolean logbackEnabled;
 	private boolean contextFactoryEnabled;
 	private Pattern urlExcludePattern;
 	private Pattern allowedAddrPattern;
@@ -90,14 +91,7 @@ public class MonitoringFilter implements Filter {
 		this.timer = new Timer("javamelody"
 				+ Parameters.getContextPath(config.getServletContext()).replace('/', ' '), true);
 
-		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));
-		// on branche le handler java.util.logging pour le counter de logs
-		LoggingHandler.getSingleton().register();
-		log4jEnabled = isLog4jEnabled();
-		if (log4jEnabled) {
-			// si log4j est disponible on branche aussi l'appender pour le counter de logs
-			Log4JAppender.getSingleton().register();
-		}
+		initLogs();
 
 		this.contextFactoryEnabled = !monitoringDisabled
 				&& Boolean.parseBoolean(Parameters.getParameter(Parameter.CONTEXT_FACTORY_ENABLED));
@@ -162,15 +156,34 @@ public class MonitoringFilter implements Filter {
 		initCollect();
 	}
 
-	private boolean isLog4jEnabled() {
+	private void initLogs() {
+		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));
+		// on branche le handler java.util.logging pour le counter de logs
+		LoggingHandler.getSingleton().register();
+
 		try {
 			Class.forName("org.apache.log4j.Logger");
 			// test avec AppenderSkeleton nécessaire car log4j-over-slf4j contient la classe
 			// org.apache.log4j.Logger mais pas org.apache.log4j.AppenderSkeleton
 			Class.forName("org.apache.log4j.AppenderSkeleton");
-			return true;
+			log4jEnabled = true;
 		} catch (final ClassNotFoundException e) {
-			return false;
+			log4jEnabled = false;
+		}
+		if (log4jEnabled) {
+			// si log4j est disponible on branche aussi l'appender pour le counter de logs
+			Log4JAppender.getSingleton().register();
+		}
+
+		try {
+			Class.forName("ch.qos.logback.classic.Logger");
+			logbackEnabled = true;
+		} catch (final ClassNotFoundException e) {
+			logbackEnabled = false;
+		}
+		if (logbackEnabled) {
+			// si logback est disponible on branche aussi l'appender pour le counter de logs
+			LogbackAppender.getSingleton().register();
 		}
 	}
 
@@ -239,7 +252,10 @@ public class MonitoringFilter implements Filter {
 				JdbcWrapper.SINGLETON.stop();
 				JdbcDriver.SINGLETON.deregister();
 
-				// on enlève l'appender de log4j et le handler de java.util.logging
+				// on enlève l'appender de logback, log4j et le handler de java.util.logging
+				if (logbackEnabled) {
+					LogbackAppender.getSingleton().deregister();
+				}
 				if (log4jEnabled) {
 					Log4JAppender.getSingleton().deregister();
 				}
@@ -504,7 +520,9 @@ public class MonitoringFilter implements Filter {
 		// dans les 2 cas, on ne construit le message de log
 		// que si le logger est configuré pour écrire le niveau INFO
 		final String filterName = filterConfig.getFilterName();
-		if (log4jEnabled) {
+		if (logbackEnabled) {
+			logback(httpRequest, duration, systemError, responseSize, filterName);
+		} else if (log4jEnabled) {
 			log4j(httpRequest, duration, systemError, responseSize, filterName);
 		} else {
 			final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(filterName);
@@ -519,6 +537,16 @@ public class MonitoringFilter implements Filter {
 		// la variable logger doit être dans une méthode à part pour ne pas faire ClassNotFoundException
 		// si log4j non présent (mais variable préférable pour performance)
 		final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(filterName);
+		if (logger.isInfoEnabled()) {
+			logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
+		}
+	}
+
+	private static void logback(HttpServletRequest httpRequest, long duration, boolean systemError,
+			int responseSize, String filterName) {
+		// la variable logger doit être dans une méthode à part pour ne pas faire ClassNotFoundException
+		// si logback non présent (mais variable préférable pour performance)
+		final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(filterName);
 		if (logger.isInfoEnabled()) {
 			logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
 		}

@@ -63,12 +63,16 @@ public class LoggingHandler extends Handler {
 
 	static void addErrorLogToCounter(String message, Throwable throwable) {
 		if (throwable == null) {
-			LOG_COUNTER.addRequestForSystemError(message, -1, -1, null);
+			addErrorLogToCounter(message, (String) null);
 		} else {
 			final StringWriter stackTrace = new StringWriter(200);
 			throwable.printStackTrace(new PrintWriter(stackTrace));
-			LOG_COUNTER.addRequestForSystemError(message, -1, -1, stackTrace.toString());
+			addErrorLogToCounter(message, stackTrace.toString());
 		}
+	}
+
+	static void addErrorLogToCounter(String message, String throwableStackTrace) {
+		LOG_COUNTER.addRequestForSystemError(message, -1, -1, throwableStackTrace);
 	}
 
 	void register() {
