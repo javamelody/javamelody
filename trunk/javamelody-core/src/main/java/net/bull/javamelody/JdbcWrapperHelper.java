@@ -22,8 +22,8 @@ import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -43,16 +43,23 @@ final class JdbcWrapperHelper {
 		super();
 	}
 
-	static Map<String, DataSource> getDataSources() throws NamingException {
-		final Map<String, DataSource> dataSources = new HashMap<String, DataSource>(2);
+	static Map<String, DataSource> getJndiAndSpringDataSources() throws NamingException {
+		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(
+				getJndiDataSources());
+		dataSources.putAll(SpringDataSourceBeanPostProcessor.getSpringDataSources());
+		return dataSources;
+	}
+
+	static Map<String, DataSource> getJndiDataSources() throws NamingException {
+		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(2);
 		final String datasourcesParameter = Parameters.getParameter(Parameter.DATASOURCES);
 		if (datasourcesParameter == null) {
-			dataSources.putAll(getDataSourcesAt("java:comp/env/jdbc"));
+			dataSources.putAll(getJndiDataSourcesAt("java:comp/env/jdbc"));
 			// pour jboss sans jboss-env.xml ou sans resource-ref dans web.xml :
-			dataSources.putAll(getDataSourcesAt("java:/jdbc"));
+			dataSources.putAll(getJndiDataSourcesAt("java:/jdbc"));
 			// pour JavaEE 6 :
 			// (voir par exemple http://smokeandice.blogspot.com/2009/12/datasourcedefinition-hidden-gem-from.html)
-			dataSources.putAll(getDataSourcesAt("java:global/jdbc"));
+			dataSources.putAll(getJndiDataSourcesAt("java:global/jdbc"));
 		} else if (datasourcesParameter.trim().length() != 0) { // NOPMD
 			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
@@ -67,10 +74,10 @@ final class JdbcWrapperHelper {
 		return Collections.unmodifiableMap(dataSources);
 	}
 
-	private static Map<String, DataSource> getDataSourcesAt(String jndiPrefix)
+	private static Map<String, DataSource> getJndiDataSourcesAt(String jndiPrefix)
 			throws NamingException {
 		final InitialContext initialContext = new InitialContext();
-		final Map<String, DataSource> dataSources = new HashMap<String, DataSource>(2);
+		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(2);
 		try {
 			for (final NameClassPair nameClassPair : Collections.list(initialContext
 					.list(jndiPrefix))) {

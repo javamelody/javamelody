@@ -31,18 +31,32 @@ import org.junit.Test;
 public class TestJdbcWrapperHelper {
 	/** Test. */
 	@Test
-	public void testGetDataSources() {
-		getDataSources();
+	public void testGetJndiDataSources() {
+		getJndiDataSources();
 		setProperty(Parameter.DATASOURCES, "");
-		getDataSources();
+		getJndiDataSources();
 		setProperty(Parameter.DATASOURCES, "testDataSource");
-		getDataSources();
+		getJndiDataSources();
 		setProperty(Parameter.DATASOURCES, null);
 	}
 
-	private void getDataSources() {
+	/** Test. */
+	@Test
+	public void testGetJndiAndSpringDataSources() {
+		getJndiAndSpringDataSources();
+	}
+
+	private void getJndiDataSources() {
 		try {
-			JdbcWrapperHelper.getDataSources();
+			JdbcWrapperHelper.getJndiDataSources();
+		} catch (final NamingException e) {
+			assertNotNull("ok", e);
+		}
+	}
+
+	private void getJndiAndSpringDataSources() {
+		try {
+			JdbcWrapperHelper.getJndiAndSpringDataSources();
 		} catch (final NamingException e) {
 			assertNotNull("ok", e);
 		}
