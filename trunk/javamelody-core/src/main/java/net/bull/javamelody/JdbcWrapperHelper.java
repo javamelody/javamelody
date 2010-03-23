@@ -39,14 +39,20 @@ import javax.sql.DataSource;
  * @author Emeric Vernat
  */
 final class JdbcWrapperHelper {
+	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<String, DataSource>();
+
 	private JdbcWrapperHelper() {
 		super();
+	}
+
+	static void registerSpringDataSource(String beanName, DataSource dataSource) {
+		SPRING_DATASOURCES.put(beanName, dataSource);
 	}
 
 	static Map<String, DataSource> getJndiAndSpringDataSources() throws NamingException {
 		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(
 				getJndiDataSources());
-		dataSources.putAll(SpringDataSourceBeanPostProcessor.getSpringDataSources());
+		dataSources.putAll(SPRING_DATASOURCES);
 		return dataSources;
 	}
 
