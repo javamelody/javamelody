@@ -336,9 +336,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 			// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 			// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
-			for (final Map.Entry<String, DataSource> entry : JdbcWrapperHelper.getDataSources()
-					.entrySet()) {
-				final String jndiName = entry.getKey();
+			final Map<String, DataSource> dataSources = JdbcWrapperHelper
+					.getJndiAndSpringDataSources();
+			for (final Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
+				final String name = entry.getKey();
 				final DataSource dataSource = entry.getValue();
 				final Connection connection = dataSource.getConnection();
 				connection.setAutoCommit(false);
@@ -346,7 +347,7 @@ class JavaInformations implements Serializable { // NOPMD
 					if (result.length() > 0) {
 						result.append("\n\n");
 					}
-					result.append(jndiName).append(":\n");
+					result.append(name).append(":\n");
 					appendDataBaseVersion(result, connection);
 				} finally {
 					connection.rollback();

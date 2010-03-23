@@ -354,7 +354,7 @@ final class JdbcWrapper {
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
 		try {
 			final InitialContext initialContext = new InitialContext();
-			for (final Map.Entry<String, DataSource> entry : JdbcWrapperHelper.getDataSources()
+			for (final Map.Entry<String, DataSource> entry : JdbcWrapperHelper.getJndiDataSources()
 					.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
@@ -534,7 +534,7 @@ final class JdbcWrapper {
 		return createDataSourceProxy(null, dataSource);
 	}
 
-	private DataSource createDataSourceProxy(String name, final DataSource dataSource) {
+	DataSource createDataSourceProxy(String name, final DataSource dataSource) {
 		assert dataSource != null;
 		if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSource.getClass().getName())
 				&& dataSource instanceof BasicDataSource) {
