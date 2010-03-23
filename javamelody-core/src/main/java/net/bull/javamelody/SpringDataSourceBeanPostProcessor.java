@@ -18,10 +18,6 @@
  */
 package net.bull.javamelody;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -31,8 +27,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * @author Emeric Vernat
  */
 public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
-	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<String, DataSource>();
-
 	/** {@inheritDoc} */
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
@@ -42,13 +36,9 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (bean instanceof DataSource) {
 			final DataSource dataSource = (DataSource) bean;
-			SPRING_DATASOURCES.put(beanName, dataSource);
+			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
 			return JdbcWrapper.SINGLETON.createDataSourceProxy(beanName, dataSource);
 		}
 		return bean;
-	}
-
-	static Map<String, DataSource> getSpringDataSources() {
-		return Collections.unmodifiableMap(SPRING_DATASOURCES);
 	}
 }
