@@ -94,6 +94,7 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>0.9.18</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.lowagie</groupId>
