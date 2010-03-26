@@ -1,10 +1,16 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix: Use *spring datasources* in some parts of the reports, if of course the monitoring-spring.xml file (with the post-processor) is used as said in the [UserGuide]. Like with jndi datasources, database version and jdbc driver version will be displayed. And if system actions are enabled, reports on the database will be available (like mysql process list, variables, status...).
+  * added with help from _Pether Sörling_: If *Logback* is available, warn logs are automatically monitored in order to display them in reports like with log4j and with java.util.logging.
+  * More to come...
+
 === 1.13.0 ===
 
   * fix issue 14: html reports in utf-8 for cyrillic and other characters
   * fix issue 15: support for log4j-over-slf4j 
   * added: remember the last selected period (with a persistent cookie in the browser)
-  * added: UI option to display graphs and statistics for custom periods, via fields of start and end dates of period to display (from user group)
+  * added: UI option to display graphs and statistics for *custom periods*, via fields of start and end dates of period to display (from user group)
 
 === 1.12.0 ===
 
