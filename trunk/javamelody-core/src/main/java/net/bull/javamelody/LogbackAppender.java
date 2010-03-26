@@ -40,21 +40,22 @@ public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
 	private final PatternLayout exceptionLayout = new PatternLayout();
 
+	private final PatternLayout messageLayout = new PatternLayout();
+
 	/**
 	 * Constructeur.
 	 */
 	public LogbackAppender() {
 		super();
 		final LoggerContext lc = getDefaultContext();
+		messageLayout.setContext(lc);
+		messageLayout.setPattern(MESSAGE_PATTERN);
+		messageLayout.start();
+
 		exceptionLayout.setContext(lc);
 		exceptionLayout.setPattern(EXCEPTION_PATTERN);
 		exceptionLayout.start();
 
-		final PatternLayout pl = new PatternLayout();
-		pl.setContext(lc);
-		pl.setPattern(MESSAGE_PATTERN);
-		pl.start();
-		setLayout(pl);
 		setContext(lc);
 		start();
 	}
@@ -83,7 +84,7 @@ public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		// inutile de vérifier que l'appender est bien "started",
 		// car il est démarré dans le constructeur et si cela ne fonctionne pas il n'y a pas d'instance
 		if (event.getLevel().isGreaterOrEqual(MINIMUM_LEVEL)) {
-			final String output = getLayout().doLayout(event);
+			final String output = messageLayout.doLayout(event);
 			String stackTrace = exceptionLayout.doLayout(event);
 			if (stackTrace.isEmpty()) {
 				stackTrace = null;
