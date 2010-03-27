@@ -144,17 +144,8 @@ class JavaInformations implements Serializable { // NOPMD
 		maxConnectionCount = JdbcWrapper.getMaxConnectionCount();
 		systemLoadAverage = buildSystemLoadAverage();
 		processCpuTimeMillis = buildProcessCpuTimeMillis();
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem)
-				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
-						.getName())) {
-			final com.sun.management.UnixOperatingSystemMXBean unixOsBean = (com.sun.management.UnixOperatingSystemMXBean) operatingSystem;
-			unixOpenFileDescriptorCount = unixOsBean.getOpenFileDescriptorCount();
-			unixMaxFileDescriptorCount = unixOsBean.getMaxFileDescriptorCount();
-		} else {
-			unixOpenFileDescriptorCount = -1;
-			unixMaxFileDescriptorCount = -1;
-		}
+		unixOpenFileDescriptorCount = buildOpenFileDescriptorCount();
+		unixMaxFileDescriptorCount = buildMaxFileDescriptorCount();
 		host = Parameters.getHostName() + '@' + Parameters.getHostAddress();
 		os = System.getProperty("os.name") + ' ' + System.getProperty("sun.os.patch.level") + ", "
 				+ System.getProperty("os.arch") + '/' + System.getProperty("sun.arch.data.model");
@@ -222,6 +213,38 @@ class JavaInformations implements Serializable { // NOPMD
 			final com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) operatingSystem;
 			// nano-secondes converties en milli-secondes
 			return osBean.getProcessCpuTime() / 1000000;
+		}
+		return -1;
+	}
+
+	private static long buildOpenFileDescriptorCount() {
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (isSunOsMBean(operatingSystem)
+				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
+						.getName())) {
+			final com.sun.management.UnixOperatingSystemMXBean unixOsBean = (com.sun.management.UnixOperatingSystemMXBean) operatingSystem;
+			try {
+				return unixOsBean.getOpenFileDescriptorCount();
+			} catch (final Error e) {
+				// pour issue 16 (using jsvc on ubuntu or debian)
+				return -1;
+			}
+		}
+		return -1;
+	}
+
+	private static long buildMaxFileDescriptorCount() {
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (isSunOsMBean(operatingSystem)
+				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
+						.getName())) {
+			final com.sun.management.UnixOperatingSystemMXBean unixOsBean = (com.sun.management.UnixOperatingSystemMXBean) operatingSystem;
+			try {
+				return unixOsBean.getMaxFileDescriptorCount();
+			} catch (final Error e) {
+				// pour issue 16 (using jsvc on ubuntu or debian)
+				return -1;
+			}
 		}
 		return -1;
 	}
