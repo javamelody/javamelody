@@ -102,11 +102,18 @@ It is possible to force a major GC with the action
 
 <h4>Memory chart: use case of a memory saturation</h4>
 If the memory in the chart increases to the maximum and if the application can not release some of it with the garbage collector,
-the server possibly causes some OutOfMemoryErrors to interrupt the execution and to release some memory if possible.<br/>
+the server possibly causes some "OutOfMemoryErrors: Java heap space" to interrupt the execution and to release some memory if possible.<br/>
 Until the memory is sufficient, the cpu remains at 100% because the garbage collector runs permanently.
 This can cause extreme slowness or a blocking of the application server.<br/>
 The solutions can be to increase the maximum java memory (parameter Xmx in configuration of server),
 and possibly the physical memory of the server, or to optimize if possible the memory used by the application.
+
+<h4>Perm Gen memory: use case of a perm gen saturation</h4>
+If the value of the perm gen memory increases to the maximum and if the application can not release some of it,
+the server possibly causes some "OutOfMemoryErrors: PermGen space" to interrupt the execution.
+This can block all features in your application.<br/>
+The solutions can be to increase the maximum PermGen memory (parameter XX:MaxPermSize in configuration of server, 64 MB by default),
+and possibly the physical memory of the server, or to reduce if possible the number of classes loaded by the application.
 
 <h4>Charts of active threads and of active jdbc connections: use case of a flat level (long requests)</h4>
 <a href='?resource=help/activeThreads.png' target='_blank'><img src='?resource=help/activeThreads.png' alt='Active threads' width='312' height='147' /></a>
