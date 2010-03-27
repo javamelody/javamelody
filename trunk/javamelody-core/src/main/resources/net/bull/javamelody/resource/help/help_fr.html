@@ -103,12 +103,19 @@ Il est possible de forcer un GC majeur par l'action
 du rapport.</p>
 
 <h4>Courbe mémoire : cas d'utilisation d'une saturation mémoire</h4>
-Si la courbe mémoire augmente jusqu'au maximum et que l'application ne peut en libérer avec le ramasse-miette,
-le serveur provoque éventuellement des erreurs OutOfMemoryError pour interrompre le traitement et libérer si possible la mémoire.<br/>
+Si la courbe mémoire augmente jusqu'au maximum et si l'application ne peut en libérer avec le ramasse-miette,
+le serveur provoque éventuellement des erreurs "OutOfMemoryError: Java heap space" pour interrompre le traitement et libérer si possible la mémoire.<br/>
 Tant que la mémoire est insuffisante, le cpu reste à 100% car le ramasse-miette s'exécute en permanence.
 Cela peut provoquer de très fortes lenteurs et un quasi-blocage du serveur d'application.<br/>
-Les solutions peuvent être d'augmenter la mémoire java maximum (paramètre Xmx au lancement du serveur),
+Les solutions peuvent être d'augmenter la mémoire java maximum (paramètre Xmx au lancement du serveur, 64 Mo par défaut),
 et éventuellement la mémoire physique du serveur, ou bien d'optimiser si possible la consommation mémoire de l'application.
+
+<h4>Mémoire Perm Gen: cas d'utilisation d'une saturation perm gen</h4>
+Si la valeur de la mémoire perm gen augmente jusqu'au maximum et si l'application ne peut en libérer,
+le serveur provoque éventuellement des erreurs "OutOfMemoryErrors: PermGen space" pour interrompre le traitement.
+Cela peut bloquer toutes les fonctionnalités dans l'application.<br/>
+Les solutions peuvent être d'augmenter la mémoire PermGen maximum (paramètre XX:MaxPermSize au lancement du serveur),
+et éventuellement la mémoire physique du serveur, ou bien d'optimiser si possible le nombre de classes chargées par l'application.
 
 <h4>Courbes de threads actifs et connexions jdbc actives : cas d'utilisation d'un plateau (requêtes longues)</h4>
 <a href='?resource=help/activeThreads.png' target='_blank'><img src='?resource=help/activeThreads.png' alt='Threads actifs' width='312' height='147' /></a>
