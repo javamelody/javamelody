@@ -283,8 +283,10 @@ class JavaInformations implements Serializable { // NOPMD
 			threads = new ArrayList<Thread>(stackTraces.keySet());
 		} else {
 			// on récupère les threads sans stack trace en contournant bug 6434648 avant 1.6.0_01
+			// hormis pour le thread courant qui obtient sa stack trace différemment sans le bug
 			threads = getThreadsFromThreadGroups();
-			stackTraces = Collections.emptyMap();
+			final Thread currentThread = Thread.currentThread();
+			stackTraces = Collections.singletonMap(currentThread, currentThread.getStackTrace());
 		}
 
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
