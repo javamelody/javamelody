@@ -203,6 +203,9 @@ public class TestJdbcWrapper {
 				System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
 						+ Parameter.DISABLED.getCode(), "false");
 			}
+
+			assertFalse("getConnectionInformationsList", JdbcWrapper
+					.getConnectionInformationsList().isEmpty());
 		} finally {
 			connection.close();
 		}

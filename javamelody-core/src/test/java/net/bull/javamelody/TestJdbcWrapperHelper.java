@@ -62,12 +62,22 @@ public class TestJdbcWrapperHelper {
 		}
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws IllegalAccessException e */
 	@Test
-	public void testGetAccessibleField() {
+	public void testGetFieldValue() throws IllegalAccessException {
 		// sqlCounter est un champ privé qui existe comme un autre
-		assertNotNull("getAccessibleField", JdbcWrapperHelper.getAccessibleField(
-				JdbcWrapper.SINGLETON, "sqlCounter"));
+		assertNotNull("getFieldValue", JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON,
+				"sqlCounter"));
+	}
+
+	/** Test.
+	 * @throws IllegalAccessException e */
+	@Test
+	public void testSetFieldValue() throws IllegalAccessException {
+		// sqlCounter est un champ privé qui existe comme un autre
+		final Object value = JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter");
+		JdbcWrapperHelper.setFieldValue(JdbcWrapper.SINGLETON, "sqlCounter", value);
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

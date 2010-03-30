@@ -50,8 +50,7 @@ import javax.sql.DataSource;
 class JavaInformations implements Serializable { // NOPMD
 	// les stack traces des threads ne sont récupérées qu'à partir de java 1.6.0 update 1
 	// pour éviter la fuite mémoire du bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6434648
-	private static final boolean STACK_TRACES_ENABLED = "1.6.0_01"
-			.compareTo(Parameters.JAVA_VERSION) <= 0;
+	static final boolean STACK_TRACES_ENABLED = "1.6.0_01".compareTo(Parameters.JAVA_VERSION) <= 0;
 	private static final boolean SYNCHRONIZER_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 	private static final boolean SYSTEM_LOAD_AVERAGE_ENABLED = "1.6"
 			.compareTo(Parameters.JAVA_VERSION) < 0;

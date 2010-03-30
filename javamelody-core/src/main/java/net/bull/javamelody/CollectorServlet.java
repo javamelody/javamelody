@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
@@ -226,6 +227,8 @@ public class CollectorServlet extends HttpServlet {
 			doProcesses(req, resp, application);
 		} else if (DATABASE_PART.equalsIgnoreCase(partParameter)) {
 			doDatabase(req, resp, application);
+		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
+			doConnections(req, resp, application);
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 			monitoringController.doReport(req, resp, javaInformationsList);
@@ -257,8 +260,8 @@ public class CollectorServlet extends HttpServlet {
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
 		writer.write("</a></div>");
+		final String title = I18N.getString("Requetes_en_cours");
 		for (final URL url : getUrlsByApplication(application)) {
-			final String title = I18N.getString("Requetes_en_cours");
 			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=hourglass.png' alt='"
 					+ title + "'/>" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
@@ -286,8 +289,8 @@ public class CollectorServlet extends HttpServlet {
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
 		writer.write("</a></div>");
+		final String title = I18N.getString("Processus");
 		for (final URL url : getUrlsByApplication(application)) {
-			final String title = I18N.getString("Processus");
 			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=threads.png' alt='"
 					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
@@ -317,6 +320,36 @@ public class CollectorServlet extends HttpServlet {
 		final DatabaseInformations databaseInformations = new LabradorRetriever(processesUrl)
 				.call();
 		htmlReport.writeDatabase(databaseInformations);
+		writer.close();
+	}
+
+	private void doConnections(HttpServletRequest req, HttpServletResponse resp, String application)
+			throws IOException {
+		final PrintWriter writer = createWriterFromOutputStream(resp);
+		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
+		htmlReport.writeHtmlHeader(false);
+		writer.write("<div class='noPrint'>");
+		I18N.writelnTo(BACK_LINK, writer);
+		writer.write("<a href='?part=");
+		writer.write(CONNECTIONS_PART);
+		writer.write("'>");
+		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
+				writer);
+		writer.write("</a></div><br/>");
+		writer.write(I18N.getString("connexions_intro"));
+		final String title = I18N.getString("Connexions_jdbc_ouvertes");
+		for (final URL url : getUrlsByApplication(application)) {
+			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=db.png' alt='"
+					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
+			writer.write(htmlTitle);
+			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
+			final URL connectionsUrl = new URL(url.toString().replace(
+					TransportFormat.SERIALIZED.getCode(), "htmlbody").replace(
+					TransportFormat.XML.getCode(), "htmlbody")
+					+ '&' + PART_PARAMETER + '=' + CONNECTIONS_PART);
+			new LabradorRetriever(connectionsUrl).copyTo(req, resp);
+		}
+		htmlReport.writeHtmlFooter();
 		writer.close();
 	}
 
