@@ -122,6 +122,7 @@ enum TransportFormat {
 			xstream.alias("memoryInformations", MemoryInformations.class);
 			xstream.alias("threadInformations", ThreadInformations.class);
 			xstream.alias("heapHisto", HeapHistogram.class);
+			xstream.alias("connectionInformations", ConnectionInformations.class);
 			xstream.alias("classInfo", HeapHistogram.ClassInfo.class);
 			xstream.alias("sessionInformations", SessionInformations.class);
 			xstream.alias("attribute", SessionInformations.SessionAttribute.class);

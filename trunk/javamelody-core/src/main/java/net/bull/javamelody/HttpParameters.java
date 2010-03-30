@@ -47,6 +47,7 @@ final class HttpParameters {
 	static final String POM_XML_PART = "pom.xml";
 	static final String SESSIONS_PART = "sessions";
 	static final String DATABASE_PART = "database";
+	static final String CONNECTIONS_PART = "connections";
 	static final String GRAPH_PART = "graph";
 	static final String LAST_VALUE_PART = "lastValue";
 	static final String USAGES_PART = "usages";

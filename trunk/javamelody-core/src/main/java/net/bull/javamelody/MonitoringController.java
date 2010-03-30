@@ -20,6 +20,7 @@ package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
@@ -150,7 +151,20 @@ class MonitoringController {
 			// langue préférée du navigateur, getLocale ne peut être null
 			I18N.bindLocale(httpRequest.getLocale());
 
-			doReportCore(httpRequest, httpResponse, javaInformationsList);
+			final String part = httpRequest.getParameter(PART_PARAMETER);
+			final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
+			if (part == null && graph != null) {
+				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+				doGraph(httpRequest, httpResponse, range, graph);
+			} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
+				doLastValue(httpResponse, graph);
+			} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
+				doWebXml(httpResponse);
+			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
+				doPomXml(httpResponse);
+			} else {
+				doReportCore(httpRequest, httpResponse, javaInformationsList);
+			}
 		} finally {
 			I18N.unbindLocale();
 		}
@@ -158,26 +172,17 @@ class MonitoringController {
 
 	private void doReportCore(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
-		final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
-		if (part == null && graph != null) {
-			doGraph(httpRequest, httpResponse, range, graph);
-		} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
-			doLastValue(httpResponse, graph);
-		} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
-			doWebXml(httpResponse);
-		} else if (POM_XML_PART.equalsIgnoreCase(part)) {
-			doPomXml(httpResponse);
+		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
+		if (format == null || "html".equalsIgnoreCase(format)
+				|| "htmlbody".equalsIgnoreCase(format)) {
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			final String part = httpRequest.getParameter(PART_PARAMETER);
+			doCompressedHtml(httpRequest, httpResponse, javaInformationsList, range, part);
+		} else if ("pdf".equalsIgnoreCase(format)) {
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			doPdf(httpRequest, httpResponse, range, javaInformationsList);
 		} else {
-			final String format = httpRequest.getParameter(FORMAT_PARAMETER);
-			if (format == null || "html".equalsIgnoreCase(format)) {
-				doCompressedHtml(httpRequest, httpResponse, javaInformationsList, range, part);
-			} else if ("pdf".equalsIgnoreCase(format)) {
-				doPdf(httpRequest, httpResponse, range, javaInformationsList);
-			} else {
-				doSerializable(httpRequest, httpResponse, javaInformationsList, format);
-			}
+			doSerializable(httpRequest, httpResponse, javaInformationsList, format);
 		}
 	}
 
@@ -262,6 +267,11 @@ class MonitoringController {
 					requestIndex = 0;
 				}
 				return new DatabaseInformations(requestIndex);
+			} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
+				// par sécurité
+				Action.checkSystemActionsEnabled();
+				return new ArrayList<ConnectionInformations>(JdbcWrapper
+						.getConnectionInformationsList());
 			}
 		} catch (final Exception e) {
 			return e;
@@ -335,13 +345,11 @@ class MonitoringController {
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			doProcesses(htmlReport);
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			final int requestIndex;
-			if (httpRequest.getParameter(REQUEST_PARAMETER) != null) {
-				requestIndex = Integer.parseInt(httpRequest.getParameter(REQUEST_PARAMETER));
-			} else {
-				requestIndex = 0;
-			}
-			doDatabase(htmlReport, requestIndex);
+			doDatabase(htmlReport, httpRequest.getParameter(REQUEST_PARAMETER));
+		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
+			final boolean withoutHeaders = "htmlbody".equalsIgnoreCase(httpRequest
+					.getParameter(FORMAT_PARAMETER));
+			doConnections(htmlReport, withoutHeaders);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -408,15 +416,27 @@ class MonitoringController {
 		}
 	}
 
-	private void doDatabase(HtmlReport htmlReport, int requestIndex) throws IOException {
+	private void doDatabase(HtmlReport htmlReport, String requestIndex) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
-			htmlReport.writeDatabase(new DatabaseInformations(requestIndex));
+			final int index;
+			if (requestIndex != null) {
+				index = Integer.parseInt(requestIndex);
+			} else {
+				index = 0;
+			}
+			htmlReport.writeDatabase(new DatabaseInformations(index));
 		} catch (final Exception e) {
 			Collector.printStackTrace(e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 		}
+	}
+
+	private void doConnections(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), withoutHeaders);
 	}
 
 	void writeHtmlToLastShutdownFile() {

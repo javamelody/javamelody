@@ -213,6 +213,8 @@ public class TestHtmlReport {
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));
 		TestDatabaseInformations.initH2();
+		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
+		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
 		htmlReport.writeDatabase(new DatabaseInformations(0));
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);

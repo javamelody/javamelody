@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,13 +30,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.Referenceable;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -54,21 +54,31 @@ final class JdbcWrapper {
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger USED_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger ACTIVE_THREAD_COUNT = new AtomicInteger();
+	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
 
 	// instance de JdbcWrapper (ici on ne connaît pas le ServletContext)
 	static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"), null);
 
 	private static final BasicDataSourcesProperties TOMCAT_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
+	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
 
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	private final Counter sqlCounter;
 	private ServletContext servletContext;
-	private final Map<String, DataSource> dataSourcesBackup = new LinkedHashMap<String, DataSource>(
-			2);
 	private boolean jboss;
 	private boolean glassfish;
 	private boolean weblogic;
+
+	static final class ConnectionInformationsComparator implements
+			Comparator<ConnectionInformations>, Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		public int compare(ConnectionInformations connection1, ConnectionInformations connection2) {
+			return connection1.getOpeningDate().compareTo(connection2.getOpeningDate());
+		}
+	}
 
 	/**
 	 * Propriétés des BasicDataSources si elles viennent de Tomcat-DBCP ou de DBCP seul.
@@ -214,6 +224,8 @@ final class JdbcWrapper {
 				result = createStatementProxy(requestName, (Statement) result);
 			} else if ("close".equals(method.getName())) {
 				USED_CONNECTION_COUNT.decrementAndGet();
+				USED_CONNECTION_INFORMATIONS.remove(ConnectionInformations
+						.getUniqueIdOfConnection(connection));
 			}
 			return result;
 		}
@@ -297,6 +309,13 @@ final class JdbcWrapper {
 		return Collections.emptyMap();
 	}
 
+	static List<ConnectionInformations> getConnectionInformationsList() {
+		final List<ConnectionInformations> result = new ArrayList<ConnectionInformations>(
+				USED_CONNECTION_INFORMATIONS.values());
+		Collections.sort(result, new ConnectionInformationsComparator());
+		return Collections.unmodifiableList(result);
+	}
+
 	Counter getSqlCounter() {
 		return sqlCounter;
 	}
@@ -353,7 +372,6 @@ final class JdbcWrapper {
 		// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
 		try {
-			final InitialContext initialContext = new InitialContext();
 			for (final Map.Entry<String, DataSource> entry : JdbcWrapperHelper.getJndiDataSources()
 					.entrySet()) {
 				final String jndiName = entry.getKey();
@@ -363,14 +381,10 @@ final class JdbcWrapper {
 				} else if (!isProxyAlready(dataSource)) {
 					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
 					final DataSource dataSourceProxy = createDataSourceProxy(jndiName, dataSource);
-					final Object securityToken = JdbcWrapperHelper.changeContextWritable(
-							servletContext, null);
-					initialContext.rebind(jndiName, dataSourceProxy);
-					dataSourcesBackup.put(jndiName, dataSource);
-					JdbcWrapperHelper.changeContextWritable(servletContext, securityToken);
+					JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
+							dataSourceProxy);
 				}
 			}
-			initialContext.close();
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
@@ -398,27 +412,22 @@ final class JdbcWrapper {
 			// la super-classe de com.sun.gjc.spi.jdbc40.DataSource40 contiennent toutes les
 			// deux un attribut de nom "cm" et de type javax.resource.spi.ConnectionManager
 			// dont on veut faire un proxy.
-			final Field connectionManagerField = JdbcWrapperHelper.getAccessibleField(dataSource,
-					"cm");
-			Object javaxConnectionManager = connectionManagerField.get(dataSource);
+			Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(dataSource, "cm");
 			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
-			connectionManagerField.set(dataSource, javaxConnectionManager);
+			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			// WEBLOGIC: le contexte JNDI est en lecture seule donc on modifie directement
 			// l'instance de RmiDataSource déjà présente dans le JNDI.
-			final Field jdbcCtxField = JdbcWrapperHelper.getAccessibleField(dataSource, "jdbcCtx");
-			Object jdbcCtx = jdbcCtxField.get(dataSource);
+			Object jdbcCtx = JdbcWrapperHelper.getFieldValue(dataSource, "jdbcCtx");
 			if (jdbcCtx != null) {
 				jdbcCtx = createContextProxy((Context) jdbcCtx);
-				jdbcCtxField.set(dataSource, jdbcCtx);
+				JdbcWrapperHelper.setFieldValue(dataSource, "jdbcCtx", jdbcCtx);
 			}
-			final Field driverInstanceField = JdbcWrapperHelper.getAccessibleField(dataSource,
-					"driverInstance");
-			Object driverInstance = driverInstanceField.get(dataSource);
+			Object driverInstance = JdbcWrapperHelper.getFieldValue(dataSource, "driverInstance");
 			if (driverInstance != null) {
 				driverInstance = createDriverProxy((Driver) driverInstance);
-				driverInstanceField.set(dataSource, driverInstance);
+				JdbcWrapperHelper.setFieldValue(dataSource, "driverInstance", driverInstance);
 			}
 		}
 	}
@@ -426,23 +435,13 @@ final class JdbcWrapper {
 	boolean stop() {
 		boolean ok;
 		try {
-			final InitialContext initialContext = new InitialContext();
-			for (final Map.Entry<String, DataSource> entry : dataSourcesBackup.entrySet()) {
-				final String jndiName = entry.getKey();
-				final DataSource dataSource = entry.getValue();
-				final Object securityToken = JdbcWrapperHelper.changeContextWritable(
-						servletContext, null);
-				initialContext.rebind(jndiName, dataSource);
-				JdbcWrapperHelper.changeContextWritable(servletContext, securityToken);
-			}
-			initialContext.close();
+			JdbcWrapperHelper.rebindInitialDataSources(servletContext);
 			// TODO si jboss, glassfish ou weblogic avec datasource, il faudrait aussi désencapsuler
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
 			ok = false;
 		}
-		dataSourcesBackup.clear();
 		return ok;
 	}
 
@@ -501,17 +500,15 @@ final class JdbcWrapper {
 			// pour jboss,
 			// result instance de WrappedConnectionJDK6 ou WrappedConnectionJDK5
 			// (attribut "mc" sur classe parente)
-			final Field baseWrapperManagedConnectionField = JdbcWrapperHelper.getAccessibleField(
-					connection, "mc");
-			final Object baseWrapperManagedConnection = baseWrapperManagedConnectionField
-					.get(connection);
-			final Field connectionField = JdbcWrapperHelper.getAccessibleField(
-					baseWrapperManagedConnection, "con");
-			Connection con = (Connection) connectionField.get(baseWrapperManagedConnection);
+			final Object baseWrapperManagedConnection = JdbcWrapperHelper.getFieldValue(connection,
+					"mc");
+			final String conFieldName = "con";
+			Connection con = (Connection) JdbcWrapperHelper.getFieldValue(
+					baseWrapperManagedConnection, conFieldName);
 			// on teste isProxyAlready ici pour raison de perf
 			if (!isProxyAlready(con)) {
 				con = createConnectionProxy(con);
-				connectionField.set(baseWrapperManagedConnection, con);
+				JdbcWrapperHelper.setFieldValue(baseWrapperManagedConnection, conFieldName, con);
 			}
 		} else if (glassfish
 				&& "com.sun.gjc.spi.jdbc40.ConnectionHolder40".equals(connection.getClass()
@@ -519,13 +516,12 @@ final class JdbcWrapper {
 			// pour glassfish,
 			// result instance de com.sun.gjc.spi.jdbc40.ConnectionHolder40
 			// (attribut "con" sur classe parente)
-			final Field connectionHolderField = JdbcWrapperHelper.getAccessibleField(connection,
-					"con");
-			Connection con = (Connection) connectionHolderField.get(connection);
+			final String conFieldName = "con";
+			Connection con = (Connection) JdbcWrapperHelper.getFieldValue(connection, conFieldName);
 			// on teste isProxyAlready ici pour raison de perf
 			if (!isProxyAlready(con)) {
 				con = createConnectionProxy(con);
-				connectionHolderField.set(connection, con);
+				JdbcWrapperHelper.setFieldValue(connection, conFieldName, con);
 			}
 		}
 	}
@@ -629,6 +625,11 @@ final class JdbcWrapper {
 		assert connection != null;
 		if (isMonitoringDisabled() || !sqlCounter.isDisplayed()) {
 			return connection;
+		}
+		// on limite la taille pour éviter une éventuelle saturation mémoire
+		if (USED_CONNECTION_INFORMATIONS.size() < MAX_USED_CONNECTION_INFORMATIONS) {
+			USED_CONNECTION_INFORMATIONS.put(ConnectionInformations
+					.getUniqueIdOfConnection(connection), new ConnectionInformations());
 		}
 		final InvocationHandler invocationHandler = new ConnectionInvocationHandler(connection);
 		return createProxy(connection, invocationHandler);

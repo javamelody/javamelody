@@ -40,6 +40,7 @@ import javax.sql.DataSource;
  */
 final class JdbcWrapperHelper {
 	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<String, DataSource>();
+	private static final Map<String, DataSource> JNDI_DATASOURCES_BACKUP = new LinkedHashMap<String, DataSource>();
 
 	private JdbcWrapperHelper() {
 		super();
@@ -47,6 +48,32 @@ final class JdbcWrapperHelper {
 
 	static void registerSpringDataSource(String beanName, DataSource dataSource) {
 		SPRING_DATASOURCES.put(beanName, dataSource);
+	}
+
+	static void rebindDataSource(ServletContext servletContext, String jndiName,
+			DataSource dataSource, DataSource dataSourceProxy) throws Throwable {
+		final Object securityToken = changeContextWritable(servletContext, null);
+		final InitialContext initialContext = new InitialContext();
+		initialContext.rebind(jndiName, dataSourceProxy);
+		JNDI_DATASOURCES_BACKUP.put(jndiName, dataSource);
+		changeContextWritable(servletContext, securityToken);
+		initialContext.close();
+	}
+
+	static void rebindInitialDataSources(ServletContext servletContext) throws Throwable {
+		try {
+			final InitialContext initialContext = new InitialContext();
+			for (final Map.Entry<String, DataSource> entry : JNDI_DATASOURCES_BACKUP.entrySet()) {
+				final String jndiName = entry.getKey();
+				final DataSource dataSource = entry.getValue();
+				final Object securityToken = changeContextWritable(servletContext, null);
+				initialContext.rebind(jndiName, dataSource);
+				changeContextWritable(servletContext, securityToken);
+			}
+			initialContext.close();
+		} finally {
+			JNDI_DATASOURCES_BACKUP.clear();
+		}
 	}
 
 	static Map<String, DataSource> getJndiAndSpringDataSources() throws NamingException {
@@ -113,7 +140,7 @@ final class JdbcWrapperHelper {
 
 	@SuppressWarnings("all")
 	// CHECKSTYLE:OFF
-	static Object changeContextWritable(ServletContext servletContext, Object securityToken)
+	private static Object changeContextWritable(ServletContext servletContext, Object securityToken)
 			throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException,
 			NamingException {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
@@ -158,7 +185,16 @@ final class JdbcWrapperHelper {
 		return null;
 	}
 
-	static Field getAccessibleField(Object object, String fieldName) {
+	static Object getFieldValue(Object object, String fieldName) throws IllegalAccessException {
+		return getAccessibleField(object, fieldName).get(object);
+	}
+
+	static void setFieldValue(Object object, String fieldName, Object value)
+			throws IllegalAccessException {
+		getAccessibleField(object, fieldName).set(object, value);
+	}
+
+	private static Field getAccessibleField(Object object, String fieldName) {
 		assert fieldName != null;
 		Class<?> classe = object.getClass();
 		Field result = null;
