@@ -4,7 +4,7 @@
   * fix: Use *spring datasources* in some parts of the reports, if of course the monitoring-spring.xml file (with the post-processor) is used as said in the [UserGuide#7._JDBC user guide]. Like with jndi datasources, database version and jdbc driver version will be displayed. And if system actions are enabled, reports on the database will be available (like mysql variables and process list, or oracle long requests).
   * fix issue 16: InternalError "Unable to open directory /proc/self/fd" on ubuntu or debian using jsvc
   * added with help from _Pether Sörling_: If *Logback* is available, warn logs are automatically monitored in order to display them in reports like with log4j and with java.util.logging, and Logback is used for log of http requests.
-  * More to come...
+  * added: if system actions are enabled, display of stack traces of where were opened jdbc connections, in order to help *find jdbc connection leaks*
 
 === 1.13.0 ===
 
