@@ -66,6 +66,7 @@ final class JdbcWrapper {
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	private final Counter sqlCounter;
 	private ServletContext servletContext;
+	private boolean systemActionsEnabled;
 	private boolean jboss;
 	private boolean glassfish;
 	private boolean weblogic;
@@ -268,6 +269,8 @@ final class JdbcWrapper {
 			glassfish = serverInfo.contains("GlassFish");
 			weblogic = serverInfo.contains("WebLogic");
 		}
+		systemActionsEnabled = Boolean.parseBoolean(Parameters
+				.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
 	}
 
 	void initServletContext(ServletContext context) {
@@ -277,6 +280,8 @@ final class JdbcWrapper {
 		jboss = serverInfo.contains("JBoss");
 		glassfish = serverInfo.contains("GlassFish");
 		weblogic = serverInfo.contains("WebLogic");
+		systemActionsEnabled = Boolean.parseBoolean(Parameters
+				.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
 	}
 
 	static int getUsedConnectionCount() {
@@ -627,7 +632,8 @@ final class JdbcWrapper {
 			return connection;
 		}
 		// on limite la taille pour éviter une éventuelle saturation mémoire
-		if (USED_CONNECTION_INFORMATIONS.size() < MAX_USED_CONNECTION_INFORMATIONS) {
+		if (systemActionsEnabled
+				&& USED_CONNECTION_INFORMATIONS.size() < MAX_USED_CONNECTION_INFORMATIONS) {
 			USED_CONNECTION_INFORMATIONS.put(ConnectionInformations
 					.getUniqueIdOfConnection(connection), new ConnectionInformations());
 		}
