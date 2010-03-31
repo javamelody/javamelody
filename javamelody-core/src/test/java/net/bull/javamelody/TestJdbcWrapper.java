@@ -46,6 +46,10 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
+	static {
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
+				+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode(), "true");
+	}
 	private static final String EQUALS = "equals";
 	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
 	private JdbcDriver driver;
@@ -206,6 +210,7 @@ public class TestJdbcWrapper {
 
 			assertFalse("getConnectionInformationsList", JdbcWrapper
 					.getConnectionInformationsList().isEmpty());
+			// TODO tester activeConnectionCount et autres
 		} finally {
 			connection.close();
 		}
