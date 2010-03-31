@@ -141,6 +141,39 @@ et sinon @$ORACLE_HOME/rdbms/admin/utlxplan.sql et "grant all on plan_table to p
 <li>Il peut être utile de vérifier avec le monitoring l'état de la mémoire et de l'utilisation cpu du serveur d'application.
  Il peut être utile également de vérifier par vos propres moyens l'état de la mémoire, du cpu et des accès disques de la base de données.</li>
 </ul>
+
+<h4>Courbes des connexions jdbc utilisées : cas d'utilisation d'une fuite de connexions jdbc</h4>
+Les connexions jdbc sont généralement mutualisées dans un pool de connexions par l'intermédiaire
+d'une datasource jdbc, ce qui permet en particulier de ne pas réouvrir les connexions vers la base
+de données en permanence et ce qui permet également de définir un nombre maximum de transactions
+pouvant s'exécuter simultanément par instance du serveur d'application.
+<br/>
+Il est possible dans JavaMelody de visualiser les 2 courbes de connexions jdbc actives et de
+connexions jdbc utilisées.
+La courbe de connexions jdbc actives indique le nombre de connexions en cours d'exécution de requêtes sql.
+Et la courbe de connexion jdbc utilisées indique le nombre de connexions ouvertes et utilisées dans
+des transactions avec la base de données mais qui n'exécutent pas forcément de requêtes sql.
+<br/>
+Si jamais l'application monitorée contient une fuite de connexions jdbc se manifestant dans certaines
+conditions, alors des connexions sont inutilement utilisées et restent indisponibles en dehors du
+pool de connexions. La courbe de connexions utilisées montrera éventuellement que leur nombre augmente
+sans redescendre au minimum tel que configuré dans le pool de connexions de la datasource et ce même
+si le serveur n'a aucune activité, la nuit par exemple. Une fois au maximum, des erreurs surviennent
+dans le pool de connexions indiquant qu'il n'y a plus de connexion disponible.
+<br/>
+Si une fuite de connexions jdbc est suspectée, les heures et les stack traces indiquant où les
+connexions ont été ouvertes peuvent être affichées par le lien
+<img width='16' height='16' src='?resource=db.png' alt='Connexions'/> 'Connections jdbc ouvertes',
+dans la partie 'Informations systèmes' du rapport.
+(Ce lien est disponible à la condition que le paramètre 'system-actions-enabled' ait été positionné à 'true').
+Une lecture attentive du code correspondant à ces stack traces confirmera ou non la fuite de
+connexions jdbc.
+<br/><br/>
+La courbe de connexions jdbc utilisées et ces stack traces d'ouverture sont toutefois peu utiles
+si un pool de connexions est utilisé directement en passant par un driver jdbc sans qu'il y ait de
+datasource, car dans ce cas on ne visualise dans cette courbe et ces stack traces que les ouvertures
+de connexions par le pool et non les utilisations réelles de ces connexions par l'application.
+
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistiques</h3>
 Les statistiques d'un compteur présentent les statistiques des requêtes exécutées sur le serveur d'application.<br/>
