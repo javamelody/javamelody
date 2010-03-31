@@ -139,6 +139,39 @@ and otherwise @$ORACLE_HOME/rdbms/admin/utlxplan.sql and "grant all on plan_tabl
 <li>It can be useful to check with the monitoring the state of the memory and the cpu used by the application server.
  It can also be useful to check on your own the state of the memory, of the cpu and of disk access of your database.</li>
 </ul>
+
+<h4>Charts of used jdbc connections : use case of a jdbc connections leak</h4>
+In general, the jdbc connections are shared in a connections pool with a jdbc datasource,
+which allows in particular not to reopen the connections to the database
+data continuously and which can also define a maximum number of transactions
+which can run simultaneously per instance of the application server.
+<br/>
+It is possible in JavaMelody to view the 2 charts of active jdbc connections and
+used jdbc connections.
+The chart of active jdbc connections shows the number of connections running sql queries.
+And the chart of used jdbc connections shows the number of opened connections which are used in
+transactions with the database but not necessarily executing sql queries.
+<br/>
+If ever the monitored application contains a leak of jdbc connections in some particular
+conditions, then connections are used unnecessarily and remain unavailable outside the
+connection pool. The chart of used connections may show that their number increases
+without decreasing to the minimum configured in the connection pool of the datasource
+even if the server has no activity, at night for example. At the maximum, errors are thrown
+in the connections pool because there is no more available connection.
+<br/>
+If a leak of jdbc connections is suspected, times and stack traces showing where
+connections have been opened can be displayed by the link
+<img width='16' height='16' src='?resource=db.png' alt='Connexions'/> 'Opened jdbc connections'
+in the 'System informations' part of the report.
+(This link is available if the parameter 'system-actions-enabled' has been set to 'true').
+Careful reading of the code for these stack traces will confirm or not the jdbc connections leak.
+<br/><br/>
+The chart of used jdbc connections and the stack traces of openings are of little use
+if a connection pool is used directly with a JDBC driver and without a datasource, because in this
+case you visualize with this chart and these stack traces only the openings
+of connections by the pool and not the real uses of these connections by the application.
+
+
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistics</h3>
 The statistics of a counter shows the statistics of the requests executed on the application server.<br/>
