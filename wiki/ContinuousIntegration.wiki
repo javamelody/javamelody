@@ -1,4 +1,4 @@
-== Continuous integration of JavaMelody ==
+== Continuous Integration of JavaMelody ==
 
 [http://en.wikipedia.org/wiki/Continuous_integration Continuous integration] can be used to continuously make nightly builds of JavaMelody and to make reports like user guide, unit tests or browsable sources.
 
