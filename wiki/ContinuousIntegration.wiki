@@ -24,4 +24,4 @@ The following explains how to do this with [http://hudson-ci.org/ Hudson] which 
   * In the maven site, you can click on the green arrow to download the latest zip of project including the javamelody.jar,
 or you can open the generated user guide or the project reports (checkstyle, findbugs...) from the menu.
 
-And of course, you can now install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody.
+And of course, you can also install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody.
