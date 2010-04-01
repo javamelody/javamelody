@@ -7,7 +7,7 @@ But if you have a private server, you can easily configure it to make nightly bu
 
 The following explains how to do this with [http://hudson-ci.org/ Hudson] which is a very good and free continuous integration server.
 
-  * First, if you don't have Hudson, get it from http://hudson-ci.org/
+  * First, if you don't have Hudson, get it from http://hudson-ci.org/ and be sure to have [http://maven.apache.org maven] configured in "Manage hudson / Configure system".
   * After installation, open the hudson server page in your browser and click on the _New job_ link.
   * Write _JavaMelody_ in "job name", select _Build a maven2 project_ and click "OK".
   * In "Source Code Management" of the configuration page, select _Subversion_.
