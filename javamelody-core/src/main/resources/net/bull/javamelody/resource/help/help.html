@@ -304,6 +304,10 @@ If jdk 1.6, 'view memory histogram', to display the number of instances in memor
 'View OS processes' : list of processes of the operating system (linux with
 <a href='http://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> or windows with tasklist)
 and for each process: user, memory and cpu</li>
+<li><img src='?resource=db.png' width='20' height='20' alt='Opened jdbc connections' />
+To help find a possible jdbc connections leak, the opened jdbc connections
+shows the list of the stack traces of where were opened jdbc connections.
+</li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Database' />
 'Database' : Informations and statistics on the database (if postgresql, mysql or oracle),
 like for example the current sql requests or if oracle, the longest requests in cumulative time with
