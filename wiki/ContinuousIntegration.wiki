@@ -11,7 +11,7 @@ The following explains how to do this with [http://hudson-ci.org/ Hudson] which 
   * After installation, open the hudson server page in your browser and click on the _New job_ link.
   * Write _JavaMelody_ in "job name", select _Build a maven2 project_ and click "OK".
   * In "Source Code Management" of the configuration page, select _Subversion_.
-  * And in "Repository URL", write _https://javamelody.googlecode.com/svn/trunk/javamelody-core_.
+  * And in "Repository URL", write _https://javamelody.googlecode.com/svn/trunk/javamelody-core_
   * In "Build Triggers", check _Poll SCM_ and write _@daily_ or _@weekly_ in the "Schedule" area.
   * In "Build", write _clean site dashboard:dashboard site -e_ in the "Goals and options" area.
   * In "Build" also, click the "Advanced..." button and write _-Xmx128m_ in "MAVEN_OPTS". 
