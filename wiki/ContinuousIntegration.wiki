@@ -13,8 +13,8 @@ The following explains how to do this with [http://hudson-ci.org/ Hudson] which 
   * In "Source Code Management" of the configuration page, select _Subversion_.
   * And in "Repository URL", write _https://javamelody.googlecode.com/svn/trunk/javamelody-core_
   * In "Build Triggers", check _Poll SCM_ and write _@daily_ or _@weekly_ in the "Schedule" area.
-  * In "Build", write _clean site dashboard:dashboard site -e_ in the "Goals and options" area.
-  * In "Build" also, click the "Advanced..." button and write _-Xmx128m_ in "MAVEN_OPTS". 
+  * In "Build", write "_clean site dashboard:dashboard site -e_" in the "Goals and options" area.
+  * In "Build" also, click the "Advanced..." button and write "_-Xmx128m_" in "MAVEN_OPTS". 
 
   * If you already have the hudson plugins checktyle, findbus, pmd, dry and corbertura installed in your server, then you can check all of them in "Build settings" to generate charts and reports.
   * Click "Save" at the bottom to save the configuration
