@@ -1,0 +1,27 @@
+== Continuous integration of JavaMelody ==
+
+[http://en.wikipedia.org/wiki/Continuous_integration Continuous integration] can be used to continuously make nightly builds of JavaMelody and to make reports like user guide, unit tests or browsable sources.
+
+There is no public continuous integration server for the JavaMelody project yet (if you can have one, please post the url to evernat at free.fr).
+But if you have a private server, you can easily configure it to make nightly builds and reports.
+
+The following explains how to do this with [http://hudson-ci.org/ Hudson] which is a very good and free continuous integration server.
+
+  * First, if you don't have Hudson, get it from http://hudson-ci.org/
+  * After installation, open the hudson server page in your browser and click on the _New job_ link.
+  * Write _JavaMelody_ in "job name", select _Build a maven2 project_ and click "OK".
+  * In "Source Code Management" of the configuration page, select _Subversion_.
+  * And in "Repository URL", write _https://javamelody.googlecode.com/svn/trunk/javamelody-core_.
+  * In "Build Triggers", check _Poll SCM_ and write _@daily_ or _@weekly_ in the "Schedule" area.
+  * In "Build", write _clean site dashboard:dashboard site -e_ in the "Goals and options" area.
+  * In "Build" also, click the "Advanced..." button and write _-Xmx128m_ in "MAVEN_OPTS". 
+
+  * If you already have the hudson plugins checktyle, findbus, pmd, dry and corbertura installed in your server, then you can check all of them in "Build settings" to generate charts and reports.
+  * Click "Save" at the bottom to save the configuration
+  * And click "Schedule a build" to run the job. (Note: the first time, wait for maven to download some dependencies).
+
+  * When the job is finished, you can open the junit reports from the hudson job page or you can open the "Maven-generated site".
+  * In the maven site, you can click on the green arrow to download the latest zip of project including the javamelody.jar,
+or you can open the generated user guide or the project reports (checkstyle, findbugs...) from the menu.
+
+And of course, you can now install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody.
