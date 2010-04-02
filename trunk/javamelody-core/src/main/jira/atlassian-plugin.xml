@@ -19,7 +19,7 @@
 			if contain a component number like "/component/xxx" (jira),
 			if contain an unit test name like "/test/abcdef" (bamboo),
 			or if contain an artifact name like "/artifact/abcdef" (bamboo) -->
-			<param-value>-\d+|/attachment/.+|/component/.+|/test/.+|/artifact/.+</param-value>
+			<param-value>-\d+|chment/.+|onent/.+|est/.+|ifact/.+</param-value>
 		</init-param>
 		<init-param>
 			<param-name>system-actions-enabled</param-name>
