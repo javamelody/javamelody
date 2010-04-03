@@ -518,11 +518,11 @@ class HtmlCoreReport {
 		writeln("<a href='?part=processes'>");
 		writeln("<img src='?resource=threads.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
-		writeln(separator);
-		writeln("<a href='?part=connections'>");
-		writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#Connexions_jdbc_ouvertes#\" /> #Connexions_jdbc_ouvertes#</a>");
-
 		if (isDatabaseEnabled()) {
+			writeln(separator);
+			writeln("<a href='?part=connections'>");
+			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#Connexions_jdbc_ouvertes#\" /> #Connexions_jdbc_ouvertes#</a>");
+
 			writeln(separator);
 			writeln("<a href='?part=database'>");
 			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#database#\" /> #database#</a>");
