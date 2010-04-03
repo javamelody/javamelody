@@ -33,8 +33,7 @@ class HtmlJobInformationsReport {
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
-	private final boolean systemActionsEnabled = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
+	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Writer writer) {
 		super();

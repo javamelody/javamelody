@@ -274,6 +274,14 @@ final class Parameters {
 	}
 
 	/**
+	 * Booléen selon que le paramètre system-actions-enabled vaut true.
+	 * @return boolean
+	 */
+	static boolean isSystemActionsEnabled() {
+		return Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
+	}
+
+	/**
 	 * @return Nom de l'application courante et nom du sous-répertoire de stockage dans une application monitorée.
 	 */
 	static String getCurrentApplication() {

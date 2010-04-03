@@ -205,7 +205,7 @@ class HtmlCoreReport {
 			writeln(END_DIV);
 			writeln("<br/>");
 		}
-		if (Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
+		if (Parameters.isSystemActionsEnabled()) {
 			writeSystemActionsLinks();
 		}
 

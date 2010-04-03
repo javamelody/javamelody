@@ -218,9 +218,7 @@ class HtmlJavaInformationsReport {
 			uniqueByPageSequence++;
 			writeln(" ; &nbsp;&nbsp;&nbsp;");
 			writeShowHideLink("detailsDependencies" + uniqueByPageSequence, "#Details#");
-			if (javaInformations.doesPomXmlExists()
-					&& Boolean.parseBoolean(Parameters
-							.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
+			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
 				writeln("&nbsp;&nbsp;&nbsp;<a href='?part=pom.xml' class='noPrint'>");
 				writeln("<img src='?resource=xml.png' width='14' height='14' alt=\"#pom.xml#\"/> #pom.xml#</a>");
 			}

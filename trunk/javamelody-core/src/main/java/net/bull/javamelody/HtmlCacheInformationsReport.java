@@ -74,7 +74,7 @@ class HtmlCacheInformationsReport {
 		}
 		writeln("</tbody></table>");
 		write("<div align='right' class='noPrint'>");
-		if (Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
+		if (Parameters.isSystemActionsEnabled()) {
 			writeln("<a href='?action=clear_caches' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_purge_caches") + "');\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
