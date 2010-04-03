@@ -1,10 +1,10 @@
 <atlassian-plugin key="net.bull.javamelody"
-	name="JavaMelody Monitoring JIRA Plugin" pluginsVersion="1">
+	name="JavaMelody Monitoring Plugin" pluginsVersion="1">
 	<plugin-info>
-		<description>Monitoring of JIRA server with JavaMelody.</description>
-		<version>1.12</version>
+		<description>Monitoring of JIRA or Bamboo server with JavaMelody.</description>
+		<version>1.14</version>
 		<application-version min="4.0" />
-		<vendor name="Emeric Vernat" url="http://javamelody.googlecode.com/" />
+		<vendor name="JavaMelody" url="http://javamelody.googlecode.com/" />
 	</plugin-info>
 
 	<servlet-filter name="MonitoringFilter" key="MonitoringFilter"
