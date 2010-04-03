@@ -34,8 +34,7 @@ class HtmlThreadInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean stackTraceEnabled;
 	private final boolean cpuTimeEnabled;
-	private final boolean systemActionsEnabled = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
+	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlThreadInformationsReport(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled, Writer writer) {

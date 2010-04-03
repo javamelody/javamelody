@@ -105,7 +105,7 @@ enum Action { // NOPMD
 	 * Vérifie que le paramètre pour activer les actions systèmes est positionné.
 	 */
 	static void checkSystemActionsEnabled() {
-		if (!Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))) {
+		if (!Parameters.isSystemActionsEnabled()) {
 			throw new IllegalStateException(I18N.getString("Actions_non_activees"));
 		}
 	}

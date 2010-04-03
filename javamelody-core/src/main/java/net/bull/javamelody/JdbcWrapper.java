@@ -269,8 +269,7 @@ final class JdbcWrapper {
 			glassfish = serverInfo.contains("GlassFish");
 			weblogic = serverInfo.contains("WebLogic");
 		}
-		connectionInformationsEnabled = Boolean.parseBoolean(Parameters
-				.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))
+		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
 				&& !Parameters.isNoDatabase();
 	}
 
@@ -281,8 +280,7 @@ final class JdbcWrapper {
 		jboss = serverInfo.contains("JBoss");
 		glassfish = serverInfo.contains("GlassFish");
 		weblogic = serverInfo.contains("WebLogic");
-		connectionInformationsEnabled = Boolean.parseBoolean(Parameters
-				.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED))
+		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
 				&& !Parameters.isNoDatabase();
 	}
 
