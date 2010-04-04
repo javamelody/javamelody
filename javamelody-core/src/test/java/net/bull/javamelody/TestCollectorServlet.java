@@ -110,7 +110,6 @@ public class TestCollectorServlet {
 		doGet(".*", null);
 		setUp();
 		doGet(null, TEST);
-		// TODO tester les cookies dans getApplication
 	}
 
 	private void doGet(String pattern, String application) throws IOException, ServletException {

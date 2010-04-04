@@ -182,19 +182,25 @@ public class TestJdbcWrapper {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
+		final int usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		try {
 			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
+			assertEquals("getUsedConnectionCount", usedConnectionCount + 1, JdbcWrapper
+					.getUsedConnectionCount());
 			assertNotNull("createConnectionProxy", connection);
 			assertFalse(EQUALS, connection.equals(connection));
 			connection.hashCode();
 
+			final int activeConnectionCount = JdbcWrapper.getActiveConnectionCount();
+
 			connection.prepareStatement("select 1").close();
 			connection.prepareCall("select 2").close();
 
-			connection.rollback();
+			assertEquals("getActiveConnectionCount", activeConnectionCount, JdbcWrapper
+					.getActiveConnectionCount());
 
-			assertSame("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
+			connection.rollback();
 
 			jdbcWrapper.getSqlCounter().setDisplayed(false);
 			connection = jdbcWrapper.createConnectionProxy(connection);
@@ -210,10 +216,15 @@ public class TestJdbcWrapper {
 
 			assertFalse("getConnectionInformationsList", JdbcWrapper
 					.getConnectionInformationsList().isEmpty());
-			// TODO tester activeConnectionCount et autres
 		} finally {
 			connection.close();
+			assertEquals("getUsedConnectionCount", usedConnectionCount, JdbcWrapper
+					.getUsedConnectionCount());
 		}
+
+		assertSame("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
+
+		JdbcWrapper.getActiveThreadCount();
 	}
 
 	/** Test.
