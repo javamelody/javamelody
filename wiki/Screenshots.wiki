@@ -7,7 +7,8 @@
   # [#Current_requests Current requests]
   # [#System_informations System informations]
   # [#Threads Threads]
-  # [#Caches_of_data Caches of data]
+  # [#Caches_of_data_(ehcache) Caches of data (ehcache)]
+  # [#Jobs_(quartz,_v1.15) Jobs (quartz)]
   # [#Sessions Sessions]
   # [#Memory_histogram Memory histogram]
   # [#Processes Processes]
@@ -40,8 +41,11 @@
 === Threads ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/threads.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/threads.png' width='50%' alt='Threads' /></a>
 
-=== Caches of data ===
+=== Caches of data (ehcache) ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/caches.png' width='50%' alt='Caches de données' /></a>
+
+=== Jobs (quartz, v1.15) ===
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/jobs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/jobs.png' width='50%' alt='Jobs' /></a>
 
 === Sessions ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' width='50%' alt='Sessions' /></a>
