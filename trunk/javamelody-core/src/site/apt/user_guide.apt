@@ -74,7 +74,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Si vous voulez monitorer un serveur {{{http://www.atlassian.com/software/jira/}JIRA}}
 	ou {{{http://www.atlassian.com/software/bamboo/}Bamboo}}, vous pouvez installer JavaMelody facilement
 	par l'intermédiaire d'un plugin JIRA/Bamboo.
-	Pour cela, {{{http://code.google.com/p/javamelody/downloads/list}télécharger}} le fichier jar du plugin
+	Pour cela, {{{https://plugins.atlassian.com/plugin/details/20909}télécharger}} le fichier jar du plugin
 	et copier le fichier dans le répertoire <<<JIRA x.x.x/atlassian-jira/WEB-INF/lib>>>.
 	Redémarrer le serveur.
 	Vous pouvez alors ouvrir le rapport à partir de l'adresse <<<http://host:8080/monitoring>>>. C'est tout.
