@@ -7,6 +7,8 @@
   * added with help from _Pether Sörling_: If *Logback* is available, warn logs are automatically monitored in order to display them in reports like with log4j and with java.util.logging, and Logback is used for log of http requests.
   * added: if system actions are enabled, display of stack traces of where were opened jdbc connections, in order to help *find jdbc connection leaks*
 
+Atlassian JIRA and Bamboo plugin has been published on Atlassian plugin exchange: https://plugins.atlassian.com/plugin/details/20909
+
 === 1.13.0 ===
 
   * fix issue 14: html reports in utf-8 for cyrillic and other characters
