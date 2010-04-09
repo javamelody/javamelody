@@ -57,7 +57,7 @@ Java Melody : monitoring d'applications Java
 
 	[]
 	
-	Ces courbes peuvent être visualisées sur la journée en cours, la semaine, le mois ou l'année.
+	Ces courbes peuvent être visualisées sur la journée en cours, la semaine, le mois, l'année ou une période personnalisée.
 
 	Le monitoring inclut des statistiques sur les compteurs définis (à l'heure d'aujourd'hui requêtes HTTP, requêtes SQL
 	et méthodes de façades métiers si EJB3 ou si Spring) avec pour chaque compteur :

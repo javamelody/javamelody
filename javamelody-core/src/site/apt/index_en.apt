@@ -57,7 +57,7 @@ Java Melody : monitoring of Java applications
 
 	[]
 	
-	These charts can be viewed on the current day, week, month or year.
+	These charts can be viewed on the current day, week, month, year or custom period.
 
 	The monitoring includes statistics of predefined counters (as of today http requests, sql requests
 	and methods of business façades if EJB3 or if Spring) with, for each counter :
