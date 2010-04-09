@@ -140,6 +140,12 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	où <host> est le nom du serveur où la webapp est déployée, suivi éventuellement du port (par exemple localhost:8080)
 	et où <context> est le nom du contexte de la webapp que vous avez configuré au moment du déploiement de celle-ci.
 	
+	Dans le cas où le démarrage du serveur ne fonctionne pas et qu'une erreur est présente dans
+	la sortie du serveur concernant "window server" (en particulier si Mac OSX server est utilisé),
+	ajouter la propriété système "-Djava.awt.headless=true" (commande de lancement java ou selon le
+	cas interface d'administration du serveur ou $CATALINA_HOME/conf/catalina.properties si tomcat).
+	Et redémarrer le serveur.
+	
 	Vous pouvez ensuite compléter le paramétrage comme ci-dessous en fonction des besoins.
 
 ** 4. Génération de rapports PDF
@@ -184,7 +190,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	* dans les propriétés systèmes avec le préfixe <<<javamelody.>>>
 
-	  (commande de lancement java ou selon le cas interface d'administration)
+	  (commande de lancement java ou selon le cas interface d'administration
+	  ou $CATALINA_HOME/conf/catalina.properties si tomcat)
 
 	[]
 
