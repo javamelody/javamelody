@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * added: If *quartz* is available, display of number of executions, mean times and last errors with stack-traces per job for the selected period, and also display of the last 100 errors with stack-traces for the selected period.
+
 === 1.14.0 ===
 
   * fix: Use *spring datasources* in some parts of the reports, if of course the monitoring-spring.xml file (with the post-processor) is used as said in the [UserGuide#7._JDBC user guide]. Like with jndi datasources, database version and jdbc driver version will be displayed. And if system actions are enabled, reports on the database will be available (like mysql variables and process list, or oracle long requests).
