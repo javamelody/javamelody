@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * added: If *quartz* is available, display of number of executions, mean times and last errors with stack-traces per job for the selected period, and also display of the last 100 errors with stack-traces for the selected period.
+  * [UserGuide#3._First_results doc updated] for issue 19 InternalError "Can't connect to window server" on Mac OS X Server.
 
 === 1.14.0 ===
 
