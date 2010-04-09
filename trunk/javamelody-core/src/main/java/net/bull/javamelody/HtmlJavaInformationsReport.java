@@ -258,7 +258,7 @@ class HtmlJavaInformationsReport {
 	}
 
 	// méthode inspirée de VisualScoreTag dans LambdaProbe/JStripe (Licence GPL)
-	private static String toBar(double percentValue) { // NOPMD
+	static String toBar(double percentValue) { // NOPMD
 		final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
 		final StringBuilder sb = new StringBuilder();
 		final String body = "<img src=''?resource=bar/rb_{0}.gif'' alt=''+'' title=''"

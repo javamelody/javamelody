@@ -72,8 +72,9 @@ public class TestHtmlReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		counter = new Counter("http", "dbweb.png", sqlCounter);
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, "jobs.png");
 		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
-				errorCounter), timer);
+				errorCounter, jobCounter), timer);
 		writer = new StringWriter();
 	}
 

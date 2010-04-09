@@ -64,10 +64,12 @@ public class TestPdfReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, "jobs.png");
 		final List<Counter> counters = new ArrayList<Counter>();
 		counters.add(counter);
 		counters.add(sqlCounter);
 		counters.add(errorCounter);
+		counters.add(jobCounter);
 		counter.addRequest("test1", 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, true, 10000);

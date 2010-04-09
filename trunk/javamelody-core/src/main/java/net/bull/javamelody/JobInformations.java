@@ -43,8 +43,8 @@ import org.quartz.impl.SchedulerRepository;
  * @author Emeric Vernat
  */
 class JobInformations implements Serializable {
+	static final boolean QUARTZ_AVAILABLE = isQuartzAvailable();
 	private static final long serialVersionUID = -2826168112578815952L;
-	private static final boolean QUARTZ_AVAILABLE = isQuartzAvailable();
 	private final String group;
 	private final String name;
 	private final String description;
