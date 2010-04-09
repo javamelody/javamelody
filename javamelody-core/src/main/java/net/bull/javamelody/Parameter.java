@@ -100,6 +100,11 @@ public enum Parameter {
 	LOG_TRANSFORM_PATTERN("log-transform-pattern"),
 
 	/**
+	 * Expression régulière (null par défaut) pour transformer le nom d'un job.
+	 */
+	JOB_TRANSFORM_PATTERN("job-transform-pattern"),
+
+	/**
 	 * Compteurs affichés: mettre "http,sql,error,log,ejb" pour afficher les ejb3
 	 * ou "http,sql,error,log,spring" pour afficher les beans spring ("http,sql,error,log" par défaut).
 	 */

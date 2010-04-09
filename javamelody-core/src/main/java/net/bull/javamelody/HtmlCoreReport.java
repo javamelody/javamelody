@@ -215,16 +215,21 @@ class HtmlCoreReport {
 		writeln("#Threads#</h3>");
 		writeThreads();
 
-		if (isCacheEnabled()) {
-			writeln("<h3><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
-			writeln("#Caches#</h3>");
-			writeCaches();
-		}
-
 		if (isJobEnabled()) {
 			writeln("<h3><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
 			writeln("#Jobs#</h3>");
 			writeJobs();
+		}
+
+		if (isCacheEnabled()) {
+			writeln("<h3><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
+			writeln("#Caches#</h3>");
+			writeCaches();
+			// pour que les tooltips des stack traces s'affichent dans le scroll
+			writeln("<br/><br/><br/><br/>");
+		} else if (JavaInformations.STACK_TRACES_ENABLED) {
+			// pour que les tooltips des stack traces s'affichent dans le scroll
+			writeln("<br/><br/><br/><br/>");
 		}
 
 		writeMessageIfNotNull(message, null);
@@ -345,11 +350,6 @@ class HtmlCoreReport {
 			htmlThreadInformationsReport.writeDeadlocks();
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
 			htmlThreadInformationsReport.toHtml();
-			// plus nécessaire, car il y a caches et logos après:
-			//			if (JavaInformations.STACK_TRACES_ENABLED) {
-			//				// pour que les tooltips des stack traces s'affichent dans le scroll
-			//				writeln("<br/><br/><br/><br/><br/><br/><br/><br/>");
-			//			}
 			writeln("</div><br/>");
 			i++;
 		}
@@ -446,6 +446,7 @@ class HtmlCoreReport {
 
 	private void writeJobs() throws IOException {
 		int i = 0;
+		final Counter rangeJobCounter = collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME);
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJobEnabled()) {
 				continue;
@@ -460,8 +461,8 @@ class HtmlCoreReport {
 			final String id = "job_" + i;
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
-			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(), writer)
-					.toHtml();
+			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(),
+					rangeJobCounter, writer).toHtml();
 			writeln("</div><br/>");
 			i++;
 		}

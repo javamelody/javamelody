@@ -21,8 +21,11 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Partie du rapport html pour les jobs.
@@ -30,29 +33,43 @@ import java.util.List;
  */
 class HtmlJobInformationsReport {
 	private final List<JobInformations> jobInformationsList;
+	private final Counter rangeJobCounter;
+	private final Map<String, CounterRequest> counterRequestsByRequestName;
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
+	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
-	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Writer writer) {
+	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
+			Writer writer) {
 		super();
 		assert jobInformationsList != null;
+		assert rangeJobCounter != null;
 		assert writer != null;
 
 		this.jobInformationsList = jobInformationsList;
+		this.rangeJobCounter = rangeJobCounter;
 		this.writer = writer;
+		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
+		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(counterRequests
+				.size());
+		for (final CounterRequest counterRequest : counterRequests) {
+			counterRequestsByRequestName.put(counterRequest.getName(), counterRequest);
+		}
 	}
 
 	void toHtml() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Jobs#'>");
 		write("<thead><tr><th>#JobGroup#</th>");
 		write("<th>#JobName#</th>");
-		write("<th>#JobDescription#</th>");
 		write("<th>#JobClassName#</th>");
+		write("<th class='sorttable_numeric'>#JobHits#</th>");
+		write("<th>#JobLastException#</th>");
+		write("<th class='sorttable_date'>#JobMeanTime#</th>");
+		write("<th class='sorttable_date'>#JobElapsedTime#</th>");
 		write("<th class='sorttable_date'>#JobPreviousFireTime#</th>");
 		write("<th class='sorttable_date'>#JobNextFireTime#</th>");
-		write("<th class='sorttable_date'>#JobElapsedTime#</th>");
 		write("<th>#JobPaused#</th>");
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Pause_job#</th>");
@@ -87,42 +104,61 @@ class HtmlJobInformationsReport {
 
 		// writer.write pour éviter traduction car # dans l'url
 		writer.write("<a href='http://www.quartz-scheduler.org/docs/index.html'");
-		writeln("target='_blank'>Configuration reference</a></div>");
+		writeln("target='_blank'>Configuration reference</a>");
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+
+		writeShowHideLink("jobs", "#Dernieres_erreurs#");
+		writeln("<div id='jobs' style='display: none;'>");
+		new HtmlCounterErrorReport(rangeJobCounter, writer).toHtml();
+		writeln("</div>");
+
+		writeln("</div>");
 	}
 
 	private void writeJobInformations(JobInformations jobInformations) throws IOException {
 		write("<td>");
-		final String nextColumn = "</td> <td>";
 		final String nextColumnAlignRight = "</td> <td align='right'>";
 		writer.write(htmlEncode(jobInformations.getGroup()));
-		write(nextColumn);
-		writer.write(htmlEncode(jobInformations.getName()));
-		write(nextColumn);
-		final String nbsp = "&nbsp;";
-		if (jobInformations.getDescription() != null) {
-			writer.write(htmlEncode(jobInformations.getDescription()));
-		} else {
-			write(nbsp);
-		}
-		write(nextColumn);
+		write("</td> <td>");
+		writeNameWithDescription(jobInformations);
+		write("</td> <td>");
 		writer.write(htmlEncode(jobInformations.getJobClassName()));
+
+		final CounterRequest counterRequest = getCounterRequest(jobInformations);
+		if (counterRequest != null) {
+			write(nextColumnAlignRight);
+			write(integerFormat.format(counterRequest.getHits()));
+			write("</td> <td align='center'>");
+			writeStackTrace(counterRequest.getStackTrace());
+			write(nextColumnAlignRight);
+			write(elapsedTimeFormat.format(new Date(counterRequest.getMean())));
+			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
+			// uniquement car cela ferait trop de colonnes dans la page
+		} else {
+			write("</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;");
+		}
+
+		write(nextColumnAlignRight);
+		if (jobInformations.getElapsedTime() >= 0) {
+			write(elapsedTimeFormat.format(new Date(jobInformations.getElapsedTime())));
+			if (counterRequest != null) {
+				write("<br/>");
+				writeln(toBar(counterRequest.getMean(), jobInformations.getElapsedTime()));
+			}
+		} else {
+			write("&nbsp;");
+		}
 		write(nextColumnAlignRight);
 		if (jobInformations.getPreviousFireTime() != null) {
 			write(fireTimeFormat.format(jobInformations.getPreviousFireTime()));
 		} else {
-			write(nbsp);
+			write("&nbsp;");
 		}
 		write(nextColumnAlignRight);
 		if (jobInformations.getNextFireTime() != null) {
 			write(fireTimeFormat.format(jobInformations.getNextFireTime()));
 		} else {
-			write(nbsp);
-		}
-		write(nextColumnAlignRight);
-		if (jobInformations.getElapsedTime() >= 0) {
-			write(elapsedTimeFormat.format(new Date(jobInformations.getElapsedTime())));
-		} else {
-			write(nbsp);
+			write("&nbsp;");
 		}
 		write("</td> <td align='center'>");
 		if (jobInformations.isPaused()) {
@@ -131,20 +167,63 @@ class HtmlJobInformationsReport {
 			write("#non#");
 		}
 		if (systemActionsEnabled) {
-			write("</td> <td align='center' class='noPrint'>");
-			final String onClickConfirm = "' onclick=\"javascript:return confirm('";
-			final String endOnClickConfirm = "');\">";
-			writeln("<a href='?action=pause_job&amp;jobId=" + jobInformations.getGlobalJobId()
-					+ onClickConfirm + I18N.getStringForJavascript("confirm_pause_job")
-					+ endOnClickConfirm);
-			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_job#\" title=\"#Pause_job#\" /></a>");
-			write("</td> <td align='center' class='noPrint'>");
-			writeln("<a href='?action=resume_job&amp;jobId=" + jobInformations.getGlobalJobId()
-					+ onClickConfirm + I18N.getStringForJavascript("confirm_resume_job")
-					+ endOnClickConfirm);
-			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_job#\" title=\"#Resume_job#\" /></a>");
+			writePauseJobAndResumeJobLinks(jobInformations);
 		}
 		write("</td>");
+	}
+
+	private void writeNameWithDescription(JobInformations jobInformations) throws IOException {
+		if (jobInformations.getDescription() == null) {
+			writer.write(htmlEncode(jobInformations.getName()));
+		} else {
+			write("<a class='tooltip'><em>");
+			writer.write(htmlEncode(jobInformations.getDescription()));
+			writeln("</em>");
+			writer.write(htmlEncode(jobInformations.getName()));
+			writeln("</a>");
+		}
+	}
+
+	private void writeStackTrace(String stackTrace) throws IOException {
+		if (stackTrace == null) {
+			write("<img src='?resource=bullets/green.png' alt='#JobWithoutLastException#' title='#JobWithoutLastException#'/>");
+		} else {
+			write("<a class='tooltip'>");
+			write("<em>");
+			writeln(I18N.htmlEncode(stackTrace.replace("[See nested", "\n[See nested"), true));
+			writeln("</em>");
+			write("<img src='?resource=bullets/red.png' alt=''/>");
+			writeln("</a>");
+		}
+	}
+
+	private void writePauseJobAndResumeJobLinks(JobInformations jobInformations) throws IOException {
+		write("</td> <td align='center' class='noPrint'>");
+		final String onClickConfirm = "' onclick=\"javascript:return confirm('";
+		final String endOnClickConfirm = "');\">";
+		writeln("<a href='?action=pause_job&amp;jobId=" + jobInformations.getGlobalJobId()
+				+ onClickConfirm + I18N.getStringForJavascript("confirm_pause_job")
+				+ endOnClickConfirm);
+		writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_job#\" title=\"#Pause_job#\" /></a>");
+		write("</td> <td align='center' class='noPrint'>");
+		writeln("<a href='?action=resume_job&amp;jobId=" + jobInformations.getGlobalJobId()
+				+ onClickConfirm + I18N.getStringForJavascript("confirm_resume_job")
+				+ endOnClickConfirm);
+		writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_job#\" title=\"#Resume_job#\" /></a>");
+	}
+
+	private CounterRequest getCounterRequest(JobInformations jobInformations) {
+		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
+		return counterRequestsByRequestName.get(jobFullName);
+	}
+
+	private void writeShowHideLink(String idToShow, String label) throws IOException {
+		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
+				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
+	}
+
+	private static String toBar(int mean, long elapsedTime) {
+		return HtmlJavaInformationsReport.toBar(100d * elapsedTime / mean);
 	}
 
 	private static String htmlEncode(String text) {

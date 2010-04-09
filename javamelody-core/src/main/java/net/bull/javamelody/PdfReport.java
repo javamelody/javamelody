@@ -130,16 +130,16 @@ class PdfReport {
 		addParagraph(getI18nString("Threads"), "threads.png");
 		writeThreads(false);
 
-		if (isCacheEnabled()) {
-			add(new Phrase("\n", normalFont));
-			addParagraph(getI18nString("Caches"), "caches.png");
-			writeCaches(false);
-		}
-
 		if (isJobEnabled()) {
 			add(new Phrase("\n", normalFont));
 			addParagraph(getI18nString("Jobs"), "jobs.png");
 			writeJobs(false);
+		}
+
+		if (isCacheEnabled()) {
+			add(new Phrase("\n", normalFont));
+			addParagraph(getI18nString("Caches"), "caches.png");
+			writeCaches(false);
 		}
 
 		document.newPage();
@@ -161,16 +161,16 @@ class PdfReport {
 		addParagraph(getI18nString("Threads_detailles"), "threads.png");
 		writeThreads(true);
 
-		if (isCacheEnabled()) {
-			add(new Phrase("\n", normalFont));
-			addParagraph(getI18nString("Caches_detailles"), "caches.png");
-			writeCaches(true);
-		}
-
 		if (isJobEnabled()) {
 			add(new Phrase("\n", normalFont));
 			addParagraph(getI18nString("Jobs_detailles"), "jobs.png");
 			writeJobs(true);
+		}
+
+		if (isCacheEnabled()) {
+			add(new Phrase("\n", normalFont));
+			addParagraph(getI18nString("Caches_detailles"), "caches.png");
+			writeCaches(true);
 		}
 
 		writePoweredBy();
@@ -352,8 +352,9 @@ class PdfReport {
 		return false;
 	}
 
-	private void writeJobs(boolean includeDetails) throws DocumentException {
+	private void writeJobs(boolean includeDetails) throws DocumentException, IOException {
 		String eol = "";
+		final Counter rangeJobCounter = collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME);
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJobEnabled()) {
 				continue;
@@ -365,7 +366,8 @@ class PdfReport {
 			add(new Phrase(eol + msg, PdfDocumentFactory.BOLD_FONT));
 
 			if (includeDetails) {
-				new PdfJobInformationsReport(jobInformationsList, document).toPdf();
+				new PdfJobInformationsReport(jobInformationsList, rangeJobCounter, document)
+						.toPdf();
 			}
 			eol = "\n";
 		}

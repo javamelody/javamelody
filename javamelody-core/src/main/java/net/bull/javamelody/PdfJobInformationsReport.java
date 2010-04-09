@@ -19,9 +19,13 @@
 package net.bull.javamelody;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Document;
@@ -39,19 +43,29 @@ import com.lowagie.text.pdf.PdfPTable;
  */
 class PdfJobInformationsReport {
 	private final List<JobInformations> jobInformationsList;
+	private final Map<String, CounterRequest> counterRequestsByRequestName;
 	private final Document document;
+	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
 	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
 	private PdfPTable currentTable;
 
-	PdfJobInformationsReport(List<JobInformations> jobInformationsList, Document document) {
+	PdfJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
+			Document document) {
 		super();
 		assert jobInformationsList != null;
+		assert rangeJobCounter != null;
 		assert document != null;
 
 		this.jobInformationsList = jobInformationsList;
 		this.document = document;
+		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
+		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(counterRequests
+				.size());
+		for (final CounterRequest counterRequest : counterRequests) {
+			counterRequestsByRequestName.put(counterRequest.getName(), counterRequest);
+		}
 	}
 
 	void toPdf() throws DocumentException {
@@ -90,7 +104,6 @@ class PdfJobInformationsReport {
 		Arrays.fill(relativeWidths, 0, headers.size(), 1);
 		relativeWidths[1] = 2;
 		relativeWidths[2] = 3;
-		relativeWidths[3] = 3;
 
 		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
 	}
@@ -99,11 +112,12 @@ class PdfJobInformationsReport {
 		final List<String> headers = new ArrayList<String>();
 		headers.add(getI18nString("JobGroup"));
 		headers.add(getI18nString("JobName"));
-		headers.add(getI18nString("JobDescription"));
 		headers.add(getI18nString("JobClassName"));
+		headers.add(getI18nString("JobHits"));
+		headers.add(getI18nString("JobMeanTime"));
+		headers.add(getI18nString("JobElapsedTime"));
 		headers.add(getI18nString("JobPreviousFireTime"));
 		headers.add(getI18nString("JobNextFireTime"));
-		headers.add(getI18nString("JobElapsedTime"));
 		headers.add(getI18nString("JobPaused"));
 		return headers;
 	}
@@ -113,13 +127,23 @@ class PdfJobInformationsReport {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(jobInformations.getGroup());
 		addCell(jobInformations.getName());
-		if (jobInformations.getDescription() != null) {
-			addCell(jobInformations.getDescription());
+		addCell(jobInformations.getJobClassName());
+		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		final CounterRequest counterRequest = getCounterRequest(jobInformations);
+		if (counterRequest != null) {
+			addCell(integerFormat.format(counterRequest.getHits()));
+			addCell(elapsedTimeFormat.format(new Date(counterRequest.getMean())));
+			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
+			// uniquement car cela ferait trop de colonnes dans la page
+		} else {
+			addCell("");
+			addCell("");
+		}
+		if (jobInformations.getElapsedTime() >= 0) {
+			addCell(elapsedTimeFormat.format(jobInformations.getElapsedTime()));
 		} else {
 			addCell("");
 		}
-		addCell(jobInformations.getJobClassName());
-		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		if (jobInformations.getPreviousFireTime() != null) {
 			addCell(fireTimeFormat.format(jobInformations.getPreviousFireTime()));
 		} else {
@@ -130,17 +154,17 @@ class PdfJobInformationsReport {
 		} else {
 			addCell("");
 		}
-		if (jobInformations.getElapsedTime() >= 0) {
-			addCell(elapsedTimeFormat.format(jobInformations.getElapsedTime()));
-		} else {
-			addCell("");
-		}
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		if (jobInformations.isPaused()) {
 			addCell(getI18nString("oui"));
 		} else {
 			addCell(getI18nString("non"));
 		}
+	}
+
+	private CounterRequest getCounterRequest(JobInformations jobInformations) {
+		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
+		return counterRequestsByRequestName.get(jobFullName);
 	}
 
 	private static String getI18nString(String key) {

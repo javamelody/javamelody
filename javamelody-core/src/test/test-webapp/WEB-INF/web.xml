@@ -18,7 +18,7 @@
 		</init-param>
 		<init-param>
 			<param-name>displayed-counters</param-name>
-			<param-value>http,sql,error,log,spring,services</param-value>
+			<param-value>http,sql,error,log,spring,services,job</param-value>
 		</init-param>
 		<!--
 		<init-param>

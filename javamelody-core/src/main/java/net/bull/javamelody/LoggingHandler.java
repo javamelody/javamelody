@@ -38,7 +38,7 @@ public class LoggingHandler extends Handler {
 	// On utilise un counter static pour le cas où logging (ou log4j) serait reconfiguré après la configuration
 	// faite par le filtre. Il suffirait dans ce cas de déclarer LoggingHandler (ou Log4JAppender) dans le fichier
 	// logging.properties (ou log4j.xml/log4j;properties) utilisé pour obtenir le même counter statique.
-	private static final Counter LOG_COUNTER = new Counter("log", "log.png");
+	private static final Counter LOG_COUNTER = new Counter(Counter.LOG_COUNTER_NAME, "log.png");
 	static { // bloc d'initialisation statique
 		LOG_COUNTER.setMaxRequestsCount(500);
 	}

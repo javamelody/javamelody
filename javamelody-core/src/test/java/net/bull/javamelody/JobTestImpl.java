@@ -18,6 +18,8 @@
  */
 package net.bull.javamelody;
 
+import java.util.Random;
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -27,12 +29,17 @@ import org.quartz.JobExecutionException;
  * @author Emeric Vernat
  */
 public class JobTestImpl implements Job {
+	private static final Random RANDOM = new Random();
+
 	/** {@inheritDoc} */
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(RANDOM.nextInt(5000));
 		} catch (final InterruptedException e) {
 			throw new JobExecutionException(e);
+		}
+		if (RANDOM.nextInt(10) >= 8) {
+			throw new JobExecutionException("il y a une erreur");
 		}
 	}
 }

@@ -54,15 +54,10 @@ class HtmlCounterErrorReport {
 
 	private void writeErrors(List<CounterError> errors) throws IOException {
 		assert errors != null;
-		boolean displayUser = false;
-		for (final CounterError error : errors) {
-			if (error.getRemoteUser() != null) {
-				displayUser = true;
-				break;
-			}
-		}
+		final boolean displayUser = shouldDisplayUser(errors);
+		final boolean displayHttpRequest = shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
-			write("<div class='severe'>");
+			write("<div class='severe' align='left'>");
 			writeln(I18N
 					.getFormattedString("Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT));
 			write("</div>");
@@ -71,7 +66,9 @@ class HtmlCounterErrorReport {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='"
 				+ tableName + "'>");
 		write("<thead><tr><th class='sorttable_date'>#Date#</th>");
-		write("<th>#Requete#</th>");
+		if (displayHttpRequest) {
+			write("<th>#Requete#</th>");
+		}
 		if (displayUser) {
 			write("<th>#Utilisateur#</th>");
 		}
@@ -85,22 +82,25 @@ class HtmlCounterErrorReport {
 				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
 			}
 			odd = !odd; // NOPMD
-			writeError(error, displayUser);
+			writeError(error, displayUser, displayHttpRequest);
 			writeln("</tr>");
 		}
 		writeln("</tbody></table>");
 	}
 
-	private void writeError(CounterError error, boolean displayUser) throws IOException {
+	private void writeError(CounterError error, boolean displayUser, boolean displayHttpRequest)
+			throws IOException {
 		write("<td align='right'>");
 		write(dateTimeFormat.format(error.getDate()));
 		write("</td><td>");
-		if (error.getHttpRequest() == null) {
-			write("&nbsp;");
-		} else {
-			write(htmlEncode(error.getHttpRequest()));
+		if (displayHttpRequest) {
+			if (error.getHttpRequest() == null) {
+				write("&nbsp;");
+			} else {
+				write(htmlEncode(error.getHttpRequest()));
+			}
+			write("</td><td>");
 		}
-		write("</td><td>");
 		if (displayUser) {
 			if (error.getRemoteUser() == null) {
 				write("&nbsp;");
@@ -123,6 +123,24 @@ class HtmlCounterErrorReport {
 			writer.write(htmlEncode(error.getMessage()));
 		}
 		write("</td>");
+	}
+
+	private static boolean shouldDisplayUser(List<CounterError> errors) {
+		for (final CounterError error : errors) {
+			if (error.getRemoteUser() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean shouldDisplayHttpRequest(List<CounterError> errors) {
+		for (final CounterError error : errors) {
+			if (error.getHttpRequest() != null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static String htmlEncode(String text) {

@@ -99,48 +99,23 @@ public class MonitoringFilter implements Filter {
 			MonitoringInitialContextFactory.init();
 		}
 
-		final boolean noDatabase = Parameters.isNoDatabase();
-		final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
 		// si l'application a utilisé JdbcDriver avant d'initialiser ce filtre
 		// (par exemple dans un listener de contexte), on doit récupérer son sqlCounter
 		// car il est lié à une connexion jdbc qui est certainement conservée dans un pool
 		// (sinon les requêtes sql sur cette connexion ne seront pas monitorées)
-		final Counter sqlCounter = jdbcWrapper.getSqlCounter();
 		// sqlCounter dans JdbcWrapper peut être alimenté soit par une datasource soit par un driver
-		jdbcWrapper.initServletContext(config.getServletContext());
-		if (!noDatabase) {
-			jdbcWrapper.rebindDataSources();
+		JdbcWrapper.SINGLETON.initServletContext(config.getServletContext());
+		if (!Parameters.isNoDatabase()) {
+			JdbcWrapper.SINGLETON.rebindDataSources();
 		}
 
-		// liaison des compteurs : les contextes par thread du sqlCounter ont pour parent le httpCounter
-		this.httpCounter = new Counter(Counter.HTTP_COUNTER_NAME, "dbweb.png", sqlCounter);
-		this.errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, "error.png");
-		this.errorCounter.setMaxRequestsCount(250);
+		// initialisation du listener de jobs quartz
+		if (JobInformations.QUARTZ_AVAILABLE) {
+			JobGlobalListener.initJobGlobalListener();
+		}
 
+		final List<Counter> counters = initCounters();
 		final String application = Parameters.getCurrentApplication();
-		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
-		final Counter springCounter = MonitoringProxy.getSpringCounter();
-		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
-		final Counter logCounter = LoggingHandler.getLogCounter();
-
-		final List<Counter> counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter,
-				springCounter, servicesCounter, errorCounter, logCounter);
-		setRequestTransformPatterns(counters);
-		final String displayedCounters = Parameters.getParameter(Parameter.DISPLAYED_COUNTERS);
-		// displayedCounters doit être traité avant l'initialisation du collector
-		// sinon les dayCounters ne seront pas bons
-		if (displayedCounters == null) {
-			// par défaut, tous les compteurs sont affichés sauf ejb
-			httpCounter.setDisplayed(true);
-			sqlCounter.setDisplayed(!noDatabase);
-			errorCounter.setDisplayed(true);
-			logCounter.setDisplayed(true);
-			ejbCounter.setDisplayed(false);
-			springCounter.setDisplayed(false);
-			servicesCounter.setDisplayed(false);
-		} else {
-			setDisplayedCounters(counters, displayedCounters);
-		}
 		this.collector = new Collector(application, counters, timer);
 
 		if (Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN) != null) {
@@ -154,6 +129,102 @@ public class MonitoringFilter implements Filter {
 		}
 
 		initCollect();
+	}
+
+	private List<Counter> initCounters() {
+		// liaison des compteurs : les contextes par thread du sqlCounter ont pour parent le httpCounter
+		final Counter sqlCounter = JdbcWrapper.SINGLETON.getSqlCounter();
+		this.httpCounter = new Counter(Counter.HTTP_COUNTER_NAME, "dbweb.png", sqlCounter);
+		this.errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, "error.png");
+		this.errorCounter.setMaxRequestsCount(250);
+
+		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
+		final Counter springCounter = MonitoringProxy.getSpringCounter();
+		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
+		final Counter logCounter = LoggingHandler.getLogCounter();
+		final List<Counter> counters;
+		if (JobInformations.QUARTZ_AVAILABLE) {
+			final Counter jobCounter = JobGlobalListener.getJobCounter();
+			jobCounter.setDisplayed(true);
+			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
+					servicesCounter, errorCounter, logCounter, jobCounter);
+		} else {
+			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
+					servicesCounter, errorCounter, logCounter);
+		}
+
+		setRequestTransformPatterns(counters);
+		final String displayedCounters = Parameters.getParameter(Parameter.DISPLAYED_COUNTERS);
+		// displayedCounters doit être traité avant l'initialisation du collector
+		// sinon les dayCounters ne seront pas bons
+		if (displayedCounters == null) {
+			// par défaut, tous les compteurs sont affichés sauf ejb
+			httpCounter.setDisplayed(true);
+			sqlCounter.setDisplayed(!Parameters.isNoDatabase());
+			errorCounter.setDisplayed(true);
+			logCounter.setDisplayed(true);
+			ejbCounter.setDisplayed(false);
+			springCounter.setDisplayed(false);
+			servicesCounter.setDisplayed(false);
+		} else {
+			setDisplayedCounters(counters, displayedCounters);
+		}
+		return counters;
+	}
+
+	private static void setRequestTransformPatterns(List<Counter> counters) {
+		for (final Counter counter : counters) {
+			// le paramètre pour ce nom de compteur doit exister
+			final Parameter parameter = Parameter.valueOfIgnoreCase(counter.getName()
+					+ "_TRANSFORM_PATTERN");
+			if (Parameters.getParameter(parameter) != null) {
+				final Pattern pattern = Pattern.compile(Parameters.getParameter(parameter));
+				counter.setRequestTransformPattern(pattern);
+			}
+		}
+	}
+
+	private static void setDisplayedCounters(List<Counter> counters, String displayedCounters) {
+		for (final Counter counter : counters) {
+			counter.setDisplayed(false);
+		}
+		for (final String displayedCounter : displayedCounters.split(",")) {
+			final String displayedCounterName = displayedCounter.trim();
+			boolean found = false;
+			for (final Counter counter : counters) {
+				if (displayedCounterName.equalsIgnoreCase(counter.getName())) {
+					counter.setDisplayed(true);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				throw new IllegalArgumentException("Unknown counter: " + displayedCounterName);
+			}
+		}
+	}
+
+	private void initCollect() {
+		try {
+			Class.forName("org.jrobin.core.RrdDb");
+		} catch (final ClassNotFoundException e) {
+			// si pas de jar jrobin, alors pas de collecte
+			return;
+		}
+
+		final int periodMillis = Parameters.getResolutionSeconds() * 1000;
+		// on schedule la tâche de fond
+		final TimerTask task = new CollectTimerTask(collector);
+		timer.schedule(task, periodMillis, periodMillis);
+
+		// on appelle la collecte pour que les instances jrobin soient définies
+		// au cas où un graph de la page de monitoring soit demandé de suite
+		collector.collectLocalContextWithoutErrors();
+
+		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
+				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
+			MailReport.scheduleReportMailForLocalServer(collector, timer);
+		}
 	}
 
 	private void initLogs() {
@@ -187,56 +258,6 @@ public class MonitoringFilter implements Filter {
 		}
 	}
 
-	private static void setRequestTransformPatterns(List<Counter> counters) {
-		for (final Counter counter : counters) {
-			// le paramètre pour ce nom de compteur doit exister
-			final Parameter parameter = Parameter.valueOfIgnoreCase(counter.getName()
-					+ "_TRANSFORM_PATTERN");
-			if (Parameters.getParameter(parameter) != null) {
-				final Pattern pattern = Pattern.compile(Parameters.getParameter(parameter));
-				counter.setRequestTransformPattern(pattern);
-			}
-		}
-	}
-
-	private static void setDisplayedCounters(List<Counter> counters, String displayedCounters) {
-		for (final Counter counter : counters) {
-			counter.setDisplayed(false);
-		}
-		for (final String displayedCounter : displayedCounters.split(",")) {
-			final String displayedCounterName = displayedCounter.trim();
-			for (final Counter counter : counters) {
-				if (displayedCounterName.equalsIgnoreCase(counter.getName())) {
-					counter.setDisplayed(true);
-					break;
-				}
-			}
-		}
-	}
-
-	private void initCollect() {
-		try {
-			Class.forName("org.jrobin.core.RrdDb");
-		} catch (final ClassNotFoundException e) {
-			// si pas de jar jrobin, alors pas de collecte
-			return;
-		}
-
-		final int periodMillis = Parameters.getResolutionSeconds() * 1000;
-		// on schedule la tâche de fond
-		final TimerTask task = new CollectTimerTask(collector);
-		timer.schedule(task, periodMillis, periodMillis);
-
-		// on appelle la collecte pour que les instances jrobin soient définies
-		// au cas où un graph de la page de monitoring soit demandé de suite
-		collector.collectLocalContextWithoutErrors();
-
-		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
-				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
-			MailReport.scheduleReportMailForLocalServer(collector, timer);
-		}
-	}
-
 	/** {@inheritDoc} */
 	public void destroy() {
 		if (monitoringDisabled) {
@@ -253,13 +274,12 @@ public class MonitoringFilter implements Filter {
 				JdbcDriver.SINGLETON.deregister();
 
 				// on enlève l'appender de logback, log4j et le handler de java.util.logging
-				if (logbackEnabled) {
-					LogbackAppender.getSingleton().deregister();
+				deregisterLogs();
+
+				// on enlève le listener de jobs quartz
+				if (JobInformations.QUARTZ_AVAILABLE) {
+					JobGlobalListener.destroyJobGlobalListener();
 				}
-				if (log4jEnabled) {
-					Log4JAppender.getSingleton().deregister();
-				}
-				LoggingHandler.getSingleton().deregister();
 			}
 		} finally {
 			if (contextFactoryEnabled) {
@@ -287,6 +307,16 @@ public class MonitoringFilter implements Filter {
 			filterConfig = null;
 			timer = null;
 		}
+	}
+
+	private void deregisterLogs() {
+		if (logbackEnabled) {
+			LogbackAppender.getSingleton().deregister();
+		}
+		if (log4jEnabled) {
+			Log4JAppender.getSingleton().deregister();
+		}
+		LoggingHandler.getSingleton().deregister();
 	}
 
 	/** {@inheritDoc} */

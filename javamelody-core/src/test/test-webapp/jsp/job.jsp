@@ -14,9 +14,10 @@ scheduler.start();
 //Define job instance
 Random random = new Random();
 JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+job.setDescription("coucou\ncoucou");
 
 //Define a Trigger that will fire "now"
-Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, new Date());
+Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, 100, 20 * 1000);
 //Schedule the job with the trigger
 scheduler.scheduleJob(job, trigger);
 

@@ -151,33 +151,38 @@ final class Collector {
 		final Collection<Counter> currentDayCounters = dayCountersByCounter.values();
 		final List<Counter> result = new ArrayList<Counter>(currentDayCounters.size());
 		for (final Counter dayCounter : currentDayCounters) {
-			final PeriodCounterFactory periodCounterFactory = new PeriodCounterFactory(dayCounter);
-			final Counter counter;
-			if (range.getPeriod() == null) {
-				counter = periodCounterFactory.getCustomCounter(range);
-			} else {
-				switch (range.getPeriod()) {
-				case JOUR:
-					counter = periodCounterFactory.getDayCounter();
-					break;
-				case SEMAINE:
-					counter = periodCounterFactory.getWeekCounter();
-					break;
-				case MOIS:
-					counter = periodCounterFactory.getMonthCounter();
-					break;
-				case ANNEE:
-					counter = periodCounterFactory.getYearCounter();
-					break;
-				case TOUT:
-					throw new IllegalStateException(range.getPeriod().toString());
-				default:
-					throw new IllegalArgumentException(range.getPeriod().toString());
-				}
-			}
+			final Counter counter = getRangeCounter(range, dayCounter);
 			result.add(counter);
 		}
 		return result;
+	}
+
+	private Counter getRangeCounter(Range range, Counter dayCounter) throws IOException {
+		final PeriodCounterFactory periodCounterFactory = new PeriodCounterFactory(dayCounter);
+		final Counter counter;
+		if (range.getPeriod() == null) {
+			counter = periodCounterFactory.getCustomCounter(range);
+		} else {
+			switch (range.getPeriod()) {
+			case JOUR:
+				counter = periodCounterFactory.getDayCounter();
+				break;
+			case SEMAINE:
+				counter = periodCounterFactory.getWeekCounter();
+				break;
+			case MOIS:
+				counter = periodCounterFactory.getMonthCounter();
+				break;
+			case ANNEE:
+				counter = periodCounterFactory.getYearCounter();
+				break;
+			case TOUT:
+				throw new IllegalStateException(range.getPeriod().toString());
+			default:
+				throw new IllegalArgumentException(range.getPeriod().toString());
+			}
+		}
+		return counter;
 	}
 
 	List<Counter> getRangeCountersToBeDisplayed(Range range) throws IOException {
@@ -185,11 +190,23 @@ final class Collector {
 		final Iterator<Counter> it = result.iterator();
 		while (it.hasNext()) {
 			final Counter counter = it.next();
-			if (!counter.isDisplayed()) {
+			if (!counter.isDisplayed() || Counter.JOB_COUNTER_NAME.equals(counter.getName())) {
 				it.remove();
 			}
 		}
 		return Collections.unmodifiableList(result);
+	}
+
+	Counter getRangeCounter(Range range, String counterName) throws IOException {
+		for (final Counter counter : counters) {
+			if (counter.getName().equals(counterName)) {
+				if (range.getPeriod() == Period.TOUT) {
+					return counter;
+				}
+				return getRangeCounter(range, dayCountersByCounter.get(counter));
+			}
+		}
+		throw new IllegalArgumentException(counterName);
 	}
 
 	void collectLocalContextWithoutErrors() {
