@@ -125,7 +125,7 @@ class HtmlCounterErrorReport {
 		write("</td>");
 	}
 
-	private static boolean shouldDisplayUser(List<CounterError> errors) {
+	static boolean shouldDisplayUser(List<CounterError> errors) {
 		for (final CounterError error : errors) {
 			if (error.getRemoteUser() != null) {
 				return true;
@@ -134,7 +134,7 @@ class HtmlCounterErrorReport {
 		return false;
 	}
 
-	private static boolean shouldDisplayHttpRequest(List<CounterError> errors) {
+	static boolean shouldDisplayHttpRequest(List<CounterError> errors) {
 		for (final CounterError error : errors) {
 			if (error.getHttpRequest() != null) {
 				return true;

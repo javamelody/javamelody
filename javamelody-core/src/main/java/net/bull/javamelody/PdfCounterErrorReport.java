@@ -65,8 +65,8 @@ class PdfCounterErrorReport {
 
 	private void writeErrors(List<CounterError> errors) throws DocumentException {
 		assert errors != null;
-		final boolean displayUser = shouldDisplayUser(errors);
-		final boolean displayHttpRequest = shouldDisplayHttpRequest(errors);
+		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);
+		final boolean displayHttpRequest = HtmlCounterErrorReport.shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
 			document.add(new Phrase(I18N.getFormattedString("Dernieres_erreurs_seulement",
 					Counter.MAX_ERRORS_COUNT) + '\n', severeFont));
@@ -85,24 +85,6 @@ class PdfCounterErrorReport {
 			writeError(error, displayUser, displayHttpRequest);
 		}
 		document.add(currentTable);
-	}
-
-	private static boolean shouldDisplayUser(List<CounterError> errors) {
-		for (final CounterError error : errors) {
-			if (error.getRemoteUser() != null) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static boolean shouldDisplayHttpRequest(List<CounterError> errors) {
-		for (final CounterError error : errors) {
-			if (error.getHttpRequest() != null) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void writeHeader(boolean displayUser, boolean displayHttpRequest)
