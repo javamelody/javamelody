@@ -36,7 +36,8 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 final class JobGlobalListener implements JobListener {
-	private static final Counter JOB_COUNTER = new Counter(Counter.JOB_COUNTER_NAME, "jobs.png");
+	private static final Counter JOB_COUNTER = new Counter(Counter.JOB_COUNTER_NAME, "jobs.png",
+			JdbcWrapper.SINGLETON.getSqlCounter());
 
 	static Counter getJobCounter() {
 		return JOB_COUNTER;
