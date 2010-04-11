@@ -145,7 +145,6 @@ public class MonitoringFilter implements Filter {
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
-			jobCounter.setDisplayed(true);
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
 					servicesCounter, errorCounter, logCounter, jobCounter);
 		} else {
@@ -186,7 +185,13 @@ public class MonitoringFilter implements Filter {
 
 	private static void setDisplayedCounters(List<Counter> counters, String displayedCounters) {
 		for (final Counter counter : counters) {
-			counter.setDisplayed(false);
+			if (Counter.JOB_COUNTER_NAME.equals(counter.getName())) {
+				// le compteur "job" a toujours displayed=true s'il est présent,
+				// même s'il n'est pas dans la liste des "displayedCounters"
+				counter.setDisplayed(true);
+			} else {
+				counter.setDisplayed(false);
+			}
 		}
 		for (final String displayedCounter : displayedCounters.split(",")) {
 			final String displayedCounterName = displayedCounter.trim();
