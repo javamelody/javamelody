@@ -249,15 +249,8 @@ class CounterRequest implements Cloneable, Serializable {
 		return stackTrace;
 	}
 
-	/**
-	 * Définit la dernière stack trace
-	 * @param stackTrace String
-	 */
-	void setStackTrace(String stackTrace) {
-		this.stackTrace = stackTrace;
-	}
-
-	void addHit(long duration, long cpuTime, boolean systemError, int responseSize) {
+	void addHit(long duration, long cpuTime, boolean systemError, String systemErrorStackTrace,
+			int responseSize) {
 		hits++;
 		durationsSum += duration;
 		durationsSquareSum += duration * duration;
@@ -267,6 +260,9 @@ class CounterRequest implements Cloneable, Serializable {
 		cpuTimeSum += cpuTime;
 		if (systemError) {
 			systemErrors++;
+		}
+		if (systemErrorStackTrace != null) {
+			stackTrace = systemErrorStackTrace;
 		}
 		responseSizesSum += responseSize;
 	}

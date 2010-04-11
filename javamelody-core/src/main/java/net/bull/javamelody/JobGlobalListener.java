@@ -74,41 +74,36 @@ final class JobGlobalListener implements JobListener {
 	}
 
 	/** {@inheritDoc} */
-	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-		// on calcule nous même le fullName pour être sûr que c'est le même que celui calculé
+	public void jobToBeExecuted(JobExecutionContext context) {
+		// on calcule nous même le fullName du job pour être sûr que c'est le même que celui calculé
 		// dans HtmlJobInformationsReport.getCounterRequest
 		final JobDetail jobDetail = context.getJobDetail();
 		final String jobFullName = jobDetail.getGroup() + '.' + jobDetail.getName();
-		final long jobRunTime = context.getJobRunTime();
+		JOB_COUNTER.bindContextIncludingCpu(jobFullName);
+	}
+
+	/** {@inheritDoc} */
+	public void jobExecutionVetoed(JobExecutionContext context) {
+		JOB_COUNTER.unbindContext();
+	}
+
+	/** {@inheritDoc} */
+	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+		// sera recalculé: final long jobRunTime = context.getJobRunTime();
+		final String stackTrace;
 		if (jobException == null) {
-			addJobExecutionToCounter(jobFullName, jobRunTime, null);
+			stackTrace = null;
 		} else {
 			final StringWriter stackTraceWriter = new StringWriter(200);
 			jobException.printStackTrace(new PrintWriter(stackTraceWriter));
-			addJobExecutionToCounter(jobFullName, jobRunTime, stackTraceWriter.toString());
+			stackTrace = stackTraceWriter.toString();
 		}
-	}
-
-	private void addJobExecutionToCounter(String jobFullName, long jobRunTime, String stackTrace) {
-		if (stackTrace == null) {
-			JOB_COUNTER.addRequest(jobFullName, jobRunTime, -1, false, -1);
-		} else {
-			JOB_COUNTER.addRequestForSystemError(jobFullName, jobRunTime, -1, stackTrace);
-		}
+		// on enregistre la requête dans les statistiques
+		JOB_COUNTER.addRequestForCurrentContext(stackTrace);
 	}
 
 	/** {@inheritDoc} */
 	public String getName() {
 		return getClass().getName();
-	}
-
-	/** {@inheritDoc} */
-	public void jobExecutionVetoed(JobExecutionContext context) {
-		// rien
-	}
-
-	/** {@inheritDoc} */
-	public void jobToBeExecuted(JobExecutionContext context) {
-		// rien
 	}
 }

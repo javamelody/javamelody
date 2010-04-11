@@ -65,18 +65,13 @@ class PdfCounterErrorReport {
 
 	private void writeErrors(List<CounterError> errors) throws DocumentException {
 		assert errors != null;
-		boolean displayUser = false;
-		for (final CounterError error : errors) {
-			if (error.getRemoteUser() != null) {
-				displayUser = true;
-				break;
-			}
-		}
+		final boolean displayUser = shouldDisplayUser(errors);
+		final boolean displayHttpRequest = shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
 			document.add(new Phrase(I18N.getFormattedString("Dernieres_erreurs_seulement",
 					Counter.MAX_ERRORS_COUNT) + '\n', severeFont));
 		}
-		writeHeader(displayUser);
+		writeHeader(displayUser, displayHttpRequest);
 
 		final PdfPCell defaultCell = getDefaultCell();
 		boolean odd = false;
@@ -87,25 +82,48 @@ class PdfCounterErrorReport {
 				defaultCell.setGrayFill(1);
 			}
 			odd = !odd; // NOPMD
-			writeError(error, displayUser);
+			writeError(error, displayUser, displayHttpRequest);
 		}
 		document.add(currentTable);
 	}
 
-	private void writeHeader(boolean displayUser) throws DocumentException {
-		final List<String> headers = createHeaders(displayUser);
+	private static boolean shouldDisplayUser(List<CounterError> errors) {
+		for (final CounterError error : errors) {
+			if (error.getRemoteUser() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean shouldDisplayHttpRequest(List<CounterError> errors) {
+		for (final CounterError error : errors) {
+			if (error.getHttpRequest() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void writeHeader(boolean displayUser, boolean displayHttpRequest)
+			throws DocumentException {
+		final List<String> headers = createHeaders(displayUser, displayHttpRequest);
 		final int[] relativeWidths = new int[headers.size()];
 		Arrays.fill(relativeWidths, 0, headers.size(), 1);
-		relativeWidths[1] = 4; // requête http
+		if (displayHttpRequest) {
+			relativeWidths[1] = 4; // requête http
+		}
 		relativeWidths[headers.size() - 1] = 4; // message d'erreur
 
 		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
 	}
 
-	private List<String> createHeaders(boolean displayUser) {
+	private List<String> createHeaders(boolean displayUser, boolean displayHttpRequest) {
 		final List<String> headers = new ArrayList<String>();
 		headers.add(getI18nString("Date"));
-		headers.add(getI18nString("Requete"));
+		if (displayHttpRequest) {
+			headers.add(getI18nString("Requete"));
+		}
 		if (displayUser) {
 			headers.add(getI18nString("Utilisateur"));
 		}
@@ -113,14 +131,16 @@ class PdfCounterErrorReport {
 		return headers;
 	}
 
-	private void writeError(CounterError error, boolean displayUser) {
+	private void writeError(CounterError error, boolean displayUser, boolean displayHttpRequest) {
 		getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
 		addCell(dateTimeFormat.format(error.getDate()));
 		getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-		if (error.getHttpRequest() == null) {
-			addCell("");
-		} else {
-			addCell(error.getHttpRequest());
+		if (displayHttpRequest) {
+			if (error.getHttpRequest() == null) {
+				addCell("");
+			} else {
+				addCell(error.getHttpRequest());
+			}
 		}
 		if (displayUser) {
 			if (error.getRemoteUser() == null) {

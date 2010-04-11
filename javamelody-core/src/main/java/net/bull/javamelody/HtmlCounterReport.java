@@ -424,17 +424,13 @@ class HtmlCounterReport {
 	void toHtml() throws IOException {
 		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 		if (requests.isEmpty()) {
-			if (isErrorCounter()) {
-				writeln("#Aucune_erreur#");
-			} else {
-				writeln("#Aucune_requete#");
-			}
+			writeNoRequests();
 			return;
 		}
 		final String counterName = counter.getName();
 		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 		// 1. synthèse
-		if (isErrorCounter()) {
+		if (isErrorAndNotJobCounter()) {
 			// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
 			assert !requests.isEmpty();
 			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
@@ -455,13 +451,16 @@ class HtmlCounterReport {
 		writeln("<div align='right'>");
 		// Rq : si serveur utilisé de 8h à 20h (soit 12h) on peut multiplier par 2 ces hits par minute indiqués
 		// pour avoir une moyenne sur les heures d'activité sans la nuit
-		if (isErrorCounter()) {
-			writeln(I18N.getFormattedString("nb_erreurs", integerFormat.format(hitsParMinute),
-					integerFormat.format(requests.size())));
+		final String nbKey;
+		if (isJobCounter()) {
+			nbKey = "nb_jobs";
+		} else if (isErrorCounter()) {
+			nbKey = "nb_erreurs";
 		} else {
-			writeln(I18N.getFormattedString("nb_requetes", integerFormat.format(hitsParMinute),
-					integerFormat.format(requests.size())));
+			nbKey = "nb_requetes";
 		}
+		writeln(I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute), integerFormat
+				.format(requests.size())));
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		writeShowHideLink("details" + counterName, "#Details#");
@@ -492,8 +491,26 @@ class HtmlCounterReport {
 		}
 	}
 
+	private void writeNoRequests() throws IOException {
+		if (isJobCounter()) {
+			writeln("#Aucun_job#");
+		} else if (isErrorCounter()) {
+			writeln("#Aucune_erreur#");
+		} else {
+			writeln("#Aucune_requete#");
+		}
+	}
+
 	private boolean isErrorCounter() {
 		return counter.isErrorCounter();
+	}
+
+	private boolean isJobCounter() {
+		return counter.isJobCounter();
+	}
+
+	private boolean isErrorAndNotJobCounter() {
+		return isErrorCounter() && !isJobCounter();
 	}
 
 	private void writeRequests(String tableName, String childCounterName,
@@ -501,7 +518,26 @@ class HtmlCounterReport {
 		assert requestList != null;
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='"
 				+ tableName + "'>");
-		if (isErrorCounter()) {
+		writeTableHead(childCounterName);
+		writeln("<tbody>");
+		boolean odd = false;
+		for (final CounterRequest request : requestList) {
+			if (odd) {
+				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+			} else {
+				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+			}
+			odd = !odd; // NOPMD
+			writeRequest(request, includeGraph);
+			writeln("</tr>");
+		}
+		writeln("</tbody></table>");
+	}
+
+	private void writeTableHead(String childCounterName) throws IOException {
+		if (isJobCounter()) {
+			write("<thead><tr><th>#Job#</th>");
+		} else if (isErrorCounter()) {
 			write("<thead><tr><th>#Erreur#</th>");
 		} else {
 			write("<thead><tr><th>#Requete#</th>");
@@ -519,7 +555,7 @@ class HtmlCounterReport {
 			write("<th class='sorttable_numeric'>#temps_cpu_cumule#</th>");
 			write("<th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
 		}
-		if (!isErrorCounter()) {
+		if (!isErrorAndNotJobCounter()) {
 			write("<th class='sorttable_numeric'>#erreur_systeme#</th>");
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {
@@ -531,19 +567,7 @@ class HtmlCounterReport {
 			write("</th><th class='sorttable_numeric'>"
 					+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
 		}
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
-		for (final CounterRequest request : requestList) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
-			writeRequest(request, includeGraph);
-			writeln("</tr>");
-		}
-		writeln("</tbody></table>");
+		writeln("</tr></thead>");
 	}
 
 	private void writeRequest(CounterRequest request, boolean includeGraph) throws IOException {
@@ -587,7 +611,7 @@ class HtmlCounterReport {
 			write(integerFormat.format(cpuTimeMean));
 			write("</span>");
 		}
-		if (!isErrorCounter()) {
+		if (!isErrorAndNotJobCounter()) {
 			write(nextColumn);
 			write(systemErrorFormat.format(request.getSystemErrorPercentage()));
 		}

@@ -190,7 +190,7 @@ final class Collector {
 		final Iterator<Counter> it = result.iterator();
 		while (it.hasNext()) {
 			final Counter counter = it.next();
-			if (!counter.isDisplayed() || Counter.JOB_COUNTER_NAME.equals(counter.getName())) {
+			if (!counter.isDisplayed() || counter.isJobCounter()) {
 				it.remove();
 			}
 		}

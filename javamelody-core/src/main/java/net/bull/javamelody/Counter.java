@@ -383,8 +383,22 @@ class Counter implements Cloneable, Serializable {
 		addRequest(context.getRequestName(), duration, cpuUsedMillis, systemError, -1);
 	}
 
+	void addRequestForCurrentContext(String systemErrorStackTrace) {
+		final CounterRequestContext context = contextThreadLocal.get();
+		assert context != null;
+		final long duration = context.getDuration(System.currentTimeMillis());
+		final long cpuUsedMillis = context.getCpuTime();
+		addRequest(context.getRequestName(), duration, cpuUsedMillis,
+				systemErrorStackTrace != null, systemErrorStackTrace, -1);
+	}
+
 	void addRequest(String requestName, long duration, long cpuTime, boolean systemError,
 			int responseSize) {
+		addRequest(requestName, duration, cpuTime, systemError, null, responseSize);
+	}
+
+	private void addRequest(String requestName, long duration, long cpuTime, boolean systemError,
+			String systemErrorStackTrace, int responseSize) {
 		// la méthode addRequest n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet
 		// ce qui pourrait faire une contention et des ralentissements,
@@ -404,7 +418,7 @@ class Counter implements Cloneable, Serializable {
 			// concurrents entre plusieurs threads pour le même type de requête.
 			// Rq : on pourrait remplacer ce bloc synchronized par un synchronized
 			// sur les méthodes addHit et addChildHits dans la classe CounterRequest.
-			request.addHit(duration, cpuTime, systemError, responseSize);
+			request.addHit(duration, cpuTime, systemError, systemErrorStackTrace, responseSize);
 
 			if (context != null) {
 				// on ajoute dans la requête parente toutes les requêtes filles du contexte
@@ -437,6 +451,14 @@ class Counter implements Cloneable, Serializable {
 						systemError, responseSize);
 			}
 		}
+		if (systemErrorStackTrace != null) {
+			synchronized (errors) {
+				errors.addLast(new CounterError(requestName, systemErrorStackTrace));
+				if (errors.size() > MAX_ERRORS_COUNT) {
+					errors.removeFirst();
+				}
+			}
+		}
 	}
 
 	void addRequestForSystemError(String requestName, long duration, long cpuTime, String stackTrace) {
@@ -456,10 +478,7 @@ class Counter implements Cloneable, Serializable {
 		final String aggregateRequestName = getAggregateRequestName(requestName);
 		final CounterRequest request = getCounterRequestInternal(aggregateRequestName);
 		synchronized (request) {
-			request.addHit(duration, cpuTime, true, -1);
-			if (stackTrace != null) {
-				request.setStackTrace(stackTrace);
-			}
+			request.addHit(duration, cpuTime, true, stackTrace, -1);
 		}
 		synchronized (errors) {
 			errors.addLast(new CounterError(requestName, stackTrace));
@@ -471,11 +490,20 @@ class Counter implements Cloneable, Serializable {
 
 	/**
 	 * Retourne true si ce counter est un counter d'error
-	 * (c'est-à-dire si son nom est "error" ou "log")
+	 * (c'est-à-dire si son nom est "error", "log" ou "job")
 	 * @return boolean
 	 */
 	boolean isErrorCounter() {
 		return errorCounter;
+	}
+
+	/**
+	 * Retourne true si ce counter est un counter de job
+	 * (c'est-à-dire si son nom est "job")
+	 * @return boolean
+	 */
+	boolean isJobCounter() {
+		return JOB_COUNTER_NAME.equals(name);
 	}
 
 	private String getAggregateRequestName(String requestName) {

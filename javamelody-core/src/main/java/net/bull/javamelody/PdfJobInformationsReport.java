@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,7 +44,6 @@ class PdfJobInformationsReport {
 	private final List<JobInformations> jobInformationsList;
 	private final Map<String, CounterRequest> counterRequestsByRequestName;
 	private final Document document;
-	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
 	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
@@ -113,7 +111,6 @@ class PdfJobInformationsReport {
 		headers.add(getI18nString("JobGroup"));
 		headers.add(getI18nString("JobName"));
 		headers.add(getI18nString("JobClassName"));
-		headers.add(getI18nString("JobHits"));
 		headers.add(getI18nString("JobMeanTime"));
 		headers.add(getI18nString("JobElapsedTime"));
 		headers.add(getI18nString("JobPreviousFireTime"));
@@ -131,12 +128,10 @@ class PdfJobInformationsReport {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
 		if (counterRequest != null) {
-			addCell(integerFormat.format(counterRequest.getHits()));
 			addCell(elapsedTimeFormat.format(new Date(counterRequest.getMean())));
-			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
-			// uniquement car cela ferait trop de colonnes dans la page
+			// rq: on n'affiche pas ici le nb d'exécutions, le maximum, l'écart-type
+			// ou le pourcentage d'erreurs, uniquement car cela ferait trop de colonnes dans la page
 		} else {
-			addCell("");
 			addCell("");
 		}
 		if (jobInformations.getElapsedTime() >= 0) {

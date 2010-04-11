@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +32,10 @@ import java.util.Map;
  */
 class HtmlJobInformationsReport {
 	private final List<JobInformations> jobInformationsList;
-	private final Counter rangeJobCounter;
 	private final Map<String, CounterRequest> counterRequestsByRequestName;
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
-	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
@@ -49,7 +46,6 @@ class HtmlJobInformationsReport {
 		assert writer != null;
 
 		this.jobInformationsList = jobInformationsList;
-		this.rangeJobCounter = rangeJobCounter;
 		this.writer = writer;
 		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
 		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(counterRequests
@@ -64,7 +60,6 @@ class HtmlJobInformationsReport {
 		write("<thead><tr><th>#JobGroup#</th>");
 		write("<th>#JobName#</th>");
 		write("<th>#JobClassName#</th>");
-		write("<th class='sorttable_numeric'>#JobHits#</th>");
 		write("<th>#JobLastException#</th>");
 		write("<th class='sorttable_date'>#JobMeanTime#</th>");
 		write("<th class='sorttable_date'>#JobElapsedTime#</th>");
@@ -105,12 +100,6 @@ class HtmlJobInformationsReport {
 		// writer.write pour éviter traduction car # dans l'url
 		writer.write("<a href='http://www.quartz-scheduler.org/docs/index.html'");
 		writeln("target='_blank'>Configuration reference</a>");
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-
-		writeShowHideLink("jobs", "#Dernieres_erreurs#");
-		writeln("<div id='jobs' style='display: none;'>");
-		new HtmlCounterErrorReport(rangeJobCounter, writer).toHtml();
-		writeln("</div>");
 
 		writeln("</div>");
 	}
@@ -126,8 +115,6 @@ class HtmlJobInformationsReport {
 
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
 		if (counterRequest != null) {
-			write(nextColumnAlignRight);
-			write(integerFormat.format(counterRequest.getHits()));
 			write("</td> <td align='center'>");
 			writeStackTrace(counterRequest.getStackTrace());
 			write(nextColumnAlignRight);
@@ -135,7 +122,7 @@ class HtmlJobInformationsReport {
 			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
 			// uniquement car cela ferait trop de colonnes dans la page
 		} else {
-			write("</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;");
+			write("</td><td>&nbsp;</td><td>&nbsp;");
 		}
 
 		write(nextColumnAlignRight);
@@ -215,11 +202,6 @@ class HtmlJobInformationsReport {
 	private CounterRequest getCounterRequest(JobInformations jobInformations) {
 		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
 		return counterRequestsByRequestName.get(jobFullName);
-	}
-
-	private void writeShowHideLink(String idToShow, String label) throws IOException {
-		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
-				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
 	}
 
 	private static String toBar(int mean, long elapsedTime) {
