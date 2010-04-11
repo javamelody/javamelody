@@ -218,19 +218,21 @@ class HtmlCoreReport {
 		if (isJobEnabled()) {
 			writeln("<h3><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
 			writeln("#Jobs#</h3>");
-			writeJobs();
+			final Counter rangeJobCounter = collector.getRangeCounter(range,
+					Counter.JOB_COUNTER_NAME);
+			writeJobs(rangeJobCounter);
+			writeCounter(rangeJobCounter);
 		}
 
 		if (isCacheEnabled()) {
 			writeln("<h3><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
 			writeln("#Caches#</h3>");
 			writeCaches();
-			// pour que les tooltips des stack traces s'affichent dans le scroll
-			writeln("<br/><br/><br/><br/>");
-		} else if (JavaInformations.STACK_TRACES_ENABLED) {
-			// pour que les tooltips des stack traces s'affichent dans le scroll
-			writeln("<br/><br/><br/><br/>");
 		}
+		//		else if (JavaInformations.STACK_TRACES_ENABLED) {
+		//			// pour que les tooltips des stack traces s'affichent dans le scroll
+		//			writeln("<br/><br/><br/><br/>");
+		//		}
 
 		writeMessageIfNotNull(message, null);
 		writePoweredBy();
@@ -251,17 +253,21 @@ class HtmlCoreReport {
 	private Map<String, HtmlCounterReport> writeCounters() throws IOException {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
 		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
-			writeln("<h3><img width='24' height='24' src='?resource=" + counter.getIconName()
-					+ "' alt='" + counter.getName() + "'/>");
-			final String counterLabel = I18N.getString(counter.getName() + "Label");
-			writeln(I18N.getFormattedString("Statistiques_compteur", counterLabel));
-			writeln(" - " + range.getLabel() + "</h3>");
-			final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range,
-					writer);
-			htmlCounterReport.toHtml();
+			final HtmlCounterReport htmlCounterReport = writeCounter(counter);
 			counterReportsByCounterName.put(counter.getName(), htmlCounterReport);
 		}
 		return counterReportsByCounterName;
+	}
+
+	private HtmlCounterReport writeCounter(Counter counter) throws IOException {
+		writeln("<h3><img width='24' height='24' src='?resource=" + counter.getIconName()
+				+ "' alt='" + counter.getName() + "'/>");
+		final String counterLabel = I18N.getString(counter.getName() + "Label");
+		writeln(I18N.getFormattedString("Statistiques_compteur", counterLabel));
+		writeln(" - " + range.getLabel() + "</h3>");
+		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
+		htmlCounterReport.toHtml();
+		return htmlCounterReport;
 	}
 
 	static void writeAddAndRemoveApplicationLinks(String currentApplication, Writer writer)
@@ -444,9 +450,8 @@ class HtmlCoreReport {
 		}
 	}
 
-	private void writeJobs() throws IOException {
+	private void writeJobs(Counter rangeJobCounter) throws IOException {
 		int i = 0;
-		final Counter rangeJobCounter = collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME);
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJobEnabled()) {
 				continue;
@@ -610,7 +615,7 @@ class HtmlCoreReport {
 
 	private void writeDurationAndOverhead() throws IOException {
 		final long displayDuration = System.currentTimeMillis() - start;
-		writeln("<div style='font-size:10pt;'>");
+		writeln("<br/><div style='font-size:10pt;'>");
 		writeln("#temps_derniere_collecte#: " + collector.getLastCollectDuration() + " #ms#<br/>");
 		writeln("#temps_affichage#: " + displayDuration + " #ms#<br/>");
 		writeln("#Estimation_overhead_memoire#: < "

@@ -248,8 +248,13 @@ class PdfCounterRequestContextReport {
 			if (parentCounter.getIconName() != null) {
 				paragraph.add(new Chunk(getImage(parentCounter.getIconName()), 0, -1));
 			}
-			paragraph.add(new Phrase(integerFormat.format(duration), counterReport
-					.getSlaFont(duration)));
+			final Font slaFont;
+			if (counterReport == null) {
+				slaFont = PdfDocumentFactory.INFO_CELL_FONT;
+			} else {
+				slaFont = counterReport.getSlaFont(duration);
+			}
+			paragraph.add(new Phrase(integerFormat.format(duration), slaFont));
 			first = false;
 		}
 		currentTable.addCell(paragraph);

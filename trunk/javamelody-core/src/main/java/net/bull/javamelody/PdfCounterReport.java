@@ -75,7 +75,7 @@ class PdfCounterReport {
 		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 		if (requests.isEmpty()) {
 			writeNoRequests();
-		} else if (isErrorCounter()) {
+		} else if (isErrorAndNotJobCounter()) {
 			// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
 			assert !requests.isEmpty();
 			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
@@ -102,6 +102,14 @@ class PdfCounterReport {
 		return counter.isErrorCounter();
 	}
 
+	private boolean isJobCounter() {
+		return counter.isJobCounter();
+	}
+
+	private boolean isErrorAndNotJobCounter() {
+		return isErrorCounter() && !isJobCounter();
+	}
+
 	void writeRequestDetails() throws DocumentException, IOException {
 		// détails des requêtes
 		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
@@ -116,7 +124,9 @@ class PdfCounterReport {
 
 	private void writeNoRequests() throws DocumentException {
 		final String msg;
-		if (isErrorCounter()) {
+		if (isJobCounter()) {
+			msg = "Aucun_job";
+		} else if (isErrorCounter()) {
 			msg = "Aucune_erreur";
 		} else {
 			msg = "Aucune_requete";
@@ -166,7 +176,9 @@ class PdfCounterReport {
 
 	private List<String> createHeaders(String childCounterName) {
 		final List<String> headers = new ArrayList<String>();
-		if (isErrorCounter()) {
+		if (isJobCounter()) {
+			headers.add(getI18nString("Job"));
+		} else if (isErrorCounter()) {
 			headers.add(getI18nString("Erreur"));
 		} else {
 			headers.add(getI18nString("Requete"));
@@ -187,7 +199,7 @@ class PdfCounterReport {
 			headers.add(getI18nString("temps_cpu_cumule"));
 			headers.add(getI18nString("Temps_cpu_moyen"));
 		}
-		if (!isErrorCounter()) {
+		if (!isErrorAndNotJobCounter()) {
 			headers.add(getI18nString("erreur_systeme"));
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {
@@ -208,7 +220,9 @@ class PdfCounterReport {
 				- counter.getStartDate().getTime(), 1);
 		final long hitsParMinute = 60 * 1000 * globalRequest.getHits() / deltaMillis;
 		final String key;
-		if (isErrorCounter()) {
+		if (isJobCounter()) {
+			key = "nb_jobs";
+		} else if (isErrorCounter()) {
 			key = "nb_erreurs";
 		} else {
 			key = "nb_requetes";
@@ -249,7 +263,7 @@ class PdfCounterReport {
 			currentTable.addCell(new Phrase(integerFormat.format(cpuTimeMean),
 					getSlaFont(cpuTimeMean)));
 		}
-		if (!isErrorCounter()) {
+		if (!isErrorAndNotJobCounter()) {
 			addCell(systemErrorFormat.format(request.getSystemErrorPercentage()));
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {

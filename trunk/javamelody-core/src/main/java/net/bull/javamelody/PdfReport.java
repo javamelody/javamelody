@@ -130,10 +130,14 @@ class PdfReport {
 		addParagraph(getI18nString("Threads"), "threads.png");
 		writeThreads(false);
 
+		PdfCounterReport pdfJobCounterReport = null;
+		Counter rangeJobCounter = null;
 		if (isJobEnabled()) {
+			rangeJobCounter = collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME);
 			add(new Phrase("\n", normalFont));
 			addParagraph(getI18nString("Jobs"), "jobs.png");
-			writeJobs(false);
+			writeJobs(rangeJobCounter, false);
+			pdfJobCounterReport = writeCounter(rangeJobCounter);
 		}
 
 		if (isCacheEnabled()) {
@@ -147,7 +151,7 @@ class PdfReport {
 		writeGraphs(collector.getOtherJRobins());
 		writeGraphDetails();
 
-		writeCounterDetails(pdfCounterReports);
+		writeCountersDetails(pdfCounterReports);
 
 		if (!collectorServer) {
 			addParagraph(getI18nString("Requetes_en_cours_detaillees"), "hourglass.png");
@@ -164,7 +168,8 @@ class PdfReport {
 		if (isJobEnabled()) {
 			add(new Phrase("\n", normalFont));
 			addParagraph(getI18nString("Jobs_detailles"), "jobs.png");
-			writeJobs(true);
+			writeJobs(rangeJobCounter, true);
+			writeCounterDetails(pdfJobCounterReport);
 		}
 
 		if (isCacheEnabled()) {
@@ -235,29 +240,38 @@ class PdfReport {
 	private List<PdfCounterReport> writeCounters() throws IOException, DocumentException {
 		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
 		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
-			final String counterLabel = I18N.getString(counter.getName() + "Label");
-			addParagraph(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
-					+ range.getLabel(), counter.getIconName());
-			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
-					range, false, document);
-			pdfCounterReport.toPdf();
-			pdfCounterReports.add(pdfCounterReport);
+			pdfCounterReports.add(writeCounter(counter));
 		}
 		return pdfCounterReports;
 	}
 
-	private void writeCounterDetails(List<PdfCounterReport> pdfCounterReports)
+	private PdfCounterReport writeCounter(Counter counter) throws DocumentException, IOException {
+		final String counterLabel = I18N.getString(counter.getName() + "Label");
+		addParagraph(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
+				+ range.getLabel(), counter.getIconName());
+		final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter, range,
+				false, document);
+		pdfCounterReport.toPdf();
+		return pdfCounterReport;
+	}
+
+	private void writeCountersDetails(List<PdfCounterReport> pdfCounterReports)
 			throws DocumentException, IOException {
 		for (final PdfCounterReport pdfCounterReport : pdfCounterReports) {
-			final String counterLabel = I18N.getString(pdfCounterReport.getCounterName() + "Label");
-			addParagraph(I18N.getFormattedString("Statistiques_compteur_detaillees", counterLabel)
-					+ " - " + range.getLabel(), pdfCounterReport.getCounterIconName());
-			pdfCounterReport.writeRequestDetails();
-			if (pdfCounterReport.isErrorCounter()) {
-				addParagraph(I18N.getString(pdfCounterReport.getCounterName() + "ErrorLabel")
-						+ " - " + range.getLabel(), pdfCounterReport.getCounterIconName());
-				pdfCounterReport.writeErrorDetails();
-			}
+			writeCounterDetails(pdfCounterReport);
+		}
+	}
+
+	private void writeCounterDetails(PdfCounterReport pdfCounterReport) throws DocumentException,
+			IOException {
+		final String counterLabel = I18N.getString(pdfCounterReport.getCounterName() + "Label");
+		addParagraph(I18N.getFormattedString("Statistiques_compteur_detaillees", counterLabel)
+				+ " - " + range.getLabel(), pdfCounterReport.getCounterIconName());
+		pdfCounterReport.writeRequestDetails();
+		if (pdfCounterReport.isErrorCounter()) {
+			addParagraph(I18N.getString(pdfCounterReport.getCounterName() + "ErrorLabel") + " - "
+					+ range.getLabel(), pdfCounterReport.getCounterIconName());
+			pdfCounterReport.writeErrorDetails();
 		}
 	}
 
@@ -352,9 +366,9 @@ class PdfReport {
 		return false;
 	}
 
-	private void writeJobs(boolean includeDetails) throws DocumentException, IOException {
+	private void writeJobs(Counter rangeJobCounter, boolean includeDetails)
+			throws DocumentException {
 		String eol = "";
-		final Counter rangeJobCounter = collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME);
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJobEnabled()) {
 				continue;

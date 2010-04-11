@@ -58,7 +58,7 @@ public class TestCounter {
 
 	private CounterRequest createCounterRequest() {
 		final CounterRequest request = new CounterRequest("test Counter", counter.getName());
-		request.addHit(100, 50, false, 1000);
+		request.addHit(100, 50, false, null, 1000);
 		return request;
 	}
 

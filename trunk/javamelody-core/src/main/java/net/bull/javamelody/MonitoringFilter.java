@@ -185,7 +185,7 @@ public class MonitoringFilter implements Filter {
 
 	private static void setDisplayedCounters(List<Counter> counters, String displayedCounters) {
 		for (final Counter counter : counters) {
-			if (Counter.JOB_COUNTER_NAME.equals(counter.getName())) {
+			if (counter.isJobCounter()) {
 				// le compteur "job" a toujours displayed=true s'il est présent,
 				// même s'il n'est pas dans la liste des "displayedCounters"
 				counter.setDisplayed(true);
