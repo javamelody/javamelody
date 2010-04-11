@@ -343,8 +343,10 @@ La configuration de chaque cache est également rappelée.
 Jobs</h3>
 Les jobs affichent la liste des tâches (ou batchs) dans l'application java à condition que la librairie
 <a href="http://www.quartz-scheduler.org/" target="_blank">quartz</a> soit utilisée pour ceux-ci.<br/>
-Pour chacun des jobs, le nombre d'exécutions, le temps moyen, la dernière erreur pour la période sélectionnée,
+Pour chacun des jobs, le temps moyen, la dernière erreur avec stack-trace pour la période sélectionnée,
 ainsi que l'heure de la dernière exécution et de la prochaine exécution sont indiqués.
+Comme pour les requêtes http, les statistiques pour les jobs sont affichées avec temps moyen,
+temps cpu moyens, hits sql et temps sql pour la période sélectionnée.
 <br/>Des boutons permettent de mettre en pause ou de redémarrer chacun des jobs ou tous les jobs.
 
 <h3>Langue</h3>
