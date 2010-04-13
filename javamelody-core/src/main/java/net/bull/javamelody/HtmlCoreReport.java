@@ -243,11 +243,12 @@ class HtmlCoreReport {
 		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
 		final String startDate = I18N.createDateAndTimeFormat().format(
 				collector.getCounters().get(0).getStartDate());
-		writeln(I18N.getFormattedString("Statistiques", javaMelodyUrl,
-				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
+		writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl, I18N
+				.getCurrentDateAndTime(), startDate, collector.getApplication()));
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
-			writeln(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
+			writer.write(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
 		}
+		writeln("");
 	}
 
 	private Map<String, HtmlCounterReport> writeCounters() throws IOException {
