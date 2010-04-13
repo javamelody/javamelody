@@ -384,6 +384,7 @@ class Counter implements Cloneable, Serializable {
 	}
 
 	void addRequestForCurrentContext(String systemErrorStackTrace) {
+		assert errorCounter;
 		final CounterRequestContext context = contextThreadLocal.get();
 		assert context != null;
 		final long duration = context.getDuration(System.currentTimeMillis());
@@ -452,6 +453,7 @@ class Counter implements Cloneable, Serializable {
 			}
 		}
 		if (systemErrorStackTrace != null) {
+			assert errorCounter;
 			synchronized (errors) {
 				errors.addLast(new CounterError(requestName, systemErrorStackTrace));
 				if (errors.size() > MAX_ERRORS_COUNT) {
