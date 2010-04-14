@@ -54,7 +54,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Dépendance requise : JRobin (LGPL) pour les courbes d'évolution
 	
-	Dépendance optionnelle : iText (LGPL ou MPL) pour les rapports au format pdf en plus de html
+	Dépendances optionnelles : iText (LGPL ou MPL) pour les rapports au format pdf en plus de html,
+		Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring,
+		Ehcache pour le monitoring des caches, Quartz pour le monitoring des jobs en batchs
 
 	Langage : français et anglais
 
