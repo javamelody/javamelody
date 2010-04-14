@@ -46,6 +46,8 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	private static final Counter SPRING_COUNTER = new Counter("spring", "beans.png",
 			JdbcWrapper.SINGLETON.getSqlCounter());
 
+	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SERVICES_COUNTER
+			.getName());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
 	@SuppressWarnings("all")
@@ -58,6 +60,9 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	private MonitoringProxy(Object facade) {
 		super();
 		this.facade = facade;
+		// quand cet intercepteur est utilisé, le compteur est affiché
+		// sauf si le paramètre displayed-counters dit le contraire
+		SERVICES_COUNTER.setDisplayed(!COUNTER_HIDDEN);
 	}
 
 	/**

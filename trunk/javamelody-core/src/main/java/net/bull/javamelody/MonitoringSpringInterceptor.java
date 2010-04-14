@@ -14,8 +14,20 @@ import org.springframework.aop.support.AopUtils;
 public class MonitoringSpringInterceptor implements MethodInterceptor, Serializable {
 	private static final long serialVersionUID = -6594338383847482623L;
 	private static final Counter SPRING_COUNTER = MonitoringProxy.getSpringCounter();
+	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SPRING_COUNTER
+			.getName());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
+
+	/**
+	 * Constructeur.
+	 */
+	public MonitoringSpringInterceptor() {
+		super();
+		// quand cet intercepteur est utilisé, le compteur est affiché
+		// sauf si le paramètre displayed-counters dit le contraire
+		SPRING_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+	}
 
 	/**
 	 * Performs method invocation.
