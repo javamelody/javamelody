@@ -362,16 +362,6 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Ou alors, sans modifier le fichier ejb-jar.xml, il est possible d'ajouter l'annotation @Interceptor dans les sources
 	java des implémentations d'ejb.
 
-	De plus, il est nécessaire de définir le paramètre <<<displayed-counters>>>, comme les paramètres optionnels
-	ci-dessus, et avec pour valeur "http,sql,error,log,ejb". Par exemple, dans le filtre du fichier web.xml :
-	
-+-------------------------------+
-	<init-param>
-		<param-name>displayed-counters</param-name>
-		<param-value>http,sql,error,log,ejb</param-value>
-	</init-param>
-+-------------------------------+
-
 ** 9. Façades métiers (si Spring)
 
 	Si l'application à monitorer contient des façades métiers ou autres objets configurés avec Spring,
@@ -423,19 +413,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	toutes les façades, vous pouvez créer et ajouter à vos façades une interface
 	<<<com.xyz.someapp.service.Monitored>>> avant de l'utiliser dans votre fichier xml comme
 	ci-dessus, ou bien vous pouvez utiliser une des alternatives ci-dessous.
-
-	Etape 4 : De plus, il est nécessaire de définir le paramètre <<<displayed-counters>>>, comme les
-	paramètres optionnels ci-dessus, et avec pour valeur "http,sql,error,log,spring" ou
-	"http,sql,error,log,ejb,spring". Par exemple, dans le filtre du fichier web.xml :
 	
-+-------------------------------+
-	<init-param>
-		<param-name>displayed-counters</param-name>
-		<param-value>http,sql,error,log,spring</param-value>
-	</init-param>
-+-------------------------------+
-	
-	Selon vos préférences, vous avez le choix avec d'autres alternatives à la place de l'étape 3 ci-dessus.
+	Selon vos préférences, vous avez le choix avec d'autres alternatives à la place de l'étape 3.
 	Ces alternatives ne sont pas exclusives : vous pouvez en utiliser une et la compléter par une autre.
 
 	* Utilisation d'une annotation de JavaMelody.
