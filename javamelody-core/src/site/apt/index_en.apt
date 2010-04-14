@@ -73,8 +73,8 @@ Java Melody : monitoring of Java applications
 	
 	[]
 	
-	The monitoring also includes statistics on http errors, on warnings and errors in logs
-	and on data caches if ehcache.
+	The monitoring also includes statistics on http errors, on warnings and errors in logs,
+	on data caches if ehcache and batch jobs if quartz.
 
 	An optional and independent collect server may be used if necessary to unload the application of storage management,
 	and of reports generation and to centralize the data of clustered applications or of several applications.
