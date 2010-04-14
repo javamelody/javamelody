@@ -225,18 +225,7 @@ Advanced documentation of Java Melody
 
 	As pre-requisites for this, the jar of javamelody must be available in the classpath used to compile sources
 	and façades must have interfaces and not only implementations.
-
-	And in order to display the statistics, it is necessary to define the parameter <<<displayed-counters>>>,
-	as the optional parameters in the user guide, and with value "http,sql,error,log,services" for example.
-	Like with the following configuration in the filter of the web.xml file:
 	
-+-------------------------------+
-	<init-param>
-		<param-name>displayed-counters</param-name>
-		<param-value>http,sql,error,log,services</param-value>
-	</init-param>
-+-------------------------------+
-
 
 * Usage of JavaMelody in JonAS 5 (which uses OSGI)
 
