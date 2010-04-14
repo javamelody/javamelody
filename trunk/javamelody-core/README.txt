@@ -25,7 +25,8 @@ Version de serveur requise en exécution : api servlet 2.4 minimum (ou JavaEE 1.
 	comme Tomcat 5.5 ou 6, GlassFish v2 ou v3, JBoss 4 ou 5, Jonas 4 ou 5, WebLogic 9 ou 10
 Dépendance requise : JRobin (LGPL) pour les courbes d'évolution
 Dépendances optionnelles : iText (LGPL ou MPL) pour les rapports au format pdf en plus de html,
-	Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring
+	Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring,
+	Quartz pour le monitoring des jobs en batchs
 Langage : français et anglais
 Navigateur : Le rapport html de JavaMelody est optimisé pour Firefox, Chrome ou MSIE8 (MSIE7 non recommandé).
 
