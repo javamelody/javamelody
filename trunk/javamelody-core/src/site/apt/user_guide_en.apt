@@ -54,7 +54,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	Required dependency: JRobin (LGPL) for evolution charts
 	
-	Optional dependency: iText (LGPL ou MPL) for reports in pdf format in addition to html
+	Optional dependencies: iText (LGPL ou MPL) for reports in pdf format in addition to html,
+		Spring AOP, AOP alliance, Spring core, Spring beans and Commons logging for monitoring of Spring beans,
+		Ehcache for monitoring of caches, Quartz for monitoring of batch jobs
 
 	Language: English and French
 
