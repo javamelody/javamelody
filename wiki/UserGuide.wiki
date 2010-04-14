@@ -60,8 +60,8 @@ Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4),
 like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, Jetty 6, WebLogic 9, 10 or 11
 
 Required dependency: JRobin (LGPL) for evolution charts
-	
-Optional dependency: iText (LGPL ou MPL) for reports in pdf format in addition to html
+
+Optional dependency: iText (LGPL ou MPL) for reports in pdf format in addition to html, Spring AOP, AOP alliance, Spring core, Spring beans and Commons logging for monitoring of Spring beans, Quartz for monitoring of batch jobs
 
 Language: English and French
 
