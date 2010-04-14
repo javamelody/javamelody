@@ -3,6 +3,7 @@
 
   * added: If *quartz* is available, display of mean time and last error with stack-trace per job for the selected period, and also display of the statistics for all the jobs with number of executions, mean cpu times, number of sql hits, sql times and last 100 errors with stack-traces for the selected period.
   * [UserGuide#3._First_results doc updated] for issue 19 InternalError "Can't connect to window server" on Mac OS X Server.
+  * change: the graphics and the statistics of ejb, spring and services will be displayed automatically when they are used (except if the parameter "displayed-counters" has been defined AND if the parameter does not include "ejb", "spring" or "services"). So usage of ejb, spring or services will be easier because it will not be necessary anymore to define the parameter "displayed-counters".
 
 === 1.14.0 ===
 
