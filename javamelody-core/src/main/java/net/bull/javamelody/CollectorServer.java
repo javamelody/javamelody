@@ -220,6 +220,8 @@ class CollectorServer {
 		for (final Counter newCounter : counters) {
 			for (final Counter counter : collector.getCounters()) {
 				if (counter.getName().equals(newCounter.getName())) {
+					// counter.isDisplayed() peut changer pour spring, ejb ou services selon l'utilisation
+					counter.setDisplayed(newCounter.isDisplayed());
 					counter.addRequestsAndErrors(newCounter);
 					break;
 				}

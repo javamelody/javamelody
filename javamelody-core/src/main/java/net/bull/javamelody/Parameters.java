@@ -282,6 +282,28 @@ final class Parameters {
 	}
 
 	/**
+	 * Retourne false si le paramètre displayed-counters n'a pas été défini
+	 * ou si il contient le compteur dont le nom est paramètre,
+	 * et retourne true sinon (c'est-à-dire si le paramètre displayed-counters est défini
+	 * et si il ne contient pas le compteur dont le nom est paramètre).
+	 * @param counterName Nom du compteur
+	 * @return boolean
+	 */
+	static boolean isCounterHidden(String counterName) {
+		final String displayedCounters = getParameter(Parameter.DISPLAYED_COUNTERS);
+		if (displayedCounters == null) {
+			return false;
+		}
+		for (final String displayedCounter : displayedCounters.split(",")) {
+			final String displayedCounterName = displayedCounter.trim();
+			if (counterName.equalsIgnoreCase(displayedCounterName)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * @return Nom de l'application courante et nom du sous-répertoire de stockage dans une application monitorée.
 	 */
 	static String getCurrentApplication() {

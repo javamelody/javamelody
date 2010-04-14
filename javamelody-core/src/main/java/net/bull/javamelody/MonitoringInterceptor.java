@@ -33,8 +33,19 @@ import javax.interceptor.InvocationContext;
  */
 public class MonitoringInterceptor {
 	private static final Counter EJB_COUNTER = MonitoringProxy.getEjbCounter();
+	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(EJB_COUNTER.getName());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
+
+	/**
+	 * Constructeur.
+	 */
+	public MonitoringInterceptor() {
+		super();
+		// quand cet intercepteur est utilisé, le compteur est affiché
+		// sauf si le paramètre displayed-counters dit le contraire
+		EJB_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+	}
 
 	/**
 	 * Intercepte une exécution de méthode sur un ejb.
