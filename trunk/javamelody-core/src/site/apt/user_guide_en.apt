@@ -465,6 +465,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="exposeSchedulerInRepository" value="true" /> 
+		...
 	</bean>
 +-------------------------------+
 
