@@ -463,6 +463,24 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB ce qui ne devrait
 	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
+** 10. Jobs en batchs (si Quartz)
+
+	Les jobs sont automatiquement monitorés quand ils sont ordonnancés avec {{{http://www.quartz-scheduler.org/} Quartz}}.
+
+	Mais si ces jobs sont ordonnancés dans Quartz en utilisant
+	{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
+	il est nécessaire d'ajouter la propriété "exposeSchedulerInRepository" avec la valeur "true"
+	dans le bean "SchedulerFactoryBean" dans votre fichier applicationContext.xml.
+
++-------------------------------+
+	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="exposeSchedulerInRepository" value="true" /> 
+	</bean>
++-------------------------------+
+
+	Sans cette propriété "exposeSchedulerInRepository", les jobs ordonnancés avec Spring ne seront
+	ni monitorés ni affichés dans le rapport.
+
 ** 10. Rapports hebdomadaires, quotidiens ou mensuels par mail
 
 	Un rapport hebdomadaire, quotidien ou mensuel au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
