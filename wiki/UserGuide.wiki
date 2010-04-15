@@ -16,10 +16,11 @@
     * [#7._JDBC 7. JDBC]
     * [#8._Business_facades_(ejb-jar.xml_file_if_EJB3) 8. Business facades (ejb-jar.xml file if EJB3)]
     * [#9._Business_facades_(if_Spring) 9. Business facades (if Spring)]
-    * [#10._Weekly,_daily_or_monthly_reports_by_mail 10. Weekly, daily or monthly reports by mail]
-    * [#11._Database_user 11. Database user]
-    * [#12._Security 12. Security]
-    * [#13._Full_results 13. Full results]
+    * [#10._Batch_jobs_(if_Quartz) 10. Batch jobs (if Quartz)]
+    * [#11._Weekly,_daily_or_monthly_reports_by_mail 11. Weekly, daily or monthly reports by mail]
+    * [#12._Database_user 12. Database user]
+    * [#13._Security 13. Security]
+    * [#14._Full_results 14. Full results]
   * [#Dependencies Dependencies]
   * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
   * [#Compilation_and_development Compilation and development]
@@ -460,7 +461,25 @@ or
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
 	facades with separate interfaces and implementations. 
 
-=== 10. Weekly, daily or monthly reports by mail ===
+=== 10. Batch jobs (if Quartz) ===
+
+	Batch jobs are automatically monitored when they are scheduled with [http://www.quartz-scheduler.org/ Quartz].
+
+	But if these jobs are scheduled in Quartz using
+	[http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html Spring scheduling],
+	you need to add the property "exposeSchedulerInRepository" with the value "true" for the bean
+	"SchedulerFactoryBean" in your applicationContext.xml file.
+
+{{{
+	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="exposeSchedulerInRepository" value="true" /> 
+	</bean>
+}}}
+
+	Without this "exposeSchedulerInRepository" property, the jobs scheduled using Spring are neither
+	monitored nor displayed in report.
+
+=== 11. Weekly, daily or monthly reports by mail ===
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -530,7 +549,7 @@ or
 <Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 }}}
 
-=== 11. Database user ===
+=== 12. Database user ===
 
 	From the html page of the monitoring, it is possible to display informations and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -547,7 +566,7 @@ or
 	in order to grant the right to the user 'myapplication':
 	{{{grant select any dictionary to myapplication}}}
 
-=== 12. Security ===
+=== 13. Security ===
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -597,7 +616,7 @@ or
 </tomcat-users>
 }}}
 
-=== 13. Full results ===
+=== 14. Full results ===
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
