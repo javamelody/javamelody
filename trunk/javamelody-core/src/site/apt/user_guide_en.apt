@@ -453,7 +453,25 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
 	facades with separate interfaces and implementations. 
 
-** 10. Weekly, daily or monthly reports by mail
+** 10. Batch jobs (if Quartz)
+
+	Batch jobs are automatically monitored when they are scheduled with {{{http://www.quartz-scheduler.org/} Quartz}}.
+
+	But if these jobs are scheduled in Quartz using
+	{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
+	you need to add the property "exposeSchedulerInRepository" with the value "true" for the bean
+	"SchedulerFactoryBean" in your applicationContext.xml file.
+
++-------------------------------+
+	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="exposeSchedulerInRepository" value="true" /> 
+	</bean>
++-------------------------------+
+
+	Without this "exposeSchedulerInRepository" property, the jobs scheduled using Spring are neither
+	monitored nor displayed in report.
+
+** 11. Weekly, daily or monthly reports by mail
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -524,7 +542,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 
-** 11. Database user
+** 12. Database user
 
 	From the html page of the monitoring, it is possible to display informations and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -541,7 +559,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in order to grant the right to the user 'myapplication':
 	<<<grant select any dictionary to myapplication>>>
 
-** 12. Security
+** 13. Security
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -591,7 +609,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 </tomcat-users>
 +-------------------------------+
 
-** 13. Full results
+** 14. Full results
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
