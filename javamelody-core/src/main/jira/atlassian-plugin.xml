@@ -15,11 +15,12 @@
 		<init-param>
 			<param-name>http-transform-pattern</param-name>
 			<!-- URLs are aggregated if contain an issue number (jira) or a build number (bamboo)
-			like "-xxx", if contain an attachment name like "/attachment/xxx/abcdef" (jira),
+			like "-xxx", if contain a fixforversion number like "/fixforversion/xxx" (jira),
+			if contain an attachment name like "/attachment/xxx/abcdef" (jira),
 			if contain a component number like "/component/xxx" (jira),
 			if contain an unit test name like "/test/abcdef" (bamboo),
 			or if contain an artifact name like "/artifact/abcdef" (bamboo) -->
-			<param-value>-\d+|chment/.+|onent/.+|est/.+|ifact/.+</param-value>
+			<param-value>-\d+|/\d+|chment/.+|onent/.+|est/.+|ifact/.+</param-value>
 		</init-param>
 		<init-param>
 			<param-name>system-actions-enabled</param-name>
