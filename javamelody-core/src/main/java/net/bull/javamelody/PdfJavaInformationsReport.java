@@ -18,10 +18,17 @@
  */
 package net.bull.javamelody;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import com.lowagie.text.Anchor;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -34,6 +41,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * @author Emeric Vernat
  */
 class PdfJavaInformationsReport {
+	private static final String BAR_SEPARATOR = "   ";
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final List<JavaInformations> javaInformationsList;
@@ -41,6 +49,75 @@ class PdfJavaInformationsReport {
 	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
 	private final Font boldCellFont = PdfDocumentFactory.BOLD_CELL_FONT;
 	private PdfPTable currentTable;
+
+	private static final class Bar {
+		// constantes pour l'affichage d'une barre avec pourcentage
+		private static final double MIN_VALUE = 0;
+		private static final double MAX_VALUE = 100;
+		private static final int PARTIAL_BLOCKS = 5;
+		private static final int FULL_BLOCKS = 10;
+		private static final double UNIT_SIZE = (MAX_VALUE - MIN_VALUE)
+				/ (FULL_BLOCKS * PARTIAL_BLOCKS);
+
+		private final BufferedImage image = new BufferedImage(106, 10, BufferedImage.TYPE_INT_RGB);
+		private final Graphics graphics = image.getGraphics();
+		private int x; // initialisé à 0
+
+		private Bar() {
+			super();
+		}
+
+		static BufferedImage toBar(double percentValue) throws IOException {
+			final Bar bar = new Bar();
+			bar.draw(percentValue);
+			bar.graphics.dispose();
+			return bar.image;
+		}
+
+		// méthode inspirée de VisualScoreTag dans LambdaProbe/JStripe (Licence GPL)
+		private void draw(double percentValue) throws IOException { // NOPMD
+			assert x == 0;
+			final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
+			final int fullBlockCount = (int) Math.floor(myPercent / (UNIT_SIZE * PARTIAL_BLOCKS));
+			final int partialBlockIndex = (int) Math.floor((myPercent - fullBlockCount * UNIT_SIZE
+					* PARTIAL_BLOCKS)
+					/ UNIT_SIZE);
+
+			addImage(getBarImage(fullBlockCount > 0 || partialBlockIndex > 0 ? "a" : "a0"));
+
+			final BufferedImage fullBody = getBarImage(String.valueOf(PARTIAL_BLOCKS));
+			for (int i = 0; i < fullBlockCount; i++) {
+				addImage(fullBody);
+			}
+
+			if (partialBlockIndex > 0) {
+				final BufferedImage partialBody = getBarImage(String.valueOf(partialBlockIndex));
+				addImage(partialBody);
+			}
+
+			final int emptyBlocks = FULL_BLOCKS - fullBlockCount - (partialBlockIndex > 0 ? 1 : 0);
+
+			if (emptyBlocks > 0) {
+				final BufferedImage emptyBody = getBarImage(String.valueOf(0));
+				for (int i = 0; i < emptyBlocks; i++) {
+					addImage(emptyBody);
+				}
+			}
+
+			addImage(getBarImage(fullBlockCount == FULL_BLOCKS ? "b" : "b0"));
+		}
+
+		private void addImage(BufferedImage img) {
+			graphics.drawImage(img, x, 0, null);
+			x += img.getWidth();
+		}
+
+		private static BufferedImage getBarImage(String key) throws IOException {
+			// ici, ne pas utiliser Toolkit.createImage et surtout pas ImageIcon (sur un serveur)
+			return ImageIO.read(Bar.class.getResource(Parameters.getResourcePath("bar/rb_" + key
+					+ ".gif")));
+		}
+	}
 
 	PdfJavaInformationsReport(List<JavaInformations> javaInformationsList, Document document) {
 		super();
@@ -51,7 +128,7 @@ class PdfJavaInformationsReport {
 		this.document = document;
 	}
 
-	void toPdf() throws DocumentException {
+	void toPdf() throws DocumentException, IOException {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			currentTable = createJavaInformationsTable();
 			writeSummary(javaInformations);
@@ -70,16 +147,23 @@ class PdfJavaInformationsReport {
 		return table;
 	}
 
-	private void writeSummary(JavaInformations javaInformations) {
+	private void writeSummary(JavaInformations javaInformations) throws BadElementException,
+			IOException {
 		addCell(getI18nString("Host") + ':');
 		currentTable.addCell(new Phrase(javaInformations.getHost(), boldCellFont));
 		addCell(getI18nString("memoire_utilisee") + ':');
 		final String divide = " / ";
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
-		addCell(integerFormat.format(memoryInformations.getUsedMemory() / 1024 / 1024) + ' '
-				+ getI18nString("Mo") + divide
-				+ integerFormat.format(memoryInformations.getMaxMemory() / 1024 / 1024) + ' '
-				+ getI18nString("Mo"));
+		final long usedMemory = memoryInformations.getUsedMemory();
+		final long maxMemory = memoryInformations.getMaxMemory();
+		final Phrase memoryPhrase = new Phrase(integerFormat.format(usedMemory / 1024 / 1024) + ' '
+				+ getI18nString("Mo") + divide + integerFormat.format(maxMemory / 1024 / 1024)
+				+ ' ' + getI18nString("Mo") + BAR_SEPARATOR, cellFont);
+		final com.lowagie.text.Image memoryImage = com.lowagie.text.Image.getInstance(Bar
+				.toBar(100d * usedMemory / maxMemory), null);
+		memoryImage.scalePercent(50);
+		memoryPhrase.add(new Chunk(memoryImage, 0, 0));
+		currentTable.addCell(memoryPhrase);
 		addCell(getI18nString("nb_sessions_http") + ':');
 		addCell(integerFormat.format(javaInformations.getSessionCount()));
 		addCell(getI18nString("nb_threads_actifs") + "\n("
@@ -88,21 +172,27 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("nb_connexions_actives") + ':');
 		addCell(integerFormat.format(javaInformations.getActiveConnectionCount()));
 		addCell(getI18nString("nb_connexions_utilisees") + "\n(" + getI18nString("ouvertes") + "):");
-		final String usedConnectionCount;
-		if (javaInformations.getMaxConnectionCount() < 0) {
-			usedConnectionCount = integerFormat.format(javaInformations.getUsedConnectionCount());
+		final int usedConnectionCount = javaInformations.getUsedConnectionCount();
+		final int maxConnectionCount = javaInformations.getMaxConnectionCount();
+		if (maxConnectionCount < 0) {
+			addCell(integerFormat.format(usedConnectionCount));
 		} else {
-			usedConnectionCount = integerFormat.format(javaInformations.getUsedConnectionCount())
-					+ divide + integerFormat.format(javaInformations.getMaxConnectionCount());
+			final Phrase usedConnectionCountPhrase = new Phrase(integerFormat
+					.format(usedConnectionCount)
+					+ divide + integerFormat.format(maxConnectionCount) + BAR_SEPARATOR, cellFont);
+			final com.lowagie.text.Image usedConnectionCountImage = com.lowagie.text.Image
+					.getInstance(Bar.toBar(100d * usedConnectionCount / maxConnectionCount), null);
+			usedConnectionCountImage.scalePercent(50);
+			usedConnectionCountPhrase.add(new Chunk(usedConnectionCountImage, 0, 0));
+			currentTable.addCell(usedConnectionCountPhrase);
 		}
-		addCell(usedConnectionCount);
 		if (javaInformations.getSystemLoadAverage() >= 0) {
 			addCell(getI18nString("Charge_systeme") + ':');
 			addCell(decimalFormat.format(javaInformations.getSystemLoadAverage()));
 		}
 	}
 
-	void writeInformationsDetails() throws DocumentException {
+	void writeInformationsDetails() throws DocumentException, IOException {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			currentTable = createJavaInformationsTable();
 			writeSummary(javaInformations);
@@ -111,7 +201,8 @@ class PdfJavaInformationsReport {
 		}
 	}
 
-	private void writeDetails(JavaInformations javaInformations) {
+	private void writeDetails(JavaInformations javaInformations) throws BadElementException,
+			IOException {
 		addCell(getI18nString("OS") + ':');
 		addCell(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors() + ' '
 				+ getI18nString("coeurs") + ')');
@@ -122,9 +213,7 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("PID") + ':');
 		addCell(javaInformations.getPID());
 		if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
-			addCell(getI18nString("nb_fichiers") + ':');
-			addCell(integerFormat.format(javaInformations.getUnixOpenFileDescriptorCount()) + " / "
-					+ integerFormat.format(javaInformations.getUnixMaxFileDescriptorCount()));
+			writeFileDescriptorCounts(javaInformations);
 		}
 		if (javaInformations.getServerInfo() != null) {
 			addCell(getI18nString("Serveur") + ':');
@@ -166,15 +255,38 @@ class PdfJavaInformationsReport {
 		addCell("");
 	}
 
-	private void writeMemoryInformations(MemoryInformations memoryInformations) {
+	private void writeFileDescriptorCounts(JavaInformations javaInformations)
+			throws BadElementException, IOException {
+		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
+		final long unixMaxFileDescriptorCount = javaInformations.getUnixMaxFileDescriptorCount();
+		addCell(getI18nString("nb_fichiers") + ':');
+		final Phrase fileDescriptorCountPhrase = new Phrase(integerFormat
+				.format(unixOpenFileDescriptorCount)
+				+ " / " + integerFormat.format(unixMaxFileDescriptorCount) + BAR_SEPARATOR,
+				cellFont);
+		final com.lowagie.text.Image fileDescriptorCountImage = com.lowagie.text.Image.getInstance(
+				Bar.toBar(100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount), null);
+		fileDescriptorCountImage.scalePercent(50);
+		fileDescriptorCountPhrase.add(new Chunk(fileDescriptorCountImage, 0, 0));
+		currentTable.addCell(fileDescriptorCountPhrase);
+	}
+
+	private void writeMemoryInformations(MemoryInformations memoryInformations)
+			throws BadElementException, IOException {
 		addCell(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + getI18nString("Mo")));
 		final long usedPermGen = memoryInformations.getUsedPermGen();
 		final long maxPermGen = memoryInformations.getMaxPermGen();
 		addCell(getI18nString("Memoire_Perm_Gen") + ':');
 		if (maxPermGen >= 0) {
-			addCell(integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
-					+ " / " + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
-					+ getI18nString("Mo"));
+			final Phrase permGenPhrase = new Phrase(integerFormat.format(usedPermGen / 1024 / 1024)
+					+ ' ' + getI18nString("Mo") + " / "
+					+ integerFormat.format(maxPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
+					+ BAR_SEPARATOR, cellFont);
+			final com.lowagie.text.Image permGenImage = com.lowagie.text.Image.getInstance(Bar
+					.toBar(100d * usedPermGen / maxPermGen), null);
+			permGenImage.scalePercent(50);
+			permGenPhrase.add(new Chunk(permGenImage, 0, 0));
+			currentTable.addCell(permGenPhrase);
 		} else {
 			addCell(integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo"));
 		}
