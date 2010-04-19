@@ -31,11 +31,12 @@ import java.util.Map;
  * @author Emeric Vernat
  */
 class HtmlJobInformationsReport {
+	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
 	private final Map<String, CounterRequest> counterRequestsByRequestName;
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
-	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
+	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
@@ -65,6 +66,7 @@ class HtmlJobInformationsReport {
 		write("<th class='sorttable_date'>#JobElapsedTime#</th>");
 		write("<th class='sorttable_date'>#JobPreviousFireTime#</th>");
 		write("<th class='sorttable_date'>#JobNextFireTime#</th>");
+		write("<th>#JobPeriodOrCronExpression#</th>");
 		write("<th>#JobPaused#</th>");
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Pause_job#</th>");
@@ -118,35 +120,15 @@ class HtmlJobInformationsReport {
 			write("</td> <td align='center'>");
 			writeStackTrace(counterRequest.getStackTrace());
 			write(nextColumnAlignRight);
-			write(elapsedTimeFormat.format(new Date(counterRequest.getMean())));
+			write(durationFormat.format(new Date(counterRequest.getMean())));
 			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
 			// uniquement car cela ferait trop de colonnes dans la page
 		} else {
 			write("</td><td>&nbsp;</td><td>&nbsp;");
 		}
 
-		write(nextColumnAlignRight);
-		if (jobInformations.getElapsedTime() >= 0) {
-			write(elapsedTimeFormat.format(new Date(jobInformations.getElapsedTime())));
-			if (counterRequest != null) {
-				write("<br/>");
-				writeln(toBar(counterRequest.getMean(), jobInformations.getElapsedTime()));
-			}
-		} else {
-			write("&nbsp;");
-		}
-		write(nextColumnAlignRight);
-		if (jobInformations.getPreviousFireTime() != null) {
-			write(fireTimeFormat.format(jobInformations.getPreviousFireTime()));
-		} else {
-			write("&nbsp;");
-		}
-		write(nextColumnAlignRight);
-		if (jobInformations.getNextFireTime() != null) {
-			write(fireTimeFormat.format(jobInformations.getNextFireTime()));
-		} else {
-			write("&nbsp;");
-		}
+		writeJobTimes(jobInformations, counterRequest);
+
 		write("</td> <td align='center'>");
 		if (jobInformations.isPaused()) {
 			write("#oui#");
@@ -181,6 +163,44 @@ class HtmlJobInformationsReport {
 			writeln("</em>");
 			write("<img src='?resource=bullets/red.png' alt=''/>");
 			writeln("</a>");
+		}
+	}
+
+	private void writeJobTimes(JobInformations jobInformations, CounterRequest counterRequest)
+			throws IOException {
+		final String nextColumnAlignRight = "</td> <td align='right'>";
+		final String nbsp = "&nbsp;";
+		write(nextColumnAlignRight);
+		if (jobInformations.getElapsedTime() >= 0) {
+			write(durationFormat.format(new Date(jobInformations.getElapsedTime())));
+			if (counterRequest != null) {
+				write("<br/>");
+				writeln(toBar(counterRequest.getMean(), jobInformations.getElapsedTime()));
+			}
+		} else {
+			write(nbsp);
+		}
+		write(nextColumnAlignRight);
+		if (jobInformations.getPreviousFireTime() != null) {
+			write(fireTimeFormat.format(jobInformations.getPreviousFireTime()));
+		} else {
+			write(nbsp);
+		}
+		write(nextColumnAlignRight);
+		if (jobInformations.getNextFireTime() != null) {
+			write(fireTimeFormat.format(jobInformations.getNextFireTime()));
+		} else {
+			write(nbsp);
+		}
+		write(nextColumnAlignRight);
+		// on n'affiche pas la période si >= 1 jour car ce formateur ne saurait pas l'afficher
+		if (jobInformations.getRepeatInterval() > 0
+				&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
+			write(durationFormat.format(new Date(jobInformations.getRepeatInterval())));
+		} else if (jobInformations.getCronExpression() != null) {
+			write(jobInformations.getCronExpression());
+		} else {
+			write(nbsp);
 		}
 	}
 

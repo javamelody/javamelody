@@ -41,11 +41,12 @@ import com.lowagie.text.pdf.PdfPTable;
  * @author Emeric Vernat
  */
 class PdfJobInformationsReport {
+	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
 	private final Map<String, CounterRequest> counterRequestsByRequestName;
 	private final Document document;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
-	private final DateFormat elapsedTimeFormat = I18N.createDurationFormat();
+	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
 	private PdfPTable currentTable;
 
@@ -99,9 +100,10 @@ class PdfJobInformationsReport {
 	private void writeHeader() throws DocumentException {
 		final List<String> headers = createHeaders();
 		final int[] relativeWidths = new int[headers.size()];
-		Arrays.fill(relativeWidths, 0, headers.size(), 1);
-		relativeWidths[1] = 2;
-		relativeWidths[2] = 3;
+		Arrays.fill(relativeWidths, 0, headers.size(), 2);
+		relativeWidths[1] = 3; // nom
+		relativeWidths[2] = 5; // nom de la classe
+		relativeWidths[headers.size() - 1] = 1; // paused
 
 		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
 	}
@@ -115,6 +117,7 @@ class PdfJobInformationsReport {
 		headers.add(getI18nString("JobElapsedTime"));
 		headers.add(getI18nString("JobPreviousFireTime"));
 		headers.add(getI18nString("JobNextFireTime"));
+		headers.add(getI18nString("JobPeriodOrCronExpression"));
 		headers.add(getI18nString("JobPaused"));
 		return headers;
 	}
@@ -128,14 +131,14 @@ class PdfJobInformationsReport {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
 		if (counterRequest != null) {
-			addCell(elapsedTimeFormat.format(new Date(counterRequest.getMean())));
+			addCell(durationFormat.format(new Date(counterRequest.getMean())));
 			// rq: on n'affiche pas ici le nb d'exécutions, le maximum, l'écart-type
 			// ou le pourcentage d'erreurs, uniquement car cela ferait trop de colonnes dans la page
 		} else {
 			addCell("");
 		}
 		if (jobInformations.getElapsedTime() >= 0) {
-			addCell(elapsedTimeFormat.format(jobInformations.getElapsedTime()));
+			addCell(durationFormat.format(jobInformations.getElapsedTime()));
 		} else {
 			addCell("");
 		}
@@ -146,6 +149,15 @@ class PdfJobInformationsReport {
 		}
 		if (jobInformations.getNextFireTime() != null) {
 			addCell(fireTimeFormat.format(jobInformations.getNextFireTime()));
+		} else {
+			addCell("");
+		}
+		// on n'affiche pas la période si >= 1 jour car ce formateur ne saurait pas l'afficher
+		if (jobInformations.getRepeatInterval() > 0
+				&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
+			addCell(durationFormat.format(new Date(jobInformations.getRepeatInterval())));
+		} else if (jobInformations.getCronExpression() != null) {
+			addCell(jobInformations.getCronExpression());
 		} else {
 			addCell("");
 		}

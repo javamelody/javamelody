@@ -26,10 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.SchedulerRepository;
 
@@ -52,6 +54,8 @@ class JobInformations implements Serializable {
 	private final Date previousFireTime;
 	private final Date nextFireTime;
 	private final long elapsedTime;
+	private final long repeatInterval;
+	private final String cronExpression;
 	private final boolean paused;
 	private final String globalJobId;
 
@@ -74,6 +78,8 @@ class JobInformations implements Serializable {
 
 		Date triggerNextFireTime = null;
 		Date triggerPreviousFireTime = null;
+		String cronTriggerExpression = null;
+		long simpleTriggerRepeatInterval = -1;
 		boolean jobPaused = true;
 		for (final Trigger trigger : scheduler.getTriggersOfJob(name, group)) {
 			if (triggerNextFireTime == null || triggerNextFireTime.after(trigger.getNextFireTime())) {
@@ -83,15 +89,19 @@ class JobInformations implements Serializable {
 					|| triggerPreviousFireTime.before(trigger.getPreviousFireTime())) {
 				triggerPreviousFireTime = trigger.getPreviousFireTime();
 			}
-			//						if (trigger instanceof CronTrigger) {
-			//							((CronTrigger) trigger).getCronExpression();
-			//						}
-			if (scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) != Trigger.STATE_PAUSED) {
-				jobPaused = false;
+			if (trigger instanceof CronTrigger) {
+				// getCronExpression gives a PMD false+
+				cronTriggerExpression = ((CronTrigger) trigger).getCronExpression(); // NOPMD
+			} else if (trigger instanceof SimpleTrigger) {
+				simpleTriggerRepeatInterval = ((SimpleTrigger) trigger).getRepeatInterval(); // NOPMD
 			}
+			jobPaused = jobPaused
+					&& scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) != Trigger.STATE_PAUSED;
 		}
 		this.nextFireTime = triggerNextFireTime;
 		this.previousFireTime = triggerPreviousFireTime;
+		this.repeatInterval = simpleTriggerRepeatInterval;
+		this.cronExpression = cronTriggerExpression;
 		this.paused = jobPaused;
 		this.globalJobId = buildGlobalJobId(jobDetail);
 	}
@@ -184,6 +194,14 @@ class JobInformations implements Serializable {
 
 	Date getPreviousFireTime() {
 		return previousFireTime;
+	}
+
+	long getRepeatInterval() {
+		return repeatInterval;
+	}
+
+	String getCronExpression() {
+		return cronExpression;
 	}
 
 	boolean isPaused() {
