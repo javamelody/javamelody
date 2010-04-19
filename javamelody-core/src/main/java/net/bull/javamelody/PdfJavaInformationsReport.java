@@ -33,6 +33,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -50,7 +51,7 @@ class PdfJavaInformationsReport {
 	private final Font boldCellFont = PdfDocumentFactory.BOLD_CELL_FONT;
 	private PdfPTable currentTable;
 
-	private static final class Bar {
+	static final class Bar {
 		// constantes pour l'affichage d'une barre avec pourcentage
 		private static final double MIN_VALUE = 0;
 		private static final double MAX_VALUE = 100;
@@ -159,8 +160,7 @@ class PdfJavaInformationsReport {
 		final Phrase memoryPhrase = new Phrase(integerFormat.format(usedMemory / 1024 / 1024) + ' '
 				+ getI18nString("Mo") + divide + integerFormat.format(maxMemory / 1024 / 1024)
 				+ ' ' + getI18nString("Mo") + BAR_SEPARATOR, cellFont);
-		final com.lowagie.text.Image memoryImage = com.lowagie.text.Image.getInstance(Bar
-				.toBar(100d * usedMemory / maxMemory), null);
+		final Image memoryImage = Image.getInstance(Bar.toBar(100d * usedMemory / maxMemory), null);
 		memoryImage.scalePercent(50);
 		memoryPhrase.add(new Chunk(memoryImage, 0, 0));
 		currentTable.addCell(memoryPhrase);
@@ -180,8 +180,8 @@ class PdfJavaInformationsReport {
 			final Phrase usedConnectionCountPhrase = new Phrase(integerFormat
 					.format(usedConnectionCount)
 					+ divide + integerFormat.format(maxConnectionCount) + BAR_SEPARATOR, cellFont);
-			final com.lowagie.text.Image usedConnectionCountImage = com.lowagie.text.Image
-					.getInstance(Bar.toBar(100d * usedConnectionCount / maxConnectionCount), null);
+			final Image usedConnectionCountImage = Image.getInstance(Bar.toBar(100d
+					* usedConnectionCount / maxConnectionCount), null);
 			usedConnectionCountImage.scalePercent(50);
 			usedConnectionCountPhrase.add(new Chunk(usedConnectionCountImage, 0, 0));
 			currentTable.addCell(usedConnectionCountPhrase);
@@ -264,8 +264,8 @@ class PdfJavaInformationsReport {
 				.format(unixOpenFileDescriptorCount)
 				+ " / " + integerFormat.format(unixMaxFileDescriptorCount) + BAR_SEPARATOR,
 				cellFont);
-		final com.lowagie.text.Image fileDescriptorCountImage = com.lowagie.text.Image.getInstance(
-				Bar.toBar(100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount), null);
+		final Image fileDescriptorCountImage = Image.getInstance(Bar.toBar(100d
+				* unixOpenFileDescriptorCount / unixMaxFileDescriptorCount), null);
 		fileDescriptorCountImage.scalePercent(50);
 		fileDescriptorCountPhrase.add(new Chunk(fileDescriptorCountImage, 0, 0));
 		currentTable.addCell(fileDescriptorCountPhrase);
@@ -282,8 +282,8 @@ class PdfJavaInformationsReport {
 					+ ' ' + getI18nString("Mo") + " / "
 					+ integerFormat.format(maxPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
 					+ BAR_SEPARATOR, cellFont);
-			final com.lowagie.text.Image permGenImage = com.lowagie.text.Image.getInstance(Bar
-					.toBar(100d * usedPermGen / maxPermGen), null);
+			final Image permGenImage = Image.getInstance(
+					Bar.toBar(100d * usedPermGen / maxPermGen), null);
 			permGenImage.scalePercent(50);
 			permGenPhrase.add(new Chunk(permGenImage, 0, 0));
 			currentTable.addCell(permGenPhrase);

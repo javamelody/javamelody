@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +27,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.bull.javamelody.PdfJavaInformationsReport.Bar;
+
 import com.lowagie.text.Anchor;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
@@ -67,7 +73,7 @@ class PdfJobInformationsReport {
 		}
 	}
 
-	void toPdf() throws DocumentException {
+	void toPdf() throws DocumentException, IOException {
 		writeHeader();
 
 		final PdfPCell defaultCell = getDefaultCell();
@@ -122,7 +128,8 @@ class PdfJobInformationsReport {
 		return headers;
 	}
 
-	private void writeJobInformations(JobInformations jobInformations) {
+	private void writeJobInformations(JobInformations jobInformations) throws BadElementException,
+			IOException {
 		final PdfPCell defaultCell = getDefaultCell();
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(jobInformations.getGroup());
@@ -137,8 +144,29 @@ class PdfJobInformationsReport {
 		} else {
 			addCell("");
 		}
-		if (jobInformations.getElapsedTime() >= 0) {
-			addCell(durationFormat.format(jobInformations.getElapsedTime()));
+		writeJobTimes(jobInformations, counterRequest);
+		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		if (jobInformations.isPaused()) {
+			addCell(getI18nString("oui"));
+		} else {
+			addCell(getI18nString("non"));
+		}
+	}
+
+	private void writeJobTimes(JobInformations jobInformations, CounterRequest counterRequest)
+			throws BadElementException, IOException {
+		final long elapsedTime = jobInformations.getElapsedTime();
+		if (elapsedTime >= 0) {
+			final Phrase elapsedTimePhrase = new Phrase(durationFormat.format(elapsedTime),
+					cellFont);
+			if (counterRequest != null) {
+				final Image memoryImage = Image.getInstance(Bar.toBar(100d * elapsedTime
+						/ counterRequest.getMean()), null);
+				memoryImage.scalePercent(47);
+				elapsedTimePhrase.add("\n");
+				elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));
+			}
+			currentTable.addCell(elapsedTimePhrase);
 		} else {
 			addCell("");
 		}
@@ -160,12 +188,6 @@ class PdfJobInformationsReport {
 			addCell(jobInformations.getCronExpression());
 		} else {
 			addCell("");
-		}
-		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		if (jobInformations.isPaused()) {
-			addCell(getI18nString("oui"));
-		} else {
-			addCell(getI18nString("non"));
 		}
 	}
 

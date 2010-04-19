@@ -367,7 +367,7 @@ class PdfReport {
 	}
 
 	private void writeJobs(Counter rangeJobCounter, boolean includeDetails)
-			throws DocumentException {
+			throws DocumentException, IOException {
 		String eol = "";
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJobEnabled()) {
