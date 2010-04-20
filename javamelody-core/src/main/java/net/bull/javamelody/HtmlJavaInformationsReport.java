@@ -23,12 +23,16 @@ import java.io.Writer;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Partie du rapport html pour les informations systèmes sur le serveur.
  * @author Emeric Vernat
  */
 class HtmlJavaInformationsReport {
+	private static final String[] OS = { "linux", "windows", "mac", "solaris", "hp", "ibm", };
+	private static final String[] APPLICATION_SERVERS = { "tomcat", "glassfish", "jonas", "jetty",
+			"oracle", "bea", "ibm", };
 	// constantes pour l'affichage d'une barre avec pourcentage
 	private static final double MIN_VALUE = 0;
 	private static final double MAX_VALUE = 100;
@@ -82,7 +86,7 @@ class HtmlJavaInformationsReport {
 	}
 
 	private void writeSummary(JavaInformations javaInformations) throws IOException {
-		final String lineEnd = "</td></tr>";
+		final String lineEnd = "</td> </tr>";
 		final String columnAndLineEnd = "</td><td>" + lineEnd;
 		writeln("<table align='left' border='0' cellspacing='0' cellpadding='2' summary='#Informations_systemes#'>");
 		writeln("<tr><td>#Host#: </td><td><b>" + javaInformations.getHost() + "</b>" + lineEnd);
@@ -135,8 +139,13 @@ class HtmlJavaInformationsReport {
 			writeln("<tr><td>#Host#: </td><td><b>" + javaInformations.getHost() + "</b>"
 					+ columnEnd);
 		}
-		writeln("<tr><td>#OS#: </td><td>" + javaInformations.getOS() + " ("
-				+ javaInformations.getAvailableProcessors() + " #coeurs#)" + columnEnd);
+		writeln("<tr><td>#OS#: </td><td>");
+		final String osIconName = getOSIconName(javaInformations.getOS());
+		if (osIconName != null) {
+			writeln("<img src='?resource=servers/" + osIconName + "' alt='#OS#'/>");
+		}
+		writeln(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
+				+ " #coeurs#)" + columnEnd);
 		writeln("<tr><td>#Java#: </td><td>" + javaInformations.getJavaVersion() + columnEnd);
 		writeln("<tr><td>#JVM#: </td><td>" + javaInformations.getJvmVersion() + columnEnd);
 		writeln("<tr><td>#PID#: </td><td>" + javaInformations.getPID() + columnEnd);
@@ -150,8 +159,15 @@ class HtmlJavaInformationsReport {
 			writeln(toBar(100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount));
 			writeln(columnEnd);
 		}
-		if (javaInformations.getServerInfo() != null) {
-			writeln("<tr><td>#Serveur#: </td><td>" + javaInformations.getServerInfo() + columnEnd);
+		final String serverInfo = javaInformations.getServerInfo();
+		if (serverInfo != null) {
+			writeln("<tr><td>#Serveur#: </td><td>");
+			final String applicationServerIconName = getApplicationServerIconName(serverInfo);
+			if (applicationServerIconName != null) {
+				writeln("<img src='?resource=servers/" + applicationServerIconName
+						+ "' alt='#Serveur#'/>");
+			}
+			writeln(serverInfo + columnEnd);
 			writeln("<tr><td>#Contexte_webapp#: </td><td>" + javaInformations.getContextPath()
 					+ columnEnd);
 		}
@@ -171,6 +187,19 @@ class HtmlJavaInformationsReport {
 					+ " #Mo# " + columnEnd);
 		}
 
+		writeDatabaseVersionAndDataSourceDetails(javaInformations);
+
+		if (javaInformations.isDependenciesEnabled()) {
+			writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
+			writeDependencies(javaInformations);
+			writeln(columnEnd);
+		}
+		writeln("</table>");
+	}
+
+	private void writeDatabaseVersionAndDataSourceDetails(JavaInformations javaInformations)
+			throws IOException {
+		final String columnEnd = "</td></tr>";
 		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
 			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>"
 					+ replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
@@ -182,12 +211,26 @@ class HtmlJavaInformationsReport {
 					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
 					+ " class='noPrint' target='_blank'>DataSource reference</a>" + columnEnd);
 		}
-		if (javaInformations.isDependenciesEnabled()) {
-			writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
-			writeDependencies(javaInformations);
-			writeln(columnEnd);
+	}
+
+	private static String getOSIconName(String os) {
+		final String tmp = os.toLowerCase(Locale.getDefault());
+		for (final String anOS : OS) {
+			if (tmp.contains(anOS)) {
+				return anOS + ".png";
+			}
 		}
-		writeln("</table>");
+		return null;
+	}
+
+	private static String getApplicationServerIconName(String appServer) {
+		final String tmp = appServer.toLowerCase(Locale.getDefault());
+		for (final String applicationServer : APPLICATION_SERVERS) {
+			if (tmp.contains(applicationServer)) {
+				return applicationServer + ".png";
+			}
+		}
+		return null;
 	}
 
 	private void writeMemoryInformations(MemoryInformations memoryInformations) throws IOException {
