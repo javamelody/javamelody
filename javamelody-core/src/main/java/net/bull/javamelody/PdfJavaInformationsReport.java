@@ -204,8 +204,18 @@ class PdfJavaInformationsReport {
 	private void writeDetails(JavaInformations javaInformations) throws BadElementException,
 			IOException {
 		addCell(getI18nString("OS") + ':');
-		addCell(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors() + ' '
-				+ getI18nString("coeurs") + ')');
+		final Phrase osPhrase = new Phrase("", cellFont);
+		final String osIconName = HtmlJavaInformationsReport
+				.getOSIconName(javaInformations.getOS());
+		if (osIconName != null) {
+			final Image osImage = PdfDocumentFactory.getImage("servers/" + osIconName);
+			osImage.scalePercent(40);
+			osPhrase.add(new Chunk(osImage, 0, 0));
+			osPhrase.add("   ");
+		}
+		osPhrase.add(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
+				+ ' ' + getI18nString("coeurs") + ')');
+		currentTable.addCell(osPhrase);
 		addCell(getI18nString("Java") + ':');
 		addCell(javaInformations.getJavaVersion());
 		addCell(getI18nString("JVM") + ':');
@@ -215,9 +225,21 @@ class PdfJavaInformationsReport {
 		if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
 			writeFileDescriptorCounts(javaInformations);
 		}
-		if (javaInformations.getServerInfo() != null) {
+		final String serverInfo = javaInformations.getServerInfo();
+		if (serverInfo != null) {
 			addCell(getI18nString("Serveur") + ':');
-			addCell(javaInformations.getServerInfo());
+			final Phrase serverInfoPhrase = new Phrase("", cellFont);
+			final String applicationServerIconName = HtmlJavaInformationsReport
+					.getApplicationServerIconName(serverInfo);
+			if (applicationServerIconName != null) {
+				final Image applicationServerImage = PdfDocumentFactory.getImage("servers/"
+						+ applicationServerIconName);
+				applicationServerImage.scalePercent(40);
+				serverInfoPhrase.add(new Chunk(applicationServerImage, 0, 0));
+				serverInfoPhrase.add("   ");
+			}
+			serverInfoPhrase.add(serverInfo);
+			currentTable.addCell(serverInfoPhrase);
 			addCell(getI18nString("Contexte_webapp") + ':');
 			addCell(javaInformations.getContextPath());
 		}
@@ -233,18 +255,7 @@ class PdfJavaInformationsReport {
 			addCell(integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
 					+ ' ' + getI18nString("Mo"));
 		}
-		addCell(getI18nString("Base_de_donnees") + ':');
-		addCell(javaInformations.getDataBaseVersion());
-		if (javaInformations.getDataSourceDetails() != null) {
-			addCell(getI18nString("DataSource_jdbc") + ':');
-			addCell(javaInformations.getDataSourceDetails());
-			addCell("");
-			final Anchor anchor = new Anchor("DataSource reference", PdfDocumentFactory.BLUE_FONT);
-			anchor.setName("DataSource reference");
-			anchor
-					.setReference("http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
-			currentTable.addCell(anchor);
-		}
+		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 		if (javaInformations.isDependenciesEnabled()) {
 			addCell(getI18nString("Dependencies") + ':');
 			addCell(I18N.getFormattedString("nb_dependencies", javaInformations
@@ -269,6 +280,21 @@ class PdfJavaInformationsReport {
 		fileDescriptorCountImage.scalePercent(50);
 		fileDescriptorCountPhrase.add(new Chunk(fileDescriptorCountImage, 0, 0));
 		currentTable.addCell(fileDescriptorCountPhrase);
+	}
+
+	private void writeDatabaseVersionAndDataSourceDetails(JavaInformations javaInformations) {
+		addCell(getI18nString("Base_de_donnees") + ':');
+		addCell(javaInformations.getDataBaseVersion());
+		if (javaInformations.getDataSourceDetails() != null) {
+			addCell(getI18nString("DataSource_jdbc") + ':');
+			addCell(javaInformations.getDataSourceDetails());
+			addCell("");
+			final Anchor anchor = new Anchor("DataSource reference", PdfDocumentFactory.BLUE_FONT);
+			anchor.setName("DataSource reference");
+			anchor
+					.setReference("http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
+			currentTable.addCell(anchor);
+		}
 	}
 
 	private void writeMemoryInformations(MemoryInformations memoryInformations)

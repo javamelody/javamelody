@@ -213,7 +213,7 @@ class HtmlJavaInformationsReport {
 		}
 	}
 
-	private static String getOSIconName(String os) {
+	static String getOSIconName(String os) {
 		final String tmp = os.toLowerCase(Locale.getDefault());
 		for (final String anOS : OS) {
 			if (tmp.contains(anOS)) {
@@ -223,7 +223,7 @@ class HtmlJavaInformationsReport {
 		return null;
 	}
 
-	private static String getApplicationServerIconName(String appServer) {
+	static String getApplicationServerIconName(String appServer) {
 		final String tmp = appServer.toLowerCase(Locale.getDefault());
 		for (final String applicationServer : APPLICATION_SERVERS) {
 			if (tmp.contains(applicationServer)) {
