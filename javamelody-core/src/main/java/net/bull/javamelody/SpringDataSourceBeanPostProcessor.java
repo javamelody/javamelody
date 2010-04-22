@@ -18,9 +18,13 @@
  */
 package net.bull.javamelody;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.jndi.JndiObjectFactoryBean;
 
 /**
  * Post-processor Spring pour une éventuelle DataSource défini dans le fichier xml Spring.
@@ -33,11 +37,24 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	/** {@inheritDoc} */
-	public Object postProcessAfterInitialization(Object bean, String beanName) {
+	public Object postProcessAfterInitialization(final Object bean, String beanName) {
 		if (bean instanceof DataSource) {
 			final DataSource dataSource = (DataSource) bean;
 			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
 			return JdbcWrapper.SINGLETON.createDataSourceProxy(beanName, dataSource);
+		} else if (bean instanceof JndiObjectFactoryBean) {
+			// fix issue 20
+			final InvocationHandler invocationHandler = new InvocationHandler() {
+				/** {@inheritDoc} */
+				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+					Object result = method.invoke(bean, args);
+					if (result instanceof DataSource) {
+						result = JdbcWrapper.SINGLETON.createDataSourceProxy((DataSource) result);
+					}
+					return result;
+				}
+			};
+			return JdbcWrapper.createProxy(bean, invocationHandler);
 		}
 
 		// I tried here in the post-processor to fix "quartz jobs which are scheduled with spring
