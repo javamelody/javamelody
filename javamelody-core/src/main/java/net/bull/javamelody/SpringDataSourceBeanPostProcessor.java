@@ -37,7 +37,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	/** {@inheritDoc} */
-	public Object postProcessAfterInitialization(final Object bean, String beanName) {
+	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
 		if (bean instanceof DataSource) {
 			final DataSource dataSource = (DataSource) bean;
 			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
@@ -49,7 +49,8 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 					Object result = method.invoke(bean, args);
 					if (result instanceof DataSource) {
-						result = JdbcWrapper.SINGLETON.createDataSourceProxy((DataSource) result);
+						result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
+								(DataSource) result);
 					}
 					return result;
 				}
