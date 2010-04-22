@@ -160,7 +160,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>2.5.6</version>
-			<scope>test</scope>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->
