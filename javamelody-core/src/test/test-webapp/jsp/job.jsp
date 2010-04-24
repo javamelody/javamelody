@@ -17,14 +17,18 @@ JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class)
 job.setDescription("coucou\ncoucou");
 
 //Define a Trigger that will fire "now"
-Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, 100, 20 * 1000);
+Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, 10000, 20 * 1000);
 //Schedule the job with the trigger
 scheduler.scheduleJob(job, trigger);
 
 //Define a Trigger that will fire "later"
 JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+Trigger trigger3 = new SimpleTrigger("trigger" + random.nextInt(), null, new Date(System.currentTimeMillis()));
+scheduler.scheduleJob(job2, trigger3);
 Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null, new Date(System.currentTimeMillis() + random.nextInt(60000)));
-scheduler.scheduleJob(job2, trigger2);
+trigger2.setJobGroup(job2.getGroup());
+trigger2.setJobName(job2.getName());
+scheduler.scheduleJob(trigger2);
 
 %>
 
