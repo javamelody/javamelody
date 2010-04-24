@@ -1,7 +1,8 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix issue 20: SQL requests were not monitored and "jdbc connections" were always 0, when JndiObjectFactoryBean is used in Spring
+  * fix issue 20: SQL requests were not monitored and "jdbc connections" were always 0, when *JndiObjectFactoryBean* is used in Spring
+  * fix issue 21 for *JIRA*: Null pointer with quartz jobs in jira
   * added: If *quartz* is available, display of mean time and last error with stack-trace per job for the selected period, and also display of the statistics for all the jobs with number of executions, mean cpu times, number of sql hits, sql times and last 100 errors with stack-traces for the selected period.
   * [UserGuide#10._Batch_jobs_(if_Quartz) doc updated] for *quartz* jobs scheduled with Spring, with help from _Pether Sörling_.
   * [UserGuide#3._First_results doc updated] for issue 19 InternalError "Can't connect to window server" on Mac OS X Server.
