@@ -216,9 +216,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	afin de permettre l'agrégation sur ces requêtes.
 
 	Et les paramètres <<<ejb-transform-pattern>>>, <<<spring-transform-pattern>>>,
-	<<<error-transform-pattern>>> et <<<log-transform-pattern>>> permettent de transformer les
-	descriptions des méthodes ejb3, des méthodes spring, des erreurs systèmes http ou des logs
-	d'erreurs systèmes (pour agréger par composants ejb au lieu d'agréger par méthodes ejb par exemple)
+	<<<error-transform-pattern>>>, <<<log-transform-pattern>>> et <<<job-transform-pattern>>> 
+	permettent de transformer les descriptions des méthodes ejb3, des méthodes spring,
+	des erreurs systèmes http, des logs d'erreurs systèmes ou des noms de jobs
+	(pour agréger par composants ejb au lieu d'agréger par méthodes ejb par exemple)
 
 	Le paramètre <<<log>>> permet d'activer les logs des requêtes http (<<<false>>> par défaut).
 	Les requêtes http seront logguées avec la durée et la taille de la réponse
