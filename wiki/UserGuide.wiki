@@ -20,7 +20,7 @@
     * [#11._Weekly,_daily_or_monthly_reports_by_mail 11. Weekly, daily or monthly reports by mail]
     * [#12._Database_user 12. Database user]
     * [#13._Security 13. Security]
-    * [#14._SecurityManager 14. SecurityManager]
+    * [#14. 14. SecurityManager]
     * [#15._Full_results 15. Full results]
   * [#Dependencies Dependencies]
   * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
