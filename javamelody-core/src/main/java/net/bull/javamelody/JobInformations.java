@@ -75,20 +75,14 @@ class JobInformations implements Serializable {
 		} else {
 			elapsedTime = System.currentTimeMillis() - jobExecutionContext.getFireTime().getTime();
 		}
+		final Trigger[] triggers = scheduler.getTriggersOfJob(name, group);
+		this.nextFireTime = getNextFireTime(triggers);
+		this.previousFireTime = getPreviousFireTime(triggers);
 
-		Date triggerNextFireTime = null;
-		Date triggerPreviousFireTime = null;
 		String cronTriggerExpression = null;
 		long simpleTriggerRepeatInterval = -1;
 		boolean jobPaused = true;
-		for (final Trigger trigger : scheduler.getTriggersOfJob(name, group)) {
-			if (triggerNextFireTime == null || triggerNextFireTime.after(trigger.getNextFireTime())) {
-				triggerNextFireTime = trigger.getNextFireTime();
-			}
-			if (triggerPreviousFireTime == null
-					|| triggerPreviousFireTime.before(trigger.getPreviousFireTime())) {
-				triggerPreviousFireTime = trigger.getPreviousFireTime();
-			}
+		for (final Trigger trigger : triggers) {
 			if (trigger instanceof CronTrigger) {
 				// getCronExpression gives a PMD false+
 				cronTriggerExpression = ((CronTrigger) trigger).getCronExpression(); // NOPMD
@@ -98,8 +92,6 @@ class JobInformations implements Serializable {
 			jobPaused = jobPaused
 					&& scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) != Trigger.STATE_PAUSED;
 		}
-		this.nextFireTime = triggerNextFireTime;
-		this.previousFireTime = triggerPreviousFireTime;
 		this.repeatInterval = simpleTriggerRepeatInterval;
 		this.cronExpression = cronTriggerExpression;
 		this.paused = jobPaused;
@@ -158,6 +150,28 @@ class JobInformations implements Serializable {
 			}
 		}
 		return result;
+	}
+
+	private static Date getPreviousFireTime(Trigger[] triggers) {
+		Date triggerPreviousFireTime = null;
+		for (final Trigger trigger : triggers) {
+			if (triggerPreviousFireTime == null || trigger.getPreviousFireTime() != null
+					&& triggerPreviousFireTime.before(trigger.getPreviousFireTime())) {
+				triggerPreviousFireTime = trigger.getPreviousFireTime();
+			}
+		}
+		return triggerPreviousFireTime;
+	}
+
+	private static Date getNextFireTime(Trigger[] triggers) {
+		Date triggerNextFireTime = null;
+		for (final Trigger trigger : triggers) {
+			if (triggerNextFireTime == null || trigger.getNextFireTime() != null
+					&& triggerNextFireTime.after(trigger.getNextFireTime())) {
+				triggerNextFireTime = trigger.getNextFireTime();
+			}
+		}
+		return triggerNextFireTime;
 	}
 
 	String getGlobalJobId() {
