@@ -136,6 +136,11 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void contextInitialized(ServletContextEvent event) {
+		// lecture de la propriété système java.io.tmpdir uniquement
+		// pour lancer une java.security.AccessControlException si le SecurityManager est activé,
+		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters
+		System.getProperty("java.io.tmpdir");
+
 		Parameters.initialize(event.getServletContext());
 
 		// on initialise le monitoring des DataSource jdbc même si cette initialisation
