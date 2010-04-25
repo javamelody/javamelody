@@ -46,7 +46,7 @@ class HtmlProcessInformationsReport {
 		writeLinks();
 		writeln("<br/>");
 
-		writeln("<img src='?resource=threads.png' width='24' height='24' alt='#Processus#' />&nbsp;");
+		writeln("<img src='?resource=processes.png' width='24' height='24' alt='#Processus#' />&nbsp;");
 		writeln("<b>#Processus#</b>");
 		writeTable();
 	}

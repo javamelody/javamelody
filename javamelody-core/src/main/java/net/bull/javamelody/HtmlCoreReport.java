@@ -523,7 +523,7 @@ class HtmlCoreReport {
 
 		writeln(separator);
 		writeln("<a href='?part=processes'>");
-		writeln("<img src='?resource=threads.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
+		writeln("<img src='?resource=processes.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
 		if (isDatabaseEnabled()) {
 			writeln(separator);
