@@ -612,7 +612,35 @@ Description and documentation of Java Melody : monitoring of Java EE application
 </tomcat-users>
 +-------------------------------+
 
-** 14. Full results
+** 14. SecurityManager
+
+	If your are one of the rare people with a security manager enabled in your server, there will be
+	an exception like the following in the server output at the start of the webapp with JavaMelody:
+	"java.security.AccessControlException: access denied ...".
+	
+	It is because JavaMelody needs access to a lot of system informations and it needs to write its files.
+	In order for JavaMelody to work, you can disable the SecurityManager (if Tomcat, remove the option
+	{{{http://tomcat.apache.org/tomcat-6.0-doc/security-manager-howto.html}-security}} from start)
+	or if you want to keep it, you can modify the
+	{{{http://java.sun.com/javase/6/docs/technotes/guides/security/PolicyFiles.html#Examples}java.policy}}
+	file of your server.
+	
+	For example with Tomcat, the java.policy file is $CATALINA_HOME/conf/catalina.policy
+	and you can add something like the following to grant access to the JavaMelody and JRobin jar files:
+
++-------------------------------+
+	grant codeBase "file:${catalina.home}/webapps/<votre_webapp>/WEB-INF/lib/javamelody-x.jar" {
+		permission java.security.AllPermission;
+	};
+	grant codeBase "file:${catalina.home}/webapps/<votre_webapp>/WEB-INF/lib/jrobin-1.5.9.1.jar" {
+		permission java.security.AllPermission;
+	};
++-------------------------------+
+	
+	and replace <<< <your_webapp> >>> with the name of your webapp and replace
+	<<<javamelody-x.jar>>> with the exact name of the JavaMelody jar file.
+
+** 15. Full results
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
