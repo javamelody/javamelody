@@ -484,7 +484,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Sans cette propriété "exposeSchedulerInRepository", les jobs ordonnancés avec Spring ne seront
 	ni monitorés ni affichés dans le rapport.
 
-** 10. Rapports hebdomadaires, quotidiens ou mensuels par mail
+** 11. Rapports hebdomadaires, quotidiens ou mensuels par mail
 
 	Un rapport hebdomadaire, quotidien ou mensuel au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
 	Cette fonctionnalité nécessite la librairie iText dans votre webapp (licence LGPL ou MPL, le fichier jar iText
@@ -555,7 +555,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 +-------------------------------+
 
-** 11. Utilisateur base de données
+** 12. Utilisateur base de données
 
 	Depuis la page html du monitoring, il est possible d'accéder à des informations et à des
 	statistiques sur la base de données (si postgresql, mysql ou oracle),
@@ -572,7 +572,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	sql suivante en tant qu'utilisateur 'system' pour accorder le droit à l'utilisateur 'myapplication' :
 	<<<grant select any dictionary to myapplication>>>
 
-** 12. Sécurité
+** 13. Sécurité
 
 	La page de monitoring étant uniquement en consultation et ne contenant pas d'informations comme login ou mot de passe,
 	il n'est pas absolument nécessaire que cette page soit en accès restreint. Toutefois, il est possible de restreindre
@@ -623,7 +623,38 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 </tomcat-users>
 +-------------------------------+
 
-** 13. Résultat complet
+** 14. SecurityManager
+
+	Si vous êtes l'une des rares personnes avec un SecurityManager activé dans votre serveur,
+	il y aura une exception comme celle ci-dans la sortie du serveur au démarrage de la webapp
+	avec JavaMelody : "java.security.AccessControlException: access denied ...".
+	
+	Et cela car JavaMelody a besoin d'un accès à de nombreuses informations systèmes et elle a
+	besoin d'écrire ses fichiers. Pour que JavaMelody fonctionne, vous pouvez désactiver le
+	SecurityManager (Si Tomcat, enlever l'option
+	{{{http://tomcat.apache.org/tomcat-6.0-doc/security-manager-howto.html}-security}} du démarrage)
+	ou si vous voulez le conserver, vous pouvez modifier le fichier
+	{{{http://java.sun.com/javase/6/docs/technotes/guides/security/PolicyFiles.html#Examples}java.policy}}
+	de votre serveur.
+	
+	Par exemple avec Tomcat, le fichier java.policy est $CATALINA_HOME/conf/catalina.policy
+	et vous pouvez ajouter quelque chose comme l'exemple suivant pour accorder l'accès aux fichiers
+	jar de JavaMelody et de JRobin :
+
++-------------------------------+
+	grant codeBase "file:${catalina.home}/webapps/<votre_webapp>/WEB-INF/lib/javamelody-x.jar" {
+		permission java.security.AllPermission;
+	};
+	grant codeBase "file:${catalina.home}/webapps/<votre_webapp>/WEB-INF/lib/jrobin-1.5.9.1.jar" {
+		permission java.security.AllPermission;
+	};
++-------------------------------+
+	
+	en remplaçant <<< <votre_webapp> >>> par le nom de votre webapp et en remplaçant
+	<<<javamelody-x.jar>>> par le nom exact du fichier jar de JavaMelody.
+
+
+** 15. Résultat complet
 
 	Pour consulter le monitoring, déployer le war et ouvrir la page suivante dans un navigateur web après avoir démarré le serveur :
 
