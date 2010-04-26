@@ -481,7 +481,10 @@ final class Collector {
 		final String requestStorageId = newRequest.getId();
 		// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
 		final JRobin requestJRobin;
-		if (!dayCounter.isJspCounter()) {
+		if (!dayCounter.isJspCounter()
+				&& (!dayCounter.isErrorCounter() || dayCounter.isJobCounter())) {
+			// on ne crée pas de graphiques pour les "jsp", "error" et "job" car peu utiles
+			// et potentiellement lourd en usage disque et en mémoire utilisée
 			requestJRobin = getRequestJRobin(requestStorageId, newRequest.getName());
 		} else {
 			requestJRobin = null;
@@ -495,12 +498,10 @@ final class Collector {
 			lastPeriodRequest.removeHits(request);
 			if (lastPeriodRequest.getHits() > 0) {
 				if (requestJRobin != null) {
-					if (dayCounter.isErrorCounter()) {
-						requestJRobin.addValue(lastPeriodRequest.getHits());
-					} else {
-						// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
-						requestJRobin.addValue(lastPeriodRequest.getMean());
-					}
+					// plus nécessaire: if (dayCounter.isErrorCounter()) requestJRobin.addValue(lastPeriodRequest.getHits());
+
+					// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
+					requestJRobin.addValue(lastPeriodRequest.getMean());
 				}
 				// agrégation de la requête sur le compteur pour le jour courant
 				dayCounter.addHits(lastPeriodRequest);
