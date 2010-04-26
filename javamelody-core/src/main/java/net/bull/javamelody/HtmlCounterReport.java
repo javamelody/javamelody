@@ -434,7 +434,7 @@ class HtmlCounterReport {
 			// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
 			assert !requests.isEmpty();
 			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
-			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, true);
+			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false);
 		} else {
 			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
 					counterRequestAggregation.getWarningRequest(), counterRequestAggregation
@@ -481,7 +481,7 @@ class HtmlCounterReport {
 		// 3. détails par requêtes (non visible par défaut)
 		writeln("<div id='details" + counterName + "' style='display: none;'>");
 		writeRequests(counterName, counter.getChildCounterName(), requests,
-				!counter.isJspCounter());
+				!isErrorAndNotJobCounter() && !counter.isJspCounter());
 		writeln("</div>");
 
 		// 4. logs (non visible par défaut)
