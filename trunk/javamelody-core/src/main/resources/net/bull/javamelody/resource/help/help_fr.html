@@ -177,7 +177,7 @@ de connexions par le pool et non les utilisations réelles de ces connexions par 
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistiques</h3>
 Les statistiques d'un compteur présentent les statistiques des requêtes exécutées sur le serveur d'application.<br/>
-Il existe 5 compteurs de requêtes aujourd'hui :<ul>
+Il existe 6 compteurs de requêtes aujourd'hui :<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Statistiques http</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
@@ -188,6 +188,8 @@ Statistiques ejb (si façades ejb3 de JavaEE 5+)</li>
 Statistiques spring (si façades spring)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
 Statistiques d'interfaces façades (sans ejb3 ni spring)</li>
+<li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
+Statistiques des pages jsp (ou plus précisément, des exécutions de include ou forward sur httpServletRequest.getRequestDispatcher, c'est-à-dire les pages jsp en général)</li>
 </ul>
 Pour chaque compteur, une requête apparaît dans les statistiques quand elle est terminée;
 pour connaître les requêtes non terminées voir la partie 
@@ -215,10 +217,10 @@ s'il est élevé, les temps sont très variés, s'il est faible les temps sont rappr
 <li>le temps cpu moyen en millisecondes</li>
 <li>le pourcentage d'erreurs systèmes</li>
 </ul>
-et si il s'agit des statistiques http :<ul>
-<li>la taille moyenne en kilo-octets du flux de réponse</li>
-<li>le nombre moyen de hits sql, par exécution de requête http</li>
-<li>le temps moyen passé à exécuter des requêtes sql, par exécution de requête http</li>
+et si il s'agit des statistiques http, ejb, spring, interfaces ou jsp :<ul>
+<li>la taille moyenne en kilo-octets du flux de réponse (seulement pour http)</li>
+<li>le nombre moyen de hits sql, par exécution de requête http, ejb...</li>
+<li>le temps moyen passé à exécuter des requêtes sql, par exécution de requête http, ejb...</li>
 </ul>
 
 Les temps moyens, les temps maximums et les temps cpu moyens sont cumulatifs : par exemple, les temps http moyens
@@ -226,7 +228,7 @@ incluent les temps ejb moyens et les temps sql moyens ; de plus, les temps cpu m
 incluent les temps cpu moyens pour ejb et pour sql.
 Mais les temps d'attente comme 'sleep' ou attente pour I/O ne consomme pas de cpu, donc ils sont
 inclus dans les temps moyens mais pas dans les temps cpu moyens.
-<br/>
+<br/><br/>
 Comme tous les tableaux du rapport, les tableaux de statistiques sont triables par ordre ascendant ou descendant en cliquant sur les entêtes de colonnes.<br/>
 Les statistiques sont persistées pour chaque compteur : un redémarrage du serveur d'application n'a pas d'influence sur elles.<br/>
 Si un serveur de collecte est utilisé pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
