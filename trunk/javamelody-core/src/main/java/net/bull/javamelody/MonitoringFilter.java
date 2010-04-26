@@ -142,14 +142,15 @@ public class MonitoringFilter implements Filter {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
+		final Counter jspCounter = JspWrapper.getJspCounter();
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					servicesCounter, errorCounter, logCounter, jobCounter);
+					servicesCounter, errorCounter, logCounter, jspCounter, jobCounter);
 		} else {
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					servicesCounter, errorCounter, logCounter);
+					servicesCounter, errorCounter, logCounter, jspCounter);
 		}
 
 		setRequestTransformPatterns(counters);
@@ -165,6 +166,7 @@ public class MonitoringFilter implements Filter {
 			ejbCounter.setDisplayed(false);
 			springCounter.setDisplayed(false);
 			servicesCounter.setDisplayed(false);
+			jspCounter.setDisplayed(false);
 		} else {
 			setDisplayedCounters(counters, displayedCounters);
 		}
@@ -346,6 +348,7 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 
+		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest);
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				httpResponse);
 		final long start = System.currentTimeMillis();
@@ -362,7 +365,7 @@ public class MonitoringFilter implements Filter {
 			// on binde la requête http (utilisateur courant et requête complète) pour les derniers logs d'erreurs
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);
-			chain.doFilter(request, wrappedResponse);
+			chain.doFilter(wrappedRequest, wrappedResponse);
 			wrappedResponse.flushBuffer();
 		} catch (final Throwable t) { // NOPMD
 			// on catche Throwable pour avoir tous les cas d'erreur système

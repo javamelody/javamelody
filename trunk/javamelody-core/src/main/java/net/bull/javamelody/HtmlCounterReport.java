@@ -480,7 +480,8 @@ class HtmlCounterReport {
 
 		// 3. détails par requêtes (non visible par défaut)
 		writeln("<div id='details" + counterName + "' style='display: none;'>");
-		writeRequests(counterName, counter.getChildCounterName(), requests, true);
+		writeRequests(counterName, counter.getChildCounterName(), requests,
+				!counter.isJspCounter());
 		writeln("</div>");
 
 		// 4. logs (non visible par défaut)
@@ -574,7 +575,7 @@ class HtmlCounterReport {
 		final String nextColumn = "</td> <td align='right'>";
 		write("<td>");
 		if (includeGraph) {
-			htmlCounterRequestGraphReport.writeRequestGraph(request.getId(), request.getName());
+			writeRequestGraph(request.getId(), request.getName());
 		} else {
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
 			writer.write(htmlEncode(request.getName()));

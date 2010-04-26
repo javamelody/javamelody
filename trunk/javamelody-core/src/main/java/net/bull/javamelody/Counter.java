@@ -57,6 +57,10 @@ class Counter implements Cloneable, Serializable {
 	 */
 	static final String LOG_COUNTER_NAME = "log";
 	/**
+	 * Nom du counter des JSPs.
+	 */
+	static final String JSP_COUNTER_NAME = "jsp";
+	/**
 	 * Nom du counter des jobs.
 	 */
 	static final String JOB_COUNTER_NAME = "job";
@@ -506,6 +510,15 @@ class Counter implements Cloneable, Serializable {
 	 */
 	boolean isJobCounter() {
 		return JOB_COUNTER_NAME.equals(name);
+	}
+
+	/**
+	 * Retourne true si ce counter est un counter de jsp
+	 * (c'est-à-dire si son nom est "jsp")
+	 * @return boolean
+	 */
+	boolean isJspCounter() {
+		return JSP_COUNTER_NAME.equals(name);
 	}
 
 	private String getAggregateRequestName(String requestName) {
