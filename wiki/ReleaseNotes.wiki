@@ -3,11 +3,13 @@
 
   * fix issue 20: SQL requests were not monitored and "jdbc connections" were always 0, when *JndiObjectFactoryBean* is used in Spring
   * fix issue 21 for *JIRA*: Null pointer with quartz jobs in jira
-  * added: If *quartz* is available, display of mean time and last error with stack-trace per job for the selected period, and also display of the statistics for all the jobs with number of executions, mean cpu times, number of sql hits, sql times and last 100 errors with stack-traces for the selected period.
   * [UserGuide#10._Batch_jobs_(if_Quartz) doc updated] for *quartz* jobs scheduled with Spring, with help from _Pether Sörling_.
   * [UserGuide#3._First_results doc updated] for issue 19 InternalError "Can't connect to window server" on Mac OS X Server.
-  * [UserGuide#14. doc updated] for usage of JavaMelody with SecurityManager enabled
+  * [UserGuide#14. doc updated] for usage of JavaMelody when SecurityManager is enabled
+  * added: Statistics of rendering times in *JSP pages* (when RequestDispacher is used)
+  * added: If *quartz* is available, display of mean time and last error with stack-trace per job for the selected period, and also display of the statistics for all the jobs with number of executions, mean cpu times, number of sql hits, sql times and last 100 errors with stack-traces for the selected period.
   * change: the graphics and the statistics of [UserGuide#8._Business_facades_(ejb-jar.xml_file_if_EJB3) ejb], [UserGuide#9._Business_facades_(if_Spring) spring] and [UserGuideAdvanced#Business_facades_(without_EJB3_and_without_Spring) services] will be displayed automatically when they are used (except if the parameter "displayed-counters" has been defined AND if the parameter does not include "ejb", "spring" or "services"). So usage of ejb, spring or services will be easier because it will not be necessary anymore to define the parameter "displayed-counters".
+  * change to reduce disk usage: graphics for "http system errors" and "system errors logs" are no longer displayed (unneeded files will be automatically deleted at midnight)
 
 === 1.14.0 ===
 
