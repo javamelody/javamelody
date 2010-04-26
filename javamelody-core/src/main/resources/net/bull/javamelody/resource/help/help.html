@@ -175,7 +175,7 @@ of connections by the pool and not the real uses of these connections by the app
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistics</h3>
 The statistics of a counter shows the statistics of the requests executed on the application server.<br/>
-5 counters of requests exist today:<ul>
+6 counters of requests exist today:<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Http statistics</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
@@ -186,6 +186,8 @@ Ejb statistics (if ejb3 façades on JavaEE 5+)</li>
 Spring statistics (if spring façades)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
 Statistics of façades interfaces (without ejb3 and without spring)</li>
+<li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
+Statistics of rendering with jsp pages (or more precisely, of executions of include or forward on httpServletRequest.getRequestDispatcher, which are the jsp pages in general) </li>
 </ul>
 For each counter, a request appears in the statistics when it is finished;
 to know the unfinished requests see the 
@@ -212,16 +214,16 @@ if it is high, the execution times are varied, and if it is low the execution ti
 <li>the mean cpu time in milliseconds</li>
 <li>the percentage of system errors</li>
 </ul>
-and if it is an http statistic:<ul>
-<li>the mean size in kilo-bytes of the response stream</li>
-<li>the mean number of sql hits, by execution of http request</li>
-<li>the mean time executing sql requests, by execution of http request</li>
+and if it is an http, ejb, spring, interfaces or jsp statistic:<ul>
+<li>the mean size in kilo-bytes of the response stream (only for http)</li>
+<li>the mean number of sql hits, by execution of http(, ejb...) request</li>
+<li>the mean time executing sql requests, by execution of http(, ejb...) request</li>
 </ul>
 
 The mean times, the maximum times and the mean cpu times are cumulative: for example, the http mean times include
 the ejb mean times and the sql mean times ; moreover the http mean cpu times include the ejb mean cpu time and the sql mean cpu times.
 But wait times like sleeping or waiting for I/O do not consume cpu, so they are included in mean times but not in mean cpu times.
-<br/>
+<br/><br/>
 Like all tables of the report, the tables of statistics can be ordered in ascending or descending order by clicking on headers of columns.<br/>
 The statistics are persisted for each counter: a restart of the application server has no influence on them.<br/>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
