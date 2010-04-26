@@ -380,9 +380,8 @@ final class Collector {
 	private long collectCounterData(Counter counter) throws IOException {
 		// counterName vaut http, sql ou ws par exemple
 		final String counterName = counter.getName();
-		final boolean errorCounter = counter.isErrorCounter();
 		final List<CounterRequest> requests = counter.getRequests();
-		if (!errorCounter) {
+		if (!counter.isErrorCounter()) {
 			// on calcule les totaux depuis le départ
 			final CounterRequest newGlobalRequest = new CounterRequest(counterName + " global",
 					counterName);
@@ -393,9 +392,18 @@ final class Collector {
 
 			// on récupère les instances de jrobin même s'il n'y a pas de hits ou pas de précédents totaux
 			// pour être sûr qu'elles soient initialisées (si pas instanciée alors pas de courbe)
-			final JRobin hitsJRobin = getCounterJRobin(counterName + "HitsRate");
-			final JRobin meanTimesJRobin = getCounterJRobin(counterName + "MeanTimes");
-			final JRobin systemErrorsJRobin = getCounterJRobin(counterName + "SystemErrors");
+			final JRobin hitsJRobin;
+			final JRobin meanTimesJRobin;
+			final JRobin systemErrorsJRobin;
+			if (!counter.isJspCounter()) {
+				hitsJRobin = getCounterJRobin(counterName + "HitsRate");
+				meanTimesJRobin = getCounterJRobin(counterName + "MeanTimes");
+				systemErrorsJRobin = getCounterJRobin(counterName + "SystemErrors");
+			} else {
+				hitsJRobin = getOtherJRobin(counterName + "HitsRate");
+				meanTimesJRobin = getOtherJRobin(counterName + "MeanTimes");
+				systemErrorsJRobin = getOtherJRobin(counterName + "SystemErrors");
+			}
 
 			final CounterRequest globalRequest = globalRequestsByCounter.get(counter);
 			if (globalRequest != null) {
@@ -472,7 +480,12 @@ final class Collector {
 			throws IOException {
 		final String requestStorageId = newRequest.getId();
 		// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
-		final JRobin requestJRobin = getRequestJRobin(requestStorageId, newRequest.getName());
+		final JRobin requestJRobin;
+		if (!dayCounter.isJspCounter()) {
+			requestJRobin = getRequestJRobin(requestStorageId, newRequest.getName());
+		} else {
+			requestJRobin = null;
+		}
 
 		final CounterRequest request = requestsById.get(requestStorageId);
 		if (request != null) {
@@ -481,11 +494,13 @@ final class Collector {
 			final CounterRequest lastPeriodRequest = newRequest.clone();
 			lastPeriodRequest.removeHits(request);
 			if (lastPeriodRequest.getHits() > 0) {
-				if (dayCounter.isErrorCounter()) {
-					requestJRobin.addValue(lastPeriodRequest.getHits());
-				} else {
-					// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
-					requestJRobin.addValue(lastPeriodRequest.getMean());
+				if (requestJRobin != null) {
+					if (dayCounter.isErrorCounter()) {
+						requestJRobin.addValue(lastPeriodRequest.getHits());
+					} else {
+						// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
+						requestJRobin.addValue(lastPeriodRequest.getMean());
+					}
 				}
 				// agrégation de la requête sur le compteur pour le jour courant
 				dayCounter.addHits(lastPeriodRequest);
