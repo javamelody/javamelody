@@ -218,6 +218,14 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	of http system errors, of system error logs, of names of jobs or of jsp pages
 	(in order to aggregate by ejb components and not by ejb methods for example)
 
+	The parameter <<<displayed-counters>>> can modify the displayed counters for the statistics
+	and for the graphics (<<<http,sql,error,log>>> by default). So the counters displayed by default
+	are those with keys http, sql, error and log. The counters with keys jsp, ejb, spring and
+	services are automatically displayed when they are used (see below for ejb or spring and see
+	the advanced user guide for services without ejb and spring).
+	So the parameter <<<displayed-counters>>> can hide some counters with for example the value
+	<<<http,sql,ejb,spring>>>.
+
 	The parameter <<<log>>> can activate logs of http requests (<<<false>>> by default).
 	The http request will be logged with duration and size of the response
 	in the log category corresponding to the name of the filter set in <<<web.xml>>> file,

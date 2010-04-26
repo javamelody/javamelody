@@ -219,7 +219,15 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<<<error-transform-pattern>>>, <<<log-transform-pattern>>>, <<<job-transform-pattern>>>
 	et <<<jsp-transform-pattern>>> permettent de transformer les descriptions des méthodes ejb3,
 	des méthodes spring, des erreurs systèmes http, des logs d'erreurs systèmes, des noms de jobs
-	ou des pages jsp (pour agréger par composants ejb au lieu d'agréger par méthodes ejb par exemple)
+	ou des pages jsp (pour agréger par composants ejb au lieu d'agréger par méthodes ejb par exemple).
+	
+	Le paramètre <<<displayed-counters>>> permet de modifier les compteurs affichés pour les
+	statistiques et les graphiques (<<<http,sql,error,log>>> par défaut). Les compteurs affichés 
+	par défaut sont donc ceux de codes http, sql, error et log. Les compteurs de codes jsp, ejb,
+	spring et services s'affichent automatiquement quand ils sont utilisés (voir ci-dessous pour
+	ejb ou spring et dans le guide utilisateur avancé pour les services sans ejb ni spring).
+	Le paramètre <<<displayed-counters>>> permet donc de cacher certains compteurs avec par exemple
+	la valeur <<<http,sql,ejb,spring>>>.
 
 	Le paramètre <<<log>>> permet d'activer les logs des requêtes http (<<<false>>> par défaut).
 	Les requêtes http seront logguées avec la durée et la taille de la réponse
