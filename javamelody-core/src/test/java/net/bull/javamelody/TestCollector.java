@@ -169,12 +169,16 @@ public class TestCollector {
 	public void testCollectWithoutErrors() throws IOException {
 		try {
 			final Counter counter = createCounter();
-			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
-					timer);
+			final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
+			final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
+			final Collector collector = new Collector(TEST, Arrays.asList(counter, jspCounter,
+					jobCounter), timer);
 			if (collector.getCounters().size() == 0) {
 				fail("getCounters");
 			}
 			counter.addRequest("test1", 0, 0, false, 1000);
+			jspCounter.addRequest("test2", 0, 0, false, 0);
+			jobCounter.addRequest("test3", 0, 0, false, 0);
 			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
 					true)));
 			counter.addRequest("test2", 0, 0, false, 1000);
@@ -182,6 +186,14 @@ public class TestCollector {
 			counter.addRequest("test4", 10000, 200, true, 10000);
 			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
 					false)));
+			setProperty(Parameter.NO_DATABASE, "true");
+			try {
+				new Collector(TEST, Collections.singletonList(counter), timer)
+						.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
+								false)));
+			} finally {
+				setProperty(Parameter.NO_DATABASE, "false");
+			}
 			if (collector.getLastCollectDuration() == 0) {
 				fail("getLastCollectDuration");
 			}
@@ -280,6 +292,21 @@ public class TestCollector {
 			assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
 			assertEquals("custom", 1, collector.getRangeCountersToBeDisplayed(
 					Range.createCustomRange(new Date(), new Date())).size());
+		} finally {
+			timer.cancel();
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testGetRangeCounter() throws IOException {
+		try {
+			final Counter counter = createCounter();
+			final Counter counter2 = new Counter("sql", null);
+			final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2), timer);
+			collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
+			collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
 		} finally {
 			timer.cancel();
 		}

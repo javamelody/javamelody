@@ -176,6 +176,7 @@ public class TestCounter {
 	@Test
 	public void testAddErrors() {
 		final CounterError beforeError = new CounterError("before", null);
+		assertNotNull("CounterError.toString()", beforeError.toString());
 		try {
 			Thread.sleep(50);
 		} catch (final InterruptedException e) {
