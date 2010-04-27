@@ -103,4 +103,10 @@ class CounterError implements Serializable {
 	String getStackTrace() {
 		return stackTrace;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[message=" + getMessage() + ']';
+	}
 }
