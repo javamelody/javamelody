@@ -149,5 +149,8 @@ public class TestMonitoringSpringInterceptor {
 				.getBean("annotatedTestMethodSpring");
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
 		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
+
+		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
+		context.getType("dataSource2");
 	}
 }
