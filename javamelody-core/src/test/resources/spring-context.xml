@@ -22,11 +22,14 @@
         <property name="password" value="root" />
         <property name="maxIdle" value="13" />
     </bean>
-	<!--
-    <bean id="dataSource"
-		class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName"
-			value="java:comp/env/jdbc/TestDB" />
+    <!--
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/TestDB" />
 	</bean>
-    -->
+	-->
+    <bean id="dataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/TestDB" />
+		<property name="lookupOnStartup" value="false" />
+		<property name="expectedType" value="javax.sql.DataSource" />
+	</bean>
 </beans>
