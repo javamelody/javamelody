@@ -478,7 +478,7 @@ public class MonitoringFilter implements Filter {
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
 		if (isRequestNotAllowed(httpRequest)) {
-			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès interdit");
+			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
 		}
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
