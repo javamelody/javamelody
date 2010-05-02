@@ -3,6 +3,7 @@
 
   * fix issue 20: SQL requests were not monitored and "jdbc connections" were always 0, when *JndiObjectFactoryBean* is used in Spring
   * fix issue 21 for *JIRA*: Null pointer with quartz jobs in jira
+  * fix issue 22 for *JIRA*: The report will be visible only for jira administrators
   * [UserGuide#10._Batch_jobs_(if_Quartz) doc updated] for *quartz* jobs scheduled with Spring, with help from _Pether Sörling_.
   * [UserGuide#3._First_results doc updated] for issue 19 InternalError "Can't connect to window server" on Mac OS X Server.
   * [UserGuide#14. doc updated] for usage of JavaMelody when SecurityManager is enabled
