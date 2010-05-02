@@ -79,6 +79,8 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
 		final Class<?> userClass = Class.forName("com.opensymphony.user.User");
 		try {
+			// on travaille par réflexion car la compilation normale introduirait une dépendance
+			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
 					.invoke(null);
 			final Boolean result = (Boolean) permissionManager.getClass().getMethod(
