@@ -8,7 +8,7 @@
 	</plugin-info>
 
 	<servlet-filter name="MonitoringFilter" key="MonitoringFilter"
-		class="net.bull.javamelody.MonitoringFilter" location="before-decoration"
+		class="net.bull.javamelody.JiraMonitoringFilter" location="before-decoration"
 		weight="200">
 		<description>Monitoring Filter.</description>
 		<url-pattern>/*</url-pattern>
