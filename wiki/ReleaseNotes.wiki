@@ -10,6 +10,7 @@
   * [UserGuide#14. doc updated] for usage of JavaMelody when SecurityManager is enabled
   * added: Statistics of rendering times in *JSP pages* (when RequestDispacher is used)
   * added: If *quartz* is available, display of mean time and last error with stack-trace per job for the selected period, and also display of the statistics for all the jobs with number of executions, mean cpu times, number of sql hits, sql times and last 100 errors with stack-traces for the selected period.
+  * added: In Hudson plugin, if the server has servlet api 3.0 (JavaEE 6), then display the graphic of the number of http sessions and display the list of current http sessions
   * change: the graphics and the statistics of [UserGuide#8._Business_facades_(ejb-jar.xml_file_if_EJB3) ejb], [UserGuide#9._Business_facades_(if_Spring) spring] and [UserGuideAdvanced#Business_facades_(without_EJB3_and_without_Spring) services] will be displayed automatically when they are used (except if the parameter "displayed-counters" has been defined AND if the parameter does not include "ejb", "spring" or "services"). So usage of ejb, spring or services will be easier because it will not be necessary anymore to define the parameter "displayed-counters".
   * change to reduce disk usage: graphics for "http system errors" and "system errors logs" are no longer displayed (unneeded files will be automatically deleted at midnight)
 
