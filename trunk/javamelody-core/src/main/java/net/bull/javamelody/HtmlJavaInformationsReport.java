@@ -97,7 +97,7 @@ class HtmlJavaInformationsReport {
 		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
 		writeln(" #Mo# / " + integerFormat.format(maxMemory / 1024 / 1024)
 				+ " #Mo#&nbsp;&nbsp;&nbsp;</td><td>");
-		writeln(toBar(100d * usedMemory / maxMemory));
+		writeln(toBar(memoryInformations.getUsedMemoryPercentage()));
 		writeln(lineEnd);
 		if (javaInformations.getSessionCount() >= 0) {
 			write("<tr><td>#nb_sessions_http#: </td><td>");
@@ -116,10 +116,10 @@ class HtmlJavaInformationsReport {
 			final int maxConnectionCount = javaInformations.getMaxConnectionCount();
 			write("<tr><td>#nb_connexions_utilisees#<br/>(#ouvertes#): </td><td>");
 			writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
-			if (maxConnectionCount >= 0) {
+			if (maxConnectionCount > 0) {
 				writeln(" / " + integerFormat.format(maxConnectionCount)
 						+ "&nbsp;&nbsp;&nbsp;</td><td>");
-				writeln(toBar(100d * usedConnectionCount / maxConnectionCount));
+				writeln(toBar(javaInformations.getUsedConnectionPercentage()));
 			}
 			writeln(lineEnd);
 		}
@@ -156,7 +156,7 @@ class HtmlJavaInformationsReport {
 			write("<tr><td>#nb_fichiers#</td><td>");
 			writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
 			writeln(" / " + integerFormat.format(unixMaxFileDescriptorCount) + "&nbsp;&nbsp;&nbsp;");
-			writeln(toBar(100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount));
+			writeln(toBar(javaInformations.getUnixOpenFileDescriptorPercentage()));
 			writeln(columnEnd);
 		}
 		final String serverInfo = javaInformations.getServerInfo();
@@ -245,10 +245,10 @@ class HtmlJavaInformationsReport {
 			final long maxPermGen = memoryInformations.getMaxPermGen();
 			writeln("<tr><td>#Memoire_Perm_Gen#: </td><td>"
 					+ integerFormat.format(usedPermGen / 1024 / 1024) + " #Mo#");
-			if (maxPermGen >= 0) {
+			if (maxPermGen > 0) {
 				writeln(" / " + integerFormat.format(maxPermGen / 1024 / 1024)
 						+ " #Mo#&nbsp;&nbsp;&nbsp;");
-				writeln(toBar(100d * usedPermGen / maxPermGen));
+				writeln(toBar(memoryInformations.getUsedPermGenPercentage()));
 			}
 			writeln(columnEnd);
 		}

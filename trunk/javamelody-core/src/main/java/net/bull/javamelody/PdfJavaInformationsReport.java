@@ -160,7 +160,8 @@ class PdfJavaInformationsReport {
 		final Phrase memoryPhrase = new Phrase(integerFormat.format(usedMemory / 1024 / 1024) + ' '
 				+ getI18nString("Mo") + divide + integerFormat.format(maxMemory / 1024 / 1024)
 				+ ' ' + getI18nString("Mo") + BAR_SEPARATOR, cellFont);
-		final Image memoryImage = Image.getInstance(Bar.toBar(100d * usedMemory / maxMemory), null);
+		final Image memoryImage = Image.getInstance(Bar.toBar(memoryInformations
+				.getUsedMemoryPercentage()), null);
 		memoryImage.scalePercent(50);
 		memoryPhrase.add(new Chunk(memoryImage, 0, 0));
 		currentTable.addCell(memoryPhrase);
@@ -174,14 +175,14 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("nb_connexions_utilisees") + "\n(" + getI18nString("ouvertes") + "):");
 		final int usedConnectionCount = javaInformations.getUsedConnectionCount();
 		final int maxConnectionCount = javaInformations.getMaxConnectionCount();
-		if (maxConnectionCount < 0) {
+		if (maxConnectionCount <= 0) {
 			addCell(integerFormat.format(usedConnectionCount));
 		} else {
 			final Phrase usedConnectionCountPhrase = new Phrase(integerFormat
 					.format(usedConnectionCount)
 					+ divide + integerFormat.format(maxConnectionCount) + BAR_SEPARATOR, cellFont);
-			final Image usedConnectionCountImage = Image.getInstance(Bar.toBar(100d
-					* usedConnectionCount / maxConnectionCount), null);
+			final Image usedConnectionCountImage = Image.getInstance(Bar.toBar(javaInformations
+					.getUsedConnectionPercentage()), null);
 			usedConnectionCountImage.scalePercent(50);
 			usedConnectionCountPhrase.add(new Chunk(usedConnectionCountImage, 0, 0));
 			currentTable.addCell(usedConnectionCountPhrase);
@@ -275,8 +276,8 @@ class PdfJavaInformationsReport {
 				.format(unixOpenFileDescriptorCount)
 				+ " / " + integerFormat.format(unixMaxFileDescriptorCount) + BAR_SEPARATOR,
 				cellFont);
-		final Image fileDescriptorCountImage = Image.getInstance(Bar.toBar(100d
-				* unixOpenFileDescriptorCount / unixMaxFileDescriptorCount), null);
+		final Image fileDescriptorCountImage = Image.getInstance(Bar.toBar(javaInformations
+				.getUnixOpenFileDescriptorPercentage()), null);
 		fileDescriptorCountImage.scalePercent(50);
 		fileDescriptorCountPhrase.add(new Chunk(fileDescriptorCountImage, 0, 0));
 		currentTable.addCell(fileDescriptorCountPhrase);
@@ -303,13 +304,13 @@ class PdfJavaInformationsReport {
 		final long usedPermGen = memoryInformations.getUsedPermGen();
 		final long maxPermGen = memoryInformations.getMaxPermGen();
 		addCell(getI18nString("Memoire_Perm_Gen") + ':');
-		if (maxPermGen >= 0) {
+		if (maxPermGen > 0) {
 			final Phrase permGenPhrase = new Phrase(integerFormat.format(usedPermGen / 1024 / 1024)
 					+ ' ' + getI18nString("Mo") + " / "
 					+ integerFormat.format(maxPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
 					+ BAR_SEPARATOR, cellFont);
-			final Image permGenImage = Image.getInstance(
-					Bar.toBar(100d * usedPermGen / maxPermGen), null);
+			final Image permGenImage = Image.getInstance(Bar.toBar(memoryInformations
+					.getUsedPermGenPercentage()), null);
 			permGenImage.scalePercent(50);
 			permGenPhrase.add(new Chunk(permGenImage, 0, 0));
 			currentTable.addCell(permGenPhrase);
