@@ -53,8 +53,19 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		if (jira && httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
 			try {
 				// only the jira administrator can view the monitoring report
-				if (!hasSystemAdminPermission(httpRequest)) {
+				final Object user = getUser(httpRequest);
+				if (user == null) {
+					// si non authentifié, on redirige vers la page de login en indiquant la page
+					// d'origine (sans le contexte) à afficher après le login
 					final HttpServletResponse httpResponse = (HttpServletResponse) response;
+					final String destination = getMonitoringUrl(httpRequest).substring(
+							httpRequest.getContextPath().length());
+					httpResponse.sendRedirect("login.jsp?os_destination=" + destination);
+					return;
+				}
+				if (!hasSystemAdminPermission(user)) {
+					final HttpServletResponse httpResponse = (HttpServletResponse) response;
+					// si authentifié mais sans la permission system admin, alors Forbidden 
 					httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 					return;
 				}
@@ -66,14 +77,8 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		super.doFilter(request, response, chain);
 	}
 
-	private static boolean hasSystemAdminPermission(HttpServletRequest httpRequest)
-			throws ClassNotFoundException {
-		final HttpSession session = httpRequest.getSession(false);
-		if (session == null) {
-			return false;
-		}
-		final Object remoteUser = session.getAttribute(LOGGED_IN_KEY);
-		if (remoteUser == null) {
+	private static boolean hasSystemAdminPermission(Object user) throws ClassNotFoundException {
+		if (user == null) {
 			return false;
 		}
 		final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
@@ -85,7 +90,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 					.invoke(null);
 			final Boolean result = (Boolean) permissionManager.getClass().getMethod(
 					"hasPermission", new Class[] { Integer.TYPE, userClass }).invoke(
-					permissionManager, new Object[] { SYSTEM_ADMIN, remoteUser });
+					permissionManager, new Object[] { SYSTEM_ADMIN, user });
 			return result;
 		} catch (SecurityException e) {
 			throw new IllegalStateException(e);
@@ -99,5 +104,13 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		//		return remoteUser != null
 		//				&& com.atlassian.jira.ManagerFactory.getPermissionManager().hasPermission(
 		//						SYSTEM_ADMIN, (com.opensymphony.user.User) remoteUser);
+	}
+
+	private static Object getUser(HttpServletRequest httpRequest) {
+		final HttpSession session = httpRequest.getSession(false);
+		if (session == null) {
+			return null;
+		}
+		return session.getAttribute(LOGGED_IN_KEY);
 	}
 }
