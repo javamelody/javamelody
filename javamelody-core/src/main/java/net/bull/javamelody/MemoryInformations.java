@@ -148,12 +148,23 @@ class MemoryInformations implements Serializable {
 		return maxMemory;
 	}
 
+	double getUsedMemoryPercentage() {
+		return 100d * usedMemory / maxMemory;
+	}
+
 	long getUsedPermGen() {
 		return usedPermGen;
 	}
 
 	long getMaxPermGen() {
 		return maxPermGen;
+	}
+
+	double getUsedPermGenPercentage() {
+		if (usedPermGen > 0 && maxPermGen > 0) {
+			return 100d * usedPermGen / maxPermGen;
+		}
+		return -1d;
 	}
 
 	long getUsedNonHeapMemory() {

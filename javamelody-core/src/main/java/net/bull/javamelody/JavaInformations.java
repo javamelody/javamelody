@@ -474,6 +474,13 @@ class JavaInformations implements Serializable { // NOPMD
 		return maxConnectionCount;
 	}
 
+	double getUsedConnectionPercentage() {
+		if (maxConnectionCount > 0) {
+			return 100d * usedConnectionCount / maxConnectionCount;
+		}
+		return -1d;
+	}
+
 	long getProcessCpuTimeMillis() {
 		return processCpuTimeMillis;
 	}
@@ -488,6 +495,13 @@ class JavaInformations implements Serializable { // NOPMD
 
 	long getUnixMaxFileDescriptorCount() {
 		return unixMaxFileDescriptorCount;
+	}
+
+	double getUnixOpenFileDescriptorPercentage() {
+		if (unixOpenFileDescriptorCount >= 0) {
+			return 100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount;
+		}
+		return -1d;
 	}
 
 	String getHost() {
