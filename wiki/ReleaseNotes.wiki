@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.15.0 ===
 
   * fix issue 20: SQL requests were not monitored and "jdbc connections" were always 0, when *JndiObjectFactoryBean* is used in Spring
   * fix issue 21 for *JIRA*: Null pointer with quartz jobs in jira
