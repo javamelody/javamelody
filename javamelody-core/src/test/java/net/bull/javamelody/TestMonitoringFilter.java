@@ -504,6 +504,41 @@ public class TestMonitoringFilter {
 		}
 	}
 
+	/** Test.
+	 * @throws ServletException e 
+	 * @throws IOException e */
+	@Test
+	public void testJiraMonitoringFilter() throws ServletException, IOException {
+		try {
+			final JiraMonitoringFilter jiraMonitoringFilter = new JiraMonitoringFilter();
+			init();
+			setUp();
+
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getQueryString()).andReturn("param1=1");
+			expect(request.getMethod()).andReturn("GET");
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			final FilterChain chain = createNiceMock(FilterChain.class);
+
+			replay(config);
+			replay(context);
+			replay(request);
+			replay(response);
+			replay(chain);
+			jiraMonitoringFilter.init(config);
+			jiraMonitoringFilter.doFilter(request, response, chain);
+			verify(config);
+			verify(context);
+			verify(request);
+			verify(response);
+			verify(chain);
+		} finally {
+			destroy();
+		}
+	}
+
 	private static void setProperty(Parameter parameter, String value) {
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
 	}
