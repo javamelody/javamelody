@@ -515,10 +515,8 @@ public class TestMonitoringFilter {
 			setUp();
 
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			expect(request.getQueryString()).andReturn("param1=1");
-			expect(request.getMethod()).andReturn("GET");
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final FilterChain chain = createNiceMock(FilterChain.class);
 
