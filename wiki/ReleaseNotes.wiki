@@ -1,7 +1,7 @@
 #labels Featured
 === 1.15.0 ===
- 
-  * fix issue 20 : SQL requests were not monitored and "jdbc connections" were always 0, when *JndiObjectFactoryBean* is used in Spring
+.
+  * fix issue 20: SQL requests were not monitored and "jdbc connections" were always 0, when *JndiObjectFactoryBean* is used in Spring
   * fix issue 21 for *JIRA*: Null pointer with quartz jobs in jira
   * fix issue 22 for *JIRA*: The report will be visible only for jira administrators
   * fix issue 23 for *JIRA*: The report displayed only random characters when gzip compression is enabled in jira
