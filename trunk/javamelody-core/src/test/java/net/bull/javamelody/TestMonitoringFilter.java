@@ -35,6 +35,7 @@ import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
@@ -550,28 +551,39 @@ public class TestMonitoringFilter {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
+			final RequestDispatcher requestDispatcherWithError = createNiceMock(RequestDispatcher.class);
 			final String url1 = "test.jsp";
 			final String url2 = "test.jsp?param=test";
 			final String url3 = null;
 			expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
-			expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcher);
+			expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcherWithError);
+			requestDispatcherWithError.forward(request, response);
+			expectLastCall().andThrow(new UnknownError("erreur dans forward"));
 			expect(request.getRequestDispatcher(url3)).andReturn(null);
 			final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
 
 			replay(request);
 			replay(response);
+			replay(requestDispatcher);
+			replay(requestDispatcherWithError);
 			final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
 					.getRequestDispatcher(url1);
 			wrappedRequestDispatcher.toString();
 			wrappedRequestDispatcher.include(wrappedRequest, response);
 			final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
 					.getRequestDispatcher(url2);
-			wrappedRequestDispatcher2.forward(wrappedRequest, response);
+			try {
+				wrappedRequestDispatcher2.forward(wrappedRequest, response);
+			} catch (final UnknownError e) {
+				assertNotNull("ok", e);
+			}
 			final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
 					.getRequestDispatcher(url3);
 			assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher3);
 			verify(request);
 			verify(response);
+			verify(requestDispatcher);
+			// verify ne marche pas ici car on fait une Error, verify(requestDispatcherWithError);
 		} finally {
 			destroy();
 		}
