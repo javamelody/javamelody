@@ -53,6 +53,7 @@ import java.util.Timer;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -505,7 +506,7 @@ public class TestMonitoringFilter {
 	}
 
 	/** Test.
-	 * @throws ServletException e 
+	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
 	public void testJiraMonitoringFilter() throws ServletException, IOException {
@@ -532,6 +533,27 @@ public class TestMonitoringFilter {
 			verify(request);
 			verify(response);
 			verify(chain);
+		} finally {
+			destroy();
+		}
+	}
+
+	/** Test. */
+	@Test
+	public void testJspWrapper() {
+		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
+
+		try {
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
+			expect(request.getRequestDispatcher("test.jsp")).andReturn(requestDispatcher);
+			final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
+
+			replay(request);
+			final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
+					.getRequestDispatcher("test.jsp");
+			wrappedRequestDispatcher.toString();
+			verify(request);
 		} finally {
 			destroy();
 		}
