@@ -538,22 +538,29 @@ public class TestMonitoringFilter {
 		}
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws IOException e
+	 * @throws ServletException e */
 	@Test
-	public void testJspWrapper() {
+	public void testJspWrapper() throws ServletException, IOException {
 		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
 
 		try {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
 			expect(request.getRequestDispatcher("test.jsp")).andReturn(requestDispatcher);
 			final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
 
 			replay(request);
+			replay(response);
 			final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
 					.getRequestDispatcher("test.jsp");
 			wrappedRequestDispatcher.toString();
+			wrappedRequestDispatcher.include(wrappedRequest, response);
+			wrappedRequestDispatcher.forward(wrappedRequest, response);
 			verify(request);
+			verify(response);
 		} finally {
 			destroy();
 		}
