@@ -573,7 +573,7 @@ public class TestMonitoringFilter {
 			final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
 					.getRequestDispatcher(url2);
 			try {
-				wrappedRequestDispatcher2.forward(wrappedRequest, response);
+				wrappedRequestDispatcher2.forward(request, response);
 			} catch (final UnknownError e) {
 				assertNotNull("ok", e);
 			}
