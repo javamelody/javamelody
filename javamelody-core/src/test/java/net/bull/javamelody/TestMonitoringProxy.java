@@ -45,16 +45,22 @@ public class TestMonitoringProxy {
 
 		servicesCounter.setDisplayed(false);
 		assertNotNull("now()", springTestFacade.now());
-		assertSame("requestsCount", 0, servicesCounter.getRequestsCount());
+		final String requestsCount = "requestsCount";
+		assertSame(requestsCount, 0, servicesCounter.getRequestsCount());
 
 		servicesCounter.setDisplayed(true);
 		assertNotNull("now()", springTestFacade.now());
-		assertSame("requestsCount", 1, servicesCounter.getRequestsCount());
+		assertSame(requestsCount, 1, servicesCounter.getRequestsCount());
 
 		try {
 			springTestFacade.throwError();
 		} catch (final Error e) {
-			assertSame("requestsCount", 2, servicesCounter.getRequestsCount());
+			assertSame(requestsCount, 2, servicesCounter.getRequestsCount());
+		}
+		try {
+			springTestFacade.throwException();
+		} catch (final Exception e) {
+			assertSame(requestsCount, 3, servicesCounter.getRequestsCount());
 		}
 	}
 }

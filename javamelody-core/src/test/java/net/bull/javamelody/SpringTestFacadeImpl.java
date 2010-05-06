@@ -83,4 +83,11 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	public void throwError() {
 		throw new OutOfMemoryError("test");
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void throwException() {
+		throw new IllegalStateException("test");
+	}
 }
