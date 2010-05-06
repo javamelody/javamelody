@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -107,10 +108,12 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 		try {
 			SERVICES_COUNTER.bindContextIncludingCpu(requestName);
 			return method.invoke(facade, args);
-		} catch (final Error e) {
-			// on catche Error pour avoir les erreurs systèmes
-			// mais pas Exception qui sont fonctionnelles en général
-			systemError = true;
+		} catch (final InvocationTargetException e) {
+			if (e.getCause() instanceof Error) {
+				// on catche Error pour avoir les erreurs systèmes
+				// mais pas Exception qui sont fonctionnelles en général
+				systemError = true;
+			}
 			throw e;
 		} finally {
 			// on enregistre la requête dans les statistiques

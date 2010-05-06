@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.servlet.RequestDispatcher;
@@ -113,10 +114,12 @@ final class JspWrapper implements InvocationHandler {
 			}
 			JSP_COUNTER.bindContextIncludingCpu(pathWithoutParameters);
 			return method.invoke(requestDispatcher, args);
-		} catch (final Error e) {
-			// on catche Error pour avoir les erreurs systèmes
-			// mais pas Exception qui sont fonctionnelles en général
-			systemError = true;
+		} catch (final InvocationTargetException e) {
+			if (e.getCause() instanceof Error) {
+				// on catche Error pour avoir les erreurs systèmes
+				// mais pas Exception qui sont fonctionnelles en général
+				systemError = true;
+			}
 			throw e;
 		} finally {
 			// on enregistre la requête dans les statistiques
