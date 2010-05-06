@@ -65,7 +65,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 				}
 				if (!hasSystemAdminPermission(user)) {
 					final HttpServletResponse httpResponse = (HttpServletResponse) response;
-					// si authentifié mais sans la permission system admin, alors Forbidden 
+					// si authentifié mais sans la permission system admin, alors Forbidden
 					httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 					return;
 				}
@@ -92,13 +92,13 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 					"hasPermission", new Class[] { Integer.TYPE, userClass }).invoke(
 					permissionManager, new Object[] { SYSTEM_ADMIN, user });
 			return result;
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			throw new IllegalStateException(e);
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			throw new IllegalStateException(e);
-		} catch (InvocationTargetException e) {
+		} catch (final InvocationTargetException e) {
 			throw new IllegalStateException(e);
-		} catch (NoSuchMethodException e) {
+		} catch (final NoSuchMethodException e) {
 			throw new IllegalStateException(e);
 		}
 		//		return remoteUser != null

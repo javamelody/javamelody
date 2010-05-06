@@ -41,7 +41,7 @@ final class JspWrapper implements InvocationHandler {
 	private final RequestDispatcher requestDispatcher;
 
 	private static class HttpRequestWrapper extends HttpServletRequestWrapper {
-		/** 
+		/**
 		 * Constructs a request object wrapping the given request.
 		 * @param request HttpServletRequest
 		 */
