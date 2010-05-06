@@ -53,6 +53,9 @@ final class JspWrapper implements InvocationHandler {
 		@Override
 		public RequestDispatcher getRequestDispatcher(String path) {
 			final RequestDispatcher requestDispatcher = super.getRequestDispatcher(path);
+			if (requestDispatcher == null) {
+				return null;
+			}
 			final InvocationHandler invocationHandler = new JspWrapper(path, requestDispatcher);
 			return JdbcWrapper.createProxy(requestDispatcher, invocationHandler);
 		}
