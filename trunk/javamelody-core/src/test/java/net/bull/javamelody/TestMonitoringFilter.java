@@ -38,6 +38,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -549,16 +550,26 @@ public class TestMonitoringFilter {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
-			expect(request.getRequestDispatcher("test.jsp")).andReturn(requestDispatcher);
+			final String url1 = "test.jsp";
+			final String url2 = "test.jsp?param=test";
+			final String url3 = null;
+			expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
+			expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcher);
+			expect(request.getRequestDispatcher(url3)).andReturn(null);
 			final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
 
 			replay(request);
 			replay(response);
 			final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
-					.getRequestDispatcher("test.jsp");
+					.getRequestDispatcher(url1);
 			wrappedRequestDispatcher.toString();
 			wrappedRequestDispatcher.include(wrappedRequest, response);
-			wrappedRequestDispatcher.forward(wrappedRequest, response);
+			final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
+					.getRequestDispatcher(url2);
+			wrappedRequestDispatcher2.forward(wrappedRequest, response);
+			final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
+					.getRequestDispatcher(url3);
+			assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher3);
 			verify(request);
 			verify(response);
 		} finally {
