@@ -552,20 +552,26 @@ public class TestMonitoringFilter {
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
 			final RequestDispatcher requestDispatcherWithError = createNiceMock(RequestDispatcher.class);
+			final RequestDispatcher requestDispatcherWithException = createNiceMock(RequestDispatcher.class);
 			final String url1 = "test.jsp";
-			final String url2 = "test.jsp?param=test";
-			final String url3 = null;
+			final String url2 = "test.jsp?param=test2";
+			final String url3 = "test.jsp?param=test3";
+			final String url4 = null;
 			expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
 			expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcherWithError);
 			requestDispatcherWithError.forward(request, response);
 			expectLastCall().andThrow(new UnknownError("erreur dans forward"));
-			expect(request.getRequestDispatcher(url3)).andReturn(null);
+			expect(request.getRequestDispatcher(url3)).andReturn(requestDispatcherWithException);
+			requestDispatcherWithException.forward(request, response);
+			expectLastCall().andThrow(new IllegalStateException("erreur dans forward"));
+			expect(request.getRequestDispatcher(url4)).andReturn(null);
 			final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
 
 			replay(request);
 			replay(response);
 			replay(requestDispatcher);
 			replay(requestDispatcherWithError);
+			replay(requestDispatcherWithException);
 			final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
 					.getRequestDispatcher(url1);
 			wrappedRequestDispatcher.toString();
@@ -579,11 +585,19 @@ public class TestMonitoringFilter {
 			}
 			final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
 					.getRequestDispatcher(url3);
-			assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher3);
+			try {
+				wrappedRequestDispatcher3.forward(request, response);
+			} catch (final IllegalStateException e) {
+				assertNotNull("ok", e);
+			}
+			final RequestDispatcher wrappedRequestDispatcher4 = wrappedRequest
+					.getRequestDispatcher(url4);
+			assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher4);
 			verify(request);
 			verify(response);
 			verify(requestDispatcher);
 			// verify ne marche pas ici car on fait une Error, verify(requestDispatcherWithError);
+			verify(requestDispatcherWithException);
 		} finally {
 			destroy();
 		}

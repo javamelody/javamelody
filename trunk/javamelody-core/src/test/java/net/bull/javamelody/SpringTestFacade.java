@@ -43,4 +43,9 @@ public interface SpringTestFacade {
 	 * Méthode test de service sur la façade.
 	 */
 	void throwError();
+
+	/**
+	 * Méthode test de service sur la façade.
+	 */
+	void throwException();
 }
