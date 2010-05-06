@@ -56,7 +56,9 @@ final class JspWrapper implements InvocationHandler {
 			if (requestDispatcher == null) {
 				return null;
 			}
-			final InvocationHandler invocationHandler = new JspWrapper(path, requestDispatcher);
+			// il n'est pas dit que path soit non null
+			final InvocationHandler invocationHandler = new JspWrapper(String.valueOf(path),
+					requestDispatcher);
 			return JdbcWrapper.createProxy(requestDispatcher, invocationHandler);
 		}
 	}
@@ -68,6 +70,8 @@ final class JspWrapper implements InvocationHandler {
 	 */
 	JspWrapper(String path, RequestDispatcher requestDispatcher) {
 		super();
+		assert path != null;
+		assert requestDispatcher != null;
 		// quand ce RequestDispatcher est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		JSP_COUNTER.setDisplayed(!COUNTER_HIDDEN);
@@ -102,7 +106,7 @@ final class JspWrapper implements InvocationHandler {
 		boolean systemError = false;
 		try {
 			final String pathWithoutParameters;
-			if (path != null && path.indexOf('?') != -1) {
+			if (path.indexOf('?') != -1) {
 				pathWithoutParameters = path.substring(0, path.indexOf('?'));
 			} else {
 				pathWithoutParameters = path;
