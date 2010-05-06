@@ -33,7 +33,7 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
 /**
- * Test unitaire de la classe MonitoringProxy.
+ * Test unitaire de la classe JobGlobalListener.
  * @author Emeric Vernat
  */
 public class TestJobGlobalListener {
@@ -43,8 +43,8 @@ public class TestJobGlobalListener {
 		assertNotNull("getJobCounter", JobGlobalListener.getJobCounter());
 	}
 
-	/** Test. 
-	 * @throws SchedulerException e 
+	/** Test.
+	 * @throws SchedulerException e
 	 * @throws InterruptedException e */
 	@Test
 	public void testJobGlobalListener() throws SchedulerException, InterruptedException {
