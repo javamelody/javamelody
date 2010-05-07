@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -183,8 +189,17 @@ public class TestCounter {
 			throw new IllegalStateException(e);
 		}
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+
 		CounterError.bindRequest(null);
 		CounterError.unbindRequest();
+		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
+		expect(httpRequest.getRemoteUser()).andReturn("me");
+		replay(httpRequest);
+		CounterError.bindRequest(httpRequest);
+		new CounterError("with request", null);
+		CounterError.unbindRequest();
+		verify(httpRequest);
+
 		final int errorsCount = errorCounter.getErrorsCount();
 		final List<CounterError> errors = new ArrayList<CounterError>();
 		errors.add(new CounterError("erreur", null));
