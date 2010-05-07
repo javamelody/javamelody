@@ -813,10 +813,7 @@ class Counter implements Cloneable, Serializable {
 			}
 			if (errors != null) {
 				errors.clear();
-				final List<CounterError> counterErrors = counter.getErrors();
-				if (counterErrors != null) { // pour compatibilité ascendante
-					errors.addAll(counterErrors);
-				}
+				errors.addAll(counter.getErrors());
 			}
 			// on ajoute les nouvelles requêtes enregistrées avant de lire le fichier
 			// (par ex. les premières requêtes collectées par le serveur de collecte lors de l'initialisation)
