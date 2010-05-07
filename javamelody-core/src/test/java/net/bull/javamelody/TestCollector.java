@@ -307,6 +307,11 @@ public class TestCollector {
 			final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2), timer);
 			collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
 			collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
+			try {
+				collector.getRangeCounter(Period.TOUT.getRange(), "unknown");
+			} catch (final IllegalArgumentException e) {
+				assertNotNull("getRangeCounter", e);
+			}
 		} finally {
 			timer.cancel();
 		}

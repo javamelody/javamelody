@@ -156,7 +156,7 @@ public class TestAction {
 
 			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 
-			//Define a Trigger that will fire "now"
+			//Define a Trigger that will fire "later"
 			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, new Date(
 					System.currentTimeMillis() + 60000));
 			//Schedule the job with the trigger
@@ -165,7 +165,7 @@ public class TestAction {
 			//Define a Trigger that will fire "later"
 			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + random.nextInt(60000)));
+					new Date(System.currentTimeMillis() + 60000));
 			scheduler.scheduleJob(job2, trigger2);
 
 			globalJobId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
