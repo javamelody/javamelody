@@ -512,8 +512,8 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testJiraMonitoringFilter() throws ServletException, IOException {
+		final JiraMonitoringFilter jiraMonitoringFilter = new JiraMonitoringFilter();
 		try {
-			final JiraMonitoringFilter jiraMonitoringFilter = new JiraMonitoringFilter();
 			init();
 			setUp();
 
@@ -536,6 +536,7 @@ public class TestMonitoringFilter {
 			verify(response);
 			verify(chain);
 		} finally {
+			jiraMonitoringFilter.destroy();
 			destroy();
 		}
 	}

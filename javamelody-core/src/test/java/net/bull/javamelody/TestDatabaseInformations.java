@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -30,6 +31,7 @@ import javax.naming.NamingException;
 
 import net.bull.javamelody.DatabaseInformations.Database;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,21 +40,32 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestDatabaseInformations {
-	static void initH2() {
+	private Connection connection;
+
+	static Connection initH2() {
 		// nécessite la dépendance vers la base de données H2
 		final Properties info = new Properties();
 		info.put("driver", "org.h2.Driver");
 		try {
-			JdbcDriver.SINGLETON.connect(TestJdbcWrapper.H2_DATABASE_URL, info);
+			return JdbcDriver.SINGLETON.connect(TestJdbcWrapper.H2_DATABASE_URL, info);
 		} catch (final SQLException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	/** Test. */
+	/** setup. */
 	@Before
 	public void setUp() {
-		initH2();
+		connection = initH2();
+	}
+
+	/** tearDown.
+	 * @throws SQLException e */
+	@After
+	public void tearDown() throws SQLException {
+		if (connection != null) {
+			connection.close();
+		}
 	}
 
 	/** Test.
