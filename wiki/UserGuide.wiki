@@ -88,7 +88,7 @@ or MSIE8 (MSIE7 not recommended).
 	Then you can open the report from the address {{{http://host:8080/monitoring}}}. That's it.
 	Note: It does not seem possible to monitor sql requests at the moment.
 	
-	This plugin probably works also with Confluence.
+	This plugin seems to not work with Confluence.
 
 == Grails Plugin ==
 
