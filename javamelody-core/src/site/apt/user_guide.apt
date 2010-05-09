@@ -82,7 +82,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Vous pouvez alors ouvrir le rapport à partir de l'adresse <<<http://host:8080/monitoring>>>. C'est tout.
 	Note : Il ne paraît pas possible de monitorer les requêtes sql pour le moment.
 	
-	Ce plugin fonctionne certainement avec Confluence également.
+	Ce plugin ne fonctionne apparemment pas avec Confluence.
 
 * Plugin Grails
 
