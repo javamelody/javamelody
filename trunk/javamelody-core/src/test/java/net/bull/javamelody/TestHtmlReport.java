@@ -171,6 +171,12 @@ public class TestHtmlReport {
 				Period.SEMAINE, writer);
 		htmlReport.toHtml("message 6");
 		assertNotEmptyAndClear(writer);
+
+		// période personnalisée
+		final HtmlReport htmlReportRange = new HtmlReport(collector, null, javaInformationsList,
+				Range.createCustomRange(new Date(), new Date()), writer);
+		htmlReportRange.toHtml("message 6");
+		assertNotEmptyAndClear(writer);
 	}
 
 	/** Test.
