@@ -50,8 +50,16 @@ class CounterError implements Serializable {
 			this.remoteUser = null;
 			this.httpRequest = null;
 		} else {
-			this.remoteUser = currentRequest.getRemoteUser();
-			this.httpRequest = (String) currentRequest.getAttribute(REQUEST_KEY);
+			// unbindRequest pour éviter StackOverflowError dans le cas où getRemoteUser()
+			// fait un log warn ou error. Par exemple, dans le cas d'un SSO comme
+			// com.pixelpark.seraph.SSOAuthenticator.getUser (cf issue 24).
+			unbindRequest();
+			try {
+				this.httpRequest = (String) currentRequest.getAttribute(REQUEST_KEY);
+				this.remoteUser = currentRequest.getRemoteUser();
+			} finally {
+				bindRequest(currentRequest);
+			}
 		}
 	}
 
