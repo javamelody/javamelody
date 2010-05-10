@@ -239,6 +239,7 @@ public class TestJdbcWrapper {
 		// nécessite la dépendance vers la base de données H2
 		final Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
 		jdbcWrapper.rewrapConnection(connection);
+		connection.close();
 	}
 
 	/** Test.
