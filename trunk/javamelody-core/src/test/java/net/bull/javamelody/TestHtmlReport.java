@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -213,20 +214,26 @@ public class TestHtmlReport {
 		final String fileName = ProcessInformations.WINDOWS ? "/tasklist.txt" : "/ps.txt";
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));
-		TestDatabaseInformations.initH2();
+		// avant initH2 pour avoir une liste de connexions vide
 		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
-		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
-		htmlReport.writeDatabase(new DatabaseInformations(0));
-		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
-		HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
-		htmlReport.toHtml(null); // writeSystemActionsLinks
-		assertNotEmptyAndClear(writer);
-		setProperty(Parameter.NO_DATABASE, "true");
-		htmlReport.toHtml(null); // writeSystemActionsLinks
-		assertNotEmptyAndClear(writer);
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
-		setProperty(Parameter.NO_DATABASE, "false");
+		final Connection connection = TestDatabaseInformations.initH2();
+		try {
+			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
+			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
+			htmlReport.writeDatabase(new DatabaseInformations(0));
+			HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
+			HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+			htmlReport.toHtml(null); // writeSystemActionsLinks
+			assertNotEmptyAndClear(writer);
+			setProperty(Parameter.NO_DATABASE, "true");
+			htmlReport.toHtml(null); // writeSystemActionsLinks
+			assertNotEmptyAndClear(writer);
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+			setProperty(Parameter.NO_DATABASE, "false");
+		} finally {
+			connection.close();
+		}
 	}
 
 	/** Test.
