@@ -34,7 +34,7 @@ public class JobTestImpl implements Job {
 	/** {@inheritDoc} */
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			Thread.sleep(RANDOM.nextInt(5000));
+			Thread.sleep(RANDOM.nextInt(2000));
 		} catch (final InterruptedException e) {
 			throw new JobExecutionException(e);
 		}

@@ -72,11 +72,12 @@ public class TestJobGlobalListener {
 			scheduler.scheduleJob(job, trigger);
 
 			// JobTestImpl fait un sleep de 5s au plus, donc on l'attend pour le compter
-			Thread.sleep(5100);
+			Thread.sleep(2100);
 
 			assertSame("requestsCount", 1, jobCounter.getRequestsCount());
 		} finally {
 			scheduler.shutdown();
+			JobGlobalListener.destroyJobGlobalListener();
 		}
 	}
 }

@@ -73,7 +73,7 @@ public class TestHtmlReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		counter = new Counter("http", "dbweb.png", sqlCounter);
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, "jobs.png");
+		final Counter jobCounter = JobGlobalListener.getJobCounter();
 		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
 				errorCounter, jobCounter), timer);
 		writer = new StringWriter();
@@ -300,6 +300,10 @@ public class TestHtmlReport {
 	 * @throws SchedulerException e */
 	@Test
 	public void testJob() throws IOException, SchedulerException {
+		// job quartz
+		JobGlobalListener.initJobGlobalListener();
+		JobGlobalListener.getJobCounter().clear();
+
 		//Grab the Scheduler instance from the Factory
 		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
@@ -311,12 +315,6 @@ public class TestHtmlReport {
 			final Random random = new Random();
 			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 
-			//Define a Trigger that will fire "now"
-			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date());
-			//Schedule the job with the trigger
-			scheduler.scheduleJob(job, trigger);
-
 			//Define a Trigger that will fire "later"
 			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
@@ -324,14 +322,38 @@ public class TestHtmlReport {
 			scheduler.scheduleJob(job2, trigger2);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
+			// (mais "Aucun job" dans le counter)
 			final List<JavaInformations> javaInformationsList2 = Collections
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
 					Period.TOUT, writer);
 			htmlReport.toHtml(null);
 			assertNotEmptyAndClear(writer);
+
+			//Define a Trigger that will fire "now"
+			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date());
+			//Schedule the job with the trigger
+			scheduler.scheduleJob(job, trigger);
+
+			// JobTestImpl fait un sleep de 2s au plus, donc on l'attend pour le compter
+			try {
+				Thread.sleep(2100);
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			}
+
+			// JavaInformations doit être réinstancié pour récupérer les jobs
+			final List<JavaInformations> javaInformationsList3 = Collections
+					.singletonList(new JavaInformations(null, true));
+			final HtmlReport htmlReport3 = new HtmlReport(collector, null, javaInformationsList3,
+					Period.TOUT, writer);
+			htmlReport3.toHtml(null);
+			assertNotEmptyAndClear(writer);
 		} finally {
 			scheduler.shutdown();
+			JobGlobalListener.getJobCounter().clear();
+			JobGlobalListener.destroyJobGlobalListener();
 		}
 	}
 

@@ -64,7 +64,7 @@ public class TestPdfReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, "jobs.png");
+		final Counter jobCounter = JobGlobalListener.getJobCounter();
 		final List<Counter> counters = new ArrayList<Counter>();
 		counters.add(counter);
 		counters.add(sqlCounter);
@@ -144,6 +144,10 @@ public class TestPdfReport {
 
 	private void job(Collector collector, ByteArrayOutputStream output) throws IOException,
 			SchedulerException {
+		// job quartz
+		JobGlobalListener.initJobGlobalListener();
+		JobGlobalListener.getJobCounter().clear();
+
 		//Grab the Scheduler instance from the Factory
 		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
@@ -153,13 +157,6 @@ public class TestPdfReport {
 
 			//Define job instance
 			final Random random = new Random();
-			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-
-			//Define a Trigger that will fire "now"
-			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date());
-			//Schedule the job with the trigger
-			scheduler.scheduleJob(job, trigger);
 
 			//Define a Trigger that will fire "later"
 			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
@@ -168,14 +165,39 @@ public class TestPdfReport {
 			scheduler.scheduleJob(job2, trigger2);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
+			// (mais "Aucun job" dans le counter)
 			final List<JavaInformations> javaInformationsList = Collections
 					.singletonList(new JavaInformations(null, true));
 			final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList,
 					Period.TOUT, output);
 			pdfReport.toPdf();
 			assertNotEmptyAndClear(output);
+
+			//Define a Trigger that will fire "now"
+			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date());
+			//Schedule the job with the trigger
+			scheduler.scheduleJob(job, trigger);
+
+			// JobTestImpl fait un sleep de 2s au plus, donc on l'attend pour le compter
+			try {
+				Thread.sleep(2100);
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			}
+
+			// JavaInformations doit être réinstancié pour récupérer les jobs
+			final List<JavaInformations> javaInformationsList2 = Collections
+					.singletonList(new JavaInformations(null, true));
+			final PdfReport pdfReport2 = new PdfReport(collector, false, javaInformationsList2,
+					Period.TOUT, output);
+			pdfReport2.toPdf();
+			assertNotEmptyAndClear(output);
 		} finally {
 			scheduler.shutdown();
+			JobGlobalListener.getJobCounter().clear();
+			JobGlobalListener.destroyJobGlobalListener();
 		}
 	}
 
