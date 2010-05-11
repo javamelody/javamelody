@@ -18,11 +18,17 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
@@ -44,9 +50,22 @@ public class TestHtmlCounterErrorReport {
 		final StringWriter writer = new StringWriter();
 		final HtmlCounterErrorReport report = new HtmlCounterErrorReport(errorCounter, writer);
 		report.toHtml();
+		assertNotEmptyAndClear(writer);
+
 		while (errorCounter.getErrorsCount() < Counter.MAX_ERRORS_COUNT) {
 			errorCounter.addErrors(Collections.singletonList(new CounterError("erreur", null)));
 		}
+		report.toHtml();
+		assertNotEmptyAndClear(writer);
+
+		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
+		expect(httpRequest.getAttribute(CounterError.REQUEST_KEY)).andReturn("/test GET");
+		expect(httpRequest.getRemoteUser()).andReturn("me");
+		replay(httpRequest);
+		CounterError.bindRequest(httpRequest);
+		errorCounter.addErrors(Collections.singletonList(new CounterError("with request", null)));
+		CounterError.unbindRequest();
+		verify(httpRequest);
 		report.toHtml();
 		assertNotEmptyAndClear(writer);
 	}
