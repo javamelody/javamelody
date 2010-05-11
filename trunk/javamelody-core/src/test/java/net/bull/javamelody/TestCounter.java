@@ -193,6 +193,7 @@ public class TestCounter {
 		CounterError.bindRequest(null);
 		CounterError.unbindRequest();
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
+		expect(httpRequest.getAttribute(CounterError.REQUEST_KEY)).andReturn("/test GET");
 		expect(httpRequest.getRemoteUser()).andReturn("me");
 		replay(httpRequest);
 		CounterError.bindRequest(httpRequest);
