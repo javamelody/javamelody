@@ -226,7 +226,8 @@ public class TestHtmlReport {
 		try {
 			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
 			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
-			htmlReport.writeDatabase(new DatabaseInformations(0));
+			htmlReport.writeDatabase(new DatabaseInformations(0)); // h2.memory
+			htmlReport.writeDatabase(new DatabaseInformations(3)); // h2.settings avec nbColumns==2
 			HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 			HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
