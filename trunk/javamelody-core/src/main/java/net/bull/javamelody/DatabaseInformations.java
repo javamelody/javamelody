@@ -77,7 +77,7 @@ class DatabaseInformations implements Serializable {
 				tmp = Arrays.asList("current_queries");
 				break;
 			case H2:
-				tmp = Arrays.asList("memory");
+				tmp = Arrays.asList("memory", "sessions", "locks", "settings");
 				break;
 			default:
 				throw new IllegalStateException();
@@ -129,14 +129,16 @@ class DatabaseInformations implements Serializable {
 
 	int getNbColumns() {
 		final String selectedRequestName = getSelectedRequestName();
-		if (database == Database.ORACLE && "oracle.statistics".equals(selectedRequestName)) {
+		if ("oracle.statistics".equals(selectedRequestName)) {
 			return 2;
-		} else if (database == Database.ORACLE && "oracle.events".equals(selectedRequestName)) {
+		} else if ("oracle.events".equals(selectedRequestName)) {
 			return 2;
-		} else if (database == Database.MYSQL && "mysql.variables".equals(selectedRequestName)) {
+		} else if ("mysql.variables".equals(selectedRequestName)) {
 			return 2;
-		} else if (database == Database.MYSQL && "mysql.global_status".equals(selectedRequestName)) {
+		} else if ("mysql.global_status".equals(selectedRequestName)) {
 			return 4;
+		} else if ("h2.settings".equals(selectedRequestName)) {
+			return 2;
 		}
 		return 1;
 	}
