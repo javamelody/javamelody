@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -41,6 +42,7 @@ import net.sf.ehcache.Element;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -316,13 +318,19 @@ public class TestHtmlReport {
 
 			//Define a Trigger that will fire "later"
 			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
+			final SimpleTrigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
 					new Date(System.currentTimeMillis() + 60000));
+			trigger2.setRepeatInterval(2 * 24L * 60 * 60 * 1000);
 			scheduler.scheduleJob(job2, trigger2);
-			final JobDetail job3 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-			final Trigger trigger3 = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + 60000));
-			scheduler.scheduleJob(job3, trigger3);
+			try {
+				final JobDetail job3 = new JobDetail("job" + random.nextInt(), null,
+						JobTestImpl.class);
+				final Trigger trigger3 = new CronTrigger("trigger" + random.nextInt(), null,
+						"0 0 0 * * ? 2030");
+				scheduler.scheduleJob(job3, trigger3);
+			} catch (final ParseException e) {
+				throw new IllegalStateException(e);
+			}
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			// (mais "Aucun job" dans le counter)
@@ -336,7 +344,7 @@ public class TestHtmlReport {
 			//Define a Trigger that will fire "now"
 			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 			job.setDescription("description");
-			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+			final SimpleTrigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
 					new Date());
 			//Schedule the job with the trigger
 			scheduler.scheduleJob(job, trigger);
@@ -348,6 +356,7 @@ public class TestHtmlReport {
 				throw new IllegalStateException(e);
 			}
 			// et on le relance pour qu'il soit en cours
+			trigger.setRepeatInterval(60000);
 			scheduler.scheduleJob(job, trigger);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
