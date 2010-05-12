@@ -344,7 +344,7 @@ public class TestHtmlReport {
 			// JobTestImpl fait un sleep de 2s au plus, donc on l'attend pour le compter
 			try {
 				Thread.sleep(2100);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				throw new IllegalStateException(e);
 			}
 			// et on le relance pour qu'il soit en cours
