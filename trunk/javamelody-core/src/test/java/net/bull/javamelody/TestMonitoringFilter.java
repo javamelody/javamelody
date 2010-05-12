@@ -356,6 +356,11 @@ public class TestMonitoringFilter {
 			CacheManager.getInstance().addCache("test clear");
 		}
 		monitoring(parameters);
+		parameters.put(ACTION_PARAMETER, Action.PAUSE_JOB.toString());
+		parameters.put("jobId", "all");
+		monitoring(parameters);
+		parameters.put(ACTION_PARAMETER, Action.RESUME_JOB.toString());
+		monitoring(parameters);
 		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
 		parameters.put("counter", "all");
 		monitoring(parameters);
