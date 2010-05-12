@@ -1,3 +1,5 @@
 === JavaMelody search in mailing lists in the Internet ===
 
-<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody"/>
+<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody&r=270" width="100%" height="100%"/>
+
+<p align="right">[http://markmail.org/search/?q=javamelody Expand]</p>
