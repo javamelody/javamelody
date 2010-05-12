@@ -1,5 +1,4 @@
-=== JavaMelody search in mailing lists in the Internet ===
-
+JavaMelody search in mailing lists in the Internet:
 <wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody&r=270" width="100%" height="600"/>
 
 <p align="right">[http://markmail.org/search/?q=javamelody Refine in MarkMail]</p>
