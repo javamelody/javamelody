@@ -128,11 +128,11 @@ public class TestHtmlReport {
 		htmlReport.toHtml("message 2");
 		assertNotEmptyAndClear(writer);
 
-		setProperty(Parameter.NO_DATABASE, "true");
+		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		collector.collectWithoutErrors(javaInformationsList);
 		htmlReport.toHtml("message 2");
 		assertNotEmptyAndClear(writer);
-		setProperty(Parameter.NO_DATABASE, "false");
+		setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 	}
 
 	/** Test.
@@ -230,14 +230,14 @@ public class TestHtmlReport {
 			htmlReport.writeDatabase(new DatabaseInformations(3)); // h2.settings avec nbColumns==2
 			HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 			HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 			htmlReport.toHtml(null); // writeSystemActionsLinks
 			assertNotEmptyAndClear(writer);
-			setProperty(Parameter.NO_DATABASE, "true");
+			setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 			htmlReport.toHtml(null); // writeSystemActionsLinks
 			assertNotEmptyAndClear(writer);
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
-			setProperty(Parameter.NO_DATABASE, "false");
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.FALSE.toString());
+			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		} finally {
 			connection.close();
 		}
@@ -351,7 +351,7 @@ public class TestHtmlReport {
 			scheduler.scheduleJob(job, trigger);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 			final List<JavaInformations> javaInformationsList3 = Collections
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport3 = new HtmlReport(collector, null, javaInformationsList3,
@@ -359,7 +359,7 @@ public class TestHtmlReport {
 			htmlReport3.toHtml(null);
 			assertNotEmptyAndClear(writer);
 		} finally {
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.FALSE.toString());
 			scheduler.shutdown();
 			JobGlobalListener.getJobCounter().clear();
 			JobGlobalListener.destroyJobGlobalListener();
