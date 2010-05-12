@@ -49,8 +49,10 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Timer;
 
 import javax.servlet.FilterChain;
@@ -96,7 +98,12 @@ public class TestMonitoringFilter {
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
-		expect(context.getServerInfo()).andReturn("EasyMock").anyTimes();
+		// mockJetty pour avoir un applicationServerIconName dans JavaInformations
+		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
+		// dependencies pour avoir des dépendances dans JavaInformations
+		final Set<String> dependencies = new LinkedHashSet<String>(Arrays.asList(
+				"/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		monitoringFilter = new MonitoringFilter();
 	}
