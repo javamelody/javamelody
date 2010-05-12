@@ -6,7 +6,7 @@ JavaMelody search in mailing lists on the Internet (or [http://markmail.org/sear
 
 [http://www.riksdagsmonitor.com/monitoring Running example of JavaMelody] thanks to _Pether Sörling_
 
-[UserGuide User guide]
+[ReleaseNotes Release notes], [Screenshots Screenshots], [UserGuide User guide]
 
 [http://groups.google.com/group/javamelody JavaMelody users' group]
 
