@@ -163,6 +163,10 @@ public class TestPdfReport {
 			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
 					new Date(System.currentTimeMillis() + random.nextInt(60000)));
 			scheduler.scheduleJob(job2, trigger2);
+			final JobDetail job3 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			final Trigger trigger3 = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date(System.currentTimeMillis() + 60000));
+			scheduler.scheduleJob(job3, trigger3);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			// (mais "Aucun job" dans le counter)
@@ -175,6 +179,7 @@ public class TestPdfReport {
 
 			//Define a Trigger that will fire "now"
 			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			job.setDescription("description");
 			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
 					new Date());
 			//Schedule the job with the trigger
@@ -186,6 +191,8 @@ public class TestPdfReport {
 			} catch (InterruptedException e) {
 				throw new IllegalStateException(e);
 			}
+			// et on le relance pour qu'il soit en cours
+			scheduler.scheduleJob(job, trigger);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			final List<JavaInformations> javaInformationsList2 = Collections

@@ -313,13 +313,16 @@ public class TestHtmlReport {
 
 			//Define job instance
 			final Random random = new Random();
-			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 
 			//Define a Trigger that will fire "later"
 			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + random.nextInt(60000)));
+					new Date(System.currentTimeMillis() + 60000));
 			scheduler.scheduleJob(job2, trigger2);
+			final JobDetail job3 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			final Trigger trigger3 = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date(System.currentTimeMillis() + 60000));
+			scheduler.scheduleJob(job3, trigger3);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			// (mais "Aucun job" dans le counter)
@@ -331,6 +334,8 @@ public class TestHtmlReport {
 			assertNotEmptyAndClear(writer);
 
 			//Define a Trigger that will fire "now"
+			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			job.setDescription("description");
 			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
 					new Date());
 			//Schedule the job with the trigger
@@ -342,8 +347,11 @@ public class TestHtmlReport {
 			} catch (InterruptedException e) {
 				throw new IllegalStateException(e);
 			}
+			// et on le relance pour qu'il soit en cours
+			scheduler.scheduleJob(job, trigger);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 			final List<JavaInformations> javaInformationsList3 = Collections
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport3 = new HtmlReport(collector, null, javaInformationsList3,
@@ -351,6 +359,7 @@ public class TestHtmlReport {
 			htmlReport3.toHtml(null);
 			assertNotEmptyAndClear(writer);
 		} finally {
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
 			scheduler.shutdown();
 			JobGlobalListener.getJobCounter().clear();
 			JobGlobalListener.destroyJobGlobalListener();
