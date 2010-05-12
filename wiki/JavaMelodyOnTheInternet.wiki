@@ -1,0 +1,19 @@
+JavaMelody search in blogs on the Internet:
+<wiki:gadget url="http://google-code-feed-gadget.googlecode.com/svn/trunk/gadget.xml" up_feeds="http://blogsearch.google.com/blogsearch_feeds?q=javamelody&prmdo=1&output=rss" width="100%" height="340px" border="0"/>
+
+JavaMelody search in mailing lists on the Internet (or [http://markmail.org/search/?q=javamelody refine search in MarkMail]):
+<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody&r=270" width="100%" height="310px" border="0"/>
+
+[http://www.riksdagsmonitor.com/monitoring Running example of JavaMelody] thanks to _Pether Sörling_
+
+[UserGuide User guide]
+
+[http://groups.google.com/group/javamelody JavaMelody users' group]
+
+[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]
+
+[https://plugins.atlassian.com/plugin/details/20909 JIRA/Bamboo plugin]
+
+[http://www.grails.org/plugin/grails-melody Grails plugin]
+
+[https://www.ohloh.net/p/javamelody ohloh statistics] <wiki:gadget url="http://www.ohloh.net/p/444931/widgets/project_users.xml?style=blue" height="100" border="0"/>
