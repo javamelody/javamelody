@@ -1,4 +1,3 @@
 JavaMelody search in mailing lists in the Internet:
-<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody&r=270" width="100%" height="310"/>
-
 <p align="right">[http://markmail.org/search/?q=javamelody Refine search in MarkMail]</p>
+<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody&r=270" width="100%" height="310"/>
