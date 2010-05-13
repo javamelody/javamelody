@@ -90,7 +90,7 @@ class JobInformations implements Serializable {
 				simpleTriggerRepeatInterval = ((SimpleTrigger) trigger).getRepeatInterval(); // NOPMD
 			}
 			jobPaused = jobPaused
-					&& scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) != Trigger.STATE_PAUSED;
+					&& scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) == Trigger.STATE_PAUSED;
 		}
 		this.repeatInterval = simpleTriggerRepeatInterval;
 		this.cronExpression = cronTriggerExpression;
