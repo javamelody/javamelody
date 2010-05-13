@@ -20,9 +20,11 @@ package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -253,6 +255,7 @@ public class TestMonitoringFilter {
 	public void testDoMonitoring() throws ServletException, IOException {
 		monitoring(Collections.<String, String> emptyMap());
 		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "html"));
+		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "htmlbody"));
 	}
 
 	/** Test.
@@ -300,6 +303,15 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(REQUEST_PARAMETER, "0");
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		parameters.put(FORMAT_PARAMETER, "htmlbody");
+		monitoring(parameters);
+		parameters.remove(FORMAT_PARAMETER);
 		parameters.put(REQUEST_PARAMETER, "0");
 		monitoring(parameters);
 		parameters.remove(REQUEST_PARAMETER);
@@ -319,6 +331,10 @@ public class TestMonitoringFilter {
 
 		parameters.put(PART_PARAMETER, GRAPH);
 		parameters.put(GRAPH, "usedMemory");
+		monitoring(parameters);
+
+		parameters.put(PART_PARAMETER, LAST_VALUE_PART);
+		parameters.put(GRAPH, "usedMemory,cpu,unknown");
 		monitoring(parameters);
 
 		parameters.put(PART_PARAMETER, USAGES_PART);
@@ -396,6 +412,8 @@ public class TestMonitoringFilter {
 		parameters.put(REQUEST_PARAMETER, "0");
 		monitoring(parameters);
 		parameters.remove(REQUEST_PARAMETER);
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
@@ -420,6 +438,8 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
@@ -437,6 +457,10 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DATABASE_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
