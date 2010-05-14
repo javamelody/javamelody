@@ -55,6 +55,13 @@ class CounterResponseStream extends FilterServletOutputStream {
 		return dataLength;
 	}
 
+	/**
+	 * Réinitialiser dataLength à 0.
+	 */
+	public void reset() {
+		dataLength = 0;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void write(int i) throws IOException {
