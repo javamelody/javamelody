@@ -388,6 +388,9 @@ final class JdbcWrapper {
 					final DataSource dataSourceProxy = createDataSourceProxy(jndiName, dataSource);
 					JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
 							dataSourceProxy);
+					if (isAtlassian()) {
+						rewrapDataSource(dataSource);
+					}
 				}
 			}
 			ok = true;
@@ -396,6 +399,20 @@ final class JdbcWrapper {
 			ok = false;
 		}
 		return ok;
+	}
+
+	private static boolean isAtlassian() {
+		// on regarde la propriété système qui est présente normalement
+		if (System.getProperty("atlassian.standalone") != null) {
+			return true;
+		}
+		// sinon on regarde si une classe principale de JIRA est présente
+		try {
+			Class.forName("com.atlassian.jira.startup.JiraStartupChecklistContextListener");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	private void rewrapDataSource(DataSource dataSource) throws IllegalAccessException {
@@ -424,16 +441,29 @@ final class JdbcWrapper {
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			// WEBLOGIC: le contexte JNDI est en lecture seule donc on modifie directement
 			// l'instance de RmiDataSource déjà présente dans le JNDI.
-			Object jdbcCtx = JdbcWrapperHelper.getFieldValue(dataSource, "jdbcCtx");
-			if (jdbcCtx != null) {
-				jdbcCtx = createContextProxy((Context) jdbcCtx);
-				JdbcWrapperHelper.setFieldValue(dataSource, "jdbcCtx", jdbcCtx);
+			rewrapWebLogicDataSource(dataSource);
+		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)) {
+			// JIRA dans Tomcat: la dataSource a déjà été mise en cache par org.ofbiz.core.entity.transaction.JNDIFactory
+			// à l'initialisation de com.atlassian.jira.startup.JiraStartupChecklistContextListener
+			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI
+			Object innerDataSource = JdbcWrapperHelper.getFieldValue(dataSource, "dataSource");
+			if (innerDataSource != null) {
+				innerDataSource = createDataSourceProxy((DataSource) innerDataSource);
+				JdbcWrapperHelper.setFieldValue(dataSource, "dataSource", innerDataSource);
 			}
-			Object driverInstance = JdbcWrapperHelper.getFieldValue(dataSource, "driverInstance");
-			if (driverInstance != null) {
-				driverInstance = createDriverProxy((Driver) driverInstance);
-				JdbcWrapperHelper.setFieldValue(dataSource, "driverInstance", driverInstance);
-			}
+		}
+	}
+
+	private void rewrapWebLogicDataSource(DataSource dataSource) throws IllegalAccessException {
+		Object jdbcCtx = JdbcWrapperHelper.getFieldValue(dataSource, "jdbcCtx");
+		if (jdbcCtx != null) {
+			jdbcCtx = createContextProxy((Context) jdbcCtx);
+			JdbcWrapperHelper.setFieldValue(dataSource, "jdbcCtx", jdbcCtx);
+		}
+		Object driverInstance = JdbcWrapperHelper.getFieldValue(dataSource, "driverInstance");
+		if (driverInstance != null) {
+			driverInstance = createDriverProxy((Driver) driverInstance);
+			JdbcWrapperHelper.setFieldValue(dataSource, "driverInstance", driverInstance);
 		}
 	}
 
@@ -477,7 +507,6 @@ final class JdbcWrapper {
 				}
 				return result;
 			}
-
 		};
 		return createProxy(driver, invocationHandler);
 	}
