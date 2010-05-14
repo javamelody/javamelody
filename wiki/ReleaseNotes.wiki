@@ -6,7 +6,7 @@
     * jdbc connections and sql requests are now monitored in JIRA (like jsp pages)
 
   * *Hudson plugin*
-    * change to reduce disk usage: Some common http requests are now aggregated in statistics, for example on build numbers. The javamelody.http-transform-pattern parameter has now the default value of {{{ /\d+/|/site/.+|avadoc/.+|/ws/.+|obertura/.+|estReport/.+|iolations/file/.+|/user/.+|/static/\w+/ }}} and all matches in http URLs will be replaced by "$". Note that it is possible on each Hudson server to change the value of this parameter with a system property -Djavamelody.http-transform-pattern=xxx in the java command line.
+    * change to reduce disk usage: Some common http requests are now aggregated in statistics, for example on build numbers. The javamelody.http-transform-pattern parameter has now the default value of {{{ "/\d+/|/site/.+|avadoc/.+|/ws/.+|obertura/.+|estReport/.+|iolations/file/.+|/user/.+|/static/\w+/" }}} and all matches in http URLs will be replaced by "$". Note that it is possible on each Hudson server to change the value of this parameter with a system property -Djavamelody.http-transform-pattern=xxx in the java command line.
 
 === 1.15.0 ===
 
