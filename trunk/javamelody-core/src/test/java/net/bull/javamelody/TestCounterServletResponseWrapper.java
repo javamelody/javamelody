@@ -37,9 +37,18 @@ public class TestCounterServletResponseWrapper {
 	public void testCounterServletResponseWrapper() throws IOException {
 		final CounterServletResponseWrapper wrapper = new CounterServletResponseWrapper(
 				new HttpResponse());
+		// stream est null pour l'instant
+		wrapper.reset();
+		wrapper.resetBuffer();
+
 		wrapper.createOutputStream();
 		wrapper.getOutputStream().write(new byte[8]);
 		assertEquals("dataLength", 8, wrapper.getDataLength());
+		wrapper.reset();
+		assertEquals("dataLength with reset", 0, wrapper.getDataLength());
+		wrapper.getOutputStream().write(new byte[8]);
+		wrapper.resetBuffer();
+		assertEquals("dataLength with resetBuffer", 0, wrapper.getDataLength());
 	}
 
 	/** Test.

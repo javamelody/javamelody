@@ -52,6 +52,13 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 		return stream;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void reset() {
+		super.reset();
+		status = 0;
+	}
+
 	/**
 	 * Retourne le status définit par setStatus ou sendError.
 	 * @return int

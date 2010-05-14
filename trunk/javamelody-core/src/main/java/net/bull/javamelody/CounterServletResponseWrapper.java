@@ -43,7 +43,29 @@ class CounterServletResponseWrapper extends FilterServletResponseWrapper {
 	 * @return int
 	 */
 	public int getDataLength() {
-		return getStream() == null ? 0 : ((CounterResponseStream) getStream()).getDataLength();
+		return getCounterResponseStream() == null ? 0 : getCounterResponseStream().getDataLength();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void reset() {
+		super.reset();
+		if (getCounterResponseStream() != null) {
+			getCounterResponseStream().reset();
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void resetBuffer() {
+		super.resetBuffer();
+		if (getCounterResponseStream() != null) {
+			getCounterResponseStream().reset();
+		}
+	}
+
+	private CounterResponseStream getCounterResponseStream() {
+		return (CounterResponseStream) getStream();
 	}
 
 	/** {@inheritDoc} */
