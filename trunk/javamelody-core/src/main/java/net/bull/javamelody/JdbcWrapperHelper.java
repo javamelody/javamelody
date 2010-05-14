@@ -31,6 +31,7 @@ import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
@@ -77,8 +78,12 @@ final class JdbcWrapperHelper {
 	}
 
 	static Map<String, DataSource> getJndiAndSpringDataSources() throws NamingException {
-		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(
-				getJndiDataSources());
+		Map<String, DataSource> dataSources;
+		try {
+			dataSources = new LinkedHashMap<String, DataSource>(getJndiDataSources());
+		} catch (final NoInitialContextException e) {
+			dataSources = new LinkedHashMap<String, DataSource>();
+		}
 		dataSources.putAll(SPRING_DATASOURCES);
 		return dataSources;
 	}
