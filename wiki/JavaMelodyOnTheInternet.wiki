@@ -1,10 +1,11 @@
-[http://www.riksdagsmonitor.com/monitoring Running example of JavaMelody] thanks to _Pether Sörling_
+*Demo*
+  * [http://www.riksdagsmonitor.com/monitoring Running example of JavaMelody] thanks to _Pether Sörling_
 
 *A selection of blogs*:
   * [http://ejvyas.blogspot.com/2009/12/java-melody-monitoring-of-javaee.html Vyas]
   * [http://pradeepjanakiraman.wordpress.com/2010/02/04/java-melody-pretty-cool/ Pradeep]
-  * [http://sourceforge.net/apps/wordpress/cia/2010/03/04/javamelody-for-chilled-application-monitoring/ Pether Sörling]
   * [http://olamy.blogspot.com/2009/11/using-javamelody-in-your-application.html Olivier Lamy (Maven PMC)]
+  * [http://sourceforge.net/apps/wordpress/cia/2010/03/04/javamelody-for-chilled-application-monitoring/ Pether Sörling]
   * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
   * [http://blog.klicap.es/archives/175 Antonio (Spanish)]
   * [http://www.javahispano.org/contenidos/es/javamelody__solucion_opensource_para_monitorizar_aplicaciones_java_ee/ javahispano (Spanish)]
