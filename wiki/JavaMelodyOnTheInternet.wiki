@@ -1,6 +1,17 @@
 JavaMelody search in blogs on the Internet:
 <wiki:gadget url="http://google-code-feed-gadget.googlecode.com/svn/trunk/gadget.xml" up_feeds="http://blogsearch.google.com/blogsearch_feeds?q=javamelody&prmdo=1&output=rss" width="100%" height="260px" border="0"/>
 
+A selection of blogs:
+  * [http://ejvyas.blogspot.com/2009/12/java-melody-monitoring-of-javaee.html Vyas]
+  * [http://pradeepjanakiraman.wordpress.com/2010/02/04/java-melody-pretty-cool/ Pradeep]
+  * [http://olamy.blogspot.com/2009/11/using-javamelody-in-your-application.html Olivier Lamy (Maven PMC)]
+  * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
+  * [http://blog.klicap.es/archives/175 Antonio (Spanish)]
+  * [http://www.javahispano.org/contenidos/es/javamelody__solucion_opensource_para_monitorizar_aplicaciones_java_ee/ javahispano (Spanish)]
+  * [http://psm-blog.blogspot.com/2009/11/monitoring-von-jee-anwedungen.html psm-blog (German)]
+  * [http://it-republik.de/jaxenter/news/Java-EE-App-Server-ueberwachen-mit-JavaMelody-055352.html it-republik (German)]
+  * [http://atamanenko.blogspot.com/2010/02/grails.html atamenko (Russian)]
+
 JavaMelody search in mailing lists on the Internet (or [http://markmail.org/search/?q=javamelody refine search in MarkMail]):
 <wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?q=javamelody&r=270" width="100%" height="310px" border="0"/>
 
