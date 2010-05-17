@@ -42,14 +42,16 @@
 	<resource type="i18n" name="i18n" location="javamelody_i18n" />
 
 	<web-item key="net.bull.javamelody.web-item" name="Monitoring"
-		section="system.top.navigation.bar" i18n-name-key="net.bull.javamelody.web-item"
+		section="system.admin/system" i18n-name-key="net.bull.javamelody.web-item"
 		weight="10">
 		<icon height="16" width="16">
 			<link>/monitoring?resource=systemmonitor.png</link>
 		</icon>
 		<label key="net.bull.javamelody.label">Monitoring</label>
 		<link linkId="net.bull.javamelody.link">/monitoring</link>
+		<!-- Pour compatibilite avec Confluence, on ne met pas cette condition qui n'est pas
+			 necessaire si la section est system.admin/system
 		<condition
-			class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition" />
+			class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition" />-->
 	</web-item>
 </atlassian-plugin>
