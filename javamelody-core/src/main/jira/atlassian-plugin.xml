@@ -41,7 +41,8 @@
 
 	<resource type="i18n" name="i18n" location="javamelody_i18n" />
 
-	<web-item key="net.bull.javamelody.web-item" name="Monitoring"
+	<!-- doc: http://confluence.atlassian.com/display/JIRA/Web+Fragments -->
+	<web-item key="net.bull.javamelody.jira-web-item" name="Monitoring"
 		section="system.admin/system" i18n-name-key="net.bull.javamelody.web-item"
 		weight="10">
 		<icon height="16" width="16">
@@ -53,5 +54,16 @@
 			 necessaire si la section est system.admin/system
 		<condition
 			class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition" />-->
+	</web-item>
+
+	<!-- doc: http://confluence.atlassian.co.jp/display/DOC/Web+UI+Plugins -->
+	<web-item key="net.bull.javamelody.confluence-web-item" name="Monitoring"
+		section="system.admin/administration" i18n-name-key="net.bull.javamelody.web-item"
+		weight="10">
+		<icon height="16" width="16">
+			<link>/monitoring?resource=systemmonitor.png</link>
+		</icon>
+		<label key="net.bull.javamelody.label">Monitoring</label>
+		<link linkId="net.bull.javamelody.link">/monitoring</link>
 	</web-item>
 </atlassian-plugin>
