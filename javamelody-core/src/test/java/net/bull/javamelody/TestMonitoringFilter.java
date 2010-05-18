@@ -556,7 +556,14 @@ public class TestMonitoringFilter {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
+					.anyTimes();
+			final StringWriter stringWriter = new StringWriter();
+			expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
 			final FilterChain chain = createNiceMock(FilterChain.class);
 
 			replay(config);

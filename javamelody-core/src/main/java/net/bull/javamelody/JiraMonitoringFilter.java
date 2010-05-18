@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -38,7 +37,10 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 	private static final int SYSTEM_ADMIN = 44;
 	// valeur de DefaultAuthenticator.LOGGED_IN_KEY
 	private static final String LOGGED_IN_KEY = "seraph_defaultauthenticator_user";
-	private boolean jira = true;
+	// initialisation ici et non dans la méthode init, car on ne sait pas très bien
+	// quand la méthode init serait appelée dans les systèmes de plugins
+	private final boolean jira = isJira();
+	private final boolean confluence = isConfluence();
 
 	/** {@inheritDoc} */
 	@Override
@@ -49,41 +51,63 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 			return;
 		}
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
+		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		if (jira && httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
-			try {
-				// only the jira administrator can view the monitoring report
-				final Object user = getUser(httpRequest);
-				if (user == null) {
-					// si non authentifié, on redirige vers la page de login en indiquant la page
-					// d'origine (sans le contexte) à afficher après le login
-					final HttpServletResponse httpResponse = (HttpServletResponse) response;
-					final String destination = getMonitoringUrl(httpRequest).substring(
-							httpRequest.getContextPath().length());
-					httpResponse.sendRedirect("login.jsp?os_destination=" + destination);
-					return;
-				}
-				if (!hasSystemAdminPermission(user)) {
-					final HttpServletResponse httpResponse = (HttpServletResponse) response;
-					// si authentifié mais sans la permission system admin, alors Forbidden
-					httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
-					return;
-				}
-			} catch (final ClassNotFoundException e) {
-				// apparemment ce n'est pas jira, mais bamboo ou confluence
-				jira = false;
-			}
+		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))
+				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse) || confluence
+						&& !checkConfluenceAdminPermission(httpRequest, httpResponse))) {
+			return;
 		}
 		super.doFilter(request, response, chain);
 	}
 
-	private static boolean hasSystemAdminPermission(Object user) throws ClassNotFoundException {
+	private boolean checkJiraAdminPermission(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException {
+		// only the administrator can view the monitoring report
+		final Object user = getUser(httpRequest);
+		if (user == null) {
+			// si non authentifié, on redirige vers la page de login en indiquant la page
+			// d'origine (sans le contexte) à afficher après le login
+			final String destination = getMonitoringUrl(httpRequest).substring(
+					httpRequest.getContextPath().length());
+			httpResponse.sendRedirect("login.jsp?os_destination=" + destination);
+			return false;
+		}
+		if (!hasJiraSystemAdminPermission(user)) {
+			// si authentifié mais sans la permission system admin, alors Forbidden
+			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean checkConfluenceAdminPermission(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException {
+		// only the administrator can view the monitoring report
+		final Object user = getUser(httpRequest);
+		if (user == null) {
+			// si non authentifié, on redirige vers la page de login en indiquant la page
+			// d'origine (sans le contexte) à afficher après le login
+			final String destination = getMonitoringUrl(httpRequest).substring(
+					httpRequest.getContextPath().length());
+			httpResponse.sendRedirect("login.action?os_destination=" + destination);
+			return false;
+		}
+		if (!hasConfluenceAdminPermission(user)) {
+			// si authentifié mais sans la permission system admin, alors Forbidden
+			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+			return false;
+		}
+		return true;
+	}
+
+	private static boolean hasJiraSystemAdminPermission(Object user) {
 		if (user == null) {
 			return false;
 		}
-		final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
-		final Class<?> userClass = Class.forName("com.opensymphony.user.User");
 		try {
+			final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
+			final Class<?> userClass = Class.forName("com.opensymphony.user.User");
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
@@ -92,25 +116,63 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 					"hasPermission", new Class[] { Integer.TYPE, userClass }).invoke(
 					permissionManager, new Object[] { SYSTEM_ADMIN, user });
 			return result;
-		} catch (final SecurityException e) {
-			throw new IllegalStateException(e);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		} catch (final InvocationTargetException e) {
-			throw new IllegalStateException(e);
-		} catch (final NoSuchMethodException e) {
+		} catch (final Exception e) {
 			throw new IllegalStateException(e);
 		}
-		//		return remoteUser != null
+		//		return user != null
 		//				&& com.atlassian.jira.ManagerFactory.getPermissionManager().hasPermission(
-		//						SYSTEM_ADMIN, (com.opensymphony.user.User) remoteUser);
+		//						SYSTEM_ADMIN, (com.opensymphony.user.User) user);
+	}
+
+	private static boolean hasConfluenceAdminPermission(Object user) {
+		if (user == null) {
+			return false;
+		}
+		try {
+			final Class<?> containerManagerClass = Class
+					.forName("com.atlassian.spring.container.ContainerManager");
+			final Class<?> userClass = Class.forName("com.atlassian.user.User");
+			// on travaille par réflexion car la compilation normale introduirait une dépendance
+			// trop compliquée et trop lourde à télécharger pour maven
+			final Object permissionManager = containerManagerClass.getMethod("getComponent",
+					new Class[] { String.class })
+					.invoke(null, new Object[] { "permissionManager" });
+			final Boolean result = (Boolean) permissionManager.getClass().getMethod(
+					"isConfluenceAdministrator", new Class[] { userClass }).invoke(
+					permissionManager, new Object[] { user });
+			return result;
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+		//		return user != null
+		//				&& com.atlassian.spring.container.ContainerManager.getComponent("permissionManager").
+		//					isConfluenceAdministrator((com.opensymphony.user.User) user);
 	}
 
 	private static Object getUser(HttpServletRequest httpRequest) {
+		// ceci fonctionne dans JIRA et dans Confluence (et Bamboo ?)
 		final HttpSession session = httpRequest.getSession(false);
 		if (session == null) {
 			return null;
 		}
 		return session.getAttribute(LOGGED_IN_KEY);
+	}
+
+	private static boolean isJira() {
+		try {
+			Class.forName("com.atlassian.jira.ManagerFactory");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private static boolean isConfluence() {
+		try {
+			Class.forName("com.atlassian.confluence.security.PermissionManager");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 }
