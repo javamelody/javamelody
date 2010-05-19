@@ -36,15 +36,20 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	// pour qu'un proxy soit sérialisable si la façade est sérialisable
 	private static final long serialVersionUID = 1882880665014391301L;
 
-	private static final Counter SERVICES_COUNTER = new Counter("services", "beans.png",
+	private static final String BEANS_ICON_NAME = "beans.png";
+	private static final Counter SERVICES_COUNTER = new Counter("services", BEANS_ICON_NAME,
 			JdbcWrapper.SINGLETON.getSqlCounter());
 	// EJB_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
 	// ClassNotFoundException si les classes javax.interceptor ne sont pas présentes
-	private static final Counter EJB_COUNTER = new Counter("ejb", "beans.png",
+	private static final Counter EJB_COUNTER = new Counter("ejb", BEANS_ICON_NAME,
 			JdbcWrapper.SINGLETON.getSqlCounter());
 	// SPRING_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
 	// ClassNotFoundException si les classes Spring et AOP alliance ne sont pas présentes
-	private static final Counter SPRING_COUNTER = new Counter("spring", "beans.png",
+	private static final Counter SPRING_COUNTER = new Counter("spring", BEANS_ICON_NAME,
+			JdbcWrapper.SINGLETON.getSqlCounter());
+	// GUICE_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
+	// ClassNotFoundException si les classes OP alliance ne sont pas présentes
+	private static final Counter GUICE_COUNTER = new Counter("guice", BEANS_ICON_NAME,
 			JdbcWrapper.SINGLETON.getSqlCounter());
 
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SERVICES_COUNTER
@@ -86,6 +91,10 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 
 	static Counter getSpringCounter() {
 		return SPRING_COUNTER;
+	}
+
+	static Counter getGuiceCounter() {
+		return GUICE_COUNTER;
 	}
 
 	/**

@@ -140,17 +140,19 @@ public class MonitoringFilter implements Filter {
 
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
+		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
 		final Counter jspCounter = JspWrapper.getJspCounter();
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
-			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					servicesCounter, errorCounter, logCounter, jspCounter, jobCounter);
+			counters = Arrays
+					.asList(httpCounter, sqlCounter, ejbCounter, springCounter, guiceCounter,
+							servicesCounter, errorCounter, logCounter, jspCounter, jobCounter);
 		} else {
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					servicesCounter, errorCounter, logCounter, jspCounter);
+					guiceCounter, servicesCounter, errorCounter, logCounter, jspCounter);
 		}
 
 		setRequestTransformPatterns(counters);
