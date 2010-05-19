@@ -39,7 +39,7 @@ public enum Parameter {
 	STORAGE_DIRECTORY("storage-directory"),
 
 	/**
-	 * Active le log des requêtes http (false par défaut).
+	 * Active le log des requêtes http au niveau INFO (false par défaut).
 	 */
 	LOG("log"),
 
@@ -82,6 +82,11 @@ public enum Parameter {
 	 * Expression régulière (null par défaut) pour transformer la description d'une méthode spring.
 	 */
 	SPRING_TRANSFORM_PATTERN("spring-transform-pattern"),
+
+	/**
+	 * Expression régulière (null par défaut) pour transformer la description d'une méthode guice.
+	 */
+	GUICE_TRANSFORM_PATTERN("guice-transform-pattern"),
 
 	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une méthode de

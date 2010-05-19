@@ -32,6 +32,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 // on pourrait utiliser l'annotation @MonitoredWithSpring,
 // mais MonitoredWithInterfacePointcut suffit dans spring-context.xml
+@MonitoredWithGuice
 public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}

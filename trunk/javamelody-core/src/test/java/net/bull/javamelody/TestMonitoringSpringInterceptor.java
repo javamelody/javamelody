@@ -52,7 +52,8 @@ public class TestMonitoringSpringInterceptor {
 	 * Test.
 	 */
 	@MonitoredWithSpring(name = "test class")
-	public static class AnnotatedTestClassSpring implements AnnotatedTest {
+	@MonitoredWithGuice(name = "test class")
+	public static class AnnotatedTestClass implements AnnotatedTest {
 		/**
 		 * Test.
 		 * @return Date
@@ -65,11 +66,12 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
-	public static class AnnotatedTestMethodSpring implements AnnotatedTest {
+	public static class AnnotatedTestMethod implements AnnotatedTest {
 		/**
 		 * Test.
 		 * @return Date
 		 */
+		@MonitoredWithGuice(name = "test method")
 		public Date myMethod() {
 			return new Date();
 		}

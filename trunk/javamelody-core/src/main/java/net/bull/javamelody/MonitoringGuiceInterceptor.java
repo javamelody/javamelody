@@ -22,18 +22,17 @@ import java.io.Serializable;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.aop.support.AopUtils;
 
 /**
- * Method interceptor that measures the duration of the intercepted call.
+ * Method interceptor that measures the duration of the intercepted call using Google Guice.
  *
  * Inspired by Erik van Oosten (Java Simon, Licence LGPL)
  * @author Emeric Vernat
  */
-public class MonitoringSpringInterceptor implements MethodInterceptor, Serializable {
+public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializable {
 	private static final long serialVersionUID = -6594338383847482623L;
-	private static final Counter SPRING_COUNTER = MonitoringProxy.getSpringCounter();
-	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SPRING_COUNTER
+	private static final Counter GUICE_COUNTER = MonitoringProxy.getGuiceCounter();
+	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(GUICE_COUNTER
 			.getName());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
@@ -41,11 +40,11 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 	/**
 	 * Constructeur.
 	 */
-	public MonitoringSpringInterceptor() {
+	public MonitoringGuiceInterceptor() {
 		super();
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
-		SPRING_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		GUICE_COUNTER.setDisplayed(!COUNTER_HIDDEN);
 	}
 
 	/**
@@ -56,8 +55,8 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 	 * @throws Throwable anything thrown by the method
 	 */
 	public Object invoke(MethodInvocation invocation) throws Throwable {
-		// cette méthode est appelée par spring aop
-		if (DISABLED || !SPRING_COUNTER.isDisplayed()) {
+		// cette méthode est appelée par guice aop
+		if (DISABLED || !GUICE_COUNTER.isDisplayed()) {
 			return invocation.proceed();
 		}
 		// nom identifiant la requête
@@ -65,7 +64,7 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 
 		boolean systemError = false;
 		try {
-			SPRING_COUNTER.bindContextIncludingCpu(requestName);
+			GUICE_COUNTER.bindContextIncludingCpu(requestName);
 			return invocation.proceed();
 		} catch (final Error e) {
 			// on catche Error pour avoir les erreurs systèmes
@@ -74,7 +73,7 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 			throw e;
 		} finally {
 			// on enregistre la requête dans les statistiques
-			SPRING_COUNTER.addRequestForCurrentContext(systemError);
+			GUICE_COUNTER.addRequestForCurrentContext(systemError);
 		}
 	}
 
@@ -92,10 +91,9 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 
 	@SuppressWarnings("unchecked")
 	private static String getClassPart(MethodInvocation invocation) {
-		// si guice et pas Spring, alors remplacer AopUtils.getTargetClass() par getMethod().getDeclaringClass()
-		// http://ninomartinez.wordpress.com/2010/05/14/guice-caching-interceptors/
+		// TODO http://ninomartinez.wordpress.com/2010/05/14/guice-caching-interceptors/
 		// (faire exemple avec un interceptor static)
-		final Class targetClass = AopUtils.getTargetClass(invocation.getThis());
+		final Class targetClass = invocation.getMethod().getDeclaringClass();
 		final MonitoredWithSpring classAnnotation = (MonitoredWithSpring) targetClass
 				.getAnnotation(MonitoredWithSpring.class);
 		if (classAnnotation == null || classAnnotation.name() == null
