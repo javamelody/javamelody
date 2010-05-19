@@ -91,8 +91,6 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 
 	@SuppressWarnings("unchecked")
 	private static String getClassPart(MethodInvocation invocation) {
-		// TODO http://ninomartinez.wordpress.com/2010/05/14/guice-caching-interceptors/
-		// (faire exemple avec un interceptor static)
 		final Class targetClass = invocation.getMethod().getDeclaringClass();
 		final MonitoredWithSpring classAnnotation = (MonitoredWithSpring) targetClass
 				.getAnnotation(MonitoredWithSpring.class);
