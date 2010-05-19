@@ -231,10 +231,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Le paramètre <<<displayed-counters>>> permet donc de cacher certains compteurs avec par exemple
 	la valeur <<<http,sql,ejb,spring>>>.
 
-	Le paramètre <<<log>>> permet d'activer les logs des requêtes http (<<<false>>> par défaut).
-	Les requêtes http seront logguées avec la durée et la taille de la réponse
+	Le paramètre <<<log>>> permet d'activer les logs des requêtes http au niveau INFO (<<<false>>>
+	par défaut). Les requêtes http seront logguées avec la durée et la taille de la réponse
 	dans la catégorie de log correspondant au nom du filtre paramétré dans le fichier <<<web.xml>>>,
-	en utilisant Log4J s'il est présent dans votre application, ou en utilisant java.util.logging sinon.
+	en utilisant Logback ou Log4J si présent dans votre application, ou en utilisant java.util.logging sinon.
 
 	Le paramètre <<<storage-directory>>> est le nom du répertoire de stockage (monitoring par défaut).
 	Si le nom du répertoire commence par '/', on considère que c'est un chemin absolu,
