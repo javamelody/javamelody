@@ -92,8 +92,8 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 	@SuppressWarnings("unchecked")
 	private static String getClassPart(MethodInvocation invocation) {
 		final Class targetClass = invocation.getMethod().getDeclaringClass();
-		final MonitoredWithSpring classAnnotation = (MonitoredWithSpring) targetClass
-				.getAnnotation(MonitoredWithSpring.class);
+		final MonitoredWithGuice classAnnotation = (MonitoredWithGuice) targetClass
+				.getAnnotation(MonitoredWithGuice.class);
 		if (classAnnotation == null || classAnnotation.name() == null
 				|| classAnnotation.name().length() == 0) {
 			return targetClass.getSimpleName();
@@ -102,8 +102,8 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 	}
 
 	private static String getMethodPart(MethodInvocation invocation) {
-		final MonitoredWithSpring methodAnnotation = invocation.getMethod().getAnnotation(
-				MonitoredWithSpring.class);
+		final MonitoredWithGuice methodAnnotation = invocation.getMethod().getAnnotation(
+				MonitoredWithGuice.class);
 		if (methodAnnotation == null || methodAnnotation.name() == null
 				|| methodAnnotation.name().length() == 0) {
 			return invocation.getMethod().getName();
