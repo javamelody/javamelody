@@ -359,7 +359,7 @@ or
 	a counter can be created for statistics of execution of methods. But it is not recommended for response time
 	to monitor execution of all methodes of Spring beans, for example the methods of low granularity as getters of entities.
 
-	Step 1: Add the jar dependency spring-aop to you project (in pom.xml if maven).
+	Step 1: Add the jar dependency spring-aop to your project (in pom.xml if maven).
 
 	Step 2: Make sure the Spring configuration file ({{{net/bull/javamelody/monitoring-spring.xml}}},
 	included in the provided jar) is loaded as one of the first configuration files.
