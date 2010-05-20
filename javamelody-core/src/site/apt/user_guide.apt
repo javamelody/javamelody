@@ -217,19 +217,20 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	pour transformer les descriptions des requêtes sql (identifiants non bindés dans une clause in par exemple)
 	afin de permettre l'agrégation sur ces requêtes.
 
-	Et les paramètres <<<ejb-transform-pattern>>>, <<<spring-transform-pattern>>>,
+	Et les paramètres <<<ejb-transform-pattern>>>, <<<spring-transform-pattern>>>, <<<guice-transform-pattern>>>,
 	<<<error-transform-pattern>>>, <<<log-transform-pattern>>>, <<<job-transform-pattern>>>
 	et <<<jsp-transform-pattern>>> permettent de transformer les descriptions des méthodes ejb3,
-	des méthodes spring, des erreurs systèmes http, des logs d'erreurs systèmes, des noms de jobs
-	ou des pages jsp (pour agréger par composants ejb au lieu d'agréger par méthodes ejb par exemple).
+	des méthodes spring, des méthodes guice, des erreurs systèmes http, des logs d'erreurs systèmes,
+	des noms de jobs ou des pages jsp (pour agréger par composants ejb au lieu d'agréger par
+	méthodes ejb par exemple).
 	
 	Le paramètre <<<displayed-counters>>> permet de modifier les compteurs affichés pour les
 	statistiques et les graphiques (<<<http,sql,error,log>>> par défaut). Les compteurs affichés 
 	par défaut sont donc ceux de codes http, sql, error et log. Les compteurs de codes jsp, ejb,
-	spring et services s'affichent automatiquement quand ils sont utilisés (voir ci-dessous pour
-	ejb ou spring et dans le guide utilisateur avancé pour les services sans ejb ni spring).
-	Le paramètre <<<displayed-counters>>> permet donc de cacher certains compteurs avec par exemple
-	la valeur <<<http,sql,ejb,spring>>>.
+	spring, guice et services s'affichent automatiquement quand ils sont utilisés (voir ci-dessous
+	pour ejb, spring ou guice et dans le guide utilisateur avancé pour les services sans ejb ni spring
+	ni guice). Le paramètre <<<displayed-counters>>> permet donc de cacher certains compteurs avec
+	par exemple la valeur <<<http,sql,ejb,spring>>>.
 
 	Le paramètre <<<log>>> permet d'activer les logs des requêtes http au niveau INFO (<<<false>>>
 	par défaut). Les requêtes http seront logguées avec la durée et la taille de la réponse
@@ -475,7 +476,68 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB ce qui ne devrait
 	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
-** 10. Jobs en batchs (si Quartz)
+** 10. Façades métiers (si Guice)
+
+	Si l'application à monitorer contient des façades métiers ou autres objets configurés avec Guice,
+	un compteur peut être créé pour les statistiques d'exécution de méthodes. Il n'est pas conseillé
+	pour autant de monitorer les exécutions de toutes les méthodes des beans Guice et en particulier les méthodes
+	de très faible granularité comme les getters d'entités, au risque d'introduire un surcoût en temps de réponse.
+	
+	Etape 1 : Pour configurer le monitoring des beans Guice, ajouter la dépendance guice
+	(dans pom.xml si maven). En pré-requis pour Guice, il est nécessaire que le jar de javamelody
+	soit disponible dans le classpath lors de la compilation.
+	
+	Etape 2 (par annotations) : Ajouter le module MonitoringGuiceModule à votre module Guice.
+	Par exemple :
+
++-------------------------------+
+		final Module testModule = new AbstractModule() {
+			/** {@inheritDoc} */
+			@Override
+			protected void configure() {
+				// configuration du monitoring Guice par annotations
+				install(new net.bull.javamelody.MonitoringGuiceModule());
+				// façade
+				bind(TestFacade.class).to(TestFacadeImpl.class);
+			}
+		};
++-------------------------------+
+
+	Puis ajouter simplement l'annotation <<<@net.bull.javamelody.MonitoredWithGuice>>> à toutes les
+	classes d'implémentations (pas sur les interfaces) et/ou méthodes que vous voulez monitorer.
+	L'annotation permet aussi de changer les noms des classes affichées dans le monitoring.
+	Si le nom affiché par le monitoring pour la classe ou la méthode ne vous convient
+	pas, vous pouvez ajouter (name="mon use case") entre parenthèses après l'annotation sur votre
+	classe ou sur votre méthode.
+	
+	Comme Guice ne configure le monitoring que pour les beans guice, assurez vous que ces classes
+	sont instanciés par l'intermédiaire de Guice
+	(c'est-à-dire déclarez les en tant que bind dans votre module Guice)
+	
+	En alternative à l'étape 2, vous pouvez utiliser une interface ou une super-classe à la place
+	des annotations. En supposant que les façades métiers possèdent une interface ou une super-classe
+	commune <<<com.xyz.someapp.service.Facade>>> et que vous voules monitorer toutes les méthodes
+	de ces façades, ajouter seulement le bindInterceptor suivant dans votre module Guice :
+	
++-------------------------------+
+		final Module testModule = new AbstractModule() {
+			/** {@inheritDoc} */
+			@Override
+			protected void configure() {
+				// configuration du monitoring Guice par interface
+				bindInterceptor(Matchers.subclassesOf(com.xyz.someapp.service.Facade.class),
+					Matchers.any(), new net.bull.javamelody.MonitoringGuiceInterceptor());
+				// façade
+				bind(TestFacade.class).to(TestFacadeImpl.class);
+			}
+		};
++-------------------------------+
+	
+	Note : Si vous n'avez pas d'interface commune pour les façades ou si vous ne souhaitez pas monitorer
+	toutes les façades, vous pouvez créer et ajouter à vos façades une interface
+	<<<com.xyz.someapp.service.Monitored>>> avant de l'utiliser dans votre module comme ci-dessus.
+
+** 11. Jobs en batchs (si Quartz)
 
 	Les jobs sont automatiquement monitorés quand ils sont ordonnancés avec {{{http://www.quartz-scheduler.org/} Quartz}}.
 
@@ -494,7 +556,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Sans cette propriété "exposeSchedulerInRepository", les jobs ordonnancés avec Spring ne seront
 	ni monitorés ni affichés dans le rapport.
 
-** 11. Rapports hebdomadaires, quotidiens ou mensuels par mail
+** 12. Rapports hebdomadaires, quotidiens ou mensuels par mail
 
 	Un rapport hebdomadaire, quotidien ou mensuel au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
 	Cette fonctionnalité nécessite la librairie iText dans votre webapp (licence LGPL ou MPL, le fichier jar iText
@@ -565,7 +627,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 +-------------------------------+
 
-** 12. Utilisateur base de données
+** 13. Utilisateur base de données
 
 	Depuis la page html du monitoring, il est possible d'accéder à des informations et à des
 	statistiques sur la base de données (si postgresql, mysql ou oracle),
@@ -582,7 +644,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	sql suivante en tant qu'utilisateur 'system' pour accorder le droit à l'utilisateur 'myapplication' :
 	<<<grant select any dictionary to myapplication>>>
 
-** 13. Sécurité
+** 14. Sécurité
 
 	La page de monitoring étant uniquement en consultation et ne contenant pas d'informations comme login ou mot de passe,
 	il n'est pas absolument nécessaire que cette page soit en accès restreint. Toutefois, il est possible de restreindre
@@ -633,7 +695,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 </tomcat-users>
 +-------------------------------+
 
-** 14. SecurityManager
+** 15. SecurityManager
 
 	Si vous êtes l'une des rares personnes avec un SecurityManager activé dans votre serveur,
 	il y aura une exception comme celle ci-dans la sortie du serveur au démarrage de la webapp
@@ -664,7 +726,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<<<javamelody-x.jar>>> par le nom exact du fichier jar de JavaMelody.
 
 
-** 15. Résultat complet
+** 16. Résultat complet
 
 	Pour consulter le monitoring, déployer le war et ouvrir la page suivante dans un navigateur web après avoir démarré le serveur :
 

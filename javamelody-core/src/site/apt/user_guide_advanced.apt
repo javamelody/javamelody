@@ -200,12 +200,12 @@ Documentation avancée de Java Melody
 +-------------------------------+
 
 
-* Façades métiers (sans EJB3 ni Spring)
+* Façades métiers (sans EJB3 ni Spring ni Guice)
 
 	Si l'application à monitorer contient des façades métiers avec des interfaces Java,
 	un compteur peut être créé pour les statistiques d'exécution de méthodes sur ces façades même si ces interfaces ne sont ni EJB3 ni Spring.
 
-	Tout d'abord si ces façades sont EJB3 ou Spring, alors il est plus simple d'utiliser la configuration décrite dans le guide d'utilisation. 
+	Tout d'abord si ces façades sont EJB3, Spring ou Guice, alors il est plus simple d'utiliser la configuration décrite dans le guide d'utilisation. 
 	Sinon imaginons qu'une des façades métiers ait une interface avec une implémentation, laquelle est instanciée par exemple dans une factory
 	comme ci-dessous :
 
