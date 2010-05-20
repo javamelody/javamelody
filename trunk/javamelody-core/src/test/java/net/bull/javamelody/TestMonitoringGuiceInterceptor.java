@@ -73,7 +73,7 @@ public class TestMonitoringGuiceInterceptor {
 			}
 		};
 		final Injector injector = Guice.createInjector(testModule);
-		final SpringTestFacade springTestFacade = injector.getInstance(SpringTestFacadeImpl.class);
+		final SpringTestFacade springTestFacade = injector.getInstance(SpringTestFacade.class);
 
 		guiceCounter.setDisplayed(false);
 		assertNotNull("now()", springTestFacade.now());
