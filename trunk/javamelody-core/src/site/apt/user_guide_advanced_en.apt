@@ -190,12 +190,12 @@ Advanced documentation of Java Melody
 +-------------------------------+
 
 
-* Business façades (without EJB3 and without Spring)
+* Business façades (without EJB3 and without Spring and without Guice)
 
 	If the application to monitor contains some business façades with Java interfaces, a counter can be created for statistics of execution
-	of methods on these façades even if these interfaces are neither EJB3 nor Spring.
+	of methods on these façades even if these interfaces are neither EJB3 nor Spring nor Guice.
 
-	First, if these façades are EJB3 or Spring, then it is simpler to use the configuration described in the user guide. 
+	First, if these façades are EJB3, Spring or Guice, then it is simpler to use the configuration described in the user guide. 
 	Otherwise let's say that a business façade has an interface with an implementation, which is instanciated in a factory for example as below:
 
 +-------------------------------+
