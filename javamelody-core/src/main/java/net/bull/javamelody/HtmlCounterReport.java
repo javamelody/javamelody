@@ -87,12 +87,7 @@ class HtmlCounterReport {
 
 		void writeRequestAndGraphDetail(Collector collector, String graphName) throws IOException {
 			counters = collector.getRangeCountersToBeDisplayed(range);
-			requestsById = new HashMap<String, CounterRequest>();
-			for (final Counter counter : counters) {
-				for (final CounterRequest request : counter.getRequests()) {
-					requestsById.put(request.getId(), request);
-				}
-			}
+			requestsById = mapAllRequestsById();
 			final CounterRequest request = requestsById.get(graphName);
 			if (request != null) {
 				writeRequest(request);
@@ -101,15 +96,19 @@ class HtmlCounterReport {
 					writeSqlRequestExplainPlan(request.getName());
 				}
 			}
+			if (request == null || getCounterByRequestId(request) != null
+					&& isRequestGraphDisplayed(getCounterByRequestId(request))) {
+				writeln("<div id='track'>");
+				writeln("<div class='selected' id='handle'>");
+				writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
+				writeln("</div></div>");
 
-			writeln("<div id='track'>");
-			writeln("<div class='selected' id='handle'>");
-			writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
-			writeln("</div></div>");
+				writeln("<div align='center'><img class='synthèse' id='img' src='"
+						+ "?width=960&amp;height=400&amp;graph=" + graphName
+						+ "' alt='zoom'/></div>");
 
-			writeln("<div align='center'><img class='synthèse' id='img' src='"
-					+ "?width=960&amp;height=400&amp;graph=" + graphName + "' alt='zoom'/></div>");
-
+				writeGraphDetailScript(graphName);
+			}
 			if (request != null && request.getStackTrace() != null) {
 				writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
 				// writer.write pour ne pas gérer de traductions si la stack-trace contient '#'
@@ -117,8 +116,6 @@ class HtmlCounterReport {
 						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 				writeln("</font></blockquote></blockquote>");
 			}
-
-			writeGraphDetailScript(graphName);
 		}
 
 		private void writeSqlRequestExplainPlan(String sqlRequest) throws IOException {
@@ -385,6 +382,16 @@ class HtmlCounterReport {
 			writeln(SCRIPT_END);
 		}
 
+		private Map<String, CounterRequest> mapAllRequestsById() {
+			final Map<String, CounterRequest> result = new HashMap<String, CounterRequest>();
+			for (final Counter counter : counters) {
+				for (final CounterRequest request : counter.getRequests()) {
+					result.put(request.getId(), request);
+				}
+			}
+			return result;
+		}
+
 		private Counter getCounterByRequestId(CounterRequest request) {
 			final String requestId = request.getId();
 			for (final Counter counter : counters) {
@@ -434,13 +441,13 @@ class HtmlCounterReport {
 			// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
 			assert !requests.isEmpty();
 			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
-			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false);
+			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false, true);
 		} else {
 			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
 					counterRequestAggregation.getWarningRequest(), counterRequestAggregation
 							.getSevereRequest());
 			writeRequests(globalRequest.getName(), counter.getChildCounterName(), summaryRequests,
-					false);
+					false, false);
 		}
 
 		// 2. débit et liens
@@ -481,7 +488,7 @@ class HtmlCounterReport {
 		// 3. détails par requêtes (non visible par défaut)
 		writeln("<div id='details" + counterName + "' style='display: none;'>");
 		writeRequests(counterName, counter.getChildCounterName(), requests,
-				!isErrorAndNotJobCounter() && !counter.isJspCounter());
+				isRequestGraphDisplayed(counter), true);
 		writeln("</div>");
 
 		// 4. logs (non visible par défaut)
@@ -514,8 +521,14 @@ class HtmlCounterReport {
 		return isErrorCounter() && !isJobCounter();
 	}
 
+	static boolean isRequestGraphDisplayed(Counter parentCounter) {
+		return !(parentCounter.isErrorCounter() && !parentCounter.isJobCounter())
+				&& !parentCounter.isJspCounter();
+	}
+
 	private void writeRequests(String tableName, String childCounterName,
-			List<CounterRequest> requestList, boolean includeGraph) throws IOException {
+			List<CounterRequest> requestList, boolean includeGraph, boolean includeDetailLink)
+			throws IOException {
 		assert requestList != null;
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='"
 				+ tableName + "'>");
@@ -529,7 +542,7 @@ class HtmlCounterReport {
 				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
 			}
 			odd = !odd; // NOPMD
-			writeRequest(request, includeGraph);
+			writeRequest(request, includeGraph, includeDetailLink);
 			writeln("</tr>");
 		}
 		writeln("</tbody></table>");
@@ -571,15 +584,11 @@ class HtmlCounterReport {
 		writeln("</tr></thead>");
 	}
 
-	private void writeRequest(CounterRequest request, boolean includeGraph) throws IOException {
+	private void writeRequest(CounterRequest request, boolean includeGraph,
+			boolean includeDetailLink) throws IOException {
 		final String nextColumn = "</td> <td align='right'>";
 		write("<td>");
-		if (includeGraph) {
-			writeRequestGraph(request.getId(), request.getName());
-		} else {
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(htmlEncode(request.getName()));
-		}
+		writeRequestName(request, includeGraph, includeDetailLink);
 		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 		if (counterRequestAggregation.isTimesDisplayed()) {
 			write(nextColumn);
@@ -629,8 +638,23 @@ class HtmlCounterReport {
 		write("</td>");
 	}
 
-	void writeRequestGraph(String requestId, String requestName) throws IOException {
-		htmlCounterRequestGraphReport.writeRequestGraph(requestId, requestName);
+	void writeRequestName(CounterRequest request, boolean includeGraph, boolean includeDetailLink)
+			throws IOException {
+		final String requestName = request.getName();
+		if (includeGraph) {
+			assert includeDetailLink;
+			htmlCounterRequestGraphReport.writeRequestGraph(request.getId(), requestName);
+		} else if (includeDetailLink) {
+			write("<a href='?part=graph&amp;graph=");
+			write(request.getId());
+			write("'>");
+			// writer.write pour ne pas gérer de traductions si le nom contient '#'
+			writer.write(htmlEncode(requestName));
+			write("</a>");
+		} else {
+			// writer.write pour ne pas gérer de traductions si le nom contient '#'
+			writer.write(htmlEncode(requestName));
+		}
 	}
 
 	String getSlaHtmlClass(int mean) {
