@@ -61,7 +61,7 @@ Les courbes présentées sont :<ul>
 <li>le nombre de connexions jdbc actives (ou nombre de requêtes sql en cours)</li>
 <li>le nombre de connexions jdbc utilisées (ou nombre de transactions sql ouvertes);
   dans le cas où il n'y a pas de datasource, c'est en fait le nombre de connexions jdbc ouvertes dans le pool de connexions</li>
-<li>pour chacun des compteurs de requêtes (http, sql et éventuellement ejb ou spring) :<ul>
+<li>pour chacun des compteurs de requêtes (http, sql et éventuellement ejb, spring, guice, pages jsp) :<ul>
 	<li>le nombre de hits par minute (ou nombre d'exécutions de requêtes par minute)</li>
 	<li>le temps moyen en millisecondes</li>
 	<li>le pourcentage d'erreurs systèmes
@@ -98,8 +98,8 @@ Si la résolution paramétrée est suffisamment fine, la courbe montre également le
  en petites dents de scie entre les GC majeurs.
 Ces GC mineurs libèrent également la mémoire mais en moins grande quantité que les GC majeurs.
 Il est possible de forcer un GC majeur par l'action 
-'<img src='?resource=broom.png' width='16' height='16' alt='Garbage collector' /> Exécuter le ramasse-miette'
- dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='System informations'/> Informations systèmes'
+'<img src='?resource=broom.png' width='16' height='16' alt='Exécuter le ramase-miette' /> Exécuter le ramasse-miette'
+ dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='Informations systèmes'/> Informations systèmes'
 du rapport.</p>
 
 <h4>Courbe mémoire : cas d'utilisation d'une saturation mémoire</h4>
@@ -163,8 +163,8 @@ dans le pool de connexions indiquant qu'il n'y a plus de connexion disponible.
 <br/>
 Si une fuite de connexions jdbc est suspectée, les heures et les stack traces indiquant où les
 connexions ont été ouvertes peuvent être affichées par le lien
-<img width='16' height='16' src='?resource=db.png' alt='Connexions'/> 'Connections jdbc ouvertes',
-dans la partie 'Informations systèmes' du rapport.
+'<img width='16' height='16' src='?resource=db.png' alt='Connexions'/> Connections jdbc ouvertes',
+dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='System informations'/> Informations systèmes' du rapport.
 (Ce lien est disponible à la condition que le paramètre 'system-actions-enabled' ait été positionné à 'true').
 Une lecture attentive du code correspondant à ces stack traces confirmera ou non la fuite de
 connexions jdbc.
@@ -177,7 +177,7 @@ de connexions par le pool et non les utilisations réelles de ces connexions par 
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistiques</h3>
 Les statistiques d'un compteur présentent les statistiques des requêtes exécutées sur le serveur d'application.<br/>
-Il existe 6 compteurs de requêtes aujourd'hui :<ul>
+Il existe 7 compteurs de requêtes aujourd'hui :<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Statistiques http</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
@@ -186,8 +186,10 @@ Statistiques sql (jdbc)</li>
 Statistiques ejb (si façades ejb3 de JavaEE 5+)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='spring'/>
 Statistiques spring (si façades spring)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='guice'/>
+Statistiques guice (si façades guice)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
-Statistiques d'interfaces façades (sans ejb3 ni spring)</li>
+Statistiques d'interfaces façades (sans ejb3 ni spring ni guice)</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
 Statistiques des pages jsp (ou plus précisément, des exécutions de include ou forward sur httpServletRequest.getRequestDispatcher, c'est-à-dire les pages jsp en général)</li>
 </ul>
@@ -217,7 +219,7 @@ s'il est élevé, les temps sont très variés, s'il est faible les temps sont rappr
 <li>le temps cpu moyen en millisecondes</li>
 <li>le pourcentage d'erreurs systèmes</li>
 </ul>
-et si il s'agit des statistiques http, ejb, spring, interfaces ou jsp :<ul>
+et si il s'agit des statistiques http, ejb, spring, guice, interfaces ou jsp :<ul>
 <li>la taille moyenne en kilo-octets du flux de réponse (seulement pour http)</li>
 <li>le nombre moyen de hits sql, par exécution de requête http, ejb...</li>
 <li>le temps moyen passé à exécuter des requêtes sql, par exécution de requête http, ejb...</li>
@@ -248,8 +250,8 @@ Ces statistiques indiquent la liste des 250 erreurs systèmes les plus fréquentes
 de chaque erreur sur la période choisie, ainsi que le temps moyen de la requête pour chaque erreur.
 Seule l'erreur la plus fréquente est affichée au départ, les autres erreurs étant affichées en cliquant le lien '+ Détails'.
 Les dates, heures, utilisateurs et requêtes http complètes des 100 dernières erreurs sont affichées en cliquant le lien '+ Dernières erreurs'.
-En cliquant sur le nom d'une erreur, il est possible de voir pour cette erreur la courbe d'évolution du nombre
-d'occurrences au fil du temps ainsi que la stack-trace java de l'erreur quand il s'agit d'une exception java.
+En cliquant sur le nom d'une erreur, il est possible de voir pour cette erreur la stack-trace java
+de l'erreur quand il s'agit d'une exception java.
 <br/>Ces statistiques d'erreurs permettent d'améliorer la fiabilité de l'application selon son utilisation réelle en production.
 
 <h3><img width='24' height='24' src='?resource=log.png' alt="Logs d'erreurs systèmes"/>
@@ -260,8 +262,8 @@ Ces statistiques indiquent la liste des 500 logs d'erreurs systèmes les plus fré
 le nombre d'occurrences de chaque erreur sur la période choisie.
 Seule le log d'erreur le plus fréquent est affiché au départ, les autres logs étant affichés en cliquant le lien '+ Détails'.
 Les dates, heures, utilisateurs et le cas échéant requêtes http complètes des 100 dernièrs logs d'erreurs sont affichées en cliquant le lien '+ Dernières erreurs'.
-En cliquant sur le nom d'un log d'erreur, il est possible de voir pour ce log la courbe d'évolution du nombre
-d'occurrences au fil du temps ainsi que la stack-trace java de l'erreur quand une exception java a été inscrite avec le log.
+En cliquant sur le nom d'un log d'erreur, il est possible de voir pour ce log la stack-trace java
+de l'erreur quand une exception java a été inscrite avec le log.
 <br/>Ces statistiques de logs d'erreurs permettent également d'améliorer la fiabilité de l'application selon son utilisation réelle en production.
 
 <h3><img width='24' height='24' src='?resource=hourglass.png' alt='Requêtes en cours'/>
@@ -309,7 +311,7 @@ Si jdk 1.6, 'voir l'histogramme mémoire', pour afficher le nombre d'instances en
 <a href='http://fr.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> ou windows avec tasklist) avec pour chaque
 processus : utilisateur, mémoire et cpu</li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Connexions jdbc ouvertes' />
-Pour aider à diagnostiquer une éventuelle fuite de connexions jdbc, les connexions jdbc ouvertes
+Pour aider à diagnostiquer une éventuelle fuite de connexions jdbc, les 'connexions jdbc ouvertes'
 donnent la liste des stack traces où ces connexions ont été ouvertes.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Base de données' />
