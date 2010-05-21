@@ -162,7 +162,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		try {
 			Class.forName("com.atlassian.jira.ManagerFactory");
 			return true;
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			return false;
 		}
 	}
@@ -171,7 +171,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		try {
 			Class.forName("com.atlassian.confluence.security.PermissionManager");
 			return true;
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			return false;
 		}
 	}
