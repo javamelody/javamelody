@@ -23,7 +23,7 @@ import com.google.inject.matcher.Matchers;
 
 /**
  * Module Guice pour configurer l'intercepteur de monitoring utilisant l'annotation
- * MonitoringWithGuice, sur des classes et/ou sur des méthodes.<br/>
+ * {@link MonitoredWithGuice}, sur des classes et/ou sur des méthodes.<br/>
  * Ce module fait simplement:
  * <code><br/>
  *      // for annotated methods with MonitoredWithGuice<br/>

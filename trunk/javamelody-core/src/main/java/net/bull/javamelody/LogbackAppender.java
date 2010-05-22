@@ -28,7 +28,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 
 /**
- * Appender pour les logs de logback, configuré automatiquement par MonitoringFilter.
+ * Appender pour les logs de logback, configuré automatiquement par {@link MonitoringFilter}.
  * @author Emeric Vernat
  */
 public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {

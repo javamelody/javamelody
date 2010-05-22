@@ -28,7 +28,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * Handler pour les logs de java.util.logging, configuré automatiquement par MonitoringFilter.
+ * Handler pour les logs de java.util.logging, configuré automatiquement par {@link MonitoringFilter}.
  * @author Emeric Vernat
  */
 public class LoggingHandler extends Handler {

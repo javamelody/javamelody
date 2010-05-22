@@ -25,7 +25,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * Appender pour les logs de log4j, configuré automatiquement par MonitoringFilter.
+ * Appender pour les logs de log4j, configuré automatiquement par {@link MonitoringFilter}.
  * @author Emeric Vernat
  */
 public class Log4JAppender extends AppenderSkeleton {
