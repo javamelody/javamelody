@@ -41,6 +41,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 	// quand la méthode init serait appelée dans les systèmes de plugins
 	private final boolean jira = isJira();
 	private final boolean confluence = isConfluence();
+	private final boolean bamboo = isBamboo();
 
 	/** {@inheritDoc} */
 	@Override
@@ -55,7 +56,8 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 
 		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))
 				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse) || confluence
-						&& !checkConfluenceAdminPermission(httpRequest, httpResponse))) {
+						&& !checkConfluenceAdminPermission(httpRequest, httpResponse) || bamboo
+						&& !checkBambooAdminPermission(httpRequest, httpResponse))) {
 			return;
 		}
 		super.doFilter(request, response, chain);
@@ -101,10 +103,27 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		return true;
 	}
 
-	private static boolean hasJiraSystemAdminPermission(Object user) {
+	private boolean checkBambooAdminPermission(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException {
+		// only the administrator can view the monitoring report
+		final Object user = getUser(httpRequest);
 		if (user == null) {
+			// si non authentifié, on redirige vers la page de login en indiquant la page
+			// d'origine (sans le contexte) à afficher après le login
+			final String destination = getMonitoringUrl(httpRequest).substring(
+					httpRequest.getContextPath().length());
+			httpResponse.sendRedirect("userlogin!default.action?os_destination=" + destination);
 			return false;
 		}
+		if (!hasBambooAdminPermission(user)) {
+			// si authentifié mais sans la permission admin, alors Forbidden
+			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+			return false;
+		}
+		return true;
+	}
+
+	private static boolean hasJiraSystemAdminPermission(Object user) {
 		try {
 			final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
 			final Class<?> userClass = Class.forName("com.opensymphony.user.User");
@@ -125,9 +144,6 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 	}
 
 	private static boolean hasConfluenceAdminPermission(Object user) {
-		if (user == null) {
-			return false;
-		}
 		try {
 			final Class<?> containerManagerClass = Class
 					.forName("com.atlassian.spring.container.ContainerManager");
@@ -147,6 +163,35 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		//		return user != null
 		//				&& com.atlassian.spring.container.ContainerManager.getComponent("permissionManager").
 		//					isConfluenceAdministrator((com.opensymphony.user.User) user);
+	}
+
+	private static boolean hasBambooAdminPermission(Object user) {
+		try {
+			final Class<?> containerManagerClass = Class
+					.forName("com.atlassian.spring.container.ContainerManager");
+			// on travaille par réflexion car la compilation normale introduirait une dépendance
+			// trop compliquée et trop lourde à télécharger pour maven
+			final Object bambooPermissionManager = containerManagerClass.getMethod("getComponent",
+					new Class[] { String.class }).invoke(null,
+					new Object[] { "bambooPermissionManager" });
+			final Class<?> globalApplicationSecureObjectClass = Class
+					.forName("com.atlassian.bamboo.security.GlobalApplicationSecureObject");
+			final Object globalApplicationSecureObject = globalApplicationSecureObjectClass
+					.getField("INSTANCE").get(null);
+			final Boolean result = (Boolean) bambooPermissionManager
+					.getClass()
+					.getMethod("hasPermission",
+							new Class[] { String.class, String.class, Object.class })
+					.invoke(
+							bambooPermissionManager,
+							new Object[] { user.toString(), "ADMIN", globalApplicationSecureObject });
+			return result;
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+		//		return user != null
+		//				&& com.atlassian.spring.container.ContainerManager.getComponent("bambooPermissionManager").
+		//					hasPermission(username, "ADMIN", GlobalApplicationSecureObject.INSTANCE);
 	}
 
 	private static Object getUser(HttpServletRequest httpRequest) {
@@ -170,6 +215,15 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 	private static boolean isConfluence() {
 		try {
 			Class.forName("com.atlassian.confluence.security.PermissionManager");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private static boolean isBamboo() {
+		try {
+			Class.forName("com.atlassian.bamboo.security.BambooPermissionManager");
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
