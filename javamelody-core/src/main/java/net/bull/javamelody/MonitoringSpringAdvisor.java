@@ -21,7 +21,7 @@ package net.bull.javamelody;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 
 /**
- * Advisor Spring dont l'advice est par défaut une instance de MonitoringSpringInterceptor.
+ * Advisor Spring dont l'advice est par défaut une instance de {@link MonitoringSpringInterceptor}.
  * Cet advisor simplifie la configuration dans un fichier de context Spring.
  * @author Emeric Vernat
  */
