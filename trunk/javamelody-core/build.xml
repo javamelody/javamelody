@@ -246,11 +246,11 @@
 	</target>
 
 	<!-- Construction du zip -->
-	<target name="zip" depends="clean,jar,war,javadoc">
+	<target name="zip" depends="clean,jar,war,jira-jar,javadoc">
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody.zip" />
 		<zip destfile="javamelody.zip">
-			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,**/Fonctions.odt,javamelody.zip,jira-javamelody.jar" />
+			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,javamelody.zip" />
 			<!-- jar jrobin copié selon indication du user_guide -->
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
 		</zip>
