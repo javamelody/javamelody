@@ -34,7 +34,7 @@ import java.net.URLClassLoader;
  * @author Emeric Vernat
  */
 @SuppressWarnings("unchecked")
-public final class VirtualMachine {
+final class VirtualMachine {
 	private static final boolean JROCKIT = System.getProperty("java.vendor").contains("BEA");
 	private static final boolean SUPPORTED = "1.6".compareTo(System.getProperty("java.version")) < 0
 			&& (System.getProperty("java.vendor").contains("Sun") || JROCKIT);
@@ -49,7 +49,7 @@ public final class VirtualMachine {
 	/**
 	 * @return true si heapHisto supporté (jdk 1.6 de Sun ou de JRockit de BEA)
 	 */
-	public static boolean isSupported() {
+	static boolean isSupported() {
 		return SUPPORTED;
 	}
 
@@ -57,7 +57,7 @@ public final class VirtualMachine {
 	 * @return false si non supporté ou si un attachement ou un histogramme a échoué,
 	 * 		true si supporté et pas essayé ou si réussi
 	 */
-	public static synchronized boolean isEnabled() { // NOPMD
+	static synchronized boolean isEnabled() { // NOPMD
 		return enabled;
 	}
 
@@ -66,7 +66,7 @@ public final class VirtualMachine {
 	 * 			null si enabled est false
 	 * @throws Exception e
 	 */
-	public static synchronized Object getJvmVirtualMachine() throws Exception { // NOPMD
+	static synchronized Object getJvmVirtualMachine() throws Exception { // NOPMD
 		// si hotspot retourne une instance de sun.tools.attach.HotSpotVirtualMachine
 		// cf http://www.java2s.com/Open-Source/Java-Document/6.0-JDK-Modules-sun/tools/sun/tools/attach/HotSpotVirtualMachine.java.htm
 		// et sous windows : sun.tools.attach.WindowsVirtualMachine
@@ -110,7 +110,7 @@ public final class VirtualMachine {
 	 * Détachement du singleton.
 	 * @throws Exception e
 	 */
-	public static synchronized void detach() throws Exception { // NOPMD
+	static synchronized void detach() throws Exception { // NOPMD
 		if (jvmVirtualMachine != null) {
 			final Class virtualMachineClass = jvmVirtualMachine.getClass();
 			final Method detachMethod = virtualMachineClass.getMethod("detach");
@@ -123,7 +123,7 @@ public final class VirtualMachine {
 	 * @return flux contenant l'histogramme mémoire comme retourné par jmap -histo
 	 * @throws Exception e
 	 */
-	public static InputStream heapHisto() throws Exception { // NOPMD
+	static InputStream heapHisto() throws Exception { // NOPMD
 		if (!isSupported()) {
 			throw new IllegalStateException(I18N.getString("heap_histo_non_supporte"));
 		}
@@ -149,7 +149,7 @@ public final class VirtualMachine {
 	 * @return l'histogramme mémoire
 	 * @throws Exception e
 	 */
-	public static HeapHistogram createHeapHistogram() throws Exception { // NOPMD
+	static HeapHistogram createHeapHistogram() throws Exception { // NOPMD
 		final InputStream input = heapHisto();
 		try {
 			return new HeapHistogram(input, JROCKIT);

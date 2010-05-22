@@ -42,7 +42,7 @@ import java.util.Scanner;
  * Adaptée uniquement pour le style de code, le comparateur, la méthode add et la source.
  * @author Tomas Hurka
  */
-public class HeapHistogram implements Serializable {
+class HeapHistogram implements Serializable {
 	private static final long serialVersionUID = 2163916067335213382L;
 	private static final String BOOLEAN_TEXT = "boolean"; // NOI18N
 	private static final String CHAR_TEXT = "char"; // NOI18N
