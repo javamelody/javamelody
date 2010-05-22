@@ -167,6 +167,7 @@ public class MonitoringFilter implements Filter {
 			logCounter.setDisplayed(true);
 			ejbCounter.setDisplayed(false);
 			springCounter.setDisplayed(false);
+			guiceCounter.setDisplayed(false);
 			servicesCounter.setDisplayed(false);
 			jspCounter.setDisplayed(false);
 		} else {
