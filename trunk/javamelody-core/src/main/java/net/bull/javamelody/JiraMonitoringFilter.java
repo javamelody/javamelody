@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Filter of monitoring JavaMelody with security check for JIRA system administrator.
+ * Filter of monitoring JavaMelody for JIRA/Bamboo/Confluence with security check for system administrator.
  * @author Emeric Vernat
  */
 public class JiraMonitoringFilter extends MonitoringFilter {
