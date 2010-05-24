@@ -105,6 +105,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	But if you deploy your application with an ear file, probably because you use EJBs, follow the {{{user_guide_advanced_en.html} advanced documentation}}.
 	
+	Please note that the javamelody.war file is not used in installation here.
+	
 ** 1. Jar files
 
 	Copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied javamelody.zip file,

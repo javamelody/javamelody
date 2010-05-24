@@ -84,6 +84,9 @@ Advanced documentation of Java Melody
 	and / or the monitoring of an application with several instances of servers (a cluster for example).
 	So the reports, the storage and the charts are moved out of the application to the collect server.
 
+	Please note that the centralized collect server with javamelody.war only works if the monitoring
+	already works with javamelody.jar in the target application at http://<host>:<port>/<context>/monitoring.
+
 ** 1. War file of the webapp of monitoring
 
 	Copy the javamelody.war file, located at the root of the supplied javamelody.zip file, to the centralized server.

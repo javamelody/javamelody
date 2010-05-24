@@ -88,6 +88,9 @@ Documentation avancée de Java Melody
 	Ainsi les rapports, le stockage et les courbes sont déportées de l'application
 	vers le serveur de collecte.
 
+	Remarque: le serveur de collecte centralisé avec javamelody.war fonctionne seulement si le monitoring
+	fonctionne dors et déjà avec javamelody.jar dans l'application cible à http://<host>:<port>/<context>/monitoring.
+
 ** 1. Fichier war de la webapp de monitoring
 
 	Copier le fichier javamelody.war situé à la racine du fichier javamelody.zip fourni, vers le serveur centralisé.
