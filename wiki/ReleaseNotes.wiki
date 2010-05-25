@@ -6,6 +6,13 @@
   * Monitoring of Business facades with *[http://code.google.com/p/google-guice/ Guice]* (like with EJB or with Spring)
   * Some minor bugs fixed
 
+=== JavaMelody Grails Plugin 0.3 ===
+
+[http://www.grails.org/plugin/grails-melody JavaMelody Grails Plugin] 0.3 has been released by _Liu Chao_.
+
+  * fix issue 18: Grails-melody plugin breaks the filterpane plugin
+  * includes JavaMelody 1.15.0
+
 === 1.15.1 of Hudson plugin and of JIRA/Bamboo plugin ===
 
   * *[https://plugins.atlassian.com/plugin/details/20909 JIRA/Bamboo plugin]*
