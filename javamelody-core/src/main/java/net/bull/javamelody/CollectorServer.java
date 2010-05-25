@@ -50,29 +50,39 @@ class CollectorServer {
 	 */
 	CollectorServer() throws IOException {
 		super();
+		boolean initOk = false;
 		this.timer = new Timer("collector", true);
+		try {
+			final Map<String, List<URL>> urlsByApplication = Parameters
+					.getCollectorUrlsByApplications();
+			LOGGER.info("applications monitorées : " + urlsByApplication.keySet());
+			LOGGER.info("urls des applications monitorées : " + urlsByApplication);
 
-		final Map<String, List<URL>> urlsByApplication = Parameters
-				.getCollectorUrlsByApplications();
-		LOGGER.info("applications monitorées : " + urlsByApplication.keySet());
-		LOGGER.info("urls des applications monitorées : " + urlsByApplication);
-
-		final int periodMillis = Parameters.getResolutionSeconds() * 1000;
-		LOGGER.info("résolution du monitoring en secondes : " + Parameters.getResolutionSeconds());
-		final TimerTask collectTask = new TimerTask() {
-			/** {@inheritDoc} */
-			@Override
-			public void run() {
-				// il ne doit pas y avoir d'erreur dans cette task
-				collectWithoutErrors();
-				// cette collecte ne peut interférer avec un autre thread,
-				// car les compteurs sont mis à jour et utilisés par le même timer
-				// et donc le même thread (les différentes tasks ne peuvent se chevaucher)
+			final int periodMillis = Parameters.getResolutionSeconds() * 1000;
+			LOGGER.info("résolution du monitoring en secondes : "
+					+ Parameters.getResolutionSeconds());
+			final TimerTask collectTask = new TimerTask() {
+				/** {@inheritDoc} */
+				@Override
+				public void run() {
+					// il ne doit pas y avoir d'erreur dans cette task
+					collectWithoutErrors();
+					// cette collecte ne peut interférer avec un autre thread,
+					// car les compteurs sont mis à jour et utilisés par le même timer
+					// et donc le même thread (les différentes tasks ne peuvent se chevaucher)
+				}
+			};
+			// on schedule la tâche de fond,
+			// avec une exécution de suite en asynchrone pour initialiser les données
+			timer.schedule(collectTask, 100, periodMillis);
+			initOk = true;
+		} finally {
+			if (!initOk) {
+				// si exception dans initialisation, on annule la création du timer
+				// (sinon tomcat ne serait pas content)
+				timer.cancel();
 			}
-		};
-		// on schedule la tâche de fond,
-		// avec une exécution de suite en asynchrone pour initialiser les données
-		timer.schedule(collectTask, 100, periodMillis);
+		}
 	}
 
 	void collectWithoutErrors() {

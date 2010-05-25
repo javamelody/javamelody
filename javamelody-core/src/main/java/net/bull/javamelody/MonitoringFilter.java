@@ -88,47 +88,57 @@ public class MonitoringFilter implements Filter {
 		if (monitoringDisabled) {
 			return;
 		}
+		boolean initOk = false;
 		this.timer = new Timer("javamelody"
 				+ Parameters.getContextPath(config.getServletContext()).replace('/', ' '), true);
+		try {
+			initLogs();
 
-		initLogs();
+			this.contextFactoryEnabled = !monitoringDisabled
+					&& Boolean.parseBoolean(Parameters
+							.getParameter(Parameter.CONTEXT_FACTORY_ENABLED));
+			if (contextFactoryEnabled) {
+				MonitoringInitialContextFactory.init();
+			}
 
-		this.contextFactoryEnabled = !monitoringDisabled
-				&& Boolean.parseBoolean(Parameters.getParameter(Parameter.CONTEXT_FACTORY_ENABLED));
-		if (contextFactoryEnabled) {
-			MonitoringInitialContextFactory.init();
+			// si l'application a utilisé JdbcDriver avant d'initialiser ce filtre
+			// (par exemple dans un listener de contexte), on doit récupérer son sqlCounter
+			// car il est lié à une connexion jdbc qui est certainement conservée dans un pool
+			// (sinon les requêtes sql sur cette connexion ne seront pas monitorées)
+			// sqlCounter dans JdbcWrapper peut être alimenté soit par une datasource soit par un driver
+			JdbcWrapper.SINGLETON.initServletContext(config.getServletContext());
+			if (!Parameters.isNoDatabase()) {
+				JdbcWrapper.SINGLETON.rebindDataSources();
+			}
+
+			// initialisation du listener de jobs quartz
+			if (JobInformations.QUARTZ_AVAILABLE) {
+				JobGlobalListener.initJobGlobalListener();
+			}
+
+			final List<Counter> counters = initCounters();
+			final String application = Parameters.getCurrentApplication();
+			this.collector = new Collector(application, counters, timer);
+
+			if (Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN) != null) {
+				// lance une PatternSyntaxException si la syntaxe du pattern est invalide
+				urlExcludePattern = Pattern.compile(Parameters
+						.getParameter(Parameter.URL_EXCLUDE_PATTERN));
+			}
+			if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
+				allowedAddrPattern = Pattern.compile(Parameters
+						.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
+			}
+
+			initCollect();
+			initOk = true;
+		} finally {
+			if (!initOk) {
+				// si exception dans initialisation, on annule la création du timer
+				// (sinon tomcat ne serait pas content)
+				timer.cancel();
+			}
 		}
-
-		// si l'application a utilisé JdbcDriver avant d'initialiser ce filtre
-		// (par exemple dans un listener de contexte), on doit récupérer son sqlCounter
-		// car il est lié à une connexion jdbc qui est certainement conservée dans un pool
-		// (sinon les requêtes sql sur cette connexion ne seront pas monitorées)
-		// sqlCounter dans JdbcWrapper peut être alimenté soit par une datasource soit par un driver
-		JdbcWrapper.SINGLETON.initServletContext(config.getServletContext());
-		if (!Parameters.isNoDatabase()) {
-			JdbcWrapper.SINGLETON.rebindDataSources();
-		}
-
-		// initialisation du listener de jobs quartz
-		if (JobInformations.QUARTZ_AVAILABLE) {
-			JobGlobalListener.initJobGlobalListener();
-		}
-
-		final List<Counter> counters = initCounters();
-		final String application = Parameters.getCurrentApplication();
-		this.collector = new Collector(application, counters, timer);
-
-		if (Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN) != null) {
-			// lance une PatternSyntaxException si la syntaxe du pattern est invalide
-			urlExcludePattern = Pattern.compile(Parameters
-					.getParameter(Parameter.URL_EXCLUDE_PATTERN));
-		}
-		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
-			allowedAddrPattern = Pattern.compile(Parameters
-					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
-		}
-
-		initCollect();
 	}
 
 	private List<Counter> initCounters() {
