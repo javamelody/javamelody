@@ -385,9 +385,15 @@ public class TestHtmlReport {
 		htmlReport.toHtml(null);
 		assertNotEmptyAndClear(writer);
 
-		collectorServer.collectWithoutErrors();
-		htmlReport.toHtml(null);
-		assertNotEmptyAndClear(writer);
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		try {
+			collectorServer.collectWithoutErrors();
+			htmlReport.toHtml(null);
+			assertNotEmptyAndClear(writer);
+		} finally {
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
+					"false");
+		}
 	}
 
 	/** Test.

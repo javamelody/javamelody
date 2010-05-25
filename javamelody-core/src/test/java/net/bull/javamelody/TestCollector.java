@@ -49,7 +49,6 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 public class TestCollector {
-	private static final String EXCEPTION = "exception";
 	private static final String TEST = "test";
 	private Timer timer;
 
@@ -426,6 +425,10 @@ public class TestCollector {
 	@Test
 	public void testCollectorServer() throws IOException {
 		try {
+			System
+					.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
+							"true");
+
 			// ce test ne fait que vérifier s'il n'y a pas d'erreur inattendue
 			// car sans serveur d'application monitoré il ne peut rien faire d'autre
 			final String application = "testapp";
@@ -441,30 +444,10 @@ public class TestCollector {
 			try {
 				collectorServer.collectWithoutErrors();
 				Parameters.removeCollectorApplication(application);
-				try {
-					collectorServer.addCollectorApplication(application, urls);
-				} catch (final Exception e) {
-					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull(EXCEPTION, e);
-				}
-				try {
-					collectorServer.collectSessionInformations(application, null);
-				} catch (final Exception e) {
-					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull(EXCEPTION, e);
-				}
-				try {
-					collectorServer.collectSessionInformations(application, "sessionId");
-				} catch (final Exception e) {
-					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull(EXCEPTION, e);
-				}
-				try {
-					collectorServer.collectHeapHistogram(application);
-				} catch (final Exception e) {
-					// exception car il n'y a pas de serveur à cette adresse
-					assertNotNull(EXCEPTION, e);
-				}
+				collectorServer.addCollectorApplication(application, urls);
+				collectorServer.collectSessionInformations(application, null);
+				collectorServer.collectSessionInformations(application, "sessionId");
+				collectorServer.collectHeapHistogram(application);
 				collectorServer.getCollectorByApplication(application);
 				collectorServer.getJavaInformationsByApplication(application);
 				collectorServer.isApplicationDataAvailable(application);
@@ -476,6 +459,8 @@ public class TestCollector {
 				collectorServer.stop();
 			}
 		} finally {
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
+					"false");
 			timer.cancel();
 		}
 	}

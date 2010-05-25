@@ -36,6 +36,7 @@ public class TestLabradorRetriever {
 	 * @throws IOException e */
 	@Test
 	public void testCall() throws IOException {
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
 		final File file = File.createTempFile("test", ".ser");
 		try {
 			final ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(file));
