@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +61,9 @@ class LabradorRetriever {
 	}
 
 	<T> T call() throws IOException {
+		if (shouldMock()) {
+			return this.<T> createMockResultOfCall();
+		}
 		final long start = System.currentTimeMillis();
 		try {
 			final URLConnection connection = openConnection(url);
@@ -106,6 +111,9 @@ class LabradorRetriever {
 
 	void copyTo(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
+		if (shouldMock()) {
+			return;
+		}
 		assert httpRequest != null;
 		assert httpResponse != null;
 		final long start = System.currentTimeMillis();
@@ -193,5 +201,43 @@ class LabradorRetriever {
 				error.close();
 			}
 		}
+	}
+
+	private static boolean shouldMock() {
+		return Boolean.parseBoolean(System.getProperty(Parameters.PARAMETER_SYSTEM_PREFIX
+				+ "mockLabradorRetriever"));
+	}
+
+	// bouchon pour tests unitaires
+	@SuppressWarnings("unchecked")
+	private <T> T createMockResultOfCall() throws IOException {
+		final Object result;
+		final String request = url.toString();
+		if (!request.contains(HttpParameters.PART_PARAMETER + '=')) {
+			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null),
+					new JavaInformations(null, true));
+		} else if (request.contains(HttpParameters.SESSIONS_PART)
+				&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
+			result = null;
+		} else if (request.contains(HttpParameters.SESSIONS_PART)
+				|| request.contains(HttpParameters.PROCESSES_PART)) {
+			result = Collections.emptyList();
+		} else if (request.contains(HttpParameters.DATABASE_PART)) {
+			try {
+				result = new DatabaseInformations(0);
+			} catch (final Exception e) {
+				throw new IllegalStateException(e);
+			}
+		} else if (request.contains(HttpParameters.HEAP_HISTO_PART)) {
+			final InputStream input = getClass().getResourceAsStream("/heaphisto.txt");
+			try {
+				result = new HeapHistogram(input, false);
+			} finally {
+				input.close();
+			}
+		} else {
+			result = null;
+		}
+		return (T) result;
 	}
 }

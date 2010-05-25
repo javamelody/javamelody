@@ -16,8 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.bull.javamelody;
+package net.bull.javamelody; // NOPMD
 
+import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
+import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.POM_XML_PART;
+import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
+import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -26,6 +41,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -54,6 +72,7 @@ public class TestCollectorServlet {
 	@Before
 	public void setUp() {
 		tearDown();
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 		config = createNiceMock(ServletConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -68,6 +87,7 @@ public class TestCollectorServlet {
 		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
 		// plus si ils utilisent JRobin
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", "true");
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
 		if (collectorServlet != null) {
 			collectorServlet.destroy();
 		}
@@ -183,6 +203,109 @@ public class TestCollectorServlet {
 		replay(response);
 		collectorServlet.init(config);
 		collectorServlet.doPost(request, response);
+		verify(config);
+		verify(context);
+		verify(request);
+		verify(response);
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoPart() throws IOException, ServletException {
+		final Map<String, String> parameters = new LinkedHashMap<String, String>();
+		// partParameter null: monitoring principal
+		parameters.put(PART_PARAMETER, null);
+		doPart(parameters);
+		setUp();
+		parameters.put(PART_PARAMETER, WEB_XML_PART);
+		doPart(parameters);
+		setUp();
+		parameters.put(PART_PARAMETER, POM_XML_PART);
+		doPart(parameters);
+		setUp();
+		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		doPart(parameters);
+		setUp();
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		doPart(parameters);
+		setUp();
+		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
+		testDatabaseInformations.setUp();
+		try {
+			parameters.put(PART_PARAMETER, DATABASE_PART);
+			doPart(parameters);
+			setUp();
+			parameters.put(REQUEST_PARAMETER, "0");
+			doPart(parameters);
+			setUp();
+		} finally {
+			testDatabaseInformations.tearDown();
+		}
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		doPart(parameters);
+		setUp();
+		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		doPart(parameters);
+		setUp();
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		doPart(parameters);
+		setUp();
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testAction() throws IOException, ServletException {
+		final Map<String, String> parameters = new LinkedHashMap<String, String>();
+		parameters.put("application", TEST);
+		parameters.put(ACTION_PARAMETER, Action.GC.toString());
+		doPart(parameters);
+		setUp();
+		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
+		parameters.put(COUNTER_PARAMETER, "all");
+		doPart(parameters);
+		setUp();
+		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
+		parameters.put(SESSION_ID_PARAMETER, "aSessionId");
+		doPart(parameters);
+		setUp();
+		parameters.put(ACTION_PARAMETER, Action.KILL_THREAD.toString());
+		parameters.put(THREAD_ID_PARAMETER, "aThreadId");
+		doPart(parameters);
+		setUp();
+		parameters.put(ACTION_PARAMETER, Action.PAUSE_JOB.toString());
+		parameters.put(JOB_ID_PARAMETER, "all");
+		doPart(parameters);
+		setUp();
+		parameters.put(ACTION_PARAMETER, "remove_application");
+		doPart(parameters);
+		setUp();
+	}
+
+	private void doPart(Map<String, String> parameters) throws IOException, ServletException {
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
+		expect(request.getHeaders("Accept-Encoding")).andReturn(
+				Collections.enumeration(Collections.singleton("text/html"))).anyTimes();
+		expect(request.getParameter("appName")).andReturn(TEST).anyTimes();
+		expect(request.getParameter("appUrls")).andReturn("http://localhost/test").anyTimes();
+		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+			expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+		}
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
+				new ByteArrayOutputStream());
+		expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
+		replay(config);
+		replay(context);
+		replay(request);
+		replay(response);
+		collectorServlet.init(config);
+		collectorServlet.doPost(request, response);
+		collectorServlet.doGet(request, response);
 		verify(config);
 		verify(context);
 		verify(request);

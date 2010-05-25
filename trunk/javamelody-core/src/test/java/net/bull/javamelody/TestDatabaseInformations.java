@@ -59,12 +59,15 @@ public class TestDatabaseInformations {
 		connection = initH2();
 	}
 
-	/** tearDown.
-	 * @throws SQLException e */
+	/** tearDown. */
 	@After
-	public void tearDown() throws SQLException {
+	public void tearDown() {
 		if (connection != null) {
-			connection.close();
+			try {
+				connection.close();
+			} catch (final SQLException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 	}
 
