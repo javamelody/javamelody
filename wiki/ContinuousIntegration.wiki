@@ -23,4 +23,6 @@ The following explains how to do this with [http://hudson-ci.org/ Hudson] which 
   * When the job is finished, you can open the junit reports from the hudson job page or you can open the "Maven-generated site".
   * In the maven site, you can click on the green arrow to download the latest zip of project including the javamelody.jar, or you can open the generated user guide or the project reports (checkstyle, findbugs...) from the menu.
 
-And of course, you can also install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody.
+And of course, you can also install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody, or if you use [http://www.atlassian.com/software/jira/ JIRA] you can install the "[https://plugins.atlassian.com/plugin/details/20909 Monitoring]" JIRA plugin.
+
+In hudson, I also recommend the [http://wiki.hudson-ci.org/display/HUDSON/Violations violations], [http://wiki.hudson-ci.org/display/HUDSON/Cobertura+Plugin cobertura] and [http://wiki.hudson-ci.org/display/HUDSON/Tmp+Cleaner+Plugin tmp cleaner] plugins.
