@@ -291,6 +291,14 @@ class DatabaseInformations implements Serializable {
 		// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
 		String explainRequest = "explain plan set statement_id = '" + statementId + "' for "
 				+ sqlRequest;
+
+		// dans le cas où la requête contient ';' (requêtes multiples), je ne sais pas si explain
+		// plan considère que cela fait partie de la requête à analyser où si certaines versions
+		// d'oracle considèrent que cela vient après l'explain plan; par sécurité on interdit cela
+		if (explainRequest.indexOf(';') != -1) {
+			explainRequest = explainRequest.substring(0, explainRequest.indexOf(';'));
+		}
+
 		// on remplace les paramètres bindés "?" par ":n"
 		int index = explainRequest.indexOf('?');
 		while (index != -1) {
