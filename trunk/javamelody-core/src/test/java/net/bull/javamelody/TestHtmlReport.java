@@ -325,6 +325,7 @@ public class TestHtmlReport {
 					new Date(System.currentTimeMillis() + 60000));
 			trigger2.setRepeatInterval(2 * 24L * 60 * 60 * 1000);
 			scheduler.scheduleJob(job2, trigger2);
+			scheduler.pauseJob(job2.getName(), job2.getGroup());
 			try {
 				final JobDetail job3 = new JobDetail("job" + random.nextInt(), null,
 						JobTestImpl.class);
