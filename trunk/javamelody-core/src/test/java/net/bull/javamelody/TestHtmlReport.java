@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.bull.javamelody;
+package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static org.junit.Assert.assertEquals;
@@ -56,7 +56,9 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test unitaire de la classe HtmlReport.
  * @author Emeric Vernat
  */
+// CHECKSTYLE:OFF
 public class TestHtmlReport {
+	// CHECKSTYLE:ON
 	private Timer timer;
 	private List<JavaInformations> javaInformationsList;
 	private Counter sqlCounter;
