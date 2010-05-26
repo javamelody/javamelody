@@ -64,7 +64,7 @@ public class TestJobGlobalListener {
 			final Random random = new Random();
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
 			// (aléatoirement il y en a 2/10 qui font une erreur)
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 10; i++) {
 				//Define job instance
 				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
 						JobTestImpl.class);
@@ -79,7 +79,7 @@ public class TestJobGlobalListener {
 			// JobTestImpl fait un sleep de 2s au plus, donc on attend les jobs pour les compter
 			Thread.sleep(3000);
 
-			assertSame("requestsCount", 20, jobCounter.getRequestsCount());
+			assertSame("requestsCount", 10, jobCounter.getRequestsCount());
 		} finally {
 			scheduler.shutdown();
 			JobGlobalListener.destroyJobGlobalListener();
