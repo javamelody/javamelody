@@ -315,7 +315,6 @@ public class TestHtmlReport {
 			// and start it off
 			scheduler.start();
 
-			//Define job instance
 			final Random random = new Random();
 
 			//Define a Trigger that will fire "later"
@@ -351,8 +350,7 @@ public class TestHtmlReport {
 				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
 						JobTestImpl.class);
 				job.setDescription("description");
-		
-				//Define a Trigger that will fire "now"
+
 				final SimpleTrigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
 						new Date());
 				//Schedule the job with the trigger
@@ -367,7 +365,7 @@ public class TestHtmlReport {
 			}
 
 			for (Map.Entry<JobDetail, SimpleTrigger> entry : triggersByJob.entrySet()) {
-				// et on les relance pour qu'il soit en cours
+				// et on les relance pour qu'ils soient en cours
 				entry.getValue().setRepeatInterval(60000);
 				scheduler.scheduleJob(entry.getKey(), entry.getValue());
 			}
