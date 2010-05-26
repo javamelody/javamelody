@@ -450,7 +450,7 @@ final class Collector {
 		final int maxRequestsCount = counter.getMaxRequestsCount();
 		for (final CounterRequest newRequest : requests) {
 			if (size > maxRequestsCount && newRequest.getHits() < 10) {
-				// Si le nombre de requêtes est supérieur à 20000
+				// Si le nombre de requêtes est supérieur à 10000
 				// on suppose que l'application a des requêtes sql non bindées
 				// (bien que cela ne soit en général pas conseillé).
 				// En tout cas, on essaye ici d'éviter de saturer
