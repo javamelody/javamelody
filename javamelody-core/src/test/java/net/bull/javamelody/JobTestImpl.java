@@ -39,7 +39,7 @@ public class JobTestImpl implements Job {
 			throw new JobExecutionException(e);
 		}
 		if (RANDOM.nextInt(10) >= 8) {
-			throw new JobExecutionException("il y a une erreur");
+			throw new JobExecutionException("test d'erreur");
 		}
 	}
 }
