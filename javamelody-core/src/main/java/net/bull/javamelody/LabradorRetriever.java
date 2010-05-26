@@ -215,7 +215,7 @@ class LabradorRetriever {
 		final String request = url.toString();
 		if (!request.contains(HttpParameters.PART_PARAMETER + '=')) {
 			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null),
-					new JavaInformations(null, true));
+					new JavaInformations(null, true), "ceci est message pour le rapport");
 		} else if (request.contains(HttpParameters.SESSIONS_PART)
 				&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
 			result = null;
