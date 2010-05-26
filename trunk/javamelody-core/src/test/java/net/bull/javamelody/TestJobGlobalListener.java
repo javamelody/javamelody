@@ -61,20 +61,25 @@ public class TestJobGlobalListener {
 			// and start it off
 			scheduler.start();
 
-			//Define job instance
 			final Random random = new Random();
-			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
+			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
+			// (aléatoirement il y en a 2/10 qui font une erreur)
+			for (int i = 0; i < 20; i++) {
+				//Define job instance
+				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
+						JobTestImpl.class);
 
-			//Define a Trigger that will fire "now"
-			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date());
-			//Schedule the job with the trigger
-			scheduler.scheduleJob(job, trigger);
+				//Define a Trigger that will fire "now"
+				final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+						new Date());
+				//Schedule the job with the trigger
+				scheduler.scheduleJob(job, trigger);
+			}
 
-			// JobTestImpl fait un sleep de 5s au plus, donc on l'attend pour le compter
-			Thread.sleep(2100);
+			// JobTestImpl fait un sleep de 2s au plus, donc on attend les jobs pour les compter
+			Thread.sleep(3000);
 
-			assertSame("requestsCount", 1, jobCounter.getRequestsCount());
+			assertSame("requestsCount", 20, jobCounter.getRequestsCount());
 		} finally {
 			scheduler.shutdown();
 			JobGlobalListener.destroyJobGlobalListener();
