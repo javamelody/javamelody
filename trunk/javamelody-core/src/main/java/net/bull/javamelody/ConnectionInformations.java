@@ -73,4 +73,11 @@ class ConnectionInformations implements Serializable {
 	long getThreadId() {
 		return threadId;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[openingDate=" + getOpeningDate() + ", threadId="
+				+ getThreadId() + ']';
+	}
 }

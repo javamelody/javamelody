@@ -48,7 +48,9 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test unitaire de la classe Collector.
  * @author Emeric Vernat
  */
+// CHECKSTYLE:OFF
 public class TestCollector {
+	// CHECKSTYLE:ON
 	private static final String TEST = "test";
 	private Timer timer;
 
@@ -91,41 +93,35 @@ public class TestCollector {
 	/** Test.
 	 * @throws SchedulerException e */
 	@Test
-	public void testToString() throws SchedulerException {
+	public void testToString() throws SchedulerException { // NOPMD
 		try {
 			final Collector collector = createCollectorWithOneCounter();
-			if (collector.toString().isEmpty()) {
-				fail("toString collector vide");
-			}
-			if (new JavaInformations(null, false).toString().isEmpty()) {
-				fail("toString java vide");
-			}
-			if (new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread.currentThread()
-					.getStackTrace()), 100, 1000, false).toString().isEmpty()) {
-				fail("toString thread vide");
-			}
-			if (new SessionInformations(new SessionTestImpl(true), true).toString().isEmpty()) {
-				fail("toString session vide");
-			}
-			if (new MemoryInformations().toString().isEmpty()) {
-				fail("toString memory vide");
-			}
+			assertToStringNotEmpty("collector", collector);
+			assertToStringNotEmpty("java", new JavaInformations(null, false));
+			assertToStringNotEmpty("thread", new ThreadInformations(Thread.currentThread(), Arrays
+					.asList(Thread.currentThread().getStackTrace()), 100, 1000, false));
+			assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true),
+					true));
+			assertToStringNotEmpty("memory", new MemoryInformations());
 			CacheManager.getInstance().addCache("testToString");
 			try {
-				if (new CacheInformations(CacheManager.getInstance().getEhcache("testToString"))
-						.toString().isEmpty()) {
-					fail("toString cache vide");
-				}
+				assertToStringNotEmpty("cache", new CacheInformations(CacheManager.getInstance()
+						.getEhcache("testToString")));
 			} finally {
 				CacheManager.getInstance().shutdown();
 			}
 			final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 			final JobDetail job = new JobDetail("job", null, JobTestImpl.class);
-			if (new JobInformations(job, null, scheduler).toString().isEmpty()) {
-				fail("toString job vide");
-			}
+			assertToStringNotEmpty("job", new JobInformations(job, null, scheduler));
+			assertToStringNotEmpty("connectionInfos", new ConnectionInformations());
 		} finally {
 			timer.cancel();
+		}
+	}
+
+	private static void assertToStringNotEmpty(String type, Object value) {
+		if (value.toString().isEmpty()) {
+			fail("toString " + type + " vide");
 		}
 	}
 
