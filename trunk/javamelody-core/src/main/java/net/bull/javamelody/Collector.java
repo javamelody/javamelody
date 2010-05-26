@@ -239,7 +239,7 @@ final class Collector {
 			}
 			long memorySize = 0;
 			for (final Counter counter : counters) {
-				// counter.isDisplayed() peut changer pour spring, ejb ou services selon l'utilisation
+				// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
 				dayCountersByCounter.get(counter).setDisplayed(counter.isDisplayed());
 				// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
 				// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
