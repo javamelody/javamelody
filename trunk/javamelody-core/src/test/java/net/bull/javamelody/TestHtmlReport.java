@@ -367,7 +367,7 @@ public class TestHtmlReport {
 				throw new IllegalStateException(e);
 			}
 
-			for (Map.Entry<JobDetail, SimpleTrigger> entry : triggersByJob.entrySet()) {
+			for (final Map.Entry<JobDetail, SimpleTrigger> entry : triggersByJob.entrySet()) {
 				// et on les relance pour qu'ils soient en cours
 				entry.getValue().setRepeatInterval(60000);
 				scheduler.scheduleJob(entry.getKey(), entry.getValue());
