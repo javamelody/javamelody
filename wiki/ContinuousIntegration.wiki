@@ -25,4 +25,4 @@ The following explains how to do this with [http://hudson-ci.org/ Hudson] which 
 
 And of course, you can also install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody, or if you use [http://www.atlassian.com/software/jira/ JIRA] you can install the "[https://plugins.atlassian.com/plugin/details/20909 Monitoring]" JIRA plugin.
 
-In hudson, I also recommend the [http://wiki.hudson-ci.org/display/HUDSON/Violations violations], [http://wiki.hudson-ci.org/display/HUDSON/Cobertura+Plugin cobertura] and [http://wiki.hudson-ci.org/display/HUDSON/Tmp+Cleaner+Plugin tmp cleaner] plugins.
+In hudson, the [http://wiki.hudson-ci.org/display/HUDSON/Violations violations], [http://wiki.hudson-ci.org/display/HUDSON/Cobertura+Plugin cobertura] and [http://wiki.hudson-ci.org/display/HUDSON/Tmp+Cleaner+Plugin tmp cleaner] plugins can also be recommended.
