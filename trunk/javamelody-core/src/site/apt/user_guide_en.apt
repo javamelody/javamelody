@@ -72,18 +72,22 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page
 	or from the address <<<http://yourhost/monitoring>>>. That's it.
 
-* Atlassian JIRA and Bamboo Plugin
+* Atlassian JIRA, Confluence and Bamboo Plugin
 
-	If you want to monitor a {{{http://www.atlassian.com/software/jira/}JIRA}} or a
+	If you want to monitor a {{{http://www.atlassian.com/software/jira/}JIRA}},
+	{{{http://www.atlassian.com/software/confluence/}Confluence}} or a
 	{{{http://www.atlassian.com/software/bamboo/}Bamboo}} server, you can install JavaMelody easily
-	with a JIRA/Bamboo plugin. For this, {{{https://plugins.atlassian.com/plugin/details/20909}download}} the jar file of the plugin
-	and copy the file in the <<<JIRA x.x.x/atlassian-jira/WEB-INF/lib>>> directory.
+	with a JIRA/Confluence/Bamboo plugin.
+	For this, {{{https://plugins.atlassian.com/plugin/details/20909}download}} the jar file of the plugin
+	and copy the file in the <<<JIRA x.x.x/atlassian-jira/WEB-INF/lib>>> directory for JIRA,
+	in <<<Bamboo/webapp/WEB-INF/lib>>> for Bamboo
+	or with the "Plugin manager" in the "Administration" menu for Confluence.
 	Restart the server.
-	Then you can open the report from the address <<<http://host:8080/monitoring>>>. That's it.
-	Note: It does not seem possible to monitor sql requests at the moment.
-	
-	This plugin seems not to work with Confluence, but the setup as explained in following chapters does work
-	(place JavaMelody entries first in "filter" and "filter-mapping" sections of the web.xml file).
+	Then you can open the report from the address <<<http://host:port/monitoring>>>
+	(the "Monitoring" link is also available in the "Administration" menu).
+	That's it.
+	Notes: The jdbc connections and the SQL requests are monitored in JIRA, but not in Confluence
+	and Bamboo by default. And the http sessions are never monitored with this plugin.
 
 * Grails Plugin
 
