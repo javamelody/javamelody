@@ -344,6 +344,7 @@ final class JRobin {
 		if (getName().startsWith("error")) {
 			// c'est un jrobin issu d'un CounterRequest du Counter "error"
 			return I18N.getString("Erreurs_par_minute_pour") + ' ' + shortRequestName;
+			// TODO n'existe plus : supprimer le if et les 2 traductions après v1.16
 		}
 		return I18N.getString("Temps_moyens_de") + ' ' + shortRequestName;
 	}
