@@ -402,16 +402,26 @@ final class JdbcWrapper {
 	}
 
 	private static boolean isAtlassian() {
-		// on regarde la propriété système qui est présente normalement
+		// on regarde la propriété système qui est présente normalement dans JIRA
 		if (System.getProperty("atlassian.standalone") != null) {
 			return true;
 		}
-		// sinon on regarde si une classe principale de JIRA est présente
+		// sinon on regarde si une classe principale de JIRA, Confluence ou Bamboo est présente
 		try {
 			Class.forName("com.atlassian.jira.startup.JiraStartupChecklistContextListener");
 			return true;
 		} catch (final ClassNotFoundException e) {
-			return false;
+			try {
+				Class.forName("com.atlassian.confluence.security.PermissionManager");
+				return true;
+			} catch (final ClassNotFoundException e2) {
+				try {
+					Class.forName("com.atlassian.bamboo.security.BambooPermissionManager");
+					return true;
+				} catch (final ClassNotFoundException e3) {
+					return false;
+				}
+			}
 		}
 	}
 
