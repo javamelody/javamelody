@@ -197,20 +197,28 @@ public class TestCollector {
 				fail("getCounterJRobins");
 			}
 			final Range range = Period.JOUR.getRange();
+			final Range customRange = Range.createCustomRange(new Date(System.currentTimeMillis()
+					- 24L * 60 * 60 * 1000), new Date());
 			for (final JRobin jrobin : collector.getCounterJRobins()) {
 				final JRobin robin = collector.getJRobin(jrobin.getName());
 				assertNotNull("getJRobin non null", robin);
 				jrobin.graph(range, 500, 200);
 				jrobin.graph(range, 80, 80);
+				jrobin.graph(customRange, 500, 200);
+				jrobin.graph(customRange, 80, 80);
 
 				jrobin.getLastValue();
+				robin.deleteFile();
 			}
 			for (final JRobin jrobin : collector.getOtherJRobins()) {
 				final JRobin robin = collector.getJRobin(jrobin.getName());
 				assertNotNull("getJRobin non null", robin);
+				robin.deleteFile();
 			}
 			for (final CounterRequest request : counter.getRequests()) {
-				assertNotNull("getJRobin non null", collector.getJRobin(request.getId()));
+				final JRobin robin = collector.getJRobin(request.getId());
+				assertNotNull("getJRobin non null", robin);
+				robin.deleteFile();
 			}
 			assertNull("getJRobin null", collector.getJRobin("n'importe quoi"));
 		} finally {

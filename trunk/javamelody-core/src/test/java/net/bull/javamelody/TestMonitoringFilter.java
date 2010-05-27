@@ -62,6 +62,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -75,7 +76,11 @@ import org.junit.Test;
  * Test unitaire de la classe MonitoringFilter.
  * @author Emeric Vernat
  */
+// CHECKSTYLE:OFF
 public class TestMonitoringFilter {
+	// CHECKSTYLE:ON
+	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
+	private static final String PERIOD_COOKIE_NAME = "javamelody.period";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 	private static final String CONTEXT_PATH = "/test";
 	private static final String GRAPH = "graph";
@@ -263,7 +268,8 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap(PERIOD_PARAMETER, "jour"));
+		monitoring(Collections.<String, String> singletonMap(PERIOD_PARAMETER, Period.JOUR
+				.getCode()));
 	}
 
 	/** Test.
@@ -489,6 +495,12 @@ public class TestMonitoringFilter {
 			}
 			for (final Map.Entry<String, String> entry : parameters.entrySet()) {
 				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+			}
+			if (parameters.isEmpty()) {
+				// dans au moins un cas on met un cookie
+				final Cookie[] cookies = { new Cookie("dummy", "dummy"),
+						new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };
+				expect(request.getCookies()).andReturn(cookies).anyTimes();
 			}
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
