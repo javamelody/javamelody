@@ -396,6 +396,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
+					<!-- Ce paramètre permet aussi de tester l'appel à RuntimeMXBean.getInputArguments() -->
+					<argLine>-Xmx128m</argLine>
 				</configuration>
 			</plugin>
 
