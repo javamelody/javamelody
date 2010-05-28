@@ -57,7 +57,7 @@ final class JdbcWrapper {
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
 
 	// instance de JdbcWrapper (ici on ne connaît pas le ServletContext)
-	static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"), null);
+	static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"));
 
 	private static final BasicDataSourcesProperties TOMCAT_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
@@ -257,18 +257,12 @@ final class JdbcWrapper {
 		}
 	}
 
-	private JdbcWrapper(Counter sqlCounter, ServletContext servletContext) {
+	private JdbcWrapper(Counter sqlCounter) {
 		super();
 		assert sqlCounter != null;
 		this.sqlCounter = sqlCounter;
-		// servletContext est null pour un simple JdbcDriver
-		this.servletContext = servletContext;
-		if (servletContext != null) {
-			final String serverInfo = servletContext.getServerInfo();
-			jboss = serverInfo.contains("JBoss");
-			glassfish = serverInfo.contains("GlassFish");
-			weblogic = serverInfo.contains("WebLogic");
-		}
+		// servletContext reste null pour l'instant
+		this.servletContext = null;
 		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
 				&& !Parameters.isNoDatabase();
 	}
