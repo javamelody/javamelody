@@ -107,7 +107,7 @@ public class TestJdbcWrapper {
 		final BasicDataSource tomcatDataSource = new BasicDataSource();
 		tomcatDataSource.setUrl("jdbc:h2:~/.h2/test");
 		tomcatDataSource.setMaxActive(456);
-		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy(tomcatDataSource);
+		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy("test", tomcatDataSource);
 		assertNotNull("createDataSourceProxy", tomcatProxy);
 		assertNotNull("getLogWriter", tomcatProxy.getLogWriter());
 		tomcatProxy.getConnection().close();
