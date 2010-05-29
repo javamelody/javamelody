@@ -425,6 +425,12 @@ public class TestMonitoringFilter {
 		} finally {
 			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
 		}
+		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
+		try {
+			monitoring(Collections.<String, String> emptyMap(), false);
+		} finally {
+			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
+		}
 		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
 		try {
 			monitoring(Collections.<String, String> emptyMap(), false);
@@ -674,6 +680,7 @@ public class TestMonitoringFilter {
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getRemoteAddr()).andReturn("here").anyTimes();
 			final Random random = new Random();
 			if (random.nextBoolean()) {
 				expect(request.getHeaders("Accept-Encoding")).andReturn(
