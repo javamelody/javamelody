@@ -116,6 +116,7 @@ class DatabaseInformations implements Serializable {
 		super();
 		this.selectedRequestIndex = selectedRequestIndex;
 		final Connection connection = getConnection();
+		assert connection != null;
 		try {
 			database = Database.getDatabaseForConnection(connection);
 			requestNames = database.getRequestNames();
