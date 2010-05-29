@@ -48,10 +48,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -62,9 +65,12 @@ import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.ehcache.CacheManager;
 
@@ -194,13 +200,35 @@ public class TestMonitoringFilter {
 	@Test
 	public void testDoFilter() throws ServletException, IOException {
 		try {
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
-			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			expect(request.getQueryString()).andReturn("param1=1");
-			expect(request.getMethod()).andReturn("GET");
-			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			final FilterChain servletChain = createNiceMock(FilterChain.class);
+			final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
+			final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
+			replay(servletRequest);
+			replay(servletResponse);
+			replay(servletChain);
+			monitoringFilter.doFilter(servletRequest, servletResponse, servletChain);
+			verify(servletRequest);
+			verify(servletResponse);
+			verify(servletChain);
+
+			final FilterChain servletChain2 = createNiceMock(FilterChain.class);
+			final HttpServletRequest servletRequest2 = createNiceMock(HttpServletRequest.class);
+			final ServletResponse servletResponse2 = createNiceMock(ServletResponse.class);
+			replay(servletRequest2);
+			replay(servletResponse2);
+			replay(servletChain2);
+			monitoringFilter.doFilter(servletRequest2, servletResponse2, servletChain2);
+			verify(servletRequest2);
+			verify(servletResponse2);
+			verify(servletChain2);
+
 			final FilterChain chain = createNiceMock(FilterChain.class);
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request2").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getQueryString()).andReturn("param2=2");
+			expect(request.getMethod()).andReturn("POST");
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 
 			replay(config);
 			replay(context);
@@ -214,6 +242,124 @@ public class TestMonitoringFilter {
 			verify(request);
 			verify(response);
 			verify(chain);
+		} finally {
+			destroy();
+		}
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoFilterWithSession() throws ServletException, IOException {
+		try {
+			final FilterChain chain = createNiceMock(FilterChain.class);
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request3").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getQueryString()).andReturn("param3=3");
+			expect(request.getMethod()).andReturn("POST");
+			final HttpSession session = createNiceMock(HttpSession.class);
+			expect(request.getSession(false)).andReturn(session);
+			expect(request.getLocale()).andReturn(Locale.FRANCE);
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+
+			replay(config);
+			replay(context);
+			replay(request);
+			replay(response);
+			replay(chain);
+			replay(session);
+			monitoringFilter.init(config);
+			monitoringFilter.doFilter(request, response, chain);
+			verify(config);
+			verify(context);
+			verify(request);
+			verify(response);
+			verify(chain);
+			verify(session);
+		} finally {
+			destroy();
+		}
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoFilterWithSessionBis() throws ServletException, IOException {
+		try {
+			final FilterChain chain = createNiceMock(FilterChain.class);
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request1").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getQueryString()).andReturn("param1=1");
+			expect(request.getMethod()).andReturn("GET");
+			final HttpSession session = createNiceMock(HttpSession.class);
+			expect(request.getSession(false)).andReturn(session);
+			// Locale sans pays
+			expect(request.getLocale()).andReturn(Locale.FRENCH).anyTimes();
+			// "X-Forwarded-For"
+			expect(request.getHeader("X-Forwarded-For")).andReturn("somewhere").anyTimes();
+			// getRemoteUser
+			expect(request.getRemoteUser()).andReturn("me").anyTimes();
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+
+			replay(config);
+			replay(context);
+			replay(request);
+			replay(response);
+			replay(chain);
+			replay(session);
+			monitoringFilter.init(config);
+			monitoringFilter.doFilter(request, response, chain);
+			verify(config);
+			verify(context);
+			verify(request);
+			verify(response);
+			verify(chain);
+			verify(session);
+		} finally {
+			destroy();
+		}
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoFilterWithSessionTer() throws ServletException, IOException {
+		try {
+			final FilterChain chain = createNiceMock(FilterChain.class);
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request4").anyTimes();
+			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+			expect(request.getQueryString()).andReturn("param4=4");
+			expect(request.getMethod()).andReturn("GET");
+			final HttpSession session = createNiceMock(HttpSession.class);
+			expect(request.getSession(false)).andReturn(session);
+			expect(session.getAttribute(SessionInformations.SESSION_COUNTRY_KEY)).andReturn(
+					Locale.FRANCE.getCountry()).anyTimes();
+			expect(session.getAttribute(SessionInformations.SESSION_REMOTE_ADDR)).andReturn(
+					"somewhere").anyTimes();
+			expect(session.getAttribute(SessionInformations.SESSION_REMOTE_USER)).andReturn("me")
+					.anyTimes();
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+
+			replay(config);
+			replay(context);
+			replay(request);
+			replay(response);
+			replay(chain);
+			replay(session);
+			monitoringFilter.init(config);
+			monitoringFilter.doFilter(request, response, chain);
+			verify(config);
+			verify(context);
+			verify(request);
+			verify(response);
+			verify(chain);
+			verify(session);
 		} finally {
 			destroy();
 		}
@@ -261,6 +407,35 @@ public class TestMonitoringFilter {
 		monitoring(Collections.<String, String> emptyMap());
 		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "html"));
 		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "htmlbody"));
+		setProperty(Parameter.DISABLED, Boolean.TRUE.toString());
+		try {
+			monitoring(Collections.<String, String> emptyMap(), false);
+		} finally {
+			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
+		}
+		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
+		try {
+			monitoring(Collections.<String, String> emptyMap());
+		} finally {
+			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
+		}
+		setProperty(Parameter.URL_EXCLUDE_PATTERN, ".*");
+		try {
+			monitoring(Collections.<String, String> emptyMap(), false);
+		} finally {
+			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
+		}
+		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
+		try {
+			monitoring(Collections.<String, String> emptyMap(), false);
+		} finally {
+			setProperty(Parameter.MONITORING_PATH, "/monitoring");
+		}
+		setProperty(Parameter.MAIL_SESSION, "test");
+		setProperty(Parameter.ADMIN_EMAILS, null);
+		monitoring(Collections.<String, String> emptyMap());
+		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
+		monitoring(Collections.<String, String> emptyMap());
 	}
 
 	/** Test.
@@ -307,16 +482,7 @@ public class TestMonitoringFilter {
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, DATABASE_PART);
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, DATABASE_PART);
-		parameters.put(REQUEST_PARAMETER, "0");
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
-		parameters.put(FORMAT_PARAMETER, "htmlbody");
-		monitoring(parameters);
+		monitorJdbcParts(parameters);
 		parameters.remove(FORMAT_PARAMETER);
 		parameters.put(REQUEST_PARAMETER, "0");
 		monitoring(parameters);
@@ -355,6 +521,29 @@ public class TestMonitoringFilter {
 			exception = true;
 		}
 		assertTrue("exception if unknown part", exception);
+	}
+
+	private void monitorJdbcParts(Map<String, String> parameters) throws IOException,
+			ServletException {
+		final Connection connection = TestDatabaseInformations.initH2();
+		try {
+			parameters.put(PART_PARAMETER, DATABASE_PART);
+			monitoring(parameters);
+			parameters.put(PART_PARAMETER, DATABASE_PART);
+			parameters.put(REQUEST_PARAMETER, "0");
+			monitoring(parameters);
+			parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+			monitoring(parameters);
+			parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+			parameters.put(FORMAT_PARAMETER, "htmlbody");
+			monitoring(parameters);
+		} finally {
+			try {
+				connection.close();
+			} catch (final SQLException e) {
+				Collector.printStackTrace(e);
+			}
+		}
 	}
 
 	/** Test.
@@ -562,8 +751,16 @@ public class TestMonitoringFilter {
 	public void testJiraMonitoringFilter() throws ServletException, IOException {
 		final JiraMonitoringFilter jiraMonitoringFilter = new JiraMonitoringFilter();
 		try {
-			init();
-			setUp();
+			final FilterChain servletChain = createNiceMock(FilterChain.class);
+			final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
+			final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
+			replay(servletRequest);
+			replay(servletResponse);
+			replay(servletChain);
+			jiraMonitoringFilter.doFilter(servletRequest, servletResponse, servletChain);
+			verify(servletRequest);
+			verify(servletResponse);
+			verify(servletChain);
 
 			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
@@ -660,6 +857,10 @@ public class TestMonitoringFilter {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		if (value == null) {
+			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
+		} else {
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		}
 	}
 }
