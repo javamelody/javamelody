@@ -534,15 +534,12 @@ public class MonitoringFilter implements Filter {
 
 	private static String getRequestName(HttpServletRequest httpRequest,
 			CounterServletResponseWrapper wrappedResponse) {
-		final String requestName;
 		if (wrappedResponse.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
 			// Sécurité : si status http est 404, alors requestName est Error404
 			// pour éviter de saturer la mémoire avec potentiellement beaucoup d'url différentes
-			requestName = "Error404";
-		} else {
-			return getCompleteRequestName(httpRequest, false);
+			return "Error404";
 		}
-		return requestName;
+		return getCompleteRequestName(httpRequest, false);
 	}
 
 	private boolean isHttpMonitoringDisabled() {
