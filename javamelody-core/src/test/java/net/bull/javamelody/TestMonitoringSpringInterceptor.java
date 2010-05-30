@@ -44,8 +44,36 @@ public class TestMonitoringSpringInterceptor {
 		 * Test.
 		 * @return Date
 		 */
-		@MonitoredWithSpring(name = "test method")
+		@MonitoredWithSpring
 		Date myMethod();
+
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		@MonitoredWithSpring(name = "test method")
+		Date myOtherMethod();
+	}
+
+	/**
+	 * Test.
+	 */
+	@MonitoredWithSpring
+	@MonitoredWithGuice
+	public static class AnnotatedTestClass implements AnnotatedTest {
+		/**
+		 * {@inheritDoc}
+		 */
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Date myOtherMethod() {
+			return new Date();
+		}
 	}
 
 	/**
@@ -53,12 +81,18 @@ public class TestMonitoringSpringInterceptor {
 	 */
 	@MonitoredWithSpring(name = "test class")
 	@MonitoredWithGuice(name = "test class")
-	public static class AnnotatedTestClass implements AnnotatedTest {
+	public static class AnnotatedTestOtherClass implements AnnotatedTest {
 		/**
-		 * Test.
-		 * @return Date
+		 * {@inheritDoc}
 		 */
 		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Date myOtherMethod() {
 			return new Date();
 		}
 	}
@@ -68,11 +102,18 @@ public class TestMonitoringSpringInterceptor {
 	 */
 	public static class AnnotatedTestMethod implements AnnotatedTest {
 		/**
-		 * Test.
-		 * @return Date
+		 * {@inheritDoc}
+		 */
+		@MonitoredWithGuice
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
 		 */
 		@MonitoredWithGuice(name = "test method")
-		public Date myMethod() {
+		public Date myOtherMethod() {
 			return new Date();
 		}
 	}
@@ -147,10 +188,16 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.myMethod());
 		assertSame(REQUESTS_COUNT, 3, springCounter.getRequestsCount());
 
+		final AnnotatedTest annotatedTestOtherClassSpring = (AnnotatedTest) context
+				.getBean("annotatedTestOtherClassSpring");
+		assertNotNull("annotatedTestOtherClassSpring", annotatedTestOtherClassSpring.myMethod());
+		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
+
 		final AnnotatedTest annotatedTestMethodSpring = (AnnotatedTest) context
 				.getBean("annotatedTestMethodSpring");
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
-		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
+		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myOtherMethod());
+		assertSame(REQUESTS_COUNT, 6, springCounter.getRequestsCount());
 
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
