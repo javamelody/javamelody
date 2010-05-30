@@ -23,6 +23,7 @@ import static org.junit.Assert.assertSame;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTest;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestClass;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestMethod;
+import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestOtherClass;
 
 import org.junit.Test;
 
@@ -60,6 +61,8 @@ public class TestMonitoringGuiceInterceptor {
 
 		final Key<AnnotatedTest> annotatedTestMethodKey = Key.get(AnnotatedTest.class, Names
 				.named("annotatedTestMethod"));
+		final Key<AnnotatedTest> annotatedTestOtherClassKey = Key.get(AnnotatedTest.class, Names
+				.named("annotatedTestOtherClass"));
 		final Module testModule = new AbstractModule() {
 			/** {@inheritDoc} */
 			@Override
@@ -69,6 +72,7 @@ public class TestMonitoringGuiceInterceptor {
 				// implémentation de test
 				bind(SpringTestFacade.class).to(SpringTestFacadeImpl.class);
 				bind(AnnotatedTest.class).to(AnnotatedTestClass.class);
+				bind(annotatedTestOtherClassKey).to(AnnotatedTestOtherClass.class);
 				bind(annotatedTestMethodKey).to(AnnotatedTestMethod.class);
 			}
 		};
@@ -93,8 +97,14 @@ public class TestMonitoringGuiceInterceptor {
 		assertNotNull("annotatedTestClass", annotatedTestClass.myMethod());
 		assertSame(REQUESTS_COUNT, 3, guiceCounter.getRequestsCount());
 
+		final AnnotatedTest annotatedTestOtherClass = injector
+				.getInstance(annotatedTestOtherClassKey);
+		assertNotNull("annotatedTestOtherClass", annotatedTestOtherClass.myMethod());
+		assertSame(REQUESTS_COUNT, 4, guiceCounter.getRequestsCount());
+
 		final AnnotatedTest annotatedTestMethod = injector.getInstance(annotatedTestMethodKey);
 		assertNotNull("annotatedTestMethod", annotatedTestMethod.myMethod());
-		assertSame(REQUESTS_COUNT, 4, guiceCounter.getRequestsCount());
+		assertNotNull("annotatedTestMethod", annotatedTestMethod.myOtherMethod());
+		assertSame(REQUESTS_COUNT, 6, guiceCounter.getRequestsCount());
 	}
 }

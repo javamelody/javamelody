@@ -6,6 +6,7 @@
 	
 	<bean name="springTestFacade" class="net.bull.javamelody.SpringTestFacadeImpl" />
 	<bean name="annotatedTestClassSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestClass" />
+	<bean name="annotatedTestOtherClassSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestOtherClass" />
 	<bean name="annotatedTestMethodSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestMethod" />
 
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
