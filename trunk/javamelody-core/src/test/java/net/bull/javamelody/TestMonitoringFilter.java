@@ -236,12 +236,27 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoFilter() throws ServletException, IOException {
+		// displayed-counters
+		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
+		try {
+			doFilter(createNiceMock(HttpServletRequest.class));
+			setProperty(Parameter.DISPLAYED_COUNTERS, "unknown");
+			try {
+				doFilter(createNiceMock(HttpServletRequest.class));
+			} catch (final IllegalArgumentException e) {
+				assertNotNull("ok", e);
+			}
+		} finally {
+			setProperty(Parameter.DISPLAYED_COUNTERS, null);
+		}
+
 		// standard
 		doFilter(createNiceMock(HttpServletRequest.class));
 
 		// log
 		setProperty(Parameter.LOG, "true");
 		try {
+			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.WARN);
 			doFilter(createNiceMock(HttpServletRequest.class));
 
 			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.DEBUG);
