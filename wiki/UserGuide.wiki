@@ -81,15 +81,16 @@ or MSIE8 (MSIE7 not recommended).
 
 == Atlassian JIRA, Confluence and Bamboo Plugin ==
 
-	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily
-	with a JIRA/Bamboo plugin. For this, [https://plugins.atlassian.com/plugin/details/20909 download] the jar file of the plugin
-	and copy the file in the "{{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}}" directory. Restart the server.
+	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA],
+	[http://www.atlassian.com/software/confluence/ Confluence] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily
+	with a JIRA/Confluence/Bamboo plugin. For this, [https://plugins.atlassian.com/plugin/details/20909 download] the jar file of the plugin
+	and copy the file in the "{{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}}" directory for JIRA, in <<<Bamboo/webapp/WEB-INF/lib>>> for Bamboo or with the "Plugin manager" in the "Administration" menu for Confluence.
+	Restart the server.
 
-	Then you can open the report from the address {{{http://<host>:<port>/monitoring}}}. That's it.
+	Then you can open the report from the address {{{http://<host>:<port>/monitoring}}} (the "Monitoring" link is also available in the "Administration" menu).
+	That's it.
 
-	Note: It does not seem possible to monitor sql requests, jdbc connections or http sessions at the moment.
-	
-	This plugin seems not to work with Confluence, but the setup as explained in following chapters does work (place JavaMelody entries first in "filter" and "filter-mapping" sections of the web.xml file).
+	Notes: The jdbc connections and the SQL requests are monitored in JIRA, but not in Confluence and Bamboo by default. And the http sessions are never monitored with this plugin.
 
 == Grails Plugin ==
 
