@@ -378,12 +378,14 @@ final class JdbcWrapper {
 				if (glassfish || jboss || weblogic) {
 					rewrapDataSource(dataSource);
 				} else if (!isProxyAlready(dataSource)) {
-					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
-					final DataSource dataSourceProxy = createDataSourceProxy(jndiName, dataSource);
-					JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
-							dataSourceProxy);
 					if (isAtlassian()) {
 						rewrapDataSource(dataSource);
+					} else {
+						// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
+						final DataSource dataSourceProxy = createDataSourceProxy(jndiName,
+								dataSource);
+						JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
+								dataSourceProxy);
 					}
 				}
 			}
