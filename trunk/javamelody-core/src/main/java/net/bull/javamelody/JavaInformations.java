@@ -352,8 +352,11 @@ class JavaInformations implements Serializable { // NOPMD
 				try {
 					appendDataBaseVersion(result, connection);
 				} finally {
-					connection.rollback();
-					connection.close();
+					try {
+						connection.rollback();
+					} finally {
+						connection.close();
+					}
 				}
 				return result.toString();
 			}
@@ -374,8 +377,11 @@ class JavaInformations implements Serializable { // NOPMD
 					result.append(name).append(":\n");
 					appendDataBaseVersion(result, connection);
 				} finally {
-					connection.rollback();
-					connection.close();
+					try {
+						connection.rollback();
+					} finally {
+						connection.close();
+					}
 				}
 			}
 		} catch (final NamingException e) {
