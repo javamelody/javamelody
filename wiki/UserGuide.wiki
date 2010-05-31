@@ -16,12 +16,13 @@
     * [#7._JDBC 7. JDBC]
     * [#8._Business_facades_(ejb-jar.xml_file_if_EJB3) 8. Business facades (ejb-jar.xml file if EJB3)]
     * [#9._Business_facades_(if_Spring) 9. Business facades (if Spring)]
-    * [#10._Batch_jobs_(if_Quartz) 10. Batch jobs (if Quartz)]
-    * [#11._Weekly,_daily_or_monthly_reports_by_mail 11. Weekly, daily or monthly reports by mail]
-    * [#12._Database_user 12. Database user]
-    * [#13._Security 13. Security]
-    * [#14. 14. SecurityManager]
-    * [#15._Full_results 15. Full results]
+    * [#10._Business_facades_(if_Guice) 10. Business facades (if Guice)]
+    * [#11._Batch_jobs_(if_Quartz) 11. Batch jobs (if Quartz)]
+    * [#12._Weekly,_daily_or_monthly_reports_by_mail 12. Weekly, daily or monthly reports by mail]
+    * [#13._Database_user 13. Database user]
+    * [#14._Security 14. Security]
+    * [#15._SecurityManager 15. SecurityManager]
+    * [#16._Full_results 15. Full results]
   * [#Dependencies Dependencies]
   * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
   * [#Compilation_and_development Compilation and development]
@@ -208,11 +209,10 @@ or MSIE8 (MSIE7 not recommended).
 	to transform descriptions of sql requests (not binded identifiers for a "in" clause for example)
 	in order to be able to aggregate on these requests.
 
-	And the parameters {{{ejb-transform-pattern}}}, {{{spring-transform-pattern}}},
-	{{{error-transform-pattern}}}, {{{log-transform-pattern}}}, {{{job-transform-pattern}}} and {{{jsp-transform-pattern}}} can transform descriptions of
-	ejb3 methods, of spring methods, of http system errors, of system error logs, of names of jobs or of jsp pages (in order to aggregate by ejb components and not by ejb methods for example)
+	And the parameters {{{ejb-transform-pattern}}}, {{{spring-transform-pattern}}}, {{{guice-transform-pattern}}}, {{{error-transform-pattern}}}, {{{log-transform-pattern}}}, {{{job-transform-pattern}}} and {{{jsp-transform-pattern}}} can transform descriptions of
+	ejb3 methods, of spring methods, of guice methods, of http system errors, of system error logs, of names of jobs or of jsp pages (in order to aggregate by ejb components and not by ejb methods for example)
 
-	The parameter {{{displayed-counters}}} can modify the displayed counters for the statistics and for the graphics ({{{http,sql,error,log}}} by default). So the counters displayed by default are those with keys http, sql, error and log. The counters with keys jsp, ejb, spring and services are automatically displayed when they are used (see below for ejb or spring and see the UserGuideAdvanced for services without ejb and spring).
+	The parameter {{{displayed-counters}}} can modify the displayed counters for the statistics and for the graphics ({{{http,sql,error,log}}} by default). So the counters displayed by default are those with keys http, sql, error and log. The counters with keys jsp, ejb, spring, guice and services are automatically displayed when they are used (see below for ejb, spring or guice and see the UserGuideAdvanced for services without ejb, spring and guice).
 	So the parameter {{{displayed-counters}}} can hide some counters with for example the value {{{http,sql,ejb,spring}}}.
 
 	The parameter {{{log}}} can activate logs of http requests at the INFO level ({{{false}}} by default).
@@ -448,7 +448,64 @@ or
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
 	facades with separate interfaces and implementations. 
 
-=== 10. Batch jobs (if Quartz) ===
+=== 10. Business facades (if Guice) ===
+
+	If the application to monitor contains some business facades or other objects initialized with Guice,
+	a counter can be created for statistics of execution of methods. But it is not recommended for response time
+	to monitor execution of all methodes of Guice beans, for example the methods of low granularity as getters of entities.
+
+	Step 1: Add the jar dependency guice to your project (in pom.xml if maven).
+	As pre-requisite for guice, the jar of javamelody must be available in the classpath used to compile sources.
+	
+	Step 2 (with annotations): Add the MonitoringGuiceModule to your Guice module. For example:
+
+{{{
+		final Module testModule = new AbstractModule() {
+			/** {@inheritDoc} */
+			@Override
+			protected void configure() {
+				// configuration of the Guice monitoring with annotations
+				install(new net.bull.javamelody.MonitoringGuiceModule());
+				// facade
+				bind(TestFacade.class).to(TestFacadeImpl.class);
+			}
+		};
+}}}
+
+	Then, just add the annotation {{{@net.bull.javamelody.MonitoredWithGuice}}} to all
+	implementation classes (not to interfaces) and/or methods you want to monitor.
+	The annotation also let you change the names of displayed classes in the monitoring.
+	If the name displayed by the monitoring for the class or the method does not please you,
+	you can add (name="my business use case") between parentheses after the annotation on your class
+	or on your method.
+	
+	As the Guice configuration of the monitoring is only for guice beans, make sure these classes are
+	instantiated through Guice (i.e. declare them as a bind in a Guice module).
+	
+	As alternative to step 2, you can use an interface or a super-class in place of annotations.
+	Assuming that the business facades have a common interface or super-class
+	{{{com.xyz.someapp.service.Facade}}} and that you want to monitor all methods of those facades,
+	add only the following bindInterceptor in your Guice module:
+	
+{{{
+		final Module testModule = new AbstractModule() {
+			/** {@inheritDoc} */
+			@Override
+			protected void configure() {
+				// configuration du monitoring Guice par interface
+				bindInterceptor(Matchers.subclassesOf(com.xyz.someapp.service.Facade.class),
+					Matchers.any(), new net.bull.javamelody.MonitoringGuiceInterceptor());
+				// facade
+				bind(TestFacade.class).to(TestFacadeImpl.class);
+			}
+		};
+}}}
+	
+	Note: If you don't have a common interface for facades or if you don't want to monitor all facades,
+	you can create and add to your facades an interface {{{com.xyz.someapp.service.Monitored}}}
+	and then use it in your module like above.
+
+=== 11. Batch jobs (if Quartz) ===
 
 	Batch jobs are automatically monitored when they are scheduled with [http://www.quartz-scheduler.org/ Quartz].
 
@@ -467,7 +524,7 @@ or
 	Without this "exposeSchedulerInRepository" property, the jobs scheduled using Spring are neither
 	monitored nor displayed in report.
 
-=== 11. Weekly, daily or monthly reports by mail ===
+=== 12. Weekly, daily or monthly reports by mail ===
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -537,7 +594,7 @@ or
 <Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 }}}
 
-=== 12. Database user ===
+=== 13. Database user ===
 
 	From the html page of the monitoring, it is possible to display informations and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -554,7 +611,7 @@ or
 	in order to grant the right to the user 'myapplication':
 	{{{grant select any dictionary to myapplication}}}
 
-=== 13. Security ===
+=== 14. Security ===
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -604,7 +661,7 @@ or
 </tomcat-users>
 }}}
 
-=== 14. SecurityManager ===
+=== 15. SecurityManager ===
 
 	If your are one of the rare people with a security manager enabled in your server, there will be
 	an exception like the following in the server output at the start of the webapp with JavaMelody:
@@ -632,7 +689,7 @@ or
 	and replace {{{<your_webapp>}}} with the name of your webapp and replace
 	{{{javamelody-x.jar}}} with the exact name of the JavaMelody jar file.
 
-=== 15. Full results ===
+=== 16. Full results ===
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
