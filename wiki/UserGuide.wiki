@@ -22,7 +22,7 @@
     * [#13._Database_user 13. Database user]
     * [#14._Security 14. Security]
     * [#15. 15. SecurityManager]
-    * [#16._Full_results 15. Full results]
+    * [#16._Full_results 16. Full results]
   * [#Dependencies Dependencies]
   * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
   * [#Compilation_and_development Compilation and development]
