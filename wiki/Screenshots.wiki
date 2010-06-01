@@ -12,7 +12,7 @@
   # [#Sessions Sessions]
   # [#Memory_histogram Memory histogram]
   # [#Processes Processes]
-  # [#Drill-down_(and_ejb/spring/services_components) Drill-down (and ejb/spring/services components)]
+  # [#Drill-down_(and_ejb/spring/guice/services_components) Drill-down (and ejb/spring/guice/services components)]
   # [#Zoom_on_chart Zoom on chart]
   # [#Mysql_process Mysql process]
   # [#Oracle_long_requests Oracle long requests]
@@ -56,7 +56,7 @@
 === Processes ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' width='50%' alt='Processus' /></a>
 
-=== Drill-down (and ejb/spring/services components) ===
+=== Drill-down (and ejb/spring/guice/services components) ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/drill-down.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/drill-down.png' width='50%' alt='Drill-down (et composants ejb/spring/autres)' /></a>
 
 === Zoom on chart ===
