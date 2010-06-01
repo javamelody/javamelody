@@ -70,9 +70,9 @@ Advanced documentation of Java Melody
 	
 	Then you can complete the settings as below according to your needs.
 
-	** 4 to 12. Other settings (optional parameters, JDBC, EJB3, Spring, etc)
+	** 4 to 16. Other settings (optional parameters, JDBC, EJB3, Spring, etc)
 
-	To complete the settings, just follow the chapters 4 to 12 of the {{{user_guide_en.html} user guide}}.
+	To complete the settings, just follow the chapters 4 to 16 of the {{{user_guide_en.html} user guide}}.
 	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
 	
 	
