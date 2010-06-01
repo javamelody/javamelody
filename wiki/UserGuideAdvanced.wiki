@@ -8,7 +8,7 @@ For standard documentation, see [UserGuide]
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
-    * [#4_to_15._Other_settings_(optional_parameters,_JDBC,_EJB3,_etc) 4 to 15. Other settings (optional parameters, JDBC, EJB3, etc)]
+    * [#4_to_16._Other_settings_(optional_parameters,_JDBC,_EJB3,_etc) 4 to 16. Other settings (optional parameters, JDBC, EJB3, etc)]
   * [#Optional_centralization_server_setup Optional centralization server setup]
     * [#1._War_file_of_the_webapp_of_monitoring 1. War file of the webapp of monitoring]
     * [#2._Deployment_of_the_webapp_of_monitoring 2. Deployment of the webapp of monitoring]
@@ -80,9 +80,9 @@ For standard documentation, see [UserGuide]
 	
 	Then you can complete the settings as below according to your needs.
 
-=== 4 to 15. Other settings (optional parameters, JDBC, EJB3, etc) ===
+=== 4 to 16. Other settings (optional parameters, JDBC, EJB3, etc) ===
 
-	To complete the settings, just follow the chapters 4 to 15 of the [UserGuide].
+	To complete the settings, just follow the chapters 4 to 16 of the [UserGuide].
 	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
 	
 	
