@@ -4,7 +4,7 @@
   * Compatibility of the [https://plugins.atlassian.com/plugin/details/20909 JIRA/Bamboo plugin] with *Confluence*
     * Notes: The "Monitoring" link is moved to the Administration menu and only administrators in JIRA/Bamboo/Confluence are authorized to view reports. Http sessions are unfortunately never seen by this plugin.
   * Monitoring of jdbc connections and of *sql requests in JIRA* (but not in Confluence and Bamboo by default)
-  * Fix issue 20: The count of used jdbc connections increases in the display with each "/monitoring" page refresh (but connections are really closed)
+  * Fix issue 20: In JIRA, the count of used jdbc connections increases in the display with each "/monitoring" page refresh (but connections are really closed)
   * Monitoring of Business facades with *[http://code.google.com/p/google-guice/ Guice]* (like with EJB or with Spring)
   * Some minor bugs fixed
 
