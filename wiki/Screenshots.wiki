@@ -1,6 +1,7 @@
 #labels Featured
 === Table of contents ===
   # [#Charts Charts]
+  # [#Other_charts Other charts]
   # [#English/French English/French]
   # [#Statistics_of_requests Statistics of requests]
   # [#Http_errors_and_logs_of_errors Http errors and logs of errors]
@@ -23,7 +24,7 @@
 === Charts ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/graphs.png' width='50%' alt='Courbes' /></a>
 
-=== Charts ===
+=== Other charts ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/autres_courbes.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/autres_courbes.png' width='50%' alt='Autres courbes' /></a>
 
 === English/French ===
