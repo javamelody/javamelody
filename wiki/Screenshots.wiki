@@ -2,7 +2,7 @@
 === Table of contents ===
   # [#Charts Charts]
   # [#Other_charts Other charts]
-  # [#English/French English/French]
+  # [#English/French_(http,_sql,_spring,_jsp) English/French (http, sql, spring, jsp)]
   # [#Statistics_of_requests Statistics of requests]
   # [#Http_errors_and_logs_of_errors Http errors and logs of errors]
   # [#Current_requests Current requests]
@@ -27,7 +27,7 @@
 === Other charts ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/autres_courbes.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/autres_courbes.png' width='50%' alt='Autres courbes' /></a>
 
-=== English/French ===
+=== English/French (http, sql, spring, jsp) ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/french_http_sql_spring_jsp.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/french_http_sql_spring_jsp.png' width='50%' alt='Anglais' /></a>
 
 === Statistics of requests ===
