@@ -48,7 +48,7 @@
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/jobs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/jobs.png' width='50%' alt='Jobs' /></a>
 
 === Http sessions ===
-<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' width='50%' alt='Sessions' /></a>
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' width='50%' alt='Http sessions' /></a>
 
 === Memory histogram ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' width='50%' alt='Histogramme mémoire' /></a>
