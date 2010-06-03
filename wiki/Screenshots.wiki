@@ -9,7 +9,7 @@
   # [#Threads Threads]
   # [#Caches_of_data_(ehcache) Caches of data (ehcache)]
   # [#Jobs_(quartz,_v1.15) Jobs (quartz)]
-  # [#Sessions Sessions]
+  # [#Http sessions Http sessions]
   # [#Memory_histogram Memory histogram]
   # [#Processes Processes]
   # [#Drill-down_(and_ejb/spring/guice/services_components) Drill-down (and ejb/spring/guice/services components)]
@@ -47,7 +47,7 @@
 === Jobs (quartz, v1.15) ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/jobs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/jobs.png' width='50%' alt='Jobs' /></a>
 
-=== Sessions ===
+=== Http sessions ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/sessions.png' width='50%' alt='Sessions' /></a>
 
 === Memory histogram ===
