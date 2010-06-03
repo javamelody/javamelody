@@ -9,7 +9,7 @@
   # [#Threads Threads]
   # [#Caches_of_data_(ehcache) Caches of data (ehcache)]
   # [#Jobs_(quartz,_v1.15) Jobs (quartz)]
-  # [#Http sessions Http sessions]
+  # [#Http_sessions Http sessions]
   # [#Memory_histogram Memory histogram]
   # [#Processes Processes]
   # [#Drill-down_(and_ejb/spring/guice/services_components) Drill-down (and ejb/spring/guice/services components)]
