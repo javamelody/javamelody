@@ -153,10 +153,11 @@
 	<!-- Construction du jar du plugin Jira -->
 	<target name="jira-jar" depends="jar">
 		<echo message="Construction du jar pour le plugin Jira" level="info" />
-		<!-- Description Jira/Confluence/Bamboo pour le plugin -->
-		<copy file="src/main/jira/atlassian-plugin.xml" todir="build/" overwrite="true"/>
+		<!-- Description Jira/Confluence/Bamboo pour le plugin.
+		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
+		<copy file="src/main/jira/atlassian-plugin.xml" todir="build/" overwrite="true" />
 		<replace file="build/atlassian-plugin.xml" propertyFile="VERSION.properties">
-			<replacefilter token="${version}" property="version"/>
+			<replacefilter token="${version}" property="version" />
 		</replace>
 		<delete file="jira-javamelody.jar" />
 		<jar destfile="jira-javamelody.jar">
