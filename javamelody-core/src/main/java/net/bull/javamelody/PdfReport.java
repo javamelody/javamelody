@@ -149,6 +149,7 @@ class PdfReport {
 		document.newPage();
 		addParagraph(getI18nString("Statistiques_detaillees"), "systemmonitor.png");
 		writeGraphs(collector.getOtherJRobins());
+		document.newPage();
 		writeGraphDetails();
 
 		writeCountersDetails(pdfCounterReports);
@@ -203,15 +204,15 @@ class PdfReport {
 		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
+				if (i % 3 == 0 && i != 0) {
+					// un retour après httpSessions et avant activeThreads pour l'alignement
+					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
+				}
 				final Image image = Image.getInstance(jrobin.graph(range, 200, 50));
 				image.scalePercent(50);
 				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
 				jrobinParagraph.add(new Phrase(" "));
-			}
-			i++;
-			if (i % 3 == 0) {
-				// un retour après httpSessions et avant activeThreads pour l'alignement
-				jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
+				i++;
 			}
 		}
 		jrobinParagraph.add(new Phrase("\n"));
@@ -224,8 +225,6 @@ class PdfReport {
 		jrobinTable.setWidthPercentage(100);
 		jrobinTable.getDefaultCell().setBorder(0);
 		for (final JRobin jrobin : collector.getCounterJRobins()) {
-			// les jrobin de compteurs (qui commencent par le jrobin xxxHitsRate)
-			// doivent être sur une même ligne donc on met un <br/> si c'est le premier
 			final String jrobinName = jrobin.getName();
 			if (isJRobinDisplayed(jrobinName)) {
 				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
