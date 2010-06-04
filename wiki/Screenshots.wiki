@@ -6,7 +6,7 @@
   # [#English/French_(http,_sql,_spring,_jsp) English/French (http, sql, spring, jsp)]
   # [#Http_errors_and_logs_of_errors Http errors and logs of errors]
   # [#Current_requests Current requests]
-  # [#System_informations System informations]
+  # [#System_informations_and_actions System informations and actions]
   # [#Threads Threads]
   # [#Caches_of_data_(ehcache) Caches of data (ehcache)]
   # [#Jobs_(quartz) Jobs (quartz)]
@@ -39,7 +39,7 @@
 === Current requests ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/requetes_en_cours.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/requetes_en_cours.png' width='50%' alt='Requête en cours' /></a>
 
-=== System informations ===
+=== System informations and actions===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/infos_systemes.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/infos_systemes.png' width='50%' alt='Informations systèmes' /></a>
 
 === Threads ===
