@@ -262,6 +262,11 @@ public class TestJdbcWrapper {
 				jdbcWrapper.getSqlCounter().setDisplayed(false);
 				statement.execute("select 4");
 				jdbcWrapper.getSqlCounter().setDisplayed(true);
+				try {
+					statement.execute("invalid sql");
+				} catch (final SQLException e) {
+					assertNotNull("ok", e);
+				}
 			} finally {
 				statement.close();
 			}
