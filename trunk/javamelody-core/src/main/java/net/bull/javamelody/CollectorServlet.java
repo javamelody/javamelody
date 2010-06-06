@@ -35,6 +35,7 @@ import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StreamCorruptedException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,11 +139,11 @@ public class CollectorServlet extends HttpServlet {
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
 		}
+		// post du formulaire d'ajout d'application à monitorer
+		final String appName = req.getParameter("appName");
+		final String appUrls = req.getParameter("appUrls");
 		I18N.bindLocale(req.getLocale());
 		try {
-			// post du formulaire d'ajout d'application à monitorer
-			final String appName = req.getParameter("appName");
-			final String appUrls = req.getParameter("appUrls");
 			if (appName == null || appUrls == null) {
 				writeMessage(req, resp, getApplication(req, resp), I18N
 						.getString("donnees_manquantes"));
@@ -160,6 +161,10 @@ public class CollectorServlet extends HttpServlet {
 					"?application=" + appName);
 		} catch (final FileNotFoundException e) {
 			final String message = I18N.getString("monitoring_configure");
+			LOGGER.warn(message, e);
+			writeMessage(req, resp, getApplication(req, resp), message + '\n' + e.toString());
+		} catch (final StreamCorruptedException e) {
+			final String message = I18N.getFormattedString("reponse_non_comprise", appUrls);
 			LOGGER.warn(message, e);
 			writeMessage(req, resp, getApplication(req, resp), message + '\n' + e.toString());
 		} catch (final Exception e) {
