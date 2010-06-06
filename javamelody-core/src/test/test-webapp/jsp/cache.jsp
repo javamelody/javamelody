@@ -6,7 +6,10 @@
 if (CacheManager.getInstance().getCache("test") == null) {
 	CacheManager.getInstance().addCache("test");
 }
-CacheManager.getInstance().getCache("test").put(new Element(new Random().nextInt(), new Random().nextInt()));
+Integer key = new Random().nextInt();
+CacheManager.getInstance().getCache("test").put(new Element(key, new Random().nextInt()));
+// pour afficher les % d'efficacité
+CacheManager.getInstance().getCache("test").get(key);
 %>
 
 Cache initialized
