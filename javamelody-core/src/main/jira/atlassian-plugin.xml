@@ -2,7 +2,7 @@
 	name="JavaMelody Monitoring Plugin" pluginsVersion="1">
 	<plugin-info>
 		<description>Monitoring of JIRA, Confluence or Bamboo server with JavaMelody.</description>
-		<version>1.16.0</version>
+		<version>${version}</version>
 		<application-version min="4.0" />
 		<vendor name="JavaMelody" url="http://javamelody.googlecode.com/" />
 	</plugin-info>
