@@ -48,6 +48,9 @@ class HtmlCacheInformationsReport {
 	void toHtml() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Caches#'>");
 		write("<thead><tr><th>#Cache#</th>");
+		if (configurationEnabled) {
+			write("<th class='sorttable_numeric'>#Pourcentage_memoire_utilise#</th>");
+		}
 		write("<th class='sorttable_numeric'>#Nb_objets_en_memoire#</th>");
 		write("<th class='sorttable_numeric'>#Nb_objets_sur_disque#</th>");
 		if (hitsRatioEnabled) {
@@ -90,6 +93,10 @@ class HtmlCacheInformationsReport {
 		write("<td>");
 		write(cacheInformations.getName());
 		final String nextColumnAlignRight = "</td> <td align='right'>";
+		if (configurationEnabled) {
+			write(nextColumnAlignRight);
+			write(integerFormat.format(cacheInformations.getInMemoryPercentUsed()));
+		}
 		write(nextColumnAlignRight);
 		write(integerFormat.format(cacheInformations.getInMemoryObjectCount()));
 		write(nextColumnAlignRight);

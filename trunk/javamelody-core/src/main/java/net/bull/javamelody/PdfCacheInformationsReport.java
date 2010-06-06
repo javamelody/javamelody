@@ -104,6 +104,9 @@ class PdfCacheInformationsReport {
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
 		headers.add(getI18nString("Cache"));
+		if (configurationEnabled) {
+			headers.add(getI18nString("Pourcentage_memoire_utilise"));
+		}
 		headers.add(getI18nString("Nb_objets_en_memoire"));
 		headers.add(getI18nString("Nb_objets_sur_disque"));
 		if (hitsRatioEnabled) {
@@ -121,6 +124,9 @@ class PdfCacheInformationsReport {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(cacheInformations.getName());
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		if (configurationEnabled) {
+			addCell(integerFormat.format(cacheInformations.getInMemoryPercentUsed()));
+		}
 		addCell(integerFormat.format(cacheInformations.getInMemoryObjectCount()));
 		addCell(integerFormat.format(cacheInformations.getOnDiskObjectCount()));
 		if (hitsRatioEnabled) {
