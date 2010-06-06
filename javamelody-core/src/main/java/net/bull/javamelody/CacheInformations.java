@@ -46,6 +46,7 @@ class CacheInformations implements Serializable {
 	private static final boolean EHCACHE_1_2_X = isEhcache12x();
 	private final String name;
 	private final long inMemoryObjectCount;
+	private final int inMemoryPercentUsed;
 	private final long onDiskObjectCount;
 	private final long inMemoryHits;
 	private final long cacheHits;
@@ -77,6 +78,7 @@ class CacheInformations implements Serializable {
 		long tmpInMemoryHits;
 		long tmpCacheHits;
 		long tmpCacheMisses;
+		int tmpInMemoryPercentUsed;
 		String tmpConfiguration;
 		if (EHCACHE_1_2_X) {
 			// getInMemoryHits, getCacheHits et getCacheMisses n'existent pas en echache v1.2
@@ -86,21 +88,26 @@ class CacheInformations implements Serializable {
 			tmpCacheHits = invokeStatisticsMethod(statistics, "getCacheHits");
 			tmpCacheMisses = invokeStatisticsMethod(statistics, "getCacheMisses");
 			// getCacheConfiguration et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
+			tmpInMemoryPercentUsed = -1;
 			tmpConfiguration = null;
 		} else if (EHCACHE_1_2) {
 			tmpInMemoryHits = -1;
 			tmpCacheHits = -1;
 			tmpCacheMisses = -1;
+			tmpInMemoryPercentUsed = -1;
 			tmpConfiguration = null;
 		} else {
 			tmpInMemoryHits = statistics.getInMemoryHits();
 			tmpCacheHits = statistics.getCacheHits();
 			tmpCacheMisses = statistics.getCacheMisses();
+			tmpInMemoryPercentUsed = (int) (100 * inMemoryObjectCount / cache
+					.getCacheConfiguration().getMaxElementsInMemory());
 			tmpConfiguration = buildConfiguration(cache);
 		}
 		this.inMemoryHits = tmpInMemoryHits;
 		this.cacheHits = tmpCacheHits;
 		this.cacheMisses = tmpCacheMisses;
+		this.inMemoryPercentUsed = tmpInMemoryPercentUsed;
 		this.configuration = tmpConfiguration;
 	}
 
@@ -221,6 +228,10 @@ class CacheInformations implements Serializable {
 		return inMemoryObjectCount;
 	}
 
+	long getInMemoryPercentUsed() {
+		return inMemoryPercentUsed;
+	}
+
 	long getOnDiskObjectCount() {
 		return onDiskObjectCount;
 	}
@@ -250,8 +261,8 @@ class CacheInformations implements Serializable {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[name=" + getName() + ", inMemoryObjectCount="
-				+ getInMemoryObjectCount() + ", onDiskObjectCount=" + getOnDiskObjectCount()
-				+ ", inMemoryHitsRatio=" + getInMemoryHitsRatio() + ", hitsRatio=" + getHitsRatio()
-				+ ']';
+				+ getInMemoryObjectCount() + ", inMemoryPercentUsed=" + getInMemoryPercentUsed()
+				+ ", onDiskObjectCount=" + getOnDiskObjectCount() + ", inMemoryHitsRatio="
+				+ getInMemoryHitsRatio() + ", hitsRatio=" + getHitsRatio() + ']';
 	}
 }
