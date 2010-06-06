@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * Filtre de servlet pour le monitoring.
  * C'est la classe de ce filtre qui doit être déclarée dans le fichier web.xml de la webapp.
@@ -268,7 +270,9 @@ public class MonitoringFilter implements Filter {
 
 		try {
 			Class.forName("ch.qos.logback.classic.Logger");
-			logbackEnabled = true;
+			// on vérifie aussi LoggerContext car il peut arriver que getILoggerFactory ne soit pas ok (jonas)
+			logbackEnabled = Class.forName("ch.qos.logback.classic.LoggerContext")
+					.isAssignableFrom(LoggerFactory.getILoggerFactory().getClass());
 		} catch (final ClassNotFoundException e) {
 			logbackEnabled = false;
 		}
