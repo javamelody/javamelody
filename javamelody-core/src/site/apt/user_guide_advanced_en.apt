@@ -234,7 +234,7 @@ Advanced documentation of Java Melody
 
 JonAS 5 uses OSGI and so you need to add a configuration of felix in JonAS to use JavaMelody.
 
-Copy the content of the latest {{{http://websvn.ow2.org/filedetails.php?repname=jonas&path=%2Fjonas%2Ftrunk%2Fjonas%2Fmodules%2Ftools%2Flaunchers%2Ffelix-launcher%2Fsrc%2Fmain%2Fresources%2Forg%2Fow2%2Fjonas%2Flauncher%2Ffelix%2Fdefault-config.properties}
+Copy the content of the latest {{{http://websvn.ow2.org/filedetails.php?repname=jonas&path=%2Fjonas%2Fbranches%2Fjonas_5_1%2Fjonas%2Fmodules%2Ftools%2Flaunchers%2Ffelix-launcher%2Fsrc%2Fmain%2Fresources%2Forg%2Fow2%2Fjonas%2Flauncher%2Ffelix%2Fdefault-config.properties}
 felix-config.properties}} for JonAS in a file named "felix-config.properties" and written in the "conf" directory of your JonAS server.
 If the content of this latest file does not suit your JonAS version, you can find the "felix-config.properties" file for your version in the felix jar file of your server.
 
