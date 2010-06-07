@@ -68,7 +68,8 @@ class DatabaseInformations implements Serializable {
 				break;
 			case ORACLE:
 				tmp = Arrays
-						.asList("sessions", "locks", "sqlTimes", "instance", "database",
+						.asList("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
+								"invalidObjects", "disabledConstraints", "instance", "database",
 								"nlsParameters", "tablespaceFreespace", "datafileIo",
 								"tablespaceExtents", "ratios", "parameters",
 								"rollbackSegmentStatistics", "statistics", "events");
