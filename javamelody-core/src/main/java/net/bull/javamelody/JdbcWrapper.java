@@ -371,22 +371,24 @@ final class JdbcWrapper {
 		// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
 		try {
+			final boolean rewrapDataSources = Boolean.parseBoolean(Parameters
+					.getParameter(Parameter.REWRAP_DATASOURCES));
+			if (rewrapDataSources) {
+				// on annule le rebinding éventuellement fait avant par SessionListener
+				// si rewrap-datasources est défini dans le filter
+				JdbcWrapperHelper.rebindInitialDataSources(servletContext);
+			}
 			for (final Map.Entry<String, DataSource> entry : JdbcWrapperHelper.getJndiDataSources()
 					.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				if (glassfish || jboss || weblogic) {
+				if (rewrapDataSources || glassfish || jboss || weblogic) {
 					rewrapDataSource(dataSource);
 				} else if (!isProxyAlready(dataSource)) {
-					if (isAtlassian()) {
-						rewrapDataSource(dataSource);
-					} else {
-						// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
-						final DataSource dataSourceProxy = createDataSourceProxy(jndiName,
-								dataSource);
-						JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
-								dataSourceProxy);
-					}
+					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
+					final DataSource dataSourceProxy = createDataSourceProxy(jndiName, dataSource);
+					JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
+							dataSourceProxy);
 				}
 			}
 			ok = true;
@@ -395,30 +397,6 @@ final class JdbcWrapper {
 			ok = false;
 		}
 		return ok;
-	}
-
-	private static boolean isAtlassian() {
-		// on regarde la propriété système qui est présente normalement dans JIRA
-		if (System.getProperty("atlassian.standalone") != null) {
-			return true;
-		}
-		// sinon on regarde si une classe principale de JIRA, Confluence ou Bamboo est présente
-		try {
-			Class.forName("com.atlassian.jira.startup.JiraStartupChecklistContextListener");
-			return true;
-		} catch (final ClassNotFoundException e) {
-			try {
-				Class.forName("com.atlassian.confluence.security.PermissionManager");
-				return true;
-			} catch (final ClassNotFoundException e2) {
-				try {
-					Class.forName("com.atlassian.bamboo.security.BambooPermissionManager");
-					return true;
-				} catch (final ClassNotFoundException e3) {
-					return false;
-				}
-			}
-		}
 	}
 
 	private void rewrapDataSource(DataSource dataSource) throws IllegalAccessException {
