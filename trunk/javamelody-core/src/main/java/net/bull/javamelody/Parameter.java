@@ -147,6 +147,15 @@ public enum Parameter {
 	DATASOURCES("datasources"),
 
 	/**
+	 * Si Tomcat et si JNDI est utilisé pour les datasources, active le rewraping des
+	 * datasources au lieu de faire du rebinding dans JNDI (false par défaut).
+	 * Cela permet de monitorer les requêtes SQL dans le cas où les datasources sont récupérées une
+	 * fois pour toute et que l'initialisation de JavaMelody ne peux être faite avant (hibernate par exemple).
+	 * Cela est utilisé notamment dans le plugin Atlassian pour JIRA.
+	 */
+	REWRAP_DATASOURCES("rewrap-datasources"),
+
+	/**
 	 * Nom JNDI de la session mail pour l'envoi par mail de rapport de hebdomadaire (null par défaut).
 	 */
 	MAIL_SESSION("mail-session"),
