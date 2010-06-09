@@ -61,6 +61,10 @@ class Counter implements Cloneable, Serializable {
 	 */
 	static final String JSP_COUNTER_NAME = "jsp";
 	/**
+	 * Nom du counter des actions Struts.
+	 */
+	static final String STRUTS_COUNTER_NAME = "struts";
+	/**
 	 * Nom du counter des jobs.
 	 */
 	static final String JOB_COUNTER_NAME = "job";
@@ -513,12 +517,12 @@ class Counter implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Retourne true si ce counter est un counter de jsp
+	 * Retourne true si ce counter est un counter de jsp ou d'actions Struts
 	 * (c'est-à-dire si son nom est "jsp")
 	 * @return boolean
 	 */
-	boolean isJspCounter() {
-		return JSP_COUNTER_NAME.equals(name);
+	boolean isJspOrStrutsCounter() {
+		return JSP_COUNTER_NAME.equals(name) || STRUTS_COUNTER_NAME.equals(name);
 	}
 
 	private String getAggregateRequestName(String requestName) {

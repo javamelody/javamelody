@@ -48,9 +48,13 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	private static final Counter SPRING_COUNTER = new Counter("spring", BEANS_ICON_NAME,
 			JdbcWrapper.SINGLETON.getSqlCounter());
 	// GUICE_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
-	// ClassNotFoundException si les classes OP alliance ne sont pas présentes
+	// ClassNotFoundException si les classes AOP alliance ne sont pas présentes
 	private static final Counter GUICE_COUNTER = new Counter("guice", BEANS_ICON_NAME,
 			JdbcWrapper.SINGLETON.getSqlCounter());
+	// STRUTS_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
+	// ClassNotFoundException si les classes xwork de Struts 2 ne sont pas présentes
+	private static final Counter STRUTS_COUNTER = new Counter(Counter.STRUTS_COUNTER_NAME,
+			"struts.png", JdbcWrapper.SINGLETON.getSqlCounter());
 
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SERVICES_COUNTER
 			.getName());
@@ -95,6 +99,10 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 
 	static Counter getGuiceCounter() {
 		return GUICE_COUNTER;
+	}
+
+	static Counter getStrutsCounter() {
+		return STRUTS_COUNTER;
 	}
 
 	/**

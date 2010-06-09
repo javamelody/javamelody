@@ -523,7 +523,7 @@ class HtmlCounterReport {
 
 	static boolean isRequestGraphDisplayed(Counter parentCounter) {
 		return !(parentCounter.isErrorCounter() && !parentCounter.isJobCounter())
-				&& !parentCounter.isJspCounter();
+				&& !parentCounter.isJspOrStrutsCounter();
 	}
 
 	private void writeRequests(String tableName, String childCounterName,

@@ -395,7 +395,7 @@ final class Collector {
 			final JRobin hitsJRobin;
 			final JRobin meanTimesJRobin;
 			final JRobin systemErrorsJRobin;
-			if (!counter.isJspCounter()) {
+			if (!counter.isJspOrStrutsCounter()) {
 				hitsJRobin = getCounterJRobin(counterName + "HitsRate");
 				meanTimesJRobin = getCounterJRobin(counterName + "MeanTimes");
 				systemErrorsJRobin = getCounterJRobin(counterName + "SystemErrors");
@@ -481,7 +481,7 @@ final class Collector {
 		final String requestStorageId = newRequest.getId();
 		// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
 		final JRobin requestJRobin;
-		if (!dayCounter.isJspCounter()
+		if (!dayCounter.isJspOrStrutsCounter()
 				&& (!dayCounter.isErrorCounter() || dayCounter.isJobCounter())) {
 			// on ne crée pas de graphiques pour les "jsp", "error" et "job" car peu utiles
 			// et potentiellement lourd en usage disque et en mémoire utilisée
