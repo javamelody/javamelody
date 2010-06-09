@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * added: Statistics of [http://struts.apache.org/ Struts 2] actions
+  * added: Statistics of *[http://struts.apache.org/ Struts 2]* actions
   * added: If Oracle database, added 3 reports on foreign keys without indexes, invalid objets and disabled constraints
 
 === 1.16.0 ===
