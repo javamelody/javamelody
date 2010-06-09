@@ -220,15 +220,16 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in order to be able to aggregate on these requests.
 
 	And the parameters <<<ejb-transform-pattern>>>, <<<spring-transform-pattern>>>, <<<guice-transform-pattern>>>,
-	<<<error-transform-pattern>>>, <<<log-transform-pattern>>>, <<<job-transform-pattern>>> and
-	<<<jsp-transform-pattern>>> can transform descriptions of ejb3 methods, of spring methods,
-	of guice methods, of http system errors, of system error logs, of names of jobs or of jsp pages
+	<<<error-transform-pattern>>>, <<<log-transform-pattern>>>, <<<job-transform-pattern>>>,
+	<<<struts-transform-pattern>>>  and <<<jsp-transform-pattern>>> can transform descriptions of
+	ejb3 methods, of spring methods, of guice methods, of http system errors, of system error logs,
+	of names of jobs, of struts actions or of jsp pages
 	(in order to aggregate by ejb components and not by ejb methods for example)
 
 	The parameter <<<displayed-counters>>> can modify the displayed counters for the statistics
 	and for the graphics (<<<http,sql,error,log>>> by default). So the counters displayed by default
-	are those with keys http, sql, error and log. The counters with keys jsp, ejb, spring, guice and
-	services are automatically displayed when they are used (see below for ejb, spring or guice and
+	are those with keys http, sql, error and log. The counters with keys struts, jsp, ejb, spring, guice and
+	services are automatically displayed when they are used (see below for ejb, spring, guice or struts and
 	see the advanced user guide for services without ejb, spring and guice).
 	So the parameter <<<displayed-counters>>> can hide some counters with for example the value
 	<<<http,sql,ejb,spring>>>.
@@ -527,7 +528,33 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	you can create and add to your façades an interface <<<com.xyz.someapp.service.Monitored>>>
 	and then use it in your module like above.
 
-** 11. Batch jobs (if Quartz)
+** 11. Actions Struts 2
+
+	If the application to monitor contains some {{{http://struts.apache.org/} Struts 2}} actions,
+	a counter can be created for statistics of execution of actions.
+	For this, a Struts interceptor must be added.
+	
+	In your Struts xml file, add the following lines (or add the "monitoring" interceptor
+	in your default stack) :
+
++-------------------------------+
+	<package name="default" extends="struts-default" >
+		<interceptors>
+			<interceptor name="monitoring" class="net.bull.javamelody.StrutsInterceptor"/>          
+
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="monitoring"/>
+				<interceptor-ref name="defaultStack"/>
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="myStack"/>
+	</package>
++-------------------------------+
+
+	Then, in all your Struts packages, use the "default" package with <<<extends="default">>>
+
+** 12. Batch jobs (if Quartz)
 
 	Batch jobs are automatically monitored when they are scheduled with {{{http://www.quartz-scheduler.org/} Quartz}}.
 
@@ -546,7 +573,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Without this "exposeSchedulerInRepository" property, the jobs scheduled using Spring are neither
 	monitored nor displayed in report.
 
-** 12. Weekly, daily or monthly reports by mail
+** 13. Weekly, daily or monthly reports by mail
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -617,7 +644,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 
-** 13. Database user
+** 14. Database user
 
 	From the html page of the monitoring, it is possible to display informations and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -634,7 +661,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in order to grant the right to the user 'myapplication':
 	<<<grant select any dictionary to myapplication>>>
 
-** 14. Security
+** 15. Security
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -684,7 +711,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 </tomcat-users>
 +-------------------------------+
 
-** 15. SecurityManager
+** 16. SecurityManager
 
 	If your are one of the rare people with a security manager enabled in your server, there will be
 	an exception like the following in the server output at the start of the webapp with JavaMelody:
@@ -712,7 +739,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	and replace <<< <your_webapp> >>> with the name of your webapp and replace
 	<<<javamelody-x.jar>>> with the exact name of the JavaMelody jar file.
 
-** 16. Full results
+** 17. Full results
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 

@@ -154,17 +154,19 @@ public class MonitoringFilter implements Filter {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
+		final Counter strutsCounter = MonitoringProxy.getStrutsCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
 		final Counter jspCounter = JspWrapper.getJspCounter();
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
-			counters = Arrays
-					.asList(httpCounter, sqlCounter, ejbCounter, springCounter, guiceCounter,
-							servicesCounter, errorCounter, logCounter, jspCounter, jobCounter);
+			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
+					guiceCounter, servicesCounter, strutsCounter, jspCounter, errorCounter,
+					logCounter, jobCounter);
 		} else {
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, errorCounter, logCounter, jspCounter);
+					guiceCounter, servicesCounter, strutsCounter, jspCounter, errorCounter,
+					logCounter);
 		}
 
 		setRequestTransformPatterns(counters);
@@ -172,7 +174,7 @@ public class MonitoringFilter implements Filter {
 		// displayedCounters doit être traité avant l'initialisation du collector
 		// sinon les dayCounters ne seront pas bons
 		if (displayedCounters == null) {
-			// par défaut, tous les compteurs sont affichés sauf ejb
+			// par défaut, les compteurs http, sql, error et log sont affichés
 			httpCounter.setDisplayed(true);
 			sqlCounter.setDisplayed(!Parameters.isNoDatabase());
 			errorCounter.setDisplayed(true);
@@ -181,6 +183,7 @@ public class MonitoringFilter implements Filter {
 			springCounter.setDisplayed(false);
 			guiceCounter.setDisplayed(false);
 			servicesCounter.setDisplayed(false);
+			strutsCounter.setDisplayed(false);
 			jspCounter.setDisplayed(false);
 		} else {
 			setDisplayedCounters(counters, displayedCounters);

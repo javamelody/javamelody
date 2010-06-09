@@ -169,6 +169,13 @@
 			<version>2.0</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- Dépendance optionnelle xwork pour interceptor struts 2 -->
+		<dependency>
+			<groupId>com.opensymphony</groupId>
+			<artifactId>xwork</artifactId>
+			<version>2.1.0</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>
 			<groupId>junit</groupId>

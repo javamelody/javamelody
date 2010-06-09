@@ -90,9 +90,14 @@ public enum Parameter {
 
 	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une méthode de
-	 * façade autre que ejb3 ou spring (ie par MonitoringProxy).
+	 * façade autre que ejb3, spring ou guice (ie par MonitoringProxy).
 	 */
 	SERVICES_TRANSFORM_PATTERN("services-transform-pattern"),
+
+	/**
+	 * Expression régulière (null par défaut) pour transformer la description d'une action Struts 2.
+	 */
+	STRUTS_TRANSFORM_PATTERN("struts-transform-pattern"),
 
 	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une erreur http.
