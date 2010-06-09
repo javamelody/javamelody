@@ -1,4 +1,9 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * added: Statistics of [http://struts.apache.org/ Struts 2] actions
+  * added: If Oracle database, added 3 reports on foreign keys without indexes, invalid objets and disabled constraints
+
 === 1.16.0 ===
 
   * Compatibility of the [https://plugins.atlassian.com/plugin/details/20909 JIRA/Bamboo plugin] with *Confluence*
