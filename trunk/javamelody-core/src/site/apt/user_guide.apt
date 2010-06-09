@@ -410,7 +410,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</context-param>
 +-------------------------------+
 
-	Etape 3 : En supposant que les façades métiers possèdent une interface commune 
+	Etape 3 : En supposant que les façades métiers possèdent une interface (ou une super-classe) commune 
 	<<<com.xyz.someapp.service.Facade>>> et que vous voules monitorer toutes les méthodes
 	de ces façades, ajouter les lignes suivantes dans votre fichier applicationContext.xml :
 	
@@ -428,8 +428,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	sont instanciés par l'intermédiaire de Spring
 	(c'est-à-dire déclarez les en tant que bean dans un fichier de configuration Spring)
 	
-	Note : Si vous n'avez pas d'interface commune pour les façades ou si vous ne souhaitez pas monitorer
-	toutes les façades, vous pouvez créer et ajouter à vos façades une interface
+	Note : Si vous n'avez pas d'interface (ou de super-classe) commune pour les façades ou si vous
+	ne souhaitez pas monitorer toutes les façades, vous pouvez créer et ajouter à vos façades une interface
 	<<<com.xyz.someapp.service.Monitored>>> avant de l'utiliser dans votre fichier xml comme
 	ci-dessus, ou bien vous pouvez utiliser une des alternatives ci-dessous.
 	
