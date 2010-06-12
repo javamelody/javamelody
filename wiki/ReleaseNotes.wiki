@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 28: NoSuchMethodError when undeployed and when JavaMelody 1.15.0 or 1.16.0 is used with Quartz 1.7 or 1.8
   * added: Statistics of *[http://struts.apache.org/ Struts 2]* actions
   * added: If Oracle database and if system actions are enabled, 3 new reports on foreign keys without indexes, invalid objets and disabled constraints
 
