@@ -65,5 +65,21 @@ public class TestStrutsInterceptor {
 		strutsInterceptor.intercept(invocation);
 		assertSame(requestsCount, 1, strutsCounter.getRequestsCount());
 		verify(invocation);
+
+		final ActionInvocation invocation2 = createNiceMock(ActionInvocation.class);
+		final ActionContext context2 = new ActionContext(new HashMap<Object, Object>());
+		context2.setName("test2.action");
+		expect(invocation2.getInvocationContext()).andReturn(context2).anyTimes();
+		expect(invocation2.invoke()).andThrow(new IllegalStateException("test d'erreur"))
+				.anyTimes();
+
+		replay(invocation2);
+		try {
+			strutsInterceptor.intercept(invocation2);
+		} catch (final IllegalStateException e) {
+			assertNotNull("ok", e);
+		}
+		assertSame(requestsCount, 2, strutsCounter.getRequestsCount());
+		verify(invocation2);
 	}
 }
