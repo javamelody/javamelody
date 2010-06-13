@@ -126,6 +126,18 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
+	public void testContextInitialized() {
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
+		expect(servletContext.getServerInfo()).andReturn("Mock");
+		final ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
+		replay(servletContext);
+		sessionListener.contextInitialized(servletContextEvent);
+		sessionListener.contextDestroyed(servletContextEvent);
+		verify(servletContext);
+	}
+
+	/** Test. */
+	@Test
 	public void testContextDestroyed() {
 		sessionListener.sessionCreated(createSessionEvent());
 		sessionListener.contextDestroyed(null);
@@ -185,18 +197,6 @@ public class TestSessionListener {
 		if (!SessionListener.getAllSessionsInformations().isEmpty()) {
 			fail("sessionWillPassivate");
 		}
-	}
-
-	/** Test. */
-	@Test
-	public void testInit() {
-		final ServletContext servletContext = createNiceMock(ServletContext.class);
-		expect(servletContext.getServerInfo()).andReturn("Mock");
-		final ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
-		replay(servletContext);
-		sessionListener.contextInitialized(servletContextEvent);
-		sessionListener.contextDestroyed(servletContextEvent);
-		verify(servletContext);
 	}
 
 	/** Test. */
