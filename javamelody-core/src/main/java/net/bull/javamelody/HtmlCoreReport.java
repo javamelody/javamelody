@@ -56,8 +56,7 @@ class HtmlCoreReport {
 			writeln("<a href=\"javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();\" ");
 			final String linkLabel = I18N.getString("personnalisee");
 			writeln("title='" + I18N.getFormattedString("Choisir_periode", linkLabel) + "'>");
-			writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> ");
-			writeln("#personnalisee#</a>");
+			writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> #personnalisee#</a>");
 			writeln("<div id='customPeriod' style='display: none;'>");
 			writeln(SCRIPT_BEGIN);
 			writeln("function validateCustomPeriodForm() {");
@@ -261,10 +260,10 @@ class HtmlCoreReport {
 	}
 
 	private HtmlCounterReport writeCounter(Counter counter) throws IOException {
-		writeln("<h3><img width='24' height='24' src='?resource=" + counter.getIconName()
-				+ "' alt='" + counter.getName() + "'/>");
+		write("<h3><img width='24' height='24' src='?resource=" + counter.getIconName() + "' alt='"
+				+ counter.getName() + "'/>");
 		final String counterLabel = I18N.getString(counter.getName() + "Label");
-		writeln(I18N.getFormattedString("Statistiques_compteur", counterLabel));
+		write(I18N.getFormattedString("Statistiques_compteur", counterLabel));
 		writeln(" - " + range.getLabel() + "</h3>");
 		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
 		htmlCounterReport.toHtml();
@@ -479,59 +478,59 @@ class HtmlCoreReport {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		final String endOfOnClickConfirm = "');\">";
 		if (isGcEnabled()) {
-			writeln("<a href='?action=gc' onclick=\"javascript:return confirm('"
+			write("<a href='?action=gc' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
-			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
+			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
-			writeln("<a href='' onclick=\"javascript:alert('"
+			write("<a href='' onclick=\"javascript:alert('"
 					+ I18N.getStringForJavascript("ramasse_miette_desactive")
 					+ "');return false;\">");
-			writeln("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
+			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
 		if (isHeapDumpEnabled()) {
 			// si serveur de collecte, on suppose que si la version de java est la bonne
 			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
 			// des webapps monitorées
-			writeln("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
+			write("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
-			writeln("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
+			write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 			writeln(separator);
 		}
 		if (isSessionsEnabled()) {
-			writeln("<a href='?action=invalidate_sessions' onclick=\"javascript:return confirm('"
+			write("<a href='?action=invalidate_sessions' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_invalidate_sessions")
 					+ endOfOnClickConfirm);
-			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
+			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
-			writeln("<a href='?part=sessions'>");
+			write("<a href='?part=sessions'>");
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
 		writeln("<br />");
 		if (isHeapHistoEnabled()) {
 			writeln(separator);
-			writeln("<a href='?part=heaphisto'>");
-			writeln("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
+			write("<a href='?part=heaphisto'>");
+			write("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
 		}
 		if (doesWebXmlExists()) {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
 			writeln(separator);
-			writeln("<a href='?part=web.xml'>");
-			writeln("<img src='?resource=xml.png' width='20' height='20' alt=\"#web.xml#\" /> #web.xml#</a>");
+			write("<a href='?part=web.xml'>");
+			write("<img src='?resource=xml.png' width='20' height='20' alt=\"#web.xml#\" /> #web.xml#</a>");
 		}
 
 		writeln(separator);
-		writeln("<a href='?part=processes'>");
-		writeln("<img src='?resource=processes.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
+		write("<a href='?part=processes'>");
+		write("<img src='?resource=processes.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
 		if (isDatabaseEnabled()) {
 			writeln(separator);
-			writeln("<a href='?part=connections'>");
-			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#Connexions_jdbc_ouvertes#\" /> #Connexions_jdbc_ouvertes#</a>");
+			write("<a href='?part=connections'>");
+			write("<img src='?resource=db.png' width='20' height='20' alt=\"#Connexions_jdbc_ouvertes#\" /> #Connexions_jdbc_ouvertes#</a>");
 
 			writeln(separator);
-			writeln("<a href='?part=database'>");
+			write("<a href='?part=database'>");
 			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#database#\" /> #database#</a>");
 		}
 
@@ -575,22 +574,21 @@ class HtmlCoreReport {
 		writeln("<div class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (graphName == null) {
-			writeln("<a href='?' title='#Rafraichir#'>");
+			write("<a href='?' title='#Rafraichir#'>");
 		} else {
-			writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+			write("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 			writeln(separator);
-			writeln("<a href='?part=" + part + "&amp;graph=" + graphName
-					+ "' title='#Rafraichir#'>");
+			write("<a href='?part=" + part + "&amp;graph=" + graphName + "' title='#Rafraichir#'>");
 		}
-		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (graphName == null && PDF_ENABLED) {
 			writeln(separator);
-			writeln("<a href='?format=pdf' title='#afficher_PDF#'>");
-			writeln("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+			write("<a href='?format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln(separator);
-		writeln("<a href='?resource=#help_url#' target='_blank'");
-		writeln(" title=\"#Afficher_aide_en_ligne#\"><img src='?resource=action_help.png' alt='#Aide_en_ligne#'/> #Aide_en_ligne#</a>");
+		write("<a href='?resource=#help_url#' target='_blank'");
+		write(" title=\"#Afficher_aide_en_ligne#\"><img src='?resource=action_help.png' alt='#Aide_en_ligne#'/> #Aide_en_ligne#</a>");
 		writeln(separator);
 		writeln("#Choix_periode# :&nbsp;");
 		// On affiche des liens vers les périodes.
@@ -598,14 +596,14 @@ class HtmlCoreReport {
 		// si la résolution des données est de 5 min, on ne verra alors presque rien
 		for (final Period myPeriod : Period.values()) {
 			if (graphName == null) {
-				writeln("<a href='?period=" + myPeriod.getCode() + "' ");
+				write("<a href='?period=" + myPeriod.getCode() + "' ");
 			} else {
-				writeln("<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period="
+				write("<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period="
 						+ myPeriod.getCode() + "' ");
 			}
-			writeln("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
+			write("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
 					+ "'>");
-			writeln("<img src='?resource=" + myPeriod.getIconName() + "' alt='"
+			write("<img src='?resource=" + myPeriod.getIconName() + "' alt='"
 					+ myPeriod.getLinkLabel() + "' /> ");
 			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;");
 		}
@@ -640,6 +638,10 @@ class HtmlCoreReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
 				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
+	}
+
+	private void write(String html) throws IOException {
+		I18N.writeTo(html, writer);
 	}
 
 	private void writeln(String html) throws IOException {

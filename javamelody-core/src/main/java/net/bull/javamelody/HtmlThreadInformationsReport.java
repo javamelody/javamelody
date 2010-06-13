@@ -182,7 +182,7 @@ class HtmlThreadInformationsReport {
 			writer.write(threadInformations.getName());
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
-				writeln(htmlEncode(stackTraceElement.toString()));
+				write(htmlEncode(stackTraceElement.toString()));
 				writeln("<br/>");
 			}
 			writeln("</em>");
