@@ -43,7 +43,7 @@ public class TestStrutsInterceptor {
 		assertNotNull("getStrutsCounter", MonitoringProxy.getStrutsCounter());
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws Exception e */
 	@Test
 	public void testStruts() throws Exception { // NOPMD
