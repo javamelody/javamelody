@@ -18,12 +18,18 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
@@ -179,6 +185,18 @@ public class TestSessionListener {
 		if (!SessionListener.getAllSessionsInformations().isEmpty()) {
 			fail("sessionWillPassivate");
 		}
+	}
+
+	/** Test. */
+	@Test
+	public void testInit() {
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
+		expect(servletContext.getServerInfo()).andReturn("Mock");
+		final ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
+		replay(servletContext);
+		sessionListener.contextInitialized(servletContextEvent);
+		sessionListener.contextDestroyed(servletContextEvent);
+		verify(servletContext);
 	}
 
 	/** Test. */
