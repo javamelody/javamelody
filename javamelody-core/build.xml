@@ -252,12 +252,43 @@
 		<fail message="Tests failed: check test reports." if="test.failed" />
 	</target>
 
+	<!-- Construction du war de test -->
+	<target name="test-war" depends="jar">
+		<echo message="Construction du war de test" level="info" />
+		<!-- Doit être exécuté avec un jdk et non un jre pour TestHtmlHeapHistogramReport -->
+		<echo message="Compilation des classes de tests" level="info" />
+		<mkdir dir="build/test-classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="off" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/test/java" destdir="build/test-classes">
+			<classpath>
+				<path path="build/classes" />
+				<path path="${class.path}" />
+				<fileset dir="src/main/lib">
+					<include name="junit-4.5.jar" />
+					<include name="h2-1.1.118.jar" />
+					<include name="easymock-2.0.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<delete file="test.war" />
+		<jar destfile="test.war">
+			<!-- classes de la webapp -->
+			<zipfileset dir="build/test-classes" prefix="WEB-INF/classes" />
+			<!-- ressources de la webapp -->
+			<zipfileset dir="src/test/resources" prefix="WEB-INF/classes" />
+			<!-- dépendance javamelody -->
+			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
+			<!-- fichiers jsp, xml et dépendances de la webapp -->
+			<zipfileset dir="src/test/test-webapp/" excludes="WEB-INF/classes/**" />
+		</jar>
+	</target>
+
 	<!-- Construction du zip -->
 	<target name="zip" depends="clean,jar,war,jira-jar,javadoc">
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody.zip" />
 		<zip destfile="javamelody.zip">
-			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,javamelody.zip" />
+			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,javamelody.zip,test.war" />
 			<!-- jar jrobin copié selon indication du user_guide -->
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
 		</zip>
