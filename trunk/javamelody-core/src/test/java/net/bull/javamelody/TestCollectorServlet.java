@@ -41,6 +41,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -299,17 +300,42 @@ public class TestCollectorServlet {
 		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
 		expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
-		replay(config);
-		replay(context);
-		replay(request);
-		replay(response);
-		collectorServlet.init(config);
-		collectorServlet.doPost(request, response);
-		collectorServlet.doGet(request, response);
-		verify(config);
-		verify(context);
-		verify(request);
-		verify(response);
+		InputStream webXmlStream = null;
+		try {
+			webXmlStream = getClass().getResourceAsStream("/WEB-INF/web.xml");
+			InputStream webXmlStream2 = null;
+			try {
+				webXmlStream2 = context.getResourceAsStream("/WEB-INF/web.xml");
+				expect(webXmlStream2).andReturn(webXmlStream).anyTimes();
+				final String javamelodyDir = "/META-INF/maven/net.bull.javamelody/";
+				final String webapp = javamelodyDir + "javamelody-test-webapp/";
+				expect(context.getResourcePaths("/META-INF/maven/")).andReturn(
+						Collections.singleton(javamelodyDir)).anyTimes();
+				expect(context.getResourcePaths(javamelodyDir)).andReturn(
+						Collections.singleton(webapp)).anyTimes();
+				expect(context.getResourceAsStream(webapp + "pom.xml")).andReturn(
+						getClass().getResourceAsStream("/pom.xml")).anyTimes();
+				replay(config);
+				replay(context);
+				replay(request);
+				replay(response);
+				collectorServlet.init(config);
+				collectorServlet.doPost(request, response);
+				collectorServlet.doGet(request, response);
+				verify(config);
+				verify(context);
+				verify(request);
+				verify(response);
+			} finally {
+				if (webXmlStream2 != null) {
+					webXmlStream2.close();
+				}
+			}
+		} finally {
+			if (webXmlStream != null) {
+				webXmlStream.close();
+			}
+		}
 	}
 
 	/** Test. */
