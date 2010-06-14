@@ -559,7 +559,7 @@ class Counter implements Cloneable, Serializable {
 		int size = requests.size();
 		final int maxRequests = getMaxRequestsCount();
 		if (size > maxRequests) {
-			// Si le nombre de requêtes est supérieur à 20000 (sql non bindé par ex.),
+			// Si le nombre de requêtes est supérieur à 10000 (sql non bindé par ex.),
 			// on essaye ici d'éviter de saturer la mémoire (et le disque dur)
 			// avec toutes ces requêtes différentes en éliminant celles ayant moins de 10 hits.
 			// (utile pour une agrégation par année dans PeriodCounterFactory par ex.)
