@@ -117,10 +117,19 @@ public class TestCounter {
 		assertEquals("error requests", before.toString(), after.toString());
 		int i = 0;
 		while (errorCounter.getRequestsCount() < Counter.MAX_ERRORS_COUNT) {
-			errorCounter.addRequestForSystemError("request " + i, 1, 0, null);
+			errorCounter.addRequestForSystemError("request a" + i, 1, 0, null);
 			i++;
 		}
-		errorCounter.addRequestForSystemError("request " + i, 1, 0, null);
+		errorCounter.addRequestForSystemError("request a" + i, 1, 0, null);
+		errorCounter.clear();
+		i = 0;
+		while (errorCounter.getRequestsCount() < Counter.MAX_ERRORS_COUNT) {
+			errorCounter.bindContextIncludingCpu("request b" + i);
+			errorCounter.addRequestForCurrentContext("stack trace");
+			i++;
+		}
+		errorCounter.bindContextIncludingCpu("request b" + i);
+		errorCounter.addRequestForCurrentContext("stack trace");
 	}
 
 	/** Test. */
@@ -176,6 +185,11 @@ public class TestCounter {
 		counter.setMaxRequestsCount(1);
 		counter.addRequestsAndErrors(counter2);
 		assertEquals("count", 1, counter.getRequestsCount());
+		for (int i = 0; i < 20; i++) {
+			counter2.addRequest("request 4", 100, 50, false, 100);
+		}
+		counter.addRequestsAndErrors(counter2);
+		assertEquals("count", 2, counter.getRequestsCount());
 	}
 
 	/** Test. */
