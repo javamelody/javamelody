@@ -165,15 +165,17 @@ public class TestCollector {
 		try {
 			final Counter counter = createCounter();
 			final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
+			final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
 			final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
 			final Collector collector = new Collector(TEST, Arrays.asList(counter, jspCounter,
-					jobCounter), timer);
+					strutsCounter, jobCounter), timer);
 			if (collector.getCounters().size() == 0) {
 				fail("getCounters");
 			}
 			counter.addRequest("test1", 0, 0, false, 1000);
 			jspCounter.addRequest("test2", 0, 0, false, 0);
-			jobCounter.addRequest("test3", 0, 0, false, 0);
+			strutsCounter.addRequest("test3", 0, 0, false, 0);
+			jobCounter.addRequest("test4", 0, 0, false, 0);
 			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
 					true)));
 			counter.addRequest("test2", 0, 0, false, 1000);
