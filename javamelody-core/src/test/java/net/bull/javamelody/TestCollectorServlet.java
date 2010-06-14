@@ -49,6 +49,7 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -185,6 +186,9 @@ public class TestCollectorServlet {
 			ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+		// un cookie d'une application (qui n'existe pas)
+		final Cookie[] cookies = { new Cookie("javamelody.application", "anothertest") };
+		expect(request.getCookies()).andReturn(cookies).anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
@@ -292,7 +296,11 @@ public class TestCollectorServlet {
 		expect(request.getHeaders("Accept-Encoding")).andReturn(
 				Collections.enumeration(Collections.singleton("text/html"))).anyTimes();
 		expect(request.getParameter("appName")).andReturn(TEST).anyTimes();
-		expect(request.getParameter("appUrls")).andReturn("http://localhost/test").anyTimes();
+		expect(request.getParameter("appUrls")).andReturn(
+				"http://localhost/test,http://localhost:8080/test2").anyTimes();
+		// un cookie d'une application (qui existe)
+		final Cookie[] cookies = { new Cookie("javamelody.application", TEST) };
+		expect(request.getCookies()).andReturn(cookies).anyTimes();
 		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
 			expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 		}

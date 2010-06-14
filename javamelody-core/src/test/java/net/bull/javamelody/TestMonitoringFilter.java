@@ -267,7 +267,7 @@ public class TestMonitoringFilter {
 			expect(request.getQueryString()).andReturn("param1=1").anyTimes();
 			doFilter(request);
 		} finally {
-			setProperty(Parameter.LOG, "false");
+			setProperty(Parameter.LOG, null);
 		}
 
 		// ajax

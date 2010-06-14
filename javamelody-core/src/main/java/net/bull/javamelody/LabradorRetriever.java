@@ -214,9 +214,19 @@ class LabradorRetriever {
 		final Object result;
 		final String request = url.toString();
 		if (!request.contains(HttpParameters.PART_PARAMETER + '=')) {
-			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null),
-					new JavaInformations(null, true), "ceci est message pour le rapport");
-		} else if (request.contains(HttpParameters.SESSIONS_PART)
+			final String message = request.contains("/test2") ? null
+					: "ceci est message pour le rapport";
+			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null), new Counter(
+					Counter.ERROR_COUNTER_NAME, null), new JavaInformations(null, true), message);
+		} else {
+			result = createMockResultOfPartCall(request);
+		}
+		return (T) result;
+	}
+
+	private Object createMockResultOfPartCall(String request) throws IOException {
+		final Object result;
+		if (request.contains(HttpParameters.SESSIONS_PART)
 				&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
 			result = null;
 		} else if (request.contains(HttpParameters.SESSIONS_PART)
@@ -238,6 +248,6 @@ class LabradorRetriever {
 		} else {
 			result = null;
 		}
-		return (T) result;
+		return result;
 	}
 }
