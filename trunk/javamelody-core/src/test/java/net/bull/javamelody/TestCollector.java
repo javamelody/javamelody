@@ -189,7 +189,7 @@ public class TestCollector {
 						.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
 								false)));
 			} finally {
-				setProperty(Parameter.NO_DATABASE, "false");
+				setProperty(Parameter.NO_DATABASE, null);
 			}
 			if (collector.getLastCollectDuration() == 0) {
 				fail("getLastCollectDuration");
@@ -464,6 +464,27 @@ public class TestCollector {
 			} finally {
 				collectorServer.stop();
 			}
+
+			try {
+				// test d'une erreur dans l'instanciation du CollectorServer : timer.cancel() doit être appelé
+				setProperty(Parameter.RESOLUTION_SECONDS, "-1");
+				new CollectorServer();
+			} catch (final IllegalStateException e) {
+				assertNotNull("ok", e);
+			} finally {
+				setProperty(Parameter.RESOLUTION_SECONDS, null);
+			}
+
+			// test mail_session
+			setProperty(Parameter.MAIL_SESSION, null);
+			new CollectorServer().collectWithoutErrors();
+			setProperty(Parameter.MAIL_SESSION, "test");
+			setProperty(Parameter.ADMIN_EMAILS, null);
+			new CollectorServer().collectWithoutErrors();
+			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
+			new CollectorServer().collectWithoutErrors();
+			setProperty(Parameter.MAIL_SESSION, null);
+			setProperty(Parameter.ADMIN_EMAILS, null);
 		} finally {
 			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
 					"false");
@@ -472,6 +493,10 @@ public class TestCollector {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		if (value == null) {
+			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
+		} else {
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		}
 	}
 }
