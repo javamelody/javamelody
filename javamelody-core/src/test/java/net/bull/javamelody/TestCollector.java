@@ -444,7 +444,8 @@ public class TestCollector {
 			collectorServer.collectWithoutErrors();
 
 			// pour être sûr qu'il y a une application
-			final List<URL> urls = Parameters.parseUrl("http://localhost:8090/test");
+			final List<URL> urls = Parameters
+					.parseUrl("http://localhost/test,http://localhost:8090/test");
 			Parameters.addCollectorApplication(application, urls);
 
 			try {
