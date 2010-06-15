@@ -41,6 +41,7 @@ public class TestLog {
 	/** Initialisation. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		logbackAppender = new LogbackAppender();
 		log4jAppender = new Log4JAppender();
 		loggingHandler = new LoggingHandler();

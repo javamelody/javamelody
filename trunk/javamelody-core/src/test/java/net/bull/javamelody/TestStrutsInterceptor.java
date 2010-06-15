@@ -27,6 +27,7 @@ import static org.junit.Assert.assertSame;
 
 import java.util.HashMap;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -37,6 +38,12 @@ import com.opensymphony.xwork2.ActionInvocation;
  * @author Emeric Vernat
  */
 public class TestStrutsInterceptor {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testGetStrutsCounter() {

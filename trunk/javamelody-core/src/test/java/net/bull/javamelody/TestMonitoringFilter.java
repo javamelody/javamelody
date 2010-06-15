@@ -103,7 +103,16 @@ public class TestMonitoringFilter {
 	 * Initialisation.
 	 */
 	@Before
+	public void setUpFirst() {
+		Utils.initialize();
+	}
+
+	/**
+	 * Initialisation.
+	 */
+	@Before
 	public void setUp() {
+		// rq: pas setUpFirst ici car setUp est rappelée dans les méthodes
 		tearDown();
 		config = createNiceMock(FilterConfig.class);
 		context = createNiceMock(ServletContext.class);
@@ -137,7 +146,7 @@ public class TestMonitoringFilter {
 	private void destroy() {
 		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
 		// plus si ils utilisent JRobin
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
 		}
@@ -856,10 +865,6 @@ public class TestMonitoringFilter {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		if (value == null) {
-			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
-		} else {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
-		}
+		Utils.setProperty(parameter, value);
 	}
 }

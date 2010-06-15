@@ -24,6 +24,7 @@ import static org.junit.Assert.assertSame;
 import java.util.Date;
 import java.util.Random;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -37,6 +38,12 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 public class TestJobGlobalListener {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testGetJobCounter() {

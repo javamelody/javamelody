@@ -25,6 +25,7 @@ import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestClass;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestMethod;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestOtherClass;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
@@ -40,6 +41,12 @@ import com.google.inject.name.Names;
  */
 public class TestMonitoringGuiceInterceptor {
 	private static final String REQUESTS_COUNT = "requestsCount";
+
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
 
 	/** Test. */
 	@Test

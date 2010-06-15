@@ -57,6 +57,7 @@ public class TestCollector {
 	/** Test. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		final File[] files = Parameters.getStorageDirectory(TEST).listFiles();
 		if (files != null) {
 			for (final File file : files) {
@@ -431,9 +432,7 @@ public class TestCollector {
 	@Test
 	public void testCollectorServer() throws IOException {
 		try {
-			System
-					.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
-							"true");
+			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 
 			// ce test ne fait que vérifier s'il n'y a pas d'erreur inattendue
 			// car sans serveur d'application monitoré il ne peut rien faire d'autre
@@ -487,17 +486,11 @@ public class TestCollector {
 			setProperty(Parameter.MAIL_SESSION, null);
 			setProperty(Parameter.ADMIN_EMAILS, null);
 		} finally {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
-					"false");
 			timer.cancel();
 		}
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		if (value == null) {
-			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
-		} else {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
-		}
+		Utils.setProperty(parameter, value);
 	}
 }

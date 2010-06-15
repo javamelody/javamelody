@@ -46,10 +46,6 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
-	static {
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
-				+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode(), "true");
-	}
 	private static final String EQUALS = "equals";
 	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
 	private JdbcDriver driver;
@@ -59,6 +55,8 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e */
 	@Before
 	public void setUp() throws SQLException {
+		Utils.initialize();
+		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 		driver = new JdbcDriver();
 		DriverManager.registerDriver(driver);
 		jdbcWrapper = JdbcWrapper.SINGLETON;
@@ -205,13 +203,11 @@ public class TestJdbcWrapper {
 			jdbcWrapper.getSqlCounter().setDisplayed(false);
 			connection = jdbcWrapper.createConnectionProxy(connection);
 			jdbcWrapper.getSqlCounter().setDisplayed(true);
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode(),
-					"true");
+			Utils.setProperty(Parameter.DISABLED, "true");
 			try {
 				connection = jdbcWrapper.createConnectionProxy(connection);
 			} finally {
-				System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.DISABLED.getCode(), "false");
+				Utils.setProperty(Parameter.DISABLED, "false");
 			}
 
 			// il peut arriver que getConnectionInformationsList retourne une liste vide

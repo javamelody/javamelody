@@ -48,6 +48,7 @@ public class TestHtmlHeapHistogramReport {
 	/** Initialisation. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		timer = new Timer("test timer", true);
 	}
 

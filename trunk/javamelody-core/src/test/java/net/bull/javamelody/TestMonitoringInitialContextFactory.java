@@ -27,6 +27,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,12 +45,18 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 		initialContext = new InitialContext();
 	}
 
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test.
 	 * @throws NamingException e */
 	@Test
 	public void test() throws NamingException {
 		try {
-			System.setProperty(Context.INITIAL_CONTEXT_FACTORY, this.getClass().getName());
+			Utils.setProperty(Context.INITIAL_CONTEXT_FACTORY, this.getClass().getName());
 			try {
 				MonitoringInitialContextFactory.init();
 				new MonitoringInitialContextFactory().getInitialContext(null);
@@ -57,7 +64,7 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 				MonitoringInitialContextFactory.stop();
 			}
 
-			System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "xyz.nimportequoi");
+			Utils.setProperty(Context.INITIAL_CONTEXT_FACTORY, "xyz.nimportequoi");
 			NamingException result = null;
 			try {
 				MonitoringInitialContextFactory.init();
@@ -70,7 +77,7 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 			// namingexception si la classe n'existe pas
 			assertNotNull("exception", result);
 		} finally {
-			System.getProperties().remove(Context.INITIAL_CONTEXT_FACTORY);
+			Utils.setProperty(Context.INITIAL_CONTEXT_FACTORY, null);
 		}
 	}
 

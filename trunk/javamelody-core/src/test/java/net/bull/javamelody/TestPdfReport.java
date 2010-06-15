@@ -35,6 +35,7 @@ import java.util.Timer;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
@@ -54,6 +55,12 @@ import com.lowagie.text.DocumentException;
 //CHECKSTYLE:OFF
 public class TestPdfReport {
 	private static final String TEST_APP = "test app";
+
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
 
 	//CHECKSTYLE:ON
 	/** Test.

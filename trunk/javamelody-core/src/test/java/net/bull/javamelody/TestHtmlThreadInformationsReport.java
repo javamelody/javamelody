@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestHtmlThreadInformationsReport {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	private static void assertNotEmptyAndClear(StringWriter writer) {
 		assertTrue("rapport vide", writer.getBuffer().length() > 0);
 		writer.getBuffer().setLength(0);

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.interceptor.InvocationContext;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,6 +34,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringInterceptor {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	static class InvokeContext implements InvocationContext {
 		private final boolean throwError;
 

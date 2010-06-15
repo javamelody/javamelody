@@ -41,6 +41,7 @@ public class TestJdbcDriver {
 	/** Test. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		driver = new JdbcDriver();
 	}
 

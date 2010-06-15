@@ -30,6 +30,7 @@ import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestHtmlCounterErrorReport {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	private static void assertNotEmptyAndClear(StringWriter writer) {
 		assertTrue("rapport vide", writer.getBuffer().length() > 0);
 		writer.getBuffer().setLength(0);
