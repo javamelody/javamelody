@@ -20,6 +20,7 @@ package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -139,6 +140,14 @@ public class TestHtmlReport {
 		htmlReport.toHtml("message 2");
 		assertNotEmptyAndClear(writer);
 		setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
+
+		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, "-1");
+		try {
+			htmlReport.toHtml("message 2");
+		} catch (final IllegalStateException e) {
+			assertNotNull("ok", e);
+		}
+		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, null);
 	}
 
 	/** Test.
@@ -435,7 +444,11 @@ public class TestHtmlReport {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		if (value == null) {
+			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
+		} else {
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		}
 	}
 
 	private static void assertNotEmptyAndClear(final StringWriter writer) {
