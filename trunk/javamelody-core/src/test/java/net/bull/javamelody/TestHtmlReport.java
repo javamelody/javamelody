@@ -305,7 +305,11 @@ public class TestHtmlReport {
 					Period.TOUT, writer);
 			htmlReport.toHtml(null);
 			assertNotEmptyAndClear(writer);
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+			htmlReport.toHtml(null);
+			assertNotEmptyAndClear(writer);
 		} finally {
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, null);
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache(cacheName2);
 		}
