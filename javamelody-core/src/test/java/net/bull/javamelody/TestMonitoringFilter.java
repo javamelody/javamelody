@@ -125,6 +125,7 @@ public class TestMonitoringFilter {
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
 		// mockJetty pour avoir un applicationServerIconName dans JavaInformations
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		// dependencies pour avoir des dépendances dans JavaInformations
