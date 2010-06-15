@@ -32,6 +32,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -148,6 +149,32 @@ public class TestCounter {
 		counterRequest.removeHits(counterRequest);
 		// on teste l'ajout de hits avec counterRequests à 0 hit(s)
 		counter.addHits(counterRequest);
+	}
+
+	/** Test. */
+	@Test
+	public void testCounterRequestRemoveHits() {
+		final CounterRequest counterRequest = createCounterRequest();
+		final CounterRequest counterRequest2 = createCounterRequest();
+		// test de CounterRequest.removeHits (avec counterRequest2.hits == 0)
+		counterRequest.removeHits(counterRequest2);
+		counterRequest2.addHit(0, 0, false, null, -1);
+		// test de CounterRequest.removeHits (counterRequest2.hits doit être != 0)
+		counterRequest.removeHits(counterRequest2);
+		final String childId1 = "test";
+		counterRequest2.addChildRequests(Collections.singletonMap(childId1, 0L));
+		// test de CounterRequest.removeHits
+		counterRequest.removeHits(counterRequest2);
+		// test de CounterRequest.removeHits
+		final String childId2 = "autre test";
+		counterRequest.addChildRequests(Collections.singletonMap(childId2, 0L));
+		counterRequest.removeHits(counterRequest2);
+		// test de CounterRequest.removeHits
+		counterRequest.addChildRequests(Collections.singletonMap(childId1, 0L));
+		counterRequest.removeHits(counterRequest2);
+		// test de CounterRequest.removeHits
+		counterRequest2.addChildRequests(Collections.singletonMap(childId2, 0L));
+		counterRequest.removeHits(counterRequest2);
 	}
 
 	/** Test. */
