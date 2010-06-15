@@ -25,6 +25,7 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -36,9 +37,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class TestMonitoringSpringInterceptor {
 	private static final String REQUESTS_COUNT = "requestsCount";
 
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/**
-	 * Test.
-	 */
+		 * Test.
+		 */
 	public interface AnnotatedTest {
 		/**
 		 * Test.

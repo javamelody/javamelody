@@ -56,6 +56,7 @@ public class TestDatabaseInformations {
 	/** setup. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		connection = initH2();
 	}
 

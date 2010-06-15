@@ -45,6 +45,7 @@ public class TestRange {
 	/** Test. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		periodRange = Period.JOUR.getRange();
 		customRange = Range.createCustomRange(
 				new Date(System.currentTimeMillis() - ONE_DAY_MILLIS), new Date());

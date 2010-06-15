@@ -72,6 +72,7 @@ public class TestHtmlReport {
 	/** Initialisation. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		timer = new Timer("test timer", true);
 		javaInformationsList = Collections.singletonList(new JavaInformations(null, true));
 		sqlCounter = new Counter("sql", "db.png");
@@ -408,15 +409,10 @@ public class TestHtmlReport {
 		htmlReport.toHtml(null);
 		assertNotEmptyAndClear(writer);
 
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
-		try {
-			collectorServer.collectWithoutErrors();
-			htmlReport.toHtml(null);
-			assertNotEmptyAndClear(writer);
-		} finally {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever",
-					"false");
-		}
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		collectorServer.collectWithoutErrors();
+		htmlReport.toHtml(null);
+		assertNotEmptyAndClear(writer);
 	}
 
 	/** Test.
@@ -444,11 +440,7 @@ public class TestHtmlReport {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		if (value == null) {
-			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
-		} else {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
-		}
+		Utils.setProperty(parameter, value);
 	}
 
 	private static void assertNotEmptyAndClear(final StringWriter writer) {

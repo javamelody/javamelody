@@ -74,7 +74,8 @@ public class TestCollectorServlet {
 	@Before
 	public void setUp() {
 		tearDown();
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		Utils.initialize();
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 		config = createNiceMock(ServletConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -88,9 +89,8 @@ public class TestCollectorServlet {
 	public void tearDown() {
 		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
 		// plus si ils utilisent JRobin
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", "true");
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
 		if (collectorServlet != null) {
+			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", "true");
 			collectorServlet.destroy();
 		}
 	}

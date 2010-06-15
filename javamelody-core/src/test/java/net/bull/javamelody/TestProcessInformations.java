@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,6 +34,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestProcessInformations {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testReadPs() {

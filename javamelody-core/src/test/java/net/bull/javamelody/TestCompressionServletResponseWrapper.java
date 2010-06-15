@@ -31,6 +31,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -39,6 +40,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestCompressionServletResponseWrapper {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	static class HttpResponse implements HttpServletResponse {
 		private final ServletOutputStream outputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());

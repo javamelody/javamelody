@@ -31,6 +31,7 @@ import java.util.Timer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,8 +39,14 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestPdfCounterErrorReport {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test.
-	 * @throws IOException e */
+		 * @throws IOException e */
 	@Test
 	public void testCounterError() throws IOException {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);

@@ -33,6 +33,7 @@ import java.util.Timer;
 
 import net.sf.ehcache.CacheManager;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -46,6 +47,12 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 public class TestAction {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testValueOfIgnoreCase() {
@@ -215,9 +222,6 @@ public class TestAction {
 	/** Test. */
 	@Test
 	public void testCheckSystemActionsEnabled() {
-		// remove pour être sûr par rapport aux autres tests unitaires
-		System.getProperties().remove(
-				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.SYSTEM_ACTIONS_ENABLED.getCode());
 		boolean systemActionsEnabled = true;
 		try {
 			Action.checkSystemActionsEnabled();
@@ -228,16 +232,12 @@ public class TestAction {
 		if (systemActionsEnabled) {
 			fail("checkSystemActionsEnabled");
 		}
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
-				+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode(), "true");
+		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
 		systemActionsEnabled = true;
 		try {
 			Action.checkSystemActionsEnabled();
 		} catch (final Exception e) {
 			systemActionsEnabled = false;
-		} finally {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX
-					+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode(), "false");
 		}
 		if (!systemActionsEnabled) {
 			fail("checkSystemActionsEnabled");

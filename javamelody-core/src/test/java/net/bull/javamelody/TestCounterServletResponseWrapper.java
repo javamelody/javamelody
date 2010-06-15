@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import net.bull.javamelody.TestCompressionServletResponseWrapper.HttpResponse;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestCounterServletResponseWrapper {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test.
 	 * @throws IOException e */
 	@Test

@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -28,6 +29,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMonitoringProxy {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testGetServicesCounter() {

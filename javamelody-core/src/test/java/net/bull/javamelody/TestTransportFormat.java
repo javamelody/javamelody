@@ -29,6 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -36,6 +37,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestTransportFormat {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	private Counter createCounter() {
 		final Counter counter = new Counter("test transport format", null);
 		counter.addRequest("test1", 0, 0, false, 1000);

@@ -62,6 +62,7 @@ public class TestSessionListener {
 	/** Test. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		sessionListener = new SessionListener();
 		clearSessions();
 	}

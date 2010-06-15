@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.naming.NamingException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -29,6 +30,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapperHelper {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testGetJndiDataSources() {
@@ -81,10 +88,6 @@ public class TestJdbcWrapperHelper {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		if (value == null) {
-			System.getProperties().remove(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode());
-		} else {
-			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
-		}
+		Utils.setProperty(parameter, value);
 	}
 }

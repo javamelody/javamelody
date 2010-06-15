@@ -53,6 +53,7 @@ public class TestCounter {
 	/** Initialisation. */
 	@Before
 	public void setUp() {
+		Utils.initialize();
 		counter = new Counter("test", null);
 		counter.bindContext("bind context", "bind my context");
 	}

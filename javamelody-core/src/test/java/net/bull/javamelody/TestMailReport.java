@@ -27,6 +27,7 @@ import java.util.Timer;
 
 import javax.naming.NoInitialContextException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,12 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestMailReport {
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. */
 	@Test
 	public void testScheduleReportMail() {
@@ -89,6 +96,6 @@ public class TestMailReport {
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		Utils.setProperty(parameter, value);
 	}
 }

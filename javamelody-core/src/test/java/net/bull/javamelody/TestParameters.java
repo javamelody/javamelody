@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,7 +38,13 @@ import org.junit.Test;
  */
 public class TestParameters {
 	private static void setProperty(Parameter parameter, String value) {
-		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
+		Utils.setProperty(parameter, value);
+	}
+
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
 	}
 
 	/** Test. */
