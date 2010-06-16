@@ -180,6 +180,8 @@ public class TestCollectorServlet {
 		doPost(TEST, "https://localhost:8090/test", true);
 		setUp();
 		doPost(TEST, "ftp://localhost:8090/test", true);
+		setUp();
+		doPost(TEST, "http://une url,pas une url", true);
 	}
 
 	private void doPost(String appName, String appUrls, boolean allowed) throws IOException,
