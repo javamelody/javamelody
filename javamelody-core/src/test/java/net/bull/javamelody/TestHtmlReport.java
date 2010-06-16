@@ -458,9 +458,10 @@ public class TestHtmlReport {
 	 * @throws IOException e */
 	@Test
 	public void testToHtmlEn() throws IOException {
-		I18N.bindLocale(Locale.UK);
+		I18N.bindLocale(Locale.US);
+		Locale.setDefault(Locale.US);
 		try {
-			assertEquals("locale en", Locale.UK, I18N.getCurrentLocale());
+			assertEquals("locale en", Locale.US, I18N.getCurrentLocale());
 
 			// counter avec 3 requêtes
 			counter.addRequest("test1", 0, 0, false, 1000);
@@ -472,6 +473,7 @@ public class TestHtmlReport {
 			assertNotEmptyAndClear(writer);
 		} finally {
 			I18N.unbindLocale();
+			Locale.setDefault(Locale.FRENCH);
 		}
 	}
 }
