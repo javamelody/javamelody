@@ -25,6 +25,9 @@ import java.util.HashSet;
  * @author Emeric Vernat
  */
 final class Utils {
+	private static final String SYSTEM_ACTIONS_PROPERTY_NAME = Parameters.PARAMETER_SYSTEM_PREFIX
+			+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode();
+
 	private Utils() {
 		super();
 	}
@@ -47,6 +50,10 @@ final class Utils {
 				System.getProperties().remove(systemProperty.toString());
 			}
 		}
+		// pour avoir les informations sur les connections, l'initialisation de la classe JdbcWrapper
+		// doit se faire avec les actions systèmes activées
+		System.setProperty(SYSTEM_ACTIONS_PROPERTY_NAME, "true");
 		JdbcWrapper.USED_CONNECTION_INFORMATIONS.clear();
+		System.getProperties().remove(SYSTEM_ACTIONS_PROPERTY_NAME);
 	}
 }

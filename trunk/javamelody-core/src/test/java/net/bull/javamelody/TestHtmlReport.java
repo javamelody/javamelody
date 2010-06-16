@@ -239,6 +239,7 @@ public class TestHtmlReport {
 		// avant initH2 pour avoir une liste de connexions vide
 		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
 		final Connection connection = TestDatabaseInformations.initH2();
+		final Connection connection2 = TestDatabaseInformations.initH2();
 		try {
 			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
 			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
@@ -256,6 +257,7 @@ public class TestHtmlReport {
 			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		} finally {
 			connection.close();
+			connection2.close();
 		}
 	}
 
