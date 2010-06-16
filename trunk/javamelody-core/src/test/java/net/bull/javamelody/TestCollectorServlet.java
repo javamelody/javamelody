@@ -235,9 +235,9 @@ public class TestCollectorServlet {
 		setUp();
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
-		setUp();
 		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
 		testDatabaseInformations.setUp();
+		setUp();
 		try {
 			parameters.put(PART_PARAMETER, DATABASE_PART);
 			doPart(parameters);
