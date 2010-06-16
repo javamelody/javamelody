@@ -379,7 +379,7 @@ public class CollectorServlet extends HttpServlet {
 		MonitoringController.noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		if (application == null) {
+		if (application == null || collector == null || javaInformationsList == null) {
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {
 			final PrintWriter writer = createWriterFromOutputStream(resp);
