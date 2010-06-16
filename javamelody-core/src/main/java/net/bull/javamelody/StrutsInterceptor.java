@@ -18,8 +18,6 @@
  */
 package net.bull.javamelody;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
@@ -65,12 +63,10 @@ public final class StrutsInterceptor extends AbstractInterceptor {
 
 			STRUTS_COUNTER.bindContextIncludingCpu(actionName);
 			return invocation.invoke();
-		} catch (final InvocationTargetException e) {
-			if (e.getCause() instanceof Error) {
-				// on catche Error pour avoir les erreurs systèmes
-				// mais pas Exception qui sont fonctionnelles en général
-				systemError = true;
-			}
+		} catch (final Error e) {
+			// on catche Error pour avoir les erreurs systèmes
+			// mais pas Exception qui sont fonctionnelles en général
+			systemError = true;
 			throw e;
 		} finally {
 			// on enregistre la requête dans les statistiques
