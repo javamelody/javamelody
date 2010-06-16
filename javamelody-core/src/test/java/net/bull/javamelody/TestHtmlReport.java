@@ -410,15 +410,19 @@ public class TestHtmlReport {
 	@Test
 	public void testWithCollectorServer() throws IOException {
 		final CollectorServer collectorServer = new CollectorServer();
-		final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
-				javaInformationsList, Period.TOUT, writer);
-		htmlReport.toHtml(null);
-		assertNotEmptyAndClear(writer);
+		try {
+			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
+					javaInformationsList, Period.TOUT, writer);
+			htmlReport.toHtml(null);
+			assertNotEmptyAndClear(writer);
 
-		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
-		collectorServer.collectWithoutErrors();
-		htmlReport.toHtml(null);
-		assertNotEmptyAndClear(writer);
+			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+			collectorServer.collectWithoutErrors();
+			htmlReport.toHtml(null);
+			assertNotEmptyAndClear(writer);
+		} finally {
+			collectorServer.stop();
+		}
 	}
 
 	/** Test.
