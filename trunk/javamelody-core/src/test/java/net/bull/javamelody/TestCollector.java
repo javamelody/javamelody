@@ -440,14 +440,14 @@ public class TestCollector {
 			Parameters.removeCollectorApplication(application);
 
 			final CollectorServer collectorServer = new CollectorServer();
-			collectorServer.collectWithoutErrors();
-
-			// pour être sûr qu'il y a une application
-			final List<URL> urls = Parameters
-					.parseUrl("http://localhost/test,http://localhost:8090/test");
-			Parameters.addCollectorApplication(application, urls);
-
 			try {
+				collectorServer.collectWithoutErrors();
+
+				// pour être sûr qu'il y a une application
+				final List<URL> urls = Parameters
+						.parseUrl("http://localhost/test,http://localhost:8090/test");
+				Parameters.addCollectorApplication(application, urls);
+
 				collectorServer.collectWithoutErrors();
 				Parameters.removeCollectorApplication(application);
 				collectorServer.addCollectorApplication(application, urls);
@@ -468,7 +468,7 @@ public class TestCollector {
 			try {
 				// test d'une erreur dans l'instanciation du CollectorServer : timer.cancel() doit être appelé
 				setProperty(Parameter.RESOLUTION_SECONDS, "-1");
-				new CollectorServer();
+				new CollectorServer().stop();
 			} catch (final IllegalStateException e) {
 				assertNotNull("ok", e);
 			} finally {
@@ -477,12 +477,18 @@ public class TestCollector {
 
 			// test mail_session
 			setProperty(Parameter.MAIL_SESSION, null);
-			new CollectorServer().collectWithoutErrors();
+			CollectorServer tmp = new CollectorServer();
+			tmp.collectWithoutErrors();
+			tmp.stop();
 			setProperty(Parameter.MAIL_SESSION, "test");
 			setProperty(Parameter.ADMIN_EMAILS, null);
-			new CollectorServer().collectWithoutErrors();
+			tmp = new CollectorServer();
+			tmp.collectWithoutErrors();
+			tmp.stop();
 			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
-			new CollectorServer().collectWithoutErrors();
+			tmp = new CollectorServer();
+			tmp.collectWithoutErrors();
+			tmp.stop();
 			setProperty(Parameter.MAIL_SESSION, null);
 			setProperty(Parameter.ADMIN_EMAILS, null);
 		} finally {
