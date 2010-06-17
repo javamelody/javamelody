@@ -530,6 +530,25 @@
 					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
 			</plugin>
+			<!-- Information sur le projet -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>summary</report>
+							<report>license</report>
+							<report>mailing-list</report>
+							<report>issue-tracking</report>
+							<report>scm</report>
+							<report>cim</report>
+							<report>plugin-management</report>
+							<report>plugins</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
 			<!-- Site -->
 			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
