@@ -77,13 +77,12 @@ public class TestStrutsInterceptor {
 		final ActionContext context2 = new ActionContext(new HashMap<Object, Object>());
 		context2.setName("test2.action");
 		expect(invocation2.getInvocationContext()).andReturn(context2).anyTimes();
-		expect(invocation2.invoke()).andThrow(new IllegalStateException("test d'erreur"))
-				.anyTimes();
+		expect(invocation2.invoke()).andThrow(new UnknownError("test d'erreur")).anyTimes();
 
 		replay(invocation2);
 		try {
 			strutsInterceptor.intercept(invocation2);
-		} catch (final IllegalStateException e) {
+		} catch (final UnknownError e) {
 			assertNotNull("ok", e);
 		}
 		assertSame(requestsCount, 2, strutsCounter.getRequestsCount());
