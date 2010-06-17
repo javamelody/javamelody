@@ -37,6 +37,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -64,6 +68,7 @@ public class TestHtmlReport {
 	private List<JavaInformations> javaInformationsList;
 	private Counter sqlCounter;
 	private Counter servicesCounter;
+	private Counter jspCounter;
 	private Counter counter;
 	private Counter errorCounter;
 	private Collector collector;
@@ -78,12 +83,13 @@ public class TestHtmlReport {
 		sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setDisplayed(false);
 		servicesCounter = new Counter("services", "beans.png", sqlCounter);
+		jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		counter = new Counter("http", "dbweb.png", sqlCounter);
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = JobGlobalListener.getJobCounter();
 		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
-				errorCounter, jobCounter), timer);
+				jspCounter, errorCounter, jobCounter), timer);
 		writer = new StringWriter();
 	}
 
@@ -198,10 +204,11 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testAllWrite() throws Exception { // NOPMD
+	public void testWriteRequests() throws Exception { // NOPMD
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.writeRequestAndGraphDetail("httpHitsRate");
+		assertNotEmptyAndClear(writer);
 
 		// writeRequestAndGraphDetail avec drill-down
 		collector.collectWithoutErrors(javaInformationsList);
@@ -216,6 +223,7 @@ public class TestHtmlReport {
 		servicesCounter.addRequest("service1", 10, 10, false, -1);
 		servicesCounter.bindContext("service2", "service2");
 		servicesCounter.addRequest("service2", 10, 10, false, -1);
+		jspCounter.addRequest("jsp1", 10, 10, false, -1);
 		counter.addRequest(requestName, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport toutHtmlReport = new HtmlReport(collector, null, javaInformationsList,
@@ -223,38 +231,81 @@ public class TestHtmlReport {
 		for (final Counter collectorCounter : collector.getCounters()) {
 			for (final CounterRequest request : collectorCounter.getRequests()) {
 				toutHtmlReport.writeRequestAndGraphDetail(request.getId());
+				assertNotEmptyAndClear(writer);
 				toutHtmlReport.writeRequestUsages(request.getId());
+				assertNotEmptyAndClear(writer);
 			}
 		}
 		sqlCounter.setDisplayed(false);
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testOtherWrites() throws Exception { // NOPMD
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+				Period.SEMAINE, writer);
 
 		htmlReport.writeSessionDetail("", null);
+		assertNotEmptyAndClear(writer);
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
 				SESSIONS_PART);
+		assertNotEmptyAndClear(writer);
 		htmlReport
 				.writeSessions(Collections.<SessionInformations> emptyList(), null, SESSIONS_PART);
+		assertNotEmptyAndClear(writer);
 		final String fileName = ProcessInformations.WINDOWS ? "/tasklist.txt" : "/ps.txt";
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));
-		// avant initH2 pour avoir une liste de connexions vide
-		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
+		assertNotEmptyAndClear(writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
+		assertNotEmptyAndClear(writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
+		assertNotEmptyAndClear(writer);
 		final Connection connection = TestDatabaseInformations.initH2();
-		final Connection connection2 = TestDatabaseInformations.initH2();
 		try {
-			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
-			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
 			htmlReport.writeDatabase(new DatabaseInformations(0)); // h2.memory
+			assertNotEmptyAndClear(writer);
 			htmlReport.writeDatabase(new DatabaseInformations(3)); // h2.settings avec nbColumns==2
-			HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
-			HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
+			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 			htmlReport.toHtml(null); // writeSystemActionsLinks
 			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 			htmlReport.toHtml(null); // writeSystemActionsLinks
 			assertNotEmptyAndClear(writer);
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.FALSE.toString());
-			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
+		} finally {
+			connection.close();
+		}
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testWriteConnections() throws Exception { // NOPMD
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+				Period.SEMAINE, writer);
+
+		// avant initH2 pour avoir une liste de connexions vide
+		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
+		assertNotEmptyAndClear(writer);
+		// une connexion créée sur le thread courant
+		final Connection connection = TestDatabaseInformations.initH2();
+		// une deuxième connexion créée sur un thread qui n'existera plus quand le rapport sera généré
+		final ExecutorService executorService = Executors.newFixedThreadPool(1);
+		final Callable<Connection> task = new Callable<Connection>() {
+			public Connection call() {
+				return TestDatabaseInformations.initH2();
+			}
+		};
+		final Future<Connection> future = executorService.submit(task);
+		final Connection connection2 = future.get();
+		executorService.shutdown();
+		try {
+			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), false);
+			assertNotEmptyAndClear(writer);
+			htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), true);
+			assertNotEmptyAndClear(writer);
 		} finally {
 			connection.close();
 			connection2.close();
