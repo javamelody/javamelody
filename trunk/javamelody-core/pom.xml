@@ -534,6 +534,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<!-- v2.2 does not work, ArrayIndexOutOfBounds, http://jira.codehaus.org/browse/MPIR-194 -->
+				<version>2.1</version>
 				<reportSets>
 					<reportSet>
 						<reports>
