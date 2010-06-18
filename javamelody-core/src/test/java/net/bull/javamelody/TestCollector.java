@@ -378,9 +378,10 @@ public class TestCollector {
 		Collector.printStackTrace(new Exception(TEST));
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws IOException e */
 	@Test
-	public void testStop() {
+	public void testStop() throws IOException {
 		try {
 			final Collector collector = createCollectorWithOneCounter();
 			collector.stop();
@@ -400,6 +401,10 @@ public class TestCollector {
 					true)));
 			collector2.stop();
 			setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
+
+			// à défaut de pouvoir appeler JRobin.stop() car les autres tests ne pourront plus
+			// utiliser JRobin, on appelle au moins JRobin.getJRobinFileSyncTimer()
+			JRobin.getJRobinFileSyncTimer();
 		} finally {
 			timer.cancel();
 		}
