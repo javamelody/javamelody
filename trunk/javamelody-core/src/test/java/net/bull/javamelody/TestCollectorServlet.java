@@ -126,15 +126,13 @@ public class TestCollectorServlet {
 	@Test
 	public void testDoGet() throws ServletException, IOException {
 		doGet("a", null);
-		setUp();
 		doGet(null, null);
-		setUp();
 		doGet(".*", null);
-		setUp();
 		doGet(null, TEST);
 	}
 
 	private void doGet(String pattern, String application) throws IOException, ServletException {
+		setUp();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
@@ -170,22 +168,17 @@ public class TestCollectorServlet {
 	@Test
 	public void testDoPost() throws ServletException, IOException {
 		doPost(null, null, false);
-		setUp();
 		doPost(null, null, true);
-		setUp();
 		doPost(TEST, null, true);
-		setUp();
 		doPost(TEST, "http://localhost:8090/test", true);
-		setUp();
 		doPost(TEST, "https://localhost:8090/test", true);
-		setUp();
 		doPost(TEST, "ftp://localhost:8090/test", true);
-		setUp();
 		doPost(TEST, "http://une url,pas une url", true);
 	}
 
 	private void doPost(String appName, String appUrls, boolean allowed) throws IOException,
 			ServletException {
+		setUp();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		// un cookie d'une application (qui n'existe pas)
@@ -225,40 +218,30 @@ public class TestCollectorServlet {
 		// partParameter null: monitoring principal
 		parameters.put(PART_PARAMETER, null);
 		doPart(parameters);
-		setUp();
 		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		doPart(parameters);
-		setUp();
 		parameters.put(PART_PARAMETER, POM_XML_PART);
 		doPart(parameters);
-		setUp();
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		doPart(parameters);
-		setUp();
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
 		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
 		testDatabaseInformations.setUp();
-		setUp();
 		try {
 			parameters.put(PART_PARAMETER, DATABASE_PART);
 			doPart(parameters);
-			setUp();
 			parameters.put(REQUEST_PARAMETER, "0");
 			doPart(parameters);
-			setUp();
 		} finally {
 			testDatabaseInformations.tearDown();
 		}
 		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
 		doPart(parameters);
-		setUp();
 		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		doPart(parameters);
-		setUp();
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		doPart(parameters);
-		setUp();
 	}
 
 	/** Test.
@@ -270,29 +253,24 @@ public class TestCollectorServlet {
 		parameters.put("application", TEST);
 		parameters.put(ACTION_PARAMETER, Action.GC.toString());
 		doPart(parameters);
-		setUp();
 		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
 		parameters.put(COUNTER_PARAMETER, "all");
 		doPart(parameters);
-		setUp();
 		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
 		parameters.put(SESSION_ID_PARAMETER, "aSessionId");
 		doPart(parameters);
-		setUp();
 		parameters.put(ACTION_PARAMETER, Action.KILL_THREAD.toString());
 		parameters.put(THREAD_ID_PARAMETER, "aThreadId");
 		doPart(parameters);
-		setUp();
 		parameters.put(ACTION_PARAMETER, Action.PAUSE_JOB.toString());
 		parameters.put(JOB_ID_PARAMETER, "all");
 		doPart(parameters);
-		setUp();
 		parameters.put(ACTION_PARAMETER, "remove_application");
 		doPart(parameters);
-		setUp();
 	}
 
 	private void doPart(Map<String, String> parameters) throws IOException, ServletException {
+		setUp();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		expect(request.getHeaders("Accept-Encoding")).andReturn(
