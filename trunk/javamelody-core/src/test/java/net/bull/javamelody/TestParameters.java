@@ -173,6 +173,7 @@ public class TestParameters {
 	public void testParseUrl() throws MalformedURLException {
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.XML.getCode());
 		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost,http://localhost"));
+		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost/"));
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.SERIALIZED.getCode());
 		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost,http://localhost"));
 	}
