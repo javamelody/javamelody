@@ -142,8 +142,6 @@ public class TestCollectorServlet {
 		if (application != null) {
 			expect(request.getParameter("application")).andReturn(application).anyTimes();
 		}
-		// on considère qu'il a déjà été ajouté avant par HttpCookieManager.addCookie
-		expect(request.getAttribute("javamelody.application")).andReturn("added").anyTimes();
 		if (pattern != null) {
 			expect(
 					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
