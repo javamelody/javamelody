@@ -498,6 +498,10 @@ public class TestHtmlReport {
 		if (writer.getBuffer().length() != 0) {
 			fail("HtmlCounterRequestContextReport");
 		}
+		// cas où counterReportsByCounterName est null
+		assertNotNull("HtmlCounterRequestContextReport", new HtmlCounterRequestContextReport(
+				Collections.<CounterRequestContext> emptyList(), null, Collections
+						.<ThreadInformations> emptyList(), true, writer));
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
