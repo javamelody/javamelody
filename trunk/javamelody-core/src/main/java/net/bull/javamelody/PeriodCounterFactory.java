@@ -217,20 +217,6 @@ class PeriodCounterFactory {
 			}
 		}
 
-		// TODO temporaire: depuis la v1.15, les fichiers "error*.rrd" et "log*.rrd" ne sont plus utilisés,
-		// donc on les supprime automatiquement pour réduire l'usage disque
-		final FilenameFilter rrdErrorAndLogFilenameFilter = new FilenameFilter() {
-			/** {@inheritDoc} */
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".rrd")
-						&& (name.startsWith(Counter.ERROR_COUNTER_NAME) || name
-								.startsWith(Counter.LOG_COUNTER_NAME));
-			}
-		};
-		for (final File file : storageDir.listFiles(rrdErrorAndLogFilenameFilter)) {
-			result = result && file.delete();
-		}
-
 		// on retourne true si tous les fichiers .ser.gz obsolètes ont été supprimés, false sinon
 		return result;
 	}
