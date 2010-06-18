@@ -80,15 +80,15 @@ final class JRobin {
 	}
 
 	static void stop() throws IOException {
-		// cette méthode doit être appelée pour arrêter jrobin et en particulier le timer static dans RrdNioBackend
-		// (note : dans jrobin 1.5.9, il n'y a plus de shutdown hook comme il y avait avant dans RrdNioBackend)
+		getJRobinFileSyncTimer().cancel();
+	}
+
+	static Timer getJRobinFileSyncTimer() throws IOException {
 		try {
 			// on accède à ce timer par réflexion pour l'arrêter faute d'autre moyen
 			final Field field = RrdNioBackend.class.getDeclaredField("fileSyncTimer");
 			setFieldAccessible(field);
-			// null car ce field est static
-			final Timer fileSyncTimer = (Timer) field.get(null);
-			fileSyncTimer.cancel();
+			return (Timer) field.get(null);
 		} catch (final NoSuchFieldException e) {
 			throw createIOException(e);
 		} catch (final IllegalAccessException e) {
