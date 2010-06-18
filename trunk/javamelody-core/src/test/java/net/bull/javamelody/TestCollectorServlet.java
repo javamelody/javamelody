@@ -184,6 +184,9 @@ public class TestCollectorServlet {
 		// un cookie d'une application (qui n'existe pas)
 		final Cookie[] cookies = { new Cookie("javamelody.application", "anothertest") };
 		expect(request.getCookies()).andReturn(cookies).anyTimes();
+		// on considère qu'il a déjà été ajouté avant par HttpCookieManager.addCookie
+		// (contrairement au test dans TestMonitoringFilter.monitoring)
+		expect(request.getAttribute("javamelody.application")).andReturn("added").anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
