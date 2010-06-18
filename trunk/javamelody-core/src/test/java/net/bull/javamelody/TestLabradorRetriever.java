@@ -18,12 +18,16 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +61,25 @@ public class TestLabradorRetriever {
 		} finally {
 			if (!file.delete()) {
 				fail("file.delete");
+			}
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testCopyTo() throws IOException {
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
+		final File file = File.createTempFile("testLabradorRetriever", null);
+		try {
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			// si le fichier n'était pas vide il faudrait retourner un ByteArrayOutputStream
+			// pour response.getOutputStream() en utilisant expect et replay
+			new LabradorRetriever(file.toURI().toURL()).copyTo(request, response);
+		} finally {
+			if (!file.delete()) {
+				file.deleteOnExit();
 			}
 		}
 	}
