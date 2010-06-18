@@ -19,12 +19,15 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Locale;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -107,11 +110,17 @@ public class TestParameters {
 	/** Test. */
 	@Test
 	public void testGetStorageDirectory() {
-		assertNotNull("getStorageDirectory", Parameters.getStorageDirectory("test"));
+		final String message = "getStorageDirectory";
+		final String application = "test";
+		assertNotNull(message, Parameters.getStorageDirectory(application));
 		setProperty(Parameter.STORAGE_DIRECTORY, "");
-		assertNotNull("getStorageDirectory", Parameters.getStorageDirectory("test"));
+		assertNotNull(message, Parameters.getStorageDirectory(application));
 		setProperty(Parameter.STORAGE_DIRECTORY, "/");
-		assertNotNull("getStorageDirectory", Parameters.getStorageDirectory("test"));
+		assertNotNull(message, Parameters.getStorageDirectory(application));
+		if (System.getProperty("os.name").toLowerCase(Locale.getDefault()).contains("windows")) {
+			setProperty(Parameter.STORAGE_DIRECTORY, "c:/");
+			assertNotNull(message, Parameters.getStorageDirectory(application));
+		}
 		setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
 	}
 
@@ -176,5 +185,16 @@ public class TestParameters {
 		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost/"));
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.SERIALIZED.getCode());
 		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost,http://localhost"));
+	}
+
+	/** Test. */
+	@Test
+	public void testIsCounterHidden() {
+		setProperty(Parameter.DISPLAYED_COUNTERS, null);
+		assertFalse("isCounterHidden", Parameters.isCounterHidden("http"));
+		setProperty(Parameter.DISPLAYED_COUNTERS, "http,sql");
+		assertFalse("isCounterHidden", Parameters.isCounterHidden("http"));
+		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
+		assertTrue("isCounterHidden", Parameters.isCounterHidden("http"));
 	}
 }
