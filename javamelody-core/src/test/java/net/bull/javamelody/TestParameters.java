@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +31,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 
 import javax.servlet.FilterConfig;
@@ -82,6 +87,37 @@ public class TestParameters {
 	@Test
 	public void testGetResourcePath() {
 		assertNotNull("getResourcePath", Parameters.getResourcePath("resource"));
+	}
+
+	/** Test.
+	 * @throws MalformedURLException e */
+	@Test
+	public void testGetContextPath() throws MalformedURLException {
+		final String path = "path";
+		ServletContext context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(3).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
+		expect(context.getContextPath()).andReturn(path).anyTimes();
+		replay(context);
+		assertEquals("getContextPath", path, Parameters.getContextPath(context));
+		verify(context);
+
+		context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(2).anyTimes();
+		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getContextPath()).andReturn(path).anyTimes();
+		replay(context);
+		assertEquals("getContextPath", path, Parameters.getContextPath(context));
+		verify(context);
+
+		context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(2).anyTimes();
+		expect(context.getMinorVersion()).andReturn(4).anyTimes();
+		final URL url = getClass().getResource("/WEB-INF/web.xml");
+		expect(context.getResource("/WEB-INF/web.xml")).andReturn(url).anyTimes();
+		replay(context);
+		assertNotNull("getContextPath", Parameters.getContextPath(context));
+		verify(context);
 	}
 
 	/** Test. */
