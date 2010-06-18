@@ -699,8 +699,6 @@ public class TestMonitoringFilter {
 				final Cookie[] cookies = { new Cookie("dummy", "dummy"),
 						new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };
 				expect(request.getCookies()).andReturn(cookies).anyTimes();
-				// on considère qu'il n'a jamais été ajouté avant
-				expect(request.getAttribute(PERIOD_COOKIE_NAME)).andReturn(null).anyTimes();
 			}
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
