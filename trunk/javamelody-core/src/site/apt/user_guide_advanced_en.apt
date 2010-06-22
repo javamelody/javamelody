@@ -19,6 +19,8 @@ Advanced documentation of Java Melody
 	If you deploy your application with a war file or with an equivalent directory, just follow the {{{user_guide_en.html} user guide}}.
 	
 	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup of JavaMelody in your ear.
+	Note that if you have class loading issues with an ear, use of a single war instead of an ear could help
+	(and with JavaEE 6, you can even use EJBs in a single war).
 	
 	** 1. Jar files
 

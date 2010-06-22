@@ -21,6 +21,9 @@ Documentation avancée de Java Melody
 	
 	Si vous déployez votre application avec un fichier ear, probablement parce que vous utilisez des EJBs,
 	ce chapitre vous guidera pour mettre en oeuvre JavaMelody dans votre ear.
+	Note: si vous avez des problèmes de class loading avec un ear, cela peut aider d'utiliser
+	un unique war à la place d'un ear (et avec JavaEE 6, il est même possible d'utiliser des EJBs
+	dans un unique war).
 	
 	** 1. Fichiers jar
 
