@@ -322,7 +322,7 @@ class HeapHistogram implements Serializable {
 			try {
 				final Class<?> clazz = Class.forName(jvmName);
 				final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
-				if (codeSource != null) {
+				if (codeSource != null && codeSource.getLocation() != null) {
 					String src = codeSource.getLocation().toString();
 					if (src.startsWith("file:/")) {
 						src = src.substring("file:/".length());
