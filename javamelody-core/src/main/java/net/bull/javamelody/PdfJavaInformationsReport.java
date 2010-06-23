@@ -43,6 +43,7 @@ import com.lowagie.text.pdf.PdfPTable;
  */
 class PdfJavaInformationsReport {
 	private static final String BAR_SEPARATOR = "   ";
+	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final List<JavaInformations> javaInformationsList;
@@ -284,8 +285,10 @@ class PdfJavaInformationsReport {
 	}
 
 	private void writeDatabaseVersionAndDataSourceDetails(JavaInformations javaInformations) {
-		addCell(getI18nString("Base_de_donnees") + ':');
-		addCell(javaInformations.getDataBaseVersion());
+		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
+			addCell(getI18nString("Base_de_donnees") + ':');
+			addCell(javaInformations.getDataBaseVersion());
+		}
 		if (javaInformations.getDataSourceDetails() != null) {
 			addCell(getI18nString("DataSource_jdbc") + ':');
 			addCell(javaInformations.getDataSourceDetails());
