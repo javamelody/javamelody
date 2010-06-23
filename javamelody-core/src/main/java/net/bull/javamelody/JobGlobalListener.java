@@ -54,7 +54,9 @@ final class JobGlobalListener implements JobListener {
 				}
 			}
 		} catch (final SchedulerException e) {
-			throw new IllegalStateException(e);
+			// initialisation du JobGlobalListener échouée, tant pis, il n'y aura pas les temps pour quartz
+			// (cela peut arriver, en particulier en développement dans Grails)
+			Collector.printStackTrace(e);
 		}
 	}
 
