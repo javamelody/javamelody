@@ -109,8 +109,8 @@ class HtmlJavaInformationsReport {
 		writeln(columnAndLineEnd);
 		if (!noDatabase) {
 			write("<tr><td>#nb_connexions_actives#: </td><td>");
-			writeGraph("activeConnections", integerFormat.format(javaInformations
-					.getActiveConnectionCount()));
+			writeGraph("activeConnections",
+					integerFormat.format(javaInformations.getActiveConnectionCount()));
 			writeln(columnAndLineEnd);
 			final int usedConnectionCount = javaInformations.getUsedConnectionCount();
 			final int maxConnectionCount = javaInformations.getMaxConnectionCount();

@@ -55,8 +55,8 @@ final class PID {
 		Process process = null;
 		try {
 			try {
-				if (!System.getProperty("os.name").toLowerCase(Locale.getDefault()).contains(
-						"windows")) {
+				if (!System.getProperty("os.name").toLowerCase(Locale.getDefault())
+						.contains("windows")) {
 					cmd = new String[] { "/bin/sh", "-c", "echo $$ $PPID" };
 				} else {
 					// getpids.exe is taken from http://www.scheibli.com/projects/getpids/index.html (GPL)

@@ -84,8 +84,8 @@ class PdfCounterReport {
 			// 1. synthèse
 			final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
-					counterRequestAggregation.getWarningRequest(), counterRequestAggregation
-							.getSevereRequest());
+					counterRequestAggregation.getWarningRequest(),
+					counterRequestAggregation.getSevereRequest());
 			writeRequests(counter.getChildCounterName(), summaryRequests);
 		}
 	}
@@ -227,8 +227,9 @@ class PdfCounterReport {
 		} else {
 			key = "nb_requetes";
 		}
-		final Paragraph footer = new Paragraph(I18N.getFormattedString(key, integerFormat
-				.format(hitsParMinute), integerFormat.format(requests.size())), normalFont);
+		final Paragraph footer = new Paragraph(I18N.getFormattedString(key,
+				integerFormat.format(hitsParMinute), integerFormat.format(requests.size())),
+				normalFont);
 		footer.setAlignment(Element.ALIGN_RIGHT);
 		document.add(footer);
 	}

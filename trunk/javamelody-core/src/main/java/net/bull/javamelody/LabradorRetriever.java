@@ -120,8 +120,8 @@ class LabradorRetriever {
 		try {
 			final URLConnection connection = openConnection(url);
 			// pour traductions
-			connection.setRequestProperty("Accept-Language", httpRequest
-					.getHeader("Accept-Language"));
+			connection.setRequestProperty("Accept-Language",
+					httpRequest.getHeader("Accept-Language"));
 			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
 			// puisque le filtre de monitoring n'est pas censé créer des sessions
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }

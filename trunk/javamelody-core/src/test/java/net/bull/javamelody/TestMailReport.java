@@ -90,8 +90,8 @@ public class TestMailReport {
 	public void testGetMailPeriod() {
 		for (final Period period : Period.values()) {
 			assertNotNull("getMailCode", period.getMailCode());
-			assertEquals("valueOfByMailCode", period, Period
-					.valueOfByMailCode(period.getMailCode()));
+			assertEquals("valueOfByMailCode", period,
+					Period.valueOfByMailCode(period.getMailCode()));
 		}
 	}
 

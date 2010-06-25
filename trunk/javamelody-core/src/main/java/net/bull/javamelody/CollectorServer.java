@@ -89,8 +89,8 @@ class CollectorServer {
 		// clone pour éviter ConcurrentModificationException
 		final Map<String, List<URL>> clone;
 		try {
-			clone = new LinkedHashMap<String, List<URL>>(Parameters
-					.getCollectorUrlsByApplications());
+			clone = new LinkedHashMap<String, List<URL>>(
+					Parameters.getCollectorUrlsByApplications());
 		} catch (final IOException e) {
 			LOGGER.warn(e.getMessage(), e);
 			return;

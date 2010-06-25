@@ -49,8 +49,8 @@ class HtmlJobInformationsReport {
 		this.jobInformationsList = jobInformationsList;
 		this.writer = writer;
 		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
-		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(counterRequests
-				.size());
+		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(
+				counterRequests.size());
 		for (final CounterRequest counterRequest : counterRequests) {
 			counterRequestsByRequestName.put(counterRequest.getName(), counterRequest);
 		}

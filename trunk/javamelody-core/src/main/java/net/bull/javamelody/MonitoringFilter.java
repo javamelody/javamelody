@@ -511,8 +511,8 @@ public class MonitoringFilter implements Filter {
 		} else {
 			javaInformations = null;
 		}
-		monitoringController.doReport(httpRequest, httpResponse, Collections
-				.singletonList(javaInformations));
+		monitoringController.doReport(httpRequest, httpResponse,
+				Collections.singletonList(javaInformations));
 	}
 
 	private static String getCompleteRequestName(HttpServletRequest httpRequest,

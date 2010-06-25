@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 // CHECKSTYLE:OFF
-@Target( { ElementType.METHOD, ElementType.TYPE })
+@Target({ ElementType.METHOD, ElementType.TYPE })
 // CHECKSTYLE:ON
 public @interface MonitoredWithSpring {
 	/**

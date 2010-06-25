@@ -184,8 +184,8 @@ public class TestJdbcWrapper {
 		try {
 			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
-			assertEquals("getUsedConnectionCount", usedConnectionCount + 1, JdbcWrapper
-					.getUsedConnectionCount());
+			assertEquals("getUsedConnectionCount", usedConnectionCount + 1,
+					JdbcWrapper.getUsedConnectionCount());
 			assertNotNull("createConnectionProxy", connection);
 			assertFalse(EQUALS, connection.equals(connection));
 			connection.hashCode();
@@ -195,8 +195,8 @@ public class TestJdbcWrapper {
 			connection.prepareStatement("select 1").close();
 			connection.prepareCall("select 2").close();
 
-			assertEquals("getActiveConnectionCount", activeConnectionCount, JdbcWrapper
-					.getActiveConnectionCount());
+			assertEquals("getActiveConnectionCount", activeConnectionCount,
+					JdbcWrapper.getActiveConnectionCount());
 
 			connection.rollback();
 
@@ -213,12 +213,12 @@ public class TestJdbcWrapper {
 			// il peut arriver que getConnectionInformationsList retourne une liste vide
 			// si la classe JdbcWrapper a été initialisée alors que system-actions-enabled=false
 			// ou que no-database=true ce est le cas vu l'ordre des tests dans le script ant
-			assertNotNull("getConnectionInformationsList", JdbcWrapper
-					.getConnectionInformationsList());
+			assertNotNull("getConnectionInformationsList",
+					JdbcWrapper.getConnectionInformationsList());
 		} finally {
 			connection.close();
-			assertEquals("getUsedConnectionCount", usedConnectionCount, JdbcWrapper
-					.getUsedConnectionCount());
+			assertEquals("getUsedConnectionCount", usedConnectionCount,
+					JdbcWrapper.getUsedConnectionCount());
 		}
 
 		assertSame("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
@@ -291,9 +291,9 @@ public class TestJdbcWrapper {
 	public void testIsHashCodeMethod() {
 		assertTrue("isHashCodeMethod1", JdbcWrapper.isHashCodeMethod("hashCode", new Object[] {}));
 		assertTrue("isHashCodeMethod2", JdbcWrapper.isHashCodeMethod("hashCode", null));
-		assertFalse("isHashCodeMethod3", JdbcWrapper.isHashCodeMethod("nothashCode",
-				new Object[] {}));
-		assertFalse("isHashCodeMethod4", JdbcWrapper.isHashCodeMethod("hashCode",
-				new Object[] { "" }));
+		assertFalse("isHashCodeMethod3",
+				JdbcWrapper.isHashCodeMethod("nothashCode", new Object[] {}));
+		assertFalse("isHashCodeMethod4",
+				JdbcWrapper.isHashCodeMethod("hashCode", new Object[] { "" }));
 	}
 }

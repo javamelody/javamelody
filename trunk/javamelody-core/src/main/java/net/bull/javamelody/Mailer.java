@@ -154,8 +154,8 @@ class Mailer {
 		if (Boolean.parseBoolean(session.getProperty("mail." + protocol + ".auth"))) {
 			final Transport tr = session.getTransport(protocol);
 			try {
-				tr.connect(session.getProperty("mail." + protocol + ".user"), session
-						.getProperty("mail." + protocol + ".password"));
+				tr.connect(session.getProperty("mail." + protocol + ".user"),
+						session.getProperty("mail." + protocol + ".password"));
 				msg.saveChanges(); // don't forget this
 				tr.sendMessage(msg, msg.getAllRecipients());
 			} finally {

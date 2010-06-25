@@ -79,8 +79,8 @@ public class TestDatabaseInformations {
 	public void testDatabaseInformations() throws SQLException, NamingException {
 		final int requestIndex = 0;
 		final DatabaseInformations databaseInformations = new DatabaseInformations(requestIndex);
-		assertSame("getSelectedRequestIndex", requestIndex, databaseInformations
-				.getSelectedRequestIndex());
+		assertSame("getSelectedRequestIndex", requestIndex,
+				databaseInformations.getSelectedRequestIndex());
 		assertNotNull("getSelectedRequestName", databaseInformations.getSelectedRequestName());
 		assertNotNull("getNbColumns", databaseInformations.getNbColumns());
 		assertNotNull("getResult", databaseInformations.getResult());

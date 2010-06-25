@@ -255,8 +255,8 @@ class MonitoringController {
 			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
-				return new ArrayList<ProcessInformations>(ProcessInformations
-						.buildProcessInformations());
+				return new ArrayList<ProcessInformations>(
+						ProcessInformations.buildProcessInformations());
 			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
@@ -270,8 +270,8 @@ class MonitoringController {
 			} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
-				return new ArrayList<ConnectionInformations>(JdbcWrapper
-						.getConnectionInformationsList());
+				return new ArrayList<ConnectionInformations>(
+						JdbcWrapper.getConnectionInformationsList());
 			}
 		} catch (final Exception e) {
 			return e;
@@ -367,8 +367,8 @@ class MonitoringController {
 						.getSessionInformationsBySessionId(sessionId));
 			}
 		} else {
-			sessionsInformations = collectorServer.collectSessionInformations(collector
-					.getApplication(), sessionId);
+			sessionsInformations = collectorServer.collectSessionInformations(
+					collector.getApplication(), sessionId);
 		}
 		if (sessionId == null || sessionsInformations.isEmpty()) {
 			htmlReport.writeSessions(sessionsInformations, messageForReport, SESSIONS_PART);
@@ -448,8 +448,8 @@ class MonitoringController {
 			final File lastShutdownFile = new File(dir, "last_shutdown.html");
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(lastShutdownFile));
 			try {
-				final JavaInformations javaInformations = new JavaInformations(Parameters
-						.getServletContext(), true);
+				final JavaInformations javaInformations = new JavaInformations(
+						Parameters.getServletContext(), true);
 				// on pourrait faire I18N.bindLocale(Locale.getDefault()), mais cela se fera tout seul
 				final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
 						Collections.singletonList(javaInformations), Period.JOUR, writer);
@@ -472,8 +472,10 @@ class MonitoringController {
 
 		// simple appel de monitoring sans format
 		httpResponse.setContentType("application/pdf");
-		httpResponse.addHeader(CONTENT_DISPOSITION, encodeFileNameToContentDisposition(httpRequest,
-				PdfReport.getFileName(collector.getApplication())));
+		httpResponse.addHeader(
+				CONTENT_DISPOSITION,
+				encodeFileNameToContentDisposition(httpRequest,
+						PdfReport.getFileName(collector.getApplication())));
 		try {
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer != null,
 					javaInformationsList, range, httpResponse.getOutputStream());

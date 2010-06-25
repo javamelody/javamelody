@@ -151,8 +151,8 @@ enum Action { // NOPMD
 				// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
 				// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
 				final String heapDumpPath = heapDump().getPath();
-				messageForReport = I18N.getFormattedString("heap_dump_genere", heapDumpPath
-						.replace('\\', '/'));
+				messageForReport = I18N.getFormattedString("heap_dump_genere",
+						heapDumpPath.replace('\\', '/'));
 			} else {
 				messageForReport = I18N.getString("heap_dump_not_good");
 			}

@@ -99,8 +99,10 @@ public class TestCollector {
 			final Collector collector = createCollectorWithOneCounter();
 			assertToStringNotEmpty("collector", collector);
 			assertToStringNotEmpty("java", new JavaInformations(null, false));
-			assertToStringNotEmpty("thread", new ThreadInformations(Thread.currentThread(), Arrays
-					.asList(Thread.currentThread().getStackTrace()), 100, 1000, false));
+			assertToStringNotEmpty(
+					"thread",
+					new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread
+							.currentThread().getStackTrace()), 100, 1000, false));
 			assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true),
 					true));
 			assertToStringNotEmpty("memory", new MemoryInformations());
@@ -131,8 +133,8 @@ public class TestCollector {
 	public void testClearCounter() {
 		try {
 			final Counter counter = createCounter();
-			final Collector collector = new Collector("test collector", Collections
-					.singletonList(counter), timer);
+			final Collector collector = new Collector("test collector",
+					Collections.singletonList(counter), timer);
 			counter.addRequest("test clear", 0, 0, false, 1000);
 			collector.clearCounter(counter.getName());
 			if (counter.getRequestsCount() != 0) {
@@ -296,8 +298,11 @@ public class TestCollector {
 			assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
 			assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
 			assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
-			assertEquals("custom", 1, collector.getRangeCountersToBeDisplayed(
-					Range.createCustomRange(new Date(), new Date())).size());
+			assertEquals(
+					"custom",
+					1,
+					collector.getRangeCountersToBeDisplayed(
+							Range.createCustomRange(new Date(), new Date())).size());
 		} finally {
 			timer.cancel();
 		}
@@ -394,8 +399,8 @@ public class TestCollector {
 			// on provoque une erreur, mais elle ne doit pas remonter (seulement trace dans console)
 			setProperty(Parameter.STORAGE_DIRECTORY, "/???");
 			final Counter counter = createCounter();
-			final Collector collector2 = new Collector("test stop", Collections
-					.singletonList(counter), timer);
+			final Collector collector2 = new Collector("test stop",
+					Collections.singletonList(counter), timer);
 			counter.addRequest("test stop", 0, 0, false, 1000);
 			collector2.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
 					true)));

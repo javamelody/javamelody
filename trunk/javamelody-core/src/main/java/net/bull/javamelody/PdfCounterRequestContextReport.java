@@ -70,8 +70,8 @@ class PdfCounterRequestContextReport {
 		assert document != null;
 
 		this.rootCurrentContexts = rootCurrentContexts;
-		this.counterReportsByCounterName = new HashMap<String, PdfCounterReport>(pdfCounterReports
-				.size());
+		this.counterReportsByCounterName = new HashMap<String, PdfCounterReport>(
+				pdfCounterReports.size());
 		for (final PdfCounterReport counterReport : pdfCounterReports) {
 			counterReportsByCounterName.put(counterReport.getCounterName(), counterReport);
 		}

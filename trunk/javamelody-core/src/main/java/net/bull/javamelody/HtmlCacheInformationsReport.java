@@ -84,8 +84,7 @@ class HtmlCacheInformationsReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
 		// writer.write pour éviter traduction car # dans l'url
-		writer
-				.write("<a href='http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
+		writer.write("<a href='http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
 		writeln("target='_blank'>Configuration reference</a></div>");
 	}
 

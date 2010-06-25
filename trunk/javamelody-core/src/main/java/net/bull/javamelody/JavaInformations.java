@@ -291,8 +291,8 @@ class JavaInformations implements Serializable { // NOPMD
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
 				&& threadBean.isThreadCpuTimeEnabled();
 		final long[] deadlockedThreads = getDeadlockedThreads(threadBean);
-		final List<ThreadInformations> threadInfosList = new ArrayList<ThreadInformations>(threads
-				.size());
+		final List<ThreadInformations> threadInfosList = new ArrayList<ThreadInformations>(
+				threads.size());
 		for (final Thread thread : threads) {
 			final StackTraceElement[] stackTraceElements = stackTraces.get(thread);
 			final List<StackTraceElement> stackTraceElementList = stackTraceElements == null ? null
@@ -346,8 +346,8 @@ class JavaInformations implements Serializable { // NOPMD
 			// car s'il n'y a pas de datasource une exception est déclenchée
 			final JdbcDriver jdbcDriver = JdbcDriver.SINGLETON;
 			if (jdbcDriver.getLastConnectUrl() != null) {
-				final Connection connection = DriverManager.getConnection(jdbcDriver
-						.getLastConnectUrl(), jdbcDriver.getLastConnectInfo());
+				final Connection connection = DriverManager.getConnection(
+						jdbcDriver.getLastConnectUrl(), jdbcDriver.getLastConnectInfo());
 				connection.setAutoCommit(false);
 				try {
 					appendDataBaseVersion(result, connection);
@@ -400,10 +400,10 @@ class JavaInformations implements Serializable { // NOPMD
 		final DatabaseMetaData metaData = connection.getMetaData();
 		// Sécurité: pour l'instant on n'indique pas metaData.getUserName()
 		result.append(metaData.getURL()).append('\n');
-		result.append(metaData.getDatabaseProductName()).append(", ").append(
-				metaData.getDatabaseProductVersion()).append('\n');
-		result.append("Driver JDBC:\n").append(metaData.getDriverName()).append(", ").append(
-				metaData.getDriverVersion());
+		result.append(metaData.getDatabaseProductName()).append(", ")
+				.append(metaData.getDatabaseProductVersion()).append('\n');
+		result.append("Driver JDBC:\n").append(metaData.getDriverName()).append(", ")
+				.append(metaData.getDriverVersion());
 	}
 
 	private static String buildDataSourceDetails() {

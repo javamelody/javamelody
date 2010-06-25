@@ -367,8 +367,9 @@ class Counter implements Cloneable, Serializable {
 		// completeRequestName est la même chose éventuellement complétée
 		// pour cette requête à destination de l'affichage dans les requêtes courantes
 		// (sinon mettre 2 fois la même chose)
-		final CounterRequestContext context = new CounterRequestContext(this, contextThreadLocal
-				.get(), requestName, completeRequestName, remoteUser, startCpuTime);
+		final CounterRequestContext context = new CounterRequestContext(this,
+				contextThreadLocal.get(), requestName, completeRequestName, remoteUser,
+				startCpuTime);
 		contextThreadLocal.set(context);
 		if (context.getParentContext() == null) {
 			rootCurrentContextsByThreadId.put(context.getThreadId(), context);
@@ -696,8 +697,8 @@ class Counter implements Cloneable, Serializable {
 	List<CounterRequest> getOrderedByHitsRequests() {
 		final List<CounterRequest> requestList = getRequests();
 		if (requestList.size() > 1) {
-			Collections.sort(requestList, Collections
-					.reverseOrder(new CounterRequestByHitsComparator()));
+			Collections.sort(requestList,
+					Collections.reverseOrder(new CounterRequestByHitsComparator()));
 		}
 		return requestList;
 	}

@@ -78,14 +78,14 @@ public class TestCounter {
 		// puis une requête ajoutée avec un contexte sans contexte parent
 		counter.bindContext(request.getName(), request.getName());
 
-		counter.addRequest(request.getName(), request.getMean(), 0, false, request
-				.getResponseSizeMean());
+		counter.addRequest(request.getName(), request.getMean(), 0, false,
+				request.getResponseSizeMean());
 		final List<CounterRequest> before = counter.getOrderedRequests();
-		counter.addRequest(request.getName(), request.getMean(), 0, false, request
-				.getResponseSizeMean());
+		counter.addRequest(request.getName(), request.getMean(), 0, false,
+				request.getResponseSizeMean());
 		counter.setRequestTransformPattern(Pattern.compile("aaaaa"));
-		counter.addRequest(request.getName(), request.getMean(), 0, false, request
-				.getResponseSizeMean());
+		counter.addRequest(request.getName(), request.getMean(), 0, false,
+				request.getResponseSizeMean());
 		final List<CounterRequest> after = counter.getOrderedRequests();
 		after.get(0).removeHits(request);
 		after.get(0).removeHits(request);

@@ -131,9 +131,9 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
 					.invoke(null);
-			final Boolean result = (Boolean) permissionManager.getClass().getMethod(
-					"hasPermission", new Class[] { Integer.TYPE, userClass }).invoke(
-					permissionManager, new Object[] { SYSTEM_ADMIN, user });
+			final Boolean result = (Boolean) permissionManager.getClass()
+					.getMethod("hasPermission", new Class[] { Integer.TYPE, userClass })
+					.invoke(permissionManager, new Object[] { SYSTEM_ADMIN, user });
 			return result;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
@@ -153,9 +153,9 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 			final Object permissionManager = containerManagerClass.getMethod("getComponent",
 					new Class[] { String.class })
 					.invoke(null, new Object[] { "permissionManager" });
-			final Boolean result = (Boolean) permissionManager.getClass().getMethod(
-					"isConfluenceAdministrator", new Class[] { userClass }).invoke(
-					permissionManager, new Object[] { user });
+			final Boolean result = (Boolean) permissionManager.getClass()
+					.getMethod("isConfluenceAdministrator", new Class[] { userClass })
+					.invoke(permissionManager, new Object[] { user });
 			return result;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
@@ -182,8 +182,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 					.getClass()
 					.getMethod("hasPermission",
 							new Class[] { String.class, String.class, Object.class })
-					.invoke(
-							bambooPermissionManager,
+					.invoke(bambooPermissionManager,
 							new Object[] { user.toString(), "ADMIN", globalApplicationSecureObject });
 			return result;
 		} catch (final Exception e) {

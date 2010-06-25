@@ -121,8 +121,8 @@ public class TestSessionListener {
 				.getSessionInformationsBySessionId(sessionEvent.getSession().getId());
 		assertEquals("getSessionInformationsBySessionId", sessionEvent.getSession().getId(),
 				sessionInformations.getId());
-		assertNull("getSessionInformationsBySessionId", SessionListener
-				.getSessionInformationsBySessionId("n'importe quoi"));
+		assertNull("getSessionInformationsBySessionId",
+				SessionListener.getSessionInformationsBySessionId("n'importe quoi"));
 	}
 
 	/** Test. */

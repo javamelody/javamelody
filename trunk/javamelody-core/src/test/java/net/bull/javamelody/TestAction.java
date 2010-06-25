@@ -57,8 +57,8 @@ public class TestAction {
 	@Test
 	public void testValueOfIgnoreCase() {
 		for (final Action action : Action.values()) {
-			assertSame("same", action, Action.valueOfIgnoreCase(action.toString().toLowerCase(
-					Locale.getDefault())));
+			assertSame("same", action,
+					Action.valueOfIgnoreCase(action.toString().toLowerCase(Locale.getDefault())));
 		}
 	}
 
@@ -80,17 +80,17 @@ public class TestAction {
 			final String threadId = "threadId";
 			final String jobId = "jobId";
 
-			assertNotNull("message GC", Action.GC.execute(collector, counterName, sessionId,
-					threadId, jobId));
+			assertNotNull("message GC",
+					Action.GC.execute(collector, counterName, sessionId, threadId, jobId));
 			assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector,
 					counterName, sessionId, threadId, jobId));
-			assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, "all",
-					sessionId, threadId, jobId));
+			assertNotNull("message CLEAR_COUNTER",
+					Action.CLEAR_COUNTER.execute(collector, "all", sessionId, threadId, jobId));
 			if (CacheManager.getInstance().getCache("test clear") == null) {
 				CacheManager.getInstance().addCache("test clear");
 			}
-			assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector,
-					counterName, sessionId, threadId, jobId));
+			assertNotNull("message CLEAR_CACHES",
+					Action.CLEAR_CACHES.execute(collector, counterName, sessionId, threadId, jobId));
 			final String heapDump1 = Action.HEAP_DUMP.execute(collector, counterName, sessionId,
 					threadId, jobId);
 			assertNotNull("message HEAP_DUMP", heapDump1);
@@ -122,34 +122,38 @@ public class TestAction {
 	private void jobs(Collector collector, String counterName, String sessionId, String threadId,
 			String jobId) throws IOException, SchedulerException {
 		try {
-			assertNotNull("message PAUSE_JOB 1", Action.PAUSE_JOB.execute(collector, counterName,
-					sessionId, threadId, jobId));
+			assertNotNull("message PAUSE_JOB 1",
+					Action.PAUSE_JOB.execute(collector, counterName, sessionId, threadId, jobId));
 		} catch (final IllegalArgumentException e) {
 			assertNotNull(e.toString(), e);
 		}
 		try {
-			assertNotNull("message RESUME_JOB 1", Action.RESUME_JOB.execute(collector, counterName,
-					sessionId, threadId, jobId));
+			assertNotNull("message RESUME_JOB 1",
+					Action.RESUME_JOB.execute(collector, counterName, sessionId, threadId, jobId));
 		} catch (final IllegalArgumentException e) {
 			assertNotNull(e.toString(), e);
 		}
-		assertNotNull("message PAUSE_JOB 2", Action.PAUSE_JOB.execute(collector, counterName,
-				sessionId, threadId, "all"));
-		assertNotNull("message RESUME_JOB 2", Action.RESUME_JOB.execute(collector, counterName,
-				sessionId, threadId, "all"));
+		assertNotNull("message PAUSE_JOB 2",
+				Action.PAUSE_JOB.execute(collector, counterName, sessionId, threadId, "all"));
+		assertNotNull("message RESUME_JOB 2",
+				Action.RESUME_JOB.execute(collector, counterName, sessionId, threadId, "all"));
 		assertNull("message PAUSE_JOB 3", Action.PAUSE_JOB.execute(collector, counterName,
 				sessionId, threadId, "nopid_noip_id"));
 		assertNull("message RESUME_JOB 3", Action.RESUME_JOB.execute(collector, counterName,
 				sessionId, threadId, "nopid_noip_id"));
-		assertNull("message PAUSE_JOB 4", Action.PAUSE_JOB.execute(collector, counterName,
-				sessionId, threadId, PID.getPID() + "_noip_id"));
-		assertNull("message RESUME_JOB 4", Action.RESUME_JOB.execute(collector, counterName,
-				sessionId, threadId, PID.getPID() + "_noip_id"));
+		assertNull(
+				"message PAUSE_JOB 4",
+				Action.PAUSE_JOB.execute(collector, counterName, sessionId, threadId, PID.getPID()
+						+ "_noip_id"));
+		assertNull(
+				"message RESUME_JOB 4",
+				Action.RESUME_JOB.execute(collector, counterName, sessionId, threadId, PID.getPID()
+						+ "_noip_id"));
 		String globalJobId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
-		assertNotNull("message PAUSE_JOB 5", Action.PAUSE_JOB.execute(collector, counterName,
-				sessionId, threadId, globalJobId));
-		assertNotNull("message RESUME_JOB 5", Action.RESUME_JOB.execute(collector, counterName,
-				sessionId, threadId, globalJobId));
+		assertNotNull("message PAUSE_JOB 5",
+				Action.PAUSE_JOB.execute(collector, counterName, sessionId, threadId, globalJobId));
+		assertNotNull("message RESUME_JOB 5",
+				Action.RESUME_JOB.execute(collector, counterName, sessionId, threadId, globalJobId));
 
 		//Grab the Scheduler instance from the Factory
 		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -189,15 +193,17 @@ public class TestAction {
 	private void killThread(Collector collector, String counterName, String sessionId,
 			String threadId, String jobId) throws IOException {
 		try {
-			assertNull("message KILL_THREAD 1", Action.KILL_THREAD.execute(collector, counterName,
-					sessionId, threadId, jobId));
+			assertNull("message KILL_THREAD 1",
+					Action.KILL_THREAD.execute(collector, counterName, sessionId, threadId, jobId));
 		} catch (final IllegalArgumentException e) {
 			assertNotNull(e.toString(), e);
 		}
 		assertNull("message KILL_THREAD 2", Action.KILL_THREAD.execute(collector, counterName,
 				sessionId, "nopid_noip_id", jobId));
-		assertNull("message KILL_THREAD 3", Action.KILL_THREAD.execute(collector, counterName,
-				sessionId, PID.getPID() + "_noip_id", jobId));
+		assertNull(
+				"message KILL_THREAD 3",
+				Action.KILL_THREAD.execute(collector, counterName, sessionId, PID.getPID()
+						+ "_noip_id", jobId));
 		final Thread myThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
 			public void run() {

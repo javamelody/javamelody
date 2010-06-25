@@ -145,8 +145,8 @@ public class CollectorServlet extends HttpServlet {
 		I18N.bindLocale(req.getLocale());
 		try {
 			if (appName == null || appUrls == null) {
-				writeMessage(req, resp, getApplication(req, resp), I18N
-						.getString("donnees_manquantes"));
+				writeMessage(req, resp, getApplication(req, resp),
+						I18N.getString("donnees_manquantes"));
 				return;
 			}
 			if (!appUrls.startsWith("http://") && !appUrls.startsWith("https://")) {
@@ -271,9 +271,9 @@ public class CollectorServlet extends HttpServlet {
 					+ title + "'/>" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL currentRequestsUrl = new URL(url.toString().replace(
-					TransportFormat.SERIALIZED.getCode(), "html").replace(
-					TransportFormat.XML.getCode(), "html")
+			final URL currentRequestsUrl = new URL(url.toString()
+					.replace(TransportFormat.SERIALIZED.getCode(), "html")
+					.replace(TransportFormat.XML.getCode(), "html")
 					+ '&' + PART_PARAMETER + '=' + CURRENT_REQUESTS_PART);
 			new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 		}
@@ -348,9 +348,9 @@ public class CollectorServlet extends HttpServlet {
 					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL connectionsUrl = new URL(url.toString().replace(
-					TransportFormat.SERIALIZED.getCode(), "htmlbody").replace(
-					TransportFormat.XML.getCode(), "htmlbody")
+			final URL connectionsUrl = new URL(url.toString()
+					.replace(TransportFormat.SERIALIZED.getCode(), "htmlbody")
+					.replace(TransportFormat.XML.getCode(), "htmlbody")
 					+ '&' + PART_PARAMETER + '=' + CONNECTIONS_PART);
 			new LabradorRetriever(connectionsUrl).copyTo(req, resp);
 		}
