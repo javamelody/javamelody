@@ -239,7 +239,7 @@ public class TestCounter {
 		expect(httpRequest.getRemoteUser()).andReturn("me");
 		replay(httpRequest);
 		CounterError.bindRequest(httpRequest);
-		new CounterError("with request", null);
+		assertNotNull("new CounterError", new CounterError("with request", null));
 		CounterError.unbindRequest();
 		verify(httpRequest);
 
