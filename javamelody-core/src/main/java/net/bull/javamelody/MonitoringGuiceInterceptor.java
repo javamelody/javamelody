@@ -89,10 +89,9 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 		return classPart + '.' + methodPart;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static String getClassPart(MethodInvocation invocation) {
-		final Class targetClass = invocation.getMethod().getDeclaringClass();
-		final MonitoredWithGuice classAnnotation = (MonitoredWithGuice) targetClass
+		final Class<?> targetClass = invocation.getMethod().getDeclaringClass();
+		final MonitoredWithGuice classAnnotation = targetClass
 				.getAnnotation(MonitoredWithGuice.class);
 		if (classAnnotation == null || classAnnotation.name() == null
 				|| classAnnotation.name().length() == 0) {
