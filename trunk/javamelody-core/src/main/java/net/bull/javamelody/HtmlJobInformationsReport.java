@@ -198,7 +198,8 @@ class HtmlJobInformationsReport {
 				&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
 			write(durationFormat.format(new Date(jobInformations.getRepeatInterval())));
 		} else if (jobInformations.getCronExpression() != null) {
-			write(jobInformations.getCronExpression());
+			// writer.write pour ne pas gérer de traductions si l'expression contient '#'
+			writer.write(htmlEncode(jobInformations.getCronExpression()));
 		} else {
 			write(nbsp);
 		}
