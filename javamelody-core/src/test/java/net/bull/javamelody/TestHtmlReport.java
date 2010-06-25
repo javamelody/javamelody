@@ -491,17 +491,19 @@ public class TestHtmlReport {
 	@Test
 	public void testEmptyHtmlCounterRequestContext() throws IOException {
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(), Collections
-						.<String, HtmlCounterReport> emptyMap(), Collections
-						.<ThreadInformations> emptyList(), true, writer);
+				Collections.<CounterRequestContext> emptyList(),
+				Collections.<String, HtmlCounterReport> emptyMap(),
+				Collections.<ThreadInformations> emptyList(), true, writer);
 		report.toHtml();
 		if (writer.getBuffer().length() != 0) {
 			fail("HtmlCounterRequestContextReport");
 		}
 		// cas où counterReportsByCounterName est null
-		assertNotNull("HtmlCounterRequestContextReport", new HtmlCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(), null, Collections
-						.<ThreadInformations> emptyList(), true, writer));
+		assertNotNull(
+				"HtmlCounterRequestContextReport",
+				new HtmlCounterRequestContextReport(
+						Collections.<CounterRequestContext> emptyList(), null, Collections
+								.<ThreadInformations> emptyList(), true, writer));
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

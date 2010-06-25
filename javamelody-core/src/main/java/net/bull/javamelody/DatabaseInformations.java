@@ -50,8 +50,8 @@ class DatabaseInformations implements Serializable {
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
 		// (Parameters.getResourcePath("databaseInformations") seul ne fonctionne pas si on est dans un jar/war)
-		private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
-				"databaseInformations").replace('/', '.').substring(1);
+		private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters
+				.getResourcePath("databaseInformations").replace('/', '.').substring(1);
 
 		List<String> getRequestNames() {
 			final List<String> tmp;
@@ -224,8 +224,8 @@ class DatabaseInformations implements Serializable {
 		// car s'il n'y a pas de datasource une exception est déclenchée
 		final JdbcDriver jdbcDriver = JdbcDriver.SINGLETON;
 		if (jdbcDriver.getLastConnectUrl() != null) {
-			final Connection connection = DriverManager.getConnection(jdbcDriver
-					.getLastConnectUrl(), jdbcDriver.getLastConnectInfo());
+			final Connection connection = DriverManager.getConnection(
+					jdbcDriver.getLastConnectUrl(), jdbcDriver.getLastConnectInfo());
 			connection.setAutoCommit(false);
 			return connection;
 		}
@@ -316,8 +316,8 @@ class DatabaseInformations implements Serializable {
 			throws SQLException {
 		// table PLAN_TABLE par défaut et format par défaut
 		final String planTableRequest = "select * from table(dbms_xplan.display(null,?, null))";
-		final String[][] planTableOutput = executeRequest(connection, planTableRequest, Collections
-				.singletonList(statementId));
+		final String[][] planTableOutput = executeRequest(connection, planTableRequest,
+				Collections.singletonList(statementId));
 		final StringBuilder sb = new StringBuilder();
 		for (final String[] row : planTableOutput) {
 			for (final String value : row) {

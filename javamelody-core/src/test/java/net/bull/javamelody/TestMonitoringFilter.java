@@ -451,8 +451,8 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap(PERIOD_PARAMETER, Period.JOUR
-				.getCode()));
+		monitoring(Collections.<String, String> singletonMap(PERIOD_PARAMETER,
+				Period.JOUR.getCode()));
 	}
 
 	/** Test.

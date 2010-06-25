@@ -585,23 +585,23 @@ final class JdbcWrapper {
 		properties.put(name, "defaultCatalog", tcDataSource.getDefaultCatalog());
 		properties.put(name, "defaultAutoCommit", tcDataSource.getDefaultAutoCommit());
 		properties.put(name, "defaultReadOnly", tcDataSource.getDefaultReadOnly());
-		properties.put(name, "defaultTransactionIsolation", tcDataSource
-				.getDefaultTransactionIsolation());
+		properties.put(name, "defaultTransactionIsolation",
+				tcDataSource.getDefaultTransactionIsolation());
 		properties.put(name, "driverClassName", tcDataSource.getDriverClassName());
 		properties.put(name, "initialSize", tcDataSource.getInitialSize());
 		properties.put(name, "maxIdle", tcDataSource.getMaxIdle());
-		properties.put(name, "maxOpenPreparedStatements", tcDataSource
-				.getMaxOpenPreparedStatements());
+		properties.put(name, "maxOpenPreparedStatements",
+				tcDataSource.getMaxOpenPreparedStatements());
 		properties.put(name, "maxWait", tcDataSource.getMaxWait());
-		properties.put(name, "minEvictableIdleTimeMillis", tcDataSource
-				.getMinEvictableIdleTimeMillis());
+		properties.put(name, "minEvictableIdleTimeMillis",
+				tcDataSource.getMinEvictableIdleTimeMillis());
 		properties.put(name, "minIdle", tcDataSource.getMinIdle());
 		properties.put(name, "numTestsPerEvictionRun", tcDataSource.getNumTestsPerEvictionRun());
 		properties.put(name, "testOnBorrow", tcDataSource.getTestOnBorrow());
 		properties.put(name, "testOnReturn", tcDataSource.getTestOnReturn());
 		properties.put(name, "testWhileIdle", tcDataSource.getTestWhileIdle());
-		properties.put(name, "timeBetweenEvictionRunsMillis", tcDataSource
-				.getTimeBetweenEvictionRunsMillis());
+		properties.put(name, "timeBetweenEvictionRunsMillis",
+				tcDataSource.getTimeBetweenEvictionRunsMillis());
 		properties.put(name, "validationQuery", tcDataSource.getValidationQuery());
 	}
 
@@ -619,23 +619,23 @@ final class JdbcWrapper {
 		properties.put(name, "defaultCatalog", dbcpDataSource.getDefaultCatalog());
 		properties.put(name, "defaultAutoCommit", dbcpDataSource.getDefaultAutoCommit());
 		properties.put(name, "defaultReadOnly", dbcpDataSource.getDefaultReadOnly());
-		properties.put(name, "defaultTransactionIsolation", dbcpDataSource
-				.getDefaultTransactionIsolation());
+		properties.put(name, "defaultTransactionIsolation",
+				dbcpDataSource.getDefaultTransactionIsolation());
 		properties.put(name, "driverClassName", dbcpDataSource.getDriverClassName());
 		properties.put(name, "initialSize", dbcpDataSource.getInitialSize());
 		properties.put(name, "maxIdle", dbcpDataSource.getMaxIdle());
-		properties.put(name, "maxOpenPreparedStatements", dbcpDataSource
-				.getMaxOpenPreparedStatements());
+		properties.put(name, "maxOpenPreparedStatements",
+				dbcpDataSource.getMaxOpenPreparedStatements());
 		properties.put(name, "maxWait", dbcpDataSource.getMaxWait());
-		properties.put(name, "minEvictableIdleTimeMillis", dbcpDataSource
-				.getMinEvictableIdleTimeMillis());
+		properties.put(name, "minEvictableIdleTimeMillis",
+				dbcpDataSource.getMinEvictableIdleTimeMillis());
 		properties.put(name, "minIdle", dbcpDataSource.getMinIdle());
 		properties.put(name, "numTestsPerEvictionRun", dbcpDataSource.getNumTestsPerEvictionRun());
 		properties.put(name, "testOnBorrow", dbcpDataSource.getTestOnBorrow());
 		properties.put(name, "testOnReturn", dbcpDataSource.getTestOnReturn());
 		properties.put(name, "testWhileIdle", dbcpDataSource.getTestWhileIdle());
-		properties.put(name, "timeBetweenEvictionRunsMillis", dbcpDataSource
-				.getTimeBetweenEvictionRunsMillis());
+		properties.put(name, "timeBetweenEvictionRunsMillis",
+				dbcpDataSource.getTimeBetweenEvictionRunsMillis());
 		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
 	}
 
@@ -647,8 +647,9 @@ final class JdbcWrapper {
 		// on limite la taille pour éviter une éventuelle saturation mémoire
 		if (connectionInformationsEnabled
 				&& USED_CONNECTION_INFORMATIONS.size() < MAX_USED_CONNECTION_INFORMATIONS) {
-			USED_CONNECTION_INFORMATIONS.put(ConnectionInformations
-					.getUniqueIdOfConnection(connection), new ConnectionInformations());
+			USED_CONNECTION_INFORMATIONS.put(
+					ConnectionInformations.getUniqueIdOfConnection(connection),
+					new ConnectionInformations());
 		}
 		final InvocationHandler invocationHandler = new ConnectionInvocationHandler(connection);
 		return createProxy(connection, invocationHandler);

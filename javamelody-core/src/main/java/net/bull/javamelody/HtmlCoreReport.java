@@ -242,8 +242,8 @@ class HtmlCoreReport {
 		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
 		final String startDate = I18N.createDateAndTimeFormat().format(
 				collector.getCounters().get(0).getStartDate());
-		writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl, I18N
-				.getCurrentDateAndTime(), startDate, collector.getApplication()));
+		writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl,
+				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
 			writer.write(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
 		}
@@ -345,14 +345,14 @@ class HtmlCoreReport {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			writeln("<b>#Threads_sur# " + javaInformations.getHost() + ": </b>");
 			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
-					javaInformations.getPeakThreadCount(), javaInformations
-							.getTotalStartedThreadCount()));
+					javaInformations.getPeakThreadCount(),
+					javaInformations.getTotalStartedThreadCount()));
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "threads_" + i;
 			writeShowHideLink(id, "#Details#");
 			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
-					javaInformations.getThreadInformationsList(), javaInformations
-							.isStackTraceEnabled(), writer);
+					javaInformations.getThreadInformationsList(),
+					javaInformations.isStackTraceEnabled(), writer);
 			htmlThreadInformationsReport.writeDeadlocks();
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
 			htmlThreadInformationsReport.toHtml();

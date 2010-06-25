@@ -146,8 +146,8 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("methodMatcher", pointcut.getMethodMatcher());
 		assertFalse("methodMatcher.isRuntime", pointcut.getMethodMatcher().isRuntime());
 		try {
-			assertFalse("methodMatcher.matches", pointcut.getMethodMatcher().matches(null, null,
-					null));
+			assertFalse("methodMatcher.matches",
+					pointcut.getMethodMatcher().matches(null, null, null));
 		} catch (final UnsupportedOperationException e) {
 			assertNotNull("ok", e);
 		}

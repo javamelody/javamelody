@@ -39,8 +39,8 @@ final class I18N {
 	// ce qui charge net.bull.javamelody.resource.translations.properties
 	// et net.bull.javamelody.resource.translations_fr.properties
 	// (Parameters.getResourcePath("translations") seul ne fonctionne pas si on est dans un jar/war)
-	private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters.getResourcePath(
-			"translations").replace('/', '.').substring(1);
+	private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters
+			.getResourcePath("translations").replace('/', '.').substring(1);
 	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<Locale>();
 	private static final boolean JAVA_16 = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 
@@ -130,8 +130,8 @@ final class I18N {
 	 */
 	static String htmlEncode(String text, boolean encodeSpace) {
 		// ces encodages html sont incomplets mais suffisants pour le monitoring
-		String result = text.replaceAll("[&]", "&amp;").replaceAll("[<]", "&lt;").replaceAll("[>]",
-				"&gt;").replaceAll("[\n]", "<br/>");
+		String result = text.replaceAll("[&]", "&amp;").replaceAll("[<]", "&lt;")
+				.replaceAll("[>]", "&gt;").replaceAll("[\n]", "<br/>");
 		if (encodeSpace) {
 			result = result.replaceAll(" ", "&nbsp;");
 		}

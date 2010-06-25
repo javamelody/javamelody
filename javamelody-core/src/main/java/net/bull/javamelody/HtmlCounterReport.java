@@ -444,8 +444,8 @@ class HtmlCounterReport {
 			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false, true);
 		} else {
 			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
-					counterRequestAggregation.getWarningRequest(), counterRequestAggregation
-							.getSevereRequest());
+					counterRequestAggregation.getWarningRequest(),
+					counterRequestAggregation.getSevereRequest());
 			writeRequests(globalRequest.getName(), counter.getChildCounterName(), summaryRequests,
 					false, false);
 		}
@@ -466,8 +466,8 @@ class HtmlCounterReport {
 		} else {
 			nbKey = "nb_requetes";
 		}
-		writeln(I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute), integerFormat
-				.format(requests.size())));
+		writeln(I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute),
+				integerFormat.format(requests.size())));
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		writeShowHideLink("details" + counterName, "#Details#");

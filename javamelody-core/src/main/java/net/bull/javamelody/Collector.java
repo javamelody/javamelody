@@ -212,8 +212,8 @@ final class Collector {
 	void collectLocalContextWithoutErrors() {
 		// ici on n'inclue pas les informations de la bdd et des threads
 		// car on n'en a pas besoin pour la collecte et cela économise des requêtes sql
-		final JavaInformations javaInformations = new JavaInformations(Parameters
-				.getServletContext(), false);
+		final JavaInformations javaInformations = new JavaInformations(
+				Parameters.getServletContext(), false);
 
 		collectWithoutErrors(Collections.singletonList(javaInformations));
 	}

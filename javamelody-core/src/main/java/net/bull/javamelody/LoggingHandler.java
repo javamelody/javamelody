@@ -96,8 +96,8 @@ public class LoggingHandler extends Handler {
 		if (record.getLevel().intValue() < MINIMUM_LEVEL.intValue()) {
 			return;
 		}
-		addErrorLogToCounter(record.getLevel().getName() + ": " + record.getMessage(), record
-				.getThrown());
+		addErrorLogToCounter(record.getLevel().getName() + ": " + record.getMessage(),
+				record.getThrown());
 	}
 
 	/**

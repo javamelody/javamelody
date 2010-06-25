@@ -76,8 +76,8 @@ public class TestHtmlSessionInformationsReport {
 
 		// pays null
 		sessionPays.setCountry(null);
-		assertNull("countryDisplay null", new SessionInformations(sessionPays, false)
-				.getCountryDisplay());
+		assertNull("countryDisplay null",
+				new SessionInformations(sessionPays, false).getCountryDisplay());
 		htmlSessionInformationsReport.toHtml(Collections.singletonList(new SessionInformations(
 				sessionPays, false)));
 		assertNotEmptyAndClear(writer);

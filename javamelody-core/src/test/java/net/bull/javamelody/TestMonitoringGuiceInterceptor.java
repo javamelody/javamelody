@@ -66,10 +66,10 @@ public class TestMonitoringGuiceInterceptor {
 		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
 		guiceCounter.clear();
 
-		final Key<AnnotatedTest> annotatedTestMethodKey = Key.get(AnnotatedTest.class, Names
-				.named("annotatedTestMethod"));
-		final Key<AnnotatedTest> annotatedTestOtherClassKey = Key.get(AnnotatedTest.class, Names
-				.named("annotatedTestOtherClass"));
+		final Key<AnnotatedTest> annotatedTestMethodKey = Key.get(AnnotatedTest.class,
+				Names.named("annotatedTestMethod"));
+		final Key<AnnotatedTest> annotatedTestOtherClassKey = Key.get(AnnotatedTest.class,
+				Names.named("annotatedTestOtherClass"));
 		final Module testModule = new AbstractModule() {
 			/** {@inheritDoc} */
 			@Override

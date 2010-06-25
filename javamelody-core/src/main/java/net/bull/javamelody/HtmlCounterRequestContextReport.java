@@ -84,8 +84,8 @@ class HtmlCounterRequestContextReport {
 				final int[] childDurationsMeans = new int[contextsSize];
 				i = 0;
 				for (final CounterRequestContext context : contexts) {
-					totalChildHits[i] = getValueOrIgnoreIfNoChildHitForContext(context, context
-							.getTotalChildHits());
+					totalChildHits[i] = getValueOrIgnoreIfNoChildHitForContext(context,
+							context.getTotalChildHits());
 					final CounterRequest counterRequest = getCounterRequest(context);
 					childHitsMeans[i] = getValueOrIgnoreIfNoChildHitForContext(context,
 							counterRequest.getChildHitsMean());
@@ -166,8 +166,8 @@ class HtmlCounterRequestContextReport {
 		}
 		writeContexts(Collections.singletonList(rootCurrentContexts.get(0)));
 		writeln("<div align='right'>");
-		writeln(I18N.getFormattedString("nb_requete_en_cours", integerFormat
-				.format(rootCurrentContexts.size())));
+		writeln(I18N.getFormattedString("nb_requete_en_cours",
+				integerFormat.format(rootCurrentContexts.size())));
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		final String counterName = rootCurrentContexts.get(0).getParentCounter().getName();
 		// PID dans l'id du div pour concaténation de pages et affichage dans serveur de collecte
@@ -302,8 +302,8 @@ class HtmlCounterRequestContextReport {
 		final HtmlCounterReport counterReport = getCounterReport(parentCounter, Period.TOUT);
 		final CounterRequest counterRequest = counterRequestContextReportHelper
 				.getCounterRequest(context);
-		counterReport.writeRequestName(counterRequest, HtmlCounterReport
-				.isRequestGraphDisplayed(parentCounter), true);
+		counterReport.writeRequestName(counterRequest,
+				HtmlCounterReport.isRequestGraphDisplayed(parentCounter), true);
 	}
 
 	private HtmlCounterReport getCounterReport(Counter parentCounter, Period period) {

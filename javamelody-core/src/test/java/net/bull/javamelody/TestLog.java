@@ -54,8 +54,8 @@ public class TestLog {
 		assertNotNull("getSingleton not null", Log4JAppender.getSingleton());
 		assertSame("getSingleton same", Log4JAppender.getSingleton(), Log4JAppender.getSingleton());
 		assertNotNull("getSingleton not null", LoggingHandler.getSingleton());
-		assertSame("getSingleton same", LoggingHandler.getSingleton(), LoggingHandler
-				.getSingleton());
+		assertSame("getSingleton same", LoggingHandler.getSingleton(),
+				LoggingHandler.getSingleton());
 	}
 
 	/** Test. */

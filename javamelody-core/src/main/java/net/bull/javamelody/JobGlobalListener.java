@@ -73,7 +73,9 @@ final class JobGlobalListener implements JobListener {
 							// pour Quartz 1.7, 1.8 et +,
 							// cette méthode n'existe pas avant Quartz 1.6
 							try {
-								scheduler.getClass().getMethod("removeGlobalJobListener",
+								final Class<? extends Scheduler> schedulerClass = scheduler
+										.getClass();
+								schedulerClass.getMethod("removeGlobalJobListener",
 										new Class[] { String.class }).invoke(scheduler,
 										new Object[] { jobListener.getName() });
 							} catch (final Exception e2) {

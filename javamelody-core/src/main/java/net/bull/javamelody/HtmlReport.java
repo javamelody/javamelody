@@ -95,10 +95,8 @@ class HtmlReport {
 		final String analyticsId = Parameters.getParameter(Parameter.ANALYTICS_ID);
 		if (analyticsId != null) {
 			writer.write(SCRIPT_BEGIN);
-			writer
-					.write("var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
-			writer
-					.write("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
+			writer.write("var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
+			writer.write("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
 			writer.write(SCRIPT_END);
 			writer.write(SCRIPT_BEGIN);
 			writer.write(" try{\n");

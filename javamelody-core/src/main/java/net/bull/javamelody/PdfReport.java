@@ -187,8 +187,8 @@ class PdfReport {
 	private String buildSummary() {
 		final String startDate = I18N.createDateAndTimeFormat().format(
 				collector.getCounters().get(0).getStartDate());
-		final String tmp = I18N.getFormattedString("Statistiques", "JavaMelody", I18N
-				.getCurrentDateAndTime(), startDate, collector.getApplication());
+		final String tmp = I18N.getFormattedString("Statistiques", "JavaMelody",
+				I18N.getCurrentDateAndTime(), startDate, collector.getApplication());
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
 			return tmp + " (" + javaInformationsList.get(0).getContextDisplayName() + ')';
 		}
@@ -246,8 +246,9 @@ class PdfReport {
 
 	private PdfCounterReport writeCounter(Counter counter) throws DocumentException, IOException {
 		final String counterLabel = I18N.getString(counter.getName() + "Label");
-		addParagraph(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
-				+ range.getLabel(), counter.getIconName());
+		addParagraph(
+				I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
+						+ range.getLabel(), counter.getIconName());
 		final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter, range,
 				false, document);
 		pdfCounterReport.toPdf();
@@ -296,9 +297,9 @@ class PdfReport {
 			add(new Phrase(getI18nString("Aucune_requete_en_cours"), normalFont));
 		} else {
 			final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
-					rootCurrentContexts, pdfCounterReports, javaInformations
-							.getThreadInformationsList(), javaInformations.isStackTraceEnabled(),
-					pdfDocumentFactory, document);
+					rootCurrentContexts, pdfCounterReports,
+					javaInformations.getThreadInformationsList(),
+					javaInformations.isStackTraceEnabled(), pdfDocumentFactory, document);
 			pdfCounterRequestContextReport.toPdf();
 			pdfCounterRequestContextReports.add(pdfCounterRequestContextReport);
 		}
@@ -321,13 +322,13 @@ class PdfReport {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			add(new Phrase(eol + getI18nString("Threads_sur") + ' ' + javaInformations.getHost()
 					+ ": ", PdfDocumentFactory.BOLD_FONT));
-			add(new Phrase(I18N.getFormattedString("thread_count", javaInformations
-					.getThreadCount(), javaInformations.getPeakThreadCount(), javaInformations
-					.getTotalStartedThreadCount()), normalFont));
+			add(new Phrase(I18N.getFormattedString("thread_count",
+					javaInformations.getThreadCount(), javaInformations.getPeakThreadCount(),
+					javaInformations.getTotalStartedThreadCount()), normalFont));
 
 			final PdfThreadInformationsReport pdfThreadInformationsReport = new PdfThreadInformationsReport(
-					javaInformations.getThreadInformationsList(), javaInformations
-							.isStackTraceEnabled(), pdfDocumentFactory, document);
+					javaInformations.getThreadInformationsList(),
+					javaInformations.isStackTraceEnabled(), pdfDocumentFactory, document);
 			pdfThreadInformationsReport.writeDeadlocks();
 
 			if (includeDetails) {

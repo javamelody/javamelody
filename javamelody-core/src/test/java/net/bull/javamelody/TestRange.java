@@ -86,10 +86,14 @@ public class TestRange {
 		try {
 			assertEquals("parse1", periodRange.getPeriod(), Range.parse(periodRange.getValue())
 					.getPeriod());
-			assertTrue("parse2", isSameDay(customRange.getStartDate(), Range.parse(
-					customRange.getValue()).getStartDate()));
-			assertTrue("parse3", isSameDay(customRange.getEndDate(), Range.parse(
-					customRange.getValue()).getEndDate()));
+			assertTrue(
+					"parse2",
+					isSameDay(customRange.getStartDate(), Range.parse(customRange.getValue())
+							.getStartDate()));
+			assertTrue(
+					"parse3",
+					isSameDay(customRange.getEndDate(), Range.parse(customRange.getValue())
+							.getEndDate()));
 
 			// on teste le résultat en cas d'erreur de format
 			assertNotNull("parse4", Range.parse("xxxxxx-01/01/2010"));
@@ -114,8 +118,7 @@ public class TestRange {
 	@SuppressWarnings("deprecation")
 	private static boolean isSameDay(Date date1, Date date2) {
 		return (date1.getTime() - date1.getTimezoneOffset() * ONE_MINUTE_MILLIS) / ONE_DAY_MILLIS == (date2
-				.getTime() - date2.getTimezoneOffset() * ONE_MINUTE_MILLIS)
-				/ ONE_DAY_MILLIS;
+				.getTime() - date2.getTimezoneOffset() * ONE_MINUTE_MILLIS) / ONE_DAY_MILLIS;
 	}
 
 	/** Test. */

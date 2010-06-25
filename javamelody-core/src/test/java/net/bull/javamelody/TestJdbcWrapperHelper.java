@@ -74,8 +74,8 @@ public class TestJdbcWrapperHelper {
 	@Test
 	public void testGetFieldValue() throws IllegalAccessException {
 		// sqlCounter est un champ privé qui existe comme un autre
-		assertNotNull("getFieldValue", JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON,
-				"sqlCounter"));
+		assertNotNull("getFieldValue",
+				JdbcWrapperHelper.getFieldValue(JdbcWrapper.SINGLETON, "sqlCounter"));
 	}
 
 	/** Test.

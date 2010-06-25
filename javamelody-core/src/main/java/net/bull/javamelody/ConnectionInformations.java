@@ -58,8 +58,8 @@ class ConnectionInformations implements Serializable {
 	}
 
 	List<StackTraceElement> getOpeningStackTrace() {
-		final List<StackTraceElement> stackTrace = new ArrayList<StackTraceElement>(Arrays
-				.asList(openingStackTrace));
+		final List<StackTraceElement> stackTrace = new ArrayList<StackTraceElement>(
+				Arrays.asList(openingStackTrace));
 		// on enlève les premiers éléments qui sont forcément ceux de javamelody
 		// (Thread.getStackTrace(), constructeur ConnectionInformations,
 		// JdbcWrapper.createConnectionProxy, appelant de createConnectionProxy...)

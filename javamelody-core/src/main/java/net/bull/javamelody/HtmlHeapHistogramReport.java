@@ -48,8 +48,8 @@ class HtmlHeapHistogramReport {
 
 		writeln("<img src='?resource=memory.png' width='24' height='24' alt='#memoire#' />&nbsp;");
 		writeln("<b>"
-				+ I18N.getFormattedString("heap_histo_du", I18N.createDateAndTimeFormat().format(
-						heapHistogram.getTime())) + "</b>");
+				+ I18N.getFormattedString("heap_histo_du",
+						I18N.createDateAndTimeFormat().format(heapHistogram.getTime())) + "</b>");
 		writeln("<br/><br/><b>#Heap#</b>");
 		final String separator = "&nbsp;&nbsp;&nbsp;";
 		writeln(separator);

@@ -120,8 +120,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	static List<SessionInformations> sortSessions(List<SessionInformations> sessionsInformations) {
 		if (sessionsInformations.size() > 1) {
-			Collections.sort(sessionsInformations, Collections
-					.reverseOrder(new SessionInformationsComparator()));
+			Collections.sort(sessionsInformations,
+					Collections.reverseOrder(new SessionInformationsComparator()));
 		}
 		return sessionsInformations;
 	}

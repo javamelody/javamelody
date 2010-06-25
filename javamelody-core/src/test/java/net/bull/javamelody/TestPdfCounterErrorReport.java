@@ -52,12 +52,12 @@ public class TestPdfCounterErrorReport {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Timer timer = new Timer("test", true);
 		try {
-			final Collector collector = new Collector("test", Collections
-					.singletonList(errorCounter), timer);
+			final Collector collector = new Collector("test",
+					Collections.singletonList(errorCounter), timer);
 			final JavaInformations javaInformations = new JavaInformations(null, true);
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			final PdfReport pdfReport = new PdfReport(collector, false, Collections
-					.singletonList(javaInformations), Period.TOUT, output);
+			final PdfReport pdfReport = new PdfReport(collector, false,
+					Collections.singletonList(javaInformations), Period.TOUT, output);
 			while (errorCounter.getErrorsCount() < Counter.MAX_ERRORS_COUNT) {
 				errorCounter.addErrors(Collections.singletonList(new CounterError("erreur", null)));
 			}
@@ -73,8 +73,8 @@ public class TestPdfCounterErrorReport {
 					.singletonList(new CounterError("with request", null)));
 			CounterError.unbindRequest();
 			verify(httpRequest);
-			final PdfReport pdfReport2 = new PdfReport(collector, false, Collections
-					.singletonList(javaInformations), Period.TOUT, output);
+			final PdfReport pdfReport2 = new PdfReport(collector, false,
+					Collections.singletonList(javaInformations), Period.TOUT, output);
 			pdfReport2.toPdf();
 			assertNotEmptyAndClear(output);
 		} finally {

@@ -305,9 +305,9 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(), Collections
-						.<PdfCounterReport> emptyList(), Collections
-						.<ThreadInformations> emptyList(), true, pdfDocumentFactory, document);
+				Collections.<CounterRequestContext> emptyList(),
+				Collections.<PdfCounterReport> emptyList(),
+				Collections.<ThreadInformations> emptyList(), true, pdfDocumentFactory, document);
 		report.toPdf();
 		report.writeContextDetails();
 		// on ne peut fermer le document car on n'a rien écrit normalement
@@ -324,8 +324,9 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		boolean stackTraceEnabled = true;
-		final PdfThreadInformationsReport report = new PdfThreadInformationsReport(JavaInformations
-				.buildThreadInformationsList(), stackTraceEnabled, pdfDocumentFactory, document);
+		final PdfThreadInformationsReport report = new PdfThreadInformationsReport(
+				JavaInformations.buildThreadInformationsList(), stackTraceEnabled,
+				pdfDocumentFactory, document);
 		report.toPdf();
 		document.close();
 		assertNotEmptyAndClear(output);

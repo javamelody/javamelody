@@ -135,8 +135,8 @@ class HtmlThreadInformationsReport {
 					"confirm_kill_thread", threadInformations.getName()));
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
 			writer.write("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
-			final String title = I18N.getFormattedString("kill_thread", threadInformations
-					.getName());
+			final String title = I18N.getFormattedString("kill_thread",
+					threadInformations.getName());
 			writer.write("<img width='16' height='16' src='?resource=stop.png' alt='" + title
 					+ "' title='" + title + "' />");
 			write("</a>");

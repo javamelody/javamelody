@@ -66,8 +66,8 @@ class PdfJobInformationsReport {
 		this.jobInformationsList = jobInformationsList;
 		this.document = document;
 		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
-		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(counterRequests
-				.size());
+		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(
+				counterRequests.size());
 		for (final CounterRequest counterRequest : counterRequests) {
 			counterRequestsByRequestName.put(counterRequest.getName(), counterRequest);
 		}
@@ -160,8 +160,8 @@ class PdfJobInformationsReport {
 			final Phrase elapsedTimePhrase = new Phrase(durationFormat.format(elapsedTime),
 					cellFont);
 			if (counterRequest != null) {
-				final Image memoryImage = Image.getInstance(Bar.toBar(100d * elapsedTime
-						/ counterRequest.getMean()), null);
+				final Image memoryImage = Image.getInstance(
+						Bar.toBar(100d * elapsedTime / counterRequest.getMean()), null);
 				memoryImage.scalePercent(47);
 				elapsedTimePhrase.add("\n");
 				elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));

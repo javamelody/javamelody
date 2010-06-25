@@ -121,15 +121,15 @@ class MailReport {
 	}
 
 	void sendReportMailForLocalServer(Collector collector, Period period) throws Exception { // NOPMD
-		final JavaInformations javaInformations = new JavaInformations(Parameters
-				.getServletContext(), true);
+		final JavaInformations javaInformations = new JavaInformations(
+				Parameters.getServletContext(), true);
 		sendReportMail(collector, false, Collections.singletonList(javaInformations), period);
 	}
 
 	void sendReportMail(Collector collector, boolean collectorServer,
 			List<JavaInformations> javaInformationsList, Period period) throws Exception { // NOPMD
-		final File tmpFile = new File(Parameters.TEMPORARY_DIRECTORY, PdfReport
-				.getFileName(collector.getApplication()));
+		final File tmpFile = new File(Parameters.TEMPORARY_DIRECTORY,
+				PdfReport.getFileName(collector.getApplication()));
 		try {
 			final OutputStream output = new BufferedOutputStream(new FileOutputStream(tmpFile));
 			try {
