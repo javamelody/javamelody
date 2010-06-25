@@ -90,13 +90,12 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 		return classPart + '.' + methodPart;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static String getClassPart(MethodInvocation invocation) {
 		// si guice et pas Spring, alors remplacer AopUtils.getTargetClass() par getMethod().getDeclaringClass()
 		// http://ninomartinez.wordpress.com/2010/05/14/guice-caching-interceptors/
 		// (faire exemple avec un interceptor static)
-		final Class targetClass = AopUtils.getTargetClass(invocation.getThis());
-		final MonitoredWithSpring classAnnotation = (MonitoredWithSpring) targetClass
+		final Class<?> targetClass = AopUtils.getTargetClass(invocation.getThis());
+		final MonitoredWithSpring classAnnotation = targetClass
 				.getAnnotation(MonitoredWithSpring.class);
 		if (classAnnotation == null || classAnnotation.name() == null
 				|| classAnnotation.name().length() == 0) {

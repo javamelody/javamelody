@@ -133,7 +133,7 @@ enum TransportFormat {
 			xstream.alias("databaseInformations", DatabaseInformations.class);
 			final MapConverter mapConverter = new MapConverter(xstream.getMapper()) {
 				/** {@inheritDoc} */
-				@SuppressWarnings("unchecked")
+				@SuppressWarnings("rawtypes")
 				@Override
 				public boolean canConvert(Class type) {
 					return true; // Counter.requests est bien une map

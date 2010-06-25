@@ -33,7 +33,6 @@ import java.net.URLClassLoader;
  * <br/>@see <a href="http://java.sun.com/javase/6/docs/jdk/api/attach/spec/com/sun/tools/attach/VirtualMachine.html#attach(java.lang.String)">VirtualMachine</a>
  * @author Emeric Vernat
  */
-@SuppressWarnings("unchecked")
 final class VirtualMachine {
 	private static final boolean JROCKIT = System.getProperty("java.vendor").contains("BEA");
 	private static final boolean SUPPORTED = "1.6".compareTo(System.getProperty("java.version")) < 0
@@ -72,7 +71,7 @@ final class VirtualMachine {
 		// et sous windows : sun.tools.attach.WindowsVirtualMachine
 		if (jvmVirtualMachine == null) {
 			// on utilise la réflexion pour éviter de dépendre de tools.jar du jdk à la compilation
-			final Class virtualMachineClass = findVirtualMachineClass();
+			final Class<?> virtualMachineClass = findVirtualMachineClass();
 			final Method attachMethod = virtualMachineClass.getMethod("attach", String.class);
 			final String pid = PID.getPID();
 			try {
@@ -112,7 +111,7 @@ final class VirtualMachine {
 	 */
 	static synchronized void detach() throws Exception { // NOPMD
 		if (jvmVirtualMachine != null) {
-			final Class virtualMachineClass = jvmVirtualMachine.getClass();
+			final Class<?> virtualMachineClass = jvmVirtualMachine.getClass();
 			final Method detachMethod = virtualMachineClass.getMethod("detach");
 			jvmVirtualMachine = invoke(detachMethod, jvmVirtualMachine);
 			jvmVirtualMachine = null;
@@ -132,7 +131,7 @@ final class VirtualMachine {
 		}
 
 		try {
-			final Class virtualMachineClass = getJvmVirtualMachine().getClass();
+			final Class<?> virtualMachineClass = getJvmVirtualMachine().getClass();
 			final Method heapHistoMethod = virtualMachineClass.getMethod("heapHisto",
 					Object[].class);
 			return (InputStream) invoke(heapHistoMethod, getJvmVirtualMachine(),

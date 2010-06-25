@@ -584,13 +584,12 @@ class MonitoringController {
 		return new BufferedInputStream(webXml);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static InputStream getPomXmlAsStream() {
-		final Set mavenDir = Parameters.getServletContext().getResourcePaths("/META-INF/maven/");
+		final Set<?> mavenDir = Parameters.getServletContext().getResourcePaths("/META-INF/maven/");
 		if (mavenDir == null || mavenDir.isEmpty()) {
 			return null;
 		}
-		final Set groupDir = Parameters.getServletContext().getResourcePaths(
+		final Set<?> groupDir = Parameters.getServletContext().getResourcePaths(
 				(String) mavenDir.iterator().next());
 		if (groupDir == null || groupDir.isEmpty()) {
 			return null;

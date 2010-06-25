@@ -697,11 +697,11 @@ final class JdbcWrapper {
 		// Rq: object.get.Class().getInterfaces() ne suffit pas pour Connection dans Tomcat
 		// car la connection est une instance de PoolGuardConnectionWrapper
 		// et connection.getClass().getInterfaces() est vide dans ce cas
-		final List<Class> interfaces = new ArrayList(Arrays.asList(object.getClass()
+		final List<Class<?>> interfaces = new ArrayList<Class<?>>(Arrays.asList(object.getClass()
 				.getInterfaces()));
-		Class classe = object.getClass().getSuperclass();
+		Class<?> classe = object.getClass().getSuperclass();
 		while (classe != null) {
-			final List<Class> superInterfaces = Arrays.asList(classe.getInterfaces());
+			final List<Class<?>> superInterfaces = Arrays.asList(classe.getInterfaces());
 			// removeAll d'abord car il ne faut pas de doublon dans la liste
 			interfaces.removeAll(superInterfaces);
 			interfaces.addAll(superInterfaces);
@@ -710,7 +710,7 @@ final class JdbcWrapper {
 		// on ignore l'interface javax.naming.Referenceable car sinon le rebind sous jetty appelle
 		// referenceable.getReference() et devient inutile
 		interfaces.remove(Referenceable.class);
-		final Class[] interfacesArray = interfaces.toArray(new Class[interfaces.size()]);
+		final Class<?>[] interfacesArray = interfaces.toArray(new Class[interfaces.size()]);
 
 		// ce handler désencapsule les InvocationTargetException des 3 proxy
 		final InvocationHandler ih = new DelegatingInvocationHandler(invocationHandler);

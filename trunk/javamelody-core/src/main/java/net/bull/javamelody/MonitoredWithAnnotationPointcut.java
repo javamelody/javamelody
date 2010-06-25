@@ -31,7 +31,7 @@ public class MonitoredWithAnnotationPointcut implements Pointcut {
 		INSTANCE;
 
 		/** {@inheritDoc} */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public boolean matches(Method method, Class targetClass) {
 			return targetClass.isAnnotationPresent(MonitoredWithSpring.class)
 					|| method.isAnnotationPresent(MonitoredWithSpring.class);
@@ -43,7 +43,7 @@ public class MonitoredWithAnnotationPointcut implements Pointcut {
 		}
 
 		/** {@inheritDoc} */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		public boolean matches(Method method, Class targetClass, Object[] args) {
 			throw new UnsupportedOperationException("This is not a runtime method matcher");
 		}
