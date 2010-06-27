@@ -84,6 +84,7 @@
 		<delete file="javamelody.jar" />
 		<delete file="javamelody.war" />
 		<delete file="jira-javamelody.jar" />
+		<delete file="test.war" />
 	</target>
 
 	<!-- Construction du jar -->
