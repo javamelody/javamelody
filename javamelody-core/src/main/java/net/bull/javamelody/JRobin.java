@@ -273,21 +273,23 @@ final class JRobin {
 		try {
 			// request RRD database reference from the pool
 			final RrdDb rrdDb = rrdPool.requestRrdDb(rrdFileName);
-			try {
-				// create sample with the current timestamp
-				final Sample sample = rrdDb.createSample();
-				// test pour éviter l'erreur suivante au redéploiement par exemple:
-				// org.jrobin.core.RrdException:
-				// Bad sample timestamp x. Last update time was x, at least one second step is required
-				if (sample.getTime() > rrdDb.getLastUpdateTime()) {
-					// set value for load datasource
-					sample.setValue(getDataSourceName(), value);
-					// update database
-					sample.update();
+			synchronized (rrdDb) {
+				try {
+					// create sample with the current timestamp
+					final Sample sample = rrdDb.createSample();
+					// test pour éviter l'erreur suivante au redéploiement par exemple:
+					// org.jrobin.core.RrdException:
+					// Bad sample timestamp x. Last update time was x, at least one second step is required
+					if (sample.getTime() > rrdDb.getLastUpdateTime()) {
+						// set value for load datasource
+						sample.setValue(getDataSourceName(), value);
+						// update database
+						sample.update();
+					}
+				} finally {
+					// release RRD database reference
+					rrdPool.release(rrdDb);
 				}
-			} finally {
-				// release RRD database reference
-				rrdPool.release(rrdDb);
 			}
 		} catch (final RrdException e) {
 			if (e.getMessage() != null && e.getMessage().startsWith("Invalid file header")) {
