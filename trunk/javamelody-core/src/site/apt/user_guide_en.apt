@@ -86,8 +86,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Then you can open the report from the address <<<http://host:port/monitoring>>>
 	(the "Monitoring" link is also available in the "Administration" menu).
 	That's it.
-	Notes: The jdbc connections and the SQL requests are monitored in JIRA, but not in Confluence
-	and Bamboo by default. And the http sessions are never monitored with this plugin.
+	Notes: The jdbc connections and the SQL requests are monitored in JIRA, and they are monitored
+	in Confluence and Bamboo if a jdbc datasource is used and not a direct jdbc connection.
+	And the http sessions are never monitored with this plugin.
 
 * Grails Plugin
 
