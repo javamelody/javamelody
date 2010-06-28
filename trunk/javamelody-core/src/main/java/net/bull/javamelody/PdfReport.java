@@ -415,7 +415,7 @@ class PdfReport {
 
 	private void writeDurationAndOverhead() throws DocumentException {
 		final long displayDuration = System.currentTimeMillis() - start;
-		final String tmp = '\n' + getI18nString("temps_derniere_collecte") + ": "
+		final String tmp = "\n\n" + getI18nString("temps_derniere_collecte") + ": "
 				+ collector.getLastCollectDuration() + ' ' + getI18nString("ms") + '\n'
 				+ getI18nString("temps_affichage") + ": " + displayDuration + ' '
 				+ getI18nString("ms") + '\n' + getI18nString("Estimation_overhead_memoire")
