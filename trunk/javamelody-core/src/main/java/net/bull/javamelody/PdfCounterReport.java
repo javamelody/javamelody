@@ -290,7 +290,7 @@ class PdfCounterReport {
 
 	Font getSlaFont(int mean) {
 		final Font font;
-		if (mean < counterRequestAggregation.getWarningThreshold()) {
+		if (mean < counterRequestAggregation.getWarningThreshold() || mean == 0) {
 			// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
 			font = infoCellFont;
 		} else if (mean < counterRequestAggregation.getSevereThreshold()) {
