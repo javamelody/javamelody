@@ -56,8 +56,7 @@ class CounterRequestAggregation {
 		// on n'affiche pas la colonne "Taille de réponse" si elle est négative car non défini
 		// (pour les requêtes sql par exemple)
 		this.responseSizeDisplayed = globalRequest.getResponseSizeMean() >= 0;
-		this.childHitsDisplayed = globalRequest.getChildHitsMean() > 0
-				|| globalRequest.getChildDurationsMean() > 0;
+		this.childHitsDisplayed = globalRequest.hasChildHits();
 		this.timesDisplayed = globalRequest.getMean() >= 0;
 		this.cpuTimesDisplayed = globalRequest.getCpuTimeMean() >= 0;
 
