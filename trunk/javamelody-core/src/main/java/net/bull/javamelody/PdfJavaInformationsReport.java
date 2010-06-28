@@ -166,8 +166,10 @@ class PdfJavaInformationsReport {
 		memoryImage.scalePercent(50);
 		memoryPhrase.add(new Chunk(memoryImage, 0, 0));
 		currentTable.addCell(memoryPhrase);
-		addCell(getI18nString("nb_sessions_http") + ':');
-		addCell(integerFormat.format(javaInformations.getSessionCount()));
+		if (javaInformations.getSessionCount() >= 0) {
+			addCell(getI18nString("nb_sessions_http") + ':');
+			addCell(integerFormat.format(javaInformations.getSessionCount()));
+		}
 		addCell(getI18nString("nb_threads_actifs") + "\n("
 				+ getI18nString("Requetes_http_en_cours") + "):");
 		addCell(integerFormat.format(javaInformations.getActiveThreadCount()));
