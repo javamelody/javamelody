@@ -315,7 +315,7 @@ class HtmlCounterReport {
 			writeln(systemErrorFormat.format(request.getSystemErrorPercentage()));
 			if (allChildHitsDisplayed) {
 				writeln(nextColumn);
-				final boolean childHitsDisplayed = request.getChildHitsMean() > 0;
+				final boolean childHitsDisplayed = request.hasChildHits();
 				if (childHitsDisplayed) {
 					writeln(systemErrorFormat.format(request.getChildHitsMean()));
 				} else {

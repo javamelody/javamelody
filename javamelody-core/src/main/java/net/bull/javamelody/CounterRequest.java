@@ -202,6 +202,13 @@ class CounterRequest implements Cloneable, Serializable {
 	}
 
 	/**
+	 * @return Booléen selon qu'il existe des requêtes filles (sql en particulier)
+	 */
+	boolean hasChildHits() {
+		return childHits > 0;
+	}
+
+	/**
 	 * @return Nombre moyen d'exécutions des requêtes filles (sql en particulier)
 	 */
 	int getChildHitsMean() {
