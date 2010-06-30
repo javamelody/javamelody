@@ -44,6 +44,8 @@ public class SessionTestImpl implements HttpSession {
 			attributes.put(SessionInformations.SESSION_REMOTE_ADDR, "localhost");
 			attributes.put(SessionInformations.SESSION_REMOTE_USER, "admin");
 			attributes.put("test", null);
+		} else {
+			attributes.put("not serializable", new Object());
 			final Object exceptionInToString = new Object() {
 				/** {@inheritDoc} */
 				@Override
@@ -52,8 +54,6 @@ public class SessionTestImpl implements HttpSession {
 				}
 			};
 			attributes.put("exception in toString()", exceptionInToString);
-		} else {
-			attributes.put("not serializable", new Object());
 		}
 	}
 
