@@ -93,6 +93,11 @@ public class TestMailReport {
 			assertEquals("valueOfByMailCode", period,
 					Period.valueOfByMailCode(period.getMailCode()));
 		}
+		try {
+			Period.valueOfByMailCode("unknown");
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("ok", e);
+		}
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
