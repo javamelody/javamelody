@@ -355,10 +355,15 @@ public class TestPdfReport {
 		document3.close();
 		assertNotEmptyAndClear(output);
 
+		final Document document4 = pdfDocumentFactory.createDocument();
+		document4.open();
 		final PdfThreadInformationsReport report4 = new PdfThreadInformationsReport(
 				new ArrayList<ThreadInformations>(), stackTraceEnabled, pdfDocumentFactory,
-				document3);
+				document4);
+		report4.toPdf();
 		report4.writeDeadlocks();
+		document4.close();
+		assertNotEmptyAndClear(output);
 	}
 
 	/** Test. */
