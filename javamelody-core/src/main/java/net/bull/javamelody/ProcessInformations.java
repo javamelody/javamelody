@@ -72,14 +72,13 @@ final class ProcessInformations implements Serializable {
 				imageNameBuilder.append(' ').append(sc.next());
 			}
 			pid = sc.nextInt();
-			sc.next();
-			String memory = sc.next();
-			if (memory.length() == 0 || !Character.isDigit(memory.charAt(0))) {
+			if ("Console".equals(sc.next())) {
 				// ce if est nécessaire si windows server 2003 mais sans connexion à distance ouverte
 				// (comme tasklist.txt dans resources de test,
 				// car parfois "Console" est présent mais parfois non)
-				memory = sc.next();
+				sc.next();
 			}
+			final String memory = sc.next();
 			cpuPercentage = -1;
 			memPercentage = -1;
 			vsz = Integer.parseInt(memory.replace("ÿ", ""));
