@@ -208,5 +208,6 @@ public class TestMonitoringSpringInterceptor {
 
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
+		context.getBean("dataSource2");
 	}
 }
