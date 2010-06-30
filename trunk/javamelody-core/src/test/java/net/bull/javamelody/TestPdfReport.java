@@ -340,6 +340,25 @@ public class TestPdfReport {
 		report2.toPdf();
 		document2.close();
 		assertNotEmptyAndClear(output);
+
+		// writeDeadlocks
+		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
+		final Thread thread = Thread.currentThread();
+		threads.add(new ThreadInformations(thread, null, 10, 10, false));
+		threads.add(new ThreadInformations(thread, null, 10, 10, true));
+		final Document document3 = pdfDocumentFactory.createDocument();
+		document3.open();
+		stackTraceEnabled = false;
+		final PdfThreadInformationsReport report3 = new PdfThreadInformationsReport(threads,
+				stackTraceEnabled, pdfDocumentFactory, document3);
+		report3.writeDeadlocks();
+		document3.close();
+		assertNotEmptyAndClear(output);
+
+		final PdfThreadInformationsReport report4 = new PdfThreadInformationsReport(
+				new ArrayList<ThreadInformations>(), stackTraceEnabled, pdfDocumentFactory,
+				document3);
+		report4.writeDeadlocks();
 	}
 
 	/** Test. */
