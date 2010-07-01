@@ -186,7 +186,7 @@ class CounterRequest implements Cloneable, Serializable {
 		// le type de retour est float pour être mesurable
 		// car il est probable que le pourcentage soit inférieur à 1%
 		if (hits > 0) {
-			return 100f * systemErrors / hits;
+			return Math.min(100f * systemErrors / hits, 100f);
 		}
 		return 0;
 	}
