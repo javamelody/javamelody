@@ -178,8 +178,8 @@ Advanced documentation of Java Melody
 	(for example "http://<host1>/myapp/,http://<host2>/myapp/" for "cluster").
 	Note: it is not possible to monitor one application in several collect servers.
 
-	In order for a webapp of monitoring to monitor an application, the monitoring should be setup in this application
-	as written at the start of this document.
+	In order for the collect server to monitor an application, the monitoring should be setup in this application
+	as written at the start of this chapter.
 	When the monitoring is setup in the application, it is not compulsory to include the jrobin-*.jar file in the
 	WEB-INF/lib directory of the application, as only the collect server will handle the charts for this application.
 	And with this setup again, it is possible to restrict access to the monitoring of the application only to the
