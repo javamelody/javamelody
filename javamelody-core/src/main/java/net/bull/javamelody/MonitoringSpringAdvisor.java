@@ -34,5 +34,7 @@ public class MonitoringSpringAdvisor extends DefaultPointcutAdvisor {
 	public MonitoringSpringAdvisor() {
 		super();
 		setAdvice(new MonitoringSpringInterceptor());
+		// ordre par rapport aux autres advisors/aspects (issue 32)
+		setOrder(0);
 	}
 }
