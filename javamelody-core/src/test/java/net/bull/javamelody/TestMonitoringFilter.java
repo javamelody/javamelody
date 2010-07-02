@@ -288,7 +288,13 @@ public class TestMonitoringFilter {
 		// erreur système http, avec log
 		setProperty(Parameter.LOG, "true");
 		try {
-			doFilter(createNiceMock(HttpServletRequest.class), true);
+			final String test = "test";
+			doFilter(createNiceMock(HttpServletRequest.class), new UnknownError(test));
+			doFilter(createNiceMock(HttpServletRequest.class), new IllegalStateException(test));
+			// pas possibles:
+			//			doFilter(createNiceMock(HttpServletRequest.class), new IOException(test));
+			//			doFilter(createNiceMock(HttpServletRequest.class), new ServletException(test));
+			//			doFilter(createNiceMock(HttpServletRequest.class), new Exception(test));
 		} finally {
 			setProperty(Parameter.LOG, null);
 		}
@@ -347,10 +353,10 @@ public class TestMonitoringFilter {
 	}
 
 	private void doFilter(HttpServletRequest request) throws ServletException, IOException {
-		doFilter(request, false);
+		doFilter(request, null);
 	}
 
-	private void doFilter(HttpServletRequest request, boolean exceptionInDoFilter)
+	private void doFilter(HttpServletRequest request, Throwable exceptionInDoFilter)
 			throws ServletException, IOException {
 		setUp();
 
@@ -358,10 +364,9 @@ public class TestMonitoringFilter {
 			final FilterChain chain = createNiceMock(FilterChain.class);
 			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			if (exceptionInDoFilter) {
+			if (exceptionInDoFilter != null) {
 				// cela fera une erreur système http comptée dans les stats
-				expect(request.getMethod())
-						.andThrow(new IllegalStateException("il y a une erreur"));
+				expect(request.getMethod()).andThrow(exceptionInDoFilter);
 			} else {
 				expect(request.getMethod()).andReturn("GET").anyTimes();
 			}
@@ -373,11 +378,11 @@ public class TestMonitoringFilter {
 			replay(response);
 			replay(chain);
 			monitoringFilter.init(config);
-			if (exceptionInDoFilter) {
+			if (exceptionInDoFilter != null) {
 				try {
 					monitoringFilter.doFilter(request, response, chain);
-				} catch (final IllegalStateException e) {
-					assertNotNull("ok", e);
+				} catch (final Throwable t) { // NOPMD
+					assertNotNull("ok", t);
 				}
 			} else {
 				monitoringFilter.doFilter(request, response, chain);
@@ -466,7 +471,7 @@ public class TestMonitoringFilter {
 		} finally {
 			setProperty(Parameter.MONITORING_PATH, "/monitoring");
 		}
-		setProperty(Parameter.MAIL_SESSION, "test");
+		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
 		monitoring(Collections.<String, String> emptyMap());
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
