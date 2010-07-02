@@ -284,6 +284,9 @@ public class TestMonitoringFilter {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getHeader("X-Requested-With")).andReturn("XMLHttpRequest");
 		doFilter(request);
+
+		// erreur système http
+		doFilter(createNiceMock(HttpServletRequest.class), true);
 	}
 
 	/** Test.
@@ -339,13 +342,24 @@ public class TestMonitoringFilter {
 	}
 
 	private void doFilter(HttpServletRequest request) throws ServletException, IOException {
+		doFilter(request, false);
+	}
+
+	private void doFilter(HttpServletRequest request, boolean exceptionInDoFilter)
+			throws ServletException, IOException {
 		setUp();
 
 		try {
 			final FilterChain chain = createNiceMock(FilterChain.class);
 			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			expect(request.getMethod()).andReturn("GET").anyTimes();
+			if (exceptionInDoFilter) {
+				// cela fera une erreur système http comptée dans les stats
+				expect(request.getMethod())
+						.andThrow(new IllegalStateException("il y a une erreur"));
+			} else {
+				expect(request.getMethod()).andReturn("GET").anyTimes();
+			}
 			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 
 			replay(config);
@@ -354,7 +368,15 @@ public class TestMonitoringFilter {
 			replay(response);
 			replay(chain);
 			monitoringFilter.init(config);
-			monitoringFilter.doFilter(request, response, chain);
+			if (exceptionInDoFilter) {
+				try {
+					monitoringFilter.doFilter(request, response, chain);
+				} catch (final IllegalStateException e) {
+					assertNotNull("ok", e);
+				}
+			} else {
+				monitoringFilter.doFilter(request, response, chain);
+			}
 			verify(config);
 			verify(context);
 			verify(request);
