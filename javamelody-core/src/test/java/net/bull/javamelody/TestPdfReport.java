@@ -64,9 +64,10 @@ public class TestPdfReport {
 
 	/** Test.
 	 * @throws IOException e
-	 * @throws SchedulerException e */
+	 * @throws SchedulerException e
+	 * @throws DocumentException e */
 	@Test
-	public void testToPdf() throws IOException, SchedulerException {
+	public void testToPdf() throws IOException, SchedulerException, DocumentException {
 		//CHECKSTYLE:ON
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setDisplayed(false);
@@ -232,7 +233,8 @@ public class TestPdfReport {
 	}
 
 	private void rootContexts(Counter counter, Collector collector, Timer timer,
-			JavaInformations javaInformations, ByteArrayOutputStream output) throws IOException {
+			JavaInformations javaInformations, ByteArrayOutputStream output) throws IOException,
+			DocumentException {
 		PdfReport pdfReport;
 		TestCounter.bindRootContexts("first request", counter, 3);
 		pdfReport = new PdfReport(collector, false, Collections.singletonList(javaInformations),
@@ -246,6 +248,17 @@ public class TestPdfReport {
 		pdfReport = new PdfReport(collector2, false, Collections.singletonList(javaInformations),
 				Period.TOUT, output);
 		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
+
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(
+				collector.getApplication(), output);
+		final Document document = pdfDocumentFactory.createDocument();
+		document.open();
+		final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
+				collector2.getRootCurrentContexts(), new ArrayList<PdfCounterReport>(),
+				new ArrayList<ThreadInformations>(), false, pdfDocumentFactory, document);
+		pdfCounterRequestContextReport.toPdf();
+		document.close();
 		assertNotEmptyAndClear(output);
 	}
 
