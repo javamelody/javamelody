@@ -6,6 +6,7 @@
   * fix for Grails: an exception in initialisation of Quartz should not stop initialisation of the webapp
   * fix issue 8: A synchronized (rrdDb) was added against the exception "Bad sample timestamp x. Last update time was x, at least one second step is required". It was seen with deployment on Tomcat without modification of monitored webapps.
   * fix for JIRA: "mean sql hits" and "mean sql time" displayed in http and in jsp statistics
+  * changed: The default order of MonitoringSpringAdvisor is now 0 for priority before other spring advisors (issue 32)
   * added: Statistics of *[http://struts.apache.org/ Struts 2]* actions
   * added: If Oracle database and if system actions are enabled, 3 new reports on foreign keys without indexes, invalid objets and disabled constraints
 
