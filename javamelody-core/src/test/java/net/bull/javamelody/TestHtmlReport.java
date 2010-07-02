@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -330,6 +331,12 @@ public class TestHtmlReport {
 		myCounter.bindContext("my context", "my context");
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b");
+		assertNotEmptyAndClear(writer);
+
+		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
+				collector2.getRootCurrentContexts(), null, new ArrayList<ThreadInformations>(),
+				false, writer);
+		htmlCounterRequestContextReport.toHtml();
 		assertNotEmptyAndClear(writer);
 	}
 

@@ -62,12 +62,12 @@ public class TestPdfReport {
 		Utils.initialize();
 	}
 
-	//CHECKSTYLE:ON
 	/** Test.
 	 * @throws IOException e
 	 * @throws SchedulerException e */
 	@Test
 	public void testToPdf() throws IOException, SchedulerException {
+		//CHECKSTYLE:ON
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setDisplayed(false);
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
@@ -124,6 +124,12 @@ public class TestPdfReport {
 			cache(collector, output);
 
 			job(collector, output);
+
+			Utils.setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
+			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+			pdfReport.toPdf();
+			assertNotEmptyAndClear(output);
+			Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		} finally {
 			timer.cancel();
 		}
