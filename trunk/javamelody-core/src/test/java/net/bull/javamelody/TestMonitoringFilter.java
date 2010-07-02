@@ -653,8 +653,10 @@ public class TestMonitoringFilter {
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
 		parameters.put(PART_PARAMETER, null);
-		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
 		parameters.put(COLLECTOR_PARAMETER, "stop");
+		monitoring(parameters);
+
+		parameters.put(ACTION_PARAMETER, Action.GC.toString());
 		monitoring(parameters);
 	}
 
