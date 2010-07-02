@@ -285,8 +285,13 @@ public class TestMonitoringFilter {
 		expect(request.getHeader("X-Requested-With")).andReturn("XMLHttpRequest");
 		doFilter(request);
 
-		// erreur système http
-		doFilter(createNiceMock(HttpServletRequest.class), true);
+		// erreur système http, avec log
+		setProperty(Parameter.LOG, "true");
+		try {
+			doFilter(createNiceMock(HttpServletRequest.class), true);
+		} finally {
+			setProperty(Parameter.LOG, null);
+		}
 	}
 
 	/** Test.
