@@ -78,7 +78,7 @@ or MSIE8 (MSIE7 not recommended).
 
 == Hudson Plugin ==
 
-	If you want to monitor a [http://hudson-ci.org/ Hudson] server, you can install JavaMelody by point and click with a Hudson plugin. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page or from the address {{{http://yourhost/monitoring}}}. That's it.
+	If you want to monitor a [http://hudson-ci.org/ Hudson] server, you can install JavaMelody by point and click with a [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page or from the address {{{http://yourhost/monitoring}}}. That's it.
 
 == Atlassian JIRA, Confluence and Bamboo Plugin ==
 
