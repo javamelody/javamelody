@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.17.0 ===
 
   * fix issue 28: NoSuchMethodError when undeployed and when JavaMelody 1.15.0 or 1.16.0 is used with Quartz 1.7 or 1.8
   * fix issue 30: Quartz job CRON expression with '#' causes NullPointerException
