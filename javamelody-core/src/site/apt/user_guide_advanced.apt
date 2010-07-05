@@ -76,9 +76,9 @@ Documentation avancée de Java Melody
 	
 	Vous pouvez ensuite compléter le paramétrage comme ci-dessous en fonction des besoins.
 
-	** 4 à 16. Autres paramétrages (paramètres optionnels, JDBC, EJB3, Spring, etc)
+	** 4 à 17. Autres paramétrages (paramètres optionnels, JDBC, EJB3, Spring, etc)
 
-	Pour compléter le paramétrage, suivez simplement les chapitres 4 à 16 du {{{user_guide.html} guide d'utilisation}}.
+	Pour compléter le paramétrage, suivez simplement les chapitres 4 à 17 du {{{user_guide.html} guide d'utilisation}}.
 	Puisque vous utilisez un fichier ear, vous pouvez être intéressé notamment par le chapitre "Façades métiers (fichier ejb-jar.xml si EJB3)".
 	
 	
