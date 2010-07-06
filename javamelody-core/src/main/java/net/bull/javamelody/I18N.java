@@ -150,13 +150,13 @@ final class I18N {
 		if (index == -1) {
 			writer.write(html);
 		} else {
-			final ResourceBundle resourceBundle2 = getResourceBundle();
+			final ResourceBundle resourceBundle = getResourceBundle();
 			int begin = 0;
 			while (index != -1) {
 				writer.write(html, begin, index - begin);
 				final int nextIndex = html.indexOf('#', index + 1);
 				final String key = html.substring(index + 1, nextIndex);
-				writer.write(resourceBundle2.getString(key));
+				writer.write(resourceBundle.getString(key));
 				begin = nextIndex + 1;
 				index = html.indexOf('#', begin);
 			}
