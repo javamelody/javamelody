@@ -201,15 +201,19 @@ class HtmlJavaInformationsReport {
 			throws IOException {
 		final String columnEnd = "</td></tr>";
 		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
-			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>"
-					+ replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
-							"&amp;") + columnEnd);
+			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>");
+			// writer.write pour ne pas gérer de traductions si la donnée contient '#'
+			writer.write(replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
+					"&amp;"));
+			writeln(columnEnd);
 		}
 		if (javaInformations.getDataSourceDetails() != null) {
-			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>"
-					+ replaceEolWithBr(javaInformations.getDataSourceDetails())
+			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>");
+			// writer.write pour ne pas gérer de traductions si la donnée contient '#'
+			writer.write(replaceEolWithBr(javaInformations.getDataSourceDetails())
 					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
-					+ " class='noPrint' target='_blank'>DataSource reference</a>" + columnEnd);
+					+ " class='noPrint' target='_blank'>DataSource reference</a>");
+			writeln(columnEnd);
 		}
 	}
 
