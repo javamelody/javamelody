@@ -386,20 +386,23 @@ class Counter implements Cloneable, Serializable {
 
 	void addRequestForCurrentContext(boolean systemError) {
 		final CounterRequestContext context = contextThreadLocal.get();
-		assert context != null;
-		final long duration = context.getDuration(System.currentTimeMillis());
-		final long cpuUsedMillis = context.getCpuTime();
-		addRequest(context.getRequestName(), duration, cpuUsedMillis, systemError, -1);
+		if (context != null) {
+			final long duration = context.getDuration(System.currentTimeMillis());
+			final long cpuUsedMillis = context.getCpuTime();
+			addRequest(context.getRequestName(), duration, cpuUsedMillis, systemError, -1);
+		}
 	}
 
 	void addRequestForCurrentContext(String systemErrorStackTrace) {
 		assert errorCounter;
 		final CounterRequestContext context = contextThreadLocal.get();
-		assert context != null;
-		final long duration = context.getDuration(System.currentTimeMillis());
-		final long cpuUsedMillis = context.getCpuTime();
-		addRequest(context.getRequestName(), duration, cpuUsedMillis,
-				systemErrorStackTrace != null, systemErrorStackTrace, -1);
+		// context peut être null (depuis JobGlobalListener, cf issue 34)
+		if (context != null) {
+			final long duration = context.getDuration(System.currentTimeMillis());
+			final long cpuUsedMillis = context.getCpuTime();
+			addRequest(context.getRequestName(), duration, cpuUsedMillis,
+					systemErrorStackTrace != null, systemErrorStackTrace, -1);
+		}
 	}
 
 	void addRequest(String requestName, long duration, long cpuTime, boolean systemError,
