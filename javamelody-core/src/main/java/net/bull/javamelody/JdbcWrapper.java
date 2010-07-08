@@ -693,6 +693,9 @@ final class JdbcWrapper {
 		}
 		final InvocationHandler invocationHandler = new ConnectionInvocationHandler(connection);
 		if (jonas) {
+			// si jonas, on ne garde que l'interface java.sql.Connection
+			// car sinon on a NoClassDefFoundError: org.ow2.jonas.resource.internal.cm.ManagedConnectionInfo
+			// à la création du proxy (dans le cas d'un EAR avec des ejbs dans des jars et un war)
 			return createProxy(connection, invocationHandler,
 					Arrays.asList(new Class<?>[] { Connection.class }));
 		}
