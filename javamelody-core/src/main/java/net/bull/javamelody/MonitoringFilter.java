@@ -350,19 +350,15 @@ public class MonitoringFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)
-				|| isHttpMonitoringDisabled()) {
-			// si ce n'est pas une requête http, on ne la monitore pas
+				|| isHttpMonitoringDisabled() || isRequestExcluded((HttpServletRequest) request)) {
+			// si ce n'est pas une requête http ou si le monitoring http est désactivé
+			// ou si cette url est exclue, on ne monitore pas cette requête http
 			chain.doFilter(request, response);
 			return;
 		}
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		if (isRequestExcluded(httpRequest)) {
-			// si cette url est exclue, on ne monitore pas cette requête http
-			chain.doFilter(request, response);
-			return;
-		}
 		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
 			doMonitoring(httpRequest, httpResponse);
 			return;
@@ -560,7 +556,7 @@ public class MonitoringFilter implements Filter {
 								.substring(httpRequest.getContextPath().length())).matches();
 	}
 
-	private boolean isRequestNotAllowed(final HttpServletRequest httpRequest) {
+	private boolean isRequestNotAllowed(HttpServletRequest httpRequest) {
 		return allowedAddrPattern != null
 				&& !allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
 	}
