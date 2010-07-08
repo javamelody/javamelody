@@ -70,6 +70,7 @@ final class JdbcWrapper {
 	private boolean jboss;
 	private boolean glassfish;
 	private boolean weblogic;
+	private boolean jonas;
 
 	static final class ConnectionInformationsComparator implements
 			Comparator<ConnectionInformations>, Serializable {
@@ -274,6 +275,7 @@ final class JdbcWrapper {
 		jboss = serverInfo.contains("JBoss");
 		glassfish = serverInfo.contains("GlassFish");
 		weblogic = serverInfo.contains("WebLogic");
+		jonas = System.getProperty("jonas.name") != null;
 		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
 				&& !Parameters.isNoDatabase();
 	}
@@ -430,11 +432,10 @@ final class JdbcWrapper {
 			// JIRA dans Tomcat: la dataSource a déjà été mise en cache par org.ofbiz.core.entity.transaction.JNDIFactory
 			// à l'initialisation de com.atlassian.jira.startup.JiraStartupChecklistContextListener
 			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI
-			Object innerDataSource = JdbcWrapperHelper.getFieldValue(dataSource, "dataSource");
-			if (innerDataSource != null) {
-				innerDataSource = createDataSourceProxy((DataSource) innerDataSource);
-				JdbcWrapperHelper.setFieldValue(dataSource, "dataSource", innerDataSource);
-			}
+			rewrapBasicDataSource(dataSource);
+		} else if (jonas) {
+			// JONAS (si rewrap-datasources==true)
+			rewrapJonasDataSource(dataSource);
 		}
 	}
 
@@ -448,6 +449,40 @@ final class JdbcWrapper {
 		if (driverInstance != null) {
 			driverInstance = createDriverProxy((Driver) driverInstance);
 			JdbcWrapperHelper.setFieldValue(dataSource, "driverInstance", driverInstance);
+		}
+	}
+
+	private void rewrapBasicDataSource(DataSource dataSource) throws IllegalAccessException {
+		Object innerDataSource = JdbcWrapperHelper.getFieldValue(dataSource, "dataSource");
+		if (innerDataSource != null) {
+			innerDataSource = createDataSourceProxy((DataSource) innerDataSource);
+			JdbcWrapperHelper.setFieldValue(dataSource, "dataSource", innerDataSource);
+		}
+	}
+
+	private void rewrapJonasDataSource(DataSource dataSource) throws IllegalAccessException {
+		// cette méthode est utilisée sous jonas seulement is rewrap-datasources==true
+		final String dataSourceClassName = dataSource.getClass().getName();
+		if ("org.ow2.jonas.jndi.interceptors.impl.datasource.DatasourceWrapper"
+				.equals(dataSourceClassName)) {
+			// JONAS (si rewrap-datasource==true)
+			Object wrappedDataSource = JdbcWrapperHelper.getFieldValue(dataSource,
+					"wrappedDataSource");
+			if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(wrappedDataSource.getClass()
+					.getName())) {
+				Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(wrappedDataSource,
+						"cm");
+				javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
+				JdbcWrapperHelper.setFieldValue(wrappedDataSource, "cm", javaxConnectionManager);
+			} else {
+				// rq: cela ne semble pas forcément suffire de faire un proxy de wrappedDataSource
+				wrappedDataSource = createDataSourceProxy((DataSource) wrappedDataSource);
+				JdbcWrapperHelper.setFieldValue(dataSource, "wrappedDataSource", wrappedDataSource);
+			}
+		} else if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(dataSourceClassName)) {
+			Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(dataSource, "cm");
+			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
+			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
 		}
 	}
 
@@ -495,15 +530,20 @@ final class JdbcWrapper {
 		return createProxy(driver, invocationHandler);
 	}
 
-	// pour jboss, glassfish
+	// pour jboss, glassfish ou jonas
 	private Object createJavaxConnectionManagerProxy(final Object javaxConnectionManager) {
 		assert javaxConnectionManager != null;
+		final boolean rewrapConnection = jboss || glassfish;
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				final Object result = method.invoke(javaxConnectionManager, args);
 				if (result instanceof Connection) {
-					rewrapConnection((Connection) result);
+					if (rewrapConnection) {
+						rewrapConnection((Connection) result);
+					} else {
+						return createConnectionProxy((Connection) result);
+					}
 				}
 				return result;
 			}
@@ -652,6 +692,10 @@ final class JdbcWrapper {
 					new ConnectionInformations());
 		}
 		final InvocationHandler invocationHandler = new ConnectionInvocationHandler(connection);
+		if (jonas) {
+			return createProxy(connection, invocationHandler,
+					Arrays.asList(new Class<?>[] { Connection.class }));
+		}
 		return createProxy(connection, invocationHandler);
 	}
 
@@ -685,8 +729,13 @@ final class JdbcWrapper {
 		return "hashCode" == methodName && (args == null || args.length == 0); // NOPMD
 	}
 
-	@SuppressWarnings("unchecked")
 	static <T> T createProxy(T object, InvocationHandler invocationHandler) {
+		return createProxy(object, invocationHandler, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	static <T> T createProxy(T object, InvocationHandler invocationHandler,
+			List<Class<?>> interfaces) {
 		if (isProxyAlready(object)) {
 			// si l'objet est déjà un proxy créé pas nous, initialisé par exemple
 			// depuis SessionListener ou MonitoringInitialContextFactory,
@@ -697,20 +746,24 @@ final class JdbcWrapper {
 		// Rq: object.get.Class().getInterfaces() ne suffit pas pour Connection dans Tomcat
 		// car la connection est une instance de PoolGuardConnectionWrapper
 		// et connection.getClass().getInterfaces() est vide dans ce cas
-		final List<Class<?>> interfaces = new ArrayList<Class<?>>(Arrays.asList(object.getClass()
-				.getInterfaces()));
-		Class<?> classe = object.getClass().getSuperclass();
-		while (classe != null) {
-			final List<Class<?>> superInterfaces = Arrays.asList(classe.getInterfaces());
-			// removeAll d'abord car il ne faut pas de doublon dans la liste
-			interfaces.removeAll(superInterfaces);
-			interfaces.addAll(superInterfaces);
-			classe = classe.getSuperclass();
+		final List<Class<?>> myInterfaces;
+		if (interfaces == null) {
+			myInterfaces = new ArrayList<Class<?>>(Arrays.asList(object.getClass().getInterfaces()));
+			Class<?> classe = object.getClass().getSuperclass();
+			while (classe != null) {
+				final List<Class<?>> superInterfaces = Arrays.asList(classe.getInterfaces());
+				// removeAll d'abord car il ne faut pas de doublon dans la liste
+				myInterfaces.removeAll(superInterfaces);
+				myInterfaces.addAll(superInterfaces);
+				classe = classe.getSuperclass();
+			}
+			// on ignore l'interface javax.naming.Referenceable car sinon le rebind sous jetty appelle
+			// referenceable.getReference() et devient inutile
+			myInterfaces.remove(Referenceable.class);
+		} else {
+			myInterfaces = interfaces;
 		}
-		// on ignore l'interface javax.naming.Referenceable car sinon le rebind sous jetty appelle
-		// referenceable.getReference() et devient inutile
-		interfaces.remove(Referenceable.class);
-		final Class<?>[] interfacesArray = interfaces.toArray(new Class[interfaces.size()]);
+		final Class<?>[] interfacesArray = myInterfaces.toArray(new Class[myInterfaces.size()]);
 
 		// ce handler désencapsule les InvocationTargetException des 3 proxy
 		final InvocationHandler ih = new DelegatingInvocationHandler(invocationHandler);
