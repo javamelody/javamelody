@@ -1,4 +1,9 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 33: Database name or jdbc driver with '#' causes IndexOutOfBounds
+  * fix issue 34: Application server restart causes persistent Quartz jobs to be hanging around
+
 === 1.17.0 ===
 
   * fix issue 28: NoSuchMethodError when undeployed and when JavaMelody 1.15.0 or 1.16.0 is used with Quartz 1.7 or 1.8
