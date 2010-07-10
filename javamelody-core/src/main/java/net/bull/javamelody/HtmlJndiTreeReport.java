@@ -71,7 +71,7 @@ class HtmlJndiTreeReport {
 					odd = !odd; // NOPMD
 					writeBinding(binding);
 					writeln("</tr>");
-				} catch (NamingException e) {
+				} catch (final NamingException e) {
 					continue;
 				}
 			}
