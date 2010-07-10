@@ -34,6 +34,7 @@ final class HttpParameters {
 	static final String JOB_ID_PARAMETER = "jobId";
 	static final String COLLECTOR_PARAMETER = "collector";
 	static final String REQUEST_PARAMETER = "request";
+	static final String PATH_PARAMETER = "path";
 	static final String COUNTER_PARAMETER = "counter";
 	static final String GRAPH_PARAMETER = "graph";
 	static final String RESOURCE_PARAMETER = "resource";
@@ -51,6 +52,7 @@ final class HttpParameters {
 	static final String GRAPH_PART = "graph";
 	static final String LAST_VALUE_PART = "lastValue";
 	static final String USAGES_PART = "usages";
+	static final String JNDI_PART = "jndi";
 
 	/**
 	 * Constructeur privé: pas d'instance.

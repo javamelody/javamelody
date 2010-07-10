@@ -498,6 +498,11 @@ class HtmlCoreReport {
 			write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 			writeln(separator);
 		}
+		if (isHeapHistoEnabled()) {
+			write("<a href='?part=heaphisto'>");
+			write("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
+			writeln(separator);
+		}
 		if (isSessionsEnabled()) {
 			write("<a href='?action=invalidate_sessions' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_invalidate_sessions")
@@ -508,11 +513,6 @@ class HtmlCoreReport {
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
 		writeln("<br />");
-		if (isHeapHistoEnabled()) {
-			writeln(separator);
-			write("<a href='?part=heaphisto'>");
-			write("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
-		}
 		if (doesWebXmlExists()) {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
 			writeln(separator);
@@ -523,6 +523,10 @@ class HtmlCoreReport {
 		writeln(separator);
 		write("<a href='?part=processes'>");
 		write("<img src='?resource=processes.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
+
+		writeln(separator);
+		write("<a href='?part=jndi'>");
+		write("<img src='?resource=jndi.png' width='20' height='20' alt=\"#Arbre_JNDI#\" /> #Arbre_JNDI#</a>");
 
 		if (isDatabaseEnabled()) {
 			writeln(separator);

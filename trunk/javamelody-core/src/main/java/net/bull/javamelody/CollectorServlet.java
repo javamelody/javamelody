@@ -16,15 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.bull.javamelody;
+package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
@@ -230,6 +232,8 @@ public class CollectorServlet extends HttpServlet {
 			doCurrentRequests(req, resp, application);
 		} else if (PROCESSES_PART.equalsIgnoreCase(partParameter)) {
 			doProcesses(req, resp, application);
+		} else if (JNDI_PART.equalsIgnoreCase(partParameter)) {
+			doJndi(req, resp, application);
 		} else if (DATABASE_PART.equalsIgnoreCase(partParameter)) {
 			doDatabase(req, resp, application);
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
@@ -307,6 +311,21 @@ public class CollectorServlet extends HttpServlet {
 		}
 		htmlReport.writeHtmlFooter();
 		writer.close();
+	}
+
+	private void doJndi(HttpServletRequest req, HttpServletResponse resp, String application)
+			throws IOException {
+		final URL url = getUrlsByApplication(application).get(0);
+		final String pathParameter = req.getParameter(PATH_PARAMETER) != null ? req
+				.getParameter(PATH_PARAMETER) : "";
+		final String jndiParameters = '&' + PART_PARAMETER + '=' + JNDI_PART + '&' + PATH_PARAMETER
+				+ '=' + pathParameter;
+		final String htmlBodyFormat = "html";
+		final URL currentRequestsUrl = new URL(url.toString()
+				.replace(TransportFormat.SERIALIZED.getCode(), htmlBodyFormat)
+				.replace(TransportFormat.XML.getCode(), htmlBodyFormat)
+				+ jndiParameters);
+		new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 	}
 
 	private void doDatabase(HttpServletRequest req, HttpServletResponse resp, String application)
