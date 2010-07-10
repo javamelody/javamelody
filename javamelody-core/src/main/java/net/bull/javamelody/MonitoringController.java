@@ -32,9 +32,11 @@ import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
@@ -335,7 +337,14 @@ class MonitoringController {
 		} else if (USAGES_PART.equalsIgnoreCase(part)) {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestUsages(graphName);
-		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
+		} else {
+			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
+		}
+	}
+
+	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
+			HtmlReport htmlReport) throws IOException {
+		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 			doSessions(sessionId, htmlReport);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
@@ -350,6 +359,8 @@ class MonitoringController {
 			final boolean withoutHeaders = "htmlbody".equalsIgnoreCase(httpRequest
 					.getParameter(FORMAT_PARAMETER));
 			doConnections(htmlReport, withoutHeaders);
+		} else if (JNDI_PART.equalsIgnoreCase(part)) {
+			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -437,6 +448,17 @@ class MonitoringController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), withoutHeaders);
+	}
+
+	private void doJndi(HtmlReport htmlReport, String path) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		try {
+			htmlReport.writeJndi(path);
+		} catch (final Exception e) {
+			Collector.printStackTrace(e);
+			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
+		}
 	}
 
 	void writeHtmlToLastShutdownFile() {

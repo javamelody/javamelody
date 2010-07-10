@@ -23,6 +23,8 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
+
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
 /**
@@ -210,6 +212,12 @@ class HtmlReport {
 			htmlConnectionInformationsReport.toHtml();
 			writeHtmlFooter();
 		}
+	}
+
+	void writeJndi(String path) throws IOException, NamingException {
+		writeHtmlHeader(false);
+		new HtmlJndiTreeReport(path, writer).toHtml();
+		writeHtmlFooter();
 	}
 
 	private void writeln(String html) throws IOException {
