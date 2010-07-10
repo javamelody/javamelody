@@ -3,6 +3,7 @@
 
   * fix issue 33: Database name or jdbc driver with '#' causes IndexOutOfBounds
   * fix issue 34: Application server restart causes persistent Quartz jobs to be hanging around
+  * Add a "JNDI Tree" link in "system actions" (for example to check if a datasource is really in "java:/" or in "java:/comp/env/") 
 
 === Grails Plugin 0.4 ===
 
