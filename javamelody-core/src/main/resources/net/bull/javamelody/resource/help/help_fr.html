@@ -298,20 +298,23 @@ Si jdk 1.6, 'générer un heap dump',
  pour exporter tout le contenu de la mémoire dans un fichier du répertoire temporaire sur le serveur,
  que vous pouvez ouvrir ensuite avec <a href="http://visualvm.dev.java.net" target="_blank">VisualVM</a> du JDK
  ou avec <a href="http://www.eclipse.org/mat/" target="_blank">Eclipse MAT</a></li>
+<li><img src='?resource=memory.png' width='20' height='20' alt='Histogramme mémoire' />
+Si jdk 1.6, 'voir l'histogramme mémoire', pour afficher le nombre d'instances en mémoire pour chaque classe java</li>
 <li><img src='?resource=user-trash.png' width='18' height='18' alt='Invalider les sessions' />
 'Invalider les sessions http', pour forcer la déconnexion de tous les utilisateurs</li>
 <li><img src='?resource=system-users.png' width='20' height='20' alt='Sessions' />
 'Voir les sessions http', pour voir les attributs, les tailles sérialisées
  (généralement supérieure aux tailles en mémoire), la provenance et éventuellement l'utilisateur de chaque session
  (si authentification par JavaEE)</li>
-<li><img src='?resource=memory.png' width='20' height='20' alt='Histogramme mémoire' />
-Si jdk 1.6, 'voir l'histogramme mémoire', pour afficher le nombre d'instances en mémoire pour chaque classe java</li>
 <li><img src='?resource=xml.png' width='20' height='20' alt='web.xml' />
 'Voir le descripteur de déploiement' : fichier web.xml de l'application</li>
 <li><img src='?resource=processes.png' width='20' height='20' alt='Processus' />
 'Voir les processus de l'OS' : liste des processus du système d'exploitation (linux avec
 <a href='http://fr.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> ou windows avec tasklist) avec pour chaque
 processus : utilisateur, mémoire et cpu</li>
+<li><img src='?resource=jndi.png' width='20' height='20' alt='Arbre JNDI' />
+'Arbre JNDI' : Parcours du contexte JNDI, par exemple pour trouver le chemin et le nom d'une datasource JDBC.
+</li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Connexions jdbc ouvertes' />
 Pour aider à diagnostiquer une éventuelle fuite de connexions jdbc, les 'connexions jdbc ouvertes'
 donnent la liste des stack traces où ces connexions ont été ouvertes.
