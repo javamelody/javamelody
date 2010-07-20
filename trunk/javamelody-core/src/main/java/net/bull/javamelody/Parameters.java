@@ -48,7 +48,7 @@ final class Parameters {
 	static final String JAVAMELODY_VERSION = getJavaMelodyVersion();
 	// résolution (ou pas) par défaut en s de stockage des valeurs dans les fichiers RRD
 	private static final int DEFAULT_RESOLUTION_SECONDS = 60;
-	// stockage des fichiers RRD de JRobin dans le répertoire temp/monitoring/<context> par défaut
+	// stockage des fichiers RRD de JRobin dans le répertoire temp/javamelody/<context> par défaut
 	private static final String DEFAULT_DIRECTORY = "javamelody";
 	// nom du fichier stockant les applications et leurs urls dans le répertoire de stockage
 	private static final String APPLICATIONS_FILENAME = "applications.properties";

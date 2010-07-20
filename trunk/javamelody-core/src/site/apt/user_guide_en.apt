@@ -240,7 +240,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	in the log category corresponding to the name of the filter set in <<<web.xml>>> file,
 	using Logback or Log4J if present in your application, or using java.util.logging otherwise.
 
-	The parameter <<<storage-directory>>> is the name of the directory of storage (monitoring by default).
+	The parameter <<<storage-directory>>> is the name of the directory of storage (javamelody by default).
 	If the name of the directory starts with '/', it is considered as an absolute path,
 	otherwise it is considered as relative to the temporary directory
 	(<temp> in <<<TOMCAT_HOME>>> for tomcat).

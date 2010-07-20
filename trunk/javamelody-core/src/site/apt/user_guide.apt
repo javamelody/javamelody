@@ -242,7 +242,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	dans la catégorie de log correspondant au nom du filtre paramétré dans le fichier <<<web.xml>>>,
 	en utilisant Logback ou Log4J si présent dans votre application, ou en utilisant java.util.logging sinon.
 
-	Le paramètre <<<storage-directory>>> est le nom du répertoire de stockage (monitoring par défaut).
+	Le paramètre <<<storage-directory>>> est le nom du répertoire de stockage (javamelody par défaut).
 	Si le nom du répertoire commence par '/', on considère que c'est un chemin absolu,
 	sinon on considère que c'est un chemin relatif par rapport au répertoire temporaire
 	(<temp> dans <<<TOMCAT_HOME>>> pour tomcat).
