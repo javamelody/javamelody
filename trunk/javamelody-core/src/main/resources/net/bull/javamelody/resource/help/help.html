@@ -295,26 +295,29 @@ If jdk 1.6, 'generate a heap dump',
  to dump all the content of the memory in a file of the temporary directory on the server,
  which you can open with <a href="http://visualvm.dev.java.net" target="_blank">VisualVM</a> of the JDK
  or with <a href="http://www.eclipse.org/mat/" target="_blank">Eclipse MAT</a></li>
+<li><img src='?resource=memory.png' width='20' height='20' alt='Memory histogram' />
+If jdk 1.6, 'view memory histogram', to display the number of instances in memory for each java class</li>
 <li><img src='?resource=user-trash.png' width='18' height='18' alt='Invalidate http sessions' />
 'Invalidate http sessions', to force all users to disconnect</li>
 <li><img src='?resource=system-users.png' width='20' height='20' alt='Sessions' />
 'View http sessions', to see the attributes, the serialized sizes
  (generally higher than the sizes in memory), the country and possibly the user of each session
  (if authentication by JavaEE)</li>
-<li><img src='?resource=memory.png' width='20' height='20' alt='Memory histogram' />
-If jdk 1.6, 'view memory histogram', to display the number of instances in memory for each java class</li>
 <li><img src='?resource=xml.png' width='20' height='20' alt='web.xml' />
-'View deployment descriptor' : web.xml file of the application</li>
+'View deployment descriptor': web.xml file of the application</li>
 <li><img src='?resource=processes.png' width='20' height='20' alt='Processus' />
-'View OS processes' : list of processes of the operating system (linux with
+'View OS processes': list of processes of the operating system (linux with
 <a href='http://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> or windows with tasklist)
 and for each process: user, memory and cpu</li>
+<li><img src='?resource=jndi.png' width='20' height='20' alt='JNDI tree' />
+'JNDI tree': Browse the JNDI context, for example to find the path and name of a JDBC datasource.
+</li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Opened jdbc connections' />
 To help find a possible jdbc connections leak, the 'opened jdbc connections'
 shows the list of the stack traces of where were opened jdbc connections.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Database' />
-'Database' : Informations and statistics on the database (if postgresql, mysql or oracle),
+'Database': Informations and statistics on the database (if postgresql, mysql or oracle),
 like for example the current sql requests or if oracle, the longest requests in cumulative time with
 display of the cpu time and of the elementary cost (of buffer gets).
 This function will display an error if the user configured in the application to connect to the
