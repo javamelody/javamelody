@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lowagie.text.Annotation;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -209,10 +208,6 @@ class PdfDocumentFactory {
 	static Image getImage(String resourceFileName) throws BadElementException, IOException {
 		return Image.getInstance(PdfDocumentFactory.class.getResource(Parameters
 				.getResourcePath(resourceFileName)));
-	}
-
-	Annotation createAnnotation(String url) {
-		return new Annotation(0, 0, 0, 0, url);
 	}
 
 	static PdfPTable createPdfPTable(List<String> headers, int[] relativeWidths)

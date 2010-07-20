@@ -399,13 +399,12 @@ class PdfReport {
 	//		paragraph.setAlignment(ElementTags.ALIGN_CENTER);
 	//		paragraph.add(new Phrase("\nPowered by   ", normalFont));
 	//		final Image imageBull = PdfDocumentFactory.getImage("logobull.png");
-	//		imageBull.setAnnotation(pdfDocumentFactory.createAnnotation("http://www.bull.com/fr/"));
+	//		imageBull.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.bull.com/fr/"));
 	//		imageBull.scalePercent(50);
 	//		paragraph.add(new Chunk(imageBull, 0, 0));
 	//		paragraph.add(new Phrase("     "));
 	//		final Image imageNovaforge = PdfDocumentFactory.getImage("Novaforge2.png");
-	//		imageNovaforge.setAnnotation(pdfDocumentFactory
-	//				.createAnnotation("http://www.bull.com/fr/services/novaforge.php"));
+	//		imageNovaforge.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.bull.com/fr/services/novaforge.php"));
 	//		imageNovaforge.scalePercent(50);
 	//		paragraph.add(new Chunk(imageNovaforge, 0, 0));
 	//		add(paragraph);
