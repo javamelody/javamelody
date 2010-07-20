@@ -182,7 +182,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 6. Optional parameters
 
-	It is possible to configure some settings. These parameters can be defined in priority order:
+	It is possible to configure some settings. These parameters can be defined in ascending order of priority:
 
 	* in initialisation parameters of the filter
 
