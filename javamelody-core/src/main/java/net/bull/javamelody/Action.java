@@ -85,7 +85,7 @@ enum Action { // NOPMD
 	static final boolean GC_ENABLED = !ManagementFactory.getRuntimeMXBean().getInputArguments()
 			.contains("-XX:+DisableExplicitGC");
 	/**
-	 * Booleén selon que l'action 'Heap dump' est possible.
+	 * Booléen selon que l'action 'Heap dump' est possible.
 	 */
 	static final boolean HEAP_DUMP_ENABLED = "1.6".compareTo(System.getProperty("java.version")) < 0
 			&& System.getProperty("java.vendor").contains("Sun");
