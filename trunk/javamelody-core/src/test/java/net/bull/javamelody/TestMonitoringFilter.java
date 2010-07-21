@@ -24,6 +24,7 @@ import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
@@ -540,6 +541,8 @@ public class TestMonitoringFilter {
 		monitoring(parameters, false);
 		parameters.put(PART_PARAMETER, POM_XML_PART);
 		monitoring(parameters, false);
+		parameters.put(PART_PARAMETER, JNDI_PART);
+		monitoring(parameters);
 
 		parameters.put(PART_PARAMETER, GRAPH);
 		parameters.put(GRAPH, "usedMemory");
