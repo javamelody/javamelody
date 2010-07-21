@@ -24,6 +24,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -221,6 +222,8 @@ public class TestCollectorServlet {
 		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, POM_XML_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, JNDI_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		doPart(parameters);

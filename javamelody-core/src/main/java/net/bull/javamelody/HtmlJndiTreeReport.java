@@ -23,7 +23,6 @@ import java.io.Writer;
 
 import javax.naming.Binding;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
@@ -32,13 +31,16 @@ import javax.naming.NamingException;
  * @author Emeric Vernat
  */
 class HtmlJndiTreeReport {
+	private final Context context;
 	private final String path;
 	private final Writer writer;
 
-	HtmlJndiTreeReport(String path, Writer writer) {
+	HtmlJndiTreeReport(Context context, String path, Writer writer) {
 		super();
+		assert context != null;
 		assert writer != null;
 
+		this.context = context;
 		this.path = path != null ? path : "";
 		this.writer = writer;
 	}
@@ -56,7 +58,6 @@ class HtmlJndiTreeReport {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Arbre_JNDI#'>");
 		write("<thead><tr><th>#Nom#</th><th>#Type#</th>");
 		writeln("</tr></thead><tbody>");
-		final InitialContext context = new InitialContext();
 		final NamingEnumeration<Binding> enumeration = context.listBindings("java:" + path);
 		try {
 			boolean odd = false;
