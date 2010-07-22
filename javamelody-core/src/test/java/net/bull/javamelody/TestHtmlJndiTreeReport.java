@@ -62,10 +62,11 @@ public class TestHtmlJndiTreeReport {
 		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
 		expect(context.listBindings("java:")).andReturn(enumeration).once();
-		expect(enumeration.hasMore()).andReturn(true).times(3);
+		expect(enumeration.hasMore()).andReturn(true).times(4);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
 		expect(enumeration.next()).andReturn(
-				new Binding("test context", null, createNiceMock(Context.class))).once();
+				new Binding("test context", createNiceMock(Context.class))).once();
+		expect(enumeration.next()).andReturn(new Binding("test null classname", null, null)).once();
 		expect(enumeration.next()).andThrow(new NamingException("test")).once();
 		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(context, null, writer);
 
