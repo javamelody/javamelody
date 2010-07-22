@@ -173,22 +173,26 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("nb_threads_actifs") + "\n("
 				+ getI18nString("Requetes_http_en_cours") + "):");
 		addCell(integerFormat.format(javaInformations.getActiveThreadCount()));
-		addCell(getI18nString("nb_connexions_actives") + ':');
-		addCell(integerFormat.format(javaInformations.getActiveConnectionCount()));
-		addCell(getI18nString("nb_connexions_utilisees") + "\n(" + getI18nString("ouvertes") + "):");
-		final int usedConnectionCount = javaInformations.getUsedConnectionCount();
-		final int maxConnectionCount = javaInformations.getMaxConnectionCount();
-		if (maxConnectionCount <= 0) {
-			addCell(integerFormat.format(usedConnectionCount));
-		} else {
-			final Phrase usedConnectionCountPhrase = new Phrase(
-					integerFormat.format(usedConnectionCount) + divide
-							+ integerFormat.format(maxConnectionCount) + BAR_SEPARATOR, cellFont);
-			final Image usedConnectionCountImage = Image.getInstance(
-					Bar.toBar(javaInformations.getUsedConnectionPercentage()), null);
-			usedConnectionCountImage.scalePercent(50);
-			usedConnectionCountPhrase.add(new Chunk(usedConnectionCountImage, 0, 0));
-			currentTable.addCell(usedConnectionCountPhrase);
+		if (!noDatabase) {
+			addCell(getI18nString("nb_connexions_actives") + ':');
+			addCell(integerFormat.format(javaInformations.getActiveConnectionCount()));
+			addCell(getI18nString("nb_connexions_utilisees") + "\n(" + getI18nString("ouvertes")
+					+ "):");
+			final int usedConnectionCount = javaInformations.getUsedConnectionCount();
+			final int maxConnectionCount = javaInformations.getMaxConnectionCount();
+			if (maxConnectionCount <= 0) {
+				addCell(integerFormat.format(usedConnectionCount));
+			} else {
+				final Phrase usedConnectionCountPhrase = new Phrase(
+						integerFormat.format(usedConnectionCount) + divide
+								+ integerFormat.format(maxConnectionCount) + BAR_SEPARATOR,
+						cellFont);
+				final Image usedConnectionCountImage = Image.getInstance(
+						Bar.toBar(javaInformations.getUsedConnectionPercentage()), null);
+				usedConnectionCountImage.scalePercent(50);
+				usedConnectionCountPhrase.add(new Chunk(usedConnectionCountImage, 0, 0));
+				currentTable.addCell(usedConnectionCountPhrase);
+			}
 		}
 		if (javaInformations.getSystemLoadAverage() >= 0) {
 			addCell(getI18nString("Charge_systeme") + ':');
