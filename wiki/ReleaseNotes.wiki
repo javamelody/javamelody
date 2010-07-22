@@ -1,9 +1,10 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.18.0 ===
 
   * fix issue 33: Database name or jdbc driver with '#' causes IndexOutOfBounds
   * fix issue 34: Application server restart causes persistent Quartz jobs to be hanging around
-  * added: "JNDI Tree" link in "system actions" (for example to check if a datasource is really in "java:/" or in "java:/comp/env/") 
+  * added: "JNDI Tree" link in "system actions" (for example to check if a datasource is really in "java:/" or in "java:/comp/env/")
+  * install note for bamboo 2.6: see end of issue 37
 
 === Grails Plugin 0.4 ===
 
