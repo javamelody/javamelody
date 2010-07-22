@@ -121,7 +121,11 @@ class CollectorServer {
 		final List<JavaInformations> javaInformationsList = javaInformationsByApplication
 				.get(application);
 		final Collector collector = collectorsByApplication.get(application);
-		assert collector != null;
+		if (collector == null) {
+			// collector peut être null si ce collectorServer vient d'être arrêté par exemple
+			javaInformationsByApplication.remove(application);
+			return null;
+		}
 		collector.collectWithoutErrors(javaInformationsList);
 		LOGGER.info("collecte pour l'application " + application + " effectuée en "
 				+ (System.currentTimeMillis() - start) + "ms");
