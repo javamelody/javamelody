@@ -173,11 +173,10 @@ public class TestAction {
 			//Schedule the job with the trigger
 			scheduler.scheduleJob(job, trigger);
 
-			//Define a Trigger that will fire "later"
-			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-			final Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + 60000));
-			scheduler.scheduleJob(job2, trigger2);
+			assertNotNull("message PAUSE_JOB 5", Action.PAUSE_JOB.execute(collector, counterName,
+					sessionId, threadId, globalJobId));
+			assertNotNull("message RESUME_JOB 5", Action.RESUME_JOB.execute(collector, counterName,
+					sessionId, threadId, globalJobId));
 
 			globalJobId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
 					+ job.getFullName().hashCode();
