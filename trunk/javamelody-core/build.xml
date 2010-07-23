@@ -214,7 +214,7 @@
 		<!-- Doit être exécuté avec un jdk et non un jre pour TestHtmlHeapHistogramReport -->
 		<echo message="Compilation et exécution des tests unitaires" level="info" />
 		<mkdir dir="build/test-classes" />
-		<javac encoding="UTF-8" debug="on" deprecation="off" nowarn="off" source="1.5" target="1.5" 
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
 			srcdir="src/test/java" destdir="build/test-classes">
 			<classpath>
 				<path path="build/classes" />
@@ -225,6 +225,7 @@
 					<include name="easymock-2.0.jar" />
 				</fileset>
 			</classpath>
+			<compilerarg value="-Xlint" />
 		</javac>
 		<junit printsummary="true" showoutput="false">
 			<formatter type="plain" usefile="false" />
