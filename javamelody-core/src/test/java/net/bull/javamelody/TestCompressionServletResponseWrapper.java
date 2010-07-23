@@ -82,6 +82,10 @@ public class TestCompressionServletResponseWrapper {
 			return null;
 		}
 
+		/** @deprecated déprécié
+		 * @param url String
+		 * @return String */
+		@Deprecated
 		public String encodeRedirectUrl(String url) {
 			return null;
 		}
@@ -90,6 +94,10 @@ public class TestCompressionServletResponseWrapper {
 			return null;
 		}
 
+		/** @deprecated déprécié
+		 * @param url String
+		 * @return String */
+		@Deprecated
 		public String encodeUrl(String url) {
 			return null;
 		}
@@ -122,6 +130,10 @@ public class TestCompressionServletResponseWrapper {
 			// rien
 		}
 
+		/** @deprecated déprécié
+		 * @param sc int
+		 * @param sm String */
+		@Deprecated
 		public void setStatus(int sc, String sm) {
 			// rien
 		}

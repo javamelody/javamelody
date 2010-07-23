@@ -113,12 +113,17 @@ public class SessionTestImpl implements HttpSession {
 		return null;
 	}
 
-	/** {@inheritDoc} */
+	/** @deprecated déprécié
+	 * @param name String
+	 * @return Object */
+	@Deprecated
 	public Object getValue(String name) {
 		return null;
 	}
 
-	/** {@inheritDoc} */
+	/** @deprecated déprécié
+	 * @return String[] */
+	@Deprecated
 	public String[] getValueNames() {
 		return null;
 	}
@@ -133,7 +138,10 @@ public class SessionTestImpl implements HttpSession {
 		return false;
 	}
 
-	/** {@inheritDoc} */
+	/** @deprecated déprécié
+	 * @param name String
+	 * @param value Object */
+	@Deprecated
 	public void putValue(String name, Object value) {
 		// rien
 	}
@@ -143,7 +151,9 @@ public class SessionTestImpl implements HttpSession {
 		// rien
 	}
 
-	/** {@inheritDoc} */
+	/** @deprecated déprécié
+	 * @param name String */
+	@Deprecated
 	public void removeValue(String name) {
 		// rien
 	}
