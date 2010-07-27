@@ -681,7 +681,7 @@ final class JdbcWrapper {
 
 	Connection createConnectionProxy(Connection connection) {
 		assert connection != null;
-		if (isMonitoringDisabled() || !sqlCounter.isDisplayed()) {
+		if (isSqlMonitoringDisabled()) {
 			return connection;
 		}
 		// on limite la taille pour éviter une éventuelle saturation mémoire
@@ -700,6 +700,10 @@ final class JdbcWrapper {
 					Arrays.asList(new Class<?>[] { Connection.class }));
 		}
 		return createProxy(connection, invocationHandler);
+	}
+
+	boolean isSqlMonitoringDisabled() {
+		return isMonitoringDisabled() || !sqlCounter.isDisplayed();
 	}
 
 	private static boolean isMonitoringDisabled() {
