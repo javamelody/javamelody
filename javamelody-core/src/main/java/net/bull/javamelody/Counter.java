@@ -193,7 +193,6 @@ class Counter implements Cloneable, Serializable {
 	 * @param childCounterName Nom du compteur fils (par exemple: sql)
 	 */
 	Counter(String name, String storageName, String iconName, String childCounterName) {
-		// ici, pas de compteur fils
 		this(name, storageName, iconName, childCounterName,
 				new ThreadLocal<CounterRequestContext>());
 	}
@@ -213,8 +212,8 @@ class Counter implements Cloneable, Serializable {
 		super();
 		assert name != null;
 		assert storageName != null;
-		this.storageName = storageName;
 		this.name = name;
+		this.storageName = storageName;
 		this.errorCounter = ERROR_COUNTER_NAME.equals(name) || LOG_COUNTER_NAME.equals(name)
 				|| JOB_COUNTER_NAME.equals(name);
 		this.iconName = iconName;
@@ -311,7 +310,7 @@ class Counter implements Cloneable, Serializable {
 
 	/**
 	 * Retourne l'expression régulière permettant de transformer les requêtes de ce counter
-	 * avant aggrégation dans les statistiques (peut être null).
+	 * avant agrégation dans les statistiques (peut être null).
 	 * @return Pattern
 	 */
 	Pattern getRequestTransformPattern() {
@@ -320,7 +319,7 @@ class Counter implements Cloneable, Serializable {
 
 	/**
 	 * Définit l'expression régulière permettant de transformer les requêtes de ce counter
-	 * avant aggrégation dans les statistiques.
+	 * avant agrégation dans les statistiques.
 	 * @param requestTransformPattern Pattern
 	 */
 	void setRequestTransformPattern(Pattern requestTransformPattern) {
@@ -346,7 +345,7 @@ class Counter implements Cloneable, Serializable {
 
 	/**
 	 * Retourne l'estimation pessimiste de l'occupation mémoire de counter
-	 * (c'est-à-dire la dernère taille sérialisée non compressée de ce counter)
+	 * (c'est-à-dire la dernière taille sérialisée non compressée de ce counter)
 	 * @return long
 	 */
 	long getEstimatedMemorySize() {

@@ -48,7 +48,7 @@ class CounterStorage {
 
 	/**
 	 * Enregistre le counter.
-	 * @return Taille sérialisée non compressée du counter (estimation pessimite de l'occupation mémoire)
+	 * @return Taille sérialisée non compressée du counter (estimation pessimiste de l'occupation mémoire)
 	 * @throws IOException Exception d'entrée/sortie
 	 */
 	int writeToFile() throws IOException {
@@ -68,14 +68,13 @@ class CounterStorage {
 					new GZIPOutputStream(new BufferedOutputStream(out)));
 			final ObjectOutputStream output = new ObjectOutputStream(counterOutput);
 			try {
-				// on clone le counter avant de le sérialiser pour ne pas avoir de problèmes de concurrences d'accès
 				output.writeObject(counter);
 			} finally {
 				// ce close libère les ressources du ObjectOutputStream et du GZIPOutputStream
 				output.close();
 			}
 			// retourne la taille sérialisée non compressée,
-			// qui est une estimation pessimite de l'occupation mémoire
+			// qui est une estimation pessimiste de l'occupation mémoire
 			return counterOutput.getDataLength();
 		} finally {
 			out.close();

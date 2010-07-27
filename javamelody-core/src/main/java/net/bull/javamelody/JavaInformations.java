@@ -308,7 +308,7 @@ class JavaInformations implements Serializable { // NOPMD
 			}
 			final boolean deadlocked = deadlockedThreads != null
 					&& Arrays.binarySearch(deadlockedThreads, thread.getId()) >= 0;
-			// stackTraceElementList est une ArrayList et non unmodifiableList pour lisiblité xml
+			// stackTraceElementList est une ArrayList et non unmodifiableList pour lisibilité xml
 			threadInfosList.add(new ThreadInformations(thread, stackTraceElementList,
 					cpuTimeMillis, userTimeMillis, deadlocked));
 		}
