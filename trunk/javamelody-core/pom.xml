@@ -176,6 +176,13 @@
 			<version>2.1.0</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- Dépendance optionnelle hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.6.ga</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>
 			<groupId>junit</groupId>

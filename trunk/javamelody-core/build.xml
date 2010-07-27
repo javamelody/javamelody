@@ -42,6 +42,7 @@
 					<include name="activation.jar" />
 					<include name="ejb-api-3.0.jar" />
 					<include name="dbcp-6.0.18.jar" />
+					<include name="hibernate-3.2.6.ga.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="jrobin-1.5.9.1.jar" />
