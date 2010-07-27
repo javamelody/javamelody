@@ -114,7 +114,7 @@ enum Action { // NOPMD
 	 * Exécute l'action.
 	 * @param collector Collector pour une réinitialisation
 	 * @param counterName Nom du compteur pour une réinitialisation
-	 * @param sessionId Identifiant de session pourr invalidation (null sinon)
+	 * @param sessionId Identifiant de session pour invalidation (null sinon)
 	 * @param threadId Identifiant du thread sous la forme pid_ip_id
 	 * @param jobId Identifiant du job sous la forme pid_ip_id
 	 * @return Message de résultat
