@@ -74,6 +74,14 @@ public class HibernateBatcherFactory implements BatcherFactory {
 
 		/** {@inheritDoc} */
 		@Override
+		public CallableStatement prepareBatchCallableStatement(String sql) throws SQLException {
+			// prepareBatchCallableStatement utilisera prepareCallableStatement(String)
+			// donc override a priori inutile mais on laisse createProxy vérifier
+			return createCallableStatementProxy(sql, super.prepareBatchCallableStatement(sql));
+		}
+
+		/** {@inheritDoc} */
+		@Override
 		public CallableStatement prepareCallableStatement(String sql) throws SQLException {
 			return createCallableStatementProxy(sql, super.prepareCallableStatement(sql));
 		}
@@ -134,6 +142,14 @@ public class HibernateBatcherFactory implements BatcherFactory {
 				ScrollMode scrollMode) throws SQLException {
 			return createPreparedStatementProxy(sql,
 					super.prepareQueryStatement(sql, scrollable, scrollMode));
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public CallableStatement prepareBatchCallableStatement(String sql) throws SQLException {
+			// prepareBatchCallableStatement utilisera prepareCallableStatement(String)
+			// donc override a priori inutile mais on laisse createProxy vérifier
+			return createCallableStatementProxy(sql, super.prepareBatchCallableStatement(sql));
 		}
 
 		/** {@inheritDoc} */
