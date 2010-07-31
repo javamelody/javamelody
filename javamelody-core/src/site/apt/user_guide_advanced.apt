@@ -242,28 +242,46 @@ Documentation avancée de Java Melody
 
 	En pré-requis, il est donc nécessaire dans ce cas que le jar de javamelody soit disponible dans le classpath lors de la compilation
 	et il est nécessaire d'avoir des interfaces pour les façades et pas seulement des implémentations.
+	
+
+* Alternative pour le monitoring des requêtes sql
+
+	Si pour une raison quelconque il ne vous est pas possible de monitorer les requêtes sql avec une
+	datasource jdbc ou avec un driver jdbc comme indiqué dans le chapitre JDBC du guide utilisateur,
+	et si vous utilisez Hibernate alors il y a une alternative pour le monitoring des requêtes sql :
+	définissez la propriété Hibernate "hibernate.jdbc.factory_class" avec la valeur
+	"net.bull.javamelody.HibernateBatcherFactory".
+	Cela activera l'affichage des statistiques des requêtes sql et l'affichage des connexions jdbc
+	actives.
+	
+	Par exemple, si vous utilisez un fichier "hibernate.cfg.xml", ajoutez la ligne suivante avec
+	les autres propriétés Hibernate:
+	
++-------------------------------+
+	<property name="hibernate.jdbc.factory_class">net.bull.javamelody.HibernateBatcherFactory</property>
++-------------------------------+
 
 
 * Utilisation de JavaMelody dans JonAS 5 (qui utilise OSGI)
 
-JonAS 5 utilise OSGI et il est nécessaire d'ajouter une configuration de felix dans JonAS pour utiliser JavaMelody.
-
-Copier le contenu du dernier {{{http://websvn.ow2.org/filedetails.php?repname=jonas&path=%2Fjonas%2Fbranches%2Fjonas_5_1%2Fjonas%2Fmodules%2Ftools%2Flaunchers%2Ffelix-launcher%2Fsrc%2Fmain%2Fresources%2Forg%2Fow2%2Fjonas%2Flauncher%2Ffelix%2Fdefault-config.properties}
-felix-config.properties}} pour JonAS dans un fichier nommé "felix-config.properties" et écrit dans le répertoire "conf" de votre serveur JonAS.
-Si le contenu de ce dernier fichier ne convient pas pour votre version de JonAS, vous pouvez trouver le fichier "felix-config.properties" adapté à votre version dans le fichier jar felix de votre serveur.
-
-Dans votre fichier "felix-config.properties", ajouter les packages systèmes suivants après la déclaration existante "org.osgi.framework.system.packages" :
+	JonAS 5 utilise OSGI et il est nécessaire d'ajouter une configuration de felix dans JonAS pour utiliser JavaMelody.
+	
+	Copier le contenu du dernier {{{http://websvn.ow2.org/filedetails.php?repname=jonas&path=%2Fjonas%2Fbranches%2Fjonas_5_1%2Fjonas%2Fmodules%2Ftools%2Flaunchers%2Ffelix-launcher%2Fsrc%2Fmain%2Fresources%2Forg%2Fow2%2Fjonas%2Flauncher%2Ffelix%2Fdefault-config.properties}
+	felix-config.properties}} pour JonAS dans un fichier nommé "felix-config.properties" et écrit dans le répertoire "conf" de votre serveur JonAS.
+	Si le contenu de ce dernier fichier ne convient pas pour votre version de JonAS, vous pouvez trouver le fichier "felix-config.properties" adapté à votre version dans le fichier jar felix de votre serveur.
+	
+	Dans votre fichier "felix-config.properties", ajouter les packages systèmes suivants après la déclaration existante "org.osgi.framework.system.packages" :
 	"com.sun.management" et "sun.nio.ch".
-
-Par exemple:
-
+	
+	Par exemple:
+	
 +-------------------------------+
 org.osgi.framework.system.packages com.sun.management; \
 				   sun.nio.ch; \
 				   org.osgi.framework; version=1.5.0, \
 +-------------------------------+
-
-Puis ajouter une propriété système dans votre fichier de lancement : -Djonas.felix.configuration.file=$JONAS_BASE/conf/felix-config.properties
+	
+	Puis ajouter une propriété système dans votre fichier de lancement : -Djonas.felix.configuration.file=$JONAS_BASE/conf/felix-config.properties
 
 
 * Déploiement de JavaMelody sur Tomcat sans modification des webapps monitorées (bêta)
