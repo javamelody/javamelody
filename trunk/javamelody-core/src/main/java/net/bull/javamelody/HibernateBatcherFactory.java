@@ -46,15 +46,15 @@ public class HibernateBatcherFactory implements BatcherFactory {
 
 		/** {@inheritDoc} */
 		@Override
-		public PreparedStatement prepareSelectStatement(String sql) throws SQLException {
-			return createPreparedStatementProxy(sql, super.prepareSelectStatement(sql));
+		public PreparedStatement prepareStatement(String sql, boolean getGeneratedKeys)
+				throws SQLException {
+			return createPreparedStatementProxy(sql, super.prepareStatement(sql, getGeneratedKeys));
 		}
 
 		/** {@inheritDoc} */
 		@Override
-		public PreparedStatement prepareStatement(String sql, boolean getGeneratedKeys)
-				throws SQLException {
-			return createPreparedStatementProxy(sql, super.prepareStatement(sql, getGeneratedKeys));
+		public PreparedStatement prepareSelectStatement(String sql) throws SQLException {
+			return createPreparedStatementProxy(sql, super.prepareSelectStatement(sql));
 		}
 
 		/** {@inheritDoc} */
@@ -74,14 +74,6 @@ public class HibernateBatcherFactory implements BatcherFactory {
 
 		/** {@inheritDoc} */
 		@Override
-		public CallableStatement prepareBatchCallableStatement(String sql) throws SQLException {
-			// prepareBatchCallableStatement utilisera prepareCallableStatement(String)
-			// donc override a priori inutile mais on laisse createProxy vérifier
-			return createCallableStatementProxy(sql, super.prepareBatchCallableStatement(sql));
-		}
-
-		/** {@inheritDoc} */
-		@Override
 		public CallableStatement prepareCallableStatement(String sql) throws SQLException {
 			return createCallableStatementProxy(sql, super.prepareCallableStatement(sql));
 		}
@@ -92,6 +84,14 @@ public class HibernateBatcherFactory implements BatcherFactory {
 				ScrollMode scrollMode) throws SQLException {
 			return createCallableStatementProxy(sql,
 					super.prepareCallableQueryStatement(sql, scrollable, scrollMode));
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public CallableStatement prepareBatchCallableStatement(String sql) throws SQLException {
+			// prepareBatchCallableStatement utilisera prepareCallableStatement(String)
+			// donc override a priori inutile mais on laisse createProxy vérifier
+			return createCallableStatementProxy(sql, super.prepareBatchCallableStatement(sql));
 		}
 	}
 
@@ -168,16 +168,10 @@ public class HibernateBatcherFactory implements BatcherFactory {
 	}
 
 	static PreparedStatement createPreparedStatementProxy(String query, PreparedStatement statement) {
-		if (JdbcWrapper.SINGLETON.isSqlMonitoringDisabled()) {
-			return statement;
-		}
 		return (PreparedStatement) JdbcWrapper.SINGLETON.createStatementProxy(query, statement);
 	}
 
 	static CallableStatement createCallableStatementProxy(String query, CallableStatement statement) {
-		if (JdbcWrapper.SINGLETON.isSqlMonitoringDisabled()) {
-			return statement;
-		}
 		return (CallableStatement) JdbcWrapper.SINGLETON.createStatementProxy(query, statement);
 	}
 
