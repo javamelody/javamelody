@@ -5,6 +5,7 @@
   * [http://sourceforge.net/apps/wordpress/cia/2010/03/04/javamelody-for-chilled-application-monitoring/ Pether Sörling]
   * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
   * [http://helian.javaeye.com/blog/548476 Helian (Chinese)]
+  * [http://www.ilsitodiluca.it/2010/07/26/javamelody-un-utile-strumento-di-monitoraggio-delle-webapp-java/ Luca (Italian)]
   * [http://blog.klicap.es/archives/175 Antonio (Spanish)]
   * [http://www.javahispano.org/contenidos/es/javamelody__solucion_opensource_para_monitorizar_aplicaciones_java_ee/ javahispano (Spanish)]
   * [http://psm-blog.blogspot.com/2009/11/monitoring-von-jee-anwedungen.html Peter (German)]
