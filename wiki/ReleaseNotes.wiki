@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * Alternative for sql requests monitoring when jdbc datasource or jdbc driver can't be used and when Hibernate is used: [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/HibernateBatcherFactory.java HibernateBatcherFactory]
+  * added: Alternative for sql requests monitoring when jdbc datasource or jdbc driver can't be used and when Hibernate is used: [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/HibernateBatcherFactory.java HibernateBatcherFactory]
 
 === 1.18.0 ===
 
