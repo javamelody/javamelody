@@ -377,12 +377,6 @@ public class TestCollector {
 		}
 	}
 
-	/** Test. */
-	@Test
-	public void testPrintStackTrace() {
-		Collector.printStackTrace(new Exception(TEST));
-	}
-
 	/** Test.
 	 * @throws IOException e */
 	@Test

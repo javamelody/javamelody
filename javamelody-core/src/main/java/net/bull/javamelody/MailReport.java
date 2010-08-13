@@ -57,7 +57,7 @@ class MailReport {
 					new MailReport().sendReportMailForLocalServer(collector, period);
 				} catch (final Throwable t) { // NOPMD
 					// pas d'erreur dans cette task
-					Collector.printStackTrace(t);
+					LOG.warn("sending mail report failed", t);
 				}
 				// si rapport à la semaine, on reschedule à la même heure la semaine suivante
 				// sans utiliser de période de 24h*7 car certains jours font 23h ou 25h
@@ -68,7 +68,10 @@ class MailReport {
 		};
 
 		// schedule 1 fois la tâche
-		timer.schedule(task, getNextExecutionDate(period));
+		final Date nextExecutionDate = getNextExecutionDate(period);
+		timer.schedule(task, nextExecutionDate);
+		LOG.debug("mail report for the " + period.getMailCode()
+				+ " period scheduled with next execution date at " + nextExecutionDate);
 	}
 
 	static List<Period> getMailPeriods() {

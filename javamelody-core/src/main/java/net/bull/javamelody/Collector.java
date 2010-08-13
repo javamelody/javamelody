@@ -98,10 +98,14 @@ final class Collector {
 			for (final Counter counter : counters) {
 				dayCountersByCounter.get(counter).readFromFile();
 			}
+			LOG.debug("counters data read from files in "
+					+ Parameters.getStorageDirectory(application));
 		} catch (final IOException e) {
 			// lecture échouée, tant pis
 			// (on n'interrompt pas toute l'initialisation juste pour un fichier illisible)
-			printStackTrace(e);
+			LOG.warn(
+					"exception while reading counters data from files in "
+							+ Parameters.getStorageDirectory(application), e);
 		}
 	}
 
@@ -224,7 +228,7 @@ final class Collector {
 		try {
 			estimatedMemorySize = collect(javaInformationsList);
 		} catch (final Throwable t) { // NOPMD
-			printStackTrace(t);
+			LOG.warn("exception while collecting data", t);
 		}
 		// note : on n'inclue pas "new JavaInformations" de collectLocalContextWithoutErrors
 		// mais il est inférieur à 1 ms (sans bdd)
@@ -637,7 +641,7 @@ final class Collector {
 			}
 		} catch (final IOException e) {
 			// persistance échouée, tant pis
-			printStackTrace(e);
+			LOG.warn("exception while writing counters data to files", e);
 		} finally {
 			for (final Counter counter : counters) {
 				counter.clear();
@@ -660,7 +664,7 @@ final class Collector {
 		try {
 			JRobin.stop();
 		} catch (final Throwable t) { // NOPMD
-			printStackTrace(t);
+			LOG.warn("stopping jrobin failed", t);
 		}
 	}
 
@@ -668,13 +672,8 @@ final class Collector {
 		try {
 			VirtualMachine.detach();
 		} catch (final Throwable t) { // NOPMD
-			printStackTrace(t);
+			LOG.warn("exception while detaching virtual machine", t);
 		}
-	}
-
-	static void printStackTrace(Throwable t) {
-		// ne connaissant pas log4j ici, on ne sait pas loguer ailleurs que dans la sortie d'erreur
-		t.printStackTrace(System.err);
 	}
 
 	/** {@inheritDoc} */

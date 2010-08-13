@@ -68,7 +68,7 @@ class PeriodCounterFactory {
 		} catch (final IOException e) {
 			// lecture échouée, tant pis
 			// (on n'interrompt pas tout un rapport juste pour un des fichiers illisible)
-			printStackTrace(e);
+			LOG.info("read of a counter file failed: " + dayCounter.getName(), e);
 		}
 		return dayCounter;
 	}
@@ -157,7 +157,7 @@ class PeriodCounterFactory {
 		} catch (final IOException e) {
 			// lecture échouée, tant pis
 			// (on n'interrompt pas tout un rapport juste pour un des fichiers illisible)
-			printStackTrace(e);
+			LOG.info("read of a counter file failed: " + monthCounter.getName(), e);
 		}
 		// monthCounter n'est pas encore calculé (il est calculé à la fin de chaque mois,
 		// mais le serveur a pu aussi être arrêté ce jour là),
@@ -219,10 +219,5 @@ class PeriodCounterFactory {
 
 		// on retourne true si tous les fichiers .ser.gz obsolètes ont été supprimés, false sinon
 		return result;
-	}
-
-	private static void printStackTrace(Throwable t) {
-		// ne connaissant pas log4j ici, on ne sait pas loguer ailleurs que dans la sortie d'erreur
-		t.printStackTrace(System.err);
 	}
 }

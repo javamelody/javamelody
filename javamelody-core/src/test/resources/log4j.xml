@@ -49,8 +49,15 @@
 	<!-- Limit categories -->
 	<!-- ================ -->
 	
+	<!-- log http requests -->
 	<category name="javamelody">
 		<priority value="debug" />
+	</category>		
+	
+	<!-- internal log -->
+	<category name="net.bull.javamelody">
+		<priority value="info" />
+		<!-- <priority value="debug" /> -->
 	</category>		
 	
 	<!-- ======================= -->
