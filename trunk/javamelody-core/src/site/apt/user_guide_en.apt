@@ -799,9 +799,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 
 
-* Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)
+* Advanced documentation (setup with an ear, centralized collect server, JonAS 5, debugging logs...)
 
-	To setup with an ear or to deploy a centralized collect server, see the {{{user_guide_advanced_en.html} advanced documentation}}
+	To setup with an ear, to deploy a centralized collect server, to use JonAS 5 or to enable
+	debugging logs, see the {{{user_guide_advanced_en.html} advanced documentation}}
 	
 * Compilation and development
 
