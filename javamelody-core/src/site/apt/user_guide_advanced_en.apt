@@ -308,6 +308,74 @@ org.osgi.framework.system.packages com.sun.management; \
 	
 	* It does not seem advisable to use the monitoring by Spring AOP in this case
 	
+* Debugging logs
+	
+	Logs for debugging are available using either logback if found, or log4j if found or
+	java.util.logging otherwise. The logs messages for debugging are written using the category
+	"net.bull.javamelody" and the level "debug".
+	
+	Moreover, some stack-traces of unusual exceptions are logged using logback or log4j or
+	java.util.logging, in the same category with the level "info" or "warn".
+	
+	If the logback library is available in your monitored webapp, you can display debugging logs
+	by adding or modifying the "logback.xml" file in you "WEB-INF/classes" directory. For example:
+	
++-------------------------------+
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<configuration>
+		<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+				</pattern>
+			</encoder>
+		</appender>
+	
+		<!-- http requests log -->
+		<logger name="javamelody">
+			<level value="info" />
+		</logger>
+		
+		<!-- debugging log -->
+		<logger name="net.bull.javamelody">
+			<level value="debug" />
+		</logger>
+	
+		<root level="debug">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</configuration>
++-------------------------------+
+	
+	Or if the log4j library is available in your monitored webapp, you can display debugging logs
+	by adding or modifying the "log4j.xml" file in you "WEB-INF/classes" directory. For example:
+	
++-------------------------------+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+	<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+		<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+			<param name="Threshold" value="DEBUG" />
+			<layout class="org.apache.log4j.PatternLayout">
+				<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c] %m%n" />
+			</layout>
+		</appender>
+	
+		<!-- http requests log  -->
+		<category name="javamelody">
+			<priority value="info" />
+		</category>
+		
+		<!-- debugging log -->
+		<category name="net.bull.javamelody">
+			<priority value="debug" />
+		</category>
+		
+		<root>
+			<appender-ref ref="CONSOLE" />
+		</root>
+	</log4j:configuration>
++-------------------------------+
+	
 * Clearing all statistics and all graphs
 	
 	The storage files of statistics and of graphs are stored in the temporary directory of the server,

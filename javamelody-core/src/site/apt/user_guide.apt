@@ -816,9 +816,11 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</repositories>
 +-------------------------------+
 
-* Documentation avancée (mise en oeuvre avec un ear, serveur de collecte centralisé, JonAS 5...)
+* Documentation avancée (mise en oeuvre avec un ear, serveur de collecte centralisé, JonAS 5, logs de débogage...)
 
-	Pour mettre en oeuvre JavaMelody avec un ear ou pour déployer un serveur de collecte centralisé, consulter la {{{user_guide_advanced.html} documentation avancée}}
+	Pour mettre en oeuvre JavaMelody avec un ear, pour déployer un serveur de collecte centralisé,
+	pour utiliser JonAS 5 ou pour activer les logs de débogage,
+	consulter la {{{user_guide_advanced.html} documentation avancée}}
 	
 * Compilation et développement
 
