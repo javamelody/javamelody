@@ -85,7 +85,7 @@ class MonitoringController {
 				pomXmlExists = true;
 			}
 		} catch (final IOException e) {
-			Collector.printStackTrace(e);
+			LOG.warn(e.toString(), e);
 		}
 		JavaInformations.setWebXmlExistsAndPomXmlExists(webXmlExists, pomXmlExists);
 	}
@@ -409,7 +409,7 @@ class MonitoringController {
 				heapHistogram = collectorServer.collectHeapHistogram(collector.getApplication());
 			}
 		} catch (final Exception e) {
-			Collector.printStackTrace(e);
+			LOG.warn("heaphisto report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 			return;
 		}
@@ -422,7 +422,7 @@ class MonitoringController {
 		try {
 			htmlReport.writeProcesses(ProcessInformations.buildProcessInformations());
 		} catch (final Exception e) {
-			Collector.printStackTrace(e);
+			LOG.warn("processes report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 		}
 	}
@@ -439,7 +439,7 @@ class MonitoringController {
 			}
 			htmlReport.writeDatabase(new DatabaseInformations(index));
 		} catch (final Exception e) {
-			Collector.printStackTrace(e);
+			LOG.warn("database report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 		}
 	}
@@ -456,7 +456,7 @@ class MonitoringController {
 		try {
 			htmlReport.writeJndi(path);
 		} catch (final Exception e) {
-			Collector.printStackTrace(e);
+			LOG.warn("jndi report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 		}
 	}
@@ -480,7 +480,7 @@ class MonitoringController {
 				writer.close();
 			}
 		} catch (final IOException e) {
-			Collector.printStackTrace(e);
+			LOG.warn("exception while writing the last shutdown report", e);
 		}
 	}
 

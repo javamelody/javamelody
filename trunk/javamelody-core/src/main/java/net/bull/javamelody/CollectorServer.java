@@ -336,7 +336,7 @@ class CollectorServer {
 					new MailReport().sendReportMail(collector, true, javaInformationsList, period);
 				} catch (final Throwable t) { // NOPMD
 					// pas d'erreur dans cette task
-					Collector.printStackTrace(t);
+					LOG.warn("sending mail report failed", t);
 				}
 				// on reschedule à la même heure la semaine suivante sans utiliser de période de 24h*7
 				// car certains jours font 23h ou 25h et on ne veut pas introduire de décalage

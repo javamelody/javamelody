@@ -45,6 +45,7 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		GUICE_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		LOG.debug("guice interceptor initialized");
 	}
 
 	/**

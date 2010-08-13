@@ -53,10 +53,11 @@ final class JobGlobalListener implements JobListener {
 					scheduler.addGlobalJobListener(jobGlobalListener);
 				}
 			}
+			LOG.debug("job global listener initialized");
 		} catch (final SchedulerException e) {
 			// initialisation du JobGlobalListener échouée, tant pis, il n'y aura pas les temps pour quartz
 			// (cela peut arriver, en particulier en développement dans Grails)
-			Collector.printStackTrace(e);
+			LOG.info("initialization of job global listener failed, skipping", e);
 		}
 	}
 

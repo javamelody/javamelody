@@ -584,7 +584,7 @@ public class TestMonitoringFilter {
 			try {
 				connection.close();
 			} catch (final SQLException e) {
-				Collector.printStackTrace(e);
+				LOG.warn(e.toString(), e);
 			}
 		}
 	}

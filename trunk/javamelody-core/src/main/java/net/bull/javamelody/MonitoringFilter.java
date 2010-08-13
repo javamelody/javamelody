@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -39,8 +38,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * Filtre de servlet pour le monitoring.
@@ -57,8 +54,6 @@ public class MonitoringFilter implements Filter {
 
 	private boolean monitoringDisabled;
 	private boolean logEnabled;
-	private boolean log4jEnabled;
-	private boolean logbackEnabled;
 	private boolean contextFactoryEnabled;
 	private Pattern urlExcludePattern;
 	private Pattern allowedAddrPattern;
@@ -90,10 +85,13 @@ public class MonitoringFilter implements Filter {
 		if (monitoringDisabled) {
 			return;
 		}
+		LOG.debug("JavaMelody filter init started");
 		boolean initOk = false;
 		this.timer = new Timer("javamelody"
 				+ Parameters.getContextPath(config.getServletContext()).replace('/', ' '), true);
 		try {
+			logSystemInformationsAndParameters();
+
 			initLogs();
 
 			this.contextFactoryEnabled = !monitoringDisabled
@@ -133,12 +131,14 @@ public class MonitoringFilter implements Filter {
 			}
 
 			initCollect();
+			LOG.debug("JavaMelody filter init done");
 			initOk = true;
 		} finally {
 			if (!initOk) {
 				// si exception dans initialisation, on annule la création du timer
 				// (sinon tomcat ne serait pas content)
 				timer.cancel();
+				LOG.debug("JavaMelody filter init canceled");
 			}
 		}
 	}
@@ -188,6 +188,7 @@ public class MonitoringFilter implements Filter {
 		} else {
 			setDisplayedCounters(counters, displayedCounters);
 		}
+		LOG.debug("counters initialized");
 		return counters;
 	}
 
@@ -233,22 +234,28 @@ public class MonitoringFilter implements Filter {
 		try {
 			Class.forName("org.jrobin.core.RrdDb");
 		} catch (final ClassNotFoundException e) {
+			LOG.debug("jrobin classes unavailable: collect of data is disabled");
 			// si pas de jar jrobin, alors pas de collecte
 			return;
 		}
 
-		final int periodMillis = Parameters.getResolutionSeconds() * 1000;
+		final int resolutionSeconds = Parameters.getResolutionSeconds();
+		final int periodMillis = resolutionSeconds * 1000;
 		// on schedule la tâche de fond
 		final TimerTask task = new CollectTimerTask(collector);
 		timer.schedule(task, periodMillis, periodMillis);
+		LOG.debug("collect task scheduled every " + resolutionSeconds + 's');
 
 		// on appelle la collecte pour que les instances jrobin soient définies
 		// au cas où un graph de la page de monitoring soit demandé de suite
 		collector.collectLocalContextWithoutErrors();
+		LOG.debug("first collect of data done");
 
 		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
 				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
 			MailReport.scheduleReportMailForLocalServer(collector, timer);
+			LOG.debug("mail reports scheduled for "
+					+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
 		}
 	}
 
@@ -257,31 +264,34 @@ public class MonitoringFilter implements Filter {
 		// on branche le handler java.util.logging pour le counter de logs
 		LoggingHandler.getSingleton().register();
 
-		try {
-			Class.forName("org.apache.log4j.Logger");
-			// test avec AppenderSkeleton nécessaire car log4j-over-slf4j contient la classe
-			// org.apache.log4j.Logger mais pas org.apache.log4j.AppenderSkeleton
-			Class.forName("org.apache.log4j.AppenderSkeleton");
-			log4jEnabled = true;
-		} catch (final ClassNotFoundException e) {
-			log4jEnabled = false;
-		}
-		if (log4jEnabled) {
+		if (LOG.LOG4J_ENABLED) {
 			// si log4j est disponible on branche aussi l'appender pour le counter de logs
 			Log4JAppender.getSingleton().register();
 		}
 
-		try {
-			Class.forName("ch.qos.logback.classic.Logger");
-			// on vérifie aussi LoggerContext car il peut arriver que getILoggerFactory ne soit pas ok (jonas)
-			logbackEnabled = Class.forName("ch.qos.logback.classic.LoggerContext")
-					.isAssignableFrom(LoggerFactory.getILoggerFactory().getClass());
-		} catch (final ClassNotFoundException e) {
-			logbackEnabled = false;
-		}
-		if (logbackEnabled) {
+		if (LOG.LOGBACK_ENABLED) {
 			// si logback est disponible on branche aussi l'appender pour le counter de logs
 			LogbackAppender.getSingleton().register();
+		}
+		LOG.debug("log listeners initialized");
+	}
+
+	private void logSystemInformationsAndParameters() {
+		// log les principales informations sur le système et sur les paramètres définis spécifiquement
+		LOG.debug("OS: " + System.getProperty("os.name") + ' '
+				+ System.getProperty("sun.os.patch.level") + ", " + System.getProperty("os.arch")
+				+ '/' + System.getProperty("sun.arch.data.model"));
+		LOG.debug("Java: " + System.getProperty("java.runtime.name") + ", "
+				+ System.getProperty("java.runtime.version"));
+		LOG.debug("Server: " + filterConfig.getServletContext().getServerInfo());
+		LOG.debug("Webapp context: " + Parameters.getContextPath(filterConfig.getServletContext()));
+		LOG.debug("JavaMelody version: " + Parameters.JAVAMELODY_VERSION);
+		LOG.debug("Host: " + Parameters.getHostName() + '@' + Parameters.getHostAddress());
+		for (final Parameter parameter : Parameter.values()) {
+			final String value = Parameters.getParameter(parameter);
+			if (value != null) {
+				LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
+			}
 		}
 	}
 
@@ -337,10 +347,10 @@ public class MonitoringFilter implements Filter {
 	}
 
 	private void deregisterLogs() {
-		if (logbackEnabled) {
+		if (LOG.LOGBACK_ENABLED) {
 			LogbackAppender.getSingleton().deregister();
 		}
-		if (log4jEnabled) {
+		if (LOG.LOG4J_ENABLED) {
 			Log4JAppender.getSingleton().deregister();
 		}
 		LoggingHandler.getSingleton().deregister();
@@ -562,67 +572,13 @@ public class MonitoringFilter implements Filter {
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
-	@SuppressWarnings("unused")
 	protected void log(HttpServletRequest httpRequest, String requestName, long duration,
 			boolean systemError, int responseSize) {
 		if (!logEnabled) {
 			return;
 		}
-		// dans les 2 cas, on ne construit le message de log
-		// que si le logger est configuré pour écrire le niveau INFO
 		final String filterName = filterConfig.getFilterName();
-		if (logbackEnabled) {
-			logback(httpRequest, duration, systemError, responseSize, filterName);
-		} else if (log4jEnabled) {
-			log4j(httpRequest, duration, systemError, responseSize, filterName);
-		} else {
-			final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(filterName);
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
-			}
-		}
-	}
-
-	private static void log4j(HttpServletRequest httpRequest, long duration, boolean systemError,
-			int responseSize, String filterName) {
-		// la variable logger doit être dans une méthode à part pour ne pas faire ClassNotFoundException
-		// si log4j non présent (mais variable préférable pour performance)
-		final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(filterName);
-		if (logger.isInfoEnabled()) {
-			logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
-		}
-	}
-
-	private static void logback(HttpServletRequest httpRequest, long duration, boolean systemError,
-			int responseSize, String filterName) {
-		// la variable logger doit être dans une méthode à part pour ne pas faire ClassNotFoundException
-		// si logback non présent (mais variable préférable pour performance)
-		final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(filterName);
-		if (logger.isInfoEnabled()) {
-			logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
-		}
-	}
-
-	private static String buildLogMessage(HttpServletRequest httpRequest, long duration,
-			boolean systemError, int responseSize) {
-		final StringBuilder msg = new StringBuilder();
-		msg.append("remoteAddr = ").append(httpRequest.getRemoteAddr());
-		final String forwardedFor = httpRequest.getHeader("X-Forwarded-For");
-		if (forwardedFor != null) {
-			msg.append(", forwardedFor = ").append(forwardedFor);
-		}
-		msg.append(", request = ").append(
-				httpRequest.getRequestURI().substring(httpRequest.getContextPath().length()));
-		if (httpRequest.getQueryString() != null) {
-			msg.append('?').append(httpRequest.getQueryString());
-		}
-		msg.append(' ').append(httpRequest.getMethod());
-		msg.append(": ").append(duration).append(" ms");
-		if (systemError) {
-			msg.append(", erreur");
-		}
-		msg.append(", ").append(responseSize / 1024).append(" Ko");
-		return msg.toString();
+		LOG.log(httpRequest, requestName, duration, systemError, responseSize, filterName);
 	}
 
 	private static void throwException(Throwable t) throws IOException, ServletException {

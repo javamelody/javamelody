@@ -41,7 +41,10 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 		if (bean instanceof DataSource) {
 			final DataSource dataSource = (DataSource) bean;
 			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
-			return JdbcWrapper.SINGLETON.createDataSourceProxy(beanName, dataSource);
+			final DataSource result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
+					dataSource);
+			LOG.debug("Spring datasource wrapped: " + beanName);
+			return result;
 		} else if (bean instanceof JndiObjectFactoryBean) {
 			// fix issue 20
 			final InvocationHandler invocationHandler = new InvocationHandler() {
@@ -55,7 +58,9 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 					return result;
 				}
 			};
-			return JdbcWrapper.createProxy(bean, invocationHandler);
+			final Object result = JdbcWrapper.createProxy(bean, invocationHandler);
+			LOG.debug("Spring JNDI factory wrapped: " + beanName);
+			return result;
 		}
 
 		// I tried here in the post-processor to fix "quartz jobs which are scheduled with spring

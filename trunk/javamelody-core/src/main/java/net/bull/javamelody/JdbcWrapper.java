@@ -380,29 +380,37 @@ final class JdbcWrapper {
 				// si rewrap-datasources est défini dans le filter
 				JdbcWrapperHelper.rebindInitialDataSources(servletContext);
 			}
-			for (final Map.Entry<String, DataSource> entry : JdbcWrapperHelper.getJndiDataSources()
-					.entrySet()) {
+			final Map<String, DataSource> jndiDataSources = JdbcWrapperHelper.getJndiDataSources();
+			LOG.debug("datasources found in JNDI: " + jndiDataSources.keySet());
+			for (final Map.Entry<String, DataSource> entry : jndiDataSources.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
 				if (rewrapDataSources || glassfish || jboss || weblogic) {
-					rewrapDataSource(dataSource);
+					rewrapDataSource(jndiName, dataSource);
 				} else if (!isProxyAlready(dataSource)) {
 					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
 					final DataSource dataSourceProxy = createDataSourceProxy(jndiName, dataSource);
 					JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
 							dataSourceProxy);
+					LOG.debug("datasource rebinded: " + jndiName + " from class "
+							+ dataSource.getClass().getName() + " to class "
+							+ dataSourceProxy.getClass().getName());
 				}
 			}
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
+			LOG.debug("rebinding datasources failed, skipping", t);
 			ok = false;
 		}
 		return ok;
 	}
 
-	private void rewrapDataSource(DataSource dataSource) throws IllegalAccessException {
+	private void rewrapDataSource(String jndiName, DataSource dataSource)
+			throws IllegalAccessException {
 		final String dataSourceClassName = dataSource.getClass().getName();
+		LOG.debug("Datasource needs rewrap: " + jndiName + " of class " + dataSourceClassName);
+		final String dataSourceRewrappedMessage = "Datasource rewrapped: ";
 		if (jboss
 				&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSourceClassName)
 				|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSourceClassName)) {
@@ -423,19 +431,22 @@ final class JdbcWrapper {
 			Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(dataSource, "cm");
 			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
 			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
+			LOG.debug(dataSourceRewrappedMessage + jndiName);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			// WEBLOGIC: le contexte JNDI est en lecture seule donc on modifie directement
 			// l'instance de RmiDataSource déjà présente dans le JNDI.
 			rewrapWebLogicDataSource(dataSource);
+			LOG.debug(dataSourceRewrappedMessage + jndiName);
 		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)) {
 			// JIRA dans Tomcat: la dataSource a déjà été mise en cache par org.ofbiz.core.entity.transaction.JNDIFactory
 			// à l'initialisation de com.atlassian.jira.startup.JiraStartupChecklistContextListener
 			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI
 			rewrapBasicDataSource(dataSource);
+			LOG.debug(dataSourceRewrappedMessage + jndiName);
 		} else if (jonas) {
 			// JONAS (si rewrap-datasources==true)
-			rewrapJonasDataSource(dataSource);
+			rewrapJonasDataSource(jndiName, dataSource);
 		}
 	}
 
@@ -460,7 +471,8 @@ final class JdbcWrapper {
 		}
 	}
 
-	private void rewrapJonasDataSource(DataSource dataSource) throws IllegalAccessException {
+	private void rewrapJonasDataSource(String jndiName, DataSource dataSource)
+			throws IllegalAccessException {
 		// cette méthode est utilisée sous jonas seulement is rewrap-datasources==true
 		final String dataSourceClassName = dataSource.getClass().getName();
 		if ("org.ow2.jonas.jndi.interceptors.impl.datasource.DatasourceWrapper"
@@ -468,8 +480,10 @@ final class JdbcWrapper {
 			// JONAS (si rewrap-datasource==true)
 			Object wrappedDataSource = JdbcWrapperHelper.getFieldValue(dataSource,
 					"wrappedDataSource");
-			if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(wrappedDataSource.getClass()
-					.getName())) {
+			final String wrappedDataSourceClassName = wrappedDataSource.getClass().getName();
+			LOG.debug("Jonas wrappedDatasource needs rewrap: " + jndiName + " of class "
+					+ dataSourceClassName);
+			if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(wrappedDataSourceClassName)) {
 				Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(wrappedDataSource,
 						"cm");
 				javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
@@ -479,10 +493,12 @@ final class JdbcWrapper {
 				wrappedDataSource = createDataSourceProxy((DataSource) wrappedDataSource);
 				JdbcWrapperHelper.setFieldValue(dataSource, "wrappedDataSource", wrappedDataSource);
 			}
+			LOG.debug("Datasource rewrapped: " + jndiName);
 		} else if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(dataSourceClassName)) {
 			Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(dataSource, "cm");
 			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
 			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
+			LOG.debug("Datasource rewrapped: " + jndiName);
 		}
 	}
 
