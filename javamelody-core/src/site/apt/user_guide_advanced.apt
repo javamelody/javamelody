@@ -414,6 +414,17 @@ org.osgi.framework.system.packages com.sun.management; \
 	Mais pour réinitialiser seulement les statistiques, supprimer les fichiers *.gz dans les sous-répertoires du répertoire de stockage.
 	Et pour réinitialiser seulement les courbes, supprimer les fichiers *.rrd dans les sous-répertoires du répertoire de stockage.
 
+* Rapport écrit avant le dernier arrêt
+	
+	Quelquefois un serveur est arrêté en urgence ou quand il y a un souci avec la mémoire utilisée.
+	Et peut-être, n'avez vous pas pensé à enregistrer le rapport de JavaMelody pour avoir des chiffres
+	précis sur l'état du serveur à ce moment. Mais pas d'inquiétude, quand l'application est arrêtée,
+	JavaMelody écrit un fichier appelé <<<last_shutdown.html>>> dans le même répertoire de stockage
+	comme expliqué dans le chapitre précédent. C'est le rapport de JavaMelody en format html, et
+	il contient les statistiques pour le jour courant et les informations systèmes (comme la mémoire
+	utilisée) pour l'heure courante juste avant que l'application ne soit arrêtée, mais il ne
+	contient pas les graphiques.
+	
 * Format des fichiers RRD
 	
 	Les valeurs des courbes sont stockées au format RRD (Round Robin Database).
