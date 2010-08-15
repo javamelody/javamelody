@@ -167,18 +167,58 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 ** 5. Compléments <<<web.xml>>>
 
-	url-pattern dans le fichier <<<web.xml>>> ci-dessus peut être adapté pour ne monitorer que certaines urls,
-	éventuellement avec plusieurs mappings sur le même filtre
-	(par exemple les <<<filter-mapping>>>s avec les <<<url-pattern>>>s /servlet/* et /monitoring, mais pas /static/*,
-	avec le même <<<filter-name>>> monitoring, mais <<<url-pattern>>> doit obligatoirement "contenir" /monitoring),
-
-	ou bien, un paramètre de filtre peut être ajouté avant <<< </filter> >>> pour exclure certaines urls, par exemple :
+	<<<url-pattern>>> dans le fichier <<<web.xml>>> ci-dessus peut être adapté pour ne monitorer que
+	certaines urls, éventuellement avec plusieurs mappings sur le même filtre.
+	
+	Par exemple, il est possible d'utiliser les <<<filter-mapping>>>s avec les <<<url-pattern>>>s
+	suivants pour ne monitorer que les urls comme /servlet1/* et /servlet2/*, mais pas les autres
+	comme /static/* :
 
 +-------------------------------+
-	<init-param>
-		<param-name>url-exclude-pattern</param-name>
-		<param-value>/static/.*</param-value>
-	</init-param>
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/servlet1/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/servlet2/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
++-------------------------------+
+
+	Note: <<<url-pattern>>> doit obligatoirement "contenir" l'url /monitoring pour avoir les rapports.
+
+	En alternative, il est possible d'utiliser un seul <<<filter-mapping>>> et un paramètre de
+	filtre avec une {{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} expression régulière}}
+	peut être ajouté avant <<< </filter> >>> pour exclure certaines urls, par exemple :
+
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		
+		<init-param>
+			<param-name>url-exclude-pattern</param-name>
+			<param-value>/static/.*</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
 +-------------------------------+
 
 ** 6. Paramètres optionnels
@@ -204,8 +244,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	[]
 
-	Le paramètre <<<system-actions-enabled>>> (<<<false>>> par défaut pour sécurité) permet d'activer les actions systèmes
-	telles que <ramasse-miettes>, <sessions http>, <heap dump>, <histogramme mémoire>, <processus>, <base de données> en bas du rapport.
+	Le paramètre <<<system-actions-enabled>>> (<<<false>>> par défaut pour sécurité) permet
+	d'activer les actions systèmes telles que <ramasse-miettes>, <sessions http>, <heap dump>,
+	<histogramme mémoire>, <processus>, <arbre jndi>, <connexions jdbc ouvertes>, <base de données>
+	en bas du rapport.
 	Ces actions ont des confirmations quand nécessaire.
 
 	Le paramètre <<<url-exclude-pattern>>> est une
@@ -263,6 +305,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Le paramètre <<<monitoring-path>>> (<<</monitoring>>> par défaut) permet de changer le chemin dans l'URL d'accès
 	au rapport du monitoring. Par exemple, <<<http://.../admin/performance>>> au lieu de <<<http://.../monitoring>>>
+	
+	Le paramètre <<<no-database>>> permet de désactiver le monitoring des connexions jdbc,
+	le monitoring des requêtes sql et les rapports sur la base de données. Le mettre à true
+	pour désactiver tout cela.
 	
 	Le paramètre <<<disabled>>> (<<<false>>> par défaut) permet de désactiver le monitoring.
 	Cela permet par exemple de désactiver le monitoring temporairement ou sur certains serveurs,
@@ -412,7 +458,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 
 	Etape 3 : En supposant que les façades métiers possèdent une interface (ou une super-classe) commune 
-	<<<com.xyz.someapp.service.Facade>>> et que vous voules monitorer toutes les méthodes
+	<<<com.xyz.someapp.service.Facade>>> et que vous voulez monitorer toutes les méthodes
 	de ces façades, ajouter les lignes suivantes dans votre fichier applicationContext.xml :
 	
 +-------------------------------+
@@ -426,7 +472,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 	
 	Comme Spring ne configure le monitoring que pour les beans spring, assurez vous que ces classes
-	sont instanciés par l'intermédiaire de Spring
+	sont instanciées par l'intermédiaire de Spring
 	(c'est-à-dire déclarez les en tant que bean dans un fichier de configuration Spring)
 	
 	Note : Si vous n'avez pas d'interface (ou de super-classe) commune pour les façades ou si vous
@@ -476,9 +522,11 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</bean>
 +-------------------------------+
 
+	[]
+
 	Note : La {{{http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying} documentation }}
 	et {{{http://blog.springsource.com/2007/07/19/debunking-myths-proxies-impact-performance/} blog }}
-	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB ce qui ne devrait
+	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB, ce qui ne devrait
 	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
 ** 10. Façades métiers (si Guice)
@@ -516,7 +564,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	classe ou sur votre méthode.
 	
 	Comme Guice ne configure le monitoring que pour les beans guice, assurez vous que ces classes
-	sont instanciés par l'intermédiaire de Guice
+	sont instanciées par l'intermédiaire de Guice
 	(c'est-à-dire déclarez les en tant que bind dans votre module Guice)
 	
 	En alternative à l'étape 2, vous pouvez utiliser une interface ou une super-classe à la place
@@ -573,7 +621,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Les jobs sont automatiquement monitorés quand ils sont ordonnancés avec {{{http://www.quartz-scheduler.org/} Quartz}}.
 
 	Mais si ces jobs sont ordonnancés dans Quartz en utilisant
-	{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
+	{{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
 	il est nécessaire d'ajouter la propriété "exposeSchedulerInRepository" avec la valeur "true"
 	dans le bean "SchedulerFactoryBean" dans votre fichier applicationContext.xml.
 
@@ -657,6 +705,22 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 +-------------------------------+
+	
+	Au final, le contexte tomcat de votre webapp peut ressembler à celui-ci :
+	
++-------------------------------+
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Context docBase="/path_to_mywebapp/mywebapp.war" path="mywebapp" reloadable="false" > 
+	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="<serveur smtp>"
+		mail.smtp.user="<login>"
+		mail.from="MyApplication"
+	/>
+	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
+	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+</Context>
++-------------------------------+	
 
 ** 14. Utilisateur base de données
 
@@ -688,7 +752,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	(sauf si un serveur de collecte est utilisé comme indiqué dans le chapitre suivant, auquel cas il convient d'utiliser
 	le paramètre allowed-addr-pattern).
 	
-	Exemple de contenu du fichier web.xml pour authenfication par identifiant et mot de passe :
+	Exemple de contenu du fichier web.xml pour authentification par identifiant et mot de passe :
 	
 +-------------------------------+
 	<login-config>
