@@ -18,7 +18,10 @@
  */
 package net.bull.javamelody;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
@@ -62,8 +65,14 @@ class HtmlReport {
 	}
 
 	void toHtml(String message) throws IOException {
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		htmlCoreReport.toHtml(message);
+		writeHtmlFooter();
+	}
+
+	void writeLastShutdown() throws IOException {
+		writeHtmlHeader(false, true);
+		htmlCoreReport.toHtml(null);
 		writeHtmlFooter();
 	}
 
@@ -79,10 +88,29 @@ class HtmlReport {
 				counterReportsByCounterName);
 	}
 
-	void writeHtmlHeader(boolean includeSlider) throws IOException {
+	void writeHtmlHeader() throws IOException {
+		writeHtmlHeader(false, false);
+	}
+
+	private void writeHtmlHeader(boolean includeSlider, boolean includeCssInline)
+			throws IOException {
 		writeln("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 		writeln("<html><head><title>#Monitoring_sur# " + collector.getApplication() + "</title>");
-		writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+		if (includeCssInline) {
+			writeln("<style type='text/css'>");
+			final InputStream in = new BufferedInputStream(getClass().getResourceAsStream(
+					Parameters.getResourcePath("monitoring.css")));
+			final ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+				TransportFormat.pump(in, out);
+			} finally {
+				in.close();
+			}
+			writer.write(out.toString());
+			writeln("</style>");
+		} else {
+			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+		}
 		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
 		writeln("<script type='text/javascript' src='?resource=resizable_tables.js'></script>");
 		writeln("<script type='text/javascript' src='?resource=sorttable.js'></script>");
@@ -135,7 +163,7 @@ class HtmlReport {
 	}
 
 	void writeRequestAndGraphDetail(String graphName) throws IOException {
-		writeHtmlHeader(true);
+		writeHtmlHeader(true, false);
 
 		writeln("<div align='center'>");
 		htmlCoreReport.writeRefreshAndPeriodLinks(graphName, "graph");
@@ -148,7 +176,7 @@ class HtmlReport {
 	}
 
 	void writeRequestUsages(String graphName) throws IOException {
-		writeHtmlHeader(true);
+		writeHtmlHeader(true, false);
 
 		writeln("<div align='center'>");
 		htmlCoreReport.writeRefreshAndPeriodLinks(graphName, "usages");
@@ -162,7 +190,7 @@ class HtmlReport {
 	void writeSessions(List<SessionInformations> sessionsInformations, String message,
 			String sessionsPart) throws IOException {
 		assert sessionsInformations != null;
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		writeMessageIfNotNull(message, sessionsPart);
 		new HtmlSessionInformationsReport(writer).toHtml(sessionsInformations);
 		writeHtmlFooter();
@@ -171,7 +199,7 @@ class HtmlReport {
 	void writeSessionDetail(String sessionId, SessionInformations sessionInformations)
 			throws IOException {
 		assert sessionId != null;
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		new HtmlSessionInformationsReport(writer).writeSessionDetails(sessionId,
 				sessionInformations);
 		writeHtmlFooter();
@@ -180,7 +208,7 @@ class HtmlReport {
 	void writeHeapHistogram(HeapHistogram heapHistogram, String message, String heapHistoPart)
 			throws IOException {
 		assert heapHistogram != null;
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		writeMessageIfNotNull(message, heapHistoPart);
 		new HtmlHeapHistogramReport(writer).toHtml(heapHistogram);
 		writeHtmlFooter();
@@ -188,14 +216,14 @@ class HtmlReport {
 
 	void writeProcesses(List<ProcessInformations> processInformationsList) throws IOException {
 		assert processInformationsList != null;
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		new HtmlProcessInformationsReport(processInformationsList, writer).toHtml();
 		writeHtmlFooter();
 	}
 
 	void writeDatabase(DatabaseInformations databaseInformations) throws IOException {
 		assert databaseInformations != null;
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		new HtmlDatabaseInformationsReport(databaseInformations, writer).toHtml();
 		writeHtmlFooter();
 	}
@@ -209,14 +237,14 @@ class HtmlReport {
 			// pour affichage dans serveur de collecte
 			htmlConnectionInformationsReport.writeConnections();
 		} else {
-			writeHtmlHeader(false);
+			writeHtmlHeader();
 			htmlConnectionInformationsReport.toHtml();
 			writeHtmlFooter();
 		}
 	}
 
 	void writeJndi(String path) throws IOException, NamingException {
-		writeHtmlHeader(false);
+		writeHtmlHeader();
 		new HtmlJndiTreeReport(new InitialContext(), path, writer).toHtml();
 		writeHtmlFooter();
 	}

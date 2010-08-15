@@ -260,7 +260,7 @@ public class CollectorServlet extends HttpServlet {
 			String application) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
-		htmlReport.writeHtmlHeader(false);
+		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
 		writer.write("<a href='?part=");
@@ -289,7 +289,7 @@ public class CollectorServlet extends HttpServlet {
 			throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
-		htmlReport.writeHtmlHeader(false);
+		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
 		writer.write("<a href='?part=");
@@ -351,7 +351,7 @@ public class CollectorServlet extends HttpServlet {
 			throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
-		htmlReport.writeHtmlHeader(false);
+		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(BACK_LINK, writer);
 		writer.write("<a href='?part=");
