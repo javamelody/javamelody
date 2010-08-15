@@ -71,17 +71,17 @@ public class TestHibernateBatcherFactory {
 		try {
 			final Batcher batcher = statelessSession.getBatcher();
 			final String sql = "select 1";
-			batcher.prepareBatchCallableStatement(sql).close();
-			batcher.prepareBatchStatement(sql).close();
-			batcher.prepareCallableQueryStatement(sql, false, ScrollMode.FORWARD_ONLY).close();
-			batcher.prepareCallableStatement(sql).close();
-			batcher.prepareQueryStatement(sql, false, ScrollMode.FORWARD_ONLY).close();
-			batcher.prepareSelectStatement(sql).close();
-			batcher.prepareStatement(sql, false).close();
-			batcher.prepareStatement(sql, new String[] {}).close();
+			batcher.prepareBatchCallableStatement(sql);
+			batcher.prepareBatchStatement(sql);
+			batcher.prepareCallableQueryStatement(sql, false, ScrollMode.FORWARD_ONLY);
+			batcher.prepareCallableStatement(sql);
+			batcher.prepareQueryStatement(sql, false, ScrollMode.FORWARD_ONLY);
+			batcher.prepareSelectStatement(sql);
+			batcher.prepareStatement(sql, false);
+			batcher.prepareStatement(sql, new String[] {});
 			final PreparedStatement statement = batcher.prepareStatement(sql);
 			statement.execute();
-			statement.close();
+			batcher.closeStatements();
 		} finally {
 			statelessSession.close();
 		}
