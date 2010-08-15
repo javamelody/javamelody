@@ -10,7 +10,6 @@ There is no promise of dates or that a particular feature will ever be done.
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (German, Italian, Spanish...)
-  # Add "net.bull.javamelody" *logs* in trace level with Log4j, in particular on the initialisation parts
   # Ask Atlassian to be able in a JIRA/Bamboo/Confluence plugin to add an HttpSessionListener like for a ServletContextListener
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish or [http://static.springsource.org/docs/petclinic.html Spring pet clinic] in tomcat for example
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
