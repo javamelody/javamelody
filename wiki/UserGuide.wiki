@@ -483,8 +483,7 @@ or
 }}}
 
 	Note : The [http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying documentation] and [http://blog.springsource.com/2007/07/19/debunking-myths-proxies-impact-performance/ blog]
-	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
-	facades with separate interfaces and implementations. 
+	of Spring AOP advises to use JDK dynamic proxies and not CGLIB, which should pose no problem for facades with separate interfaces and implementations. 
 
 === 10. Business facades (if Guice) ===
 
@@ -656,6 +655,22 @@ or
 
 {{{
 <Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+}}}
+
+	Finally, the tomcat context of your webapp could look like this one:
+	
+{{{
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Context docBase="/path_to_mywebapp/mywebapp.war" path="mywebapp" reloadable="false" > 
+	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="<serveur smtp>"
+		mail.smtp.user="<login>"
+		mail.from="MyApplication"
+	/>
+	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
+	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+</Context>
 }}}
 
 === 14. Database user ===
