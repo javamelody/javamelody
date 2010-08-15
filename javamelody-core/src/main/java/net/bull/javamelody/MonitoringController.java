@@ -475,7 +475,7 @@ class MonitoringController {
 				// on pourrait faire I18N.bindLocale(Locale.getDefault()), mais cela se fera tout seul
 				final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
 						Collections.singletonList(javaInformations), Period.JOUR, writer);
-				htmlReport.toHtml(null);
+				htmlReport.writeLastShutdown();
 			} finally {
 				writer.close();
 			}
