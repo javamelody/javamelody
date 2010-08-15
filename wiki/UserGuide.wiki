@@ -227,8 +227,7 @@ or MSIE8 (MSIE7 not recommended).
 	# in system properties with prefix {{{javamelody.}}}
 	  (java launch command or administration user interface of the server or $CATALINA_HOME/conf/catalina.properties if tomcat)
 
-	The parameter {{{system-actions-enabled}}} ({{{false}}} by default for security) enables the system actions
-	garbage collector, http sessions, heap dump, memory histogram, process list, database (near the bottom of reports).
+	The parameter {{{system-actions-enabled}}} ({{{false}}} by default for security) enables the system actions garbage collector, http sessions, heap dump, memory histogram, process list, jndi tree, opened jdbc connections, database (near the bottom of reports).
 	These actions have confirmations when necessary.
 
 	The parameter {{{url-exclude-pattern}}} is a
