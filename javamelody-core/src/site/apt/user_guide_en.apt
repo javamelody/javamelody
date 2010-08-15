@@ -167,17 +167,56 @@ Description and documentation of Java Melody : monitoring of Java EE application
 ** 5. Supplements in <<<web.xml>>>
 
 	<<<url-pattern>>> in <<<web.xml>>> file above can be adapted in order not to monitor some urls,
-	possibly with several mappings on the same filter
-	(for example <<<filter-mapping>>>s with <<<url-pattern>>>s /servlet/* and /monitoring, but not /static/*,
-	with the same <<<filter-name>>> monitoring, but <<<url-pattern>>> must "contain" /monitoring),
-
-	or, a filter parameter can be added before <<< </filter> >>> in order to exclude some urls, for example:
+	possibly with several mappings on the same filter.
+	
+	For example, use the following <<<filter-mapping>>>s and <<<url-pattern>>>s to monitor only urls
+	like /servlet1/* and /servlet2/* but not the others like /static/* :
 
 +-------------------------------+
-	<init-param>
-		<param-name>url-exclude-pattern</param-name>
-		<param-value>/static/.*</param-value>
-	</init-param>
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/servlet1/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/servlet2/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
++-------------------------------+
+
+	Note that the <<<url-pattern>>>s must "contain" the url /monitoring in order to have reports.
+
+	As an alternative, you can use a single /* <<<url-pattern>>> and a filter parameter with a
+	{{{http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html} regular expression}}
+	can be added before <<< </filter> >>> in order to exclude some urls, for example:
+
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		
+		<init-param>
+			<param-name>url-exclude-pattern</param-name>
+			<param-value>/static/.*</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
 +-------------------------------+
 
 ** 6. Optional parameters
@@ -202,8 +241,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	[]
 
-	The parameter <<<system-actions-enabled>>> (<<<false>>> by default for security) enables the system actions
-	<garbage collector>, <http sessions>, <heap dump>, <memory histogram>, <process list>, <database> (near the bottom of reports).
+	The parameter <<<system-actions-enabled>>> (<<<false>>> by default for security) enables the
+	system actions <garbage collector>, <http sessions>, <heap dump>, <memory histogram>,
+	<process list>, <jndi tree>, <opened jdbc connections>, <database> (near the bottom of reports).
 	These actions have confirmations when necessary.
 
 	The parameter <<<url-exclude-pattern>>> is a
@@ -261,6 +301,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	The parameter <<<monitoring-path>>> (<<</monitoring>>> by default) is used to change the path in the URL to open
 	the report of the monitoring. For example, <<<http://.../admin/performance>>> in place of <<<http://.../monitoring>>>
+	
+	The parameter <<<no-database>>> just disables the monitoring of jdbc connections, the monitoring
+	of sql requests and the reports on the database in system informations.
+	Set it to true to disable all that.
 	
 	The parameter <<<disabled>>> (<<<false>>> by default) just disables the monitoring.
 	This allows for example to disable the monitoring temporarily or only on some servers,
@@ -467,9 +511,11 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</bean>
 +-------------------------------+
 
+	[]
+
 	Note : The {{{http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying} documentation }}
 	and {{{http://blog.springsource.com/2007/07/19/debunking-myths-proxies-impact-performance/} blog }}
-	of Spring AOP advises to use JDK dynamic proxies and not CGLIB which should pose no problem for
+	of Spring AOP advises to use JDK dynamic proxies and not CGLIB, which should pose no problem for
 	facades with separate interfaces and implementations. 
 
 ** 10. Business façades (if Guice)
@@ -560,7 +606,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Batch jobs are automatically monitored when they are scheduled with {{{http://www.quartz-scheduler.org/} Quartz}}.
 
 	But if these jobs are scheduled in Quartz using
-	{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
+	{{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
 	you need to add the property "exposeSchedulerInRepository" with the value "true" for the bean
 	"SchedulerFactoryBean" in your applicationContext.xml file.
 
@@ -644,6 +690,21 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 +-------------------------------+
 
+	Finally, the tomcat context of your webapp could look like this one:
+	
++-------------------------------+
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Context docBase="/path_to_mywebapp/mywebapp.war" path="mywebapp" reloadable="false" > 
+	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="<serveur smtp>"
+		mail.smtp.user="<login>"
+		mail.from="MyApplication"
+	/>
+	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
+	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+</Context>
++-------------------------------+
 
 ** 14. Database user
 
