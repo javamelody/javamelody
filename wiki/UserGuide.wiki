@@ -165,18 +165,53 @@ or MSIE8 (MSIE7 not recommended).
 
 === 5. Supplements in {{{web.xml}}} ===
 
-	{{{url-pattern}}} in {{{web.xml}}} file above can be adapted in order not to monitor some urls,
-	possibly with several mappings on the same filter
-	(for example {{{filter-mapping}}}s with {{{url-pattern}}}s {{{/servlet/*}}} and {{{/monitoring}}}, but not {{{/static/*}}},
-	with the same {{{filter-name}}} monitoring, but {{{url-pattern}}} must "contain" {{{/monitoring}}}),
-
-	or, a filter parameter can be added before {{{ </filter> }}} in order to exclude some urls, for example:
+	{{{url-pattern}}} in {{{web.xml}}} file above can be adapted in order not to monitor some urls, possibly with several mappings on the same filter.
+	
+	For example, use the following {{{filter-mapping}}}s and {{{url-pattern}}}s to monitor only urls like {{{/servlet1/*}}} and {{{/servlet2/*}}} but not the others like {{{/static/*}}} :
 
 {{{
-	<init-param>
-		<param-name>url-exclude-pattern</param-name>
-		<param-value>/static/.*</param-value>
-	</init-param>
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/servlet1/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/servlet2/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+}}}
+
+	Note that the {{{url-pattern}}}s must "contain" the url {{{/monitoring}}} in order to have reports.
+
+	As an alternative, you can use a single {{{/*}}} {{{url-pattern}}} and a filter parameter with a [http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html regular expression] can be added before {{{ </filter> }}} in order to exclude some urls, for example:
+
+{{{
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		
+		<init-param>
+			<param-name>url-exclude-pattern</param-name>
+			<param-value>/static/.*</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
 }}}
 
 === 6. Optional parameters ===
