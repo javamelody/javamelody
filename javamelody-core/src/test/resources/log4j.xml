@@ -22,7 +22,7 @@
 	<!-- A time/date based file appender -->
 	<appender name="FILE" class="org.apache.log4j.FileAppender">
 		<param name="File" value="System.out" />
-		<param name="Threshold" value="DEBUG" />
+		<param name="Threshold" value="INFO" />
 
 		<layout class="org.apache.log4j.PatternLayout">
 			<!-- The default pattern: Date Priority [Category] Message\n -->
@@ -36,7 +36,7 @@
 	<!-- ============================== -->
 
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-		<param name="Threshold" value="DEBUG" />
+		<param name="Threshold" value="INFO" />
 
 		<layout class="org.apache.log4j.PatternLayout">
 			<!-- The default pattern: Date Priority [Category] Message\n -->
