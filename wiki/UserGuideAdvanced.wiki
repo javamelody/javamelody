@@ -18,6 +18,7 @@ For standard documentation, see [UserGuide]
   * [#Usage_of_in_JonAS_5_(which_uses_OSGI) Usage of JavaMelody in JonAS 5 (which uses OSGI)]
   * [#Deployment_on_Tomcat_without_modification_of_monitored_webapps_( Deployment on Tomcat without modification of monitored webapps (beta)]
   * [#Clearing_all_statistics_and_all_graphs Clearing all statistics and all graphs]  
+  * [#Report_written_before_last_shutdown Report written before last shutdown]
   * [#Format_of_RRD_files Format of RRD files]
   * [#Compilation_and_development Compilation and development]
 
@@ -320,7 +321,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	Sometimes a server is stopped in emergency or when there is some issue for example with the used memory.
 	And perhaps, you did not thought of saving the JavaMelody report to have precise figures about the state of the server at this moment.
 
-	But don't worry, when the application is undeployed, JavaMelody writes a file called <<<last_shutdown.html>>> in the same storage directory as explained in the previous chapter. It is the JavaMelody report in html format, and it contains the statistics for the current day and the system informations (such as the used memory) for the current time just before the application is undeployed, but it does not contain charts.
+	But don't worry, when the application is undeployed, JavaMelody writes a file called {{{last_shutdown.html}}} in the same storage directory as explained in the previous chapter. It is the JavaMelody report in html format, and it contains the statistics for the current day and the system informations (such as the used memory) for the current time just before the application is undeployed, but it does not contain charts.
 	
 == Format of RRD files ==
 	
