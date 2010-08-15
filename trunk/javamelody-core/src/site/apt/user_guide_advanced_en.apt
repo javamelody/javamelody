@@ -398,6 +398,16 @@ org.osgi.framework.system.packages com.sun.management; \
 	But if you want to clear only the statistics, delete the *.gz files in the subdirectories of the storage directory.
 	And if you want to clear only the graphs, delete the *.rrd files in the subdirectories of the storage directory.
 
+* Report written before last shutdown
+	
+	Sometimes a server is stopped in emergency or when there is some issue for example with the used memory.
+	And perhaps, you did not thought of saving the JavaMelody report to have precise figures about
+	the state of the server at this moment. But don't worry, when the application is undeployed,
+	JavaMelody writes a file called <<<last_shutdown.html>>> in the same storage directory
+	as explained in the previous chapter. It is the JavaMelody report in html format, and it
+	contains the statistics for the current day and the system informations (such as the used memory)
+	for the current time just before the application is undeployed, but it does not contain charts.
+	
 * Format of RRD files
 	
 	Values of charts are stored in RRD (Round Robin Database) format.
