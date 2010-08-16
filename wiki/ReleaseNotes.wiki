@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 38: Distributed (XA) Transactions aborted by 'rollback' in JavaInformations.java
   * added: Alternative for *sql requests* monitoring when jdbc datasource or jdbc driver can't be used and when Hibernate is used: [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/HibernateBatcherFactory.java HibernateBatcherFactory] (doc to be done)
   * *Logs*: Logs for debugging added using either logback if found, or log4j if found or java.util.logging, and using the category "net.bull.javamelody" and the level "debug". Moreover, existing stack-traces of exceptions are no longer printed in the error console of the server, and they are now logged in logback or log4j or java.util.logging, using the category "net.bull.javamelody" and the level "info" or "warn". Logging of http requests is unchanged. (doc to be done)
   * added: [UserGuide#6._Optional_parameters Documentation] on the javamelody parameter {{{no-database}}}
