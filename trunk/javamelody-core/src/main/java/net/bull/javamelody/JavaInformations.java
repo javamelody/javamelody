@@ -352,11 +352,8 @@ class JavaInformations implements Serializable { // NOPMD
 				try {
 					appendDataBaseVersion(result, connection);
 				} finally {
-					try {
-						connection.rollback();
-					} finally {
-						connection.close();
-					}
+					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
+					connection.close();
 				}
 				return result.toString();
 			}
@@ -377,11 +374,8 @@ class JavaInformations implements Serializable { // NOPMD
 					result.append(name).append(":\n");
 					appendDataBaseVersion(result, connection);
 				} finally {
-					try {
-						connection.rollback();
-					} finally {
-						connection.close();
-					}
+					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
+					connection.close();
 				}
 			}
 		} catch (final NamingException e) {
