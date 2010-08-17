@@ -524,9 +524,15 @@ class HtmlCoreReport {
 		write("<a href='?part=processes'>");
 		write("<img src='?resource=processes.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 
-		writeln(separator);
-		write("<a href='?part=jndi'>");
-		write("<img src='?resource=jndi.png' width='20' height='20' alt=\"#Arbre_JNDI#\" /> #Arbre_JNDI#</a>");
+		final String serverInfo = javaInformationsList.get(0).getServerInfo();
+		if (serverInfo != null && !serverInfo.contains("Winstone")) {
+			// on n'affiche pas le lien JNDI si serveur Winstone car cela n'a pas d'intérêt
+			// pour Hudson sous Winstone, et surtout car (Winstone)Context.listBindings
+			// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
+			writeln(separator);
+			write("<a href='?part=jndi'>");
+			write("<img src='?resource=jndi.png' width='20' height='20' alt=\"#Arbre_JNDI#\" /> #Arbre_JNDI#</a>");
+		}
 
 		if (isDatabaseEnabled()) {
 			writeln(separator);
