@@ -392,6 +392,46 @@ org.osgi.framework.system.packages com.sun.management; \
 	</log4j:configuration>
 +-------------------------------+
 	
+	Un exemple des logs est le suivant:
+	
++-------------------------------+
+11:11:00.120 [main] DEBUG net.bull.javamelody - JavaMelody listener init started
+11:11:00.151 [main] DEBUG net.bull.javamelody - datasources found in JNDI: [java:comp/env/jdbc/TestDB2, java:comp/env/jdbc/TestDB]
+11:11:00.167 [main] DEBUG net.bull.javamelody - datasource rebinded: java:comp/env/jdbc/TestDB2 from class org.apache.tomcat.dbcp.dbcp.BasicDataSource to class $Proxy0
+11:11:00.167 [main] DEBUG net.bull.javamelody - datasource rebinded: java:comp/env/jdbc/TestDB from class org.apache.tomcat.dbcp.dbcp.BasicDataSource to class $Proxy0
+11:11:00.167 [main] DEBUG net.bull.javamelody - JavaMelody listener init done
+11:11:00.182 [main] DEBUG net.bull.javamelody - JavaMelody filter init started
+11:11:00.182 [main] DEBUG net.bull.javamelody - OS: Windows XP Service Pack 3, x86/32
+11:11:00.182 [main] DEBUG net.bull.javamelody - Java: Java(TM) SE Runtime Environment, 1.6.0_21-b06
+11:11:00.182 [main] DEBUG net.bull.javamelody - Server: Apache Tomcat/6.0.26
+11:11:00.182 [main] DEBUG net.bull.javamelody - Webapp context: /test
+11:11:00.182 [main] DEBUG net.bull.javamelody - JavaMelody version: 1.19.0-SNAPSHOT
+11:11:00.182 [main] DEBUG net.bull.javamelody - Host: xxx@xxx
+11:11:00.182 [main] DEBUG net.bull.javamelody - parameter defined: resolution-seconds=60
+11:11:00.182 [main] DEBUG net.bull.javamelody - parameter defined: log=true
+11:11:00.182 [main] DEBUG net.bull.javamelody - parameter defined: system-actions-enabled=true
+11:11:00.182 [main] DEBUG net.bull.javamelody - parameter defined: mail-session=mail/Session
+11:11:00.182 [main] DEBUG net.bull.javamelody - parameter defined: admin-emails=xxx
+11:11:00.182 [main] DEBUG net.bull.javamelody - parameter defined: mail-periods=day,week,month
+11:11:00.292 [main] DEBUG net.bull.javamelody - log listeners initialized
+11:11:00.307 [main] DEBUG net.bull.javamelody - datasources found in JNDI: [java:comp/env/jdbc/TestDB2, java:comp/env/jdbc/TestDB]
+11:11:00,386 INFO  [org.quartz.simpl.SimpleThreadPool] Job execution threads will use class loader of thread: main
+11:11:00,432 INFO  [org.quartz.core.QuartzScheduler] Quartz Scheduler v.1.5.2 created.
+11:11:00,432 INFO  [org.quartz.simpl.RAMJobStore] RAMJobStore initialized.
+11:11:00,432 INFO  [org.quartz.impl.StdSchedulerFactory] Quartz scheduler 'DefaultQuartzScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
+11:11:00,432 INFO  [org.quartz.impl.StdSchedulerFactory] Quartz scheduler version: 1.5.2
+11:11:00.432 [main] DEBUG net.bull.javamelody - job global listener initialized
+11:11:00.432 [main] DEBUG net.bull.javamelody - counters initialized
+11:11:00.495 [main] DEBUG net.bull.javamelody - counters data read from files in xxx\apache-tomcat-6.0.26\temp\javamelody\test_xxx
+11:11:00.511 [main] DEBUG net.bull.javamelody - collect task scheduled every 60s
+11:11:00.776 [main] DEBUG net.bull.javamelody - first collect of data done
+11:11:00.792 [main] DEBUG net.bull.javamelody - mail report for the day period scheduled with next execution date at Wed Aug 18 00:00:00 CEST 2010
+11:11:00.792 [main] DEBUG net.bull.javamelody - mail report for the week period scheduled with next execution date at Sun Aug 22 00:00:00 CEST 2010
+11:11:00.792 [main] DEBUG net.bull.javamelody - mail report for the month period scheduled with next execution date at Wed Sep 01 00:00:00 CEST 2010
+11:11:00.792 [main] DEBUG net.bull.javamelody - mail reports scheduled for xxx
+11:11:00.792 [main] DEBUG net.bull.javamelody - JavaMelody filter init done
++-------------------------------+
+	
 * Réinitialisation de toutes les statistiques et de toutes les courbes
 	
 	Les fichiers de sauvegarde des statistiques et des courbes sont stockés dans le répertoire temporaire du serveur,
