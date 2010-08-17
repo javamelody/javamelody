@@ -98,8 +98,7 @@ final class LOG {
 
 	static void debug(String msg) {
 		if (LOGBACK_ENABLED) {
-			final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME);
-			logger.debug(msg);
+			org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).debug(msg);
 		} else if (LOG4J_ENABLED) {
 			final org.apache.log4j.Logger logger = org.apache.log4j.Logger
 					.getLogger(INTERNAL_LOGGER_NAME);
@@ -113,8 +112,7 @@ final class LOG {
 
 	static void debug(String msg, Throwable throwable) {
 		if (LOGBACK_ENABLED) {
-			final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME);
-			logger.debug(msg, throwable);
+			org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).debug(msg, throwable);
 		} else if (LOG4J_ENABLED) {
 			final org.apache.log4j.Logger logger = org.apache.log4j.Logger
 					.getLogger(INTERNAL_LOGGER_NAME);
@@ -128,8 +126,7 @@ final class LOG {
 
 	static void info(String msg, Throwable throwable) {
 		if (LOGBACK_ENABLED) {
-			final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME);
-			logger.info(msg, throwable);
+			org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).info(msg, throwable);
 		} else if (LOG4J_ENABLED) {
 			final org.apache.log4j.Logger logger = org.apache.log4j.Logger
 					.getLogger(INTERNAL_LOGGER_NAME);
@@ -144,9 +141,7 @@ final class LOG {
 	static void warn(String msg, Throwable throwable) {
 		try {
 			if (LOGBACK_ENABLED) {
-				final org.slf4j.Logger logger = org.slf4j.LoggerFactory
-						.getLogger(INTERNAL_LOGGER_NAME);
-				logger.warn(msg, throwable);
+				org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).warn(msg, throwable);
 			} else if (LOG4J_ENABLED) {
 				final org.apache.log4j.Logger logger = org.apache.log4j.Logger
 						.getLogger(INTERNAL_LOGGER_NAME);
