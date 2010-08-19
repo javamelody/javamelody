@@ -26,7 +26,7 @@ JavaMelody search in mailing lists on the Internet (or [http://markmail.org/sear
 
 [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]
 
-[https://plugins.atlassian.com/plugin/details/20909 JIRA/Bamboo plugin]
+[https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin]
 
 [http://www.grails.org/plugin/grails-melody Grails plugin]
 
