@@ -57,6 +57,8 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	public void reset() {
 		super.reset();
 		status = 0;
+		stream = null;
+		writer = null;
 	}
 
 	/**
