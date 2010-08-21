@@ -238,7 +238,7 @@ or MSIE8 (MSIE7 not recommended).
 
 {{{
 	<?xml version="1.0" encoding="UTF-8" ?>
-	<Context docBase="<pathto>/mywebapp.war" path="mywebapp" reloadable="false" >
+	<Context docBase="path_to/mywebapp.war" path="mywebapp" reloadable="false" >
 		<Parameter name='javamelody.system-actions-enabled' value='true' override='false'/>
 	</Context>
 }}}
