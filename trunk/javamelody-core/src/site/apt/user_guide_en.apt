@@ -225,19 +225,48 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	* in initialisation parameters of the filter
 
-	  (<<<web.xml>>> file in the webapp)
+	  (<<<web.xml>>> file in the webapp), for example:
+	  
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	...
++-------------------------------+
 
 	* in context parameters of the webapp with prefix <<<javamelody.>>>
 
-	  (context xml file in Tomcat)
+	  (context xml file in Tomcat), for example:
+	  
++-------------------------------+
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<Context docBase="<pathto>/mywebapp.war" path="mywebapp" reloadable="false" >
+		<Parameter name='javamelody.system-actions-enabled' value='true' override='false'/>
+	</Context>
++-------------------------------+
 
 	* in environment variables of the OS with prefix <<<javamelody.>>>
 
-	  (OS specific or java launch command)
+	  (OS specific or java launch command), for example:
+
++-------------------------------+
+	on windows: set "javamelody.system-actions-enabled=true"
+	on linux: javamelody.system-actions-enabled=true
++-------------------------------+
 
 	* in system properties with prefix <<<javamelody.>>>
 
-	  (java launch command or administration user interface or $CATALINA_HOME/conf/catalina.properties if tomcat)
+	  (java launch command or administration user interface or $CATALINA_HOME/conf/catalina.properties if tomcat),
+	  for example:
+
++-------------------------------+
+	... -Djavamelody.system-actions-enabled=true
++-------------------------------+
 
 	[]
 

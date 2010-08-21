@@ -227,20 +227,48 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	* dans les paramètres d'initialisation du filtre
 
-	  (fichier <<<web.xml>>> dans la webapp)
+	  (fichier <<<web.xml>>> dans la webapp), par exemple:
+
++-------------------------------+
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	...
++-------------------------------+
 
 	* dans les paramètres du contexte de la webapp avec le préfixe <<<javamelody.>>>
 
-	  (fichier xml de contexte dans Tomcat)
+	  (fichier xml de contexte dans Tomcat), par exemple:
+	  
++-------------------------------+
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<Context docBase="<pathto>/mywebapp.war" path="mywebapp" reloadable="false" >
+		<Parameter name='javamelody.system-actions-enabled' value='true' override='false'/>
+	</Context>
++-------------------------------+
 
 	* dans les variables d'environnement du système d'exploitation avec le préfixe <<<javamelody.>>>
 
-	  (dépendant du système d'exploitation ou bien commande de lancement java)
+	  (dépendant du système d'exploitation ou bien commande de lancement java), par exemple:
+
++-------------------------------+
+	on windows: set "javamelody.system-actions-enabled=true"
+	on linux: javamelody.system-actions-enabled=true
++-------------------------------+
 
 	* dans les propriétés systèmes avec le préfixe <<<javamelody.>>>
 
 	  (commande de lancement java ou selon le cas interface d'administration
-	  ou $CATALINA_HOME/conf/catalina.properties si tomcat)
+	  ou $CATALINA_HOME/conf/catalina.properties si tomcat), par exemple:
+
++-------------------------------+
+	... -Djavamelody.system-actions-enabled=true
++-------------------------------+
 
 	[]
 
