@@ -47,15 +47,6 @@ public class JdbcDriver implements Driver {
 		}
 	}
 
-	void deregister() {
-		try {
-			DriverManager.deregisterDriver(this);
-		} catch (final SQLException e) {
-			// ne peut arriver
-			throw new IllegalStateException(e);
-		}
-	}
-
 	/** {@inheritDoc} */
 	public Connection connect(String url, Properties info) throws SQLException {
 		final String proxiedDriver = info.getProperty("driver");
