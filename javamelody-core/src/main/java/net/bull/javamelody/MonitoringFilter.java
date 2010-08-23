@@ -21,6 +21,9 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -308,7 +311,8 @@ public class MonitoringFilter implements Filter {
 			} finally {
 				//on rebind les dataSources initiales à la place des proxy
 				JdbcWrapper.SINGLETON.stop();
-				JdbcDriver.SINGLETON.deregister();
+
+				deregisterJdbcDriver();
 
 				// on enlève l'appender de logback, log4j et le handler de java.util.logging
 				deregisterLogs();
@@ -343,6 +347,24 @@ public class MonitoringFilter implements Filter {
 			allowedAddrPattern = null;
 			filterConfig = null;
 			timer = null;
+		}
+	}
+
+	private void deregisterJdbcDriver() {
+		// on désinstalle le driver jdbc s'il est installé
+		// (mais sans charger la classe JdbcDriver pour ne pas installer le driver)
+		final Class<MonitoringFilter> classe = MonitoringFilter.class;
+		final String packageName = classe.getName().substring(0,
+				classe.getName().length() - classe.getSimpleName().length() - 1);
+		for (final Driver driver : Collections.list(DriverManager.getDrivers())) {
+			if (driver.getClass().getName().startsWith(packageName)) {
+				try {
+					DriverManager.deregisterDriver(driver);
+				} catch (final SQLException e) {
+					// ne peut arriver
+					throw new IllegalStateException(e);
+				}
+			}
 		}
 	}
 

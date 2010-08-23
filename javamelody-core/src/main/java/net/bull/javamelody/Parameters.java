@@ -58,6 +58,8 @@ final class Parameters {
 
 	private static FilterConfig filterConfig;
 	private static ServletContext servletContext;
+	private static String lastConnectUrl;
+	private static Properties lastConnectInfo;
 
 	private Parameters() {
 		super();
@@ -79,12 +81,25 @@ final class Parameters {
 		servletContext = context;
 	}
 
+	static void initJdbcDriverParameters(String connectUrl, Properties connectInfo) {
+		Parameters.lastConnectUrl = connectUrl;
+		Parameters.lastConnectInfo = connectInfo;
+	}
+
 	/**
 	 * @return Contexte de servlet de la webapp, soit celle monitorée ou soit celle de collecte.
 	 */
 	static ServletContext getServletContext() {
 		assert servletContext != null;
 		return servletContext;
+	}
+
+	static String getLastConnectUrl() {
+		return lastConnectUrl;
+	}
+
+	static Properties getLastConnectInfo() {
+		return lastConnectInfo;
 	}
 
 	/**
