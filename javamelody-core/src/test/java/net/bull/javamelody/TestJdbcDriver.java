@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -43,17 +42,6 @@ public class TestJdbcDriver {
 	public void setUp() {
 		Utils.initialize();
 		driver = new JdbcDriver();
-	}
-
-	/** Test. */
-	@Test
-	public void testDeregister() {
-		try {
-			DriverManager.registerDriver(driver);
-			driver.deregister();
-		} catch (final Exception e) {
-			fail(e.toString());
-		}
 	}
 
 	/** Test. */
