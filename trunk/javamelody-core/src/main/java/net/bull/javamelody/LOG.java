@@ -151,7 +151,7 @@ final class LOG {
 						.getLogger(INTERNAL_LOGGER_NAME);
 				logger.log(Level.WARNING, msg, throwable);
 			}
-		} catch (Throwable t) { // NOPMD
+		} catch (final Throwable t) { // NOPMD
 			// au pire (cette méthode ne doit pas lancer d'erreur vu où elle est appelée)
 			t.printStackTrace(System.err);
 		}
