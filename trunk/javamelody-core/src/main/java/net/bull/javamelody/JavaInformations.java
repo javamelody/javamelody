@@ -344,10 +344,9 @@ class JavaInformations implements Serializable { // NOPMD
 		try {
 			// on commence par voir si le driver jdbc a été utilisé
 			// car s'il n'y a pas de datasource une exception est déclenchée
-			final JdbcDriver jdbcDriver = JdbcDriver.SINGLETON;
-			if (jdbcDriver.getLastConnectUrl() != null) {
+			if (Parameters.getLastConnectUrl() != null) {
 				final Connection connection = DriverManager.getConnection(
-						jdbcDriver.getLastConnectUrl(), jdbcDriver.getLastConnectInfo());
+						Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo());
 				connection.setAutoCommit(false);
 				try {
 					appendDataBaseVersion(result, connection);

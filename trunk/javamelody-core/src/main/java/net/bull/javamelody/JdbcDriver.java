@@ -36,13 +36,11 @@ public class JdbcDriver implements Driver {
 	// cette classe est publique pour être déclarée dans une configuration jdbc
 	static final JdbcDriver SINGLETON = new JdbcDriver();
 
-	private String lastConnectUrl;
-	private Properties lastConnectInfo;
-
 	// initialisation statique du driver
 	static {
 		try {
 			DriverManager.registerDriver(SINGLETON);
+			LOG.debug("JDBC driver registered");
 		} catch (final SQLException e) {
 			// ne peut arriver
 			throw new IllegalStateException(e);
@@ -56,14 +54,6 @@ public class JdbcDriver implements Driver {
 			// ne peut arriver
 			throw new IllegalStateException(e);
 		}
-	}
-
-	String getLastConnectUrl() {
-		return lastConnectUrl;
-	}
-
-	Properties getLastConnectInfo() {
-		return lastConnectInfo;
 	}
 
 	/** {@inheritDoc} */
@@ -84,8 +74,7 @@ public class JdbcDriver implements Driver {
 		}
 		final Properties tmp = (Properties) info.clone();
 		tmp.remove("driver");
-		lastConnectUrl = url;
-		lastConnectInfo = tmp;
+		Parameters.initJdbcDriverParameters(url, tmp);
 		return JdbcWrapper.SINGLETON.createConnectionProxy(DriverManager.getConnection(url, tmp));
 	}
 
@@ -125,7 +114,7 @@ public class JdbcDriver implements Driver {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[lastConnectUrl=" + getLastConnectUrl()
-				+ ", lastConnectInfo=" + getLastConnectInfo() + ']';
+		return getClass().getSimpleName() + "[lastConnectUrl=" + Parameters.getLastConnectUrl()
+				+ ", lastConnectInfo=" + Parameters.getLastConnectInfo() + ']';
 	}
 }
