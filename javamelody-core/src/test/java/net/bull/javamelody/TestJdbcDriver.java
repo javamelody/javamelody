@@ -47,12 +47,14 @@ public class TestJdbcDriver {
 	/** Test. */
 	@Test
 	public void testGetLastConnectUrl() {
+		Parameters.initJdbcDriverParameters(null, null);
 		assertNull("getLastConnectUrl", Parameters.getLastConnectUrl());
 	}
 
 	/** Test. */
 	@Test
 	public void testGetLastConnectInfo() {
+		Parameters.initJdbcDriverParameters(null, null);
 		assertNull("getLastConnectInfo", Parameters.getLastConnectInfo());
 	}
 
