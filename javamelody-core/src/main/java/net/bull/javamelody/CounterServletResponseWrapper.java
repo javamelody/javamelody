@@ -50,15 +50,17 @@ class CounterServletResponseWrapper extends FilterServletResponseWrapper {
 	@Override
 	public void reset() {
 		super.reset();
-		if (getCounterResponseStream() != null) {
-			getCounterResponseStream().reset();
-		}
+		resetStream();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void resetBuffer() {
 		super.resetBuffer();
+		resetStream();
+	}
+
+	private void resetStream() {
 		if (getCounterResponseStream() != null) {
 			getCounterResponseStream().reset();
 		}
