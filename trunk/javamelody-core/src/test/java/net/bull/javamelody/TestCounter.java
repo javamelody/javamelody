@@ -132,6 +132,10 @@ public class TestCounter {
 		}
 		errorCounter.bindContextIncludingCpu("request b" + i);
 		errorCounter.addRequestForCurrentContext("stack trace");
+
+		// addRequestForCurrentContext mais sans contexte courant
+		errorCounter.addRequestForCurrentContext("stack trace");
+		errorCounter.addRequestForCurrentContext(true);
 	}
 
 	/** Test. */
