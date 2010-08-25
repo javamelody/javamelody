@@ -38,7 +38,7 @@ final class LOG {
 	}
 
 	@SuppressWarnings("unused")
-	static void log(HttpServletRequest httpRequest, String requestName, long duration,
+	static void logHttpRequest(HttpServletRequest httpRequest, String requestName, long duration,
 			boolean systemError, int responseSize, String filterName) {
 		// dans les 3 cas, on ne construit le message de log
 		// que si le logger est configuré pour écrire le niveau INFO
