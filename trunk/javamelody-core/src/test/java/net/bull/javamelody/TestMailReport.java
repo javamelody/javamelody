@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -26,6 +30,7 @@ import java.util.List;
 import java.util.Timer;
 
 import javax.naming.NoInitialContextException;
+import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,9 +74,27 @@ public class TestMailReport {
 			final List<JavaInformations> javaInformationslist = Collections
 					.singletonList(new JavaInformations(null, true));
 			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
-			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
-		} catch (final NoInitialContextException e) {
-			assertNotNull("ok", e);
+			try {
+				new MailReport().sendReportMail(collector, false, javaInformationslist,
+						Period.SEMAINE);
+			} catch (final NoInitialContextException e) {
+				assertNotNull("ok", e);
+			}
+
+			// sendReportMailForLocalServer
+			final String path = "path";
+			final ServletContext context = createNiceMock(ServletContext.class);
+			expect(context.getMajorVersion()).andReturn(3).anyTimes();
+			expect(context.getMinorVersion()).andReturn(0).anyTimes();
+			expect(context.getContextPath()).andReturn(path).anyTimes();
+			replay(context);
+			Parameters.initialize(context);
+			try {
+				new MailReport().sendReportMailForLocalServer(collector, Period.SEMAINE);
+			} catch (final NoInitialContextException e) {
+				assertNotNull("ok", e);
+			}
+			verify(context);
 		} finally {
 			timer.cancel();
 		}
@@ -98,6 +121,12 @@ public class TestMailReport {
 		} catch (final IllegalArgumentException e) {
 			assertNotNull("ok", e);
 		}
+
+		assertEquals("getMailPeriods", Collections.singletonList(Period.SEMAINE),
+				MailReport.getMailPeriods());
+		setProperty(Parameter.MAIL_PERIODS, Period.JOUR.getMailCode());
+		assertEquals("getMailPeriods", Collections.singletonList(Period.JOUR),
+				MailReport.getMailPeriods());
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
