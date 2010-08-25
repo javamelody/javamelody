@@ -26,10 +26,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -222,6 +226,19 @@ public class TestJdbcWrapper {
 		}
 
 		assertSame("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
+
+		final InvocationHandler dummy = new InvocationHandler() {
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+				return null;
+			}
+		};
+		final List<Class<?>> interfaces = Arrays.asList(new Class<?>[] { Connection.class });
+		connection = DriverManager.getConnection(H2_DATABASE_URL);
+		try {
+			assertNotNull("createProxy", JdbcWrapper.createProxy(connection, dummy, interfaces));
+		} finally {
+			connection.close();
+		}
 
 		JdbcWrapper.getActiveThreadCount();
 	}

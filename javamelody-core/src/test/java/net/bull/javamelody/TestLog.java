@@ -147,4 +147,13 @@ public class TestLog {
 			loggingHandler.deregister();
 		}
 	}
+
+	/** Test. */
+	@Test
+	public void testDebugInfoAndWarn() {
+		LOG.debug("test debug");
+		LOG.debug("test debug", new IllegalStateException("test debug"));
+		LOG.info("test info", new IllegalStateException("test info"));
+		LOG.warn("test warn", new IllegalStateException("test warn"));
+	}
 }
