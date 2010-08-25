@@ -300,7 +300,7 @@ class MonitoringController {
 	private void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList, Range range, String part)
 			throws IOException {
-		if (collectorServer == null
+		if (!isFromCollectorServer()
 				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
 						.equalsIgnoreCase(part))) {
 			// avant de faire l'affichage on fait une collecte, pour que les courbes
@@ -370,7 +370,7 @@ class MonitoringController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final List<SessionInformations> sessionsInformations;
-		if (collectorServer == null) {
+		if (!isFromCollectorServer()) {
 			if (sessionId == null) {
 				sessionsInformations = SessionListener.getAllSessionsInformations();
 			} else {
@@ -390,9 +390,10 @@ class MonitoringController {
 	}
 
 	private void doCurrentRequests(HtmlReport htmlReport) throws IOException {
-		if (collectorServer != null) {
-			// la partie html des requêtes html n'est utile que depuis une application monitorée
-			// (suite à l'appel depuis le serveur de collecte qui lui n'a pas les données requises)
+		if (isFromCollectorServer()) {
+			// le html des requêtes en cours dans une page à part n'est utile que depuis une
+			// application monitorée et suite à l'appel depuis le serveur de collecte
+			// qui lui n'a pas les données requises
 			throw new IllegalStateException();
 		}
 		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true, null);
@@ -403,7 +404,7 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		final HeapHistogram heapHistogram;
 		try {
-			if (collectorServer == null) {
+			if (!isFromCollectorServer()) {
 				heapHistogram = VirtualMachine.createHeapHistogram();
 			} else {
 				heapHistogram = collectorServer.collectHeapHistogram(collector.getApplication());
@@ -486,7 +487,7 @@ class MonitoringController {
 
 	private void doPdf(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			Range range, List<JavaInformations> javaInformationsList) throws IOException {
-		if (collectorServer == null) {
+		if (!isFromCollectorServer()) {
 			// avant de faire l'affichage on fait une collecte,  pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
 			collector.collectLocalContextWithoutErrors();
@@ -499,7 +500,7 @@ class MonitoringController {
 				encodeFileNameToContentDisposition(httpRequest,
 						PdfReport.getFileName(collector.getApplication())));
 		try {
-			final PdfReport pdfReport = new PdfReport(collector, collectorServer != null,
+			final PdfReport pdfReport = new PdfReport(collector, isFromCollectorServer(),
 					javaInformationsList, range, httpResponse.getOutputStream());
 			pdfReport.toPdf();
 		} finally {
@@ -595,6 +596,10 @@ class MonitoringController {
 				in.close();
 			}
 		}
+	}
+
+	private boolean isFromCollectorServer() {
+		return collectorServer != null;
 	}
 
 	private static InputStream getWebXmlAsStream() {
