@@ -81,7 +81,7 @@ final class ProcessInformations implements Serializable {
 			final String memory = sc.next();
 			cpuPercentage = -1;
 			memPercentage = -1;
-			vsz = Integer.parseInt(memory.replace("ÿ", ""));
+			vsz = Integer.parseInt(memory.replace(",", "").replace("ÿ", ""));
 			rss = -1;
 			tty = null;
 			sc.next();
