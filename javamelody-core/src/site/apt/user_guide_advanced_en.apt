@@ -230,6 +230,17 @@ Advanced documentation of Java Melody
 
 	As pre-requisites for this, the jar of javamelody must be available in the classpath used to compile sources
 	and façades must have interfaces and not only implementations.
+	If the name displayed by the monitoring for the class does not please you,
+	you can name the proxy like this:
+
++-------------------------------+
+	public class Factory {
+		public static MyFacade createMyFacade() {
+			final MyFacade myFacade = net.bull.javamelody.MonitoringProxy.createProxy(new MyFacadeImpl(), "my business use case");
+			return myFacade;
+		}
+	}
++-------------------------------+
 	
 
 * Alternative for monitoring of sql requests
