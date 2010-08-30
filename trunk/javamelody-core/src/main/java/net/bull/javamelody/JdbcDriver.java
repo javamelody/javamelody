@@ -23,6 +23,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -41,6 +42,16 @@ public class JdbcDriver implements Driver {
 		try {
 			DriverManager.registerDriver(SINGLETON);
 			LOG.debug("JDBC driver registered");
+
+			// on désinstalle et on réinstalle les autres drivers pour que le notre soit en premier
+			// (notamment, si le jar du driver contient un fichier java.sql.Driver dans META-INF/services
+			// pour initialiser automatiquement le driver contenu dans le jar)
+			for (final Driver driver : Collections.list(DriverManager.getDrivers())) {
+				if (driver != SINGLETON) {
+					DriverManager.deregisterDriver(driver);
+					DriverManager.registerDriver(driver);
+				}
+			}
 		} catch (final SQLException e) {
 			// ne peut arriver
 			throw new IllegalStateException(e);
