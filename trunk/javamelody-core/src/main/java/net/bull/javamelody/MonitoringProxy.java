@@ -62,17 +62,28 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 			.getParameter(Parameter.DISABLED));
 	@SuppressWarnings("all")
 	private final Object facade;
+	private final String name;
 
 	/**
 	 * Constructeur privé : instanciation pour méthode createProxy ci-dessous.
 	 * @param facade Object
 	 */
 	private MonitoringProxy(Object facade) {
+		this(facade, null);
+	}
+
+	/**
+	 * Constructeur privé : instanciation pour méthode createProxy ci-dessous.
+	 * @param facade Object
+	* @param name override of the interface name in the statistics
+	 	 */
+	private MonitoringProxy(Object facade, String name) {
 		super();
 		this.facade = facade;
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		SERVICES_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		this.name = name;
 	}
 
 	/**
@@ -83,6 +94,17 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	 */
 	public static <T> T createProxy(T facade) {
 		return JdbcWrapper.createProxy(facade, new MonitoringProxy(facade));
+	}
+
+	/**
+	 *
+	 * @param <T> Type de la façade (une interface en général).
+	 * @param facade Instance de la façade
+	 * @param name override of the interface name in the statistics
+	 * @return Proxy de la façade
+	 */
+	public static <T> T createProxy(T facade, String name) {
+		return JdbcWrapper.createProxy(facade, new MonitoringProxy(facade, name));
 	}
 
 	static Counter getServicesCounter() {
@@ -118,8 +140,12 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 			return method.invoke(facade, args);
 		}
 		// nom identifiant la requête
-		final String requestName = method.getDeclaringClass().getSimpleName() + '.'
-				+ method.getName();
+		final String requestName;
+		if (name == null) {
+			requestName = method.getDeclaringClass().getSimpleName() + '.' + method.getName();
+		} else {
+			requestName = name + '.' + method.getName();
+		}
 
 		boolean systemError = false;
 		try {
