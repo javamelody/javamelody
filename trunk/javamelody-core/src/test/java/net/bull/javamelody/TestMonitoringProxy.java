@@ -47,6 +47,8 @@ public class TestMonitoringProxy {
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		servicesCounter.clear();
 		// proxy sans spring aop
+		assertNotNull("createProxy",
+				MonitoringProxy.createProxy(new SpringTestFacadeImpl(), "my facade name"));
 		final SpringTestFacade springTestFacade = MonitoringProxy
 				.createProxy(new SpringTestFacadeImpl());
 
