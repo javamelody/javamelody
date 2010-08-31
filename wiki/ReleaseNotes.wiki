@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.19.0 ===
 
   * fix issue 38: Distributed (XA) Transactions aborted by 'rollback' in JavaInformations.java
   * fix issue 41: NumberFormatException requesting process information
