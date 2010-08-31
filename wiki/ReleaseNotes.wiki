@@ -4,7 +4,7 @@
   * fix issue 38: Distributed (XA) Transactions aborted by 'rollback' in JavaInformations.java
   * fix issue 41: NumberFormatException requesting process information
   * fix issue 44: Sql requests not monitored when using jdk1.6, a recent jdbc driver and net.bull.javamelody.JdbcDriver
-  * added: [UserGuideAdvanced#Alternative_for_monitoring_of_sql_requests Alternative for *sql requests* monitoring] when jdbc datasource or jdbc driver can't be used and when Hibernate is used: HibernateBatcherFactory
+  * added: *[UserGuideAdvanced#Alternative_for_monitoring_of_sql_requests Alternative for sql requests monitoring]* when jdbc datasource or jdbc driver can't be used and when Hibernate is used: HibernateBatcherFactory
   * *Logs*: [UserGuideAdvanced#Debugging_logs Logs for debugging] added using either logback if found, or log4j if found or java.util.logging, and using the category "net.bull.javamelody" and the level "debug". Moreover, existing stack-traces of exceptions are no longer printed in the error console of the server, and they are now logged in logback or log4j or java.util.logging, using the category "net.bull.javamelody" and the level "info" or "warn". Logging of http requests is unchanged.
   * added: Names of *[UserGuideAdvanced#Business_facades_%28without_EJB3_and_without_Spring_and_without_Gu MonitoringProxies]* can now be customized.
   * added: [UserGuide#6._Optional_parameters Documentation] on the javamelody parameter {{{no-database}}}
