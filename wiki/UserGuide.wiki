@@ -25,7 +25,7 @@
     * [#16. 16. SecurityManager]
     * [#17._Full_results 17. Full results]
   * [#Dependencies Dependencies]
-  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5...)]
+  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JonAS 5, debugging logs...)]
   * [#Compilation_and_development Compilation and development]
 
 == Introduction ==
