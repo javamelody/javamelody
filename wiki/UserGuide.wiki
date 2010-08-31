@@ -859,10 +859,10 @@ or
 }}}
 
 
-== Advanced documentation (setup with an ear, centralized collect server, JonAS 5...) ==
+== Advanced documentation (setup with an ear, centralized collect server, JonAS 5, debugging logs...) ==
 
-See [UserGuideAdvanced]
+	To setup with an ear, to deploy a centralized collect server, to use JonAS 5 or to enable debugging logs, see [UserGuideAdvanced]
 
 == Compilation and development ==
 
-See [DevGuide]
+	See [DevGuide]
