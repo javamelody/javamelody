@@ -600,7 +600,8 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 		final String filterName = filterConfig.getFilterName();
-		LOG.logHttpRequest(httpRequest, requestName, duration, systemError, responseSize, filterName);
+		LOG.logHttpRequest(httpRequest, requestName, duration, systemError, responseSize,
+				filterName);
 	}
 
 	private static void throwException(Throwable t) throws IOException, ServletException {
