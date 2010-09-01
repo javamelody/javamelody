@@ -329,7 +329,7 @@ org.osgi.framework.system.packages com.sun.management; \
 	java.util.logging, in the same category with the level "info" or "warn".
 	
 	If the logback library is available in your monitored webapp, you can display debugging logs
-	by adding or modifying the "logback.xml" file in you "WEB-INF/classes" directory. For example:
+	by adding or modifying the "logback.xml" file in your "WEB-INF/classes" directory. For example:
 	
 +-------------------------------+
 	<?xml version="1.0" encoding="UTF-8" ?>
@@ -358,7 +358,7 @@ org.osgi.framework.system.packages com.sun.management; \
 +-------------------------------+
 	
 	Or if the log4j library is available in your monitored webapp, you can display debugging logs
-	by adding or modifying the "log4j.xml" file in you "WEB-INF/classes" directory. For example:
+	by adding or modifying the "log4j.xml" file in your "WEB-INF/classes" directory. For example:
 	
 +-------------------------------+
 	<?xml version="1.0" encoding="UTF-8"?>
