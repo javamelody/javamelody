@@ -861,14 +861,18 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 * Dépendances
 	
 	Si vous n'avez pas Maven2, les fichiers jar peuvent être trouvés dans le fichier zip,
-	disponible dans la partie "Download", à l'intérieur des répertoires 
+	disponible dans la partie "Download", à l'intérieur du répertoire racine et du répertoire 
 	<<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
-	et <<<javamelody/javamelody-core/src/main/lib>>>
 	
-	Si vous avez Maven2, vous pouvez utiliser les dépendances <<<jrobin>>>, <<<itext>>> et si souhaité <<<xstream>>>
-	ainsi que le dépôt suivants dans votre fichier <<<pom.xml>>> :
+	Si vous avez Maven2, vous pouvez utiliser les dépendances <<<javamelody-code>>>, <<<jrobin>>>,
+	<<<itext>>> et si souhaité <<<xstream>>> ainsi que les dépôts suivants dans votre fichier <<<pom.xml>>> :
 
 +-------------------------------+
+	<dependency>
+		<groupId>net.bull.javamelody</groupId>
+		<artifactId>javamelody-core</artifactId>
+		<version>1.19.0</version>
+	</dependency>
 	<dependency>
 		<groupId>org.jrobin</groupId>
 		<artifactId>jrobin</artifactId>
@@ -896,6 +900,17 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</dependency>
 	...
 	<repositories>
+		<!-- pour javamelody -->
+		<repository>
+			<id>m.g.o-public</id>
+			<url>http://maven.glassfish.org/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<!-- pour jrobin -->
 		<repository>
 			<id>opennms-repo</id>
