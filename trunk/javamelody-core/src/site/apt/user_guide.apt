@@ -862,9 +862,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	
 	Si vous n'avez pas Maven2, les fichiers jar peuvent être trouvés dans le fichier zip,
 	disponible dans la partie "Download", à l'intérieur du répertoire racine et du répertoire 
-	<<<javamelody/javamelody-core/src/test/test-webapp/WEB-INF/lib>>>
+	<<<src/test/test-webapp/WEB-INF/lib>>>
 	
-	Si vous avez Maven2, vous pouvez utiliser les dépendances <<<javamelody-code>>>, <<<jrobin>>>,
+	Si vous avez Maven2, vous pouvez utiliser les dépendances <<<javamelody-core>>>, <<<jrobin>>>,
 	<<<itext>>> et si souhaité <<<xstream>>> ainsi que les dépôts suivants dans votre fichier <<<pom.xml>>> :
 
 +-------------------------------+
@@ -916,6 +916,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 			<id>opennms-repo</id>
 			<name>OpenNMS Repository</name>
 			<url>http://repo.opennms.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
