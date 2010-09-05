@@ -95,7 +95,9 @@ class HtmlReport {
 	private void writeHtmlHeader(boolean includeSlider, boolean includeCssInline)
 			throws IOException {
 		writeln("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-		writeln("<html><head><title>#Monitoring_sur# " + collector.getApplication() + "</title>");
+		writer.write("<html><head><title>"
+				+ I18N.getFormattedString("Monitoring_sur", collector.getApplication())
+				+ "</title>");
 		if (includeCssInline) {
 			writeln("<style type='text/css'>");
 			final InputStream in = new BufferedInputStream(getClass().getResourceAsStream(
