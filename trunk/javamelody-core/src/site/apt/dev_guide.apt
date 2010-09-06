@@ -20,9 +20,15 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Si vous souhaitez recompiler la version en cours de développement, il vous faire un checkout anonyme depuis 
 	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (avec Eclipse ou bien {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} si Windows)
 
-	Vous pouvez utiliser le target "all" du script ant (sans maven) pour recompiler à partir des sources
-	et produire les fichiers javamelody.jar et javamelody.war qui sont ceux également disponibles dans la partie "Download".
-	Vous devez utilisez un JDK v1.6 pour compiler les sources.
+	Après décompression du fichier zip ou après le checkout, vous pouvez utiliser le target "all" du script ant
+	(sans maven) pour recompiler à partir des sources et produire les fichiers javamelody.jar, jira-javamelody.jar et
+	javamelody.war qui sont ceux également disponibles dans la partie "Download". Vous devez
+	définir la variable d'environnement JAVA_HOME avec le chemin d'un JDK v1.6 pour compiler les
+	sources. Par exemple :
+	
++-------------------------------+
+	<path_to_ant>/bin/ant -f <path_to_javamelody>/build.xml all
++-------------------------------+
 	
 	Vous pouvez aussi utiliser les goals maven "clean site" pour produire un site maven contenant des documentations
 	et des rapports sur l'analyse du code ou les tests unitaires (checkstyle, findbugs, pmd, cpd, junit, cobertura).
@@ -56,11 +62,11 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	* Faire un clique-droit sur le fichier build.xml dans le projet javamelody-core, puis sélectionner Run As, Ant Build
 	ce qui lancera la tâche par défaut "all" du script ant. (En remarque, la tâche "test" dans ce même script lance les tests unitaires.)
 	
-	* Attendre environ 10 secondes la fin de l'exécution du script
+	* Attendre environ 20 secondes la fin de l'exécution du script
 	
 	* Faire un Refresh (F5) sur le projet javamelody-core
 	
-	* Dans l'arborescence du projet, il apparait le fichier javamelody.zip, contenant le jar et le war recompilés de javamelody
+	* Dans l'arborescence du projet, il apparait le fichier javamelody.zip, contenant les jars et le war recompilés de javamelody
 
 	[]
 
@@ -68,9 +74,8 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Après quelques semaines par exemple, pour mettre à jour vos sources avec les nouveaux développements :
 	
 	* Faire un clique-droit sur le projet javamelody-core, puis sélectionner Team, Update
-	(note : j'utilise Native JavaHL et non SVN Kit dans Window, Preferences, Team, SVN, onglet SVN Connector)
 	
-	[]
+	[]	
 
 	
 * Développement
