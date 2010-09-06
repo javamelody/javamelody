@@ -10,7 +10,7 @@
 
 Compilation and development of Java Melody : monitoring d'applications Java EE
 
-	({{{dev_guide.html} Français }}, {{{user_guide_en.html} User guide }})
+	({{{dev_guide.html} Franï¿½ais }}, {{{user_guide_en.html} User guide }})
 
 * Building from sources
 
@@ -20,9 +20,14 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	If you want to rebuild the development version, you have to do an anonymous checkout from 
 	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (with Eclipse or with {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} if Windows)
 
-	You can use the "all" target of the ant script (without maven) to recompile from sources
-	and to build the javamelody.jar and javamelody.war files which are those available in "Download".
-	You must use a JDK 1.6 to compile the sources.
+	After decompressing the zip file or after the checkout, you can use the "all" target of the ant script (without maven)
+	to recompile from sources and to build the javamelody.jar, jira-javamelody.jar and javamelody.war files which are
+	those available in "Download". You must define the environment variable JAVA_HOME with the path
+	of a JDK 1.6 to compile the sources. For example:
+	
++-------------------------------+
+	<path_to_ant>/bin/ant -f <path_to_javamelody>/build.xml all
++-------------------------------+
 
 	You can also use the maven goals "clean site" to build a maven site with documentations and reports on analysis of sources
 	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura).
@@ -56,11 +61,11 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	* Do a right-click on the build.xml file in the project javamelody-core, then select Run As, Ant Build
 	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" lauches the unit tests.)
 	
-	* Wait about 10 seconds for the end of the execution of the script
+	* Wait about 20 seconds for the end of the execution of the script
 	
 	* Do a Refresh (F5) on the project javamelody-core
 	
-	* In the files of the project, the javamelody.zip file appears and contains the rebuilt jar and war of javamelody
+	* In the files of the project, the javamelody.zip file appears and contains the rebuilt jars and war of javamelody
 
 	[]
 
@@ -68,7 +73,6 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	After some weeks for example, in order to update your sources with the new developments:
 	
 	* Do a right-click on the project javamelody-core, then select Team, Update
-	(note: I use Native JavaHL and not SVN Kit in Window, Preferences, Team, SVN, tab SVN Connector)
 
 	[]
 
