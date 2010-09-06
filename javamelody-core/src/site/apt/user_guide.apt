@@ -514,7 +514,18 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	* Utilisation d'une annotation de JavaMelody.
 	(implique que la librairie javamelody.jar soit inclus dans le classpath à la compilation)
 	Ajouter simplement l'annotation <<<@net.bull.javamelody.MonitoredWithSpring>>> à toutes les
-	classes et/ou méthodes que vous voulez monitorer (sans modifier votre fichier applicationContext.xml).
+	classes et/ou méthodes que vous voulez monitorer, sans modifier votre fichier applicationContext.xml.
+	Par exemple :
+	
++-------------------------------+
+	@net.bull.javamelody.MonitoredWithSpring
+	public class TestImpl implements Test {
+		public void maMethode() {
+			...
+		}
+	}
++-------------------------------+
+
 	Cette alternative avec annotation permet aussi de changer les noms des classes affichées dans le
 	monitoring. Si le nom affiché par le monitoring pour la classe ou la méthode ne vous convient
 	pas, vous pouvez ajouter (name="mon use case") entre parenthèses après l'annotation sur votre
@@ -586,6 +597,17 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Puis ajouter simplement l'annotation <<<@net.bull.javamelody.MonitoredWithGuice>>> à toutes les
 	classes d'implémentations (pas sur les interfaces) et/ou méthodes que vous voulez monitorer.
+	Par exemple :
+	
++-------------------------------+
+	@net.bull.javamelody.MonitoredWithGuice
+	public class TestImpl implements Test {
+		public void maMethode() {
+			...
+		}
+	}
++-------------------------------+
+	
 	L'annotation permet aussi de changer les noms des classes affichées dans le monitoring.
 	Si le nom affiché par le monitoring pour la classe ou la méthode ne vous convient
 	pas, vous pouvez ajouter (name="mon use case") entre parenthèses après l'annotation sur votre
