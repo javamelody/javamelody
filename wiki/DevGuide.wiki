@@ -46,11 +46,11 @@ To rebuild the jar and the war of JavaMelody:
 	* Do a right-click on the build.xml file in the project javamelody-core, then select Run As, Ant Build
 	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" lauches the unit tests.)
 	
-	* Wait about 10 seconds for the end of the execution of the script
+	* Wait about 20 seconds for the end of the execution of the script
 	
 	* Do a Refresh (F5) on the project javamelody-core
 	
-	* In the files of the project, the javamelody.zip file appears and contains the rebuilt jar and war of javamelody
+	* In the files of the project, the javamelody.zip file appears and contains the rebuilt jars and war of javamelody
 
 	
 After some weeks for example, in order to update your sources with the new developments:
