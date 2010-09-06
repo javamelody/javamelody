@@ -56,7 +56,6 @@ To rebuild the jar and the war of JavaMelody:
 After some weeks for example, in order to update your sources with the new developments:
 	
 	* Do a right-click on the project javamelody-core, then select Team, Update
-	(note: I use Native JavaHL and not SVN Kit in Window, Preferences, Team, SVN, tab SVN Connector)
 
 
 === Development ===
