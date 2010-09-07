@@ -257,7 +257,7 @@ For standard documentation, see [UserGuide]
 	If for any reason you can't monitor sql requests with a jdbc datasource or with a jdbc driver
 	as said in the JDBC chapter of the user guide, and if you use Hibernate then there is an
 	alternative for monitoring of sql requests: define the Hibernate property
-	"hibernate.jdbc.factory_class" with the value "net.bull.javamelody.HibernateBatcherFactory".
+	"{{{hibernate.jdbc.factory_class}}}" with the value "{{{net.bull.javamelody.HibernateBatcherFactory}}}".
 	Il will enable the display of statistics of sql requests and the display of active jdbc connections.
 	
 	For example, if you use an "hibernate.cfg.xml" file, add the following with the others Hibernate
