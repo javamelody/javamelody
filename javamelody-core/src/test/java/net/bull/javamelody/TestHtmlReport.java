@@ -335,7 +335,7 @@ public class TestHtmlReport {
 
 		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
 				collector2.getRootCurrentContexts(), null, new ArrayList<ThreadInformations>(),
-				false, writer);
+				false, 500, writer);
 		htmlCounterRequestContextReport.toHtml();
 		assertNotEmptyAndClear(writer);
 	}
@@ -500,7 +500,7 @@ public class TestHtmlReport {
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
 				Collections.<CounterRequestContext> emptyList(),
 				Collections.<String, HtmlCounterReport> emptyMap(),
-				Collections.<ThreadInformations> emptyList(), true, writer);
+				Collections.<ThreadInformations> emptyList(), true, 500, writer);
 		report.toHtml();
 		if (writer.getBuffer().length() != 0) {
 			fail("HtmlCounterRequestContextReport");
@@ -510,7 +510,7 @@ public class TestHtmlReport {
 				"HtmlCounterRequestContextReport",
 				new HtmlCounterRequestContextReport(
 						Collections.<CounterRequestContext> emptyList(), null, Collections
-								.<ThreadInformations> emptyList(), true, writer));
+								.<ThreadInformations> emptyList(), true, 500, writer));
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
