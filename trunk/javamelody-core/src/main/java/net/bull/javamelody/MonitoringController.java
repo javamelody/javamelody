@@ -44,6 +44,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -105,7 +106,9 @@ class MonitoringController {
 	boolean isJavaInformationsNeeded(HttpServletRequest httpRequest) {
 		return httpRequest.getParameter(RESOURCE_PARAMETER) == null
 				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
-				&& (httpRequest.getParameter(PART_PARAMETER) == null || CURRENT_REQUESTS_PART
+				&& (httpRequest.getParameter(PART_PARAMETER) == null
+						|| CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
+								.getParameter(PART_PARAMETER)) || THREADS_PART
 						.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
 	}
 
@@ -221,7 +224,12 @@ class MonitoringController {
 		// la page monitoring avec un format "serialized" ou "xml" en paramètre
 		// pour avoir les données au format sérialisé java ou xml
 		final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
-		final Serializable serializable = createSerializable(httpRequest, javaInformationsList);
+		Serializable serializable;
+		try {
+			serializable = createSerializable(httpRequest, javaInformationsList);
+		} catch (final Exception e) {
+			serializable = e;
+		}
 		httpResponse.setContentType(transportFormat.getMimeType());
 		final String fileName = "JavaMelody_"
 				+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
@@ -239,46 +247,44 @@ class MonitoringController {
 	}
 
 	private Serializable createSerializable(HttpServletRequest httpRequest,
-			List<JavaInformations> javaInformationsList) {
+			List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
 		final String part = httpRequest.getParameter(PART_PARAMETER);
-		try {
-			if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-				// par sécurité
-				Action.checkSystemActionsEnabled();
-				return VirtualMachine.createHeapHistogram();
-			} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
-				// par sécurité
-				Action.checkSystemActionsEnabled();
-				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-				if (sessionId == null) {
-					final List<SessionInformations> sessionsInformations = SessionListener
-							.getAllSessionsInformations();
-					return new ArrayList<SessionInformations>(sessionsInformations);
-				}
-				return SessionListener.getSessionInformationsBySessionId(sessionId);
-			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-				// par sécurité
-				Action.checkSystemActionsEnabled();
-				return new ArrayList<ProcessInformations>(
-						ProcessInformations.buildProcessInformations());
-			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-				// par sécurité
-				Action.checkSystemActionsEnabled();
-				final int requestIndex;
-				if (httpRequest.getParameter(REQUEST_PARAMETER) != null) {
-					requestIndex = Integer.parseInt(httpRequest.getParameter(REQUEST_PARAMETER));
-				} else {
-					requestIndex = 0;
-				}
-				return new DatabaseInformations(requestIndex);
-			} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-				// par sécurité
-				Action.checkSystemActionsEnabled();
-				return new ArrayList<ConnectionInformations>(
-						JdbcWrapper.getConnectionInformationsList());
+		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return VirtualMachine.createHeapHistogram();
+		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
+			if (sessionId == null) {
+				final List<SessionInformations> sessionsInformations = SessionListener
+						.getAllSessionsInformations();
+				return new ArrayList<SessionInformations>(sessionsInformations);
 			}
-		} catch (final Exception e) {
-			return e;
+			return SessionListener.getSessionInformationsBySessionId(sessionId);
+		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<ProcessInformations>(
+					ProcessInformations.buildProcessInformations());
+		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final int requestIndex;
+			if (httpRequest.getParameter(REQUEST_PARAMETER) != null) {
+				requestIndex = Integer.parseInt(httpRequest.getParameter(REQUEST_PARAMETER));
+			} else {
+				requestIndex = 0;
+			}
+			return new DatabaseInformations(requestIndex);
+		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<ConnectionInformations>(
+					JdbcWrapper.getConnectionInformationsList());
+		} else if (THREADS_PART.equalsIgnoreCase(part)) {
+			return new ArrayList<ThreadInformations>(JavaInformations.buildThreadInformationsList());
 		}
 
 		return createDefaultSerializable(javaInformationsList);
@@ -339,6 +345,8 @@ class MonitoringController {
 		} else if (USAGES_PART.equalsIgnoreCase(part)) {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestUsages(graphName);
+		} else if (THREADS_PART.equalsIgnoreCase(part)) {
+			htmlReport.writeAllThreadsAsPart();
 		} else {
 			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
 		}
@@ -400,7 +408,7 @@ class MonitoringController {
 			// application monitorée (le serveur de collecte n'a pas les données requises)
 			throw new IllegalStateException();
 		}
-		htmlReport.writeCurrentRequests(withoutHeaders);
+		htmlReport.writeAllCurrentRequestsAsPart(withoutHeaders);
 	}
 
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {

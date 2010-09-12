@@ -54,6 +54,7 @@ final class HttpParameters {
 	static final String LAST_VALUE_PART = "lastValue";
 	static final String USAGES_PART = "usages";
 	static final String JNDI_PART = "jndi";
+	static final String THREADS_PART = "threads";
 
 	/**
 	 * Constructeur privé: pas d'instance.
