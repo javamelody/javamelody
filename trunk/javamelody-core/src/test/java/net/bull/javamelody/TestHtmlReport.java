@@ -22,7 +22,6 @@ import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -502,9 +501,7 @@ public class TestHtmlReport {
 				Collections.<String, HtmlCounterReport> emptyMap(),
 				Collections.<ThreadInformations> emptyList(), true, 500, writer);
 		report.toHtml();
-		if (writer.getBuffer().length() != 0) {
-			fail("HtmlCounterRequestContextReport");
-		}
+		assertNotEmptyAndClear(writer);
 		// cas où counterReportsByCounterName est null
 		assertNotNull(
 				"HtmlCounterRequestContextReport",
