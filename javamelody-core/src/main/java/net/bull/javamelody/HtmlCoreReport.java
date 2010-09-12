@@ -33,6 +33,7 @@ import java.util.Map;
  */
 class HtmlCoreReport {
 	private static final int MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT = 500;
+	private static final int MAX_THREADS_DISPLAYED_IN_MAIN_REPORT = 500;
 	private static final String END_DIV = "</div>";
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
@@ -354,6 +355,30 @@ class HtmlCoreReport {
 		}
 	}
 
+	void writeAllThreadsAsPart() throws IOException {
+		writeln("<div class='noPrint'>");
+		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ");
+		writeln("<a href='?part=threads'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		writeln("</div> <br/>");
+		writeln("<img src='?resource=threads.png' width='24' height='24' alt='#Threads#' />&nbsp;");
+		writeln("<b>#Threads#</b>");
+		writeln("<br/><br/>");
+
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			writeln("<b>#Threads_sur# " + javaInformations.getHost() + ": </b>");
+			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
+					javaInformations.getPeakThreadCount(),
+					javaInformations.getTotalStartedThreadCount()));
+			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
+					javaInformations.getThreadInformationsList(),
+					javaInformations.isStackTraceEnabled(), writer);
+			htmlThreadInformationsReport.writeDeadlocks();
+			writeln("<br/><br/>");
+			htmlThreadInformationsReport.toHtml();
+		}
+	}
+
 	private void writeThreads() throws IOException {
 		int i = 0;
 		for (final JavaInformations javaInformations : javaInformationsList) {
@@ -362,15 +387,22 @@ class HtmlCoreReport {
 					javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()));
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			final String id = "threads_" + i;
-			writeShowHideLink(id, "#Details#");
+			final List<ThreadInformations> threadInformationsList = javaInformations
+					.getThreadInformationsList();
 			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
-					javaInformations.getThreadInformationsList(),
-					javaInformations.isStackTraceEnabled(), writer);
-			htmlThreadInformationsReport.writeDeadlocks();
-			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
-			htmlThreadInformationsReport.toHtml();
-			writeln("</div><br/>");
+					threadInformationsList, javaInformations.isStackTraceEnabled(), writer);
+			if (threadInformationsList.size() <= MAX_THREADS_DISPLAYED_IN_MAIN_REPORT) {
+				final String id = "threads_" + i;
+				writeShowHideLink(id, "#Details#");
+				htmlThreadInformationsReport.writeDeadlocks();
+				writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
+				htmlThreadInformationsReport.toHtml();
+				writeln("</div><br/>");
+			} else {
+				// le nombre de threads dépasse le maximum pour être affiché dans le rapport
+				// principal, donc on affiche un lien vers une page à part
+				writeln("<a href='?part=threads'>#Details#</a><br/>");
+			}
 			i++;
 		}
 	}

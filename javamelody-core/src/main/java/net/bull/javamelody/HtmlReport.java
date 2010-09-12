@@ -80,7 +80,7 @@ class HtmlReport {
 		HtmlCoreReport.writeAddAndRemoveApplicationLinks(currentApplication, writer);
 	}
 
-	void writeCurrentRequests(boolean withoutHeaders) throws IOException {
+	void writeAllCurrentRequestsAsPart(boolean withoutHeaders) throws IOException {
 		if (withoutHeaders) {
 			// affichage pour serveur de collecte
 			htmlCoreReport.writeAllCurrentRequestsAsPart(!withoutHeaders);
@@ -89,6 +89,12 @@ class HtmlReport {
 			htmlCoreReport.writeAllCurrentRequestsAsPart(!withoutHeaders);
 			writeHtmlFooter();
 		}
+	}
+
+	void writeAllThreadsAsPart() throws IOException {
+		writeHtmlHeader();
+		htmlCoreReport.writeAllThreadsAsPart();
+		writeHtmlFooter();
 	}
 
 	void writeHtmlHeader() throws IOException {
