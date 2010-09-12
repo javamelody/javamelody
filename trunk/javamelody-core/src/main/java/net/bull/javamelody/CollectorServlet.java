@@ -22,6 +22,7 @@ import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
@@ -276,8 +277,8 @@ public class CollectorServlet extends HttpServlet {
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
 			final URL currentRequestsUrl = new URL(url.toString()
-					.replace(TransportFormat.SERIALIZED.getCode(), "html")
-					.replace(TransportFormat.XML.getCode(), "html")
+					.replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
+					.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT)
 					+ '&' + PART_PARAMETER + '=' + CURRENT_REQUESTS_PART);
 			new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 		}
@@ -368,8 +369,8 @@ public class CollectorServlet extends HttpServlet {
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
 			final URL connectionsUrl = new URL(url.toString()
-					.replace(TransportFormat.SERIALIZED.getCode(), "htmlbody")
-					.replace(TransportFormat.XML.getCode(), "htmlbody")
+					.replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
+					.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT)
 					+ '&' + PART_PARAMETER + '=' + CONNECTIONS_PART);
 			new LabradorRetriever(connectionsUrl).copyTo(req, resp);
 		}

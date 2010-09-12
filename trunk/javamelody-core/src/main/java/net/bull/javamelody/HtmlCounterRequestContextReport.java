@@ -40,6 +40,7 @@ class HtmlCounterRequestContextReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final long timeOfSnapshot = System.currentTimeMillis();
 	private final boolean stackTraceEnabled;
+	private final int maxContextsDisplayed;
 	private final HtmlThreadInformationsReport htmlThreadInformationsReport;
 
 	// classe utilitaire utilisée pour html et pdf
@@ -129,7 +130,7 @@ class HtmlCounterRequestContextReport {
 	HtmlCounterRequestContextReport(List<CounterRequestContext> rootCurrentContexts,
 			Map<String, HtmlCounterReport> counterReportsByCounterName,
 			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled,
-			Writer writer) {
+			int maxContextsDisplayed, Writer writer) {
 		super();
 		assert rootCurrentContexts != null;
 		assert threadInformationsList != null;
@@ -158,10 +159,12 @@ class HtmlCounterRequestContextReport {
 		this.htmlThreadInformationsReport = new HtmlThreadInformationsReport(
 				threadInformationsList, stackTraceEnabled, writer);
 		this.stackTraceEnabled = stackTraceEnabled;
+		this.maxContextsDisplayed = maxContextsDisplayed;
 	}
 
 	void toHtml() throws IOException {
 		if (rootCurrentContexts.isEmpty()) {
+			writeln("#Aucune_requete_en_cours#");
 			return;
 		}
 		writeContexts(Collections.singletonList(rootCurrentContexts.get(0)));
@@ -169,15 +172,42 @@ class HtmlCounterRequestContextReport {
 		writeln(I18N.getFormattedString("nb_requete_en_cours",
 				integerFormat.format(rootCurrentContexts.size())));
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		final String counterName = rootCurrentContexts.get(0).getParentCounter().getName();
-		// PID dans l'id du div pour concaténation de pages et affichage dans serveur de collecte
-		writeShowHideLink("contextDetails" + counterName + PID.getPID(), "#Details#");
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("</div>");
+		if (rootCurrentContexts.size() <= maxContextsDisplayed) {
+			final String counterName = rootCurrentContexts.get(0).getParentCounter().getName();
+			// PID dans l'id du div pour concaténation de pages et affichage dans serveur de collecte
+			writeShowHideLink("contextDetails" + counterName + PID.getPID(), "#Details#");
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>");
+			writeln("<div id='contextDetails" + counterName + PID.getPID()
+					+ "' style='display: none;'>");
+			writeContexts(rootCurrentContexts);
+			writeln("</div>");
+		} else {
+			// le nombre de requêtes en cours dépasse le maximum pour être affiché dans le rapport
+			// principal, donc on affiche un lien vers une page à part
+			writeln("<a href='?part=currentRequests'>#Details#</a>");
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>");
+		}
+	}
 
-		writeln("<div id='contextDetails" + counterName + PID.getPID()
-				+ "' style='display: none;'>");
+	void writeTitleAndDetails() throws IOException {
+		writeln("<div class='noPrint'>");
+		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<a href='?part=currentRequests'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		writeln("</div><br/>");
+		writeln("<img src='?resource=hourglass.png' width='24' height='24' alt='#Requetes_en_cours#' />&nbsp;");
+		writeln("<b>#Requetes_en_cours#</b>");
+		writeln("<br/><br/>");
+
+		if (rootCurrentContexts.isEmpty()) {
+			writeln("#Aucune_requete_en_cours#");
+			return;
+		}
 		writeContexts(rootCurrentContexts);
+
+		writeln("<div align='right'>");
+		writeln(I18N.getFormattedString("nb_requete_en_cours",
+				integerFormat.format(rootCurrentContexts.size())));
 		writeln("</div>");
 	}
 

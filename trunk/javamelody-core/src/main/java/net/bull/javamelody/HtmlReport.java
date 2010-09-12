@@ -82,10 +82,18 @@ class HtmlReport {
 	}
 
 	void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
-			boolean stackTraceEnabled, Map<String, HtmlCounterReport> counterReportsByCounterName)
-			throws IOException {
-		htmlCoreReport.writeCurrentRequests(threadInformationsList, stackTraceEnabled,
-				counterReportsByCounterName);
+			boolean stackTraceEnabled, boolean withoutHeaders,
+			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
+		if (withoutHeaders) {
+			// pour affichage dans serveur de collecte
+			htmlCoreReport.writeCurrentRequests(threadInformationsList, stackTraceEnabled,
+					Integer.MAX_VALUE, false, counterReportsByCounterName);
+		} else {
+			writeHtmlHeader();
+			htmlCoreReport.writeCurrentRequests(threadInformationsList, stackTraceEnabled,
+					Integer.MAX_VALUE, true, counterReportsByCounterName);
+			writeHtmlFooter();
+		}
 	}
 
 	void writeHtmlHeader() throws IOException {

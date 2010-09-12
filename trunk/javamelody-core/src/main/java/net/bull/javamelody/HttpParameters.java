@@ -39,6 +39,7 @@ final class HttpParameters {
 	static final String GRAPH_PARAMETER = "graph";
 	static final String RESOURCE_PARAMETER = "resource";
 	static final String FORMAT_PARAMETER = "format";
+	static final String HTML_BODY_FORMAT = "htmlbody";
 	static final String WIDTH_PARAMETER = "width";
 	static final String HEIGHT_PARAMETER = "height";
 	static final String HEAP_HISTO_PART = "heaphisto";

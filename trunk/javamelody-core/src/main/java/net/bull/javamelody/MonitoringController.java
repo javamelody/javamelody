@@ -30,6 +30,7 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
@@ -348,7 +349,9 @@ class MonitoringController {
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 			doSessions(sessionId, htmlReport);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			doCurrentRequests(htmlReport);
+			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
+					.getParameter(FORMAT_PARAMETER));
+			doCurrentRequests(htmlReport, withoutHeaders);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			doHeapHisto(htmlReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
@@ -356,7 +359,7 @@ class MonitoringController {
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			doDatabase(htmlReport, httpRequest.getParameter(REQUEST_PARAMETER));
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = "htmlbody".equalsIgnoreCase(httpRequest
+			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
 					.getParameter(FORMAT_PARAMETER));
 			doConnections(htmlReport, withoutHeaders);
 		} else if (JNDI_PART.equalsIgnoreCase(part)) {
@@ -389,14 +392,15 @@ class MonitoringController {
 		}
 	}
 
-	private void doCurrentRequests(HtmlReport htmlReport) throws IOException {
+	private void doCurrentRequests(HtmlReport htmlReport, boolean withoutHeaders)
+			throws IOException {
 		if (isFromCollectorServer()) {
 			// le html des requêtes en cours dans une page à part n'est utile que depuis une
-			// application monitorée et suite à l'appel depuis le serveur de collecte
-			// qui lui n'a pas les données requises
+			// application monitorée (le serveur de collecte n'a pas les données requises)
 			throw new IllegalStateException();
 		}
-		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true, null);
+		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true,
+				withoutHeaders, null);
 	}
 
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
