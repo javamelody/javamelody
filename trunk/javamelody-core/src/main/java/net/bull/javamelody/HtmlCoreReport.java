@@ -329,7 +329,17 @@ class HtmlCoreReport {
 				MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT, false, counterReportsByCounterName);
 	}
 
-	void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
+	void writeAllCurrentRequestsAsPart(boolean onlyTitleAndDetails) throws IOException {
+		// on est dans l'application monitorée, même si c'est pour le serveur de collecte
+		assert javaInformationsList.size() == 1;
+		final List<ThreadInformations> threadInformationsList = javaInformationsList.get(0)
+				.getThreadInformationsList();
+		final boolean stackTraceEnabled = javaInformationsList.get(0).isStackTraceEnabled();
+		writeCurrentRequests(threadInformationsList, stackTraceEnabled, Integer.MAX_VALUE,
+				onlyTitleAndDetails, null);
+	}
+
+	private void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled, int maxContextsDisplayed, boolean onlyTitleAndDetails,
 			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
 		// counterReportsByCounterName peut être null

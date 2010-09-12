@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -81,17 +80,13 @@ class HtmlReport {
 		HtmlCoreReport.writeAddAndRemoveApplicationLinks(currentApplication, writer);
 	}
 
-	void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
-			boolean stackTraceEnabled, boolean withoutHeaders,
-			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
+	void writeCurrentRequests(boolean withoutHeaders) throws IOException {
 		if (withoutHeaders) {
-			// pour affichage dans serveur de collecte
-			htmlCoreReport.writeCurrentRequests(threadInformationsList, stackTraceEnabled,
-					Integer.MAX_VALUE, false, counterReportsByCounterName);
+			// affichage pour serveur de collecte
+			htmlCoreReport.writeAllCurrentRequestsAsPart(!withoutHeaders);
 		} else {
 			writeHtmlHeader();
-			htmlCoreReport.writeCurrentRequests(threadInformationsList, stackTraceEnabled,
-					Integer.MAX_VALUE, true, counterReportsByCounterName);
+			htmlCoreReport.writeAllCurrentRequestsAsPart(!withoutHeaders);
 			writeHtmlFooter();
 		}
 	}

@@ -105,7 +105,8 @@ class MonitoringController {
 	boolean isJavaInformationsNeeded(HttpServletRequest httpRequest) {
 		return httpRequest.getParameter(RESOURCE_PARAMETER) == null
 				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
-				&& httpRequest.getParameter(PART_PARAMETER) == null;
+				&& (httpRequest.getParameter(PART_PARAMETER) == null || CURRENT_REQUESTS_PART
+						.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
 	}
 
 	String executeActionIfNeeded(HttpServletRequest httpRequest) throws IOException {
@@ -399,8 +400,7 @@ class MonitoringController {
 			// application monitorée (le serveur de collecte n'a pas les données requises)
 			throw new IllegalStateException();
 		}
-		htmlReport.writeCurrentRequests(JavaInformations.buildThreadInformationsList(), true,
-				withoutHeaders, null);
+		htmlReport.writeCurrentRequests(withoutHeaders);
 	}
 
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
