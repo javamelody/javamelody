@@ -153,7 +153,7 @@ class PdfDocumentFactory {
 		// mais marge de 40 en bas pour ne pas empiéter sur les numéros de pages
 		final Document document = new Document(pageSize, 20, 20, 20, 40);
 
-		final String title = I18N.getString("Monitoring_sur") + ' ' + application;
+		final String title = I18N.getFormattedString("Monitoring_sur", application);
 		createWriter(document, title);
 
 		// we add some meta information to the document (after writer)
