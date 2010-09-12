@@ -143,8 +143,8 @@ class MailReport {
 				output.close();
 			}
 
-			final String subject = I18N.getString("Monitoring_sur") + ' '
-					+ collector.getApplication();
+			final String subject = I18N.getFormattedString("Monitoring_sur",
+					collector.getApplication());
 			final Mailer mailer = new Mailer("java:comp/env/"
 					+ Parameters.getParameter(Parameter.MAIL_SESSION));
 			final String adminEmails = Parameters.getParameter(Parameter.ADMIN_EMAILS);
