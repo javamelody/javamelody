@@ -32,6 +32,7 @@ import java.util.Map;
  * @author Emeric Vernat
  */
 class HtmlCoreReport {
+	private static final int MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT = 500;
 	private static final String END_DIV = "</div>";
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
@@ -324,19 +325,22 @@ class HtmlCoreReport {
 		final List<ThreadInformations> threadInformationsList = javaInformations
 				.getThreadInformationsList();
 		final boolean stackTraceEnabled = javaInformations.isStackTraceEnabled();
-		writeCurrentRequests(threadInformationsList, stackTraceEnabled, counterReportsByCounterName);
+		writeCurrentRequests(threadInformationsList, stackTraceEnabled,
+				MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT, false, counterReportsByCounterName);
 	}
 
 	void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
-			boolean stackTraceEnabled, Map<String, HtmlCounterReport> counterReportsByCounterName)
-			throws IOException {
+			boolean stackTraceEnabled, int maxContextsDisplayed, boolean onlyTitleAndDetails,
+			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
 		// counterReportsByCounterName peut être null
 		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
-		if (rootCurrentContexts.isEmpty()) {
-			writeln("#Aucune_requete_en_cours#");
+		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
+				rootCurrentContexts, counterReportsByCounterName, threadInformationsList,
+				stackTraceEnabled, maxContextsDisplayed, writer);
+		if (onlyTitleAndDetails) {
+			htmlCounterRequestContextReport.writeTitleAndDetails();
 		} else {
-			new HtmlCounterRequestContextReport(rootCurrentContexts, counterReportsByCounterName,
-					threadInformationsList, stackTraceEnabled, writer).toHtml();
+			htmlCounterRequestContextReport.toHtml();
 		}
 	}
 
