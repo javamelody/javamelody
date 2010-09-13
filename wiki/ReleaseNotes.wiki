@@ -1,4 +1,9 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 45: Optimization of html rendering when there are thousands of threads or current requests: the threads are displayed in their own page when there are more than 500 threads, and the "current requests" are also displayed in their own page when there are more than 500 of them. If there are less than 500 threads or current requests, then nothing is changed in the reports.
+  * Note that a webapp with JavaMelody has no problem with 7000 threads and 7000 active http requests ! and that html reports are already highly compressed in this case.
+
 === 1.19.0 ===
 
   * fix issue 38: Distributed (XA) Transactions aborted by 'rollback' in JavaInformations.java
