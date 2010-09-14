@@ -9,6 +9,7 @@
   * [http://www.ilsitodiluca.it/2010/07/26/javamelody-un-utile-strumento-di-monitoraggio-delle-webapp-java/ Luca (Italian)]
   * [http://blog.klicap.es/archives/175 Antonio (Spanish)]
   * [http://www.javahispano.org/contenidos/es/javamelody__solucion_opensource_para_monitorizar_aplicaciones_java_ee/ javahispano (Spanish)]
+  * [http://blyx.com/2010/09/13/monitoring-alfresco-con-javamelody/ Blyx for Alfresco (Spanish)]
   * [http://psm-blog.blogspot.com/2009/11/monitoring-von-jee-anwedungen.html Peter (German)]
   * [http://it-republik.de/jaxenter/news/Java-EE-App-Server-ueberwachen-mit-JavaMelody-055352.html it-republik (German)]
   * [http://atamanenko.blogspot.com/2010/02/grails.html atamenko (Russian)]
