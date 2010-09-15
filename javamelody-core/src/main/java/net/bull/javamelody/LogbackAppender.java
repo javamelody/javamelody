@@ -34,7 +34,7 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	private static final String MESSAGE_PATTERN = "%-5level %logger{36} - %msg%nopex%n";
 	private static final String EXCEPTION_PATTERN = "%ex";
-	private static final Level MINIMUM_LEVEL = Level.WARN;
+	private static final Level THRESHOLD = Level.WARN;
 
 	private static final LogbackAppender SINGLETON = new LogbackAppender();
 
@@ -83,7 +83,7 @@ public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	protected void append(ILoggingEvent event) {
 		// inutile de vérifier que l'appender est bien "started",
 		// car il est démarré dans le constructeur et si cela ne fonctionne pas il n'y a pas d'instance
-		if (event.getLevel().isGreaterOrEqual(MINIMUM_LEVEL)) {
+		if (event.getLevel().isGreaterOrEqual(THRESHOLD)) {
 			final String output = messageLayout.doLayout(event);
 			String stackTrace = exceptionLayout.doLayout(event);
 			if (stackTrace.isEmpty()) {
