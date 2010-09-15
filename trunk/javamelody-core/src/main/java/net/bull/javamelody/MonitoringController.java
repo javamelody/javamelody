@@ -345,6 +345,10 @@ class MonitoringController {
 		} else if (USAGES_PART.equalsIgnoreCase(part)) {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestUsages(graphName);
+		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
+					.getParameter(FORMAT_PARAMETER));
+			doCurrentRequests(htmlReport, withoutHeaders);
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			htmlReport.writeAllThreadsAsPart();
 		} else {
@@ -357,10 +361,6 @@ class MonitoringController {
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 			doSessions(sessionId, htmlReport);
-		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
-			doCurrentRequests(htmlReport, withoutHeaders);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			doHeapHisto(htmlReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
