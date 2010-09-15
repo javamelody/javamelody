@@ -34,6 +34,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static org.easymock.EasyMock.createNiceMock;
@@ -519,6 +520,8 @@ public class TestMonitoringFilter {
 
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, THREADS_PART);
+		monitoring(parameters);
 
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
@@ -633,9 +636,12 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, THREADS_PART);
+		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
@@ -690,10 +696,12 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(FORMAT_PARAMETER, TransportFormat.JSON.getCode());
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, THREADS_PART);
+		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
