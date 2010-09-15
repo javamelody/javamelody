@@ -246,6 +246,13 @@ public class TestHtmlReport {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 
+		htmlReport.writeAllCurrentRequestsAsPart(true);
+		assertNotEmptyAndClear(writer);
+		htmlReport.writeAllCurrentRequestsAsPart(false);
+		assertNotEmptyAndClear(writer);
+		htmlReport.writeAllThreadsAsPart();
+		assertNotEmptyAndClear(writer);
+
 		htmlReport.writeSessionDetail("", null);
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
