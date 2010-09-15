@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * @author Emeric Vernat
  */
 public class LoggingHandler extends Handler {
-	private static final Level MINIMUM_LEVEL = Level.WARNING;
+	private static final Level THRESHOLD = Level.WARNING;
 
 	// Cette variable LOG_COUNTER conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	// On utilise un counter static pour le cas où logging (ou log4j) serait reconfiguré après la configuration
@@ -93,7 +93,7 @@ public class LoggingHandler extends Handler {
 	@Override
 	public void publish(LogRecord record) {
 		// ici on préfère ne pas appeler isLoggable(record) pour éviter un lock synchronized sur getLevel
-		if (record.getLevel().intValue() < MINIMUM_LEVEL.intValue()) {
+		if (record.getLevel().intValue() < THRESHOLD.intValue()) {
 			return;
 		}
 		addErrorLogToCounter(record.getLevel().getName() + ": " + record.getMessage(),
