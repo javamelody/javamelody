@@ -30,7 +30,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class Log4JAppender extends AppenderSkeleton {
 	private static final String MESSAGE_PATTERN = "%-5p [%c] %m%n";
-	private static final Level MINIMUM_LEVEL = Level.WARN;
+	private static final Level THRESHOLD = Level.WARN;
 
 	private static final Log4JAppender SINGLETON = new Log4JAppender();
 
@@ -40,6 +40,8 @@ public class Log4JAppender extends AppenderSkeleton {
 	public Log4JAppender() {
 		super();
 		setLayout(new PatternLayout(MESSAGE_PATTERN));
+		setThreshold(THRESHOLD);
+		setName(getClass().getName());
 	}
 
 	static Log4JAppender getSingleton() {
@@ -59,15 +61,13 @@ public class Log4JAppender extends AppenderSkeleton {
 	 */
 	@Override
 	protected void append(LoggingEvent event) {
-		if (event.getLevel().isGreaterOrEqual(MINIMUM_LEVEL)) {
-			final Throwable throwable;
-			if (event.getThrowableInformation() == null) {
-				throwable = null;
-			} else {
-				throwable = event.getThrowableInformation().getThrowable();
-			}
-			LoggingHandler.addErrorLogToCounter(getLayout().format(event), throwable);
+		final Throwable throwable;
+		if (event.getThrowableInformation() == null) {
+			throwable = null;
+		} else {
+			throwable = event.getThrowableInformation().getThrowable();
 		}
+		LoggingHandler.addErrorLogToCounter(getLayout().format(event), throwable);
 	}
 
 	/**
