@@ -208,10 +208,10 @@ final class JRobin {
 		final String titleEnd;
 		if (width > 400) {
 			if (range.getPeriod() == null) {
-				titleEnd = " - " + I18N.getString("sur") + ' ' + getApplication();
+				titleEnd = " - " + I18N.getFormattedString("sur", getApplication());
 			} else {
-				titleEnd = " - " + I18N.getCurrentDate() + ' ' + I18N.getString("sur") + ' '
-						+ getApplication();
+				titleEnd = " - " + I18N.getCurrentDate() + ' '
+						+ I18N.getFormattedString("sur", getApplication());
 			}
 		} else {
 			titleEnd = "";
@@ -346,7 +346,7 @@ final class JRobin {
 		// plus nécessaire:  if (getName().startsWith("error")) {
 		// c'est un jrobin issu d'un CounterRequest du Counter "error"
 		// return I18N.getString("Erreurs_par_minute_pour") + ' ' + shortRequestName; }
-		return I18N.getString("Temps_moyens_de") + ' ' + shortRequestName;
+		return I18N.getFormattedString("Temps_moyens_de", shortRequestName);
 	}
 
 	String getRequestName() {

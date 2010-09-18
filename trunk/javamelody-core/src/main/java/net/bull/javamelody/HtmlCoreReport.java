@@ -366,7 +366,9 @@ class HtmlCoreReport {
 		writeln("<br/><br/>");
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			writeln("<b>#Threads_sur# " + javaInformations.getHost() + ": </b>");
+			write(" <b>");
+			writer.write(I18N.getFormattedString("Threads_sur", javaInformations.getHost()));
+			write(": </b>");
 			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
 					javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()));
@@ -382,7 +384,9 @@ class HtmlCoreReport {
 	private void writeThreads() throws IOException {
 		int i = 0;
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			writeln("<b>#Threads_sur# " + javaInformations.getHost() + ": </b>");
+			write("<b>");
+			writer.write(I18N.getFormattedString("Threads_sur", javaInformations.getHost()));
+			write(": </b>");
 			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
 					javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()));
