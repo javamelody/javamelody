@@ -318,7 +318,7 @@ class PdfReport {
 	private void writeThreads(boolean includeDetails) throws DocumentException, IOException {
 		String eol = "";
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			add(new Phrase(eol + getI18nString("Threads_sur") + ' ' + javaInformations.getHost()
+			add(new Phrase(eol + I18N.getFormattedString("Threads_sur", javaInformations.getHost())
 					+ ": ", PdfDocumentFactory.BOLD_FONT));
 			add(new Phrase(I18N.getFormattedString("thread_count",
 					javaInformations.getThreadCount(), javaInformations.getPeakThreadCount(),
