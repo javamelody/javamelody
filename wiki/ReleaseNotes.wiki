@@ -3,6 +3,7 @@
 
   * added: German translation thanks to _Ewald Arnold_. We would like to have [http://groups.google.fr/group/javamelody/browse_thread/thread/5656e63513436b64 feedback here] before the official release.
 
+  * fix: In the html display of the current requests, put back the complete http request with query parameters and values, like it was displayed before v1.16.0
   * fix issue 45: Optimization of html rendering when there are thousands of threads or current requests: the threads are displayed in their own page when there are more than 500 threads, and the "current requests" are also displayed in their own page when there are more than 500 of them. If there are less than 500 threads or current requests, then nothing is changed in the reports.
   * Note that a webapp with JavaMelody has no problem with 7000 threads and 7000 active http requests ! and that html reports are already highly compressed in this case.
 
