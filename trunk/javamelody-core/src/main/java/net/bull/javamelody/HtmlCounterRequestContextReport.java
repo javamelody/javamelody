@@ -332,7 +332,7 @@ class HtmlCounterRequestContextReport {
 		final HtmlCounterReport counterReport = getCounterReport(parentCounter, Period.TOUT);
 		final CounterRequest counterRequest = counterRequestContextReportHelper
 				.getCounterRequest(context);
-		counterReport.writeRequestName(counterRequest,
+		counterReport.writeRequestName(counterRequest.getId(), context.getCompleteRequestName(),
 				HtmlCounterReport.isRequestGraphDisplayed(parentCounter), true);
 	}
 
