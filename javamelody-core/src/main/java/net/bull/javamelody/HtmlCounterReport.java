@@ -588,7 +588,7 @@ class HtmlCounterReport {
 			boolean includeDetailLink) throws IOException {
 		final String nextColumn = "</td> <td align='right'>";
 		write("<td>");
-		writeRequestName(request, includeGraph, includeDetailLink);
+		writeRequestName(request.getId(), request.getName(), includeGraph, includeDetailLink);
 		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 		if (counterRequestAggregation.isTimesDisplayed()) {
 			write(nextColumn);
@@ -638,15 +638,14 @@ class HtmlCounterReport {
 		write("</td>");
 	}
 
-	void writeRequestName(CounterRequest request, boolean includeGraph, boolean includeDetailLink)
-			throws IOException {
-		final String requestName = request.getName();
+	void writeRequestName(String requestId, String requestName, boolean includeGraph,
+			boolean includeDetailLink) throws IOException {
 		if (includeGraph) {
 			assert includeDetailLink;
-			htmlCounterRequestGraphReport.writeRequestGraph(request.getId(), requestName);
+			htmlCounterRequestGraphReport.writeRequestGraph(requestId, requestName);
 		} else if (includeDetailLink) {
 			write("<a href='?part=graph&amp;graph=");
-			write(request.getId());
+			write(requestId);
 			write("'>");
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
 			writer.write(htmlEncode(requestName));
