@@ -186,7 +186,7 @@ class MonitoringController {
 		} else if ("pdf".equalsIgnoreCase(format)) {
 			doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else {
-			doSerializable(httpRequest, httpResponse, javaInformationsList);
+			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
 	}
 
@@ -200,8 +200,9 @@ class MonitoringController {
 			List<JavaInformations> javaInformationsList) throws IOException {
 		if (isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
-			// on compresse le flux de réponse en gzip (à moins que la compression http
-			// ne soit pas supportée comme par ex s'il y a un proxy squid qui ne supporte que http 1.0)
+			// on compresse le flux de réponse en gzip à partir de 4 Ko
+			// (à moins que la compression http ne soit pas supportée
+			// comme par ex s'il y a un proxy squid qui ne supporte que http 1.0)
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
@@ -211,6 +212,28 @@ class MonitoringController {
 			}
 		} else {
 			doHtml(httpRequest, httpResponse, javaInformationsList);
+		}
+	}
+
+	private void doCompressedSerializable(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, List<JavaInformations> javaInformationsList)
+			throws IOException {
+		// note: normalement la compression est supportée ici car s'il s'agit du serveur de collecte,
+		// LabradorRetriever appelle connection.setRequestProperty("Accept-Encoding", "gzip");
+		if (isCompressionSupported(httpRequest)) {
+			// comme les données peuvent être volumineuses avec toutes les requêtes sql et http
+			// et les threads on compresse le flux de réponse en gzip à partir de 50 Ko
+			// (à moins que la compression http ne soit pas supportée
+			// comme par ex s'il y a un proxy squid qui ne supporte que http 1.0)
+			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
+					httpResponse, 50 * 1024);
+			try {
+				doSerializable(httpRequest, wrappedResponse, javaInformationsList);
+			} finally {
+				wrappedResponse.finishResponse();
+			}
+		} else {
+			doSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
 	}
 
