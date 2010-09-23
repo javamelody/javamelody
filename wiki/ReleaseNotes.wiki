@@ -6,6 +6,7 @@
   * fix: In the html display of the current requests, put back the complete http request with query parameters and values, like it was displayed before v1.16.0
   * fix issue 45: Optimization of html rendering when there are thousands of threads or current requests: the threads are displayed in their own page when there are more than 500 threads, and the "current requests" are also displayed in their own page when there are more than 500 of them. If there are less than 500 threads or current requests, then nothing is changed in the reports.
   * Note that a webapp with JavaMelody has no problem with 7000 threads and 7000 active http requests ! and that html reports are already highly compressed in this case.
+  * For the same reason, when the optional [UserGuideAdvanced#Optional_centralization_server_setup centralized collect server] is used, the data from the monitored application to the collect server are now compressed when the size of the stream is larger than 50 KB (for example, when there are 7000 threads). This applies when the transport format is 'serialized' but also when it is 'xml' or 'json'.
 
   * added: Documentation on using JavaMelody with a [UserGuide#Dependencies maven dependency]
 
