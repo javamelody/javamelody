@@ -159,6 +159,8 @@ class LabradorRetriever {
 		if (READ_TIMEOUT > 0) {
 			connection.setReadTimeout(READ_TIMEOUT);
 		}
+		// grâce à cette propriété, l'application retournera un flux compressé si la taille
+		// dépasse x Ko
 		connection.setRequestProperty("Accept-Encoding", "gzip");
 		return connection;
 	}
@@ -175,6 +177,8 @@ class LabradorRetriever {
 		InputStream input = connection.getInputStream();
 		try {
 			if ("gzip".equals(connection.getContentEncoding())) {
+				// si la taille du flux dépasse x Ko et que l'application a retourné un flux compressé
+				// alors on le décompresse
 				input = new GZIPInputStream(input);
 			}
 			final String contentType = connection.getContentType();
