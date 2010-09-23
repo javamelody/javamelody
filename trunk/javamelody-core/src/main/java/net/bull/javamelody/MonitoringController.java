@@ -182,14 +182,11 @@ class MonitoringController {
 		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
 		if (format == null || "html".equalsIgnoreCase(format)
 				|| "htmlbody".equalsIgnoreCase(format)) {
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final String part = httpRequest.getParameter(PART_PARAMETER);
-			doCompressedHtml(httpRequest, httpResponse, javaInformationsList, range, part);
+			doCompressedHtml(httpRequest, httpResponse, javaInformationsList);
 		} else if ("pdf".equalsIgnoreCase(format)) {
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			doPdf(httpRequest, httpResponse, range, javaInformationsList);
+			doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else {
-			doSerializable(httpRequest, httpResponse, javaInformationsList, format);
+			doSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
 	}
 
@@ -200,8 +197,7 @@ class MonitoringController {
 	}
 
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList, Range range, String part)
-			throws IOException {
+			List<JavaInformations> javaInformationsList) throws IOException {
 		if (isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
 			// on compresse le flux de réponse en gzip (à moins que la compression http
@@ -209,20 +205,21 @@ class MonitoringController {
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
-				doHtml(httpRequest, wrappedResponse, javaInformationsList, range, part);
+				doHtml(httpRequest, wrappedResponse, javaInformationsList);
 			} finally {
 				wrappedResponse.finishResponse();
 			}
 		} else {
-			doHtml(httpRequest, httpResponse, javaInformationsList, range, part);
+			doHtml(httpRequest, httpResponse, javaInformationsList);
 		}
 	}
 
 	private void doSerializable(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList, String format) throws IOException {
+			List<JavaInformations> javaInformationsList) throws IOException {
 		// l'appelant (un serveur d'agrégation par exemple) peut appeler
 		// la page monitoring avec un format "serialized" ou "xml" en paramètre
 		// pour avoir les données au format sérialisé java ou xml
+		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
 		final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
 		Serializable serializable;
 		try {
@@ -306,8 +303,8 @@ class MonitoringController {
 	}
 
 	private void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList, Range range, String part)
-			throws IOException {
+			List<JavaInformations> javaInformationsList) throws IOException {
+		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (!isFromCollectorServer()
 				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
 						.equalsIgnoreCase(part))) {
@@ -320,6 +317,7 @@ class MonitoringController {
 		httpResponse.setContentType(HTML_CONTENT_TYPE);
 		final BufferedWriter writer = getWriter(httpResponse);
 		try {
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
 					javaInformationsList, range, writer);
 			if (part == null) {
@@ -359,8 +357,7 @@ class MonitoringController {
 	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
 			HtmlReport htmlReport) throws IOException {
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-			doSessions(sessionId, htmlReport);
+			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			doHeapHisto(htmlReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
@@ -378,7 +375,7 @@ class MonitoringController {
 		}
 	}
 
-	private void doSessions(String sessionId, HtmlReport htmlReport) throws IOException {
+	private void doSessions(HtmlReport htmlReport, String sessionId) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final List<SessionInformations> sessionsInformations;
@@ -498,7 +495,7 @@ class MonitoringController {
 	}
 
 	private void doPdf(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			Range range, List<JavaInformations> javaInformationsList) throws IOException {
+			List<JavaInformations> javaInformationsList) throws IOException {
 		if (!isFromCollectorServer()) {
 			// avant de faire l'affichage on fait une collecte,  pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
@@ -512,6 +509,7 @@ class MonitoringController {
 				encodeFileNameToContentDisposition(httpRequest,
 						PdfReport.getFileName(collector.getApplication())));
 		try {
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			final PdfReport pdfReport = new PdfReport(collector, isFromCollectorServer(),
 					javaInformationsList, range, httpResponse.getOutputStream());
 			pdfReport.toPdf();
