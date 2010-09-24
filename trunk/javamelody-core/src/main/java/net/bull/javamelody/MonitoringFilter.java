@@ -112,6 +112,10 @@ public class MonitoringFilter implements Filter {
 			JdbcWrapper.SINGLETON.initServletContext(config.getServletContext());
 			if (!Parameters.isNoDatabase()) {
 				JdbcWrapper.SINGLETON.rebindDataSources();
+			} else {
+				// si le paramètre no-database a été mis dans web.xml, des datasources jndi ont pu
+				// être rebindées auparavant par SessionListener, donc on annule ce rebinding
+				JdbcWrapper.SINGLETON.stop();
 			}
 
 			// initialisation du listener de jobs quartz

@@ -510,6 +510,7 @@ final class JdbcWrapper {
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
+			LOG.debug("rebinding initial datasources failed, skipping", t);
 			ok = false;
 		}
 		return ok;
