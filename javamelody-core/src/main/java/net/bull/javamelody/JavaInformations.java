@@ -340,6 +340,9 @@ class JavaInformations implements Serializable { // NOPMD
 	}
 
 	private static String buildDataBaseVersion() {
+		if (Parameters.isNoDatabase()) {
+			return null;
+		}
 		final StringBuilder result = new StringBuilder();
 		try {
 			// on commence par voir si le driver jdbc a été utilisé
