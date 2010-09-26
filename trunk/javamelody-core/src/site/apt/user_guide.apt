@@ -58,7 +58,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 		Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring,
 		Ehcache pour le monitoring des caches, Quartz pour le monitoring des jobs en batchs
 
-	Langage : français et anglais
+	Langage : français, anglais et allemand
 
 	Navigateur : Le rapport html de JavaMelody est optimisé pour {{{http://www.mozilla.com}Firefox}},
 	{{{http://www.google.com/chrome}Chrome}} ou MSIE8 (MSIE7 non recommandé).
