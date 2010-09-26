@@ -12,9 +12,9 @@
 	<name>JavaMelody - TEST WebAPP</name>
 	<dependencies>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>javamelody-core</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lowagie</groupId>
@@ -71,7 +71,7 @@
 					<systemProperties>
 						<systemProperty>
 							<name>monitoring.test</name>
-							<value>http://localhost:8080/${artifactId}</value>
+							<value>http://localhost:8080/${project.artifactId}</value>
 						</systemProperty>
 					</systemProperties>
 				</configuration>
@@ -79,5 +79,3 @@
 		</plugins>
 	</build>
 </project>
-
-
