@@ -65,7 +65,9 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	 * Retourne le status définit par setStatus ou sendError.
 	 * @return int
 	 */
-	public int getStatus() {
+	public int getCurrentStatus() {
+		// cette méthode s'appele getCurrentStatus pour ne pas interférer avec getStatus
+		// dans servlet api 3.0, tout en restant compatible avec servlet api 2.5
 		return status;
 	}
 
