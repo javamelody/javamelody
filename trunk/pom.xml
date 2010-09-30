@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-parent</artifactId>
-	<version>1.20.0-SNAPSHOT</version>
+	<version>1.21.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>JavaMelody</name>
 	<modules>
