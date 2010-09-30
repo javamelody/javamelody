@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.20.0 ===
 
   * added: *German translation* thanks to _Ewald Arnold_. We would like to have [http://groups.google.fr/group/javamelody/browse_thread/thread/5656e63513436b64 feedback here] before the official release.
   * added: Documentation on using JavaMelody with a *[UserGuide#Dependencies maven dependency]*
