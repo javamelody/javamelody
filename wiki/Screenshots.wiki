@@ -3,7 +3,8 @@
   # [#Charts Charts]
   # [#Other_charts Other charts]
   # [#Statistics_of_requests Statistics of requests]
-  # [#English/French_(http,_sql,_spring,_jsp) English/French (http, sql, spring, jsp)]
+  # [#French_(http,_sql,_spring,_jsp) French (http, sql, spring, jsp)]
+  # [#German_(http,_sql,_spring,_jsp) German (http, sql, spring, jsp)]
   # [#Http_errors_and_logs_of_errors Http errors and logs of errors]
   # [#Current_requests Current requests]
   # [#System_informations_and_actions System informations and actions]
@@ -30,8 +31,11 @@
 === Statistics of requests ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/statistiques.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/statistiques.png' width='50%' alt='Statistiques requêtes' /></a>
 
-=== English/French (http, sql, spring, jsp) ===
-<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/french_http_sql_spring_jsp.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/french_http_sql_spring_jsp.png' width='50%' alt='Anglais' /></a>
+=== French (http, sql, spring, jsp) ===
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/french_http_sql_spring_jsp.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/french_http_sql_spring_jsp.png' width='50%' alt='Français' /></a>
+
+=== German (http, sql, spring, jsp) ===
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/german_http_sql_spring_jsp.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/german_http_sql_spring_jsp.png' width='50%' alt='Allemand' /></a>
 
 === Http errors and logs of errors ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' width='50%' alt="Erreurs http et logs d'erreurs" /></a>
