@@ -447,10 +447,11 @@ public class MonitoringFilter implements Filter {
 					systemException.printStackTrace(new PrintWriter(stackTrace));
 					errorCounter.addRequestForSystemError(systemException.toString(), duration,
 							cpuUsedMillis, stackTrace.toString());
-				} else if (wrappedResponse.getStatus() >= 400) {
+				} else if (wrappedResponse.getCurrentStatus() >= 400) {
 					systemError = true;
-					errorCounter.addRequestForSystemError("Error" + wrappedResponse.getStatus(),
-							duration, cpuUsedMillis, null);
+					errorCounter.addRequestForSystemError(
+							"Error" + wrappedResponse.getCurrentStatus(), duration, cpuUsedMillis,
+							null);
 				}
 
 				// taille du flux sortant
@@ -573,7 +574,7 @@ public class MonitoringFilter implements Filter {
 
 	private static String getRequestName(HttpServletRequest httpRequest,
 			CounterServletResponseWrapper wrappedResponse) {
-		if (wrappedResponse.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
+		if (wrappedResponse.getCurrentStatus() == HttpServletResponse.SC_NOT_FOUND) {
 			// Sécurité : si status http est 404, alors requestName est Error404
 			// pour éviter de saturer la mémoire avec potentiellement beaucoup d'url différentes
 			return "Error404";

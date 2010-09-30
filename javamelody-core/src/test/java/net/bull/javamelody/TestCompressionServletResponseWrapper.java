@@ -198,11 +198,12 @@ public class TestCompressionServletResponseWrapper {
 		final CompressionServletResponseWrapper wrapper = new CompressionServletResponseWrapper(
 				new HttpResponse(), 1024);
 		wrapper.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		assertEquals("status", HttpServletResponse.SC_NOT_FOUND, wrapper.getStatus());
+		assertEquals("status", HttpServletResponse.SC_NOT_FOUND, wrapper.getCurrentStatus());
 		wrapper.sendError(HttpServletResponse.SC_BAD_GATEWAY);
-		assertEquals("status", HttpServletResponse.SC_BAD_GATEWAY, wrapper.getStatus());
+		assertEquals("status", HttpServletResponse.SC_BAD_GATEWAY, wrapper.getCurrentStatus());
 		wrapper.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "message");
-		assertEquals("status", HttpServletResponse.SC_SERVICE_UNAVAILABLE, wrapper.getStatus());
+		assertEquals("status", HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+				wrapper.getCurrentStatus());
 		assertNotNull("outputStream", wrapper.createOutputStream());
 		assertNotNull("writer", wrapper.getWriter());
 		wrapper.flushBuffer();
