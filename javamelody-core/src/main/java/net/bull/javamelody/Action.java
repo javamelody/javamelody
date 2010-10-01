@@ -88,7 +88,8 @@ enum Action { // NOPMD
 	 * Booléen selon que l'action 'Heap dump' est possible.
 	 */
 	static final boolean HEAP_DUMP_ENABLED = "1.6".compareTo(System.getProperty("java.version")) < 0
-			&& System.getProperty("java.vendor").contains("Sun");
+			&& (System.getProperty("java.vendor").contains("Sun") || System.getProperty(
+					"java.vendor").contains("Oracle"));
 
 	private static final String ALL = "all";
 

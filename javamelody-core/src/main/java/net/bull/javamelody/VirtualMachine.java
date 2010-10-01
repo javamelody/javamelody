@@ -36,7 +36,8 @@ import java.net.URLClassLoader;
 final class VirtualMachine {
 	private static final boolean JROCKIT = System.getProperty("java.vendor").contains("BEA");
 	private static final boolean SUPPORTED = "1.6".compareTo(System.getProperty("java.version")) < 0
-			&& (System.getProperty("java.vendor").contains("Sun") || JROCKIT);
+			&& (System.getProperty("java.vendor").contains("Sun")
+					|| System.getProperty("java.vendor").contains("Oracle") || JROCKIT);
 	private static boolean enabled = SUPPORTED;
 	// singleton initialisé à la demande
 	private static Object jvmVirtualMachine;
