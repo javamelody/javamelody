@@ -129,6 +129,13 @@ class DatabaseInformations implements Serializable {
 		}
 	}
 
+	static int parseRequestIndex(String requestIndex) {
+		if (requestIndex != null) {
+			return Integer.parseInt(requestIndex);
+		}
+		return 0;
+	}
+
 	int getNbColumns() {
 		final String selectedRequestName = getSelectedRequestName();
 		if ("oracle.statistics".equals(selectedRequestName)) {

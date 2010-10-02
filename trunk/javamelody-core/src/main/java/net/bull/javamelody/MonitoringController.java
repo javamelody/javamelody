@@ -291,12 +291,8 @@ class MonitoringController {
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			final int requestIndex;
-			if (httpRequest.getParameter(REQUEST_PARAMETER) != null) {
-				requestIndex = Integer.parseInt(httpRequest.getParameter(REQUEST_PARAMETER));
-			} else {
-				requestIndex = 0;
-			}
+			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
+					.getParameter(REQUEST_PARAMETER));
 			return new DatabaseInformations(requestIndex);
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -464,12 +460,7 @@ class MonitoringController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
-			final int index;
-			if (requestIndex != null) {
-				index = Integer.parseInt(requestIndex);
-			} else {
-				index = 0;
-			}
+			final int index = DatabaseInformations.parseRequestIndex(requestIndex);
 			htmlReport.writeDatabase(new DatabaseInformations(index));
 		} catch (final Exception e) {
 			LOG.warn("database report failed", e);

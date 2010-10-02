@@ -331,12 +331,8 @@ public class CollectorServlet extends HttpServlet {
 
 	private void doDatabase(HttpServletRequest req, HttpServletResponse resp, String application)
 			throws IOException {
-		final int requestIndex;
-		if (req.getParameter(REQUEST_PARAMETER) != null) {
-			requestIndex = Integer.parseInt(req.getParameter(REQUEST_PARAMETER));
-		} else {
-			requestIndex = 0;
-		}
+		final int requestIndex = DatabaseInformations.parseRequestIndex(req
+				.getParameter(REQUEST_PARAMETER));
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		final URL url = getUrlsByApplication(application).get(0);
