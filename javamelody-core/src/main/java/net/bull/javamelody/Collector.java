@@ -126,7 +126,7 @@ final class Collector {
 
 	/**
 	 * @param counterName Nom d'un counter
-	 * @return Le counter de ce collector ayant ce nom
+	 * @return Le counter de ce collector ayant ce nom ou null si non trouvé
 	 */
 	Counter getCounterByName(String counterName) {
 		for (final Counter counter : counters) {
@@ -141,7 +141,7 @@ final class Collector {
 		final List<CounterRequestContext> rootCurrentContexts = new ArrayList<CounterRequestContext>();
 		for (final Counter counter : counters) {
 			if (counter.isDisplayed()) {
-				// à priori, les contextes root courants sont dans le compteur http
+				// a priori, les contextes root courants sont dans le compteur http
 				// mais il est possible qu'il y en ait aussi dans ejb ou sql sans parent dans http
 				rootCurrentContexts.addAll(counter.getOrderedRootCurrentContexts());
 			}
