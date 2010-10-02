@@ -118,7 +118,7 @@ or MSIE8 (MSIE7 not recommended).
 
 === 1. Jar files ===
 
-	Copy the files [http://code.google.com/p/javamelody/downloads/list javamelody.jar] and [http://javamelody.googlecode.com/files/jrobin-1.5.9.jar jrobin-x.jar], located at the root of the supplied javamelody.zip file,
+	Copy the files [http://code.google.com/p/javamelody/downloads/list javamelody.jar] and [http://javamelody.googlecode.com/files/jrobin-1.5.9.jar jrobin-x.jar], located at the root of the supplied [http://code.google.com/p/javamelody/downloads/list javamelody.zip] file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor.
 
 === 2. {{{web.xml}}} file ===
