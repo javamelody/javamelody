@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdDbPool;
@@ -81,6 +82,17 @@ final class JRobin {
 
 	static void stop() throws IOException {
 		getJRobinFileSyncTimer().cancel();
+	}
+
+	static void setJRobinThreadName(final String jrobinThreadName) throws IOException {
+		final TimerTask threadNameTask = new TimerTask() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				Thread.currentThread().setName(jrobinThreadName);
+			}
+		};
+		getJRobinFileSyncTimer().schedule(threadNameTask, 0);
 	}
 
 	static Timer getJRobinFileSyncTimer() throws IOException {

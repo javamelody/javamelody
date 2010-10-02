@@ -75,6 +75,7 @@ class CollectorServer {
 			// on schedule la tâche de fond,
 			// avec une exécution de suite en asynchrone pour initialiser les données
 			timer.schedule(collectTask, 100, periodMillis);
+			JRobin.setJRobinThreadName("jrobin");
 			initOk = true;
 		} finally {
 			if (!initOk) {

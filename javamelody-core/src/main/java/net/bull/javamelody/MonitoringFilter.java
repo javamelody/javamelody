@@ -246,6 +246,12 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 
+		try {
+			JRobin.setJRobinThreadName("jrobin "
+					+ Parameters.getContextPath(Parameters.getServletContext()).replace('/', ' '));
+		} catch (final IOException e) {
+			LOG.warn(e.toString(), e);
+		}
 		final int resolutionSeconds = Parameters.getResolutionSeconds();
 		final int periodMillis = resolutionSeconds * 1000;
 		// on schedule la tâche de fond
