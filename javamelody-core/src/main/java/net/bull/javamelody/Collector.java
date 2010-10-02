@@ -124,6 +124,19 @@ final class Collector {
 		return counters;
 	}
 
+	/**
+	 * @param counterName Nom d'un counter
+	 * @return Le counter de ce collector ayant ce nom
+	 */
+	Counter getCounterByName(String counterName) {
+		for (final Counter counter : counters) {
+			if (counter.getName().equals(counterName)) {
+				return counter;
+			}
+		}
+		return null;
+	}
+
 	List<CounterRequestContext> getRootCurrentContexts() {
 		final List<CounterRequestContext> rootCurrentContexts = new ArrayList<CounterRequestContext>();
 		for (final Counter counter : counters) {
@@ -202,15 +215,14 @@ final class Collector {
 	}
 
 	Counter getRangeCounter(Range range, String counterName) throws IOException {
-		for (final Counter counter : counters) {
-			if (counter.getName().equals(counterName)) {
-				if (range.getPeriod() == Period.TOUT) {
-					return counter;
-				}
-				return getRangeCounter(range, dayCountersByCounter.get(counter));
-			}
+		final Counter counter = getCounterByName(counterName);
+		if (counter == null) {
+			throw new IllegalArgumentException(counterName);
 		}
-		throw new IllegalArgumentException(counterName);
+		if (range.getPeriod() == Period.TOUT) {
+			return counter;
+		}
+		return getRangeCounter(range, dayCountersByCounter.get(counter));
 	}
 
 	void collectLocalContextWithoutErrors() {
@@ -615,18 +627,16 @@ final class Collector {
 	 * @param counterName Nom du compteur
 	 */
 	void clearCounter(String counterName) {
-		for (final Counter counter : counters) {
-			if (counter.getName().equalsIgnoreCase(counterName)) {
-				final List<CounterRequest> requests = counter.getRequests();
-				// on réinitialise le counter
-				counter.clear();
-				// et on purge les données correspondantes du collector utilisées pour les deltas
-				globalRequestsByCounter.remove(counter);
-				for (final CounterRequest request : requests) {
-					requestsById.remove(request.getId());
-					requestJRobinsById.remove(request.getId());
-				}
-				break;
+		final Counter counter = getCounterByName(counterName);
+		if (counter != null) {
+			final List<CounterRequest> requests = counter.getRequests();
+			// on réinitialise le counter
+			counter.clear();
+			// et on purge les données correspondantes du collector utilisées pour les deltas
+			globalRequestsByCounter.remove(counter);
+			for (final CounterRequest request : requests) {
+				requestsById.remove(request.getId());
+				requestJRobinsById.remove(request.getId());
 			}
 		}
 	}
