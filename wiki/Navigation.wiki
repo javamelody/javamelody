@@ -5,7 +5,7 @@
   * [UserGuideAdvanced Advanced user guide]
   * [http://code.google.com/p/javamelody/downloads/list Downloads]
 ----
-  * [http://code.google.com/p/javamelody/feeds JavaMelody users' group]
+  * [http://groups.google.com/group/javamelody JavaMelody users' group]
   * [http://code.google.com/p/javamelody/feeds Project feeds]
 ----
   * [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]
