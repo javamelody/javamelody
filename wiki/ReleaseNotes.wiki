@@ -1,4 +1,12 @@
 #labels Featured
+=== Grails Plugin 0.5 ===
+
+[http://www.grails.org/plugin/grails-melody JavaMelody Grails Plugin] 0.5 has been released.
+
+  * includes JavaMelody 1.20.0
+  * Grails version was updated to 1.2.4 in the plugin
+  * issue 36 is a known open issue for the plugin when a closure is used in a service (contribution welcome)
+
 === 1.20.0 ===
 
   * added: *German translation* thanks to _Ewald Arnold_. We would like to have [http://groups.google.fr/group/javamelody/browse_thread/thread/5656e63513436b64 feedback here].
