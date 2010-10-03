@@ -1,6 +1,7 @@
   * [http://javamelody.googlecode.com/ Home]
-  * [ReleaseNotes Release notes]
   * [Screenshots Screenshots]
+  * ----
+  * [ReleaseNotes Release notes]
   * [UserGuide User guide]
   * [UserGuideAdvanced Advanced user guide]
   * [http://code.google.com/p/javamelody/downloads/list Downloads]
