@@ -16,4 +16,4 @@
   * ----
   * [DevGuide Developer's guide]
   * [ContinuousIntegration Continuous integration]
-  * [TODO]
+  * [TODO To do]
