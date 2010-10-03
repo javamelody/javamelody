@@ -2,8 +2,8 @@
   * [Screenshots Screenshots]
   * ----
   * [ReleaseNotes Release notes]
-  * [UserGuide User guide]
-  * [UserGuideAdvanced Advanced user guide]
+  * [UserGuide User's guide]
+  * [UserGuideAdvanced Advanced user's guide]
   * ----
   * [http://groups.google.com/group/javamelody JavaMelody users' group]
   * [http://code.google.com/p/javamelody/feeds Project feeds]
@@ -14,6 +14,6 @@
   * [https://www.ohloh.net/p/javamelody ohloh statistics]
   * [JavaMelodyOnTheInternet JavaMelody on the Internet]
   * ----
-  * [DevGuide Developer guide]
+  * [DevGuide Developer's guide]
   * [ContinuousIntegration Continuous integration]
   * [TODO]
