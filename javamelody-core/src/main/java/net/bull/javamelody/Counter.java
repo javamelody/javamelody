@@ -528,6 +528,16 @@ class Counter implements Cloneable, Serializable {
 		return JSP_COUNTER_NAME.equals(name) || STRUTS_COUNTER_NAME.equals(name);
 	}
 
+	/**
+	 * Retourne true si ce counter est un counter de "façades métiers" ou "business façades"
+	 * (c'est-à-dire si son nom est "ejb", "spring", "guice" ou "services")
+	 * @return boolean
+	 */
+	boolean isBusinessFacadeCounter() {
+		return "services".equals(name) || "ejb".equals(name) || "spring".equals(name)
+				|| "guice".equals(name);
+	}
+
 	private String getAggregateRequestName(String requestName) {
 		final String aggregateRequestName;
 		if (requestTransformPattern == null) {

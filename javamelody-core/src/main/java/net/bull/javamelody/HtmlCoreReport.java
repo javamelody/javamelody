@@ -262,14 +262,18 @@ class HtmlCoreReport {
 	}
 
 	private HtmlCounterReport writeCounter(Counter counter) throws IOException {
+		writeCounterTitle(counter);
+		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
+		htmlCounterReport.toHtml();
+		return htmlCounterReport;
+	}
+
+	private void writeCounterTitle(Counter counter) throws IOException {
 		write("<h3><img width='24' height='24' src='?resource=" + counter.getIconName() + "' alt='"
 				+ counter.getName() + "'/>");
 		final String counterLabel = I18N.getString(counter.getName() + "Label");
 		write(I18N.getFormattedString("Statistiques_compteur", counterLabel));
 		writeln(" - " + range.getLabel() + "</h3>");
-		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
-		htmlCounterReport.toHtml();
-		return htmlCounterReport;
 	}
 
 	static void writeAddAndRemoveApplicationLinks(String currentApplication, Writer writer)
@@ -409,6 +413,20 @@ class HtmlCoreReport {
 			}
 			i++;
 		}
+	}
+
+	void writeCounterSummaryPerClass(String counterName, String requestId) throws IOException {
+		writeln("<div class='noPrint'>");
+		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ");
+		writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
+				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		writeln("</div>");
+
+		final Counter counter = collector.getRangeCounter(range, counterName);
+		writeCounterTitle(counter);
+		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
+		htmlCounterReport.writeRequestsAggregatedOrFilteredByClassName(requestId);
 	}
 
 	private static boolean isPdfEnabled() {
