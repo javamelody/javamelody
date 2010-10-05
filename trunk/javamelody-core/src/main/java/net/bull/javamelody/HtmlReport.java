@@ -97,6 +97,12 @@ class HtmlReport {
 		writeHtmlFooter();
 	}
 
+	void writeCounterSummaryPerClass(String counterName, String requestId) throws IOException {
+		writeHtmlHeader();
+		htmlCoreReport.writeCounterSummaryPerClass(counterName, requestId);
+		writeHtmlFooter();
+	}
+
 	void writeHtmlHeader() throws IOException {
 		writeHtmlHeader(false, false);
 	}

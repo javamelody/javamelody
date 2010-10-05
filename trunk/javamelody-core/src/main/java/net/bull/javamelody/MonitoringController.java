@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
@@ -368,6 +369,10 @@ class MonitoringController {
 			doCurrentRequests(htmlReport, withoutHeaders);
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			htmlReport.writeAllThreadsAsPart();
+		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			htmlReport.writeCounterSummaryPerClass(counterName, requestId);
 		} else {
 			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
 		}

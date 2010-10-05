@@ -18,13 +18,20 @@
  */
 package net.bull.javamelody;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import net.bull.javamelody.Counter.CounterRequestComparator;
 
 /**
  * Agrégation des requêtes d'un compteur pour l'affichage d'une synthèse.
  * @author Emeric Vernat
  */
 class CounterRequestAggregation {
+	private final Counter counter;
 	private final List<CounterRequest> requests;
 	private final CounterRequest globalRequest;
 	private final int warningThreshold;
@@ -39,6 +46,7 @@ class CounterRequestAggregation {
 	CounterRequestAggregation(Counter counter) {
 		super();
 		assert counter != null;
+		this.counter = counter;
 		if (counter.isErrorCounter()) {
 			this.requests = counter.getOrderedByHitsRequests();
 		} else {
@@ -137,5 +145,46 @@ class CounterRequestAggregation {
 
 	boolean isCpuTimesDisplayed() {
 		return cpuTimesDisplayed;
+	}
+
+	List<CounterRequest> getRequestsAggregatedByClassName() {
+		assert counter.isBusinessFacadeCounter();
+		final Map<String, CounterRequest> requestMap = new HashMap<String, CounterRequest>();
+		final String counterName = counter.getName();
+		for (final CounterRequest request : getRequests()) {
+			final String className = getClassNameFromRequest(request);
+			CounterRequest global = requestMap.get(className);
+			if (global == null) {
+				global = new CounterRequest(className, counterName);
+				requestMap.put(className, global);
+			}
+			global.addHits(request);
+		}
+		// on trie par la somme des durées
+		final List<CounterRequest> requestList = new ArrayList<CounterRequest>(requestMap.values());
+		if (requestList.size() > 1) {
+			Collections.sort(requestList, Collections.reverseOrder(new CounterRequestComparator()));
+		}
+		return requestList;
+	}
+
+	List<CounterRequest> getRequestsFilteredByClassName(String className) {
+		assert counter.isBusinessFacadeCounter();
+		assert className != null;
+		final List<CounterRequest> requestList = new ArrayList<CounterRequest>();
+		for (final CounterRequest request : getRequests()) {
+			final String requestClassName = getClassNameFromRequest(request);
+			if (className.equals(requestClassName)) {
+				requestList.add(request);
+			}
+		}
+		if (requestList.size() > 1) {
+			Collections.sort(requestList, Collections.reverseOrder(new CounterRequestComparator()));
+		}
+		return requestList;
+	}
+
+	private String getClassNameFromRequest(CounterRequest request) {
+		return request.getName().substring(0, request.getName().lastIndexOf('.'));
 	}
 }

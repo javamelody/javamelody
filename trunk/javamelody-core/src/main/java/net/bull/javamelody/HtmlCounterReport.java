@@ -441,13 +441,14 @@ class HtmlCounterReport {
 			// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
 			assert !requests.isEmpty();
 			final List<CounterRequest> summaryRequest = Collections.singletonList(requests.get(0));
-			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false, true);
+			writeRequests(counterName, counter.getChildCounterName(), summaryRequest, false, true,
+					false);
 		} else {
 			final List<CounterRequest> summaryRequests = Arrays.asList(globalRequest,
 					counterRequestAggregation.getWarningRequest(),
 					counterRequestAggregation.getSevereRequest());
 			writeRequests(globalRequest.getName(), counter.getChildCounterName(), summaryRequests,
-					false, false);
+					false, false, false);
 		}
 
 		// 2. débit et liens
@@ -469,6 +470,11 @@ class HtmlCounterReport {
 		writeln(I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute),
 				integerFormat.format(requests.size())));
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		if (counter.isBusinessFacadeCounter()) {
+			writeln(separator);
+			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
+					+ "' class='noPrint'>#Resume_par_classe#</a>");
+		}
 		writeln(separator);
 		writeShowHideLink("details" + counterName, "#Details#");
 		if (isErrorCounter()) {
@@ -488,7 +494,7 @@ class HtmlCounterReport {
 		// 3. détails par requêtes (non visible par défaut)
 		writeln("<div id='details" + counterName + "' style='display: none;'>");
 		writeRequests(counterName, counter.getChildCounterName(), requests,
-				isRequestGraphDisplayed(counter), true);
+				isRequestGraphDisplayed(counter), true, false);
 		writeln("</div>");
 
 		// 4. logs (non visible par défaut)
@@ -526,9 +532,38 @@ class HtmlCounterReport {
 				&& !parentCounter.isJspOrStrutsCounter();
 	}
 
+	void writeRequestsAggregatedOrFilteredByClassName(String requestId) throws IOException {
+		final List<CounterRequest> requestsAggregatedByClassName = counterRequestAggregation
+				.getRequestsAggregatedByClassName();
+		final List<CounterRequest> requestList;
+		if (requestId == null) {
+			// on va afficher la liste des requêtes aggrégées par classe
+			requestList = requestsAggregatedByClassName;
+		} else {
+			// on a un paramètre requestId, ie que l'utilisateur a cliqué sur un lien de détail
+			// des requêtes pour une classe, et on va afficher la liste des requêtes non aggrégées
+			// mais filtrées pour cette classe
+			requestList = new ArrayList<CounterRequest>();
+			// on recherche d'abord le nom de la classe à partir de requestId
+			for (final CounterRequest requestAggregated : requestsAggregatedByClassName) {
+				if (requestId.equals(requestAggregated.getId())) {
+					final String className = requestAggregated.getName();
+					// et on filtre les requêtes pour cette classe
+					requestList.addAll(counterRequestAggregation
+							.getRequestsFilteredByClassName(className));
+					break;
+				}
+			}
+		}
+		final boolean includeSummaryPerClassLink = requestId == null;
+		final boolean includeDetailLink = !includeSummaryPerClassLink;
+		writeRequests(counter.getName(), counter.getChildCounterName(), requestList,
+				includeDetailLink, includeDetailLink, includeSummaryPerClassLink);
+	}
+
 	private void writeRequests(String tableName, String childCounterName,
-			List<CounterRequest> requestList, boolean includeGraph, boolean includeDetailLink)
-			throws IOException {
+			List<CounterRequest> requestList, boolean includeGraph, boolean includeDetailLink,
+			boolean includeSummaryPerClassLink) throws IOException {
 		assert requestList != null;
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='"
 				+ tableName + "'>");
@@ -542,7 +577,7 @@ class HtmlCounterReport {
 				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
 			}
 			odd = !odd; // NOPMD
-			writeRequest(request, includeGraph, includeDetailLink);
+			writeRequest(request, includeGraph, includeDetailLink, includeSummaryPerClassLink);
 			writeln("</tr>");
 		}
 		writeln("</tbody></table>");
@@ -585,10 +620,11 @@ class HtmlCounterReport {
 	}
 
 	private void writeRequest(CounterRequest request, boolean includeGraph,
-			boolean includeDetailLink) throws IOException {
+			boolean includeDetailLink, boolean includeSummaryPerClassLink) throws IOException {
 		final String nextColumn = "</td> <td align='right'>";
 		write("<td>");
-		writeRequestName(request.getId(), request.getName(), includeGraph, includeDetailLink);
+		writeRequestName(request.getId(), request.getName(), includeGraph, includeDetailLink,
+				includeSummaryPerClassLink);
 		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 		if (counterRequestAggregation.isTimesDisplayed()) {
 			write(nextColumn);
@@ -639,17 +675,28 @@ class HtmlCounterReport {
 	}
 
 	void writeRequestName(String requestId, String requestName, boolean includeGraph,
-			boolean includeDetailLink) throws IOException {
+			boolean includeDetailLink, boolean includeSummaryPerClassLink) throws IOException {
 		if (includeGraph) {
 			assert includeDetailLink;
+			assert !includeSummaryPerClassLink;
 			htmlCounterRequestGraphReport.writeRequestGraph(requestId, requestName);
 		} else if (includeDetailLink) {
+			assert !includeSummaryPerClassLink;
 			write("<a href='?part=graph&amp;graph=");
 			write(requestId);
 			write("'>");
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
 			writer.write(htmlEncode(requestName));
 			write("</a>");
+		} else if (includeSummaryPerClassLink) {
+			write("<a href='?part=counterSummaryPerClass&amp;counter=");
+			write(counter.getName());
+			write("&amp;graph=");
+			write(requestId);
+			write("'>");
+			// writer.write pour ne pas gérer de traductions si le nom contient '#'
+			writer.write(htmlEncode(requestName));
+			write("</a> ");
 		} else {
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
 			writer.write(htmlEncode(requestName));
