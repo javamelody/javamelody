@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * New view with the summary per class of statistics for EJB/Spring/Guice/services with aggregation for methods and another view for the methods of the selected class.
+
 === Grails Plugin 0.5 ===
 
 [http://www.grails.org/plugin/grails-melody JavaMelody Grails Plugin] 0.5 has been released.
