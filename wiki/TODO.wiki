@@ -11,7 +11,6 @@ There is no promise of dates or that a particular feature will ever be done.
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
   # Ask Atlassian to be able in a JIRA/Bamboo/Confluence plugin to add an HttpSessionListener like for a ServletContextListener
-  # New view with the summary per class of statistics for EJB/Spring/Guice/services with aggregation for methods and another view for the methods of the selected class.
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish or [http://static.springsource.org/docs/petclinic.html Spring pet clinic] in tomcat for example
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, via a link and a persistent http cookie or at least a parameter (from user group)
