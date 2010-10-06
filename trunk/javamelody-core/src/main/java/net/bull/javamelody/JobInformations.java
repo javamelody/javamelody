@@ -142,10 +142,16 @@ class JobInformations implements Serializable {
 		final List<JobDetail> result = new ArrayList<JobDetail>();
 		for (final String jobGroupName : scheduler.getJobGroupNames()) {
 			for (final String jobName : scheduler.getJobNames(jobGroupName)) {
-				final JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
-				// le job peut être terminé et supprimé depuis la ligne ci-dessus
-				if (jobDetail != null) {
-					result.add(jobDetail);
+				try {
+					final JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
+					// le job peut être terminé et supprimé depuis la ligne ci-dessus
+					if (jobDetail != null) {
+						result.add(jobDetail);
+					}
+				} catch (final SchedulerException e) {
+					// si les jobs sont persistés en base de données, il peut y avoir une exception
+					// dans getJobDetail, par exemple si la classe du job n'existe plus dans l'application
+					LOG.debug(e.toString(), e);
 				}
 			}
 		}
