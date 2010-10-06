@@ -83,10 +83,10 @@ class HtmlReport {
 	void writeAllCurrentRequestsAsPart(boolean withoutHeaders) throws IOException {
 		if (withoutHeaders) {
 			// affichage pour serveur de collecte
-			htmlCoreReport.writeAllCurrentRequestsAsPart(!withoutHeaders);
+			htmlCoreReport.writeAllCurrentRequestsAsPart(false);
 		} else {
 			writeHtmlHeader();
-			htmlCoreReport.writeAllCurrentRequestsAsPart(!withoutHeaders);
+			htmlCoreReport.writeAllCurrentRequestsAsPart(true);
 			writeHtmlFooter();
 		}
 	}
