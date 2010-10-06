@@ -217,12 +217,14 @@ public class TestHtmlReport {
 		sqlCounter.setDisplayed(true);
 		final String requestName = "test 1";
 		counter.bindContext(requestName, "complete test 1");
-		servicesCounter.bindContext("service1", "service1");
+		servicesCounter.clear();
+		servicesCounter.bindContext("myservices.service1", "service1");
 		sqlCounter.bindContext("sql1", "complete sql1");
 		sqlCounter.addRequest("sql1", 5, -1, false, -1);
-		servicesCounter.addRequest("service1", 10, 10, false, -1);
-		servicesCounter.bindContext("service2", "service2");
-		servicesCounter.addRequest("service2", 10, 10, false, -1);
+		servicesCounter.addRequest("myservices.service1", 10, 10, false, -1);
+		servicesCounter.bindContext("myservices.service2", "service2");
+		servicesCounter.addRequest("myservices.service2", 10, 10, false, -1);
+		servicesCounter.addRequest("otherservices.service3", 10, 10, false, -1);
 		jspCounter.addRequest("jsp1", 10, 10, false, -1);
 		counter.addRequest(requestName, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
@@ -237,6 +239,14 @@ public class TestHtmlReport {
 			}
 		}
 		sqlCounter.setDisplayed(false);
+
+		// writeCounterSummaryPerClass
+		toutHtmlReport.writeCounterSummaryPerClass(servicesCounter.getName(), null);
+		String requestId = new CounterRequest("myservices", servicesCounter.getName()).getId();
+		toutHtmlReport.writeCounterSummaryPerClass(servicesCounter.getName(), requestId);
+		requestId = new CounterRequest("otherservices", servicesCounter.getName()).getId();
+		toutHtmlReport.writeCounterSummaryPerClass(servicesCounter.getName(), requestId);
+		toutHtmlReport.writeCounterSummaryPerClass(servicesCounter.getName(), "unknown");
 	}
 
 	/** Test.
