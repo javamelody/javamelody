@@ -138,22 +138,29 @@ class JobInformations implements Serializable {
 		return new ArrayList<Scheduler>(SchedulerRepository.getInstance().lookupAll());
 	}
 
-	static List<JobDetail> getAllJobsOfScheduler(Scheduler scheduler) throws SchedulerException {
+	static List<JobDetail> getAllJobsOfScheduler(Scheduler scheduler) {
 		final List<JobDetail> result = new ArrayList<JobDetail>();
-		for (final String jobGroupName : scheduler.getJobGroupNames()) {
-			for (final String jobName : scheduler.getJobNames(jobGroupName)) {
-				try {
-					final JobDetail jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
-					// le job peut être terminé et supprimé depuis la ligne ci-dessus
-					if (jobDetail != null) {
-						result.add(jobDetail);
+		try {
+			for (final String jobGroupName : scheduler.getJobGroupNames()) {
+				for (final String jobName : scheduler.getJobNames(jobGroupName)) {
+					final JobDetail jobDetail;
+					try {
+						jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
+						// le job peut être terminé et supprimé depuis la ligne ci-dessus
+						if (jobDetail != null) {
+							result.add(jobDetail);
+						}
+					} catch (final Exception e) {
+						// si les jobs sont persistés en base de données, il peut y avoir une exception
+						// dans getJobDetail, par exemple si la classe du job n'existe plus dans l'application
+						LOG.debug(e.toString(), e);
 					}
-				} catch (final SchedulerException e) {
-					// si les jobs sont persistés en base de données, il peut y avoir une exception
-					// dans getJobDetail, par exemple si la classe du job n'existe plus dans l'application
-					LOG.debug(e.toString(), e);
 				}
 			}
+		} catch (final Exception e) {
+			// si les jobs sont persistés en base de données, il peut y avoir une exception
+			// dans scheduler.getJobGroupNames(), par exemple si la base est arrêtée
+			LOG.warn(e.toString(), e);
 		}
 		return result;
 	}
