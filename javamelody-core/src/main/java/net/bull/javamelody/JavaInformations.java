@@ -293,6 +293,8 @@ class JavaInformations implements Serializable { // NOPMD
 		final long[] deadlockedThreads = getDeadlockedThreads(threadBean);
 		final List<ThreadInformations> threadInfosList = new ArrayList<ThreadInformations>(
 				threads.size());
+		// hostAddress récupéré ici car il peut y avoir plus de 20000 threads
+		final String hostAddress = Parameters.getHostAddress();
 		for (final Thread thread : threads) {
 			final StackTraceElement[] stackTraceElements = stackTraces.get(thread);
 			final List<StackTraceElement> stackTraceElementList = stackTraceElements == null ? null
@@ -310,7 +312,7 @@ class JavaInformations implements Serializable { // NOPMD
 					&& Arrays.binarySearch(deadlockedThreads, thread.getId()) >= 0;
 			// stackTraceElementList est une ArrayList et non unmodifiableList pour lisibilité xml
 			threadInfosList.add(new ThreadInformations(thread, stackTraceElementList,
-					cpuTimeMillis, userTimeMillis, deadlocked));
+					cpuTimeMillis, userTimeMillis, deadlocked, hostAddress));
 		}
 		// on retourne ArrayList et non unmodifiableList pour lisibilité du xml par xstream
 		return threadInfosList;
