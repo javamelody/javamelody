@@ -52,7 +52,7 @@ class ThreadInformations implements Serializable {
 
 	@SuppressWarnings("all")
 	ThreadInformations(Thread thread, List<StackTraceElement> stackTrace, long cpuTimeMillis,
-			long userTimeMillis, boolean deadlocked) {
+			long userTimeMillis, boolean deadlocked, String hostAddress) {
 		super();
 		assert thread != null;
 		assert stackTrace == null || stackTrace instanceof Serializable;
@@ -66,7 +66,7 @@ class ThreadInformations implements Serializable {
 		this.cpuTimeMillis = cpuTimeMillis;
 		this.userTimeMillis = userTimeMillis;
 		this.deadlocked = deadlocked;
-		this.globalThreadId = buildGlobalThreadId(thread);
+		this.globalThreadId = buildGlobalThreadId(thread, hostAddress);
 	}
 
 	static long getCurrentThreadCpuTime() {
@@ -132,8 +132,8 @@ class ThreadInformations implements Serializable {
 		return globalThreadId;
 	}
 
-	private static String buildGlobalThreadId(Thread thread) {
-		return PID.getPID() + '_' + Parameters.getHostAddress() + '_' + thread.getId();
+	private static String buildGlobalThreadId(Thread thread, String hostAddress) {
+		return PID.getPID() + '_' + hostAddress + '_' + thread.getId();
 	}
 
 	/** {@inheritDoc} */
