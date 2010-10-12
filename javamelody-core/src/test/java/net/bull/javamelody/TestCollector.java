@@ -103,7 +103,8 @@ public class TestCollector {
 			assertToStringNotEmpty(
 					"thread",
 					new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread
-							.currentThread().getStackTrace()), 100, 1000, false));
+							.currentThread().getStackTrace()), 100, 1000, false, Parameters
+							.getHostAddress()));
 			assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true),
 					true));
 			assertToStringNotEmpty("memory", new MemoryInformations());

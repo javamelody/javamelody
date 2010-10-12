@@ -363,8 +363,8 @@ public class TestPdfReport {
 		// writeDeadlocks
 		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
 		final Thread thread = Thread.currentThread();
-		threads.add(new ThreadInformations(thread, null, 10, 10, false));
-		threads.add(new ThreadInformations(thread, null, 10, 10, true));
+		threads.add(new ThreadInformations(thread, null, 10, 10, false, Parameters.getHostAddress()));
+		threads.add(new ThreadInformations(thread, null, 10, 10, true, Parameters.getHostAddress()));
 		final Document document3 = pdfDocumentFactory.createDocument();
 		document3.open();
 		stackTraceEnabled = false;

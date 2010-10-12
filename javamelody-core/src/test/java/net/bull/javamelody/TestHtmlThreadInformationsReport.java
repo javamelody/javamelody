@@ -64,11 +64,12 @@ public class TestHtmlThreadInformationsReport {
 		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
 		final Thread thread = Thread.currentThread();
 		final List<StackTraceElement> stackTrace = Arrays.asList(thread.getStackTrace());
-		threads.add(new ThreadInformations(thread, null, 10, 10, false));
+		final String hostAddress = Parameters.getHostAddress();
+		threads.add(new ThreadInformations(thread, null, 10, 10, false, hostAddress));
 		threads.add(new ThreadInformations(thread, Collections.<StackTraceElement> emptyList(), 10,
-				10, false));
-		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, true));
-		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, false));
+				10, false, hostAddress));
+		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, true, hostAddress));
+		threads.add(new ThreadInformations(thread, stackTrace, 10, 10, false, hostAddress));
 		new HtmlThreadInformationsReport(threads, true, writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
