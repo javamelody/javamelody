@@ -96,7 +96,12 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	static void invalidateAllSessions() {
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
-			session.invalidate();
+			try {
+				session.invalidate();
+			} catch (final Exception e) {
+				// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"
+				continue;
+			}
 		}
 	}
 
@@ -112,7 +117,12 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>(
 				sessions.size());
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
-			sessionsInformations.add(new SessionInformations(session, false));
+			try {
+				sessionsInformations.add(new SessionInformations(session, false));
+			} catch (final Exception e) {
+				// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"
+				continue;
+			}
 		}
 		sortSessions(sessionsInformations);
 		return Collections.unmodifiableList(sessionsInformations);
