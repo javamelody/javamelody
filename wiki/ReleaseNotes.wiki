@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 48: Quartz errors for persistent jobs after jobs' classes are renamed or deleted
+  * fix to display the list of http sessions when Tomcat throws an exception "Session already invalidated"
   * New view with the summary per class of statistics for EJB/Spring/Guice/services with aggregation for methods and another view for the methods of the selected class.
 
 === Grails Plugin 0.5 ===
