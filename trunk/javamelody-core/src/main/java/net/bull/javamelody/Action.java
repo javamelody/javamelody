@@ -45,39 +45,39 @@ enum Action { // NOPMD
 	/**
 	 * Réinitialisation d'un compteur non périodique.
 	 */
-	CLEAR_COUNTER,
+	CLEAR_COUNTER("http"),
 	/**
 	 * Garbage Collect.
 	 */
-	GC,
+	GC("systeminfo"),
 	/**
 	 * Invalidations des sessions http.
 	 */
-	INVALIDATE_SESSIONS,
+	INVALIDATE_SESSIONS("systeminfo"),
 	/**
 	 * Invalidation d'une session http.
 	 */
-	INVALIDATE_SESSION,
+	INVALIDATE_SESSION(""),
 	/**
 	 * Heap dump.
 	 */
-	HEAP_DUMP,
+	HEAP_DUMP("systeminfo"),
 	/**
 	 * Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()})
 	 */
-	CLEAR_CACHES,
+	CLEAR_CACHES("caches"),
 	/**
 	 * Tue un thread java.
 	 */
-	KILL_THREAD,
+	KILL_THREAD("threads"),
 	/**
 	 * Met un job quartz en pause.
 	 */
-	PAUSE_JOB,
+	PAUSE_JOB("jobs"),
 	/**
 	 * Enlève la pause d'un job quartz.
 	 */
-	RESUME_JOB;
+	RESUME_JOB("jobs");
 
 	/**
 	 * Booléen selon que l'action 'Garbage collector' est possible.
@@ -92,6 +92,23 @@ enum Action { // NOPMD
 					"java.vendor").contains("Oracle"));
 
 	private static final String ALL = "all";
+
+	/**
+	 * Nom du contexte dans lequel est exécutée l'action
+	 * (servira dans l'url pour replacer la page html sur l'anchor de même nom)
+	 */
+	private String contextName;
+
+	Action(String contextName) {
+		this.contextName = contextName;
+	}
+
+	String getContextName(String counterName) {
+		if (this == CLEAR_COUNTER && !"all".equalsIgnoreCase(counterName)) {
+			return counterName;
+		}
+		return contextName;
+	}
 
 	/**
 	 * Convertit le code d'une action en énumération de l'action.

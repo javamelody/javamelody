@@ -96,6 +96,7 @@ class MonitoringController {
 	private final Collector collector;
 	private final CollectorServer collectorServer;
 	private String messageForReport;
+	private String anchorNameForRedirect;
 
 	MonitoringController(Collector collector, CollectorServer collectorServer) {
 		super();
@@ -131,6 +132,7 @@ class MonitoringController {
 				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
 				messageForReport = action.execute(collector, counterName, sessionId, threadId,
 						jobId);
+				anchorNameForRedirect = action.getContextName(counterName);
 				return messageForReport;
 			} finally {
 				I18N.unbindLocale();
@@ -341,7 +343,7 @@ class MonitoringController {
 			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
 					javaInformationsList, range, writer);
 			if (part == null) {
-				htmlReport.toHtml(messageForReport);
+				htmlReport.toHtml(messageForReport, anchorNameForRedirect);
 			} else {
 				doHtmlPart(httpRequest, part, htmlReport);
 			}

@@ -166,7 +166,7 @@ class HtmlCoreReport {
 		this.writer = writer;
 	}
 
-	void toHtml(String message) throws IOException {
+	void toHtml(String message, String anchorNameForRedirect) throws IOException {
 		if (collectorServer != null) {
 			writeln("<div align='center'>");
 			writeApplicationsLinks();
@@ -174,7 +174,7 @@ class HtmlCoreReport {
 			writeln(END_DIV);
 		}
 
-		writeln("<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
+		writeln("<h3><a name='top'></a><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
 		writeSummary();
 		writeln("</h3>");
 		writeln("<div align='center'>");
@@ -193,12 +193,13 @@ class HtmlCoreReport {
 		}
 
 		if (collectorServer == null) {
-			writeln("<h3><img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>#Requetes_en_cours#</h3>");
+			write("<h3><a name='currentRequests'></a>");
+			writeln("<img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>#Requetes_en_cours#</h3>");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
 			writeCurrentRequests(javaInformationsList.get(0), counterReportsByCounterName);
 		}
 
-		writeln("<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
+		writeln("<h3><a name='systeminfo'></a><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
 		writeln("#Informations_systemes#</h3>");
 		if (collectorServer != null) {
 			writeln("<div align='center' class='noPrint'><a href='?part=currentRequests'>");
@@ -212,12 +213,13 @@ class HtmlCoreReport {
 
 		new HtmlJavaInformationsReport(javaInformationsList, writer).toHtml();
 
-		writeln("<h3 style='clear:both;'><img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
+		write("<h3 style='clear:both;'><a name='threads'></a>");
+		writeln("<img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
 		writeln("#Threads#</h3>");
 		writeThreads();
 
 		if (isJobEnabled()) {
-			writeln("<h3><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
+			writeln("<h3><a name='jobs'></a><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
 			writeln("#Jobs#</h3>");
 			final Counter rangeJobCounter = collector.getRangeCounter(range,
 					Counter.JOB_COUNTER_NAME);
@@ -226,7 +228,7 @@ class HtmlCoreReport {
 		}
 
 		if (isCacheEnabled()) {
-			writeln("<h3><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
+			writeln("<h3><a name='caches'></a><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
 			writeln("#Caches#</h3>");
 			writeCaches();
 		}
@@ -235,7 +237,7 @@ class HtmlCoreReport {
 		//			writeln("<br/><br/><br/><br/>");
 		//		}
 
-		writeMessageIfNotNull(message, null);
+		writeMessageIfNotNull(message, null, anchorNameForRedirect);
 		writePoweredBy();
 		writeDurationAndOverhead();
 	}
@@ -269,7 +271,8 @@ class HtmlCoreReport {
 	}
 
 	private void writeCounterTitle(Counter counter) throws IOException {
-		write("<h3><img width='24' height='24' src='?resource=" + counter.getIconName() + "' alt='"
+		write("<h3><a name='" + counter.getName() + "'></a>");
+		write("<img width='24' height='24' src='?resource=" + counter.getIconName() + "' alt='"
 				+ counter.getName() + "'/>");
 		final String counterLabel = I18N.getString(counter.getName() + "Label");
 		write(I18N.getFormattedString("Statistiques_compteur", counterLabel));
@@ -281,7 +284,8 @@ class HtmlCoreReport {
 		new HtmlForms(writer).writeAddAndRemoveApplicationLinks(currentApplication);
 	}
 
-	void writeMessageIfNotNull(String message, String partToRedirectTo) throws IOException {
+	void writeMessageIfNotNull(String message, String partToRedirectTo, String anchorNameForRedirect)
+			throws IOException {
 		if (message != null) {
 			writeln(SCRIPT_BEGIN);
 			// writer.write pour ne pas gérer de traductions si le message contient '#'
@@ -289,7 +293,16 @@ class HtmlCoreReport {
 			writeln("");
 			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
 			if (partToRedirectTo == null) {
-				writeln("location.href = '?'");
+				if (anchorNameForRedirect == null) {
+					writeln("location.href = '?'");
+				} else {
+					writeln("if (location.href.indexOf('?') != -1) {");
+					writer.write("location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
+							+ anchorNameForRedirect + "';");
+					writeln("} else {");
+					writer.write("location.href = '#" + anchorNameForRedirect + "';");
+					writeln("}");
+				}
 			} else {
 				writeln("location.href = '?part=" + partToRedirectTo + '\'');
 			}

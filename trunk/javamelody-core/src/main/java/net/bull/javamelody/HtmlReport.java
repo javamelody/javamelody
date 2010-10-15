@@ -63,15 +63,15 @@ class HtmlReport {
 		this(collector, collectorServer, javaInformationsList, period.getRange(), writer);
 	}
 
-	void toHtml(String message) throws IOException {
+	void toHtml(String message, String anchorNameForRedirect) throws IOException {
 		writeHtmlHeader();
-		htmlCoreReport.toHtml(message);
+		htmlCoreReport.toHtml(message, anchorNameForRedirect);
 		writeHtmlFooter();
 	}
 
 	void writeLastShutdown() throws IOException {
 		writeHtmlHeader(false, true);
-		htmlCoreReport.toHtml(null);
+		htmlCoreReport.toHtml(null, null);
 		writeHtmlFooter();
 	}
 
@@ -176,7 +176,7 @@ class HtmlReport {
 	}
 
 	void writeMessageIfNotNull(String message, String partToRedirectTo) throws IOException {
-		htmlCoreReport.writeMessageIfNotNull(message, partToRedirectTo);
+		htmlCoreReport.writeMessageIfNotNull(message, partToRedirectTo, null);
 	}
 
 	void writeRequestAndGraphDetail(String graphName) throws IOException {
