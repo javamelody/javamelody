@@ -108,7 +108,7 @@ public class TestHtmlReport {
 		// rapport avec counter sans requête
 		counter.clear();
 		errorCounter.clear();
-		htmlReport.toHtml(null);
+		htmlReport.toHtml(null, null);
 		assertNotEmptyAndClear(writer);
 	}
 
@@ -120,7 +120,7 @@ public class TestHtmlReport {
 				null, true), new JavaInformations(null, true));
 		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
 				Period.TOUT, writer);
-		htmlReport.toHtml(null);
+		htmlReport.toHtml(null, null);
 		assertNotEmptyAndClear(writer);
 	}
 
@@ -139,18 +139,18 @@ public class TestHtmlReport {
 
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
-		htmlReport.toHtml("message 2");
+		htmlReport.toHtml("message 2", null);
 		assertNotEmptyAndClear(writer);
 
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		collector.collectWithoutErrors(javaInformationsList);
-		htmlReport.toHtml("message 2");
+		htmlReport.toHtml("message 2", null);
 		assertNotEmptyAndClear(writer);
 		setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, "-1");
 		try {
-			htmlReport.toHtml("message 2");
+			htmlReport.toHtml("message 2", null);
 		} catch (final IllegalStateException e) {
 			assertNotNull("ok", e);
 		}
@@ -167,7 +167,7 @@ public class TestHtmlReport {
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
-		htmlReport.toHtml("message 3");
+		htmlReport.toHtml("message 3", null);
 		assertNotEmptyAndClear(writer);
 		for (final CounterRequest request : errorCounter.getRequests()) {
 			htmlReport.writeRequestAndGraphDetail(request.getId());
@@ -191,13 +191,13 @@ public class TestHtmlReport {
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
-		htmlReport.toHtml("message 6");
+		htmlReport.toHtml("message 6", null);
 		assertNotEmptyAndClear(writer);
 
 		// période personnalisée
 		final HtmlReport htmlReportRange = new HtmlReport(collector, null, javaInformationsList,
 				Range.createCustomRange(new Date(), new Date()), writer);
-		htmlReportRange.toHtml("message 6");
+		htmlReportRange.toHtml("message 6", null);
 		assertNotEmptyAndClear(writer);
 	}
 
@@ -286,10 +286,10 @@ public class TestHtmlReport {
 			htmlReport.writeDatabase(new DatabaseInformations(3)); // h2.settings avec nbColumns==2
 			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
-			htmlReport.toHtml(null); // writeSystemActionsLinks
+			htmlReport.toHtml(null, null); // writeSystemActionsLinks
 			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
-			htmlReport.toHtml(null); // writeSystemActionsLinks
+			htmlReport.toHtml(null, null); // writeSystemActionsLinks
 			assertNotEmptyAndClear(writer);
 		} finally {
 			connection.close();
@@ -339,14 +339,14 @@ public class TestHtmlReport {
 		TestCounter.bindRootContexts("first request", counter, 3);
 		sqlCounter.bindContext("sql", "sql");
 		htmlReport = new HtmlReport(collector, null, javaInformationsList, Period.TOUT, writer);
-		htmlReport.toHtml("message a");
+		htmlReport.toHtml("message a", null);
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter), timer);
 		myCounter.bindContext("my context", "my context");
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
-		htmlReport.toHtml("message b");
+		htmlReport.toHtml("message b", null);
 		assertNotEmptyAndClear(writer);
 
 		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
@@ -379,10 +379,10 @@ public class TestHtmlReport {
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
 					Period.TOUT, writer);
-			htmlReport.toHtml(null);
+			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
-			htmlReport.toHtml(null);
+			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 		} finally {
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, null);
@@ -432,7 +432,7 @@ public class TestHtmlReport {
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
 					Period.TOUT, writer);
-			htmlReport.toHtml(null);
+			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
@@ -469,7 +469,7 @@ public class TestHtmlReport {
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport3 = new HtmlReport(collector, null, javaInformationsList3,
 					Period.TOUT, writer);
-			htmlReport3.toHtml(null);
+			htmlReport3.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 		} finally {
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.FALSE.toString());
@@ -487,12 +487,12 @@ public class TestHtmlReport {
 		try {
 			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
 					javaInformationsList, Period.TOUT, writer);
-			htmlReport.toHtml(null);
+			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 
 			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 			collectorServer.collectWithoutErrors();
-			htmlReport.toHtml(null);
+			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 		} finally {
 			collectorServer.stop();
@@ -505,7 +505,7 @@ public class TestHtmlReport {
 	public void testWithNoDatabase() throws IOException {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
-		htmlReport.toHtml(null);
+		htmlReport.toHtml(null, null);
 		assertNotEmptyAndClear(writer);
 	}
 
@@ -551,7 +551,7 @@ public class TestHtmlReport {
 			counter.addRequest("test3", 10000, 5000, true, 10000);
 			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 					Period.TOUT, writer);
-			htmlReport.toHtml("message");
+			htmlReport.toHtml("message", null);
 			assertNotEmptyAndClear(writer);
 		} finally {
 			I18N.unbindLocale();
