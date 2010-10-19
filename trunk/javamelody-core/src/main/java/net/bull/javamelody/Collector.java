@@ -38,7 +38,7 @@ import net.bull.javamelody.Counter.CounterRequestContextComparator;
  * Collecteur de données sur les compteurs, avec son propre thread, pour remplir les courbes.
  * @author Emeric Vernat
  */
-final class Collector {
+final class Collector { // NOPMD
 	// période entre 2 collectes en milli-secondes
 	private final int periodMillis;
 	private final Timer timer;
@@ -57,6 +57,8 @@ final class Collector {
 	private final Map<Counter, Counter> dayCountersByCounter = new LinkedHashMap<Counter, Counter>();
 	private long cpuTimeMillis;
 	private long gcTimeMillis;
+	private long tomcatBytesReceived;
+	private long tomcatBytesSent;
 	private long lastCollectDuration;
 	private long estimatedMemorySize;
 	private final boolean noDatabase = Parameters.isNoDatabase();
@@ -287,6 +289,9 @@ final class Collector {
 		long usedConnectionCount = 0;
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
+		int tomcatBusyThreads = 0;
+		long bytesReceived = 0;
+		long bytesSent = 0;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
@@ -308,24 +313,24 @@ final class Collector {
 			systemLoadAverage += javaInformations.getSystemLoadAverage();
 			// que sur linx ou unix
 			unixOpenFileDescriptorCount += javaInformations.getUnixOpenFileDescriptorCount();
+			for (final TomcatInformations tomcatInformations : javaInformations
+					.getTomcatInformationsList()) {
+				tomcatBusyThreads += tomcatInformations.getCurrentThreadsBusy();
+				bytesReceived += tomcatInformations.getBytesReceived();
+				bytesSent += tomcatInformations.getBytesSent();
+			}
 		}
 		// il y a au moins 1 coeur
 		availableProcessors = Math.max(availableProcessors, 1);
 		collectJRobinValues(usedMemory, processesCpuTimeMillis, availableProcessors, sessionCount,
 				activeThreadCount, activeConnectionCount, usedConnectionCount);
 
+		collectTomcatValues(tomcatBusyThreads, bytesReceived, bytesSent);
 		// collecte du pourcentage de temps en ramasse-miette
 		collectGcTime(garbageCollectionTimeMillis, availableProcessors);
 
-		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
-		otherJRobinsValues.put("threadCount", (double) threadCount);
-		otherJRobinsValues.put("loadedClassesCount", (double) loadedClassesCount);
-		otherJRobinsValues.put("usedNonHeapMemory", (double) usedNonHeapMemory);
-		otherJRobinsValues.put("usedPhysicalMemorySize", (double) usedPhysicalMemorySize);
-		otherJRobinsValues.put("usedSwapSpaceSize", (double) usedSwapSpaceSize);
-		otherJRobinsValues.put("systemLoad", systemLoadAverage);
-		otherJRobinsValues.put("fileDescriptors", (double) unixOpenFileDescriptorCount);
-		collectorOtherJRobinsValues(otherJRobinsValues);
+		collectorOtherJRobinsValues(usedNonHeapMemory, loadedClassesCount, usedPhysicalMemorySize,
+				usedSwapSpaceSize, threadCount, systemLoadAverage, unixOpenFileDescriptorCount);
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
@@ -384,8 +389,32 @@ final class Collector {
 		}
 	}
 
-	private void collectorOtherJRobinsValues(Map<String, Double> otherJRobinsValues)
+	private void collectTomcatValues(int tomcatBusyThreads, long bytesReceived, long bytesSent)
 			throws IOException {
+		if (TomcatInformations.TOMCAT_USED) {
+			getOtherJRobin("tomcatBusyThreads").addValue(tomcatBusyThreads);
+			final double periodMinutes = periodMillis / 60000d;
+			getOtherJRobin("tomcatBytesReceived").addValue(
+					(bytesReceived - this.tomcatBytesReceived) / periodMinutes);
+			getOtherJRobin("tomcatBytesSent").addValue(
+					(bytesSent - this.tomcatBytesSent) / periodMinutes);
+			this.tomcatBytesReceived = bytesReceived;
+			this.tomcatBytesSent = bytesSent;
+		}
+	}
+
+	private void collectorOtherJRobinsValues(long usedNonHeapMemory, int loadedClassesCount,
+			long usedPhysicalMemorySize, long usedSwapSpaceSize, long threadCount,
+			double systemLoadAverage, long unixOpenFileDescriptorCount) throws IOException {
+		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
+		otherJRobinsValues.put("threadCount", (double) threadCount);
+		otherJRobinsValues.put("loadedClassesCount", (double) loadedClassesCount);
+		otherJRobinsValues.put("usedNonHeapMemory", (double) usedNonHeapMemory);
+		otherJRobinsValues.put("usedPhysicalMemorySize", (double) usedPhysicalMemorySize);
+		otherJRobinsValues.put("usedSwapSpaceSize", (double) usedSwapSpaceSize);
+		otherJRobinsValues.put("systemLoad", systemLoadAverage);
+		otherJRobinsValues.put("fileDescriptors", (double) unixOpenFileDescriptorCount);
+
 		for (final Map.Entry<String, Double> entry : otherJRobinsValues.entrySet()) {
 			if (entry.getValue() >= 0) {
 				getOtherJRobin(entry.getKey()).addValue(entry.getValue());
