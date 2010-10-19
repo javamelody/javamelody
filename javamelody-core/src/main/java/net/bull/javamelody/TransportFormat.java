@@ -120,6 +120,7 @@ enum TransportFormat {
 			xstream.alias("request", CounterRequest.class);
 			xstream.alias("javaInformations", JavaInformations.class);
 			xstream.alias("memoryInformations", MemoryInformations.class);
+			xstream.alias("tomcatInformations", TomcatInformations.class);
 			xstream.alias("threadInformations", ThreadInformations.class);
 			xstream.alias("heapHisto", HeapHistogram.class);
 			xstream.alias("connectionInformations", ConnectionInformations.class);

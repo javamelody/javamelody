@@ -60,6 +60,8 @@ class JavaInformations implements Serializable { // NOPMD
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
 	private final MemoryInformations memoryInformations;
+	@SuppressWarnings("all")
+	private final List<TomcatInformations> tomcatInformationsList;
 	private final int sessionCount;
 	private final int activeThreadCount;
 	private final int usedConnectionCount;
@@ -132,6 +134,7 @@ class JavaInformations implements Serializable { // NOPMD
 		// CHECKSTYLE:ON
 		super();
 		memoryInformations = new MemoryInformations();
+		tomcatInformationsList = TomcatInformations.buildTomcatInformationsList();
 		if (SessionListener.isEnabled()) {
 			sessionCount = SessionListener.getSessionCount();
 		} else {
@@ -456,6 +459,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 	MemoryInformations getMemoryInformations() {
 		return memoryInformations;
+	}
+
+	List<TomcatInformations> getTomcatInformationsList() {
+		return tomcatInformationsList;
 	}
 
 	int getSessionCount() {

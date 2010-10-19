@@ -42,6 +42,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * @author Emeric Vernat
  */
 class PdfJavaInformationsReport {
+	private static final String DIVIDE = " / ";
 	private static final String BAR_SEPARATOR = "   ";
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
@@ -154,12 +155,11 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("Host") + ':');
 		currentTable.addCell(new Phrase(javaInformations.getHost(), boldCellFont));
 		addCell(getI18nString("memoire_utilisee") + ':');
-		final String divide = " / ";
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
 		final long maxMemory = memoryInformations.getMaxMemory();
 		final Phrase memoryPhrase = new Phrase(integerFormat.format(usedMemory / 1024 / 1024) + ' '
-				+ getI18nString("Mo") + divide + integerFormat.format(maxMemory / 1024 / 1024)
+				+ getI18nString("Mo") + DIVIDE + integerFormat.format(maxMemory / 1024 / 1024)
 				+ ' ' + getI18nString("Mo") + BAR_SEPARATOR, cellFont);
 		final Image memoryImage = Image.getInstance(
 				Bar.toBar(memoryInformations.getUsedMemoryPercentage()), null);
@@ -184,7 +184,7 @@ class PdfJavaInformationsReport {
 				addCell(integerFormat.format(usedConnectionCount));
 			} else {
 				final Phrase usedConnectionCountPhrase = new Phrase(
-						integerFormat.format(usedConnectionCount) + divide
+						integerFormat.format(usedConnectionCount) + DIVIDE
 								+ integerFormat.format(maxConnectionCount) + BAR_SEPARATOR,
 						cellFont);
 				final Image usedConnectionCountImage = Image.getInstance(
@@ -255,6 +255,7 @@ class PdfJavaInformationsReport {
 		addCell(I18N.createDateAndTimeFormat().format(javaInformations.getStartDate()));
 		addCell(getI18nString("Arguments_JVM") + ':');
 		addCell(javaInformations.getJvmArguments());
+		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 		addCell(getI18nString("Gestion_memoire") + ':');
 		writeMemoryInformations(javaInformations.getMemoryInformations());
 		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
@@ -280,7 +281,7 @@ class PdfJavaInformationsReport {
 		final long unixMaxFileDescriptorCount = javaInformations.getUnixMaxFileDescriptorCount();
 		addCell(getI18nString("nb_fichiers") + ':');
 		final Phrase fileDescriptorCountPhrase = new Phrase(
-				integerFormat.format(unixOpenFileDescriptorCount) + " / "
+				integerFormat.format(unixOpenFileDescriptorCount) + DIVIDE
 						+ integerFormat.format(unixMaxFileDescriptorCount) + BAR_SEPARATOR,
 				cellFont);
 		final Image fileDescriptorCountImage = Image.getInstance(
@@ -306,6 +307,43 @@ class PdfJavaInformationsReport {
 		}
 	}
 
+	private void writeTomcatInformations(List<TomcatInformations> tomcatInformationsList)
+			throws BadElementException, IOException {
+		for (final TomcatInformations tomcatInformations : tomcatInformationsList) {
+			if (tomcatInformations.getRequestCount() <= 0) {
+				continue;
+			}
+			addCell("Tomcat " + tomcatInformations.getName() + ':');
+			// rq: on n'affiche pas pour l'instant getCurrentThreadCount
+			final int currentThreadsBusy = tomcatInformations.getCurrentThreadsBusy();
+			final String equal = " = ";
+			final Phrase phrase = new Phrase(getI18nString("busyThreads") + equal
+					+ integerFormat.format(currentThreadsBusy) + DIVIDE
+					+ integerFormat.format(tomcatInformations.getMaxThreads()) + BAR_SEPARATOR,
+					cellFont);
+			final Image threadsImage = Image
+					.getInstance(
+							Bar.toBar(100d * currentThreadsBusy
+									/ tomcatInformations.getMaxThreads()), null);
+			threadsImage.scalePercent(50);
+			phrase.add(new Chunk(threadsImage, 0, 0));
+
+			phrase.add(new Chunk('\n' + getI18nString("bytesReceived") + equal
+					+ integerFormat.format(tomcatInformations.getBytesReceived()) + '\n'
+					+ getI18nString("bytesSent") + equal
+					+ integerFormat.format(tomcatInformations.getBytesSent()) + '\n'
+					+ getI18nString("requestCount") + equal
+					+ integerFormat.format(tomcatInformations.getRequestCount()) + '\n'
+					+ getI18nString("errorCount") + equal
+					+ integerFormat.format(tomcatInformations.getErrorCount()) + '\n'
+					+ getI18nString("processingTime") + equal
+					+ integerFormat.format(tomcatInformations.getProcessingTime()) + '\n'
+					+ getI18nString("maxProcessingTime") + equal
+					+ integerFormat.format(tomcatInformations.getMaxTime())));
+			currentTable.addCell(phrase);
+		}
+	}
+
 	private void writeMemoryInformations(MemoryInformations memoryInformations)
 			throws BadElementException, IOException {
 		addCell(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + getI18nString("Mo")));
@@ -314,7 +352,7 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("Memoire_Perm_Gen") + ':');
 		if (maxPermGen > 0) {
 			final Phrase permGenPhrase = new Phrase(integerFormat.format(usedPermGen / 1024 / 1024)
-					+ ' ' + getI18nString("Mo") + " / "
+					+ ' ' + getI18nString("Mo") + DIVIDE
 					+ integerFormat.format(maxPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
 					+ BAR_SEPARATOR, cellFont);
 			final Image permGenImage = Image.getInstance(
