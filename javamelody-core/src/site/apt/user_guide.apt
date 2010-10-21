@@ -345,7 +345,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 ** 7. JDBC
 
-	Si une DataSource dont le nom JNDI commence par "jdbc/" est configurée dans le serveur d'application
+	Si une DataSource, dont le nom JNDI est de la forme "jdbc/MaDataSource", est configurée dans le serveur d'application
 	(contexte xml de la webapp dans Tomcat par exemple), les requêtes sql seront automatiquement monitorées en plus des requêtes http
 	sans nécessiter de paramétrage (testé en Tomcat 5.5 et 6, glassfish 3, jboss 5, weblogic 11g, jetty 6).
 
@@ -361,7 +361,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<property name="hibernate.connection.password">mypassword</property>
 +-------------------------------+
 
-	Si une DataSource est utilisée mais que son nom JNDI ne commence pas par "jdbc/" ou que celle-ci
+	Si une DataSource est utilisée mais que son nom JNDI n'est pas de la forme "jdbc/MaDataSource" ou que celle-ci
 	n'est pas dans un des contextes JNDI "java:comp/env/" ou "java:/" habituels, alors vous pouvez ajouter le paramètre optionnel
 	<<<datasources>>> (par une propriété système, une variable d'environnement, un paramètre du contexte ou du filtre)
 	pour définir le nom JNDI de la datasource utilisée par l'application.
@@ -372,7 +372,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	
 	Par exemple, pour une propriété système au lancement du serveur:
 	
-	<<<-Djavamelody.datasources=java:comp/env/myapp/mydatasource>>>
+	<<<-Djavamelody.datasources=java:comp/env/myapp/MaDataSource>>>
 	
 	Si une DataSource est définie par l'intermédiaire d'un fichier xml de contexte Spring,
 	comme par exemple <<< <bean class="org.apache.commons.dbcp.BasicDataSource">...</bean> >>>
