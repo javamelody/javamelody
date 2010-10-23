@@ -163,7 +163,7 @@ public class TestTomcatInformations {
 		// ce premier appel crée un MBeanServer
 		assertNotNull("buildTomcatInformationsList",
 				TomcatInformations.buildTomcatInformationsList());
-		final MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer();
+		final MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
 		mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
 				"Catalina:type=ThreadPool,name=http-8080"));
 		// les appels suivants réutilise le MBeanServer créé
