@@ -240,6 +240,9 @@
 					<include name="junit-4.5.jar" />
 					<include name="h2-1.1.118.jar" />
 					<include name="easymock-2.0.jar" />
+					<include name="dom4j-1.6.1.jar" />
+					<include name="commons-collections-2.1.1.jar" />
+					<include name="jta-1.0.1B.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="commons-logging-1.1.1.jar" />
