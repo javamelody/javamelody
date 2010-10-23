@@ -173,5 +173,9 @@ public class TestTomcatInformations {
 				"Catalina:type=GlobalRequestProcessor,name=http-8080"));
 		assertNotNull("buildTomcatInformationsList",
 				TomcatInformations.buildTomcatInformationsList());
+		for (final TomcatInformations tomcatInformations : TomcatInformations
+				.buildTomcatInformationsList()) {
+			tomcatInformations.toString();
+		}
 	}
 }
