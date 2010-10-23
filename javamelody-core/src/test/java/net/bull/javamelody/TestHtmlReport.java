@@ -42,6 +42,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
+
+import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
+import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -121,6 +128,42 @@ public class TestHtmlReport {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml(null, null);
+		assertNotEmptyAndClear(writer);
+	}
+
+	/** Test.
+	 * @throws IOException e
+	 * @throws JMException e */
+	@Test
+	public void testTomcatInformations() throws IOException, JMException {
+		final List<MBeanServer> mBeanServerList = MBeanServerFactory.findMBeanServer(null);
+		final MBeanServer mBeanServer;
+		if (mBeanServerList.isEmpty()) {
+			mBeanServer = MBeanServerFactory.createMBeanServer();
+		} else {
+			mBeanServer = mBeanServerList.get(0);
+		}
+		mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
+				"Catalina:type=ThreadPool,name=jk-8009"));
+		mBeanServer.registerMBean(new GlobalRequestProcessor(), new ObjectName(
+				"Catalina:type=GlobalRequestProcessor,name=jk-8009"));
+		final List<JavaInformations> myJavaInformationsList = Arrays.asList(new JavaInformations(
+				null, true));
+		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
+				Period.TOUT, writer);
+		htmlReport.toHtml(null, null);
+		assertNotEmptyAndClear(writer);
+
+		mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
+				"Catalina:type=ThreadPool,name=jk-8010"));
+		mBeanServer.registerMBean(new GlobalRequestProcessor(), new ObjectName(
+				"Catalina:type=GlobalRequestProcessor,name=jk-8010"));
+
+		final List<JavaInformations> myJavaInformationsList2 = Arrays.asList(new JavaInformations(
+				null, true));
+		final HtmlReport htmlReport2 = new HtmlReport(collector, null, myJavaInformationsList2,
+				Period.TOUT, writer);
+		htmlReport2.toHtml(null, null);
 		assertNotEmptyAndClear(writer);
 	}
 
