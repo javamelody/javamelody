@@ -117,7 +117,7 @@ Documentation avancée de Java Melody
 
 	Les applications à monitorer seront ajoutées par la suite en accédant au serveur de collecte par un navigateur web.
 	
-	Des paramètres <<<resolution-seconds>>>, <<<storage-directory>>>, , <<<system-actions-enabled>>>,
+	Des paramètres <<<resolution-seconds>>>, <<<storage-directory>>>, <<<system-actions-enabled>>>,
 	<<<warning-threshold-millis>>>, <<<severe-threshold-millis>>> et <<<allowed-addr-pattern>>>
 	optionnels peuvent être ajoutés dans le fichier de contexte xml du serveur de collecte
 	en indiquant le préfixe <<<javamelody>>>. Ils peuvent aussi être ajoutés en tant que propriétés
@@ -128,6 +128,12 @@ Documentation avancée de Java Melody
 	Le paramètre <<<system-actions-enabled>>> nécessite d'être ajouté avec la valeur true à la fois
 	dans le serveur de collecte et dans les applications monitorées.
 
+	Le serveur de collecte peut envoyer des rapports hebdomadaires, quotidiens ou mensuels par mail
+	pour chaque application monitorée.
+	Pour cela, utiliser dans le serveur de collecte (dans le contexte Tomcat par exemple)
+	exactement la même session mail, les mêmes paramètres et les mêmes fichiers jars que ceux
+	décrits dans le chapitre 'Rapports hebdomadaires, quotidiens ou mensuels par mail' du guide utilisateur.
+	
 	Si un format xml est souhaité à la place de la sérialisation java comme format de transport entre un serveur
 	de collecte et les applications monitorées, il peut être ajouté un paramètre <<<transport-format>>> spécifique
 	au serveur de collecte avec comme valeur xml. La sérialisation java est le format de transport par défaut et
