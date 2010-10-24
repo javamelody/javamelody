@@ -120,6 +120,10 @@ Advanced documentation of Java Melody
 	of charts in the monitoring. The parameter <<<system-actions-enabled>>> needs to be added with
 	the value true both in the collect server and in the monitored applications.
 	
+	The collect server can send weekly, daily or monthly reports by mail for each monitored application.
+	For this, use in the collect server (in Tomcat context for example) exactly the same mail session,
+	the same parameters and the same jar files as those in the chapter 'Weekly, daily or monthly reports by mail' of the User guide.
+	
 	If xml format is desired instead of java serialization as transport format between a collect server
 	and monitored applications, a parameter <<<transport-format>>> which is specific 
 	to the collect server can be added with 'xml' for value. The java serialization is the transport format by default
