@@ -38,14 +38,14 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 
 	/** {@inheritDoc} */
 	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
-		if (bean instanceof DataSource) {
+		if (bean instanceof DataSource && !Parameters.isNoDatabase()) {
 			final DataSource dataSource = (DataSource) bean;
 			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
 			final DataSource result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
 					dataSource);
 			LOG.debug("Spring datasource wrapped: " + beanName);
 			return result;
-		} else if (bean instanceof JndiObjectFactoryBean) {
+		} else if (bean instanceof JndiObjectFactoryBean && !Parameters.isNoDatabase()) {
 			// fix issue 20
 			final InvocationHandler invocationHandler = new InvocationHandler() {
 				/** {@inheritDoc} */
