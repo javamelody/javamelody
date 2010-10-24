@@ -110,13 +110,16 @@ Advanced documentation of Java Melody
 	</Context>
 +-------------------------------+
 
-	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
-	<<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>> can be added in the xml context file of the collect
-	server with the prefix <<<javamelody>>>. They have the same effects on the collect server 
-	than those of a monitored application as written in the {{{user_guide_en.html} user guide}}. In particular the parameter
+	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<system-actions-enabled>>>,
+	<<<warning-threshold-millis>>>, <<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>>
+	can be added in the xml context file of the collect server with the prefix <<<javamelody>>>.
+	They can also be added as system properties or environment variables with the prefix <<<javamelody>>>.
+	They have the same effects on the collect server than those of a monitored application as
+	written in the {{{user_guide_en.html} user guide}}. In particular the parameter
 	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
-	of charts in the monitoring.
-
+	of charts in the monitoring. The parameter <<<system-actions-enabled>>> needs to be added with
+	the value true both in the collect server and in the monitored applications.
+	
 	If xml format is desired instead of java serialization as transport format between a collect server
 	and monitored applications, a parameter <<<transport-format>>> which is specific 
 	to the collect server can be added with 'xml' for value. The java serialization is the transport format by default
