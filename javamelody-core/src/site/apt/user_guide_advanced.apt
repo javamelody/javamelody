@@ -117,12 +117,16 @@ Documentation avancée de Java Melody
 
 	Les applications à monitorer seront ajoutées par la suite en accédant au serveur de collecte par un navigateur web.
 	
-	Des paramètres <<<resolution-seconds>>>, <<<storage-directory>>>, <<<warning-threshold-millis>>>,
-	<<<severe-threshold-millis>>> et <<<allowed-addr-pattern>>> optionnels peuvent être ajoutés dans le fichier de
-	contexte xml du serveur de collecte en indiquant le préfixe <<<javamelody>>>. Ils ont les mêmes effets sur le
-	serveur de collecte que dans le cas du paramétrage du monitoring d'une application indiqué dans le {{{user_guide.html} guide d'utilisation}}.
+	Des paramètres <<<resolution-seconds>>>, <<<storage-directory>>>, , <<<system-actions-enabled>>>,
+	<<<warning-threshold-millis>>>, <<<severe-threshold-millis>>> et <<<allowed-addr-pattern>>>
+	optionnels peuvent être ajoutés dans le fichier de contexte xml du serveur de collecte
+	en indiquant le préfixe <<<javamelody>>>. Ils peuvent aussi être ajoutés en tant que propriétés
+	systèmes ou variables d'environnement. Ils ont les mêmes effets sur le serveur de collecte
+	que dans le cas du paramétrage du monitoring d'une application indiqué dans le {{{user_guide.html} guide d'utilisation}}.
 	En particulier le paramètre <<<resolution-seconds>>> définit la période d'appels des urls d'applications
 	depuis le serveur de collecte et la résolution des courbes dans le monitoring.
+	Le paramètre <<<system-actions-enabled>>> nécessite d'être ajouté avec la valeur true à la fois
+	dans le serveur de collecte et dans les applications monitorées.
 
 	Si un format xml est souhaité à la place de la sérialisation java comme format de transport entre un serveur
 	de collecte et les applications monitorées, il peut être ajouté un paramètre <<<transport-format>>> spécifique
