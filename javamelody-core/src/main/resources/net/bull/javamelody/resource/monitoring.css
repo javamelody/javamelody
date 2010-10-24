@@ -1,8 +1,8 @@
 /* style sheet */
 
 body {
-background-color:white;
-background: url(?resource=backgroundGradient.png) bottom left fixed repeat-x;
+	background-color:white;
+	background: url(?resource=backgroundGradient.png) bottom left fixed repeat-x;
 }
 
 a {text-decoration:none; color:#0000BB;}
@@ -10,13 +10,43 @@ a:hover {text-decoration:underline; color:#0000BB;}
 a:visited {color: #6600BB;}
 
 img {border : 0px; vertical-align : middle;}
-.synthese {filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);}
+.synthese {
+	-moz-box-shadow: 2px 2px 3px #888;
+	-webkit-box-shadow: 2px 2px 3px #888;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);
+}
 
 th {background-color:#F0F0F0; font-size: 10pt;}
-table {border-color:gray;}
+table {
+	border-color:gray;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px
+}
 table tr.odd td {background-color: #F5F5F5;}
 table tr.highlight td {background-color: #E0E0E0;}
 td {font-size: 10pt;}
+
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px;
+	border-bottom-left-radius:5px
+}
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-right-radius:5px;
+	border-bottom-right-radius:5px
+}
+table thead th:first-child {
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px;
+	border-top-left-radius:5px
+}
+table thead th:last-child {
+	-moz-border-radius-topright:5px;
+	-webkit-border-top-right-radius:5px;
+	border-top-right-radius:5px
+}
 
 .tooltip em {
     display:none;
@@ -41,6 +71,9 @@ td {font-size: 10pt;}
     color: #000;
     border: 1px solid #bbb;
     background: #ffc;
+    -moz-box-shadow: 2px 2px 3px #888;
+    -webkit-box-shadow: 2px 2px 3px #888;
+	filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);
 }
 
 div#track, div#handle {
