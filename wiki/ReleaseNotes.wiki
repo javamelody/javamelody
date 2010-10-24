@@ -3,7 +3,7 @@
 
   * fix issue 48: Quartz errors for persistent jobs after jobs' classes are renamed or deleted
   * fix to display the list of http sessions when Tomcat throws an exception "Session already invalidated"
-  * added: If Tomcat or JBoss, new graphics in "Other charts" for the number of active http and ajp threads in all the server, the number of bytes received per minute and the number of *bytes sent per minute* in all the server (the number of bytes received is often 0 for most webapps).
+  * added: If Tomcat or JBoss, new graphics in "Other charts" for the number of active http and ajp threads in all the server, the number of bytes received per minute and the number of *bytes sent per minute* by the server (the number of bytes received is often 0 for most webapps).
   * New view with the *summary per class of statistics* for EJB/Spring/Guice/services with aggregation for methods and another view for the methods of the selected class.
   * enhanced [UserGuideAdvanced#2._Deployment_of_the_webapp_of_monitoring documentation] on the configuration of the optional centralization server such as to enable system actions or to send daily/weekly/monthly reports by mail.
 
