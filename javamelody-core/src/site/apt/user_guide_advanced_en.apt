@@ -118,11 +118,12 @@ Advanced documentation of Java Melody
 	of charts in the monitoring.
 
 	If xml format is desired instead of java serialization as transport format between a collect server
-	and a monitored application, a parameter <<<transport-format>>> which is specific 
+	and monitored applications, a parameter <<<transport-format>>> which is specific 
 	to the collect server can be added with 'xml' for value. The java serialization is the transport format by default
 	and it is recommended for best performances (75% more performance for response time,
 	according to this {{{http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking}benchmark}}).
-	The xml transport format needs a dependency on libraries xstream (BSD) and xpp3 (Public Domain).
+	The xml transport format needs a dependency on libraries xstream (BSD) and xpp3 (Public Domain)
+	in the monitored webapps.
 
 ** 3. Simpler alternative of deployment of the webapp of monitoring
 
