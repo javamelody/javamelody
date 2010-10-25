@@ -13,5 +13,13 @@
 
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor"/>
+	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+		<!--
+		<property name="excludedDatasources">
+			<set>
+				<value>excludedDataSourceName</value>
+			</set>
+		</property>
+		-->
+ 	</bean>
 </beans>

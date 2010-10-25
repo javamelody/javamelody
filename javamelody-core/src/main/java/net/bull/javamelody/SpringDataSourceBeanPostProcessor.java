@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -31,6 +32,25 @@ import org.springframework.jndi.JndiObjectFactoryBean;
  * @author Emeric Vernat
  */
 public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
+	private Set<String> excludedDatasources;
+
+	/**
+	 * Définit les noms des datasources Spring exclues.
+	 * @param excludedDatasources Set
+	 */
+	public void setExcludedDatasources(Set<String> excludedDatasources) {
+		this.excludedDatasources = excludedDatasources;
+
+		// exemple:
+		//	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+		//		<property name="excludedDatasources">
+		//			<set>
+		//				<value>excludedDataSourceName</value>
+		//			</set>
+		//		</property>
+		// 	</bean>
+	}
+
 	/** {@inheritDoc} */
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
@@ -38,6 +58,10 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 
 	/** {@inheritDoc} */
 	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
+		if (excludedDatasources != null && excludedDatasources.contains(beanName)) {
+			LOG.debug("Spring datasource excluded: " + beanName);
+			return bean;
+		}
 		if (bean instanceof DataSource && !Parameters.isNoDatabase()) {
 			final DataSource dataSource = (DataSource) bean;
 			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
