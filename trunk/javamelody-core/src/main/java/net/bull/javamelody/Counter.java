@@ -641,12 +641,24 @@ class Counter implements Cloneable, Serializable {
 	 * @return CounterRequest
 	 */
 	CounterRequest getCounterRequest(CounterRequestContext context) {
+		return getCounterRequestByName(context.getRequestName());
+	}
+
+	/**
+	 * Retourne l'objet CounterRequest correspondant au nom sans agrégation en paramètre.
+	 * @param requestName Nom de la requête sans agrégation par requestTransformPattern
+	 * @return CounterRequest
+	 */
+	CounterRequest getCounterRequestByName(String requestName) {
 		// l'instance de CounterRequest retournée est clonée
 		// (nécessaire pour protéger la synchronisation interne du counter),
 		// son état peut donc être lu sans synchronisation
 		// mais toute modification de cet état ne sera pas conservée
-		final String requestName = getAggregateRequestName(context.getRequestName());
-		return getCounterRequestInternal(requestName).clone();
+		final String aggregateRequestName = getAggregateRequestName(requestName);
+		final CounterRequest request = getCounterRequestInternal(aggregateRequestName);
+		synchronized (request) {
+			return request.clone();
+		}
 	}
 
 	private CounterRequest getCounterRequestInternal(String requestName) {
