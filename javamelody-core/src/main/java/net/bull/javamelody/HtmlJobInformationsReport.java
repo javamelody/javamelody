@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Partie du rapport html pour les jobs.
@@ -33,7 +31,7 @@ import java.util.Map;
 class HtmlJobInformationsReport {
 	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
-	private final Map<String, CounterRequest> counterRequestsByRequestName;
+	private final Counter jobCounter;
 	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
@@ -47,13 +45,8 @@ class HtmlJobInformationsReport {
 		assert writer != null;
 
 		this.jobInformationsList = jobInformationsList;
+		this.jobCounter = rangeJobCounter;
 		this.writer = writer;
-		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
-		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(
-				counterRequests.size());
-		for (final CounterRequest counterRequest : counterRequests) {
-			counterRequestsByRequestName.put(counterRequest.getName(), counterRequest);
-		}
 	}
 
 	void toHtml() throws IOException {
@@ -222,7 +215,9 @@ class HtmlJobInformationsReport {
 
 	private CounterRequest getCounterRequest(JobInformations jobInformations) {
 		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
-		return counterRequestsByRequestName.get(jobFullName);
+		// rq: la méthode getCounterRequestByName prend en compte l'éventuelle utilisation du paramètre
+		// job-transform-pattern qui peut faire que jobFullName != counterRequest.getName()
+		return jobCounter.getCounterRequestByName(jobFullName);
 	}
 
 	private static String toBar(int mean, long elapsedTime) {
