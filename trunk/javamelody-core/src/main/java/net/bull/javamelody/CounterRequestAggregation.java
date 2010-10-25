@@ -185,6 +185,10 @@ class CounterRequestAggregation {
 	}
 
 	private String getClassNameFromRequest(CounterRequest request) {
-		return request.getName().substring(0, request.getName().lastIndexOf('.'));
+		final int lastIndexOf = request.getName().lastIndexOf('.');
+		if (lastIndexOf != -1) {
+			return request.getName().substring(0, lastIndexOf);
+		}
+		return request.getName();
 	}
 }
