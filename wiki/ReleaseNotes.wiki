@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.21.0 ===
 
   * fix issue 48: Quartz errors for persistent jobs after jobs' classes are renamed or deleted
   * fix to display the list of http sessions when Tomcat throws an exception "Session already invalidated"
