@@ -411,11 +411,11 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 
-		doFilter(httpRequest, httpResponse, chain);
+		doFilter(chain, httpRequest, httpResponse);
 	}
 
-	private void doFilter(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			FilterChain chain) throws IOException, ServletException {
+	private void doFilter(FilterChain chain, HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException, ServletException {
 		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest);
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				httpResponse);
