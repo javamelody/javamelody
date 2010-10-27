@@ -194,7 +194,10 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	/** {@inheritDoc} */
 	public void sessionDestroyed(HttpSessionEvent event) {
 		final HttpSession session = event.getSession();
-		session.removeAttribute(SESSION_ACTIVATION_KEY);
+
+		// plus de removeAttribute
+		// (pas nécessaire et Tomcat peut faire une exception "session already invalidated")
+		//		session.removeAttribute(SESSION_ACTIVATION_KEY);
 
 		// pour getSessionCount
 		SESSION_COUNT.decrementAndGet();
