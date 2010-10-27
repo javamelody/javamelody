@@ -97,9 +97,8 @@ public class MonitoringFilter implements Filter {
 
 			initLogs();
 
-			this.contextFactoryEnabled = !monitoringDisabled
-					&& Boolean.parseBoolean(Parameters
-							.getParameter(Parameter.CONTEXT_FACTORY_ENABLED));
+			this.contextFactoryEnabled = Boolean.parseBoolean(Parameters
+					.getParameter(Parameter.CONTEXT_FACTORY_ENABLED));
 			if (contextFactoryEnabled) {
 				MonitoringInitialContextFactory.init();
 			}
@@ -221,18 +220,20 @@ public class MonitoringFilter implements Filter {
 				counter.setDisplayed(false);
 			}
 		}
-		for (final String displayedCounter : displayedCounters.split(",")) {
-			final String displayedCounterName = displayedCounter.trim();
-			boolean found = false;
-			for (final Counter counter : counters) {
-				if (displayedCounterName.equalsIgnoreCase(counter.getName())) {
-					counter.setDisplayed(true);
-					found = true;
-					break;
+		if (!displayedCounters.isEmpty()) {
+			for (final String displayedCounter : displayedCounters.split(",")) {
+				final String displayedCounterName = displayedCounter.trim();
+				boolean found = false;
+				for (final Counter counter : counters) {
+					if (displayedCounterName.equalsIgnoreCase(counter.getName())) {
+						counter.setDisplayed(true);
+						found = true;
+						break;
+					}
 				}
-			}
-			if (!found) {
-				throw new IllegalArgumentException("Unknown counter: " + displayedCounterName);
+				if (!found) {
+					throw new IllegalArgumentException("Unknown counter: " + displayedCounterName);
+				}
 			}
 		}
 	}
@@ -392,9 +393,8 @@ public class MonitoringFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)
-				|| isHttpMonitoringDisabled() || isRequestExcluded((HttpServletRequest) request)) {
-			// si ce n'est pas une requête http ou si le monitoring http est désactivé
-			// ou si cette url est exclue, on ne monitore pas cette requête http
+				|| monitoringDisabled) {
+			// si ce n'est pas une requête http ou si le monitoring est désactivé, on fait suivre
 			chain.doFilter(request, response);
 			return;
 		}
@@ -405,7 +405,17 @@ public class MonitoringFilter implements Filter {
 			doMonitoring(httpRequest, httpResponse);
 			return;
 		}
+		if (!httpCounter.isDisplayed() || isRequestExcluded((HttpServletRequest) request)) {
+			// si cette url est exclue ou si le counter http est désactivé, on ne monitore pas cette requête http
+			chain.doFilter(request, response);
+			return;
+		}
 
+		doFilter(httpRequest, httpResponse, chain);
+	}
+
+	private void doFilter(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			FilterChain chain) throws IOException, ServletException {
 		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest);
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				httpResponse);
@@ -586,10 +596,6 @@ public class MonitoringFilter implements Filter {
 			return "Error404";
 		}
 		return getCompleteRequestName(httpRequest, false);
-	}
-
-	private boolean isHttpMonitoringDisabled() {
-		return monitoringDisabled || !httpCounter.isDisplayed();
 	}
 
 	private boolean isRequestExcluded(HttpServletRequest httpRequest) {
