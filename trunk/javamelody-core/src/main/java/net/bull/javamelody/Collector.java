@@ -292,6 +292,7 @@ final class Collector { // NOPMD
 		int tomcatBusyThreads = 0;
 		long bytesReceived = 0;
 		long bytesSent = 0;
+		boolean tomcatUsed = false;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
@@ -318,6 +319,7 @@ final class Collector { // NOPMD
 				tomcatBusyThreads += tomcatInformations.getCurrentThreadsBusy();
 				bytesReceived += tomcatInformations.getBytesReceived();
 				bytesSent += tomcatInformations.getBytesSent();
+				tomcatUsed = true;
 			}
 		}
 		// il y a au moins 1 coeur
@@ -325,7 +327,10 @@ final class Collector { // NOPMD
 		collectJRobinValues(usedMemory, processesCpuTimeMillis, availableProcessors, sessionCount,
 				activeThreadCount, activeConnectionCount, usedConnectionCount);
 
-		collectTomcatValues(tomcatBusyThreads, bytesReceived, bytesSent);
+		if (tomcatUsed) {
+			// collecte des informations de Tomcat
+			collectTomcatValues(tomcatBusyThreads, bytesReceived, bytesSent);
+		}
 		// collecte du pourcentage de temps en ramasse-miette
 		collectGcTime(garbageCollectionTimeMillis, availableProcessors);
 
@@ -391,16 +396,14 @@ final class Collector { // NOPMD
 
 	private void collectTomcatValues(int tomcatBusyThreads, long bytesReceived, long bytesSent)
 			throws IOException {
-		if (TomcatInformations.TOMCAT_USED) {
-			getOtherJRobin("tomcatBusyThreads").addValue(tomcatBusyThreads);
-			final double periodMinutes = periodMillis / 60000d;
-			getOtherJRobin("tomcatBytesReceived").addValue(
-					(bytesReceived - this.tomcatBytesReceived) / periodMinutes);
-			getOtherJRobin("tomcatBytesSent").addValue(
-					(bytesSent - this.tomcatBytesSent) / periodMinutes);
-			this.tomcatBytesReceived = bytesReceived;
-			this.tomcatBytesSent = bytesSent;
-		}
+		getOtherJRobin("tomcatBusyThreads").addValue(tomcatBusyThreads);
+		final double periodMinutes = periodMillis / 60000d;
+		getOtherJRobin("tomcatBytesReceived").addValue(
+				(bytesReceived - this.tomcatBytesReceived) / periodMinutes);
+		getOtherJRobin("tomcatBytesSent").addValue(
+				(bytesSent - this.tomcatBytesSent) / periodMinutes);
+		this.tomcatBytesReceived = bytesReceived;
+		this.tomcatBytesSent = bytesSent;
 	}
 
 	private void collectorOtherJRobinsValues(long usedNonHeapMemory, int loadedClassesCount,
