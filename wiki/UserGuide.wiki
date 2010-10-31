@@ -218,8 +218,8 @@ or MSIE8 (MSIE7 not recommended).
 
 	It is possible to configure some settings. These parameters can be defined in ascending order of priority:
 
-	# in initialisation parameters of the filter
-	  ({{{web.xml}}} file in the webapp), for example:
+	* in initialisation parameters of the filter
+          ({{{web.xml}}} file in the webapp), for example:
 
 {{{
 	<filter>
@@ -233,7 +233,7 @@ or MSIE8 (MSIE7 not recommended).
 	...
 }}}
 
-	# in context parameters of the webapp with prefix {{{javamelody.}}}
+	* in context parameters of the webapp with prefix {{{javamelody.}}}
 	  (context xml file in Tomcat), for example:
 
 {{{
@@ -243,15 +243,15 @@ or MSIE8 (MSIE7 not recommended).
 	</Context>
 }}}
 
-	# in environment variables of the OS with prefix {{{javamelody.}}}
-	  (OS specific or java launch command), for example:
+	* ~~in environment variables of the OS with prefix {{{javamelody.}}}~~
+	  ~~(OS specific or java launch command), for example:~~
 
 {{{
 	on windows: set "javamelody.system-actions-enabled=true"
 	on linux: javamelody.system-actions-enabled=true
 }}}
 
-	# in system properties with prefix {{{javamelody.}}}
+	* in system properties with prefix {{{javamelody.}}}
 	  (java launch command or administration user interface of the server or $CATALINA_HOME/conf/catalina.properties if tomcat), for example:
 
 {{{
