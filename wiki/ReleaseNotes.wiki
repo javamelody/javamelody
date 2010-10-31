@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * added: @MonitoredWithSpring can be added on interfaces like on implementation classes (doc to do)
+
 === 1.21.0 ===
 
   * fix issue 48: Quartz errors for persistent jobs after jobs' classes are renamed or deleted
