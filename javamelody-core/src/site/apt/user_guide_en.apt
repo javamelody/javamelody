@@ -506,10 +506,25 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	* Use of an annotation of JavaMelody.
 	(implies that the library javamelody.jar is included in your classpath for compilation)
-	Just add the annotation <<<@net.bull.javamelody.MonitoredWithSpring>>> to all classes and/or methods you want to monitor,
+	Just add the annotation <<<@net.bull.javamelody.MonitoredWithSpring>>> to all implementation
+	classes and/or interfaces and/or methods of interfaces which you want to monitor,
 	without modification of your applicationContext.xml file. For example:
 	
 +-------------------------------+
+	@net.bull.javamelody.MonitoredWithSpring
+	public interface Test {
+		void myMethod();
+	}
+	
+	or
+	
+	public interface Test {
+		@net.bull.javamelody.MonitoredWithSpring
+		void myMethod();
+	}
+	
+	or
+	
 	@net.bull.javamelody.MonitoredWithSpring
 	public class TestImpl implements Test {
 		public void myMethod() {
@@ -587,6 +602,15 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 	@net.bull.javamelody.MonitoredWithGuice
 	public class TestImpl implements Test {
+		public void myMethod() {
+			...
+		}
+	}
+	
+	or
+	
+	public class TestImpl implements Test {
+		@net.bull.javamelody.MonitoredWithGuice
 		public void myMethod() {
 			...
 		}
