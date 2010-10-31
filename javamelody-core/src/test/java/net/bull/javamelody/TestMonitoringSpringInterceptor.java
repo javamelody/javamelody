@@ -44,8 +44,8 @@ public class TestMonitoringSpringInterceptor {
 	}
 
 	/**
-		 * Test.
-		 */
+	 * Test.
+	 */
 	public interface AnnotatedTest {
 		/**
 		 * Test.
