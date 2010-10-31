@@ -480,7 +480,7 @@ or
 	* Alternative to step 3: Use of an annotation of JavaMelody.
 	(implies that the library javamelody.jar is included in your classpath for compilation)
 
-	Just add the annotation {{{@net.bull.javamelody.MonitoredWithSpring}}} to all classes and/or methods you want to monitor, without modification of your applicationContext.xml file. For example:
+	Just add the annotation {{{@net.bull.javamelody.MonitoredWithSpring}}} to all classes and/or methods of interfaces you want to monitor, without modification of your applicationContext.xml file. For example:
 	
 {{{
 	@net.bull.javamelody.MonitoredWithSpring
