@@ -100,7 +100,14 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 				.getAnnotation(MonitoredWithSpring.class);
 		if (classAnnotation == null || classAnnotation.name() == null
 				|| classAnnotation.name().length() == 0) {
-			return targetClass.getSimpleName();
+			final Class<?> declaringClass = invocation.getMethod().getDeclaringClass();
+			final MonitoredWithSpring declaringClassAnnotation = declaringClass
+					.getAnnotation(MonitoredWithSpring.class);
+			if (declaringClassAnnotation == null || declaringClassAnnotation.name() == null
+					|| declaringClassAnnotation.name().length() == 0) {
+				return targetClass.getSimpleName();
+			}
+			return declaringClassAnnotation.name();
 		}
 		return classAnnotation.name();
 	}
