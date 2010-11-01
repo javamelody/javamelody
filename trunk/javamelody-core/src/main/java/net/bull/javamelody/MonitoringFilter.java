@@ -220,7 +220,7 @@ public class MonitoringFilter implements Filter {
 				counter.setDisplayed(false);
 			}
 		}
-		if (!displayedCounters.isEmpty()) {
+		if (displayedCounters.length() != 0) {
 			for (final String displayedCounter : displayedCounters.split(",")) {
 				final String displayedCounterName = displayedCounter.trim();
 				boolean found = false;
