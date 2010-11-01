@@ -635,7 +635,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 			/** {@inheritDoc} */
 			@Override
 			protected void configure() {
-				// configuration du monitoring Guice par interface
+				// configuration of the Guice monitoring with interface
 				bindInterceptor(Matchers.subclassesOf(com.xyz.someapp.service.Facade.class),
 					Matchers.any(), new net.bull.javamelody.MonitoringGuiceInterceptor());
 				// façade
