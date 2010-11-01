@@ -580,7 +580,7 @@ or
 			/** {@inheritDoc} */
 			@Override
 			protected void configure() {
-				// configuration of the Guice monitoring Guice with interface
+				// configuration of the Guice monitoring with interface
 				bindInterceptor(Matchers.subclassesOf(com.xyz.someapp.service.Facade.class),
 					Matchers.any(), new net.bull.javamelody.MonitoringGuiceInterceptor());
 				// facade
