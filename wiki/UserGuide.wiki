@@ -768,14 +768,14 @@ or
 			<web-resource-name>Monitoring</web-resource-name>
 			<url-pattern>/monitoring</url-pattern>
 		</web-resource-collection>
-		<!-- if SSL enabled (SSL and certificate must then be configured in the server)
-		<user-data-constraint>
-			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint> 
-		-->
 		<auth-constraint>
 			<role-name>monitoring</role-name>
 		</auth-constraint>
+                <!-- if SSL enabled (SSL and certificate must then be configured in the server)
+                <user-data-constraint>
+                        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+                </user-data-constraint> 
+                -->
 	</security-constraint>
 }}}
 
