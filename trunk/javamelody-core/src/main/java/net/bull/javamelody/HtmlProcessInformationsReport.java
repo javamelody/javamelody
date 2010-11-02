@@ -79,7 +79,7 @@ class HtmlProcessInformationsReport {
 		writeln("</tbody></table>");
 		if (!ProcessInformations.WINDOWS) {
 			write("<div align='right'>");
-			write("<a href='http://fr.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps command reference</a></div>");
+			write("<a href='http://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps command reference</a></div>");
 		}
 	}
 
