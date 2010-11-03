@@ -250,15 +250,6 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</Context>
 +-------------------------------+
 
-	* in environment variables of the OS with prefix <<<javamelody.>>>
-
-	  (OS specific or java launch command), for example:
-
-+-------------------------------+
-	on windows: set "javamelody.system-actions-enabled=true"
-	on linux: javamelody.system-actions-enabled=true
-+-------------------------------+
-
 	* in system properties with prefix <<<javamelody.>>>
 
 	  (java launch command or administration user interface or $CATALINA_HOME/conf/catalina.properties if tomcat),
@@ -360,7 +351,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If a DataSource is used but its JNDI name is not like "jdbc/MyDataSource" or if this DataSource
 	is not in one of the usual JNDI contexts "java:comp/env/" or "java:/", then you can add the optional parameter
-	<<<datasources>>> (with a system property, an environment variable, a parameter of the context or of the filter)
+	<<<datasources>>> (with a system property, a parameter of the context or of the filter)
 	to define the JNDI name of the datasource used by the application.
 	If there are several datasources, this parameter can contain the JNDI name of the datasources
 	separated by commas.
@@ -734,7 +725,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }} session
 
 	Then it is necessary to add the list of mail addresses separated by commas to the parameter
-	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in environment variables or in system properties
+	<<<admin-emails>>>, in <<<web.xml>>> file or in tomcat context or in system properties
 	like the optional parameters above.
 	
 	And the name of the mail session should also be added in the parameter <<<mail-session>>>.
