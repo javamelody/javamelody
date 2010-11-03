@@ -328,7 +328,7 @@ or MSIE8 (MSIE7 not recommended).
 
 	If a DataSource is used but its JNDI name is not like "jdbc/MyDataSource" or if this DataSource
 	is not in one of the usual JNDI contexts "java:comp/env/" or "java:/", then you can add the optional parameter
-	{{{datasources}}} (with a system property, an environment variable, a parameter of the context or of the filter) to define the JNDI name
+	{{{datasources}}} (with a system property, a parameter of the context or of the filter) to define the JNDI name
 	of the datasource used by the application. If there are several datasources, this parameter can contain
 	the JNDI name of the datasources separated by commas. If a jonas v5 server is used, datasources can be monitored
 	but it appears that the parameter {{{datasources}}} must be used to declare them.
@@ -671,7 +671,7 @@ or
 	[http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html mail] session
 
 	Then it is necessary to add the list of mail addresses separated by commas to the parameter
-	{{{admin-emails}}}, in {{{web.xml}}} file or in tomcat context or in environment variables or in system properties like the optional parameters
+	{{{admin-emails}}}, in {{{web.xml}}} file or in tomcat context or in system properties like the optional parameters
 	above.
 	
 	And the name of the mail session should also be added in the parameter {{{mail-session}}}.
