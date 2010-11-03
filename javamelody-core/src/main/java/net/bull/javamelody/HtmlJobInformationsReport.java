@@ -112,8 +112,12 @@ class HtmlJobInformationsReport {
 		if (counterRequest != null) {
 			write("</td> <td align='center'>");
 			writeStackTrace(counterRequest.getStackTrace());
-			write(nextColumnAlignRight);
-			write(durationFormat.format(new Date(counterRequest.getMean())));
+			if (counterRequest.getMean() >= 0) {
+				write(nextColumnAlignRight);
+				write(durationFormat.format(new Date(counterRequest.getMean())));
+			} else {
+				write("</td><td>&nbsp;");
+			}
 			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
 			// uniquement car cela ferait trop de colonnes dans la page
 		} else {
