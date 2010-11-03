@@ -113,7 +113,7 @@ Advanced documentation of Java Melody
 	The optional parameters <<<resolution-seconds>>>, <<<storage-directory>>>, <<<system-actions-enabled>>>,
 	<<<warning-threshold-millis>>>, <<<severe-threshold-millis>>> and <<<allowed-addr-pattern>>>
 	can be added in the xml context file of the collect server with the prefix <<<javamelody>>>.
-	They can also be added as system properties or environment variables with the prefix <<<javamelody>>>.
+	They can also be added as system properties with the prefix <<<javamelody>>>.
 	They have the same effects on the collect server than those of a monitored application as
 	written in the {{{user_guide_en.html} user guide}}. In particular the parameter
 	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution

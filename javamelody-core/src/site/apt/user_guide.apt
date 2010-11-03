@@ -252,15 +252,6 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</Context>
 +-------------------------------+
 
-	* dans les variables d'environnement du système d'exploitation avec le préfixe <<<javamelody.>>>
-
-	  (dépendant du système d'exploitation ou bien commande de lancement java), par exemple:
-
-+-------------------------------+
-	on windows: set "javamelody.system-actions-enabled=true"
-	on linux: javamelody.system-actions-enabled=true
-+-------------------------------+
-
 	* dans les propriétés systèmes avec le préfixe <<<javamelody.>>>
 
 	  (commande de lancement java ou selon le cas interface d'administration
@@ -363,7 +354,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Si une DataSource est utilisée mais que son nom JNDI n'est pas de la forme "jdbc/MaDataSource" ou que celle-ci
 	n'est pas dans un des contextes JNDI "java:comp/env/" ou "java:/" habituels, alors vous pouvez ajouter le paramètre optionnel
-	<<<datasources>>> (par une propriété système, une variable d'environnement, un paramètre du contexte ou du filtre)
+	<<<datasources>>> (par une propriété système, un paramètre du contexte ou du filtre)
 	pour définir le nom JNDI de la datasource utilisée par l'application.
 	S'il y a plusieurs datasources, ce paramètre peut contenir les noms JNDI des datasources
 	séparés par des virgules.
@@ -751,7 +742,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	{{{http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html} mail }}
 
 	Puis il est nécessaire d'ajouter la liste des adresses mails séparées par des virgules dans le paramètre
-	<<<admin-emails>>>, dans le fichier <<<web.xml>>> ou dans le contexte tomcat ou en variable d'environnement ou en propriété système
+	<<<admin-emails>>>, dans le fichier <<<web.xml>>> ou dans le contexte tomcat ou en propriété système
 	comme pour les paramètres optionnels ci-dessus.
 	
 	Et il faut ajouter également le nom de la session mail dans le paramètre <<<mail-session>>>.
