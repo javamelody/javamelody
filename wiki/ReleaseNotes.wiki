@@ -3,6 +3,7 @@
 
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
   * added: @MonitoredWithSpring can be added on interfaces like on implementation classes (doc to do)
+  * removed: because parameters in environment variables can't work well in all OS, the possibility to use environment variables is removed
 
 === 1.21.0 ===
 
