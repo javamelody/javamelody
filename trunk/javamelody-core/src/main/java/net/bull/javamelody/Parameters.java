@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -53,10 +52,6 @@ final class Parameters {
 	private static final String DEFAULT_DIRECTORY = "javamelody";
 	// nom du fichier stockant les applications et leurs urls dans le répertoire de stockage
 	private static final String APPLICATIONS_FILENAME = "applications.properties";
-	// variables d'environnement
-	private static final boolean WINDOWS = System.getProperty("os.name")
-			.toLowerCase(Locale.getDefault()).contains("windows");
-	private static final Map<String, String> ENVIRONMENT_VARIABLES = System.getenv();
 	private static Map<String, List<URL>> urlsByApplications;
 
 	private static FilterConfig filterConfig;
@@ -402,17 +397,6 @@ final class Parameters {
 		final String name = parameter.getCode();
 		final String globalName = PARAMETER_SYSTEM_PREFIX + name;
 		String result = System.getProperty(globalName);
-		if (result != null) {
-			return result;
-		}
-		if (WINDOWS) {
-			// keys of environment variables seems to be always converted to upper case
-			// on windows (tested with XP)
-			result = ENVIRONMENT_VARIABLES.get(globalName.toUpperCase(Locale.getDefault()));
-		} else {
-			// TODO linux does not like '.' and '-'
-			result = ENVIRONMENT_VARIABLES.get(globalName);
-		}
 		if (result != null) {
 			return result;
 		}
