@@ -348,21 +348,17 @@ final class JRobin {
 	}
 
 	String getLabel() {
-		final String request = getRequestName();
-		if (request == null) {
+		if (requestName == null) {
 			// c'est un jrobin global issu soit de JavaInformations soit d'un Counter dans le Collector
 			return I18N.getString(getName());
 		}
 		// c'est un jrobin issu d'un CounterRequest dans le Collector
-		final String shortRequestName = request.substring(0, Math.min(30, request.length()));
+		final String shortRequestName = requestName
+				.substring(0, Math.min(30, requestName.length()));
 		// plus nécessaire:  if (getName().startsWith("error")) {
 		// c'est un jrobin issu d'un CounterRequest du Counter "error"
 		// return I18N.getString("Erreurs_par_minute_pour") + ' ' + shortRequestName; }
 		return I18N.getFormattedString("Temps_moyens_de", shortRequestName);
-	}
-
-	String getRequestName() {
-		return requestName;
 	}
 
 	private static IOException createIOException(Exception e) {
