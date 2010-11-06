@@ -99,7 +99,7 @@ enum Action { // NOPMD
 	 */
 	private String contextName;
 
-	Action(String contextName) {
+	private Action(String contextName) {
 		this.contextName = contextName;
 	}
 
