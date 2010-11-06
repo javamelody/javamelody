@@ -39,13 +39,13 @@ import javax.management.ObjectName;
  * Les instances sont sérialisables pour pouvoir être transmises au serveur de collecte.
  * @author Emeric Vernat
  */
-class TomcatInformations implements Serializable {
+final class TomcatInformations implements Serializable {
 	// cette classe utilise la même technique avec les MBeans Tomcat que la webapp manager de Tomcat
 	// http://svn.apache.org/repos/asf/tomcat/trunk/java/org/apache/catalina/manager/StatusManagerServlet.java
 	// http://svn.apache.org/repos/asf/tomcat/trunk/java/org/apache/catalina/manager/StatusTransformer.java
 	// http://svn.apache.org/repos/asf/tomcat/trunk/webapps/manager/xform.xsl
 
-	static final boolean TOMCAT_USED = System.getProperty("catalina.home") != null;
+	private static final boolean TOMCAT_USED = System.getProperty("catalina.home") != null;
 
 	private static final long serialVersionUID = -6145865427461051370L;
 
@@ -65,7 +65,7 @@ class TomcatInformations implements Serializable {
 	private final long processingTime;
 	private final long maxTime;
 
-	TomcatInformations(MBeanServer mBeanServer, ObjectName threadPool) throws JMException {
+	private TomcatInformations(MBeanServer mBeanServer, ObjectName threadPool) throws JMException {
 		super();
 		name = threadPool.getKeyProperty("name");
 		maxThreads = (Integer) mBeanServer.getAttribute(threadPool, "maxThreads");
