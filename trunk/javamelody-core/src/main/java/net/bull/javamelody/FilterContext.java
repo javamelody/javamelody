@@ -104,7 +104,7 @@ class FilterContext {
 		}
 	}
 
-	private List<Counter> initCounters() {
+	private static List<Counter> initCounters() {
 		// liaison des compteurs : les contextes par thread du sqlCounter ont pour parent le httpCounter
 		final Counter sqlCounter = JdbcWrapper.SINGLETON.getSqlCounter();
 		final Counter httpCounter = new Counter(Counter.HTTP_COUNTER_NAME, "dbweb.png", sqlCounter);
@@ -228,7 +228,7 @@ class FilterContext {
 		}
 	}
 
-	private void initLogs() {
+	private static void initLogs() {
 		// on branche le handler java.util.logging pour le counter de logs
 		LoggingHandler.getSingleton().register();
 
@@ -244,7 +244,7 @@ class FilterContext {
 		LOG.debug("log listeners initialized");
 	}
 
-	private void logSystemInformationsAndParameters() {
+	private static void logSystemInformationsAndParameters() {
 		// log les principales informations sur le système et sur les paramètres définis spécifiquement
 		LOG.debug("OS: " + System.getProperty("os.name") + ' '
 				+ System.getProperty("sun.os.patch.level") + ", " + System.getProperty("os.arch")
@@ -300,10 +300,10 @@ class FilterContext {
 		}
 	}
 
-	private void deregisterJdbcDriver() {
+	private static void deregisterJdbcDriver() {
 		// on désinstalle le driver jdbc s'il est installé
 		// (mais sans charger la classe JdbcDriver pour ne pas installer le driver)
-		final Class<MonitoringFilter> classe = MonitoringFilter.class;
+		final Class<FilterContext> classe = FilterContext.class;
 		final String packageName = classe.getName().substring(0,
 				classe.getName().length() - classe.getSimpleName().length() - 1);
 		for (final Driver driver : Collections.list(DriverManager.getDrivers())) {
@@ -318,7 +318,7 @@ class FilterContext {
 		}
 	}
 
-	private void deregisterLogs() {
+	private static void deregisterLogs() {
 		if (LOG.LOGBACK_ENABLED) {
 			LogbackAppender.getSingleton().deregister();
 		}
