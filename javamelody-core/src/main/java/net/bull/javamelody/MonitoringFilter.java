@@ -352,4 +352,8 @@ public class MonitoringFilter implements Filter {
 			throw new ServletException(t.getMessage(), t);
 		}
 	}
+
+	FilterContext getFilterContext() {
+		return filterContext;
+	}
 }

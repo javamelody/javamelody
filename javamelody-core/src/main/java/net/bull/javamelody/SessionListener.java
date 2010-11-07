@@ -224,6 +224,38 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_MAP_BY_ID.remove(event.getSession().getId());
 	}
 
+	// pour jira/confluence/bamboo
+	void registerSessionIfNeeded(HttpSession session) {
+		if (session != null) {
+			synchronized (session) {
+				if (!SESSION_MAP_BY_ID.containsKey(session.getId())) {
+					sessionCreated(new HttpSessionEvent(session));
+				}
+			}
+		}
+	}
+
+	// pour jira/confluence/bamboo
+	void unregisterSessionIfNeeded(HttpSession session) {
+		if (session != null) {
+			try {
+				session.getCreationTime();
+			} catch (final IllegalStateException e) {
+				// session.getCreationTime() lance IllegalStateException si la session est invalidée
+				synchronized (session) {
+					sessionDestroyed(new HttpSessionEvent(session));
+				}
+			}
+		}
+	}
+
+	// pour jira/confluence/bamboo
+	void unregisterInvalidatedSessions() {
+		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
+			unregisterSessionIfNeeded(session);
+		}
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

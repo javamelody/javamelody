@@ -331,4 +331,8 @@ class FilterContext {
 	Collector getCollector() {
 		return collector;
 	}
+
+	Timer getTimer() {
+		return timer;
+	}
 }
