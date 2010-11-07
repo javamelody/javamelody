@@ -3,7 +3,7 @@
 
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
   * added major feature for *Jira/Confluence/Bamboo plugin*: graphic of the number of sessions and details on http sessions with the link in "System informations" (this is [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/JiraMonitoringFilter.java emulated] without httpsessionlistener, because httpsessionlistener can't be used in Atlassian plugins)
-  * added: [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoredWithSpring.java @MonitoredWithSpring] can be added on interfaces like on implementation classes (doc to do)
+  * added: @MonitoredWithSpring can be added on interfaces like on implementation classes (doc to do)
   * removed: because parameters in environment variables can't work well in all OS, the possibility to use environment variables is removed. Use [UserGuide#6._Optional_parameters this] instead.
 
 === 1.21.0 ===
