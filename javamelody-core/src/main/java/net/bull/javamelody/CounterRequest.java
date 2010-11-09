@@ -335,23 +335,27 @@ class CounterRequest implements Cloneable, Serializable {
 			childHits -= request.childHits;
 			childDurationsSum -= request.childDurationsSum;
 
-			if (request.childRequestsExecutionsByRequestId != null
-					&& childRequestsExecutionsByRequestId != null) {
-				for (final Map.Entry<String, Long> entry : request.childRequestsExecutionsByRequestId
-						.entrySet()) {
-					final String requestId = entry.getKey();
-					Long nbExecutions = childRequestsExecutionsByRequestId.get(requestId);
-					if (nbExecutions != null) {
-						nbExecutions = Math.max(nbExecutions - entry.getValue(), 0);
-						if (nbExecutions == 0) {
-							childRequestsExecutionsByRequestId.remove(requestId);
-							if (childRequestsExecutionsByRequestId.isEmpty()) {
-								childRequestsExecutionsByRequestId = null;
-								break;
-							}
-						} else {
-							childRequestsExecutionsByRequestId.put(requestId, nbExecutions);
+			removeChildHits(request);
+		}
+	}
+
+	private void removeChildHits(CounterRequest request) {
+		if (request.childRequestsExecutionsByRequestId != null
+				&& childRequestsExecutionsByRequestId != null) {
+			for (final Map.Entry<String, Long> entry : request.childRequestsExecutionsByRequestId
+					.entrySet()) {
+				final String requestId = entry.getKey();
+				Long nbExecutions = childRequestsExecutionsByRequestId.get(requestId);
+				if (nbExecutions != null) {
+					nbExecutions = Math.max(nbExecutions - entry.getValue(), 0);
+					if (nbExecutions == 0) {
+						childRequestsExecutionsByRequestId.remove(requestId);
+						if (childRequestsExecutionsByRequestId.isEmpty()) {
+							childRequestsExecutionsByRequestId = null;
+							break;
 						}
+					} else {
+						childRequestsExecutionsByRequestId.put(requestId, nbExecutions);
 					}
 				}
 			}
