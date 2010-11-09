@@ -132,6 +132,11 @@ public enum Parameter {
 	NO_DATABASE("no-database"),
 
 	/**
+	 * Paramètre pour désactiver le listener sur le scheduler par défaut de Quartz ("false" par défaut).
+	 */
+	QUARTZ_DEFAULT_LISTENER_DISABLED("quartz-default-listener-disabled"),
+
+	/**
 	 * Active les actions Ramasse-miettes, Invalidation sessions et Heap-dump (false par défaut).
 	 */
 	SYSTEM_ACTIONS_ENABLED("system-actions-enabled"),
