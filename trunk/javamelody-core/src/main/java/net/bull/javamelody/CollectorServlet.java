@@ -87,7 +87,7 @@ public class CollectorServlet extends HttpServlet {
 			LOGGER.setLevel(Level.WARN);
 		}
 		// dans le serveur de collecte, on est sûr que log4j est disponible
-		LOGGER.info("initialisation de la servlet de collecte du monitoring");
+		LOGGER.info("initialization of the collector servlet of the monitoring");
 		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
 			allowedAddrPattern = Pattern.compile(Parameters
 					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
@@ -125,10 +125,10 @@ public class CollectorServlet extends HttpServlet {
 		} finally {
 			I18N.unbindLocale();
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("monitoring depuis " + req.getRemoteAddr() + ", request="
+				LOGGER.debug("monitoring from " + req.getRemoteAddr() + ", request="
 						+ req.getRequestURI()
 						+ (req.getQueryString() != null ? '?' + req.getQueryString() : "")
-						+ ", application=" + application + " en "
+						+ ", application=" + application + " in "
 						+ (System.currentTimeMillis() - start) + "ms");
 			}
 		}
@@ -158,8 +158,8 @@ public class CollectorServlet extends HttpServlet {
 			}
 			final List<URL> urls = Parameters.parseUrl(appUrls);
 			collectorServer.addCollectorApplication(appName, urls);
-			LOGGER.info("ajout application monitorée : " + appName);
-			LOGGER.info("urls de l'application monitorée : " + urls);
+			LOGGER.info("monitored application added: " + appName);
+			LOGGER.info("urls of the monitored application: " + urls);
 			showAlertAndRedirectTo(resp, I18N.getFormattedString("application_ajoutee", appName),
 					"?application=" + appName);
 		} catch (final FileNotFoundException e) {
@@ -509,12 +509,12 @@ public class CollectorServlet extends HttpServlet {
 	/** {@inheritDoc} */
 	@Override
 	public void destroy() {
-		LOGGER.info("servlet de collecte en phase d'arrêt");
+		LOGGER.info("collector servlet stopping");
 		if (collectorServer != null) {
 			collectorServer.stop();
 		}
 		Collector.stopJRobin();
-		LOGGER.info("servlet de collecte arrêtée");
+		LOGGER.info("collector servlet stopped");
 		super.destroy();
 	}
 }
