@@ -46,8 +46,14 @@ final class JobGlobalListener implements JobListener {
 	static void initJobGlobalListener() {
 		try {
 			final JobGlobalListener jobGlobalListener = new JobGlobalListener();
-			final Scheduler defaultScheduler = StdSchedulerFactory.getDefaultScheduler();
-			defaultScheduler.addGlobalJobListener(jobGlobalListener);
+			final Scheduler defaultScheduler;
+			if (Boolean.parseBoolean(Parameters
+					.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
+				defaultScheduler = null;
+			} else {
+				defaultScheduler = StdSchedulerFactory.getDefaultScheduler();
+				defaultScheduler.addGlobalJobListener(jobGlobalListener);
+			}
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 				if (scheduler != defaultScheduler) {
 					scheduler.addGlobalJobListener(jobGlobalListener);
