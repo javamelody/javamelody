@@ -97,8 +97,8 @@ class LabradorRetriever {
 		} catch (final ClassNotFoundException e) {
 			throw createIOException(e);
 		} finally {
-			LOGGER.info("appel http effectué en " + (System.currentTimeMillis() - start)
-					+ " ms pour " + url);
+			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms for "
+					+ url);
 		}
 	}
 
