@@ -55,11 +55,11 @@ class CollectorServer {
 		try {
 			final Map<String, List<URL>> urlsByApplication = Parameters
 					.getCollectorUrlsByApplications();
-			LOGGER.info("applications monitorées : " + urlsByApplication.keySet());
-			LOGGER.info("urls des applications monitorées : " + urlsByApplication);
+			LOGGER.info("monitored applications: " + urlsByApplication.keySet());
+			LOGGER.info("urls of monitored applications: " + urlsByApplication);
 
 			final int periodMillis = Parameters.getResolutionSeconds() * 1000;
-			LOGGER.info("résolution du monitoring en secondes : "
+			LOGGER.info("resolution of the monitoring in seconds: "
 					+ Parameters.getResolutionSeconds());
 			final TimerTask collectTask = new TimerTask() {
 				/** {@inheritDoc} */
@@ -113,7 +113,7 @@ class CollectorServer {
 	}
 
 	String collectForApplication(String application, List<URL> urls) throws IOException {
-		LOGGER.info("collecte pour l'application " + application + " sur " + urls);
+		LOGGER.info("collect for the application " + application + " on " + urls);
 		assert application != null;
 		assert urls != null;
 		final long start = System.currentTimeMillis();
@@ -128,7 +128,7 @@ class CollectorServer {
 			return null;
 		}
 		collector.collectWithoutErrors(javaInformationsList);
-		LOGGER.info("collecte pour l'application " + application + " effectuée en "
+		LOGGER.info("collect for the application " + application + " done in "
 				+ (System.currentTimeMillis() - start) + "ms");
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("counters " + application + " : " + collector.getCounters());
@@ -245,8 +245,8 @@ class CollectorServer {
 		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
 				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
 			scheduleReportMailForCollectorServer(application);
-			LOGGER.info("Rapport hebdomadaire programmé pour l'application " + application
-					+ " à destination de " + Parameters.getParameter(Parameter.ADMIN_EMAILS));
+			LOGGER.info("Periodic report scheduled for the application " + application + " to "
+					+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
 		}
 		return collector;
 	}
