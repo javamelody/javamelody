@@ -325,10 +325,15 @@ class CounterRequest implements Cloneable, Serializable {
 			hits -= request.hits;
 			durationsSum -= request.durationsSum;
 			durationsSquareSum -= request.durationsSquareSum;
-			// on ne peut pas enlever le maximum puisqu'on ne connaît pas le précédent maximum
-			//			if (request.maximum > maximum) {
-			//				maximum = request.maximum;
-			//			}
+			// on doit enlever le maximum même si on ne connaît pas le précédent maximum car sinon
+			// le maximum des périodes jour, semaine, mois, année est celui de la période tout
+			if (request.maximum >= maximum) {
+				if (hits > 0) {
+					maximum = durationsSum / hits;
+				} else {
+					maximum = -1;
+				}
+			}
 			cpuTimeSum -= request.cpuTimeSum;
 			systemErrors -= request.systemErrors;
 			responseSizesSum -= request.responseSizesSum;
