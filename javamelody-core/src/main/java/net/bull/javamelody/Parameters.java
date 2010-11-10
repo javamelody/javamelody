@@ -138,7 +138,7 @@ final class Parameters {
 			final StringBuilder sb = new StringBuilder();
 			for (final URL url : urls) {
 				final String urlString = url.toString();
-				// on enlève le suffixe ajouté précédemment
+				// on enlève le suffixe ajouté précédemment dans parseUrl
 				sb.append(urlString.substring(0, urlString.indexOf("/monitoring"))).append(',');
 			}
 			sb.delete(sb.length() - 1, sb.length());
@@ -147,7 +147,7 @@ final class Parameters {
 		final FileOutputStream output = new FileOutputStream(new File(getStorageDirectory(""),
 				APPLICATIONS_FILENAME));
 		try {
-			properties.store(output, "urls des applications à monitorer");
+			properties.store(output, "urls of the applications to monitor");
 		} finally {
 			output.close();
 		}
