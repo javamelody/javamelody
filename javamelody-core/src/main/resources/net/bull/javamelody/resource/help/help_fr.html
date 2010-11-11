@@ -41,7 +41,7 @@ Memory Management</a><br/>
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Stats'/>
 Synthèse</h3>
 Dans la page du monitoring, la synthèse présente des courbes d'évolution sur différentes valeurs de mesures.<br/>
-Ces mesures sont effectuées à un instant t, par exemple toutes les 2 minutes.
+Ces mesures sont effectuées à un instant t, par exemple toutes les minutes.
 Chaque courbe suit l'évolution d'une valeur de mesure sur la période plus ou moins large choisie
 par l'intermédiaire des liens au-dessus de la synthèse :
  <img width='16' height='16' src='?resource=calendar_view_day.png' alt='day'/> le jour,
@@ -81,6 +81,8 @@ Les courbes présentées sont :<ul>
 	</ul></li>
 </ul>
 
+Les heures dans les graphiques pour le jour dépendent de l'heure du serveur et du fuseau horaire du serveur
+(timezone, défini par l'OS ou spécifiquement pour le serveur d'application).<br/>
 Le lien '<img width='16' height='16' src='?resource=action_refresh.png' alt='Update'/> Actualiser' permet de rafraîchir la page et les courbes.
 Le lien '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' affiche tout le rapport en format PDF pour Adobe Reader.<br/>
 Si un serveur de collecte est utilisé pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
