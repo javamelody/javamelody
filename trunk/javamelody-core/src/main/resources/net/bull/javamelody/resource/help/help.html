@@ -41,7 +41,7 @@ Memory Management</a><br/>
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Stats'/>
 Summary</h3>
 In the page of monitoring, the summary shows evolution charts for several values of measures.<br/>
-These measures are taken at a time T, for example every 2 minutes.
+These measures are taken at a time T, for example every minutes.
 Each chart follows the evolution of a value of measure on the period short or large chosen
 with the links above the summary: <img width='16' height='16' src='?resource=calendar_view_day.png' alt='day'/> the day,
  <img width='16' height='16' src='?resource=calendar_view_week.png' alt='week'/> the week,
@@ -80,6 +80,8 @@ The charts displayed are:<ul>
 	</ul></li>
 </ul>
 
+The hours in the graphics for the day depend on the time of the server and of the timezone of the server
+(as defined by the OS or specifically for the application server).<br/>
 The link '<img width='16' height='16' src='?resource=action_refresh.png' alt='Update'/> Update' refreshes the page and the charts.
 The link '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' displays the report in PDF format for Adobe Reader.<br/>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
