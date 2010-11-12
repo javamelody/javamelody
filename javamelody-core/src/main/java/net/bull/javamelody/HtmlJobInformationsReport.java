@@ -156,7 +156,9 @@ class HtmlJobInformationsReport {
 		} else {
 			write("<a class='tooltip'>");
 			write("<em>");
-			writeln(I18N.htmlEncode(stackTrace.replace("[See nested", "\n[See nested"), true));
+			// writer.write pour ne pas gérer de traductions si la stack-trace contient '#'
+			writer.write(I18N.htmlEncode(stackTrace.replace("[See nested", "\n[See nested"), true));
+			writeln("");
 			writeln("</em>");
 			write("<img src='?resource=bullets/red.png' alt=''/>");
 			writeln("</a>");
