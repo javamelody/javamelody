@@ -4,6 +4,7 @@
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
   * fix issue 58: Quartz in Spring and server shutdown. (Added parameter "quartz-default-listener-disabled" to be used for Quartz jobs using Spring only, _doc to do_) 
   * fix issue 59: Maximum values in statistics can be incorrect
+  * fix issue 62: IndexOutOfBounds for report on some jobs
   * added major feature for *Jira/Confluence/Bamboo plugin*: graphic of the number of sessions and details on http sessions with the link in "System informations" (this is [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/JiraMonitoringFilter.java emulated] without httpsessionlistener, because httpsessionlistener can't be used in Atlassian plugins)
   * added: @MonitoredWithSpring can be added on interfaces like on implementation classes (_doc to do_)
   * removed: because parameters in environment variables can't work well in all OS, the possibility to use environment variables is removed. Use [UserGuide#6._Optional_parameters this] instead.
