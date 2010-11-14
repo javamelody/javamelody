@@ -30,6 +30,7 @@ public enum Parameter {
 	 * Une résolution entre 60 et 600 est recommandée (c'est-à-dire 1 à 10 minutes).
 	 */
 	RESOLUTION_SECONDS("resolution-seconds"),
+
 	/**
 	 * Nom du répertoire de stockage (monitoring par défaut).
 	 * Si le nom du répertoire commence par '/', on considère que c'est un chemin absolu,
@@ -145,6 +146,14 @@ public enum Parameter {
 	 * Expression régulière (null par défaut) pour restreindre l'accès au monitoring à certaines adresses IP.
 	 */
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),
+
+	/**
+	 * Désactive la vérification de l'authentification sur la page du monitoring dans le plugin Hudson
+	 * ou dans le plugin JIRA/Confluence/Bamboo, de manière à pouvoir utiliser le serveur de collecte
+	 * centralisé (false par défaut). Le paramètre allowed-addr-pattern pourra être utilisé pour
+	 * n'autoriser que le serveur de collecte pour l'obtention des données dans Hudson/JIRA/Confluence/Bamboo.
+	 */
+	PLUGIN_AUTHENTICATION_DISABLED("plugin-authentication-disabled"),
 
 	/**
 	 * Désactive le monitoring (false par défaut).
