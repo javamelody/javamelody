@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+	<New id="jdbc/TestDB" class="org.mortbay.jetty.plus.naming.Resource">
+		<Arg>jdbc/TestDB</Arg>
+		<Arg>
+			<New class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+				<Set name="Url">jdbc:mysql://127.0.0.1:3306/test?socketTimeout=5000&amp;connectTimeout=5000</Set>
+				<Set name="User">root</Set>
+				<Set name="Password">root</Set>
+			</New>
+		</Arg>
+	</New>
+</Configure> 
