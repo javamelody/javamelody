@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.22.0 ===
 
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
   * fix issue 58: Quartz in Spring and server shutdown. (Added parameter "quartz-default-listener-disabled" to be used for Quartz jobs using Spring only, _doc to do_) 
