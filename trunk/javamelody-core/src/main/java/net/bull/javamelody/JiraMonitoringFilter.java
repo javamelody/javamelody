@@ -19,11 +19,8 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -35,7 +32,9 @@ import javax.servlet.http.HttpSession;
  * Filter of monitoring JavaMelody for JIRA/Bamboo/Confluence with security check for system administrator.
  * @author Emeric Vernat
  */
-public class JiraMonitoringFilter extends MonitoringFilter {
+public class JiraMonitoringFilter extends PluginMonitoringFilter {
+	private static final boolean PLUGIN_AUTHENTICATION_DISABLED = Boolean.parseBoolean(System
+			.getProperty("javamelody.plugin-authentication-disabled"));
 	// valeur de com.atlassian.jira.security.Permissions.SYSTEM_ADMIN
 	private static final int SYSTEM_ADMIN = 44;
 	// valeur de DefaultAuthenticator.LOGGED_IN_KEY
@@ -45,25 +44,6 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 	private final boolean jira = isJira();
 	private final boolean confluence = isConfluence();
 	private final boolean bamboo = isBamboo();
-	private final SessionListener emulatedSessionListener = new SessionListener();
-
-	/** {@inheritDoc} */
-	@Override
-	public void init(FilterConfig config) throws ServletException {
-		super.init(config);
-
-		final TimerTask sessionTimerTask = new TimerTask() {
-			/** {@inheritDoc} */
-			@Override
-			public void run() {
-				unregisterInvalidatedSessions();
-			}
-		};
-		final int resolutionSeconds = Parameters.getResolutionSeconds();
-		final int periodMillis = resolutionSeconds * 1000;
-		final Timer timer = getFilterContext().getTimer();
-		timer.schedule(sessionTimerTask, periodMillis - 5 * 1000, periodMillis);
-	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -81,37 +61,15 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 			return;
 		}
 
-		registerSessionIfNeeded(httpRequest);
 		super.doFilter(request, response, chain);
-		// si logout on prend en compte de suite la destruction de la session
-		unregisterSessionIfNeeded(httpRequest);
 	}
 
 	private boolean hasNotPermission(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws IOException {
-		return !Boolean.parseBoolean(Parameters
-				.getParameter(Parameter.PLUGIN_AUTHENTICATION_DISABLED))
+		return !PLUGIN_AUTHENTICATION_DISABLED
 				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse) || confluence
 						&& !checkConfluenceAdminPermission(httpRequest, httpResponse) || bamboo
 						&& !checkBambooAdminPermission(httpRequest, httpResponse));
-	}
-
-	private void registerSessionIfNeeded(HttpServletRequest httpRequest) {
-		// rq: cette session peut-être dors et déjà invalide et c'est pourquoi on vérifie
-		// isRequestedSessionIdValid
-		if (httpRequest.isRequestedSessionIdValid()) {
-			final HttpSession session = httpRequest.getSession(false);
-			emulatedSessionListener.registerSessionIfNeeded(session);
-		}
-	}
-
-	private void unregisterSessionIfNeeded(HttpServletRequest httpRequest) {
-		final HttpSession session = httpRequest.getSession(false);
-		emulatedSessionListener.unregisterSessionIfNeeded(session);
-	}
-
-	void unregisterInvalidatedSessions() {
-		emulatedSessionListener.unregisterInvalidatedSessions();
 	}
 
 	private boolean checkJiraAdminPermission(HttpServletRequest httpRequest,
