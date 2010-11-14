@@ -215,11 +215,12 @@ class PdfJavaInformationsReport {
 		final Phrase osPhrase = new Phrase("", cellFont);
 		final String osIconName = HtmlJavaInformationsReport
 				.getOSIconName(javaInformations.getOS());
+		final String separator = "   ";
 		if (osIconName != null) {
 			final Image osImage = PdfDocumentFactory.getImage("servers/" + osIconName);
 			osImage.scalePercent(40);
 			osPhrase.add(new Chunk(osImage, 0, 0));
-			osPhrase.add("   ");
+			osPhrase.add(separator);
 		}
 		osPhrase.add(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
 				+ ' ' + getI18nString("coeurs") + ')');
@@ -227,7 +228,14 @@ class PdfJavaInformationsReport {
 		addCell(getI18nString("Java") + ':');
 		addCell(javaInformations.getJavaVersion());
 		addCell(getI18nString("JVM") + ':');
-		addCell(javaInformations.getJvmVersion());
+		final Phrase jvmVersionPhrase = new Phrase(javaInformations.getJvmVersion(), cellFont);
+		if (javaInformations.getJvmVersion().contains("Client")) {
+			jvmVersionPhrase.add(separator);
+			final Image alertImage = PdfDocumentFactory.getImage("alert.png");
+			alertImage.scalePercent(50);
+			jvmVersionPhrase.add(new Chunk(alertImage, 0, -2));
+		}
+		currentTable.addCell(jvmVersionPhrase);
 		addCell(getI18nString("PID") + ':');
 		addCell(javaInformations.getPID());
 		if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
@@ -235,19 +243,7 @@ class PdfJavaInformationsReport {
 		}
 		final String serverInfo = javaInformations.getServerInfo();
 		if (serverInfo != null) {
-			addCell(getI18nString("Serveur") + ':');
-			final Phrase serverInfoPhrase = new Phrase("", cellFont);
-			final String applicationServerIconName = HtmlJavaInformationsReport
-					.getApplicationServerIconName(serverInfo);
-			if (applicationServerIconName != null) {
-				final Image applicationServerImage = PdfDocumentFactory.getImage("servers/"
-						+ applicationServerIconName);
-				applicationServerImage.scalePercent(40);
-				serverInfoPhrase.add(new Chunk(applicationServerImage, 0, 0));
-				serverInfoPhrase.add("   ");
-			}
-			serverInfoPhrase.add(serverInfo);
-			currentTable.addCell(serverInfoPhrase);
+			writeServerInfo(serverInfo);
 			addCell(getI18nString("Contexte_webapp") + ':');
 			addCell(javaInformations.getContextPath());
 		}
@@ -273,6 +269,22 @@ class PdfJavaInformationsReport {
 		}
 		addCell("");
 		addCell("");
+	}
+
+	private void writeServerInfo(String serverInfo) throws BadElementException, IOException {
+		addCell(getI18nString("Serveur") + ':');
+		final Phrase serverInfoPhrase = new Phrase("", cellFont);
+		final String applicationServerIconName = HtmlJavaInformationsReport
+				.getApplicationServerIconName(serverInfo);
+		if (applicationServerIconName != null) {
+			final Image applicationServerImage = PdfDocumentFactory.getImage("servers/"
+					+ applicationServerIconName);
+			applicationServerImage.scalePercent(40);
+			serverInfoPhrase.add(new Chunk(applicationServerImage, 0, 0));
+			serverInfoPhrase.add("   ");
+		}
+		serverInfoPhrase.add(serverInfo);
+		currentTable.addCell(serverInfoPhrase);
 	}
 
 	private void writeFileDescriptorCounts(JavaInformations javaInformations)
