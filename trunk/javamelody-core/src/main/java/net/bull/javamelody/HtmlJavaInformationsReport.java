@@ -148,7 +148,11 @@ class HtmlJavaInformationsReport {
 		writeln(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
 				+ " #coeurs#)" + columnEnd);
 		writeln("<tr><td>#Java#: </td><td>" + javaInformations.getJavaVersion() + columnEnd);
-		writeln("<tr><td>#JVM#: </td><td>" + javaInformations.getJvmVersion() + columnEnd);
+		write("<tr><td>#JVM#: </td><td>" + javaInformations.getJvmVersion());
+		if (javaInformations.getJvmVersion().contains("Client")) {
+			write("&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"#Client_JVM#\" title=\"#Client_JVM#\"/>");
+		}
+		writeln(columnEnd);
 		writeln("<tr><td>#PID#: </td><td>" + javaInformations.getPID() + columnEnd);
 		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
 		if (unixOpenFileDescriptorCount >= 0) {
