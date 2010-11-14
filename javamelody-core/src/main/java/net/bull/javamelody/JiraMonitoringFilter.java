@@ -77,9 +77,7 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
 		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))
-				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse) || confluence
-						&& !checkConfluenceAdminPermission(httpRequest, httpResponse) || bamboo
-						&& !checkBambooAdminPermission(httpRequest, httpResponse))) {
+				&& hasNotPermission(httpRequest, httpResponse)) {
 			return;
 		}
 
@@ -87,6 +85,15 @@ public class JiraMonitoringFilter extends MonitoringFilter {
 		super.doFilter(request, response, chain);
 		// si logout on prend en compte de suite la destruction de la session
 		unregisterSessionIfNeeded(httpRequest);
+	}
+
+	private boolean hasNotPermission(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException {
+		return !Boolean.parseBoolean(Parameters
+				.getParameter(Parameter.PLUGIN_AUTHENTICATION_DISABLED))
+				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse) || confluence
+						&& !checkConfluenceAdminPermission(httpRequest, httpResponse) || bamboo
+						&& !checkBambooAdminPermission(httpRequest, httpResponse));
 	}
 
 	private void registerSessionIfNeeded(HttpServletRequest httpRequest) {
