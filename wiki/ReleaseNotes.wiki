@@ -7,6 +7,7 @@
   * fix issue 62: IndexOutOfBounds for report on some jobs
   * added major feature for *Jira/Confluence/Bamboo plugin*: graphic of the number of sessions and details on http sessions with the link in "System informations" (this is [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/JiraMonitoringFilter.java emulated] without httpsessionlistener, because httpsessionlistener can't be used in Atlassian plugins)
   * added: @MonitoredWithSpring can be added on interfaces like on implementation classes (_doc to do_)
+  * added: the system property -Djavamelody.plugin-authentication-disabled=true can be added to a Hudson, JIRA, Confluence or Bamboo server in order to disable authentication of the monitoring page in the javamelody plugin and to be able to add the server to a centralized collect server. (A system property like -Djavamelody.allowed-addr-pattern=127\.0\.0\.1 can also be added with the ip address of the collect server, _doc to do_)
   * removed: because parameters in environment variables can't work well in all OS, the possibility to use environment variables is removed. Use [UserGuide#6._Optional_parameters this] instead.
 
 === 1.21.0 ===
