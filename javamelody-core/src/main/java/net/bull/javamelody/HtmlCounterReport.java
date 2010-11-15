@@ -98,7 +98,7 @@ class HtmlCounterReport {
 			}
 			if (request == null || getCounterByRequestId(request) != null
 					&& isRequestGraphDisplayed(getCounterByRequestId(request))) {
-				writeln("<div id='track'>");
+				writeln("<div id='track' class='noPrint'>");
 				writeln("<div class='selected' id='handle'>");
 				writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
 				writeln("</div></div>");
