@@ -2,7 +2,7 @@
 === 1.22.0 ===
 
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
-  * fix issue 58: Quartz in Spring and server shutdown. (Added parameter "quartz-default-listener-disabled" to be used for Quartz jobs only when using Spring. See [UserGuide#12._Batch_jobs_(if_Quartz) doc].) 
+  * fix issue 58: Quartz in Spring and server shutdown. (Added parameter "quartz-default-listener-disabled" to be used for Quartz jobs only when used in Spring. See [UserGuide#12._Batch_jobs_(if_Quartz) doc].) 
   * fix issue 59: Maximum values in statistics can be incorrect
   * fix issue 62: IndexOutOfBounds for report on some jobs
   * added major feature for *Hudson and Jira/Confluence/Bamboo plugins*: graphic of the number of sessions and details on http sessions with the link in "System informations" (this is [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/PluginMonitoringFilter.java emulated] without httpsessionlistener, because httpsessionlistener can't be used in Hudson or in Atlassian plugins)
