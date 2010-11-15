@@ -687,8 +687,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Mais si ces jobs sont ordonnancés dans Quartz en utilisant
 	{{{http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html} Spring scheduling}},
-	il est nécessaire d'ajouter la propriété "exposeSchedulerInRepository" avec la valeur "true"
-	dans le bean "SchedulerFactoryBean" dans votre fichier applicationContext.xml.
+	il est nécessaire d'ajouter le paramètre javamelody	"quartz-default-listener-disabled" avec la 
+	valeur "true" et il est nécessaire d'ajouter la propriété "exposeSchedulerInRepository" avec
+	la valeur "true" dans le bean "SchedulerFactoryBean" dans votre fichier applicationContext.xml.
 
 +-------------------------------+
 	<bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
