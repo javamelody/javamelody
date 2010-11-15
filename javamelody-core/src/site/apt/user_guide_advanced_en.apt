@@ -202,6 +202,12 @@ Advanced documentation of Java Melody
 	</init-param>
 +-------------------------------+
 
+	If the monitored application is a Hudson, JIRA, Confluence or Bamboo server, the system property
+	<<<-Djavamelody.plugin-authentication-disabled=true>>> can be added to the monitored server
+	in order to disable authentication of the monitoring page in the javamelody plugin and to be
+	able to add the server to a centralized collect server.
+	(A system property like <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> can also be added
+	with the ip address of the collect server.)
 
 * Business façades (without EJB3 and without Spring and without Guice)
 
