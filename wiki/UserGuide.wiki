@@ -640,7 +640,8 @@ or
 
 	But if these jobs are scheduled in Quartz using
 	[http://static.springsource.org/spring/docs/2.5.x/reference/scheduling.html Spring scheduling],
-	you need to add the property "exposeSchedulerInRepository" with the value "true" for the bean
+	you need to add the javamelody parameter quartz-default-listener-disabled with the value true
+	and you need to add the property "exposeSchedulerInRepository" with the value "true" for the bean
 	"SchedulerFactoryBean" in your applicationContext.xml file.
 
 {{{
