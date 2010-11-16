@@ -148,7 +148,7 @@ Documentation avancée de Java Melody
 	il est possible de lancer le moteur de servlet {{{http://winstone.sourceforge.net} winstone}} (LGPL) déjà inclus
 	dans le fichier javamelody.war.
 	Il suffit pour cela d'utiliser la commande "java -jar javamelody.war" en précisant en propriétés systèmes
-	chacun des paramètres du monitoring détaillés dans le {{{user_guide.html} guide d'utilisation}}.
+	chacun des paramètres du monitoring détaillés ci-dessus.
 	
 	Exemples :
 	
