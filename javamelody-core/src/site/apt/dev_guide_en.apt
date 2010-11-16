@@ -17,7 +17,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	The zip file available in "Download" contains the java sources with an {{{http://ant.apache.org}ant}} script build.xml 
 	and a pom.xml file for {{{http://maven.apache.org}maven}}
 	and contains also the javadoc, the eclipse project, the jar files.
-	If you want to rebuild the development version, you have to do an anonymous checkout from 
+	If you want to rebuild the development version and not a particular release, you have to do an anonymous checkout from 
 	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (with Eclipse or with {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} if Windows)
 
 	After decompressing the zip file or after the checkout, you can use the "all" target of the ant script (without maven)
@@ -35,7 +35,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 
 * Import in Eclipse the sources of current development version
 
-	To import from the SVN server the sources of the version currently in development, with Eclipse 3.5 using a JDK 1.6 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
+	To import from the SVN server the sources of the version currently in development, with Eclipse 3.6 using a JDK 1.6 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
 	
 	* Click the task Import in File menu
 	
@@ -49,7 +49,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	
 	* Eclipse imports the project javamelody-core with the sources, then it compiles all
 	(maven must works and be connected to download the dependencies,
-	otherwise add them manually in the Build-Path from src/main/lib and src/test/test-webapp/WEB-INF/lib))
+	otherwise add them manually in the Build-Path from src/main/lib and src/test/test-webapp/WEB-INF/lib)
 	
 	* It is also possible to import the projects javamelody-test-webapp and javamelody-collector-server which are next to javamelody-core in SVN
 
@@ -59,7 +59,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	To rebuild the jar and the war of JavaMelody:
 	
 	* Do a right-click on the build.xml file in the project javamelody-core, then select Run As, Ant Build
-	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" lauches the unit tests.)
+	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" launches the unit tests.)
 	
 	* Wait about 20 seconds for the end of the execution of the script
 	
@@ -89,4 +89,6 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
 	The infinitest eclipse plugin is also recommended.
 
-    The official languages of the project is french for javadoc but english for technical terms.
+    The official languages of the project is french for javadoc but english for technical terms
+    (This provides a clean separation between functional and technical vocabulary, given that you speak French obviously).
+    

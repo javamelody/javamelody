@@ -17,7 +17,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Le fichier zip dans la partie "Download" contient les sources java avec un script {{{http://ant.apache.org}ant}} build.xml
 	et un fichier pom.xml pour {{{http://maven.apache.org}maven}}
 	ainsi que la javadoc, le projet eclipse, les fichiers jars.
-	Si vous souhaitez recompiler la version en cours de développement, il vous faire un checkout anonyme depuis 
+	Si vous souhaitez recompiler la version en cours de développement et non une version livrée, il vous faire un checkout anonyme depuis 
 	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (avec Eclipse ou bien {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} si Windows)
 
 	Après décompression du fichier zip ou après le checkout, vous pouvez utiliser le target "all" du script ant
@@ -36,7 +36,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 
 * Importer dans Eclipse les sources de la version en cours de développement
 
-	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.5 utilisant un JDK 1.6 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
+	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.6 utilisant un JDK 1.6 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
 	
 	* Lancer la tâche Import dans le menu File
 	
@@ -92,4 +92,6 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Le plugin eclipse infinitest est également recommandé.
 
 	Les langages officiels du projet sont le français pour la javadoc mais l'anglais pour les termes techniques.
-	
+	(Cela donne une séparation claire entre le vocabulaire fonctionnel et le vocabulaire technique,
+	puisque vous parlez français bien sûr).
+    
