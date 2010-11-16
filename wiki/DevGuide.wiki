@@ -4,7 +4,7 @@
 
 	The zip file available in "Download" contains the java sources with an [http://ant.apache.org ant] script build.xml and a pom.xml file for [http://maven.apache.org maven]
 	and contains also the javadoc, the eclipse project, the jar files.
-	If you want to rebuild the development version, you have to do an anonymous checkout from 
+	If you want to rebuild the development version and not a particular release, you have to do an anonymous checkout from 
 	[http://javamelody.googlecode.com/svn/trunk/javamelody-core/] (with Eclipse or with [http://tortoisesvn.tigris.org/ TortoiseSVN] if Windows)
 
 	After decompressing the zip file or after the checkout, you can use the "all" target of the ant script (without maven) to recompile from sources
