@@ -47,6 +47,8 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author Emeric Vernat
  */
 public class TestAction {
+	private static final String ALL = "all";
+
 	/** Check. */
 	@Before
 	public void setUp() {
@@ -59,6 +61,15 @@ public class TestAction {
 		for (final Action action : Action.values()) {
 			assertSame("same", action,
 					Action.valueOfIgnoreCase(action.toString().toLowerCase(Locale.getDefault())));
+		}
+	}
+
+	/** Test. */
+	@Test
+	public void testGetContextName() {
+		for (final Action action : Action.values()) {
+			assertNotNull("getContextName", action.getContextName("test"));
+			assertNotNull("getContextName", action.getContextName(ALL));
 		}
 	}
 
@@ -85,7 +96,7 @@ public class TestAction {
 			assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector,
 					counterName, sessionId, threadId, jobId));
 			assertNotNull("message CLEAR_COUNTER",
-					Action.CLEAR_COUNTER.execute(collector, "all", sessionId, threadId, jobId));
+					Action.CLEAR_COUNTER.execute(collector, ALL, sessionId, threadId, jobId));
 			if (CacheManager.getInstance().getCache("test clear") == null) {
 				CacheManager.getInstance().addCache("test clear");
 			}
@@ -134,9 +145,9 @@ public class TestAction {
 			assertNotNull(e.toString(), e);
 		}
 		assertNotNull("message PAUSE_JOB 2",
-				Action.PAUSE_JOB.execute(collector, counterName, sessionId, threadId, "all"));
+				Action.PAUSE_JOB.execute(collector, counterName, sessionId, threadId, ALL));
 		assertNotNull("message RESUME_JOB 2",
-				Action.RESUME_JOB.execute(collector, counterName, sessionId, threadId, "all"));
+				Action.RESUME_JOB.execute(collector, counterName, sessionId, threadId, ALL));
 		assertNull("message PAUSE_JOB 3", Action.PAUSE_JOB.execute(collector, counterName,
 				sessionId, threadId, "nopid_noip_id"));
 		assertNull("message RESUME_JOB 3", Action.RESUME_JOB.execute(collector, counterName,
