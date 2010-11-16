@@ -97,14 +97,14 @@ enum Action { // NOPMD
 	 * Nom du contexte dans lequel est exécutée l'action
 	 * (servira dans l'url pour replacer la page html sur l'anchor de même nom)
 	 */
-	private String contextName;
+	private final String contextName;
 
 	private Action(String contextName) {
 		this.contextName = contextName;
 	}
 
 	String getContextName(String counterName) {
-		if (this == CLEAR_COUNTER && !"all".equalsIgnoreCase(counterName)) {
+		if (this == CLEAR_COUNTER && !ALL.equalsIgnoreCase(counterName)) {
 			return counterName;
 		}
 		return contextName;
