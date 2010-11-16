@@ -10,7 +10,9 @@
 	After decompressing the zip file or after the checkout, you can use the "all" target of the ant script (without maven) to recompile from sources
 	and to build the javamelody.jar, jira-javamelody.jar and javamelody.war files which are those available in "Download".
 	You must define the environment variable JAVA_HOME with the path
-	of a JDK 1.6 to compile the sources. For example:
+	of a JDK 1.6 to compile the sources.
+
+	For example:
 
 {{{
 	<path_to_ant>/bin/ant -f <path_to_javamelody>/build.xml all
@@ -22,7 +24,7 @@
 
 === Import in Eclipse the sources of current development version ===
 
-To import from the SVN server the sources of the version currently in development, with Eclipse 3.5 using a JDK 1.6 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
+To import from the SVN server the sources of the version currently in development, with Eclipse 3.6 using a JDK 1.6 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
 	
 	* Click the task Import in File menu
 	
@@ -36,7 +38,7 @@ To import from the SVN server the sources of the version currently in developmen
 	
 	* Eclipse imports the project javamelody-core with the sources, then it compiles all
 	(maven must works and be connected to download the dependencies,
-	otherwise add them manually in the Build-Path from src/main/lib and src/test/test-webapp/WEB-INF/lib))
+	otherwise add them manually in the Build-Path from src/main/lib and src/test/test-webapp/WEB-INF/lib)
 	
 	* It is also possible to import the projects javamelody-test-webapp and javamelody-collector-server which are next to javamelody-core in SVN
 
@@ -44,7 +46,7 @@ To import from the SVN server the sources of the version currently in developmen
 To rebuild the jar and the war of JavaMelody:
 	
 	* Do a right-click on the build.xml file in the project javamelody-core, then select Run As, Ant Build
-	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" lauches the unit tests.)
+	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" launches the unit tests.)
 	
 	* Wait about 20 seconds for the end of the execution of the script
 	
@@ -69,3 +71,5 @@ After some weeks for example, in order to update your sources with the new devel
 	The infinitest eclipse plugin is also recommended.
 
 	The official languages of the project are french for javadoc but english for technical terms.
+	(This provides a clean separation between functional and technical vocabulary, given that you speak French obviously).
+    
