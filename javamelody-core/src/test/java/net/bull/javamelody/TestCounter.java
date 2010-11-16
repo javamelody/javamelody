@@ -417,9 +417,37 @@ public class TestCounter {
 	/** Test. */
 	@Test
 	public void testErrorCounter() {
-		assertFalse("errorCounter", new Counter("http", null).isErrorCounter());
-		assertTrue("errorCounter", new Counter("error", null).isErrorCounter());
-		assertTrue("errorCounter", new Counter("log", null).isErrorCounter());
+		final String message = "errorCounter";
+		assertFalse(message, new Counter("http", null).isErrorCounter());
+		assertTrue(message, new Counter("error", null).isErrorCounter());
+		assertTrue(message, new Counter("log", null).isErrorCounter());
+		assertTrue(message, new Counter("job", null).isErrorCounter());
+	}
+
+	/** Test. */
+	@Test
+	public void testJobCounter() {
+		assertFalse("jobCounter", new Counter("spring", null).isJobCounter());
+		assertTrue("jobCounter", new Counter("job", null).isJobCounter());
+	}
+
+	/** Test. */
+	@Test
+	public void testJspOrStrutsCounter() {
+		assertFalse("jspOrStrutsCounter", new Counter("http", null).isJspOrStrutsCounter());
+		assertTrue("jspOrStrutsCounter", new Counter("jsp", null).isJspOrStrutsCounter());
+		assertTrue("jspOrStrutsCounter", new Counter("struts", null).isJspOrStrutsCounter());
+	}
+
+	/** Test. */
+	@Test
+	public void testBusinessFacadeCounter() {
+		final String message = "businessFacadeCounter";
+		assertFalse(message, new Counter("log", null).isBusinessFacadeCounter());
+		assertTrue(message, new Counter("services", null).isBusinessFacadeCounter());
+		assertTrue(message, new Counter("ejb", null).isBusinessFacadeCounter());
+		assertTrue(message, new Counter("spring", null).isBusinessFacadeCounter());
+		assertTrue(message, new Counter("guice", null).isBusinessFacadeCounter());
 	}
 
 	/** Test.

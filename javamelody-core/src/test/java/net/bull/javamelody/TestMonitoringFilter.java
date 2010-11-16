@@ -252,6 +252,8 @@ public class TestMonitoringFilter {
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		try {
 			doFilter(createNiceMock(HttpServletRequest.class));
+			setProperty(Parameter.DISPLAYED_COUNTERS, "");
+			doFilter(createNiceMock(HttpServletRequest.class));
 			setProperty(Parameter.DISPLAYED_COUNTERS, "unknown");
 			try {
 				doFilter(createNiceMock(HttpServletRequest.class));
