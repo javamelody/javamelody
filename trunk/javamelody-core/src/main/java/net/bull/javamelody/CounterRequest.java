@@ -373,8 +373,8 @@ class CounterRequest implements Cloneable, Serializable {
 		try {
 			final CounterRequest clone = (CounterRequest) super.clone();
 			if (childRequestsExecutionsByRequestId != null) {
-				clone.childRequestsExecutionsByRequestId = new LinkedHashMap<String, Long>(
-						getChildRequestsExecutionsByRequestId());
+				// getChildRequestsExecutionsByRequestId fait déjà un clone de la map
+				clone.childRequestsExecutionsByRequestId = getChildRequestsExecutionsByRequestId();
 			}
 			return clone;
 		} catch (final CloneNotSupportedException e) {
