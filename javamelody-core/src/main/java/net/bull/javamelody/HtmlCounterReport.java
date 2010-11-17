@@ -216,7 +216,7 @@ class HtmlCounterReport {
 			final Map<String, Long> childRequests = request.getChildRequestsExecutionsByRequestId();
 			writeln("<br/><table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Drill_down#'>");
 			writeln("<thead><tr><th>#Requete#</th>");
-			final boolean hasChildren = childRequests != null && !childRequests.isEmpty();
+			final boolean hasChildren = !childRequests.isEmpty();
 			if (hasChildren) {
 				writeln("<th class='sorttable_numeric'>#Hits_par_requete#</th>");
 			}
