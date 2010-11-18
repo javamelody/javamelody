@@ -85,6 +85,9 @@ public class TestHtmlReport {
 	@Before
 	public void setUp() {
 		Utils.initialize();
+		// pour testTomcatInformations (si la classe TomcatInformations est déjà chargée,
+		// c'est trop tard, et c'est pourquoi cela doit être défini au lancement de junit)
+		System.setProperty("catalina.home", "unknown");
 		timer = new Timer("test timer", true);
 		javaInformationsList = Collections.singletonList(new JavaInformations(null, true));
 		sqlCounter = new Counter("sql", "db.png");
@@ -143,28 +146,49 @@ public class TestHtmlReport {
 		} else {
 			mBeanServer = mBeanServerList.get(0);
 		}
-		mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
-				"Catalina:type=ThreadPool,name=jk-8009"));
-		mBeanServer.registerMBean(new GlobalRequestProcessor(), new ObjectName(
-				"Catalina:type=GlobalRequestProcessor,name=jk-8009"));
-		final List<JavaInformations> myJavaInformationsList = Arrays.asList(new JavaInformations(
-				null, true));
-		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
-				Period.TOUT, writer);
-		htmlReport.toHtml(null, null);
-		assertNotEmptyAndClear(writer);
+		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		try {
+			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
+					new ObjectName("Catalina:type=ThreadPool,name=jk-8009")).getObjectName());
+			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
+					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8009"))
+					.getObjectName());
+			TomcatInformations.initMBeans();
+			final List<JavaInformations> myJavaInformationsList = Arrays
+					.asList(new JavaInformations(null, true));
+			final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
+					Period.TOUT, writer);
+			htmlReport.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
 
-		mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
-				"Catalina:type=ThreadPool,name=jk-8010"));
-		mBeanServer.registerMBean(new GlobalRequestProcessor(), new ObjectName(
-				"Catalina:type=GlobalRequestProcessor,name=jk-8010"));
+			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
+					new ObjectName("Catalina:type=ThreadPool,name=jk-8010")).getObjectName());
+			final GlobalRequestProcessor jk8010 = new GlobalRequestProcessor();
+			jk8010.setrequestCount(0);
+			mBeans.add(mBeanServer.registerMBean(jk8010,
+					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8010"))
+					.getObjectName());
+			TomcatInformations.initMBeans();
+			final List<JavaInformations> myJavaInformationsList2 = Arrays
+					.asList(new JavaInformations(null, true));
+			final HtmlReport htmlReport2 = new HtmlReport(collector, null, myJavaInformationsList2,
+					Period.TOUT, writer);
+			htmlReport2.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
 
-		final List<JavaInformations> myJavaInformationsList2 = Arrays.asList(new JavaInformations(
-				null, true));
-		final HtmlReport htmlReport2 = new HtmlReport(collector, null, myJavaInformationsList2,
-				Period.TOUT, writer);
-		htmlReport2.toHtml(null, null);
-		assertNotEmptyAndClear(writer);
+			jk8010.setrequestCount(1000);
+			final List<JavaInformations> myJavaInformationsList3 = Arrays
+					.asList(new JavaInformations(null, true));
+			final HtmlReport htmlReport3 = new HtmlReport(collector, null, myJavaInformationsList3,
+					Period.TOUT, writer);
+			htmlReport3.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
+		} finally {
+			for (final ObjectName registeredMBean : mBeans) {
+				mBeanServer.unregisterMBean(registeredMBean);
+			}
+			TomcatInformations.initMBeans();
+		}
 	}
 
 	/** Test.
@@ -327,6 +351,9 @@ public class TestHtmlReport {
 			htmlReport.writeDatabase(new DatabaseInformations(0)); // h2.memory
 			assertNotEmptyAndClear(writer);
 			htmlReport.writeDatabase(new DatabaseInformations(3)); // h2.settings avec nbColumns==2
+			assertNotEmptyAndClear(writer);
+			JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
+			htmlReport.toHtml(null, null); // pom.xml dans HtmlJavaInformationsReport.writeDependencies
 			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 			htmlReport.toHtml(null, null); // writeSystemActionsLinks
@@ -555,19 +582,33 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
-	public void testEmptyHtmlCounterRequestContext() throws IOException {
-		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(),
-				Collections.<String, HtmlCounterReport> emptyMap(),
-				Collections.<ThreadInformations> emptyList(), true, 500, writer);
-		report.toHtml();
-		assertNotEmptyAndClear(writer);
+	public void testHtmlCounterRequestContext() throws IOException {
 		// cas où counterReportsByCounterName est null
 		assertNotNull(
 				"HtmlCounterRequestContextReport",
 				new HtmlCounterRequestContextReport(
 						Collections.<CounterRequestContext> emptyList(), null, Collections
 								.<ThreadInformations> emptyList(), true, 500, writer));
+
+		// aucune requête en cours
+		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
+				Collections.<CounterRequestContext> emptyList(),
+				Collections.<String, HtmlCounterReport> emptyMap(),
+				Collections.<ThreadInformations> emptyList(), true, 500, writer);
+		report.toHtml();
+		assertNotEmptyAndClear(writer);
+
+		// cas où nb requêtes en cours > maxContextDisplayed
+		final List<CounterRequestContext> counterRequestContexts = Collections
+				.singletonList(new CounterRequestContext(sqlCounter, null, "Test", "Test", null, -1));
+		final HtmlCounterRequestContextReport report2 = new HtmlCounterRequestContextReport(
+				counterRequestContexts, null, Collections.<ThreadInformations> emptyList(), true,
+				0, writer);
+		report2.toHtml();
+		assertNotEmptyAndClear(writer);
+
+		// writeTitleAndDetails
+		report2.writeTitleAndDetails();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

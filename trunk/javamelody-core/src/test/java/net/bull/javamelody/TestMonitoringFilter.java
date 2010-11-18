@@ -133,6 +133,8 @@ public class TestMonitoringFilter {
 		// dependencies pour avoir des dépendances dans JavaInformations
 		final Set<String> dependencies = new LinkedHashSet<String>(Arrays.asList(
 				"/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+		// et flags pour considérer que les ressources pom.xml et web.xml existent
+		JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		monitoringFilter = new MonitoringFilter();

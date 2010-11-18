@@ -117,7 +117,8 @@ final class TomcatInformations implements Serializable {
 		}
 	}
 
-	private static void initMBeans() throws MalformedObjectNameException {
+	// visibilité package pour réinitialisation en test unitaire
+	static void initMBeans() throws MalformedObjectNameException {
 		// rq: en général, il y a 2 connecteurs (http et ajp 1.3) définis dans server.xml et donc
 		// 2 threadPools et 2 globalRequestProcessors de même nom : http-8080 et jk-8009 (ajp13)
 		final MBeanServer mBeanServer = getMBeanServer();
