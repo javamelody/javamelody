@@ -250,6 +250,7 @@
 					<include name="commons-pool-1.3.jar" />
 				</fileset>
 			</classpath>
+			<sysproperty key="catalina.home" value="unknown" />
 			<batchtest haltonerror="false" haltonfailure="false"
 				errorProperty="test.failed" failureProperty="test.failed">
 				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/JobTestImpl.class,**/SpringTestFacade*.class,**/Utils.class" />
