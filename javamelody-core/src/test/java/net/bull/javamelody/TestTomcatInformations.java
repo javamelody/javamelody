@@ -20,6 +20,9 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
@@ -82,6 +85,8 @@ public class TestTomcatInformations {
 	 * @author Emeric Vernat
 	 */
 	public static class GlobalRequestProcessor implements GlobalRequestProcessorMBean {
+		private int requestCount = 100;
+
 		/** {@inheritDoc} */
 		public long getbytesReceived() {
 			return 0;
@@ -94,7 +99,15 @@ public class TestTomcatInformations {
 
 		/** {@inheritDoc} */
 		public int getrequestCount() {
-			return 100;
+			return requestCount;
+		}
+
+		/**
+		 * setter.
+		 * @param count int
+		 */
+		public void setrequestCount(int count) {
+			this.requestCount = count;
 		}
 
 		/** {@inheritDoc} */
@@ -161,21 +174,33 @@ public class TestTomcatInformations {
 	public void testTomcatInformations() throws JMException {
 		System.setProperty("catalina.home", "unknown");
 		// ce premier appel crée un MBeanServer
+		TomcatInformations.initMBeans();
 		assertNotNull("buildTomcatInformationsList",
 				TomcatInformations.buildTomcatInformationsList());
 		final MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
-		mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
-				"Catalina:type=ThreadPool,name=http-8080"));
-		// les appels suivants réutilise le MBeanServer créé
-		assertNotNull("buildTomcatInformationsList",
-				TomcatInformations.buildTomcatInformationsList());
-		mBeanServer.registerMBean(new GlobalRequestProcessor(), new ObjectName(
-				"Catalina:type=GlobalRequestProcessor,name=http-8080"));
-		assertNotNull("buildTomcatInformationsList",
-				TomcatInformations.buildTomcatInformationsList());
-		for (final TomcatInformations tomcatInformations : TomcatInformations
-				.buildTomcatInformationsList()) {
-			tomcatInformations.toString();
+		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
+				new ObjectName("Catalina:type=ThreadPool,name=http-8080")).getObjectName());
+		TomcatInformations.initMBeans();
+		try {
+			// les appels suivants réutilise le MBeanServer créé
+			assertNotNull("buildTomcatInformationsList",
+					TomcatInformations.buildTomcatInformationsList());
+			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
+					new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"))
+					.getObjectName());
+			TomcatInformations.initMBeans();
+			assertNotNull("buildTomcatInformationsList",
+					TomcatInformations.buildTomcatInformationsList());
+			for (final TomcatInformations tomcatInformations : TomcatInformations
+					.buildTomcatInformationsList()) {
+				tomcatInformations.toString();
+			}
+		} finally {
+			for (final ObjectName registeredMBean : mBeans) {
+				mBeanServer.unregisterMBean(registeredMBean);
+			}
+			TomcatInformations.initMBeans();
 		}
 	}
 }
