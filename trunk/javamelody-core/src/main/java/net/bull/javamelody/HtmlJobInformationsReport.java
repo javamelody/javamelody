@@ -109,20 +109,17 @@ class HtmlJobInformationsReport {
 		writer.write(htmlEncode(jobInformations.getJobClassName()));
 
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
-		if (counterRequest != null) {
-			write("</td> <td align='center'>");
-			writeStackTrace(counterRequest.getStackTrace());
-			if (counterRequest.getMean() >= 0) {
-				write(nextColumnAlignRight);
-				write(durationFormat.format(new Date(counterRequest.getMean())));
-			} else {
-				write("</td><td>&nbsp;");
-			}
-			// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
-			// uniquement car cela ferait trop de colonnes dans la page
+		// counterRequest ne peut pas être null ici
+		write("</td> <td align='center'>");
+		writeStackTrace(counterRequest.getStackTrace());
+		if (counterRequest.getMean() >= 0) {
+			write(nextColumnAlignRight);
+			write(durationFormat.format(new Date(counterRequest.getMean())));
 		} else {
-			write("</td><td>&nbsp;</td><td>&nbsp;");
+			write("</td><td>&nbsp;");
 		}
+		// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
+		// uniquement car cela ferait trop de colonnes dans la page
 
 		writeJobTimes(jobInformations, counterRequest);
 
@@ -172,10 +169,8 @@ class HtmlJobInformationsReport {
 		write(nextColumnAlignRight);
 		if (jobInformations.getElapsedTime() >= 0) {
 			write(durationFormat.format(new Date(jobInformations.getElapsedTime())));
-			if (counterRequest != null) {
-				write("<br/>");
-				writeln(toBar(counterRequest.getMean(), jobInformations.getElapsedTime()));
-			}
+			write("<br/>");
+			writeln(toBar(counterRequest.getMean(), jobInformations.getElapsedTime()));
 		} else {
 			write(nbsp);
 		}
@@ -223,7 +218,10 @@ class HtmlJobInformationsReport {
 		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
 		// rq: la méthode getCounterRequestByName prend en compte l'éventuelle utilisation du paramètre
 		// job-transform-pattern qui peut faire que jobFullName != counterRequest.getName()
-		return jobCounter.getCounterRequestByName(jobFullName);
+		final CounterRequest result = jobCounter.getCounterRequestByName(jobFullName);
+		// getCounterRequestByName ne peut pas retourner null actuellement
+		assert result != null;
+		return result;
 	}
 
 	private static String toBar(int mean, long elapsedTime) {
