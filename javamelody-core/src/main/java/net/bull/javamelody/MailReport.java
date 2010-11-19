@@ -101,7 +101,7 @@ class MailReport {
 			break;
 		case SEMAINE:
 			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			// pour le cas où est déjà dimanche, alors on prend dimanche prochain
+			// pour le cas où on est déjà dimanche, alors on prend dimanche prochain
 			if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
 				// on utilise add et non roll pour ne pas tourner en boucle le 31/12
 				calendar.add(Calendar.DAY_OF_YEAR, 7);
@@ -109,7 +109,7 @@ class MailReport {
 			break;
 		case MOIS:
 			calendar.set(Calendar.DAY_OF_MONTH, 1);
-			// pour le cas où est déjà le premier du mois, alors on prend le mois prochain
+			// pour le cas où est on déjà le premier du mois, alors on prend le mois prochain
 			if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
 				// on utilise add et non roll pour ne pas tourner en boucle le 31/12
 				calendar.add(Calendar.MONTH, 1);
