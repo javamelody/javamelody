@@ -81,7 +81,7 @@ class LabradorRetriever {
 			@SuppressWarnings("unchecked")
 			final T result = (T) read(connection);
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("lu sur " + url + " : " + result);
+				LOGGER.debug("read on " + url + " : " + result);
 			}
 
 			if (result instanceof RuntimeException) {
@@ -139,8 +139,8 @@ class LabradorRetriever {
 				close(connection);
 			}
 		} finally {
-			LOGGER.info("récupération données effectuée en " + (System.currentTimeMillis() - start)
-					+ "ms pour " + url);
+			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms for "
+					+ url);
 		}
 	}
 
