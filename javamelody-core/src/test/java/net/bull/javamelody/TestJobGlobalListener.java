@@ -92,4 +92,18 @@ public class TestJobGlobalListener {
 			JobGlobalListener.destroyJobGlobalListener();
 		}
 	}
+
+	/** Test. */
+	@Test
+	public void testExecutionVetoed() {
+		new JobGlobalListener().jobExecutionVetoed(null);
+	}
+
+	/** Test. */
+	@Test
+	public void testDefaultListenerDisabled() {
+		Utils.setProperty(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED, "true");
+		JobGlobalListener.initJobGlobalListener();
+		JobGlobalListener.destroyJobGlobalListener();
+	}
 }
