@@ -65,9 +65,46 @@ public class TestMonitoringSpringInterceptor {
 	/**
 	 * Test.
 	 */
+	@MonitoredWithSpring(name = "test interface")
+	public interface AnnotatedTest2 {
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		Date myMethod();
+
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		Date myOtherMethod();
+	}
+
+	/**
+	 * Test.
+	 */
 	@MonitoredWithSpring
 	@MonitoredWithGuice
 	public static class AnnotatedTestClass implements AnnotatedTest {
+		/**
+		 * {@inheritDoc}
+		 */
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Date myOtherMethod() {
+			return new Date();
+		}
+	}
+
+	/**
+	 * Test.
+	 */
+	public static class AnnotatedTestClass2 implements AnnotatedTest2 {
 		/**
 		 * {@inheritDoc}
 		 */
@@ -195,16 +232,21 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("annotatedTestClassSpring", annotatedTestClassSpring.myMethod());
 		assertSame(REQUESTS_COUNT, 3, springCounter.getRequestsCount());
 
+		final AnnotatedTest2 annotatedTestClassSpring2 = (AnnotatedTest2) context
+				.getBean("annotatedTestClassSpring2");
+		assertNotNull("annotatedTestClassSpring2", annotatedTestClassSpring2.myMethod());
+		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
+
 		final AnnotatedTest annotatedTestOtherClassSpring = (AnnotatedTest) context
 				.getBean("annotatedTestOtherClassSpring");
 		assertNotNull("annotatedTestOtherClassSpring", annotatedTestOtherClassSpring.myMethod());
-		assertSame(REQUESTS_COUNT, 4, springCounter.getRequestsCount());
+		assertSame(REQUESTS_COUNT, 5, springCounter.getRequestsCount());
 
 		final AnnotatedTest annotatedTestMethodSpring = (AnnotatedTest) context
 				.getBean("annotatedTestMethodSpring");
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myOtherMethod());
-		assertSame(REQUESTS_COUNT, 6, springCounter.getRequestsCount());
+		assertSame(REQUESTS_COUNT, 7, springCounter.getRequestsCount());
 
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
