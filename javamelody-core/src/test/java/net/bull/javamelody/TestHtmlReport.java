@@ -58,6 +58,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
+import org.quartz.NthIncludedDayTrigger;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
@@ -489,9 +490,18 @@ public class TestHtmlReport {
 			try {
 				final JobDetail job3 = new JobDetail("job" + random.nextInt(), null,
 						JobTestImpl.class);
-				final Trigger trigger3 = new CronTrigger("trigger" + random.nextInt(), null,
+				// cron trigger that will never fire
+				final Trigger trigger3 = new CronTrigger("crontrigger" + random.nextInt(), null,
 						"0 0 0 * * ? 2030");
 				scheduler.scheduleJob(job3, trigger3);
+
+				// other trigger that will never fire
+				final NthIncludedDayTrigger trigger4 = new NthIncludedDayTrigger("nth trigger"
+						+ random.nextInt(), null);
+				trigger4.setN(1);
+				trigger4.setIntervalType(NthIncludedDayTrigger.INTERVAL_TYPE_YEARLY);
+				trigger4.setJobName(job3.getName());
+				scheduler.scheduleJob(trigger4);
 			} catch (final ParseException e) {
 				throw new IllegalStateException(e);
 			}
