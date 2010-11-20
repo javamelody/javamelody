@@ -555,7 +555,7 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
 		parameters.put(COUNTER_PARAMETER, "services");
 		monitoring(parameters);
-		parameters.put(GRAPH, "unknown");
+		parameters.put(GRAPH, "unknown service");
 		monitoring(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 
