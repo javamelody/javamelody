@@ -21,6 +21,8 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
+import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
@@ -550,6 +552,12 @@ public class TestMonitoringFilter {
 		monitoring(parameters, false);
 		parameters.put(PART_PARAMETER, JNDI_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
+		parameters.put(COUNTER_PARAMETER, "services");
+		monitoring(parameters);
+		parameters.put(GRAPH, "unknown");
+		monitoring(parameters);
+		parameters.remove(COUNTER_PARAMETER);
 
 		parameters.put(PART_PARAMETER, GRAPH);
 		parameters.put(GRAPH, "usedMemory");
