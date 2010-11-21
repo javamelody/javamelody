@@ -268,6 +268,14 @@ public class TestMonitoringFilter {
 			setProperty(Parameter.DISPLAYED_COUNTERS, null);
 		}
 
+		// url exclue
+		setProperty(Parameter.URL_EXCLUDE_PATTERN, ".*");
+		try {
+			doFilter(createNiceMock(HttpServletRequest.class));
+		} finally {
+			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
+		}
+
 		// standard
 		doFilter(createNiceMock(HttpServletRequest.class));
 
@@ -458,12 +466,6 @@ public class TestMonitoringFilter {
 			monitoring(Collections.<String, String> emptyMap());
 		} finally {
 			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
-		}
-		setProperty(Parameter.URL_EXCLUDE_PATTERN, ".*");
-		try {
-			monitoring(Collections.<String, String> emptyMap(), false);
-		} finally {
-			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
 		}
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
