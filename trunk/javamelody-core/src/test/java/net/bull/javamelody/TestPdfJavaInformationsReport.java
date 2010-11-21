@@ -77,7 +77,7 @@ public class TestPdfJavaInformationsReport {
 			document.open();
 			final PdfJavaInformationsReport pdfReport = new PdfJavaInformationsReport(
 					myJavaInformationsList, document);
-			pdfReport.toPdf();
+			pdfReport.writeInformationsDetails();
 			document.close();
 			assertNotEmptyAndClear(output);
 
@@ -95,7 +95,7 @@ public class TestPdfJavaInformationsReport {
 			document2.open();
 			final PdfJavaInformationsReport pdfReport2 = new PdfJavaInformationsReport(
 					myJavaInformationsList2, document2);
-			pdfReport2.toPdf();
+			pdfReport2.writeInformationsDetails();
 			document2.close();
 			assertNotEmptyAndClear(output);
 
@@ -106,7 +106,7 @@ public class TestPdfJavaInformationsReport {
 			document3.open();
 			final PdfJavaInformationsReport pdfReport3 = new PdfJavaInformationsReport(
 					myJavaInformationsList3, document3);
-			pdfReport3.toPdf();
+			pdfReport3.writeInformationsDetails();
 			document3.close();
 			assertNotEmptyAndClear(output);
 		} finally {
