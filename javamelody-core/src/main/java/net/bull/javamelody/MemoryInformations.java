@@ -86,7 +86,8 @@ class MemoryInformations implements Serializable {
 
 	private static MemoryPoolMXBean getPermGenMemoryPool() {
 		for (final MemoryPoolMXBean memoryPool : ManagementFactory.getMemoryPoolMXBeans()) {
-			if ("Perm Gen".equals(memoryPool.getName())) {
+			// name est "Perm Gen" ou "PS Perm Gen" (32 vs 64 bits ?)
+			if (memoryPool.getName().endsWith("Perm Gen")) {
 				return memoryPool;
 			}
 		}
