@@ -70,7 +70,7 @@ public class TestPdfReport {
 	public void testToPdf() throws IOException, SchedulerException, DocumentException {
 		//CHECKSTYLE:ON
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		sqlCounter.setDisplayed(false);
+		sqlCounter.setDisplayed(true);
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
@@ -100,6 +100,7 @@ public class TestPdfReport {
 			assertNotEmptyAndClear(output);
 
 			counter.bindContext("test 1", "complete test 1");
+			sqlCounter.bindContext("sql1", "sql 1");
 			sqlCounter.addRequest("sql1", 100, 100, false, -1);
 			counter.addRequest("test 1", 0, 0, false, 1000);
 			counter.addRequest("test2", 1000, 500, false, 1000);
