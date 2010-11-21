@@ -42,13 +42,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.ObjectName;
-
-import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
-import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -86,9 +79,6 @@ public class TestHtmlReport {
 	@Before
 	public void setUp() {
 		Utils.initialize();
-		// pour testTomcatInformations (si la classe TomcatInformations est déjà chargée,
-		// c'est trop tard, et c'est pourquoi cela doit être défini au lancement de junit)
-		System.setProperty("catalina.home", "unknown");
 		timer = new Timer("test timer", true);
 		javaInformationsList = Collections.singletonList(new JavaInformations(null, true));
 		sqlCounter = new Counter("sql", "db.png");
@@ -133,63 +123,6 @@ public class TestHtmlReport {
 				Period.TOUT, writer);
 		htmlReport.toHtml(null, null);
 		assertNotEmptyAndClear(writer);
-	}
-
-	/** Test.
-	 * @throws IOException e
-	 * @throws JMException e */
-	@Test
-	public void testTomcatInformations() throws IOException, JMException {
-		final List<MBeanServer> mBeanServerList = MBeanServerFactory.findMBeanServer(null);
-		final MBeanServer mBeanServer;
-		if (mBeanServerList.isEmpty()) {
-			mBeanServer = MBeanServerFactory.createMBeanServer();
-		} else {
-			mBeanServer = mBeanServerList.get(0);
-		}
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
-		try {
-			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-					new ObjectName("Catalina:type=ThreadPool,name=jk-8009")).getObjectName());
-			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8009"))
-					.getObjectName());
-			TomcatInformations.initMBeans();
-			final List<JavaInformations> myJavaInformationsList = Arrays
-					.asList(new JavaInformations(null, true));
-			final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
-					Period.TOUT, writer);
-			htmlReport.toHtml(null, null);
-			assertNotEmptyAndClear(writer);
-
-			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-					new ObjectName("Catalina:type=ThreadPool,name=jk-8010")).getObjectName());
-			final GlobalRequestProcessor jk8010 = new GlobalRequestProcessor();
-			jk8010.setrequestCount(0);
-			mBeans.add(mBeanServer.registerMBean(jk8010,
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8010"))
-					.getObjectName());
-			TomcatInformations.initMBeans();
-			final List<JavaInformations> myJavaInformationsList2 = Arrays
-					.asList(new JavaInformations(null, true));
-			final HtmlReport htmlReport2 = new HtmlReport(collector, null, myJavaInformationsList2,
-					Period.TOUT, writer);
-			htmlReport2.toHtml(null, null);
-			assertNotEmptyAndClear(writer);
-
-			jk8010.setrequestCount(1000);
-			final List<JavaInformations> myJavaInformationsList3 = Arrays
-					.asList(new JavaInformations(null, true));
-			final HtmlReport htmlReport3 = new HtmlReport(collector, null, myJavaInformationsList3,
-					Period.TOUT, writer);
-			htmlReport3.toHtml(null, null);
-			assertNotEmptyAndClear(writer);
-		} finally {
-			for (final ObjectName registeredMBean : mBeans) {
-				mBeanServer.unregisterMBean(registeredMBean);
-			}
-			TomcatInformations.initMBeans();
-		}
 	}
 
 	/** Test.
