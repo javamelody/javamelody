@@ -360,20 +360,23 @@ class PdfJavaInformationsReport {
 			throws BadElementException, IOException {
 		addCell(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + getI18nString("Mo")));
 		final long usedPermGen = memoryInformations.getUsedPermGen();
-		final long maxPermGen = memoryInformations.getMaxPermGen();
-		addCell(getI18nString("Memoire_Perm_Gen") + ':');
-		if (maxPermGen > 0) {
-			final Phrase permGenPhrase = new Phrase(integerFormat.format(usedPermGen / 1024 / 1024)
-					+ ' ' + getI18nString("Mo") + DIVIDE
-					+ integerFormat.format(maxPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
-					+ BAR_SEPARATOR, cellFont);
-			final Image permGenImage = Image.getInstance(
-					Bar.toBar(memoryInformations.getUsedPermGenPercentage()), null);
-			permGenImage.scalePercent(50);
-			permGenPhrase.add(new Chunk(permGenImage, 0, 0));
-			currentTable.addCell(permGenPhrase);
-		} else {
-			addCell(integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo"));
+		if (usedPermGen > 0) {
+			// perm gen est à 0 sous jrockit
+			final long maxPermGen = memoryInformations.getMaxPermGen();
+			addCell(getI18nString("Memoire_Perm_Gen") + ':');
+			if (maxPermGen > 0) {
+				final Phrase permGenPhrase = new Phrase(
+						integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
+								+ DIVIDE + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
+								+ getI18nString("Mo") + BAR_SEPARATOR, cellFont);
+				final Image permGenImage = Image.getInstance(
+						Bar.toBar(memoryInformations.getUsedPermGenPercentage()), null);
+				permGenImage.scalePercent(50);
+				permGenPhrase.add(new Chunk(permGenImage, 0, 0));
+				currentTable.addCell(permGenPhrase);
+			} else {
+				addCell(integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo"));
+			}
 		}
 	}
 
