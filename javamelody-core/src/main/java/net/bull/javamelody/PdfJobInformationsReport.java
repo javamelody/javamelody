@@ -23,9 +23,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.bull.javamelody.PdfJavaInformationsReport.Bar;
 
@@ -49,7 +47,7 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfJobInformationsReport {
 	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
-	private final Map<String, CounterRequest> counterRequestsByRequestName;
+	private final Counter jobCounter;
 	private final Document document;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
@@ -64,13 +62,8 @@ class PdfJobInformationsReport {
 		assert document != null;
 
 		this.jobInformationsList = jobInformationsList;
+		this.jobCounter = rangeJobCounter;
 		this.document = document;
-		final List<CounterRequest> counterRequests = rangeJobCounter.getRequests();
-		this.counterRequestsByRequestName = new HashMap<String, CounterRequest>(
-				counterRequests.size());
-		for (final CounterRequest counterRequest : counterRequests) {
-			counterRequestsByRequestName.put(counterRequest.getName(), counterRequest);
-		}
 	}
 
 	void toPdf() throws DocumentException, IOException {
@@ -137,13 +130,10 @@ class PdfJobInformationsReport {
 		addCell(jobInformations.getJobClassName());
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
-		if (counterRequest != null) {
-			addCell(durationFormat.format(new Date(counterRequest.getMean())));
-			// rq: on n'affiche pas ici le nb d'exécutions, le maximum, l'écart-type
-			// ou le pourcentage d'erreurs, uniquement car cela ferait trop de colonnes dans la page
-		} else {
-			addCell("");
-		}
+		// counterRequest ne peut pas être null ici
+		addCell(durationFormat.format(new Date(counterRequest.getMean())));
+		// rq: on n'affiche pas ici le nb d'exécutions, le maximum, l'écart-type
+		// ou le pourcentage d'erreurs, uniquement car cela ferait trop de colonnes dans la page
 		writeJobTimes(jobInformations, counterRequest);
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		if (jobInformations.isPaused()) {
@@ -159,13 +149,11 @@ class PdfJobInformationsReport {
 		if (elapsedTime >= 0) {
 			final Phrase elapsedTimePhrase = new Phrase(durationFormat.format(elapsedTime),
 					cellFont);
-			if (counterRequest != null) {
-				final Image memoryImage = Image.getInstance(
-						Bar.toBar(100d * elapsedTime / counterRequest.getMean()), null);
-				memoryImage.scalePercent(47);
-				elapsedTimePhrase.add("\n");
-				elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));
-			}
+			final Image memoryImage = Image.getInstance(
+					Bar.toBar(100d * elapsedTime / counterRequest.getMean()), null);
+			memoryImage.scalePercent(47);
+			elapsedTimePhrase.add("\n");
+			elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));
 			currentTable.addCell(elapsedTimePhrase);
 		} else {
 			addCell("");
@@ -193,7 +181,12 @@ class PdfJobInformationsReport {
 
 	private CounterRequest getCounterRequest(JobInformations jobInformations) {
 		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
-		return counterRequestsByRequestName.get(jobFullName);
+		// rq: la méthode getCounterRequestByName prend en compte l'éventuelle utilisation du paramètre
+		// job-transform-pattern qui peut faire que jobFullName != counterRequest.getName()
+		final CounterRequest result = jobCounter.getCounterRequestByName(jobFullName);
+		// getCounterRequestByName ne peut pas retourner null actuellement
+		assert result != null;
+		return result;
 	}
 
 	private static String getI18nString(String key) {
