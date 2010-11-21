@@ -818,6 +818,7 @@ public class TestMonitoringFilter {
 	@Test
 	public void testJiraMonitoringFilter() throws ServletException, IOException {
 		final JiraMonitoringFilter jiraMonitoringFilter = new JiraMonitoringFilter();
+		jiraMonitoringFilter.unregisterInvalidatedSessions();
 		try {
 			final FilterChain servletChain = createNiceMock(FilterChain.class);
 			final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
@@ -830,34 +831,56 @@ public class TestMonitoringFilter {
 			verify(servletResponse);
 			verify(servletChain);
 
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
-			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
-			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
-					.anyTimes();
-			final StringWriter stringWriter = new StringWriter();
-			expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
-			final FilterChain chain = createNiceMock(FilterChain.class);
-
-			replay(config);
-			replay(context);
-			replay(request);
-			replay(response);
-			replay(chain);
-			jiraMonitoringFilter.init(config);
-			jiraMonitoringFilter.doFilter(request, response, chain);
-			verify(config);
-			verify(context);
-			verify(request);
-			verify(response);
-			verify(chain);
+			doJiraFilter(jiraMonitoringFilter, false);
+			setUp();
+			doJiraFilter(jiraMonitoringFilter, true);
 		} finally {
 			jiraMonitoringFilter.destroy();
 			destroy();
+		}
+	}
+
+	private void doJiraFilter(JiraMonitoringFilter jiraMonitoringFilter, boolean hasValidSession)
+			throws IOException, ServletException {
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		final HttpSession session;
+		if (hasValidSession) {
+			expect(request.isRequestedSessionIdValid()).andReturn(Boolean.TRUE).anyTimes();
+			session = createNiceMock(HttpSession.class);
+			expect(request.getSession(false)).andReturn(session);
+			expect(session.getId()).andReturn("sessionId").anyTimes();
+		} else {
+			session = null;
+		}
+		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
+		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+		expect(request.getHeaders("Accept-Encoding")).andReturn(
+				Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
+				.anyTimes();
+		final StringWriter stringWriter = new StringWriter();
+		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
+		final FilterChain chain = createNiceMock(FilterChain.class);
+
+		replay(config);
+		replay(context);
+		replay(request);
+		replay(response);
+		replay(chain);
+		if (hasValidSession) {
+			replay(session);
+		}
+		jiraMonitoringFilter.init(config);
+		jiraMonitoringFilter.doFilter(request, response, chain);
+		verify(config);
+		verify(context);
+		verify(request);
+		verify(response);
+		verify(chain);
+		if (hasValidSession) {
+			verify(session);
 		}
 	}
 
