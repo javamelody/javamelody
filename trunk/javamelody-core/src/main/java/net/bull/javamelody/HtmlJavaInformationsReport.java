@@ -301,7 +301,7 @@ class HtmlJavaInformationsReport {
 
 		final long usedPermGen = memoryInformations.getUsedPermGen();
 		if (usedPermGen > 0) {
-			// perm gen est à 0 sous jrockit et sous jdk de sun en 64 bits
+			// perm gen est à 0 sous jrockit
 			final long maxPermGen = memoryInformations.getMaxPermGen();
 			writeln("<tr><td>#Memoire_Perm_Gen#: </td><td>"
 					+ integerFormat.format(usedPermGen / 1024 / 1024) + " #Mo#");
