@@ -160,7 +160,7 @@ public class SessionTestImpl implements HttpSession {
 
 	/** {@inheritDoc} */
 	public void setAttribute(String name, Object value) {
-		// rien
+		attributes.put(name, value);
 	}
 
 	/** {@inheritDoc} */
