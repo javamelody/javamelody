@@ -53,6 +53,10 @@ public class TestHtmlSessionInformationsReport {
 		final List<SessionInformations> sessions = new ArrayList<SessionInformations>();
 		sessions.add(new SessionInformations(new SessionTestImpl(true), false));
 		sessions.add(new SessionInformations(new SessionTestImpl(false), false));
+		final SessionTestImpl serializableButNotSession = new SessionTestImpl(true);
+		serializableButNotSession.setAttribute("serializable but not",
+				Collections.singleton(new Object()));
+		sessions.add(new SessionInformations(serializableButNotSession, false));
 		final StringWriter writer = new StringWriter();
 		final HtmlSessionInformationsReport htmlSessionInformationsReport = new HtmlSessionInformationsReport(
 				writer);
