@@ -34,4 +34,13 @@
 		<property name="lookupOnStartup" value="false" />
 		<property name="expectedType" value="javax.sql.DataSource" />
 	</bean>
+
+	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+		<property name="excludedDatasources">
+			<set>
+				<value>dataSource</value>
+				<value>dataSource2</value>
+			</set>
+		</property>
+	</bean>
 </beans>
