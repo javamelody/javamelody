@@ -116,7 +116,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		final Collection<HttpSession> sessions = SESSION_MAP_BY_ID.values();
 		final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>(
 				sessions.size());
-		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
+		for (final HttpSession session : sessions) {
 			try {
 				sessionsInformations.add(new SessionInformations(session, false));
 			} catch (final Exception e) {
