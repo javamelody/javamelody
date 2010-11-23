@@ -818,8 +818,8 @@ public class TestMonitoringFilter {
 	@Test
 	public void testJiraMonitoringFilter() throws ServletException, IOException {
 		final JiraMonitoringFilter jiraMonitoringFilter = new JiraMonitoringFilter();
-		jiraMonitoringFilter.unregisterInvalidatedSessions();
 		try {
+			// non http
 			final FilterChain servletChain = createNiceMock(FilterChain.class);
 			final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
 			final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
@@ -831,31 +831,41 @@ public class TestMonitoringFilter {
 			verify(servletResponse);
 			verify(servletChain);
 
-			doJiraFilter(jiraMonitoringFilter, false);
+			// pas de session
+			doJiraFilter(jiraMonitoringFilter, null);
+
+			// session valide dans PluginMonitoringFilter
 			setUp();
-			doJiraFilter(jiraMonitoringFilter, true);
+			HttpSession session = createNiceMock(HttpSession.class);
+			expect(session.getId()).andReturn("sessionId").anyTimes();
+			doJiraFilter(jiraMonitoringFilter, session);
+
+			jiraMonitoringFilter.unregisterInvalidatedSessions();
+
+			// session invalidée dans PluginMonitoringFilter
+			setUp();
+			session = createNiceMock(HttpSession.class);
+			expect(session.getId()).andReturn("sessionId2").anyTimes();
+			expect(session.getCreationTime()).andThrow(new IllegalStateException("invalidated"))
+					.anyTimes();
+			doJiraFilter(jiraMonitoringFilter, session);
 		} finally {
 			jiraMonitoringFilter.destroy();
 			destroy();
 		}
 	}
 
-	private void doJiraFilter(JiraMonitoringFilter jiraMonitoringFilter, boolean hasValidSession)
+	private void doJiraFilter(JiraMonitoringFilter jiraMonitoringFilter, HttpSession session)
 			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		final HttpSession session;
-		if (hasValidSession) {
-			expect(request.isRequestedSessionIdValid()).andReturn(Boolean.TRUE).anyTimes();
-			session = createNiceMock(HttpSession.class);
-			expect(request.getSession(false)).andReturn(session);
-			expect(session.getId()).andReturn("sessionId").anyTimes();
-		} else {
-			session = null;
-		}
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(request.getHeaders("Accept-Encoding")).andReturn(
 				Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+		if (session != null) {
+			expect(request.isRequestedSessionIdValid()).andReturn(Boolean.TRUE).anyTimes();
+			expect(request.getSession(false)).andReturn(session).anyTimes();
+		}
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
@@ -869,7 +879,7 @@ public class TestMonitoringFilter {
 		replay(request);
 		replay(response);
 		replay(chain);
-		if (hasValidSession) {
+		if (session != null) {
 			replay(session);
 		}
 		jiraMonitoringFilter.init(config);
@@ -879,7 +889,7 @@ public class TestMonitoringFilter {
 		verify(request);
 		verify(response);
 		verify(chain);
-		if (hasValidSession) {
+		if (session != null) {
 			verify(session);
 		}
 	}
