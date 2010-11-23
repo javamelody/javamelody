@@ -586,10 +586,12 @@ final class JdbcWrapper {
 				JdbcWrapperHelper.setFieldValue(baseWrapperManagedConnection, conFieldName, con);
 			}
 		} else if (glassfish
-				&& "com.sun.gjc.spi.jdbc40.ConnectionHolder40".equals(connection.getClass()
-						.getName())) {
+				&& ("com.sun.gjc.spi.jdbc40.ConnectionHolder40".equals(connection.getClass()
+						.getName()) || "com.sun.gjc.spi.jdbc40.ConnectionWrapper40"
+						.equals(connection.getClass().getName()))) {
 			// pour glassfish,
 			// result instance de com.sun.gjc.spi.jdbc40.ConnectionHolder40
+			// ou com.sun.gjc.spi.jdbc40.ConnectionWrapper40 selon message dans users' group
 			// (attribut "con" sur classe parente)
 			final String conFieldName = "con";
 			Connection con = (Connection) JdbcWrapperHelper.getFieldValue(connection, conFieldName);
