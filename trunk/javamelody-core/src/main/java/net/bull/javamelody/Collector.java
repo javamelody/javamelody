@@ -230,10 +230,14 @@ final class Collector { // NOPMD
 	void collectLocalContextWithoutErrors() {
 		// ici on n'inclue pas les informations de la bdd et des threads
 		// car on n'en a pas besoin pour la collecte et cela économise des requêtes sql
-		final JavaInformations javaInformations = new JavaInformations(
-				Parameters.getServletContext(), false);
+		try {
+			final JavaInformations javaInformations = new JavaInformations(
+					Parameters.getServletContext(), false);
 
-		collectWithoutErrors(Collections.singletonList(javaInformations));
+			collectWithoutErrors(Collections.singletonList(javaInformations));
+		} catch (final Throwable t) { // NOPMD
+			LOG.warn("exception while collecting data", t);
+		}
 	}
 
 	void collectWithoutErrors(List<JavaInformations> javaInformationsList) {
