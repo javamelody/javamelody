@@ -196,6 +196,9 @@ class FilterContext {
 	private void initCollect() {
 		try {
 			Class.forName("org.jrobin.core.RrdDb");
+			// il a parfois été observé "ClassNotFoundException: org.jrobin.core.RrdException"
+			// dans tomcat lors de l'arrêt du serveur à l'appel de JRobin.stop()
+			Class.forName("org.jrobin.core.RrdException");
 		} catch (final ClassNotFoundException e) {
 			LOG.debug("jrobin classes unavailable: collect of data is disabled");
 			// si pas de jar jrobin, alors pas de collecte
