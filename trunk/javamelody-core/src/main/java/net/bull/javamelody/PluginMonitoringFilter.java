@@ -46,7 +46,11 @@ public abstract class PluginMonitoringFilter extends MonitoringFilter {
 			/** {@inheritDoc} */
 			@Override
 			public void run() {
-				unregisterInvalidatedSessions();
+				try {
+					unregisterInvalidatedSessions();
+				} catch (final Throwable t) { // NOPMD
+					LOG.warn("exception while checking sessions", t);
+				}
 			}
 		};
 		final int resolutionSeconds = Parameters.getResolutionSeconds();
