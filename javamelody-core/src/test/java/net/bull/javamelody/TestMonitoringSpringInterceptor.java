@@ -247,9 +247,19 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myOtherMethod());
 		assertSame(REQUESTS_COUNT, 7, springCounter.getRequestsCount());
+	}
 
+	/** Test. */
+	@Test
+	public void testSpringDataSourceBeanPostProcessor() {
+		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
+				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", });
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
 		context.getBean("dataSource2");
+
+		Utils.setProperty(Parameter.NO_DATABASE, "true");
+		assertNotNull("no database context", new ClassPathXmlApplicationContext(new String[] {
+				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", }));
 	}
 }
