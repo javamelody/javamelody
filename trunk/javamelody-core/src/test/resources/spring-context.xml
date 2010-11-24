@@ -35,7 +35,7 @@
 		<property name="expectedType" value="javax.sql.DataSource" />
 	</bean>
 
-	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+	<bean id="springDataSourceBeanPostProcessor2" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
 		<property name="excludedDatasources">
 			<set>
 				<value>dataSource</value>
