@@ -82,9 +82,11 @@ class CompressionResponseStream extends ServletOutputStream {
 
 	private void flushToGZIP() throws IOException {
 		if (stream instanceof ByteArrayOutputStream) {
-			// indication de compression
-			response.addHeader("Content-Encoding", "gzip");
-			response.addHeader("Vary", "Accept-Encoding");
+			// indication de compression,
+			// on utilise setHeader et non addHeader pour être compatible avec PJL compression filter
+			// en particulier dans le plugin grails vis à vis de l'autre plugin grails UiPerformance
+			response.setHeader("Content-Encoding", "gzip");
+			response.setHeader("Vary", "Accept-Encoding");
 
 			// make new gzip stream using the response output stream (content-encoding is in constructor)
 			final GZIPOutputStream gzipstream = new GZIPOutputStream(response.getOutputStream(),
