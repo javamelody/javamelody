@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * change in the gzip compression of the reports in order to fix the compatibility issue between the javamelody grails plugin and the UiPerformance grails plugin.
+
 === 1.22.0 ===
 
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
