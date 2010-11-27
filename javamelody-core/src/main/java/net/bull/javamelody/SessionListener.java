@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -182,10 +183,24 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	public void sessionCreated(HttpSessionEvent event) {
 		// pour être notifié des passivations et activations, on enregistre un HttpSessionActivationListener (this)
 		final HttpSession session = event.getSession();
-		session.setAttribute(SESSION_ACTIVATION_KEY, this);
+		// Since tomcat 6.0.21, because of https://issues.apache.org/bugzilla/show_bug.cgi?id=45255
+		// when tomcat authentication is used, sessionCreated is called twice for 1 session
+		// and each time with different ids, then sessionDestroyed is called once.
+		// So we do not count the 2nd sessionCreated event and we remove the id of the first event
+		if (session.getAttribute(SESSION_ACTIVATION_KEY) == this) {
+			for (final Map.Entry<String, HttpSession> entry : SESSION_MAP_BY_ID.entrySet()) {
+				final String id = entry.getKey();
+				final HttpSession other = entry.getValue();
+				if (!id.equals(other.getId())) {
+					SESSION_MAP_BY_ID.remove(id);
+				}
+			}
+		} else {
+			session.setAttribute(SESSION_ACTIVATION_KEY, this);
 
-		// pour getSessionCount
-		SESSION_COUNT.incrementAndGet();
+			// pour getSessionCount
+			SESSION_COUNT.incrementAndGet();
+		}
 
 		// pour invalidateAllSession
 		SESSION_MAP_BY_ID.put(session.getId(), session);
@@ -224,7 +239,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_MAP_BY_ID.remove(event.getSession().getId());
 	}
 
-	// pour jira/confluence/bamboo
+	// pour hudson/jira/confluence/bamboo
 	void registerSessionIfNeeded(HttpSession session) {
 		if (session != null) {
 			synchronized (session) {
@@ -235,7 +250,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 	}
 
-	// pour jira/confluence/bamboo
+	// pour hudson/jira/confluence/bamboo
 	void unregisterSessionIfNeeded(HttpSession session) {
 		if (session != null) {
 			try {
