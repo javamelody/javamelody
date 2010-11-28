@@ -4,6 +4,8 @@
   * fix issue 66: Since tomcat 6.0.21 and when tomcat based authentication is used, session count is false and there is a possible memory leak for invalidated http sessions. This is because of the changes for tomcat enhancement [https://issues.apache.org/bugzilla/show_bug.cgi?id=45255 45255]. To tomcat experts: Isn't an http session supposed to die first before being able to born a second time?
   * minor change in the gzip compression of the reports in order to fix the compatibility issue between the javamelody grails plugin and the UiPerformance grails plugin.
 
+  * Due to the current infrastructure changes for the Hudson project, the Monitoring plugin 1.23.0 for Hudson can be downloaded from http://javamelody.googlecode.com/files/monitoring.hpi
+
 === 1.22.0 ===
 
   * fix issue 54: v1.21.0 requires jdk 1.6, when "displayed-counters" is used
