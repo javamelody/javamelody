@@ -51,7 +51,7 @@ final class Parameters {
 	// stockage des fichiers RRD de JRobin dans le répertoire temp/javamelody/<context> par défaut
 	private static final String DEFAULT_DIRECTORY = "javamelody";
 	// nom du fichier stockant les applications et leurs urls dans le répertoire de stockage
-	private static final String APPLICATIONS_FILENAME = "applications.properties";
+	private static final String COLLECTOR_APPLICATIONS_FILENAME = "applications.properties";
 	private static Map<String, List<URL>> urlsByApplications;
 
 	private static FilterConfig filterConfig;
@@ -106,7 +106,7 @@ final class Parameters {
 	 */
 	static Map<String, List<URL>> getCollectorUrlsByApplications() throws IOException {
 		if (urlsByApplications == null) {
-			readApplications();
+			readCollectorApplications();
 		}
 		return Collections.unmodifiableMap(urlsByApplications);
 	}
@@ -118,7 +118,7 @@ final class Parameters {
 		getCollectorUrlsByApplications();
 
 		urlsByApplications.put(application, urls);
-		writeApplications();
+		writeCollectorApplications();
 	}
 
 	static void removeCollectorApplication(String application) throws IOException {
@@ -127,10 +127,10 @@ final class Parameters {
 		getCollectorUrlsByApplications();
 
 		urlsByApplications.remove(application);
-		writeApplications();
+		writeCollectorApplications();
 	}
 
-	private static void writeApplications() throws IOException {
+	private static void writeCollectorApplications() throws IOException {
 		final Properties properties = new Properties();
 		for (final Map.Entry<String, List<URL>> entry : urlsByApplications.entrySet()) {
 			final List<URL> urls = entry.getValue();
@@ -144,8 +144,7 @@ final class Parameters {
 			sb.delete(sb.length() - 1, sb.length());
 			properties.put(entry.getKey(), sb.toString());
 		}
-		final FileOutputStream output = new FileOutputStream(new File(getStorageDirectory(""),
-				APPLICATIONS_FILENAME));
+		final FileOutputStream output = new FileOutputStream(getCollectorApplicationsFile());
 		try {
 			properties.store(output, "urls of the applications to monitor");
 		} finally {
@@ -153,12 +152,12 @@ final class Parameters {
 		}
 	}
 
-	private static void readApplications() throws IOException {
+	private static void readCollectorApplications() throws IOException {
 		// le fichier applications.properties contient les noms et les urls des applications à monitorer
 		// par ex.: recette=http://recette1:8080/myapp
 		// ou production=http://prod1:8080/myapp,http://prod2:8080/myapp
 		final Map<String, List<URL>> result = new LinkedHashMap<String, List<URL>>();
-		final File file = new File(getStorageDirectory(""), APPLICATIONS_FILENAME);
+		final File file = getCollectorApplicationsFile();
 		if (file.exists()) {
 			final Properties properties = new Properties();
 			final FileInputStream input = new FileInputStream(file);
@@ -175,6 +174,10 @@ final class Parameters {
 			}
 		}
 		urlsByApplications = result;
+	}
+
+	static File getCollectorApplicationsFile() {
+		return new File(getStorageDirectory(""), COLLECTOR_APPLICATIONS_FILENAME);
 	}
 
 	static List<URL> parseUrl(String value) throws MalformedURLException {

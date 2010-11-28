@@ -190,6 +190,10 @@ Advanced documentation of Java Melody
 	as written at the start of this chapter.
 	When the monitoring is setup in the application, it is not compulsory to include the jrobin-*.jar file in the
 	WEB-INF/lib directory of the application, as only the collect server will handle the charts for this application.
+	
+	
+** 5. Security with a collect server
+	
 	And with this setup again, it is possible to restrict access to the monitoring of the application only to the
 	collect server by its ip address, forbidding access to the monitoring of the application to any others.
 	For example, if the monitored application is on the same server as the collect server, the following parameter
@@ -208,6 +212,17 @@ Advanced documentation of Java Melody
 	able to add the server to a centralized collect server.
 	(A system property like <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> can also be added
 	with the ip address of the collect server.)
+
+	If you do not want that the people having access to the collect server can add or remove
+	applications to monitor, you can forbid the writing to the file "applications.properties" which
+	contains the list of the applications to monitor. This file is located in the storage directory, 
+	"temp/javamelody/applications.properties" for example.
+	The user of the OS running the java process of the collect server must be allowed to read
+	the file but without being allowed to write it. Only you, by using "root" for example, will be
+	able by editing the file to add or to remove applications as the collect server would do.
+	And in this case, the links "add an application" and "remove an application" will not be 
+	displayed in the collect server.
+
 
 * Business façades (without EJB3 and without Spring and without Guice)
 

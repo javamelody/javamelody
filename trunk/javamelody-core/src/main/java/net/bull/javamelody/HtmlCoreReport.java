@@ -168,10 +168,7 @@ class HtmlCoreReport {
 
 	void toHtml(String message, String anchorNameForRedirect) throws IOException {
 		if (collectorServer != null) {
-			writeln("<div align='center'>");
 			writeApplicationsLinks();
-			writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
-			writeln(END_DIV);
 		}
 
 		writeln("<h3><a name='top'></a><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
@@ -630,6 +627,7 @@ class HtmlCoreReport {
 
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
+		writeln("<div align='center'>");
 		final Collection<String> applications = Parameters.getCollectorUrlsByApplications()
 				.keySet();
 		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
@@ -659,6 +657,11 @@ class HtmlCoreReport {
 				writeln(application + "</a>&nbsp;&nbsp;&nbsp;");
 			}
 		}
+
+		if (Parameters.getCollectorApplicationsFile().canWrite()) {
+			writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
+		}
+		writeln(END_DIV);
 	}
 
 	void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {

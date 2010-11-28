@@ -203,6 +203,10 @@ Documentation avancée de Java Melody
 	Lors de cette mise en oeuvre dans l'application, il n'est alors pas obligatoire d'inclure le fichier
 	jrobin-*.jar dans le répertoire WEB-INF/lib de l'application, car seul le serveur de collecte gérera les courbes
 	pour cette application.
+	
+
+** 5. Sécurité avec un serveur de collecte
+	
 	Toujours lors de cette mise en oeuvre dans l'application, il est possible de restreindre l'accès au monitoring
 	de l'application au seul serveur de collecte selon son adresse ip, en interdisant ainsi l'accès au monitoring
 	de l'application aux utilisateurs ou autres. Par exemple, si l'application monitorée est sur le même serveur
@@ -223,6 +227,16 @@ Documentation avancée de Java Melody
 	(Une propriété système comme <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> peut aussi
 	être ajoutée avec l'adresse ip du serveur de collecte.)
 
+	Si vous ne souhaitez pas que les personnes ayant accès au serveur de collecte puisse ajouter
+	ou enlever des applications à monitorer, vous pouvez interdire l'écriture du fichier
+	"applications.properties" listant les applications à monitorer. Ce fichier est situé dans le
+	répertoire de stockage, par exemple "temp/javamelody/applications.properties".
+	L'utilisateur de l'OS lançant la commande java du serveur de collecte doit être autorisé à lire
+	ce fichier mais sans pouvoir l'écrire. Vous seul, en utilisant "root" par exemple, pourrez alors
+	ajouter ou enlever des applications en éditant le fichier comme le ferait le serveur de collecte.
+	Et dans ce cas, les liens "ajouter une application" et "enlever une application" n'apparaîtront
+	pas dans le serveur de collecte.
+	
 
 * Façades métiers (sans EJB3 ni Spring ni Guice)
 
