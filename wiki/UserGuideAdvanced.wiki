@@ -14,6 +14,7 @@ For standard documentation, see [UserGuide]
     * [#2._Deployment_of_the_webapp_of_monitoring 2. Deployment of the webapp of monitoring]
     * [#3._Simpler_alternative_of_deployment_of_the_webapp_of_monitoring 3. Simpler alternative of deployment of the webapp of monitoring]
     * [#4._Results_with_a_collect_server 4. Results with a collect server]
+    * [#5._Security_with_a_collect_server 5. Security with a collect server]
   * [#Business_facades_(without_EJB3_and_without_Spring_and_without_Gu Business facades (without EJB3 and without Spring and without Guice)]
   * [#Alternative_for_monitoring_of_sql_requests Alternative for monitoring of sql requests]
   * [#Usage_of_in_JonAS_5_(which_uses_OSGI) Usage of JavaMelody in JonAS 5 (which uses OSGI)]
@@ -189,6 +190,10 @@ For standard documentation, see [UserGuide]
 	as written at the start of this chapter.
 	When the monitoring is setup in the application, it is not compulsory to include the {{{jrobin-*.jar}}} file in the
 	WEB-INF/lib directory of the application, as only the collect server will handle the charts for this application.
+
+
+=== 5. Security with a collect server ===
+
 	And with this setup again, it is possible to restrict access to the monitoring of the application only to the
 	collect server by its ip address, forbidding access to the monitoring of the application to any others.
 	For example, if the monitored application is on the same server as the collect server, the following parameter
@@ -202,6 +207,10 @@ For standard documentation, see [UserGuide]
 }}}
 
 	If the monitored application is a Hudson, JIRA, Confluence or Bamboo server, the system property -Djavamelody.plugin-authentication-disabled=true can be added to the monitored server in order to disable authentication of the monitoring page in the javamelody plugin and to be able to add the server to a centralized collect server. (A system property like -Djavamelody.allowed-addr-pattern=127\.0\.0\.1 can also be added with the ip address of the collect server.)
+
+	_*Next release only (1.24)*
+	If you do not want that the people having access to the collect server can add or remove applications to monitor, you can forbid the writing to the file "applications.properties" which contains the list of the applications to monitor. This file is located in the storage directory, "temp/javamelody/applications.properties" for example. The user of the OS running the java process of the collect server must be allowed to read the file but without being allowed to write it. Only you, by using "root" for example, will be able to add or to remove applications as the collect server would do. And in this case, the links "add an application" and "remove an application" will not be displayed in the collect server._
+
 
 
 == Business facades (without EJB3 and without Spring and without Guice) ==
