@@ -156,10 +156,7 @@ public class CollectorServlet extends HttpServlet {
 				writeMessage(req, resp, getApplication(req, resp), I18N.getString("urls_format"));
 				return;
 			}
-			final List<URL> urls = Parameters.parseUrl(appUrls);
-			collectorServer.addCollectorApplication(appName, urls);
-			LOGGER.info("monitored application added: " + appName);
-			LOGGER.info("urls of the monitored application: " + urls);
+			addCollectorApplication(appName, appUrls);
 			showAlertAndRedirectTo(resp, I18N.getFormattedString("application_ajoutee", appName),
 					"?application=" + appName);
 		} catch (final FileNotFoundException e) {
@@ -176,6 +173,18 @@ public class CollectorServlet extends HttpServlet {
 		} finally {
 			I18N.unbindLocale();
 		}
+	}
+
+	private void addCollectorApplication(String appName, String appUrls) throws IOException {
+		if (!Parameters.getCollectorApplicationsFile().canWrite()) {
+			throw new IllegalStateException(
+					"applications should be added or removed in the applications.properties file, because the user is not allowed to write: "
+							+ Parameters.getCollectorApplicationsFile());
+		}
+		final List<URL> urls = Parameters.parseUrl(appUrls);
+		collectorServer.addCollectorApplication(appName, urls);
+		LOGGER.info("monitored application added: " + appName);
+		LOGGER.info("urls of the monitored application: " + urls);
 	}
 
 	private void doMonitoring(HttpServletRequest req, HttpServletResponse resp, String application)
