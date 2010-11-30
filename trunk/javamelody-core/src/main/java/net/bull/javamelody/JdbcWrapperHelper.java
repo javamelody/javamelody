@@ -98,6 +98,8 @@ final class JdbcWrapperHelper {
 			// pour JavaEE 6 :
 			// (voir par exemple http://smokeandice.blogspot.com/2009/12/datasourcedefinition-hidden-gem-from.html)
 			dataSources.putAll(getJndiDataSourcesAt("java:global/jdbc"));
+			// pour WebLogic 10 et WebSphere 7, cf issue 68
+			dataSources.putAll(getJndiDataSourcesAt("jdbc"));
 		} else if (datasourcesParameter.trim().length() != 0) { // NOPMD
 			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
