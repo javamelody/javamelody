@@ -180,8 +180,10 @@ class HtmlJavaInformationsReport {
 				+ I18N.createDateAndTimeFormat().format(javaInformations.getStartDate())
 				+ columnEnd);
 
-		writeln("<tr><td valign='top'>#Arguments_JVM#: </td><td>"
-				+ replaceEolWithBr(javaInformations.getJvmArguments()) + columnEnd);
+		write("<tr><td valign='top'>#Arguments_JVM#: </td><td>");
+		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
+		writer.write(replaceEolWithBr(javaInformations.getJvmArguments()) + columnEnd);
+		writeln("");
 
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 
