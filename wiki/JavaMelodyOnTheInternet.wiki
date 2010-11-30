@@ -7,6 +7,7 @@
   * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
   * [http://padcom13.blogspot.com/2010/11/grails-quartz-and-javamelody.html Padcom on Grails and Quartz]
   * [http://helian.javaeye.com/blog/548476 Helian (Chinese)]
+  * [http://nirvana-blanks.javaeye.com/blog/809629 nirvana_blanks (Chinese)]
   * [http://www.ilsitodiluca.it/2010/07/26/javamelody-un-utile-strumento-di-monitoraggio-delle-webapp-java/ Luca (Italian)]
   * [http://blog.klicap.es/archives/175 Antonio (Spanish)]
   * [http://www.javahispano.org/contenidos/es/javamelody__solucion_opensource_para_monitorizar_aplicaciones_java_ee/ javahispano (Spanish)]
