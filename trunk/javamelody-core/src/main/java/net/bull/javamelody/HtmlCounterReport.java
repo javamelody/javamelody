@@ -307,7 +307,7 @@ class HtmlCounterReport {
 			writeln(nextColumn);
 			final String nbsp = "&nbsp;";
 			if (request.getCpuTimeMean() >= 0) {
-				writeln(systemErrorFormat.format(request.getCpuTimeMean()));
+				writeln(integerFormat.format(request.getCpuTimeMean()));
 			} else {
 				writeln(nbsp);
 			}
@@ -317,13 +317,13 @@ class HtmlCounterReport {
 				writeln(nextColumn);
 				final boolean childHitsDisplayed = request.hasChildHits();
 				if (childHitsDisplayed) {
-					writeln(systemErrorFormat.format(request.getChildHitsMean()));
+					writeln(integerFormat.format(request.getChildHitsMean()));
 				} else {
 					writeln(nbsp);
 				}
 				writeln(nextColumn);
 				if (childHitsDisplayed) {
-					writeln(systemErrorFormat.format(request.getChildDurationsMean()));
+					writeln(integerFormat.format(request.getChildDurationsMean()));
 				} else {
 					writeln(nbsp);
 				}
