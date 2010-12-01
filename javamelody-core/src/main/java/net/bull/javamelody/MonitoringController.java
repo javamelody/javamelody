@@ -544,9 +544,17 @@ class MonitoringController {
 		final OutputStream out = httpResponse.getOutputStream();
 		// on enlève tout ".." dans le paramètre par sécurité
 		final String localResource = Parameters.getResourcePath(resource.replace("..", ""));
-		// ce contentType est nécessaire sinon la css n'est pas prise en compte
+		// un contentType est nécessaire sinon la css n'est pas prise en compte
 		// sous firefox sur un serveur distant
-		httpResponse.setContentType(Parameters.getServletContext().getMimeType(localResource));
+		if (localResource.endsWith(".css")) {
+			httpResponse.setContentType("text/css");
+		} else {
+			final String mimeType = Parameters.getServletContext().getMimeType(localResource);
+			// mimeType peut être null, cf issue 69
+			if (mimeType != null) {
+				httpResponse.setContentType(mimeType);
+			}
+		}
 		final InputStream in = new BufferedInputStream(getClass()
 				.getResourceAsStream(localResource));
 		try {
@@ -601,7 +609,7 @@ class MonitoringController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final OutputStream out = httpResponse.getOutputStream();
-		httpResponse.setContentType(Parameters.getServletContext().getMimeType("/WEB-INF/web.xml"));
+		httpResponse.setContentType("application/xml");
 		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=web.xml");
 		final InputStream in = getWebXmlAsStream();
 		if (in != null) {
@@ -617,7 +625,7 @@ class MonitoringController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final OutputStream out = httpResponse.getOutputStream();
-		httpResponse.setContentType(Parameters.getServletContext().getMimeType("/WEB-INF/web.xml"));
+		httpResponse.setContentType("application/xml");
 		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=pom.xml");
 		final InputStream in = getPomXmlAsStream();
 		if (in != null) {
