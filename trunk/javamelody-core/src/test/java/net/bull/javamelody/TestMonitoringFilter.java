@@ -503,6 +503,7 @@ public class TestMonitoringFilter {
 	@Test
 	public void testDoMonitoringWithResource() throws ServletException, IOException {
 		monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER, "monitoring.css"));
+		monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER, "beans.png"));
 	}
 
 	/** Test.
