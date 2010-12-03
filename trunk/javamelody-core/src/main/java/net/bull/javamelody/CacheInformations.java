@@ -100,8 +100,13 @@ class CacheInformations implements Serializable {
 			tmpInMemoryHits = statistics.getInMemoryHits();
 			tmpCacheHits = statistics.getCacheHits();
 			tmpCacheMisses = statistics.getCacheMisses();
-			tmpInMemoryPercentUsed = (int) (100 * inMemoryObjectCount / cache
-					.getCacheConfiguration().getMaxElementsInMemory());
+			final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
+			if (maxElementsInMemory == 0) {
+				// maxElementsInMemory peut être 0 (sans limite), cf issue 73
+				tmpInMemoryPercentUsed = -1;
+			} else {
+				tmpInMemoryPercentUsed = (int) (100 * inMemoryObjectCount / maxElementsInMemory);
+			}
 			tmpConfiguration = buildConfiguration(cache);
 		}
 		this.inMemoryHits = tmpInMemoryHits;
