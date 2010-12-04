@@ -82,9 +82,9 @@ After some weeks for example, in order to update your sources with the new devel
 
 === Tests ===
 
-	JUnit tests can be launched with the "test" target of the ant script, or with maven or in [ContinuousIntegration].
+	The JUnit tests can be launched with the "test" target of the ant script, or with maven or in [ContinuousIntegration].
 
-	Manual tests are written in the OpenOffice [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Test%20plan.ods Test plan].
+	The manual tests are written in the OpenOffice [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Test%20plan.ods Test plan].
 
 === Plugins ===
 
