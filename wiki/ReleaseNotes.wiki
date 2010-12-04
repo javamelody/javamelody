@@ -1,4 +1,13 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 68: support more prefixes for JNDI names of datasources
+  * fix issue 69: NullPointerException when getting resources if mime-type is null
+  * fix issue 71: ArrayIndexOutOfBoundsException with # in JVM parameters
+  * fix issue 73: / by zero when max_elements_in_memory = 0 in ehcache
+  * fix issue 74: "View OS Processes" does not work on MAC OS X Server
+  * added: in the optional collect server, "add and remove applications" can be restricted (issue 61)
+
 === 1.23.0 ===
 
   * fix issue 66: Since tomcat 6.0.21 and when tomcat based authentication is used, session count is false and there is a possible memory leak for invalidated http sessions. This is because of the changes for tomcat enhancement [https://issues.apache.org/bugzilla/show_bug.cgi?id=45255 45255]. To tomcat experts: Isn't an http session supposed to die first before being able to born a second time?
