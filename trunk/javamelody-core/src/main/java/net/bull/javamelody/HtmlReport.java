@@ -131,8 +131,11 @@ class HtmlReport {
 		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
 		writeln("<script type='text/javascript' src='?resource=resizable_tables.js'></script>");
 		writeln("<script type='text/javascript' src='?resource=sorttable.js'></script>");
+		// prototype.js nécessaire pour effects.js et slider.js
+		writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
+		// Effect slidedown/slideup décrit ici http://madrobby.github.com/scriptaculous/effect-slidedown/
+		writeln("<script type='text/javascript' src='?resource=effects.js'></script>");
 		if (includeSlider) {
-			writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
 			writeln("<script type='text/javascript' src='?resource=slider.js'></script>");
 		}
 		writeJavaScript();
@@ -164,12 +167,14 @@ class HtmlReport {
 		writeln("    if (document.getElementById(id + 'Img') != null) {");
 		writeln("      document.getElementById(id + 'Img').src='?resource=bullets/minus.png';");
 		writeln("    }");
-		writeln("    document.getElementById(id).style.display='inline';");
+		//		writeln("    document.getElementById(id).style.display='inline';");
+		writeln("    Effect.SlideDown(id, { duration: 0.5 });");
 		writeln("  } else {");
 		writeln("    if (document.getElementById(id + 'Img') != null) {");
 		writeln("      document.getElementById(id + 'Img').src='?resource=bullets/plus.png';");
 		writeln("    }");
-		writeln("    document.getElementById(id).style.display='none';");
+		//		writeln("    document.getElementById(id).style.display='none';");
+		writeln("    Effect.SlideUp(id, { duration: 0.5 });");
 		writeln("  }");
 		writeln("}");
 		writeln(SCRIPT_END);
