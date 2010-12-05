@@ -12,6 +12,10 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 
 	({{{dev_guide_en.html} English }}, {{{user_guide.html} Guide d'utilisation }})
 
+* Voir les sources
+
+	Les sources en cours de développement peuvent être consultées en ligne et il est possible de télécharger le fichier d'une version qui contient les sources pour cette version.
+
 * Reconstruire à partir des sources
 
 	Le fichier zip dans la partie "Download" contient les sources java avec un script {{{http://ant.apache.org}ant}} build.xml
@@ -94,4 +98,37 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Les langages officiels du projet sont le français pour la javadoc mais l'anglais pour les termes techniques.
 	(Cela donne une séparation claire entre le vocabulaire fonctionnel et le vocabulaire technique,
 	puisque vous parlez français bien sûr).
+	
+    Les diagrammes techniques dans {{{Map.odp}map}} (OpenOffice) peuvent aider à comprendre.
+	
+	
+* Tests
+
+    Les tests unitaires JUnit peuvent être lancés avec le target "test" target du script ant,
+    ou avec maven ou dans en
+    {{{http://code.google.com/p/javamelody/wiki/ContinuousIntegration}Intégration continue}}. 
+
+    Les tests manuels sont écrits dans {{{Test plan.ods}Test plan}} (OpenOffice). 
+    
+    
+* Plugins
+
+    * [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin] :
+    Les sources pour le plugin the JIRA/Confluence/Bamboo sont avec les sources de JavaMelody à
+    [http://javamelody.googlecode.com/svn/trunk/javamelody-core/].
+    Comme indiqué ci-dessus, utiliser le target "all" du script ant pour construire le fichier jira-javamelody.jar.
+
+	* [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin] :
+	Le gestionnaire des sources pour le plugin Monitoring dans Hudson est Git à 
+	[https://github.com/HudsonLabs/plugin-monitoring] (nouveau). 
+	Utiliser les commandes maven "mvn hpi:run" et "mvn package" comme pour tous les
+	[http://wiki.hudson-ci.org/display/HUDSON/Plugin+tutorial plugins Hudson].
+	L'ancien gestionnaire était Subversion à
+	[http://java.net/projects/hudson/sources/svn/show/trunk/hudson/plugins/monitoring].
+
+	* [http://www.grails.org/plugin/grails-melody Grails plugin] :
+	Le gestionnaire des sources pour le plugin JavaMelody dans Grails est Subversion à
+	[http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/]
+    
+    []
     
