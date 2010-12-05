@@ -86,9 +86,20 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Then you can open the report from the address <<<http://host:port/monitoring>>>
 	(the "Monitoring" link is also available in the "Administration" menu).
 	That's it.
+	
 	Notes: The jdbc connections and the SQL requests are monitored in JIRA, and they are monitored
-	in Confluence and Bamboo if a jdbc datasource is used and not a direct jdbc connection.
-
+	in Confluence and Bamboo if a jdbc datasource is used, and not the default jdbc connection.
+	
+	To configure Confluence with a datasource, see {{{http://confluence.atlassian.com/display/DOC/Database+Configuration}this}}.
+	
+	To configure Bamboo with a datasource, see {{{http://confluence.atlassian.com/display/BAMBOO/Connecting+Bamboo+to+an+external+database}this}}.
+	Alternatively for Bamboo, it is possible to replace the default hsqldb driver by the following in
+	<<<bamboo-home/bamboo.cfg.xml>>>:
+	<<<
+	<property name="hibernate.connection.driver">org.hsqldb.jdbcDriver</property>
+    <property name="hibernate.connection.driver_class">net.bull.javamelody.JdbcDriver</property>
+    >>>
+    
 * Grails Plugin
 
 	If you want to monitor an application developed with {{{http://www.grails.org}Grails}}, you can install JavaMelody in just one command
