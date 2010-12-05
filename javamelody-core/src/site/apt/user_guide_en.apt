@@ -240,7 +240,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	* in context parameters of the webapp with prefix <<<javamelody.>>>
 
-	  (context xml file in Tomcat), for example:
+	  (context xml file in Tomcat or in Glassfish), for example:
 	  
 +-------------------------------+
 	<?xml version="1.0" encoding="UTF-8" ?>
