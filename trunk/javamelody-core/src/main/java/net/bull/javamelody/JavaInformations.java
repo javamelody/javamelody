@@ -367,8 +367,7 @@ class JavaInformations implements Serializable { // NOPMD
 
 			// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 			// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
-			final Map<String, DataSource> dataSources = JdbcWrapperHelper
-					.getJndiAndSpringDataSources();
+			final Map<String, DataSource> dataSources = JdbcWrapper.getJndiAndSpringDataSources();
 			for (final Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
 				final String name = entry.getKey();
 				final DataSource dataSource = entry.getValue();

@@ -242,7 +242,7 @@ class DatabaseInformations implements Serializable {
 
 		// on cherche une datasource avec InitialContext
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
-		final Collection<DataSource> dataSources = JdbcWrapperHelper.getJndiAndSpringDataSources()
+		final Collection<DataSource> dataSources = JdbcWrapper.getJndiAndSpringDataSources()
 				.values();
 		if (!dataSources.isEmpty()) {
 			final Connection connection = dataSources.iterator().next().getConnection();
