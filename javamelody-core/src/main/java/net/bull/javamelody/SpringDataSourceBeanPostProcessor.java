@@ -64,7 +64,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 		}
 		if (bean instanceof DataSource && !Parameters.isNoDatabase()) {
 			final DataSource dataSource = (DataSource) bean;
-			JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
+			JdbcWrapper.registerSpringDataSource(beanName, dataSource);
 			final DataSource result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
 					dataSource);
 			LOG.debug("Spring datasource wrapped: " + beanName);

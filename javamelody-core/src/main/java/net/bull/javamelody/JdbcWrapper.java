@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.naming.Referenceable;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -319,6 +320,14 @@ final class JdbcWrapper {
 
 	Counter getSqlCounter() {
 		return sqlCounter;
+	}
+
+	static Map<String, DataSource> getJndiAndSpringDataSources() throws NamingException {
+		return JdbcWrapperHelper.getJndiAndSpringDataSources();
+	}
+
+	static void registerSpringDataSource(String beanName, DataSource dataSource) {
+		JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
 	}
 
 	Object doExecute(String requestName, Statement statement, Method method, Object[] args)
