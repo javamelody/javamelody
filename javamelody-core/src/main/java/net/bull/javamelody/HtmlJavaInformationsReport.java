@@ -329,9 +329,9 @@ class HtmlJavaInformationsReport {
 			}
 			writeln("<br/>");
 			writeln("<div id='detailsDependencies" + uniqueByPageSequence
-					+ "' style='display: none;'>");
+					+ "' style='display: none;'><div>");
 			writeln(replaceEolWithBr(javaInformations.getDependencies()));
-			writeln("</div>");
+			writeln("</div></div>");
 		}
 	}
 

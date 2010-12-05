@@ -312,9 +312,9 @@ class HtmlCoreReport {
 		writeln("<div align='right'>");
 		writeShowHideLink("detailsGraphs", "#Autres_courbes#");
 		writeln(END_DIV);
-		writeln("<div id='detailsGraphs' style='display: none;'>");
+		writeln("<div id='detailsGraphs' style='display: none;'><div>");
 		writeGraphs(collector.getOtherJRobins());
-		writeln(END_DIV);
+		writeln("</div></div>");
 	}
 
 	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
@@ -520,10 +520,10 @@ class HtmlCoreReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
+			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
 			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
 					.toHtml();
-			writeln("</div><br/>");
+			writeln("</div></div><br/>");
 			i++;
 		}
 	}
@@ -543,10 +543,10 @@ class HtmlCoreReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			final String id = "job_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
+			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
 			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(),
 					rangeJobCounter, writer).toHtml();
-			writeln("</div><br/>");
+			writeln("</div></div><br/>");
 			i++;
 		}
 	}
