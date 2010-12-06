@@ -246,7 +246,8 @@ class HtmlCoreReport {
 		writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl,
 				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
-			writer.write(" (" + javaInformationsList.get(0).getContextDisplayName() + ')');
+			writer.write(I18N.htmlEncode(" (" + javaInformationsList.get(0).getContextDisplayName()
+					+ ')', false));
 		}
 		writeln("");
 	}

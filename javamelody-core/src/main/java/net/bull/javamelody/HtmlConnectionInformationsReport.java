@@ -131,23 +131,24 @@ class HtmlConnectionInformationsReport {
 
 	private void writeTextWithStackTrace(String text, List<StackTraceElement> stackTrace)
 			throws IOException {
+		final String encodedText = htmlEncode(text);
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
 			writeln("<a class='tooltip'>");
 			writeln("<em>");
 			// writer.write pour ne pas gérer de traductions si le texte contient '#'
-			writer.write(text);
+			writer.write(encodedText);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
 				writeln(htmlEncode(stackTraceElement.toString()));
 				writeln("<br/>");
 			}
 			writeln("</em>");
-			writer.write(text);
+			writer.write(encodedText);
 			writeln("</a>");
 		} else {
 			// writer.write pour ne pas gérer de traductions si le texte contient '#'
-			writer.write(text);
+			writer.write(encodedText);
 		}
 	}
 

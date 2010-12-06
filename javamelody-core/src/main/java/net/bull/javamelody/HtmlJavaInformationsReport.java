@@ -182,7 +182,7 @@ class HtmlJavaInformationsReport {
 
 		write("<tr><td valign='top'>#Arguments_JVM#: </td><td>");
 		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
-		writer.write(replaceEolWithBr(javaInformations.getJvmArguments()) + columnEnd);
+		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), true) + columnEnd);
 		writeln("");
 
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
@@ -256,8 +256,8 @@ class HtmlJavaInformationsReport {
 		}
 		final boolean onlyOne = list.size() == 1;
 		for (final TomcatInformations tomcatInformations : list) {
-			writer.write("<tr><td valign='top'>Tomcat " + tomcatInformations.getName()
-					+ ": </td><td>");
+			writer.write("<tr><td valign='top'>Tomcat "
+					+ I18N.htmlEncode(tomcatInformations.getName(), false) + ": </td><td>");
 			// rq: on n'affiche pas pour l'instant getCurrentThreadCount
 			final int currentThreadsBusy = tomcatInformations.getCurrentThreadsBusy();
 			writeln("#busyThreads# = ");
