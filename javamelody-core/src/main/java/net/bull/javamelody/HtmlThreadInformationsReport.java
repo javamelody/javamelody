@@ -92,7 +92,7 @@ class HtmlThreadInformationsReport {
 			String separator = " ";
 			for (final ThreadInformations thread : deadlockedThreads) {
 				writer.write(separator);
-				writer.write(thread.getName());
+				writer.write(htmlEncode(thread.getName()));
 				separator = ", ";
 			}
 			write("</div>");
@@ -135,8 +135,8 @@ class HtmlThreadInformationsReport {
 					"confirm_kill_thread", threadInformations.getName()));
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
 			writer.write("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
-			final String title = I18N.getFormattedString("kill_thread",
-					threadInformations.getName());
+			final String title = htmlEncode(I18N.getFormattedString("kill_thread",
+					threadInformations.getName()));
 			writer.write("<img width='16' height='16' src='?resource=stop.png' alt='" + title
 					+ "' title='" + title + "' />");
 			write("</a>");
@@ -174,23 +174,24 @@ class HtmlThreadInformationsReport {
 
 	void writeThreadWithStackTrace(ThreadInformations threadInformations) throws IOException {
 		final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
+		final String encodedName = htmlEncode(threadInformations.getName());
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
 			writeln("<a class='tooltip'>");
 			writeln("<em>");
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(threadInformations.getName());
+			writer.write(encodedName);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
 				write(htmlEncode(stackTraceElement.toString()));
 				writeln("<br/>");
 			}
 			writeln("</em>");
-			writer.write(threadInformations.getName());
+			writer.write(encodedName);
 			writeln("</a>");
 		} else {
 			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(threadInformations.getName());
+			writer.write(encodedName);
 		}
 	}
 
