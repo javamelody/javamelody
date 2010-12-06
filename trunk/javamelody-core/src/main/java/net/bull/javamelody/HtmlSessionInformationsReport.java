@@ -173,7 +173,7 @@ class HtmlSessionInformationsReport {
 			if (remoteUser == null) {
 				write("&nbsp;");
 			} else {
-				write(remoteUser);
+				writer.write(htmlEncode(remoteUser));
 			}
 		}
 		write("</td><td align='center' class='noPrint'>");
@@ -244,7 +244,7 @@ class HtmlSessionInformationsReport {
 
 	private void writeAttribute(SessionAttribute sessionAttribute) throws IOException {
 		write("<td>");
-		write(sessionAttribute.getName());
+		writer.write(htmlEncode(sessionAttribute.getName()));
 		write("</td><td>");
 		write(String.valueOf(sessionAttribute.getType()));
 		write("</td><td align='center'>");
@@ -256,8 +256,12 @@ class HtmlSessionInformationsReport {
 		write("</td><td align='right'>");
 		write(integerFormat.format(sessionAttribute.getSerializedSize()));
 		write("</td><td>");
-		write(String.valueOf(sessionAttribute.getContent()));
+		writer.write(htmlEncode(String.valueOf(sessionAttribute.getContent())));
 		write("</td>");
+	}
+
+	private String htmlEncode(String text) {
+		return I18N.htmlEncode(text, false);
 	}
 
 	private void write(String html) throws IOException {
