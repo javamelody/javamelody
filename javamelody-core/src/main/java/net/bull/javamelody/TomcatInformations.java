@@ -99,8 +99,10 @@ final class TomcatInformations implements Serializable {
 			return Collections.emptyList();
 		}
 		try {
-			if (THREAD_POOLS.isEmpty() || GLOBAL_REQUEST_PROCESSORS.isEmpty()) {
-				initMBeans();
+			synchronized (THREAD_POOLS) {
+				if (THREAD_POOLS.isEmpty() || GLOBAL_REQUEST_PROCESSORS.isEmpty()) {
+					initMBeans();
+				}
 			}
 			final MBeanServer mBeanServer = getMBeanServer();
 			final List<TomcatInformations> tomcatInformationsList = new ArrayList<TomcatInformations>(
