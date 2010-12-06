@@ -290,7 +290,7 @@ class HtmlCounterReport {
 			writeCounterIcon(childRequest);
 			writeRequestGraph(childRequest.getId(), childRequest.getName());
 			writeln("</div></td><td align='right'>");
-			writer.write(nbExecutionsFormat.format(executionsByRequest));
+			write(nbExecutionsFormat.format(executionsByRequest));
 			writeRequestValues(childRequest, allChildHitsDisplayed);
 			writeln("</td>");
 		}
