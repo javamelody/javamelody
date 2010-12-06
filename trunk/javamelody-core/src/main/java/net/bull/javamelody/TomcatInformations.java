@@ -75,6 +75,7 @@ final class TomcatInformations implements Serializable {
 		for (final ObjectName globalRequestProcessor : GLOBAL_REQUEST_PROCESSORS) {
 			if (name.equals(globalRequestProcessor.getKeyProperty("name"))) {
 				grp = globalRequestProcessor;
+				break;
 			}
 		}
 		if (grp != null) {
