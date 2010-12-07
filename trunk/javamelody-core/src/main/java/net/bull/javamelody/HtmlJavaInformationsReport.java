@@ -182,7 +182,7 @@ class HtmlJavaInformationsReport {
 
 		write("<tr><td valign='top'>#Arguments_JVM#: </td><td>");
 		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
-		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), true) + columnEnd);
+		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), false) + columnEnd);
 		writeln("");
 
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
