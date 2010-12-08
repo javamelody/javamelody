@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
 
+import javax.management.JMException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -268,6 +269,12 @@ class HtmlReport {
 	void writeJndi(String path) throws IOException, NamingException {
 		writeHtmlHeader();
 		new HtmlJndiTreeReport(new InitialContext(), path, writer).toHtml();
+		writeHtmlFooter();
+	}
+
+	void writeMBeans() throws IOException, JMException {
+		writeHtmlHeader();
+		new HtmlMBeansReport(writer).toHtml();
 		writeHtmlFooter();
 	}
 

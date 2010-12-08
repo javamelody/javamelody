@@ -54,6 +54,7 @@ final class HttpParameters {
 	static final String LAST_VALUE_PART = "lastValue";
 	static final String USAGES_PART = "usages";
 	static final String JNDI_PART = "jndi";
+	static final String MBEANS_PART = "mbeans";
 	static final String THREADS_PART = "threads";
 	static final String COUNTER_SUMMARY_PER_CLASS_PART = "counterSummaryPerClass";
 
