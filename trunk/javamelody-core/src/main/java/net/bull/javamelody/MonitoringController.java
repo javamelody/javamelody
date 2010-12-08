@@ -37,6 +37,7 @@ import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
+import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -396,6 +397,8 @@ class MonitoringController {
 			doConnections(htmlReport, withoutHeaders);
 		} else if (JNDI_PART.equalsIgnoreCase(part)) {
 			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
+		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+			doMBeans(htmlReport);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -488,6 +491,17 @@ class MonitoringController {
 			htmlReport.writeJndi(path);
 		} catch (final Exception e) {
 			LOG.warn("jndi report failed", e);
+			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
+		}
+	}
+
+	private void doMBeans(HtmlReport htmlReport) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		try {
+			htmlReport.writeMBeans();
+		} catch (final Exception e) {
+			LOG.warn("mbeans report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 		}
 	}

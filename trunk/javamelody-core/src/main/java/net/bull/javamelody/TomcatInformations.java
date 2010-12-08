@@ -22,13 +22,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
-import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
 /**
@@ -65,12 +61,12 @@ final class TomcatInformations implements Serializable {
 	private final long processingTime;
 	private final long maxTime;
 
-	private TomcatInformations(MBeanServer mBeanServer, ObjectName threadPool) throws JMException {
+	private TomcatInformations(MBeans mBeans, ObjectName threadPool) throws JMException {
 		super();
 		name = threadPool.getKeyProperty("name");
-		maxThreads = (Integer) mBeanServer.getAttribute(threadPool, "maxThreads");
-		currentThreadCount = (Integer) mBeanServer.getAttribute(threadPool, "currentThreadCount");
-		currentThreadsBusy = (Integer) mBeanServer.getAttribute(threadPool, "currentThreadsBusy");
+		maxThreads = (Integer) mBeans.getAttribute(threadPool, "maxThreads");
+		currentThreadCount = (Integer) mBeans.getAttribute(threadPool, "currentThreadCount");
+		currentThreadsBusy = (Integer) mBeans.getAttribute(threadPool, "currentThreadsBusy");
 		ObjectName grp = null;
 		for (final ObjectName globalRequestProcessor : GLOBAL_REQUEST_PROCESSORS) {
 			if (name.equals(globalRequestProcessor.getKeyProperty("name"))) {
@@ -79,12 +75,12 @@ final class TomcatInformations implements Serializable {
 			}
 		}
 		if (grp != null) {
-			bytesReceived = (Long) mBeanServer.getAttribute(grp, "bytesReceived");
-			bytesSent = (Long) mBeanServer.getAttribute(grp, "bytesSent");
-			requestCount = (Integer) mBeanServer.getAttribute(grp, "requestCount");
-			errorCount = (Integer) mBeanServer.getAttribute(grp, "errorCount");
-			processingTime = (Long) mBeanServer.getAttribute(grp, "processingTime");
-			maxTime = (Long) mBeanServer.getAttribute(grp, "maxTime");
+			bytesReceived = (Long) mBeans.getAttribute(grp, "bytesReceived");
+			bytesSent = (Long) mBeans.getAttribute(grp, "bytesSent");
+			requestCount = (Integer) mBeans.getAttribute(grp, "requestCount");
+			errorCount = (Integer) mBeans.getAttribute(grp, "errorCount");
+			processingTime = (Long) mBeans.getAttribute(grp, "processingTime");
+			maxTime = (Long) mBeans.getAttribute(grp, "maxTime");
 		} else {
 			bytesReceived = 0;
 			bytesSent = 0;
@@ -105,13 +101,13 @@ final class TomcatInformations implements Serializable {
 					initMBeans();
 				}
 			}
-			final MBeanServer mBeanServer = getMBeanServer();
+			final MBeans mBeans = new MBeans();
 			final List<TomcatInformations> tomcatInformationsList = new ArrayList<TomcatInformations>(
 					THREAD_POOLS.size());
 			// rq: le processor correspondant au threadPool peut se retrouver selon
 			// threadPool.getKeyProperty("name").equals(globalRequestProcessor.getKeyProperty("name"))
 			for (final ObjectName threadPool : THREAD_POOLS) {
-				tomcatInformationsList.add(new TomcatInformations(mBeanServer, threadPool));
+				tomcatInformationsList.add(new TomcatInformations(mBeans, threadPool));
 			}
 			return tomcatInformationsList;
 		} catch (final JMException e) {
@@ -124,40 +120,11 @@ final class TomcatInformations implements Serializable {
 	static void initMBeans() throws MalformedObjectNameException {
 		// rq: en général, il y a 2 connecteurs (http et ajp 1.3) définis dans server.xml et donc
 		// 2 threadPools et 2 globalRequestProcessors de même nom : http-8080 et jk-8009 (ajp13)
-		final MBeanServer mBeanServer = getMBeanServer();
-		final Set<ObjectInstance> threadPoolInstances = mBeanServer.queryMBeans(new ObjectName(
-				"*:type=ThreadPool,*"), null);
-		final List<ObjectName> threadPools = new ArrayList<ObjectName>(threadPoolInstances.size());
-		for (final ObjectInstance oi : threadPoolInstances) {
-			threadPools.add(oi.getObjectName());
-		}
-		final Set<ObjectInstance> globalRequestProcessorInstances = mBeanServer.queryMBeans(
-				new ObjectName("*:type=GlobalRequestProcessor,*"), null);
-		final List<ObjectName> globalRequestProcessors = new ArrayList<ObjectName>(
-				globalRequestProcessorInstances.size());
-		for (final ObjectInstance oi : globalRequestProcessorInstances) {
-			globalRequestProcessors.add(oi.getObjectName());
-		}
-
+		final MBeans mBeans = new MBeans();
 		THREAD_POOLS.clear();
 		GLOBAL_REQUEST_PROCESSORS.clear();
-		THREAD_POOLS.addAll(threadPools);
-		GLOBAL_REQUEST_PROCESSORS.addAll(globalRequestProcessors);
-	}
-
-	/**
-	 * Retourne le javax.management.MBeanServer en le créant si nécessaire.
-	 * @return MBeanServer
-	 */
-	private static MBeanServer getMBeanServer() {
-		final List<MBeanServer> mBeanServers = MBeanServerFactory.findMBeanServer(null);
-		if (!mBeanServers.isEmpty()) {
-			// il existe déjà un MBeanServer créé précédemment par Tomcat ou bien ci-dessous
-			return mBeanServers.get(0);
-		}
-		final MBeanServer server = MBeanServerFactory.createMBeanServer();
-		LOG.debug("javax.management.MBeanServer created");
-		return server;
+		THREAD_POOLS.addAll(mBeans.getThreadPools());
+		GLOBAL_REQUEST_PROCESSORS.addAll(mBeans.getGlobalRequestProcessors());
 	}
 
 	String getName() {
