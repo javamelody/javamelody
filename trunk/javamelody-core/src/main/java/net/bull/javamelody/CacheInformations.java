@@ -140,6 +140,7 @@ class CacheInformations implements Serializable {
 		} catch (final ClassNotFoundException e) {
 			return false;
 		} catch (final NoClassDefFoundError e) {
+			// cf issue 67
 			return false;
 		}
 	}
@@ -195,6 +196,7 @@ class CacheInformations implements Serializable {
 		} catch (final ClassNotFoundException e) {
 			return false;
 		} catch (final NoClassDefFoundError e) {
+			// cf issue 67
 			return false;
 		} catch (final NoSuchMethodException e) {
 			return true;
