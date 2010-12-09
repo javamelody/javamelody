@@ -3,9 +3,10 @@
 
   * fix issue 68: support more prefixes for JNDI names of datasources
   * fix issue 69: NullPointerException when getting resources if mime-type is null
-  * fix issue 71: ArrayIndexOutOfBoundsException with # in JVM parameters
+  * fix issue 71: StringIndexOutOfBoundsException with # in JVM parameters
   * fix issue 73: / by zero when max_elements_in_memory = 0 in ehcache
   * fix issue 74: "View OS Processes" does not work on MAC OS X Server
+  * fix issue 75: StringIndexOutOfBoundsException for http session with # in attributes
   * added: in the optional collect server, "add and remove applications" can be restricted (issue 61)
 
 === 1.23.0 ===
