@@ -101,7 +101,7 @@ final class MBeans {
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
 			// (notamment, dans users tomcat ou dans datasources tomcat
-			if (attribute.isReadable() && !"password".equals(attribute.getName())) {
+			if (attribute.isReadable() && !"password".equalsIgnoreCase(attribute.getName())) {
 				attributeNames.add(attribute.getName());
 			}
 		}
