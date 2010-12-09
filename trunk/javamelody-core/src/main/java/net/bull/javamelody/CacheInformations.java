@@ -139,6 +139,8 @@ class CacheInformations implements Serializable {
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
+		} catch (final NoClassDefFoundError e) {
+			return false;
 		}
 	}
 
@@ -191,6 +193,8 @@ class CacheInformations implements Serializable {
 			Ehcache.class.getMethod("getCacheConfiguration");
 			return false;
 		} catch (final ClassNotFoundException e) {
+			return false;
+		} catch (final NoClassDefFoundError e) {
 			return false;
 		} catch (final NoSuchMethodException e) {
 			return true;
