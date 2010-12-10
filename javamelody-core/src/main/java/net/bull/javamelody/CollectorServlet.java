@@ -21,7 +21,6 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
@@ -30,7 +29,6 @@ import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -265,8 +263,6 @@ public class CollectorServlet extends HttpServlet {
 			doProcesses(req, resp, application);
 		} else if (JNDI_PART.equalsIgnoreCase(partParameter)) {
 			doJndi(req, resp, application);
-		} else if (DATABASE_PART.equalsIgnoreCase(partParameter)) {
-			doDatabase(req, resp, application);
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
 			doConnections(req, resp, application);
 		} else {
@@ -351,27 +347,12 @@ public class CollectorServlet extends HttpServlet {
 				.getParameter(PATH_PARAMETER) : "";
 		final String jndiParameters = '&' + PART_PARAMETER + '=' + JNDI_PART + '&' + PATH_PARAMETER
 				+ '=' + pathParameter;
-		final String htmlBodyFormat = "html";
+		final String htmlFormat = "html";
 		final URL currentRequestsUrl = new URL(url.toString()
-				.replace(TransportFormat.SERIALIZED.getCode(), htmlBodyFormat)
-				.replace(TransportFormat.XML.getCode(), htmlBodyFormat)
+				.replace(TransportFormat.SERIALIZED.getCode(), htmlFormat)
+				.replace(TransportFormat.XML.getCode(), htmlFormat)
 				+ jndiParameters);
 		new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
-	}
-
-	private void doDatabase(HttpServletRequest req, HttpServletResponse resp, String application)
-			throws IOException {
-		final int requestIndex = DatabaseInformations.parseRequestIndex(req
-				.getParameter(REQUEST_PARAMETER));
-		final PrintWriter writer = createWriterFromOutputStream(resp);
-		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
-		final URL url = getUrlsByApplication(application).get(0);
-		final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ DATABASE_PART + '&' + REQUEST_PARAMETER + '=' + requestIndex);
-		final DatabaseInformations databaseInformations = new LabradorRetriever(processesUrl)
-				.call();
-		htmlReport.writeDatabase(databaseInformations);
-		writer.close();
 	}
 
 	private void doConnections(HttpServletRequest req, HttpServletResponse resp, String application)

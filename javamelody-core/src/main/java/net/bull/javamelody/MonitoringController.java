@@ -479,7 +479,14 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		try {
 			final int index = DatabaseInformations.parseRequestIndex(requestIndex);
-			htmlReport.writeDatabase(new DatabaseInformations(index));
+			final DatabaseInformations databaseInformations;
+			if (!isFromCollectorServer()) {
+				databaseInformations = new DatabaseInformations(index);
+			} else {
+				databaseInformations = collectorServer.collectDatabaseInformations(
+						collector.getApplication(), index);
+			}
+			htmlReport.writeDatabase(databaseInformations);
 		} catch (final Exception e) {
 			LOG.warn("database report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
