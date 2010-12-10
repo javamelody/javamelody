@@ -25,6 +25,7 @@ import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -57,8 +58,6 @@ import org.apache.log4j.Logger;
  * @author Emeric Vernat
  */
 public class CollectorServlet extends HttpServlet {
-	private static final String BACK_LINK = "<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
 	private static final String COOKIE_NAME = "javamelody.application";
 
 	private static final long serialVersionUID = -2070469677921953224L;
@@ -253,63 +252,26 @@ public class CollectorServlet extends HttpServlet {
 			MonitoringController monitoringController, String partParameter) throws IOException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
-			doProxy(req, resp, application, PART_PARAMETER + '=' + WEB_XML_PART);
+			doProxy(req, resp, application, WEB_XML_PART);
 		} else if (POM_XML_PART.equalsIgnoreCase(partParameter)) {
 			MonitoringController.noCache(resp);
-			doProxy(req, resp, application, PART_PARAMETER + '=' + POM_XML_PART);
+			doProxy(req, resp, application, POM_XML_PART);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
-			doCurrentRequests(req, resp, application);
+			doMultiHtmlProxy(req, resp, application, CURRENT_REQUESTS_PART, "Requetes_en_cours", null,
+					"hourglass.png");
+		} else if (MBEANS_PART.equalsIgnoreCase(partParameter)) {
+			doMultiHtmlProxy(req, resp, application, MBEANS_PART, "MBeans", null, "mbeans.png");
+		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
+			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
+					"connexions_intro", "db.png");
 		} else if (PROCESSES_PART.equalsIgnoreCase(partParameter)) {
 			doProcesses(req, resp, application);
 		} else if (JNDI_PART.equalsIgnoreCase(partParameter)) {
 			doJndi(req, resp, application);
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
-			doConnections(req, resp, application);
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 			monitoringController.doReport(req, resp, javaInformationsList);
 		}
-	}
-
-	private void doProxy(HttpServletRequest req, HttpServletResponse resp, String application,
-			String urlParameter) throws IOException {
-		// récupération à la demande du contenu du web.xml de la webapp monitorée
-		// (et non celui du serveur de collecte),
-		// on prend la 1ère url puisque le contenu de web.xml est censé être le même
-		// dans tout l'éventuel cluster
-		final URL url = getUrlsByApplication(application).get(0);
-		// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
-		final URL webXmlUrl = new URL(url.toString() + '&' + urlParameter);
-		new LabradorRetriever(webXmlUrl).copyTo(req, resp);
-	}
-
-	private void doCurrentRequests(HttpServletRequest req, HttpServletResponse resp,
-			String application) throws IOException {
-		final PrintWriter writer = createWriterFromOutputStream(resp);
-		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
-		htmlReport.writeHtmlHeader();
-		writer.write("<div class='noPrint'>");
-		I18N.writelnTo(BACK_LINK, writer);
-		writer.write("<a href='?part=");
-		writer.write(CURRENT_REQUESTS_PART);
-		writer.write("'>");
-		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
-				writer);
-		writer.write("</a></div>");
-		final String title = I18N.getString("Requetes_en_cours");
-		for (final URL url : getUrlsByApplication(application)) {
-			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=hourglass.png' alt='"
-					+ title + "'/>" + title + " (" + getHostAndPort(url) + ")</h3>";
-			writer.write(htmlTitle);
-			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL currentRequestsUrl = new URL(url.toString()
-					.replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
-					.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT)
-					+ '&' + PART_PARAMETER + '=' + CURRENT_REQUESTS_PART);
-			new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
-		}
-		htmlReport.writeHtmlFooter();
-		writer.close();
 	}
 
 	private void doProcesses(HttpServletRequest req, HttpServletResponse resp, String application)
@@ -318,7 +280,9 @@ public class CollectorServlet extends HttpServlet {
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
-		I18N.writelnTo(BACK_LINK, writer);
+		I18N.writelnTo(
+				"<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+				writer);
 		writer.write("<a href='?part=");
 		writer.write(PROCESSES_PART);
 		writer.write("'>");
@@ -331,9 +295,9 @@ public class CollectorServlet extends HttpServlet {
 					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush();
-			final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+			final URL proxyUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
 					+ PROCESSES_PART);
-			final List<ProcessInformations> processes = new LabradorRetriever(processesUrl).call();
+			final List<ProcessInformations> processes = new LabradorRetriever(proxyUrl).call();
 			new HtmlProcessInformationsReport(processes, writer).writeTable();
 		}
 		htmlReport.writeHtmlFooter();
@@ -342,6 +306,8 @@ public class CollectorServlet extends HttpServlet {
 
 	private void doJndi(HttpServletRequest req, HttpServletResponse resp, String application)
 			throws IOException {
+		// contrairement aux requêtes en cours ou aux processus, un serveur de l'application suffira
+		// car l'arbre JNDI est en général identique dans tout l'éventuel cluster
 		final URL url = getUrlsByApplication(application).get(0);
 		final String pathParameter = req.getParameter(PATH_PARAMETER) != null ? req
 				.getParameter(PATH_PARAMETER) : "";
@@ -355,31 +321,50 @@ public class CollectorServlet extends HttpServlet {
 		new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 	}
 
-	private void doConnections(HttpServletRequest req, HttpServletResponse resp, String application)
+	private void doProxy(HttpServletRequest req, HttpServletResponse resp, String application,
+			String partParameter) throws IOException {
+		// récupération à la demande du contenu du web.xml de la webapp monitorée
+		// (et non celui du serveur de collecte),
+		// on prend la 1ère url puisque le contenu de web.xml est censé être le même
+		// dans tout l'éventuel cluster
+		final URL url = getUrlsByApplication(application).get(0);
+		// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
+		final URL proxyUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + partParameter);
+		new LabradorRetriever(proxyUrl).copyTo(req, resp);
+	}
+
+	private void doMultiHtmlProxy(HttpServletRequest req, HttpServletResponse resp, String application,
+			String partParameter, String titleKey, String introductionKey, String iconName)
 			throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
-		I18N.writelnTo(BACK_LINK, writer);
+		I18N.writelnTo(
+				"<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+				writer);
 		writer.write("<a href='?part=");
-		writer.write(CONNECTIONS_PART);
+		writer.write(partParameter);
 		writer.write("'>");
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
-		writer.write("</a></div><br/>");
-		writer.write(I18N.getString("connexions_intro"));
-		final String title = I18N.getString("Connexions_jdbc_ouvertes");
+		writer.write("</a></div>");
+		if (introductionKey != null) {
+			writer.write("<br/>");
+			writer.write(I18N.getString("connexions_intro"));
+		}
+		final String title = I18N.getString(titleKey);
 		for (final URL url : getUrlsByApplication(application)) {
-			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=db.png' alt='"
-					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
+			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=" + iconName
+					+ "' alt='" + title + "'/>&nbsp;" + title + " (" + getHostAndPort(url)
+					+ ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL connectionsUrl = new URL(url.toString()
+			final URL proxyUrl = new URL(url.toString()
 					.replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
 					.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT)
-					+ '&' + PART_PARAMETER + '=' + CONNECTIONS_PART);
-			new LabradorRetriever(connectionsUrl).copyTo(req, resp);
+					+ '&' + PART_PARAMETER + '=' + partParameter);
+			new LabradorRetriever(proxyUrl).copyTo(req, resp);
 		}
 		htmlReport.writeHtmlFooter();
 		writer.close();
