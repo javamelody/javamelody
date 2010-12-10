@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -229,6 +233,14 @@ class CollectorServer {
 			}
 		}
 		return heapHistoTotal;
+	}
+
+	DatabaseInformations collectDatabaseInformations(String application, int requestIndex)
+			throws IOException {
+		final URL url = getUrlsByApplication(application).get(0);
+		final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+				+ DATABASE_PART + '&' + REQUEST_PARAMETER + '=' + requestIndex);
+		return new LabradorRetriever(processesUrl).call();
 	}
 
 	private void addRequestsAndErrors(Collector collector, List<Counter> counters) {
