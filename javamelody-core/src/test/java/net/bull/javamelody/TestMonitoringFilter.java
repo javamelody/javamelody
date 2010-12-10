@@ -28,6 +28,7 @@ import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
+import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -554,6 +555,8 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, POM_XML_PART);
 		monitoring(parameters, false);
 		parameters.put(PART_PARAMETER, JNDI_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
 		parameters.put(COUNTER_PARAMETER, "services");

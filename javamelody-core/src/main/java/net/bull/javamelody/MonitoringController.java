@@ -202,7 +202,10 @@ class MonitoringController {
 
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
-		if (isCompressionSupported(httpRequest)) {
+		// on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
+		// par CollectorServlet.doCompressedPart
+		if (isCompressionSupported(httpRequest)
+				&& !(httpResponse instanceof CompressionServletResponseWrapper)) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
 			// (à moins que la compression http ne soit pas supportée
@@ -224,7 +227,10 @@ class MonitoringController {
 			throws IOException {
 		// note: normalement la compression est supportée ici car s'il s'agit du serveur de collecte,
 		// LabradorRetriever appelle connection.setRequestProperty("Accept-Encoding", "gzip");
-		if (isCompressionSupported(httpRequest)) {
+		// et on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
+		// par CollectorServlet.doCompressedPart
+		if (isCompressionSupported(httpRequest)
+				&& !(httpResponse instanceof CompressionServletResponseWrapper)) {
 			// comme les données peuvent être volumineuses avec toutes les requêtes sql et http
 			// et les threads on compresse le flux de réponse en gzip à partir de 50 Ko
 			// (à moins que la compression http ne soit pas supportée
@@ -398,7 +404,9 @@ class MonitoringController {
 		} else if (JNDI_PART.equalsIgnoreCase(part)) {
 			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			doMBeans(htmlReport);
+			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
+					.getParameter(FORMAT_PARAMETER));
+			doMBeans(htmlReport, withoutHeaders);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -495,11 +503,11 @@ class MonitoringController {
 		}
 	}
 
-	private void doMBeans(HtmlReport htmlReport) throws IOException {
+	private void doMBeans(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
-			htmlReport.writeMBeans();
+			htmlReport.writeMBeans(withoutHeaders);
 		} catch (final Exception e) {
 			LOG.warn("mbeans report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
@@ -723,7 +731,7 @@ class MonitoringController {
 		return sb.toString();
 	}
 
-	private static boolean isCompressionSupported(HttpServletRequest httpRequest) {
+	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
 		// est-ce que le navigateur déclare accepter la compression gzip ?
 		boolean supportCompression = false;
 		@SuppressWarnings("unchecked")
