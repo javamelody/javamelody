@@ -220,13 +220,34 @@ public class CollectorServlet extends HttpServlet {
 				final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 				monitoringController.doReport(req, resp, javaInformationsList);
 			} else {
-				doPart(req, resp, application, monitoringController, partParameter);
+				doCompressedPart(req, resp, application, monitoringController, partParameter);
 			}
 		} catch (final RuntimeException e) {
 			// catch RuntimeException pour éviter warning exception
 			writeMessage(req, resp, application, e.getMessage());
 		} catch (final Exception e) {
 			writeMessage(req, resp, application, e.getMessage());
+		}
+	}
+
+	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			String application, MonitoringController monitoringController, String partParameter)
+			throws IOException {
+		if (MonitoringController.isCompressionSupported(httpRequest)) {
+			// comme la page html peut être volumineuse
+			// on compresse le flux de réponse en gzip à partir de 4 Ko
+			// (à moins que la compression http ne soit pas supportée
+			// comme par ex s'il y a un proxy squid qui ne supporte que http 1.0)
+			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
+					httpResponse, 4096);
+			try {
+				doPart(httpRequest, wrappedResponse, application, monitoringController,
+						partParameter);
+			} finally {
+				wrappedResponse.finishResponse();
+			}
+		} else {
+			doPart(httpRequest, httpResponse, application, monitoringController, partParameter);
 		}
 	}
 
@@ -310,7 +331,7 @@ public class CollectorServlet extends HttpServlet {
 		writer.write("</a></div>");
 		final String title = I18N.getString("Processus");
 		for (final URL url : getUrlsByApplication(application)) {
-			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=threads.png' alt='"
+			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=processes.png' alt='"
 					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush();
