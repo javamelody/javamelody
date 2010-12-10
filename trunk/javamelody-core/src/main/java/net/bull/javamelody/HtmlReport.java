@@ -272,10 +272,15 @@ class HtmlReport {
 		writeHtmlFooter();
 	}
 
-	void writeMBeans() throws IOException, JMException {
-		writeHtmlHeader();
-		new HtmlMBeansReport(writer).toHtml();
-		writeHtmlFooter();
+	void writeMBeans(boolean withoutHeaders) throws IOException, JMException {
+		if (withoutHeaders) {
+			// pour affichage dans serveur de collecte
+			new HtmlMBeansReport(writer).writeTree();
+		} else {
+			writeHtmlHeader();
+			new HtmlMBeansReport(writer).toHtml();
+			writeHtmlFooter();
+		}
 	}
 
 	private void writeln(String html) throws IOException {

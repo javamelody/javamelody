@@ -600,6 +600,10 @@ class HtmlCoreReport {
 		}
 
 		writeln(separator);
+		write("<a href='?part=mbeans'>");
+		write("<img src='?resource=mbeans.png' width='20' height='20' alt=\"#MBeans#\" /> #MBeans#</a>");
+
+		writeln(separator);
 		write("<a href='?part=processes'>");
 		write("<img src='?resource=processes.png' width='20' height='20' alt=\"#processes#\" /> #processes#</a>");
 

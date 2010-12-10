@@ -59,14 +59,15 @@ class HtmlMBeansReport {
 	 * @throws IOException e
 	 * @throws JMException e
 	 */
-	private void writeTree() throws IOException, JMException {
+	void writeTree() throws IOException, JMException {
 		writeln("<div style='margin-left: 20px'>");
 		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = mbeans
 				.getMapObjectNamesByDomainAndFirstProperty();
+		final String pid = PID.getPID();
 		for (final Map.Entry<String, Map<String, List<ObjectName>>> entryObjectNamesByDomainAndFirstProperty : mapObjectNamesByDomainAndFirstProperty
 				.entrySet()) {
 			final String domain = entryObjectNamesByDomainAndFirstProperty.getKey();
-			final String domainId = "domain_" + encodeForId(domain);
+			final String domainId = "domain_" + encodeForId(domain) + '_' + pid;
 			write(BR);
 			writeShowHideLink(domainId, htmlEncode(domain));
 			writeln("<div id='" + domainId + "' style='display: none; margin-left: 20px;'><div>");
@@ -76,7 +77,7 @@ class HtmlMBeansReport {
 			for (final Map.Entry<String, List<ObjectName>> entryObjectNamesByFirstProperty : mapObjectNamesByFirstProperty
 					.entrySet()) {
 				final String firstProperty = entryObjectNamesByFirstProperty.getKey();
-				final String firstPropertyId = "property_" + encodeForId(firstProperty);
+				final String firstPropertyId = "property_" + encodeForId(firstProperty) + '_' + pid;
 				if (firstInDomain) {
 					firstInDomain = false;
 				} else {
@@ -89,7 +90,7 @@ class HtmlMBeansReport {
 				boolean firstMBean = true;
 				for (final ObjectName name : objectNames) {
 					String mbean = name.toString();
-					final String mbeanId = "mbean_" + encodeForId(mbean);
+					final String mbeanId = "mbean_" + encodeForId(mbean) + '_' + pid;
 					final int indexOfComma = mbean.indexOf(',');
 					if (indexOfComma != 1) {
 						mbean = mbean.substring(indexOfComma + 1);
