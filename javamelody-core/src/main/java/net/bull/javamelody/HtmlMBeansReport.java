@@ -116,7 +116,7 @@ class HtmlMBeansReport {
 	}
 
 	private String getNextId() {
-		return "x" + pid + '_' + sequence++;
+		return 'x' + pid + '_' + sequence++;
 	}
 
 	private void writeAttributes(ObjectName name) throws JMException, IOException {
