@@ -257,8 +257,8 @@ public class CollectorServlet extends HttpServlet {
 			MonitoringController.noCache(resp);
 			doProxy(req, resp, application, POM_XML_PART);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
-			doMultiHtmlProxy(req, resp, application, CURRENT_REQUESTS_PART, "Requetes_en_cours", null,
-					"hourglass.png");
+			doMultiHtmlProxy(req, resp, application, CURRENT_REQUESTS_PART, "Requetes_en_cours",
+					null, "hourglass.png");
 		} else if (MBEANS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, MBEANS_PART, "MBeans", null, "mbeans.png");
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
@@ -333,9 +333,9 @@ public class CollectorServlet extends HttpServlet {
 		new LabradorRetriever(proxyUrl).copyTo(req, resp);
 	}
 
-	private void doMultiHtmlProxy(HttpServletRequest req, HttpServletResponse resp, String application,
-			String partParameter, String titleKey, String introductionKey, String iconName)
-			throws IOException {
+	private void doMultiHtmlProxy(HttpServletRequest req, HttpServletResponse resp,
+			String application, String partParameter, String titleKey, String introductionKey,
+			String iconName) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		htmlReport.writeHtmlHeader();
