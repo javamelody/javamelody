@@ -34,6 +34,7 @@ import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.TabularData;
 
 /**
  * Objet récupérant une instance de MBeanServer lors de sa construction
@@ -118,25 +119,28 @@ final class MBeans {
 	}
 
 	private static Object convertValueIfNeeded(Object value) {
-		if (value instanceof CompositeData[]) {
-			final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (value instanceof CompositeData) {
+			final CompositeData data = (CompositeData) value;
+			final Map<String, Object> values = new TreeMap<String, Object>();
+			for (final String key : data.getCompositeType().keySet()) {
+				values.put(key, convertValueIfNeeded(data.get(key)));
+			}
+			return values;
+		} else if (value instanceof CompositeData[]) {
+			final List<Object> list = new ArrayList<Object>();
 			for (final CompositeData data : (CompositeData[]) value) {
-				final Map<String, Object> values = new TreeMap<String, Object>();
-				for (final String key : data.getCompositeType().keySet()) {
-					values.put(key, data.get(key));
-				}
-				list.add(values);
+				list.add(convertValueIfNeeded(data));
 			}
 			return list;
 		} else if (value instanceof Object[]) {
 			return Arrays.asList((Object[]) value);
-		} else if (value instanceof CompositeData) {
-			final CompositeData data = (CompositeData) value;
-			final Map<String, Object> values = new TreeMap<String, Object>();
-			for (final String key : data.getCompositeType().keySet()) {
-				values.put(key, data.get(key));
+		} else if (value instanceof TabularData) {
+			final List<Object> list = new ArrayList<Object>();
+			final TabularData tabularData = (TabularData) value;
+			for (final Object object : tabularData.values()) {
+				list.add(convertValueIfNeeded(object));
 			}
-			return values;
+			return list;
 		}
 		return value;
 	}
