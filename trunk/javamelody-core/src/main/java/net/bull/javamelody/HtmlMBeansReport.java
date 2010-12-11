@@ -37,6 +37,8 @@ class HtmlMBeansReport {
 	private static final String BR = "<br/>";
 	private final MBeans mbeans;
 	private final Writer writer;
+	private final String pid = PID.getPID();
+	private int sequence;
 
 	HtmlMBeansReport(Writer writer) {
 		super();
@@ -63,11 +65,10 @@ class HtmlMBeansReport {
 		writeln("<div style='margin-left: 20px'>");
 		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = mbeans
 				.getMapObjectNamesByDomainAndFirstProperty();
-		final String pid = PID.getPID();
 		for (final Map.Entry<String, Map<String, List<ObjectName>>> entryObjectNamesByDomainAndFirstProperty : mapObjectNamesByDomainAndFirstProperty
 				.entrySet()) {
 			final String domain = entryObjectNamesByDomainAndFirstProperty.getKey();
-			final String domainId = "domain_" + encodeForId(domain) + '_' + pid;
+			final String domainId = getNextId();
 			write(BR);
 			writeShowHideLink(domainId, htmlEncode(domain));
 			writeln("<div id='" + domainId + "' style='display: none; margin-left: 20px;'><div>");
@@ -77,7 +78,7 @@ class HtmlMBeansReport {
 			for (final Map.Entry<String, List<ObjectName>> entryObjectNamesByFirstProperty : mapObjectNamesByFirstProperty
 					.entrySet()) {
 				final String firstProperty = entryObjectNamesByFirstProperty.getKey();
-				final String firstPropertyId = "property_" + encodeForId(firstProperty) + '_' + pid;
+				final String firstPropertyId = getNextId();
 				if (firstInDomain) {
 					firstInDomain = false;
 				} else {
@@ -90,7 +91,7 @@ class HtmlMBeansReport {
 				boolean firstMBean = true;
 				for (final ObjectName name : objectNames) {
 					String mbean = name.toString();
-					final String mbeanId = "mbean_" + encodeForId(mbean) + '_' + pid;
+					final String mbeanId = getNextId();
 					final int indexOfComma = mbean.indexOf(',');
 					if (indexOfComma != 1) {
 						mbean = mbean.substring(indexOfComma + 1);
@@ -112,6 +113,10 @@ class HtmlMBeansReport {
 			writeln("</div></div>");
 		}
 		writeln("</div>");
+	}
+
+	private String getNextId() {
+		return "x" + pid + '_' + sequence++;
 	}
 
 	private void writeAttributes(ObjectName name) throws JMException, IOException {
@@ -186,11 +191,6 @@ class HtmlMBeansReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private String encodeForId(String id) {
-		return id.replace('\'', '_').replace('/', '_').replace(' ', '_').replace('"', '_')
-				.replace('@', '_').replace('=', ':').replace(',', '-');
 	}
 
 	private static String htmlEncode(String text) {
