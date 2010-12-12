@@ -50,7 +50,13 @@ class HtmlJndiTreeReport {
 		writeln("<br/>");
 
 		writeln("<img src='?resource=jndi.png' width='24' height='24' alt='#Arbre_JNDI#' />&nbsp;");
-		writeln("<b>#Arbre_JNDI#</b>");
+		if (path.length() == 0) {
+			writeln("<b>#Arbre_JNDI#</b>");
+		} else {
+			writer.write("<b>"
+					+ I18N.getFormattedString("Arbre_JNDI_pour_contexte", htmlEncode(path))
+					+ "</b>\n");
+		}
 		writeTable();
 	}
 
