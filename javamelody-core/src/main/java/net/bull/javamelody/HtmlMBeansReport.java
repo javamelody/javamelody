@@ -90,23 +90,26 @@ class HtmlMBeansReport {
 				final List<ObjectName> objectNames = entryObjectNamesByFirstProperty.getValue();
 				boolean firstMBean = true;
 				for (final ObjectName name : objectNames) {
-					String mbean = name.toString();
-					final String mbeanId = getNextId();
-					final int indexOfComma = mbean.indexOf(',');
-					if (indexOfComma != 1) {
-						mbean = mbean.substring(indexOfComma + 1);
-					}
 					if (firstMBean) {
 						firstMBean = false;
 					} else {
 						write(BR);
 					}
-					writeShowHideLink(mbeanId, htmlEncode(mbean));
-					writeln("<div id='" + mbeanId + "' style='display: none; margin-left: 20px;'>");
-					// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
-					// dans une table
-					writeAttributes(name);
-					writeln("</div>");
+					String mbean = name.toString();
+					final String mbeanId = getNextId();
+					final int indexOfComma = mbean.indexOf(',');
+					if (indexOfComma != -1) {
+						mbean = mbean.substring(indexOfComma + 1);
+						writeShowHideLink(mbeanId, htmlEncode(mbean));
+						writeln("<div id='" + mbeanId
+								+ "' style='display: none; margin-left: 20px;'>");
+						// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
+						// dans une table
+						writeAttributes(name);
+						writeln("</div>");
+					} else {
+						writeAttributes(name);
+					}
 				}
 				writeln("</div></div>");
 			}
