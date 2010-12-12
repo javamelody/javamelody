@@ -115,13 +115,12 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
     As said above, you can use the "all" target of the ant script to build the jira-javamelody.jar file.
 
 	* [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin] :
-	The manager of sources for the Hudson Monitoring plugin is Git at 
-	[https://github.com/HudsonLabs/plugin-monitoring] (new). 
+	The manager of sources for the Hudson Monitoring plugin is Subversion at
+	[https://svn.java.net/svn/hudson~svn/trunk/hudson/plugins/monitoring/]
+	and it can be browsed at [http://java.net/projects/hudson/sources/svn/show/trunk/hudson/plugins/monitoring]. 
 	Use maven commands "mvn hpi:run" or "mvn package" like for all 
 	[http://wiki.hudson-ci.org/display/HUDSON/Plugin+tutorial Hudson plugins].
-	The old manager was Subversion at 
-	[http://java.net/projects/hudson/sources/svn/show/trunk/hudson/plugins/monitoring].
-
+	
 	* [http://www.grails.org/plugin/grails-melody Grails plugin] :
 	The manager of sources for the JavaMelody Grails plugin is Subversion at
 	[http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/]
