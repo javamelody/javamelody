@@ -9,7 +9,7 @@
   * fix issue 75: StringIndexOutOfBoundsException for http session with # in attributes
   * added: in the optional collect server, "add and remove applications" can be restricted (issue 61)
 
-  * added: new view "*MBeans*", in the system actions. (MBeans contain configuration and low-level data on the application server and on the JVM). The values are viewable but not writable and operations can not be performed.
+  * added: new view "*MBeans*" with values and descriptions of attributes, in the system actions. (MBeans contain configuration and low-level data on the application server and on the JVM). The values are viewable but not writable and operations can not be performed.
 
   * added for *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]*: for each MBean attribute, a link on the left of the attribute is provided to have only the current value of an attribute in plain text. And a link below zoomed graphics is also provided to have only the last value in the graphic. For example, the following URLs can be used in this version: [http://localhost:8080/context/monitoring?part=lastValue&graph=usedMemory,cpu 1] and [http://localhost:8080/context/monitoring?jmxValue=Catalina:type=GlobalRequestProcessor,name=http-8080.bytesSent|java.lang:type=OperatingSystem.ProcessCpuTime 2]. This feature can probably be used to write a Munin/Nagios plugin using something like [https://github.com/coderholic/munin-popularity-plugins this] in order to have in Munin the same graphics as JavaMelody or to have some new graphics based on MBeans values.
 
