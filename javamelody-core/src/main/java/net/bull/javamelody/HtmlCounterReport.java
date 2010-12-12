@@ -106,6 +106,8 @@ class HtmlCounterReport {
 				writeln("<div align='center'><img class='synthèse' id='img' src='"
 						+ "?width=960&amp;height=400&amp;graph=" + graphName
 						+ "' alt='zoom'/></div>");
+				writeln("<div align='right'><a href='?part=lastValue&amp;graph=" + graphName
+						+ "' title=\"#Lien_derniere_valeur#\">_</a></div>");
 
 				writeGraphDetailScript(graphName);
 			}

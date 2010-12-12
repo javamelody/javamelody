@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
@@ -211,7 +212,9 @@ public class CollectorServlet extends HttpServlet {
 			}
 
 			final String partParameter = req.getParameter(PART_PARAMETER);
-			if (partParameter == null) {
+			if (req.getParameter(JMX_VALUE) != null) {
+				doJmxValue(req, resp, application, req.getParameter(JMX_VALUE));
+			} else if (partParameter == null) {
 				// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
 				// pour être à jour
 				final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
@@ -251,10 +254,10 @@ public class CollectorServlet extends HttpServlet {
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
 			MonitoringController monitoringController, String partParameter) throws IOException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
-			MonitoringController.noCache(resp);
+			noCache(resp);
 			doProxy(req, resp, application, WEB_XML_PART);
 		} else if (POM_XML_PART.equalsIgnoreCase(partParameter)) {
-			MonitoringController.noCache(resp);
+			noCache(resp);
 			doProxy(req, resp, application, POM_XML_PART);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CURRENT_REQUESTS_PART, "Requetes_en_cours",
@@ -319,6 +322,24 @@ public class CollectorServlet extends HttpServlet {
 				.replace(TransportFormat.XML.getCode(), htmlFormat)
 				+ jndiParameters);
 		new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
+	}
+
+	private void doJmxValue(HttpServletRequest req, HttpServletResponse resp, String application,
+			String jmxValueParameter) throws IOException {
+		noCache(resp);
+		resp.setContentType("text/plain");
+		boolean first = true;
+		for (final URL url : getUrlsByApplication(application)) {
+			if (first) {
+				first = false;
+			} else {
+				resp.getOutputStream().write('|');
+				resp.getOutputStream().write('|');
+			}
+			final URL proxyUrl = new URL(url.toString() + '&' + JMX_VALUE + '=' + jmxValueParameter);
+			new LabradorRetriever(proxyUrl).copyTo(req, resp);
+		}
+		resp.getOutputStream().close();
 	}
 
 	private void doProxy(HttpServletRequest req, HttpServletResponse resp, String application,
@@ -388,7 +409,7 @@ public class CollectorServlet extends HttpServlet {
 
 	private void writeMessage(HttpServletRequest req, HttpServletResponse resp, String application,
 			String message) throws IOException {
-		MonitoringController.noCache(resp);
+		noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 		if (application == null || collector == null || javaInformationsList == null) {
@@ -413,13 +434,13 @@ public class CollectorServlet extends HttpServlet {
 
 	private static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
 			throws IOException {
-		MonitoringController.noCache(httpResponse);
+		noCache(httpResponse);
 		httpResponse.setContentType(HTML_CONTENT_TYPE);
 		return new PrintWriter(MonitoringController.getWriter(httpResponse));
 	}
 
 	private static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
-		MonitoringController.noCache(resp);
+		noCache(resp);
 		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<html><head><title>Monitoring</title></head><body>");
@@ -438,6 +459,10 @@ public class CollectorServlet extends HttpServlet {
 		writer.write(redirectTo);
 		writer.write("';</script>");
 		writer.close();
+	}
+
+	private static void noCache(HttpServletResponse httpResponse) {
+		MonitoringController.noCache(httpResponse);
 	}
 
 	private boolean isAddressAllowed(HttpServletRequest req) {

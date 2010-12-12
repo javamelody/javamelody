@@ -52,6 +52,7 @@ final class HttpParameters {
 	static final String CONNECTIONS_PART = "connections";
 	static final String GRAPH_PART = "graph";
 	static final String LAST_VALUE_PART = "lastValue";
+	static final String JMX_VALUE = "jmxValue";
 	static final String USAGES_PART = "usages";
 	static final String JNDI_PART = "jndi";
 	static final String MBEANS_PART = "mbeans";
