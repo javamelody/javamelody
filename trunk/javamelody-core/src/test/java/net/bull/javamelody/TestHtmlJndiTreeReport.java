@@ -22,7 +22,6 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -57,18 +56,32 @@ public class TestHtmlJndiTreeReport {
 	 * @throws NamingException e */
 	@Test
 	public void testToHtml() throws IOException, NamingException {
+		doToHtml(null);
+	}
+
+	/** Test.
+	 * @throws IOException e
+	 * @throws NamingException e */
+	@Test
+	public void testToHtmlWithContextPath() throws IOException, NamingException {
+		doToHtml("comp");
+	}
+
+	private void doToHtml(String contextPath) throws NamingException, IOException {
 		final StringWriter writer = new StringWriter();
 		final Context context = createNiceMock(Context.class);
 		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
-		expect(context.listBindings("java:")).andReturn(enumeration).once();
+		expect(context.listBindings("java:" + (contextPath == null ? "" : contextPath))).andReturn(
+				enumeration).once();
 		expect(enumeration.hasMore()).andReturn(true).times(4);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
 		expect(enumeration.next()).andReturn(
 				new Binding("test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("test null classname", null, null)).once();
 		expect(enumeration.next()).andThrow(new NamingException("test")).once();
-		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(context, null, writer);
+		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(context, contextPath,
+				writer);
 
 		replay(context);
 		replay(enumeration);
@@ -76,7 +89,5 @@ public class TestHtmlJndiTreeReport {
 		verify(context);
 		verify(enumeration);
 		assertNotEmptyAndClear(writer);
-
-		assertNotNull("path", new HtmlJndiTreeReport(context, "mycontext", writer));
 	}
 }
