@@ -34,6 +34,7 @@ import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
@@ -173,6 +174,8 @@ class MonitoringController {
 				doWebXml(httpResponse);
 			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
 				doPomXml(httpResponse);
+			} else if (httpRequest.getParameter(JMX_VALUE) != null) {
+				doJmxValue(httpResponse, httpRequest.getParameter(JMX_VALUE));
 			} else {
 				doReportCore(httpRequest, httpResponse, javaInformationsList);
 			}
@@ -630,6 +633,29 @@ class MonitoringController {
 				httpResponse.getWriter().write(",");
 			}
 			httpResponse.getWriter().write(String.valueOf(lastValue));
+		}
+		httpResponse.flushBuffer();
+	}
+
+	// jmxValue=x|y|z pourra aussi être utilisé par munin notamment
+	private void doJmxValue(HttpServletResponse httpResponse, String jmxValueParameter)
+			throws IOException {
+		httpResponse.setContentType("text/plain");
+		boolean first = true;
+		for (final String mbeansAttribute : jmxValueParameter.split("[|]")) {
+			final int lastIndexOfPoint = mbeansAttribute.lastIndexOf('.');
+			if (lastIndexOfPoint <= 0) {
+				throw new IllegalArgumentException(mbeansAttribute);
+			}
+			final String name = mbeansAttribute.substring(0, lastIndexOfPoint);
+			final Object jmxValue = MBeans.getConvertedAttribute(name,
+					mbeansAttribute.substring(lastIndexOfPoint + 1));
+			if (first) {
+				first = false;
+			} else {
+				httpResponse.getWriter().write("|");
+			}
+			httpResponse.getWriter().write(String.valueOf(jmxValue));
 		}
 		httpResponse.flushBuffer();
 	}

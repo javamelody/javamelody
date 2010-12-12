@@ -137,15 +137,19 @@ class HtmlMBeansReport {
 			for (final Map.Entry<String, Object> entryAttributes : attributes.entrySet()) {
 				final String attributeName = entryAttributes.getKey();
 				final Object attributeValue = entryAttributes.getValue();
-				writeAttribute(attributeName, attributeValue, attributeInfos);
+				writeAttribute(name, attributeName, attributeValue, attributeInfos);
 			}
 			writeln("</table>");
 		}
 	}
 
-	private void writeAttribute(String attributeName, Object attributeValue,
+	private void writeAttribute(ObjectName name, String attributeName, Object attributeValue,
 			MBeanAttributeInfo[] attributeInfos) throws IOException {
 		write("<tr valign='top'><td>");
+		writer.write("<a href='?jmxValue="
+				+ name.toString().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
+				+ "' ");
+		writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
 		writer.write(htmlEncode(attributeName));
 		write("</td><td>");
 		try {

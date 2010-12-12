@@ -101,7 +101,7 @@ final class MBeans {
 		final List<String> attributeNames = new ArrayList<String>(attributeInfos.length);
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
-			// (notamment, dans users tomcat ou dans datasources tomcat
+			// (notamment, dans users tomcat ou dans datasources tomcat)
 			if (attribute.isReadable() && !"password".equalsIgnoreCase(attribute.getName())) {
 				attributeNames.add(attribute.getName());
 			}
@@ -143,6 +143,20 @@ final class MBeans {
 			return list;
 		}
 		return value;
+	}
+
+	static Object getConvertedAttribute(String name, String attribute) {
+		// on ne veut pas afficher l'attribut password, jamais
+		// (notamment, dans users tomcat ou dans datasources tomcat)
+		if ("password".equalsIgnoreCase(attribute)) {
+			throw new IllegalArgumentException(name + '.' + attribute);
+		}
+		try {
+			final MBeans mbeans = new MBeans();
+			return convertValueIfNeeded(mbeans.getAttribute(new ObjectName(name), attribute));
+		} catch (final JMException e) {
+			throw new IllegalArgumentException(name + '.' + attribute, e);
+		}
 	}
 
 	String getAttributeDescription(String name, MBeanAttributeInfo[] attributeInfos) {
