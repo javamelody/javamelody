@@ -54,6 +54,22 @@ public class TestTomcatInformations {
 		public int getcurrentThreadCount() {
 			return 42;
 		}
+
+		/** {@inheritDoc} */
+		public String[] getdummy() {
+			return new String[] { "1", "2" };
+		}
+
+		/** {@inheritDoc} */
+		public Object gettoStringException() {
+			return new Object() {
+				@Override
+				/** {@inheritDoc} */
+				public String toString() {
+					throw new IllegalStateException("test");
+				}
+			};
+		}
 	}
 
 	/**
@@ -78,6 +94,18 @@ public class TestTomcatInformations {
 		 * @return int
 		 */
 		int getcurrentThreadCount();
+
+		/**
+		 * attribut dummy.
+		 * @return String[]
+		 */
+		String[] getdummy();
+
+		/**
+		 * attribut toStringException.
+		 * @return Object
+		 */
+		Object gettoStringException();
 	}
 
 	/**
