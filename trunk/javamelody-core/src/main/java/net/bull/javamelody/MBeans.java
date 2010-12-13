@@ -77,6 +77,7 @@ final class MBeans {
 			final String firstPropertyValue;
 			final int indexOf = keyPropertyListString.indexOf('=');
 			if (indexOf == -1) {
+				// n'arrive probablement pas, mais au cas où
 				firstPropertyValue = null;
 			} else {
 				firstPropertyValue = name.getKeyProperty(keyPropertyListString
