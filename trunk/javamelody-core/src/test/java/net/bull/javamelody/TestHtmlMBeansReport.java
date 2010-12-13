@@ -27,9 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.management.JMException;
+import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
+import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
 import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
@@ -43,6 +45,20 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestHtmlMBeansReport {
+	/**
+	 * MBean sans attribut.
+	 */
+	public static class EmptyAttribute implements EmptyAttributeMBean {
+		// rien
+	}
+
+	/**
+	 * interface sans attribut.
+	 */
+	public interface EmptyAttributeMBean {
+		// rien
+	}
+
 	/** Check. */
 	@Before
 	public void setUp() {
@@ -63,15 +79,30 @@ public class TestHtmlMBeansReport {
 		final MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
 		try {
-			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-					new ObjectName("Catalina:type=ThreadPool")).getObjectName());
-			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"))
-					.getObjectName());
+			final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool(),
+					new ObjectName("Catalina:type=ThreadPool"));
+			mBeans.add(mBean1.getObjectName());
 
-			// on force à null une des descriptions
+			final ObjectInstance mBean2 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
+					new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"));
+			mBeans.add(mBean2.getObjectName());
+
+			final ObjectInstance mBean3 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
+					new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8090"));
+			mBeans.add(mBean3.getObjectName());
+
+			final ObjectInstance mBean4 = mBeanServer.registerMBean(new EmptyAttribute(),
+					new ObjectName("java.lang:type=Object"));
+			mBeans.add(mBean4.getObjectName());
+
+			// on force à null une des descriptions de bean et une des descriptions d'attribut
 			final MBeanInfo mbeanInfo = mBeanServer.getMBeanInfo(mBeans.get(0));
 			JdbcWrapperHelper.setFieldValue(mbeanInfo, "description", null);
+			final MBeanAttributeInfo mbeanAttributeInfo0 = mbeanInfo.getAttributes()[0];
+			// même description que le nom de l'attribut
+			JdbcWrapperHelper.setFieldValue(mbeanAttributeInfo0, "description", "maxThreads");
+			final MBeanAttributeInfo mbeanAttributeInfo1 = mbeanInfo.getAttributes()[1];
+			JdbcWrapperHelper.setFieldValue(mbeanAttributeInfo1, "description", null);
 
 			final StringWriter writer = new StringWriter();
 			final HtmlMBeansReport report = new HtmlMBeansReport(writer);
