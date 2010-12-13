@@ -130,7 +130,7 @@ class HtmlMBeansReport {
 		// les descriptions des MBeans de java.lang n'apportent aucune information utile
 		final boolean descriptionDisplayed = description != null
 				&& !JAVA_LANG_MBEAN_DESCRIPTION.equals(description);
-		if (!attributes.isEmpty() || descriptionDisplayed) {
+		if (descriptionDisplayed || !attributes.isEmpty()) {
 			writeln("<table border='0' cellspacing='0' cellpadding='3' summary=''>");
 			if (descriptionDisplayed) {
 				write("<tr><td colspan='3'>(");
