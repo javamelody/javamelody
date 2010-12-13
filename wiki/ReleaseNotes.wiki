@@ -18,7 +18,7 @@
   * fix issue 66: Since tomcat 6.0.21 and when tomcat based authentication is used, session count is false and there is a possible memory leak for invalidated http sessions. This is because of the changes for tomcat enhancement [https://issues.apache.org/bugzilla/show_bug.cgi?id=45255 45255]. To tomcat experts: Isn't an http session supposed to die first before being able to born a second time?
   * minor change in the gzip compression of the reports in order to fix the compatibility issue between the javamelody grails plugin and the UiPerformance grails plugin.
 
-  * The Monitoring plugin 1.23.0 for Hudson can be downloaded with the standard plugin manager in Hudson or from http://download.hudson-labs.org/plugins/monitoring/. The plugin manager says that it is built for Hudson 1.388, but in fact it works for older versions of Hudson.
+  * The "Monitoring" plugin can be installed by point and click in the plugin manager of a Hudson server, or it can be downloaded from http://download.hudson-labs.org/plugins/monitoring/. The plugin manager says that it is built for Hudson 1.388, but in fact it works for older versions of Hudson.
 
 === 1.22.0 ===
 
