@@ -272,6 +272,10 @@ public class TestHtmlReport {
 		htmlReport
 				.writeSessions(Collections.<SessionInformations> emptyList(), null, SESSIONS_PART);
 		assertNotEmptyAndClear(writer);
+		htmlReport.writeMBeans(false);
+		assertNotEmptyAndClear(writer);
+		htmlReport.writeMBeans(true);
+		assertNotEmptyAndClear(writer);
 		final String fileName = ProcessInformations.WINDOWS ? "/tasklist.txt" : "/ps.txt";
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream(fileName), ProcessInformations.WINDOWS));
