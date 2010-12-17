@@ -175,6 +175,8 @@ class MonitoringController {
 			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
 				doPomXml(httpResponse);
 			} else if (httpRequest.getParameter(JMX_VALUE) != null) {
+				// par sécurité
+				Action.checkSystemActionsEnabled();
 				doJmxValue(httpResponse, httpRequest.getParameter(JMX_VALUE));
 			} else {
 				doReportCore(httpRequest, httpResponse, javaInformationsList);
