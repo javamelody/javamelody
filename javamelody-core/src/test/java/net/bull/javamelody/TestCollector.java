@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -471,9 +473,10 @@ public class TestCollector {
 	}
 
 	/** Test.
-	 * @throws IOException e */
+	 * @throws IOException e
+	 * @throws SQLException e */
 	@Test
-	public void testCollectorServer() throws IOException {
+	public void testCollectorServer() throws IOException, SQLException {
 		try {
 			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 
@@ -496,6 +499,12 @@ public class TestCollector {
 				collectorServer.addCollectorApplication(application, urls);
 				collectorServer.collectSessionInformations(application, null);
 				collectorServer.collectSessionInformations(application, "sessionId");
+				final Connection connection = TestDatabaseInformations.initH2();
+				try {
+					collectorServer.collectDatabaseInformations(application, 0);
+				} finally {
+					connection.close();
+				}
 				collectorServer.collectHeapHistogram(application);
 				collectorServer.getCollectorByApplication(application);
 				collectorServer.getJavaInformationsByApplication(application);
@@ -517,6 +526,17 @@ public class TestCollector {
 			} finally {
 				setProperty(Parameter.RESOLUTION_SECONDS, null);
 			}
+		} finally {
+			timer.cancel();
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testCollectorMail() throws IOException {
+		try {
+			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 
 			// test mail_session
 			setProperty(Parameter.MAIL_SESSION, null);
