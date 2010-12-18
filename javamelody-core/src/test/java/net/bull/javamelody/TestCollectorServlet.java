@@ -288,8 +288,13 @@ public class TestCollectorServlet {
 		setUp();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
-		expect(request.getHeaders("Accept-Encoding")).andReturn(
-				Collections.enumeration(Collections.singleton("text/html"))).anyTimes();
+		if (MBEANS_PART.equals(parameters.get(PART_PARAMETER))) {
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Collections.singleton("application/gzip"))).anyTimes();
+		} else {
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Collections.singleton("text/html"))).anyTimes();
+		}
 		expect(request.getParameter("appName")).andReturn(TEST).anyTimes();
 		expect(request.getParameter("appUrls")).andReturn(
 				"http://localhost/test,http://localhost:8080/test2").anyTimes();
