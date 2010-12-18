@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 67: EhCache 1.4.x detection is not robust enough (NoClassDefFoundError)
   * fix issue 68: support more prefixes for JNDI names of datasources
   * fix issue 69: NullPointerException when getting resources if mime-type is null
   * fix issue 71: StringIndexOutOfBoundsException with # in JVM parameters
