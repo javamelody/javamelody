@@ -88,6 +88,12 @@ class Mailer {
 		return session;
 	}
 
+	// pour tests unitaires
+	void setSession(Session session) {
+		this.session = session;
+		fromAddress = InternetAddress.getLocalAddress(session);
+	}
+
 	private Properties getPropertiesFromSession(Object jndiSession) {
 		// On récupère ici les propriétés déclarées d'une session mail par réflexion.
 		// Le paramètre jndiSession n'est pas indiqué de type Session car le cast ne marcherait pas.
