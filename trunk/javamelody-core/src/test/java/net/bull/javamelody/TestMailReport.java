@@ -52,8 +52,7 @@ public class TestMailReport {
 		final Timer timer = new Timer("test timer", true);
 		try {
 			final Counter counter = new Counter("http", null);
-			final Collector collector = new Collector("test", Collections.singletonList(counter),
-					timer);
+			final Collector collector = new Collector("test", Collections.singletonList(counter));
 			MailReport.scheduleReportMailForLocalServer(collector, timer);
 		} finally {
 			timer.cancel();
@@ -66,38 +65,31 @@ public class TestMailReport {
 	 * @throws Exception e */
 	@Test
 	public void testSendReportMail() throws Exception { // NOPMD
-		final Timer timer = new Timer("test timer", true);
+		final Counter counter = new Counter("http", null);
+		final Collector collector = new Collector("test", Collections.singletonList(counter));
+		final List<JavaInformations> javaInformationslist = Collections
+				.singletonList(new JavaInformations(null, true));
+		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		try {
-			final Counter counter = new Counter("http", null);
-			final Collector collector = new Collector("test", Collections.singletonList(counter),
-					timer);
-			final List<JavaInformations> javaInformationslist = Collections
-					.singletonList(new JavaInformations(null, true));
-			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
-			try {
-				new MailReport().sendReportMail(collector, false, javaInformationslist,
-						Period.SEMAINE);
-			} catch (final NoInitialContextException e) {
-				assertNotNull("ok", e);
-			}
-
-			// sendReportMailForLocalServer
-			final String path = "path";
-			final ServletContext context = createNiceMock(ServletContext.class);
-			expect(context.getMajorVersion()).andReturn(3).anyTimes();
-			expect(context.getMinorVersion()).andReturn(0).anyTimes();
-			expect(context.getContextPath()).andReturn(path).anyTimes();
-			replay(context);
-			Parameters.initialize(context);
-			try {
-				new MailReport().sendReportMailForLocalServer(collector, Period.SEMAINE);
-			} catch (final NoInitialContextException e) {
-				assertNotNull("ok", e);
-			}
-			verify(context);
-		} finally {
-			timer.cancel();
+			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
+		} catch (final NoInitialContextException e) {
+			assertNotNull("ok", e);
 		}
+
+		// sendReportMailForLocalServer
+		final String path = "path";
+		final ServletContext context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(3).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
+		expect(context.getContextPath()).andReturn(path).anyTimes();
+		replay(context);
+		Parameters.initialize(context);
+		try {
+			new MailReport().sendReportMailForLocalServer(collector, Period.SEMAINE);
+		} catch (final NoInitialContextException e) {
+			assertNotNull("ok", e);
+		}
+		verify(context);
 	}
 
 	/** Test. */

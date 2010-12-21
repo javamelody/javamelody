@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -228,13 +227,8 @@ public class TestTomcatInformations {
 			}
 
 			final Counter counter = new Counter("http", null);
-			final Timer timer = new Timer(true);
-			try {
-				final Collector collector = new Collector("test", Arrays.asList(counter), timer);
-				collector.collectLocalContextWithoutErrors();
-			} finally {
-				timer.cancel();
-			}
+			final Collector collector = new Collector("test", Arrays.asList(counter));
+			collector.collectLocalContextWithoutErrors();
 		} finally {
 			for (final ObjectName registeredMBean : mBeans) {
 				mBeanServer.unregisterMBean(registeredMBean);

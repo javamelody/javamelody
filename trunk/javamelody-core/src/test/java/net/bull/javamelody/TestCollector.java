@@ -35,11 +35,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 
 import net.sf.ehcache.CacheManager;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
@@ -55,7 +53,6 @@ import org.quartz.impl.StdSchedulerFactory;
 public class TestCollector {
 	// CHECKSTYLE:ON
 	private static final String TEST = "test";
-	private Timer timer;
 
 	/** Test. */
 	@Before
@@ -70,60 +67,43 @@ public class TestCollector {
 				}
 			}
 		}
-		timer = new Timer("test timer", true);
-	}
-
-	/** Finalisation. */
-	@After
-	public void tearDown() {
-		timer.cancel();
 	}
 
 	private Collector createCollectorWithOneCounter() {
 		final Counter counter = createCounter();
-		return new Collector("test collector", Collections.singletonList(counter), timer);
+		return new Collector("test collector", Collections.singletonList(counter));
 	}
 
 	/** Test. */
 	@Test
 	public void testNewCollector() {
-		try {
-			assertNotNull("collector", createCollectorWithOneCounter());
-		} finally {
-			timer.cancel();
-		}
+		assertNotNull("collector", createCollectorWithOneCounter());
 	}
 
 	/** Test.
 	 * @throws SchedulerException e */
 	@Test
 	public void testToString() throws SchedulerException { // NOPMD
+		final Collector collector = createCollectorWithOneCounter();
+		assertToStringNotEmpty("collector", collector);
+		assertToStringNotEmpty("java", new JavaInformations(null, false));
+		assertToStringNotEmpty(
+				"thread",
+				new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread.currentThread()
+						.getStackTrace()), 100, 1000, false, Parameters.getHostAddress()));
+		assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true), true));
+		assertToStringNotEmpty("memory", new MemoryInformations());
+		CacheManager.getInstance().addCache("testToString");
 		try {
-			final Collector collector = createCollectorWithOneCounter();
-			assertToStringNotEmpty("collector", collector);
-			assertToStringNotEmpty("java", new JavaInformations(null, false));
-			assertToStringNotEmpty(
-					"thread",
-					new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread
-							.currentThread().getStackTrace()), 100, 1000, false, Parameters
-							.getHostAddress()));
-			assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true),
-					true));
-			assertToStringNotEmpty("memory", new MemoryInformations());
-			CacheManager.getInstance().addCache("testToString");
-			try {
-				assertToStringNotEmpty("cache", new CacheInformations(CacheManager.getInstance()
-						.getEhcache("testToString")));
-			} finally {
-				CacheManager.getInstance().shutdown();
-			}
-			final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-			final JobDetail job = new JobDetail("job", null, JobTestImpl.class);
-			assertToStringNotEmpty("job", new JobInformations(job, null, scheduler));
-			assertToStringNotEmpty("connectionInfos", new ConnectionInformations());
+			assertToStringNotEmpty("cache", new CacheInformations(CacheManager.getInstance()
+					.getEhcache("testToString")));
 		} finally {
-			timer.cancel();
+			CacheManager.getInstance().shutdown();
 		}
+		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+		final JobDetail job = new JobDetail("job", null, JobTestImpl.class);
+		assertToStringNotEmpty("job", new JobInformations(job, null, scheduler));
+		assertToStringNotEmpty("connectionInfos", new ConnectionInformations());
 	}
 
 	private static void assertToStringNotEmpty(String type, Object value) {
@@ -135,19 +115,15 @@ public class TestCollector {
 	/** Test. */
 	@Test
 	public void testClearCounter() {
-		try {
-			final Counter counter = createCounter();
-			final Collector collector = new Collector("test collector",
-					Collections.singletonList(counter), timer);
-			counter.addRequest("test clear", 0, 0, false, 1000);
-			collector.clearCounter(counter.getName());
-			if (counter.getRequestsCount() != 0) {
-				fail("counter vide");
-			}
-			collector.clearCounter("nothing");
-		} finally {
-			timer.cancel();
+		final Counter counter = createCounter();
+		final Collector collector = new Collector("test collector",
+				Collections.singletonList(counter));
+		counter.addRequest("test clear", 0, 0, false, 1000);
+		collector.clearCounter(counter.getName());
+		if (counter.getRequestsCount() != 0) {
+			fail("counter vide");
 		}
+		collector.clearCounter("nothing");
 	}
 
 	private Counter createCounter() {
@@ -157,160 +133,142 @@ public class TestCollector {
 	/** Test. */
 	@Test
 	public void testGetApplication() {
-		try {
-			assertEquals("getApplication", "test collector", createCollectorWithOneCounter()
-					.getApplication());
-		} finally {
-			timer.cancel();
-		}
+		assertEquals("getApplication", "test collector", createCollectorWithOneCounter()
+				.getApplication());
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testCollectWithoutErrors() throws IOException {
-		try {
-			final Counter counter = createCounter();
-			final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
-			final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
-			final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
-			final Collector collector = new Collector(TEST, Arrays.asList(counter, jspCounter,
-					strutsCounter, jobCounter), timer);
-			if (collector.getCounters().size() == 0) {
-				fail("getCounters");
-			}
-			counter.addRequest("test1", 0, 0, false, 1000);
-			jspCounter.addRequest("test2", 0, 0, false, 0);
-			strutsCounter.addRequest("test3", 0, 0, false, 0);
-			jobCounter.addRequest("test4", 0, 0, false, 0);
-			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
-					true)));
-			counter.addRequest("test2", 0, 0, false, 1000);
-			counter.addRequest("test3", 1000, 500, false, 1000);
-			counter.addRequest("test4", 10000, 200, true, 10000);
-			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
-					false)));
-			setProperty(Parameter.NO_DATABASE, "true");
-			try {
-				new Collector(TEST, Collections.singletonList(counter), timer)
-						.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
-								false)));
-			} finally {
-				setProperty(Parameter.NO_DATABASE, null);
-			}
-			if (collector.getLastCollectDuration() == 0) {
-				fail("getLastCollectDuration");
-			}
-
-			if (collector.getCounterJRobins().size() == 0) {
-				fail("getCounterJRobins");
-			}
-			final Range range = Period.JOUR.getRange();
-			final Range customRange = Range.createCustomRange(new Date(System.currentTimeMillis()
-					- 24L * 60 * 60 * 1000), new Date());
-			for (final JRobin jrobin : collector.getCounterJRobins()) {
-				final JRobin robin = collector.getJRobin(jrobin.getName());
-				assertNotNull("getJRobin non null", robin);
-				jrobin.graph(range, 500, 200);
-				jrobin.graph(range, 80, 80);
-				jrobin.graph(customRange, 500, 200);
-				jrobin.graph(customRange, 80, 80);
-
-				jrobin.getLastValue();
-				robin.deleteFile();
-			}
-			for (final JRobin jrobin : collector.getOtherJRobins()) {
-				final JRobin robin = collector.getJRobin(jrobin.getName());
-				assertNotNull("getJRobin non null", robin);
-				robin.deleteFile();
-			}
-			for (final CounterRequest request : counter.getRequests()) {
-				final JRobin robin = collector.getJRobin(request.getId());
-				assertNotNull("getJRobin non null", robin);
-				robin.deleteFile();
-			}
-			assertNull("getJRobin null", collector.getJRobin("n'importe quoi"));
-		} finally {
-			timer.cancel();
+		final Counter counter = createCounter();
+		final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
+		final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
+		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
+		final Collector collector = new Collector(TEST, Arrays.asList(counter, jspCounter,
+				strutsCounter, jobCounter));
+		if (collector.getCounters().size() == 0) {
+			fail("getCounters");
 		}
+		counter.addRequest("test1", 0, 0, false, 1000);
+		jspCounter.addRequest("test2", 0, 0, false, 0);
+		strutsCounter.addRequest("test3", 0, 0, false, 0);
+		jobCounter.addRequest("test4", 0, 0, false, 0);
+		collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
+		counter.addRequest("test2", 0, 0, false, 1000);
+		counter.addRequest("test3", 1000, 500, false, 1000);
+		counter.addRequest("test4", 10000, 200, true, 10000);
+		collector
+				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
+		setProperty(Parameter.NO_DATABASE, "true");
+		try {
+			new Collector(TEST, Collections.singletonList(counter))
+					.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
+							false)));
+		} finally {
+			setProperty(Parameter.NO_DATABASE, null);
+		}
+		if (collector.getLastCollectDuration() == 0) {
+			fail("getLastCollectDuration");
+		}
+
+		if (collector.getCounterJRobins().size() == 0) {
+			fail("getCounterJRobins");
+		}
+		final Range range = Period.JOUR.getRange();
+		final Range customRange = Range.createCustomRange(new Date(System.currentTimeMillis() - 24L
+				* 60 * 60 * 1000), new Date());
+		for (final JRobin jrobin : collector.getCounterJRobins()) {
+			final JRobin robin = collector.getJRobin(jrobin.getName());
+			assertNotNull("getJRobin non null", robin);
+			jrobin.graph(range, 500, 200);
+			jrobin.graph(range, 80, 80);
+			jrobin.graph(customRange, 500, 200);
+			jrobin.graph(customRange, 80, 80);
+
+			jrobin.getLastValue();
+			robin.deleteFile();
+		}
+		for (final JRobin jrobin : collector.getOtherJRobins()) {
+			final JRobin robin = collector.getJRobin(jrobin.getName());
+			assertNotNull("getJRobin non null", robin);
+			robin.deleteFile();
+		}
+		for (final CounterRequest request : counter.getRequests()) {
+			final JRobin robin = collector.getJRobin(request.getId());
+			assertNotNull("getJRobin non null", robin);
+			robin.deleteFile();
+		}
+		assertNull("getJRobin null", collector.getJRobin("n'importe quoi"));
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testJRobinResetFile() throws IOException {
+		final String application = TEST;
+		final String jrobinName = "name";
+		final File dir = Parameters.getStorageDirectory(application);
+		// ce fichier sera celui utilisé par JRobin
+		final File rrdFile = new File(dir, jrobinName + ".rrd");
+		assertTrue("delete", !rrdFile.exists() || rrdFile.delete());
+		final FileOutputStream out = new FileOutputStream(rrdFile);
 		try {
-			final String application = TEST;
-			final String jrobinName = "name";
-			final File dir = Parameters.getStorageDirectory(application);
-			// ce fichier sera celui utilisé par JRobin
-			final File rrdFile = new File(dir, jrobinName + ".rrd");
-			assertTrue("delete", !rrdFile.exists() || rrdFile.delete());
-			final FileOutputStream out = new FileOutputStream(rrdFile);
-			try {
-				// il faut un minimum de quantité de données pour avoir RrdException "Invalid file header"
-				// et non une IOException dans NIO
-				for (int i = 0; i < 100; i++) {
-					out.write("n'est pas un fichier rrd".getBytes());
-				}
-			} finally {
-				out.close();
+			// il faut un minimum de quantité de données pour avoir RrdException "Invalid file header"
+			// et non une IOException dans NIO
+			for (int i = 0; i < 100; i++) {
+				out.write("n'est pas un fichier rrd".getBytes());
 			}
-			final JRobin jrobin = JRobin.createInstance(application, jrobinName, "request");
-			// addValue devrait appeler resetFile car RrdException "Invalid file header"
-			// puis devrait relancer une IOException
-			try {
-				jrobin.addValue(1);
-			} catch (final IOException e) {
-				assertTrue("cause", e.getCause() != null && e.getCause().getMessage() != null
-						&& e.getCause().getMessage().contains("Invalid file header"));
-			}
-			// après ce resetFile, on devrait pouvoir appeler addValue
-			jrobin.addValue(1);
 		} finally {
-			timer.cancel();
+			out.close();
 		}
+		final JRobin jrobin = JRobin.createInstance(application, jrobinName, "request");
+		// addValue devrait appeler resetFile car RrdException "Invalid file header"
+		// puis devrait relancer une IOException
+		try {
+			jrobin.addValue(1);
+		} catch (final IOException e) {
+			assertTrue("cause", e.getCause() != null && e.getCause().getMessage() != null
+					&& e.getCause().getMessage().contains("Invalid file header"));
+		}
+		// après ce resetFile, on devrait pouvoir appeler addValue
+		jrobin.addValue(1);
 	}
 
 	/** Test. */
 	@Test
 	public void testRemoveRequest() {
-		try {
-			final Counter counter = new Counter("error", null);
-			counter.setMaxRequestsCount(1);
-			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
-					timer);
+		final Counter counter = new Counter("error", null);
+		counter.setMaxRequestsCount(1);
+		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
 
-			// test removeRequest dans collectCounterData
-			counter.addRequest("test 1", 0, 0, false, 1000);
-			counter.addRequest("test 2", 0, 0, false, 1000);
-			for (int i = 0; i < 50; i++) {
-				counter.addRequest("test 3", 0, 0, false, 1000);
-			}
-			collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
-			if (counter.getRequestsCount() > 1) {
-				fail("removeRequest");
-			}
-			counter.addRequest("test 1", 0, 0, false, 1000);
-			counter.addRequest("test 2", 0, 0, false, 1000);
-			collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
-			if (counter.getRequestsCount() > 1) {
-				fail("removeRequest");
-			}
-			for (int i = 0; i < counter.getMaxRequestsCount() * 2; i++) {
-				counter.addRequest("test 1", 0, 0, false, 1000);
-			}
-			for (int i = 0; i <= 10; i++) {
-				counter.addRequest("test 2", 0, 0, false, 1000);
-			}
+		// test removeRequest dans collectCounterData
+		counter.addRequest("test 1", 0, 0, false, 1000);
+		counter.addRequest("test 2", 0, 0, false, 1000);
+		for (int i = 0; i < 50; i++) {
 			counter.addRequest("test 3", 0, 0, false, 1000);
-			counter.addRequest("test 4", 0, 0, false, 1000);
-			collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
-			if (counter.getRequestsCount() > 1) {
-				fail("removeRequest");
-			}
-		} finally {
-			timer.cancel();
+		}
+		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+		if (counter.getRequestsCount() > 1) {
+			fail("removeRequest");
+		}
+		counter.addRequest("test 1", 0, 0, false, 1000);
+		counter.addRequest("test 2", 0, 0, false, 1000);
+		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+		if (counter.getRequestsCount() > 1) {
+			fail("removeRequest");
+		}
+		for (int i = 0; i < counter.getMaxRequestsCount() * 2; i++) {
+			counter.addRequest("test 1", 0, 0, false, 1000);
+		}
+		for (int i = 0; i <= 10; i++) {
+			counter.addRequest("test 2", 0, 0, false, 1000);
+		}
+		counter.addRequest("test 3", 0, 0, false, 1000);
+		counter.addRequest("test 4", 0, 0, false, 1000);
+		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+		if (counter.getRequestsCount() > 1) {
+			fail("removeRequest");
 		}
 	}
 
@@ -318,54 +276,45 @@ public class TestCollector {
 	 * @throws IOException e */
 	@Test
 	public void testGetRangeCountersToBeDisplayed() throws IOException {
-		try {
-			final Counter counter = createCounter();
-			final Collector collector = new Collector(TEST, Collections.singletonList(counter),
-					timer);
-			if (collector.getCounters().size() == 0) {
-				fail("getCounters");
-			}
-			final JavaInformations javaInformations = new JavaInformations(null, true);
-			final List<JavaInformations> javaInformationsList = Collections
-					.singletonList(javaInformations);
-			counter.addRequest("test1", 0, 0, false, 1000);
-			collector.collectWithoutErrors(javaInformationsList);
-			counter.addRequest("test1", 0, 0, false, 1000);
-			collector.collectWithoutErrors(javaInformationsList);
-			collector.collectWithoutErrors(javaInformationsList);
-
-			assertEquals("jour", 1, getSizeOfCountersToBeDisplayed(collector, Period.JOUR));
-			assertEquals("semaine", 1, getSizeOfCountersToBeDisplayed(collector, Period.SEMAINE));
-			assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
-			assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
-			assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
-			assertEquals(
-					"custom",
-					1,
-					collector.getRangeCountersToBeDisplayed(
-							Range.createCustomRange(new Date(), new Date())).size());
-		} finally {
-			timer.cancel();
+		final Counter counter = createCounter();
+		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
+		if (collector.getCounters().size() == 0) {
+			fail("getCounters");
 		}
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final List<JavaInformations> javaInformationsList = Collections
+				.singletonList(javaInformations);
+		counter.addRequest("test1", 0, 0, false, 1000);
+		collector.collectWithoutErrors(javaInformationsList);
+		counter.addRequest("test1", 0, 0, false, 1000);
+		collector.collectWithoutErrors(javaInformationsList);
+		collector.collectWithoutErrors(javaInformationsList);
+
+		assertEquals("jour", 1, getSizeOfCountersToBeDisplayed(collector, Period.JOUR));
+		assertEquals("semaine", 1, getSizeOfCountersToBeDisplayed(collector, Period.SEMAINE));
+		assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
+		assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
+		assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
+		assertEquals(
+				"custom",
+				1,
+				collector.getRangeCountersToBeDisplayed(
+						Range.createCustomRange(new Date(), new Date())).size());
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testGetRangeCounter() throws IOException {
+		final Counter counter = createCounter();
+		final Counter counter2 = new Counter("sql", null);
+		final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2));
+		collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
+		collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
 		try {
-			final Counter counter = createCounter();
-			final Counter counter2 = new Counter("sql", null);
-			final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2), timer);
-			collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
-			collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
-			try {
-				collector.getRangeCounter(Period.TOUT.getRange(), "unknown");
-			} catch (final IllegalArgumentException e) {
-				assertNotNull("getRangeCounter", e);
-			}
-		} finally {
-			timer.cancel();
+			collector.getRangeCounter(Period.TOUT.getRange(), "unknown");
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("getRangeCounter", e);
 		}
 	}
 
@@ -378,30 +327,26 @@ public class TestCollector {
 	 * @throws IOException e */
 	@Test
 	public void testBuildNewDayCounter() throws IOException {
-		try {
-			final Counter counter = createCounter();
-			counter.setApplication("test counter");
-			final File storageDir = Parameters.getStorageDirectory(counter.getApplication());
-			final File obsoleteFile = new File(storageDir, "obsolete.ser.gz");
-			final File notObsoleteFile = new File(storageDir, "notobsolete.ser.gz");
-			checkSetup(storageDir, obsoleteFile, notObsoleteFile);
-			final Calendar nowMinus1YearAnd2Days = Calendar.getInstance();
-			nowMinus1YearAnd2Days.add(Calendar.YEAR, -1);
-			nowMinus1YearAnd2Days.add(Calendar.DAY_OF_YEAR, -2);
-			if (!obsoleteFile.setLastModified(nowMinus1YearAnd2Days.getTimeInMillis())) {
-				fail("setLastModified");
-			}
-			final Counter newDayCounter = new PeriodCounterFactory(counter).buildNewDayCounter();
-			assertNotNull("buildNewDayCounter", newDayCounter);
-			// le fichier doit avoir été supprimé
-			if (obsoleteFile.exists()) {
-				fail("obsolete file still exists");
-			}
-			if (!notObsoleteFile.delete()) {
-				notObsoleteFile.deleteOnExit();
-			}
-		} finally {
-			timer.cancel();
+		final Counter counter = createCounter();
+		counter.setApplication("test counter");
+		final File storageDir = Parameters.getStorageDirectory(counter.getApplication());
+		final File obsoleteFile = new File(storageDir, "obsolete.ser.gz");
+		final File notObsoleteFile = new File(storageDir, "notobsolete.ser.gz");
+		checkSetup(storageDir, obsoleteFile, notObsoleteFile);
+		final Calendar nowMinus1YearAnd2Days = Calendar.getInstance();
+		nowMinus1YearAnd2Days.add(Calendar.YEAR, -1);
+		nowMinus1YearAnd2Days.add(Calendar.DAY_OF_YEAR, -2);
+		if (!obsoleteFile.setLastModified(nowMinus1YearAnd2Days.getTimeInMillis())) {
+			fail("setLastModified");
+		}
+		final Counter newDayCounter = new PeriodCounterFactory(counter).buildNewDayCounter();
+		assertNotNull("buildNewDayCounter", newDayCounter);
+		// le fichier doit avoir été supprimé
+		if (obsoleteFile.exists()) {
+			fail("obsolete file still exists");
+		}
+		if (!notObsoleteFile.delete()) {
+			notObsoleteFile.deleteOnExit();
 		}
 	}
 
@@ -422,32 +367,27 @@ public class TestCollector {
 	 * @throws IOException e */
 	@Test
 	public void testStop() throws IOException {
-		try {
-			final Collector collector = createCollectorWithOneCounter();
-			collector.stop();
-			if (collector.getCounters().size() == 0) {
-				fail("collector.getCounters() ne doit pas être vide après stop");
-			}
-			// on ne risque pas grand chose à tenter de détacher quelque chose que l'on a pas attacher
-			Collector.detachVirtualMachine();
-
-			// on provoque une erreur, mais elle ne doit pas remonter (seulement trace dans console)
-			setProperty(Parameter.STORAGE_DIRECTORY, "/???");
-			final Counter counter = createCounter();
-			final Collector collector2 = new Collector("test stop",
-					Collections.singletonList(counter), timer);
-			counter.addRequest("test stop", 0, 0, false, 1000);
-			collector2.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
-					true)));
-			collector2.stop();
-			setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
-
-			// à défaut de pouvoir appeler JRobin.stop() car les autres tests ne pourront plus
-			// utiliser JRobin, on appelle au moins JRobin.getJRobinFileSyncTimer()
-			JRobin.getJRobinFileSyncTimer();
-		} finally {
-			timer.cancel();
+		final Collector collector = createCollectorWithOneCounter();
+		collector.stop();
+		if (collector.getCounters().size() == 0) {
+			fail("collector.getCounters() ne doit pas être vide après stop");
 		}
+		// on ne risque pas grand chose à tenter de détacher quelque chose que l'on a pas attacher
+		Collector.detachVirtualMachine();
+
+		// on provoque une erreur, mais elle ne doit pas remonter (seulement trace dans console)
+		setProperty(Parameter.STORAGE_DIRECTORY, "/???");
+		final Counter counter = createCounter();
+		final Collector collector2 = new Collector("test stop", Collections.singletonList(counter));
+		counter.addRequest("test stop", 0, 0, false, 1000);
+		collector2
+				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
+		collector2.stop();
+		setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
+
+		// à défaut de pouvoir appeler JRobin.stop() car les autres tests ne pourront plus
+		// utiliser JRobin, on appelle au moins JRobin.getJRobinFileSyncTimer()
+		JRobin.getJRobinFileSyncTimer();
 	}
 
 	/** Test. */
@@ -477,57 +417,53 @@ public class TestCollector {
 	 * @throws SQLException e */
 	@Test
 	public void testCollectorServer() throws IOException, SQLException {
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+
+		// ce test ne fait que vérifier s'il n'y a pas d'erreur inattendue
+		// car sans serveur d'application monitoré il ne peut rien faire d'autre
+		final String application = "testapp";
+		Parameters.removeCollectorApplication(application);
+
+		final CollectorServer collectorServer = new CollectorServer();
 		try {
-			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+			collectorServer.collectWithoutErrors();
 
-			// ce test ne fait que vérifier s'il n'y a pas d'erreur inattendue
-			// car sans serveur d'application monitoré il ne peut rien faire d'autre
-			final String application = "testapp";
+			// pour être sûr qu'il y a une application
+			final List<URL> urls = Parameters
+					.parseUrl("http://localhost/test,http://localhost:8090/test");
+			Parameters.addCollectorApplication(application, urls);
+
+			collectorServer.collectWithoutErrors();
 			Parameters.removeCollectorApplication(application);
-
-			final CollectorServer collectorServer = new CollectorServer();
+			collectorServer.addCollectorApplication(application, urls);
+			collectorServer.collectSessionInformations(application, null);
+			collectorServer.collectSessionInformations(application, "sessionId");
+			final Connection connection = TestDatabaseInformations.initH2();
 			try {
-				collectorServer.collectWithoutErrors();
-
-				// pour être sûr qu'il y a une application
-				final List<URL> urls = Parameters
-						.parseUrl("http://localhost/test,http://localhost:8090/test");
-				Parameters.addCollectorApplication(application, urls);
-
-				collectorServer.collectWithoutErrors();
-				Parameters.removeCollectorApplication(application);
-				collectorServer.addCollectorApplication(application, urls);
-				collectorServer.collectSessionInformations(application, null);
-				collectorServer.collectSessionInformations(application, "sessionId");
-				final Connection connection = TestDatabaseInformations.initH2();
-				try {
-					collectorServer.collectDatabaseInformations(application, 0);
-				} finally {
-					connection.close();
-				}
-				collectorServer.collectHeapHistogram(application);
-				collectorServer.getCollectorByApplication(application);
-				collectorServer.getJavaInformationsByApplication(application);
-				collectorServer.isApplicationDataAvailable(application);
-				collectorServer.getFirstApplication();
-				collectorServer.scheduleReportMailForCollectorServer(application);
-				collectorServer.removeCollectorApplication(application);
-				Parameters.addCollectorApplication(application, urls);
+				collectorServer.collectDatabaseInformations(application, 0);
 			} finally {
-				collectorServer.stop();
+				connection.close();
 			}
-
-			try {
-				// test d'une erreur dans l'instanciation du CollectorServer : timer.cancel() doit être appelé
-				setProperty(Parameter.RESOLUTION_SECONDS, "-1");
-				new CollectorServer().stop();
-			} catch (final IllegalStateException e) {
-				assertNotNull("ok", e);
-			} finally {
-				setProperty(Parameter.RESOLUTION_SECONDS, null);
-			}
+			collectorServer.collectHeapHistogram(application);
+			collectorServer.getCollectorByApplication(application);
+			collectorServer.getJavaInformationsByApplication(application);
+			collectorServer.isApplicationDataAvailable(application);
+			collectorServer.getFirstApplication();
+			collectorServer.scheduleReportMailForCollectorServer(application);
+			collectorServer.removeCollectorApplication(application);
+			Parameters.addCollectorApplication(application, urls);
 		} finally {
-			timer.cancel();
+			collectorServer.stop();
+		}
+
+		try {
+			// test d'une erreur dans l'instanciation du CollectorServer : timer.cancel() doit être appelé
+			setProperty(Parameter.RESOLUTION_SECONDS, "-1");
+			new CollectorServer().stop();
+		} catch (final IllegalStateException e) {
+			assertNotNull("ok", e);
+		} finally {
+			setProperty(Parameter.RESOLUTION_SECONDS, null);
 		}
 	}
 
@@ -535,28 +471,24 @@ public class TestCollector {
 	 * @throws IOException e */
 	@Test
 	public void testCollectorMail() throws IOException {
-		try {
-			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 
-			// test mail_session
-			setProperty(Parameter.MAIL_SESSION, null);
-			CollectorServer tmp = new CollectorServer();
-			tmp.collectWithoutErrors();
-			tmp.stop();
-			setProperty(Parameter.MAIL_SESSION, "test");
-			setProperty(Parameter.ADMIN_EMAILS, null);
-			tmp = new CollectorServer();
-			tmp.collectWithoutErrors();
-			tmp.stop();
-			setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
-			tmp = new CollectorServer();
-			tmp.collectWithoutErrors();
-			tmp.stop();
-			setProperty(Parameter.MAIL_SESSION, null);
-			setProperty(Parameter.ADMIN_EMAILS, null);
-		} finally {
-			timer.cancel();
-		}
+		// test mail_session
+		setProperty(Parameter.MAIL_SESSION, null);
+		CollectorServer tmp = new CollectorServer();
+		tmp.collectWithoutErrors();
+		tmp.stop();
+		setProperty(Parameter.MAIL_SESSION, "test");
+		setProperty(Parameter.ADMIN_EMAILS, null);
+		tmp = new CollectorServer();
+		tmp.collectWithoutErrors();
+		tmp.stop();
+		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
+		tmp = new CollectorServer();
+		tmp.collectWithoutErrors();
+		tmp.stop();
+		setProperty(Parameter.MAIL_SESSION, null);
+		setProperty(Parameter.ADMIN_EMAILS, null);
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

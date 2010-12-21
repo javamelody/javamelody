@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Timer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,36 +49,29 @@ public class TestPdfCounterErrorReport {
 	@Test
 	public void testCounterError() throws IOException {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final Timer timer = new Timer("test", true);
-		try {
-			final Collector collector = new Collector("test",
-					Collections.singletonList(errorCounter), timer);
-			final JavaInformations javaInformations = new JavaInformations(null, true);
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			final PdfReport pdfReport = new PdfReport(collector, false,
-					Collections.singletonList(javaInformations), Period.TOUT, output);
-			while (errorCounter.getErrorsCount() < Counter.MAX_ERRORS_COUNT) {
-				errorCounter.addErrors(Collections.singletonList(new CounterError("erreur", null)));
-			}
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
-
-			final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
-			expect(httpRequest.getAttribute(CounterError.REQUEST_KEY)).andReturn("/test GET");
-			expect(httpRequest.getRemoteUser()).andReturn("me");
-			replay(httpRequest);
-			CounterError.bindRequest(httpRequest);
-			errorCounter.addErrors(Collections
-					.singletonList(new CounterError("with request", null)));
-			CounterError.unbindRequest();
-			verify(httpRequest);
-			final PdfReport pdfReport2 = new PdfReport(collector, false,
-					Collections.singletonList(javaInformations), Period.TOUT, output);
-			pdfReport2.toPdf();
-			assertNotEmptyAndClear(output);
-		} finally {
-			timer.cancel();
+		final Collector collector = new Collector("test", Collections.singletonList(errorCounter));
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfReport pdfReport = new PdfReport(collector, false,
+				Collections.singletonList(javaInformations), Period.TOUT, output);
+		while (errorCounter.getErrorsCount() < Counter.MAX_ERRORS_COUNT) {
+			errorCounter.addErrors(Collections.singletonList(new CounterError("erreur", null)));
 		}
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
+
+		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
+		expect(httpRequest.getAttribute(CounterError.REQUEST_KEY)).andReturn("/test GET");
+		expect(httpRequest.getRemoteUser()).andReturn("me");
+		replay(httpRequest);
+		CounterError.bindRequest(httpRequest);
+		errorCounter.addErrors(Collections.singletonList(new CounterError("with request", null)));
+		CounterError.unbindRequest();
+		verify(httpRequest);
+		final PdfReport pdfReport2 = new PdfReport(collector, false,
+				Collections.singletonList(javaInformations), Period.TOUT, output);
+		pdfReport2.toPdf();
+		assertNotEmptyAndClear(output);
 	}
 
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
