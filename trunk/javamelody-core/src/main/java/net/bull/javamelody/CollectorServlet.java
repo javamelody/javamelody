@@ -372,7 +372,7 @@ public class CollectorServlet extends HttpServlet {
 		writer.write("</a></div>");
 		if (introductionKey != null) {
 			writer.write("<br/>");
-			writer.write(I18N.getString("connexions_intro"));
+			writer.write(I18N.getString(introductionKey));
 		}
 		final String title = I18N.getString(titleKey);
 		for (final URL url : getUrlsByApplication(application)) {
