@@ -37,7 +37,7 @@ import net.bull.javamelody.Counter.CounterRequestContextComparator;
  * Collecteur de données sur les compteurs, avec son propre thread, pour remplir les courbes.
  * @author Emeric Vernat
  */
-final class Collector { // NOPMD
+class Collector { // NOPMD
 	// période entre 2 collectes en milli-secondes
 	private final int periodMillis;
 	private final String application;
