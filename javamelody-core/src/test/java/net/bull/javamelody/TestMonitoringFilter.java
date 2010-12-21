@@ -63,7 +63,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Timer;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -800,17 +799,11 @@ public class TestMonitoringFilter {
 			replay(config);
 			replay(context);
 			monitoringFilter.init(config);
-			final Timer timer = new Timer("test timer", true);
-			try {
-				final Counter sqlCounter = new Counter("sql", "db.png");
-				final Collector collector = new Collector("test", Arrays.asList(sqlCounter), timer);
-				timer.cancel();
-				new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
-				verify(config);
-				verify(context);
-			} finally {
-				timer.cancel();
-			}
+			final Counter sqlCounter = new Counter("sql", "db.png");
+			final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
+			new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
+			verify(config);
+			verify(context);
 		} finally {
 			destroy();
 		}

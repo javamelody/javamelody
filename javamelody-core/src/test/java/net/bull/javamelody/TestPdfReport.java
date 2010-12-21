@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -83,58 +82,53 @@ public class TestPdfReport {
 		counter.addRequest("test1", 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, true, 10000);
-		final Timer timer = new Timer("test", true);
-		try {
-			final Collector collector = new Collector("test", counters, timer);
-			final JavaInformations javaInformations = new JavaInformations(null, true);
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			final List<JavaInformations> javaInformationsList = Collections
-					.singletonList(javaInformations);
-			counter.addRequest("test1", 0, 0, false, 1000);
-			collector.collectWithoutErrors(javaInformationsList);
-			counter.clear();
-			collector.collectWithoutErrors(javaInformationsList);
-			PdfReport pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT,
-					output);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+		final Collector collector = new Collector("test", counters);
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final List<JavaInformations> javaInformationsList = Collections
+				.singletonList(javaInformations);
+		counter.addRequest("test1", 0, 0, false, 1000);
+		collector.collectWithoutErrors(javaInformationsList);
+		counter.clear();
+		collector.collectWithoutErrors(javaInformationsList);
+		PdfReport pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT,
+				output);
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
 
-			counter.bindContext("test 1", "complete test 1");
-			sqlCounter.bindContext("sql1", "sql 1");
-			sqlCounter.addRequest("sql1", 100, 100, false, -1);
-			counter.addRequest("test 1", 0, 0, false, 1000);
-			counter.addRequest("test2", 1000, 500, false, 1000);
-			counter.addRequest(buildLongRequestName(), 10000, 5000, true, 10000);
-			collector.collectWithoutErrors(javaInformationsList);
-			pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+		counter.bindContext("test 1", "complete test 1");
+		sqlCounter.bindContext("sql1", "sql 1");
+		sqlCounter.addRequest("sql1", 100, 100, false, -1);
+		counter.addRequest("test 1", 0, 0, false, 1000);
+		counter.addRequest("test2", 1000, 500, false, 1000);
+		counter.addRequest(buildLongRequestName(), 10000, 5000, true, 10000);
+		collector.collectWithoutErrors(javaInformationsList);
+		pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
 
-			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
 
-			// errorCounter
-			errorCounter.addRequestForSystemError("error", -1, -1, null);
-			errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
-			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+		// errorCounter
+		errorCounter.addRequestForSystemError("error", -1, -1, null);
+		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
+		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
 
-			rootContexts(counter, collector, timer, javaInformations, output);
+		rootContexts(counter, collector, javaInformations, output);
 
-			cache(collector, output);
+		cache(collector, output);
 
-			job(collector, output);
+		job(collector, output);
 
-			Utils.setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
-			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
-			Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
-		} finally {
-			timer.cancel();
-		}
+		Utils.setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
+		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
+		Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 	}
 
 	private void cache(Collector collector, ByteArrayOutputStream output) throws IOException {
@@ -233,7 +227,7 @@ public class TestPdfReport {
 		}
 	}
 
-	private void rootContexts(Counter counter, Collector collector, Timer timer,
+	private void rootContexts(Counter counter, Collector collector,
 			JavaInformations javaInformations, ByteArrayOutputStream output) throws IOException,
 			DocumentException {
 		PdfReport pdfReport;
@@ -244,7 +238,7 @@ public class TestPdfReport {
 		assertNotEmptyAndClear(output);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter), timer);
+		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
 		myCounter.bindContext("my context", "my context");
 		pdfReport = new PdfReport(collector2, false, Collections.singletonList(javaInformations),
 				Period.TOUT, output);
@@ -285,34 +279,29 @@ public class TestPdfReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png");
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final Timer timer = new Timer("test timer", true);
-		try {
-			final List<Counter> counters = Arrays.asList(counter, errorCounter);
-			final Collector collector = new Collector(TEST_APP, counters, timer);
-			final JavaInformations javaInformations = new JavaInformations(null, true);
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			final List<JavaInformations> javaInformationsList = Collections
-					.singletonList(javaInformations);
-			counter.addRequest("test include graph", 1, 1, false, 1000);
-			errorCounter.addRequestForSystemError("error", 1, 1, null);
-			collector.collectWithoutErrors(javaInformationsList);
-			counter.addRequest("test include graph", 1, 1, false, 1000);
-			errorCounter.addRequestForSystemError("error", 1, 1, null);
-			collector.collectWithoutErrors(javaInformationsList);
-			final Document document = new PdfDocumentFactory(TEST_APP, output).createDocument();
-			document.open();
-			final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
-					Period.TOUT.getRange(), true, document);
-			pdfCounterReport.toPdf();
-			pdfCounterReport.writeRequestDetails();
-			final PdfCounterReport pdfErrorCounterReport = new PdfCounterReport(collector,
-					errorCounter, Period.TOUT.getRange(), true, document);
-			pdfErrorCounterReport.writeRequestDetails();
-			document.close();
-			assertNotEmptyAndClear(output);
-		} finally {
-			timer.cancel();
-		}
+		final List<Counter> counters = Arrays.asList(counter, errorCounter);
+		final Collector collector = new Collector(TEST_APP, counters);
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final List<JavaInformations> javaInformationsList = Collections
+				.singletonList(javaInformations);
+		counter.addRequest("test include graph", 1, 1, false, 1000);
+		errorCounter.addRequestForSystemError("error", 1, 1, null);
+		collector.collectWithoutErrors(javaInformationsList);
+		counter.addRequest("test include graph", 1, 1, false, 1000);
+		errorCounter.addRequestForSystemError("error", 1, 1, null);
+		collector.collectWithoutErrors(javaInformationsList);
+		final Document document = new PdfDocumentFactory(TEST_APP, output).createDocument();
+		document.open();
+		final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
+				Period.TOUT.getRange(), true, document);
+		pdfCounterReport.toPdf();
+		pdfCounterReport.writeRequestDetails();
+		final PdfCounterReport pdfErrorCounterReport = new PdfCounterReport(collector,
+				errorCounter, Period.TOUT.getRange(), true, document);
+		pdfErrorCounterReport.writeRequestDetails();
+		document.close();
+		assertNotEmptyAndClear(output);
 	}
 
 	/** Test.

@@ -89,7 +89,7 @@ class FilterContext {
 
 			final List<Counter> counters = initCounters();
 			final String application = Parameters.getCurrentApplication();
-			this.collector = new Collector(application, counters, timer);
+			this.collector = new Collector(application, counters);
 
 			initCollect();
 

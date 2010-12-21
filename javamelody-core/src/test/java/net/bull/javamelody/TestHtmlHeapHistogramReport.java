@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
 
 import net.bull.javamelody.HeapHistogram.ClassInfo;
 
@@ -43,20 +42,17 @@ import org.junit.Test;
  */
 public class TestHtmlHeapHistogramReport {
 	private static final String EXCEPTION = "exception";
-	private Timer timer;
 
 	/** Initialisation. */
 	@Before
 	public void setUp() {
 		Utils.initialize();
-		timer = new Timer("test timer", true);
 	}
 
 	/** Finalisation.
 	 * @throws Exception e */
 	@After
 	public void tearDown() throws Exception {
-		timer.cancel();
 		VirtualMachine.detach();
 	}
 
@@ -109,7 +105,7 @@ public class TestHtmlHeapHistogramReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter counter = new Counter("test html report", null);
-		final Collector collector = new Collector("test", Collections.singletonList(counter), timer);
+		final Collector collector = new Collector("test", Collections.singletonList(counter));
 		final Period period = Period.TOUT;
 		final HtmlReport htmlReport = new HtmlReport(collector, null, createJavaInformationsList(),
 				period, writer);

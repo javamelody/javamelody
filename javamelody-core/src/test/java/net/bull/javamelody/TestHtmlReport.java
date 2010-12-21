@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.Timer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,7 +45,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.CronTrigger;
@@ -65,7 +63,6 @@ import org.quartz.impl.StdSchedulerFactory;
 // CHECKSTYLE:OFF
 public class TestHtmlReport {
 	// CHECKSTYLE:ON
-	private Timer timer;
 	private List<JavaInformations> javaInformationsList;
 	private Counter sqlCounter;
 	private Counter servicesCounter;
@@ -79,7 +76,6 @@ public class TestHtmlReport {
 	@Before
 	public void setUp() {
 		Utils.initialize();
-		timer = new Timer("test timer", true);
 		javaInformationsList = Collections.singletonList(new JavaInformations(null, true));
 		sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setDisplayed(false);
@@ -90,14 +86,8 @@ public class TestHtmlReport {
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = JobGlobalListener.getJobCounter();
 		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
-				jspCounter, errorCounter, jobCounter), timer);
+				jspCounter, errorCounter, jobCounter));
 		writer = new StringWriter();
-	}
-
-	/** Finalisation. */
-	@After
-	public void tearDown() {
-		timer.cancel();
 	}
 
 	/** Test.
@@ -351,7 +341,7 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter), timer);
+		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
 		myCounter.bindContext("my context", "my context");
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b", null);

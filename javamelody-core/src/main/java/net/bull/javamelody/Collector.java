@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.bull.javamelody.Counter.CounterRequestContextComparator;
@@ -41,7 +40,6 @@ import net.bull.javamelody.Counter.CounterRequestContextComparator;
 final class Collector { // NOPMD
 	// période entre 2 collectes en milli-secondes
 	private final int periodMillis;
-	private final Timer timer;
 	private final String application;
 	private final List<Counter> counters;
 	private final Map<String, JRobin> requestJRobinsById = new ConcurrentHashMap<String, JRobin>();
@@ -67,14 +65,11 @@ final class Collector { // NOPMD
 	 * Constructeur.
 	 * @param application Code de l'application
 	 * @param counters Liste des counters
-	 * @param timer Timer pour ordonnancer des tâches sur le thread du monitoring
 	 */
-	Collector(String application, List<Counter> counters, Timer timer) {
+	Collector(String application, List<Counter> counters) {
 		super();
 		assert application != null;
 		assert counters != null;
-		assert timer != null;
-		this.timer = timer;
 		this.application = application;
 		this.counters = Collections.unmodifiableList(new ArrayList<Counter>(counters));
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
@@ -679,8 +674,6 @@ final class Collector { // NOPMD
 
 	void stop() {
 		try {
-			timer.cancel();
-
 			// on persiste les compteurs pour les relire à l'initialisation et ne pas perdre les stats
 			for (final Counter counter : counters) {
 				counter.writeToFile();

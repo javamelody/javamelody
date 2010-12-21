@@ -253,7 +253,7 @@ class CollectorServer {
 	}
 
 	private Collector createCollector(String application, List<Counter> counters) {
-		final Collector collector = new Collector(application, counters, timer);
+		final Collector collector = new Collector(application, counters);
 		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
 				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
 			scheduleReportMailForCollectorServer(application);
@@ -361,10 +361,10 @@ class CollectorServer {
 	 * Stoppe les collectes dans ce serveur de collecte et purge les données.
 	 */
 	void stop() {
+		timer.cancel();
 		for (final Collector collector : collectorsByApplication.values()) {
 			collector.stop();
 		}
-		timer.cancel();
 
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		collectorsByApplication.clear();
