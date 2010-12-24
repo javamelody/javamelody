@@ -123,15 +123,20 @@ public class TestMBeans {
 	/** Test. */
 	@Test
 	public void testGetConvertedAttribute() {
-		assertNotNull("getConvertedAttribute",
-				MBeans.getConvertedAttribute(mbeansList.get(0).toString(), "maxThreads"));
+		final String firstMBean = mbeansList.get(0).toString();
+		assertNotNull("getConvertedAttributes",
+				MBeans.getConvertedAttributes(firstMBean + ".maxThreads"));
+		assertNotNull(
+				"getConvertedAttributes",
+				MBeans.getConvertedAttributes(firstMBean + ".maxThreads|" + firstMBean
+						+ ".maxThreads"));
 		try {
-			MBeans.getConvertedAttribute("n'importe quoi", "maxThreads");
+			MBeans.getConvertedAttributes("n'importe quoi.maxThreads");
 		} catch (final IllegalArgumentException e) {
 			assertNotNull("e", e);
 		}
 		try {
-			MBeans.getConvertedAttribute(mbeansList.get(0).toString(), "Password");
+			MBeans.getConvertedAttributes(firstMBean + ".Password");
 		} catch (final IllegalArgumentException e) {
 			assertNotNull("e", e);
 		}
