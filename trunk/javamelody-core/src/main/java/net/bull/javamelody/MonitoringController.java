@@ -643,22 +643,7 @@ class MonitoringController {
 	private void doJmxValue(HttpServletResponse httpResponse, String jmxValueParameter)
 			throws IOException {
 		httpResponse.setContentType("text/plain");
-		boolean first = true;
-		for (final String mbeansAttribute : jmxValueParameter.split("[|]")) {
-			final int lastIndexOfPoint = mbeansAttribute.lastIndexOf('.');
-			if (lastIndexOfPoint <= 0) {
-				throw new IllegalArgumentException(mbeansAttribute);
-			}
-			final String name = mbeansAttribute.substring(0, lastIndexOfPoint);
-			final Object jmxValue = MBeans.getConvertedAttribute(name,
-					mbeansAttribute.substring(lastIndexOfPoint + 1));
-			if (first) {
-				first = false;
-			} else {
-				httpResponse.getWriter().write("|");
-			}
-			httpResponse.getWriter().write(String.valueOf(jmxValue));
-		}
+		httpResponse.getWriter().write(MBeans.getConvertedAttributes(jmxValueParameter));
 		httpResponse.flushBuffer();
 	}
 

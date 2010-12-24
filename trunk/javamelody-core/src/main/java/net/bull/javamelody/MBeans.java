@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,6 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
@@ -146,18 +146,36 @@ final class MBeans {
 		return value;
 	}
 
-	static Object getConvertedAttribute(String name, String attribute) {
-		// on ne veut pas afficher l'attribut password, jamais
-		// (notamment, dans users tomcat ou dans datasources tomcat)
-		if ("password".equalsIgnoreCase(attribute)) {
-			throw new IllegalArgumentException(name + '.' + attribute);
+	static String getConvertedAttributes(String jmxValueParameter) {
+		final StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (final String mbeansAttribute : jmxValueParameter.split("[|]")) {
+			final int lastIndexOfPoint = mbeansAttribute.lastIndexOf('.');
+			if (lastIndexOfPoint <= 0) {
+				throw new IllegalArgumentException(mbeansAttribute);
+			}
+			final String name = mbeansAttribute.substring(0, lastIndexOfPoint);
+			final String attribute = mbeansAttribute.substring(lastIndexOfPoint + 1);
+			// on ne veut pas afficher l'attribut password, jamais
+			// (notamment, dans users tomcat ou dans datasources tomcat)
+			if ("password".equalsIgnoreCase(attribute)) {
+				throw new IllegalArgumentException(name + '.' + attribute);
+			}
+			if (first) {
+				first = false;
+			} else {
+				sb.append('|');
+			}
+			try {
+				final MBeans mbeans = new MBeans();
+				final Object jmxValue = convertValueIfNeeded(mbeans.getAttribute(new ObjectName(
+						name), attribute));
+				sb.append(jmxValue);
+			} catch (final JMException e) {
+				throw new IllegalArgumentException(name + '.' + attribute, e);
+			}
 		}
-		try {
-			final MBeans mbeans = new MBeans();
-			return convertValueIfNeeded(mbeans.getAttribute(new ObjectName(name), attribute));
-		} catch (final JMException e) {
-			throw new IllegalArgumentException(name + '.' + attribute, e);
-		}
+		return sb.toString();
 	}
 
 	String getAttributeDescription(String name, MBeanAttributeInfo[] attributeInfos) {
@@ -174,13 +192,14 @@ final class MBeans {
 	 * @return MBeanServer
 	 */
 	private static MBeanServer getMBeanServer() {
-		final List<MBeanServer> mBeanServers = MBeanServerFactory.findMBeanServer(null);
-		if (!mBeanServers.isEmpty()) {
-			// il existe déjà un MBeanServer créé précédemment par Tomcat ou bien ci-dessous
-			return mBeanServers.get(0);
-		}
-		final MBeanServer server = MBeanServerFactory.createMBeanServer();
-		LOG.debug("javax.management.MBeanServer created");
-		return server;
+		return ManagementFactory.getPlatformMBeanServer();
+		// alternative (sauf pour hudson slaves):
+		//		final List<MBeanServer> mBeanServers = MBeanServerFactory.findMBeanServer(null);
+		//		if (!mBeanServers.isEmpty()) {
+		//			// il existe déjà un MBeanServer créé précédemment par Tomcat ou bien ci-dessous
+		//			return mBeanServers.get(0);
+		//		}
+		//		final MBeanServer server = MBeanServerFactory.createMBeanServer();
+		//		return server;
 	}
 }
