@@ -9,7 +9,7 @@
   * fix issue 74: "View OS Processes" does not work on MAC OS X Server
   * fix issue 75: StringIndexOutOfBoundsException for http session with # in attributes
   * added: in the optional collect server, "add and remove applications" can be restricted (issue 61)
-  * added an enhancement on jdbc proxy: Improve JDBC connection wrapper equals invocation when args[0] is a javamelody proxy (issue 78)
+  * added an enhancement on jdbc proxy: Improve JDBC connection wrapper equals invocation when {{{args[0]}}} is a javamelody proxy (issue 78)
 
   * added: In the system actions, new view "*MBeans*" with the values and the descriptions of the attributes. (MBeans contain configuration and low-level data on the application server and on the JVM). The values are viewable but not writable and operations can not be performed.
 
