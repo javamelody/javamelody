@@ -107,15 +107,6 @@ class MonitoringController {
 		this.collectorServer = collectorServer;
 	}
 
-	boolean isJavaInformationsNeeded(HttpServletRequest httpRequest) {
-		return httpRequest.getParameter(RESOURCE_PARAMETER) == null
-				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
-				&& (httpRequest.getParameter(PART_PARAMETER) == null
-						|| CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
-								.getParameter(PART_PARAMETER)) || THREADS_PART
-						.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
-	}
-
 	String executeActionIfNeeded(HttpServletRequest httpRequest) throws IOException {
 		assert httpRequest != null;
 		final String actionParameter = httpRequest.getParameter(ACTION_PARAMETER);
@@ -764,5 +755,14 @@ class MonitoringController {
 			}
 		}
 		return supportCompression;
+	}
+
+	static boolean isJavaInformationsNeeded(HttpServletRequest httpRequest) {
+		return httpRequest.getParameter(RESOURCE_PARAMETER) == null
+				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
+				&& (httpRequest.getParameter(PART_PARAMETER) == null
+						|| CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
+								.getParameter(PART_PARAMETER)) || THREADS_PART
+						.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
 	}
 }
