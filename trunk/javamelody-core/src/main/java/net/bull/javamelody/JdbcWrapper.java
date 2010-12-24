@@ -210,7 +210,7 @@ final class JdbcWrapper {
 			// performance : on évite method.invoke pour equals & hashCode
 			final String methodName = method.getName();
 			if (isEqualsMethod(methodName, args)) {
-				return connection.equals(args[0]);
+				return areConnectionsEquals(args[0]);
 			} else if (isHashCodeMethod(methodName, args)) {
 				return connection.hashCode();
 			}
@@ -232,6 +232,23 @@ final class JdbcWrapper {
 			}
 			return result;
 		}
+
+		private boolean areConnectionsEquals(Object object) {
+			// Special case if what we're being passed is one of our proxies (specifically a connection proxy)
+			// This way the equals call is truely transparent for our proxies (cf issue 78)
+			if (Proxy.isProxyClass(object.getClass())) {
+				final InvocationHandler invocationHandler = Proxy.getInvocationHandler(object);
+				if (invocationHandler instanceof DelegatingInvocationHandler) {
+					final DelegatingInvocationHandler d = (DelegatingInvocationHandler) invocationHandler;
+					if (d.getDelegate() instanceof ConnectionInvocationHandler) {
+						final ConnectionInvocationHandler c = (ConnectionInvocationHandler) d
+								.getDelegate();
+						return connection.equals(c.connection);
+					}
+				}
+			}
+			return connection.equals(object);
+		}
 	}
 
 	// ce handler désencapsule les InvocationTargetException des 3 proxy
@@ -244,6 +261,10 @@ final class JdbcWrapper {
 		DelegatingInvocationHandler(InvocationHandler delegate) {
 			super();
 			this.delegate = delegate;
+		}
+
+		InvocationHandler getDelegate() {
+			return delegate;
 		}
 
 		/** {@inheritDoc} */

@@ -191,7 +191,7 @@ public class TestJdbcWrapper {
 			assertEquals("getUsedConnectionCount", usedConnectionCount + 1,
 					JdbcWrapper.getUsedConnectionCount());
 			assertNotNull("createConnectionProxy", connection);
-			assertFalse(EQUALS, connection.equals(connection));
+			assertEquals(EQUALS, connection, connection);
 			connection.hashCode();
 
 			final int activeConnectionCount = JdbcWrapper.getActiveConnectionCount();
