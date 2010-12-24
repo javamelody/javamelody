@@ -271,7 +271,7 @@ public class MonitoringFilter implements Filter {
 		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
 		// pour avoir des informations à jour
 		final JavaInformations javaInformations;
-		if (monitoringController.isJavaInformationsNeeded(httpRequest)) {
+		if (MonitoringController.isJavaInformationsNeeded(httpRequest)) {
 			javaInformations = new JavaInformations(filterConfig.getServletContext(), true);
 		} else {
 			javaInformations = null;
