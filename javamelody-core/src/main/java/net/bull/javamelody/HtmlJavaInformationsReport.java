@@ -78,12 +78,13 @@ class HtmlJavaInformationsReport {
 		writeln("<br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeShowHideLink("detailsJava", "#Details#");
 		writeln("<br/><br/>");
-		writeln("<div id='detailsJava' style='display: none;'>");
+		// div interne pour showHideLink
+		writeln("<div id='detailsJava' style='display: none;'><div>");
 		final boolean repeatHost = javaInformationsList.size() > 1;
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			writeDetails(javaInformations, repeatHost);
 		}
-		writeln("</div>");
+		writeln("</div></div>");
 	}
 
 	private void writeSummary(JavaInformations javaInformations) throws IOException {
