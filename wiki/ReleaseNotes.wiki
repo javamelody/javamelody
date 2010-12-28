@@ -13,7 +13,19 @@
 
   * added: In the system actions, new view "*MBeans*" with the values and the descriptions of the attributes. (MBeans contain configuration and low-level data on the application server and on the JVM). The values are viewable but not writable and operations can not be performed.
 
-  * added for *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]*: for each MBean attribute, a link on the left of the attribute is provided to have only the current value of an attribute in plain text. And a link below zoomed graphics is also provided to have only the last value in the graphic. For example, the following URLs can be used in this version: [http://localhost:8080/context/monitoring?part=lastValue&graph=usedMemory,cpu 1] and [http://localhost:8080/context/monitoring?jmxValue=Catalina:type=GlobalRequestProcessor,name=http-8080.bytesSent|java.lang:type=OperatingSystem.ProcessCpuTime 2]. (To use the url for a MBean value, the system actions must be [UserGuide#6._Optional_parameters enabled]). This feature can probably be used to write a Munin/Nagios plugin using something like [https://github.com/coderholic/munin-popularity-plugins this] in order to have in Munin the same graphics as in JavaMelody or to have some new graphics based on MBeans values.
+  * added for *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]*: for each MBean attribute, a link on the left of the attribute is provided to have only the current value of an attribute in plain text. And a link below zoomed graphics is also provided to have only the last value in the graphic. For example, the following URLs can be used in this version: [http://localhost:8080/context/monitoring?part=lastValue&graph=usedMemory,cpu 1] and [http://localhost:8080/context/monitoring?jmxValue=Catalina:type=GlobalRequestProcessor,name=http-8080.bytesSent|java.lang:type=OperatingSystem.ProcessCpuTime 2]. (To use the url for a MBean value, the system actions must be [UserGuide#6._Optional_parameters enabled]).<br/>This feature can probably be used to write a Munin/Nagios plugin using something like [https://github.com/coderholic/munin-popularity-plugins this] in order to have in Munin the same graphics as in JavaMelody or to have some new graphics based on MBeans values.
+
+  * added in the [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson Monitoring plugin]: *Monitoring of the Hudson nodes* (slaves) similar to the monitoring of the Hudson master.<br/>If the monitoring of the Hudson master is available at http://localhost:8080/monitoring then the monitoring of the Hudson nodes is available at http://localhost:8080/monitoring/nodes.<br/><br/>The monitoring of the Hudson nodes includes:
+    * Aggregated "used memory" chart, aggregated "% cpu" chart (between 0 and 100) for day, week, month, year or a custom period.
+    * Chart of the build times over time for the selected period
+    * Other aggregated charts: % GC, threads count, loaded classes count, system load average, open file descriptors count and more for the selected period
+    * Statistics of the build times for the selected period
+    * Threads informations for each node including name, state, stack-trace and an action to kill any thread
+    * Heap histogram aggregated for all nodes
+    * Current system informations for each node
+    * MBeans for each node
+    * Process informations for each node
+    * Actions to execute the GC or to generate a heap dump on each node
 
 === 1.23.0 ===
 
