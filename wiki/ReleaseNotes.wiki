@@ -24,6 +24,7 @@
     * Heap histogram aggregated for all nodes
     * Current system informations for each node
     * MBeans for each node
+    * Last values in charts and MBeans values like above. For example, the following URLs can be used: [http://localhost:8080/monitoring/nodes?part=lastValue&graph=usedMemory,cpu 1] and [http://localhost:8080/monitoring/nodes?jmxValue=java.lang:type=OperatingSystem.SystemLoadAverage|java.lang:type=OperatingSystem.ProcessCpuTime 2]
     * Process informations for each node
     * Actions to execute the GC or to generate a heap dump on each node
 
