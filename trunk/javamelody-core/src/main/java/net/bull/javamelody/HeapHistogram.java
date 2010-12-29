@@ -53,6 +53,10 @@ import java.util.Scanner;
 // the terms and conditions of the license of that module."
 //
 // And so, I understand that the whole module here can use LGPL, except this file which uses GPL+CE.
+//
+// And users of the whole module can use any license including a closed source one, provided that
+// the LGPL license is followed (and of course that the GPL+CE is followed for this file
+// as it is already the case for the users with the JDK files).
 
 class HeapHistogram implements Serializable {
 	private static final long serialVersionUID = 2163916067335213382L;
