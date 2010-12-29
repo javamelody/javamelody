@@ -142,6 +142,13 @@ final class VirtualMachine {
 			// alors c'est que la jvm est un JRE et non un JDK (certainement avec tomcat) :
 			// on le signale à l'administrateur car il peut simplement installer un JDK et changer JAVA_HOME,
 			throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
+		} catch (final Exception e) {
+			// si on obtient com.sun.tools.attach.AttachNotSupportedException: no providers installed
+			// alors c'est idem (javaws dans hudson nodes par exemple)
+			if ("com.sun.tools.attach.AttachNotSupportedException".equals(e.getClass().getName())) {
+				throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
+			}
+			throw e;
 		}
 	}
 
