@@ -20,6 +20,7 @@
     * Chart of the build times over time for the selected period
     * Other aggregated charts: % GC, threads count, loaded classes count, system load average, open file descriptors count and more for the selected period
     * Statistics of the build times for the selected period
+    * Running builds with time elapsed
     * Threads informations for each node including name, state, stack-trace and an action to kill any thread
     * Heap histogram aggregated for all nodes
     * Current system informations for each node
