@@ -29,7 +29,10 @@
     * Process informations for each node
     * Actions to execute the GC or to generate a heap dump on each node
 
-  * Due to the current infrastructure changes for the [https://maven2-repository.dev.java.net maven2-repository in java.net], the *Monitoring plugin 1.24.0 for Hudson* can be downloaded from http://javamelody.googlecode.com/files/monitoring.hpi<br/>You can submit this hpi file in the Advanced tab of the plugin manager in Hudson and restart the server.
+  * Due to the current infrastructure changes for the [https://maven2-repository.dev.java.net maven2-repository in java.net]:
+    * The *Monitoring plugin 1.24.0 for Hudson* can be downloaded from http://javamelody.googlecode.com/files/monitoring.hpi<br/>You can submit this hpi file in the Advanced tab of the plugin manager in Hudson and restart the server.
+    * The jar file *javamelody-core 1.24.0 is not published in any maven repository*.
+    * A new release will probably be made when the [https://maven2-repository.dev.java.net maven2-repository] comes back.
 
 === 1.23.0 ===
 
