@@ -13,6 +13,7 @@
   # [#Jobs_(quartz) Jobs (quartz)]
   # [#Http_sessions Http sessions]
   # [#Memory_histogram Memory histogram]
+  # [#MBeans MBeans]
   # [#Processes Processes]
   # [#Drill-down_(and_ejb/spring/guice/services_components) Drill-down (and ejb/spring/guice/services components)]
   # [#Zoom_on_chart Zoom on chart]
@@ -60,6 +61,9 @@
 
 === Memory histogram ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/heaphisto.png' width='50%' alt='Histogramme mémoire' /></a>
+
+=== MBeans ===
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/mbeans.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/mbeans.png' width='50%' alt='MBeans' /></a>
 
 === Processes ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/processus.png' width='50%' alt='Processus' /></a>
