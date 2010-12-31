@@ -18,6 +18,8 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -278,6 +280,16 @@ public class MonitoringFilter implements Filter {
 		}
 		monitoringController.doReport(httpRequest, httpResponse,
 				Collections.singletonList(javaInformations));
+
+		if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
+			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
+			// le stockage et les courbes, donc on arrête le timer s'il est démarré
+			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
+			if (filterContext.getTimer() != null) {
+				filterContext.getTimer().cancel();
+			}
+			collector.stop();
+		}
 	}
 
 	private static String getCompleteRequestName(HttpServletRequest httpRequest,

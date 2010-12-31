@@ -19,7 +19,6 @@
 package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
@@ -263,13 +262,6 @@ class MonitoringController {
 		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=" + fileName);
 
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
-
-		if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
-			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
-			// le stockage et les courbes, donc on arrête le timer s'il est démarré
-			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
-			collector.stop();
-		}
 	}
 
 	private Serializable createSerializable(HttpServletRequest httpRequest,
