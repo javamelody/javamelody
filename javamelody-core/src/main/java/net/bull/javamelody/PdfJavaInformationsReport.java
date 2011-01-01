@@ -251,6 +251,10 @@ class PdfJavaInformationsReport {
 		addCell(I18N.createDateAndTimeFormat().format(javaInformations.getStartDate()));
 		addCell(getI18nString("Arguments_JVM") + ':');
 		addCell(javaInformations.getJvmArguments());
+		if (javaInformations.getSessionCount() >= 0) {
+			addCell(getI18nString("httpSessionsMeanAge") + ':');
+			addCell(integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
+		}
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 		addCell(getI18nString("Gestion_memoire") + ':');
 		writeMemoryInformations(javaInformations.getMemoryInformations());

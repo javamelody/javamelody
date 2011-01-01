@@ -95,6 +95,20 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		return SESSION_COUNT.get();
 	}
 
+	static long getSessionAgeSum() {
+		final long now = System.currentTimeMillis();
+		long result = 0;
+		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
+			try {
+				result += now - session.getCreationTime();
+			} catch (final Exception e) {
+				// Tomcat can throw "java.lang.IllegalStateException: getCreationTime: Session already invalidated"
+				continue;
+			}
+		}
+		return result;
+	}
+
 	static void invalidateAllSessions() {
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
 			try {
