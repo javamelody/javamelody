@@ -165,18 +165,7 @@ class HtmlJavaInformationsReport {
 			writeln(toBar(javaInformations.getUnixOpenFileDescriptorPercentage()));
 			writeln(columnEnd);
 		}
-		final String serverInfo = javaInformations.getServerInfo();
-		if (serverInfo != null) {
-			writeln("<tr><td>#Serveur#: </td><td>");
-			final String applicationServerIconName = getApplicationServerIconName(serverInfo);
-			if (applicationServerIconName != null) {
-				writeln("<img src='?resource=servers/" + applicationServerIconName
-						+ "' alt='#Serveur#'/>");
-			}
-			writeln(serverInfo + columnEnd);
-			writeln("<tr><td>#Contexte_webapp#: </td><td>" + javaInformations.getContextPath()
-					+ columnEnd);
-		}
+		writeServerInfoAndContextPath(javaInformations);
 		writeln("<tr><td>#Demarrage#: </td><td>"
 				+ I18N.createDateAndTimeFormat().format(javaInformations.getStartDate())
 				+ columnEnd);
@@ -185,6 +174,13 @@ class HtmlJavaInformationsReport {
 		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
 		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), false) + columnEnd);
 		writeln("");
+
+		if (javaInformations.getSessionCount() >= 0) {
+			write("<tr><td>#httpSessionsMeanAge#: </td><td>");
+			writeGraph("httpSessionsMeanAge",
+					integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
+			writeln(columnEnd);
+		}
 
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 
@@ -205,6 +201,23 @@ class HtmlJavaInformationsReport {
 			writeln(columnEnd);
 		}
 		writeln("</table>");
+	}
+
+	private void writeServerInfoAndContextPath(JavaInformations javaInformations)
+			throws IOException {
+		final String serverInfo = javaInformations.getServerInfo();
+		if (serverInfo != null) {
+			final String columnEnd = " </td></tr>";
+			writeln("<tr><td>#Serveur#: </td><td>");
+			final String applicationServerIconName = getApplicationServerIconName(serverInfo);
+			if (applicationServerIconName != null) {
+				writeln("<img src='?resource=servers/" + applicationServerIconName
+						+ "' alt='#Serveur#'/>");
+			}
+			writeln(serverInfo + columnEnd);
+			writeln("<tr><td>#Contexte_webapp#: </td><td>" + javaInformations.getContextPath()
+					+ columnEnd);
+		}
 	}
 
 	private void writeDatabaseVersionAndDataSourceDetails(JavaInformations javaInformations)

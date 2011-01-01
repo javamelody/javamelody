@@ -63,6 +63,7 @@ class JavaInformations implements Serializable { // NOPMD
 	@SuppressWarnings("all")
 	private final List<TomcatInformations> tomcatInformationsList;
 	private final int sessionCount;
+	private final long sessionAgeSum;
 	private final int activeThreadCount;
 	private final int usedConnectionCount;
 	private final int maxConnectionCount;
@@ -137,8 +138,10 @@ class JavaInformations implements Serializable { // NOPMD
 		tomcatInformationsList = TomcatInformations.buildTomcatInformationsList();
 		if (SessionListener.isEnabled()) {
 			sessionCount = SessionListener.getSessionCount();
+			sessionAgeSum = SessionListener.getSessionAgeSum();
 		} else {
 			sessionCount = -1;
+			sessionAgeSum = -1;
 		}
 		activeThreadCount = JdbcWrapper.getActiveThreadCount();
 		usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
@@ -466,6 +469,17 @@ class JavaInformations implements Serializable { // NOPMD
 
 	int getSessionCount() {
 		return sessionCount;
+	}
+
+	long getSessionAgeSum() {
+		return sessionAgeSum;
+	}
+
+	long getSessionMeanAgeInMinutes() {
+		if (sessionCount > 0) {
+			return sessionAgeSum / sessionCount / 60000;
+		}
+		return -1;
 	}
 
 	int getActiveThreadCount() {

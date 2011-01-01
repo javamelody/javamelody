@@ -216,7 +216,14 @@ final class JRobin {
 			endTime = Util.getTime();
 			startTime = endTime - range.getPeriod().getDurationSeconds();
 		}
-		final String titleStart = getLabel() + " - " + range.getLabel();
+		final String label = getLabel();
+		final String titleStart;
+		if (label.length() > 31 && width <= 200) {
+			// si le label est trop long, on raccourci le titre sinon il ne rentre pas
+			titleStart = label;
+		} else {
+			titleStart = label + " - " + range.getLabel();
+		}
 		final String titleEnd;
 		if (width > 400) {
 			if (range.getPeriod() == null) {

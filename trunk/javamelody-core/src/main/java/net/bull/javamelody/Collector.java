@@ -282,6 +282,7 @@ class Collector { // NOPMD
 		long usedSwapSpaceSize = 0;
 		int availableProcessors = 0;
 		int sessionCount = 0;
+		long sessionAgeSum = 0;
 		int threadCount = 0;
 		int activeThreadCount = 0;
 		int activeConnectionCount = 0;
@@ -297,11 +298,13 @@ class Collector { // NOPMD
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 			usedMemory += memoryInformations.getUsedMemory();
 			sessionCount += javaInformations.getSessionCount();
+			sessionAgeSum += javaInformations.getSessionAgeSum();
 			threadCount += javaInformations.getThreadCount();
 			activeThreadCount += javaInformations.getActiveThreadCount();
 			activeConnectionCount += javaInformations.getActiveConnectionCount();
 			usedConnectionCount += javaInformations.getUsedConnectionCount();
-			availableProcessors += javaInformations.getAvailableProcessors();
+			// il y a au moins 1 coeur
+			availableProcessors += Math.max(javaInformations.getAvailableProcessors(), 1);
 			// processesCpuTime n'est supporté que par le jdk sun
 			processesCpuTimeMillis += javaInformations.getProcessCpuTimeMillis();
 			usedNonHeapMemory += memoryInformations.getUsedNonHeapMemory();
@@ -321,8 +324,6 @@ class Collector { // NOPMD
 				tomcatUsed = true;
 			}
 		}
-		// il y a au moins 1 coeur
-		availableProcessors = Math.max(availableProcessors, 1);
 		collectJRobinValues(usedMemory, processesCpuTimeMillis, availableProcessors, sessionCount,
 				activeThreadCount, activeConnectionCount, usedConnectionCount);
 
@@ -335,6 +336,7 @@ class Collector { // NOPMD
 
 		collectorOtherJRobinsValues(usedNonHeapMemory, loadedClassesCount, usedPhysicalMemorySize,
 				usedSwapSpaceSize, threadCount, systemLoadAverage, unixOpenFileDescriptorCount);
+		collectSessionsMeanAge(sessionAgeSum, sessionCount);
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
@@ -421,6 +423,18 @@ class Collector { // NOPMD
 			if (entry.getValue() >= 0) {
 				getOtherJRobin(entry.getKey()).addValue(entry.getValue());
 			}
+		}
+	}
+
+	private void collectSessionsMeanAge(long sessionAgeSum, int sessionCount) throws IOException {
+		if (sessionCount >= 0) {
+			final long sessionAgeMeanInMinutes;
+			if (sessionCount > 0) {
+				sessionAgeMeanInMinutes = sessionAgeSum / sessionCount / 60000;
+			} else {
+				sessionAgeMeanInMinutes = -1;
+			}
+			getOtherJRobin("httpSessionsMeanAge").addValue(sessionAgeMeanInMinutes);
 		}
 	}
 
