@@ -281,11 +281,11 @@ class Collector { // NOPMD
 		long usedPhysicalMemorySize = 0;
 		long usedSwapSpaceSize = 0;
 		int availableProcessors = 0;
-		long sessionCount = 0;
-		long threadCount = 0;
-		long activeThreadCount = 0;
-		long activeConnectionCount = 0;
-		long usedConnectionCount = 0;
+		int sessionCount = 0;
+		int threadCount = 0;
+		int activeThreadCount = 0;
+		int activeConnectionCount = 0;
+		int usedConnectionCount = 0;
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
 		int tomcatBusyThreads = 0;
@@ -342,8 +342,8 @@ class Collector { // NOPMD
 	}
 
 	private void collectJRobinValues(long usedMemory, long processesCpuTimeMillis,
-			int availableProcessors, long sessionCount, long activeThreadCount,
-			long activeConnectionCount, long usedConnectionCount) throws IOException {
+			int availableProcessors, int sessionCount, int activeThreadCount,
+			int activeConnectionCount, int usedConnectionCount) throws IOException {
 		// collecte de la mémoire java
 		getCounterJRobin("usedMemory").addValue(usedMemory);
 
@@ -406,7 +406,7 @@ class Collector { // NOPMD
 	}
 
 	private void collectorOtherJRobinsValues(long usedNonHeapMemory, int loadedClassesCount,
-			long usedPhysicalMemorySize, long usedSwapSpaceSize, long threadCount,
+			long usedPhysicalMemorySize, long usedSwapSpaceSize, int threadCount,
 			double systemLoadAverage, long unixOpenFileDescriptorCount) throws IOException {
 		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
 		otherJRobinsValues.put("threadCount", (double) threadCount);
