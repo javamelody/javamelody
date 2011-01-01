@@ -45,6 +45,7 @@ public class MonitoringInterceptor {
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		EJB_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		EJB_COUNTER.setUsed(true);
 		LOG.debug("ejb interceptor initialized");
 	}
 

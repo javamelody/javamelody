@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * et transmises au serveur de collecte.
  * @author Emeric Vernat
  */
-class Counter implements Cloneable, Serializable {
+class Counter implements Cloneable, Serializable { // NOPMD
 	/**
 	 * Nom du counter des requêtes http.
 	 */
@@ -79,6 +79,7 @@ class Counter implements Cloneable, Serializable {
 	private static final long serialVersionUID = 6759729262180992976L;
 	private String application;
 	private boolean displayed = true;
+	private transient boolean used;
 	private final String name;
 	private final boolean errorCounter;
 	private final String storageName;
@@ -306,6 +307,24 @@ class Counter implements Cloneable, Serializable {
 	 */
 	void setDisplayed(boolean displayed) {
 		this.displayed = displayed;
+	}
+
+	/**
+	 * Retourne true si ce counter est utilisé
+	 * (servira éventuellement à initialiser displayed dans FilterContext).
+	 * @return boolean
+	 */
+	boolean isUsed() {
+		return used;
+	}
+
+	/**
+	 * Définit si ce counter est utilisé
+	 * (servira éventuellement à initialiser displayed dans FilterContext).
+	 * @param used boolean
+	 */
+	void setUsed(boolean used) {
+		this.used = used;
 	}
 
 	/**

@@ -46,6 +46,7 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		SPRING_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		SPRING_COUNTER.setUsed(true);
 		LOG.debug("spring interceptor initialized");
 	}
 

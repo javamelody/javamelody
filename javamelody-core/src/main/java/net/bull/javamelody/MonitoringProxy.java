@@ -83,6 +83,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		SERVICES_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		SERVICES_COUNTER.setUsed(true);
 		this.name = name;
 	}
 

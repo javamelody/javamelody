@@ -76,6 +76,7 @@ final class JspWrapper implements InvocationHandler {
 		// quand ce RequestDispatcher est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		JSP_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		JSP_COUNTER.setUsed(true);
 		this.path = path;
 		this.requestDispatcher = requestDispatcher;
 	}
