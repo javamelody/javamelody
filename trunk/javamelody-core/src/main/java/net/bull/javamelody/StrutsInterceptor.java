@@ -42,6 +42,7 @@ public final class StrutsInterceptor extends AbstractInterceptor {
 		// quand cet intercepteur est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		STRUTS_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		STRUTS_COUNTER.setUsed(true);
 		LOG.debug("struts interceptor initialized");
 	}
 

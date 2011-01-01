@@ -132,20 +132,18 @@ class FilterContext {
 
 		setRequestTransformPatterns(counters);
 		final String displayedCounters = Parameters.getParameter(Parameter.DISPLAYED_COUNTERS);
-		// displayedCounters doit être traité avant l'initialisation du collector
-		// sinon les dayCounters ne seront pas bons
 		if (displayedCounters == null) {
-			// par défaut, les compteurs http, sql, error et log sont affichés
+			// par défaut, les compteurs http, sql, error et log (et ceux qui sont utilisés) sont affichés
 			httpCounter.setDisplayed(true);
 			sqlCounter.setDisplayed(!Parameters.isNoDatabase());
 			errorCounter.setDisplayed(true);
 			logCounter.setDisplayed(true);
-			ejbCounter.setDisplayed(false);
-			springCounter.setDisplayed(false);
-			guiceCounter.setDisplayed(false);
-			servicesCounter.setDisplayed(false);
-			strutsCounter.setDisplayed(false);
-			jspCounter.setDisplayed(false);
+			ejbCounter.setDisplayed(ejbCounter.isUsed());
+			springCounter.setDisplayed(springCounter.isUsed());
+			guiceCounter.setDisplayed(guiceCounter.isUsed());
+			servicesCounter.setDisplayed(servicesCounter.isUsed());
+			strutsCounter.setDisplayed(strutsCounter.isUsed());
+			jspCounter.setDisplayed(jspCounter.isUsed());
 		} else {
 			setDisplayedCounters(counters, displayedCounters);
 		}
