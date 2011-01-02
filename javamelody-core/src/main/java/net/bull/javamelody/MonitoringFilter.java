@@ -140,11 +140,11 @@ public class MonitoringFilter implements Filter {
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		boolean systemError = false;
 		Throwable systemException = null;
+		String requestName = getCompleteRequestName(httpRequest, false);
+		final String completeRequestName = getCompleteRequestName(httpRequest, true);
 		try {
 			JdbcWrapper.ACTIVE_THREAD_COUNT.incrementAndGet();
 			// on binde le contexte de la requête http pour les requêtes sql
-			final String requestName = getCompleteRequestName(httpRequest, false);
-			final String completeRequestName = getCompleteRequestName(httpRequest, true);
 			httpCounter.bindContext(requestName, completeRequestName, httpRequest.getRemoteUser(),
 					startCpuTime);
 			// on binde la requête http (utilisateur courant et requête complète) pour les derniers logs d'erreurs
@@ -190,7 +190,11 @@ public class MonitoringFilter implements Filter {
 				// taille du flux sortant
 				final int responseSize = wrappedResponse.getDataLength();
 				// nom identifiant la requête
-				final String requestName = getRequestName(httpRequest, wrappedResponse);
+				if (wrappedResponse.getCurrentStatus() == HttpServletResponse.SC_NOT_FOUND) {
+					// Sécurité : si status http est 404, alors requestName est Error404
+					// pour éviter de saturer la mémoire avec potentiellement beaucoup d'url différentes
+					requestName = "Error404";
+				}
 
 				// on enregistre la requête dans les statistiques
 				httpCounter.addRequest(requestName, duration, cpuUsedMillis, systemError,
@@ -314,16 +318,6 @@ public class MonitoringFilter implements Filter {
 			return tmp + ' ' + method;
 		}
 		return tmp + '?' + queryString + ' ' + method;
-	}
-
-	private static String getRequestName(HttpServletRequest httpRequest,
-			CounterServletResponseWrapper wrappedResponse) {
-		if (wrappedResponse.getCurrentStatus() == HttpServletResponse.SC_NOT_FOUND) {
-			// Sécurité : si status http est 404, alors requestName est Error404
-			// pour éviter de saturer la mémoire avec potentiellement beaucoup d'url différentes
-			return "Error404";
-		}
-		return getCompleteRequestName(httpRequest, false);
 	}
 
 	private boolean isRequestExcluded(HttpServletRequest httpRequest) {
