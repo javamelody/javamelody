@@ -34,11 +34,7 @@ import java.net.URLClassLoader;
  * @author Emeric Vernat
  */
 final class VirtualMachine {
-	private static final boolean JROCKIT = System.getProperty("java.vendor").contains("BEA");
-	private static final boolean SUPPORTED = "1.6".compareTo(System.getProperty("java.version")) < 0
-			&& (System.getProperty("java.vendor").contains("Sun")
-					|| System.getProperty("java.vendor").contains("Oracle") || JROCKIT);
-	private static boolean enabled = SUPPORTED;
+	private static boolean enabled = isSupported();
 	// singleton initialisé à la demande
 	private static Object jvmVirtualMachine;
 
@@ -50,7 +46,18 @@ final class VirtualMachine {
 	 * @return true si heapHisto supporté (jdk 1.6 de Sun ou de JRockit de BEA)
 	 */
 	static boolean isSupported() {
-		return SUPPORTED;
+		// pour nodes hudson, on réévalue sans utiliser de constante
+		return "1.6".compareTo(System.getProperty("java.version")) < 0
+				&& (System.getProperty("java.vendor").contains("Sun")
+						|| System.getProperty("java.vendor").contains("Oracle") || isJRockit());
+	}
+
+	/**
+	 * @return true si JVM JRockit
+	 */
+	static boolean isJRockit() {
+		// pour nodes hudson, on réévalue sans utiliser de constante
+		return System.getProperty("java.vendor").contains("BEA");
 	}
 
 	/**
@@ -159,7 +166,7 @@ final class VirtualMachine {
 	static HeapHistogram createHeapHistogram() throws Exception { // NOPMD
 		final InputStream input = heapHisto();
 		try {
-			return new HeapHistogram(input, JROCKIT);
+			return new HeapHistogram(input, isJRockit());
 		} finally {
 			input.close();
 		}
