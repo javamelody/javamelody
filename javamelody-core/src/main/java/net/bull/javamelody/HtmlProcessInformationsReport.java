@@ -30,6 +30,7 @@ import java.util.List;
 class HtmlProcessInformationsReport {
 	private final List<ProcessInformations> processInformationsList;
 	private final Writer writer;
+	private final boolean windows;
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
@@ -40,6 +41,7 @@ class HtmlProcessInformationsReport {
 
 		this.processInformationsList = processInformationsList;
 		this.writer = writer;
+		this.windows = isWindowsProcessList(processInformationsList);
 	}
 
 	void toHtml() throws IOException {
@@ -55,11 +57,11 @@ class HtmlProcessInformationsReport {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Processus#'>");
 		write("<thead><tr><th>#Utilisateur#</th>");
 		write("<th class='sorttable_numeric'>#PID#</th>");
-		if (!ProcessInformations.WINDOWS) {
+		if (!windows) {
 			write("<th class='sorttable_numeric'>#cpu#</th><th class='sorttable_numeric'>#mem#</th>");
 		}
 		write("<th class='sorttable_numeric'>#vsz#</th>");
-		if (!ProcessInformations.WINDOWS) {
+		if (!windows) {
 			write("<th class='sorttable_numeric'>#rss#</th><th>#tty#</th>");
 			write("<th>#stat#</th><th>#start#</th>");
 		}
@@ -77,7 +79,7 @@ class HtmlProcessInformationsReport {
 			writeln("</tr>");
 		}
 		writeln("</tbody></table>");
-		if (!ProcessInformations.WINDOWS) {
+		if (!windows) {
 			write("<div align='right'>");
 			write("<a href='http://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps command reference</a></div>");
 		}
@@ -91,7 +93,7 @@ class HtmlProcessInformationsReport {
 		final String newColumn = "</td><td>";
 		write(newColumnRight);
 		write(integerFormat.format(processInformations.getPid()));
-		if (!ProcessInformations.WINDOWS) {
+		if (!windows) {
 			write(newColumnRight);
 			write(percentFormat.format(processInformations.getCpuPercentage()));
 			write(newColumnRight);
@@ -99,7 +101,7 @@ class HtmlProcessInformationsReport {
 		}
 		write(newColumnRight);
 		write(integerFormat.format(processInformations.getVsz()));
-		if (!ProcessInformations.WINDOWS) {
+		if (!windows) {
 			write(newColumnRight);
 			write(integerFormat.format(processInformations.getRss()));
 			write(newColumn);
@@ -122,6 +124,16 @@ class HtmlProcessInformationsReport {
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=processes'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln("</div>");
+	}
+
+	private static boolean isWindowsProcessList(List<ProcessInformations> processInformationsList) {
+		// une liste de process est issue de windows et non linux si toutes les valeurs de tty sont nulles
+		for (final ProcessInformations processInformations : processInformationsList) {
+			if (processInformations.getTty() != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static String htmlEncode(String text) {
