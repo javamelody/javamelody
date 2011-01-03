@@ -80,22 +80,24 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		setEnabled(true);
 	}
 
-	static boolean isEnabled() {
-		return enabled;
-	}
-
 	private static void setEnabled(boolean newEnabled) {
 		enabled = newEnabled;
 	}
 
 	static int getSessionCount() {
+		if (!enabled) {
+			return -1;
+		}
 		// nous pourrions nous contenter d'utiliser SESSION_MAP_BY_ID.size()
 		// mais on se contente de SESSION_COUNT qui est suffisant pour avoir cette valeur
-		// (SESSION_MAP_BY_ID servira pour la fonction d'invalidateAllSessions)
+		// (SESSION_MAP_BY_ID servira pour la fonction d'invalidateAllSessions entre autres)
 		return SESSION_COUNT.get();
 	}
 
 	static long getSessionAgeSum() {
+		if (!enabled) {
+			return -1;
+		}
 		final long now = System.currentTimeMillis();
 		long result = 0;
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
