@@ -78,6 +78,15 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
+	public void testGetSessionAgeSum() {
+		sessionListener.sessionCreated(createSessionEvent());
+		if (SessionListener.getSessionAgeSum() < 0) {
+			fail("getSessionAgeSum");
+		}
+	}
+
+	/** Test. */
+	@Test
 	public void testInvalidateAllSessions() {
 		final SessionTestImpl session = new SessionTestImpl(true);
 		sessionListener.sessionCreated(new HttpSessionEvent(session));

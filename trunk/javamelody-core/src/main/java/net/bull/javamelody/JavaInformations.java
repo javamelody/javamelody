@@ -136,13 +136,8 @@ class JavaInformations implements Serializable { // NOPMD
 		super();
 		memoryInformations = new MemoryInformations();
 		tomcatInformationsList = TomcatInformations.buildTomcatInformationsList();
-		if (SessionListener.isEnabled()) {
-			sessionCount = SessionListener.getSessionCount();
-			sessionAgeSum = SessionListener.getSessionAgeSum();
-		} else {
-			sessionCount = -1;
-			sessionAgeSum = -1;
-		}
+		sessionCount = SessionListener.getSessionCount();
+		sessionAgeSum = SessionListener.getSessionAgeSum();
 		activeThreadCount = JdbcWrapper.getActiveThreadCount();
 		usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		activeConnectionCount = JdbcWrapper.getActiveConnectionCount();
