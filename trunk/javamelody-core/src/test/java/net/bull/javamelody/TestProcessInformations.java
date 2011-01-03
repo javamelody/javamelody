@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,9 @@ public class TestProcessInformations {
 		final List<ProcessInformations> processes = ProcessInformations.buildProcessInformations();
 		assertNotNull("processes null", processes);
 		assertFalse("processes vide", processes.isEmpty());
-		checkProcesses(processes, ProcessInformations.WINDOWS);
+		final boolean windows = System.getProperty("os.name").toLowerCase(Locale.getDefault())
+				.contains("windows");
+		checkProcesses(processes, windows);
 	}
 
 	private void checkProcesses(List<ProcessInformations> processInformations, boolean windows) {

@@ -33,10 +33,6 @@ import java.util.regex.Pattern;
  * @author Emeric Vernat
  */
 final class ProcessInformations implements Serializable {
-	static final boolean WINDOWS = System.getProperty("os.name").toLowerCase(Locale.getDefault())
-			.contains("windows");
-	private static final boolean MAC = System.getProperty("os.name")
-			.toLowerCase(Locale.getDefault()).contains("mac");
 	private static final long serialVersionUID = 2163916067335213382L;
 	private static final Pattern WINDOWS_STATE_PATTERN = Pattern.compile("................");
 	private static final Pattern WINDOWS_CPU_TIME_PATTERN = Pattern.compile("[0-9:]*");
@@ -140,9 +136,13 @@ final class ProcessInformations implements Serializable {
 	static List<ProcessInformations> buildProcessInformations() throws IOException {
 		Process process = null;
 		try {
-			if (WINDOWS) {
+			// pour nodes hudson, on évalue ces propriétés à chaque fois sans utiliser de constantes
+			final String osName = System.getProperty("os.name").toLowerCase(Locale.getDefault());
+			final boolean windows = osName.contains("windows");
+			final boolean mac = osName.contains("mac");
+			if (windows) {
 				process = Runtime.getRuntime().exec(new String[] { "cmd", "/c", "tasklist /V" });
-			} else if (MAC) {
+			} else if (mac) {
 				// le "f" de "ps wauxf" n'est pas supporté sur Mac OS X, cf issue 74
 				process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ps waux" });
 			} else {
@@ -150,7 +150,7 @@ final class ProcessInformations implements Serializable {
 				// (http://mindprod.com/jgloss/properties.html) qui acceptent la commande ps
 				process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ps wauxf" });
 			}
-			return buildProcessInformations(process.getInputStream(), WINDOWS);
+			return buildProcessInformations(process.getInputStream(), windows);
 		} finally {
 			if (process != null) {
 				// évitons http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6462165
