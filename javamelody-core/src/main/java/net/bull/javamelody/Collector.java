@@ -296,31 +296,39 @@ class Collector { // NOPMD
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
-			usedMemory += memoryInformations.getUsedMemory();
-			sessionCount += javaInformations.getSessionCount();
-			sessionAgeSum += javaInformations.getSessionAgeSum();
-			threadCount += javaInformations.getThreadCount();
-			activeThreadCount += javaInformations.getActiveThreadCount();
-			activeConnectionCount += javaInformations.getActiveConnectionCount();
-			usedConnectionCount += javaInformations.getUsedConnectionCount();
+			usedMemory = add(memoryInformations.getUsedMemory(), usedMemory);
+			sessionCount = add(javaInformations.getSessionCount(), sessionCount);
+			sessionAgeSum = add(javaInformations.getSessionAgeSum(), sessionAgeSum);
+			threadCount = add(javaInformations.getThreadCount(), threadCount);
+			activeThreadCount = add(javaInformations.getActiveThreadCount(), activeThreadCount);
+			activeConnectionCount = add(javaInformations.getActiveConnectionCount(),
+					activeConnectionCount);
+			usedConnectionCount = add(javaInformations.getUsedConnectionCount(),
+					usedConnectionCount);
 			// il y a au moins 1 coeur
-			availableProcessors += Math.max(javaInformations.getAvailableProcessors(), 1);
+			availableProcessors = add(Math.max(javaInformations.getAvailableProcessors(), 1),
+					availableProcessors);
 			// processesCpuTime n'est supporté que par le jdk sun
-			processesCpuTimeMillis += javaInformations.getProcessCpuTimeMillis();
-			usedNonHeapMemory += memoryInformations.getUsedNonHeapMemory();
-			loadedClassesCount += memoryInformations.getLoadedClassesCount();
-			usedPhysicalMemorySize += memoryInformations.getUsedPhysicalMemorySize();
-			usedSwapSpaceSize += memoryInformations.getUsedSwapSpaceSize();
-			garbageCollectionTimeMillis += memoryInformations.getGarbageCollectionTimeMillis();
+			processesCpuTimeMillis = add(javaInformations.getProcessCpuTimeMillis(),
+					processesCpuTimeMillis);
+			usedNonHeapMemory = add(memoryInformations.getUsedNonHeapMemory(), usedNonHeapMemory);
+			loadedClassesCount = add(memoryInformations.getLoadedClassesCount(), loadedClassesCount);
+			usedPhysicalMemorySize = add(memoryInformations.getUsedPhysicalMemorySize(),
+					usedPhysicalMemorySize);
+			usedSwapSpaceSize = add(memoryInformations.getUsedSwapSpaceSize(), usedSwapSpaceSize);
+			garbageCollectionTimeMillis = add(memoryInformations.getGarbageCollectionTimeMillis(),
+					garbageCollectionTimeMillis);
 			// systemLoadAverage n'est supporté qu'à partir du jdk 1.6 sur linux ou unix
-			systemLoadAverage += javaInformations.getSystemLoadAverage();
+			systemLoadAverage = add(javaInformations.getSystemLoadAverage(), systemLoadAverage);
 			// que sur linx ou unix
-			unixOpenFileDescriptorCount += javaInformations.getUnixOpenFileDescriptorCount();
+			unixOpenFileDescriptorCount = add(javaInformations.getUnixOpenFileDescriptorCount(),
+					unixOpenFileDescriptorCount);
 			for (final TomcatInformations tomcatInformations : javaInformations
 					.getTomcatInformationsList()) {
-				tomcatBusyThreads += tomcatInformations.getCurrentThreadsBusy();
-				bytesReceived += tomcatInformations.getBytesReceived();
-				bytesSent += tomcatInformations.getBytesSent();
+				tomcatBusyThreads = add(tomcatInformations.getCurrentThreadsBusy(),
+						tomcatBusyThreads);
+				bytesReceived = add(tomcatInformations.getBytesReceived(), bytesReceived);
+				bytesSent = add(tomcatInformations.getBytesSent(), bytesSent);
 				tomcatUsed = true;
 			}
 		}
@@ -341,6 +349,41 @@ class Collector { // NOPMD
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
 		// différenciation des indisponibilités prévues de celles non prévues
+	}
+
+	private static double add(double t1, double t2) {
+		// avec des serveurs monitorés sur des OS/JVM multiples (windows, linux par exemple),
+		// des valeurs peuvent être négatives ie non disponibles pour une JVM/OS
+		// et positives ie disponibles pour une autre JVM/OS
+		// (par exemple, systemLoadAverage est négatif sur windows et positif sur linux,
+		// et dans ce cas, si windows et linux alors on ne somme pas et on garde linux,
+		// si linux et windows alors on garde linux,
+		// si linux et linux alors on somme linux+linux qui est positif
+		// si windows et windows alors on somme windows+windows qui est négatif
+		if (t1 < 0d && t2 > 0d) {
+			return t2;
+		} else if (t1 > 0d && t2 < 0d) {
+			return t1;
+		}
+		return t1 + t2;
+	}
+
+	private static long add(long t1, long t2) {
+		if (t1 < 0L && t2 > 0L) {
+			return t2;
+		} else if (t1 > 0L && t2 < 0L) {
+			return t1;
+		}
+		return t1 + t2;
+	}
+
+	private static int add(int t1, int t2) {
+		if (t1 < 0 && t2 > 0) {
+			return t2;
+		} else if (t1 > 0 && t2 < 0) {
+			return t1;
+		}
+		return t1 + t2;
 	}
 
 	private void collectJRobinValues(long usedMemory, long processesCpuTimeMillis,
