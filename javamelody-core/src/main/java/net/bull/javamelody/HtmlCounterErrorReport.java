@@ -97,7 +97,7 @@ class HtmlCounterErrorReport {
 			if (error.getHttpRequest() == null) {
 				write("&nbsp;");
 			} else {
-				write(htmlEncode(error.getHttpRequest()));
+				writer.write(htmlEncode(error.getHttpRequest()));
 			}
 			write("</td><td>");
 		}
@@ -105,7 +105,7 @@ class HtmlCounterErrorReport {
 			if (error.getRemoteUser() == null) {
 				write("&nbsp;");
 			} else {
-				write(error.getRemoteUser());
+				writer.write(htmlEncode(error.getRemoteUser()));
 			}
 			write("</td><td>");
 		}
