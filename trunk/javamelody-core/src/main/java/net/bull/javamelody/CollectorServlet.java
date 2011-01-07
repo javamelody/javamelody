@@ -21,6 +21,9 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
@@ -31,13 +34,17 @@ import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -214,6 +221,8 @@ public class CollectorServlet extends HttpServlet {
 			final String partParameter = req.getParameter(PART_PARAMETER);
 			if (req.getParameter(JMX_VALUE) != null) {
 				doJmxValue(req, resp, application, req.getParameter(JMX_VALUE));
+			} else if (TransportFormat.isATransportFormat(req.getParameter(FORMAT_PARAMETER))) {
+				doCompressedSerializable(req, resp, application, monitoringController);
 			} else if (partParameter == null) {
 				// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
 				// pour être à jour
@@ -389,6 +398,56 @@ public class CollectorServlet extends HttpServlet {
 		}
 		htmlReport.writeHtmlFooter();
 		writer.close();
+	}
+
+	private void doCompressedSerializable(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String application,
+			MonitoringController monitoringController) throws IOException {
+		Serializable serializable;
+		try {
+			serializable = createSerializable(httpRequest, application, monitoringController);
+		} catch (final Exception e) {
+			serializable = e;
+		}
+		monitoringController.doCompressedSerializable(httpRequest, httpResponse, serializable);
+	}
+
+	private Serializable createSerializable(HttpServletRequest httpRequest, String application,
+			MonitoringController monitoringController) throws Exception { // NOPMD
+		final String part = httpRequest.getParameter(PART_PARAMETER);
+		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return collectorServer.collectHeapHistogram(application);
+		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
+			return new ArrayList<SessionInformations>(collectorServer.collectSessionInformations(
+					application, sessionId));
+		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<List<ProcessInformations>>(
+					collectorServer.collectProcessInformations(application));
+		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
+					.getParameter(REQUEST_PARAMETER));
+			return collectorServer.collectDatabaseInformations(application, requestIndex);
+		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<List<ConnectionInformations>>(
+					collectorServer.collectConnectionInformations(application));
+		} else if (THREADS_PART.equalsIgnoreCase(part)) {
+			return new ArrayList<List<ThreadInformations>>(
+					collectorServer.getThreadInformationsLists(application));
+		}
+
+		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+		return monitoringController.createDefaultSerializable(javaInformationsList);
 	}
 
 	private HtmlReport createHtmlReport(HttpServletRequest req, HttpServletResponse resp,

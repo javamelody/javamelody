@@ -159,6 +159,19 @@ enum TransportFormat {
 		return valueOf(transportFormat.toUpperCase(Locale.getDefault()).trim());
 	}
 
+	static boolean isATransportFormat(String format) {
+		if (format == null) {
+			return false;
+		}
+		final String upperCase = format.toUpperCase(Locale.getDefault()).trim();
+		for (final TransportFormat transportFormat : TransportFormat.values()) {
+			if (transportFormat.toString().equals(upperCase)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	static void pump(InputStream input, OutputStream output) throws IOException {
 		final byte[] bytes = new byte[4 * 1024];
 		int length = input.read(bytes);
