@@ -238,9 +238,48 @@ class CollectorServer {
 	DatabaseInformations collectDatabaseInformations(String application, int requestIndex)
 			throws IOException {
 		final URL url = getUrlsByApplication(application).get(0);
-		final URL processesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ DATABASE_PART + '&' + REQUEST_PARAMETER + '=' + requestIndex);
-		return new LabradorRetriever(processesUrl).call();
+		final URL databaseUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + DATABASE_PART
+				+ '&' + REQUEST_PARAMETER + '=' + requestIndex);
+		return new LabradorRetriever(databaseUrl).call();
+	}
+
+	List<List<ConnectionInformations>> collectConnectionInformations(String application)
+			throws IOException {
+		assert application != null;
+		// récupération à la demande des connections
+		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
+		for (final URL url : getUrlsByApplication(application)) {
+			final URL connectionsUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
+					+ '=' + HttpParameters.CONNECTIONS_PART);
+			final LabradorRetriever labradorRetriever = new LabradorRetriever(connectionsUrl);
+			final List<ConnectionInformations> connections = labradorRetriever.call();
+			connectionInformations.add(connections);
+		}
+		return connectionInformations;
+	}
+
+	List<List<ProcessInformations>> collectProcessInformations(String application)
+			throws IOException {
+		assert application != null;
+		// récupération à la demande des processus
+		final List<List<ProcessInformations>> processInformations = new ArrayList<List<ProcessInformations>>();
+		for (final URL url : getUrlsByApplication(application)) {
+			final URL processUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
+					+ '=' + HttpParameters.PROCESSES_PART);
+			final LabradorRetriever labradorRetriever = new LabradorRetriever(processUrl);
+			final List<ProcessInformations> processList = labradorRetriever.call();
+			processInformations.add(processList);
+		}
+		return processInformations;
+	}
+
+	List<List<ThreadInformations>> getThreadInformationsLists(String application) {
+		final List<List<ThreadInformations>> result = new ArrayList<List<ThreadInformations>>();
+		for (final JavaInformations javaInformations : getJavaInformationsByApplication(application)) {
+			result.add(new ArrayList<ThreadInformations>(javaInformations
+					.getThreadInformationsList()));
+		}
+		return result;
 	}
 
 	private void addRequestsAndErrors(Collector collector, List<Counter> counters) {

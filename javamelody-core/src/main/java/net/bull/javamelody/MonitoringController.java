@@ -220,6 +220,17 @@ class MonitoringController {
 	private void doCompressedSerializable(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, List<JavaInformations> javaInformationsList)
 			throws IOException {
+		Serializable serializable;
+		try {
+			serializable = createSerializable(httpRequest, javaInformationsList);
+		} catch (final Exception e) {
+			serializable = e;
+		}
+		doCompressedSerializable(httpRequest, httpResponse, serializable);
+	}
+
+	void doCompressedSerializable(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			Serializable serializable) throws IOException {
 		// note: normalement la compression est supportée ici car s'il s'agit du serveur de collecte,
 		// LabradorRetriever appelle connection.setRequestProperty("Accept-Encoding", "gzip");
 		// et on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
@@ -233,28 +244,22 @@ class MonitoringController {
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 50 * 1024);
 			try {
-				doSerializable(httpRequest, wrappedResponse, javaInformationsList);
+				doSerializable(httpRequest, wrappedResponse, serializable);
 			} finally {
 				wrappedResponse.finishResponse();
 			}
 		} else {
-			doSerializable(httpRequest, httpResponse, javaInformationsList);
+			doSerializable(httpRequest, httpResponse, serializable);
 		}
 	}
 
 	private void doSerializable(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList) throws IOException {
+			Serializable serializable) throws IOException {
 		// l'appelant (un serveur d'agrégation par exemple) peut appeler
 		// la page monitoring avec un format "serialized" ou "xml" en paramètre
 		// pour avoir les données au format sérialisé java ou xml
 		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
 		final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
-		Serializable serializable;
-		try {
-			serializable = createSerializable(httpRequest, javaInformationsList);
-		} catch (final Exception e) {
-			serializable = e;
-		}
 		httpResponse.setContentType(transportFormat.getMimeType());
 		final String fileName = "JavaMelody_"
 				+ collector.getApplication().replace(' ', '_').replace("/", "") + '_'
@@ -276,9 +281,8 @@ class MonitoringController {
 			Action.checkSystemActionsEnabled();
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 			if (sessionId == null) {
-				final List<SessionInformations> sessionsInformations = SessionListener
-						.getAllSessionsInformations();
-				return new ArrayList<SessionInformations>(sessionsInformations);
+				return new ArrayList<SessionInformations>(
+						SessionListener.getAllSessionsInformations());
 			}
 			return SessionListener.getSessionInformationsBySessionId(sessionId);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
@@ -298,13 +302,14 @@ class MonitoringController {
 			return new ArrayList<ConnectionInformations>(
 					JdbcWrapper.getConnectionInformationsList());
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<ThreadInformations>(JavaInformations.buildThreadInformationsList());
+			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
+					.getThreadInformationsList());
 		}
 
 		return createDefaultSerializable(javaInformationsList);
 	}
 
-	private Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList) {
+	Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList) {
 		final List<Counter> counters = collector.getCounters();
 		final List<Serializable> serialized = new ArrayList<Serializable>(counters.size()
 				+ javaInformationsList.size());
