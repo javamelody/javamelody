@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix: When the spring context is initialized before the web filter of the monitoring and when "displayed-counters" is not used, the spring monitoring was not displayed (Pete in the user group).
+  * fix issue 80: Memory histogram should be supported on Mac OS X
   * added: graphic of the mean age of the currently valid http sessions (in minutes), displayed in the "Other charts"
 
 === 1.24.0 ===
