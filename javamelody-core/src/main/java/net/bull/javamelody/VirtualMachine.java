@@ -47,9 +47,11 @@ final class VirtualMachine {
 	 */
 	static boolean isSupported() {
 		// pour nodes hudson, on réévalue sans utiliser de constante
-		return "1.6".compareTo(System.getProperty("java.version")) < 0
-				&& (System.getProperty("java.vendor").contains("Sun")
-						|| System.getProperty("java.vendor").contains("Oracle") || isJRockit());
+		final String javaVersion = System.getProperty("java.version");
+		final String javaVendor = System.getProperty("java.vendor");
+		return "1.6".compareTo(javaVersion) < 0
+				&& (javaVendor.contains("Sun") || javaVendor.contains("Oracle")
+						|| javaVendor.contains("Apple") || isJRockit());
 	}
 
 	/**
