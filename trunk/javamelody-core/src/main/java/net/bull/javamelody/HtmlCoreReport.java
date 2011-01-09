@@ -180,7 +180,7 @@ class HtmlCoreReport {
 		writeln(END_DIV);
 
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters();
-		if (range.getPeriod() == Period.TOUT) {
+		if (range.getPeriod() == Period.TOUT && counterReportsByCounterName.size() > 1) {
 			writeln("<div align='right'>");
 			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
