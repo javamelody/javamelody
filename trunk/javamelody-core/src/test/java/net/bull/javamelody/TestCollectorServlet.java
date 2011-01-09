@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
@@ -35,6 +36,7 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static org.easymock.EasyMock.createNiceMock;
@@ -66,6 +68,7 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestCollectorServlet {
+	private static final String TRUE = "true";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 	private static final String TEST = "test";
 	private ServletConfig config;
@@ -79,7 +82,8 @@ public class TestCollectorServlet {
 	public void setUp() {
 		tearDown();
 		Utils.initialize();
-		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", TRUE);
+		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		config = createNiceMock(ServletConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
@@ -94,7 +98,7 @@ public class TestCollectorServlet {
 		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
 		// plus si ils utilisent JRobin
 		if (collectorServlet != null) {
-			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", "true");
+			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 			collectorServlet.destroy();
 		}
 	}
@@ -112,7 +116,7 @@ public class TestCollectorServlet {
 		setUp();
 		expect(
 				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.LOG.getCode())).andReturn("true").anyTimes();
+						+ Parameter.LOG.getCode())).andReturn(TRUE).anyTimes();
 		expect(
 				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
 						+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("127\\.0\\.0\\.1")
@@ -256,6 +260,38 @@ public class TestCollectorServlet {
 		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		doPart(parameters);
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoCompressedSerializable() throws IOException, ServletException {
+		final Map<String, String> parameters = new LinkedHashMap<String, String>();
+		parameters.put(FORMAT_PARAMETER, "xml");
+		// partParameter null: monitoring principal
+		parameters.put(PART_PARAMETER, null);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		doPart(parameters);
+		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
+		testDatabaseInformations.setUp();
+		try {
+			parameters.put(PART_PARAMETER, DATABASE_PART);
+			doPart(parameters);
+			parameters.put(REQUEST_PARAMETER, "0");
+			doPart(parameters);
+		} finally {
+			testDatabaseInformations.tearDown();
+		}
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, THREADS_PART);
 		doPart(parameters);
 	}
 

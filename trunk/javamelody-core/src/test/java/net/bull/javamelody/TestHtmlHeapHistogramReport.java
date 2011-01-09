@@ -133,6 +133,7 @@ public class TestHtmlHeapHistogramReport {
 		if (supported && !enabled) {
 			fail("supported && !enabled");
 		}
+		VirtualMachine.isJRockit();
 		// ces méthodes ne peuvent fonctionner dans maven et/ou junit
 		final Runnable runnable = new Runnable() {
 			public void run() {

@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -28,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -157,5 +159,20 @@ public class TestTransportFormat {
 		output.reset();
 		TransportFormat.pump(input, output);
 		assertArrayEquals("array equals", byteArray, output.toByteArray());
+	}
+
+	/** Test. */
+	@Test
+	public void testIsATransportFormat() {
+		final String message = "isATransportFormat";
+		assertFalse(message, TransportFormat.isATransportFormat(null));
+		for (final TransportFormat transportFormat : TransportFormat.values()) {
+			final String format = transportFormat.toString();
+			assertTrue(message, TransportFormat.isATransportFormat(format));
+			assertTrue(message,
+					TransportFormat.isATransportFormat(format.toLowerCase(Locale.getDefault())));
+			assertTrue(message, TransportFormat.isATransportFormat(format + ' '));
+		}
+		assertFalse(message, TransportFormat.isATransportFormat("n'importe quoi"));
 	}
 }
