@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletResponse;
  * Contrôleur au sens MVC de l'ihm de monitoring dans le serveur collecte.
  * @author Emeric Vernat
  */
-public class CollectorController {
+class CollectorController {
 	private static final String COOKIE_NAME = "javamelody.application";
 
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
