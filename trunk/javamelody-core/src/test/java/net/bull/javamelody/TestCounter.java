@@ -55,7 +55,7 @@ public class TestCounter {
 	public void setUp() {
 		Utils.initialize();
 		counter = new Counter("test", null);
-		counter.bindContext("bind context", "bind my context");
+		counter.bindContext("bind context", "bind my context", null, -1);
 	}
 
 	/** Finalisation. */
@@ -76,7 +76,7 @@ public class TestCounter {
 		final CounterRequest request = createCounterRequest();
 		// ce bindContext pour tester le cas où une requête est ajoutée avec un contexte et un contexte parent
 		// puis une requête ajoutée avec un contexte sans contexte parent
-		counter.bindContext(request.getName(), request.getName());
+		counter.bindContext(request.getName(), request.getName(), null, -1);
 
 		counter.addRequest(request.getName(), request.getMean(), 0, false,
 				request.getResponseSizeMean());
@@ -95,9 +95,9 @@ public class TestCounter {
 		// test addChildRequest dans addRequest
 		final Counter sqlCounter = new Counter("sql", null);
 		final Counter httpCounter = new Counter("http", null, sqlCounter);
-		httpCounter.bindContext("http request", "http request");
+		httpCounter.bindContext("http request", "http request", null, -1);
 		final String sqlRequest = "sql request";
-		sqlCounter.bindContext(sqlRequest, sqlRequest);
+		sqlCounter.bindContext(sqlRequest, sqlRequest, null, -1);
 		sqlCounter.addRequest(sqlRequest, 0, 0, false, -1); // ici context.addChildRequest
 		sqlCounter.addRequest(sqlRequest, 0, 0, false, -1); // 2ème pour passer dans le else de addChildRequestForDrillDown
 		httpCounter.addRequest("http request", 10, 2, false, 100);
@@ -196,7 +196,7 @@ public class TestCounter {
 	public void testAddRequests() {
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
-		counter.bindContext("context", "context");
+		counter.bindContext("context", "context", null, -1);
 		final CounterRequest counterRequestWithoutHits = counter.getCounterRequest(counter
 				.getOrderedRootCurrentContexts().get(0));
 		counter.addHits(counterRequestWithoutHits);
@@ -281,7 +281,7 @@ public class TestCounter {
 	public void testGetCounterRequest() {
 		counter.unbindContext();
 		final String requestName = "get counter request";
-		counter.bindContext(requestName, "my context");
+		counter.bindContext(requestName, "my context", null, -1);
 		final CounterRequest counterRequest = counter.getCounterRequest(counter
 				.getOrderedRootCurrentContexts().get(0));
 		assertEquals("request name", requestName, counterRequest.getName());
@@ -335,8 +335,8 @@ public class TestCounter {
 	}
 
 	static void bindRootContexts(String firstRequestName, Counter myCounter, int nbRootContexts) {
-		myCounter.bindContext(firstRequestName, "my context");
-		myCounter.bindContext("child context", "my child context");
+		myCounter.bindContext(firstRequestName, "my context", null, -1);
+		myCounter.bindContext("child context", "my child context", null, -1);
 		// on crée d'autres racines de contexte
 		try {
 			Thread.sleep(100);

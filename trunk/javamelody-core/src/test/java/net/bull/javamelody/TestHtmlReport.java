@@ -174,7 +174,7 @@ public class TestHtmlReport {
 		// counter avec période non TOUT et des requêtes
 		collector.collectWithoutErrors(javaInformationsList);
 		final String requestName = "test 1";
-		counter.bindContext(requestName, "complete test 1");
+		counter.bindContext(requestName, "complete test 1", null, -1);
 		sqlCounter.addRequest("sql1", 10, 10, false, -1);
 		counter.addRequest(requestName, 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
@@ -207,13 +207,13 @@ public class TestHtmlReport {
 		// il ne sera pas utilisé dans writeRequestAndGraphDetail
 		sqlCounter.setDisplayed(true);
 		final String requestName = "test 1";
-		counter.bindContext(requestName, "complete test 1");
+		counter.bindContext(requestName, "complete test 1", null, -1);
 		servicesCounter.clear();
-		servicesCounter.bindContext("myservices.service1", "service1");
-		sqlCounter.bindContext("sql1", "complete sql1");
+		servicesCounter.bindContext("myservices.service1", "service1", null, -1);
+		sqlCounter.bindContext("sql1", "complete sql1", null, -1);
 		sqlCounter.addRequest("sql1", 5, -1, false, -1);
 		servicesCounter.addRequest("myservices.service1", 10, 10, false, -1);
-		servicesCounter.bindContext("myservices.service2", "service2");
+		servicesCounter.bindContext("myservices.service2", "service2", null, -1);
 		servicesCounter.addRequest("myservices.service2", 10, 10, false, -1);
 		servicesCounter.addRequest("otherservices.service3", 10, 10, false, -1);
 		jspCounter.addRequest("jsp1", 10, 10, false, -1);
@@ -337,14 +337,14 @@ public class TestHtmlReport {
 		// addRequest pour que CounterRequestContext.getCpuTime() soit appelée
 		counter.addRequest("first request", 100, 100, false, 1000);
 		TestCounter.bindRootContexts("first request", counter, 3);
-		sqlCounter.bindContext("sql", "sql");
+		sqlCounter.bindContext("sql", "sql", null, -1);
 		htmlReport = new HtmlReport(collector, null, javaInformationsList, Period.TOUT, writer);
 		htmlReport.toHtml("message a", null);
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
-		myCounter.bindContext("my context", "my context");
+		myCounter.bindContext("my context", "my context", null, -1);
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b", null);
 		assertNotEmptyAndClear(writer);
