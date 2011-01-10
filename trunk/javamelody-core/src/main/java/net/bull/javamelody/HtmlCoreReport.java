@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Rapport html.
+ * Rapport html principal.
  * @author Emeric Vernat
  */
 class HtmlCoreReport {
