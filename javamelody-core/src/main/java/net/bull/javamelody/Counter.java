@@ -371,10 +371,6 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		return estimatedMemorySize;
 	}
 
-	void bindContext(String requestName, String completeRequestName) {
-		bindContext(requestName, completeRequestName, null, -1);
-	}
-
 	void bindContextIncludingCpu(String requestName) {
 		bindContext(requestName, requestName, null, ThreadInformations.getCurrentThreadCpuTime());
 	}

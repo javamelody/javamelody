@@ -101,7 +101,7 @@ public class TestHtmlHeapHistogramReport {
 	private void report(HeapHistogram heapHistogram) throws IOException {
 		heapHistogram.add(heapHistogram);
 		final StringWriter writer = new StringWriter();
-		new HtmlHeapHistogramReport(writer).toHtml(heapHistogram);
+		new HtmlHeapHistogramReport(heapHistogram, writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
 		final Counter counter = new Counter("test html report", null);

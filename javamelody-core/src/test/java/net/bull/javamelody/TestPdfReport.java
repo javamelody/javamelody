@@ -96,8 +96,8 @@ public class TestPdfReport {
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
-		counter.bindContext("test 1", "complete test 1");
-		sqlCounter.bindContext("sql1", "sql 1");
+		counter.bindContext("test 1", "complete test 1", null, -1);
+		sqlCounter.bindContext("sql1", "sql 1", null, -1);
 		sqlCounter.addRequest("sql1", 100, 100, false, -1);
 		counter.addRequest("test 1", 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
@@ -239,7 +239,7 @@ public class TestPdfReport {
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
-		myCounter.bindContext("my context", "my context");
+		myCounter.bindContext("my context", "my context", null, -1);
 		pdfReport = new PdfReport(collector2, false, Collections.singletonList(javaInformations),
 				Period.TOUT, output);
 		pdfReport.toPdf();
