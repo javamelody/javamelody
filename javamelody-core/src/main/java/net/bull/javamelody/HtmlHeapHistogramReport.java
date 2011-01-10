@@ -31,18 +31,19 @@ import net.bull.javamelody.HeapHistogram.ClassInfo;
  * @author Emeric Vernat
  */
 class HtmlHeapHistogramReport {
+	private final HeapHistogram heapHistogram;
 	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
-	HtmlHeapHistogramReport(Writer writer) {
+	HtmlHeapHistogramReport(HeapHistogram heapHistogram, Writer writer) {
 		super();
+		assert heapHistogram != null;
 		assert writer != null;
+		this.heapHistogram = heapHistogram;
 		this.writer = writer;
 	}
 
-	void toHtml(HeapHistogram heapHistogram) throws IOException {
-		assert heapHistogram != null;
-
+	void toHtml() throws IOException {
 		writeLinks();
 		writeln("<br/>");
 

@@ -233,7 +233,7 @@ class HtmlReport {
 		assert heapHistogram != null;
 		writeHtmlHeader();
 		writeMessageIfNotNull(message, heapHistoPart);
-		new HtmlHeapHistogramReport(writer).toHtml(heapHistogram);
+		new HtmlHeapHistogramReport(heapHistogram, writer).toHtml();
 		writeHtmlFooter();
 	}
 
