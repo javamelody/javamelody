@@ -90,7 +90,7 @@ class HtmlCacheInformationsReport {
 
 	private void writeCacheInformations(CacheInformations cacheInformations) throws IOException {
 		write("<td>");
-		write(cacheInformations.getName());
+		writer.write(htmlEncode(cacheInformations.getName()));
 		final String nextColumnAlignRight = "</td> <td align='right'>";
 		if (configurationEnabled) {
 			write(nextColumnAlignRight);
@@ -130,6 +130,10 @@ class HtmlCacheInformationsReport {
 			}
 		}
 		return false;
+	}
+
+	private static String htmlEncode(String text) {
+		return I18N.htmlEncode(text, false);
 	}
 
 	private void write(String html) throws IOException {
