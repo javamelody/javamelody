@@ -7,7 +7,7 @@
 <h3 align='center'>Online help of the 
 <a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a> monitoring</h3>
 The JavaMelody monitoring is a tool to measure and calculate statistics on real operation of an application
-depending on the usage of the application by the users.
+depending on the usage of the application by users.
 <br/>
 The monitoring is mainly based on statistics of requests and on evolution charts.
 It allows to improve applications in QA and production and helps to:<ul>
@@ -41,7 +41,7 @@ Memory Management</a><br/>
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Stats'/>
 Summary</h3>
 In the page of monitoring, the summary shows evolution charts for several values of measures.<br/>
-These measures are taken at a time T, for example every minutes.
+These measures are taken at a time T, for example every minute.
 Each chart follows the evolution of a value of measure on the period short or large chosen
 with the links above the summary: <img width='16' height='16' src='?resource=calendar_view_day.png' alt='day'/> the day,
  <img width='16' height='16' src='?resource=calendar_view_week.png' alt='week'/> the week,
@@ -59,7 +59,7 @@ The charts displayed are:<ul>
 <li>the number of active threads (or number of current http requests)</li>
 <li>the number of active jdbc connections (or number of current sql requests)</li>
 <li>the number of used jdbc connections (or number of opened sql transactions);
-  in the case where there is no datasource, it is in fact the number of opened jdbc connections in the connections pool</li>
+  in the case where there is no datasource, it is in fact the number of opened jdbc connections in the connection pool</li>
 <li>for each counter of requests (http, sql and possibly ejb, spring, guice, struts actions, jsp pages) :<ul>
 	<li>the number of hits per minute (or number of executions of requests per minute)</li>
 	<li>the mean time in milliseconds</li>
@@ -88,7 +88,7 @@ The link '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' d
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
 the chart of the memory is the sum of the memories in each server,
 but the cpu percentage is between 0 and 100 for all servers,
-and the number of http sessions is the sum of sessions in each servers,
+and the number of http sessions is the sum of sessions in each server,
 as are the number of active threads, the number of active or used jdbc connections,
 and the number of hits per minute or the mean time in milliseconds.
 
@@ -123,10 +123,10 @@ and possibly the physical memory of the server, or to reduce if possible the num
 
 <h4>Charts of active threads and of active jdbc connections: use case of a flat level (long requests)</h4>
 <a href='?resource=help/activeThreads.png' target='_blank'><img src='?resource=help/activeThreads.png' alt='Active threads' width='312' height='147' /></a>
-<p>When a application is sparsely or not used, the charts of active threads and of active jdbc connections stay at 0.
+<p>When an application is sparsely or not used, the charts of active threads and of active jdbc connections stay at 0.
 Indeed, most requests are fortunately short and most measures (done each 2 minutes for example)
 are taken without active requests, except 1 or 2 occasionally shown as a peak.</p>
-But, when there is a flat level in the chart of active threads like in the example above,
+But, when there is a flat level in the chart of active threads as in the example above,
 this means that there is one or several requests which are long (several minutes or several hours)
 and which potentially saturate the application server or the database.<br/>
 To find the cause:<ul>
@@ -143,11 +143,11 @@ To find the cause:<ul>
 you can use the script @$ORACLE_HOME/rdbms/admin/catplan.sql as user SYS if v10g or above
 and otherwise @$ORACLE_HOME/rdbms/admin/utlxplan.sql and "grant all on plan_table to public" if v9i or less).</li>
 <li>It can be useful to check with the monitoring the state of the memory and the cpu used by the application server.
- It can also be useful to check on your own the state of the memory, of the cpu and of disk access of your database.</li>
+ It can also be useful to check by yourself the state of the memory, of the cpu and of disk access of your database.</li>
 </ul>
 
 <h4>Charts of used jdbc connections : use case of a jdbc connections leak</h4>
-In general, the jdbc connections are shared in a connections pool with a jdbc datasource,
+In general, the jdbc connections are shared in a connection pool with a jdbc datasource,
 which allows in particular not to reopen the connections to the database
 data continuously and which can also define a maximum number of transactions
 which can run simultaneously per instance of the application server.
@@ -180,7 +180,7 @@ of connections by the pool and not the real uses of these connections by the app
 
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistics</h3>
-The statistics of a counter shows the statistics of the requests executed on the application server.<br/>
+The statistics of a counter show the statistics of the requests executed on the application server.<br/>
 7 counters of requests exist today:<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Http statistics</li>
@@ -203,9 +203,9 @@ For each counter, a request appears in the statistics when it is finished;
 to know the unfinished requests see the 
 '<img width='16' height='16' src='?resource=hourglass.png' alt='Current requests'/> Current requests' part of the report.<br/>
 As for the charts, the statistics of requests are for the period small or large chosen with the
-links above the charts: the day (since 0h), the week, the month or the year.
+links above the charts: the day (from 0h), the week, the month or the year.
 So it is possible to see the statistics for only the current day, or for example for a version
-of the application deployed since a month without the statistics of previous versions.<br/>
+of the application deployed for a month without the statistics of previous versions.<br/>
 And for each counter, the report shows a summary of statistics for all the requests (global),
 of the statistics going beyond the threshold of alert level 1 (warning)
 and of those going beyond the threshold of alert level 2 (severe).
@@ -245,7 +245,7 @@ But this is not grave because in general, the problematic requests will have an 
 
 <h3><img width='24' height='24' src='?resource=error.png' alt='Http system errors'/>
 Statistics of http system errors</h3>
-The statistics of http system errors shows the errors which come back to the http filter of the
+The statistics of http system errors show the errors which come back to the http filter of the
 monitoring, either by exceptions thrown by the application via a servlet,
 either by an http error code (404 "not found" or 500 "internal server error" for example,
 <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">complete list</a>).
@@ -253,29 +253,28 @@ These statistics display the list of the 250 most frequent system errors with th
 of each error on the chosen period, and with the mean time of the request for each error.
 Only the most frequent error is displayed initially, the other errors being displayed by clicking the link '+ Details'.
 The dates, hours, users and complete http requests of the last 100 errors are displayed by clicking the link '+ Last errors'.
-By clicking on the name of an error, it is possible to see for this error the java stack-trace of
-the error when it is a java exception.
+By clicking on the name of an error, it is possible to see its java stack-trace when it is a java exception.
 <br/>These statistics of errors allow to improve the reliability of the application based on its real usage in production.
 
 <h3><img width='24' height='24' src='?resource=log.png' alt="System errors logs"/>
-Statistics of system errors logs</h3>
-The statistics of system errors logs show the 'warning' and 'error' logs written by the application
+Statistics of system error logs</h3>
+The statistics of system error logs show the 'warning' and 'error' logs written by the application
 (the libraries log4j of apache and java.util.logging of the jdk are both supported).
-These statistics display the list of the 500 most frequest errors logs with the number of
+These statistics display the list of the 500 most frequent error logs with the number of
 cases of each error on the chosen period.
 Only the most frequent error log is displayed initially, the other logs being displayed by clicking the link '+ Details'.
-The dates, hours, users and where appropriate the complete http requests of the last 100 errors logs
+The dates, hours, users and where appropriate the complete http requests of the last 100 error logs
 are displayed by clicking the link '+ Last errors'.
 By clicking on the name of an error log, it is possible to see for this log the java stack-trace of
 the error when a java exception has been written in the log.
-<br/>These statistics of errors logs allow equally to improve the reliability of the application
+<br/>These statistics of error logs allow equally to improve the reliability of the application
 based on its real usage in production.
 
 <h3><img width='24' height='24' src='?resource=hourglass.png' alt='Current requests'/>
 Current requests</h3>
-The current requests shows at the moment of the generation of the report the executions of not ended requests.<br/>
-The tree of http requests, possibly ejb, spring and/or sql is displayed with for each of the requests
- the time elapsed already, the cpu time elapsed, the number of sql requests already executed and the sql time of these requests.<br/>
+The current requests show at the moment of the generation of the report the executions of not ended requests.<br/>
+The tree of http requests, possibly ejb, spring and/or sql is displayed with for each of the requests,
+ the time already elapsed, the cpu time elapsed, the number of sql requests already executed and the sql time of these requests.<br/>
 The global statistics of the requests are displayed again for the current requests:
  mean time, mean cpu time, mean sql hits and mean sql time.
 It allows to compare the current requests with the global statistics.<br/>
@@ -283,17 +282,17 @@ The current java stack-trace is displayed by a tooltip on the thread (if jdk 1.6
 Only the longest request is displayed initially, the others are displayed by clicking on the link '+ Details'.<br/>
 
 <h3><img width='24' height='24' src='?resource=systeminfo.png' alt='System informations'/>
-System informations</h3>
-The system informations display at the moment of the generation of the report some informations on the java server,
-its state and on the operating system of the server.<br/>
-The main informations displayed initially are:
+System information</h3>
+The system information displays at the moment of the generation of the report some information on the java server,
+on its state and on the operating system of the server.<br/>
+The main information displayed initially is:
  used java memory, number of http sessions, number of active threads, number of active jdbc connections
  and number of used jdbc connnections.
 These are the same values which are used for the charts.<br/>
-The other informations, such as the version of the server, of the operating system or of the database
- or the memory of the operating system, are displayed by clicking on the links '+ Details'.<br/>
+The other information, such as the version of the server, of the operating system or of the database
+ or the memory of the operating system, is displayed by clicking on the links '+ Details'.<br/>
 <br/>
-In this part of the system informations, some links allow to run the system actions:<ul>
+In this part of the system information, some links allow to run the system actions:<ul>
 <li><img src='?resource=broom.png' width='20' height='20' alt='Garbage collector' />
 'Execute the garbage collector', to force a release of memory</li>
 <li><img src='?resource=heapdump.png' width='20' height='20' alt='Heap dump' />
@@ -323,11 +322,11 @@ and for each process: user, memory and cpu</li>
 'JNDI tree': Browse the JNDI context, for example to find the path and name of a JDBC datasource.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Opened jdbc connections' />
-To help find a possible jdbc connections leak, the 'opened jdbc connections'
+To help find a possible jdbc connection leak, the 'opened jdbc connections'
 shows the list of the stack traces of where were opened jdbc connections.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Database' />
-'Database': Informations and statistics on the database (if postgresql, mysql or oracle),
+'Database': Information and statistics on the database (if postgresql, mysql or oracle),
 like for example the current sql requests or if oracle, the longest requests in cumulative time with
 display of the cpu time and of the elementary cost (of buffer gets).
 This function will display an error if the user configured in the application to connect to the
@@ -335,12 +334,12 @@ database does not have the necessary rights. With oracle, the following request 
 "grant select any dictionary to myuser".</li>
 </ul>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
-the system informations of each server are displayed (aggregated for the list of sessions and for
+the system information of each server is displayed (aggregated for the list of sessions and for
 the memory histogram) and the actions are executed on each server one at a time.
 
 <h3><img width='24' height='24' src='?resource=threads.png' alt='Threads'/>
 Threads</h3>
-This table displays the list of all threads in the server, with for each the priority, the state
+This table displays the list of all the threads in the server, with for each the priority, the state
 and the stack-trace in a tooltip (if jdk 1.6) among other.
 
 <h3><img width='24' height='24' src='?resource=caches.png' alt='Caches of data'/>
@@ -365,11 +364,11 @@ Like with http requests, the statistics for jobs are displayed with mean times, 
 sql hits and sql times for the selected period.
 <br/>Buttons are available to pause or to resume each or all jobs.
 <br/>If you have quartz jobs scheduled with Spring but you don't see any job in the report,
-have you added the property "exposeSchedulerInRepository" as said in the user guide?
+have you added the property "exposeSchedulerInRepository" as said in the user's guide?
 
 <h3>Language</h3>
-The monitoring is displayed in French or in English depending of the preferred language in your browser.
-If the monitoring is in French language instead of being in English language, you should modify the preferred language.
+The monitoring is displayed in French or in English depending on the preferred language in your browser.
+If the monitoring is in French instead of being in English, you should modify the preferred language.
 For example, in <a href="http://www.mozilla.com/firefox" target="_blank">Firefox</a>,
 open the menu and popup "Tools, Options, Content, Language ... Choose" and move "Anglais [en]" to the first place:
 <br/><br/>
