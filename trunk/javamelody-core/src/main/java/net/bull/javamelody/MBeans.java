@@ -21,12 +21,14 @@ package net.bull.javamelody;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import javax.management.Attribute;
+import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
@@ -61,7 +63,27 @@ final class MBeans {
 		return mbeanServer.getAttribute(name, attribute);
 	}
 
+	private static void initJRockitMBeansIfNeeded() {
+		// si jrockit, on initialise les MBeans spécifiques jrockit lors de la première demande
+		if (System.getProperty("java.vendor").contains("BEA")) {
+			try {
+				// initialisation des MBeans jrockit comme indiqué dans http://blogs.oracle.com/hirt/jrockit/
+				try {
+					getMBeanServer().getMBeanInfo(
+							new ObjectName("bea.jrockit.management:type=JRockitConsole"));
+				} catch (final InstanceNotFoundException e1) {
+					getMBeanServer().createMBean("bea.jrockit.management.JRockitConsole", null);
+					LOG.debug("JRockit MBeans initialized");
+				}
+			} catch (final JMException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+	}
+
 	Map<String, Map<String, List<ObjectName>>> getMapObjectNamesByDomainAndFirstProperty() {
+		initJRockitMBeansIfNeeded();
+
 		// TreeMap et non HashMap ou LinkedHashMap pour trier par ordre des clés
 		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = new TreeMap<String, Map<String, List<ObjectName>>>();
 		final Set<ObjectName> names = mbeanServer.queryNames(null, null);
@@ -119,7 +141,7 @@ final class MBeans {
 		return result;
 	}
 
-	private static Object convertValueIfNeeded(Object value) {
+	private Object convertValueIfNeeded(Object value) {
 		if (value instanceof CompositeData) {
 			final CompositeData data = (CompositeData) value;
 			final Map<String, Object> values = new TreeMap<String, Object>();
@@ -136,10 +158,31 @@ final class MBeans {
 		} else if (value instanceof Object[]) {
 			return Arrays.asList((Object[]) value);
 		} else if (value instanceof TabularData) {
-			final List<Object> list = new ArrayList<Object>();
 			final TabularData tabularData = (TabularData) value;
-			for (final Object object : tabularData.values()) {
-				list.add(convertValueIfNeeded(object));
+			return convertValueIfNeeded(tabularData.values());
+		} else if (value instanceof Collection) {
+			final List<Object> list = new ArrayList<Object>();
+			for (final Object data : (Collection<?>) value) {
+				list.add(convertValueIfNeeded(data));
+			}
+			return list;
+		}
+		return convertJRockitValueIfNeeded(value);
+	}
+
+	private static Object convertJRockitValueIfNeeded(Object value) {
+		if (value instanceof double[]) {
+			// pour jrockit MBeans
+			final List<Double> list = new ArrayList<Double>();
+			for (final double data : (double[]) value) {
+				list.add(data);
+			}
+			return list;
+		} else if (value instanceof int[]) {
+			// pour jrockit MBeans
+			final List<Integer> list = new ArrayList<Integer>();
+			for (final int data : (int[]) value) {
+				list.add(data);
 			}
 			return list;
 		}
@@ -147,6 +190,8 @@ final class MBeans {
 	}
 
 	static String getConvertedAttributes(String jmxValueParameter) {
+		initJRockitMBeansIfNeeded();
+
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;
 		for (final String mbeansAttribute : jmxValueParameter.split("[|]")) {
@@ -168,8 +213,8 @@ final class MBeans {
 			}
 			try {
 				final MBeans mbeans = new MBeans();
-				final Object jmxValue = convertValueIfNeeded(mbeans.getAttribute(new ObjectName(
-						name), attribute));
+				final Object jmxValue = mbeans.convertValueIfNeeded(mbeans.getAttribute(
+						new ObjectName(name), attribute));
 				sb.append(jmxValue);
 			} catch (final JMException e) {
 				throw new IllegalArgumentException(name + '.' + attribute, e);
