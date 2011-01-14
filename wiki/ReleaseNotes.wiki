@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix: When the spring context is initialized before the web filter of the monitoring and when "displayed-counters" is not used, the spring monitoring was not displayed (Pete in the user group).
+  * fix: When the spring context is initialized before the web filter of the monitoring and when "displayed-counters" is not used, the spring monitoring was not displayed (Pete in the users group).
   * fix some issues in the monitoring of Hudson nodes when the operating systems of the nodes are heterogeneous
   * fix issue 80: Memory histogram should be supported on Mac OS X
   * fix issue 83: StringIndexOutOfBoundsException for caches with # in the name of a cache
