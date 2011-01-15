@@ -485,7 +485,7 @@ org.osgi.framework.system.packages com.sun.management; \
 	the state of the server at this moment. But don't worry, when the application is undeployed,
 	JavaMelody writes a file called <<<last_shutdown.html>>> in the same storage directory
 	as explained in the previous chapter. It is the JavaMelody report in html format, and it
-	contains the statistics for the current day and the system informations (such as the used memory)
+	contains the statistics for the current day and the system information (such as the used memory)
 	for the current time just before the application is undeployed, but it does not contain charts.
 	
 * Format of RRD files
