@@ -333,7 +333,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	the report of the monitoring. For example, <<<http://.../admin/performance>>> in place of <<<http://.../monitoring>>>
 	
 	The parameter <<<no-database>>> just disables the monitoring of jdbc connections, the monitoring
-	of sql requests and the reports on the database in system informations.
+	of sql requests and the reports on the database in system information.
 	Set it to true to disable all that.
 	
 	The parameter <<<disabled>>> (<<<false>>> by default) just disables the monitoring.
@@ -783,13 +783,13 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 14. Database user
 
-	From the html page of the monitoring, it is possible to display informations and statistics
+	From the html page of the monitoring, it is possible to display information and statistics
 	on the database (if postgresql, mysql or oracle),
 	like for example the current sql requests or if oracle, the longest requests in cumulative time with
 	display of the cpu time and of the elementary cost (of buffer gets).
 	
 	For that, the user in the database used by the monitored application must have the necessary
-	rights to read those informations and statistics. For example the right to execute the request
+	rights to read those information and statistics. For example the right to execute the request
 	<<<select * from pg_stat_activity>>> in postgresql, or the request <<<show full processlist>>>
 	in mysql or the request <<<select * from v$session>>> in oracle.
 	
@@ -854,7 +854,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	an exception like the following in the server output at the start of the webapp with JavaMelody:
 	"java.security.AccessControlException: access denied ...".
 	
-	It is because JavaMelody needs access to a lot of system informations and it needs to write its files.
+	It is because JavaMelody needs access to a lot of system data and it needs to write its files.
 	In order for JavaMelody to work, you can disable the SecurityManager (if Tomcat, remove the option
 	{{{http://tomcat.apache.org/tomcat-6.0-doc/security-manager-howto.html}-security}} from start)
 	or if you want to keep it, you can modify the
