@@ -6,6 +6,7 @@
   * [http://sourceforge.net/apps/wordpress/cia/2010/03/04/javamelody-for-chilled-application-monitoring/ Pether Sörling]
   * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
   * [http://panbhatt.blogspot.com/2011/01/monitoring-your-server-java.html Panbhatt]
+  * [http://looking4q.blogspot.com/2011/01/monitorize-your-own-applications-with.html Alberto]
   * [http://padcom13.blogspot.com/2010/11/grails-quartz-and-javamelody.html Padcom on Grails and Quartz]
   * [http://helian.javaeye.com/blog/548476 Helian (Chinese)]
   * [http://nirvana-blanks.javaeye.com/blog/809629 nirvana_blanks (Chinese)]
