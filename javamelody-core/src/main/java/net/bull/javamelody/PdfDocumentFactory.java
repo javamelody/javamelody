@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.lowagie.text.BadElementException;
+import com.lowagie.text.ChapterAutoNumber;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -185,7 +187,27 @@ class PdfDocumentFactory {
 		writer.setPageEvent(new PdfAdvancedPageNumberEvents());
 	}
 
-	Image getParagraphImage(String resourceFileName) throws DocumentException, IOException {
+	Element createParagraphElement(String paragraphTitle, String iconName)
+			throws DocumentException, IOException {
+		final Paragraph paragraph = new Paragraph("", PARAGRAPH_TITLE_FONT);
+		paragraph.setSpacingBefore(5);
+		paragraph.setSpacingAfter(5);
+		if (iconName != null) {
+			paragraph.add(new Chunk(getParagraphImage(iconName), 0, -5));
+		}
+		final Phrase element = new Phrase(' ' + paragraphTitle, PARAGRAPH_TITLE_FONT);
+		element.setLeading(12);
+		paragraph.add(element);
+		// chapter pour avoir la liste des signets
+		final ChapterAutoNumber chapter = new ChapterAutoNumber(paragraph);
+		// sans numéro de chapitre
+		chapter.setNumberDepth(0);
+		chapter.setBookmarkOpen(false);
+		chapter.setTriggerNewPage(false);
+		return chapter;
+	}
+
+	private Image getParagraphImage(String resourceFileName) throws DocumentException, IOException {
 		Image image = paragraphImagesByResourceName.get(resourceFileName);
 		if (image == null) {
 			image = getImage(resourceFileName);

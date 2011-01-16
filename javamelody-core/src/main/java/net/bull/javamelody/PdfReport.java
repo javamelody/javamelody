@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -429,23 +428,7 @@ class PdfReport {
 
 	private void addParagraph(String paragraphTitle, String iconName) throws DocumentException,
 			IOException {
-		final Paragraph paragraph = new Paragraph("", PdfDocumentFactory.PARAGRAPH_TITLE_FONT);
-		paragraph.setSpacingBefore(5);
-		paragraph.setSpacingAfter(5);
-		if (iconName != null) {
-			paragraph.add(new Chunk(pdfDocumentFactory.getParagraphImage(iconName), 0, -5));
-		}
-		final Phrase element = new Phrase(' ' + paragraphTitle,
-				PdfDocumentFactory.PARAGRAPH_TITLE_FONT);
-		element.setLeading(12);
-		paragraph.add(element);
-		// chapter pour avoir la liste des signets
-		final ChapterAutoNumber chapter = new ChapterAutoNumber(paragraph);
-		// sans numéro de chapitre
-		chapter.setNumberDepth(0);
-		chapter.setBookmarkOpen(false);
-		chapter.setTriggerNewPage(false);
-		add(chapter);
+		add(pdfDocumentFactory.createParagraphElement(paragraphTitle, iconName));
 	}
 
 	private static String getI18nString(String key) {
