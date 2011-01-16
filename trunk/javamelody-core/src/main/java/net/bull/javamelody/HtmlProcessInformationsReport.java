@@ -114,7 +114,7 @@ class HtmlProcessInformationsReport {
 		write(newColumnRight);
 		write(htmlEncode(processInformations.getCpuTime()));
 		write(newColumn);
-		write(htmlEncode(processInformations.getCommand()));
+		writer.write(htmlEncode(processInformations.getCommand()));
 		write("</td>");
 	}
 
