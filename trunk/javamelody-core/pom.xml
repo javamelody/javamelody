@@ -359,14 +359,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
-				Pour corriger
-				http://sourceforge.net/tracker/index.php?func=detail&aid=2230809&group_id=56262&atid=479921
-				en attendant une version de maven-pmd.plugin avec pmd 4.2.5 <plugin>
-				<artifactId>maven-pmd-plugin</artifactId> <dependencies>
-				<dependency> <groupId>pmd</groupId> <artifactId>pmd</artifactId>
-				<version>4.2.5</version> </dependency> </dependencies> </plugin>
-			-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
