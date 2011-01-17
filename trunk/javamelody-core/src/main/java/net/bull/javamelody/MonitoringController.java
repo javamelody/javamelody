@@ -73,7 +73,9 @@ import javax.servlet.http.HttpServletResponse;
  * Contrôleur au sens MVC de l'ihm de monitoring.
  * @author Emeric Vernat
  */
+// CHECKSTYLE:OFF
 class MonitoringController {
+	// CHECKSTYLE:ON
 	static {
 		boolean webXmlExists = false;
 		boolean pomXmlExists = false;
@@ -539,26 +541,61 @@ class MonitoringController {
 
 	private void doPdf(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
-		if (!isFromCollectorServer()) {
-			// avant de faire l'affichage on fait une collecte,  pour que les courbes
-			// et les compteurs par jour soit à jour avec les dernières requêtes
-			collector.collectLocalContextWithoutErrors();
-		}
+		addPdfContentTypeAndDisposition(httpRequest, httpResponse);
+		try {
+			final String part = httpRequest.getParameter(PART_PARAMETER);
+			if (SESSIONS_PART.equalsIgnoreCase(part)) {
+				final PdfOtherReport pdfOtherReport = new PdfOtherReport(
+						collector.getApplication(), httpResponse.getOutputStream());
+				final List<SessionInformations> sessionsInformations;
+				if (!isFromCollectorServer()) {
+					sessionsInformations = SessionListener.getAllSessionsInformations();
+				} else {
+					sessionsInformations = collectorServer.collectSessionInformations(
+							collector.getApplication(), null);
+				}
+				pdfOtherReport.writeSessionInformations(sessionsInformations);
+			} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+				final HeapHistogram heapHistogram;
+				if (!isFromCollectorServer()) {
+					try {
+						heapHistogram = VirtualMachine.createHeapHistogram();
+					} catch (final Exception e) {
+						// ne devrait pas arriver puisque le pdf ne peut s'afficher sans afficher auparavant le html
+						throw new IllegalStateException(e);
+					}
+				} else {
+					heapHistogram = collectorServer
+							.collectHeapHistogram(collector.getApplication());
+				}
+				final PdfOtherReport pdfOtherReport = new PdfOtherReport(
+						collector.getApplication(), httpResponse.getOutputStream());
+				pdfOtherReport.writeHeapHistogram(heapHistogram);
+			} else {
+				if (!isFromCollectorServer()) {
+					// avant de faire l'affichage on fait une collecte,  pour que les courbes
+					// et les compteurs par jour soit à jour avec les dernières requêtes
+					collector.collectLocalContextWithoutErrors();
+				}
 
-		// simple appel de monitoring sans format
+				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+				final PdfReport pdfReport = new PdfReport(collector, isFromCollectorServer(),
+						javaInformationsList, range, httpResponse.getOutputStream());
+				pdfReport.toPdf();
+			}
+		} finally {
+			httpResponse.getOutputStream().flush();
+		}
+	}
+
+	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		// méthode utilisée dans le monitoring hudson
 		httpResponse.setContentType("application/pdf");
 		httpResponse.addHeader(
 				CONTENT_DISPOSITION,
 				encodeFileNameToContentDisposition(httpRequest,
 						PdfReport.getFileName(collector.getApplication())));
-		try {
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final PdfReport pdfReport = new PdfReport(collector, isFromCollectorServer(),
-					javaInformationsList, range, httpResponse.getOutputStream());
-			pdfReport.toPdf();
-		} finally {
-			httpResponse.getOutputStream().flush();
-		}
 	}
 
 	private void doResource(HttpServletResponse httpResponse, String resource) throws IOException {

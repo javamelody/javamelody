@@ -31,6 +31,7 @@ import net.bull.javamelody.HeapHistogram.ClassInfo;
  * @author Emeric Vernat
  */
 class HtmlHeapHistogramReport {
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final HeapHistogram heapHistogram;
 	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -184,8 +185,12 @@ class HtmlHeapHistogramReport {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		writeln("<a href='?part=heaphisto'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln(separator);
+			write("<a href='?part=heaphisto&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln(separator);
-
 		if (Action.GC_ENABLED) {
 			writeln("<a href='?part=heaphisto&amp;action=gc' onclick=\"javascript:return confirm('"
 					+ I18N.getStringForJavascript("confirm_ramasse_miette") + "');\">");

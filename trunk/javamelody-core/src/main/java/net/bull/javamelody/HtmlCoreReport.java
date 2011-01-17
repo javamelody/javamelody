@@ -440,7 +440,7 @@ class HtmlCoreReport {
 		htmlCounterReport.writeRequestsAggregatedOrFilteredByClassName(requestId);
 	}
 
-	private static boolean isPdfEnabled() {
+	static boolean isPdfEnabled() {
 		try {
 			Class.forName("com.lowagie.text.Document");
 			return true;
