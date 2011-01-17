@@ -33,6 +33,7 @@ import net.bull.javamelody.SessionInformations.SessionAttribute;
  */
 class HtmlSessionInformationsReport {
 	private static final String A_HREF_PART_SESSIONS = "<a href='?part=sessions";
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
@@ -116,6 +117,11 @@ class HtmlSessionInformationsReport {
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			write(A_HREF_PART_SESSIONS + "&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS
 				+ "&amp;action=invalidate_sessions' onclick=\"javascript:return confirm('"
