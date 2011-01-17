@@ -250,8 +250,9 @@
 			<uniqueVersion>false</uniqueVersion>
 			<id>java.net-m2-repository</id>
 			<!--
-				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url -->
-			<url>java-net:/maven2-repository/trunk/repository/</url>
+				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url
+				url>java-net:/maven2-repository/trunk/repository/</url -->
+			<url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
