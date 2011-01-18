@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
@@ -557,6 +558,10 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
+		parameters.remove(PART_PARAMETER);
+		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
+		monitoring(parameters);
+		parameters.remove(JMX_VALUE);
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
 		parameters.put(COUNTER_PARAMETER, "services");
 		monitoring(parameters);
@@ -564,6 +569,20 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 
+		doMonitoringWithGraphPart();
+
+		parameters.put(PART_PARAMETER, "unknown part");
+		boolean exception = false;
+		try {
+			monitoring(parameters);
+		} catch (final IllegalArgumentException e) {
+			exception = true;
+		}
+		assertTrue("exception if unknown part", exception);
+	}
+
+	private void doMonitoringWithGraphPart() throws IOException, ServletException {
+		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(PART_PARAMETER, GRAPH);
 		parameters.put(GRAPH, "usedMemory");
 		monitoring(parameters);
@@ -575,15 +594,6 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, USAGES_PART);
 		parameters.put(GRAPH, "unknown");
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, "unknown part");
-		boolean exception = false;
-		try {
-			monitoring(parameters);
-		} catch (final IllegalArgumentException e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
 	}
 
 	private void monitorJdbcParts(Map<String, String> parameters) throws IOException,
@@ -645,7 +655,16 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "pdf"));
+		final Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put(FORMAT_PARAMETER, "pdf");
+		monitoring(parameters);
+
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		monitoring(parameters);
+
+		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
+		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		//		monitoring(parameters);
 	}
 
 	/** Test.
