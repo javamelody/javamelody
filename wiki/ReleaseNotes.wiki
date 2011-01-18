@@ -7,6 +7,7 @@
   * fix issue 83: StringIndexOutOfBoundsException for caches with # in the name of a cache
   * added: graphic of the mean age of the currently valid http sessions (in minutes), displayed in the "Other charts"
   * added: if JRockit, display the JRockit specific MBeans
+  * added: pdf reports of http sessions and of heap histogram
 
 === 1.24.0 ===
 
