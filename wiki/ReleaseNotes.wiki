@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.25.0 ===
 
   * fix: When the spring context is initialized before the web filter of the monitoring and when "displayed-counters" is not used, the spring monitoring was not displayed (Pete in the users group).
   * fix some issues in the monitoring of Hudson nodes when the operating systems of the nodes are heterogeneous
