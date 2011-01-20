@@ -29,6 +29,8 @@
 		<echo message="${ant.version}" level="info" />
 		<echo message="${java.runtime.name}, ${java.runtime.version}" level="info" />
 		<echo message="${os.name} ${sun.os.patch.level}, ${os.arch}/${sun.arch.data.model}" level="info" />
+		<property file="VERSION.properties" />
+		<echo message="JavaMelody version: ${version}" level="info" />
 		<tstamp>
 			<format property="TODAY_FR" pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
 		</tstamp>
