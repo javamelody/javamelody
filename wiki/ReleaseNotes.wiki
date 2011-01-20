@@ -3,8 +3,8 @@
 
   * fix: When the spring context is initialized before the web filter of the monitoring and when "displayed-counters" is not used, the spring monitoring was not displayed (Pete in the users group).
   * fix some issues in the monitoring of Hudson nodes when the operating systems of the nodes are heterogeneous
-  * fix issue 36: Grails Melody plugin blocks closure
-  * fix issue 79: Spring security core integration for the Grails Melody plugin
+  * fix issue 36: Grails Melody plugin blocks closure (fixed by _Liu Chao_)
+  * fix issue 79: Spring security core integration for the Grails Melody plugin (fixed by _Jean Barmash_ and _Liu Chao_)
   * fix issue 80: Memory histogram should be supported on Mac OS X
   * fix issue 83: StringIndexOutOfBoundsException for caches with # in the name of a cache
   * added: graphic of the mean age of the currently valid http sessions (in minutes), displayed in the "Other charts"
