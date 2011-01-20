@@ -140,6 +140,11 @@ public class TestMBeans {
 		} catch (final IllegalArgumentException e) {
 			assertNotNull("e", e);
 		}
+		try {
+			MBeans.getConvertedAttributes("noAttribute");
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("e", e);
+		}
 	}
 
 	/** Test.

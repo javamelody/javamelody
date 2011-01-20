@@ -28,6 +28,7 @@ import java.util.List;
  * @author Emeric Vernat
  */
 class HtmlProcessInformationsReport {
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final List<ProcessInformations> processInformationsList;
 	private final Writer writer;
 	private final boolean windows;
@@ -123,6 +124,11 @@ class HtmlProcessInformationsReport {
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=processes'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			write("<a href='?part=processes&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln("</div>");
 	}
 

@@ -555,6 +555,12 @@ class MonitoringController {
 							collector.getApplication(), null);
 				}
 				pdfOtherReport.writeSessionInformations(sessionsInformations);
+			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+				final PdfOtherReport pdfOtherReport = new PdfOtherReport(
+						collector.getApplication(), httpResponse.getOutputStream());
+				final List<ProcessInformations> processInformations = ProcessInformations
+						.buildProcessInformations();
+				pdfOtherReport.writeProcessInformations(processInformations);
 			} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 				final HeapHistogram heapHistogram;
 				if (!isFromCollectorServer()) {

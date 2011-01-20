@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -66,6 +67,32 @@ class PdfOtherReport {
 							I18N.createDateAndTimeFormat().format(heapHistogram.getTime())),
 					"memory.png");
 			new PdfHeapHistogramReport(heapHistogram, document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
+	void writeProcessInformations(List<ProcessInformations> processInformations) throws IOException {
+		try {
+			document.open();
+			addParagraph(getI18nString("Processus"), "processes.png");
+			new PdfProcessInformationsReport(processInformations, document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
+	void writeProcessInformations(Map<String, List<ProcessInformations>> processInformationsByTitle)
+			throws IOException {
+		try {
+			document.open();
+			for (final Map.Entry<String, List<ProcessInformations>> entry : processInformationsByTitle
+					.entrySet()) {
+				addParagraph(entry.getKey(), "processes.png");
+				new PdfProcessInformationsReport(entry.getValue(), document).toPdf();
+			}
 		} catch (final DocumentException e) {
 			throw createIOException(e);
 		}

@@ -116,6 +116,28 @@ public class TestPdfOtherReport {
 		assertNotEmptyAndClear(output);
 	}
 
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteProcessInformations() throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeProcessInformations(ProcessInformations.buildProcessInformations(
+				getClass().getResourceAsStream("/tasklist.txt"), true));
+		assertNotEmptyAndClear(output);
+		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeProcessInformations(ProcessInformations.buildProcessInformations(
+				getClass().getResourceAsStream("/ps.txt"), false));
+		assertNotEmptyAndClear(output);
+		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeProcessInformations(Collections.singletonMap(
+				"localhost",
+				ProcessInformations.buildProcessInformations(
+						getClass().getResourceAsStream("/ps.txt"), false)));
+		assertNotEmptyAndClear(output);
+	}
+
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
 		assertTrue("rapport vide", output.size() > 0);
 		output.reset();

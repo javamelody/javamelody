@@ -245,6 +245,9 @@ public class TestCollectorServlet {
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
+		parameters.put(FORMAT_PARAMETER, "pdf");
+		doPart(parameters);
+		parameters.remove(FORMAT_PARAMETER);
 		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
 		testDatabaseInformations.setUp();
 		try {
