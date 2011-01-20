@@ -46,7 +46,9 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -120,10 +122,13 @@ class CollectorController {
 		final MonitoringController monitoringController = new MonitoringController(collector,
 				collectorServer);
 		final String partParameter = req.getParameter(PART_PARAMETER);
+		final String formatParameter = req.getParameter(FORMAT_PARAMETER);
 		if (req.getParameter(JMX_VALUE) != null) {
 			doJmxValue(req, resp, application, req.getParameter(JMX_VALUE));
-		} else if (TransportFormat.isATransportFormat(req.getParameter(FORMAT_PARAMETER))) {
+		} else if (TransportFormat.isATransportFormat(formatParameter)) {
 			doCompressedSerializable(req, resp, application, monitoringController);
+		} else if ("pdf".equalsIgnoreCase(formatParameter)) {
+			doPdf(req, resp, application, monitoringController);
 		} else if (partParameter == null) {
 			// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
 			// pour être à jour
@@ -132,6 +137,34 @@ class CollectorController {
 		} else {
 			doCompressedPart(req, resp, application, monitoringController, partParameter);
 		}
+	}
+
+	private void doPdf(HttpServletRequest req, HttpServletResponse resp, String application,
+			MonitoringController monitoringController) throws IOException {
+		if (PROCESSES_PART.equalsIgnoreCase(req.getParameter(PART_PARAMETER))) {
+			monitoringController.addPdfContentTypeAndDisposition(req, resp);
+			try {
+				doPdfProcesses(resp, application);
+			} finally {
+				resp.getOutputStream().flush();
+			}
+		} else {
+			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+			monitoringController.doReport(req, resp, javaInformationsList);
+		}
+	}
+
+	private void doPdfProcesses(HttpServletResponse resp, String application) throws IOException {
+		final String title = I18N.getString("Processus");
+		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
+		for (final URL url : getUrlsByApplication(application)) {
+			final URL proxyUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ PROCESSES_PART);
+			final List<ProcessInformations> processes = new LabradorRetriever(proxyUrl).call();
+			processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processes);
+		}
+		new PdfOtherReport(application, resp.getOutputStream())
+				.writeProcessInformations(processesByTitle);
 	}
 
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -193,9 +226,13 @@ class CollectorController {
 		writer.write("<a href='?part=");
 		writer.write(PROCESSES_PART);
 		writer.write("'>");
-		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
+		I18N.writelnTo(
+				"<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>",
 				writer);
-		writer.write("</a></div>");
+		writer.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		I18N.writelnTo("<a href='?part=processes&amp;format=pdf' title='#afficher_PDF#'>", writer);
+		I18N.writelnTo("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>", writer);
+		writer.write("</div>");
 		final String title = I18N.getString("Processus");
 		for (final URL url : getUrlsByApplication(application)) {
 			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=processes.png' alt='"

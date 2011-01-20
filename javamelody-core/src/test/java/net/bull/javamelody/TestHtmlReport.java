@@ -266,11 +266,11 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeMBeans(true);
 		assertNotEmptyAndClear(writer);
-		final boolean windows = System.getProperty("os.name").toLowerCase(Locale.getDefault())
-				.contains("windows");
-		final String fileName = windows ? "/tasklist.txt" : "/ps.txt";
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
-				.getResourceAsStream(fileName), windows));
+				.getResourceAsStream("/tasklist.txt"), true));
+		assertNotEmptyAndClear(writer);
+		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
+				.getResourceAsStream("/ps.txt"), false));
 		assertNotEmptyAndClear(writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 		assertNotEmptyAndClear(writer);
