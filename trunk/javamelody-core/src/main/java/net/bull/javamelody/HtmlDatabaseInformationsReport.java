@@ -26,6 +26,7 @@ import java.io.Writer;
  * @author Emeric Vernat
  */
 class HtmlDatabaseInformationsReport {
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final DatabaseInformations databaseInformations;
 	private final Writer writer;
 
@@ -152,6 +153,13 @@ class HtmlDatabaseInformationsReport {
 		writeln("<a href='?part=database&amp;request="
 				+ databaseInformations.getSelectedRequestIndex()
 				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln(separator);
+			write("<a href='?part=database&amp;request="
+					+ databaseInformations.getSelectedRequestIndex()
+					+ "&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln(separator);
 		writeln("<select name='request' onchange=\"location.href='?part=database&amp;request='+options.selectedIndex;\">");
 		int index = 0;

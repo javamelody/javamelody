@@ -665,6 +665,18 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 
+		final Connection connection = TestDatabaseInformations.initH2();
+		try {
+			parameters.put(PART_PARAMETER, DATABASE_PART);
+			monitoring(parameters);
+		} finally {
+			try {
+				connection.close();
+			} catch (final SQLException e) {
+				LOG.warn(e.toString(), e);
+			}
+		}
+
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);

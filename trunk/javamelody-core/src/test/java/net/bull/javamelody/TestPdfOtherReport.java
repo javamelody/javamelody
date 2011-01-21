@@ -24,9 +24,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.naming.NamingException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -136,6 +140,27 @@ public class TestPdfOtherReport {
 				ProcessInformations.buildProcessInformations(
 						getClass().getResourceAsStream("/ps.txt"), false)));
 		assertNotEmptyAndClear(output);
+	}
+
+	/** Test.
+	 * @throws IOException e
+	 * @throws NamingException e
+	 * @throws SQLException e */
+	@Test
+	public void testWriteDatabaseInformations() throws IOException, SQLException, NamingException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		final Connection connection = TestDatabaseInformations.initH2();
+		try {
+			PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+			pdfOtherReport.writeDatabaseInformations(new DatabaseInformations(0)); // h2.memory
+			assertNotEmptyAndClear(output);
+			pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+			pdfOtherReport.writeDatabaseInformations(new DatabaseInformations(3)); // h2.settings
+			assertNotEmptyAndClear(output);
+		} finally {
+			connection.close();
+		}
 	}
 
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {

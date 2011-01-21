@@ -99,6 +99,19 @@ class PdfOtherReport {
 		document.close();
 	}
 
+	void writeDatabaseInformations(DatabaseInformations databaseInformations) throws IOException {
+		try {
+			document.open();
+			final String selectedRequestName = databaseInformations.getSelectedRequestName();
+			addParagraph(getI18nString("database") + " : " + getI18nString(selectedRequestName),
+					"db.png");
+			new PdfDatabaseInformationsReport(databaseInformations, document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
 	private static IOException createIOException(DocumentException e) {
 		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
 		final IOException ex = new IOException(e.getMessage());
