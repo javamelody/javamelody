@@ -22,24 +22,16 @@ import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
-import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
-import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
@@ -48,18 +40,14 @@ import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,9 +61,7 @@ import javax.servlet.http.HttpServletResponse;
  * Contrôleur au sens MVC de l'ihm de monitoring.
  * @author Emeric Vernat
  */
-// CHECKSTYLE:OFF
 class MonitoringController {
-	// CHECKSTYLE:ON
 	static {
 		boolean webXmlExists = false;
 		boolean pomXmlExists = false;
@@ -185,7 +171,8 @@ class MonitoringController {
 				|| "htmlbody".equalsIgnoreCase(format)) {
 			doCompressedHtml(httpRequest, httpResponse, javaInformationsList);
 		} else if ("pdf".equalsIgnoreCase(format)) {
-			doPdf(httpRequest, httpResponse, javaInformationsList);
+			final PdfController pdfController = new PdfController(collector, collectorServer);
+			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else {
 			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
@@ -197,8 +184,16 @@ class MonitoringController {
 		httpResponse.addHeader("Expires", "-1");
 	}
 
+	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		new PdfController(collector, collectorServer).addPdfContentTypeAndDisposition(httpRequest,
+				httpResponse);
+	}
+
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
+		final HtmlController htmlController = new HtmlController(collector, collectorServer,
+				messageForReport, anchorNameForRedirect);
 		// on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
 		// par CollectorServlet.doCompressedPart
 		if (isCompressionSupported(httpRequest)
@@ -210,13 +205,22 @@ class MonitoringController {
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
-				doHtml(httpRequest, wrappedResponse, javaInformationsList);
+				htmlController.doHtml(httpRequest, wrappedResponse, javaInformationsList);
 			} finally {
 				wrappedResponse.finishResponse();
 			}
 		} else {
-			doHtml(httpRequest, httpResponse, javaInformationsList);
+			htmlController.doHtml(httpRequest, httpResponse, javaInformationsList);
 		}
+	}
+
+	void writeHtmlToLastShutdownFile() {
+		new HtmlController(collector, collectorServer, messageForReport, anchorNameForRedirect)
+				.writeHtmlToLastShutdownFile();
+	}
+
+	static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
+		return HtmlController.getWriter(httpResponse);
 	}
 
 	private void doCompressedSerializable(HttpServletRequest httpRequest,
@@ -326,313 +330,6 @@ class MonitoringController {
 		return (Serializable) serialized;
 	}
 
-	private void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList) throws IOException {
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (!isFromCollectorServer()
-				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
-						.equalsIgnoreCase(part))) {
-			// avant de faire l'affichage on fait une collecte, pour que les courbes
-			// et les compteurs par jour soit à jour avec les dernières requêtes
-			collector.collectLocalContextWithoutErrors();
-		}
-
-		// simple appel de monitoring sans format
-		httpResponse.setContentType(HTML_CONTENT_TYPE);
-		final BufferedWriter writer = getWriter(httpResponse);
-		try {
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
-					javaInformationsList, range, writer);
-			if (part == null) {
-				htmlReport.toHtml(messageForReport, anchorNameForRedirect);
-			} else {
-				doHtmlPart(httpRequest, part, htmlReport);
-			}
-		} finally {
-			writer.close();
-		}
-	}
-
-	static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
-		return new BufferedWriter(new OutputStreamWriter(httpResponse.getOutputStream(),
-				HTML_CHARSET));
-	}
-
-	private void doHtmlPart(HttpServletRequest httpRequest, String part, HtmlReport htmlReport)
-			throws IOException {
-		if (GRAPH_PART.equalsIgnoreCase(part)) {
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			htmlReport.writeRequestAndGraphDetail(graphName);
-		} else if (USAGES_PART.equalsIgnoreCase(part)) {
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			htmlReport.writeRequestUsages(graphName);
-		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
-			doCurrentRequests(htmlReport, withoutHeaders);
-		} else if (THREADS_PART.equalsIgnoreCase(part)) {
-			htmlReport.writeAllThreadsAsPart();
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			htmlReport.writeCounterSummaryPerClass(counterName, requestId);
-		} else {
-			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
-		}
-	}
-
-	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
-			HtmlReport htmlReport) throws IOException {
-		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));
-		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			doHeapHisto(htmlReport);
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			doProcesses(htmlReport);
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
-					.getParameter(REQUEST_PARAMETER));
-			doDatabase(htmlReport, requestIndex);
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
-			doConnections(htmlReport, withoutHeaders);
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
-			doMBeans(htmlReport, withoutHeaders);
-		} else {
-			throw new IllegalArgumentException(part);
-		}
-	}
-
-	private void doSessions(HtmlReport htmlReport, String sessionId) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		final List<SessionInformations> sessionsInformations;
-		if (!isFromCollectorServer()) {
-			if (sessionId == null) {
-				sessionsInformations = SessionListener.getAllSessionsInformations();
-			} else {
-				sessionsInformations = Collections.singletonList(SessionListener
-						.getSessionInformationsBySessionId(sessionId));
-			}
-		} else {
-			sessionsInformations = collectorServer.collectSessionInformations(
-					collector.getApplication(), sessionId);
-		}
-		if (sessionId == null || sessionsInformations.isEmpty()) {
-			htmlReport.writeSessions(sessionsInformations, messageForReport, SESSIONS_PART);
-		} else {
-			final SessionInformations sessionInformation = sessionsInformations.get(0);
-			htmlReport.writeSessionDetail(sessionId, sessionInformation);
-		}
-	}
-
-	private void doCurrentRequests(HtmlReport htmlReport, boolean withoutHeaders)
-			throws IOException {
-		if (isFromCollectorServer()) {
-			// le html des requêtes en cours dans une page à part n'est utile que depuis une
-			// application monitorée (le serveur de collecte n'a pas les données requises)
-			throw new IllegalStateException();
-		}
-		htmlReport.writeAllCurrentRequestsAsPart(withoutHeaders);
-	}
-
-	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		final HeapHistogram heapHistogram;
-		try {
-			if (!isFromCollectorServer()) {
-				heapHistogram = VirtualMachine.createHeapHistogram();
-			} else {
-				heapHistogram = collectorServer.collectHeapHistogram(collector.getApplication());
-			}
-		} catch (final Exception e) {
-			LOG.warn("heaphisto report failed", e);
-			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
-			return;
-		}
-		htmlReport.writeHeapHistogram(heapHistogram, messageForReport, HEAP_HISTO_PART);
-	}
-
-	private void doProcesses(HtmlReport htmlReport) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		try {
-			htmlReport.writeProcesses(ProcessInformations.buildProcessInformations());
-		} catch (final Exception e) {
-			LOG.warn("processes report failed", e);
-			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
-		}
-	}
-
-	private void doDatabase(HtmlReport htmlReport, int index) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		try {
-			final DatabaseInformations databaseInformations;
-			if (!isFromCollectorServer()) {
-				databaseInformations = new DatabaseInformations(index);
-			} else {
-				databaseInformations = collectorServer.collectDatabaseInformations(
-						collector.getApplication(), index);
-			}
-			htmlReport.writeDatabase(databaseInformations);
-		} catch (final Exception e) {
-			LOG.warn("database report failed", e);
-			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
-		}
-	}
-
-	private void doConnections(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), withoutHeaders);
-	}
-
-	private void doJndi(HtmlReport htmlReport, String path) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		try {
-			htmlReport.writeJndi(path);
-		} catch (final Exception e) {
-			LOG.warn("jndi report failed", e);
-			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
-		}
-	}
-
-	private void doMBeans(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		try {
-			htmlReport.writeMBeans(withoutHeaders);
-		} catch (final Exception e) {
-			LOG.warn("mbeans report failed", e);
-			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
-		}
-	}
-
-	void writeHtmlToLastShutdownFile() {
-		try {
-			final File dir = Parameters.getStorageDirectory(collector.getApplication());
-			if (!dir.mkdirs() && !dir.exists()) {
-				throw new IOException("JavaMelody directory can't be created: " + dir.getPath());
-			}
-			final File lastShutdownFile = new File(dir, "last_shutdown.html");
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(lastShutdownFile));
-			try {
-				final JavaInformations javaInformations = new JavaInformations(
-						Parameters.getServletContext(), true);
-				// on pourrait faire I18N.bindLocale(Locale.getDefault()), mais cela se fera tout seul
-				final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
-						Collections.singletonList(javaInformations), Period.JOUR, writer);
-				htmlReport.writeLastShutdown();
-			} finally {
-				writer.close();
-			}
-		} catch (final IOException e) {
-			LOG.warn("exception while writing the last shutdown report", e);
-		}
-	}
-
-	private void doPdf(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList) throws IOException {
-		addPdfContentTypeAndDisposition(httpRequest, httpResponse);
-		try {
-			final String part = httpRequest.getParameter(PART_PARAMETER);
-			if (SESSIONS_PART.equalsIgnoreCase(part)) {
-				doPdfSessions(httpResponse);
-			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-				doPdfProcesses(httpResponse);
-			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-				final int index = DatabaseInformations.parseRequestIndex(httpRequest
-						.getParameter(REQUEST_PARAMETER));
-				doPdfDatabase(httpResponse, index);
-			} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-				doPdfHeapHisto(httpResponse);
-			} else {
-				if (!isFromCollectorServer()) {
-					// avant de faire l'affichage on fait une collecte,  pour que les courbes
-					// et les compteurs par jour soit à jour avec les dernières requêtes
-					collector.collectLocalContextWithoutErrors();
-				}
-
-				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-				final PdfReport pdfReport = new PdfReport(collector, isFromCollectorServer(),
-						javaInformationsList, range, httpResponse.getOutputStream());
-				pdfReport.toPdf();
-			}
-		} catch (final IOException e) { // NOPMD
-			throw e;
-		} catch (final Exception e) {
-			// ne devrait pas arriver puisque les pdf ne s'affichent normalement pas sans afficher auparavant le html
-			throw new IllegalStateException(e);
-		} finally {
-			httpResponse.getOutputStream().flush();
-		}
-	}
-
-	private void doPdfSessions(HttpServletResponse httpResponse) throws IOException {
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
-				httpResponse.getOutputStream());
-		final List<SessionInformations> sessionsInformations;
-		if (!isFromCollectorServer()) {
-			sessionsInformations = SessionListener.getAllSessionsInformations();
-		} else {
-			sessionsInformations = collectorServer.collectSessionInformations(
-					collector.getApplication(), null);
-		}
-		pdfOtherReport.writeSessionInformations(sessionsInformations);
-	}
-
-	private void doPdfProcesses(HttpServletResponse httpResponse) throws IOException {
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
-				httpResponse.getOutputStream());
-		final List<ProcessInformations> processInformations = ProcessInformations
-				.buildProcessInformations();
-		pdfOtherReport.writeProcessInformations(processInformations);
-	}
-
-	private void doPdfDatabase(HttpServletResponse httpResponse, final int index) throws Exception { // NOPMD
-		final DatabaseInformations databaseInformations;
-		if (!isFromCollectorServer()) {
-			databaseInformations = new DatabaseInformations(index);
-		} else {
-			databaseInformations = collectorServer.collectDatabaseInformations(
-					collector.getApplication(), index);
-		}
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
-				httpResponse.getOutputStream());
-		pdfOtherReport.writeDatabaseInformations(databaseInformations);
-	}
-
-	private void doPdfHeapHisto(HttpServletResponse httpResponse) throws Exception { // NOPMD
-		final HeapHistogram heapHistogram;
-		if (!isFromCollectorServer()) {
-			heapHistogram = VirtualMachine.createHeapHistogram();
-		} else {
-			heapHistogram = collectorServer.collectHeapHistogram(collector.getApplication());
-		}
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
-				httpResponse.getOutputStream());
-		pdfOtherReport.writeHeapHistogram(heapHistogram);
-	}
-
-	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse) {
-		// méthode utilisée dans le monitoring hudson
-		httpResponse.setContentType("application/pdf");
-		httpResponse.addHeader(
-				CONTENT_DISPOSITION,
-				encodeFileNameToContentDisposition(httpRequest,
-						PdfReport.getFileName(collector.getApplication())));
-	}
-
 	private void doResource(HttpServletResponse httpResponse, String resource) throws IOException {
 		httpResponse.addHeader("Cache-Control", "max-age=3600"); // cache navigateur 1h
 		final OutputStream out = httpResponse.getOutputStream();
@@ -739,10 +436,6 @@ class MonitoringController {
 		}
 	}
 
-	private boolean isFromCollectorServer() {
-		return collectorServer != null;
-	}
-
 	private static InputStream getWebXmlAsStream() {
 		final InputStream webXml = Parameters.getServletContext().getResourceAsStream(
 				"/WEB-INF/web.xml");
@@ -768,47 +461,6 @@ class MonitoringController {
 			return null;
 		}
 		return new BufferedInputStream(pomXml);
-	}
-
-	/**
-	 * Encode un nom de fichier avec des % pour Content-Disposition, avec téléchargement.
-	 * (US-ASCII + Encode-Word : http://www.ietf.org/rfc/rfc2183.txt, http://www.ietf.org/rfc/rfc2231.txt
-	 * sauf en MS IE qui ne supporte pas cet encodage et qui n'en a pas besoin)
-	 * @param httpRequest HttpServletRequest
-	 * @param fileName String
-	 * @return String
-	 */
-	private static String encodeFileNameToContentDisposition(HttpServletRequest httpRequest,
-			String fileName) {
-		assert fileName != null;
-		final String userAgent = httpRequest.getHeader("user-agent");
-		if (userAgent != null && userAgent.contains("MSIE")) {
-			return "attachment;filename=" + fileName;
-		}
-		return encodeFileNameToStandardContentDisposition(fileName);
-	}
-
-	private static String encodeFileNameToStandardContentDisposition(String fileName) {
-		final int length = fileName.length();
-		final StringBuilder sb = new StringBuilder(length + length / 4);
-		// attachment et non inline pour proposer l'enregistrement (sauf IE6)
-		// et non l'affichage direct dans le navigateur
-		sb.append("attachment;filename*=\"");
-		char c;
-		for (int i = 0; i < length; i++) {
-			c = fileName.charAt(i);
-			if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9') {
-				sb.append(c);
-			} else {
-				sb.append('%');
-				if (c < 16) {
-					sb.append('0');
-				}
-				sb.append(Integer.toHexString(c));
-			}
-		}
-		sb.append('"');
-		return sb.toString();
 	}
 
 	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
