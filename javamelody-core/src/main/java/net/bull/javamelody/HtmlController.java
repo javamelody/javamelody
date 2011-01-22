@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Contrôleur au sens MVC de l'ihm de monitoring.
+ * Contrôleur au sens MVC de l'ihm de monitoring pour la partie html.
  * @author Emeric Vernat
  */
 class HtmlController {

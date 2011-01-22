@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Contrôleur au sens MVC de l'ihm de monitoring.
+ * Contrôleur au sens MVC de l'ihm de monitoring pour la partie pdf.
  * @author Emeric Vernat
  */
 class PdfController {
