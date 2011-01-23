@@ -677,6 +677,8 @@ class HtmlCoreReport {
 		} else {
 			write("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 			writeln(separator);
+			writeln("<a href='?'><img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
+			writeln(separator);
 			write("<a href='?part=" + part + "&amp;graph=" + graphName + "' title='#Rafraichir#'>");
 		}
 		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
