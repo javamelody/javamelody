@@ -69,12 +69,6 @@
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
-					<systemProperties>
-						<systemProperty>
-							<name>monitoring.test</name>
-							<value>http://localhost:8080/${project.artifactId}</value>
-						</systemProperty>
-					</systemProperties>
 				</configuration>
 			</plugin>
 		</plugins>
