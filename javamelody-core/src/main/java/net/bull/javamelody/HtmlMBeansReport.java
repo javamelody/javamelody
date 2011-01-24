@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
+import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 /**
@@ -35,7 +36,7 @@ import javax.management.ObjectName;
 class HtmlMBeansReport {
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
 	private static final String BR = "<br/>";
-	private final MBeans mbeans;
+	private MBeans mbeans;
 	private final Writer writer;
 	private final String pid = PID.getPID();
 	private int sequence;
@@ -44,6 +45,7 @@ class HtmlMBeansReport {
 		super();
 		assert writer != null;
 		this.writer = writer;
+		// MBeans pour la plateforme
 		mbeans = new MBeans();
 	}
 
@@ -62,6 +64,22 @@ class HtmlMBeansReport {
 	 * @throws JMException e
 	 */
 	void writeTree() throws IOException, JMException {
+		// MBeans pour la plateforme
+		writeTreeForCurrentMBeans();
+
+		// pour JBoss 5.0.x, les MBeans de JBoss sont dans un autre MBeanServer
+		final MBeanServer plateformMBeanServer = MBeans.getPlatformMBeanServer();
+		for (final MBeanServer mbeanServer : MBeans.getMBeanServers()) {
+			if (mbeanServer != plateformMBeanServer) {
+				mbeans = new MBeans(mbeanServer);
+				writeln(BR);
+				writer.write("<b>" + htmlEncode(mbeanServer.getDefaultDomain()) + "</b>");
+				writeTreeForCurrentMBeans();
+			}
+		}
+	}
+
+	private void writeTreeForCurrentMBeans() throws IOException, JMException {
 		writeln("<div style='margin-left: 20px'>");
 		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = mbeans
 				.getMapObjectNamesByDomainAndFirstProperty();
@@ -196,7 +214,7 @@ class HtmlMBeansReport {
 	}
 
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
-		writeln("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
+		writer.write("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
 	}
 
