@@ -33,6 +33,7 @@ import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
@@ -47,8 +48,12 @@ final class MBeans {
 	private final MBeanServer mbeanServer;
 
 	MBeans() {
+		this(getPlatformMBeanServer());
+	}
+
+	MBeans(MBeanServer mbeanServer) {
 		super();
-		mbeanServer = getMBeanServer();
+		this.mbeanServer = mbeanServer;
 	}
 
 	Set<ObjectName> getThreadPools() throws MalformedObjectNameException {
@@ -69,10 +74,11 @@ final class MBeans {
 			try {
 				// initialisation des MBeans jrockit comme indiqué dans http://blogs.oracle.com/hirt/jrockit/
 				try {
-					getMBeanServer().getMBeanInfo(
+					getPlatformMBeanServer().getMBeanInfo(
 							new ObjectName("bea.jrockit.management:type=JRockitConsole"));
 				} catch (final InstanceNotFoundException e1) {
-					getMBeanServer().createMBean("bea.jrockit.management.JRockitConsole", null);
+					getPlatformMBeanServer().createMBean("bea.jrockit.management.JRockitConsole",
+							null);
 					LOG.debug("JRockit MBeans initialized");
 				}
 			} catch (final JMException e) {
@@ -88,12 +94,16 @@ final class MBeans {
 		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = new TreeMap<String, Map<String, List<ObjectName>>>();
 		final Set<ObjectName> names = mbeanServer.queryNames(null, null);
 		for (final ObjectName name : names) {
+			final String domain = name.getDomain();
+			if ("jboss.deployment".equals(domain)) {
+				// la partie "jboss.deployment" dans JBoss (5.0.x) est plutôt inutile et trop lourde
+				continue;
+			}
 			Map<String, List<ObjectName>> mapObjectNamesByFirstProperty = mapObjectNamesByDomainAndFirstProperty
-					.get(name.getDomain());
+					.get(domain);
 			if (mapObjectNamesByFirstProperty == null) {
 				mapObjectNamesByFirstProperty = new TreeMap<String, List<ObjectName>>();
-				mapObjectNamesByDomainAndFirstProperty.put(name.getDomain(),
-						mapObjectNamesByFirstProperty);
+				mapObjectNamesByDomainAndFirstProperty.put(domain, mapObjectNamesByFirstProperty);
 			}
 			final String keyPropertyListString = name.getKeyPropertyListString();
 			final String firstPropertyValue;
@@ -194,6 +204,7 @@ final class MBeans {
 
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;
+		final List<MBeanServer> mBeanServers = getMBeanServers();
 		for (final String mbeansAttribute : jmxValueParameter.split("[|]")) {
 			final int lastIndexOfPoint = mbeansAttribute.lastIndexOf('.');
 			if (lastIndexOfPoint <= 0) {
@@ -211,13 +222,29 @@ final class MBeans {
 			} else {
 				sb.append('|');
 			}
-			try {
-				final MBeans mbeans = new MBeans();
-				final Object jmxValue = mbeans.convertValueIfNeeded(mbeans.getAttribute(
-						new ObjectName(name), attribute));
-				sb.append(jmxValue);
-			} catch (final JMException e) {
-				throw new IllegalArgumentException(name + '.' + attribute, e);
+			InstanceNotFoundException instanceNotFoundException = null;
+			for (final MBeanServer mbeanServer : mBeanServers) {
+				try {
+					final MBeans mbeans = new MBeans(mbeanServer);
+					final Object jmxValue = mbeans.convertValueIfNeeded(mbeans.getAttribute(
+							new ObjectName(name), attribute));
+					sb.append(jmxValue);
+					instanceNotFoundException = null;
+					// ObjectName trouvé dans ce MBeanServer, inutile de chercher dans les suivants
+					// où il n'est d'ailleurs pas
+					break;
+				} catch (final InstanceNotFoundException e) {
+					// ObjectName non trouvé dans ce MBeanServer, donc on cherche dans le suivant
+					// (nécessaire pour JBoss 5.0.x)
+					instanceNotFoundException = e;
+					continue;
+				} catch (final JMException e) {
+					throw new IllegalArgumentException(name + '.' + attribute, e);
+				}
+			}
+			if (instanceNotFoundException != null) {
+				throw new IllegalArgumentException(name + '.' + attribute,
+						instanceNotFoundException);
 			}
 		}
 		return sb.toString();
@@ -233,10 +260,10 @@ final class MBeans {
 	}
 
 	/**
-	 * Retourne le javax.management.MBeanServer en le créant si nécessaire.
+	 * Retourne le javax.management.MBeanServer de la plateforme.
 	 * @return MBeanServer
 	 */
-	private static MBeanServer getMBeanServer() {
+	static MBeanServer getPlatformMBeanServer() {
 		return ManagementFactory.getPlatformMBeanServer();
 		// alternative (sauf pour hudson slaves):
 		//		final List<MBeanServer> mBeanServers = MBeanServerFactory.findMBeanServer(null);
@@ -246,5 +273,15 @@ final class MBeans {
 		//		}
 		//		final MBeanServer server = MBeanServerFactory.createMBeanServer();
 		//		return server;
+	}
+
+	/**
+	 * Retourne la liste de tous les javax.management.MBeanServer.
+	 * @return List
+	 */
+	static List<MBeanServer> getMBeanServers() {
+		// par exemple avec JBoss 5.0.x, il y a un MBeanServer de la plateforme (defaultDomain null)
+		// et un MBeanServer de JBoss (defaultDomain "jboss")
+		return MBeanServerFactory.findMBeanServer(null);
 	}
 }
