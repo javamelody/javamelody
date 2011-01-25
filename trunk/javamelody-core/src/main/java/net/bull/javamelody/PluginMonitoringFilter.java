@@ -61,6 +61,15 @@ public abstract class PluginMonitoringFilter extends MonitoringFilter {
 
 	/** {@inheritDoc} */
 	@Override
+	public void destroy() {
+		// évitons ClassNotFoundException: net.bull.javamelody.SessionListener,
+		// au redémarrage de Tomcat, cf 8344 dans bugs Hudson:
+		// http://issues.hudson-ci.org/browse/HUDSON-8344
+		emulatedSessionListener.removeAllActivationListeners();
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		if (!(request instanceof HttpServletRequest)) {

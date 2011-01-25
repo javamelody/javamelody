@@ -280,10 +280,21 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 	}
 
-	// pour jira/confluence/bamboo
+	// pour hudson/jira/confluence/bamboo
 	void unregisterInvalidatedSessions() {
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
 			unregisterSessionIfNeeded(session);
+		}
+	}
+
+	void removeAllActivationListeners() {
+		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
+			try {
+				session.removeAttribute(SESSION_ACTIVATION_KEY);
+			} catch (final Exception e) {
+				// Tomcat can throw "java.lang.IllegalStateException: xxx: Session already invalidated"
+				continue;
+			}
 		}
 	}
 
