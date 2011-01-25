@@ -441,9 +441,7 @@ final class JdbcWrapper {
 		final String dataSourceClassName = dataSource.getClass().getName();
 		LOG.debug("Datasource needs rewrap: " + jndiName + " of class " + dataSourceClassName);
 		final String dataSourceRewrappedMessage = "Datasource rewrapped: ";
-		if (jboss
-				&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSourceClassName)
-				|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSourceClassName)) {
+		if (isJBossOrGlassfishDataSource(dataSourceClassName)) {
 			// JBOSS: le rebind de la datasource dans le JNDI JBoss est possible mais ne
 			// fonctionne pas (car tous les lookup renverraient alors une instance de
 			// MarshalledValuePair ou une instance javax.naming.Reference selon comment cela
@@ -468,16 +466,25 @@ final class JdbcWrapper {
 			// l'instance de RmiDataSource déjà présente dans le JNDI.
 			rewrapWebLogicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage + jndiName);
-		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)) {
+		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)) {
 			// JIRA dans Tomcat: la dataSource a déjà été mise en cache par org.ofbiz.core.entity.transaction.JNDIFactory
 			// à l'initialisation de com.atlassian.jira.startup.JiraStartupChecklistContextListener
-			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI
+			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI.
+			// Et dans certains JIRA la datasource est bien une instance de org.apache.commons.dbcp.BasicDataSource
+			// cf http://groups.google.com/group/javamelody/browse_thread/thread/da8336b908f1e3bd/6cf3048f1f11866e?show_docid=6cf3048f1f11866e
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage + jndiName);
 		} else if (jonas) {
 			// JONAS (si rewrap-datasources==true)
 			rewrapJonasDataSource(jndiName, dataSource);
 		}
+	}
+
+	private boolean isJBossOrGlassfishDataSource(String dataSourceClassName) {
+		return jboss
+				&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSourceClassName)
+				|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSourceClassName);
 	}
 
 	private void rewrapWebLogicDataSource(DataSource dataSource) throws IllegalAccessException {
