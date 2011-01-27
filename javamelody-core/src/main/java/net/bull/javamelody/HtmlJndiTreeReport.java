@@ -94,7 +94,13 @@ class HtmlJndiTreeReport {
 		final String name = binding.getName();
 		final String encodedName = htmlEncode(name);
 		if (binding.getObject() instanceof Context) {
-			writer.write("<a href=\"?part=jndi&amp;path=" + htmlEncode(path + '/' + name) + "\">");
+			final String contextPath;
+			if (path.length() > 0) {
+				contextPath = path + '/' + name;
+			} else {
+				contextPath = name;
+			}
+			writer.write("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
 			writer.write("<img width='16' height='16' src='?resource=folder.png' alt='"
 					+ encodedName + "' />&nbsp;");
 			writer.write(encodedName);
