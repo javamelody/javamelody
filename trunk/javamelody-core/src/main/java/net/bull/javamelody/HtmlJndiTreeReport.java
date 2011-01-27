@@ -98,6 +98,7 @@ class HtmlJndiTreeReport {
 			if (path.length() > 0) {
 				contextPath = path + '/' + name;
 			} else {
+				// nécessaire pour jonas 5.1.0
 				contextPath = name;
 			}
 			writer.write("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
