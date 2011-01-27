@@ -337,23 +337,34 @@ class HeapHistogram implements Serializable {
 			}
 			try {
 				final Class<?> clazz = Class.forName(jvmName);
-				final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
-				if (codeSource != null && codeSource.getLocation() != null) {
-					String src = codeSource.getLocation().toString();
-					if (src.startsWith("file:/")) {
-						src = src.substring("file:/".length());
-					}
-					if (src.endsWith(".jar") || src.endsWith(".war")) {
-						src = src.intern();
-					}
-					return src;
-				}
+				return findSource(clazz);
+			} catch (final LinkageError e) {
+				// dans jonas en OSGI, par exemple avec des classes Quartz, il peut survenir
+				// des LinkageError (rq: NoClassDefFoundError hérite également de LinkageError)
 				return null;
 			} catch (final ClassNotFoundException e) {
 				// on suppose qu'il y a une seule webapp et que la plupart des classes peuvent être chargées
 				// sinon il y a une exception et on retourne null
 				return null;
 			}
+		}
+
+		private static String findSource(Class<?> clazz) {
+			final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+			if (codeSource != null && codeSource.getLocation() != null) {
+				String src = codeSource.getLocation().toString();
+				if (src.startsWith("file:/")) {
+					src = src.substring("file:/".length());
+				} else if (src.startsWith("reference:file:/")) {
+					// "reference:file:/" pour les bundles jonas
+					src = src.substring("reference:file:/".length());
+				}
+				if (src.endsWith(".jar") || src.endsWith(".war")) {
+					src = src.intern();
+				}
+				return src;
+			}
+			return null;
 		}
 
 		// CHECKSTYLE:OFF
