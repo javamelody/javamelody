@@ -31,6 +31,7 @@ import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +57,19 @@ public class TestHtmlJndiTreeReport {
 	 * @throws NamingException e */
 	@Test
 	public void testToHtml() throws IOException, NamingException {
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
+		expect(servletContext.getServerInfo()).andReturn("Mock");
+		replay(servletContext);
+		Parameters.initialize(servletContext);
 		doToHtml(null);
+		verify(servletContext);
+
+		final ServletContext servletContext2 = createNiceMock(ServletContext.class);
+		expect(servletContext2.getServerInfo()).andReturn("GlassFish");
+		replay(servletContext2);
+		Parameters.initialize(servletContext2);
+		doToHtml(null);
+		verify(servletContext2);
 	}
 
 	/** Test.
@@ -73,7 +86,9 @@ public class TestHtmlJndiTreeReport {
 		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
 		expect(context.listBindings("java:" + (contextPath == null ? "" : contextPath))).andReturn(
-				enumeration).once();
+				enumeration).anyTimes();
+		expect(context.listBindings("java:" + (contextPath == null ? "comp" : contextPath)))
+				.andReturn(enumeration).anyTimes();
 		expect(enumeration.hasMore()).andReturn(true).times(4);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
 		expect(enumeration.next()).andReturn(
