@@ -41,7 +41,15 @@ class HtmlJndiTreeReport {
 		assert writer != null;
 
 		this.context = context;
-		this.path = path != null ? path : "";
+		if (path != null) {
+			this.path = path;
+		} else if (Parameters.getServletContext().getServerInfo().contains("GlassFish")) {
+			// dans glassfish 3.0.1, context.listBindings("java:") ne retourne aucun binding à part
+			// lui-même, donc par défaut dans glassfish on prend le path "comp" et non ""
+			this.path = "comp";
+		} else {
+			this.path = "";
+		}
 		this.writer = writer;
 	}
 
@@ -84,14 +92,23 @@ class HtmlJndiTreeReport {
 			}
 			writeln("</tbody></table>");
 		} finally {
-			enumeration.close();
+			// Comme indiqué dans la javadoc enumeration.close() n'est pas nécessaire après que hasMore()
+			// a retourné false. De plus, cela provoquerait une exception dans glassfish 3.0.1
+			// "javax.naming.OperationNotSupportedException: close() not implemented"
+			// enumeration.close();
+
 			context.close();
 		}
 	}
 
 	private void writeBinding(Binding binding) throws IOException {
+		final String name = getBindingName(binding);
+		if (name.length() == 0) {
+			// nécessaire pour glassfish 3.0.1: sous glassfish, les bindings d'un contexte contienne
+			// le contexte lui-même
+			return;
+		}
 		write("<td>");
-		final String name = binding.getName();
 		final String encodedName = htmlEncode(name);
 		if (binding.getObject() instanceof Context) {
 			final String contextPath;
@@ -114,6 +131,21 @@ class HtmlJndiTreeReport {
 		final String className = binding.getClassName();
 		writer.write(className != null ? htmlEncode(className) : "&nbsp;");
 		write("</td>");
+	}
+
+	private String getBindingName(Binding binding) {
+		// nécessaire pour glassfish 3.0.1
+		String result = binding.getName();
+		if (result.startsWith("java:")) {
+			result = result.substring("java:".length());
+		}
+		if (result.startsWith(path)) {
+			result = result.substring(path.length());
+		}
+		if (result.length() > 0 && result.charAt(0) == '/') {
+			result = result.substring(1);
+		}
+		return result;
 	}
 
 	private void writeLinks() throws IOException {
