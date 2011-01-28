@@ -29,7 +29,6 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import javax.servlet.ServletContext;
@@ -137,9 +136,10 @@ final class JdbcWrapperHelper {
 					dataSources.put(jndiName, (DataSource) value);
 				}
 			}
-		} catch (final NameNotFoundException e) {
+		} catch (final NamingException e) {
+			// le préfixe ("comp/env/jdbc", "/jdbc" ou "java:global/jdbc", etc) n'existe pas dans jndi,
+			// (dans glassfish 3.0.1, c'est une NamingException et non une NameNotFoundException)
 			return dataSources;
-			// le préfixe "comp/env/jdbc" ou "/jdbc" n'existe pas dans jndi
 		}
 		initialContext.close();
 		return dataSources;
