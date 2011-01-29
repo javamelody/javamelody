@@ -55,6 +55,7 @@ final class JdbcWrapper {
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger USED_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger ACTIVE_THREAD_COUNT = new AtomicInteger();
+	static final AtomicInteger RUNNING_BUILD_COUNT = new AtomicInteger();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
 
 	// instance de JdbcWrapper (ici on ne connaît pas le ServletContext)
@@ -312,6 +313,10 @@ final class JdbcWrapper {
 
 	static int getActiveThreadCount() {
 		return ACTIVE_THREAD_COUNT.get();
+	}
+
+	static int getRunningBuildCount() {
+		return RUNNING_BUILD_COUNT.get();
 	}
 
 	static int getMaxConnectionCount() {

@@ -394,16 +394,27 @@ class Collector { // NOPMD
 
 		// collecte du pourcentage d'utilisation cpu
 		collectCpu(processesCpuTimeMillis, availableProcessors);
-		// collecte du nombre de sessions http
-		if (sessionCount >= 0) {
-			getCounterJRobin("httpSessions").addValue(sessionCount);
+
+		// si ce collector est celui des nodes Hudson, il n'y a pas de requêtes http
+		// donc il ne peut pas y avoir de sessions http ou de threads actifs
+		if (getCounterByName(Counter.HTTP_COUNTER_NAME) != null) {
+			// collecte du nombre de sessions http
+			if (sessionCount >= 0) {
+				getCounterJRobin("httpSessions").addValue(sessionCount);
+			}
+			// collecte du nombre de threads actifs (requêtes http en cours)
+			getCounterJRobin("activeThreads").addValue(activeThreadCount);
 		}
-		// collecte du nombre de threads actifs (requêtes http en cours), du nombre de connexions jdbc actives
-		// et du nombre de connexions jdbc ouvertes
-		getCounterJRobin("activeThreads").addValue(activeThreadCount);
 		if (!noDatabase) {
+			// collecte du nombre de connexions jdbc actives et du nombre de connexions jdbc ouvertes
 			getCounterJRobin("activeConnections").addValue(activeConnectionCount);
 			getCounterJRobin("usedConnections").addValue(usedConnectionCount);
+		}
+
+		// si ce collector est celui des nodes Hudson, on collecte le nombre de builds en cours
+		// pour le graphique
+		if (getCounterByName(Counter.BUILDS_COUNTER_NAME) != null) {
+			getCounterJRobin("runningBuilds").addValue(JdbcWrapper.getRunningBuildCount());
 		}
 	}
 
@@ -470,7 +481,7 @@ class Collector { // NOPMD
 	}
 
 	private void collectSessionsMeanAge(long sessionAgeSum, int sessionCount) throws IOException {
-		if (sessionCount >= 0) {
+		if (sessionCount >= 0 && getCounterByName(Counter.HTTP_COUNTER_NAME) != null) {
 			final long sessionAgeMeanInMinutes;
 			if (sessionCount > 0) {
 				sessionAgeMeanInMinutes = sessionAgeSum / sessionCount / 60000;

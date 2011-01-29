@@ -69,6 +69,10 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	static final String JOB_COUNTER_NAME = "job";
 	/**
+	 * Nom du counter des builds Hudson.
+	 */
+	static final String BUILDS_COUNTER_NAME = "builds";
+	/**
 	 * Nombre max d'erreurs conservées par le counter (si counter d'erreurs http ou de log d'erreurs).
 	 */
 	static final int MAX_ERRORS_COUNT = 100;
