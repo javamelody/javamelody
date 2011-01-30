@@ -1,4 +1,12 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix JNDI report in Glassfish or Jonas
+  * added: If JBoss, display JBoss specific MBeans
+  * Hudson/Jenkins Monitoring plugin:
+    * fix [http://issues.hudson-ci.org/browse/HUDSON-8344 Hudson issue 8344] (ClassNotFoundException: net.bull.javamelody.SessionListener)
+    * added: in the nodes report, chart of the number of the running builds by period
+
 === 1.25.0 ===
 
   * fix: When the spring context is initialized before the web filter of the monitoring and when "displayed-counters" is not used, the spring monitoring was not displayed (Pete in the users group).
