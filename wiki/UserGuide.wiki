@@ -772,7 +772,7 @@ or
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
 	its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
 	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
-	For example, "172\.16\..*" to allow the ip addresses like "172.16.x.y".
+	For example, "{{{172\.16\..*}}}" to allow the ip addresses like "{{{172.16.x.y}}}".
 
 	If some {{{security-constraint}}} et {{{security-role}}}(s) are defined in the {{{web.xml}}} file of the application,
 	you can also restrict in the {{{web.xml}}} file the access to the monitoring page to "monitoring" role
