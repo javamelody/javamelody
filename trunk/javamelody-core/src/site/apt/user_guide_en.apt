@@ -130,7 +130,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 ** 2. <<<web.xml>>> file
 
 	If your application server is compatible with Servlet API 3.0 (like tomcat 7 or glassfish v3),
-	this paragraph is not needed, you can skip it and launch the server as in the next paragraph.
+	this paragraph is generally not needed, you can skip it and launch the server as in the next paragraph.
 	Otherwise add the following lines in the file <<<WEB-INF/web.xml>>> of the war of the webapp,
 	before the description of your servlet :
 
@@ -804,6 +804,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
 	its access by a regular expression on ip address of client with the parameter <<<allowed-addr-pattern>>>
 	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
+	For example, "172\.16\..*" to allow the ip addresses like "172.16.x.y".
 
 	If some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
 	you can also restrict in the <<<web.xml>>> file the access to the monitoring page to "monitoring" role
