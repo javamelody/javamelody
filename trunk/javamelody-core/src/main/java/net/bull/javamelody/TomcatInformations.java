@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -110,6 +111,10 @@ final class TomcatInformations implements Serializable {
 				tomcatInformationsList.add(new TomcatInformations(mBeans, threadPool));
 			}
 			return tomcatInformationsList;
+		} catch (final InstanceNotFoundException e) {
+			// nécessaire pour JBoss 6.0 quand appelé depuis MonitoringFilter.destroy via
+			// writeHtmlToLastShutdownFile
+			return Collections.emptyList();
 		} catch (final JMException e) {
 			// n'est pas censé arriver
 			throw new IllegalStateException(e);
