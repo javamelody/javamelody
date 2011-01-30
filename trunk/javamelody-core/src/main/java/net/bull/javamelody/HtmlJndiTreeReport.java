@@ -110,7 +110,9 @@ class HtmlJndiTreeReport {
 		}
 		write("<td>");
 		final String encodedName = htmlEncode(name);
-		if (binding.getObject() instanceof Context) {
+		final String className = binding.getClassName();
+		if (binding.getObject() instanceof Context || "javax.naming.Context".equals(className)) {
+			// "javax.naming.Context".equals(className) nécessaire pour le path "comp" dans JBoss 6.0
 			final String contextPath;
 			if (path.length() > 0) {
 				contextPath = path + '/' + name;
@@ -128,7 +130,6 @@ class HtmlJndiTreeReport {
 		}
 		write("</td>");
 		write("<td>");
-		final String className = binding.getClassName();
 		writer.write(className != null ? htmlEncode(className) : "&nbsp;");
 		write("</td>");
 	}
