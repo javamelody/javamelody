@@ -105,7 +105,7 @@ class HtmlJndiTreeReport {
 		final String name = getBindingName(binding);
 		if (name.length() == 0) {
 			// nécessaire pour glassfish 3.0.1: sous glassfish, les bindings d'un contexte contienne
-			// le contexte lui-même
+			// le contexte lui-même (http://java.net/jira/browse/GLASSFISH-12831)
 			return;
 		}
 		write("<td>");
