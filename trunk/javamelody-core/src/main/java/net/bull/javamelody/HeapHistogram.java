@@ -355,6 +355,9 @@ class HeapHistogram implements Serializable {
 				String src = codeSource.getLocation().toString();
 				if (src.startsWith("file:/")) {
 					src = src.substring("file:/".length());
+				} else if (src.startsWith("vfs:/")) {
+					// "vfs:/" pour jboss 6.0
+					src = src.substring("vfs:/".length());
 				} else if (src.startsWith("reference:file:/")) {
 					// "reference:file:/" pour les bundles jonas
 					src = src.substring("reference:file:/".length());
