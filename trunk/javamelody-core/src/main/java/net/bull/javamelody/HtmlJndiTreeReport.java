@@ -103,11 +103,11 @@ class HtmlJndiTreeReport {
 
 	private void writeBinding(Binding binding) throws IOException {
 		final String name = getBindingName(binding);
-		if (name.length() == 0) {
-			// nécessaire pour glassfish 3.0.1: sous glassfish, les bindings d'un contexte contienne
-			// le contexte lui-même (http://java.net/jira/browse/GLASSFISH-12831)
-			return;
-		}
+		// si on veux corriger http://java.net/jira/browse/GLASSFISH-12831
+		// sous glassfish 3.0.1 et non 3.1, les bindings d'un contexte contienne le contexte lui-même
+		//		if (name.length() == 0) {
+		//			return;
+		//		}
 		write("<td>");
 		final String encodedName = htmlEncode(name);
 		final String className = binding.getClassName();
