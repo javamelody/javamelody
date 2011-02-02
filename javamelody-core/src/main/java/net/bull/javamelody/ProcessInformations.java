@@ -136,7 +136,7 @@ final class ProcessInformations implements Serializable {
 	static List<ProcessInformations> buildProcessInformations() throws IOException {
 		Process process = null;
 		try {
-			// pour nodes hudson, on évalue ces propriétés à chaque fois sans utiliser de constantes
+			// pour nodes Hudson/Jenkins, on évalue ces propriétés à chaque fois sans utiliser de constantes
 			final String osName = System.getProperty("os.name").toLowerCase(Locale.getDefault());
 			final boolean windows = osName.contains("windows");
 			final boolean mac = osName.contains("mac");

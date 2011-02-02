@@ -610,7 +610,7 @@ class HtmlCoreReport {
 		final String serverInfo = javaInformationsList.get(0).getServerInfo();
 		if (serverInfo != null && !serverInfo.contains("Winstone")) {
 			// on n'affiche pas le lien JNDI si serveur Winstone car cela n'a pas d'intérêt
-			// pour Hudson sous Winstone, et surtout car (Winstone)Context.listBindings
+			// pour Hudson/Jenkins sous Winstone, et surtout car (Winstone)Context.listBindings
 			// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
 			writeln(separator);
 			write("<a href='?part=jndi'>");
