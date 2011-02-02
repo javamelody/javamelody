@@ -3,7 +3,7 @@
 
 == Table of contents ==
   * [#Introduction Introduction]
-  * [#Hudson_Plugin Hudson Plugin]
+  * [#Hudson_/_Jenkins_Plugin Hudson / Jenkins Plugin]
   * [#Atlassian_JIRA,_Confluence_and_Bamboo_Plugin Atlassian JIRA, Confluence and Bamboo Plugin]
   * [#Grails_Plugin Grails Plugin]
   * [#Setup JavaMelody Setup]
@@ -77,9 +77,9 @@ or MSIE8 (MSIE7 not recommended).
 [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
 
 
-== Hudson Plugin ==
+== Hudson / Jenkins Plugin ==
 
-	If you want to monitor a [http://hudson-ci.org/ Hudson] server, you can install JavaMelody by point and click with a [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page or from the address {{{http://yourhost/monitoring}}}. That's it.
+	If you want to monitor a [http://hudson-ci.org/ Hudson] server or a [http://jenkins-ci.org/ Jenkins] server, you can install JavaMelody by point and click with a [http://wiki.jenkins-ci.org/display/Jenkins/Monitoring Hudson / Jenkins plugin]. For this, open Hudson / Jenkins and click "Manage Hudson / Jenkins", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson / Jenkins after the installation of the plugin. You can then open the report from the "Manage Hudson / Jenkins" page or from the address {{{http://yourhost/monitoring}}}. You can also open the report for the nodes from the address {{{http://yourhost/monitoring/nodes}}}. That's it.
 
 == Atlassian JIRA, Confluence and Bamboo Plugin ==
 
