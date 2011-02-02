@@ -40,7 +40,7 @@
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/german_http_sql_spring_jsp.PNG' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/german_http_sql_spring_jsp.PNG' width='50%' alt='Allemand' /></a>
 
 === Portuguese (sql, system information) ===
-<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/portuguese_sql_system_information.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/portuguese_sql_system_information.png' width='50%' alt='Portugais' /></a>
+<a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/portuguese_sql_system.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/portuguese_sql_system.png' width='50%' alt='Portugais' /></a>
 
 === Http errors and logs of errors ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/erreurs_http_et_logs_erreurs.png' width='50%' alt="Erreurs http et logs d'erreurs" /></a>
