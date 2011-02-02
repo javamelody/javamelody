@@ -46,7 +46,7 @@ final class VirtualMachine {
 	 * @return true si heapHisto supporté (jdk 1.6 de Sun ou de JRockit de BEA)
 	 */
 	static boolean isSupported() {
-		// pour nodes hudson, on réévalue sans utiliser de constante
+		// pour nodes Hudson/Jenkins, on réévalue sans utiliser de constante
 		final String javaVersion = System.getProperty("java.version");
 		final String javaVendor = System.getProperty("java.vendor");
 		return "1.6".compareTo(javaVersion) < 0
@@ -58,7 +58,7 @@ final class VirtualMachine {
 	 * @return true si JVM JRockit
 	 */
 	static boolean isJRockit() {
-		// pour nodes hudson, on réévalue sans utiliser de constante
+		// pour nodes Hudson/Jenkins, on réévalue sans utiliser de constante
 		return System.getProperty("java.vendor").contains("BEA");
 	}
 
@@ -153,7 +153,7 @@ final class VirtualMachine {
 			throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
 		} catch (final Exception e) {
 			// si on obtient com.sun.tools.attach.AttachNotSupportedException: no providers installed
-			// alors c'est idem (javaws dans hudson nodes par exemple)
+			// alors c'est idem (javaws dans Hudson/Jenkins nodes par exemple)
 			if ("com.sun.tools.attach.AttachNotSupportedException".equals(e.getClass().getName())) {
 				throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
 			}

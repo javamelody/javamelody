@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Abstract Filter of monitoring JavaMelody for Hudson/JIRA/Bamboo/Confluence with emulated session listener.
+ * Abstract Filter of monitoring JavaMelody for Hudson/Jenkins/JIRA/Bamboo/Confluence with emulated session listener.
  * @author Emeric Vernat
  */
 public abstract class PluginMonitoringFilter extends MonitoringFilter {
@@ -63,8 +63,8 @@ public abstract class PluginMonitoringFilter extends MonitoringFilter {
 	@Override
 	public void destroy() {
 		// évitons ClassNotFoundException: net.bull.javamelody.SessionListener,
-		// au redémarrage de Tomcat, cf 8344 dans bugs Hudson:
-		// http://issues.hudson-ci.org/browse/HUDSON-8344
+		// au redémarrage de Tomcat, cf 8344 dans bugs Hudson/Jenkins:
+		// http://issues.jenkins-ci.org/browse/JENKINS-8344
 		emulatedSessionListener.removeAllActivationListeners();
 	}
 

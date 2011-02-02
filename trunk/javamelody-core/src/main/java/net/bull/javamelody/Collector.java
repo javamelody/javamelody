@@ -395,7 +395,7 @@ class Collector { // NOPMD
 		// collecte du pourcentage d'utilisation cpu
 		collectCpu(processesCpuTimeMillis, availableProcessors);
 
-		// si ce collector est celui des nodes Hudson, il n'y a pas de requêtes http
+		// si ce collector est celui des nodes Hudson/Jenkins, il n'y a pas de requêtes http
 		// donc il ne peut pas y avoir de sessions http ou de threads actifs
 		if (getCounterByName(Counter.HTTP_COUNTER_NAME) != null) {
 			// collecte du nombre de sessions http
@@ -411,7 +411,7 @@ class Collector { // NOPMD
 			getCounterJRobin("usedConnections").addValue(usedConnectionCount);
 		}
 
-		// si ce collector est celui des nodes Hudson, on collecte le nombre de builds en cours
+		// si ce collector est celui des nodes Hudson/Jenkins, on collecte le nombre de builds en cours
 		// pour le graphique
 		if (getCounterByName(Counter.BUILDS_COUNTER_NAME) != null) {
 			getCounterJRobin("runningBuilds").addValue(JdbcWrapper.getRunningBuildCount());

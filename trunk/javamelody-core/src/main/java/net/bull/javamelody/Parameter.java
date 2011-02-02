@@ -148,10 +148,10 @@ public enum Parameter {
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),
 
 	/**
-	 * Désactive la vérification de l'authentification sur la page du monitoring dans le plugin Hudson
+	 * Désactive la vérification de l'authentification sur la page du monitoring dans le plugin Hudson/Jenkins
 	 * ou dans le plugin JIRA/Confluence/Bamboo, de manière à pouvoir utiliser le serveur de collecte
 	 * centralisé (false par défaut). Le paramètre allowed-addr-pattern pourra être utilisé pour
-	 * n'autoriser que le serveur de collecte pour l'obtention des données dans Hudson/JIRA/Confluence/Bamboo.
+	 * n'autoriser que le serveur de collecte pour l'obtention des données dans Hudson/Jenkins/JIRA/Confluence/Bamboo.
 	 */
 	PLUGIN_AUTHENTICATION_DISABLED("plugin-authentication-disabled"),
 

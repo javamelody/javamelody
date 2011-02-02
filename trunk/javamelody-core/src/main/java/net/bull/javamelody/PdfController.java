@@ -133,7 +133,7 @@ class PdfController {
 
 	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
-		// méthode utilisée dans le monitoring hudson
+		// méthode utilisée dans le monitoring Hudson/Jenkins
 		httpResponse.setContentType("application/pdf");
 		httpResponse.addHeader(
 				CONTENT_DISPOSITION,
