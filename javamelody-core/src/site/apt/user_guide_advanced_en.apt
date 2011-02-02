@@ -206,7 +206,7 @@ Advanced documentation of Java Melody
 	</init-param>
 +-------------------------------+
 
-	If the monitored application is a Hudson, JIRA, Confluence or Bamboo server, the system property
+	If the monitored application is a Hudson, Jenkins, JIRA, Confluence or Bamboo server, the system property
 	<<<-Djavamelody.plugin-authentication-disabled=true>>> can be added to the monitored server
 	in order to disable authentication of the monitoring page in the javamelody plugin and to be
 	able to add the server to a centralized collect server.
@@ -463,7 +463,7 @@ org.osgi.framework.system.packages com.sun.management; \
 	
 	For example, with tomcat it is the directory <<< <TOMCAT_HOME>/temp/javamelody/ >>>.
 	With some others servers on linux, it is the directory <<</tmp/javamelody/>>>.
-	And for the hudson plugin, it is the directory <<< <HUDSON_HOME>/javamelody/ >>>.
+	And for the Hudson / Jenkins plugin, it is the directory <<< <HUDSON_HOME>/javamelody/ >>>.
 	
 	To clear all statistics and all graphs:
 	

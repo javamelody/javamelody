@@ -64,13 +64,16 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	{{{http://www.google.com/chrome}Chrome}} or MSIE8 (MSIE7 not recommended).
 
 
-* Hudson Plugin
+* Hudson / Jenkins Plugin
 
-	If you want to monitor a {{{http://hudson-ci.org/}Hudson}} server, you can install JavaMelody by point and click
-	with a Hudson plugin. For this, open Hudson and click "Manage Hudson", "Manage plugins", "Available"
+	If you want to monitor a {{{http://hudson-ci.org/}Hudson}} server or a {{{http://jenkins-ci.org/}Jenkins}} server,
+	you can install JavaMelody by point and click with a Hudson / Jenkins plugin.
+	For this, open Hudson / Jenkins and click "Manage Hudson / Jenkins", "Manage plugins", "Available"
 	then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page.
-	Restart Hudson after the installation of the plugin. You can then open the report from the "Manage Hudson" page
-	or from the address <<<http://yourhost/monitoring>>>. That's it.
+	Restart Hudson / Jenkins after the installation of the plugin.
+	You can then open the report from the "Manage Hudson / Jenkins" page or from the address <<<http://yourhost/monitoring>>>.
+	You can also open the report for the nodes from the address http://yourhost/monitoring/nodes.
+	That's it.
 
 * Atlassian JIRA, Confluence and Bamboo Plugin
 
