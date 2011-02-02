@@ -61,13 +61,13 @@ Java version required for execution:
 	* JDK or JRE from Sun or JRockit from Oracle/BEA or J9 from IBM
 
 Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
-like Tomcat 5.5 or 6, GlassFish v2 or v3, JBoss 4 or 5, Jonas 4 or 5, Jetty 6, WebLogic 9, 10 or 11
+like Tomcat 5.5, 6 or 7, GlassFish v2 or v3, JBoss 4, 5 or 6, Jonas 4 or 5, Jetty 6, WebLogic 9, 10 or 11
 
 Required dependency: JRobin (LGPL) for evolution charts
 
 Optional dependencies: iText (LGPL or MPL) for reports in pdf format in addition to html, Spring AOP, AOP alliance, Spring core, Spring beans and Commons logging for monitoring of Spring beans, Ehcache for monitoring of caches, Quartz for monitoring of batch jobs
 
-Language: English, French and German
+Language: English, French, German and Portuguese
 
 Browser: The html report of JavaMelody is best viewed with
 [http://www.mozilla.com Firefox],
