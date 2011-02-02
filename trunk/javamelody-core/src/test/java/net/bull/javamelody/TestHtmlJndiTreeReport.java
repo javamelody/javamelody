@@ -58,14 +58,14 @@ public class TestHtmlJndiTreeReport {
 	@Test
 	public void testToHtml() throws IOException, NamingException {
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
-		expect(servletContext.getServerInfo()).andReturn("Mock");
+		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
 		replay(servletContext);
 		Parameters.initialize(servletContext);
 		doToHtml(null);
 		verify(servletContext);
 
 		final ServletContext servletContext2 = createNiceMock(ServletContext.class);
-		expect(servletContext2.getServerInfo()).andReturn("GlassFish");
+		expect(servletContext2.getServerInfo()).andReturn("GlassFish").anyTimes();
 		replay(servletContext2);
 		Parameters.initialize(servletContext2);
 		doToHtml(null);

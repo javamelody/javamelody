@@ -31,6 +31,7 @@ import javax.naming.NamingException;
  * @author Emeric Vernat
  */
 class HtmlJndiTreeReport {
+	private static final String JNDI_PREFIX = "java:";
 	private final Context context;
 	private final String path;
 	private final Writer writer;
@@ -72,7 +73,14 @@ class HtmlJndiTreeReport {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Arbre_JNDI#'>");
 		write("<thead><tr><th>#Nom#</th><th>#Type#</th>");
 		writeln("</tr></thead><tbody>");
-		final NamingEnumeration<Binding> enumeration = context.listBindings("java:" + path);
+		final String jndiName;
+		if (Parameters.getServletContext().getServerInfo().contains("WebLogic")) {
+			// path + '/' nécessaire pour WebLogic 10.3.1.0 mais pas supporté dans JBoss
+			jndiName = JNDI_PREFIX + path + '/';
+		} else {
+			jndiName = JNDI_PREFIX + path;
+		}
+		final NamingEnumeration<Binding> enumeration = context.listBindings(jndiName);
 		try {
 			boolean odd = false;
 			while (enumeration.hasMore()) {
@@ -137,8 +145,8 @@ class HtmlJndiTreeReport {
 	private String getBindingName(Binding binding) {
 		// nécessaire pour glassfish 3.0.1
 		String result = binding.getName();
-		if (result.startsWith("java:")) {
-			result = result.substring("java:".length());
+		if (result.startsWith(JNDI_PREFIX)) {
+			result = result.substring(JNDI_PREFIX.length());
 		}
 		if (result.startsWith(path)) {
 			result = result.substring(path.length());
