@@ -6,7 +6,7 @@
   * fix JNDI report in Glassfish or Jonas
   * added: If JBoss 5, display JBoss specific MBeans
   * Hudson/Jenkins Monitoring plugin:
-    * fix [http://issues.jenkins-ci.org/browse/HUDSON-8344 Hudson issue 8344] (ClassNotFoundException: net.bull.javamelody.SessionListener)
+    * fix [http://issues.jenkins-ci.org/browse/JENKINS-8344 Jenkins issue 8344] (ClassNotFoundException: net.bull.javamelody.SessionListener)
     * added: in the nodes report, chart of the number of the running builds by period
 
 === 1.25.0 ===
