@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * added: *Portuguese Brazil translation*, including the online help, thanks to _Luiz Gonzaga_ and _Renan Oliveira da Cunha_. This translation is the default for all portuguese people. The first language in the browser settings should be Portuguese (pt) or Portuguese/Brazil (pt-br) to use it. The [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Ajuda_on-line_do_monitoring.pdf online help in Portuguese] is also available.
+  * added: *Portuguese Brazil translation*, including the online help, thanks to _Luiz Gonzaga_ and _Renan Oliveira da Cunha_. This translation is the default for all Portuguese people. The first language in the browser settings should be Portuguese (pt) or Portuguese/Brazil (pt-br) to use it. The [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Ajuda_on-line_do_monitoring.pdf online help in Portuguese] is also available.
   * fix issue 85: web-fragment schema location in *JBoss 6.0.0 CE*
   * fix JNDI report in Glassfish or Jonas
   * added: If JBoss 5, display JBoss specific MBeans
