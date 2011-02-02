@@ -8,6 +8,7 @@
   * [http://panbhatt.blogspot.com/2011/01/monitoring-your-server-java.html Panbhatt]
   * [http://looking4q.blogspot.com/2011/01/monitorize-your-own-applications-with.html Alberto]
   * [http://padcom13.blogspot.com/2010/11/grails-quartz-and-javamelody.html Padcom on Grails and Quartz]
+  * [http://nabilbenyoussef.blogspot.com/2011/02/monitoring-javamelody.html Nabil (French)]
   * [http://helian.javaeye.com/blog/548476 Helian (Chinese)]
   * [http://nirvana-blanks.javaeye.com/blog/809629 nirvana_blanks (Chinese)]
   * [http://www.ilsitodiluca.it/2010/07/26/javamelody-un-utile-strumento-di-monitoraggio-delle-webapp-java/ Luca (Italian)]
