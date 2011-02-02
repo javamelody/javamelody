@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "HTTP://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title>Ajuda on-line do JavaMelody monitoring</title>
+<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>
+<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />
+</head><body>
+
+<h3 align='center'>Ajuda on-line do 
+<a href='HTTP://javamelody.googlecode.com' target='_blank'>JavaMelody</a> monitoring</h3>
+O JavaMelody monitoring é uma ferramenta para medir e calcular estatísticas sobre o funcionamento real de uma aplicação através da utilização do aplicativo pelos usuários. <br/>
+O monitoramento é baseado principalmente nas estatísticas das requisições realizadas e nos gráficos de evolução gerados.
+Esta ferramenta permite melhorar as aplicações em processo de QA (controle de qualidade) e em produção, e ajuda a:<ul>
+<li>fornecer fatos reais sobre os tempos médios de resposta e número de execuções</li>
+<li>tomar decisões quando as tendências são ruins, antes que os problemas se tornem sérios demais</li>
+<li>otimizar a aplicação baseando-se nos tempos de resposta mais limitantes</li>
+<li>localizar a causa raiz dos tempos de resposta</li>
+<li>verificar o ganho real após as otimizações</li>
+</ul>
+
+O relatório em html do JavaMelody é melhor visualizado com
+<a href="HTTP://www.mozilla.com" target="_blank">Firefox</a>,
+<a href="HTTP://www.google.com/chrome" target="_blank">Chrome</a>
+ou MS-IE8 (MS-IE7 não recomendado).
+
+<h3><img width='16' height='30' src='?resource=help/coffee.png' alt='Docs'/>
+Documentações</h3>
+<a href='HTTP://java.sun.com/javase/reference/index.jsp' target='_blank'>
+Referência rápida Java SE (em inglês)</a><br/>
+<a href='HTTP://java.sun.com/javase/6/webnotes/trouble/TSG-VM/html/index.html' target='_blank'>
+Guia de Solução de Problemas para Java SE 6 (em inglês)</a><br/>
+<a href='HTTP://java.sun.com/javase/6/webnotes/trouble/other/troubleshooting-j2se5.html' target='_blank'>
+Guia de Solução de Problemas para Java SE 5 (em inglês)</a><br/>
+<a href='HTTP://java.sun.com/developer/technicalArticles/J2SE/monitoring/' target='_blank'>
+Monitorando e Gerenciando o Java SE 6 (em inglês)</a><br/>
+<a href='HTTP://java.sun.com/performance/reference/whitepapers/6_performance.html' target='_blank'>
+Desempenho Java SE 6 (em inglês)</a><br/>
+<a href='HTTP://java.sun.com/j2se/reference/whitepapers/memorymanagement_whitepaper.pdf' target='_blank'>
+Gerenciamento de Memória (em inglês)</a><br/>
+
+<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Estado'/>
+Sumário</h3>
+Na página de monitoração, o sumário apresenta gráficos de evolução para diversos valores de medições.<br/>
+Essas medições são tomadas em um tempo T, por exemplo, a cada dois minutos.
+Cada gráfico acompanha a evolução de um valor medido no curto ou longo prazo, escolhido com links sobre o sumário: <img width='16' height='16' src='?resource=calendar_view_day.png' alt='dia'/> dia a dia,
+ <img width='16' height='16' src='?resource=calendar_view_week.png' alt='semana'/> semana a semana,
+ <img width='16' height='16' src='?resource=calendar_view_month.png' alt='mês'/> mês a mês, 
+ <img width='16' height='16' src='?resource=calendar.png' alt='ano'/> ano a ano ou
+ <img width='16' height='16' src='?resource=calendar.png' alt='personalizado'/> por um período escolhido.
+Em cada gráfico, o valor médio é exibido em verde e o valor máximo,
+em azul, com números abaixo do mesmo.
+Os gráficos são persistidos: um reinício do servidor de aplicação não tem influência sobre eles, exceto por um intervalo nas medidas.<br/>
+Cada gráfico pode ser ampliado e redimensionado, clicando sobre eles no sumário.<br/><br/>
+
+Os gráficos exibidos são:<ul>
+<li>A memória java usada, entre 0 e o máximo definido por Xmx na configuração do servidor</li>
+<li>O percentual de CPU usado pelo processo java, entre 0 e 100, mesmo
+que existam vários núcleos e/ou vários processadores</li>
+<li>O número de sessões HTTP (ou número de usuários conectados)</li>
+<li>O número de threads ativas (ou número de requisições HTTP correntes)</li>
+<li>O número de conexões JDBC ativas (ou número de requisições SQL correntes)</li>
+<li>O número de conexões JDBC usadas (ou número de transações SQL abertas);
+  no caso onde não há fonte de dados (datasource com JDBC sem pool), ele é, de fato, o número de conexões JDBC abertas no pool de conexões</li>
+<li>Para cada contador de requisições (HTTP, SQL e possivelmente EJB, Spring, Guice, ações de struts, páginas JSP):<ul>
+	<li>O tempo médio em milissegundos</li>
+	<li>O percentual de erros do sistema
+	(Este valor, para um contador, é a média para o último período de medição)</li>
+	</ul></li>
+<li>E também em 'Outros gráficos', alguns dados que são globais para a JVM ou para o Sistema Operacional:<ul>
+	<li>Se for Tomcat ou JBoss, o número de threads ativas em todo o servidor, o número de bytes recebidos
+	por minuto e o número de bytes enviados por minuto pelo servidor (o número de bytes recebidos é geralmente 0 para a maioria das webapps)</li>
+	<li>O percentual de CPU para o coletor de lixo da JVM</li>
+	<li>O número de threads para a JVM</li>
+	<li>O número de classes carregadas pela JVM</li>
+	<li>O uso de memória não heap para a JVM</li>
+	<li>A memória física utilizada pelo Sistema Operacional</li>
+	<li>A memória swap utilizada pelo Sistema Operacional</li>
+	<li>A idade média para sessões HTTP atualmente válidas em minutos</li>
+	<li>Se Linux: a carga do sistema e o número de arquivos abertos pelo Sistema Operacional</li>
+	</ul></li>
+</ul>
+As horas nos gráficos para o dia corrente dependem da hora do servidor e do fuso horário (como definido pelo Sistema Operacional ou o especificado para o servidor de aplicação).<br/>
+O link '<img width='16' height='16' src='?resource=action_refresh.png' alt='Atualizar'/> atualizar' atualiza a página e os gráficos.
+O link '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' exibe o relatório no formato PDF para o Adobe Reader.<br/>
+Se um servidor de coleta é usado para exibir a monitoração para diversos servidores em uma Farm ou em um Cluster,
+o gráfico da memória é o somatório das memórias de cada servidor,
+mas o percentual de CPU é entre 0 e 100 para todos os servidores,
+e o número de sessões HTTP é o somatório de sessões em cada servidor,
+bem como o número de threads ativas, o número de conexões JDBC ativas ou usadas,
+e o número de acessos por minuto ou o tempo médio em milissegundos.
+
+<h4>Gráfico de Memória: caso de uso de um aplicativo sendo utilizado de forma intermitente (dia / noite, por exemplo)</h4>
+<img src='?resource=help/usedMemory.png' alt='Memória' />
+<p>A memória no gráfico aumenta rapidamente quando a aplicação é usada e aumenta lentamente, mas ainda aumenta, quando o aplicativo não é usado.
+Um gráfico com inclinações, como no exemplo acima, é normal mesmo se o aplicativo não for usado.<br/>
+Em todos os casos, e se necessário, a memória é finalmente liberada,
+de uma só vez, pelo coletor de lixo (CL principal) e vai para um nível baixo, antes de voltar a subir rapidamente ou lentamente.
+Se o conjunto de ações é suficientemente fino, o gráfico também mostra os CLs secundários como pequenas variações no gráfico entre os coletores de lixo principais (CL).
+Estes coletores de lixo secundários liberam, também alguma memória, mas em menor quantidade que os coletores de lixo principais (CLs principais).
+É possível forçar um coletor de lixo principal com a ação 
+'<img src='?resource=broom.png' width='16' height='16' alt='Coletor de lixo' /> Executar o coletor de lixo'
+ na parte '<img width='16' height='16' src='?resource=systeminfo.png' alt='Informações do sistema'/> Informações do sistema' do relatório.</p>
+
+<h4>Gráfico de memória: caso de uso de uma saturação da memória</h4>
+Se a memória no gráfico chega ao máximo e se a aplicação não pode liberar um pouco de memória com o coletor de lixo, o servidor possivelmente causará algum "OutOfMemoryErrors: Java heap space" para interromper a execução e liberar alguma memória se possível.<br/> 
+Até que a memória seja suficiente, a CPU permanece em 100% porque o coletor de lixo é executado de forma permanente.
+Isso pode causar extrema lentidão ou um bloqueio do servidor de aplicativos.<br/>
+A solução pode ser incrementar o valor máximo para a memória java (parâmetro Xmx na configuração do servidor), e, possivelmente, a memória física do servidor ou otimizar, se possível, a memória utilizada pela aplicação.
+
+<h4>Memória Perm Gen: caso de uso de uma saturação da memória Perm Gen </h4>
+Se o valor da memória Perm Gen aumenta ao máximo e se a aplicação não consegue liberar um pouco da mesma,
+o servidor, possivelmente, causará alguns "OutOfMemoryErrors: Perm Gen space" interrompendo a execução da aplicação.
+Isso pode bloquear todos os recursos em sua aplicação.<br/>
+As soluções podem ser incrementar a memória Perm Gen máxima (parâmetro XX:MaxPermSize na configuração do servidor, 64 MB por padrão),
+e, possivelmente, a memória física do servidor, ou reduzir, se possível, o número de classes carregadas pela aplicação.
+
+<h4>Gráficos de threads ativas e conexões JDBC ativas: Caso de uso de nível contínuo plano (requisições longas)</h4>
+<a href='?resource=help/activeThreads.png' target='_blank'><img src='?resource=help/activeThreads.png' alt='threads ativas' width='312' height='147' /></a>
+<p>Quando um aplicativo é pouco utilizado ou não é utilizado, os gráficos de threads ativas e o de conexões JDBC ativas devem ficar em 0. Na verdade, a maioria das requisições são, felizmente, rápidas e curtas e a maioria das medidas (realizadas a cada 2 minutos, por exemplo) são tomadas sem requisições ativas, exceto 1 ou 2 vezes ocasionalmente mostradas como um pico.</p>
+Mas, quando há um nível estável plano no gráfico de threads ativas, como no exemplo acima,
+isto significa que há uma ou várias requisições que são longas (vários minutos ou várias horas)
+e que podem, potencialmente, saturar o servidor de aplicativos ou banco de dados. <br/>
+Para descobrir a causa:<ul>
+
+<li>Se o nível estável de threads ativas é reproduzido exatamente no de conexões JDBC ativas,
+ isso mostra que a causa está em uma ou várias requisições SQL e não na execução de código java.</li>
+<li>Se o nível plano continua correntemente, você pode procurar as requisições HTTP (e SQL) envolvidas na parte '<img width='16' height='16' src='?resource=hourglass.png' alt='Requisições correntes'/> Requisições correntes' do relatório.</li>
+<li>Se o nível estável terminou, você pode procurar as estatísticas de requisições HTTP (e SQL) envolvidas, na tabela de detalhada de '<img width='16' height='16' src='?resource=dbweb.png' alt='Estatísticas HTTP'/> HTTP (e SQL)', exceto se o servidor de aplicação foi parado antes do fim destas requisições.</li>
+<li>Os dados exibidos no detalhe de uma solicitação HTTP podem ajudá-lo a encontrar a causa raiz nas façades ou nas requisições SQL.</li>
+<li>Se um banco de dados Oracle é usado, a exibição do plano de execução no detalhe da requisição SQL pode ajudá-lo a procurar a causa para o tempo gasto nesta execução.
+
+<br/>(se a exibição do plano de execução diz que uma tabela "plan_table" deve ser criada: 
+você pode usar o script @$ORACLE_HOME/rdbms/admin/catplan.sql como um usuário SYS, se v10g ou acima e caso contrário @$ORACLE_HOME/rdbms/admin/utlxplan.sql e "grant all on plan_table to public" se v9i ou anterior).</li>
+<li>Pode ser útil para verificar com a monitoração o estado da memória e da CPU usado pelo servidor de aplicativos. 
+Também pode ser útil para verificar o estado da memória, da CPU e do acesso ao disco do seu banco de dados.</li>
+</ul>
+
+<h4>Gráficos de conexões JDBC utilizadas: caso de uso de um vazamento de conexões JDBC</h4>
+Em geral, as conexões JDBC são compartilhadas em um pool de conexões com uma fonte de dados (Data Source) JDBC, que permite, em particular, não reabrir as conexões à base de dados continuamente e que também define um número máximo de transações que podem ser executadas simultaneamente por instância do servidor de aplicativos.
+<br/>
+É possível, no JavaMelody, ver 2 gráficos de conexões JDBC ativas e conexões JDBC usadas. O gráfico de conexões JDBC ativas exibe o número de conexões executando consultas SQL. E o gráfico de conexões JDBC usadas exibe o número de conexões abertas que são usadas em transações com o banco de dados, mas não necessariamente executando consultas SQL.<br/>
+Se o aplicativo monitorado contém um vazamento de conexões JDBC, em alguma condição particular, as conexões são usadas desnecessariamente e permanecem indisponíveis fora do pool de conexões. O gráfico de conexões utilizadas pode mostrar que seu número aumenta sem diminuir ao mínimo configurado no pool de conexão da fonte de dados (datasource) mesmo se o servidor não tiver nenhuma atividade, à noite, por exemplo. Atingindo o máximo, os erros são registrados no pool de conexões, porque não há mais conexão disponível.<br/>
+
+Se há suspeita de vazamento de conexões JDBC, tempos e rastreamentos de pilha mostrando onde as conexões foram abertas podem ser visualizados pelo link 
+'<img width='16' height='16' src='?resource=db.png' alt='Conexões'/> Conexões JDBC abertas'
+em '<img width='16' height='16' src='?resource=systeminfo.png' alt='Informações do systema'/> Informações do sistema' no relatório.
+(Este link estará disponível se o parâmetro 'system-actions-enabled' tiver sido configurado como 'true').
+Uma leitura atenta do código para esses rastreamentos de pilha irá confirmar ou não o vazamento de conexões JDBC.
+<br/><br/>
+O gráfico de conexões JDBC utilizadas e os rastreamentos de pilha de conexões são de pouca utilidade se um pool de conexão é utilizado diretamente através de um driver JDBC e sem uma fonte de dados (datasource), porque, neste caso, você visualizará neste gráfico e nestes rastreamentos de pilha apenas as aberturas realizadas através do pool de conexões e não o uso real de conexões pela aplicação.
+
+
+<h3><img width='24' height='24' src='?resource=dbweb.png' alt='Estatísticas'/>
+Estatísticas</h3>
+As estatísticas de um contador mostram as estatísticas das requisições executadas no servidor de aplicativos. <br/>
+Hoje, existem 7 contadores de requisições: <ul>
+<li><img width='24' height='24' src='?resource=dbweb.png' alt='HTTP'/>
+Estatísticas Http</li>
+<li><img width='24' height='24' src='?resource=db.png' alt='SQL'/>
+Estatísticas SQL (JDBC)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='EJB'/>
+Estatísticas EJB (se EJB3 façades em JavaEE 5+)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='Spring'/>
+Estatísticas Spring (se Spring façades)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='Guice'/>
+Estatísticas Guice (se Guice façades)</li>
+<li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
+Estatísticas de interfaces façades (sem EJB3, Spring ou Guice)</li>
+<li><img width='24' height='24' src='?resource=struts.png' alt='struts'/>
+Estatísticas de ações struts</li>
+<li><img width='24' height='24' src='?resource=jsp.png' alt='JSP'/>
+Estatísticas de renderização de páginas JSP (ou, mais precisamente, de execuções de inclusões ou repasses em HTTPServletRequest.getRequestDispatcher, que são as páginas JSP, em geral) </li>
+</ul>
+Para cada contador, uma requisição aparece nas estatísticas quando ela termina; 
+para conhecer as requisições inacabadas veja a sessão
+'<img width='16' height='16' src='?resource=hourglass.png' alt='Requisições correntes'/> Requisições correntes' no relatório.<br/>
+Quanto aos gráficos, as estatísticas das requisições são para um período pequeno ou grande, escolhido através dos links acima do gráfico: o dia (desde 0h), a semana, o mês ou o ano. Então, é possível ver as estatísticas somente para o dia atual, ou por exemplo, para uma versão do aplicativo implantado há um mês sem as estatísticas das versões anteriores.<br/>
+E para cada contador, o relatório exibe o resumo de estatísticas para todas as requisições (global),
+das estatísticas que vão além do limiar de alerta de nível 1 (warning) daqueles que vão para além do limiar de alerta de nível 2 (severe).
+Os detalhes das estatísticas para cada requisição são exibidas clicando no link '+ Detalhes'.<br/><br/>
+Cada estatística da requisição exibe:<ul>
+<li>o conteúdo da requisição</li>
+<li>um gráfico de evolução para os tempos médios dessa requisição como uma tooltip (dica) para o mesmo período das estatísticas; podemos ampliar este gráfico clicando no conteúdo da requisição.
+Este gráfico pode ser ampliado, clicando sobre o conteúdo da requisição </li>
+<li>o percentual de tempo acumulado(tempo médio * numéro de acessos) comparado com outras requisições</li>
+<li>o número de acessos (ou número de execuções)</li>
+<li>o tempo médio em milisegundos</li>
+<li>o tempo máximo em milissegundos</li>
+<li>o desvio padrão entre os tempos de execução: se ele é alto, os tempos de execução são variados, e se ele é baixo, os tempos de execução são próximos uns dos outros</li>
+<li>o percentual acumulado de tempo de CPU (tempo médio CPU * número de acessos) comparado com outras requisições.</li>
+<li>o tempo médio de CPU em milisegundos</li>
+
+<li>o percentual de erros de sistema</li>
+</ul>
+e se é um HTTP, EJB, Spring, Guice interfaces, ações struts ou estatística JSP:<ul>
+<li>o tamanho médio em quilo-bytes para a o fluxo de resposta (somente para HTTP)</li>
+<li>o número médio de acessos SQL , por execução da requisição HTTP(, EJB...)</li>
+<li>o tempo médio de execução de requisições SQL, por execução da requisição de HTTP(, EJB...)</li>
+</ul>
+Os tempos médios, os tempos máximos e os tempos médios de CPU são cumulativos: por exemplo, os tempos médios de HTTP incluem o tempo médio de EJB e o tempo médio de SQL; além disso, os tempos médios de CPU para o HTTP incluem os tempos médios de CPU para o EJB e os tempos médios de CPU para o SQL.
+Mas os tempos de espera como paradas ou aguardando à espera de I/O não consomem CPU, assim, eles são incluídos nos tempos médios, mas não em tempos médios de CPU.<br/><br/>
+Como em todas as tabelas do relatório, as tabelas de estatísticas pode ser ordenadas em ordem ascendente ou descendente, clicando no cabeçalho das colunas.<br/>
+As estatísticas são mantidas para cada contador: um reinício do servidor da aplicação não tem qualquer influência sobre eles.<br/>
+Se um servidor coletor é usado para exibir o monitoramento de vários servidores em uma Farm ou em um Cluster,
+as estatísticas dos contadores são globais para todos os servidores.<br/><br/>
+
+Nota: No MS Windows (exceto o Vista), a resolução do clock utilizado está
+em torno de 16 ms (ou 0, ou 16 ou 32 ms).
+Assim, o tempo de uma execução não é preciso abaixo de 16 ms com o Windows.
+Isto é em parte corrigido pelo uso de uma média quando há execuções suficientes.
+Mas isso não é grave porque, em geral, as requisições problemáticas terão um prazo de execução muito maior do que 16 ms.<br/>
+
+<h3><img width='24' height='24' src='?resource=error.png' alt='Erros HTTP no sistema'/>
+Estatísticas de erros HTTP no sistema</h3>
+As estatísticas de erros HTTP no sistema mostram os erros que voltaram para o filtro HTTP do monitoramento, seja por exceções geradas pela aplicação, através de um servlet, seja por um código de erro HTTP (404 "não encontrado" ou "500 Erro Interno do Servidor", por exemplo,
+<a href="HTTP://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">Lista completa</a>)
+Estas estatísticas exibem a lista dos 250 erros mais frequentes do sistema com o número de casos de cada erro no período escolhido, e com o tempo médio da requisição para cada erro.
+Somente o erro mais frequente é apresentado inicialmente, os outros erros serão exibidos clicando no link '+ Detalhes'.
+As datas, horários, os usuários e as solicitações HTTP completas dos últimos 100 erros são exibidos clicando no link '+ Últimos erros'.
+Ao clicar sobre o nome de um erro, é possível ver para este erro, o rastreamento da pilha do java, quando ele é uma exceção java.
+<br/> Estas estatísticas de erros permitem melhorar a confiabilidade do aplicativo com base em seu uso real na produção.
+
+<h3><img width='24' height='24' src='?resource=log.png' alt="Logs de erros de sistema"/>
+Estatísticas de erros do sistema</h3>
+As estatísticas dos logs de erros do sistema exibem 'alertas' e 'erros' produzidos pelo aplicativo
+(tanto as bibliotecas log4j do Apache quanto a java.util.logging do JDK são suportadas).
+Estas estatísticas exibem a lista dos 500 erros mais frequentes registrados com o número de casos de cada erro ocorrido no período escolhido.
+
+Apenas o log do erro mais frequente é exibido inicialmente, os outros registros no log serão exibidos, clicando no link '+ Detalhes'.
+As datas, horários, os usuários e, eventualmente, as requisições completas  dos últimos 100 erros HTTP dos logs são exibidas clicando no link '+ Últimos erros'.
+Ao clicar sobre o nome de um log de erro, é possível ver, para este log, o rasteamento da pilha do erro quando um exceção java tiver sido escrita no log.
+<br/>Estas estatísticas de erros registradas no log permitem melhorar a confiabilidade da aplicação com base no seu uso real na produção.
+
+
+<h3><img width='24' height='24' src='?resource=hourglass.png' alt='Requisições correntes'/>
+Requisições correntes</h3>
+As requisições correntes exibem, no momento da geração do relatório, as execuçções das requisições que não terminaram.<br/>
+
+A árvore de solicitações HTTP, EJB possivelmente, Spring e/ou SQL é exibida, para cada uma das requisições, juntamente com o tempo já decorrido, o tempo gasto de CPU, o número de requisições SQL já executadas e o tempo SQL destas requisições.<br/>
+As estatísticas globais das requisições são exibidas novamente para as requisições correntes: tempo médio, a média de tempo de CPU, média de acessos SQL e tempo médio de SQL. Isso permite comparar as requisições correntes com as estatísticas globais.<br/>
+
+O rastreamento da pilha do erro atual do java é exibido como uma dica na thread (se for JDK 1.6).<br/>
+Somente a maior requisição é apresentada inicialmente, as outras são exibidas clicando no link '+ Detalhes'.<br/>
+
+<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='Informações sobre o sistema'/>
+Informações sobre o sistema</h3>
+
+As informações sobre o sistema são exibidas no momento da geração do relatório com algumas informações sobre o servidor de java,
+seu estado e do sistema operacional do servidor.<br/>
+As principais informações apresentadas, inicialmente, são:
+  memória java usada, número de sessões HTTP, número de threads ativas, número de conexões JDBC ativas e número de conexões JDBC usadas
+Estes são os mesmos valores que são usados para os gráficos.<br/>
+As outras informações, tais como a versão do servidor, do sistema operacional ou do banco de dados
+  ou a memória do sistema operacional, são exibidas clicando no link '+ Detalhes '. <br/>
+<br/>
+Nesta parte das informações do sistema, alguns links permitem executar ações do sistema: <ul>
+
+<li> <img src='?resource=broom.png' width='20' height='20' alt='Coletor de lixo' />
+'Executar o coletor de lixo', para forçar a liberação de memória </li>
+<li> <img src='?resource=heapdump.png' width='20' height='20' alt='Heap dump'/>
+Se for JDK 1.6, 'Gerar um heap dump',
+  para despejar todo o conteúdo da memória em um arquivo do diretório temporário no servidor,
+  que pode ser aberto com <a href="HTTP://visualvm.dev.java.net" target="_blank"> o VisualVM</a> do JDK
+  ou com <a href="HTTP://www.eclipse.org/mat/" target="_blank"> o Eclipse MAT </a> </li>
+<li> <img src='?resource=memory.png' width='20' height='20' alt='Histograma da Memória'/>
+Se for JDK 1.6, 'Ver histograma da memória', para mostrar o número de instâncias na memória para cada classe java </li>
+<li> <img src='?resource=user-trash.png' width='18' height='18' alt='Invalidar Sessões HTTP'/>
+'Invalidar sessões HTTP', para forçar todos os usuários a desligar</li>
+<li> <img src='?resource=system-users.png' width='20' height='20' alt='Sessões'/>
+'Ver sessões HTTP', para ver os atributos, os tamanhos serializados
+  (geralmente maiores que os tamanhos em memória), o país e, possivelmente, o usuário de cada sessão (se houver autenticação por JavaEE) </li>
+<li> <img src='?resource=xml.png' width='20' height='20' alt='web.xml'/>
+'Ver descritor de publicação': arquivo web.xml da aplicação </li>
+<li> <img src='?resource=mbeans.png' width='20' height='20' alt='mbeans'/>
+'MBeans': gerenciamento de beans, como no jconsole ou jvisualvm,
+com alguma configuração e sobre dados técnicos do servidor de aplicação e a JVM.
+Os valores são visíveis, mas não alteráveis e as operações não podem ser executadas. </li>
+<li> <img src='?resource=processes.png' width='20' height='20' alt='Processos'/>
+'Ver os processos do SO': lista de processos do sistema operacional (Linux com
+<a href='HTTP://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'> ps </a> ou Windows com tasklist)
+e para cada processo: usuário, memória e CPU</li>
+<li> <img src='?resource=jndi.png' width='20' height='20' alt='Árvore JNDI'/>
+'Árvore JNDI': Procura o contexto JNDI, por exemplo, para encontrar a localização e o nome de uma fonte de dados JDBC.
+</li>
+
+<li><img src='?resource=db.png' width='20' height='20' alt='Conexões JDBC abertas' />
+Para ajudar a localizar possíveis vazamentos de conexões JDBC, o 'Conexões JDBC abertas' exibe a lista de rastreamentos da pilha de onde foram abertas as conexões JDBC.
+</li>
+<li><img src='?resource=db.png' width='20' height='20' alt='Banco de dados' />
+'Banco de dados': Informações e estatísticas sobre o banco de dados (se for PostgreSQL, MySQL ou Oracle),
+
+como, por exemplo, as requisições SQL correntes ou se for Oracle, as requisições mais longas em tempo acumulado com
+exibição do tempo de CPU e do custo básico (de buffer gets).
+Esta função irá mostrar um erro se o usuário configurado no aplicativo para se conectar ao banco de dados não tiver os direitos necessários. No Oracle, a seguinte SQL concede esse direito:
+"grant select any dictionary to myuser".</li>
+</ul>
+
+Se um servidor coletor é usado para exibir a monitoração de vários servidores em uma Farm ou em um Cluster, as informações do sistema de cada servidor são exibidas (agregadas para a lista de sessões e histograma de memória) e as ações são executadas em cada servidor, um de cada vez.
+
+<h3><img width='24' height='24' src='?resource=threads.png' alt='Threads'/>
+Threads</h3>
+Esta tabela exibe a lista de todas as threads no servidor, com a prioridade de cada uma, o estado e a pilha de rastreamento em uma tooltip (se for JDK 1.6), entre outras informações.
+
+<h3><img width='24' height='24' src='?resource=caches.png' alt='Caches de dados'/>
+Caches de dados</h3>
+Os caches de dados exibem a lista de caches no aplicativo java, desde que a biblioteca <a href="HTTP://ehcache.sourceforge.net" target="_blank">ehcache</a> seja utilizada por eles.<br/>
+Para cada um dos caches, algumas estatísticas são exibidas:
+o número de objetos em memória e em disco no momento, a eficiência da memória cache (percentual desde o início do servidor de acessos ao cache de memória em comparação com os acessos ao cache em disco),
+a eficiência global do cache (percentagem do cache de memória ou cache de disco comparado com todos os acessos ao cache, incluindo dados não presentes no cache). A configuração de cada cache também é exibida para obter informações.
+<br/>Um botão está disponível para limpar todos os caches.
+
+<h3><img width='24' height='24' src='?resource=jobs.png' alt='Jobs'/>
+Jobs</h3>
+Os jobs exibem a lista de tarefas (ou lotes) no aplicativo java, desde que a biblioteca <a href="HTTP://www.quartz-scheduler.org/" target="_blank">quartz</a> seja utilizada por eles.<br/>
+
+Para cada job, o tempo médio, o último erro com rastreamento da pilha para um período escolhido, e os tempos da execução anterior e da próxima execução são exibidos. Como nos pedidos HTTP, as estatísticas de trabalhos são exibidas com tempos médios, o tempo médio de CPU, acessos SQL e tempos de SQL para o período selecionado.
+<br/>Botões estão disponíveis para fazer uma pausa ou retomar um ou todos os jobs.
+<br/> Se você tem jobs Quartz agendados com Spring, mas você não vê job algum no relatório,
+você adicionou a propriedade "exposeSchedulerInRepository", como diz o guia do usuário?
+
+<h3>Linguagem</h3>
+O monitoramento é exibido em Francês, Inglês ou Português Brasileiro dependendo da linguagem preferida em seu browser. Se o monitoramento está em língua francesa ao invés de estar no idioma Português, você deve modificar o idioma de preferência. Por exemplo, em <a href="http://www.mozilla.com/firefox" target="_blank">Firefox</a>, abra o menu Editar e "Ferramentas, Opções, Conteúdo, Idiomas, ... Selecionar" e colocar "Português/Brasil [pt-br]" em primeiro lugar:
+<br/><br/>
+<div align='center'><a href='?resource=help/language.png' target='_blank'>
+<img src='?resource=help/language.png' alt='langue' width='25%' height='25%' /></a></div>
+
+<br/><br/>
+
+<h3>Créditos de Ícones</h3>
+<a href='HTTP://www.famfamfam.com/'>Silk, mini and flag icons (Creative Commons)</a>
+<br/><br/>
+<a href='HTTP://tango.freedesktop.org/Tango_Icon_Library'>Tango icons (GPL)</a> 
+</body></html>
