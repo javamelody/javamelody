@@ -8,7 +8,7 @@
   * [http://groups.google.com/group/javamelody JavaMelody users' group]
   * [http://code.google.com/p/javamelody/feeds Project feeds]
   * ----
-  * [http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]
+  * [http://wiki.jenkins-ci.org/display/JENKINS/Monitoring Hudson / Jenkins plugin]
   * [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin]
   * [http://www.grails.org/plugin/grails-melody Grails plugin]
   * [https://www.ohloh.net/p/javamelody ohloh statistics]
