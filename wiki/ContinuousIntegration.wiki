@@ -5,10 +5,10 @@
 There is no public continuous integration server for the JavaMelody project yet (if you can have one, please post the url to evernat at free.fr).
 But if you have a private server, you can easily configure it to make nightly builds and reports.
 
-The following explains how to do this with [http://hudson-ci.org/ Hudson] which is a very good and free continuous integration server.
+The following explains how to do this with [http://jenkins-ci.org/ Jenkins] which is a very good and free continuous integration server.
 
-  * First, if you don't have Hudson, get it from http://hudson-ci.org/ and be sure to have [http://maven.apache.org maven] configured in "Manage hudson / Configure system".
-  * After installation, open the hudson server page in your browser and click on the _New job_ link.
+  * First, if you don't have Jenkins, get it from http://jenkins-ci.org/ and be sure to have [http://maven.apache.org maven] configured in "Manage Jenkins / Configure system".
+  * After installation, open the Jenkins server page in your browser and click on the _New job_ link.
   * Write _JavaMelody_ in "job name", select _Build a maven2 project_ and click "OK".
   * In "Source Code Management" of the configuration page, select _Subversion_.
   * And in "Repository URL", write _https://javamelody.googlecode.com/svn/trunk/javamelody-core_
@@ -16,13 +16,13 @@ The following explains how to do this with [http://hudson-ci.org/ Hudson] which 
   * In "Build", write "_clean antrun:run site dashboard:dashboard site -e_" in the "Goals and options" area.
   * In "Build" also, click the "Advanced..." button and write "_-Xmx128m_" in "MAVEN_OPTS". 
 
-  * If you already have the hudson plugins checktyle, findbus, pmd, dry and corbertura installed in your server, then you can check all of them in "Build settings" to generate charts and reports.
+  * If you already have the Jenkins plugins checktyle, findbus, pmd, dry and corbertura installed in your server, then you can check all of them in "Build settings" to generate charts and reports.
   * Click "Save" at the bottom to save the configuration
   * And click "Schedule a build" to run the job. (Note: the first time, wait for maven to download some dependencies).
 
   * When the job is finished, you can open the junit reports from the hudson job page or you can open the "Maven-generated site".
   * In the maven site, you can click on the green arrow to download the latest zip of project including the javamelody.jar, or you can open the generated user guide or the project reports (checkstyle, findbugs...) from the menu.
 
-And of course, you can also install the "[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Monitoring]" hudson plugin in your hudson server to monitor it with JavaMelody, or if you use [http://www.atlassian.com/software/jira/ JIRA] you can install the "[https://plugins.atlassian.com/plugin/details/20909 Monitoring]" JIRA plugin.
+And of course, you can also install the "[http://wiki.jenkins-ci.org/display/Jenkins/Monitoring Monitoring]" Jenkins plugin in your Jenkins server to monitor it with JavaMelody, or if you use [http://www.atlassian.com/software/jira/ JIRA] you can install the "[https://plugins.atlassian.com/plugin/details/20909 Monitoring]" JIRA plugin.
 
-In hudson, the [http://wiki.hudson-ci.org/display/HUDSON/Violations violations], [http://wiki.hudson-ci.org/display/HUDSON/Cobertura+Plugin cobertura] and [http://wiki.hudson-ci.org/display/HUDSON/Tmp+Cleaner+Plugin tmp cleaner] plugins can also be recommended.
+In Jenkins, the [http://wiki.jenkins-ci.org/display/JENKINS/Violations violations], [http://wiki.jenkins-ci.org/display/JENKINS/Cobertura+Plugin cobertura] and [http://wiki.jenkins-ci.org/display/JENKINS/Tmp+Cleaner+Plugin tmp cleaner] plugins can also be recommended.
