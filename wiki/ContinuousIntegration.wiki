@@ -20,7 +20,7 @@ The following explains how to do this with [http://jenkins-ci.org/ Jenkins] whic
   * Click "Save" at the bottom to save the configuration
   * And click "Schedule a build" to run the job. (Note: the first time, wait for maven to download some dependencies).
 
-  * When the job is finished, you can open the junit reports from the hudson job page or you can open the "Maven-generated site".
+  * When the job is finished, you can open the junit reports from the Jenkins job page or you can open the "Maven-generated site".
   * In the maven site, you can click on the green arrow to download the latest zip of project including the javamelody.jar, or you can open the generated user guide or the project reports (checkstyle, findbugs...) from the menu.
 
 And of course, you can also install the "[http://wiki.jenkins-ci.org/display/Jenkins/Monitoring Monitoring]" Jenkins plugin in your Jenkins server to monitor it with JavaMelody, or if you use [http://www.atlassian.com/software/jira/ JIRA] you can install the "[https://plugins.atlassian.com/plugin/details/20909 Monitoring]" JIRA plugin.
