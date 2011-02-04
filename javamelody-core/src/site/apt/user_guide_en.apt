@@ -133,7 +133,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 ** 2. <<<web.xml>>> file
 
 	If your application server is compatible with Servlet API 3.0 (like tomcat 7, glassfish v3 or jboss 6),
-	this paragraph is generally not needed, you can skip it and launch the server as in the next paragraph.
+	this paragraph is generally not needed, you can skip it and launch the server as in the next paragraph,
+	except if you use a web.xml file without version="3.0".
 	Otherwise add the following lines in the file <<<WEB-INF/web.xml>>> of the war of the webapp,
 	before the description of your servlet :
 
