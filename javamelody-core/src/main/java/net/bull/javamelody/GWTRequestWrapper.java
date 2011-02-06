@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,7 +39,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @author dhartford
  */
 class GWTRequestWrapper extends HttpServletRequestWrapper {
-	private final String originalPayload; //this is a bit of a memory hog for just profiling, but no other way.
+	private final byte[] originalPayload; //this is a bit of a memory hog for just profiling, but no other way.
 	private String gwtRpcMethodName;
 
 	/**
@@ -48,23 +49,17 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	GWTRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
-		final StringBuilder stringBuilder = new StringBuilder();
 		//Intent is to get the 7th (0-based array 6th) pipe delimited value.
 		//If there is any room for optimization, it would be here and cross-check with MonitoringFilter.
 		final InputStream inputStream = request.getInputStream();
-		final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-		try {
-			final char[] charBuffer = new char[128];
-			int bytesRead = bufferedReader.read(charBuffer);
-			while (bytesRead > 0) {
-				stringBuilder.append(charBuffer, 0, bytesRead);
-				bytesRead = bufferedReader.read(charBuffer);
-			}
-		} finally {
-			bufferedReader.close();
-		}
-		originalPayload = stringBuilder.toString();
-		parseGwtRpcMethodName(originalPayload);
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		TransportFormat.pump(inputStream, byteArrayOutputStream);
+		originalPayload = byteArrayOutputStream.toByteArray();
+
+		//decode the specified array of bytes using the platform's default charset
+		final String payload = new String(originalPayload);
+		//parse the gwt rpc method name
+		parseGwtRpcMethodName(payload);
 	}
 
 	private void parseGwtRpcMethodName(String payload) {
@@ -82,14 +77,18 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 	/** {@inheritDoc} */
 	@Override
 	public BufferedReader getReader() throws IOException {
-		return new BufferedReader(new InputStreamReader(this.getInputStream()));
+		// use character encoding as said in the API
+		final String characterEncoding = this.getCharacterEncoding();
+		if (characterEncoding == null) {
+			return new BufferedReader(new InputStreamReader(this.getInputStream()));
+		}
+		return new BufferedReader(new InputStreamReader(this.getInputStream(), characterEncoding));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-				originalPayload.getBytes());
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(originalPayload);
 		final ServletInputStream servletInputStream = new ServletInputStream() {
 			/** {@inheritDoc} */
 			@Override
