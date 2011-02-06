@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.servlet.ServletInputStream;
@@ -41,6 +40,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 class GWTRequestWrapper extends HttpServletRequestWrapper {
 	private final byte[] originalPayload; //this is a bit of a memory hog for just profiling, but no other way.
 	private String gwtRpcMethodName;
+	private ServletInputStream inputStream;
+	private BufferedReader reader;
 
 	/**
 	 * Constructor.
@@ -51,9 +52,8 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 		super(request);
 		//Intent is to get the 7th (0-based array 6th) pipe delimited value.
 		//If there is any room for optimization, it would be here and cross-check with MonitoringFilter.
-		final InputStream inputStream = request.getInputStream();
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		TransportFormat.pump(inputStream, byteArrayOutputStream);
+		TransportFormat.pump(request.getInputStream(), byteArrayOutputStream);
 		originalPayload = byteArrayOutputStream.toByteArray();
 
 		//decode the specified array of bytes using the platform's default charset
@@ -77,26 +77,33 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 	/** {@inheritDoc} */
 	@Override
 	public BufferedReader getReader() throws IOException {
-		// use character encoding as said in the API
-		final String characterEncoding = this.getCharacterEncoding();
-		if (characterEncoding == null) {
-			return new BufferedReader(new InputStreamReader(this.getInputStream()));
+		if (reader == null) {
+			// use character encoding as said in the API
+			final String characterEncoding = this.getCharacterEncoding();
+			if (characterEncoding == null) {
+				reader = new BufferedReader(new InputStreamReader(this.getInputStream()));
+			}
+			reader = new BufferedReader(new InputStreamReader(this.getInputStream(),
+					characterEncoding));
 		}
-		return new BufferedReader(new InputStreamReader(this.getInputStream(), characterEncoding));
+		return reader;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(originalPayload);
-		final ServletInputStream servletInputStream = new ServletInputStream() {
-			/** {@inheritDoc} */
-			@Override
-			public int read() throws IOException {
-				return byteArrayInputStream.read();
-			}
-		};
-		return servletInputStream;
+		if (inputStream == null) {
+			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+					originalPayload);
+			inputStream = new ServletInputStream() {
+				/** {@inheritDoc} */
+				@Override
+				public int read() throws IOException {
+					return byteArrayInputStream.read();
+				}
+			};
+		}
+		return inputStream;
 	}
 
 	String getGwtRpcMethodName() {
