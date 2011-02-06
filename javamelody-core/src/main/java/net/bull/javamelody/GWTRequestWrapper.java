@@ -31,91 +31,68 @@ import javax.servlet.http.HttpServletRequestWrapper;
 //20091201 dhartford
 //20100519 dhartford adjustments for UTF-8, however did not have an impact so removed.
 //20100520 dhartford adjustments for reader/inputstream.
+//20110206 evernat   refactoring
 
 /**
- * @author dhartford
  * Simple Wrapper class to get the payload for GWT RPC method name retrieval.
+ * @author dhartford
  */
-public class GWTRequestWrapper extends HttpServletRequestWrapper {
-
+class GWTRequestWrapper extends HttpServletRequestWrapper {
 	private final String originalPayload; //this is a bit of a memory hog for just profiling, but no other way.
 	private String gwtRpcMethodName;
 
 	/**
-	 * @return Full payload
-	 */
-	public String getGwtPayload() {
-		return originalPayload;
-	}
-
-	/**
-	 * 
+	 * Constructor.
 	 * @param request the original HttpServletRequest
 	 * @throws IOException In case of issues.
 	 */
-	public GWTRequestWrapper(HttpServletRequest request) throws IOException {
+	GWTRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
-		StringBuilder stringBuilder = new StringBuilder();
+		final StringBuilder stringBuilder = new StringBuilder();
 		//Intent is to get the 7th (0-based array 6th) pipe delimited value.
 		//If there is any room for optimization, it would be here and cross-check with MonitoringFilter.
-		BufferedReader bufferedReader = null;
+		final InputStream inputStream = request.getInputStream();
+		final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
-			InputStream inputStream = request.getInputStream();
-			if (inputStream != null) {
-				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-				char[] charBuffer = new char[128];
-				int bytesRead = -1;
-				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-					stringBuilder.append(charBuffer, 0, bytesRead);
-				}
-			} else {
-				stringBuilder.append("");
+			final char[] charBuffer = new char[128];
+			int bytesRead = bufferedReader.read(charBuffer);
+			while (bytesRead > 0) {
+				stringBuilder.append(charBuffer, 0, bytesRead);
+				bytesRead = bufferedReader.read(charBuffer);
 			}
-		} catch (IOException ex) {
-			throw ex;
 		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException ex) {
-					throw ex;
-				}
-			}
+			bufferedReader.close();
 		}
 		originalPayload = stringBuilder.toString();
 		parseGwtRpcMethodName(originalPayload);
 	}
 
-	private void parseGwtRpcMethodName(String originalPayload) {
-
+	private void parseGwtRpcMethodName(String payload) {
 		//commented out code uses GWT-user library for a more 'proper' approach.
 		//GWT-user library approach is more future-proof, but requires more dependency management.
 		//				RPCRequest decodeRequest = RPC.decodeRequest(readLine);
 		//				gwtmethodname = decodeRequest.getMethod().getName();
 
-		String[] split = originalPayload.split("\\|"); //pipe delimited
+		final String[] split = payload.split("\\|"); //pipe delimited
 		if (split[6] != null && split[6].length() > 0) {
 			gwtRpcMethodName = split[6];
 		}
-
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequestWrapper#getReader()
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public BufferedReader getReader() throws IOException {
 		return new BufferedReader(new InputStreamReader(this.getInputStream()));
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequestWrapper#getInputStream()
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
 				originalPayload.getBytes());
-		ServletInputStream servletInputStream = new ServletInputStream() {
+		final ServletInputStream servletInputStream = new ServletInputStream() {
+			/** {@inheritDoc} */
+			@Override
 			public int read() throws IOException {
 				return byteArrayInputStream.read();
 			}
@@ -123,7 +100,7 @@ public class GWTRequestWrapper extends HttpServletRequestWrapper {
 		return servletInputStream;
 	}
 
-	public String getGwtRpcMethodName() {
+	String getGwtRpcMethodName() {
 		return gwtRpcMethodName;
 	}
 }
