@@ -161,7 +161,8 @@ class HtmlJndiTreeReport {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<a href='?'><img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
+		writer.write("<a href='?#systeminfo'>");
+		writeln("<img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=jndi&amp;path=" + htmlEncode(path)
 				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
