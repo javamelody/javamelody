@@ -60,6 +60,15 @@ public class TestMBeans {
 		final ObjectInstance mBean2 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
 				new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"));
 		mbeansList.add(mBean2.getObjectName());
+		final ObjectInstance mBean3 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
+				new ObjectName("jonas:j2eeType=Servlet"));
+		mbeansList.add(mBean3.getObjectName());
+		final ObjectInstance mBean4 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
+				new ObjectName("notjonas:type=Servlet"));
+		mbeansList.add(mBean4.getObjectName());
+		final ObjectInstance mBean5 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
+				new ObjectName("jboss.deployment:type=Servlet"));
+		mbeansList.add(mBean5.getObjectName());
 	}
 
 	/** After.
@@ -124,12 +133,20 @@ public class TestMBeans {
 	@Test
 	public void testGetConvertedAttribute() {
 		final String firstMBean = mbeansList.get(0).toString();
-		assertNotNull("getConvertedAttributes",
-				MBeans.getConvertedAttributes(firstMBean + ".maxThreads"));
+		final String message = "getConvertedAttributes";
+		assertNotNull(message, MBeans.getConvertedAttributes(firstMBean + ".maxThreads"));
 		assertNotNull(
-				"getConvertedAttributes",
+				message,
 				MBeans.getConvertedAttributes(firstMBean + ".maxThreads|" + firstMBean
 						+ ".maxThreads"));
+		assertNotNull(message, MBeans.getConvertedAttributes(firstMBean + ".intArrayAsInJRockit"));
+		assertNotNull(message,
+				MBeans.getConvertedAttributes(firstMBean + ".doubleArrayAsInJRockit"));
+		try {
+			MBeans.getConvertedAttributes("Catalina:type=instanceNotFound.maxThreads");
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("e", e);
+		}
 		try {
 			MBeans.getConvertedAttributes("n'importe quoi.maxThreads");
 		} catch (final IllegalArgumentException e) {
