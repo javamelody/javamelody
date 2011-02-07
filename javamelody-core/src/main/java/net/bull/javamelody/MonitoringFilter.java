@@ -144,8 +144,8 @@ public class MonitoringFilter implements Filter {
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		boolean systemError = false;
 		Throwable systemException = null;
-		String requestName = getCompleteRequestName(httpRequest, false);
-		final String completeRequestName = getCompleteRequestName(httpRequest, true);
+		String requestName = getCompleteRequestName(wrappedRequest, false);
+		final String completeRequestName = getCompleteRequestName(wrappedRequest, true);
 		try {
 			JdbcWrapper.ACTIVE_THREAD_COUNT.incrementAndGet();
 			// on binde le contexte de la requête http pour les requêtes sql
@@ -316,8 +316,7 @@ public class MonitoringFilter implements Filter {
 		}
 		if (!includeQueryString) {
 			//20091201 dhartford:Check for GWT for modified http request statistic gathering.
-			if (httpRequest.getContentType() != null
-					&& httpRequest.getContentType().startsWith("text/x-gwt-rpc")) {
+			if (httpRequest instanceof GWTRequestWrapper) {
 				//Cast the GWT HttpServletRequestWrapper object, get the actual payload for
 				//type x-gwt-rpc, and obtain methodname (manually, the 7th pipe-delimited item).
 				final GWTRequestWrapper wrapper = (GWTRequestWrapper) httpRequest;
