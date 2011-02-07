@@ -71,6 +71,16 @@ public class TestTomcatInformations {
 				}
 			};
 		}
+
+		/** {@inheritDoc} */
+		public int[] getintArrayAsInJRockit() {
+			return new int[] { 1 };
+		}
+
+		/** {@inheritDoc} */
+		public double[] getdoubleArrayAsInJRockit() {
+			return new double[] { 1d };
+		}
 	}
 
 	/**
@@ -107,6 +117,16 @@ public class TestTomcatInformations {
 		 * @return Object
 		 */
 		Object gettoStringException();
+
+		/**
+		 * @return int[]
+		 */
+		int[] getintArrayAsInJRockit();
+
+		/**
+		 * @return double[]
+		 */
+		double[] getdoubleArrayAsInJRockit();
 	}
 
 	/**
