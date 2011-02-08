@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class TestHtmlMBeansReport {
 	@Test
 	public void testToHtml() throws IOException, JMException {
 		assertNotNull("mbeans", new MBeans());
-		final MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
+		final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
 		try {
 			final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool(),
@@ -103,6 +104,9 @@ public class TestHtmlMBeansReport {
 			JdbcWrapperHelper.setFieldValue(mbeanAttributeInfo0, "description", "maxThreads");
 			final MBeanAttributeInfo mbeanAttributeInfo1 = mbeanInfo.getAttributes()[1];
 			JdbcWrapperHelper.setFieldValue(mbeanAttributeInfo1, "description", null);
+
+			// register another mbeanServer
+			MBeanServerFactory.createMBeanServer("jboss");
 
 			final StringWriter writer = new StringWriter();
 			final HtmlMBeansReport report = new HtmlMBeansReport(writer);
