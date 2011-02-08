@@ -46,7 +46,7 @@ class HtmlMBeansReport {
 		assert writer != null;
 		this.writer = writer;
 		// MBeans pour la plateforme
-		mbeans = new MBeans();
+		setMBeans(new MBeans());
 	}
 
 	void toHtml() throws IOException, JMException {
@@ -71,7 +71,7 @@ class HtmlMBeansReport {
 		final MBeanServer plateformMBeanServer = MBeans.getPlatformMBeanServer();
 		for (final MBeanServer mbeanServer : MBeans.getMBeanServers()) {
 			if (mbeanServer != plateformMBeanServer) {
-				mbeans = new MBeans(mbeanServer);
+				setMBeans(new MBeans(mbeanServer));
 				writeln(BR);
 				writer.write("<b>" + htmlEncode(mbeanServer.getDefaultDomain()) + "</b>");
 				writeTreeForCurrentMBeans();
@@ -216,6 +216,10 @@ class HtmlMBeansReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writer.write("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
+	}
+
+	private void setMBeans(MBeans mBeans) {
+		this.mbeans = mBeans;
 	}
 
 	private static String htmlEncode(String text) {
