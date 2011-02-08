@@ -41,6 +41,8 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestHtmlJndiTreeReport {
+	private static final String JNDI_PREFIX = "java:";
+
 	/** Check. */
 	@Before
 	public void setUp() {
@@ -57,19 +59,18 @@ public class TestHtmlJndiTreeReport {
 	 * @throws NamingException e */
 	@Test
 	public void testToHtml() throws IOException, NamingException {
+		doToHtmlWithServerName("Mock");
+		doToHtmlWithServerName("GlassFish");
+		doToHtmlWithServerName("WebLogic");
+	}
+
+	private void doToHtmlWithServerName(String serverName) throws NamingException, IOException {
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
-		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
+		expect(servletContext.getServerInfo()).andReturn(serverName).anyTimes();
 		replay(servletContext);
 		Parameters.initialize(servletContext);
 		doToHtml(null);
 		verify(servletContext);
-
-		final ServletContext servletContext2 = createNiceMock(ServletContext.class);
-		expect(servletContext2.getServerInfo()).andReturn("GlassFish").anyTimes();
-		replay(servletContext2);
-		Parameters.initialize(servletContext2);
-		doToHtml(null);
-		verify(servletContext2);
 	}
 
 	/** Test.
@@ -85,14 +86,24 @@ public class TestHtmlJndiTreeReport {
 		final Context context = createNiceMock(Context.class);
 		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
-		expect(context.listBindings("java:" + (contextPath == null ? "" : contextPath))).andReturn(
-				enumeration).anyTimes();
-		expect(context.listBindings("java:" + (contextPath == null ? "comp" : contextPath)))
-				.andReturn(enumeration).anyTimes();
-		expect(enumeration.hasMore()).andReturn(true).times(4);
+		if (contextPath == null) {
+			expect(context.listBindings(JNDI_PREFIX)).andReturn(enumeration).anyTimes();
+			expect(context.listBindings(JNDI_PREFIX + '/')).andReturn(enumeration).anyTimes();
+			expect(context.listBindings(JNDI_PREFIX + "comp")).andReturn(enumeration).anyTimes();
+			expect(context.listBindings(JNDI_PREFIX + "comp/")).andReturn(enumeration).anyTimes();
+		} else {
+			expect(context.listBindings(JNDI_PREFIX + contextPath)).andReturn(enumeration)
+					.anyTimes();
+			expect(context.listBindings(JNDI_PREFIX + contextPath + '/')).andReturn(enumeration)
+					.anyTimes();
+		}
+		expect(enumeration.hasMore()).andReturn(true).times(6);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
 		expect(enumeration.next()).andReturn(
 				new Binding("test context", createNiceMock(Context.class))).once();
+		expect(enumeration.next()).andReturn(new Binding("", "test")).once();
+		expect(enumeration.next()).andReturn(
+				new Binding("java:/test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("test null classname", null, null)).once();
 		expect(enumeration.next()).andThrow(new NamingException("test")).once();
 		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(context, contextPath,
