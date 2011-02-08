@@ -1,8 +1,9 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * added: *GWT-RPC detailed statistic collection feature*, contributed by _dhartford_ (issue 88).<br/>Breaks up general servlet calls (GwtServiceServlet) into the specific GWT-RPC calls for statistic collection (GwtServiceServlet.LOGIN GWT-RPC, GwtServiceServlet.Data_retrieve_method GWT-RPC, GwtServiceServlet.update_data GWT-RPC, etc).<br/>Only enabled when GWT-RPC is detected (and 'http'). Works with GWT 1.3 to 2.1 (to date).  Will not work with deRPC/RequestFactory transport mechanisms, only GWT-RPC specifically.
   * added: *Portuguese Brazil translation*, including the online help, thanks to _Luiz Gonzaga da Mata_ and _Renan Oliveira da Cunha_. This translation is the default for all Portuguese people. The first language in the browser settings should be Portuguese (pt) or Portuguese/Brazil (pt-br) to use it. The [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Ajuda_on-line_do_monitoring.pdf online help in Portuguese Brazil] is also available.
-  * fix issue 85: web-fragment schema location in *JBoss 6.0.0 CE*
+  * fix issue 85: web-fragment schema location in *JBoss 6.0.0 CE*, patch contributed by _dhartford_
   * fix JNDI report in Glassfish, WebLogic, Jonas and Websphere
   * added: If JBoss 5, display JBoss specific MBeans
   * Hudson/Jenkins Monitoring plugin:
