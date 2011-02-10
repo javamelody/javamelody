@@ -50,6 +50,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -70,6 +71,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
@@ -367,6 +369,57 @@ public class TestMonitoringFilter {
 		replay(session);
 		doFilter(request);
 		verify(session);
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoFilterWithGWT() throws ServletException, IOException {
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		expect(request.getContentType()).andReturn("text/x-gwt-rpc").anyTimes();
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+				"1|2|3|4|5|6|7|8|9|10".getBytes());
+		final ServletInputStream inputStream = new ServletInputStream() {
+			/** {@inheritDoc} */
+			@Override
+			public int read() throws IOException {
+				return byteArrayInputStream.read();
+			}
+		};
+		expect(request.getInputStream()).andReturn(inputStream).anyTimes();
+		doFilter(request);
+
+		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
+		expect(request2.getContentType()).andReturn("text/x-gwt-rpc").anyTimes();
+		final ByteArrayInputStream byteArrayInputStream2 = new ByteArrayInputStream(
+				"1|2|3|4|5|6||8|9|10".getBytes());
+		final ServletInputStream inputStream2 = new ServletInputStream() {
+			/** {@inheritDoc} */
+			@Override
+			public int read() throws IOException {
+				return byteArrayInputStream2.read();
+			}
+		};
+		expect(request2.getInputStream()).andReturn(inputStream2).anyTimes();
+		replay(request2);
+		final GWTRequestWrapper wrapper2 = new GWTRequestWrapper(request2);
+		wrapper2.getInputStream().read();
+		wrapper2.getReader().read();
+		verify(request2);
+
+		byteArrayInputStream2.reset();
+		final HttpServletRequest request3 = createNiceMock(HttpServletRequest.class);
+		expect(request3.getContentType()).andReturn("text/x-gwt-rpc").anyTimes();
+		expect(request3.getCharacterEncoding()).andReturn("utf-8").anyTimes();
+		expect(request3.getInputStream()).andReturn(inputStream2).anyTimes();
+		replay(request3);
+		final GWTRequestWrapper wrapper3 = new GWTRequestWrapper(request3);
+		wrapper3.getInputStream().read();
+		wrapper3.getInputStream().read();
+		wrapper3.getReader().read();
+		wrapper3.getReader().read();
+		verify(request3);
 	}
 
 	private void doFilter(HttpServletRequest request) throws ServletException, IOException {
