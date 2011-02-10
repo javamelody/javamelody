@@ -69,7 +69,7 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 		//				gwtmethodname = decodeRequest.getMethod().getName();
 
 		final String[] split = payload.split("\\|"); //pipe delimited
-		if (split[6] != null && split[6].length() > 0) {
+		if (split[6].length() > 0) {
 			gwtRpcMethodName = split[6];
 		}
 	}
@@ -82,9 +82,10 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 			final String characterEncoding = this.getCharacterEncoding();
 			if (characterEncoding == null) {
 				reader = new BufferedReader(new InputStreamReader(this.getInputStream()));
+			} else {
+				reader = new BufferedReader(new InputStreamReader(this.getInputStream(),
+						characterEncoding));
 			}
-			reader = new BufferedReader(new InputStreamReader(this.getInputStream(),
-					characterEncoding));
 		}
 		return reader;
 	}
