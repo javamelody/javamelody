@@ -25,14 +25,19 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
 /**
  * Post-processor Spring pour une éventuelle DataSource défini dans le fichier xml Spring.
  * @author Emeric Vernat
  */
-public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
+public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
+		ApplicationContextAware {
 	private Set<String> excludedDatasources;
+	private ApplicationContext applicationContext;
 
 	/**
 	 * Définit les noms des datasources Spring exclues.
@@ -52,6 +57,11 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	/** {@inheritDoc} */
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
+	/** {@inheritDoc} */
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
@@ -60,6 +70,12 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
 		if (excludedDatasources != null && excludedDatasources.contains(beanName)) {
 			LOG.debug("Spring datasource excluded: " + beanName);
+			return bean;
+		}
+		if (applicationContext instanceof ConfigurableApplicationContext
+				&& ((ConfigurableApplicationContext) applicationContext).getBeanFactory()
+						.getBeanDefinition(beanName).isAbstract()) {
+			LOG.debug("Ignoring abstract bean: " + beanName);
 			return bean;
 		}
 		if (bean instanceof DataSource && !Parameters.isNoDatabase()) {
@@ -71,18 +87,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 			return result;
 		} else if (bean instanceof JndiObjectFactoryBean && !Parameters.isNoDatabase()) {
 			// fix issue 20
-			final InvocationHandler invocationHandler = new InvocationHandler() {
-				/** {@inheritDoc} */
-				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-					Object result = method.invoke(bean, args);
-					if (result instanceof DataSource) {
-						result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
-								(DataSource) result);
-					}
-					return result;
-				}
-			};
-			final Object result = JdbcWrapper.createProxy(bean, invocationHandler);
+			final Object result = createProxy(bean, beanName);
 			LOG.debug("Spring JNDI factory wrapped: " + beanName);
 			return result;
 		}
@@ -128,5 +133,20 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 		//		}
 
 		return bean;
+	}
+
+	private Object createProxy(final Object bean, final String beanName) {
+		final InvocationHandler invocationHandler = new InvocationHandler() {
+			/** {@inheritDoc} */
+			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+				Object result = method.invoke(bean, args);
+				if (result instanceof DataSource) {
+					result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
+							(DataSource) result);
+				}
+				return result;
+			}
+		};
+		return JdbcWrapper.createProxy(bean, invocationHandler);
 	}
 }
