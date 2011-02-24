@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -72,9 +73,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
 			LOG.debug("Spring datasource excluded: " + beanName);
 			return bean;
 		}
-		if (applicationContext instanceof ConfigurableApplicationContext
-				&& ((ConfigurableApplicationContext) applicationContext).getBeanFactory()
-						.getBeanDefinition(beanName).isAbstract()) {
+		if (isBeanDefinitionAbstract(beanName)) {
 			LOG.debug("Ignoring abstract bean: " + beanName);
 			return bean;
 		}
@@ -133,6 +132,17 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
 		//		}
 
 		return bean;
+	}
+
+	private boolean isBeanDefinitionAbstract(String beanName) {
+		if (applicationContext instanceof ConfigurableApplicationContext) {
+			final ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext)
+					.getBeanFactory();
+			// beanFactory ne contient pas forcément beanName, cf issue 80 comment 7
+			return beanFactory.containsBeanDefinition(beanName)
+					&& beanFactory.getBeanDefinition(beanName).isAbstract();
+		}
+		return false;
 	}
 
 	private Object createProxy(final Object bean, final String beanName) {
