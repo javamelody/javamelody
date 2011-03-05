@@ -34,7 +34,7 @@ import javax.management.ObjectName;
  * @author Emeric Vernat
  */
 class HtmlMBeansReport {
-	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private static final String BR = "<br/>";
 	private MBeans mbeans;
 	private final Writer writer;
@@ -144,13 +144,10 @@ class HtmlMBeansReport {
 		final MBeanInfo mbeanInfo = mbeans.getMBeanInfo(name);
 		final MBeanAttributeInfo[] attributeInfos = mbeanInfo.getAttributes();
 		final Map<String, Object> attributes = mbeans.getAttributes(name, attributeInfos);
-		final String description = mbeanInfo.getDescription();
-		// les descriptions des MBeans de java.lang n'apportent aucune information utile
-		final boolean descriptionDisplayed = description != null
-				&& !JAVA_LANG_MBEAN_DESCRIPTION.equals(description);
-		if (descriptionDisplayed || !attributes.isEmpty()) {
+		final String description = mbeans.formatMBeansDescription(mbeanInfo.getDescription());
+		if (description != null || !attributes.isEmpty()) {
 			writeln("<table border='0' cellspacing='0' cellpadding='3' summary=''>");
-			if (descriptionDisplayed) {
+			if (description != null) {
 				write("<tr><td colspan='3'>(");
 				writer.write(htmlEncode(description));
 				write(")</td></tr>");
@@ -173,25 +170,8 @@ class HtmlMBeansReport {
 		writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
 		writer.write(htmlEncode(attributeName));
 		write("</td><td>");
-		try {
-			if (attributeValue instanceof List) {
-				write("[");
-				boolean first = true;
-				for (final Object value : (List<?>) attributeValue) {
-					if (first) {
-						first = false;
-					} else {
-						write(",<br/>");
-					}
-					writer.write(htmlEncode(String.valueOf(value)));
-				}
-				write("]");
-			} else {
-				writer.write(htmlEncode(String.valueOf(attributeValue)));
-			}
-		} catch (final Exception e) {
-			writer.write(htmlEncode(e.toString()));
-		}
+		// \n sera encodé dans <br/> dans htmlEncode
+		writer.write(htmlEncode(mbeans.formatAttributeValue(attributeValue)));
 		write("</td><td>");
 		final String attributeDescription = mbeans.getAttributeDescription(attributeName,
 				attributeInfos);
@@ -201,6 +181,8 @@ class HtmlMBeansReport {
 			write("(");
 			writer.write(htmlEncode(attributeDescription));
 			write(")");
+		} else {
+			write("nbsp;");
 		}
 		write("</td></tr>");
 	}
@@ -210,6 +192,11 @@ class HtmlMBeansReport {
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=mbeans'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			write("<a href='?part=mbeans&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln("</div>");
 	}
 

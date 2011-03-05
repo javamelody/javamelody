@@ -21,6 +21,7 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
@@ -61,6 +62,8 @@ class PdfController {
 				final int index = DatabaseInformations.parseRequestIndex(httpRequest
 						.getParameter(REQUEST_PARAMETER));
 				doDatabase(httpResponse, index);
+			} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+				doMBeans(httpResponse);
 			} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 				doHeapHisto(httpResponse);
 			} else {
@@ -117,6 +120,15 @@ class PdfController {
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
 				httpResponse.getOutputStream());
 		pdfOtherReport.writeDatabaseInformations(databaseInformations);
+	}
+
+	private void doMBeans(HttpServletResponse httpResponse) throws Exception { // NOPMD
+		if (isFromCollectorServer()) {
+			throw new IllegalStateException("Not supported on the collect server");
+		}
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
+				httpResponse.getOutputStream());
+		pdfOtherReport.writeMBeans();
 	}
 
 	private void doHeapHisto(HttpServletResponse httpResponse) throws Exception { // NOPMD
