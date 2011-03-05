@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix: do not monitor abstract Spring dataSources (patch by David Karlsen)
+
 === 1.26.0 ===
 
   * added: *GWT-RPC detailed statistic collection feature*, contributed by _dhartford_ (issue 88).<br/>Breaks up general servlet calls (GwtServiceServlet) into the specific GWT-RPC calls for statistic collection (GwtServiceServlet.LOGIN GWT-RPC, GwtServiceServlet.Data_retrieve_method GWT-RPC, GwtServiceServlet.update_data GWT-RPC, etc).<br/>Only enabled when GWT-RPC is detected (and 'http'). Works with GWT 1.3 to 2.1 (to date).  Will not work with deRPC/RequestFactory transport mechanisms, only GWT-RPC specifically.
