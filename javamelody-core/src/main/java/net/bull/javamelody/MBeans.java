@@ -45,6 +45,7 @@ import javax.management.openmbean.TabularData;
  * @author Emeric Vernat
  */
 final class MBeans {
+	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
 	private final MBeanServer mbeanServer;
 
 	MBeans() {
@@ -153,6 +154,47 @@ final class MBeans {
 			result.put(attribute.getName(), value);
 		}
 		return result;
+	}
+
+	String formatAttributeValue(Object attributeValue) {
+		try {
+			if (attributeValue instanceof List) {
+				final StringBuilder sb = new StringBuilder();
+				sb.append('[');
+				boolean first = true;
+				for (final Object value : (List<?>) attributeValue) {
+					if (first) {
+						first = false;
+					} else {
+						sb.append(",\n");
+					}
+					sb.append(String.valueOf(value));
+				}
+				sb.append(']');
+				return sb.toString();
+			}
+			return String.valueOf(attributeValue);
+		} catch (final Exception e) {
+			return e.toString();
+		}
+	}
+
+	String formatMBeansDescription(String description) {
+		// les descriptions des MBeans de java.lang n'apportent aucune information utile
+		if (description == null || JAVA_LANG_MBEAN_DESCRIPTION.equals(description)) {
+			return null;
+		}
+		int indexOf = description.indexOf("  ");
+		if (indexOf != -1) {
+			// certaines descriptions de Tomcat 6 contiennent de nombreux espaces qui se suivent
+			final StringBuilder sb = new StringBuilder(description);
+			while (indexOf != -1) {
+				sb.deleteCharAt(indexOf);
+				indexOf = sb.indexOf("  ");
+			}
+			return sb.toString();
+		}
+		return description;
 	}
 
 	private Object convertValueIfNeeded(Object value) {

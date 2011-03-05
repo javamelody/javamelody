@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.JMException;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -112,7 +114,20 @@ class PdfOtherReport {
 		document.close();
 	}
 
-	private static IOException createIOException(DocumentException e) {
+	void writeMBeans() throws IOException {
+		try {
+			document.open();
+			addParagraph(getI18nString("MBeans"), "mbeans.png");
+			new PdfMBeansReport(document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		} catch (final JMException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
+	private static IOException createIOException(Exception e) {
 		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
 		final IOException ex = new IOException(e.getMessage());
 		ex.initCause(e);

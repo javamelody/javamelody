@@ -163,6 +163,16 @@ public class TestPdfOtherReport {
 		}
 	}
 
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteMBeans() throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeMBeans();
+		assertNotEmptyAndClear(output);
+	}
+
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
 		assertTrue("rapport vide", output.size() > 0);
 		output.reset();
