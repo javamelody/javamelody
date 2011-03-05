@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix: do not monitor abstract Spring dataSources (patch by David Karlsen)
+  * added: pdf report of MBeans
 
 === 1.26.0 ===
 
