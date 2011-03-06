@@ -3,6 +3,7 @@
 
   * fix: do not monitor abstract Spring dataSources (patch by David Karlsen)
   * added: pdf report of MBeans
+  * [http://www.grails.org/plugin/grails-melody JavaMelody Grails Plugin]: use dependency resolution (issue 92).<br/>Dependencies are now declared in [https://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/grails-app/conf/BuildConfig.groovy BuildConfig.groovy] instead of jar files in the plugin. As a consequence and starting from JavaMelody Grails plugin v1.2, a network connection will be needed the first time to download the dependencies with Ivy.
 
 === 1.26.0 ===
 
