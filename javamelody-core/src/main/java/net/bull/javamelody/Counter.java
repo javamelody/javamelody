@@ -557,6 +557,11 @@ class Counter implements Cloneable, Serializable { // NOPMD
 				|| "guice".equals(name);
 	}
 
+	boolean isRequestIdFromThisCounter(String requestId) {
+		// cela marche car requestId commence par counter.getName() selon CounterRequest.buildId
+		return requestId.startsWith(getName());
+	}
+
 	private String getAggregateRequestName(String requestName) {
 		final String aggregateRequestName;
 		if (requestTransformPattern == null) {

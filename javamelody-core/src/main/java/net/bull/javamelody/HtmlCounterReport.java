@@ -92,7 +92,7 @@ class HtmlCounterReport {
 			if (request != null) {
 				writeRequest(request);
 
-				if (graphName.startsWith(JdbcWrapper.SINGLETON.getSqlCounter().getName())) {
+				if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)) {
 					writeSqlRequestExplainPlan(request.getName());
 				}
 			}
@@ -397,8 +397,7 @@ class HtmlCounterReport {
 		private Counter getCounterByRequestId(CounterRequest request) {
 			final String requestId = request.getId();
 			for (final Counter counter : counters) {
-				// cela marche car requestId commence par counter.getName() selon CounterRequest.buildId
-				if (requestId.startsWith(counter.getName())) {
+				if (counter.isRequestIdFromThisCounter(requestId)) {
 					return counter;
 				}
 			}
