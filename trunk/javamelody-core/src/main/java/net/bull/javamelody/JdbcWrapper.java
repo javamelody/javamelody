@@ -840,6 +840,10 @@ final class JdbcWrapper {
 
 	private static boolean isProxyAlready(Object object) {
 		return Proxy.isProxyClass(object.getClass())
-				&& Proxy.getInvocationHandler(object) instanceof DelegatingInvocationHandler;
+				&& Proxy.getInvocationHandler(object).getClass().getName()
+						.equals(DelegatingInvocationHandler.class.getName());
+		// utilisation de Proxy.getInvocationHandler(object).getClass().getName().equals(DelegatingInvocationHandler.class.getName())
+		// et non de Proxy.getInvocationHandler(object) instanceof DelegatingInvocationHandler
+		// pour issue 97 (classLoaders différents pour les classes DelegatingInvocationHandler)
 	}
 }
