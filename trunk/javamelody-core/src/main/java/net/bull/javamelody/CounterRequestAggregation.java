@@ -184,7 +184,7 @@ class CounterRequestAggregation {
 		return requestList;
 	}
 
-	private String getClassNameFromRequest(CounterRequest request) {
+	private static String getClassNameFromRequest(CounterRequest request) {
 		final int lastIndexOf = request.getName().lastIndexOf('.');
 		if (lastIndexOf != -1) {
 			return request.getName().substring(0, lastIndexOf);
