@@ -4,7 +4,7 @@ For standard documentation, see [UserGuide]
 
 == Table of contents ==
 
-  * [#Setup_of_in_an_ear_file Setup of JavaMelody in an ear file]
+  * [#Setup_in_an_ear_file Setup JavaMelody in an ear file]
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
@@ -26,15 +26,15 @@ For standard documentation, see [UserGuide]
   * [#Compilation_and_development Compilation and development]
 
 
-== Setup of JavaMelody in an ear file ==
+== Setup JavaMelody in an ear file ==
 
 	(Written based on a contribution by 'dhartford')
 
 	If you deploy your application with a war file or with an equivalent directory, just follow the [UserGuide].
 	
-	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup of JavaMelody in your ear.
+	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup JavaMelody in your ear.
 
-	Note that if you have class loading issues with an ear, use of a single war instead of an ear could help (and with JavaEE 6, you can even use EJBs in a single war).
+	Note that if you have class loading issues with an ear, the use of a single war instead of an ear could help (and with JavaEE 6, you can even use EJBs in a single war).
 	
 === 1. Jar files ===
 
