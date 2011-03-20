@@ -25,20 +25,14 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
 /**
  * Post-processor Spring pour une éventuelle DataSource défini dans le fichier xml Spring.
  * @author Emeric Vernat
  */
-public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
-		ApplicationContextAware {
+public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 	private Set<String> excludedDatasources;
-	private ApplicationContext applicationContext;
 
 	/**
 	 * Définit les noms des datasources Spring exclues.
@@ -58,11 +52,6 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
 	}
 
 	/** {@inheritDoc} */
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
-
-	/** {@inheritDoc} */
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
@@ -71,10 +60,6 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
 	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
 		if (excludedDatasources != null && excludedDatasources.contains(beanName)) {
 			LOG.debug("Spring datasource excluded: " + beanName);
-			return bean;
-		}
-		if (isBeanDefinitionAbstract(beanName)) {
-			LOG.debug("Ignoring abstract bean: " + beanName);
 			return bean;
 		}
 		if (bean instanceof DataSource && !Parameters.isNoDatabase()) {
@@ -132,17 +117,6 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor,
 		//		}
 
 		return bean;
-	}
-
-	private boolean isBeanDefinitionAbstract(String beanName) {
-		if (applicationContext instanceof ConfigurableApplicationContext) {
-			final ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext)
-					.getBeanFactory();
-			// beanFactory ne contient pas forcément beanName, cf issue 80 comment 7
-			return beanFactory.containsBeanDefinition(beanName)
-					&& beanFactory.getBeanDefinition(beanName).isAbstract();
-		}
-		return false;
 	}
 
 	private Object createProxy(final Object bean, final String beanName) {
