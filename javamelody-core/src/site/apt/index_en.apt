@@ -18,7 +18,7 @@ Java Melody : monitoring of Java applications
 
 	( {{{screenshots.html}Screenshots}}, {{{user_guide_en.html}User guide}}, {{{index.html}Français}} )
 	
-	The goal of this monitoring tool is to monitor Java or Java EE applications servers in QA and production environments.
+	The goal of JavaMelody is to monitor Java or Java EE applications servers in QA and production environments.
 	It is not a tool to simulate requests from users,
 	it is a tool to measure and calculate statistics on real operation of an application
 	depending on the usage of the application by users.
@@ -26,7 +26,7 @@ Java Melody : monitoring of Java applications
 	JavaMelody is opensource (LGPL) and production ready: in production in an application of 25 person years.
 	JavaMelody is easy to integrate in most applications and is lightweight (no profiling and no database).
 
-	Monitoring is mainly based on statistics of requests and on evolution charts.
+	JavaMelody is mainly based on statistics of requests and on evolution charts.
 	
 	It allows to improve applications in QA and production and help to:
 	
@@ -42,7 +42,7 @@ Java Melody : monitoring of Java applications
 
 	[]
 
-	The monitoring includes summary charts showing the evolution over time of the following indicators:
+	It includes summary charts showing the evolution over time of the following indicators:
 
 	* Number of executions, mean execution times and percentage of errors of http requests,
 	sql requests, struts actions, jsp pages or methods of business façades (if EJB3, Spring or Guice)
@@ -59,7 +59,7 @@ Java Melody : monitoring of Java applications
 	
 	These charts can be viewed on the current day, week, month, year or custom period.
 
-	The monitoring includes statistics of predefined counters (as of today http requests, sql requests,
+	JavaMelody includes statistics of predefined counters (as of today http requests, sql requests,
 	struts actions, jsp pages and methods of business façades if EJB3, Spring or Guice) with, for each counter :
 
 	* A summary indicating the overall number of executions, the average execution time, the cpu time and the percentage of errors. 
@@ -73,7 +73,7 @@ Java Melody : monitoring of Java applications
 	
 	[]
 	
-	The monitoring also includes statistics on http errors, on warnings and errors in logs,
+	It also includes statistics on http errors, on warnings and errors in logs,
 	on data caches if ehcache and batch jobs if quartz.
 
 	An optional and independent collect server may be used if necessary to unload the application of storage management,

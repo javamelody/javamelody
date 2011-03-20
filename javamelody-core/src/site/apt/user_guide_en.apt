@@ -12,13 +12,13 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	({{{user_guide.html} Français }})
 
-	The goal of this monitoring tool is to monitor Java or Java EE applications servers in QA and production environments.
+	The goal of JavaMelody is to monitor Java or Java EE applications servers in QA and production environments.
 	
 	It is not a tool to simulate requests from users,
 	it is a tool to measure and calculate statistics on real operation of an application
 	depending on the usage of the application by users.
 	
-	Monitoring is mainly based on statistics of requests and on evolution charts.
+	JavaMelody is mainly based on statistics of requests and on evolution charts.
 	
 	It allows to improve applications in QA and production and helps to:
 	
