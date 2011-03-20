@@ -70,7 +70,7 @@ class PdfRuntimeDependenciesReport {
 	 * public class A {
 	 *    @Inject
 	 *    private B b;
-	 *    
+	 *
 	 *    public void a() {
 	 *       b.b1();
 	 *       for (int i = 0; i < 100; i++) {
@@ -189,7 +189,7 @@ class PdfRuntimeDependenciesReport {
 			final int diff = value - mean;
 			square += diff * diff;
 		}
-		return Math.sqrt(((double) square) / values.size());
+		return Math.sqrt((double) square / values.size());
 	}
 
 	private List<String> getCalledBeans(Map<String, Map<String, Integer>> runtimeDependencies) {
