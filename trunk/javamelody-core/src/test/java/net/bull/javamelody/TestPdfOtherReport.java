@@ -173,6 +173,17 @@ public class TestPdfOtherReport {
 		assertNotEmptyAndClear(output);
 	}
 
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteRuntimeDependencies() throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeRuntimeDependencies(new Counter("services", null),
+				Period.TOUT.getRange());
+		assertNotEmptyAndClear(output);
+	}
+
 	private void assertNotEmptyAndClear(ByteArrayOutputStream output) {
 		assertTrue("rapport vide", output.size() > 0);
 		output.reset();

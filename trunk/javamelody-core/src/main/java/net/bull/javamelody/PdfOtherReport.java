@@ -127,6 +127,22 @@ class PdfOtherReport {
 		document.close();
 	}
 
+	void writeRuntimeDependencies(Counter counter, Range range) throws IOException {
+		try {
+			final Document myDocument = pdfDocumentFactory.createDocument(true);
+			myDocument.open();
+			final String counterLabel = I18N.getString(counter.getName() + "Label");
+			final String paragraphTitle = I18N.getFormattedString("Dependance_compteur",
+					counterLabel) + " - " + range.getLabel();
+			myDocument.add(pdfDocumentFactory.createParagraphElement(paragraphTitle,
+					counter.getIconName()));
+			new PdfRuntimeDependenciesReport(counter, myDocument).toPdf();
+			myDocument.close();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+	}
+
 	private static IOException createIOException(Exception e) {
 		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
 		final IOException ex = new IOException(e.getMessage());
