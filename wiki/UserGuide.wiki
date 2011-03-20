@@ -10,7 +10,7 @@
     * [#1._Jar_files 1. Jar files]
     * [#2._web.xml_file 2. web.xml file]
     * [#3._First_results 3. First results]
-    * [#4._PDF_reports_generation 4. PDF reports generation]
+    * [#4._PDF_report_generation 4. PDF report generation]
     * [#5._Supplements_in_web.xml 5. Supplements in web.xml]
     * [#6._Optional_parameters 6. Optional parameters]
     * [#7._JDBC 7. JDBC]
@@ -165,7 +165,7 @@ or MSIE8 (MSIE7 not recommended).
 	
 	Then you can complete the settings as below according to your needs.
 
-=== 4. PDF reports generation ===
+=== 4. PDF report generation ===
 
 	To generate PDF reports as well as html reports, it is needed to add the library iText
 	(licence LGPL or MPL, the iText jar file alone is enough, without the other dependencies like iText-rtf).
