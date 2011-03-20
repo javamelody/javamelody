@@ -88,7 +88,7 @@ For standard documentation, see [UserGuide]
 
 === 4 to 17. Other settings (optional parameters, JDBC, EJB3, etc) ===
 
-	To complete the settings, just follow the chapters 4 to 17 of the [UserGuide].
+	To complete the settings, just follow chapters 4 to 17 of the [UserGuide].
 	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
 	
 	
@@ -113,8 +113,8 @@ For standard documentation, see [UserGuide]
 	Note : An alternative which does not need an application server is described in the following chapter.
 
 	Deploy the javamelody.war file in the application server of the centralized server.
-	If it is Tomcat, you can write a xml context file named 'javamelody.xml' in the directory
-	conf/Catalina/localhost of Tomcat as the following example:
+	If it is Tomcat, you can write an xml context file named 'javamelody.xml' in the directory
+	conf/Catalina/localhost of Tomcat as in the following example:
 
 {{{
 	<?xml version="1.0" encoding="UTF-8" ?>
@@ -126,7 +126,7 @@ For standard documentation, see [UserGuide]
 	The optional parameters {{{resolution-seconds}}}, {{{storage-directory}}}, {{{system-actions-enabled}}}, {{{warning-threshold-millis}}},
 	{{{severe-threshold-millis}}} and {{{allowed-addr-pattern}}} can be added in the xml context file of the collect server with the prefix {{{javamelody}}}. They can also be added as system properties with the prefix {{{javamelody}}}.
 
-    They have the same effects on the collect server than those of a monitored application as written in the [UserGuide]. In particular the parameter {{{resolution-seconds}}} defines the period of calls to urls of applications from collect server and the resolution of charts in the monitoring. The parameter {{{system-actions-enabled}}} needs to be added with the value true both in the collect server and in the monitored applications.
+    They have the same effects on the collect server than those of a monitored application as written in the [UserGuide]. In particular the parameter {{{resolution-seconds}}} defines the period of calls to urls of applications from collect server and the resolution of charts in the monitoring. The parameter {{{system-actions-enabled}}} needs to be added with the value "true" both in the collect server and in the monitored applications.
     
 	The collect server can send weekly, daily or monthly reports by mail for each monitored application. For this, use in the collect server (in Tomcat context for example) exactly the same mail session, the same parameters and the same jar files as those in [UserGuide#13._Weekly,_daily_or_monthly_reports_by_mail Weekly, daily or monthly reports by mail].
     
@@ -208,7 +208,7 @@ For standard documentation, see [UserGuide]
 
 	If the monitored application is a Hudson, Jenkins, JIRA, Confluence or Bamboo server, the system property -Djavamelody.plugin-authentication-disabled=true can be added to the monitored server in order to disable authentication of the monitoring page in the javamelody plugin and to be able to add the server to a centralized collect server. (A system property like -Djavamelody.allowed-addr-pattern=127\.0\.0\.1 can also be added with the ip address of the collect server.)
 
-	If you do not want that the people having access to the collect server can add or remove applications to monitor, you can forbid the writing to the file "applications.properties" which contains the list of the applications to monitor. This file is located in the storage directory, "temp/javamelody/applications.properties" for example. The user of the OS running the java process of the collect server must be allowed to read the file but without being allowed to write it. Only you, by using "root" for example, will be able by editing the file to add or to remove applications as the collect server would do. And in this case, the links "add an application" and "remove an application" will not be displayed in the collect server.
+	If you do not want the people having access to the collect server to be able to add or remove applications to monitor, you can forbid the writing to the file "applications.properties" which contains the list of the applications to monitor. This file is located in the storage directory, "temp/javamelody/applications.properties" for example. The user of the OS running the java process of the collect server must be allowed to read the file but without being allowed to write it. Only you, by using "root" for example, will be able by editing the file to add or to remove applications as the collect server would do. And in this case, the links "add an application" and "remove an application" will not be displayed in the collect server.
 
 	See also the comment by Chris at the bottom of this page.
 
@@ -264,9 +264,9 @@ For standard documentation, see [UserGuide]
 	as said in the JDBC chapter of the user guide, and if you use Hibernate then there is an
 	alternative for monitoring of sql requests: define the Hibernate property
 	"{{{hibernate.jdbc.factory_class}}}" with the value "{{{net.bull.javamelody.HibernateBatcherFactory}}}".
-	Il will enable the display of statistics of sql requests and the display of active jdbc connections.
+	It will enable the display of statistics of sql requests and the display of active jdbc connections.
 	
-	For example, if you use an "hibernate.cfg.xml" file, add the following with the others Hibernate
+	For example, if you use an "hibernate.cfg.xml" file, add the following with the other Hibernate
 	properties:
 
 {{{
@@ -319,13 +319,13 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	</listener>
 }}}
 
-	In this conf/web.xml file of tomcat, it can be added some parameters as written in the [UserGuide user guide].
+	In this conf/web.xml file of tomcat, some parameters can be added as written in the [UserGuide user guide].
 	
 	So and without modification of the webapps, all webapps deployed in this Tomcat instance are monitored
 	(and it is then not possible to choose which, otherwise than with the url-exclude-pattern parameter described in the [UserGuide user guide]).
 	This technique is specific to Tomcat 6 and does not apply to other JavaEE implementations.
 
-	The {{{ClassLoader}}} in applications servers is a complex subject. In consequence :
+	The {{{ClassLoader}}} in application servers is a complex subject. In consequence :
 	
 	* This feature is considered as beta for now
 	
@@ -337,7 +337,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 == Debugging logs ==
 	
 	Logs for debugging are available using either logback if found, or log4j if found or
-	java.util.logging otherwise. The logs messages for debugging are written using the category
+	java.util.logging otherwise. The log messages for debugging are written using the category
 	"net.bull.javamelody" and the level "debug".
 	
 	Moreover, some stack-traces of unusual exceptions are logged using logback or log4j or
@@ -402,7 +402,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	</log4j:configuration>
 }}}
 	
-	An example of the logs is the following:
+	Here is an example of debugging logs:
 	
 {{{
 11:11:00.120 [main] DEBUG net.bull.javamelody - JavaMelody listener init started
@@ -447,7 +447,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	The storage files of statistics and of graphs are stored in the temporary directory of the server, unless if you have defined the "storage-directory" parameter. And there is a sub directory for each application.
 	
 	For example, with tomcat it is the directory {{{<TOMCAT_HOME>/temp/javamelody/}}}.
-	With some others servers on linux, it is the directory {{{/tmp/javamelody/}}}.
+	With some other servers on linux, it is the directory {{{/tmp/javamelody/}}}.
 	And for the Hudson / Jenkins plugin, it is the directory {{{<HUDSON_HOME>/javamelody/}}}.
 	
 	To clear all statistics and all graphs:
@@ -463,7 +463,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 
 == Report written before last shutdown ==
 	
-	Sometimes a server is stopped in emergency or when there is some issue for example with the used memory.
+	Sometimes a server is stopped in emergency or when there is a problem for example with the used memory.
 	And perhaps, you did not thought of saving the JavaMelody report to have precise figures about the state of the server at this moment.
 
 	But don't worry, when the application is undeployed, JavaMelody writes a file called {{{last_shutdown.html}}} in the same storage directory as explained in the previous chapter. It is the JavaMelody report in html format, and it contains the statistics for the current day and the system information (such as the used memory) for the current time just before the application is undeployed, but it does not contain charts.
