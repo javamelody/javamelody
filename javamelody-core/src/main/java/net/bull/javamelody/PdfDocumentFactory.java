@@ -148,8 +148,17 @@ class PdfDocumentFactory {
 	}
 
 	Document createDocument() throws DocumentException, IOException {
+		return createDocument(false);
+	}
+
+	Document createDocument(boolean landscape) throws DocumentException, IOException {
 		// creation of a document-object
-		final Rectangle pageSize = PageSize.A4; // landscape : PageSize.A4.rotate()
+		final Rectangle pageSize;
+		if (landscape) {
+			pageSize = PageSize.A4.rotate();
+		} else {
+			pageSize = PageSize.A4;
+		}
 		// marges de 20 à gauche, à droite et en haut pour bien utiliser la largeur
 		// et avoir une meilleur lisibilité sur les tableaux larges,
 		// mais marge de 40 en bas pour ne pas empiéter sur les numéros de pages

@@ -58,6 +58,7 @@ final class HttpParameters {
 	static final String MBEANS_PART = "mbeans";
 	static final String THREADS_PART = "threads";
 	static final String COUNTER_SUMMARY_PER_CLASS_PART = "counterSummaryPerClass";
+	static final String RUNTIME_DEPENDENCIES_PART = "runtimeDependencies";
 
 	/**
 	 * Constructeur privé: pas d'instance.

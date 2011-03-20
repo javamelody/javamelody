@@ -36,6 +36,7 @@ import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
+import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
@@ -610,6 +611,8 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, JNDI_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, MBEANS_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
 		monitoring(parameters);
 		parameters.remove(PART_PARAMETER);
 		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");

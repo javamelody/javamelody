@@ -33,6 +33,7 @@ import java.util.Map;
  * @author Emeric Vernat
  */
 class HtmlCounterReport {
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final Counter counter;
 	private final Range range;
 	private final Writer writer;
@@ -453,6 +454,24 @@ class HtmlCounterReport {
 		}
 
 		// 2. débit et liens
+		writeSizeAndLinks(requests, counterName, globalRequest);
+
+		// 3. détails par requêtes (non visible par défaut)
+		writeln("<div id='details" + counterName + "' style='display: none;'>");
+		writeRequests(counterName, counter.getChildCounterName(), requests,
+				isRequestGraphDisplayed(counter), true, false);
+		writeln("</div>");
+
+		// 4. logs (non visible par défaut)
+		if (isErrorCounter()) {
+			writeln("<div id='logs" + counterName + "' style='display: none;'>");
+			new HtmlCounterErrorReport(counter, writer).toHtml();
+			writeln("</div>");
+		}
+	}
+
+	private void writeSizeAndLinks(List<CounterRequest> requests, String counterName,
+			CounterRequest globalRequest) throws IOException {
 		// delta ni négatif ni à 0
 		final long deltaMillis = Math.max(System.currentTimeMillis()
 				- counter.getStartDate().getTime(), 1);
@@ -475,6 +494,11 @@ class HtmlCounterReport {
 			writeln(separator);
 			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
 					+ "' class='noPrint'>#Resume_par_classe#</a>");
+			if (PDF_ENABLED) {
+				writeln(separator);
+				writeln("<a href='?part=runtimeDependencies&amp;format=pdf&amp;counter="
+						+ counterName + "' class='noPrint'>#Dependances#</a>");
+			}
 		}
 		writeln(separator);
 		writeShowHideLink("details" + counterName, "#Details#");
@@ -491,19 +515,6 @@ class HtmlCounterReport {
 							counterName)) + "');\">#Reinitialiser#</a>");
 		}
 		writeln("</div>");
-
-		// 3. détails par requêtes (non visible par défaut)
-		writeln("<div id='details" + counterName + "' style='display: none;'>");
-		writeRequests(counterName, counter.getChildCounterName(), requests,
-				isRequestGraphDisplayed(counter), true, false);
-		writeln("</div>");
-
-		// 4. logs (non visible par défaut)
-		if (isErrorCounter()) {
-			writeln("<div id='logs" + counterName + "' style='display: none;'>");
-			new HtmlCounterErrorReport(counter, writer).toHtml();
-			writeln("</div>");
-		}
 	}
 
 	private void writeNoRequests() throws IOException {
