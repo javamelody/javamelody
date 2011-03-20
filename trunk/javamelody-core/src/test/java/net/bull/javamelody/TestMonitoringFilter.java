@@ -612,8 +612,6 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
-		monitoring(parameters);
 		parameters.remove(PART_PARAMETER);
 		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
 		monitoring(parameters);
@@ -720,6 +718,11 @@ public class TestMonitoringFilter {
 
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
+
+		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
+		parameters.put(COUNTER_PARAMETER, "services");
+		monitoring(parameters);
+		parameters.remove(COUNTER_PARAMETER);
 
 		final Connection connection = TestDatabaseInformations.initH2();
 		try {
