@@ -12,14 +12,14 @@ Advanced documentation of Java Melody
 
 	({{{user_guide_advanced.html} Français }}, {{{user_guide_en.html} User guide }})
 
-* Setup of JavaMelody in an ear file in place of a war file
+* Setup JavaMelody in an ear file in place of a war file
 
 	(Written based on a contribution by 'dhartford')
 
 	If you deploy your application with a war file or with an equivalent directory, just follow the {{{user_guide_en.html} user guide}}.
 	
-	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup of JavaMelody in your ear.
-	Note that if you have class loading issues with an ear, use of a single war instead of an ear could help
+	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup JavaMelody in your ear.
+	Note that if you have class loading issues with an ear, the use of a single war instead of an ear could help
 	(and with JavaEE 6, you can even use EJBs in a single war).
 	
 	** 1. Jar files
@@ -74,7 +74,7 @@ Advanced documentation of Java Melody
 
 	** 4 to 17. Other settings (optional parameters, JDBC, EJB3, Spring, etc)
 
-	To complete the settings, just follow the chapters 4 to 17 of the {{{user_guide_en.html} user guide}}.
+	To complete the settings, just follow chapters 4 to 17 of the {{{user_guide_en.html} user guide}}.
 	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
 	
 	
@@ -100,8 +100,8 @@ Advanced documentation of Java Melody
 	Note : An alternative which does not need an application server is described in the following chapter.
 
 	Deploy the javamelody.war file in the application server of the centralized server.
-	If it is Tomcat, you can write a xml context file named 'javamelody.xml' in the directory
-	conf/Catalina/localhost of Tomcat as the following example:
+	If it is Tomcat, you can write an xml context file named 'javamelody.xml' in the directory
+	conf/Catalina/localhost of Tomcat as in the following example:
 
 +-------------------------------+
 	<?xml version="1.0" encoding="UTF-8" ?>
@@ -118,7 +118,7 @@ Advanced documentation of Java Melody
 	written in the {{{user_guide_en.html} user guide}}. In particular the parameter
 	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
 	of charts in the monitoring. The parameter <<<system-actions-enabled>>> needs to be added with
-	the value true both in the collect server and in the monitored applications.
+	the value "true" both in the collect server and in the monitored applications.
 	
 	The collect server can send weekly, daily or monthly reports by mail for each monitored application.
 	For this, use in the collect server (in Tomcat context for example) exactly the same mail session,
@@ -213,7 +213,7 @@ Advanced documentation of Java Melody
 	(A system property like <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> can also be added
 	with the ip address of the collect server.)
 
-	If you do not want that the people having access to the collect server can add or remove
+	If you do not want the people having access to the collect server to be able to add or remove
 	applications to monitor, you can forbid the writing to the file "applications.properties" which
 	contains the list of the applications to monitor. This file is located in the storage directory, 
 	"temp/javamelody/applications.properties" for example.
@@ -278,9 +278,9 @@ Advanced documentation of Java Melody
 	as said in the JDBC chapter of the user guide, and if you use Hibernate then there is an
 	alternative for monitoring of sql requests: define the Hibernate property
 	"hibernate.jdbc.factory_class" with the value "net.bull.javamelody.HibernateBatcherFactory".
-	Il will enable the display of statistics of sql requests and the display of active jdbc connections.
+	It will enable the display of statistics of sql requests and the display of active jdbc connections.
 	
-	For example, if you use an "hibernate.cfg.xml" file, add the following with the others Hibernate
+	For example, if you use an "hibernate.cfg.xml" file, add the following with the other Hibernate
 	properties:
 
 +-------------------------------+
@@ -334,13 +334,13 @@ org.osgi.framework.system.packages com.sun.management; \
 	</listener>
 +-------------------------------+
 
-	In this conf/web.xml file of tomcat, it can be added some parameters as written in the user guide.
+	In this conf/web.xml file of tomcat, some parameters can be added as written in the user guide.
 	
 	So and without modification of the webapps, all webapps deployed in this Tomcat instance are monitored
 	(and it is then not possible to choose which, otherwise than with the url-exclude-pattern parameter described in the user guide).
 	This technique is specific to Tomcat 6 and does not apply to other JavaEE implementations.
 
-	The <<<ClassLoader>>> in applications servers is a complex subject. In consequence :
+	The <<<ClassLoader>>> in application servers is a complex subject. In consequence :
 	
 	* This feature is considered as beta for now
 	
@@ -351,7 +351,7 @@ org.osgi.framework.system.packages com.sun.management; \
 * Debugging logs
 	
 	Logs for debugging are available using either logback if found, or log4j if found or
-	java.util.logging otherwise. The logs messages for debugging are written using the category
+	java.util.logging otherwise. The log messages for debugging are written using the category
 	"net.bull.javamelody" and the level "debug".
 	
 	Moreover, some stack-traces of unusual exceptions are logged using logback or log4j or
@@ -416,7 +416,7 @@ org.osgi.framework.system.packages com.sun.management; \
 	</log4j:configuration>
 +-------------------------------+
 	
-	An example of the logs is the following:
+	Here is an example of debugging logs:
 	
 +-------------------------------+
 11:11:00.120 [main] DEBUG net.bull.javamelody - JavaMelody listener init started
@@ -462,7 +462,7 @@ org.osgi.framework.system.packages com.sun.management; \
 	unless if you have defined the "storage-directory" parameter. And there is a sub directory for each application.
 	
 	For example, with tomcat it is the directory <<< <TOMCAT_HOME>/temp/javamelody/ >>>.
-	With some others servers on linux, it is the directory <<</tmp/javamelody/>>>.
+	With some other servers on linux, it is the directory <<</tmp/javamelody/>>>.
 	And for the Hudson / Jenkins plugin, it is the directory <<< <HUDSON_HOME>/javamelody/ >>>.
 	
 	To clear all statistics and all graphs:
@@ -480,7 +480,7 @@ org.osgi.framework.system.packages com.sun.management; \
 
 * Report written before last shutdown
 	
-	Sometimes a server is stopped in emergency or when there is some issue for example with the used memory.
+	Sometimes a server is stopped in emergency or when there is a problem for example with the used memory.
 	And perhaps, you did not thought of saving the JavaMelody report to have precise figures about
 	the state of the server at this moment. But don't worry, when the application is undeployed,
 	JavaMelody writes a file called <<<last_shutdown.html>>> in the same storage directory
