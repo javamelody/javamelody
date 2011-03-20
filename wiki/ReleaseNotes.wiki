@@ -3,7 +3,7 @@
 
   * fix: do not monitor abstract Spring dataSources (patch by _David Karlsen_)
   * fix issue 97: StackOverflowError in JBoss 4 when using JNDI dataSources with several monitored webapps (fix verified by _Saurabh Arora_).
-  * grammar fixes in user guides by _Stéphanie Bourbon_
+  * grammar fixes in English user guides and online help by _Stéphanie Bourbon_
   * added: pdf report of "Runtime dependencies" for EJB3/Spring/Guice/Services
   * added: pdf report of MBeans (system actions must be [UserGuide#6._Optional_parameters enabled])
   * [http://www.grails.org/plugin/grails-melody JavaMelody Grails Plugin]: use dependency resolution (issue 92).<br/>Dependencies of the plugin are now declared in [https://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/grails-app/conf/BuildConfig.groovy BuildConfig.groovy] instead of jar files in the plugin. As a consequence and starting from JavaMelody Grails plugin v1.2, a network connection will be needed the first time to download the dependencies with Ivy.
