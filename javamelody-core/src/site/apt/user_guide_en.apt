@@ -12,7 +12,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	({{{user_guide.html} Français }})
 
-	The goal of JavaMelody is to monitor Java or Java EE applications servers in QA and production environments.
+	The goal of JavaMelody is to monitor Java or Java EE application servers in QA and production environments.
 	
 	It is not a tool to simulate requests from users,
 	it is a tool to measure and calculate statistics on real operation of an application
@@ -67,7 +67,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 * Hudson / Jenkins Plugin
 
 	If you want to monitor a {{{http://hudson-ci.org/}Hudson}} server or a {{{http://jenkins-ci.org/}Jenkins}} server,
-	you can install JavaMelody by point and click with a Hudson / Jenkins plugin.
+	you can install JavaMelody by pointing and clicking with a Hudson / Jenkins plugin.
 	For this, open Hudson / Jenkins and click "Manage Hudson / Jenkins", "Manage plugins", "Available"
 	then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page.
 	Restart Hudson / Jenkins after the installation of the plugin.
@@ -161,7 +161,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	where <host> is the name of the server where the webapp is deployed, followed possibly by the port (for example localhost:8080)
 	and where <context> is the name of the context of the webapp which you have configured during the deployment thereof.
 	
-	In case starting of the server does not work and if you have an error in the output of the server
+	If the starting of the server does not work and if you have an error in the output of the server
 	complaining about a "window server" (in particular if you use Mac OSX server),
 	add the system property "-Djava.awt.headless=true" (in the java launch command or in
 	the administration user interface of the server;
@@ -170,9 +170,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Then you can complete the settings as below according to your needs.
 
-** 4. PDF reports generation
+** 4. PDF report generation
 
-	To generate PDF reports as well as html reports, it is needed to add the library iText
+	To generate PDF reports as well as html reports, adding the library iText is required
 	(licence LGPL or MPL, the iText jar file alone is enough, without the other dependencies like iText-rtf).
 	
 	Copy the file <<<itext-2.1.7.jar>>>, located in the directory <<<src/test/test-webapp/WEB-INF/lib/>>> of the supplied javamelody.zip file,
@@ -310,7 +310,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	<<<http,sql,ejb,spring>>>.
 
 	The parameter <<<log>>> can activate logs of http requests at the INFO level (<<<false>>> by default).
-	The http request will be logged with duration and size of the response
+	The http request will be logged with the duration and the size of the response
 	in the log category corresponding to the name of the filter set in <<<web.xml>>> file,
 	using Logback or Log4J if present in your application, or using java.util.logging otherwise.
 
@@ -329,7 +329,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	this default setting gives dynamic thresholds which indicate the requests with unusual mean times regardless of the
 	application).
 	Beyond the thresholds the mean times are displayed in orange or in red and are separately counted in summary tables
-	with their average times percentages, hits, etc.
+	with their average time percentages, hits, etc.
 	These threshold parameters can serve as a basis for a SLA (service level) of an application, for which
 	constraints can be defined such as "response time less than 2s for 90% of http requests".
 
@@ -348,7 +348,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 ** 7. JDBC
 
 	If a DataSource, which JNDI name is like "jdbc/MyDataSource", is configured in the application server
-	(xml context of the webapp in Tomcat for example), the sql requests will be automically monitored
+	(xml context of the webapp in Tomcat for example), the sql requests will be automatically monitored
 	without requiring any parameters (tested on Tomcat 5.5 and 6, glassfish 3, jboss 5, weblogic 11g, jetty 6).
 
 	If a jdbc driver is used directly without DataSource, "net.bull.javamelody.JdbcDriver" should be defined
@@ -463,7 +463,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If the application to monitor contains some business façades or other objects initialized with Spring,
 	a counter can be created for statistics of execution of methods. But it is not recommended for response time
-	to monitor execution of all methodes of Spring beans, for example the methods of low granularity as getters of entities.
+	to monitor execution of all methods of Spring beans, for example the methods of low granularity as getters of entities.
 
 	Step 1: Add the jar dependency spring-aop to your project (in pom.xml if maven).
 
@@ -504,10 +504,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Note: If you don't have a common interface (or super-class) for façades or if you don't want to
 	monitor all façades, you can create and add to your façades an interface <<<com.xyz.someapp.service.Monitored>>>
-	and then use it in your xml file like above, otherwise you can use an alternative like below.
+	and then use it in your xml file as above, otherwise you can use an alternative as below.
 
 	If you prefer, you have the choice with other alternatives for step 3.
-	These alternatives are not exclusives: you can use one and complete it with another.
+	These alternatives are not exclusive: you can use one and complete it with another.
 
 	* Use of an annotation of JavaMelody.
 	(implies that the library javamelody.jar is included in your classpath for compilation)
@@ -538,9 +538,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	}
 +-------------------------------+
 
-	This alternative with annotation also let you change the names of displayed classes in the monitoring.
+	This alternative with annotation also lets you change the names of displayed classes in the monitoring.
 	If the name displayed by the monitoring for the class or the method does not please you,
-	you can add (name="my business use case") between parentheses after the annotation on your class or on your method.
+	you can add (name="my business use case") in brackets after the annotation on your class or on your method.
 
 	* Use of JdkRegexpMethodPointcut.
 	Assuming that the business façades can be found with a regular expression,
@@ -558,7 +558,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	* Use of any pointcut provided by Spring or writing of your own pointcut.
 	You can use any {{{http://static.springsource.org/spring/docs/2.5.x/api/index.html}pointcut}}
-	provided by Spring or you can write your own one.
+	provided by Spring or you can write your own.
 	For example, you can create a class <<<com.xyz.someapp.service.MonitoringPointcut>>>
 	which implements org.springframework.aop.Pointcut and add the following lines in your applicationContext.xml file:
 	
@@ -581,7 +581,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If the application to monitor contains some business façades or other objects initialized with Guice,
 	a counter can be created for statistics of execution of methods. But it is not recommended for response time
-	to monitor execution of all methodes of Guice beans, for example the methods of low granularity as getters of entities.
+	to monitor execution of all methods of Guice beans, for example the methods of low granularity as getters of entities.
 
 	Step 1: Add the jar dependency guice to your project (in pom.xml if maven).
 	As pre-requisite for guice, the jar of javamelody must be available in the classpath used to compile sources.
@@ -622,9 +622,9 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	}
 +-------------------------------+
 	
-	The annotation also let you change the names of displayed classes in the monitoring.
+	The annotation also lets you change the names of displayed classes in the monitoring.
 	If the name displayed by the monitoring for the class or the method does not please you,
-	you can add (name="my business use case") between parentheses after the annotation on your class
+	you can add (name="my business use case") in brackets after the annotation on your class
 	or on your method.
 	
 	As the Guice configuration of the monitoring is only for guice beans, make sure these classes are
@@ -651,7 +651,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Note: If you don't have a common interface for façades or if you don't want to monitor all façades,
 	you can create and add to your façades an interface <<<com.xyz.someapp.service.Monitored>>>
-	and then use it in your module like above.
+	and then use it in your module as above.
 
 ** 11. Actions Struts 2
 
@@ -732,7 +732,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	mail.smtp.password=<password>
 +-------------------------------+
 
-	If the mail server needs ssl, replace mail.smtp by mail.smtps in all lines above and add a line
+	If the mail server needs ssl, replace mail.smtp by mail.smtps on all lines above and add a line
 	
 	<<<mail.transport.protocol=smtps>>>
 	
@@ -753,7 +753,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	By default, the report is sent weekly (once a week).
 	It is possible to adapt that to the desired level of supervision.
-	For example, it is possible to send it daily (every days),
+	For example, it is possible to send it daily (every day),
 	monthly, or a combination of daily, weekly and monthly.
 	
 	For that, add the parameter <<<mail-periods>>> with the periods "day", "week" or "month" separated by commas.
@@ -797,7 +797,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	<<<select * from pg_stat_activity>>> in postgresql, or the request <<<show full processlist>>>
 	in mysql or the request <<<select * from v$session>>> in oracle.
 	
-	If the user in the database does not have already the necessary rights, you should grant them.
+	If the user in the database does not already have the necessary rights, you should grant them.
 	For example, in oracle you can execute as a 'system' user the following sql request
 	in order to grant the right to the user 'myapplication':
 	<<<grant select any dictionary to myapplication>>>
@@ -843,7 +843,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	The realm and the users must be defined in the application server,
 	and the users must have the "monitoring" role to have access to the reports.
-	For example, if tomcat is used with the default realm, modify the content of the conf/tomcat-users.xml file as following:
+	For example, if tomcat is used with the default realm, modify the content of the conf/tomcat-users.xml file as follows:
 	
 +-------------------------------+
 <?xml version='1.0' encoding='utf-8'?>
@@ -856,7 +856,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 ** 16. SecurityManager
 
 	If your are one of the rare people with a security manager enabled in your server, there will be
-	an exception like the following in the server output at the start of the webapp with JavaMelody:
+	an exception like the following one in the server output at the start of the webapp with JavaMelody:
 	"java.security.AccessControlException: access denied ...".
 	
 	It is because JavaMelody needs access to a lot of system data and it needs to write its files.
@@ -867,13 +867,13 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	file of your server.
 	
 	For example with Tomcat, the java.policy file is $CATALINA_HOME/conf/catalina.policy
-	and you can add something like the following to grant access to the JavaMelody and JRobin jar files:
+	and you can add something like the following example to grant access to the JavaMelody and JRobin jar files:
 
 +-------------------------------+
-	grant codeBase "file:${catalina.home}/webapps/<votre_webapp>/WEB-INF/lib/javamelody-x.jar" {
+	grant codeBase "file:${catalina.home}/webapps/<your_webapp>/WEB-INF/lib/javamelody-x.jar" {
 		permission java.security.AllPermission;
 	};
-	grant codeBase "file:${catalina.home}/webapps/<votre_webapp>/WEB-INF/lib/jrobin-1.5.9.1.jar" {
+	grant codeBase "file:${catalina.home}/webapps/<your_webapp>/WEB-INF/lib/jrobin-1.5.9.1.jar" {
 		permission java.security.AllPermission;
 	};
 +-------------------------------+
