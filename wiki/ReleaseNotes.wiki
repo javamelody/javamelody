@@ -1,7 +1,6 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix: do not monitor abstract Spring dataSources (patch by _David Karlsen_)
   * fix issue 97: StackOverflowError in JBoss 4 when using JNDI dataSources with several monitored webapps (fix verified by _Saurabh Arora_).
   * grammar fixes in English user guides and online help by _Stéphanie Bourbon_
   * added: pdf report of "Runtime dependencies" for EJB3/Spring/Guice/Services
