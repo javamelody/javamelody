@@ -18,7 +18,7 @@ Java Melody : monitoring d'applications Java
 	
 	( {{{screenshots.html}Copies d'écrans}}, {{{user_guide.html}Guide d'utilisation}}, {{{index_en.html}English}} )
 	
-	Cet outil de monitoring a pour but de monitorer les serveurs d'applications Java / Java EE en recette et en production. 
+	JavaMelody a pour but de monitorer les serveurs d'applications Java / Java EE en recette et en production. 
 	Ce n'est pas un outil de simulation de requêtes utilisateur,
 	c'est un outil de mesure et de statistiques sur le fonctionnement réel d'une application
 	selon l'usage qui en est fait par les utilisateurs.
@@ -26,7 +26,7 @@ Java Melody : monitoring d'applications Java
 	JavaMelody est opensource (LGPL) et prêt pour une mise en production : déjà en production dans une application de 25 années hommes.
 	JavaMelody est facile à intégrer dans la plupart des applications et est léger (pas de profileur et pas de base de données).
 
-	Le monitoring est en grande partie basé sur des statistiques de requêtes et sur des courbes d'évolution.
+	JavaMelody est en grande partie basé sur des statistiques de requêtes et sur des courbes d'évolution.
 	
 	Il permet ainsi d'améliorer les applications en recette et en production et d'aider à :
 	
@@ -42,7 +42,7 @@ Java Melody : monitoring d'applications Java
 
 	[]
 
-	Le monitoring inclut des courbes de synthèse montrant l'évolution au fil du temps des indicateurs suivants :
+	Il inclut des courbes de synthèse montrant l'évolution au fil du temps des indicateurs suivants :
 
 	* Nombre d'exécutions, temps d'exécutions moyens et pourcentage d'erreurs pour les
 	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers (si EJB3, Spring ou Guice)
@@ -59,7 +59,7 @@ Java Melody : monitoring d'applications Java
 	
 	Ces courbes peuvent être visualisées sur la journée en cours, la semaine, le mois, l'année ou une période personnalisée.
 
-	Le monitoring inclut des statistiques sur les compteurs définis (à l'heure d'aujourd'hui
+	JavaMelody inclut des statistiques sur les compteurs définis (à l'heure d'aujourd'hui
 	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers si EJB3,
 	Spring ou Guice) avec pour chaque compteur :
 
@@ -74,7 +74,7 @@ Java Melody : monitoring d'applications Java
 	
 	[]
 	
-	Le monitoring inclut également des statistiques sur les erreurs http, sur les warnings et erreurs dans les logs,
+	Il inclut également des statistiques sur les erreurs http, sur les warnings et erreurs dans les logs,
 	sur les caches de données si ehcache et sur les jobs en batchs si quartz.
 
 	Un serveur de collecte optionnel et indépendant peut si nécessaire être utilisé pour décharger l'application de la gestion du stockage,
