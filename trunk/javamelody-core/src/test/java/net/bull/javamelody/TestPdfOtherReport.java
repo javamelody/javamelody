@@ -178,9 +178,26 @@ public class TestPdfOtherReport {
 	@Test
 	public void testWriteRuntimeDependencies() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final Counter sqlCounter = new Counter("sql", null);
+		final Counter counter = new Counter("services", null, sqlCounter);
+		counter.bindContextIncludingCpu("BeanA.test");
+		counter.bindContextIncludingCpu("BeanA.test2");
+		counter.bindContextIncludingCpu("BeanB.test");
+		counter.addRequestForCurrentContext(false);
+		counter.bindContextIncludingCpu("BeanB.test2");
+		counter.addRequestForCurrentContext(false);
+		counter.addRequestForCurrentContext(false);
+		counter.addRequestForCurrentContext(false);
+		counter.bindContextIncludingCpu("test");
+		counter.bindContextIncludingCpu("BeanA.test");
+		counter.addRequestForCurrentContext(false);
+		counter.addRequestForCurrentContext(false);
+		counter.bindContextIncludingCpu("test2");
+		sqlCounter.bindContextIncludingCpu("sql");
+		sqlCounter.addRequestForCurrentContext(false);
+		counter.addRequestForCurrentContext(false);
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeRuntimeDependencies(new Counter("services", null),
-				Period.TOUT.getRange());
+		pdfOtherReport.writeRuntimeDependencies(counter, Period.TOUT.getRange());
 		assertNotEmptyAndClear(output);
 	}
 
