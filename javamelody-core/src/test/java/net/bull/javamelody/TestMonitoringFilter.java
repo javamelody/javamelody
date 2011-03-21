@@ -719,6 +719,9 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 
+		parameters.put(PART_PARAMETER, MBEANS_PART);
+		monitoring(parameters);
+
 		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
 		parameters.put(COUNTER_PARAMETER, "services");
 		monitoring(parameters);
@@ -739,6 +742,15 @@ public class TestMonitoringFilter {
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
+
+		parameters.put(PART_PARAMETER, "unknown part");
+		boolean exception = false;
+		try {
+			monitoring(parameters);
+		} catch (final Exception e) {
+			exception = true;
+		}
+		assertTrue("exception if unknown part", exception);
 	}
 
 	/** Test.
