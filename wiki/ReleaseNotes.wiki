@@ -5,6 +5,7 @@
   * grammar fixes in English user guides and online help by _Stéphanie Bourbon_
   * added: pdf report of "Runtime dependencies" for EJB3/Spring/Guice/Services
   * added: pdf report of MBeans (system actions must be [UserGuide#6._Optional_parameters enabled])
+  * added: [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/SpringDataSourceFactoryBean.java SpringDataSourceFactoryBean], as an alternative to excludedDatasources in [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/SpringDataSourceBeanPostProcessor.java SpringDataSourceBeanPostProcessor], in order to define which datasources are monitored (issue 90, patch by _David Karlsen_)
   * [http://www.grails.org/plugin/grails-melody JavaMelody Grails Plugin]: use dependency resolution (issue 92).<br/>Dependencies of the plugin are now declared in [https://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/grails-app/conf/BuildConfig.groovy BuildConfig.groovy] instead of jar files in the plugin. As a consequence and starting from JavaMelody Grails plugin v1.2, a network connection will be needed the first time to download the dependencies with Ivy.
 
 === 1.26.0 ===
