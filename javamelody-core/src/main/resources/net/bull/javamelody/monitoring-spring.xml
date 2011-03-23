@@ -22,4 +22,10 @@
 		</property>
 		-->
  	</bean>
+
+	<!--
+ 	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">
+		<property name="targetName" value="targetDataSource" />
+	</bean>
+	-->
 </beans>
