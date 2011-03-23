@@ -30,12 +30,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
+import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 import net.sf.ehcache.CacheManager;
 
 import org.junit.Before;
@@ -160,6 +167,9 @@ public class TestCollector {
 		counter.addRequest("test4", 10000, 200, true, 10000);
 		collector
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
+		final Counter buildsCounter = new Counter(Counter.BUILDS_COUNTER_NAME, null);
+		new Collector(TEST, Collections.singletonList(buildsCounter))
+				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
 		setProperty(Parameter.NO_DATABASE, "true");
 		try {
 			new Collector(TEST, Collections.singletonList(counter))
@@ -168,6 +178,7 @@ public class TestCollector {
 		} finally {
 			setProperty(Parameter.NO_DATABASE, null);
 		}
+
 		if (collector.getLastCollectDuration() == 0) {
 			fail("getLastCollectDuration");
 		}
@@ -200,6 +211,31 @@ public class TestCollector {
 			robin.deleteFile();
 		}
 		assertNull("getJRobin null", collector.getJRobin("n'importe quoi"));
+	}
+
+	/** Test.
+	 * @throws JMException e */
+	@Test
+	public void testCollectTomcatInformations() throws JMException {
+		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
+		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		try {
+			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
+					new ObjectName("Catalina:type=ThreadPool,name=jk-8009")).getObjectName());
+			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
+					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8009"))
+					.getObjectName());
+			TomcatInformations.initMBeans();
+			final Collector collector = new Collector(TEST,
+					Arrays.asList(new Counter("http", null)));
+			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
+					true)));
+		} finally {
+			for (final ObjectName registeredMBean : mBeans) {
+				mBeanServer.unregisterMBean(registeredMBean);
+			}
+			TomcatInformations.initMBeans();
+		}
 	}
 
 	/** Test.
