@@ -373,6 +373,7 @@ public class TestHtmlReport {
 			final Cache cache2 = cacheManager.getCache(cacheName2);
 			cache2.getCacheConfiguration().setOverflowToDisk(false);
 			cache2.getCacheConfiguration().setEternal(true);
+			cache2.getCacheConfiguration().setMaxElementsInMemory(0);
 
 			// JavaInformations doit être réinstancié pour récupérer les caches
 			final List<JavaInformations> javaInformationsList2 = Collections
