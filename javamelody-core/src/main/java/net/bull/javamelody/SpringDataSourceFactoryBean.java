@@ -38,7 +38,7 @@ public class SpringDataSourceFactoryBean extends AbstractFactoryBean {
 	//	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">
 	//		<property name="targetName" value="targetDataSource" />
 	//	</bean>
-	//	
+	//
 	//	<bean id="targetDataSource" ...
 	//	</bean>
 
