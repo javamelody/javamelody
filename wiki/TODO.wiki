@@ -11,11 +11,25 @@ There is no promise of dates or that a particular feature will ever be done.
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
   # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-franc/wiki/CxfMonitoring#Spring_configuration this one]
-  # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish or [http://static.springsource.org/docs/petclinic.html Spring pet clinic] in tomcat for example
+  # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
+  # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?)
+  # Drill-down in child requests, for example in the detail of a request
+  # Add a pdf report of the detail of a request
+  # Stack-traces: Link to open a popup with the stack-trace (in addition to the tooltip)
   # Test the monitoring of sql requests with a datasource from jndi in *[https://groups.google.com/group/javamelody/t/39da9d1d1fe5f275 Glassfish 3]*
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
   # Test the jndi report in *Websphere*
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, via a link and a persistent http cookie or at least a parameter (from user group)
+  # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish or [http://static.springsource.org/docs/petclinic.html Spring pet clinic] in tomcat for example
+  # Basic server monitoring: in downloads, provide a simple war file to monitor only an application server (cpu, memory, system informations, mbeans, threads) without monitoring an application (http requests, http sessions, etc)
+  # Cloud Watch metrics for an application in Amazon EC2, possibly by using Beans Talk.
+  # Statistics of JSF actions like for Struts actions
+  # Possibly document the external API: [ReleaseNotes#1.24.0 lastValue and jmxValue] ; and also xml and json format on some pages
+  # Possibly document the rewrap-datasources parameter for Tomcat and Jonas
+  # Format the sql requests before display in the sql statistics
+  # Add a button to kill a system process and its children in the process list?
+  # Monitoring of [http://blogs.sun.com/alanb/entry/monitoring_direct_buffers nio buffers] if Java 7 (in other charts?)
+  # Add a view with the classloader hierarchy
   # Simplify UI with [http://groups.google.fr/group/javamelody/browse_thread/thread/d4ac1b796e366852 user feedback]
   # Details on GC types and on cpu per gc type (from user group)
   # Display of graphs with *percentages of navigators, of OS, of countries/languages* based on user-agent and main locale, with jrobin and percentage one above the others up to 100%, and idem with types of requests (get,post,ajax,gwt or perhaps select/update/insert/delete)
