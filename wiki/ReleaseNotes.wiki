@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.27.0 ===
 
   * fix issue 97: StackOverflowError in JBoss 4 when using JNDI dataSources with several monitored webapps (fix verified by _Saurabh Arora_).
   * grammar fixes in English user guides and online help by _Stéphanie Bourbon_
