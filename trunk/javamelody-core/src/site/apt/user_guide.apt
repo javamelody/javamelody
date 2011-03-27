@@ -592,6 +592,35 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	de Spring AOP recommande d'utiliser des proxys dynamiques du JDK et non CGLIB, ce qui ne devrait
 	pas poser de problème pour des façades avec interfaces et implémentations séparées.
 
+	* Alternative pour utiliser AspectJ, dans le cas où les proxys ne fonctionnent pas (merci à {{{http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/} Witek Wołejszo}})
+	Parfois les proxys ne peuvent pas fonctionner dans certaines circonstances, par exemple si vous n'utilisez pas d'interfaces.
+	Dans ce cas, il est possible d'utiliser AspectJ avec le fichier de contexte suivant
+	{{{net/bull/javamelody/monitoring-spring-aspectj.xml}}} à la place de
+	{{{net/bull/javamelody/monitoring-spring.xml}}}.
+	Vous pouvez alors utiliser l'annotation @MonitoredWithSpring comme indiqué ci-dessus,
+	ou vous pouvez utiliser d'autres pointcuts comme le suivant avec une interface commune (ou une super-classe):
+
++-------------------------------+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <aop:config proxy-target-class="true" >
+        <aop:advisor advice-ref="monitoringAdvice" pointcut-ref="facadePointcut" />
+    </aop:config>
+
+	<bean id="facadePointcut" class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+		<property name="interfaceName" value="com.xyz.someapp.service.Facade" />
+	</bean>
+</beans>
++-------------------------------+
+
+	[]
+
 ** 10. Façades métiers (si Guice)
 
 	Si l'application à monitorer contient des façades métiers ou autres objets configurés avec Guice,

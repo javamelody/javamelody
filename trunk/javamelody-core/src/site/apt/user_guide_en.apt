@@ -575,7 +575,36 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Note : The {{{http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying} documentation }}
 	and {{{http://blog.springsource.com/2007/07/19/debunking-myths-proxies-impact-performance/} blog }}
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB, which should pose no problem for
-	facades with separate interfaces and implementations. 
+	facades with separate interfaces and implementations.
+
+	* Alternative in order to use AspectJ, in case that proxies don't work (thanks to {{{http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/} Witek Wołejszo}})
+	Sometimes proxies can't work is some circumstances, for example if you don't use interfaces.
+	In this case, it is possible to use AspectJ with the following context file
+	{{{net/bull/javamelody/monitoring-spring-aspectj.xml}}} instead of
+	{{{net/bull/javamelody/monitoring-spring.xml}}}.
+	You can then use the @MonitoredWithSpring annotation as said above,
+	or you can use other pointcuts like the following with a common interface (or super-class):
+
++-------------------------------+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <aop:config proxy-target-class="true" >
+        <aop:advisor advice-ref="monitoringAdvice" pointcut-ref="facadePointcut" />
+    </aop:config>
+
+	<bean id="facadePointcut" class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+		<property name="interfaceName" value="com.xyz.someapp.service.Facade" />
+	</bean>
+</beans>
++-------------------------------+
+
+	[]
 
 ** 10. Business façades (if Guice)
 
