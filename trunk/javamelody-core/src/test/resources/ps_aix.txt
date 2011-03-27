@@ -1,0 +1,16 @@
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root     2425274  0,0  0,0  820  860      - A      21 feb  0:00 /bin/ksh /pconsole/lwi/bin/lwistart_src.sh 
+root     1835148  0,0  0,0  448  448      - A      21 feb  0:00 rtcmd
+root     1900652  0,0  0,0  512  512      - A      21 feb  0:00 kbiod
+root     1769614  0,0  0,0  512  512      - A      21 feb  0:00 nfsSM
+root     1572994  0,0  0,0  772  800      - A      21 feb  0:00 /usr/lib/errdemon 
+root     1704046  0,0  0,0  448  448      - A      21 feb  0:00 aioPpool
+root     2490544  0,0  0,0  332  340      - A      21 feb  0:00 /usr/sbin/writesrv 
+root     2621614  0,0  0,0 7120 7180      - A      21 feb  0:00 /usr/lpp/OV/lbin/conf/ovconfd 
+root     2424986  0,0  0,0  448  448      - A      21 feb  0:00 pofCmdProc
+root     2031766  0,0  0,0  940  960      - A      21 feb  0:00 /usr/sbin/srcmstr 
+root     2293914  0,0  0,0 2620 2640      - A      21 feb  0:00 /usr/sbin/muxatmd 
+root      524308  0,0  0,0  448  448      - A      21 feb  0:00 memgrdd
+root      983106  0,0  0,0  448  448      - A      21 feb  0:00 lvmbb
+root      393232  0,0  0,0  640  640      - A      21 feb  0:00 psmd
+root      262156  0,0  0,0  640  640      - A      21 feb  0:00 lrud

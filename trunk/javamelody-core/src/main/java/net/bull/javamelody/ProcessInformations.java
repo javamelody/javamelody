@@ -97,13 +97,17 @@ final class ProcessInformations implements Serializable {
 		} else {
 			user = sc.next();
 			pid = sc.nextInt();
-			cpuPercentage = sc.nextFloat();
-			memPercentage = sc.nextFloat();
+			cpuPercentage = Float.parseFloat(sc.next().replace(",", "."));
+			memPercentage = Float.parseFloat(sc.next().replace(",", "."));
 			vsz = sc.nextInt();
 			rss = sc.nextInt();
 			tty = sc.next();
 			stat = sc.next();
-			start = sc.next();
+			if (sc.hasNextInt()) {
+				start = sc.next() + ' ' + sc.next();
+			} else {
+				start = sc.next();
+			}
 			cpuTime = sc.next();
 			command = sc.nextLine();
 		}
@@ -140,10 +144,11 @@ final class ProcessInformations implements Serializable {
 			final String osName = System.getProperty("os.name").toLowerCase(Locale.getDefault());
 			final boolean windows = osName.contains("windows");
 			final boolean mac = osName.contains("mac");
+			final boolean aix = osName.contains("aix");
 			if (windows) {
 				process = Runtime.getRuntime().exec(new String[] { "cmd", "/c", "tasklist /V" });
-			} else if (mac) {
-				// le "f" de "ps wauxf" n'est pas supporté sur Mac OS X, cf issue 74
+			} else if (mac || aix) {
+				// le "f" de "ps wauxf" n'est pas supporté sur Mac OS X et sur AIX, cf issues 74 et 99
 				process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ps waux" });
 			} else {
 				// tous les systèmes (ou presque) non Windows sont une variante de linux ou unix
