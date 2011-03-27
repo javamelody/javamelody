@@ -713,6 +713,12 @@ public class TestMonitoringFilter {
 		parameters.put(FORMAT_PARAMETER, "pdf");
 		monitoring(parameters);
 
+		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
+		parameters.put(COUNTER_PARAMETER, "services");
+		monitoring(parameters);
+		parameters.remove(COUNTER_PARAMETER);
+
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
 
@@ -721,11 +727,6 @@ public class TestMonitoringFilter {
 
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
-		parameters.put(COUNTER_PARAMETER, "services");
-		monitoring(parameters);
-		parameters.remove(COUNTER_PARAMETER);
 
 		final Connection connection = TestDatabaseInformations.initH2();
 		try {
@@ -796,10 +797,10 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
-		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(FORMAT_PARAMETER, TransportFormat.XML.getCode());
 		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
