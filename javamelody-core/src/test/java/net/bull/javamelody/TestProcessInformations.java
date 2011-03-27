@@ -52,6 +52,10 @@ public class TestProcessInformations {
 				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false);
 		assertSame("processes", processInformations2.size(), 118);
 		checkProcesses(processInformations2, false);
+		final List<ProcessInformations> processInformations3 = ProcessInformations
+				.buildProcessInformations(getClass().getResourceAsStream("/ps_aix.txt"), false);
+		assertSame("processes", processInformations3.size(), 15);
+		checkProcesses(processInformations3, false);
 	}
 
 	/** Test.
