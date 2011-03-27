@@ -109,6 +109,8 @@ class PdfController {
 	}
 
 	private void doSessions(HttpServletResponse httpResponse) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
 				httpResponse.getOutputStream());
 		final List<SessionInformations> sessionsInformations;
@@ -122,6 +124,8 @@ class PdfController {
 	}
 
 	private void doProcesses(HttpServletResponse httpResponse) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
 				httpResponse.getOutputStream());
 		final List<ProcessInformations> processInformations = ProcessInformations
@@ -130,6 +134,8 @@ class PdfController {
 	}
 
 	private void doDatabase(HttpServletResponse httpResponse, final int index) throws Exception { // NOPMD
+		// par sécurité
+		Action.checkSystemActionsEnabled();
 		final DatabaseInformations databaseInformations;
 		if (!isFromCollectorServer()) {
 			databaseInformations = new DatabaseInformations(index);
@@ -143,6 +149,8 @@ class PdfController {
 	}
 
 	private void doMBeans(HttpServletResponse httpResponse) throws Exception { // NOPMD
+		// par sécurité
+		Action.checkSystemActionsEnabled();
 		if (isFromCollectorServer()) {
 			throw new IllegalStateException("Not supported on the collect server");
 		}
@@ -152,6 +160,8 @@ class PdfController {
 	}
 
 	private void doHeapHisto(HttpServletResponse httpResponse) throws Exception { // NOPMD
+		// par sécurité
+		Action.checkSystemActionsEnabled();
 		final HeapHistogram heapHistogram;
 		if (!isFromCollectorServer()) {
 			heapHistogram = VirtualMachine.createHeapHistogram();
