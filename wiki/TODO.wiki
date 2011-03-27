@@ -10,12 +10,12 @@ There is no promise of dates or that a particular feature will ever be done.
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
-  # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-franc/wiki/CxfMonitoring#Spring_configuration this one]
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
   # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?)
   # Drill-down in child requests, for example in the detail of a request
   # Add a pdf report of the detail of a request
   # Stack-traces: Link to open a popup with the stack-trace (in addition to the tooltip)
+  # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-franc/wiki/CxfMonitoring#Spring_configuration this one]
   # Test the monitoring of sql requests with a datasource from jndi in *[https://groups.google.com/group/javamelody/t/39da9d1d1fe5f275 Glassfish 3]*
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
   # Test the jndi report in *Websphere*
