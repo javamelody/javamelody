@@ -7,12 +7,12 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<aop:config proxy-target-class="true" >
-        <aop:advisor advice-ref="monitoringAdvice" pointcut-ref="monitoringPointcut" />
-    </aop:config>
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="monitoringAdvice" pointcut-ref="monitoringPointcut" />
+	</aop:config>
 
-    <bean id="monitoringAdvice" class="net.bull.javamelody.MonitoringSpringInterceptor" />
-    <bean id="monitoringPointcut" class="net.bull.javamelody.MonitoredWithAnnotationPointcut" />
+	<bean id="monitoringAdvice" class="net.bull.javamelody.MonitoringSpringInterceptor" />
+	<bean id="monitoringPointcut" class="net.bull.javamelody.MonitoredWithAnnotationPointcut" />
 
 	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
 		<!--
