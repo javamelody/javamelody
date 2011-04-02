@@ -17,6 +17,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # Add the 90th or 95th percentile in zoomed graphics, besides the mean (org.jrobin.data.DataProcessor.getPercentile)
   # Stack-traces: Link to open a popup with the stack-trace (in addition to the tooltip)
   # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-franc/wiki/CxfMonitoring#Spring_configuration this one]
+  # Test the compatibility or the non-compatibility with Quartz 2.0
   # Test the monitoring of sql requests with a datasource from jndi in *[https://groups.google.com/group/javamelody/t/39da9d1d1fe5f275 Glassfish 3]*
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
   # Test the jndi report in *Websphere*
