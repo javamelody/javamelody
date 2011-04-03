@@ -146,6 +146,12 @@ public class TestHtmlReport {
 			assertNotNull("ok", e);
 		}
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, null);
+
+		// cas counterReportsByCounterName.size() == 1
+		collector = new Collector("test", Arrays.asList(counter));
+		final HtmlReport htmlReport2 = new HtmlReport(collector, null, javaInformationsList,
+				Period.TOUT, writer);
+		htmlReport2.toHtml(null, null);
 	}
 
 	/** Test.
@@ -216,6 +222,7 @@ public class TestHtmlReport {
 		servicesCounter.bindContext("myservices.service2", "service2", null, -1);
 		servicesCounter.addRequest("myservices.service2", 10, 10, false, -1);
 		servicesCounter.addRequest("otherservices.service3", 10, 10, false, -1);
+		servicesCounter.addRequest("otherservices", 10, 10, false, -1);
 		jspCounter.addRequest("jsp1", 10, 10, false, -1);
 		counter.addRequest(requestName, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);

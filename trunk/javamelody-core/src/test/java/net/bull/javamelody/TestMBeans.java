@@ -170,9 +170,13 @@ public class TestMBeans {
 	public void testGetAttributeDescription() throws JMException {
 		assertNotNull("getAttributeDescription", mbeans.getAttributeDescription("maxThreads",
 				mbeans.getMBeanInfo(mbeansList.get(0)).getAttributes()));
-		assertNull(
-				"getAttributeDescription",
-				mbeans.getAttributeDescription("n'existe pas",
-						mbeans.getMBeanInfo(mbeansList.get(0)).getAttributes()));
+	}
+
+	/** Test. */
+	@Test
+	public void testFormatMBeansDescription() {
+		assertNull("mbeansDescription", mbeans.formatMBeansDescription(null));
+		assertNotNull("mbeansDescription", mbeans.formatMBeansDescription("abc"));
+		assertNotNull("mbeansDescription", mbeans.formatMBeansDescription("a  b     c"));
 	}
 }
