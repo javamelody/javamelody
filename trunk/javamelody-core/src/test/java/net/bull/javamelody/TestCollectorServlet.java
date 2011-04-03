@@ -226,6 +226,9 @@ public class TestCollectorServlet {
 		// partParameter null: monitoring principal
 		parameters.put(PART_PARAMETER, null);
 		doPart(parameters);
+		parameters.put(FORMAT_PARAMETER, "pdf");
+		doPart(parameters);
+		parameters.remove(FORMAT_PARAMETER);
 		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, POM_XML_PART);

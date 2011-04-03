@@ -35,6 +35,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Emeric Vernat
  */
 public class TestMonitoringSpringInterceptor {
+	private static final String TEST_CONTEXT_FILENAME = "spring-context.xml";
+	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
 	private static final String REQUESTS_COUNT = "requestsCount";
 
 	/** Check. */
@@ -209,7 +211,7 @@ public class TestMonitoringSpringInterceptor {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
 		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
-				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", });
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		final SpringTestFacade springTestFacade = (SpringTestFacade) context
 				.getBean("springTestFacade");
 
@@ -253,13 +255,29 @@ public class TestMonitoringSpringInterceptor {
 	@Test
 	public void testSpringDataSourceBeanPostProcessor() {
 		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
-				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", });
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
 		context.getBean("dataSource2");
 
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
 		assertNotNull("no database context", new ClassPathXmlApplicationContext(new String[] {
-				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml", }));
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, }));
+	}
+
+	/** Test. */
+	@Test
+	public void testSpringDataSourceFactoryBean() {
+		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+		// utilisation de l'InvocationHandler dans SpringDataSourceFactoryBean
+		context.getType("wrappedDataSource");
+		context.getBean("wrappedDataSource");
+
+		try {
+			new SpringDataSourceFactoryBean().createInstance();
+		} catch (final IllegalStateException e) {
+			assertNotNull("ok", e);
+		}
 	}
 }

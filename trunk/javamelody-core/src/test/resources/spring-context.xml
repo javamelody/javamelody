@@ -24,6 +24,9 @@
         <property name="password" value="root" />
         <property name="maxIdle" value="13" />
     </bean>
+	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">
+		<property name="targetName" value="dataSource" />
+	</bean>
     <!--
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:comp/env/jdbc/TestDB" />
