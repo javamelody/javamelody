@@ -41,6 +41,7 @@ import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -72,10 +73,11 @@ class CollectorController {
 	}
 
 	void addCollectorApplication(String appName, String appUrls) throws IOException {
-		if (!Parameters.getCollectorApplicationsFile().canWrite()) {
+		final File file = Parameters.getCollectorApplicationsFile();
+		if (file.exists() && !file.canWrite()) {
 			throw new IllegalStateException(
 					"applications should be added or removed in the applications.properties file, because the user is not allowed to write: "
-							+ Parameters.getCollectorApplicationsFile());
+							+ file);
 		}
 		final List<URL> urls = Parameters.parseUrl(appUrls);
 		collectorServer.addCollectorApplication(appName, urls);
