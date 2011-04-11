@@ -177,6 +177,8 @@ final class LOG {
 					LoggerFactory.getILoggerFactory().getClass());
 		} catch (final ClassNotFoundException e) {
 			return false;
+		} catch (final NoClassDefFoundError e) {
+			return false;
 		}
 	}
 }
