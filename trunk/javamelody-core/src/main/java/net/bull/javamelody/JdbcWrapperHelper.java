@@ -176,7 +176,9 @@ final class JdbcWrapperHelper {
 				return clone;
 			}
 			// on remet le contexte not writable comme avant
-			readOnlyContexts.putAll((Hashtable<String, Object>) lock);
+			@SuppressWarnings("unchecked")
+			final Hashtable<String, Object> myLock = (Hashtable<String, Object>) lock;
+			readOnlyContexts.putAll(myLock);
 
 			return null;
 		} else if (servletContext.getServerInfo().contains("jetty")) {
