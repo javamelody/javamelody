@@ -128,8 +128,8 @@ final class TomcatInformations implements Serializable {
 		final MBeans mBeans = new MBeans();
 		THREAD_POOLS.clear();
 		GLOBAL_REQUEST_PROCESSORS.clear();
-		THREAD_POOLS.addAll(mBeans.getThreadPools());
-		GLOBAL_REQUEST_PROCESSORS.addAll(mBeans.getGlobalRequestProcessors());
+		THREAD_POOLS.addAll(mBeans.getTomcatThreadPools());
+		GLOBAL_REQUEST_PROCESSORS.addAll(mBeans.getTomcatGlobalRequestProcessors());
 	}
 
 	String getName() {

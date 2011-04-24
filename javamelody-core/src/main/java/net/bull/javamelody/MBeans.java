@@ -57,11 +57,11 @@ final class MBeans {
 		this.mbeanServer = mbeanServer;
 	}
 
-	Set<ObjectName> getThreadPools() throws MalformedObjectNameException {
+	Set<ObjectName> getTomcatThreadPools() throws MalformedObjectNameException {
 		return mbeanServer.queryNames(new ObjectName("*:type=ThreadPool,*"), null);
 	}
 
-	Set<ObjectName> getGlobalRequestProcessors() throws MalformedObjectNameException {
+	Set<ObjectName> getTomcatGlobalRequestProcessors() throws MalformedObjectNameException {
 		return mbeanServer.queryNames(new ObjectName("*:type=GlobalRequestProcessor,*"), null);
 	}
 
