@@ -52,11 +52,11 @@ final class JdbcWrapperHelper {
 
 	static void rebindDataSource(ServletContext servletContext, String jndiName,
 			DataSource dataSource, DataSource dataSourceProxy) throws Throwable {
-		final Object securityToken = changeContextWritable(servletContext, null);
+		final Object lock = changeContextWritable(servletContext, null);
 		final InitialContext initialContext = new InitialContext();
 		initialContext.rebind(jndiName, dataSourceProxy);
 		JNDI_DATASOURCES_BACKUP.put(jndiName, dataSource);
-		changeContextWritable(servletContext, securityToken);
+		changeContextWritable(servletContext, lock);
 		initialContext.close();
 	}
 
@@ -66,9 +66,9 @@ final class JdbcWrapperHelper {
 			for (final Map.Entry<String, DataSource> entry : JNDI_DATASOURCES_BACKUP.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				final Object securityToken = changeContextWritable(servletContext, null);
+				final Object lock = changeContextWritable(servletContext, null);
 				initialContext.rebind(jndiName, dataSource);
-				changeContextWritable(servletContext, securityToken);
+				changeContextWritable(servletContext, lock);
 			}
 			initialContext.close();
 		} finally {
@@ -147,7 +147,7 @@ final class JdbcWrapperHelper {
 
 	@SuppressWarnings("all")
 	// CHECKSTYLE:OFF
-	private static Object changeContextWritable(ServletContext servletContext, Object securityToken)
+	private static Object changeContextWritable(ServletContext servletContext, Object lock)
 			throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException,
 			NamingException {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
@@ -162,15 +162,21 @@ final class JdbcWrapperHelper {
 			@SuppressWarnings("unchecked")
 			final Hashtable<String, Object> readOnlyContexts = (Hashtable<String, Object>) field
 					.get(null);
-			// contextPath vaut /myapp par exemple
-			final String contextName = "/Catalina/localhost"
-					+ Parameters.getContextPath(servletContext);
-			if (securityToken == null) {
-				// on rend le contexte writable
-				return readOnlyContexts.remove(contextName);
+			// la clé dans cette Hashtable est normalement
+			// "/Catalina/" + hostName + Parameters.getContextPath(servletContext) ;
+			// hostName vaut en général "localhost" (ou autre selon le Host dans server.xml)
+			// et contextPath vaut "/myapp" par exemple ;
+			// la valeur est un securityToken
+			if (lock == null) {
+				// on utilise clear et non remove au cas où le host ne soit pas localhost dans server.xml
+				// (cf issue 105)
+				final Hashtable<String, Object> clone = new Hashtable<String, Object>(
+						readOnlyContexts);
+				readOnlyContexts.clear();
+				return clone;
 			}
 			// on remet le contexte not writable comme avant
-			readOnlyContexts.put(contextName, securityToken);
+			readOnlyContexts.putAll((Hashtable<String, Object>) lock);
 
 			return null;
 		} else if (servletContext.getServerInfo().contains("jetty")) {
@@ -180,12 +186,12 @@ final class JdbcWrapperHelper {
 			@SuppressWarnings("unchecked")
 			final Hashtable<Object, Object> env = (Hashtable<Object, Object>) field
 					.get(jdbcContext);
-			if (securityToken == null) {
+			if (lock == null) {
 				// on rend le contexte writable
 				return env.remove("org.mortbay.jndi.lock");
 			}
 			// on remet le contexte not writable comme avant
-			env.put("org.mortbay.jndi.lock", securityToken);
+			env.put("org.mortbay.jndi.lock", lock);
 
 			return null;
 		}
