@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.28.0 ===
 
   * fix issue 99: NullPointerException when displaying the list of process on AIX
   * fix issue 101: In the collector server, can't add an application when the applications.properties file does not exist
