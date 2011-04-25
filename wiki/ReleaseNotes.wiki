@@ -4,6 +4,7 @@
   * fix issue 99: NullPointerException when displaying the list of process on AIX
   * fix issue 101: In the collector server, can't add an application when the applications.properties file does not exist
   * fix issue 102: In the collector server, NoClassDefFoundError when IBM's JVM is used
+  * fix issue 105: Monitoring JNDI DataSource in Tomcat fails under host name other than "localhost"
   * added: Alternative in order to use AspectJ using [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/monitoring-spring-aspectj.xml net/bull/javamelody/monitoring-spring-aspectj.xml], in case that proxies don't work (thanks to [http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/ _Witek Wołejszo_]) (_TODO doc_)
 
 === 1.27.0 ===
