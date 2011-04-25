@@ -544,9 +544,10 @@ or
 
 	* Alternative in order to use AspectJ, in case that proxies don't work (thanks to [http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/ Witek Wołejszo])
 	Sometimes proxies can't work is some circumstances, for example if you don't use interfaces.
-	In this case, it is possible to use AspectJ with the following context file
+	In this case, it is possible to use AspectJ with the following context file:
 	{{{net/bull/javamelody/monitoring-spring-aspectj.xml}}}, [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/monitoring-spring-aspectj.xml included] the provided jar, instead of
 	{{{net/bull/javamelody/monitoring-spring.xml}}}.
+
 	You can then use the @MonitoredWithSpring annotation as said above,
 	or you can use other pointcuts like the following with a common interface (or super-class):
 
