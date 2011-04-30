@@ -59,6 +59,7 @@ class Collector { // NOPMD
 	private long tomcatBytesSent;
 	private long lastCollectDuration;
 	private long estimatedMemorySize;
+	private boolean firstCollectDone;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 
 	/**
@@ -246,6 +247,7 @@ class Collector { // NOPMD
 		// note : on n'inclue pas "new JavaInformations" de collectLocalContextWithoutErrors
 		// mais il est inférieur à 1 ms (sans bdd)
 		lastCollectDuration = Math.max(0, System.currentTimeMillis() - start);
+		firstCollectDone = true;
 	}
 
 	private long collect(List<JavaInformations> javaInformationsList) throws IOException {
@@ -621,6 +623,14 @@ class Collector { // NOPMD
 				// agrégation de la requête sur le compteur pour le jour courant
 				dayCounter.addHits(lastPeriodRequest);
 			}
+		} else if (firstCollectDone) {
+			// si c'est la première collecte (!firstCollectDone), alors on n'ajoute pas
+			// newRequest dans dayCounter car cela ajouterait la première fois tout le contenu
+			// de la période "tout" dans le dayCounter du jour,
+			// mais si c'est une collecte suivante (firstCollectDone), alors on ajoute
+			// newRequest dans dayCounter car il s'agit simplement d'une nouvelle requête
+			// qui n'avait pas encore été rencontrée dans la période "tout"
+			dayCounter.addHits(newRequest);
 		}
 		requestsById.put(requestStorageId, newRequest);
 	}
