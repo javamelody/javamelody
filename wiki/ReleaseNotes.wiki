@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 106: a few HTTP hits are lost in the statistics for the first hit(s) on new requests (no impact on applications once requests are known)
+
 === 1.28.0 ===
 
   * fix issue 99: NullPointerException when displaying the list of process on AIX
