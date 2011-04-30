@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix issue 106: a few HTTP hits are lost in the statistics for the first hit(s) on new requests (no impact on applications once requests are known)
+  * fix issue 106: a few HTTP hits are lost in the statistics for the first hit(s) on new requests (no impact on statistics once requests are known)
 
 === 1.28.0 ===
 
