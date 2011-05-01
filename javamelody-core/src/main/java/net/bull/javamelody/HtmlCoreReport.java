@@ -436,6 +436,12 @@ class HtmlCoreReport {
 		writeln(hrefStart + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 
+		if (PDF_ENABLED) {
+			writeln(separator);
+			write(hrefStart);
+			writeln("&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln("</div>");
 
 		final Counter counter = collector.getRangeCounter(range, counterName);

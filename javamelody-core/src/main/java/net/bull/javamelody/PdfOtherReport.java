@@ -143,6 +143,24 @@ class PdfOtherReport {
 		}
 	}
 
+	void writeCounterSummaryPerClass(Collector collector, Counter counter, String requestId,
+			Range range) throws IOException {
+		final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
+				.getRequestsAggregatedOrFilteredByClassName(requestId);
+		try {
+			document.open();
+			final String counterLabel = I18N.getString(counter.getName() + "Label");
+			final String title = I18N.getFormattedString("Statistiques_compteur", counterLabel)
+					+ " - " + range.getLabel();
+			addParagraph(title, counter.getIconName());
+			new PdfCounterReport(collector, counter, range, false, document).writeRequests(
+					counter.getChildCounterName(), requestList);
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
 	private static IOException createIOException(Exception e) {
 		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
 		final IOException ex = new IOException(e.getMessage());
