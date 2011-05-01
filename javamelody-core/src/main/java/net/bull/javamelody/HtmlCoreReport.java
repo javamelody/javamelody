@@ -429,9 +429,13 @@ class HtmlCoreReport {
 	void writeCounterSummaryPerClass(String counterName, String requestId) throws IOException {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ");
-		writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
-				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
+		writeln(separator);
+		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
+				+ (requestId == null ? "" : "&amp;graph=" + requestId);
+		writeln(hrefStart + "'>");
+		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+
 		writeln("</div>");
 
 		final Counter counter = collector.getRangeCounter(range, counterName);
@@ -672,6 +676,7 @@ class HtmlCoreReport {
 	void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {
 		writeln("<div class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
+		final String graphParameter = "&amp;graph=";
 		if (graphName == null) {
 			write("<a href='?' title='#Rafraichir#'>");
 		} else {
@@ -679,7 +684,7 @@ class HtmlCoreReport {
 			writeln(separator);
 			writeln("<a href='?'><img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
 			writeln(separator);
-			write("<a href='?part=" + part + "&amp;graph=" + graphName + "' title='#Rafraichir#'>");
+			write("<a href='?part=" + part + graphParameter + graphName + "' title='#Rafraichir#'>");
 		}
 		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (graphName == null && PDF_ENABLED) {
@@ -699,7 +704,7 @@ class HtmlCoreReport {
 			if (graphName == null) {
 				write("<a href='?period=" + myPeriod.getCode() + "' ");
 			} else {
-				write("<a href='?part=" + part + "&amp;graph=" + graphName + "&amp;period="
+				write("<a href='?part=" + part + graphParameter + graphName + "&amp;period="
 						+ myPeriod.getCode() + "' ");
 			}
 			write("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
