@@ -32,6 +32,7 @@ import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
@@ -277,6 +278,7 @@ class MonitoringController {
 
 	private Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
+		final Range range = getRangeForSerializable(httpRequest);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -312,11 +314,12 @@ class MonitoringController {
 					.getThreadInformationsList());
 		}
 
-		return createDefaultSerializable(javaInformationsList);
+		return createDefaultSerializable(javaInformationsList, range);
 	}
 
-	Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList) {
-		final List<Counter> counters = collector.getCounters();
+	Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList, Range range)
+			throws IOException {
+		final List<Counter> counters = collector.getRangeCounters(range);
 		final List<Serializable> serialized = new ArrayList<Serializable>(counters.size()
 				+ javaInformationsList.size());
 		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
@@ -328,6 +331,17 @@ class MonitoringController {
 			serialized.add(messageForReport);
 		}
 		return (Serializable) serialized;
+	}
+
+	Range getRangeForSerializable(HttpServletRequest httpRequest) {
+		final Range range;
+		if (httpRequest.getParameter(PERIOD_PARAMETER) == null) {
+			// période tout par défaut pour Serializable, notamment pour le serveur de collecte
+			range = Period.TOUT.getRange();
+		} else {
+			range = Range.parse(httpRequest.getParameter(PERIOD_PARAMETER));
+		}
+		return range;
 	}
 
 	private void doResource(HttpServletResponse httpResponse, String resource) throws IOException {
