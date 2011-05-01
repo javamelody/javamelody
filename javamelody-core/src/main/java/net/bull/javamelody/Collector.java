@@ -159,7 +159,7 @@ class Collector { // NOPMD
 		return estimatedMemorySize;
 	}
 
-	private List<Counter> getRangeCounters(Range range) throws IOException {
+	List<Counter> getRangeCounters(Range range) throws IOException {
 		if (range.getPeriod() == Period.TOUT) {
 			return new ArrayList<Counter>(counters);
 		}
