@@ -139,7 +139,7 @@ class PdfCounterReport {
 		new PdfCounterErrorReport(counter, document).toPdf();
 	}
 
-	private void writeRequests(String childCounterName, List<CounterRequest> requestList)
+	void writeRequests(String childCounterName, List<CounterRequest> requestList)
 			throws DocumentException, IOException {
 		assert requestList != null;
 		writeHeader(childCounterName);

@@ -20,7 +20,9 @@ package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -68,7 +70,14 @@ class PdfController {
 						javaInformationsList, range, httpResponse.getOutputStream());
 				pdfReport.toPdf();
 			} else {
-				doPdfPart(httpRequest, httpResponse, part);
+				try {
+					doPdfPart(httpRequest, httpResponse, part);
+				} catch (final IOException e) { // NOPMD
+					throw e;
+				} catch (final Exception e) {
+					// ne devrait pas arriver puisque les pdf ne s'affichent normalement pas sans afficher auparavant le html
+					throw new IllegalStateException(e);
+				}
 			}
 		} finally {
 			httpResponse.getOutputStream().flush();
@@ -76,35 +85,36 @@ class PdfController {
 	}
 
 	private void doPdfPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			String part) throws IOException {
-		try {
-			if (SESSIONS_PART.equalsIgnoreCase(part)) {
-				doSessions(httpResponse);
-			} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-				doProcesses(httpResponse);
-			} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-				final int index = DatabaseInformations.parseRequestIndex(httpRequest
-						.getParameter(REQUEST_PARAMETER));
-				doDatabase(httpResponse, index);
-			} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-				doMBeans(httpResponse);
-			} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-				doHeapHisto(httpResponse);
-			} else if (RUNTIME_DEPENDENCIES_PART.equalsIgnoreCase(part)) {
-				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-				final Counter counter = collector.getRangeCounter(range, counterName);
-				final PdfOtherReport pdfOtherReport = new PdfOtherReport(
-						collector.getApplication(), httpResponse.getOutputStream());
-				pdfOtherReport.writeRuntimeDependencies(counter, range);
-			} else {
-				throw new IllegalArgumentException(part);
-			}
-		} catch (final IOException e) { // NOPMD
-			throw e;
-		} catch (final Exception e) {
-			// ne devrait pas arriver puisque les pdf ne s'affichent normalement pas sans afficher auparavant le html
-			throw new IllegalStateException(e);
+			String part) throws Exception { // NOPMD
+		if (SESSIONS_PART.equalsIgnoreCase(part)) {
+			doSessions(httpResponse);
+		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+			doProcesses(httpResponse);
+		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+			final int index = DatabaseInformations.parseRequestIndex(httpRequest
+					.getParameter(REQUEST_PARAMETER));
+			doDatabase(httpResponse, index);
+		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+			doMBeans(httpResponse);
+		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+			doHeapHisto(httpResponse);
+		} else if (RUNTIME_DEPENDENCIES_PART.equalsIgnoreCase(part)) {
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final Counter counter = collector.getRangeCounter(range, counterName);
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
+					httpResponse.getOutputStream());
+			pdfOtherReport.writeRuntimeDependencies(counter, range);
+		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final Counter counter = collector.getRangeCounter(range, counterName);
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
+					httpResponse.getOutputStream());
+			pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
+		} else {
+			throw new IllegalArgumentException(part);
 		}
 	}
 
