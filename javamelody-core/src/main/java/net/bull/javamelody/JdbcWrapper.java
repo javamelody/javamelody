@@ -484,7 +484,7 @@ final class JdbcWrapper {
 				.equals(dataSourceClassName)
 				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
 			// rewrap pour tomee/openejb (cf issue 104),
-			// on récupère pour une connection avant de la refermer,
+			// on récupère une connection avant de la refermer,
 			// car sinon la datasource interne n'est pas encore créée
 			// et le rewrap ne peut pas fonctionner
 			dataSource.getConnection().close();
