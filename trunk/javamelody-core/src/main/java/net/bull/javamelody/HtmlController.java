@@ -77,7 +77,8 @@ class HtmlController {
 			List<JavaInformations> javaInformationsList) throws IOException {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (!isFromCollectorServer()
-				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part) || GRAPH_PART
+				&& (part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part)
+						|| GRAPH_PART.equalsIgnoreCase(part) || COUNTER_SUMMARY_PER_CLASS_PART
 						.equalsIgnoreCase(part))) {
 			// avant de faire l'affichage on fait une collecte, pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
