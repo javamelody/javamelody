@@ -545,28 +545,8 @@ class HtmlCounterReport {
 	}
 
 	void writeRequestsAggregatedOrFilteredByClassName(String requestId) throws IOException {
-		final List<CounterRequest> requestsAggregatedByClassName = counterRequestAggregation
-				.getRequestsAggregatedByClassName();
-		final List<CounterRequest> requestList;
-		if (requestId == null) {
-			// on va afficher la liste des requêtes aggrégées par classe
-			requestList = requestsAggregatedByClassName;
-		} else {
-			// on a un paramètre requestId, ie que l'utilisateur a cliqué sur un lien de détail
-			// des requêtes pour une classe, et on va afficher la liste des requêtes non aggrégées
-			// mais filtrées pour cette classe
-			requestList = new ArrayList<CounterRequest>();
-			// on recherche d'abord le nom de la classe à partir de requestId
-			for (final CounterRequest requestAggregated : requestsAggregatedByClassName) {
-				if (requestId.equals(requestAggregated.getId())) {
-					final String className = requestAggregated.getName();
-					// et on filtre les requêtes pour cette classe
-					requestList.addAll(counterRequestAggregation
-							.getRequestsFilteredByClassName(className));
-					break;
-				}
-			}
-		}
+		final List<CounterRequest> requestList = counterRequestAggregation
+				.getRequestsAggregatedOrFilteredByClassName(requestId);
 		final boolean includeSummaryPerClassLink = requestId == null;
 		final boolean includeDetailLink = !includeSummaryPerClassLink;
 		writeRequests(counter.getName(), counter.getChildCounterName(), requestList,

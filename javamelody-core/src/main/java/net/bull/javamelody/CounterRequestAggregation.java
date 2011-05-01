@@ -147,7 +147,31 @@ class CounterRequestAggregation {
 		return cpuTimesDisplayed;
 	}
 
-	List<CounterRequest> getRequestsAggregatedByClassName() {
+	List<CounterRequest> getRequestsAggregatedOrFilteredByClassName(String requestId) {
+		final List<CounterRequest> requestsAggregatedByClassName = getRequestsAggregatedByClassName();
+		final List<CounterRequest> requestList;
+		if (requestId == null) {
+			// on va afficher la liste des requêtes aggrégées par classe
+			requestList = requestsAggregatedByClassName;
+		} else {
+			// on a un paramètre requestId, ie que l'utilisateur a cliqué sur un lien de détail
+			// des requêtes pour une classe, et on va afficher la liste des requêtes non aggrégées
+			// mais filtrées pour cette classe
+			requestList = new ArrayList<CounterRequest>();
+			// on recherche d'abord le nom de la classe à partir de requestId
+			for (final CounterRequest requestAggregated : requestsAggregatedByClassName) {
+				if (requestId.equals(requestAggregated.getId())) {
+					final String className = requestAggregated.getName();
+					// et on filtre les requêtes pour cette classe
+					requestList.addAll(getRequestsFilteredByClassName(className));
+					break;
+				}
+			}
+		}
+		return Collections.unmodifiableList(requestList);
+	}
+
+	private List<CounterRequest> getRequestsAggregatedByClassName() {
 		assert counter.isBusinessFacadeCounter();
 		final Map<String, CounterRequest> requestMap = new HashMap<String, CounterRequest>();
 		final String counterName = counter.getName();
@@ -168,7 +192,7 @@ class CounterRequestAggregation {
 		return requestList;
 	}
 
-	List<CounterRequest> getRequestsFilteredByClassName(String className) {
+	private List<CounterRequest> getRequestsFilteredByClassName(String className) {
 		assert counter.isBusinessFacadeCounter();
 		assert className != null;
 		final List<CounterRequest> requestList = new ArrayList<CounterRequest>();
