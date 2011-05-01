@@ -21,6 +21,7 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
@@ -267,6 +268,10 @@ public class TestCollectorServlet {
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		doPart(parameters);
+		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		doPart(parameters);
 	}
 
 	/** Test.
@@ -281,6 +286,10 @@ public class TestCollectorServlet {
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
+		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
+		parameters.put(COUNTER_PARAMETER, "services");
+		doPart(parameters);
+		parameters.remove(COUNTER_PARAMETER);
 		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
 		testDatabaseInformations.setUp();
 		try {
