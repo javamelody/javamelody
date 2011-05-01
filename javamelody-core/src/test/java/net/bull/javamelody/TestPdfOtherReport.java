@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -198,6 +199,19 @@ public class TestPdfOtherReport {
 		counter.addRequestForCurrentContext(false);
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeRuntimeDependencies(counter, Period.TOUT.getRange());
+		assertNotEmptyAndClear(output);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteCounterSummaryPerClass() throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		final Counter counter = new Counter("services", null);
+		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter));
+		pdfOtherReport
+				.writeCounterSummaryPerClass(collector, counter, null, Period.TOUT.getRange());
 		assertNotEmptyAndClear(output);
 	}
 

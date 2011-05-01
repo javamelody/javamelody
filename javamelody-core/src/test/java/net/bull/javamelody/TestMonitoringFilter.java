@@ -94,7 +94,7 @@ import ch.qos.logback.classic.Logger;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestMonitoringFilter {
+public class TestMonitoringFilter { // NOPMD
 	private static final String FILTER_NAME = "monitoring";
 	// CHECKSTYLE:ON
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
@@ -728,6 +728,11 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
 
+		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
+		parameters.put(COUNTER_PARAMETER, "guice");
+		monitoring(parameters);
+		parameters.remove(COUNTER_PARAMETER);
+
 		final Connection connection = TestDatabaseInformations.initH2();
 		try {
 			parameters.put(PART_PARAMETER, DATABASE_PART);
@@ -781,6 +786,13 @@ public class TestMonitoringFilter {
 		parameters.remove(REQUEST_PARAMETER);
 		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
+		parameters.put(COUNTER_PARAMETER, "guice");
+		monitoring(parameters);
+		parameters.put(PERIOD_PARAMETER, "jour");
+		monitoring(parameters);
+		parameters.remove(COUNTER_PARAMETER);
+		parameters.remove(PERIOD_PARAMETER);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
