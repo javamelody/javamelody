@@ -20,9 +20,12 @@ package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
+import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
@@ -348,6 +351,7 @@ class CollectorController {
 
 	private Serializable createSerializable(HttpServletRequest httpRequest, String application,
 			MonitoringController monitoringController) throws Exception { // NOPMD
+		final Range range = monitoringController.getRangeForSerializable(httpRequest);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -378,10 +382,18 @@ class CollectorController {
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<List<ThreadInformations>>(
 					collectorServer.getThreadInformationsLists(application));
+		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			final Collector collector = getCollectorByApplication(application);
+			final Counter counter = collector.getRangeCounter(range, counterName);
+			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
+					.getRequestsAggregatedOrFilteredByClassName(requestId);
+			return new ArrayList<CounterRequest>(requestList);
 		}
 
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		return monitoringController.createDefaultSerializable(javaInformationsList);
+		return monitoringController.createDefaultSerializable(javaInformationsList, range);
 	}
 
 	private HtmlReport createHtmlReport(HttpServletRequest req, HttpServletResponse resp,

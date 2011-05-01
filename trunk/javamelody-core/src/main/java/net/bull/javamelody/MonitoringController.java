@@ -22,6 +22,7 @@ import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
+import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
@@ -312,6 +313,13 @@ class MonitoringController {
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
 					.getThreadInformationsList());
+		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			final Counter counter = collector.getRangeCounter(range, counterName).clone();
+			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
+					.getRequestsAggregatedOrFilteredByClassName(requestId);
+			return new ArrayList<CounterRequest>(requestList);
 		}
 
 		return createDefaultSerializable(javaInformationsList, range);
