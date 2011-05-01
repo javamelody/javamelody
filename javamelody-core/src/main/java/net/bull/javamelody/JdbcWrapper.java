@@ -420,7 +420,7 @@ final class JdbcWrapper {
 			for (final Map.Entry<String, DataSource> entry : jndiDataSources.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				if (rewrapDataSources || glassfish || jboss || weblogic) {
+				if (rewrapDataSources || isServerNeedsRewrap(jndiName)) {
 					rewrapDataSource(jndiName, dataSource);
 				} else if (!isProxyAlready(dataSource)) {
 					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
@@ -442,7 +442,7 @@ final class JdbcWrapper {
 	}
 
 	private void rewrapDataSource(String jndiName, DataSource dataSource)
-			throws IllegalAccessException {
+			throws IllegalAccessException, SQLException {
 		final String dataSourceClassName = dataSource.getClass().getName();
 		LOG.debug("Datasource needs rewrap: " + jndiName + " of class " + dataSourceClassName);
 		final String dataSourceRewrappedMessage = "Datasource rewrapped: ";
@@ -480,10 +480,24 @@ final class JdbcWrapper {
 			// cf http://groups.google.com/group/javamelody/browse_thread/thread/da8336b908f1e3bd/6cf3048f1f11866e?show_docid=6cf3048f1f11866e
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage + jndiName);
+		} else if ("org.apache.openejb.resource.jdbc.BasicManagedDataSource"
+				.equals(dataSourceClassName)
+				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
+			// rewrap pour tomee/openejb (cf issue 104),
+			// on récupère pour une connection avant de la refermer,
+			// car sinon la datasource interne n'est pas encore créée
+			// et le rewrap ne peut pas fonctionner
+			dataSource.getConnection().close();
+			rewrapBasicDataSource(dataSource);
+			LOG.debug(dataSourceRewrappedMessage + jndiName);
 		} else if (jonas) {
 			// JONAS (si rewrap-datasources==true)
 			rewrapJonasDataSource(jndiName, dataSource);
 		}
+	}
+
+	private boolean isServerNeedsRewrap(String jndiName) {
+		return glassfish || jboss || weblogic || jndiName.contains("openejb");
 	}
 
 	private boolean isJBossOrGlassfishDataSource(String dataSourceClassName) {
