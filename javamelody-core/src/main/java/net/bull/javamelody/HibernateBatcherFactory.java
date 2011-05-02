@@ -188,9 +188,9 @@ public class HibernateBatcherFactory implements BatcherFactory {
 
 		final Batcher result;
 		if (settings.getJdbcBatchSize() == 0) {
-			result = new HibernateBatchingBatcher(connectionManager, interceptor);
-		} else {
 			result = new HibernateNonBatchingBatcher(connectionManager, interceptor);
+		} else {
+			result = new HibernateBatchingBatcher(connectionManager, interceptor);
 		}
 		LOG.debug("hibernate batcher factory initialized");
 		return result;
