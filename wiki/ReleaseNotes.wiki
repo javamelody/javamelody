@@ -3,6 +3,7 @@
 
   * fix issue 106: a few HTTP hits are lost in the statistics for the first hit(s) on new requests (no impact on statistics once requests are known)
   * fix issue 104: support SQL monitoring in Apache OpenEJB bundled as TomEE
+  * fix issue 107: Hibernate factory doesn't work with HSQL with batching turned off
   * added: PDF report for the "Summary by class"
 
 === 1.28.0 ===
