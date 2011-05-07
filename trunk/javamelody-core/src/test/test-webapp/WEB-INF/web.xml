@@ -13,7 +13,8 @@
 	<filter>
 		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
-		<!-- pour mettre des paramètres pour le filtre, voir fichier user_guide.apt -->
+		<!-- servlet api 3.0: <async-supported>true</async-supported> -->
+		<!-- pour mettre des paramètres pour le filtre, voir le user guide -->
 		<init-param>
 			<param-name>system-actions-enabled</param-name>
 			<param-value>true</param-value>
