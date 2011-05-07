@@ -157,6 +157,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</listener>
 +-------------------------------+
 
+	Si le filter et le listener sont ajoutés dans une webapp de type Servlet API 3.0,
+	il est possible d'ajouter aussi <<< <async-supported>true</async-supported> >>> dans le filtre
+	pour supporter les requêtes asynchrones.
+
 ** 3. Premiers résultats
 
 	Vous pouvez dès à présent consulter le monitoring : déployer le war et ouvrir la page suivante dans un navigateur web après avoir
