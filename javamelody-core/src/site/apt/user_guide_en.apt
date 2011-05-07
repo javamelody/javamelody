@@ -152,7 +152,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	</listener>
 +-------------------------------+
 
-	If you add the filter and the listener in a Servlet API 3.0 webapp, you may also add
+	If you add these lines in a Servlet API 3.0 webapp, you may also add
 	<<< <async-supported>true</async-supported> >>> in the filter to support asynchronous requests.
 
 ** 3. First results
