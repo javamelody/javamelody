@@ -152,7 +152,7 @@ or MSIE8 (MSIE7 not recommended).
 	</listener>
 }}}
 
-	If you add the filter and the listener in a Servlet API 3.0 webapp, you may also add {{{<async-supported>true</async-supported>}}} to support asynchronous requests.
+	If you add the filter and the listener in a Servlet API 3.0 webapp, you may also add {{{<async-supported>true</async-supported>}}} in the filter to support asynchronous requests.
 
 === 3. First results ===
 
