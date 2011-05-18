@@ -42,9 +42,9 @@ final class LOG {
 			boolean systemError, int responseSize, String filterName) {
 		// dans les 3 cas, on ne construit le message de log
 		// que si le logger est configuré pour écrire le niveau INFO
-		if (LOG.LOGBACK_ENABLED) {
+		if (LOGBACK_ENABLED) {
 			logback(httpRequest, duration, systemError, responseSize, filterName);
-		} else if (LOG.LOG4J_ENABLED) {
+		} else if (LOG4J_ENABLED) {
 			log4j(httpRequest, duration, systemError, responseSize, filterName);
 		} else {
 			final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(filterName);
