@@ -1,0 +1,119 @@
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0   2064   528 ?        Ss   May26   0:00 init [5]
+root         2  0.0  0.0      0     0 ?        S<   May26   0:00 [migration/0]
+root         3  0.0  0.0      0     0 ?        SN   May26   0:00 [ksoftirqd/0]
+root         4  0.0  0.0      0     0 ?        S<   May26   0:00 [watchdog/0]
+root         5  0.0  0.0      0     0 ?        S<   May26   0:00 [migration/1]
+root         6  0.0  0.0      0     0 ?        SN   May26   0:00 [ksoftirqd/1]
+root         7  0.0  0.0      0     0 ?        S<   May26   0:00 [watchdog/1]
+root         8  0.0  0.0      0     0 ?        S<   May26   0:00 [events/0]
+root         9  0.0  0.0      0     0 ?        S<   May26   0:00 [events/1]
+root        10  0.0  0.0      0     0 ?        S<   May26   0:00 [khelper]
+root        11  0.0  0.0      0     0 ?        S<   May26   0:00 [kthread]
+root        15  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kblockd/0]
+root        16  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kblockd/1]
+root        17  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kacpid]
+root       127  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [cqueue/0]
+root       128  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [cqueue/1]
+root       131  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [khubd]
+root       133  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kseriod]
+root       201  0.0  0.0      0     0 ?        S<   May26   0:32  \_ [kswapd0]
+root       202  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [aio/0]
+root       203  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [aio/1]
+root       359  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kpsmoused]
+root       389  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [ata/0]
+root       390  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [ata/1]
+root       391  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [ata_aux]
+root       395  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [scsi_eh_0]
+root       396  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [scsi_eh_1]
+root       397  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [scsi_eh_2]
+root       398  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [scsi_eh_3]
+root       414  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [ksnapd]
+root       419  0.0  0.0      0     0 ?        S<   May26   0:15  \_ [kjournald]
+root       447  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kauditd]
+root      4164  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kmpathd/0]
+root      4165  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kmpathd/1]
+root      4216  0.0  0.0      0     0 ?        S<   May26   0:00  \_ [kjournald]
+root     26291  0.0  0.0      0     0 ?        S    Jun11   0:00  \_ [pdflush]
+root     26829  0.0  0.0      0     0 ?        S    Jun11   0:00  \_ [pdflush]
+root      4615  0.0  0.0   1720   392 ?        Ss   May26   0:00 syslogd -m 0
+root      4618  0.0  0.0   1668   244 ?        Ss   May26   0:00 klogd -x
+rpc       4651  0.0  0.0   1804   300 ?        Ss   May26   0:00 portmap
+dbus      4728  0.0  0.0   2884   776 ?        Ss   May26   0:44 dbus-daemon --system
+root      4739  0.0  0.0   2148   460 ?        Ss   May26   0:00 /usr/sbin/hcid
+root      4745  0.0  0.0   1740   300 ?        Ss   May26   0:00 /usr/sbin/sdpd
+root      4768  0.0  0.0      0     0 ?        S<   May26   0:00 [krfcommd]
+root      4830  0.0  0.0   1908   276 ?        Ss   May26   0:00 /usr/bin/hidd --server
+root      4902  0.0  0.0   2716   368 ?        Ss   May26   0:00 xinetd -stayalive -pidfile /var/run/xinetd.pid
+root      4922  0.0  0.0   9148   724 ?        Ss   May26   0:00 sendmail: accepting connections
+smmsp     4930  0.0  0.0   8080   640 ?        Ss   May26   0:00 sendmail: Queue runner@01:00:00 for /var/spool/clientmqueue
+root      4942  0.0  0.0   1896   284 ?        Ss   May26   0:00 gpm -m /dev/input/mice -t exps2
+xfs       4984  0.0  0.0   3808   504 ?        Ss   May26   0:00 xfs -droppriv -daemon
+root      5015  0.0  0.0   2240   276 ?        Ss   May26   0:00 /usr/sbin/atd
+avahi     5060  0.0  0.0   3596   892 ?        Ss   May26   0:02 avahi-daemon: running [frmya1185.local]
+avahi     5061  0.0  0.0   2572   144 ?        Ss   May26   0:00  \_ avahi-daemon: chroot helper
+68        5072  0.0  0.0   5928  1476 ?        Ss   May26   0:25 hald
+root      5073  0.0  0.0   3132   620 ?        S    May26   0:00  \_ hald-runner
+68        5080  0.0  0.0   1992   484 ?        S    May26   0:00      \_ hald-addon-acpi: listening on acpid socket /var/run/acpid.socket
+68        5085  0.0  0.0   1992   472 ?        S    May26   0:00      \_ hald-addon-keyboard: listening on /dev/input/event0
+root      5095  0.0  0.0   1948   392 ?        S    May26   0:23      \_ hald-addon-storage: polling /dev/hda
+root      5171  0.0  0.1  83232  3312 ?        SN   May26   0:22 /usr/bin/python -tt /usr/sbin/yum-updatesd
+root      5173  0.0  0.0   2952  1044 ?        SN   May26   0:00 /usr/libexec/gam_server
+root      5175  0.0  0.0   1984   452 ?        S    May26   0:00 /usr/sbin/smartd -q never
+root      5180  0.0  0.0   1652   228 tty1     Ss+  May26   0:00 /sbin/mingetty tty1
+root      5181  0.0  0.0   1652   228 tty2     Ss+  May26   0:00 /sbin/mingetty tty2
+root      5184  0.0  0.0   1656   228 tty3     Ss+  May26   0:00 /sbin/mingetty tty3
+root      5188  0.0  0.0   1656   228 tty4     Ss+  May26   0:00 /sbin/mingetty tty4
+root      5191  0.0  0.0   1656   228 tty5     Ss+  May26   0:00 /sbin/mingetty tty5
+root      5220  0.0  0.0   1656   228 tty6     Ss+  May26   0:00 /sbin/mingetty tty6
+root      5221  0.0  0.0  15764  1092 ?        Ss   May26   0:00 /usr/sbin/gdm-binary -nodaemon
+root      5279  0.0  0.0  16468   960 ?        S    May26   0:00  \_ /usr/sbin/gdm-binary -nodaemon
+root      5284  0.0  0.0  17472  1980 tty7     Ss+  May26   0:52      \_ /usr/bin/Xorg :0 -br -audit 0 -auth /var/gdm/:0.Xauth -nolisten tcp vt7
+root     23161  0.0  0.1  25320  3036 ?        Ss   May29   0:00      \_ /usr/bin/gnome-session
+root     23195  0.0  0.0   6536   192 ?        Ss   May29   0:00          \_ /usr/bin/ssh-agent /bin/sh -c exec -l /bin/bash -c "/usr/bin/dbus-launch --exit-w
+root      5281  0.0  0.0  27448  1144 ?        S    May26   0:00 /usr/libexec/gdm-rh-security-token-helper
+root     23220  0.0  0.0   2768   296 ?        S    May29   0:00 /usr/bin/dbus-launch --exit-with-session /etc/X11/xinit/Xclients
+root     23221  0.0  0.0   2752   588 ?        Ss   May29   0:00 /bin/dbus-daemon --fork --print-pid 4 --print-address 6 --session
+root     23230  0.0  0.0   2560   340 ?        S    May29   0:00 /usr/bin/gnome-keyring-daemon
+root     23232  0.0  0.1  33984  2824 ?        Sl   May29   0:21 /usr/libexec/gnome-settings-daemon
+root     23247  0.0  0.0  39752   972 ?        Ssl  May29   0:00 /usr/libexec/bonobo-activation-server --ac-activate --ior-output-fd=18
+root     23252  0.0  0.1  22836  2200 ?        S    May29   0:00 /usr/libexec/vino-server --oaf-activate-iid=OAFIID:GNOME_RemoteDesktopServer --oaf-ior-fd=17
+root     23254  0.0  0.1  17028  2700 ?        Ss   May29   0:17 metacity --sm-client-id=default1
+root     23258  0.0  0.1  48468  3604 ?        Ss   May29   0:01 gnome-panel --sm-client-id default2
+root     23260  1.4 64.4 2135204 1336596 ?     Ss   May29 286:38 nautilus --no-default-window --sm-client-id default3
+root     23263  0.0  0.0  22600  1840 ?        Ss   May29   0:00 gnome-volume-manager --sm-client-id default5
+root     23265  0.0  0.1  44848  2848 ?        Ss   May29   0:00 eggcups --sm-client-id default4
+root     23268  0.0  0.1  76712  2856 ?        S    May29   0:00 /usr/libexec/trashapplet --oaf-activate-iid=OAFIID:GNOME_Panel_TrashApplet_Factory --oaf-ior-
+root     23272  0.0  0.1  46464  3108 ?        S    May29   0:05 /usr/libexec/wnck-applet --oaf-activate-iid=OAFIID:GNOME_Wncklet_Factory --oaf-ior-fd=27
+root     23274  0.0  0.0  11440  1528 ?        S    May29   0:00 /usr/libexec/gnome-vfs-daemon
+root     23286  0.0  0.1  14452  2396 ?        Ss   May29   0:00 bt-applet --sm-disable
+root     23289  0.0  0.2  37856  5572 ?        Ss   May29   0:00 /usr/bin/python -tt /usr/bin/puplet
+root     23301  0.0  0.1  44896  2940 ?        Ss   May29   0:00 nm-applet --sm-disable
+root     23306  0.0  0.1  15264  2084 ?        Ss   May29   0:00 pam-panel-icon --sm-client-id default0
+root     23309  0.0  0.0   1844   356 ?        S    May29   0:00  \_ /sbin/pam_timestamp_check -d root
+root     23308  0.0  0.1  44712  2568 ?        Ss   May29   0:23 gnome-power-manager
+root     23312  0.0  0.1  47552  3116 ?        S    May29   0:00 /usr/libexec/mixer_applet2 --oaf-activate-iid=OAFIID:GNOME_MixerApplet_Factory --oaf-ior-fd=2
+root     23319  0.0  0.0   2468   524 ?        S    May29   0:00 /usr/libexec/mapping-daemon
+root     23326  0.0  0.1  23112  2376 ?        S    May29   0:00 /usr/libexec/notification-area-applet --oaf-activate-iid=OAFIID:GNOME_NotificationAreaApplet_
+root     23328  0.0  0.1  29224  3464 ?        S    May29   0:00 /usr/libexec/clock-applet --oaf-activate-iid=OAFIID:GNOME_ClockApplet_Factory --oaf-ior-fd=32
+root     23414  0.0  0.1  16944  2264 ?        Ss   May29   0:22 gnome-screensaver
+root     23420  0.0  0.1  41348  3744 ?        Sl   May29   0:00 gnome-terminal
+root     23423  0.0  0.0   2468   332 ?        S    May29   0:00  \_ gnome-pty-helper
+root     23424  0.0  0.0   4532   412 pts/1    Ss+  May29   0:00  \_ bash
+root     23440  0.0  1.8 249868 37772 pts/1    Sl   May29   2:47      \_ java -jar hudson.war
+root      6589  0.0  0.0   2152   392 ?        S<s  May31   0:00 /sbin/udevd -d
+root      7869  0.0  0.0  12520   592 ?        S<sl May31   0:00 auditd
+root      7871  0.0  0.0  13092   576 ?        S<sl May31   0:00  \_ /sbin/audispd
+root      7975  0.0  0.0   1668   376 ?        Ss   May31   0:00 /usr/sbin/acpid
+root      8086  0.0  0.0   5504   260 ?        Ss   May31   0:00 rpc.idmapd
+rpcuser   8140  0.0  0.0   1952   528 ?        Ss   May31   0:00 rpc.statd
+root      8228  0.0  0.0  12444   724 ?        Ssl  May31   0:00 automount
+root      8264  0.0  0.0  12724   592 ?        Ssl  May31   0:00 pcscd
+root      8429  0.0  0.0  10168  1020 ?        Ss   May31   0:05 cupsd
+root      8453  0.0  0.0   5280   624 ?        Ss   May31   0:00 crond
+root      8526  0.0  0.0   7124   624 ?        Ss   May31   0:00 /usr/sbin/sshd
+root     27189  0.1  0.1   9980  2840 ?        Ss   01:03   0:00  \_ sshd: root@pts/2
+root     27191  0.2  0.0   4536  1448 pts/2    Ss   01:03   0:00      \_ -bash
+root     27215  0.0  0.0   4220   920 pts/2    R+   01:03   0:00          \_ ps wauxf
+root      8593  0.0  0.0   7020  1452 ?        S    May31   0:00 /usr/libexec/gconfd-2 12
+root     11167  0.3 15.9 704108 329920 ?       Sl   May31  62:52 /usr/bin/java -Xms256m -Xmx512m -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogMan
