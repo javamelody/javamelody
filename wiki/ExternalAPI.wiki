@@ -1,3 +1,5 @@
+This page documents the external API of JavaMelody, including how to get the monitoring data in a XML format.
+
 == Table of contents ==
 
   * [#HTML HTML]
