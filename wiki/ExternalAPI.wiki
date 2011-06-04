@@ -1,3 +1,14 @@
+== Table of contents ==
+
+  * [#HTML HTML]
+  * [#PDF PDF]
+  * [#PNG_and_lastValue PNG and lastValue]
+  * [#jmxValue jmxValue]
+  * [#XML XML]
+  * [#JSON JSON]
+  * [#Serialized Serialized]
+  * [#API_when_using_a_collect_server API when using a collect server]
+
 === HTML ===
 
 The monitoring pages can display monitoring data in the HTML format.
