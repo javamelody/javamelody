@@ -67,7 +67,7 @@ Note: The lastValue and jmxValue API may be used in a [http://munin.projects.lin
 
 For each MBean (JMX) attribute, a link on the left of the attribute in the MBeans page is provided to have only the current value of an attribute in plain text. For example, the following URL retrieves the bytes sent and the process cpu time for a Tomcat server: http://localhost:8080/mywebapp/monitoring?jmxValue=Catalina:type=GlobalRequestProcessor,name=http-8080.bytesSent|java.lang:type=OperatingSystem.ProcessCpuTime
 
-To use the URL for a MBean value, the system actions must be [enabled UserGuide#6._Optional_parameters].
+To use the URL for a MBean value, the system actions must be [UserGuide#6._Optional_parameters enabled].
 
 
 === XML ===
