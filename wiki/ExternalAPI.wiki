@@ -103,7 +103,7 @@ The JSON API works the same as the XML API: just use "json" as "format" paramete
 === Serialized ===
 
 The monitoring data is also available as java serialization over http, with "serialized" as "format" parameter.
-This format is only recommended for the communication between a collect server and its monitored applications.
+This format is recommended only for the communication between a collect server and its monitored applications.
 
 
 === API when using a collect server ===
