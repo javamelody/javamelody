@@ -105,10 +105,10 @@ class PdfRuntimeDependenciesReport {
 				}
 				Integer nbOfMethodCalls = nbMethodsCalledByCalledBean.get(calledBean);
 				if (nbOfMethodCalls == null) {
-					nbOfMethodCalls = Integer.valueOf(1);
+					nbOfMethodCalls = 1;
 				} else {
 					// on compte le nombre de méthodes appelées et non le nombre d'exécutions
-					nbOfMethodCalls = Integer.valueOf(nbOfMethodCalls + 1);
+					nbOfMethodCalls = nbOfMethodCalls + 1;
 				}
 				nbMethodsCalledByCalledBean.put(calledBean, nbOfMethodCalls);
 			}
