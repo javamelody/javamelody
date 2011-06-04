@@ -62,7 +62,7 @@ class LabradorRetriever {
 
 	<T> T call() throws IOException {
 		if (shouldMock()) {
-			return this.<T> createMockResultOfCall();
+			return createMockResultOfCall();
 		}
 		final long start = System.currentTimeMillis();
 		try {

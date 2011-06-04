@@ -82,9 +82,8 @@ final class JobGlobalListener implements JobListener {
 							try {
 								final Class<? extends Scheduler> schedulerClass = scheduler
 										.getClass();
-								schedulerClass.getMethod("removeGlobalJobListener",
-										new Class[] { String.class }).invoke(scheduler,
-										new Object[] { jobListener.getName() });
+								schedulerClass.getMethod("removeGlobalJobListener", String.class)
+										.invoke(scheduler, jobListener.getName());
 							} catch (final Exception e2) {
 								throw new IllegalArgumentException(e2); // NOPMD
 							}

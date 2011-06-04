@@ -188,8 +188,7 @@ class DatabaseInformations implements Serializable {
 			if (e.getErrorCode() == 942 && e.getMessage() != null
 					&& e.getMessage().startsWith("ORA-")) {
 				final String userName = connection.getMetaData().getUserName();
-				final SQLException ex = createGrantException(userName, e);
-				throw ex;
+				throw createGrantException(userName, e);
 			}
 			throw e;
 		} finally {
