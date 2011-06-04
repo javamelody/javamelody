@@ -58,7 +58,7 @@ Usual graphics names include:
    * and httpHitsRate, httpMeanTimes, httpSystemErrors (and same with sql, ejb, spring, guice, jsp ... instead of http)
    * and systemLoad, fileDescriptors for Linux and Unix
    * and tomcatBusyThreads, tomcatBytesReceived, tomcatBytesSent for Tomcat
-   * and runningBuilds for Jenkins / Hudson.
+   * and runningBuilds for Jenkins / Hudson nodes.
 
 Note: The lastValue and jmxValue API may be used in a [http://munin.projects.linpro.no/ Munin] or [http://www.nagios.org/ Nagios] plugin, to make your own graphics or alerts using something like [https://github.com/coderholic/munin-popularity-plugins this].
 
