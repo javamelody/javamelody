@@ -2,7 +2,7 @@
 
 === Browsing the sources ===
 
-	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources or you can [http://code.google.com/p/javamelody/downloads/list download] the zip file of a release which include the sources of that release.
+	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources or you can [http://code.google.com/p/javamelody/downloads/list download] the zip file of a release which includes the sources of that release.
 
 === Building from sources ===
 
