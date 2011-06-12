@@ -1,4 +1,5 @@
 *A selection of blogs*:
+  * [http://www.slideshare.net/djkarlsen/significance-of-metrics Slides] and [http://vimeo.com/channels/rootsconf#24706626 video] of David Karlsen at the Roots Conference
   * [http://dhartford.blogspot.com/2011/02/javamelody-performance-usage-statistics.html dhartford]
   * [http://ejvyas.blogspot.com/2009/12/java-melody-monitoring-of-javaee.html Vyas]
   * [http://pradeepjanakiraman.wordpress.com/2010/02/04/java-melody-pretty-cool/ Pradeep]
