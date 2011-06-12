@@ -74,7 +74,9 @@ Browser: The html report of JavaMelody is best viewed with
 [http://www.google.com/chrome Chrome]
 or MSIE8 (MSIE7 not recommended).
 
-[http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help] [http://www.slideshare.net/djkarlsen/significance-of-metrics Roots conference slides by David Karlsen]
+[http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
+
+[http://www.slideshare.net/djkarlsen/significance-of-metrics Roots conference slides by David Karlsen]
 
 
 == Hudson / Jenkins Plugin ==
