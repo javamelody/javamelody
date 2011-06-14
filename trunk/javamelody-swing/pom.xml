@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.bull.javamelody</groupId>
+		<artifactId>javamelody-parent</artifactId>
+		<version>1.30.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>javamelody-swing</artifactId>
+	<packaging>jar</packaging>
+	<name>Java Melody Swing</name>
+	<description>Swing UI for Java Melody</description>
+	<url>http://javamelody.googlecode.com/</url>
+	<licenses>
+		<license>
+			<name>LGPL</name>
+			<url>LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Emeric Vernat</name>
+			<email>evernat@free.fr</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://javamelody.googlecode.com/svn/trunk/</url>
+	</scm>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jmxri</artifactId>
+					<groupId>com.sun.jmx</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jmxtools</artifactId>
+					<groupId>com.sun.jdmk</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jms</artifactId>
+					<groupId>javax.jms</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>mail</artifactId>
+					<groupId>javax.mail</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bctsp-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<!--
+			"mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn,
+			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy"
+			suffit, https://maven2-repository.dev.java.net/
+			http://wiki.hudson-ci.org/display/HUDSON/Hosting+Plugins
+		-->
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>java.net-m2-repository</id>
+			<!--
+				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url url>java-net:/maven2-repository/trunk/repository/</url -->
+			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
+			<id>local</id>
+			<url>file:.</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<!-- For some reason RELEASE doesn't work in Netbeans -->
+				<version>1.9</version>
+			</extension>
+		</extensions>
+		<!--
+			/!\ Maven >= 3.0 :
+			http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
+
+			<sourceEncoding>UTF-8</sourceEncoding>
+		-->
+		<plugins>
+			<!-- Configuration compilation -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<!--
+			/!\ Maven >= 2.1 :
+			http://docs.codehaus.org/display/MAVEN/Reporting+Encoding+Configuration
+
+			<outputEncoding>UTF-8</outputEncoding>
+		-->
+		<plugins>
+			<!-- Javadoc -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+					<docencoding>UTF-8</docencoding>
+					<links>
+						<link>http://java.sun.com/javase/6/docs/api/</link>
+						<link>http://java.sun.com/javaee/5/docs/api/</link>
+					</links>
+				</configuration>
+			</plugin>
+			<!-- Vérification des règles de codage -->
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<enableRSS>false</enableRSS>
+					<configLocation>${basedir}/.checkstyle.xml</configLocation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<configuration>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<enableRulesSummary>false</enableRulesSummary>
+					<source>1.5</source>
+					<targetJdk>1.5</targetJdk>
+					<linkXref>true</linkXref>
+					<sourceEncoding>UTF-8</sourceEncoding>
+					<minimumPriority>4</minimumPriority>
+					<minimumTokens>75</minimumTokens>
+					<rulesets>
+						<ruleset>${basedir}/.pmd</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
+			<!-- Métriques -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javancss-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+			</plugin>
+			<!-- Références croisées -->
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<configuration>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+					<linkJavadoc>false</linkJavadoc>
+				</configuration>
+			</plugin>
+			<!-- Information sur le projet -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<!-- v2.2 does not work, ArrayIndexOutOfBounds, http://jira.codehaus.org/browse/MPIR-194 -->
+				<version>2.1</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>summary</report>
+							<report>license</report>
+							<report>mailing-list</report>
+							<report>issue-tracking</report>
+							<report>scm</report>
+							<report>cim</report>
+							<report>plugin-management</report>
+							<report>plugins</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<!-- Site -->
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
