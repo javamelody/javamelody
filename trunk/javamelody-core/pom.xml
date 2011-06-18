@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.29.2-SNAPSHOT</version>
+	<version>1.30.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Java Melody</name>
 	<description>Monitoring of JavaEE applications</description>
