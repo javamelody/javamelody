@@ -203,6 +203,13 @@ class StatisticsPanel extends JPanel { // NOPMD
 						counterRequestAggregation.getSevereRequest());
 			}
 			table.setList(requests);
+			//			SwingUtilities.invokeLater(new Runnable() {
+			//				@Override
+			//				public void run() {
+			//					tableScrollPane
+			//							.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+			//				}
+			//			});
 		}
 	}
 
