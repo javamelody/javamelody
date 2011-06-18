@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.awt.Frame;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -75,10 +76,12 @@ public final class Main {
 			throw new RuntimeException(e); // NOPMD
 		}
 		final Collector collector = collectorServer.getCollectorByApplication("test");
+		final List<JavaInformations> javaInformationsList = collectorServer
+				.getJavaInformationsByApplication("test");
 		final String collectorUrl = CollectorServer.getUrlsByApplication("test").get(0)
 				.toExternalForm();
 		final URL onlineHelpUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
-		final MainPanel contentPane = new MainPanel(collector, onlineHelpUrl);
+		final MainPanel contentPane = new MainPanel(collector, javaInformationsList, onlineHelpUrl);
 		frame.setContentPane(contentPane);
 		frame.setIconImage(ImageIconCache.getImageIcon("systemmonitor.png").getImage());
 		// définit la taille
