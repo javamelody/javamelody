@@ -46,8 +46,8 @@ final class JdbcWrapperHelper {
 		super();
 	}
 
-	static void registerSpringDataSource(String beanName, DataSource dataSource) {
-		SPRING_DATASOURCES.put(beanName, dataSource);
+	static void registerSpringDataSource(String name, DataSource dataSource) {
+		SPRING_DATASOURCES.put(name, dataSource);
 	}
 
 	static void rebindDataSource(ServletContext servletContext, String jndiName,
