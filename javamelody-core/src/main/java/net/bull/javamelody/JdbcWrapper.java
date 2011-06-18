@@ -46,20 +46,23 @@ import javax.sql.DataSource;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 /**
- * Cette classe rebind dans l'annuaire JNDI la dataSource jdbc en la remplaçant
+ * Cette classe est utile pour construire des proxy de DataSources ou de Connections jdbc.<br>
+ * Et notamment elle rebinde dans l'annuaire JNDI la dataSource jdbc en la remplaçant
  * par un proxy de monitoring.
  * @author Emeric Vernat
  */
-final class JdbcWrapper {
+public final class JdbcWrapper {
+	/**
+	 * Instance singleton de JdbcWrapper (ici on ne connaît pas le ServletContext).
+	 */
+	public static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"));
+
 	// au lieu d'utiliser int avec des synchronized partout, on utilise AtomicInteger
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger USED_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger ACTIVE_THREAD_COUNT = new AtomicInteger();
 	static final AtomicInteger RUNNING_BUILD_COUNT = new AtomicInteger();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
-
-	// instance de JdbcWrapper (ici on ne connaît pas le ServletContext)
-	static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"));
 
 	private static final BasicDataSourcesProperties TOMCAT_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
@@ -352,8 +355,13 @@ final class JdbcWrapper {
 		return JdbcWrapperHelper.getJndiAndSpringDataSources();
 	}
 
-	static void registerSpringDataSource(String beanName, DataSource dataSource) {
-		JdbcWrapperHelper.registerSpringDataSource(beanName, dataSource);
+	/**
+	 * Enregistre une DataSource ne venant pas de JNDI.
+	 * @param name String
+	 * @param dataSource DataSource
+	 */
+	public static void registerSpringDataSource(String name, DataSource dataSource) {
+		JdbcWrapperHelper.registerSpringDataSource(name, dataSource);
 	}
 
 	Object doExecute(String requestName, Statement statement, Method method, Object[] args)
@@ -659,11 +667,22 @@ final class JdbcWrapper {
 		}
 	}
 
-	DataSource createDataSourceProxy(DataSource dataSource) {
+	/**
+	 * Crée un proxy d'une dataSource jdbc.
+	 * @param dataSource DataSource
+	 * @return DataSource
+	 */
+	public DataSource createDataSourceProxy(DataSource dataSource) {
 		return createDataSourceProxy(null, dataSource);
 	}
 
-	DataSource createDataSourceProxy(String name, final DataSource dataSource) {
+	/**
+	 * Crée un proxy d'une dataSource jdbc.
+	 * @param name String
+	 * @param dataSource DataSource
+	 * @return DataSource
+	 */
+	public DataSource createDataSourceProxy(String name, final DataSource dataSource) {
 		assert dataSource != null;
 		if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSource.getClass().getName())
 				&& dataSource instanceof BasicDataSource) {
@@ -754,7 +773,12 @@ final class JdbcWrapper {
 		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
 	}
 
-	Connection createConnectionProxy(Connection connection) {
+	/**
+	 * Crée un proxy d'une connexion jdbc.
+	 * @param connection Connection
+	 * @return Connection
+	 */
+	public Connection createConnectionProxy(Connection connection) {
 		assert connection != null;
 		if (isSqlMonitoringDisabled()) {
 			return connection;
