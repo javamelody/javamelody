@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.text.DecimalFormat;
 
@@ -36,58 +37,154 @@ class JavaInformationsPanel extends JPanel {
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
+	private final JavaInformations javaInformations;
+	private final JPanel gridPanel;
+	private JavaInformationsPanel detailsPanel;
 
 	JavaInformationsPanel(JavaInformations javaInformations) {
 		super();
+		this.javaInformations = javaInformations;
 		setOpaque(false);
-		setLayout(new GridLayout(-1, 2));
+		setLayout(new BorderLayout());
+		// TODO mettre des hauteurs variables selon les labels
+		gridPanel = new JPanel(new GridLayout(-1, 2, 10, 0));
+		gridPanel.setOpaque(false);
+		add(gridPanel, BorderLayout.NORTH);
+	}
+
+	void showSummary() {
 		addLabel(I18N.getString("Host"));
 		final JLabel hostLabel = new JLabel(javaInformations.getHost());
 		hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
-		add(hostLabel);
+		gridPanel.add(hostLabel);
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
 		final long maxMemory = memoryInformations.getMaxMemory();
 		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
 		//		writeln(toBar(memoryInformations.getUsedMemoryPercentage()));
 		addLabel(I18N.getString("memoire_utilisee"));
-		add(new JLabel(integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo")
+		addValue(integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo")
 				+ " / " + integerFormat.format(maxMemory / 1024 / 1024) + ' '
-				+ I18N.getString("Mo")));
+				+ I18N.getString("Mo"));
 		if (javaInformations.getSessionCount() >= 0) {
 			addLabel(I18N.getString("nb_sessions_http"));
 			// 			writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
-			add(new JLabel(integerFormat.format(javaInformations.getSessionCount())));
+			addValue(integerFormat.format(javaInformations.getSessionCount()));
 		}
 		addLabel("<html>" + I18N.getString("nb_threads_actifs") + "<br>("
 				+ I18N.getString("Requetes_http_en_cours") + ')');
 		//		writeGraph("activeThreads", integerFormat.format(javaInformations.getActiveThreadCount()));
-		add(new JLabel(integerFormat.format(javaInformations.getActiveThreadCount())));
+		addValue(integerFormat.format(javaInformations.getActiveThreadCount()));
 		if (!noDatabase) {
 			addLabel(I18N.getString("nb_connexions_actives"));
 			// writeGraph("activeConnections", integerFormat.format(javaInformations.getActiveConnectionCount()));
-			add(new JLabel(integerFormat.format(javaInformations.getActiveConnectionCount())));
+			addValue(integerFormat.format(javaInformations.getActiveConnectionCount()));
 			final int usedConnectionCount = javaInformations.getUsedConnectionCount();
 			final int maxConnectionCount = javaInformations.getMaxConnectionCount();
 			addLabel("<html>" + I18N.getString("nb_connexions_utilisees") + "<br>("
 					+ I18N.getString("ouvertes") + ')');
 			//			writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
 			if (maxConnectionCount > 0) {
-				add(new JLabel(integerFormat.format(usedConnectionCount)));
+				addValue(integerFormat.format(usedConnectionCount));
 				//			writeln(toBar(javaInformations.getUsedConnectionPercentage()));
 			} else {
-				add(new JLabel(integerFormat.format(usedConnectionCount) + " / "
-						+ integerFormat.format(maxConnectionCount)));
+				addValue(integerFormat.format(usedConnectionCount) + " / "
+						+ integerFormat.format(maxConnectionCount));
 			}
 		}
 		if (javaInformations.getSystemLoadAverage() >= 0) {
 			addLabel(I18N.getString("Charge_systeme"));
 			//			writeGraph("systemLoad", decimalFormat.format(javaInformations.getSystemLoadAverage()));
-			add(new JLabel(decimalFormat.format(javaInformations.getSystemLoadAverage())));
+			addValue(decimalFormat.format(javaInformations.getSystemLoadAverage()));
 		}
 	}
 
+	void showDetails(boolean repeatHost) {
+		if (detailsPanel != null) {
+			detailsPanel.setVisible(!detailsPanel.isVisible());
+		} else {
+			detailsPanel = new JavaInformationsPanel(javaInformations);
+			detailsPanel.addDetails(repeatHost);
+			add(detailsPanel, BorderLayout.SOUTH);
+			// sans cela, le panel n'apparaît pas la première fois
+			detailsPanel.setVisible(false);
+			detailsPanel.setVisible(true);
+		}
+	}
+
+	private void addDetails(boolean repeatHost) {
+		if (repeatHost) {
+			addLabel(I18N.getString("Host"));
+			final JLabel hostLabel = new JLabel(javaInformations.getHost());
+			hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
+			add(hostLabel);
+		}
+		addLabel(I18N.getString("OS"));
+		//		final String osIconName = getOSIconName(javaInformations.getOS());
+		//		if (osIconName != null) {
+		//			writeln("<img src='?resource=servers/" + osIconName + "' alt='#OS#'/>");
+		//		}
+		//		writeln(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
+		//				+ " #coeurs#)" + columnEnd);
+		//		writeln("<tr><td>#Java#: </td><td>" + javaInformations.getJavaVersion() + columnEnd);
+		//		write("<tr><td>#JVM#: </td><td>" + javaInformations.getJvmVersion());
+		//		if (javaInformations.getJvmVersion().contains("Client")) {
+		//			write("&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"#Client_JVM#\" title=\"#Client_JVM#\"/>");
+		//		}
+		//		writeln(columnEnd);
+		//		writeln("<tr><td>#PID#: </td><td>" + javaInformations.getPID() + columnEnd);
+		//		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
+		//		if (unixOpenFileDescriptorCount >= 0) {
+		//			final long unixMaxFileDescriptorCount = javaInformations
+		//					.getUnixMaxFileDescriptorCount();
+		//			write("<tr><td>#nb_fichiers#</td><td>");
+		//			writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
+		//			writeln(" / " + integerFormat.format(unixMaxFileDescriptorCount) + "&nbsp;&nbsp;&nbsp;");
+		//			writeln(toBar(javaInformations.getUnixOpenFileDescriptorPercentage()));
+		//			writeln(columnEnd);
+		//		}
+		//		writeServerInfoAndContextPath(javaInformations);
+		//		writeln("<tr><td>#Demarrage#: </td><td>"
+		//				+ I18N.createDateAndTimeFormat().format(javaInformations.getStartDate())
+		//				+ columnEnd);
+		//
+		//		write("<tr><td valign='top'>#Arguments_JVM#: </td><td>");
+		//		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
+		//		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), false) + columnEnd);
+		//		writeln("");
+		//
+		//		if (javaInformations.getSessionCount() >= 0) {
+		//			write("<tr><td>#httpSessionsMeanAge#: </td><td>");
+		//			writeGraph("httpSessionsMeanAge",
+		//					integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
+		//			writeln(columnEnd);
+		//		}
+		//
+		//		writeTomcatInformations(javaInformations.getTomcatInformationsList());
+		//
+		//		writeMemoryInformations(javaInformations.getMemoryInformations());
+		//
+		//		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
+		//			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
+		//			writeln("<tr><td>#Free_disk_space#: </td><td>"
+		//					+ integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
+		//					+ " #Mo# " + columnEnd);
+		//		}
+		//
+		//		writeDatabaseVersionAndDataSourceDetails(javaInformations);
+		//
+		//		if (javaInformations.isDependenciesEnabled()) {
+		//			writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
+		//			writeDependencies(javaInformations);
+		//			writeln(columnEnd);
+		//		}
+	}
+
 	private void addLabel(String text) {
-		add(new JLabel(text + ": "));
+		gridPanel.add(new JLabel(text + ": "));
+	}
+
+	private void addValue(String value) {
+		gridPanel.add(new JLabel(value));
 	}
 }
