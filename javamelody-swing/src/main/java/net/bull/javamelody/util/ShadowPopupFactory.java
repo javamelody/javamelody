@@ -74,6 +74,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 	// Instance Creation ******************************************************
 
 	private ShadowPopupFactory(PopupFactory storedFactory) {
+		super();
 		this.storedFactory = storedFactory;
 	}
 
@@ -236,7 +237,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 				if (cache == null) {
 					cache = new ArrayList<ShadowPopup>(MAX_CACHE_SIZE);
 				}
-				if (cache.size() > 0) {
+				if (!cache.isEmpty()) {
 					result = cache.remove(0);
 				} else {
 					result = new ShadowPopup();
@@ -524,19 +525,19 @@ public final class ShadowPopupFactory extends PopupFactory {
 		/**
 		 * The singleton instance used to draw all borders.
 		 */
-		private static final ShadowPopupBorder instance = new ShadowPopupBorder();
+		private static final ShadowPopupBorder INSTANCE = new ShadowPopupBorder();
 
 		/**
 		 * The drop shadow is created from a PNG image with 8 bit alpha channel.
 		 */
-		private static final Image shadow = new ImageIcon(
+		private static final Image SHADOW = new ImageIcon(
 				ShadowPopupBorder.class.getResource("/img/shadow.png")).getImage();
 
 		// Instance Creation *****************************************************
 
 		// Returns the singleton instance used to draw all borders.
 		public static ShadowPopupBorder getInstance() {
-			return instance;
+			return INSTANCE;
 		}
 
 		// Paints the border for the specified component with the specified position and size.
@@ -556,13 +557,13 @@ public final class ShadowPopupFactory extends PopupFactory {
 			}
 
 			// draw drop shadow
-			g.drawImage(shadow, x + 5, y + height - 5, x + 10, y + height, 0, 6, 5, 11, null, c);
-			g.drawImage(shadow, x + 10, y + height - 5, x + width - 5, y + height, 5, 6, 6, 11,
+			g.drawImage(SHADOW, x + 5, y + height - 5, x + 10, y + height, 0, 6, 5, 11, null, c);
+			g.drawImage(SHADOW, x + 10, y + height - 5, x + width - 5, y + height, 5, 6, 6, 11,
 					null, c);
-			g.drawImage(shadow, x + width - 5, y + 5, x + width, y + 10, 6, 0, 11, 5, null, c);
-			g.drawImage(shadow, x + width - 5, y + 10, x + width, y + height - 5, 6, 5, 11, 6,
+			g.drawImage(SHADOW, x + width - 5, y + 5, x + width, y + 10, 6, 0, 11, 5, null, c);
+			g.drawImage(SHADOW, x + width - 5, y + 10, x + width, y + height - 5, 6, 5, 11, 6,
 					null, c);
-			g.drawImage(shadow, x + width - 5, y + height - 5, x + width, y + height, 6, 6, 11, 11,
+			g.drawImage(SHADOW, x + width - 5, y + height - 5, x + width, y + height, 6, 6, 11, 11,
 					null, c);
 		}
 
