@@ -23,6 +23,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,7 +33,9 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MIntegerTableCellRenderer;
@@ -49,9 +53,16 @@ class StatisticsPanel extends JPanel { // NOPMD
 	private final Counter counter;
 	private final Range range;
 	private final MTable<CounterRequest> table;
+	private StatisticsPanel detailsPanel;
 
 	StatisticsPanel(Counter counter, Range range) {
+		this(counter, range, null);
+	}
+
+	private StatisticsPanel(Counter counter, Range range,
+			CounterRequestAggregation counterRequestAggregation) {
 		super();
+
 		setOpaque(false);
 		setLayout(new BorderLayout());
 
@@ -59,14 +70,16 @@ class StatisticsPanel extends JPanel { // NOPMD
 		this.range = range;
 
 		if (counter.getRequestsCount() == 0) {
-			this.counterRequestAggregation = null;
 			this.table = null;
+			this.counterRequestAggregation = null;
 		} else {
-			this.counterRequestAggregation = new CounterRequestAggregation(counter);
 			this.table = new MTable<CounterRequest>();
-
-			addScrollPane(counterRequestAggregation.getGlobalRequest());
-			addSizeAndButtons(counterRequestAggregation.getGlobalRequest());
+			if (counterRequestAggregation == null) {
+				this.counterRequestAggregation = new CounterRequestAggregation(counter);
+			} else {
+				this.counterRequestAggregation = counterRequestAggregation;
+			}
+			addColumns();
 		}
 
 		//		// 2. débit et liens
@@ -87,10 +100,8 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	}
 
-	private void addScrollPane(final CounterRequest globalRequest) { // NOPMD
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
-				table);
-		tableScrollPane.setPreferredSize(new Dimension(-1, 76));
+	private void addColumns() {
+		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 		table.addColumn("name", I18N.getString("Requete"));
 		final MIntegerTableCellRenderer meanCellRenderer = new MIntegerTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
@@ -183,8 +194,6 @@ class StatisticsPanel extends JPanel { // NOPMD
 			table.addColumn("childDurationsMean",
 					I18N.getFormattedString("temps_fils_moyen", counter.getChildCounterName()));
 		}
-
-		add(tableScrollPane, BorderLayout.NORTH);
 	}
 
 	public void showGlobalRequests() {
@@ -203,19 +212,24 @@ class StatisticsPanel extends JPanel { // NOPMD
 						counterRequestAggregation.getSevereRequest());
 			}
 			table.setList(requests);
-			//			SwingUtilities.invokeLater(new Runnable() {
-			//				@Override
-			//				public void run() {
-			//					tableScrollPane
-			//							.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-			//				}
-			//			});
+
+			addScrollPane();
+			addRequestsSizeAndButtons();
 		}
 	}
 
 	public void showDetailRequests() {
-		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
-		table.setList(requests);
+		if (detailsPanel == null) {
+			detailsPanel = new StatisticsPanel(counter, range, counterRequestAggregation);
+			detailsPanel.setVisible(false);
+			final List<CounterRequest> requests = counterRequestAggregation.getRequests();
+			detailsPanel.table.setList(requests);
+			detailsPanel.addScrollPane();
+			detailsPanel.add(new JLabel(" "), BorderLayout.SOUTH);
+
+			add(detailsPanel, BorderLayout.SOUTH);
+		}
+		detailsPanel.setVisible(!detailsPanel.isVisible());
 	}
 
 	private void addNoRequests() {
@@ -227,10 +241,26 @@ class StatisticsPanel extends JPanel { // NOPMD
 		} else {
 			key = "Aucune_requete";
 		}
-		add(new JLabel(I18N.getString(key)));
+		add(new JLabel(I18N.getString(key)), BorderLayout.CENTER);
+		add(new JLabel(" "), BorderLayout.SOUTH);
 	}
 
-	private void addSizeAndButtons(CounterRequest globalRequest) {
+	private void addScrollPane() {
+		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
+		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
+				table);
+		add(tableScrollPane, BorderLayout.NORTH);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				tableScrollPane
+						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+			}
+		});
+	}
+
+	private void addRequestsSizeAndButtons() {
+		final CounterRequest globalRequest = this.counterRequestAggregation.getGlobalRequest();
 		// delta ni négatif ni à 0
 		final long deltaMillis = Math.max(System.currentTimeMillis()
 				- counter.getStartDate().getTime(), 1);
@@ -252,7 +282,14 @@ class StatisticsPanel extends JPanel { // NOPMD
 		final JPanel eastPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		eastPanel.setOpaque(false);
 		eastPanel.add(new JLabel(text));
-		eastPanel.add(new JButton(I18N.getString("Details")));
+		final JButton detailsButton = new JButton(I18N.getString("Details"));
+		detailsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showDetailRequests();
+			}
+		});
+		eastPanel.add(detailsButton);
 		add(eastPanel, BorderLayout.EAST);
 	}
 
