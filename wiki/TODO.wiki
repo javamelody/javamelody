@@ -10,7 +10,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
-  # ~~Add pdf/xml/json reports for the counter summary per class~~
+  # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
   # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?)
   # Cannot remove in the GUI an application from the collector server when the application is no longer using javamelody. When trying to select it, the collector server is showing an error 500 with the message "Data unavailable for the application". (Meanwhile, it is possible to remove the application directly from the applications.properties file in the temp directory.)
@@ -22,13 +22,13 @@ There is no promise of dates or that a particular feature will ever be done.
   # Test the compatibility or the non-compatibility with Quartz 2.0
   # Test the monitoring of sql requests with a datasource from jndi in *[https://groups.google.com/group/javamelody/t/39da9d1d1fe5f275 Glassfish 3]*
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
-  # ~~Test the jndi report in *Websphere*~~
+  # ~~Test the jndi report in *Websphere*~~ (done)
   # Option in the UI to change from cumulative times (http times include sql) to *non-cumulative times*, via a link and a persistent http cookie or at least a parameter (from user group)
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish or [http://static.springsource.org/docs/petclinic.html Spring pet clinic] in tomcat for example
   # Basic server monitoring: in downloads, provide a simple war file to monitor only an application server (cpu, memory, system informations, mbeans, threads) without monitoring any application (http requests, http sessions, etc)
   # Cloud Watch metrics for an application in Amazon EC2, possibly by using Beans Talk.
   # Statistics of JSF actions like for Struts actions
-  # ~~Possibly document the external API: [ReleaseNotes#1.24.0 lastValue and jmxValue] ; and also xml and json format on some pages~~
+  # ~~Possibly document the external API: [ReleaseNotes#1.24.0 lastValue and jmxValue] ; and also xml and json format on some pages~~ (done)
   # Possibly document the rewrap-datasources parameter for Tomcat and Jonas
   # Format the sql requests before display in the sql statistics
   # Add a button to kill a system process and its children in the process list?
@@ -41,6 +41,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # *CSV* exports of tables
   # (_started_) Rich *desktop UI* able to connect to multiple servers via CollectorServer and to centralized collect servers, with [http://java.sun.com/docs/books/tutorial/uiswing/ swing] and [http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp java web start]
   # *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]* plugin to display some graphs in those tools
+  # Extract informations from bonecp such as max connections like from dbcp
   # Maven:
     # Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?
     # ~~And why some maven plugins (such as dashboard) are sometimes years late?~~
