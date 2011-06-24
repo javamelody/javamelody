@@ -182,7 +182,7 @@ class HtmlMBeansReport {
 			writer.write(htmlEncode(attributeDescription));
 			write(")");
 		} else {
-			write("nbsp;");
+			write("&nbsp;");
 		}
 		write("</td></tr>");
 	}
