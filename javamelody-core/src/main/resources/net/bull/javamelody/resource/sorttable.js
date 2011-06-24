@@ -262,9 +262,12 @@ sorttable = {
      each sort function takes two parameters, a and b
      you are comparing a[0] and b[0] */
   sort_numeric: function(a,b) {
-    aa = parseFloat(a[0].replace(/[^0-9.-]/g,''));
+    //aa = parseFloat(a[0].replace(/[^0-9.-]/g,''));
+	//issue 117: this is ok for this app because of number of decimals
+    aa = parseFloat(a[0].replace(/[^0-9-]/g,''));
     if (isNaN(aa)) aa = 0;
-    bb = parseFloat(b[0].replace(/[^0-9.-]/g,'')); 
+    //issue 117: bb = parseFloat(b[0].replace(/[^0-9.-]/g,'')); 
+    bb = parseFloat(b[0].replace(/[^0-9-]/g,'')); 
     if (isNaN(bb)) bb = 0;
     return aa-bb;
   },
