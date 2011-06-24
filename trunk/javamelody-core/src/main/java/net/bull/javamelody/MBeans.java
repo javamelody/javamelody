@@ -146,10 +146,11 @@ final class MBeans {
 		}
 		final String[] attributeNamesArray = attributeNames.toArray(new String[attributeNames
 				.size()]);
-		final List<Attribute> attributes = mbeanServer.getAttributes(name, attributeNamesArray)
-				.asList();
+		// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
+		final List<Object> attributes = mbeanServer.getAttributes(name, attributeNamesArray);
 		final Map<String, Object> result = new TreeMap<String, Object>();
-		for (final Attribute attribute : attributes) {
+		for (final Object object : attributes) {
+			final Attribute attribute = (Attribute) object;
 			final Object value = convertValueIfNeeded(attribute.getValue());
 			result.put(attribute.getName(), value);
 		}
