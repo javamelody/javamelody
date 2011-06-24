@@ -1,4 +1,9 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 116: MBeans overview does not work with java 1.5
+  * fix issue 117: Sorting of numbers is based on String comparison in German
+
 === 1.29.0 ===
 
   * fix issue 106: a few HTTP hits are lost in the statistics for the first hit(s) on new requests (no impact on statistics once requests are known)
