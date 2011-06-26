@@ -26,7 +26,7 @@ import javax.swing.table.AbstractTableModel;
 
 /**
  * TableModel de MTable.
- * 
+ *
  * @param <T>
  *           Type des valeurs de la liste
  * @author Emeric Vernat
@@ -41,7 +41,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param table
 	 *           JTable
 	 */
@@ -56,7 +56,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Retourne la table liée à ce modèle.
-	 * 
+	 *
 	 * @return JTable
 	 */
 	protected JTable getTable() {
@@ -84,7 +84,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Ajoute un objet.
-	 * 
+	 *
 	 * @param object
 	 *           TypeValue
 	 * @see #removeObject
@@ -96,7 +96,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Enlève un objet.
-	 * 
+	 *
 	 * @param object
 	 *           TypeValue
 	 * @see #addObject
@@ -108,7 +108,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Retourne la valeur de la propriété list.
-	 * 
+	 *
 	 * @return List
 	 * @see #setList
 	 */
@@ -118,7 +118,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Définit la valeur de la propriété list.
-	 * 
+	 *
 	 * @param newList
 	 *           List
 	 * @see #getList
@@ -134,7 +134,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/**
 	 * Retourne l'objet à la position rowIndex.
-	 * 
+	 *
 	 * @return Object
 	 * @param rowIndex
 	 *           int
@@ -158,7 +158,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 	/**
 	 * Retourne un booléen suivant que la cellule est éditable (false par défaut). <br/>
 	 * Ici, l'implémentation est faite selon que la propriété cellEditor de la TableColumn correspondante est nulle ou non.
-	 * 
+	 *
 	 * @return boolean
 	 * @param row
 	 *           int

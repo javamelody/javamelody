@@ -51,7 +51,7 @@ import javax.swing.text.JTextComponent;
 
 /**
  * Composant Table basique servant de base à MListTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MBasicTable extends JTable {
@@ -69,7 +69,7 @@ public class MBasicTable extends JTable {
 
 	/**
 	 * KeyAdapter.
-	 * 
+	 *
 	 * @author Emeric Vernat
 	 */
 	private static class KeyHandler extends KeyAdapter {
@@ -105,7 +105,7 @@ public class MBasicTable extends JTable {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dataModel
 	 *           Modèle pour les données (par exemple, MTableModel)
 	 */
@@ -204,7 +204,7 @@ public class MBasicTable extends JTable {
 
 	/**
 	 * Retourne la map par défaut des renderers de cellules avec pour clé le type des valeurs.
-	 * 
+	 *
 	 * @return Map
 	 */
 	private Map<Class<?>, TableCellRenderer> getDefaultTableCellRenderers() {
@@ -263,7 +263,7 @@ public class MBasicTable extends JTable {
 
 	/**
 	 * Renvoie le texte affiché à la position demandée.
-	 * 
+	 *
 	 * @return String
 	 * @param row
 	 *           int
@@ -307,7 +307,7 @@ public class MBasicTable extends JTable {
 
 	/**
 	 * Gestion des événements clavier sur cette table.
-	 * 
+	 *
 	 * @param event
 	 *           KeyEvent
 	 */

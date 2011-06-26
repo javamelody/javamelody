@@ -24,7 +24,7 @@ import java.text.NumberFormat;
 
 /**
  * Définit un renderer pour représenter un Double avec 2 décimales dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MDoubleTableCellRenderer extends MDefaultTableCellRenderer {
@@ -46,7 +46,7 @@ public class MDoubleTableCellRenderer extends MDefaultTableCellRenderer {
 
 	/**
 	 * Retourne la valeur de la propriété numberFormat.
-	 * 
+	 *
 	 * @return NumberFormat
 	 * @see #setNumberFormat
 	 */
@@ -56,7 +56,7 @@ public class MDoubleTableCellRenderer extends MDefaultTableCellRenderer {
 
 	/**
 	 * Définit la valeur de la propriété numberFormat.
-	 * 
+	 *
 	 * @param newNumberFormat
 	 *           NumberFormat
 	 * @see #getNumberFormat

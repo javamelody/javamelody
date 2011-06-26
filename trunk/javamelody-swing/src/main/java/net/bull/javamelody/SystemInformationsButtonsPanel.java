@@ -38,7 +38,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private List<JavaInformations> javaInformationsList;
+	private final List<JavaInformations> javaInformationsList;
 
 	SystemInformationsButtonsPanel(List<JavaInformations> javaInformationsList) {
 		super();

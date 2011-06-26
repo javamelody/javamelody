@@ -29,7 +29,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
 /**
  * Panel des boutons principaux.
  * @author Emeric Vernat

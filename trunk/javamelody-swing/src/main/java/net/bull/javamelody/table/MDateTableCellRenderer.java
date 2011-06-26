@@ -23,7 +23,7 @@ import java.util.Date;
 
 /**
  * Définit un renderer pour représenter une Date dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MDateTableCellRenderer extends MDefaultTableCellRenderer {
@@ -42,7 +42,7 @@ public class MDateTableCellRenderer extends MDefaultTableCellRenderer {
 
 	/**
 	 * Retourne la valeur de la propriété dateFormat.
-	 * 
+	 *
 	 * @return DateFormat
 	 * @see #setDateFormat
 	 */
@@ -52,7 +52,7 @@ public class MDateTableCellRenderer extends MDefaultTableCellRenderer {
 
 	/**
 	 * Définit la valeur de la propriété dateFormat.
-	 * 
+	 *
 	 * @param newDateFormat
 	 *           DateFormat
 	 * @see #getDateFormat

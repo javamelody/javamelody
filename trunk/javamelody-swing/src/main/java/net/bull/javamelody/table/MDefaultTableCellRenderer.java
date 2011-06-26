@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 /**
  * Renderer par défaut pour les cellules des JTables. <br/>
  * La super classe contient un certain nombre d'optimisation de performances pour le rendu.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MDefaultTableCellRenderer extends DefaultTableCellRenderer {
@@ -34,7 +34,7 @@ public class MDefaultTableCellRenderer extends DefaultTableCellRenderer {
 
 	/**
 	 * Ajustement de la hauteur de cette ligne en fonction de la taille du renderer (ex: la taille d'une icône ou d'un label html).
-	 * 
+	 *
 	 * @param table
 	 *           javax.swing.JTable
 	 * @param component

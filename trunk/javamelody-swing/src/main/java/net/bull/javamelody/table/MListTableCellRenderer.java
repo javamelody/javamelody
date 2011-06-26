@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 /**
  * Définit un renderer pour représenter une List dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MListTableCellRenderer extends MDefaultTableCellRenderer {

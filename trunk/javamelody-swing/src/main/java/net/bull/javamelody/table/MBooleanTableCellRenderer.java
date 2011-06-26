@@ -29,7 +29,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  * Définit un renderer pour représenter un Boolean à l'aide d'une checkbox dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MBooleanTableCellRenderer extends JCheckBox implements TableCellRenderer {

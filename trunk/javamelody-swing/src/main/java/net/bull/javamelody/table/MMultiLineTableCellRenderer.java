@@ -25,7 +25,7 @@ import javax.swing.JTable;
 
 /**
  * Définit un renderer pour représenter une cellule avec des retours chariots, de hauteur variable, dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MMultiLineTableCellRenderer extends MDefaultTableCellRenderer {
