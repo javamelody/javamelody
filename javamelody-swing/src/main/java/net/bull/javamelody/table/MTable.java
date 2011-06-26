@@ -27,7 +27,7 @@ import javax.swing.table.TableModel;
 
 /**
  * Composant Table, qui utilise une API typée pour la liste des valeurs et qui utilise les String (enum) pour définir les valeurs dans les colonnes.
- * 
+ *
  * @param <T>
  *           Type des valeurs de la liste
  * @author Emeric Vernat
@@ -50,7 +50,7 @@ public class MTable<T> extends MListTable<T> {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dataModel
 	 *           Modèle pour les données
 	 */
@@ -72,7 +72,7 @@ public class MTable<T> extends MListTable<T> {
 
 	/**
 	 * Ajoute une colonne dans la table.
-	 * 
+	 *
 	 * @param attribute
 	 *           Nom de l'attribut des objets à afficher dans la colonne<br/>
 	 * @param libelle
@@ -98,7 +98,7 @@ public class MTable<T> extends MListTable<T> {
 
 	/**
 	 * Méthode typée pour définir un renderer spécifique pour les cellules d'une colonne dans la table.
-	 * 
+	 *
 	 * @param attribute
 	 *           Nom de l'attribut des objets pour une colonne existante
 	 * @param cellRenderer

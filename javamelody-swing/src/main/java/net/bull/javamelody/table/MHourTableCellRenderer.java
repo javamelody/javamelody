@@ -22,7 +22,7 @@ import java.text.DateFormat;
 
 /**
  * Définit un renderer pour représenter une heure (Date) dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MHourTableCellRenderer extends MDateTableCellRenderer {

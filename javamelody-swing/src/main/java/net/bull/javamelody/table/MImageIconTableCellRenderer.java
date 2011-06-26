@@ -23,7 +23,7 @@ import javax.swing.SwingConstants;
 
 /**
  * Définit un renderer pour représenter une Icon dans une JTable.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MImageIconTableCellRenderer extends MDefaultTableCellRenderer {

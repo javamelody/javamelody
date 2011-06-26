@@ -25,7 +25,7 @@ import javax.swing.JTable;
 
 /**
  * Définit un renderer pour représenter un Component AWT ou Swing se dessinant lui-même dans une JTable (par ex. un JLabel avec icône, texte, toolTipText, fonte, foreground, horizontalAlignement ...).
- * 
+ *
  * @author Emeric Vernat
  */
 public class MComponentTableCellRenderer extends MDefaultTableCellRenderer {

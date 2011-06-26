@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 
 /**
  * ScrollPane avec une table directement intégrée.
- * 
+ *
  * @param <T>
  *           Type des valeurs de la liste
  * @author Emeric Vernat
@@ -40,7 +40,7 @@ public class MTableScrollPane<T> extends JScrollPane {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param table
 	 *           MTable
 	 */
@@ -54,7 +54,7 @@ public class MTableScrollPane<T> extends JScrollPane {
 
 	/**
 	 * Retourne la table incluse.
-	 * 
+	 *
 	 * @return MTable
 	 */
 	@SuppressWarnings("unchecked")
@@ -64,7 +64,7 @@ public class MTableScrollPane<T> extends JScrollPane {
 
 	/**
 	 * Redéfinit la table incluse.
-	 * 
+	 *
 	 * @param table
 	 *           MTable
 	 */

@@ -28,7 +28,7 @@ import javax.swing.table.TableModel;
 
 /**
  * Composant Table typé servant de base à MTable.
- * 
+ *
  * @param <T>
  *           Type des valeurs de la liste
  * @author Emeric Vernat
@@ -38,7 +38,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param dataModel
 	 *           Modèle pour les données (par exemple, MTableModel)
 	 */
@@ -58,7 +58,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Retourne la valeur de la propriété listTableModel.
-	 * 
+	 *
 	 * @return MListTableModel
 	 */
 	@SuppressWarnings("unchecked")
@@ -68,7 +68,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Retourne la valeur de la propriété list.
-	 * 
+	 *
 	 * @return List
 	 * @see #setList
 	 */
@@ -78,9 +78,9 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Définit la valeur de la propriété list. <BR>
-	 * 
+	 *
 	 * Cette méthode adaptent automatiquement les largeurs des colonnes selon les données.
-	 * 
+	 *
 	 * @param newList
 	 *           List
 	 * @see #getList
@@ -100,7 +100,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Retourne la liste d'objets sélectionnés.
-	 * 
+	 *
 	 * @return List
 	 * @see #setSelectedList
 	 */
@@ -124,7 +124,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Retourne l'objet sélectionné.
-	 * 
+	 *
 	 * @return TypeValue
 	 * @see #setSelectedObject
 	 */
@@ -138,7 +138,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Définit la liste d'objets sélectionnés.
-	 * 
+	 *
 	 * @param newSelectedList
 	 *           List
 	 * @see #getSelectedList
@@ -171,7 +171,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Définit l'objet sélectionné. L'objet peut être null pour ne rien sélectionné.
-	 * 
+	 *
 	 * @param newSelectedObject
 	 *           TypeValue
 	 * @see #getSelectedObject
@@ -188,7 +188,7 @@ public class MListTable<T> extends MBasicTable {
 
 	/**
 	 * Renvoie l'objet à la position demandée. Attention rowIndex est l'index vu de la JTable avec les index, et non pas vu du ListTableModel.
-	 * 
+	 *
 	 * @return Object
 	 * @param rowIndex
 	 *           int

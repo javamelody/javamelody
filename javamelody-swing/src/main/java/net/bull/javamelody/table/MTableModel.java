@@ -24,7 +24,7 @@ import javax.swing.JTable;
 
 /**
  * TableModel de MTable, qui utilise les String (enum) pour déterminer les valeurs dans les colonnes.
- * 
+ *
  * @param <T>
  *           Type des valeurs de la liste
  * @author Emeric Vernat
@@ -34,7 +34,7 @@ public class MTableModel<T> extends MListTableModel<T> {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param table
 	 *           JTable
 	 */
@@ -91,7 +91,7 @@ public class MTableModel<T> extends MListTableModel<T> {
 
 	/**
 	 * Retourne l'attribut correspondant à un numéro de colonne.
-	 * 
+	 *
 	 * @param columnIndex
 	 *           int
 	 * @return String
