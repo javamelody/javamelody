@@ -506,6 +506,6 @@ class MonitoringController {
 				&& (httpRequest.getParameter(PART_PARAMETER) == null
 						|| CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
 								.getParameter(PART_PARAMETER)) || THREADS_PART
-						.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
+							.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
 	}
 }
