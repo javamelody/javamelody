@@ -106,6 +106,10 @@ class PeriodCounterFactory {
 		if (range.getPeriod() == null) {
 			counter.addRequestsAndErrors(getDayCounterAtDate(range.getEndDate()));
 			dayCalendar.setTime(range.getEndDate());
+			// issue 122: attention endDate contient un jour jusqu'à 23h59m59s selon Range.parse
+			dayCalendar.set(Calendar.HOUR_OF_DAY, 0);
+			dayCalendar.set(Calendar.MINUTE, 0);
+			dayCalendar.set(Calendar.SECOND, 0);
 		} else {
 			counter.addRequestsAndErrors(currentDayCounter);
 			dayCalendar.setTime(currentDayCounter.getStartDate());
