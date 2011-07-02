@@ -472,9 +472,16 @@ class HtmlCounterReport {
 
 	private void writeSizeAndLinks(List<CounterRequest> requests, String counterName,
 			CounterRequest globalRequest) throws IOException {
+		final long end;
+		if (range.getEndDate() != null) {
+			// l'utilisateur a choisi une période personnalisée de date à date,
+			// donc la fin est peut-être avant la date du jour
+			end = Math.min(range.getEndDate().getTime(), System.currentTimeMillis());
+		} else {
+			end = System.currentTimeMillis();
+		}
 		// delta ni négatif ni à 0
-		final long deltaMillis = Math.max(System.currentTimeMillis()
-				- counter.getStartDate().getTime(), 1);
+		final long deltaMillis = Math.max(end - counter.getStartDate().getTime(), 1);
 		final long hitsParMinute = 60 * 1000 * globalRequest.getHits() / deltaMillis;
 		writeln("<div align='right'>");
 		// Rq : si serveur utilisé de 8h à 20h (soit 12h) on peut multiplier par 2 ces hits par minute indiqués
