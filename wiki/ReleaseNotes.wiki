@@ -4,6 +4,7 @@
   * fix issue 116: MBeans overview does not work with java 1.5
   * fix issue 117: Sorting of numbers is based on String comparison in German
   * fix issue 122: Average number of requests per minutes seems to be wrong, with a single day in a custom period
+  * fix issue 124: Start date removed in the text at the top of the monitoring page, except if the "All" period is selected.
 
 === 1.29.0 ===
 
