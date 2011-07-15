@@ -241,10 +241,15 @@ class HtmlCoreReport {
 
 	private void writeSummary() throws IOException {
 		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
-		final String startDate = I18N.createDateAndTimeFormat().format(
-				collector.getCounters().get(0).getStartDate());
-		writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl,
-				I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
+		if (range.getPeriod() == Period.TOUT) {
+			final String startDate = I18N.createDateAndTimeFormat().format(
+					collector.getCounters().get(0).getStartDate());
+			writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl,
+					I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
+		} else {
+			writer.write(I18N.getFormattedString("Statistiques_sans_depuis", javaMelodyUrl,
+					I18N.getCurrentDateAndTime(), collector.getApplication()));
+		}
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
 			writer.write(I18N.htmlEncode(" (" + javaInformationsList.get(0).getContextDisplayName()
 					+ ')', false));
