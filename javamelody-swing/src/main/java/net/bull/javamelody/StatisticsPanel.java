@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ScrollPaneConstants;
@@ -47,6 +47,9 @@ import net.bull.javamelody.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class StatisticsPanel extends JPanel { // NOPMD
+	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
+	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+
 	private static final long serialVersionUID = 1L;
 
 	final transient CounterRequestAggregation counterRequestAggregation;
@@ -282,11 +285,16 @@ class StatisticsPanel extends JPanel { // NOPMD
 		final JPanel eastPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		eastPanel.setOpaque(false);
 		eastPanel.add(new JLabel(text));
-		final JButton detailsButton = new JButton(I18N.getString("Details"));
+		final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
 		detailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showDetailRequests();
+				if (detailsButton.getIcon() == PLUS_ICON) {
+					detailsButton.setIcon(MINUS_ICON);
+				} else {
+					detailsButton.setIcon(PLUS_ICON);
+				}
 			}
 		});
 		eastPanel.add(detailsButton);
