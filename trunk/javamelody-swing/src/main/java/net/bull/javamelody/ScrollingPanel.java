@@ -30,7 +30,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,6 +40,9 @@ import javax.swing.JPanel;
  * @author Emeric Vernat
  */
 class ScrollingPanel extends JPanel {
+	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
+	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -98,13 +101,19 @@ class ScrollingPanel extends JPanel {
 			javaInformationsPanelList.add(javaInformationsPanel);
 			westJavaInformationsPanel.add(javaInformationsPanel);
 		}
-		final JButton javaInformationsDetailsButton = new JButton(I18N.getString("Details"));
+		final MButton javaInformationsDetailsButton = new MButton(I18N.getString("Details"),
+				PLUS_ICON);
 		javaInformationsDetailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final boolean repeatHost = list.size() > 1;
 				for (final JavaInformationsPanel javaInformationsPanel : javaInformationsPanelList) {
 					javaInformationsPanel.showDetails(repeatHost);
+				}
+				if (javaInformationsDetailsButton.getIcon() == PLUS_ICON) {
+					javaInformationsDetailsButton.setIcon(MINUS_ICON);
+				} else {
+					javaInformationsDetailsButton.setIcon(PLUS_ICON);
 				}
 			}
 		});
