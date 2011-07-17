@@ -24,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -52,7 +51,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 		final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		southPanel.setOpaque(false);
 
-		final JButton gcButton = new JButton(I18N.getString("ramasse_miette"),
+		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"),
 				ImageIconCache.getScaledImageIcon("broom.png", 20, 20));
 		gcButton.addActionListener(new ActionListener() {
 			@Override
@@ -63,7 +62,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 			}
 		});
 		northPanel.add(gcButton);
-		final JButton heapDumpButton = new JButton(I18N.getString("heap_dump"),
+		final MButton heapDumpButton = new MButton(I18N.getString("heap_dump"),
 				ImageIconCache.getScaledImageIcon("heapdump.png", 20, 20));
 		heapDumpButton.addActionListener(new ActionListener() {
 			@Override
@@ -74,12 +73,12 @@ class SystemInformationsButtonsPanel extends JPanel {
 			}
 		});
 		northPanel.add(heapDumpButton);
-		final JButton heapHistoButton = new JButton(I18N.getString("heaphisto"),
+		final MButton heapHistoButton = new MButton(I18N.getString("heaphisto"),
 				ImageIconCache.getScaledImageIcon("memory.png", 20, 20));
 		northPanel.add(heapHistoButton);
 
 		if (isSessionsEnabled()) {
-			final JButton invalidateSessionsButton = new JButton(
+			final MButton invalidateSessionsButton = new MButton(
 					I18N.getString("invalidate_sessions"), ImageIconCache.getScaledImageIcon(
 							"user-trash.png", 18, 18));
 			invalidateSessionsButton.addActionListener(new ActionListener() {
@@ -91,21 +90,21 @@ class SystemInformationsButtonsPanel extends JPanel {
 				}
 			});
 			northPanel.add(invalidateSessionsButton);
-			final JButton sessionsButton = new JButton(I18N.getString("sessions"),
+			final MButton sessionsButton = new MButton(I18N.getString("sessions"),
 					ImageIconCache.getScaledImageIcon("system-users.png", 20, 20));
 			northPanel.add(sessionsButton);
 		}
 		if (doesWebXmlExists()) {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
-			final JButton webXmlButton = new JButton(I18N.getString("web.xml"),
+			final MButton webXmlButton = new MButton(I18N.getString("web.xml"),
 					ImageIconCache.getScaledImageIcon("xml.png", 20, 20));
 			southPanel.add(webXmlButton);
 		}
 
-		final JButton mbeansButton = new JButton(I18N.getString("MBeans"),
+		final MButton mbeansButton = new MButton(I18N.getString("MBeans"),
 				ImageIconCache.getScaledImageIcon("mbeans.png", 20, 20));
 		southPanel.add(mbeansButton);
-		final JButton processesButton = new JButton(I18N.getString("processes"),
+		final MButton processesButton = new MButton(I18N.getString("processes"),
 				ImageIconCache.getScaledImageIcon("processes.png", 20, 20));
 		southPanel.add(processesButton);
 
@@ -115,18 +114,18 @@ class SystemInformationsButtonsPanel extends JPanel {
 			// pour Hudson/Jenkins sous Winstone, et surtout car (Winstone)Context.listBindings
 			// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
 
-			final JButton jndiButton = new JButton(I18N.getString("Arbre_JNDI"),
+			final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"),
 					ImageIconCache.getScaledImageIcon("jndi.png", 20, 20));
 			southPanel.add(jndiButton);
 		}
 
 		if (isDatabaseEnabled()) {
-			final JButton connectionsButton = new JButton(
+			final MButton connectionsButton = new MButton(
 					I18N.getString("Connexions_jdbc_ouvertes"), ImageIconCache.getScaledImageIcon(
 							"db.png", 20, 20));
 			southPanel.add(connectionsButton);
 
-			final JButton databaseButton = new JButton(I18N.getString("database"),
+			final MButton databaseButton = new MButton(I18N.getString("database"),
 					ImageIconCache.getScaledImageIcon("db.png", 20, 20));
 			southPanel.add(databaseButton);
 		}
