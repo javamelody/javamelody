@@ -71,7 +71,7 @@ public final class Main {
 		final CollectorServer collectorServer = new CollectorServer();
 		try {
 			// on attend que les données de test soient chargées
-			Thread.sleep(500);
+			Thread.sleep(1500);
 		} catch (final InterruptedException e) {
 			throw new RuntimeException(e); // NOPMD
 		}
@@ -80,8 +80,8 @@ public final class Main {
 				.getJavaInformationsByApplication("test");
 		final String collectorUrl = CollectorServer.getUrlsByApplication("test").get(0)
 				.toExternalForm();
-		final URL onlineHelpUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
-		final MainPanel contentPane = new MainPanel(collector, javaInformationsList, onlineHelpUrl);
+		final URL monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
+		final MainPanel contentPane = new MainPanel(collector, javaInformationsList, monitoringUrl);
 		frame.setContentPane(contentPane);
 		frame.setIconImage(ImageIconCache.getImageIcon("systemmonitor.png").getImage());
 		// définit la taille

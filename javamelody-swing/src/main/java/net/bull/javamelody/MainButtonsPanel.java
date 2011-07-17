@@ -22,10 +22,15 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -36,39 +41,75 @@ import javax.swing.JPanel;
 class MainButtonsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	MainButtonsPanel(final URL onlineHelpUrl) {
+	private final Collector collector;
+	private final List<JavaInformations> javaInformationsList;
+
+	MainButtonsPanel(final Collector collector, final List<JavaInformations> javaInformationsList,
+			final URL monitoringUrl) {
 		super();
+		this.collector = collector;
+		this.javaInformationsList = javaInformationsList;
 
 		setOpaque(false);
 		setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		final JButton refreshButton = new JButton(I18N.getString("Actualiser"),
+		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
 		refreshButton.setToolTipText(I18N.getString("Rafraichir"));
-		final JButton pdfButton = new JButton(I18N.getString("PDF"),
+		final MButton pdfButton = new MButton(I18N.getString("PDF"),
 				ImageIconCache.getImageIcon("pdf.png"));
 		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
-		final JButton onlineHelpButton = new JButton(I18N.getString("Aide_en_ligne"),
+		final MButton onlineHelpButton = new MButton(I18N.getString("Aide_en_ligne"),
 				ImageIconCache.getImageIcon("action_help.png"));
 		onlineHelpButton.setToolTipText(I18N.getString("Afficher_aide_en_ligne"));
+		// TODO traductions
+		final MButton monitoringButton = new MButton("Monitoring",
+				ImageIconCache.getScaledImageIcon("systemmonitor.png", 16, 16));
+		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
+				collector.getApplication()));
 		add(refreshButton);
 		add(pdfButton);
 		add(onlineHelpButton);
+		add(monitoringButton);
 		add(new JLabel("        " + I18N.getString("Choix_periode") + " : "));
 		for (final Period myPeriod : Period.values()) {
-			final JButton myPeriodButton = new JButton(myPeriod.getLinkLabel(),
+			final MButton myPeriodButton = new MButton(myPeriod.getLinkLabel(),
 					ImageIconCache.getImageIcon(myPeriod.getIconName()));
 			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode",
 					myPeriod.getLinkLabel()));
 			add(myPeriodButton);
 		}
 
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final Exception ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
+
+		monitoringButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI(monitoringUrl.toExternalForm()));
+				} catch (final Exception ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		});
+
 		onlineHelpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Desktop.getDesktop().browse(
-							new URI(onlineHelpUrl.toExternalForm() + "?resource="
+							new URI(monitoringUrl.toExternalForm() + "?resource="
 									+ I18N.getString("help_url")));
 				} catch (final Exception ex) {
 					// TODO Auto-generated catch block
@@ -76,5 +117,26 @@ class MainButtonsPanel extends JPanel {
 				}
 			}
 		});
+	}
+
+	void actionPdf() throws IOException {
+		// ici on prend un comportement similaire au serveur de collecte
+		// en ne mettant pas les requêtes en cours puisque de toute façon on n'a pas
+		// les données dans les counters
+		final boolean collectorServer = true;
+		// TODO récupérer range sélectionné
+		final Range range = Period.TOUT.getRange();
+		final File tempFile = new File(System.getProperty("java.io.tmpdir"),
+				PdfReport.getFileName(collector.getApplication()));
+		tempFile.deleteOnExit();
+		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		try {
+			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
+					javaInformationsList, range, output);
+			pdfReport.toPdf();
+		} finally {
+			output.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 }
