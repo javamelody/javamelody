@@ -34,7 +34,7 @@ import javax.swing.ScrollPaneConstants;
 class MainPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	MainPanel(Collector collector, List<JavaInformations> javaInformationsList, URL onlineHelpUrl)
+	MainPanel(Collector collector, List<JavaInformations> javaInformationsList, URL monitoringUrl)
 			throws IOException {
 		super();
 		setLayout(new BorderLayout());
@@ -46,7 +46,8 @@ class MainPanel extends JPanel {
 		//		southPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		southPanel.add(scrollPane, BorderLayout.CENTER);
 
-		add(new MainButtonsPanel(onlineHelpUrl), BorderLayout.NORTH);
+		add(new MainButtonsPanel(collector, javaInformationsList, monitoringUrl),
+				BorderLayout.NORTH);
 		add(southPanel, BorderLayout.CENTER);
 	}
 }
