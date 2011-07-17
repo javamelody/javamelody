@@ -117,22 +117,27 @@ class JavaInformationsPanel extends JPanel {
 			addLabel(I18N.getString("Host"));
 			final JLabel hostLabel = new JLabel(javaInformations.getHost());
 			hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
-			add(hostLabel);
+			gridPanel.add(hostLabel);
 		}
 		addLabel(I18N.getString("OS"));
-		//		final String osIconName = getOSIconName(javaInformations.getOS());
-		//		if (osIconName != null) {
-		//			writeln("<img src='?resource=servers/" + osIconName + "' alt='#OS#'/>");
-		//		}
-		//		writeln(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
-		//				+ " #coeurs#)" + columnEnd);
-		//		writeln("<tr><td>#Java#: </td><td>" + javaInformations.getJavaVersion() + columnEnd);
-		//		write("<tr><td>#JVM#: </td><td>" + javaInformations.getJvmVersion());
+		final String osIconName = HtmlJavaInformationsReport
+				.getOSIconName(javaInformations.getOS());
+		final JLabel osLabel = new JLabel(javaInformations.getOS() + " ("
+				+ javaInformations.getAvailableProcessors() + ' ' + I18N.getString("coeurs") + ')');
+		if (osIconName != null) {
+			osLabel.setIcon(ImageIconCache.getImageIcon("servers/" + osIconName));
+		}
+		gridPanel.add(osLabel);
+		addLabel(I18N.getString("Java"));
+		addValue(javaInformations.getJavaVersion());
+		addLabel(I18N.getString("JVM"));
+		addLabel(javaInformations.getJvmVersion());
+		// TODO
 		//		if (javaInformations.getJvmVersion().contains("Client")) {
 		//			write("&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"#Client_JVM#\" title=\"#Client_JVM#\"/>");
 		//		}
-		//		writeln(columnEnd);
-		//		writeln("<tr><td>#PID#: </td><td>" + javaInformations.getPID() + columnEnd);
+		addLabel(I18N.getString("PID"));
+		addValue(javaInformations.getPID());
 		//		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
 		//		if (unixOpenFileDescriptorCount >= 0) {
 		//			final long unixMaxFileDescriptorCount = javaInformations
@@ -144,33 +149,29 @@ class JavaInformationsPanel extends JPanel {
 		//			writeln(columnEnd);
 		//		}
 		//		writeServerInfoAndContextPath(javaInformations);
-		//		writeln("<tr><td>#Demarrage#: </td><td>"
-		//				+ I18N.createDateAndTimeFormat().format(javaInformations.getStartDate())
-		//				+ columnEnd);
-		//
-		//		write("<tr><td valign='top'>#Arguments_JVM#: </td><td>");
-		//		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
-		//		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), false) + columnEnd);
-		//		writeln("");
-		//
-		//		if (javaInformations.getSessionCount() >= 0) {
-		//			write("<tr><td>#httpSessionsMeanAge#: </td><td>");
-		//			writeGraph("httpSessionsMeanAge",
-		//					integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
-		//			writeln(columnEnd);
-		//		}
+		addLabel(I18N.getString("Demarrage"));
+		addValue(I18N.createDateAndTimeFormat().format(javaInformations.getStartDate()));
+		// TODO
+		//		addLabel(I18N.getString("Arguments_JVM"));
+		//		addValue("<html>" + javaInformations.getJvmArguments().replace("\n", "<br/>"));
+
+		if (javaInformations.getSessionCount() >= 0) {
+			addLabel(I18N.getString("httpSessionsMeanAge"));
+			// writeGraph("httpSessionsMeanAge", integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
+			addValue(integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
+		}
 		//
 		//		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 		//
 		//		writeMemoryInformations(javaInformations.getMemoryInformations());
-		//
-		//		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
-		//			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
-		//			writeln("<tr><td>#Free_disk_space#: </td><td>"
-		//					+ integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
-		//					+ " #Mo# " + columnEnd);
-		//		}
-		//
+
+		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
+			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
+			addLabel(I18N.getString("Free_disk_space"));
+			addValue(integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
+					+ ' ' + I18N.getString("Mo"));
+		}
+
 		//		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 		//
 		//		if (javaInformations.isDependenciesEnabled()) {
