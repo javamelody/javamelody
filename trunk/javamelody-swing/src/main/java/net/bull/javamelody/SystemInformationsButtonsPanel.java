@@ -40,11 +40,10 @@ class SystemInformationsButtonsPanel extends JPanel {
 	private final List<JavaInformations> javaInformationsList;
 
 	SystemInformationsButtonsPanel(List<JavaInformations> javaInformationsList) {
-		super();
+		super(new BorderLayout());
 		this.javaInformationsList = javaInformationsList;
 
 		setOpaque(false);
-		setLayout(new BorderLayout());
 
 		final JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		northPanel.setOpaque(false);
