@@ -92,7 +92,7 @@ class ScrollingPanel extends JPanel {
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<JavaInformationsPanel>(
 				list.size());
-		final JPanel westJavaInformationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		final JPanel westJavaInformationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		westJavaInformationsPanel.setOpaque(false);
 		for (final JavaInformations javaInformations : list) {
 			final JavaInformationsPanel javaInformationsPanel = new JavaInformationsPanel(
