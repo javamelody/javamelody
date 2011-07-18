@@ -46,12 +46,11 @@ class MainButtonsPanel extends JPanel {
 
 	MainButtonsPanel(final Collector collector, final List<JavaInformations> javaInformationsList,
 			final URL monitoringUrl) {
-		super();
+		super(new FlowLayout(FlowLayout.CENTER));
 		this.collector = collector;
 		this.javaInformationsList = javaInformationsList;
 
 		setOpaque(false);
-		setLayout(new FlowLayout(FlowLayout.CENTER));
 
 		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
