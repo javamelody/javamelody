@@ -64,10 +64,9 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private StatisticsPanel(Counter counter, Range range,
 			CounterRequestAggregation counterRequestAggregation) {
-		super();
+		super(new BorderLayout());
 
 		setOpaque(false);
-		setLayout(new BorderLayout());
 
 		this.counter = counter;
 		this.range = range;
@@ -244,7 +243,7 @@ class StatisticsPanel extends JPanel { // NOPMD
 		} else {
 			key = "Aucune_requete";
 		}
-		add(new JLabel(I18N.getString(key)), BorderLayout.CENTER);
+		add(new JLabel(' ' + I18N.getString(key)), BorderLayout.CENTER);
 		add(new JLabel(" "), BorderLayout.SOUTH);
 	}
 
