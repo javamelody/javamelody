@@ -34,6 +34,8 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.util.MSwingUtilities;
+
 /**
  * Panel des boutons principaux.
  * @author Emeric Vernat
@@ -41,8 +43,8 @@ import javax.swing.JPanel;
 class MainButtonsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private final Collector collector;
-	private final List<JavaInformations> javaInformationsList;
+	private final transient Collector collector;
+	private final transient List<JavaInformations> javaInformationsList;
 
 	MainButtonsPanel(final Collector collector, final List<JavaInformations> javaInformationsList,
 			final URL monitoringUrl) {
@@ -85,8 +87,7 @@ class MainButtonsPanel extends JPanel {
 				try {
 					actionPdf();
 				} catch (final Exception ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					MSwingUtilities.showException(ex);
 				}
 			}
 		});
@@ -97,8 +98,7 @@ class MainButtonsPanel extends JPanel {
 				try {
 					Desktop.getDesktop().browse(new URI(monitoringUrl.toExternalForm()));
 				} catch (final Exception ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					MSwingUtilities.showException(ex);
 				}
 			}
 		});
@@ -111,8 +111,7 @@ class MainButtonsPanel extends JPanel {
 							new URI(monitoringUrl.toExternalForm() + "?resource="
 									+ I18N.getString("help_url")));
 				} catch (final Exception ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					MSwingUtilities.showException(ex);
 				}
 			}
 		});
