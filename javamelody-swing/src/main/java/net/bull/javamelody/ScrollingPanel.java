@@ -25,6 +25,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,14 +50,16 @@ class ScrollingPanel extends JPanel {
 	private final Collector collector;
 	@SuppressWarnings("all")
 	private final List<JavaInformations> javaInformationsList;
+	private final URL monitoringUrl;
 	// TODO range selon sélection (jour par défaut)
 	private final Range range = Period.TOUT.getRange();
 
-	ScrollingPanel(Collector collector, List<JavaInformations> javaInformationsList)
-			throws IOException {
+	ScrollingPanel(Collector collector, List<JavaInformations> javaInformationsList,
+			URL monitoringUrl) throws IOException {
 		super();
 		this.collector = collector;
 		this.javaInformationsList = javaInformationsList;
+		this.monitoringUrl = monitoringUrl;
 
 		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -88,7 +91,7 @@ class ScrollingPanel extends JPanel {
 	private void addSystemInformations() {
 		addParagraphTitle(I18N.getString("Informations_systemes"), "systeminfo.png");
 		final List<JavaInformations> list = javaInformationsList;
-		add(new SystemInformationsButtonsPanel(list));
+		add(new SystemInformationsButtonsPanel(list, monitoringUrl));
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<JavaInformationsPanel>(
 				list.size());
@@ -96,7 +99,7 @@ class ScrollingPanel extends JPanel {
 		westJavaInformationsPanel.setOpaque(false);
 		for (final JavaInformations javaInformations : list) {
 			final JavaInformationsPanel javaInformationsPanel = new JavaInformationsPanel(
-					javaInformations);
+					javaInformations, monitoringUrl);
 			javaInformationsPanel.showSummary();
 			javaInformationsPanelList.add(javaInformationsPanel);
 			westJavaInformationsPanel.add(javaInformationsPanel);
@@ -109,6 +112,7 @@ class ScrollingPanel extends JPanel {
 				final boolean repeatHost = list.size() > 1;
 				for (final JavaInformationsPanel javaInformationsPanel : javaInformationsPanelList) {
 					javaInformationsPanel.showDetails(repeatHost);
+					javaInformationsPanel.validate();
 				}
 				if (javaInformationsDetailsButton.getIcon() == PLUS_ICON) {
 					javaInformationsDetailsButton.setIcon(MINUS_ICON);
