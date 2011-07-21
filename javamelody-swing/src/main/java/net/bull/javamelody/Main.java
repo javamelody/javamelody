@@ -24,11 +24,11 @@ import java.net.URL;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import net.bull.javamelody.util.MSwingUtilities;
 import net.bull.javamelody.util.ShadowPopupFactory;
 
 /**
@@ -55,8 +55,7 @@ public final class Main {
 					// affichage de la frame dans le thread AWT
 					showFrame();
 				} catch (final Throwable t) { // NOPMD
-					t.printStackTrace();
-					JOptionPane.showMessageDialog(null, t.toString());
+					MSwingUtilities.showException(t);
 					System.exit(1); // NOPMD
 				}
 			}
