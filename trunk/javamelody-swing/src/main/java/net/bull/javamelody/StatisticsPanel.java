@@ -232,6 +232,7 @@ class StatisticsPanel extends JPanel { // NOPMD
 			add(detailsPanel, BorderLayout.SOUTH);
 		}
 		detailsPanel.setVisible(!detailsPanel.isVisible());
+		detailsPanel.validate();
 	}
 
 	private void addNoRequests() {
