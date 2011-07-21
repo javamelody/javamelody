@@ -19,14 +19,27 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+
+import net.bull.javamelody.util.MSwingUtilities;
+import net.bull.javamelody.util.SpringUtilities;
 
 import com.lowagie.text.Font;
 
@@ -35,18 +48,23 @@ import com.lowagie.text.Font;
  * @author Emeric Vernat
  */
 class JavaInformationsPanel extends JPanel {
+	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
+	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+
 	private static final long serialVersionUID = 1L;
 
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final JavaInformations javaInformations;
+	private final URL monitoringUrl;
 	private final JPanel gridPanel;
 	private JavaInformationsPanel detailsPanel;
 
-	JavaInformationsPanel(JavaInformations javaInformations) {
+	JavaInformationsPanel(JavaInformations javaInformations, URL monitoringUrl) {
 		super(new BorderLayout());
 		this.javaInformations = javaInformations;
+		this.monitoringUrl = monitoringUrl;
 		setOpaque(false);
 		gridPanel = new JPanel(new SpringLayout());
 		gridPanel.setOpaque(false);
@@ -57,7 +75,7 @@ class JavaInformationsPanel extends JPanel {
 		addLabel(I18N.getString("Host"));
 		final JLabel hostLabel = new JLabel(javaInformations.getHost());
 		hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
-		gridPanel.add(hostLabel);
+		addJLabel(hostLabel);
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
 		final long maxMemory = memoryInformations.getMaxMemory();
@@ -105,7 +123,7 @@ class JavaInformationsPanel extends JPanel {
 		if (detailsPanel != null) {
 			detailsPanel.setVisible(!detailsPanel.isVisible());
 		} else {
-			detailsPanel = new JavaInformationsPanel(javaInformations);
+			detailsPanel = new JavaInformationsPanel(javaInformations, monitoringUrl);
 			detailsPanel.addDetails(repeatHost);
 			add(detailsPanel, BorderLayout.SOUTH);
 			// sans cela, le panel n'apparaît pas la première fois
@@ -119,7 +137,7 @@ class JavaInformationsPanel extends JPanel {
 			addLabel(I18N.getString("Host"));
 			final JLabel hostLabel = new JLabel(javaInformations.getHost());
 			hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
-			gridPanel.add(hostLabel);
+			addJLabel(hostLabel);
 		}
 		addLabel(I18N.getString("OS"));
 		final String osIconName = HtmlJavaInformationsReport
@@ -129,15 +147,17 @@ class JavaInformationsPanel extends JPanel {
 		if (osIconName != null) {
 			osLabel.setIcon(ImageIconCache.getImageIcon("servers/" + osIconName));
 		}
-		gridPanel.add(osLabel);
+		addJLabel(osLabel);
 		addLabel(I18N.getString("Java"));
 		addValue(javaInformations.getJavaVersion());
 		addLabel(I18N.getString("JVM"));
-		addLabel(javaInformations.getJvmVersion());
-		// TODO
-		//		if (javaInformations.getJvmVersion().contains("Client")) {
-		//			write("&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"#Client_JVM#\" title=\"#Client_JVM#\"/>");
-		//		}
+		final JLabel jvmVersionLabel = new JLabel(javaInformations.getJvmVersion());
+		if (javaInformations.getJvmVersion().contains("Client")) {
+			jvmVersionLabel.setIcon(ImageIconCache.getImageIcon("alert.png"));
+			jvmVersionLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+			jvmVersionLabel.setToolTipText(I18N.getString("Client_JVM"));
+		}
+		addJLabel(jvmVersionLabel);
 		addLabel(I18N.getString("PID"));
 		addValue(javaInformations.getPID());
 		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
@@ -193,7 +213,7 @@ class JavaInformationsPanel extends JPanel {
 				serverInfoLabel.setIcon(ImageIconCache.getImageIcon("servers/"
 						+ applicationServerIconName));
 			}
-			gridPanel.add(serverInfoLabel);
+			addJLabel(serverInfoLabel);
 			addLabel(I18N.getString("Contexte_webapp"));
 			addValue(javaInformations.getContextPath());
 		}
@@ -207,8 +227,23 @@ class JavaInformationsPanel extends JPanel {
 		if (javaInformations.getDataSourceDetails() != null) {
 			addLabel(I18N.getString("DataSource_jdbc"));
 			addValue(javaInformations.getDataSourceDetails());
-			//					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
-			//					+ " class='noPrint' target='_blank'>DataSource reference</a>");
+			addLabel("");
+			final JLabel dataSourceReferenceLabel = new JLabel("DataSource reference");
+			dataSourceReferenceLabel.setForeground(Color.BLUE.darker());
+			dataSourceReferenceLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			dataSourceReferenceLabel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					try {
+						Desktop.getDesktop()
+								.browse(new URI(
+										"http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html"));
+					} catch (final Exception ex) {
+						MSwingUtilities.showException(ex);
+					}
+				}
+			});
+			gridPanel.add(dataSourceReferenceLabel);
 		}
 	}
 
@@ -278,20 +313,54 @@ class JavaInformationsPanel extends JPanel {
 
 	private void writeDependencies() {
 		final int nbDependencies = javaInformations.getDependenciesList().size();
-		addValue(I18N.getFormattedString("nb_dependencies", nbDependencies));
+		final JPanel panel = new JPanel(new BorderLayout());
+		panel.setOpaque(false);
+		final JLabel nbDependenciesLabel = new JLabel(I18N.getFormattedString("nb_dependencies",
+				nbDependencies));
+		panel.add(nbDependenciesLabel, BorderLayout.CENTER);
 		if (nbDependencies > 0) {
-			//			writeln(" ; &nbsp;&nbsp;&nbsp;");
-			//			writeShowHideLink("detailsDependencies" + uniqueByPageSequence, "#Details#");
-			//			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
-			//				writeln("&nbsp;&nbsp;&nbsp;<a href='?part=pom.xml' class='noPrint'>");
-			//				writeln("<img src='?resource=xml.png' width='14' height='14' alt=\"#pom.xml#\"/> #pom.xml#</a>");
-			//			}
-			//			writeln("<br/>");
-			//			writeln("<div id='detailsDependencies" + uniqueByPageSequence
-			//					+ "' style='display: none;'><div>");
-			//			writeln(replaceEolWithBr(javaInformations.getDependencies()));
-			//			writeln("</div></div>");
+			nbDependenciesLabel.setText(nbDependenciesLabel.getText() + " ; ");
+			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			panel.add(detailsButton, BorderLayout.EAST);
+			final JLabel dependenciesLabel = new JLabel("<html>"
+					+ javaInformations.getDependencies().replace("\n", "<br/>"));
+			final JPanel dependendiesDetailsPanel = new JPanel(new BorderLayout());
+			panel.add(dependendiesDetailsPanel, BorderLayout.SOUTH);
+			dependendiesDetailsPanel.setVisible(false);
+			dependendiesDetailsPanel.setOpaque(false);
+			dependendiesDetailsPanel.add(dependenciesLabel, BorderLayout.NORTH);
+			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
+				final MButton pomXmlButton = new MButton(I18N.getString("pom.xml"),
+						ImageIconCache.getScaledImageIcon("xml.png", 14, 14));
+				dependendiesDetailsPanel.add(pomXmlButton, BorderLayout.WEST);
+				dependendiesDetailsPanel.add(new JLabel(""), BorderLayout.CENTER);
+				pomXmlButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Desktop.getDesktop().browse(
+									new URI(getMonitoringUrl().toExternalForm() + "?part=pom.xml"));
+						} catch (final Exception ex) {
+							MSwingUtilities.showException(ex);
+						}
+					}
+				});
+			}
+			final JPanel localGridPanel = gridPanel;
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dependendiesDetailsPanel.setVisible(!dependendiesDetailsPanel.isVisible());
+					localGridPanel.validate();
+					if (detailsButton.getIcon() == PLUS_ICON) {
+						detailsButton.setIcon(MINUS_ICON);
+					} else {
+						detailsButton.setIcon(PLUS_ICON);
+					}
+				}
+			});
 		}
+		gridPanel.add(panel);
 	}
 
 	private void makeGrid() {
@@ -307,7 +376,7 @@ class JavaInformationsPanel extends JPanel {
 		}
 		final JLabel label = new JLabel(tmp + ": ");
 		label.setVerticalAlignment(SwingConstants.TOP);
-		gridPanel.add(label);
+		addJLabel(label);
 	}
 
 	private void addValue(String value) {
@@ -316,6 +385,14 @@ class JavaInformationsPanel extends JPanel {
 			// JLabel accepte la syntaxe html
 			tmp = "<html>" + tmp.replace("\n", "<br/>");
 		}
-		gridPanel.add(new JLabel(tmp));
+		addJLabel(new JLabel(tmp));
+	}
+
+	private void addJLabel(JLabel jLabel) {
+		gridPanel.add(jLabel);
+	}
+
+	URL getMonitoringUrl() {
+		return monitoringUrl;
 	}
 }
