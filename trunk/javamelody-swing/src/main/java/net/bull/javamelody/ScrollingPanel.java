@@ -91,7 +91,10 @@ class ScrollingPanel extends JPanel {
 	private void addSystemInformations() {
 		addParagraphTitle(I18N.getString("Informations_systemes"), "systeminfo.png");
 		final List<JavaInformations> list = javaInformationsList;
-		add(new SystemInformationsButtonsPanel(list, monitoringUrl));
+		// TODO mettre propriété système system-actions-enabled dans jnlp
+		if (Parameters.isSystemActionsEnabled()) {
+			add(new SystemInformationsButtonsPanel(list, monitoringUrl));
+		}
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<JavaInformationsPanel>(
 				list.size());
