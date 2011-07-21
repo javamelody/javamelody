@@ -23,6 +23,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
+import net.bull.javamelody.util.MSwingUtilities;
+
 /**
  * Bouton.
  * @author Emeric Vernat
@@ -71,9 +73,8 @@ public class MButton extends JButton {
 			} finally {
 				waitCursor.restore();
 			}
-		} catch (final Exception e) {
-			// TODO afficher les erreurs y compris Runtime (pas d'exception handler global)
-			e.printStackTrace();
+		} catch (final Throwable t) { // NOPMD
+			MSwingUtilities.showException(t);
 		}
 	}
 }
