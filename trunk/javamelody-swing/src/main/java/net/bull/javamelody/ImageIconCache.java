@@ -18,15 +18,13 @@
  */
 package net.bull.javamelody;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
+
+import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Cache d'objets ImageIcon.
@@ -76,42 +74,6 @@ public final class ImageIconCache {
 	 * @return ImageIcon
 	 */
 	public static ImageIcon getScaledImageIcon(String fileName, int targetWidth, int targetHeight) {
-		return getScaledInstance(getImageIcon(fileName), targetWidth, targetHeight);
-	}
-
-	/**
-	 * Redimensionne une ImageIcon.
-	 * @param icon ImageIcon
-	 * @param targetWidth int
-	 * @param targetHeight int
-	 * @return ImageIcon
-	 */
-	public static ImageIcon getScaledInstance(ImageIcon icon, int targetWidth, int targetHeight) {
-		return new ImageIcon(getScaledInstance(icon.getImage(), targetWidth, targetHeight));
-	}
-
-	/**
-	 * Redimensionne une image.
-	 * @param img Image
-	 * @param targetWidth int
-	 * @param targetHeight int
-	 * @return Image
-	 */
-	public static Image getScaledInstance(Image img, int targetWidth, int targetHeight) {
-		final int type = BufferedImage.TYPE_INT_ARGB;
-		Image ret = img;
-		final int width = ret.getWidth(null);
-		final int height = ret.getHeight(null);
-		if (width != targetWidth && height != targetHeight) {
-			// a priori plus performant que Image.getScaledInstance
-			final BufferedImage scratchImage = new BufferedImage(targetWidth, targetHeight, type);
-			final Graphics2D g2 = scratchImage.createGraphics();
-			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g2.drawImage(ret, 0, 0, targetWidth, targetHeight, 0, 0, width, height, null);
-			g2.dispose();
-			ret = scratchImage;
-		}
-		return ret;
+		return MSwingUtilities.getScaledInstance(getImageIcon(fileName), targetWidth, targetHeight);
 	}
 }
