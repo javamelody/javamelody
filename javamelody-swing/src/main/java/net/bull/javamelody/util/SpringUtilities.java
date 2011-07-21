@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.bull.javamelody;
+package net.bull.javamelody.util;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -45,7 +45,7 @@ import javax.swing.SpringLayout;
  * These utilities are used by several programs, such as
  * SpringBox and SpringCompactGrid.
  */
-final class SpringUtilities {
+public final class SpringUtilities {
 	private SpringUtilities() {
 		super();
 	}
