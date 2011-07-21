@@ -37,7 +37,8 @@ class MainPanel extends JPanel {
 	MainPanel(Collector collector, List<JavaInformations> javaInformationsList, URL monitoringUrl)
 			throws IOException {
 		super(new BorderLayout());
-		final ScrollingPanel scrollingPanel = new ScrollingPanel(collector, javaInformationsList);
+		final ScrollingPanel scrollingPanel = new ScrollingPanel(collector, javaInformationsList,
+				monitoringUrl);
 		final JScrollPane scrollPane = new JScrollPane(scrollingPanel);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);

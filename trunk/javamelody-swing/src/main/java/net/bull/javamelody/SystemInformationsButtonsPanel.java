@@ -19,15 +19,20 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
+import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des boutons principaux.
@@ -38,10 +43,12 @@ class SystemInformationsButtonsPanel extends JPanel {
 
 	@SuppressWarnings("all")
 	private final List<JavaInformations> javaInformationsList;
+	private final URL monitoringUrl;
 
-	SystemInformationsButtonsPanel(List<JavaInformations> javaInformationsList) {
+	SystemInformationsButtonsPanel(List<JavaInformations> javaInformationsList, URL monitoringUrl) {
 		super(new BorderLayout());
 		this.javaInformationsList = javaInformationsList;
+		this.monitoringUrl = monitoringUrl;
 
 		setOpaque(false);
 
@@ -97,6 +104,17 @@ class SystemInformationsButtonsPanel extends JPanel {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
 			final MButton webXmlButton = new MButton(I18N.getString("web.xml"),
 					ImageIconCache.getScaledImageIcon("xml.png", 20, 20));
+			webXmlButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						Desktop.getDesktop().browse(
+								new URI(getMonitoringUrl().toExternalForm() + "?part=web.xml"));
+					} catch (final Exception ex) {
+						MSwingUtilities.showException(ex);
+					}
+				}
+			});
 			southPanel.add(webXmlButton);
 		}
 
@@ -150,5 +168,9 @@ class SystemInformationsButtonsPanel extends JPanel {
 		return JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(this), message,
 				UIManager.getString("OptionPane.titleText"), JOptionPane.YES_OPTION
 						| JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
+	}
+
+	URL getMonitoringUrl() {
+		return monitoringUrl;
 	}
 }
