@@ -24,6 +24,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 
 import net.bull.javamelody.util.MSwingUtilities;
+import net.bull.javamelody.util.MWaitCursor;
 
 /**
  * Bouton.
