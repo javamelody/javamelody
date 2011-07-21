@@ -54,15 +54,15 @@ public final class ShadowPopupFactory extends PopupFactory {
 	 * shadow effect. The two following constants define the names of
 	 * these client properties.
 	 */
-	static final String PROP_HORIZONTAL_BACKGROUND = "sae.hShadowBg";
-	static final String PROP_VERTICAL_BACKGROUND = "sae.vShadowBg";
+	static final String PROP_HORIZONTAL_BACKGROUND = "hShadowBg";
+	static final String PROP_VERTICAL_BACKGROUND = "vShadowBg";
 
 	/**
 	 * The 'scratch pad' objects used to calculate dirty regions of
 	 * the screen snapshots.
 	 */
-	private static final Point POINT = new Point();
-	private static final Rectangle RECT = new Rectangle();
+	static final Point POINT = new Point();
+	static final Rectangle RECT = new Rectangle();
 
 	/**
 	 * The PopupFactory used before this PopupFactory has been installed
@@ -531,7 +531,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 		 * The drop shadow is created from a PNG image with 8 bit alpha channel.
 		 */
 		private static final Image SHADOW = new ImageIcon(
-				ShadowPopupBorder.class.getResource("/img/shadow.png")).getImage();
+				ShadowPopupBorder.class.getResource("/icons/shadow.png")).getImage();
 
 		// Instance Creation *****************************************************
 

@@ -20,29 +20,62 @@ package net.bull.javamelody.table;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import net.bull.javamelody.print.MClipboardPrinter;
+
 /**
- * Composant Table, qui utilise une API typée pour la liste des valeurs et qui utilise les String (enum) pour définir les valeurs dans les colonnes.
+ * Composant Table, qui utilise une API typée pour la liste des valeurs et qui utilise les String pour définir les valeurs dans les colonnes.
  *
  * @param <T>
  *           Type des valeurs de la liste
  * @author Emeric Vernat
  */
 public class MTable<T> extends MListTable<T> {
-	// TODO étudier l'intérêt d'utiliser JXTable de SwingX (malgré l'abandon du projet par Oracle?)
-	// et si oui remplacer cette implémentation
-
 	static final Color BICOLOR_LINE = Color.decode("#E7E7E7");
 
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("all")
+	private static final KeyAdapter CLIPBOARD_KEY_LISTENER = new KeyAdapter() {
+		@Override
+		public void keyPressed(final KeyEvent event) {
+			if (event.getSource() instanceof MTable) {
+				final MTable<?> table = (MTable<?>) event.getSource();
+				final int keyCode = event.getKeyCode();
+				final int modifiers = event.getModifiers();
+				if ((modifiers & java.awt.Event.CTRL_MASK) != 0 && keyCode == KeyEvent.VK_C) {
+					event.consume();
+					new MClipboardPrinter().print(table, null);
+				}
+			}
+		}
+	};
+
+	@SuppressWarnings("all")
+	private static final MouseAdapter POPUP_MENU_MOUSE_LISTENER = new MouseAdapter() {
+		@Override
+		public void mouseReleased(final MouseEvent event) {
+			if (event.isPopupTrigger() || SwingUtilities.isRightMouseButton(event)) {
+				POPUP_MENU.showForTable((MBasicTable) event.getComponent(), event.getX(),
+						event.getY());
+			}
+		}
+	};
+
+	private static final TablePopupMenu POPUP_MENU = new TablePopupMenu();
+
 	/**
-	 * Constructeur.
-	 */
+	* Constructeur.
+	*/
 	public MTable() {
 		// on utilise le modèle par défaut créé par la méthode createDefaultDataModel() ci-dessus
 		this(null);
@@ -63,6 +96,11 @@ public class MTable<T> extends MListTable<T> {
 		setAutoCreateRowSorter(true);
 		// fond de couleur blanc (plutôt que gris en look and feel Nimbus ; utile pour le rendu des cases à cocher dans le tableau)
 		setBackground(Color.WHITE);
+		// listener pour surcharger la copie dans presse-papier (format pour Excel et non format par défaut de Swing)
+		addKeyListener(CLIPBOARD_KEY_LISTENER);
+		// listener pour afficher le popup menu
+		addMouseListener(POPUP_MENU_MOUSE_LISTENER);
+		add(POPUP_MENU);
 	}
 
 	@Override

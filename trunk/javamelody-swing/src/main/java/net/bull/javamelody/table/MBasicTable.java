@@ -270,7 +270,7 @@ public class MBasicTable extends JTable {
 	 * @param column
 	 *           int
 	 */
-	String getTextAt(final int row, final int column) {
+	public String getTextAt(final int row, final int column) {
 		final Object value = getValueAt(row, column);
 
 		String text = "";
