@@ -61,10 +61,17 @@ public class MTableModel<T> extends MListTableModel<T> {
 		// la valeur affichée dans la cellule est le résultat de l'appel
 		// à la méthode "get" + Identifier sur l'objet
 		try {
-			// le getter pour un attribut commence par "get" selon la convention de nommage
-			final Method method = object.getClass().getDeclaredMethod(
-					"get" + Character.toUpperCase(identifier.charAt(0)) + identifier.substring(1),
-					(Class<?>[]) null);
+			// le getter pour un attribut commence par "get" ou "is" selon la convention de nommage
+			final String upperFirstIdentifier = Character.toUpperCase(identifier.charAt(0))
+					+ identifier.substring(1);
+			Method method;
+			try {
+				method = object.getClass().getDeclaredMethod("get" + upperFirstIdentifier,
+						(Class<?>[]) null);
+			} catch (final NoSuchMethodException e) {
+				method = object.getClass().getDeclaredMethod("is" + upperFirstIdentifier,
+						(Class<?>[]) null);
+			}
 			// la méthode n'est pas forcément public dans notre cas
 			method.setAccessible(true);
 			return method.invoke(object, (Object[]) null);
