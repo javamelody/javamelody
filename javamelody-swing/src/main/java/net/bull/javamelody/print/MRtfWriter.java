@@ -41,7 +41,7 @@ import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
 
 /**
  * Objet d'impression/export pour Rtf (portrait ou paysage) en utilisant iText-RTF.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MRtfWriter extends MPdfWriter {
@@ -53,7 +53,7 @@ public class MRtfWriter extends MPdfWriter {
 
 	/**
 	 * Objet d'impression/export pour Rtf paysage.
-	 * 
+	 *
 	 * @author Emeric Vernat
 	 */
 	public static class LandscapeRtfWriter extends MRtfWriter {
@@ -72,7 +72,7 @@ public class MRtfWriter extends MPdfWriter {
 
 	/**
 	 * Constructeur avec booléen selon que format Portrait (false) ou Paysage (true).
-	 * 
+	 *
 	 * @param landscape
 	 *           boolean
 	 */
@@ -82,7 +82,7 @@ public class MRtfWriter extends MPdfWriter {
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer l'extension du fichier exporté.
-	 * 
+	 *
 	 * @return String
 	 */
 	@Override
@@ -92,7 +92,7 @@ public class MRtfWriter extends MPdfWriter {
 
 	/**
 	 * Implémentation de méthode abstraite : renvoye l'icône représentant le type.
-	 * 
+	 *
 	 * @return Icon
 	 */
 	@Override
@@ -102,7 +102,7 @@ public class MRtfWriter extends MPdfWriter {
 
 	/**
 	 * Implémentation de méthode abstraite : renvoie le nom.
-	 * 
+	 *
 	 * @return String
 	 */
 	@Override
@@ -112,7 +112,7 @@ public class MRtfWriter extends MPdfWriter {
 
 	/**
 	 * We create a writer that listens to the document and directs a RTF-stream to out
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param document

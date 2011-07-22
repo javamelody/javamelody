@@ -32,7 +32,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Advanced page number x/y events.
- * 
+ *
  * @author Emeric Vernat
  */
 class AdvancedPageNumberEvents extends PdfPageEventHelper {
@@ -47,7 +47,7 @@ class AdvancedPageNumberEvents extends PdfPageEventHelper {
 
 	/**
 	 * we override the onGenericTag method.
-	 * 
+	 *
 	 * @param writer
 	 *           PdfWriter
 	 * @param document
@@ -65,7 +65,7 @@ class AdvancedPageNumberEvents extends PdfPageEventHelper {
 
 	/**
 	 * we override the onOpenDocument method.
-	 * 
+	 *
 	 * @param writer
 	 *           PdfWriter
 	 * @param document
@@ -86,7 +86,7 @@ class AdvancedPageNumberEvents extends PdfPageEventHelper {
 
 	/**
 	 * we override the onChapter method.
-	 * 
+	 *
 	 * @param writer
 	 *           PdfWriter
 	 * @param document
@@ -104,7 +104,7 @@ class AdvancedPageNumberEvents extends PdfPageEventHelper {
 
 	/**
 	 * we override the onEndPage method.
-	 * 
+	 *
 	 * @param writer
 	 *           PdfWriter
 	 * @param document
@@ -126,7 +126,7 @@ class AdvancedPageNumberEvents extends PdfPageEventHelper {
 
 	/**
 	 * we override the onCloseDocument method.
-	 * 
+	 *
 	 * @param writer
 	 *           PdfWriter
 	 * @param document
