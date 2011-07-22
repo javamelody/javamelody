@@ -18,14 +18,28 @@
  */
 package net.bull.javamelody.util;
 
+import java.awt.AWTEvent;
+import java.awt.AWTException;
+import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import javax.swing.FocusManager;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 /**
  * Classe utilitaire pour Swing.
@@ -45,6 +59,123 @@ public final class MSwingUtilities {
 		JOptionPane.showMessageDialog(null, throwable.toString(),
 				UIManager.getString("OptionPane.messageDialogTitle"), JOptionPane.ERROR_MESSAGE);
 		// on pourrait affichage une boîte de dialogue plus évoluée pour permettre d'afficher la stack trace en détail
+	}
+
+	/**
+	 * Retourne l'instance courante de la classe componentClass contenant l'élément component. <br/>
+	 * Cette méthode peut-être très utile pour récupérer une référence à un parent éloigné (ancêtre), en l'absence de référence directe du type attribut.
+	 * 
+	 * <br/>
+	 * Ex : un composant panel désire une référence sur sa JFrame parente, alors l'instruction suivante suffit : getAncestorOfClass(JFrame.class, panel)
+	 * 
+	 * @return Component
+	 * @param <Type>
+	 *           le type du composant recherché
+	 * @param componentClass
+	 *           Class
+	 * @param component
+	 *           Component
+	 */
+	@SuppressWarnings("unchecked")
+	public static <Type> Type getAncestorOfClass(final Class<Type> componentClass,
+			final Component component) {
+		return (Type) SwingUtilities.getAncestorOfClass(componentClass, component);
+	}
+
+	/**
+	 * Retourne le focusOwner permanent.<br/>
+	 * Le focusOwner permanent est défini comme le dernier Component à avoir reçu un événement FOCUS_GAINED permanent.<br/>
+	 * Le focusOwner et le focusOwner permanent sont équivalent sauf si un changement temporaire de focus<br/>
+	 * est en cours. Si c'est le cas, le focusOwner permanent redeviendra &galement<br/>
+	 * le focusOwner à la fin de ce changement de focus temporaire.
+	 * 
+	 * @return Component
+	 */
+	public static Component getPermanentFocusOwner() {
+		// return new DefaultKeyboardFocusManager().getPermanentFocusOwner();
+		return FocusManager.getCurrentManager().getPermanentFocusOwner();
+	}
+
+	/**
+	 * Retourne la fenêtre possédant le focus.
+	 * 
+	 * @return Component
+	 */
+	public static Window getFocusedWindow() {
+		// return new DefaultKeyboardFocusManager().getFocusedWindow();
+		return FocusManager.getCurrentManager().getFocusedWindow();
+	}
+
+	/**
+	 * Démarre un composant dans une Frame (utile pour écrire des méthodes main sur des panels en développement).
+	 * 
+	 * @param component
+	 *           JComponent
+	 * @return la Frame créée
+	 */
+	public static JFrame run(final JComponent component) {
+		final JFrame frame = new JFrame();
+		try {
+			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			component.setOpaque(true); // si opaque false, il y a des pbs de paint
+			frame.setContentPane(component);
+			frame.setTitle(component.getClass().getName());
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+		} catch (final Exception exception) {
+			exception.printStackTrace(System.err); // NOPMD
+		}
+		return frame;
+	}
+
+	/**
+	 * Démarre un composant dans une Frame sans pack() (utile pour écrire des méthodes main sur des panels en développement).
+	 * 
+	 * @param component
+	 *           JComponent
+	 * @return la Frame créée
+	 */
+	public static JFrame runUnpacked(final JComponent component) {
+		component.setPreferredSize(component.getSize());
+		return run(component);
+	}
+
+	/**
+	 * Initialisation d'événements sur la touche Escape pour fermer les dialogues.
+	 */
+	public static void initEscapeClosesDialogs() {
+		final AWTEventListener awtEventListener = new AWTEventListener() {
+			/** {@inheritDoc} */
+			@Override
+			public void eventDispatched(final AWTEvent event) {
+				if (event instanceof KeyEvent
+						&& ((KeyEvent) event).getKeyCode() == KeyEvent.VK_ESCAPE
+						&& event.getID() == KeyEvent.KEY_PRESSED) {
+					escapePressed();
+				}
+			}
+		};
+		Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.KEY_EVENT_MASK);
+	}
+
+	/**
+	 * La touche Esc a été pressée : fermer la dialogue modale ouverte.
+	 */
+	private static void escapePressed() {
+		final Component focusOwner = getPermanentFocusOwner();
+		final Window focusedWindow = SwingUtilities.getWindowAncestor(focusOwner);
+		if (focusedWindow instanceof Dialog && ((Dialog) focusedWindow).isModal()) {
+			try {
+				final Robot robot = new Robot();
+				robot.keyPress(KeyEvent.VK_ALT);
+				robot.keyPress(KeyEvent.VK_F4);
+				robot.keyRelease(KeyEvent.VK_F4);
+				robot.keyRelease(KeyEvent.VK_ALT);
+			} catch (final AWTException e) {
+				throw new IllegalStateException(e);
+			}
+		}
 	}
 
 	/**
