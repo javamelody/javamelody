@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Popup menu des tables.
- * 
+ *
  * @author Emeric Vernat
  */
 class TablePopupMenu extends JPopupMenu {
@@ -76,7 +76,7 @@ class TablePopupMenu extends JPopupMenu {
 
 	/**
 	 * Retourne la liste des objets d'export / impression.
-	 * 
+	 *
 	 * @return List
 	 */
 	private List<MPrinter> getPrinters() {
@@ -114,7 +114,7 @@ class TablePopupMenu extends JPopupMenu {
 
 	/**
 	 * Affiche la popup pour la table en paramètre à la position x / y.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param x
