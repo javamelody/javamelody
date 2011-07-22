@@ -34,6 +34,8 @@ import javax.swing.ScrollPaneConstants;
 class MainPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
+	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
+
 	MainPanel(Collector collector, List<JavaInformations> javaInformationsList, URL monitoringUrl)
 			throws IOException {
 		super(new BorderLayout());
