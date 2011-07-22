@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 /**
  * Encodage de chaines au format HTML.
- * 
+ *
  * @author Emeric Vernat
  */
 final class MHtmlEncoder {
@@ -38,7 +38,7 @@ final class MHtmlEncoder {
 
 	/**
 	 * Initialisation de la classe. 1) tri de la liste de caracteres speciaux 2) generation des tables de remplacement
-	 * 
+	 *
 	 * @formatter:off
 	 */
 	static {
@@ -97,7 +97,7 @@ final class MHtmlEncoder {
 
 	/**
 	 * Retourne une chaine encodée.
-	 * 
+	 *
 	 * @return String Chaine encodée
 	 * @param s
 	 *           String Chaine à encoder
@@ -113,7 +113,7 @@ final class MHtmlEncoder {
 
 	/**
 	 * Append une chaine à un StringBuilder apres l'avoir encodée. Plus la chaine à encoder est longue, plus les gains de perfs sont sensibles.
-	 * 
+	 *
 	 * @param sb
 	 *           String StringBuilder à appender.
 	 * @param s

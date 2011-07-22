@@ -10,11 +10,11 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  * A convenience implementation of FileFilter that filters out all files except for those type extensions that it knows about.
- * 
+ *
  * Extensions are of the type ".foo", which is typically found on Windows and Unix boxes, but not on Macinthosh. Case is ignored.
- * 
+ *
  * Example - create a new filter that filters out all files but gif and jpg image files:
- * 
+ *
  * <code>
  *     JFileChooser chooser = new JFileChooser();
  *     MExtensionFileFilter filter = new MExtensionFileFilter(
@@ -22,7 +22,7 @@ import javax.swing.filechooser.FileFilter;
  *     chooser.addChoosableFileFilter(filter);
  *     chooser.showOpenDialog(this);
  * </code>
- * 
+ *
  * @author Jeff Dinkins, Sun
  */
 public class MExtensionFileFilter extends FileFilter {
@@ -36,7 +36,7 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Creates a file filter. If no filters are added, then all files are accepted.
-	 * 
+	 *
 	 * @see #addExtension
 	 */
 	public MExtensionFileFilter() {
@@ -46,9 +46,9 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Creates a file filter from the given string array and description. Example: new MExtensionFileFilter(String {"gif", "jpg"}, "Gif and JPG Images");
-	 * 
+	 *
 	 * Note that the "." before the extension is not needed and will be ignored.
-	 * 
+	 *
 	 * @param newFilters
 	 *           String[]
 	 * @param newDescription
@@ -68,7 +68,7 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Creates a file filter that accepts files with the given extension. Example: new MExtensionFileFilter("jpg");
-	 * 
+	 *
 	 * @param extension
 	 *           String
 	 * @see #addExtension
@@ -79,9 +79,9 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Creates a file filter that accepts the given file type. Example: new MExtensionFileFilter("jpg", "JPEG Image Images");
-	 * 
+	 *
 	 * Note that the "." before the extension is not needed. If provided, it will be ignored.
-	 * 
+	 *
 	 * @param extension
 	 *           String
 	 * @param newDescription
@@ -100,9 +100,9 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Return true if this file should be shown in the directory pane, false if it shouldn't.
-	 * 
+	 *
 	 * Files that begin with "." are ignored.
-	 * 
+	 *
 	 * @return boolean
 	 * @param file
 	 *           File
@@ -126,13 +126,13 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Adds a filetype "dot" extension to filter against.
-	 * 
+	 *
 	 * For example: the following code will create a filter that filters out all files except those that end in ".jpg" and ".tif":
-	 * 
+	 *
 	 * MExtensionFileFilter filter = new MExtensionFileFilter(); filter.addExtension("jpg"); filter.addExtension("tif");
-	 * 
+	 *
 	 * Note that the "." before the extension is not needed and will be ignored.
-	 * 
+	 *
 	 * @param extension
 	 *           String
 	 */
@@ -147,7 +147,7 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Returns the human readable description of this filter. For example: "JPEG and GIF Image Files (*.jpg, *.gif)"
-	 * 
+	 *
 	 * @return String
 	 * @see #setDescription
 	 * @see #setExtensionListInDescription
@@ -183,7 +183,7 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Return the extension portion of the file's name.
-	 * 
+	 *
 	 * @return String
 	 * @param file
 	 *           File
@@ -201,9 +201,9 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Returns whether the extension list (.jpg, .gif, etc) should show up in the human readable description.
-	 * 
+	 *
 	 * Only relevent if a description was provided in the constructor or using setDescription();
-	 * 
+	 *
 	 * @return boolean
 	 * @see #getDescription
 	 * @see #setDescription
@@ -215,7 +215,7 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Sets the human readable description of this filter. For example: filter.setDescription("Gif and JPG Images");
-	 * 
+	 *
 	 * @param newDescription
 	 *           String
 	 * @see #getDescription
@@ -229,9 +229,9 @@ public class MExtensionFileFilter extends FileFilter {
 
 	/**
 	 * Determines whether the extension list (.jpg, .gif, etc) should show up in the human readable description.
-	 * 
+	 *
 	 * Only relevent if a description was provided in the constructor or using setDescription();
-	 * 
+	 *
 	 * @param bool
 	 *           boolean
 	 * @see #getDescription

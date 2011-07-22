@@ -33,7 +33,7 @@ import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Printer de table copiant les données dans le presse-papiers.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MClipboardPrinter extends MHtmlWriter {
@@ -57,7 +57,7 @@ public class MClipboardPrinter extends MHtmlWriter {
 
 	/**
 	 * Copie la sélection d'une table dans le presse-papiers (au format html pour Excel par exemple).
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 */

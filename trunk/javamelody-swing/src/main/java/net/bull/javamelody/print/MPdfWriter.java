@@ -44,7 +44,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Objet d'impression/export pour Pdf (portrait ou paysage) en utilisant iText.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MPdfWriter extends MPrinter {
@@ -58,7 +58,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Objet d'impression/export pour Pdf paysage.
-	 * 
+	 *
 	 * @author Emeric Vernat
 	 */
 	public static class LandscapePdfWriter extends MPdfWriter {
@@ -77,7 +77,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param myLandscape
 	 *           boolean
 	 */
@@ -88,7 +88,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Retourne un booléen selon que l'export est en paysage ou en portrait.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public boolean isLandscape() {
@@ -97,7 +97,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Lance l'impression (Méthode abstraite assurant le polymorphisme des instances.).
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param out
@@ -112,7 +112,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer l'extension du fichier exporté.
-	 * 
+	 *
 	 * @return String
 	 */
 	@Override
@@ -122,7 +122,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer l'icône représentant le type.
-	 * 
+	 *
 	 * @return Icon
 	 */
 	@Override
@@ -132,7 +132,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer leur nom.
-	 * 
+	 *
 	 * @return String
 	 */
 	@Override
@@ -142,7 +142,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Ecrit le pdf.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param out
@@ -193,7 +193,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * We create a writer that listens to the document and directs a PDF-stream to out
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param document
@@ -232,7 +232,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Effectue le rendu des headers.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param datatable
@@ -276,7 +276,7 @@ public class MPdfWriter extends MPrinter {
 
 	/**
 	 * Effectue le rendu de la liste.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param datatable

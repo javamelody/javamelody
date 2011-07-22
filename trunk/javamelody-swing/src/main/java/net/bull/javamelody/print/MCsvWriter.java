@@ -35,7 +35,7 @@ import net.bull.javamelody.table.MBasicTable;
 
 /**
  * Writer CSV non localisé.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MCsvWriter extends MPrinter {
@@ -74,7 +74,7 @@ public class MCsvWriter extends MPrinter {
 
 	/**
 	 * Encode un texte pour l'export au format csv ou csv local.
-	 * 
+	 *
 	 * @return String
 	 * @param text
 	 *           String
@@ -102,7 +102,7 @@ public class MCsvWriter extends MPrinter {
 
 	/**
 	 * Exporte une JTable dans un fichier au format csv pour double-clique. (séparateur ',', formats nombres et dates US).
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param outputStream
@@ -117,7 +117,7 @@ public class MCsvWriter extends MPrinter {
 
 	/**
 	 * Exporte une JTable dans un fichier au format csv pour double-clique. (séparateur ',', formats nombres et dates US).
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param outputStream
@@ -175,7 +175,7 @@ public class MCsvWriter extends MPrinter {
 
 	/**
 	 * Exporte les headers csv d'une JTable..
-	 * 
+	 *
 	 * @param table
 	 *           JTable
 	 * @param out

@@ -33,7 +33,7 @@ import net.bull.javamelody.table.MBasicTable;
 
 /**
  * Writer HTML.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MHtmlWriter extends MPrinter {
@@ -69,7 +69,7 @@ public class MHtmlWriter extends MPrinter {
 
 	/**
 	 * Encode un texte au format html.
-	 * 
+	 *
 	 * @return String
 	 * @param text
 	 *           String
@@ -80,7 +80,7 @@ public class MHtmlWriter extends MPrinter {
 
 	/**
 	 * Exporte une JTable dans un fichier au format html.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param outputStream
@@ -181,7 +181,7 @@ public class MHtmlWriter extends MPrinter {
 
 				text = getTextAt(table, k, i);
 				text = formatHtml(text);
-				out.write((text != null && text.trim().length() != 0) ? text : "&nbsp;"); // NOPMD
+				out.write(text != null && text.trim().length() != 0 ? text : "&nbsp;"); // NOPMD
 				out.write(" </td>");
 				out.write(eol);
 			}

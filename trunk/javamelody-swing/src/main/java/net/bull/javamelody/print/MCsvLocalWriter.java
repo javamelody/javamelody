@@ -31,7 +31,7 @@ import net.bull.javamelody.table.MBasicTable;
 
 /**
  * Writer CSV localisé.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MCsvLocalWriter extends MCsvWriter {
@@ -59,7 +59,7 @@ public class MCsvLocalWriter extends MCsvWriter {
 
 	/**
 	 * Exporte une JTable dans un fichier au format csv local pour Menu,Ouvrir. (séparateur ';', formats nombres et dates locaux).
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param outputStream
@@ -76,7 +76,7 @@ public class MCsvLocalWriter extends MCsvWriter {
 
 	/**
 	 * Exporte une JTable dans un fichier au format csv local pour Menu,Ouvrir. (séparateur ';', formats nombres et dates locaux).
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param outputStream

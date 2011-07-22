@@ -38,7 +38,7 @@ import net.bull.javamelody.table.MBasicTable;
 /**
  * Classe d'impression et d'export. <br/>
  * Cette classe s'utilise avec la méthode statique printOrExport. <br/>
- * 
+ *
  * @author Emeric Vernat
  */
 public abstract class MPrinter {
@@ -54,7 +54,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Construit le titre à inclure dans l'impression/export.
-	 * 
+	 *
 	 * @param component
 	 *           java.awt.Component
 	 * @return String
@@ -92,7 +92,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Renvoie le texte de la cellule de cette JTable à la ligne et la colonne spécifiée.
-	 * 
+	 *
 	 * @return String
 	 * @param table
 	 *           MBasicTable
@@ -115,7 +115,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Renvoie la valeur de la cellule de cette JTable à la ligne et la colonne spécifiée.
-	 * 
+	 *
 	 * @return String
 	 * @param table
 	 *           MBasicTable
@@ -130,7 +130,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Renvoie la boîte de dialogue swing de choix du fichier d'export. (Initialisée pour s'ouvrir sur le répertoire courant user.dir).
-	 * 
+	 *
 	 * @return JFileChooser
 	 */
 	public static synchronized JFileChooser getFileChooser() { // NOPMD
@@ -143,7 +143,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Choix du fichier pour un export.
-	 * 
+	 *
 	 * @return File
 	 * @param table
 	 *           JTable
@@ -188,7 +188,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Retourne le fichier de sortie, par défaut on ouvre la boîte de dialogue de choix du fichier.
-	 * 
+	 *
 	 * @return File
 	 * @param table
 	 *           JTable
@@ -201,7 +201,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Méthode abstraite assurant le polymorphisme des instances.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @param outputStream
@@ -213,7 +213,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer leur nom.
-	 * 
+	 *
 	 * @return String
 	 */
 	public abstract String getName();
@@ -222,21 +222,21 @@ public abstract class MPrinter {
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer l'extension du fichier exporté.
-	 * 
+	 *
 	 * @return String
 	 */
 	public abstract String getFileExtension();
 
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer l'icône représentant le type.
-	 * 
+	 *
 	 * @return Icon
 	 */
 	public abstract Icon getIcon();
 
 	/**
 	 * Impression/export de la table.
-	 * 
+	 *
 	 * @param table
 	 *           MBasicTable
 	 * @throws IOException
@@ -259,7 +259,7 @@ public abstract class MPrinter {
 	/**
 	 * Affiche le document. <br/>
 	 * Les implémentations peuvent surcharger cette méthode.
-	 * 
+	 *
 	 * @param targetFile
 	 *           File
 	 * @throws IOException
@@ -276,7 +276,7 @@ public abstract class MPrinter {
 
 	/**
 	 * Retourne le nom pour affichage.
-	 * 
+	 *
 	 * @return String
 	 */
 	@Override

@@ -31,7 +31,7 @@ import net.bull.javamelody.table.MBasicTable;
 
 /**
  * Printer Java.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MJavaPrinter extends MPrinter {
