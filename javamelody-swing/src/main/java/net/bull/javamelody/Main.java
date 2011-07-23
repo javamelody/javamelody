@@ -47,6 +47,7 @@ public final class Main {
 	public static void main(String[] args) {
 		initLookAndFeel();
 		ShadowPopupFactory.install();
+		MSwingUtilities.initEscapeClosesDialogs();
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
