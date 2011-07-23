@@ -28,7 +28,7 @@ import net.bull.javamelody.util.MWaitCursor;
 
 /**
  * MenuItem.
- * 
+ *
  * @author Emeric Vernat
  */
 public class MMenuItem extends JMenuItem {
@@ -43,7 +43,7 @@ public class MMenuItem extends JMenuItem {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param text
 	 *           String
 	 */
@@ -53,7 +53,7 @@ public class MMenuItem extends JMenuItem {
 
 	/**
 	 * Constructeur.
-	 * 
+	 *
 	 * @param text
 	 *           String
 	 * @param icon
@@ -65,9 +65,9 @@ public class MMenuItem extends JMenuItem {
 
 	/**
 	 * Méthode interne pour notifier tous les listeners qui ont enregistré leur intérêt par menuItem.addActionListener pour les évènements d'action sur cet item.
-	 * 
+	 *
 	 * Dans la surcharge de cette méthode, le curseur sablier est ici automatiquement affiché.
-	 * 
+	 *
 	 * @param event
 	 *           ActionEvent
 	 */
