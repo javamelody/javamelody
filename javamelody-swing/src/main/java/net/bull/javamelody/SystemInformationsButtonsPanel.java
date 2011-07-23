@@ -86,7 +86,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 		if (isSessionsEnabled()) {
 			final MButton invalidateSessionsButton = new MButton(
 					I18N.getString("invalidate_sessions"), ImageIconCache.getScaledImageIcon(
-							"user-trash.png", 18, 18));
+							"user-trash.png", 20, 20));
 			invalidateSessionsButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
