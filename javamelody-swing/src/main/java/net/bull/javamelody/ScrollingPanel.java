@@ -72,6 +72,9 @@ class ScrollingPanel extends JPanel {
 
 		addThreadInformations();
 
+		add(new JLabel(" "));
+		add(new JLabel(" "));
+
 		for (final Component component : getComponents()) {
 			((JComponent) component).setAlignmentX(Component.LEFT_ALIGNMENT);
 		}
@@ -132,7 +135,38 @@ class ScrollingPanel extends JPanel {
 	private void addThreadInformations() {
 		addParagraphTitle(I18N.getString("Threads"), "threads.png");
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			javaInformations.getThreadInformationsList();
+			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
+					javaInformations.getThreadInformationsList(),
+					javaInformations.isStackTraceEnabled());
+			threadInformationsPanel.setVisible(false);
+			final JLabel summaryLabel = new JLabel("<html><b>"
+					+ I18N.getFormattedString("Threads_sur", javaInformations.getHost())
+					+ ": </b>"
+					+ I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
+							javaInformations.getPeakThreadCount(),
+							javaInformations.getTotalStartedThreadCount()));
+			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					threadInformationsPanel.setVisible(!threadInformationsPanel.isVisible());
+					validate();
+					if (detailsButton.getIcon() == PLUS_ICON) {
+						detailsButton.setIcon(MINUS_ICON);
+					} else {
+						detailsButton.setIcon(PLUS_ICON);
+					}
+				}
+			});
+
+			final JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			flowPanel.setOpaque(false);
+			flowPanel.add(summaryLabel);
+			flowPanel.add(detailsButton);
+			// TODO afficher deadlocks
+
+			add(flowPanel);
+			add(threadInformationsPanel);
 		}
 	}
 
