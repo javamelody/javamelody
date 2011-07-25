@@ -33,7 +33,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # Possibly document the rewrap-datasources parameter for Tomcat and Jonas
   # Format the sql requests before display in the sql statistics
   # Add a button to kill a system process and its children in the process list?
-  # Monitoring of [http://blogs.sun.com/alanb/entry/monitoring_direct_buffers nio buffers] if Java 7 (in other charts?)
+  # Monitoring of [http://blogs.sun.com/alanb/entry/monitoring_direct_buffers nio buffers] if Java 7 and of the new [http://download.oracle.com/javase/7/docs/jre/api/management/extension/com/sun/management/OperatingSystemMXBean.html#getSystemCpuLoad%28%29 % system cpu] if Java 7 and Oracle JDK (in other charts?). getSystemCpuLoad may not be implemented on Windows (returns -1) and getProcessCpuLoad is probably useless given that there is already the "% cpu" for the process.
   # Add a view with the classloader hierarchy
   # Simplify UI with [http://groups.google.fr/group/javamelody/browse_thread/thread/d4ac1b796e366852 user feedback]
   # Details on GC types and on cpu per gc type (from user group)
