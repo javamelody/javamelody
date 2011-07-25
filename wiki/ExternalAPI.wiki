@@ -62,6 +62,7 @@ Usual graphics names include:
 
 Note: The lastValue and jmxValue API may be used in a [http://munin.projects.linpro.no/ Munin] or [http://www.nagios.org/ Nagios] plugin, to make your own graphics or alerts using something like [https://github.com/coderholic/munin-popularity-plugins this].
 
+Note: There is also a [https://github.com/sbower/nagios_javamelody_plugin Nagios plugin] by Shawn Bower based on a command reading the last values in the RRD files (it starts a JVM for each value, which may not scale a lot).
 
 === jmxValue ===
 
