@@ -72,6 +72,23 @@ class ScrollingPanel extends JPanel {
 
 		addThreadInformations();
 
+		if (isJobEnabled()) {
+			addParagraphTitle(I18N.getString("Jobs"), "jobs.png");
+			final Counter rangeJobCounter = collector.getRangeCounter(range,
+					Counter.JOB_COUNTER_NAME);
+			addJobs(rangeJobCounter);
+			addCounter(rangeJobCounter);
+		}
+
+		if (isCacheEnabled()) {
+			addParagraphTitle("Caches", "caches.png");
+			addCaches();
+		}
+
+		// TODO
+		//		writeMessageIfNotNull(message, null, anchorNameForRedirect);
+		//		writeDurationAndOverhead();
+
 		add(new JLabel(" "));
 		add(new JLabel(" "));
 
@@ -82,13 +99,17 @@ class ScrollingPanel extends JPanel {
 
 	private void addCounters() throws IOException {
 		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
-			final String counterLabel = I18N.getString(counter.getName() + "Label");
-			addParagraphTitle(I18N.getFormattedString("Statistiques_compteur", counterLabel)
-					+ " - " + range.getLabel(), counter.getIconName());
-			final StatisticsPanel statisticsPanel = new StatisticsPanel(counter, range);
-			statisticsPanel.showGlobalRequests();
-			add(statisticsPanel);
+			addCounter(counter);
 		}
+	}
+
+	private void addCounter(Counter counter) {
+		final String counterLabel = I18N.getString(counter.getName() + "Label");
+		addParagraphTitle(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
+				+ range.getLabel(), counter.getIconName());
+		final StatisticsPanel statisticsPanel = new StatisticsPanel(counter, range);
+		statisticsPanel.showGlobalRequests();
+		add(statisticsPanel);
 	}
 
 	private void addSystemInformations() {
@@ -135,9 +156,10 @@ class ScrollingPanel extends JPanel {
 	private void addThreadInformations() {
 		addParagraphTitle(I18N.getString("Threads"), "threads.png");
 		for (final JavaInformations javaInformations : javaInformationsList) {
+			final List<ThreadInformations> threadInformationsList = javaInformations
+					.getThreadInformationsList();
 			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
-					javaInformations.getThreadInformationsList(),
-					javaInformations.isStackTraceEnabled());
+					threadInformationsList, javaInformations.isStackTraceEnabled());
 			threadInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("Threads_sur", javaInformations.getHost())
@@ -163,11 +185,101 @@ class ScrollingPanel extends JPanel {
 			flowPanel.setOpaque(false);
 			flowPanel.add(summaryLabel);
 			flowPanel.add(detailsButton);
-			// TODO afficher deadlocks
 
 			add(flowPanel);
+			addThreadDeadlocks(threadInformationsList);
 			add(threadInformationsPanel);
 		}
+	}
+
+	private void addThreadDeadlocks(List<ThreadInformations> threadInformationsList) {
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		for (final ThreadInformations thread : threadInformationsList) {
+			if (thread.isDeadlocked()) {
+				deadlockedThreads.add(thread);
+			}
+		}
+		if (!deadlockedThreads.isEmpty()) {
+			final StringBuilder sb = new StringBuilder();
+			sb.append("  ");
+			sb.append(I18N.getString("Threads_deadlocks"));
+			String separator = " ";
+			for (final ThreadInformations thread : deadlockedThreads) {
+				sb.append(separator);
+				sb.append(thread.getName());
+				separator = ", ";
+			}
+			final JLabel label = new JLabel(sb.toString());
+			label.setForeground(Color.RED);
+			label.setFont(label.getFont().deriveFont(Font.BOLD));
+			add(label);
+		}
+	}
+
+	private void addCaches() {
+		int i = 0;
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (!javaInformations.isCacheEnabled()) {
+				continue;
+			}
+			final List<CacheInformations> cacheInformationsList = javaInformations
+					.getCacheInformationsList();
+			// TODO
+			//			writeln("<b>");
+			//			writeln(I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
+			//					javaInformations.getHost()));
+			//			writeln("</b>");
+			//			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			//			final String id = "caches_" + i;
+			//			writeShowHideLink(id, "#Details#");
+			//			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
+			//			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
+			//					.toHtml();
+			//			writeln("</div></div><br/>");
+			i++;
+		}
+	}
+
+	private void addJobs(Counter rangeJobCounter) {
+		int i = 0;
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (!javaInformations.isJobEnabled()) {
+				continue;
+			}
+			final List<JobInformations> jobInformationsList = javaInformations
+					.getJobInformationsList();
+			// TODO
+			//			writeln("<b>");
+			//			writeln(I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
+			//					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount()));
+			//			writeln("</b>");
+			//			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			//			final String id = "job_" + i;
+			//			writeShowHideLink(id, "#Details#");
+			//			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
+			//			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(),
+			//					rangeJobCounter, writer).toHtml();
+			//			writeln("</div></div><br/>");
+			i++;
+		}
+	}
+
+	private boolean isCacheEnabled() {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isCacheEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isJobEnabled() {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isJobEnabled()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void addParagraphTitle(String title, String iconName) {
