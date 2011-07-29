@@ -745,11 +745,7 @@ class HtmlCoreReport {
 	private void writePoweredBy() throws IOException {
 		writeln("");
 		//		writeln("<div align='center'><font size='-1' face='Helvetica'>Powered by</font>&nbsp;&nbsp;&nbsp;");
-		//		writeln("<a href='http://www.bull.com/fr/'>");
-		//		writeln("<img src='?resource=logobull.png' alt='Bull' title='Bull' /></a>");
-		//		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		//		writeln("<a href='http://www.bull.com/fr/services/novaforge.php'>");
-		//		writeln("<img src='?resource=Novaforge2.png' alt='Novaforge' title='Novaforge' /></a></div>");
+		//		writeln("</div>");
 	}
 
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
