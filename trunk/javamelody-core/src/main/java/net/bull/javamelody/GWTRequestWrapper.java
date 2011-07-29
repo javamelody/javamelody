@@ -69,7 +69,7 @@ class GWTRequestWrapper extends HttpServletRequestWrapper {
 		//				gwtmethodname = decodeRequest.getMethod().getName();
 
 		final String[] split = payload.split("\\|"); //pipe delimited
-		if (split[6].length() > 0) {
+		if (split.length > 6 && split[6].length() > 0) {
 			gwtRpcMethodName = split[6];
 		}
 	}
