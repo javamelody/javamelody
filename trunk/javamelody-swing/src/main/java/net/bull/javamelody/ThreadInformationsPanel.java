@@ -204,7 +204,7 @@ class ThreadInformationsPanel extends JPanel {
 						| JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
 	}
 
-	private void showStackTraceInPopup(ThreadInformations threadInformations) {
+	final void showStackTraceInPopup(ThreadInformations threadInformations) {
 		final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
