@@ -1,4 +1,7 @@
 #labels Featured
+=== Next release (trunk) ===
+  * fix issue 129: ArrayIndexOutOfBoundsException in GWTRequestWrapper in a particular case.
+
 === 1.30.0 ===
 
   * fix issue 116: MBeans overview does not work with java 1.5
