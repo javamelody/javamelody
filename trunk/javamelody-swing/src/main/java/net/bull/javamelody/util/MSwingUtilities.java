@@ -162,7 +162,7 @@ public final class MSwingUtilities {
 	/**
 	 * La touche Esc a été pressée : fermer la dialogue modale ouverte.
 	 */
-	private static void escapePressed() {
+	static void escapePressed() {
 		final Component focusOwner = getPermanentFocusOwner();
 		final Window focusedWindow = SwingUtilities.getWindowAncestor(focusOwner);
 		if (focusedWindow instanceof Dialog && ((Dialog) focusedWindow).isModal()) {
