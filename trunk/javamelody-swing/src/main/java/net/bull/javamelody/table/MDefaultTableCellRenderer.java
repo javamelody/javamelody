@@ -36,9 +36,9 @@ public class MDefaultTableCellRenderer extends DefaultTableCellRenderer {
 	 * Ajustement de la hauteur de cette ligne en fonction de la taille du renderer (ex: la taille d'une icône ou d'un label html).
 	 *
 	 * @param table
-	 *           javax.swing.JTable
+	 *           JTable
 	 * @param component
-	 *           java.awt.Component
+	 *           Component
 	 * @param row
 	 *           int
 	 */
@@ -46,7 +46,7 @@ public class MDefaultTableCellRenderer extends DefaultTableCellRenderer {
 		// Ajustement de la hauteur de cette ligne en fonction de la taille du renderer
 		final int cellHeight = table.getRowHeight(row);
 		final int rendererHeight = component.getPreferredSize().height;
-		if (cellHeight < rendererHeight - 2) { // dans le cas normal, cellHeight est � 16 et rendererHeight est � 18
+		if (cellHeight < rendererHeight - 2) { // dans le cas normal, cellHeight est à 16 et rendererHeight est à 18
 			table.setRowHeight(row, rendererHeight);
 		}
 	}
