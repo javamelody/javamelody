@@ -69,8 +69,13 @@ public class MTableModel<T> extends MListTableModel<T> {
 				method = object.getClass().getDeclaredMethod("get" + upperFirstIdentifier,
 						(Class<?>[]) null);
 			} catch (final NoSuchMethodException e) {
-				method = object.getClass().getDeclaredMethod("is" + upperFirstIdentifier,
-						(Class<?>[]) null);
+				try {
+					method = object.getClass().getDeclaredMethod("is" + upperFirstIdentifier,
+							(Class<?>[]) null);
+				} catch (final NoSuchMethodException e2) {
+					// si non trouvée non plus, alors l'exception lancée est e et non e2
+					throw e;
+				}
 			}
 			// la méthode n'est pas forcément public dans notre cas
 			method.setAccessible(true);
