@@ -892,19 +892,16 @@ or
 
 	If you don't have Maven2, the jar files can be found in the zip file in "Download" inside the root directory and inside the directory {{{src/test/test-webapp/WEB-INF/lib}}}
 	
-	If you have Maven2, you can use the dependencies {{{javamelody-core}}}, {{{jrobin}}}, {{{itext}}} and if you wish {{{xstream}}} in you {{{pom.xml}}} like this:
+	If you have Maven2, you can use the dependencies {{{javamelody-core}}} ({{{jrobin}}} is included transitively with javamelody-core), and optionally {{{itext}}} to add PDF export, in your {{{pom.xml}}} like this:
 
 {{{
+	<!-- javamelody-core -->
 	<dependency>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-core</artifactId>
-		<version>1.26.0</version>
+		<version>1.30.0</version>
 	</dependency>
-	<dependency>
-		<groupId>org.jrobin</groupId>
-		<artifactId>jrobin</artifactId>
-		<version>1.5.9</version>
-	</dependency>
+	<!-- itext, option to add PDF export -->
 	<dependency>
 		<groupId>com.lowagie</groupId>
 		<artifactId>itext</artifactId>
@@ -920,14 +917,9 @@ or
 			</exclusion>
 		</exclusions>
 	</dependency>
-	<dependency>
-		<groupId>com.thoughtworks.xstream</groupId>
-		<artifactId>xstream</artifactId>
-		<version>1.3.1</version>
-	</dependency>
 	...
 	<repositories>
-		<!-- for javamelody -->
+		<!-- for javamelody and for jrobin -->
 		<repository>
 			<id>m.g.o-public</id>
 			<url>http://maven.glassfish.org/content/groups/public/</url>
@@ -938,21 +930,23 @@ or
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<!-- for jrobin -->
-		<repository>
-			<id>opennms-repo</id>
-			<name>OpenNMS Repository</name>
-			<url>http://repo.opennms.org/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 }}}
 
+The dependencies jrobin (included in javamelody-core) and if you wish {{{xstream}}} as an option for the remoting with the collector server are:
+
+{{{
+	<dependency>
+		<groupId>com.thoughtworks.xstream</groupId>
+		<artifactId>xstream</artifactId>
+		<version>1.3.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jrobin</groupId>
+		<artifactId>jrobin</artifactId>
+		<version>1.5.9</version>
+	</dependency>
+}}}
 
 == Advanced documentation (setup with an ear, centralized collect server, JonAS 5, debugging logs...) ==
 
