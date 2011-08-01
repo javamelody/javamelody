@@ -104,6 +104,18 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- Dépendances ehcache et quartz -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.5.2</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance XStream pour exports XML et JSON -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
