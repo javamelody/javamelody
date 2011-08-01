@@ -62,6 +62,18 @@ public final class MSwingUtilities {
 	}
 
 	/**
+	 * Affiche une boîte de dialogue de confirmation.
+	 * @param component Component
+	 * @param message String
+	 * @return boolean
+	 */
+	public static boolean showConfirmation(Component component, String message) {
+		return JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(component), message,
+				UIManager.getString("OptionPane.titleText"), JOptionPane.OK_OPTION
+						| JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
+	}
+
+	/**
 	 * Retourne l'instance courante de la classe componentClass contenant l'élément component. <br/>
 	 * Cette méthode peut-être très utile pour récupérer une référence à un parent éloigné (ancêtre), en l'absence de référence directe du type attribut.
 	 * 
