@@ -2,6 +2,8 @@
 === Next release (trunk) ===
   * fix issue 129: ArrayIndexOutOfBoundsException in GWTRequestWrapper in a particular case.
 
+  * The JRobin dependency is now available in the same maven repository as JavaMelody: [http://maven.glassfish.org/content/groups/public/org/jrobin/jrobin/1.5.9/]. So it is not necessary to add the jrobin repository or the jrobin dependency in your pom.xml. The jrobin dependency is included transitively with javamelody-core. Reference: [UserGuide#Dependencies]
+
 === 1.30.0 ===
 
   * fix issue 116: MBeans overview does not work with java 1.5
