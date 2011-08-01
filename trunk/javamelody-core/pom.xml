@@ -224,8 +224,8 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<!-- pour jrobin (plus nécessaire car jrobin est disponible dans maven.glassfish.org)
 		<repository>
-			<!-- pour jrobin -->
 			<id>opennms-repo</id>
 			<name>OpenNMS Repository</name>
 			<url>http://repo.opennms.org/maven2</url>
@@ -236,7 +236,7 @@
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
-		</repository>
+		</repository>-->
 	</repositories>
 
 	<distributionManagement>
