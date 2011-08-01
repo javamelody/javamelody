@@ -31,19 +31,18 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
+import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des threads.
@@ -199,9 +198,7 @@ class ThreadInformationsPanel extends JPanel {
 	}
 
 	final boolean confirm(String message) {
-		return JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(this), message,
-				UIManager.getString("OptionPane.titleText"), JOptionPane.YES_OPTION
-						| JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
+		return MSwingUtilities.showConfirmation(this, message);
 	}
 
 	final void showStackTraceInPopup(ThreadInformations threadInformations) {

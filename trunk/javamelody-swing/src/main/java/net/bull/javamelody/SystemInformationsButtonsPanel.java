@@ -27,10 +27,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import net.bull.javamelody.util.MSwingUtilities;
 
@@ -165,9 +162,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 	}
 
 	boolean confirm(String message) {
-		return JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(this), message,
-				UIManager.getString("OptionPane.titleText"), JOptionPane.YES_OPTION
-						| JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
+		return MSwingUtilities.showConfirmation(this, message);
 	}
 
 	URL getMonitoringUrl() {
