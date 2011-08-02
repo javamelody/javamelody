@@ -181,7 +181,7 @@ class ScrollingPanel extends JPanel {
 				}
 			});
 
-			final JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			final JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
 			flowPanel.setOpaque(false);
 			flowPanel.add(summaryLabel);
 			flowPanel.add(detailsButton);
@@ -217,26 +217,39 @@ class ScrollingPanel extends JPanel {
 	}
 
 	private void addCaches() {
-		int i = 0;
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isCacheEnabled()) {
 				continue;
 			}
 			final List<CacheInformations> cacheInformationsList = javaInformations
 					.getCacheInformationsList();
-			// TODO
-			//			writeln("<b>");
-			//			writeln(I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
-			//					javaInformations.getHost()));
-			//			writeln("</b>");
-			//			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			//			final String id = "caches_" + i;
-			//			writeShowHideLink(id, "#Details#");
-			//			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
-			//			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
-			//					.toHtml();
-			//			writeln("</div></div><br/>");
-			i++;
+			final CacheInformationsPanel cacheInformationsPanel = new CacheInformationsPanel(
+					cacheInformationsList);
+			cacheInformationsPanel.setVisible(false);
+			final JLabel summaryLabel = new JLabel("<html><b>"
+					+ I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
+							javaInformations.getHost()) + "</b>");
+			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					cacheInformationsPanel.setVisible(!cacheInformationsPanel.isVisible());
+					validate();
+					if (detailsButton.getIcon() == PLUS_ICON) {
+						detailsButton.setIcon(MINUS_ICON);
+					} else {
+						detailsButton.setIcon(PLUS_ICON);
+					}
+				}
+			});
+
+			final JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+			flowPanel.setOpaque(false);
+			flowPanel.add(summaryLabel);
+			flowPanel.add(detailsButton);
+
+			add(flowPanel);
+			add(cacheInformationsPanel);
 		}
 	}
 
