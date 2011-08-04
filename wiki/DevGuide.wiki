@@ -93,3 +93,5 @@ After some weeks for example, in order to update your sources with the new devel
 	[http://wiki.jenkins-ci.org/display/JENKINS/Monitoring Hudson / Jenkins plugin] : The manager of sources for the Hudson / Jenkins Monitoring plugin is Subversion at [http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/] ~~and it can be browsed at [http://java.net/projects/hudson/sources/svn/show/trunk/hudson/plugins/monitoring] Git at [https://github.com/HudsonLabs/plugin-monitoring]~~. Use maven commands "mvn hpi:run" or "mvn package" like for all [http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial Hudson / Jenkins plugins].
 
 	[http://www.grails.org/plugin/grails-melody Grails plugin] : The manager of sources for the JavaMelody Grails plugin is Subversion at [http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/]
+
+	[https://github.com/sbower/nagios_javamelody_plugin Nagios plugin] : There is also a Nagios plugin by Shawn Bower based on a command reading the last values in the RRD files (it starts a JVM for each value, which may not scale a lot). The manager of sources is Git at [https://github.com/sbower/nagios_javamelody_plugin]
