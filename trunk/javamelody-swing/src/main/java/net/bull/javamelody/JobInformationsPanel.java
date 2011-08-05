@@ -33,11 +33,14 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
@@ -197,28 +200,63 @@ class JobInformationsPanel extends JPanel {
 	}
 
 	private void addButtons() {
-		final MButton purgeCachesButton = new MButton(I18N.getString("Purge_caches"),
-				ImageIconCache.getScaledImageIcon("user-trash.png", 18, 18));
-		purgeCachesButton.addActionListener(new ActionListener() {
+		final Icon pauseIcon = ImageIconCache.getScaledImageIcon("control_pause_blue.png", 18, 18);
+		final Icon resumeIcon = ImageIconCache.getScaledImageIcon("control_play_blue.png", 18, 18);
+		final MButton pauseJobButton = new MButton(I18N.getString("Pause_job"), pauseIcon);
+		pauseJobButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_purge_caches"))) {
+				if (confirm(I18N.getString("confirm_pause_job"))) {
 					// TODO
 				}
 			}
 		});
-		// TODO Pause_all_jobs et Resume_all_jobs
-		//		writeln("<a href='?action=pause_job&amp;jobId=all" + onClickConfirm
-		//				+ I18N.getStringForJavascript("confirm_pause_all_jobs") + endOnClickConfirm);
-		//		writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_all_jobs#\" /> #Pause_all_jobs#</a>");
-		//		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		//		writeln("<a href='?action=resume_job&amp;jobId=all" + onClickConfirm
-		//				+ I18N.getStringForJavascript("confirm_resume_all_jobs") + endOnClickConfirm);
-		//		writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_all_jobs#\" /> #Resume_all_jobs#</a>");
-		// TODO Pause_Job et Resume_Job
+		final MButton resumeJobButton = new MButton(I18N.getString("Resume_job"), resumeIcon);
+		resumeJobButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_resume_job"))) {
+					// TODO
+				}
+			}
+		});
+
+		final MButton pauseAllJobsButton = new MButton(I18N.getString("Pause_all_jobs"), pauseIcon);
+		pauseAllJobsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_pause_all_jobs"))) {
+					// TODO
+				}
+			}
+		});
+		final MButton resumeAllJobsButton = new MButton(I18N.getString("Resume_all_jobs"),
+				resumeIcon);
+		resumeAllJobsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_resume_all_jobs"))) {
+					// TODO
+				}
+			}
+		});
+		final MTable<JobInformations> myTable = table;
+		myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final JobInformations jobInformations = myTable.getSelectedObject();
+				pauseJobButton.setEnabled(jobInformations != null);
+				resumeJobButton.setEnabled(jobInformations != null);
+			}
+		});
+		pauseJobButton.setEnabled(myTable.getSelectedObject() != null);
+		resumeJobButton.setEnabled(myTable.getSelectedObject() != null);
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.setOpaque(false);
-		buttonPanel.add(purgeCachesButton);
+		buttonPanel.add(pauseJobButton);
+		buttonPanel.add(resumeJobButton);
+		buttonPanel.add(pauseAllJobsButton);
+		buttonPanel.add(resumeAllJobsButton);
 		add(buttonPanel, BorderLayout.EAST);
 	}
 
