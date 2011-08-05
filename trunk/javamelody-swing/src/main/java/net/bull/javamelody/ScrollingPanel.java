@@ -254,26 +254,40 @@ class ScrollingPanel extends JPanel {
 	}
 
 	private void addJobs(Counter rangeJobCounter) {
-		int i = 0;
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJobEnabled()) {
 				continue;
 			}
 			final List<JobInformations> jobInformationsList = javaInformations
 					.getJobInformationsList();
-			// TODO
-			//			writeln("<b>");
-			//			writeln(I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
-			//					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount()));
-			//			writeln("</b>");
-			//			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			//			final String id = "job_" + i;
-			//			writeShowHideLink(id, "#Details#");
-			//			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
-			//			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(),
-			//					rangeJobCounter, writer).toHtml();
-			//			writeln("</div></div><br/>");
-			i++;
+			final JobInformationsPanel jobInformationsPanel = new JobInformationsPanel(
+					jobInformationsList);
+			jobInformationsPanel.setVisible(false);
+			final JLabel summaryLabel = new JLabel("<html><b>"
+					+ I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
+							javaInformations.getHost(),
+							javaInformations.getCurrentlyExecutingJobCount()) + "</b>");
+			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					jobInformationsPanel.setVisible(!jobInformationsPanel.isVisible());
+					validate();
+					if (detailsButton.getIcon() == PLUS_ICON) {
+						detailsButton.setIcon(MINUS_ICON);
+					} else {
+						detailsButton.setIcon(PLUS_ICON);
+					}
+				}
+			});
+
+			final JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+			flowPanel.setOpaque(false);
+			flowPanel.add(summaryLabel);
+			flowPanel.add(detailsButton);
+
+			add(flowPanel);
+			add(jobInformationsPanel);
 		}
 	}
 
