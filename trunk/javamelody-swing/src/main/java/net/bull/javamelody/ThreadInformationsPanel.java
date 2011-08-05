@@ -102,7 +102,8 @@ class ThreadInformationsPanel extends JPanel {
 				if (row == -1) {
 					setIcon(null);
 				} else {
-					final ThreadInformations threadInformations = myTable.getList().get(row);
+					final ThreadInformations threadInformations = myTable.getList().get(
+							myTable.convertRowIndexToModel(row));
 					setIcon(ImageIconCache.getImageIcon("bullets/"
 							+ HtmlThreadInformationsReport.getStateIcon(threadInformations)));
 				}
@@ -123,7 +124,8 @@ class ThreadInformationsPanel extends JPanel {
 				if (row == -1) {
 					setToolTipText(null);
 				} else {
-					final ThreadInformations threadInformations = myTable.getList().get(row);
+					final ThreadInformations threadInformations = myTable.getList().get(
+							myTable.convertRowIndexToModel(row));
 					final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
 					if (stackTrace != null && !stackTrace.isEmpty()) {
 						// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
