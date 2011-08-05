@@ -713,7 +713,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	List<CounterRequest> getRequests() {
 		// thread-safe :
 		// on crée une copie de la collection et on clone ici chaque CounterRequest de manière synchronisée
-		// de manière à ce que l'appelant n'est pas à se préoccuper des synchronisations nécessaires
+		// de manière à ce que l'appelant n'ai pas à se préoccuper des synchronisations nécessaires
 		// Rq : l'Iterator sur ConcurrentHashMap.values() est garanti ne pas lancer ConcurrentModificationException
 		// même s'il y a des ajouts concurrents
 		final List<CounterRequest> result = new ArrayList<CounterRequest>(requests.size());
