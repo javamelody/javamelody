@@ -189,7 +189,7 @@ class ThreadInformationsPanel extends JPanel {
 				if (threadInformations != null
 						&& confirm(I18N.getFormattedString("confirm_kill_thread",
 								threadInformations.getName()))) {
-					// TODO	
+					// TODO
 				}
 			}
 		});
