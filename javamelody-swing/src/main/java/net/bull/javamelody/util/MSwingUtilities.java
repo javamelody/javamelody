@@ -76,10 +76,10 @@ public final class MSwingUtilities {
 	/**
 	 * Retourne l'instance courante de la classe componentClass contenant l'élément component. <br/>
 	 * Cette méthode peut-être très utile pour récupérer une référence à un parent éloigné (ancêtre), en l'absence de référence directe du type attribut.
-	 * 
+	 *
 	 * <br/>
 	 * Ex : un composant panel désire une référence sur sa JFrame parente, alors l'instruction suivante suffit : getAncestorOfClass(JFrame.class, panel)
-	 * 
+	 *
 	 * @return Component
 	 * @param <Type>
 	 *           le type du composant recherché
@@ -100,7 +100,7 @@ public final class MSwingUtilities {
 	 * Le focusOwner et le focusOwner permanent sont équivalent sauf si un changement temporaire de focus<br/>
 	 * est en cours. Si c'est le cas, le focusOwner permanent redeviendra &galement<br/>
 	 * le focusOwner à la fin de ce changement de focus temporaire.
-	 * 
+	 *
 	 * @return Component
 	 */
 	public static Component getPermanentFocusOwner() {
@@ -110,7 +110,7 @@ public final class MSwingUtilities {
 
 	/**
 	 * Retourne la fenêtre possédant le focus.
-	 * 
+	 *
 	 * @return Component
 	 */
 	public static Window getFocusedWindow() {
@@ -120,7 +120,7 @@ public final class MSwingUtilities {
 
 	/**
 	 * Démarre un composant dans une Frame (utile pour écrire des méthodes main sur des panels en développement).
-	 * 
+	 *
 	 * @param component
 	 *           JComponent
 	 * @return la Frame créée
@@ -143,7 +143,7 @@ public final class MSwingUtilities {
 
 	/**
 	 * Démarre un composant dans une Frame sans pack() (utile pour écrire des méthodes main sur des panels en développement).
-	 * 
+	 *
 	 * @param component
 	 *           JComponent
 	 * @return la Frame créée
