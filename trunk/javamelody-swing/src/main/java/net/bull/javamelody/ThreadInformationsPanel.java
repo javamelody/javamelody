@@ -221,13 +221,27 @@ class ThreadInformationsPanel extends JPanel {
 			// sinon il reste blanc malgré editable false
 			textArea.setBackground(Color.decode("#E7E7E7"));
 			final JScrollPane scrollPane = new JScrollPane(textArea);
-			final JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(table),
+			final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
+			buttonPanel.setOpaque(false);
+			// TODO traduction
+			final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
+			clipBoardButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					textArea.selectAll();
+					textArea.copy();
+					textArea.setCaretPosition(0);
+				}
+			});
+			buttonPanel.add(clipBoardButton);
+			final JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this),
 					threadInformations.getName(), true);
 			final JPanel contentPane = new JPanel(new BorderLayout());
 			contentPane.add(scrollPane, BorderLayout.CENTER);
+			contentPane.add(buttonPanel, BorderLayout.SOUTH);
 			dialog.setContentPane(contentPane);
 			dialog.pack();
-			dialog.setLocationRelativeTo(table);
+			dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
 			dialog.setVisible(true);
 		}
 	}
