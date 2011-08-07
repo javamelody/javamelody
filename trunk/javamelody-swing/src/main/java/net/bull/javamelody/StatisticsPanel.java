@@ -245,7 +245,6 @@ class StatisticsPanel extends JPanel { // NOPMD
 			key = "Aucune_requete";
 		}
 		add(new JLabel(' ' + I18N.getString(key)), BorderLayout.CENTER);
-		add(new JLabel(" "), BorderLayout.SOUTH);
 	}
 
 	private void addScrollPane() {
