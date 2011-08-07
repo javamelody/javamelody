@@ -61,7 +61,7 @@ class ScrollingPanel extends JPanel {
 		this.javaInformationsList = javaInformationsList;
 		this.monitoringUrl = monitoringUrl;
 
-		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+		setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(new Color(230, 230, 230));
 		add(new ChartsPanel());
@@ -212,6 +212,8 @@ class ScrollingPanel extends JPanel {
 			final JLabel label = new JLabel(sb.toString());
 			label.setForeground(Color.RED);
 			label.setFont(label.getFont().deriveFont(Font.BOLD));
+			// séparateur avec composants au-dessus
+			label.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 			add(label);
 		}
 	}
@@ -313,7 +315,8 @@ class ScrollingPanel extends JPanel {
 		final JLabel label = new JLabel(title);
 		label.setIcon(ImageIconCache.getScaledImageIcon(iconName, 24, 24));
 		label.setFont(label.getFont().deriveFont(Font.BOLD, label.getFont().getSize() + 4));
+		// séparateur avec composants au-dessus et en-dessous
+		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		add(label);
-		add(new JLabel(" ")); // séparateur
 	}
 }
