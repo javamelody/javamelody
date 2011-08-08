@@ -52,11 +52,94 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private static final long serialVersionUID = 1L;
 
-	final transient CounterRequestAggregation counterRequestAggregation;
+	private final transient CounterRequestAggregation counterRequestAggregation;
 	private final Counter counter;
 	private final Range range;
 	private final MTable<CounterRequest> table;
 	private StatisticsPanel detailsPanel;
+
+	private static final class ResponseSizeMeanTableCellRenderer extends MIntegerTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		ResponseSizeMeanTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public void setValue(final Object value) {
+			super.setValue((Integer) value / 1024);
+		}
+	}
+
+	private class MeanTableCellRenderer extends MIntegerTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		MeanTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public void setValue(Object value) {
+			final Integer mean = (Integer) value;
+			final CounterRequestAggregation myCounterRequestAggregation = getCounterRequestAggregation();
+			if (mean < myCounterRequestAggregation.getWarningThreshold() || mean == 0) {
+				// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
+				// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
+				setForeground(Color.GREEN.darker());
+				setFont(getFont().deriveFont(Font.PLAIN));
+			} else if (mean < myCounterRequestAggregation.getSevereThreshold()) {
+				// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
+				// attention à cette requête qui est plus longue que les autres
+				setForeground(Color.ORANGE);
+				setFont(getFont().deriveFont(Font.BOLD));
+			} else {
+				// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
+				// cette requête est très longue par rapport aux autres ;
+				// il peut être opportun de l'optimiser si possible
+				setForeground(Color.RED);
+				setFont(getFont().deriveFont(Font.BOLD));
+			}
+			super.setValue(mean);
+		}
+	}
+
+	private class DurationPercentageTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		DurationPercentageTableCellRenderer() {
+			super();
+			setHorizontalAlignment(SwingConstants.RIGHT);
+		}
+
+		@Override
+		public void setValue(final Object value) {
+			final CounterRequest globalRequest = getCounterRequestAggregation().getGlobalRequest();
+			if (globalRequest.getDurationsSum() == 0) {
+				setText("0");
+			} else {
+				setText(String.valueOf(100 * (Long) value / globalRequest.getDurationsSum()));
+			}
+		}
+	}
+
+	private class CpuPercentageTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		CpuPercentageTableCellRenderer() {
+			super();
+			setHorizontalAlignment(SwingConstants.RIGHT);
+		}
+
+		@Override
+		public void setValue(final Object value) {
+			final CounterRequest globalRequest = getCounterRequestAggregation().getGlobalRequest();
+			if (globalRequest.getCpuTimeSum() == 0) {
+				setText("0");
+			} else {
+				setText(String.valueOf(100 * (Long) value / globalRequest.getCpuTimeSum()));
+			}
+		}
+	}
 
 	StatisticsPanel(Counter counter, Range range) {
 		this(counter, range, null);
@@ -103,55 +186,15 @@ class StatisticsPanel extends JPanel { // NOPMD
 	}
 
 	private void addColumns() {
-		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
 		table.addColumn("name", I18N.getString("Requete"));
-		final MIntegerTableCellRenderer meanCellRenderer = new MIntegerTableCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void setValue(Object value) {
-				final Integer mean = (Integer) value;
-				if (mean < counterRequestAggregation.getWarningThreshold() || mean == 0) {
-					// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
-					// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
-					setForeground(Color.GREEN.darker());
-					setFont(getFont().deriveFont(Font.PLAIN));
-				} else if (mean < counterRequestAggregation.getSevereThreshold()) {
-					// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
-					// attention à cette requête qui est plus longue que les autres
-					setForeground(Color.ORANGE);
-					setFont(getFont().deriveFont(Font.BOLD));
-				} else {
-					// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
-					// cette requête est très longue par rapport aux autres ;
-					// il peut être opportun de l'optimiser si possible
-					setForeground(Color.RED);
-					setFont(getFont().deriveFont(Font.BOLD));
-				}
-				super.setValue(mean);
-			}
-		};
+		final MIntegerTableCellRenderer meanCellRenderer = new MeanTableCellRenderer();
 		if (counterRequestAggregation.isTimesDisplayed()) {
 			table.addColumn("durationsSum", I18N.getString("temps_cumule"));
 			table.addColumn("hits", I18N.getString("Hits"));
 			table.addColumn("mean", I18N.getString("Temps_moyen"));
 			table.addColumn("maximum", I18N.getString("Temps_max"));
 			table.addColumn("standardDeviation", I18N.getString("Ecart_type"));
-			final MDefaultTableCellRenderer durationPercentageCellRenderer = new MDefaultTableCellRenderer() {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void setValue(final Object value) {
-					if (globalRequest.getDurationsSum() == 0) {
-						setText("0");
-					} else {
-						setText(String
-								.valueOf(100 * (Long) value / globalRequest.getDurationsSum()));
-					}
-				}
-			};
-			durationPercentageCellRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-			table.setColumnCellRenderer("durationsSum", durationPercentageCellRenderer);
+			table.setColumnCellRenderer("durationsSum", new DurationPercentageTableCellRenderer());
 			table.setColumnCellRenderer("mean", meanCellRenderer);
 		} else {
 			table.addColumn("hits", I18N.getString("Hits"));
@@ -159,20 +202,7 @@ class StatisticsPanel extends JPanel { // NOPMD
 		if (counterRequestAggregation.isCpuTimesDisplayed()) {
 			table.addColumn("cpuTimeSum", I18N.getString("temps_cpu_cumule"));
 			table.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
-			final MDefaultTableCellRenderer cpuPercentageCellRenderer = new MDefaultTableCellRenderer() {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void setValue(final Object value) {
-					if (globalRequest.getCpuTimeSum() == 0) {
-						setText("0");
-					} else {
-						setText(String.valueOf(100 * (Long) value / globalRequest.getCpuTimeSum()));
-					}
-				}
-			};
-			cpuPercentageCellRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-			table.setColumnCellRenderer("cpuTimeSum", cpuPercentageCellRenderer);
+			table.setColumnCellRenderer("cpuTimeSum", new CpuPercentageTableCellRenderer());
 			table.setColumnCellRenderer("cpuTimeMean", meanCellRenderer);
 		}
 		if (!isErrorAndNotJobCounter()) {
@@ -180,15 +210,7 @@ class StatisticsPanel extends JPanel { // NOPMD
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {
 			table.addColumn("responseSizeMean", I18N.getString("Taille_moyenne"));
-			final MIntegerTableCellRenderer responseSizeMeanCellRenderer = new MIntegerTableCellRenderer() {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void setValue(final Object value) {
-					super.setValue((Integer) value / 1024);
-				}
-			};
-			table.setColumnCellRenderer("responseSizeMean", responseSizeMeanCellRenderer);
+			table.setColumnCellRenderer("responseSizeMean", new ResponseSizeMeanTableCellRenderer());
 		}
 		if (counterRequestAggregation.isChildHitsDisplayed()) {
 			table.addColumn("childHitsMean",
@@ -298,6 +320,10 @@ class StatisticsPanel extends JPanel { // NOPMD
 		});
 		eastPanel.add(detailsButton);
 		add(eastPanel, BorderLayout.EAST);
+	}
+
+	CounterRequestAggregation getCounterRequestAggregation() {
+		return counterRequestAggregation;
 	}
 
 	private boolean isErrorCounter() {

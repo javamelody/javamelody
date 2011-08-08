@@ -56,8 +56,37 @@ class JobInformationsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final transient List<JobInformations> jobInformationsList;
-	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 	private final MTable<JobInformations> table;
+
+	private class NameTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		NameTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// tooltip selon la description
+			if (row == -1) {
+				setToolTipText(null);
+			} else {
+				final MTable<JobInformations> myTable = getTable();
+				final JobInformations jobInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				final String description = jobInformations.getDescription();
+				if (description != null) {
+					setToolTipText("<html>" + description.replaceAll("\n", "<br/>"));
+				} else {
+					setToolTipText(null);
+				}
+			}
+			// et texte selon la valeur (nom du job)
+			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
+					column);
+		}
+	}
 
 	JobInformationsPanel(List<JobInformations> jobInformationsList) {
 		super(new BorderLayout());
@@ -104,32 +133,7 @@ class JobInformationsPanel extends JPanel {
 		table.addColumn("repeatInterval", I18N.getString("JobPeriodOrCronExpression"));
 		table.addColumn("paused", I18N.getString("JobPaused"));
 
-		final MTable<JobInformations> myTable = table;
-		final MDefaultTableCellRenderer nameTableCellRenderer = new MDefaultTableCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Component getTableCellRendererComponent(JTable jtable, Object value,
-					boolean isSelected, boolean hasFocus, int row, int column) {
-				// tooltip selon la description
-				if (row == -1) {
-					setToolTipText(null);
-				} else {
-					final JobInformations jobInformations = myTable.getList().get(
-							myTable.convertRowIndexToModel(row));
-					final String description = jobInformations.getDescription();
-					if (description != null) {
-						setToolTipText("<html>" + description.replaceAll("\n", "<br/>"));
-					} else {
-						setToolTipText(null);
-					}
-				}
-				// et texte selon la valeur (nom du job)
-				return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus,
-						row, column);
-			}
-		};
-		table.setColumnCellRenderer("name", nameTableCellRenderer);
+		table.setColumnCellRenderer("name", new NameTableCellRenderer());
 
 		final MDateTableCellRenderer durationTableCellRenderer = new MDateTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
@@ -262,5 +266,9 @@ class JobInformationsPanel extends JPanel {
 
 	final boolean confirm(String message) {
 		return MSwingUtilities.showConfirmation(this, message);
+	}
+
+	final MTable<JobInformations> getTable() {
+		return table;
 	}
 }

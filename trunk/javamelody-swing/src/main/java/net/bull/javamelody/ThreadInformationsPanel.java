@@ -56,6 +56,71 @@ class ThreadInformationsPanel extends JPanel {
 	private final boolean cpuTimeEnabled;
 	private final MTable<ThreadInformations> table;
 
+	private class NameTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		NameTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// tooltip selon la stack-trace
+			if (row == -1) {
+				setToolTipText(null);
+			} else {
+				final MTable<ThreadInformations> myTable = getTable();
+				final ThreadInformations threadInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
+				if (stackTrace != null && !stackTrace.isEmpty()) {
+					// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
+					final StringBuilder sb = new StringBuilder();
+					sb.append("<html>");
+					sb.append(threadInformations.getName());
+					sb.append("<br/>");
+					for (final StackTraceElement stackTraceElement : stackTrace) {
+						sb.append(stackTraceElement);
+						sb.append("<br/>");
+					}
+					setToolTipText(sb.toString());
+				} else {
+					setToolTipText(null);
+				}
+			}
+			// et texte selon la valeur (nom du thread)
+			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
+	private class StateTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		StateTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// icône correspondant à l'état
+			if (row == -1) {
+				setIcon(null);
+			} else {
+				final MTable<ThreadInformations> myTable = getTable();
+				final ThreadInformations threadInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				setIcon(ImageIconCache.getImageIcon("bullets/"
+						+ HtmlThreadInformationsReport.getStateIcon(threadInformations)));
+			}
+			// et texte selon la valeur (libellé de l'état)
+			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
 	ThreadInformationsPanel(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled) {
 		super(new BorderLayout());
@@ -92,62 +157,9 @@ class ThreadInformationsPanel extends JPanel {
 			table.addColumn("userTimeMillis", I18N.getString("Temps_user"));
 		}
 		final MTable<ThreadInformations> myTable = table;
-		final MDefaultTableCellRenderer stateTableCellRenderer = new MDefaultTableCellRenderer() {
-			private static final long serialVersionUID = 1L;
+		table.setColumnCellRenderer("state", new StateTableCellRenderer());
 
-			@Override
-			public Component getTableCellRendererComponent(JTable jtable, Object value,
-					boolean isSelected, boolean hasFocus, int row, int column) {
-				// icône correspondant à l'état
-				if (row == -1) {
-					setIcon(null);
-				} else {
-					final ThreadInformations threadInformations = myTable.getList().get(
-							myTable.convertRowIndexToModel(row));
-					setIcon(ImageIconCache.getImageIcon("bullets/"
-							+ HtmlThreadInformationsReport.getStateIcon(threadInformations)));
-				}
-				// et texte selon la valeur (libellé de l'état)
-				return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus,
-						row, column);
-			}
-		};
-		table.setColumnCellRenderer("state", stateTableCellRenderer);
-
-		final MDefaultTableCellRenderer nameTableCellRenderer = new MDefaultTableCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Component getTableCellRendererComponent(JTable jtable, Object value,
-					boolean isSelected, boolean hasFocus, int row, int column) {
-				// tooltip selon la stack-trace
-				if (row == -1) {
-					setToolTipText(null);
-				} else {
-					final ThreadInformations threadInformations = myTable.getList().get(
-							myTable.convertRowIndexToModel(row));
-					final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
-					if (stackTrace != null && !stackTrace.isEmpty()) {
-						// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
-						final StringBuilder sb = new StringBuilder();
-						sb.append("<html>");
-						sb.append(threadInformations.getName());
-						sb.append("<br/>");
-						for (final StackTraceElement stackTraceElement : stackTrace) {
-							sb.append(stackTraceElement);
-							sb.append("<br/>");
-						}
-						setToolTipText(sb.toString());
-					} else {
-						setToolTipText(null);
-					}
-				}
-				// et texte selon la valeur (nom du thread)
-				return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus,
-						row, column);
-			}
-		};
-		table.setColumnCellRenderer("name", nameTableCellRenderer);
+		table.setColumnCellRenderer("name", new NameTableCellRenderer());
 
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -244,5 +256,9 @@ class ThreadInformationsPanel extends JPanel {
 			dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
 			dialog.setVisible(true);
 		}
+	}
+
+	MTable<ThreadInformations> getTable() {
+		return table;
 	}
 }
