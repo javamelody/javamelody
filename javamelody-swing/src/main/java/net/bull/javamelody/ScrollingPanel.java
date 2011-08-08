@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 class ScrollingPanel extends JPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+	private static final String DETAILS_KEY = "Details";
 
 	private static final long serialVersionUID = 1L;
 
@@ -131,7 +132,7 @@ class ScrollingPanel extends JPanel {
 			javaInformationsPanelList.add(javaInformationsPanel);
 			westJavaInformationsPanel.add(javaInformationsPanel);
 		}
-		final MButton javaInformationsDetailsButton = new MButton(I18N.getString("Details"),
+		final MButton javaInformationsDetailsButton = new MButton(I18N.getString(DETAILS_KEY),
 				PLUS_ICON);
 		javaInformationsDetailsButton.addActionListener(new ActionListener() {
 			@Override
@@ -167,7 +168,7 @@ class ScrollingPanel extends JPanel {
 					+ I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
 							javaInformations.getPeakThreadCount(),
 							javaInformations.getTotalStartedThreadCount()));
-			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			final MButton detailsButton = new MButton(I18N.getString(DETAILS_KEY), PLUS_ICON);
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -231,7 +232,7 @@ class ScrollingPanel extends JPanel {
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
 							javaInformations.getHost()) + "</b>");
-			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			final MButton detailsButton = new MButton(I18N.getString(DETAILS_KEY), PLUS_ICON);
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -269,7 +270,7 @@ class ScrollingPanel extends JPanel {
 					+ I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
 							javaInformations.getHost(),
 							javaInformations.getCurrentlyExecutingJobCount()) + "</b>");
-			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			final MButton detailsButton = new MButton(I18N.getString(DETAILS_KEY), PLUS_ICON);
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
