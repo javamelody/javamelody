@@ -161,7 +161,10 @@ public class MPdfWriter extends MPrinter {
 			// we add some meta information to the document, and we open it
 			document.addAuthor(System.getProperty("user.name"));
 			document.addCreator("JavaMelody");
-			document.addTitle(buildTitle(table));
+			final String title = buildTitle(table);
+			if (title != null) {
+				document.addTitle(title);
+			}
 			document.open();
 
 			// ouvre la boîte de dialogue Imprimer de Adobe Reader
