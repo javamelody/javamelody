@@ -38,6 +38,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 /**
@@ -69,7 +70,15 @@ class Mailer {
 			synchronized (this) {
 				final InitialContext ctx = new InitialContext();
 				try {
-					session = (Session) ctx.lookup(jndiName);
+					try {
+						session = (Session) ctx.lookup("java:comp/env/" + jndiName);
+					} catch (final NameNotFoundException e) {
+						try {
+							session = (Session) ctx.lookup("java:/" + jndiName);
+						} catch (final NameNotFoundException e2) {
+							session = (Session) ctx.lookup(jndiName);
+						}
+					}
 				} catch (final ClassCastException e) {
 					// la déclaration d'une session mail dans un contexte tomcat par exemple
 					// nécessite d'avoir les jars javamail et activation dans le répertoire lib
