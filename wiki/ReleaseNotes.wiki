@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
   * fix issue 129: ArrayIndexOutOfBoundsException in GWTRequestWrapper in a particular case.
+  * fix issue 134: In JBoss, sending mails with weekly report should not need jboss-web.xml
 
   * The JRobin dependency is now available in the same maven repository as JavaMelody: [http://maven.glassfish.org/content/groups/public/org/jrobin/jrobin/1.5.9/]. So it is not necessary to add the jrobin repository or the jrobin dependency in your pom.xml. The jrobin dependency is included transitively with javamelody-core. Reference: [UserGuide#Dependencies]
 
