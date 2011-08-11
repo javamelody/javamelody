@@ -127,12 +127,13 @@ public class MRtfWriter extends MPdfWriter {
 		final RtfWriter2 writer = RtfWriter2.getInstance(document, out);
 
 		// title
-		if (table.getName() != null) {
-			final HeaderFooter header = new RtfHeaderFooter(new Paragraph(table.getName()));
+		final String title = buildTitle(table);
+		if (title != null) {
+			final HeaderFooter header = new RtfHeaderFooter(new Paragraph(title));
 			header.setAlignment(Element.ALIGN_LEFT);
 			header.setBorder(Rectangle.NO_BORDER);
 			document.setHeader(header);
-			document.addTitle(table.getName());
+			document.addTitle(title);
 		}
 
 		// advanced page numbers : x/y
