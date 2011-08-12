@@ -141,7 +141,16 @@ class SessionInformations implements Serializable {
 			remoteAddr = addr.toString();
 		}
 
-		final Object user = session.getAttribute(SESSION_REMOTE_USER);
+		Object user = session.getAttribute(SESSION_REMOTE_USER);
+		if (user == null) {
+			// si getRemoteUser() n'était pas renseigné, on essaye ACEGI_SECURITY_LAST_USERNAME
+			// (notamment pour Hudson/Jenkins)
+			user = session.getAttribute("ACEGI_SECURITY_LAST_USERNAME");
+			if (user == null) {
+				// et sinon SPRING_SECURITY_LAST_USERNAME
+				user = session.getAttribute("SPRING_SECURITY_LAST_USERNAME");
+			}
+		}
 		if (user == null) {
 			remoteUser = null;
 		} else {
