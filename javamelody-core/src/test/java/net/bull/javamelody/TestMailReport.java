@@ -70,6 +70,7 @@ public class TestMailReport {
 		final List<JavaInformations> javaInformationslist = Collections
 				.singletonList(new JavaInformations(null, true));
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
+		setProperty(Parameter.MAIL_SESSION, "mail/Session");
 		try {
 			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
 		} catch (final NoInitialContextException e) {
