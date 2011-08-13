@@ -451,6 +451,8 @@
 			<!-- Vérification des règles de codage -->
 			<plugin>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<!-- erreur cacheFile en 2.7 -->
+				<version>2.6</version>
 				<configuration>
 					<enableRSS>false</enableRSS>
 					<configLocation>${basedir}/.checkstyle.xml</configLocation>
