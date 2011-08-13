@@ -113,21 +113,26 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
     
 * Plugins
 
-    * [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin] :
+    * {{{https://plugins.atlassian.com/plugin/details/20909}JIRA/Confluence/Bamboo plugin}} :
     Les sources pour le plugin the JIRA/Confluence/Bamboo sont avec les sources de JavaMelody à
-    [http://javamelody.googlecode.com/svn/trunk/javamelody-core/].
+    {{{http://javamelody.googlecode.com/svn/trunk/javamelody-core/}http://javamelody.googlecode.com/svn/trunk/javamelody-core/}}.
     Comme indiqué ci-dessus, utiliser le target "all" du script ant pour construire le fichier jira-javamelody.jar.
 
-	* [http://wiki.jenkins-ci.org/display/JENKINS/Monitoring Hudson / Jenkins plugin] :
+	* {{{http://wiki.jenkins-ci.org/display/JENKINS/Monitoring}Hudson / Jenkins plugin}} :
 	Le gestionnaire des sources pour le plugin Monitoring dans Hudson / Jenkins est Subversion à
-	[http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/]
-	et il peut être consulté à [http://java.net/projects/hudson/sources/svn/show/trunk/hudson/plugins/monitoring] (todo).
+	{{{http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}}
+	(mirroir Git à {{{https://github.com/jenkinsci/monitoring-plugin}https://github.com/jenkinsci/monitoring-plugin}}).
 	Utiliser les commandes maven "mvn hpi:run" et "mvn package" comme pour tous les
-	[http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial plugins Hudson / Jenkins].
+	{{{http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial}Hudson / Jenkins plugins}}.
 
-	* [http://www.grails.org/plugin/grails-melody Grails plugin] :
+	* {{{http://www.grails.org/plugin/grails-melody}Grails plugin}} :
 	Le gestionnaire des sources pour le plugin JavaMelody dans Grails est Subversion à
-	[http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/]
-    
+	{{{http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/}http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/}}
+
+	* {{{https://github.com/sbower/nagios_javamelody_plugin}Nagios plugin}} :
+	Il y a aussi un plugin Nagios par Shawn Bower basé sur une commande lisant les dernières valeurs
+	dans les fichiers RRD (il démarre une JVM pour chaque valeur, ce qui peut poser problème à grande échelle).
+	The manager of sources is Git at {{{https://github.com/sbower/nagios_javamelody_plugin}https://github.com/sbower/nagios_javamelody_plugin}}
+	
     []
     

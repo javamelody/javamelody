@@ -125,7 +125,7 @@ Documentation avancée de Java Melody
 	que dans le cas du paramétrage du monitoring d'une application indiqué dans le {{{user_guide.html} guide d'utilisation}}.
 	En particulier le paramètre <<<resolution-seconds>>> définit la période d'appels des urls d'applications
 	depuis le serveur de collecte et la résolution des courbes dans le monitoring.
-	Le paramètre <<<system-actions-enabled>>> nécessite d'être ajouté avec la valeur true à la fois
+	Le paramètre <<<system-actions-enabled>>> nécessite d'être ajouté avec la valeur "true" à la fois
 	dans le serveur de collecte et dans les applications monitorées.
 
 	Le serveur de collecte peut envoyer des rapports hebdomadaires, quotidiens ou mensuels par mail
@@ -303,6 +303,25 @@ Documentation avancée de Java Melody
 +-------------------------------+
 	<property name="hibernate.jdbc.factory_class">net.bull.javamelody.HibernateBatcherFactory</property>
 +-------------------------------+
+
+
+* Utilisation de JavaMelody dans JBoss AS 7 (qui utilise OSGI)
+
+JBoss AS 7 utilise OSGI et il est nécessaire d'ajouter une configuration dans JBoss pour utiliser JavaMelody.
+
+Ajouter com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
+
++-------------------------------+
+    ...
+    <dependencies>
+        <module name="system" export="false" services="import">
+            <exports>
+                <include-set>
+                    <path name="com/sun/management"/>
+                    <path name="com/sun/script/javascript"/>
++-------------------------------+
+
+Sinon il y aura une erreur java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean
 
 
 * Utilisation de JavaMelody dans JonAS 5 (qui utilise OSGI)

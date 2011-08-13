@@ -74,7 +74,7 @@ Advanced documentation of Java Melody
 
 	** 4 to 17. Other settings (optional parameters, JDBC, EJB3, Spring, etc)
 
-	To complete the settings, just follow chapters 4 to 17 of the {{{user_guide_en.html} user guide}}.
+	To complete the settings, just follow the chapters 4 to 17 of the {{{user_guide_en.html} user guide}}.
 	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
 	
 	
@@ -213,7 +213,7 @@ Advanced documentation of Java Melody
 	(A system property like <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> can also be added
 	with the ip address of the collect server.)
 
-	If you do not want the people having access to the collect server to be able to add or remove
+	If you do not want that the people having access to the collect server to be able to add or remove
 	applications to monitor, you can forbid the writing to the file "applications.properties" which
 	contains the list of the applications to monitor. This file is located in the storage directory, 
 	"temp/javamelody/applications.properties" for example.
@@ -286,6 +286,25 @@ Advanced documentation of Java Melody
 +-------------------------------+
 	<property name="hibernate.jdbc.factory_class">net.bull.javamelody.HibernateBatcherFactory</property>
 +-------------------------------+
+
+
+* Usage of JavaMelody in JBoss AS 7 (which uses OSGI)
+
+JBoss AS 7 uses OSGI and so you need to add a configuration in JBoss to use JavaMelody.
+
+Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
+
++-------------------------------+
+    ...
+    <dependencies>
+        <module name="system" export="false" services="import">
+            <exports>
+                <include-set>
+                    <path name="com/sun/management"/>
+                    <path name="com/sun/script/javascript"/>
++-------------------------------+
+
+Otherwise you will have a java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean
 
 
 * Usage of JavaMelody in JonAS 5 (which uses OSGI)
