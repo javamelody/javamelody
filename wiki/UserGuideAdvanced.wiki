@@ -274,6 +274,23 @@ For standard documentation, see [UserGuide]
 }}}
 
 
+== Usage of JavaMelody in JBoss AS 7 (which uses OSGI) ==
+
+JBoss AS 7 uses OSGI and so you need to add a configuration in JBoss to use JavaMelody.
+
+Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
+{{{
+    ...
+    <dependencies>
+        <module name="system" export="false" services="import">
+            <exports>
+                <include-set>
+                    <path name="com/sun/management"/>
+                    <path name="com/sun/script/javascript"/>
+}}}
+Otherwise you will have a java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean
+
+
 == Usage of JavaMelody in JonAS 5 (which uses OSGI) ==
 
 JonAS 5 uses OSGI and so you need to add a configuration of felix in JonAS to use JavaMelody.
