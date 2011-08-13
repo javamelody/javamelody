@@ -63,6 +63,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	Browser: The html report of JavaMelody is best viewed with {{{http://www.mozilla.com}Firefox}},
 	{{{http://www.google.com/chrome}Chrome}} or MSIE8 (MSIE7 not recommended).
 
+	{{{http://www.slideshare.net/djkarlsen/significance-of-metrics} Roots conference slides by David Karlsen}}
+
 
 * Hudson / Jenkins Plugin
 
@@ -927,24 +929,22 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	If you don't have Maven2, the jar files can be found in the zip file in "Download"
 	inside the root directory and inside the directory <<<src/test/test-webapp/WEB-INF/lib>>>
 	
-	If you have Maven2, you can use the dependencies <<<javamelody-core>>>, <<<jrobin>>>, <<<itext>>>
-	and if you wish <<<xstream>>> in you <<<pom.xml>>> like this:
+	If you have Maven2, you can use the dependencies <<<javamelody-core>>>, 
+	(<<<jrobin>>> is included transitively with javamelody-core),
+	and optionally <<<itext>>> to add PDF export, in your <<<pom.xml>>> like this:
 
 +-------------------------------+
+	<!-- javamelody-core -->
 	<dependency>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-core</artifactId>
-		<version>1.19.0</version>
+		<version>1.30.0</version>
 	</dependency>
-	<dependency>
-		<groupId>org.jrobin</groupId>
-		<artifactId>jrobin</artifactId>
-		<version>1.5.9</version>
-	</dependency>
+	<!-- itext, option to add PDF export -->
 	<dependency>
 		<groupId>com.lowagie</groupId>
 		<artifactId>itext</artifactId>
-		<version>2.1.4</version>
+		<version>2.1.7</version>
 		<exclusions>
 			<exclusion>
 				<artifactId>bcmail-jdk14</artifactId>
@@ -954,16 +954,15 @@ Description and documentation of Java Melody : monitoring of Java EE application
 				<artifactId>bcprov-jdk14</artifactId>
 				<groupId>bouncycastle</groupId>
 			</exclusion>
+			<exclusion>
+				<artifactId>bctsp-jdk14</artifactId>
+				<groupId>bouncycastle</groupId>
+			</exclusion>
 		</exclusions>
-	</dependency>
-	<dependency>
-		<groupId>com.thoughtworks.xstream</groupId>
-		<artifactId>xstream</artifactId>
-		<version>1.3.1</version>
 	</dependency>
 	...
 	<repositories>
-		<!-- for javamelody -->
+		<!-- for javamelody and for jrobin -->
 		<repository>
 			<id>m.g.o-public</id>
 			<url>http://maven.glassfish.org/content/groups/public/</url>
@@ -974,25 +973,29 @@ Description and documentation of Java Melody : monitoring of Java EE application
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<!-- for jrobin -->
-		<repository>
-			<id>opennms-repo</id>
-			<name>OpenNMS Repository</name>
-			<url>http://repo.opennms.org/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 +-------------------------------+
 
+	The dependencies jrobin (included in javamelody-core) and if you wish <<<xstream>>>
+	as an option for the remoting with the collector server are:
 
-* Advanced documentation (setup with an ear, centralized collect server, JonAS 5, debugging logs...)
++-------------------------------+
+	<dependency>
+		<groupId>com.thoughtworks.xstream</groupId>
+		<artifactId>xstream</artifactId>
+		<version>1.3.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jrobin</groupId>
+		<artifactId>jrobin</artifactId>
+		<version>1.5.9</version>
+	</dependency>
++-------------------------------+
 
-	To setup with an ear, to deploy a centralized collect server, to use JonAS 5 or to enable
+
+* Advanced documentation (setup with an ear, centralized collect server, JBoss AS 7, JonAS 5, debugging logs...)
+
+	To setup with an ear, to deploy a centralized collect server, to use JBoss AS 7, JonAS 5 or to enable
 	debugging logs, see the {{{user_guide_advanced_en.html} advanced documentation}}
 	
 * Compilation and development
