@@ -290,10 +290,10 @@ Advanced documentation of Java Melody
 
 * Usage of JavaMelody in JBoss AS 7 (which uses OSGI)
 
-JBoss AS 7 uses OSGI and so you need to add a configuration in JBoss to use JavaMelody.
-
-Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
-
+	JBoss AS 7 uses OSGI and so you need to add a configuration in JBoss to use JavaMelody.
+	
+	Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
+	
 +-------------------------------+
     ...
     <dependencies>
@@ -303,8 +303,8 @@ Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
                     <path name="com/sun/management"/>
                     <path name="com/sun/script/javascript"/>
 +-------------------------------+
-
-Otherwise you will have a java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean
+	
+	Otherwise you will have a java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean
 
 
 * Usage of JavaMelody in JonAS 5 (which uses OSGI)

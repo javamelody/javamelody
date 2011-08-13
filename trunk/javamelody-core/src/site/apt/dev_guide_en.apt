@@ -113,7 +113,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
     The sources for the JIRA/Confluence/Bamboo plugin are with the sources of JavaMelody at
     {{{http://javamelody.googlecode.com/svn/trunk/javamelody-core/}http://javamelody.googlecode.com/svn/trunk/javamelody-core/}}.
     As said above, you can use the "all" target of the ant script to build the jira-javamelody.jar file.
-
+	
 	* {{{http://wiki.jenkins-ci.org/display/JENKINS/Monitoring}Hudson / Jenkins plugin}} :
 	The manager of sources for the Hudson / Jenkins Monitoring plugin is Subversion at
 	{{{http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}}
@@ -124,10 +124,10 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	* {{{http://www.grails.org/plugin/grails-melody}Grails plugin}} :
 	The manager of sources for the JavaMelody Grails plugin is Subversion at
 	{{{http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/}http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/}}
-
+	
 	* {{{https://github.com/sbower/nagios_javamelody_plugin}Nagios plugin}} :
 	There is also a Nagios plugin by Shawn Bower based on a command reading the last values
 	in the RRD files (it starts a JVM for each value, which may not scale a lot).
 	The manager of sources is Git at {{{https://github.com/sbower/nagios_javamelody_plugin}https://github.com/sbower/nagios_javamelody_plugin}}
-	
+
 	[]
