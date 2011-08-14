@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.31.0 ===
   * fix issue 128: Fix the shutdown process in JIRA 4.3.4 and clean it for Confluence/Bamboo/Jenkins/Hudson.
   * fix issue 129: ArrayIndexOutOfBoundsException in GWTRequestWrapper in a particular case.
   * fix issue 134: In JBoss, sending mails with weekly report should not need jboss-web.xml
