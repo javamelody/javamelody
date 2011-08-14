@@ -66,6 +66,7 @@ public abstract class PluginMonitoringFilter extends MonitoringFilter {
 		// au redémarrage de Tomcat, cf 8344 dans bugs Hudson/Jenkins:
 		// http://issues.jenkins-ci.org/browse/JENKINS-8344
 		emulatedSessionListener.removeAllActivationListeners();
+		super.destroy();
 	}
 
 	/** {@inheritDoc} */
