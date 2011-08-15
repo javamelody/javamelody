@@ -78,6 +78,7 @@ class ScrollingPanel extends JPanel {
 			final Counter rangeJobCounter = collector.getRangeCounter(range,
 					Counter.JOB_COUNTER_NAME);
 			addJobs(rangeJobCounter);
+			// TODO ajouter bouton "dernières erreurs" sur ce job (comme sur erreurs http et logs)
 			addCounter(rangeJobCounter);
 		}
 
@@ -264,7 +265,7 @@ class ScrollingPanel extends JPanel {
 			final List<JobInformations> jobInformationsList = javaInformations
 					.getJobInformationsList();
 			final JobInformationsPanel jobInformationsPanel = new JobInformationsPanel(
-					jobInformationsList);
+					jobInformationsList, rangeJobCounter);
 			jobInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
