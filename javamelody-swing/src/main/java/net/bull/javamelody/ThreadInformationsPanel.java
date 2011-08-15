@@ -21,7 +21,9 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -35,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -171,9 +174,17 @@ class ThreadInformationsPanel extends JPanel {
 			}
 		});
 
-		add(tableScrollPane, BorderLayout.NORTH);
-
 		table.setList(threadInformationsList);
+		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
+
+		add(tableScrollPane, BorderLayout.NORTH);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				tableScrollPane
+						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+			}
+		});
 	}
 
 	private void addButton() {
@@ -226,36 +237,42 @@ class ThreadInformationsPanel extends JPanel {
 				sb.append(stackTraceElement);
 				sb.append('\n');
 			}
-			final JTextArea textArea = new JTextArea();
-			textArea.setText(sb.toString());
-			textArea.setEditable(false);
-			// background nécessaire avec la plupart des look and feels dont Nimbus,
-			// sinon il reste blanc malgré editable false
-			textArea.setBackground(Color.decode("#E7E7E7"));
-			final JScrollPane scrollPane = new JScrollPane(textArea);
-			final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
-			buttonPanel.setOpaque(false);
-			// TODO traduction
-			final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
-			clipBoardButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					textArea.selectAll();
-					textArea.copy();
-					textArea.setCaretPosition(0);
-				}
-			});
-			buttonPanel.add(clipBoardButton);
-			final JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this),
-					threadInformations.getName(), true);
-			final JPanel contentPane = new JPanel(new BorderLayout());
-			contentPane.add(scrollPane, BorderLayout.CENTER);
-			contentPane.add(buttonPanel, BorderLayout.SOUTH);
-			dialog.setContentPane(contentPane);
-			dialog.pack();
-			dialog.setLocationRelativeTo(SwingUtilities.getWindowAncestor(this));
-			dialog.setVisible(true);
+			final String title = threadInformations.getName();
+			final String text = sb.toString();
+			showTextInPopup(this, title, text);
 		}
+	}
+
+	static void showTextInPopup(Component component, String title, String text) {
+		final JTextArea textArea = new JTextArea();
+		textArea.setText(text);
+		textArea.setEditable(false);
+		// background nécessaire avec la plupart des look and feels dont Nimbus,
+		// sinon il reste blanc malgré editable false
+		textArea.setBackground(Color.decode("#E7E7E7"));
+		final JScrollPane scrollPane = new JScrollPane(textArea);
+		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
+		buttonPanel.setOpaque(false);
+		// TODO traduction
+		final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
+		clipBoardButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textArea.selectAll();
+				textArea.copy();
+				textArea.setCaretPosition(0);
+			}
+		});
+		buttonPanel.add(clipBoardButton);
+		final Window window = SwingUtilities.getWindowAncestor(component);
+		final JDialog dialog = new JDialog((JFrame) window, title, true);
+		final JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane.add(scrollPane, BorderLayout.CENTER);
+		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		dialog.setContentPane(contentPane);
+		dialog.pack();
+		dialog.setLocationRelativeTo(window);
+		dialog.setVisible(true);
 	}
 
 	MTable<ThreadInformations> getTable() {
