@@ -937,7 +937,7 @@ or
 	</repositories>
 }}}
 
-The dependencies jrobin (included in javamelody-core) and if you wish {{{xstream}}} as an option for the remoting with the collector server are:
+The dependencies {{{jrobin}}} (included in javamelody-core) and if you wish {{{xstream}}} as an option for the remoting with the collector server are:
 
 {{{
 	<dependency>
