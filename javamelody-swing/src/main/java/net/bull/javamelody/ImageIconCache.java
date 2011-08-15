@@ -51,15 +51,12 @@ public final class ImageIconCache {
 			return null;
 		}
 
-		final URL url = ImageIconCache.class.getResource(Parameters.getResourcePath(fileName));
-		if (url == null) {
-			return null;
-		}
 		if (CACHE.size() > 150) {
 			CACHE.clear(); // pour éviter une fuite mémoire potentielle
 		}
 		ImageIcon imageIcon = CACHE.get(fileName);
 		if (imageIcon == null) {
+			final URL url = ImageIconCache.class.getResource(Parameters.getResourcePath(fileName));
 			imageIcon = new ImageIcon(url);
 			CACHE.put(fileName, imageIcon);
 		}
