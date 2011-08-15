@@ -277,6 +277,21 @@ class JobInformationsPanel extends JPanel {
 		// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
 		// uniquement car cela ferait trop de colonnes dans la page
 
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					final JobInformations jobInformations = getTable().getSelectedObject();
+					final CounterRequest counterRequest = getCounterRequest(jobInformations);
+					if (counterRequest.getStackTrace() != null) {
+						ThreadInformationsPanel.showTextInPopup(JobInformationsPanel.this,
+								counterRequest.getName(), counterRequest.getStackTrace());
+
+					}
+				}
+			}
+		});
+
 		add(tableScrollPane, BorderLayout.NORTH);
 
 		table.setList(jobInformationsList);
@@ -290,7 +305,7 @@ class JobInformationsPanel extends JPanel {
 		});
 	}
 
-	CounterRequest getCounterRequest(JobInformations jobInformations) {
+	final CounterRequest getCounterRequest(JobInformations jobInformations) {
 		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
 		// rq: la méthode getCounterRequestByName prend en compte l'éventuelle utilisation du paramètre
 		// job-transform-pattern qui peut faire que jobFullName != counterRequest.getName()
