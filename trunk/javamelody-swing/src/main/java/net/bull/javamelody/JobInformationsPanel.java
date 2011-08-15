@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -38,9 +39,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableColumn;
 
 import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
@@ -56,7 +59,39 @@ class JobInformationsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final transient List<JobInformations> jobInformationsList;
+	private final Counter jobCounter;
 	private final MTable<JobInformations> table;
+
+	private final class MeanTimeTableCellRenderer extends MDateTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		MeanTimeTableCellRenderer() {
+			super();
+			setDateFormat(I18N.createDurationFormat());
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// durée moyenne
+			final Date date;
+			if (row == -1) {
+				date = null;
+			} else {
+				final MTable<JobInformations> myTable = getTable();
+				final JobInformations jobInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				final CounterRequest counterRequest = getCounterRequest(jobInformations);
+				if (counterRequest.getMean() >= 0) {
+					date = new Date(counterRequest.getMean());
+				} else {
+					date = null;
+				}
+			}
+			return super.getTableCellRendererComponent(jtable, date, isSelected, hasFocus, row,
+					column);
+		}
+	}
 
 	private class NameTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -88,9 +123,83 @@ class JobInformationsPanel extends JPanel {
 		}
 	}
 
-	JobInformationsPanel(List<JobInformations> jobInformationsList) {
+	private final class StackTraceTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		StackTraceTableCellRenderer() {
+			super();
+			setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// tooltip et icône selon la stackTrace
+			if (row == -1) {
+				setToolTipText(null);
+				setIcon(null);
+			} else {
+				final MTable<JobInformations> myTable = getTable();
+				final JobInformations jobInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				final CounterRequest counterRequest = getCounterRequest(jobInformations);
+				final String stackTrace = counterRequest.getStackTrace();
+				if (stackTrace == null) {
+					setToolTipText(I18N.getString("JobWithoutLastException"));
+					setIcon(ImageIconCache.getImageIcon("bullets/green.png"));
+				} else {
+					setIcon(ImageIconCache.getImageIcon("bullets/red.png"));
+					setToolTipText("<html>"
+							+ stackTrace.replace("[See nested", "\n[See nested").replaceAll("\n",
+									"<br/>"));
+				}
+			}
+			// sans texte
+			return super.getTableCellRendererComponent(jtable, null, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
+	private final class RepeatIntervalTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+		private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
+		private final DateFormat dateFormat = I18N.createDurationFormat();
+
+		RepeatIntervalTableCellRenderer() {
+			super();
+			setHorizontalAlignment(SwingConstants.RIGHT);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// texte selon repeatInterval et cronExpression
+			final String text;
+			if (row == -1) {
+				text = null;
+			} else {
+				final MTable<JobInformations> myTable = getTable();
+				final JobInformations jobInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				// on n'affiche pas la période si >= 1 jour car ce formateur ne saurait pas l'afficher
+				if (jobInformations.getRepeatInterval() > 0
+						&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
+					text = dateFormat.format(new Date(jobInformations.getRepeatInterval()));
+				} else if (jobInformations.getCronExpression() != null) {
+					text = jobInformations.getCronExpression();
+				} else {
+					text = null;
+				}
+			}
+			return super.getTableCellRendererComponent(jtable, text, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
+	JobInformationsPanel(List<JobInformations> jobInformationsList, Counter rangeJobCounter) {
 		super(new BorderLayout());
 		this.jobInformationsList = jobInformationsList;
+		this.jobCounter = rangeJobCounter;
 		this.table = new MTable<JobInformations>();
 
 		setOpaque(false);
@@ -124,9 +233,14 @@ class JobInformationsPanel extends JPanel {
 		table.addColumn("group", I18N.getString("JobGroup"));
 		table.addColumn("name", I18N.getString("JobName"));
 		table.addColumn("jobClassName", I18N.getString("JobClassName"));
-		// TODO stackTrace et mean dépendent de counterRequest
-		//		table.addColumn("stackTrace", I18N.getString("JobLastException"));
-		//		table.addColumn("mean", I18N.getString("JobMeanTime"));
+		final TableColumn stackTraceTableColumn = new TableColumn(table.getColumnCount());
+		stackTraceTableColumn.setIdentifier(table.getColumnCount());
+		stackTraceTableColumn.setHeaderValue(I18N.getString("JobLastException"));
+		table.addColumn(stackTraceTableColumn);
+		final TableColumn meanTimeTableColumn = new TableColumn(table.getColumnCount());
+		meanTimeTableColumn.setIdentifier(table.getColumnCount());
+		meanTimeTableColumn.setHeaderValue(I18N.getString("JobMeanTime"));
+		table.addColumn(meanTimeTableColumn);
 		table.addColumn("elapsedTime", I18N.getString("JobElapsedTime"));
 		table.addColumn("previousFireTime", I18N.getString("JobPreviousFireTime"));
 		table.addColumn("nextFireTime", I18N.getString("JobNextFireTime"));
@@ -134,6 +248,8 @@ class JobInformationsPanel extends JPanel {
 		table.addColumn("paused", I18N.getString("JobPaused"));
 
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
+		stackTraceTableColumn.setCellRenderer(new StackTraceTableCellRenderer());
+		meanTimeTableColumn.setCellRenderer(new MeanTimeTableCellRenderer());
 
 		final MDateTableCellRenderer durationTableCellRenderer = new MDateTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
@@ -151,44 +267,15 @@ class JobInformationsPanel extends JPanel {
 		};
 		durationTableCellRenderer.setDateFormat(I18N.createDurationFormat());
 		table.setColumnCellRenderer("elapsedTime", durationTableCellRenderer);
+		// barre pour elapsedTime : toBar(counterRequest.getMean(), jobInformations.getElapsedTime())
 
 		final MDateTableCellRenderer fireTimeTableCellRenderer = new MDateTableCellRenderer();
 		fireTimeTableCellRenderer.setDateFormat(I18N.createDateAndTimeFormat());
 		table.setColumnCellRenderer("previousFireTime", fireTimeTableCellRenderer);
 		table.setColumnCellRenderer("nextFireTime", fireTimeTableCellRenderer);
-
-		//		final CounterRequest counterRequest = getCounterRequest(jobInformations);
-		//		// counterRequest ne peut pas être null ici
-		//		write("</td> <td align='center'>");
-		//		writeStackTrace(counterRequest.getStackTrace());
-		//		if (counterRequest.getMean() >= 0) {
-		//			write(nextColumnAlignRight);
-		//			write(durationFormat.format(new Date(counterRequest.getMean())));
-		//		} else {
-		//			write("</td><td>&nbsp;");
-		//		}
-		//		// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
-		//		// uniquement car cela ferait trop de colonnes dans la page
-		//
-		//		write(nextColumnAlignRight);
-		//		if (jobInformations.getElapsedTime() >= 0) {
-		//			write(durationFormat.format(new Date(jobInformations.getElapsedTime())));
-		//			write("<br/>");
-		//			writeln(toBar(counterRequest.getMean(), jobInformations.getElapsedTime()));
-		//		} else {
-		//			write(nbsp);
-		//		}
-		//		write(nextColumnAlignRight);
-		//		// on n'affiche pas la période si >= 1 jour car ce formateur ne saurait pas l'afficher
-		//		if (jobInformations.getRepeatInterval() > 0
-		//				&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
-		//			write(durationFormat.format(new Date(jobInformations.getRepeatInterval())));
-		//		} else if (jobInformations.getCronExpression() != null) {
-		//			// writer.write pour ne pas gérer de traductions si l'expression contient '#'
-		//			writer.write(htmlEncode(jobInformations.getCronExpression()));
-		//		} else {
-		//			write(nbsp);
-		//		}
+		table.setColumnCellRenderer("repeatInterval", new RepeatIntervalTableCellRenderer());
+		// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
+		// uniquement car cela ferait trop de colonnes dans la page
 
 		add(tableScrollPane, BorderLayout.NORTH);
 
@@ -201,6 +288,16 @@ class JobInformationsPanel extends JPanel {
 						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 			}
 		});
+	}
+
+	CounterRequest getCounterRequest(JobInformations jobInformations) {
+		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
+		// rq: la méthode getCounterRequestByName prend en compte l'éventuelle utilisation du paramètre
+		// job-transform-pattern qui peut faire que jobFullName != counterRequest.getName()
+		final CounterRequest result = jobCounter.getCounterRequestByName(jobFullName);
+		// getCounterRequestByName ne peut pas retourner null actuellement
+		assert result != null;
+		return result;
 	}
 
 	private void addButtons() {
