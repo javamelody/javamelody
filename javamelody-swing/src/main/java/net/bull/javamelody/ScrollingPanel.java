@@ -36,6 +36,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.util.MSwingUtilities;
+
 /**
  * Panel principal.
  * @author Emeric Vernat
@@ -78,7 +80,6 @@ class ScrollingPanel extends JPanel {
 			final Counter rangeJobCounter = collector.getRangeCounter(range,
 					Counter.JOB_COUNTER_NAME);
 			addJobs(rangeJobCounter);
-			// TODO ajouter bouton "dernières erreurs" sur ce job (comme sur erreurs http et logs)
 			addCounter(rangeJobCounter);
 		}
 
@@ -100,8 +101,26 @@ class ScrollingPanel extends JPanel {
 	}
 
 	private void addCounters() throws IOException {
-		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
+		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
+		for (final Counter counter : counters) {
 			addCounter(counter);
+		}
+		if (range.getPeriod() == Period.TOUT && counters.size() > 1) {
+			final JPanel clearAllCountersPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			clearAllCountersPanel.setOpaque(false);
+			final MButton clearAllCountersButton = new MButton(
+					I18N.getString("Reinitialiser_toutes_stats"));
+			clearAllCountersButton.setToolTipText(I18N.getString("Vider_toutes_stats"));
+			clearAllCountersButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (confirm(I18N.getString("confirm_vider_toutes_stats"))) {
+						// TODO
+					}
+				}
+			});
+			clearAllCountersPanel.add(clearAllCountersButton);
+			add(clearAllCountersPanel);
 		}
 	}
 
@@ -320,5 +339,9 @@ class ScrollingPanel extends JPanel {
 		// séparateur avec composants au-dessus et en-dessous
 		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		add(label);
+	}
+
+	final boolean confirm(String message) {
+		return MSwingUtilities.showConfirmation(this, message);
 	}
 }
