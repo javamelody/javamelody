@@ -41,6 +41,7 @@ import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MIntegerTableCellRenderer;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
+import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des statistiques.
@@ -56,7 +57,9 @@ class StatisticsPanel extends JPanel { // NOPMD
 	private final Counter counter;
 	private final Range range;
 	private final MTable<CounterRequest> table;
+	private final JPanel mainPanel;
 	private StatisticsPanel detailsPanel;
+	private JPanel lastErrorsPanel;
 
 	private static final class ResponseSizeMeanTableCellRenderer extends MIntegerTableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -166,23 +169,16 @@ class StatisticsPanel extends JPanel { // NOPMD
 			}
 			addColumns();
 		}
+		this.mainPanel = new JPanel(new BorderLayout());
+		this.mainPanel.setOpaque(false);
+		add(this.mainPanel, BorderLayout.NORTH);
 
-		//		// 2. débit et liens
-		//		writeSizeAndLinks(requests, counterName, globalRequest);
-		//
+		// TODO
 		//		// 3. détails par requêtes (non visible par défaut)
 		//		writeln("<div id='details" + counterName + "' style='display: none;'>");
 		//		writeRequests(counterName, counter.getChildCounterName(), requests,
 		//				isRequestGraphDisplayed(counter), true, false);
 		//		writeln("</div>");
-		//
-		//		// 4. logs (non visible par défaut)
-		//		if (isErrorCounter()) {
-		//			writeln("<div id='logs" + counterName + "' style='display: none;'>");
-		//			new HtmlCounterErrorReport(counter, writer).toHtml();
-		//			writeln("</div>");
-		//		}
-
 	}
 
 	private void addColumns() {
@@ -242,19 +238,29 @@ class StatisticsPanel extends JPanel { // NOPMD
 		}
 	}
 
-	public void showDetailRequests() {
+	void showDetailRequests() {
 		if (detailsPanel == null) {
 			detailsPanel = new StatisticsPanel(counter, range, counterRequestAggregation);
 			detailsPanel.setVisible(false);
 			final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 			detailsPanel.table.setList(requests);
 			detailsPanel.addScrollPane();
-			detailsPanel.add(new JLabel(" "), BorderLayout.SOUTH);
 
-			add(detailsPanel, BorderLayout.SOUTH);
+			add(detailsPanel, BorderLayout.CENTER);
 		}
 		detailsPanel.setVisible(!detailsPanel.isVisible());
 		detailsPanel.validate();
+	}
+
+	void showLastErrors() {
+		if (lastErrorsPanel == null) {
+			lastErrorsPanel = new CounterErrorPanel(counter);
+			lastErrorsPanel.setVisible(false);
+
+			add(lastErrorsPanel, BorderLayout.SOUTH);
+		}
+		lastErrorsPanel.setVisible(!lastErrorsPanel.isVisible());
+		lastErrorsPanel.validate();
 	}
 
 	private void addNoRequests() {
@@ -266,14 +272,14 @@ class StatisticsPanel extends JPanel { // NOPMD
 		} else {
 			key = "Aucune_requete";
 		}
-		add(new JLabel(' ' + I18N.getString(key)), BorderLayout.CENTER);
+		mainPanel.add(new JLabel(' ' + I18N.getString(key)), BorderLayout.CENTER);
 	}
 
 	private void addScrollPane() {
 		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
 		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
 				table);
-		add(tableScrollPane, BorderLayout.NORTH);
+		mainPanel.add(tableScrollPane, BorderLayout.NORTH);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -285,9 +291,16 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private void addRequestsSizeAndButtons() {
 		final CounterRequest globalRequest = this.counterRequestAggregation.getGlobalRequest();
+		final long end;
+		if (range.getEndDate() != null) {
+			// l'utilisateur a choisi une période personnalisée de date à date,
+			// donc la fin est peut-être avant la date du jour
+			end = Math.min(range.getEndDate().getTime(), System.currentTimeMillis());
+		} else {
+			end = System.currentTimeMillis();
+		}
 		// delta ni négatif ni à 0
-		final long deltaMillis = Math.max(System.currentTimeMillis()
-				- counter.getStartDate().getTime(), 1);
+		final long deltaMillis = Math.max(end - counter.getStartDate().getTime(), 1);
 		final long hitsParMinute = 60 * 1000 * globalRequest.getHits() / deltaMillis;
 		// Rq : si serveur utilisé de 8h à 20h (soit 12h) on peut multiplier par 2 ces hits par minute indiqués
 		// pour avoir une moyenne sur les heures d'activité sans la nuit
@@ -306,6 +319,18 @@ class StatisticsPanel extends JPanel { // NOPMD
 		final JPanel eastPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		eastPanel.setOpaque(false);
 		eastPanel.add(new JLabel(text));
+
+		if (counter.isBusinessFacadeCounter()) {
+			// TODO
+			//			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
+			//					+ "' class='noPrint'>#Resume_par_classe#</a>");
+			//			if (PDF_ENABLED) {
+			//				writeln(separator);
+			//				writeln("<a href='?part=runtimeDependencies&amp;format=pdf&amp;counter="
+			//						+ counterName + "' class='noPrint'>#Dependances#</a>");
+			//			}
+		}
+
 		final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
 		detailsButton.addActionListener(new ActionListener() {
 			@Override
@@ -319,7 +344,40 @@ class StatisticsPanel extends JPanel { // NOPMD
 			}
 		});
 		eastPanel.add(detailsButton);
-		add(eastPanel, BorderLayout.EAST);
+
+		if (isErrorCounter()) {
+			final MButton lastErrorsButton = new MButton(I18N.getString("Dernieres_erreurs"),
+					PLUS_ICON);
+			lastErrorsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					showLastErrors();
+					if (lastErrorsButton.getIcon() == PLUS_ICON) {
+						lastErrorsButton.setIcon(MINUS_ICON);
+					} else {
+						lastErrorsButton.setIcon(PLUS_ICON);
+					}
+				}
+			});
+			eastPanel.add(lastErrorsButton);
+		}
+		if (range.getPeriod() == Period.TOUT) {
+			final MButton clearCounterButton = new MButton(I18N.getString("Reinitialiser"));
+			clearCounterButton.setToolTipText(I18N.getFormattedString("Vider_stats",
+					counter.getName()));
+			final Counter myCounter = counter;
+			clearCounterButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (confirm(I18N.getFormattedString("confirm_vider_stats", myCounter.getName()))) {
+						// TODO
+					}
+				}
+			});
+			eastPanel.add(clearCounterButton);
+		}
+
+		mainPanel.add(eastPanel, BorderLayout.EAST);
 	}
 
 	CounterRequestAggregation getCounterRequestAggregation() {
@@ -336,5 +394,9 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private boolean isErrorAndNotJobCounter() {
 		return isErrorCounter() && !isJobCounter();
+	}
+
+	boolean confirm(String message) {
+		return MSwingUtilities.showConfirmation(this, message);
 	}
 }
