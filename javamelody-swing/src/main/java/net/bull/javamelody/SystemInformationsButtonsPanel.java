@@ -83,6 +83,17 @@ class SystemInformationsButtonsPanel extends JPanel {
 		northPanel.add(heapDumpButton);
 		final MButton heapHistoButton = new MButton(I18N.getString("heaphisto"),
 				ImageIconCache.getScaledImageIcon("memory.png", 20, 20));
+		heapHistoButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// TODO à déplacer dans constructeur du panel
+					getRemoteCollector().collectHeapHistogram();
+				} catch (final IOException ex) {
+					MSwingUtilities.showException(ex);
+				}
+			}
+		});
 		northPanel.add(heapHistoButton);
 
 		if (isSessionsEnabled()) {
