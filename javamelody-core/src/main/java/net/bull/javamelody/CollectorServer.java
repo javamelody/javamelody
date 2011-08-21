@@ -18,14 +18,8 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,8 +36,7 @@ import org.apache.log4j.Logger;
 class CollectorServer {
 	private static final Logger LOGGER = Logger.getLogger("javamelody");
 
-	private final Map<String, Collector> collectorsByApplication = new LinkedHashMap<String, Collector>();
-	private final Map<String, List<JavaInformations>> javaInformationsByApplication = new LinkedHashMap<String, List<JavaInformations>>();
+	private final Map<String, RemoteCollector> remoteCollectorsByApplication = new LinkedHashMap<String, RemoteCollector>();
 	private final Map<String, Throwable> lastCollectExceptionsByApplication = new LinkedHashMap<String, Throwable>();
 
 	private final Timer timer;
@@ -105,7 +98,6 @@ class CollectorServer {
 			final List<URL> urls = entry.getValue();
 			try {
 				collectForApplication(application, urls);
-				assert collectorsByApplication.size() == javaInformationsByApplication.size();
 				lastCollectExceptionsByApplication.remove(application);
 			} catch (final Throwable e) { // NOPMD
 				// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
@@ -121,16 +113,31 @@ class CollectorServer {
 		assert application != null;
 		assert urls != null;
 		final long start = System.currentTimeMillis();
-		final String messageForReport = collectDataForApplication(application, urls);
 
-		final List<JavaInformations> javaInformationsList = javaInformationsByApplication
-				.get(application);
-		final Collector collector = collectorsByApplication.get(application);
-		if (collector == null) {
-			// collector peut être null si ce collectorServer vient d'être arrêté par exemple
-			javaInformationsByApplication.remove(application);
-			return null;
+		final boolean remoteCollectorAvailable = isApplicationDataAvailable(application);
+		final RemoteCollector remoteCollector;
+		if (!remoteCollectorAvailable) {
+			remoteCollector = new RemoteCollector(application, urls);
+		} else {
+			remoteCollector = getRemoteCollectorByApplication(application);
 		}
+		final String messageForReport = remoteCollector.collectData();
+		if (!remoteCollectorAvailable) {
+			// on initialise les remoteCollectors au fur et à mesure
+			// puisqu'on ne peut pas forcément au démarrage
+			// car la webapp à monitorer peut être indisponible
+			remoteCollectorsByApplication.put(application, remoteCollector);
+
+			if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
+					&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
+				scheduleReportMailForCollectorServer(application);
+				LOGGER.info("Periodic report scheduled for the application " + application + " to "
+						+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
+			}
+		}
+		final List<JavaInformations> javaInformationsList = remoteCollector
+				.getJavaInformationsList();
+		final Collector collector = remoteCollector.getCollector();
 		collector.collectWithoutErrors(javaInformationsList);
 		LOGGER.info("collect for the application " + application + " done in "
 				+ (System.currentTimeMillis() - start) + "ms");
@@ -145,161 +152,33 @@ class CollectorServer {
 		return messageForReport;
 	}
 
-	private String collectDataForApplication(String application, List<URL> urls) throws IOException {
-		final List<JavaInformations> javaInformationsList = new ArrayList<JavaInformations>();
-		final StringBuilder sb = new StringBuilder();
-		Collector collector = collectorsByApplication.get(application);
-		for (final URL url : urls) {
-			final List<Serializable> serialized = new LabradorRetriever(url).call();
-			final List<Counter> counters = new ArrayList<Counter>();
-			for (final Serializable serializable : serialized) {
-				if (serializable instanceof Counter) {
-					final Counter counter = (Counter) serializable;
-					counter.setApplication(application);
-					counters.add(counter);
-				} else if (serializable instanceof JavaInformations) {
-					final JavaInformations newJavaInformations = (JavaInformations) serializable;
-					javaInformationsList.add(newJavaInformations);
-				} else if (serializable instanceof String) {
-					sb.append(serializable).append('\n');
-				}
-			}
-			if (collector == null) {
-				// on initialise les collectors au fur et à mesure
-				// puisqu'on ne peut pas forcément au démarrage
-				// car la webapp à monitorer peut être indisponible
-				collector = createCollector(application, counters);
-				collectorsByApplication.put(application, collector);
-			} else {
-				addRequestsAndErrors(collector, counters);
-			}
-		}
-		javaInformationsByApplication.put(application, javaInformationsList);
-		final String messageForReport;
-		if (sb.length() == 0) {
-			messageForReport = null;
-		} else {
-			messageForReport = sb.toString();
-		}
-		return messageForReport;
-	}
-
 	List<SessionInformations> collectSessionInformations(String application, String sessionId)
 			throws IOException {
-		assert application != null;
-		// sessionId est null si on veut toutes les sessions
-		if (sessionId == null) {
-			// récupération à la demande des sessions
-			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
-			for (final URL url : getUrlsByApplication(application)) {
-				final URL sessionsUrl = new URL(url.toString() + '&'
-						+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.SESSIONS_PART);
-				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
-				final List<SessionInformations> sessions = labradorRetriever.call();
-				sessionsInformations.addAll(sessions);
-			}
-			SessionListener.sortSessions(sessionsInformations);
-			return sessionsInformations;
-		}
-		SessionInformations found = null;
-		for (final URL url : getUrlsByApplication(application)) {
-			final URL sessionsUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.SESSIONS_PART + '&'
-					+ HttpParameters.SESSION_ID_PARAMETER + '=' + sessionId);
-			final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
-			final SessionInformations session = (SessionInformations) labradorRetriever.call();
-			if (session != null) {
-				found = session;
-				break;
-			}
-		}
-		// si found est toujours null, alors la session a été invalidée
-		return Collections.singletonList(found);
+		return getRemoteCollectorByApplication(application).collectSessionInformations(sessionId);
 	}
 
 	HeapHistogram collectHeapHistogram(String application) throws IOException {
-		assert application != null;
-		// récupération à la demande des HeapHistogram
-		HeapHistogram heapHistoTotal = null;
-		for (final URL url : getUrlsByApplication(application)) {
-			final URL heapHistoUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.HEAP_HISTO_PART);
-			final LabradorRetriever labradorRetriever = new LabradorRetriever(heapHistoUrl);
-			final HeapHistogram heapHisto = labradorRetriever.call();
-			if (heapHistoTotal == null) {
-				heapHistoTotal = heapHisto;
-			} else {
-				heapHistoTotal.add(heapHisto);
-			}
-		}
-		return heapHistoTotal;
+		return getRemoteCollectorByApplication(application).collectHeapHistogram();
 	}
 
 	DatabaseInformations collectDatabaseInformations(String application, int requestIndex)
 			throws IOException {
-		final URL url = getUrlsByApplication(application).get(0);
-		final URL databaseUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + DATABASE_PART
-				+ '&' + REQUEST_PARAMETER + '=' + requestIndex);
-		return new LabradorRetriever(databaseUrl).call();
+		return getRemoteCollectorByApplication(application).collectDatabaseInformations(
+				requestIndex);
 	}
 
 	List<List<ConnectionInformations>> collectConnectionInformations(String application)
 			throws IOException {
-		assert application != null;
-		// récupération à la demande des connections
-		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
-		for (final URL url : getUrlsByApplication(application)) {
-			final URL connectionsUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.CONNECTIONS_PART);
-			final LabradorRetriever labradorRetriever = new LabradorRetriever(connectionsUrl);
-			final List<ConnectionInformations> connections = labradorRetriever.call();
-			connectionInformations.add(connections);
-		}
-		return connectionInformations;
+		return getRemoteCollectorByApplication(application).collectConnectionInformations();
 	}
 
 	List<List<ProcessInformations>> collectProcessInformations(String application)
 			throws IOException {
-		assert application != null;
-		// récupération à la demande des processus
-		final List<List<ProcessInformations>> processInformations = new ArrayList<List<ProcessInformations>>();
-		for (final URL url : getUrlsByApplication(application)) {
-			final URL processUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.PROCESSES_PART);
-			final LabradorRetriever labradorRetriever = new LabradorRetriever(processUrl);
-			final List<ProcessInformations> processList = labradorRetriever.call();
-			processInformations.add(processList);
-		}
-		return processInformations;
+		return getRemoteCollectorByApplication(application).collectProcessInformations();
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists(String application) {
-		final List<List<ThreadInformations>> result = new ArrayList<List<ThreadInformations>>();
-		for (final JavaInformations javaInformations : getJavaInformationsByApplication(application)) {
-			result.add(new ArrayList<ThreadInformations>(javaInformations
-					.getThreadInformationsList()));
-		}
-		return result;
-	}
-
-	private void addRequestsAndErrors(Collector collector, List<Counter> counters) {
-		for (final Counter newCounter : counters) {
-			final Counter counter = collector.getCounterByName(newCounter.getName());
-			// counter.isDisplayed() peut changer pour spring, ejb ou services selon l'utilisation
-			counter.setDisplayed(newCounter.isDisplayed());
-			counter.addRequestsAndErrors(newCounter);
-		}
-	}
-
-	private Collector createCollector(String application, List<Counter> counters) {
-		final Collector collector = new Collector(application, counters);
-		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
-				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
-			scheduleReportMailForCollectorServer(application);
-			LOGGER.info("Periodic report scheduled for the application " + application + " to "
-					+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
-		}
-		return collector;
+		return getRemoteCollectorByApplication(application).getThreadInformationsLists();
 	}
 
 	void addCollectorApplication(String application, List<URL> urls) throws IOException {
@@ -309,8 +188,7 @@ class CollectorServer {
 
 	void removeCollectorApplication(String application) throws IOException {
 		Parameters.removeCollectorApplication(application);
-		collectorsByApplication.remove(application);
-		javaInformationsByApplication.remove(application);
+		remoteCollectorsByApplication.remove(application);
 	}
 
 	/**
@@ -319,7 +197,7 @@ class CollectorServer {
 	 * @return Collector
 	 */
 	Collector getCollectorByApplication(String application) {
-		return collectorsByApplication.get(application);
+		return getRemoteCollectorByApplication(application).getCollector();
 	}
 
 	/**
@@ -328,7 +206,14 @@ class CollectorServer {
 	 * @return Liste de JavaInformations
 	 */
 	List<JavaInformations> getJavaInformationsByApplication(String application) {
-		return javaInformationsByApplication.get(application);
+		return getRemoteCollectorByApplication(application).getJavaInformationsList();
+	}
+
+	private RemoteCollector getRemoteCollectorByApplication(String application) {
+		assert application != null;
+		final RemoteCollector remoteCollector = remoteCollectorsByApplication.get(application);
+		assert remoteCollector != null;
+		return remoteCollector;
 	}
 
 	/**
@@ -345,10 +230,10 @@ class CollectorServer {
 	 * @return String
 	 */
 	String getFirstApplication() {
-		if (collectorsByApplication.isEmpty()) {
+		if (remoteCollectorsByApplication.isEmpty()) {
 			return null;
 		}
-		return collectorsByApplication.keySet().iterator().next();
+		return remoteCollectorsByApplication.keySet().iterator().next();
 	}
 
 	/**
@@ -359,8 +244,7 @@ class CollectorServer {
 	 */
 	boolean isApplicationDataAvailable(String application) {
 		assert application != null;
-		return collectorsByApplication.containsKey(application)
-				&& javaInformationsByApplication.containsKey(application);
+		return remoteCollectorsByApplication.containsKey(application);
 	}
 
 	void scheduleReportMailForCollectorServer(String application) {
@@ -401,13 +285,12 @@ class CollectorServer {
 	 */
 	void stop() {
 		timer.cancel();
-		for (final Collector collector : collectorsByApplication.values()) {
-			collector.stop();
+		for (final RemoteCollector remoteCollector : remoteCollectorsByApplication.values()) {
+			remoteCollector.getCollector().stop();
 		}
 
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
-		collectorsByApplication.clear();
-		javaInformationsByApplication.clear();
+		remoteCollectorsByApplication.clear();
 	}
 
 	static List<URL> getUrlsByApplication(String application) throws IOException {
