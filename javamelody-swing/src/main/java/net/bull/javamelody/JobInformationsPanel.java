@@ -58,7 +58,8 @@ import net.bull.javamelody.util.MSwingUtilities;
 class JobInformationsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private final transient List<JobInformations> jobInformationsList;
+	@SuppressWarnings("all")
+	private final List<JobInformations> jobInformationsList;
 	private final Counter jobCounter;
 	private final MTable<JobInformations> table;
 

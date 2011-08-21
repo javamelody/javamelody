@@ -53,7 +53,8 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private static final long serialVersionUID = 1L;
 
-	private final transient CounterRequestAggregation counterRequestAggregation;
+	@SuppressWarnings("all")
+	private final CounterRequestAggregation counterRequestAggregation;
 	private final Counter counter;
 	private final Range range;
 	private final MTable<CounterRequest> table;
