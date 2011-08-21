@@ -65,6 +65,7 @@ class JavaInformationsPanel extends JPanel {
 
 	JavaInformationsPanel(JavaInformations javaInformations, URL monitoringUrl) {
 		super(new BorderLayout());
+		assert javaInformations != null;
 		this.javaInformations = javaInformations;
 		this.monitoringUrl = monitoringUrl;
 		setOpaque(false);

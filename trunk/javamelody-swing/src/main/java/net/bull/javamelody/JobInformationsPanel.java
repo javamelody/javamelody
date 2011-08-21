@@ -241,6 +241,8 @@ class JobInformationsPanel extends JPanel {
 
 	JobInformationsPanel(List<JobInformations> jobInformationsList, Counter rangeJobCounter) {
 		super(new BorderLayout());
+		assert jobInformationsList != null;
+		assert rangeJobCounter != null;
 		this.jobInformationsList = jobInformationsList;
 		this.jobCounter = rangeJobCounter;
 		this.table = new MTable<JobInformations>();
