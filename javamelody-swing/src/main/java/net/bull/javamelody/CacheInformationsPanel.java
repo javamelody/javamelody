@@ -54,6 +54,7 @@ class CacheInformationsPanel extends JPanel {
 
 	CacheInformationsPanel(List<CacheInformations> cacheInformationsList) {
 		super(new BorderLayout());
+		assert cacheInformationsList != null;
 		this.cacheInformationsList = cacheInformationsList;
 		this.hitsRatioEnabled = HtmlCacheInformationsReport
 				.isHitsRatioEnabled(cacheInformationsList);
