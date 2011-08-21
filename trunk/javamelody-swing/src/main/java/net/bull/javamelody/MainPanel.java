@@ -19,12 +19,15 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+
+import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel principal.
@@ -48,5 +51,10 @@ class MainPanel extends JPanel {
 
 		add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
 		add(southPanel, BorderLayout.CENTER);
+	}
+
+	static void addOngletFromChild(Component child, JPanel panel) {
+		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
+		// TODO
 	}
 }

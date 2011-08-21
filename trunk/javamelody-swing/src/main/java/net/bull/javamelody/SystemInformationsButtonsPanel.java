@@ -87,8 +87,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// TODO à déplacer dans constructeur du panel
-					getRemoteCollector().collectHeapHistogram();
+					addOnglet(new HeapInformationsPanel(getRemoteCollector()));
 				} catch (final IOException ex) {
 					MSwingUtilities.showException(ex);
 				}
@@ -115,8 +114,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						// TODO à déplacer dans constructeur du panel
-						getRemoteCollector().collectSessionInformations(null);
+						addOnglet(new SessionInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
 						MSwingUtilities.showException(ex);
 					}
@@ -157,8 +155,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// TODO à déplacer dans constructeur du panel
-					getRemoteCollector().collectProcessInformations();
+					addOnglet(new ProcessInformationsPanel(getRemoteCollector()));
 				} catch (final IOException ex) {
 					MSwingUtilities.showException(ex);
 				}
@@ -191,8 +188,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						// TODO à déplacer dans constructeur du panel
-						getRemoteCollector().collectConnectionInformations();
+						addOnglet(new SessionInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
 						MSwingUtilities.showException(ex);
 					}
@@ -206,8 +202,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						// TODO à déplacer dans constructeur du panel
-						getRemoteCollector().collectDatabaseInformations(0);
+						addOnglet(new DatabaseInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
 						MSwingUtilities.showException(ex);
 					}
@@ -231,6 +226,10 @@ class SystemInformationsButtonsPanel extends JPanel {
 
 	private boolean isSessionsEnabled() {
 		return javaInformationsList.get(0).getSessionCount() >= 0;
+	}
+
+	void addOnglet(JPanel panel) {
+		MainPanel.addOngletFromChild(this, panel);
 	}
 
 	boolean confirm(String message) {
