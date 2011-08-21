@@ -62,7 +62,7 @@ class PdfJavaInformationsReport {
 		private static final double UNIT_SIZE = (MAX_VALUE - MIN_VALUE)
 				/ (FULL_BLOCKS * PARTIAL_BLOCKS);
 
-		private final BufferedImage image = new BufferedImage(106, 10, BufferedImage.TYPE_INT_RGB);
+		private final BufferedImage image = new BufferedImage(106, 10, BufferedImage.TYPE_INT_ARGB);
 		private final Graphics graphics = image.getGraphics();
 		private int x; // initialisé à 0
 
