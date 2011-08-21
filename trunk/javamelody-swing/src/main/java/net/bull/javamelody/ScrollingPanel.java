@@ -50,6 +50,8 @@ class ScrollingPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
+	private final RemoteCollector remoteCollector;
+	@SuppressWarnings("all")
 	private final Collector collector;
 	@SuppressWarnings("all")
 	private final List<JavaInformations> javaInformationsList;
@@ -57,11 +59,12 @@ class ScrollingPanel extends JPanel {
 	// TODO range selon sélection (jour par défaut)
 	private final Range range = Period.TOUT.getRange();
 
-	ScrollingPanel(Collector collector, List<JavaInformations> javaInformationsList,
-			URL monitoringUrl) throws IOException {
+	ScrollingPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
 		super();
-		this.collector = collector;
-		this.javaInformationsList = javaInformationsList;
+		assert remoteCollector != null;
+		this.remoteCollector = remoteCollector;
+		this.collector = remoteCollector.getCollector();
+		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
 
 		setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
@@ -138,7 +141,7 @@ class ScrollingPanel extends JPanel {
 		final List<JavaInformations> list = javaInformationsList;
 		// TODO mettre propriété système system-actions-enabled dans jnlp
 		if (Parameters.isSystemActionsEnabled()) {
-			add(new SystemInformationsButtonsPanel(list, monitoringUrl));
+			add(new SystemInformationsButtonsPanel(remoteCollector, monitoringUrl));
 		}
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<JavaInformationsPanel>(

@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -36,11 +35,9 @@ class MainPanel extends JPanel {
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
-	MainPanel(Collector collector, List<JavaInformations> javaInformationsList, URL monitoringUrl)
-			throws IOException {
+	MainPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
 		super(new BorderLayout());
-		final ScrollingPanel scrollingPanel = new ScrollingPanel(collector, javaInformationsList,
-				monitoringUrl);
+		final ScrollingPanel scrollingPanel = new ScrollingPanel(remoteCollector, monitoringUrl);
 		final JScrollPane scrollPane = new JScrollPane(scrollingPanel);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
@@ -49,8 +46,7 @@ class MainPanel extends JPanel {
 		//		southPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		southPanel.add(scrollPane, BorderLayout.CENTER);
 
-		add(new MainButtonsPanel(collector, javaInformationsList, monitoringUrl),
-				BorderLayout.NORTH);
+		add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
 		add(southPanel, BorderLayout.CENTER);
 	}
 }
