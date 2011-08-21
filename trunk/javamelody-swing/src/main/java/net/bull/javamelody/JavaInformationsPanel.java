@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -38,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+import net.bull.javamelody.PdfJavaInformationsReport.Bar;
 import net.bull.javamelody.util.MSwingUtilities;
 import net.bull.javamelody.util.SpringUtilities;
 
@@ -79,12 +81,12 @@ class JavaInformationsPanel extends JPanel {
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
 		final long maxMemory = memoryInformations.getMaxMemory();
-		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
-		//		writeln(toBar(memoryInformations.getUsedMemoryPercentage()));
 		addLabel(I18N.getString("memoire_utilisee"));
-		addValue(integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo")
-				+ " / " + integerFormat.format(maxMemory / 1024 / 1024) + ' '
-				+ I18N.getString("Mo"));
+		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
+		addJLabel(toBar(
+				integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo") + " / "
+						+ integerFormat.format(maxMemory / 1024 / 1024) + ' '
+						+ I18N.getString("Mo"), memoryInformations.getUsedMemoryPercentage()));
 		if (javaInformations.getSessionCount() >= 0) {
 			addLabel(I18N.getString("nb_sessions_http"));
 			// 			writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
@@ -104,8 +106,8 @@ class JavaInformationsPanel extends JPanel {
 					+ ')');
 			//			writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
 			if (maxConnectionCount > 0) {
-				addValue(integerFormat.format(usedConnectionCount));
-				//			writeln(toBar(javaInformations.getUsedConnectionPercentage()));
+				addJLabel(toBar(integerFormat.format(usedConnectionCount),
+						javaInformations.getUsedConnectionPercentage()));
 			} else {
 				addValue(integerFormat.format(usedConnectionCount) + " / "
 						+ integerFormat.format(maxConnectionCount));
@@ -165,10 +167,10 @@ class JavaInformationsPanel extends JPanel {
 			final long unixMaxFileDescriptorCount = javaInformations
 					.getUnixMaxFileDescriptorCount();
 			addLabel(I18N.getString("nb_fichiers"));
-			addValue(integerFormat.format(unixOpenFileDescriptorCount) + " / "
-					+ integerFormat.format(unixMaxFileDescriptorCount));
+			addJLabel(toBar(integerFormat.format(unixOpenFileDescriptorCount) + " / "
+					+ integerFormat.format(unixMaxFileDescriptorCount),
+					javaInformations.getUnixOpenFileDescriptorPercentage()));
 			// writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
-			// writeln(toBar(javaInformations.getUnixOpenFileDescriptorPercentage()));
 		}
 		writeServerInfoAndContextPath();
 		addLabel(I18N.getString("Demarrage"));
@@ -260,7 +262,7 @@ class JavaInformationsPanel extends JPanel {
 			addLabel("Tomcat " + I18N.htmlEncode(tomcatInformations.getName(), false));
 			// rq: on n'affiche pas pour l'instant getCurrentThreadCount
 			final int currentThreadsBusy = tomcatInformations.getCurrentThreadsBusy();
-			addValue(I18N.getString("busyThreads") + equals
+			final String value = I18N.getString("busyThreads") + equals
 					+ integerFormat.format(currentThreadsBusy) + " /  "
 					+ integerFormat.format(tomcatInformations.getMaxThreads()) + '\n'
 					+ I18N.getString("bytesReceived") + equals
@@ -274,11 +276,14 @@ class JavaInformationsPanel extends JPanel {
 					+ I18N.getString("processingTime") + equals
 					+ integerFormat.format(tomcatInformations.getProcessingTime()) + '\n'
 					+ I18N.getString("maxProcessingTime") + equals
-					+ integerFormat.format(tomcatInformations.getMaxTime()));
+					+ integerFormat.format(tomcatInformations.getMaxTime());
+			final JLabel label = toBar(value,
+					100d * currentThreadsBusy / tomcatInformations.getMaxThreads());
+			label.setVerticalTextPosition(SwingConstants.TOP);
+			addJLabel(label);
 			//			if (onlyOne) {
 			//				writeGraph("tomcatBusyThreads", integerFormat.format(currentThreadsBusy));
 			//          }
-			//			writeln(toBar(100d * currentThreadsBusy / tomcatInformations.getMaxThreads()));
 			//			if (onlyOne) {
 			//				writeGraph("tomcatBytesReceived",
 			//						integerFormat.format(tomcatInformations.getBytesReceived()));
@@ -302,9 +307,8 @@ class JavaInformationsPanel extends JPanel {
 			final String permGen = integerFormat.format(usedPermGen / 1024 / 1024) + ' '
 					+ I18N.getString("Mo");
 			if (maxPermGen > 0) {
-				addValue(permGen + " / " + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
-						+ I18N.getString("Mo"));
-				// writeln(toBar(memoryInformations.getUsedPermGenPercentage()));
+				addJLabel(toBar(permGen + " / " + integerFormat.format(maxPermGen / 1024 / 1024)
+						+ ' ' + I18N.getString("Mo"), memoryInformations.getUsedPermGenPercentage()));
 			} else {
 				addValue(permGen);
 			}
@@ -390,6 +394,25 @@ class JavaInformationsPanel extends JPanel {
 
 	private void addJLabel(JLabel jLabel) {
 		gridPanel.add(jLabel);
+	}
+
+	static JLabel toBar(String text, double percentValue) { // NOPMD
+		String tmp = text;
+		if (tmp.indexOf('\n') != -1) {
+			// JLabel accepte la syntaxe html
+			tmp = "<html>" + tmp.replace("\n", "<br/>");
+		}
+		final JLabel label = new JLabel(tmp);
+		label.setIconTextGap(10);
+		try {
+			label.setIcon(new ImageIcon(Bar.toBar(percentValue)));
+		} catch (final IOException e) {
+			throw new IllegalStateException(e);
+		}
+		label.setHorizontalTextPosition(SwingConstants.LEFT);
+		final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
+		label.setToolTipText(I18N.createPercentFormat().format(myPercent) + '%');
+		return label;
 	}
 
 	URL getMonitoringUrl() {

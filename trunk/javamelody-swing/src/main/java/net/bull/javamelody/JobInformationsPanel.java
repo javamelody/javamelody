@@ -93,6 +93,49 @@ class JobInformationsPanel extends JPanel {
 		}
 	}
 
+	private final class ElapsedTimeTableCellRenderer extends MDateTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		ElapsedTimeTableCellRenderer() {
+			super();
+			setDateFormat(I18N.createDurationFormat());
+			setHorizontalTextPosition(LEFT);
+			// pas pratique pour la hauteur même avec adjustRowHeight:
+			//			setVerticalTextPosition(TOP);
+			//			setHorizontalTextPosition(CENTER);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// durée écoulée et barre de progression
+			final Date date;
+			if (row == -1) {
+				date = null;
+				setIcon(null);
+				setToolTipText(null);
+			} else {
+				final MTable<JobInformations> myTable = getTable();
+				final JobInformations jobInformations = myTable.getList().get(
+						myTable.convertRowIndexToModel(row));
+				final long elapsedTime = jobInformations.getElapsedTime();
+				if (elapsedTime >= 0) {
+					date = new Date(elapsedTime);
+					final CounterRequest counterRequest = getCounterRequest(jobInformations);
+					final JLabel barLabel = toBar(counterRequest.getMean(), elapsedTime);
+					setIcon(barLabel.getIcon());
+					setToolTipText(barLabel.getToolTipText());
+				} else {
+					date = null;
+					setIcon(null);
+					setToolTipText(null);
+				}
+			}
+			return super.getTableCellRendererComponent(jtable, date, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
 	private class NameTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
 
@@ -250,24 +293,7 @@ class JobInformationsPanel extends JPanel {
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
 		stackTraceTableColumn.setCellRenderer(new StackTraceTableCellRenderer());
 		meanTimeTableColumn.setCellRenderer(new MeanTimeTableCellRenderer());
-
-		final MDateTableCellRenderer durationTableCellRenderer = new MDateTableCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void setValue(final Object value) {
-				final Long elapsedTime = (Long) value;
-				if (elapsedTime >= 0) {
-					final Date date = new Date(elapsedTime);
-					setText(getDateFormat().format(date));
-				} else {
-					setText(null);
-				}
-			}
-		};
-		durationTableCellRenderer.setDateFormat(I18N.createDurationFormat());
-		table.setColumnCellRenderer("elapsedTime", durationTableCellRenderer);
-		// barre pour elapsedTime : toBar(counterRequest.getMean(), jobInformations.getElapsedTime())
+		table.setColumnCellRenderer("elapsedTime", new ElapsedTimeTableCellRenderer());
 
 		final MDateTableCellRenderer fireTimeTableCellRenderer = new MDateTableCellRenderer();
 		fireTimeTableCellRenderer.setDateFormat(I18N.createDateAndTimeFormat());
@@ -374,6 +400,10 @@ class JobInformationsPanel extends JPanel {
 		buttonPanel.add(pauseAllJobsButton);
 		buttonPanel.add(resumeAllJobsButton);
 		add(buttonPanel, BorderLayout.EAST);
+	}
+
+	static JLabel toBar(int mean, long elapsedTime) {
+		return JavaInformationsPanel.toBar("", 100d * elapsedTime / mean);
 	}
 
 	final boolean confirm(String message) {
