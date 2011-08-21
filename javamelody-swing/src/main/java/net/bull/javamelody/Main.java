@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.awt.Frame;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -68,20 +69,13 @@ public final class Main {
 		frame.setTitle("Java Melody");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// TODO mettre les instances de MainPanel dans des onglets
-		final CollectorServer collectorServer = new CollectorServer();
-		try {
-			// on attend que les données de test soient chargées
-			Thread.sleep(1500);
-		} catch (final InterruptedException e) {
-			throw new RuntimeException(e); // NOPMD
-		}
-		final Collector collector = collectorServer.getCollectorByApplication("test");
-		final List<JavaInformations> javaInformationsList = collectorServer
-				.getJavaInformationsByApplication("test");
-		final String collectorUrl = CollectorServer.getUrlsByApplication("test").get(0)
-				.toExternalForm();
+		final List<URL> urls = Arrays.asList(new URL(
+				"http://localhost:8090/test/monitoring?format=serialized"));
+		final RemoteCollector remoteCollector = new RemoteCollector("test", urls);
+		remoteCollector.collectData();
+		final String collectorUrl = urls.get(0).toExternalForm();
 		final URL monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
-		final MainPanel contentPane = new MainPanel(collector, javaInformationsList, monitoringUrl);
+		final MainPanel contentPane = new MainPanel(remoteCollector, monitoringUrl);
 		frame.setContentPane(contentPane);
 		frame.setIconImage(ImageIconCache.getImageIcon("systemmonitor.png").getImage());
 		// définit la taille

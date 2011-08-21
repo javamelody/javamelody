@@ -43,14 +43,16 @@ import net.bull.javamelody.util.MSwingUtilities;
 class MainButtonsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private final transient Collector collector;
-	private final transient List<JavaInformations> javaInformationsList;
+	@SuppressWarnings("all")
+	private final Collector collector;
+	@SuppressWarnings("all")
+	private final List<JavaInformations> javaInformationsList;
 
-	MainButtonsPanel(final Collector collector, final List<JavaInformations> javaInformationsList,
-			final URL monitoringUrl) {
+	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
 		super(new FlowLayout(FlowLayout.CENTER));
-		this.collector = collector;
-		this.javaInformationsList = javaInformationsList;
+		assert remoteCollector != null;
+		this.collector = remoteCollector.getCollector();
+		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 
 		setOpaque(false);
 

@@ -23,6 +23,7 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -39,12 +40,16 @@ class SystemInformationsButtonsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
+	private final RemoteCollector remoteCollector;
+	@SuppressWarnings("all")
 	private final List<JavaInformations> javaInformationsList;
 	private final URL monitoringUrl;
 
-	SystemInformationsButtonsPanel(List<JavaInformations> javaInformationsList, URL monitoringUrl) {
+	SystemInformationsButtonsPanel(RemoteCollector remoteCollector, URL monitoringUrl) {
 		super(new BorderLayout());
-		this.javaInformationsList = javaInformationsList;
+		assert remoteCollector != null;
+		this.remoteCollector = remoteCollector;
+		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
 
 		setOpaque(false);
@@ -95,6 +100,17 @@ class SystemInformationsButtonsPanel extends JPanel {
 			northPanel.add(invalidateSessionsButton);
 			final MButton sessionsButton = new MButton(I18N.getString("sessions"),
 					ImageIconCache.getScaledImageIcon("system-users.png", 20, 20));
+			sessionsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						// TODO à déplacer dans constructeur du panel
+						getRemoteCollector().collectSessionInformations(null);
+					} catch (final IOException ex) {
+						MSwingUtilities.showException(ex);
+					}
+				}
+			});
 			northPanel.add(sessionsButton);
 		}
 		if (doesWebXmlExists()) {
@@ -117,9 +133,26 @@ class SystemInformationsButtonsPanel extends JPanel {
 
 		final MButton mbeansButton = new MButton(I18N.getString("MBeans"),
 				ImageIconCache.getScaledImageIcon("mbeans.png", 20, 20));
+		mbeansButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
 		southPanel.add(mbeansButton);
 		final MButton processesButton = new MButton(I18N.getString("processes"),
 				ImageIconCache.getScaledImageIcon("processes.png", 20, 20));
+		processesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// TODO à déplacer dans constructeur du panel
+					getRemoteCollector().collectProcessInformations();
+				} catch (final IOException ex) {
+					MSwingUtilities.showException(ex);
+				}
+			}
+		});
 		southPanel.add(processesButton);
 
 		final String serverInfo = javaInformationsList.get(0).getServerInfo();
@@ -130,6 +163,12 @@ class SystemInformationsButtonsPanel extends JPanel {
 
 			final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"),
 					ImageIconCache.getScaledImageIcon("jndi.png", 20, 20));
+			jndiButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO
+				}
+			});
 			southPanel.add(jndiButton);
 		}
 
@@ -137,10 +176,32 @@ class SystemInformationsButtonsPanel extends JPanel {
 			final MButton connectionsButton = new MButton(
 					I18N.getString("Connexions_jdbc_ouvertes"), ImageIconCache.getScaledImageIcon(
 							"db.png", 20, 20));
+			connectionsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						// TODO à déplacer dans constructeur du panel
+						getRemoteCollector().collectConnectionInformations();
+					} catch (final IOException ex) {
+						MSwingUtilities.showException(ex);
+					}
+				}
+			});
 			southPanel.add(connectionsButton);
 
 			final MButton databaseButton = new MButton(I18N.getString("database"),
 					ImageIconCache.getScaledImageIcon("db.png", 20, 20));
+			databaseButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						// TODO à déplacer dans constructeur du panel
+						getRemoteCollector().collectDatabaseInformations(0);
+					} catch (final IOException ex) {
+						MSwingUtilities.showException(ex);
+					}
+				}
+			});
 			southPanel.add(databaseButton);
 		}
 
@@ -167,5 +228,9 @@ class SystemInformationsButtonsPanel extends JPanel {
 
 	URL getMonitoringUrl() {
 		return monitoringUrl;
+	}
+
+	RemoteCollector getRemoteCollector() {
+		return remoteCollector;
 	}
 }
