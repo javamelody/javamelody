@@ -217,12 +217,14 @@ class CollectorServer {
 	}
 
 	/**
-	 * Retourne la map des dernières erreurs de collecte par codes d'applications ou null
-	 * si la dernière collecte pour l'application s'est exécutée sans exception.
-	 * @return Map
+	 * Retourne true si les données d'une application sont disponibles (c'est-à-dire si au moins
+	 * une communication avec l'application a pu avoir lieu)
+	 * @param application Code l'application
+	 * @return boolean
 	 */
-	Map<String, Throwable> getLastCollectExceptionsByApplication() {
-		return Collections.unmodifiableMap(lastCollectExceptionsByApplication);
+	boolean isApplicationDataAvailable(String application) {
+		assert application != null;
+		return remoteCollectorsByApplication.containsKey(application);
 	}
 
 	/**
@@ -237,14 +239,12 @@ class CollectorServer {
 	}
 
 	/**
-	 * Retourne true si les données d'une application sont disponibles (c'est-à-dire si au moins
-	 * une communication avec l'application a pu avoir lieu)
-	 * @param application Code l'application
-	 * @return boolean
+	 * Retourne la map des dernières erreurs de collecte par codes d'applications ou null
+	 * si la dernière collecte pour l'application s'est exécutée sans exception.
+	 * @return Map
 	 */
-	boolean isApplicationDataAvailable(String application) {
-		assert application != null;
-		return remoteCollectorsByApplication.containsKey(application);
+	Map<String, Throwable> getLastCollectExceptionsByApplication() {
+		return Collections.unmodifiableMap(lastCollectExceptionsByApplication);
 	}
 
 	void scheduleReportMailForCollectorServer(String application) {
