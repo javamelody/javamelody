@@ -47,7 +47,8 @@ import net.bull.javamelody.util.MSwingUtilities;
 class CacheInformationsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private final transient List<CacheInformations> cacheInformationsList;
+	@SuppressWarnings("all")
+	private final List<CacheInformations> cacheInformationsList;
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
 	private final MTable<CacheInformations> table;

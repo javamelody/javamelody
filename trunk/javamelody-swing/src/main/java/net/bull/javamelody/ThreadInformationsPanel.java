@@ -54,7 +54,8 @@ import net.bull.javamelody.util.MSwingUtilities;
 class ThreadInformationsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private final transient List<ThreadInformations> threadInformationsList;
+	@SuppressWarnings("all")
+	private final List<ThreadInformations> threadInformationsList;
 	private final boolean stackTraceEnabled;
 	private final boolean cpuTimeEnabled;
 	private final MTable<ThreadInformations> table;
