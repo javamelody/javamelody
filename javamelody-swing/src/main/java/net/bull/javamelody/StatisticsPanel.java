@@ -154,6 +154,8 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 		setOpaque(false);
 
+		assert counter != null;
+		assert range != null;
 		this.counter = counter;
 		this.range = range;
 

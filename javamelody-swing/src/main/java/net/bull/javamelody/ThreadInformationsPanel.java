@@ -127,6 +127,7 @@ class ThreadInformationsPanel extends JPanel {
 	ThreadInformationsPanel(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled) {
 		super(new BorderLayout());
+		assert threadInformationsList != null;
 		this.threadInformationsList = threadInformationsList;
 		this.stackTraceEnabled = stackTraceEnabled;
 		this.cpuTimeEnabled = !threadInformationsList.isEmpty()
