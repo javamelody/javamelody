@@ -20,11 +20,11 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,9 +33,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MIntegerTableCellRenderer;
@@ -53,6 +51,8 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("all")
+	private final RemoteCollector remoteCollector;
 	@SuppressWarnings("all")
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final Counter counter;
@@ -145,18 +145,20 @@ class StatisticsPanel extends JPanel { // NOPMD
 		}
 	}
 
-	StatisticsPanel(Counter counter, Range range) {
-		this(counter, range, null);
+	StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range) {
+		this(remoteCollector, counter, range, null);
 	}
 
-	private StatisticsPanel(Counter counter, Range range,
+	private StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range,
 			CounterRequestAggregation counterRequestAggregation) {
 		super(new BorderLayout());
 
 		setOpaque(false);
 
+		assert remoteCollector != null;
 		assert counter != null;
 		assert range != null;
+		this.remoteCollector = remoteCollector;
 		this.counter = counter;
 		this.range = range;
 
@@ -243,7 +245,8 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	void showDetailRequests() {
 		if (detailsPanel == null) {
-			detailsPanel = new StatisticsPanel(counter, range, counterRequestAggregation);
+			detailsPanel = new StatisticsPanel(getRemoteCollector(), counter, range,
+					counterRequestAggregation);
 			detailsPanel.setVisible(false);
 			final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 			detailsPanel.table.setList(requests);
@@ -279,17 +282,10 @@ class StatisticsPanel extends JPanel { // NOPMD
 	}
 
 	private void addScrollPane() {
-		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
+		Utilities.adjustTableHeight(table);
 		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
 				table);
 		mainPanel.add(tableScrollPane, BorderLayout.NORTH);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				tableScrollPane
-						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-			}
-		});
 	}
 
 	private void addRequestsSizeAndButtons() {
@@ -373,7 +369,15 @@ class StatisticsPanel extends JPanel { // NOPMD
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (confirm(I18N.getFormattedString("confirm_vider_stats", myCounter.getName()))) {
-						// TODO
+						try {
+							// TODO refresh
+							final String message = getRemoteCollector()
+									.executeActionAndCollectData(Action.CLEAR_COUNTER,
+											myCounter.getName(), null, null, null);
+							showMessage(message);
+						} catch (final IOException ex) {
+							MSwingUtilities.showException(ex);
+						}
 					}
 				}
 			});
@@ -401,5 +405,13 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	boolean confirm(String message) {
 		return MSwingUtilities.showConfirmation(this, message);
+	}
+
+	final void showMessage(final String message) {
+		MSwingUtilities.showMessage(this, message);
+	}
+
+	final RemoteCollector getRemoteCollector() {
+		return remoteCollector;
 	}
 }
