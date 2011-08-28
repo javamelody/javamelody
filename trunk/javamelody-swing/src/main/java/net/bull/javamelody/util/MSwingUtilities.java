@@ -74,6 +74,17 @@ public final class MSwingUtilities {
 	}
 
 	/**
+	 * Affiche une boîte de dialogue d'information.
+	 * @param component Component
+	 * @param message String
+	 */
+	public static void showMessage(Component component, String message) {
+		JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(component), message,
+				UIManager.getString("OptionPane.messageDialogTitle"),
+				JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	/**
 	 * Retourne l'instance courante de la classe componentClass contenant l'élément component. <br/>
 	 * Cette méthode peut-être très utile pour récupérer une référence à un parent éloigné (ancêtre), en l'absence de référence directe du type attribut.
 	 *
