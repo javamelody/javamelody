@@ -65,7 +65,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_ramasse_miette"))) {
-					// TODO
+					executeAction(Action.GC);
 				}
 			}
 		});
@@ -76,7 +76,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_heap_dump"))) {
-					// TODO
+					executeAction(Action.HEAP_DUMP);
 				}
 			}
 		});
@@ -103,7 +103,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (confirm(I18N.getString("confirm_invalidate_sessions"))) {
-						// TODO
+						executeAction(Action.INVALIDATE_SESSIONS);
 					}
 				}
 			});
@@ -188,7 +188,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						addOnglet(new SessionInformationsPanel(getRemoteCollector()));
+						addOnglet(new ConnectionInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
 						MSwingUtilities.showException(ex);
 					}
@@ -226,6 +226,17 @@ class SystemInformationsButtonsPanel extends JPanel {
 
 	private boolean isSessionsEnabled() {
 		return javaInformationsList.get(0).getSessionCount() >= 0;
+	}
+
+	void executeAction(final Action action) {
+		try {
+			// TODO refresh
+			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
+					null, null, null);
+			MSwingUtilities.showMessage(this, message);
+		} catch (final IOException ex) {
+			MSwingUtilities.showException(ex);
+		}
 	}
 
 	void addOnglet(JPanel panel) {

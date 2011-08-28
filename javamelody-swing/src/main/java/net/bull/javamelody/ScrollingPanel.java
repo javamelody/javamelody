@@ -118,7 +118,15 @@ class ScrollingPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (confirm(I18N.getString("confirm_vider_toutes_stats"))) {
-						// TODO
+						try {
+							// TODO refresh
+							final String message = getRemoteCollector()
+									.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null,
+											null, null);
+							showMessage(message);
+						} catch (final IOException ex) {
+							MSwingUtilities.showException(ex);
+						}
 					}
 				}
 			});
@@ -131,7 +139,8 @@ class ScrollingPanel extends JPanel {
 		final String counterLabel = I18N.getString(counter.getName() + "Label");
 		addParagraphTitle(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
 				+ range.getLabel(), counter.getIconName());
-		final StatisticsPanel statisticsPanel = new StatisticsPanel(counter, range);
+		final StatisticsPanel statisticsPanel = new StatisticsPanel(getRemoteCollector(), counter,
+				range);
 		statisticsPanel.showGlobalRequests();
 		add(statisticsPanel);
 	}
@@ -141,7 +150,7 @@ class ScrollingPanel extends JPanel {
 		final List<JavaInformations> list = javaInformationsList;
 		// TODO mettre propriété système system-actions-enabled dans jnlp
 		if (Parameters.isSystemActionsEnabled()) {
-			add(new SystemInformationsButtonsPanel(remoteCollector, monitoringUrl));
+			add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl));
 		}
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<JavaInformationsPanel>(
@@ -336,15 +345,19 @@ class ScrollingPanel extends JPanel {
 	}
 
 	private void addParagraphTitle(String title, String iconName) {
-		final JLabel label = new JLabel(title);
-		label.setIcon(ImageIconCache.getScaledImageIcon(iconName, 24, 24));
-		label.setFont(label.getFont().deriveFont(Font.BOLD, label.getFont().getSize() + 4));
-		// séparateur avec composants au-dessus et en-dessous
-		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		final JLabel label = Utilities.createParagraphTitle(title, iconName);
 		add(label);
 	}
 
 	final boolean confirm(String message) {
 		return MSwingUtilities.showConfirmation(this, message);
+	}
+
+	final void showMessage(final String message) {
+		MSwingUtilities.showMessage(this, message);
+	}
+
+	final RemoteCollector getRemoteCollector() {
+		return remoteCollector;
 	}
 }
