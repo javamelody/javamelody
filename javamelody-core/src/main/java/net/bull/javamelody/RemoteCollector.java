@@ -53,9 +53,13 @@ class RemoteCollector {
 	}
 
 	String collectData() throws IOException {
+		return collectDataWithUrls(urls);
+	}
+
+	private String collectDataWithUrls(List<URL> urlsForCollect) throws IOException {
 		final List<JavaInformations> list = new ArrayList<JavaInformations>();
 		final StringBuilder sb = new StringBuilder();
-		for (final URL url : urls) {
+		for (final URL url : urlsForCollect) {
 			final List<Serializable> serialized = new LabradorRetriever(url).call();
 			final List<Counter> counters = new ArrayList<Counter>();
 			for (final Serializable serializable : serialized) {
@@ -84,6 +88,30 @@ class RemoteCollector {
 			messageForReport = sb.toString();
 		}
 		return messageForReport;
+	}
+
+	String executeActionAndCollectData(Action action, String counterName, String sessionId,
+			String threadId, String jobId) throws IOException {
+		assert action != null;
+		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
+		for (final URL url : urls) {
+			final StringBuilder actionUrl = new StringBuilder(url.toString());
+			actionUrl.append("&action=").append(action);
+			if (counterName != null) {
+				actionUrl.append("&counter=").append(counterName);
+			}
+			if (sessionId != null) {
+				actionUrl.append("&sessionId=").append(sessionId);
+			}
+			if (threadId != null) {
+				actionUrl.append("&threadId=").append(threadId);
+			}
+			if (jobId != null) {
+				actionUrl.append("&jobId=").append(jobId);
+			}
+			actionUrls.add(new URL(actionUrl.toString()));
+		}
+		return collectDataWithUrls(actionUrls);
 	}
 
 	List<SessionInformations> collectSessionInformations(String sessionId) throws IOException {
