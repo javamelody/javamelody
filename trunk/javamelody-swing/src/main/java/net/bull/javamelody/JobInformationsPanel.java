@@ -23,7 +23,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,9 +37,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
@@ -324,14 +321,7 @@ class JobInformationsPanel extends JPanel {
 		add(tableScrollPane, BorderLayout.NORTH);
 
 		table.setList(jobInformationsList);
-		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				tableScrollPane
-						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-			}
-		});
+		Utilities.adjustTableHeight(table);
 	}
 
 	final CounterRequest getCounterRequest(JobInformations jobInformations) {
