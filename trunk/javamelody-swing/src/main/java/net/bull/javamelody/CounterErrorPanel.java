@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
@@ -30,8 +29,6 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
@@ -142,17 +139,11 @@ class CounterErrorPanel extends JPanel {
 
 		table.setList(errors);
 
-		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
+		Utilities.adjustTableHeight(table);
+
 		final MTableScrollPane<CounterError> tableScrollPane = new MTableScrollPane<CounterError>(
 				table);
 		add(tableScrollPane, BorderLayout.CENTER);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				tableScrollPane
-						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-			}
-		});
 	}
 
 	private void addNoErrors() {
