@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +32,6 @@ import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
@@ -118,14 +115,7 @@ class CacheInformationsPanel extends JPanel {
 		add(tableScrollPane, BorderLayout.NORTH);
 
 		table.setList(cacheInformationsList);
-		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				tableScrollPane
-						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-			}
-		});
+		Utilities.adjustTableHeight(table);
 	}
 
 	private void addButton() {
