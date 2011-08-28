@@ -26,6 +26,7 @@ import java.net.URL;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 
 import net.bull.javamelody.util.MSwingUtilities;
 
@@ -56,5 +57,6 @@ class MainPanel extends JPanel {
 	static void addOngletFromChild(Component child, JPanel panel) {
 		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
 		// TODO
+		MSwingUtilities.run(panel).setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 }
