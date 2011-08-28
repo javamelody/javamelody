@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -37,7 +36,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -177,16 +175,9 @@ class ThreadInformationsPanel extends JPanel {
 		});
 
 		table.setList(threadInformationsList);
-		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
+		Utilities.adjustTableHeight(table);
 
 		add(tableScrollPane, BorderLayout.NORTH);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				tableScrollPane
-						.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-			}
-		});
 	}
 
 	private void addButton() {
