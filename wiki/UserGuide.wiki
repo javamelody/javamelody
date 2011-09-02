@@ -132,6 +132,8 @@ or MSIE8 (MSIE7 not recommended).
 	Copy the files [http://code.google.com/p/javamelody/downloads/list javamelody.jar] and [http://javamelody.googlecode.com/files/jrobin-1.5.9.jar jrobin-x.jar], located at the root of the supplied [http://code.google.com/p/javamelody/downloads/list javamelody.zip] file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor.
 
+	Or if you use Maven, add the javamelody-core [UserGuide#Dependencies dependency].
+
 === 2. {{{web.xml}}} file ===
 
 	If your application server is compatible with Servlet API 3.0 (like tomcat 7, glassfish v3 or jboss 6),
