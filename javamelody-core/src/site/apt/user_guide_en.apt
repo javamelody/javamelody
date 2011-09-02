@@ -121,7 +121,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	
 	Then this integration can be completed later by configuration as needed.
 
-	If you deploy your application with a war file or with an equivalent directory, follow the following chapters.
+	If you deploy your application with a war file or with an equivalent directory, read the following chapters.
 	
 	But if you deploy your application with an ear file, probably because you use EJBs, follow the {{{user_guide_advanced_en.html} advanced documentation}}.
 	
