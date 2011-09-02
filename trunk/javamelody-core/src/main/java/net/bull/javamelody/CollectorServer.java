@@ -197,7 +197,11 @@ class CollectorServer {
 	 * @return Collector
 	 */
 	Collector getCollectorByApplication(String application) {
-		return getRemoteCollectorByApplication(application).getCollector();
+		final RemoteCollector remoteCollector = getRemoteCollectorByApplication(application);
+		if (remoteCollector == null) {
+			return null;
+		}
+		return remoteCollector.getCollector();
 	}
 
 	/**
@@ -206,7 +210,11 @@ class CollectorServer {
 	 * @return Liste de JavaInformations
 	 */
 	List<JavaInformations> getJavaInformationsByApplication(String application) {
-		return getRemoteCollectorByApplication(application).getJavaInformationsList();
+		final RemoteCollector remoteCollector = getRemoteCollectorByApplication(application);
+		if (remoteCollector == null) {
+			return null;
+		}
+		return remoteCollector.getJavaInformationsList();
 	}
 
 	private RemoteCollector getRemoteCollectorByApplication(String application) {
