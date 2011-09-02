@@ -131,6 +131,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	Copy the files <<<javamelody.jar>>> and <<<jrobin-x.jar>>>, located at the root of the supplied javamelody.zip file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor.
+	
+	Or if you use Maven, add the javamelody-core dependency. 
 
 ** 2. <<<web.xml>>> file
 
