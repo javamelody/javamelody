@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>javamelody-swing</artifactId>
 	<packaging>jar</packaging>
-	<name>Java Melody Swing</name>
+	<name>JavaMelody - Swing</name>
 	<description>Swing UI for Java Melody</description>
 	<url>http://javamelody.googlecode.com/</url>
 	<licenses>

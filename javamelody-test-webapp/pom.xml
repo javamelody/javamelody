@@ -10,6 +10,7 @@
 	<artifactId>javamelody-test-webapp</artifactId>
 	<packaging>war</packaging>
 	<name>JavaMelody - TEST WebAPP</name>
+	<description>Webapp to test manually Java Melody</description>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
