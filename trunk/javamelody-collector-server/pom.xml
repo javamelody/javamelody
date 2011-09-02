@@ -9,7 +9,8 @@
 	</parent>
 	<artifactId>javamelody-collector-server</artifactId>
 	<packaging>war</packaging>
-	<name>Java Melody - Monitoring Collector server</name>
+	<name>JavaMelody - Collector server</name>
+	<description>Optional centralized collector server for Java Melody</description>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
