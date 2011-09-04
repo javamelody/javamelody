@@ -36,21 +36,17 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import net.bull.javamelody.util.MSwingUtilities;
-
 /**
  * Panel principal.
  * @author Emeric Vernat
  */
-class ScrollingPanel extends JPanel {
+class ScrollingPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
 	private static final String DETAILS_KEY = "Details";
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final RemoteCollector remoteCollector;
 	@SuppressWarnings("all")
 	private final Collector collector;
 	@SuppressWarnings("all")
@@ -60,15 +56,14 @@ class ScrollingPanel extends JPanel {
 	private final Range range = Period.TOUT.getRange();
 
 	ScrollingPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
-		super();
-		assert remoteCollector != null;
-		this.remoteCollector = remoteCollector;
+		super(remoteCollector, new FlowLayout());
 		this.collector = remoteCollector.getCollector();
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
 
 		setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setOpaque(true);
 		setBackground(new Color(230, 230, 230));
 		add(new ChartsPanel());
 
@@ -125,7 +120,7 @@ class ScrollingPanel extends JPanel {
 											null, null);
 							showMessage(message);
 						} catch (final IOException ex) {
-							MSwingUtilities.showException(ex);
+							showException(ex);
 						}
 					}
 				}
@@ -159,7 +154,7 @@ class ScrollingPanel extends JPanel {
 		westJavaInformationsPanel.setOpaque(false);
 		for (final JavaInformations javaInformations : list) {
 			final JavaInformationsPanel javaInformationsPanel = new JavaInformationsPanel(
-					javaInformations, monitoringUrl);
+					getRemoteCollector(), javaInformations, monitoringUrl);
 			javaInformationsPanel.showSummary();
 			javaInformationsPanelList.add(javaInformationsPanel);
 			westJavaInformationsPanel.add(javaInformationsPanel);
@@ -260,7 +255,7 @@ class ScrollingPanel extends JPanel {
 			final List<CacheInformations> cacheInformationsList = javaInformations
 					.getCacheInformationsList();
 			final CacheInformationsPanel cacheInformationsPanel = new CacheInformationsPanel(
-					cacheInformationsList);
+					getRemoteCollector(), cacheInformationsList);
 			cacheInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
@@ -297,7 +292,7 @@ class ScrollingPanel extends JPanel {
 			final List<JobInformations> jobInformationsList = javaInformations
 					.getJobInformationsList();
 			final JobInformationsPanel jobInformationsPanel = new JobInformationsPanel(
-					jobInformationsList, rangeJobCounter);
+					getRemoteCollector(), jobInformationsList, rangeJobCounter);
 			jobInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
@@ -348,17 +343,5 @@ class ScrollingPanel extends JPanel {
 	private void addParagraphTitle(String title, String iconName) {
 		final JLabel label = Utilities.createParagraphTitle(title, iconName);
 		add(label);
-	}
-
-	final boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
-	}
-
-	final void showMessage(final String message) {
-		MSwingUtilities.showMessage(this, message);
-	}
-
-	final RemoteCollector getRemoteCollector() {
-		return remoteCollector;
 	}
 }

@@ -39,20 +39,17 @@ import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MIntegerTableCellRenderer;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
-import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des statistiques.
  * @author Emeric Vernat
  */
-class StatisticsPanel extends JPanel { // NOPMD
+class StatisticsPanel extends MelodyPanel { // NOPMD
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final RemoteCollector remoteCollector;
 	@SuppressWarnings("all")
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final Counter counter;
@@ -151,14 +148,10 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range,
 			CounterRequestAggregation counterRequestAggregation) {
-		super(new BorderLayout());
+		super(remoteCollector, new BorderLayout());
 
-		setOpaque(false);
-
-		assert remoteCollector != null;
 		assert counter != null;
 		assert range != null;
-		this.remoteCollector = remoteCollector;
 		this.counter = counter;
 		this.range = range;
 
@@ -376,7 +369,7 @@ class StatisticsPanel extends JPanel { // NOPMD
 											myCounter.getName(), null, null, null);
 							showMessage(message);
 						} catch (final IOException ex) {
-							MSwingUtilities.showException(ex);
+							showException(ex);
 						}
 					}
 				}
@@ -401,17 +394,5 @@ class StatisticsPanel extends JPanel { // NOPMD
 
 	private boolean isErrorAndNotJobCounter() {
 		return isErrorCounter() && !isJobCounter();
-	}
-
-	boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
-	}
-
-	final void showMessage(final String message) {
-		MSwingUtilities.showMessage(this, message);
-	}
-
-	final RemoteCollector getRemoteCollector() {
-		return remoteCollector;
 	}
 }

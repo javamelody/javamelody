@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
@@ -32,7 +31,7 @@ import net.bull.javamelody.table.MTableScrollPane;
  * Panel de la liste des connexions jdbc.
  * @author Emeric Vernat
  */
-class ConnectionInformationsPanel extends JPanel {
+class ConnectionInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -40,12 +39,9 @@ class ConnectionInformationsPanel extends JPanel {
 	private final MTable<ConnectionInformations> table;
 
 	ConnectionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(new BorderLayout());
-		assert remoteCollector != null;
+		super(remoteCollector, new BorderLayout());
 		this.connectionInformationsList = remoteCollector.collectConnectionInformations();
 		this.table = new MTable<ConnectionInformations>();
-
-		setOpaque(false);
 
 		addScrollPane();
 

@@ -49,7 +49,7 @@ import com.lowagie.text.Font;
  * Panel des informations systèmes.
  * @author Emeric Vernat
  */
-class JavaInformationsPanel extends JPanel {
+class JavaInformationsPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
 
@@ -63,12 +63,12 @@ class JavaInformationsPanel extends JPanel {
 	private final JPanel gridPanel;
 	private JavaInformationsPanel detailsPanel;
 
-	JavaInformationsPanel(JavaInformations javaInformations, URL monitoringUrl) {
-		super(new BorderLayout());
+	JavaInformationsPanel(RemoteCollector remoteCollector, JavaInformations javaInformations,
+			URL monitoringUrl) {
+		super(remoteCollector, new BorderLayout());
 		assert javaInformations != null;
 		this.javaInformations = javaInformations;
 		this.monitoringUrl = monitoringUrl;
-		setOpaque(false);
 		gridPanel = new JPanel(new SpringLayout());
 		gridPanel.setOpaque(false);
 		add(gridPanel, BorderLayout.NORTH);
@@ -126,7 +126,8 @@ class JavaInformationsPanel extends JPanel {
 		if (detailsPanel != null) {
 			detailsPanel.setVisible(!detailsPanel.isVisible());
 		} else {
-			detailsPanel = new JavaInformationsPanel(javaInformations, monitoringUrl);
+			detailsPanel = new JavaInformationsPanel(getRemoteCollector(), javaInformations,
+					monitoringUrl);
 			detailsPanel.addDetails(repeatHost);
 			add(detailsPanel, BorderLayout.SOUTH);
 			// sans cela, le panel n'apparaît pas la première fois
@@ -242,7 +243,7 @@ class JavaInformationsPanel extends JPanel {
 								.browse(new URI(
 										"http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html"));
 					} catch (final Exception ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			});
@@ -346,7 +347,7 @@ class JavaInformationsPanel extends JPanel {
 							Desktop.getDesktop().browse(
 									new URI(getMonitoringUrl().toExternalForm() + "?part=pom.xml"));
 						} catch (final Exception ex) {
-							MSwingUtilities.showException(ex);
+							showException(ex);
 						}
 					}
 				});

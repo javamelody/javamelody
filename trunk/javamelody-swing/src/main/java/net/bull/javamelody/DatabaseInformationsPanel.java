@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
@@ -31,7 +30,7 @@ import net.bull.javamelody.table.MTableScrollPane;
  * Panel du rapport base de données.
  * @author Emeric Vernat
  */
-class DatabaseInformationsPanel extends JPanel {
+class DatabaseInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -39,12 +38,9 @@ class DatabaseInformationsPanel extends JPanel {
 	private final MTable<DatabaseInformations> table;
 
 	DatabaseInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(new BorderLayout());
-		assert remoteCollector != null;
+		super(remoteCollector, new BorderLayout());
 		this.databaseInformations = remoteCollector.collectDatabaseInformations(0);
 		this.table = new MTable<DatabaseInformations>();
-
-		setOpaque(false);
 
 		addScrollPane();
 
