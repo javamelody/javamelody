@@ -96,15 +96,6 @@ class SessionInformationsPanel extends MelodyPanel {
 		super(remoteCollector, new BorderLayout());
 		setOpaque(false);
 
-		// TODO
-		//		writeBackAndRefreshLinks();
-		//		writeln("<br/>");
-		//
-		//		if (sessionsInformations.isEmpty()) {
-		//			writeln("#Aucune_session#");
-		//			return;
-		//		}
-
 		refresh();
 	}
 
