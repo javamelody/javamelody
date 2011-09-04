@@ -35,13 +35,12 @@ import javax.swing.JPanel;
 
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
-import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des caches (EHCache).
  * @author Emeric Vernat
  */
-class CacheInformationsPanel extends JPanel {
+class CacheInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -50,8 +49,9 @@ class CacheInformationsPanel extends JPanel {
 	private final boolean configurationEnabled;
 	private final MTable<CacheInformations> table;
 
-	CacheInformationsPanel(List<CacheInformations> cacheInformationsList) {
-		super(new BorderLayout());
+	CacheInformationsPanel(RemoteCollector remoteCollector,
+			List<CacheInformations> cacheInformationsList) {
+		super(remoteCollector, new BorderLayout());
 		assert cacheInformationsList != null;
 		this.cacheInformationsList = cacheInformationsList;
 		this.hitsRatioEnabled = HtmlCacheInformationsReport
@@ -59,8 +59,6 @@ class CacheInformationsPanel extends JPanel {
 		this.configurationEnabled = HtmlCacheInformationsReport
 				.isConfigurationEnabled(cacheInformationsList);
 		this.table = new MTable<CacheInformations>();
-
-		setOpaque(false);
 
 		addScrollPane();
 
@@ -75,7 +73,7 @@ class CacheInformationsPanel extends JPanel {
 							.browse(new URI(
 									"http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary"));
 				} catch (final Exception ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -133,9 +131,5 @@ class CacheInformationsPanel extends JPanel {
 		buttonPanel.setOpaque(false);
 		buttonPanel.add(purgeCachesButton);
 		add(buttonPanel, BorderLayout.EAST);
-	}
-
-	final boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
 	}
 }

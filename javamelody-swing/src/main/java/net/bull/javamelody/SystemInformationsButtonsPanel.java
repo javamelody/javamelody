@@ -30,29 +30,21 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import net.bull.javamelody.util.MSwingUtilities;
-
 /**
  * Panel des boutons principaux.
  * @author Emeric Vernat
  */
-class SystemInformationsButtonsPanel extends JPanel {
+class SystemInformationsButtonsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final RemoteCollector remoteCollector;
 	@SuppressWarnings("all")
 	private final List<JavaInformations> javaInformationsList;
 	private final URL monitoringUrl;
 
 	SystemInformationsButtonsPanel(RemoteCollector remoteCollector, URL monitoringUrl) {
-		super(new BorderLayout());
-		assert remoteCollector != null;
-		this.remoteCollector = remoteCollector;
+		super(remoteCollector, new BorderLayout());
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
-
-		setOpaque(false);
 
 		final JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		northPanel.setOpaque(false);
@@ -89,7 +81,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				try {
 					addOnglet(new HeapInformationsPanel(getRemoteCollector()));
 				} catch (final IOException ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -116,7 +108,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 					try {
 						addOnglet(new SessionInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			});
@@ -133,7 +125,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 						Desktop.getDesktop().browse(
 								new URI(getMonitoringUrl().toExternalForm() + "?part=web.xml"));
 					} catch (final Exception ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			});
@@ -157,7 +149,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 				try {
 					addOnglet(new ProcessInformationsPanel(getRemoteCollector()));
 				} catch (final IOException ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -190,7 +182,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 					try {
 						addOnglet(new ConnectionInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			});
@@ -204,7 +196,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 					try {
 						addOnglet(new DatabaseInformationsPanel(getRemoteCollector()));
 					} catch (final IOException ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			});
@@ -233,9 +225,9 @@ class SystemInformationsButtonsPanel extends JPanel {
 			// TODO refresh
 			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
 					null, null, null);
-			MSwingUtilities.showMessage(this, message);
+			showMessage(message);
 		} catch (final IOException ex) {
-			MSwingUtilities.showException(ex);
+			showException(ex);
 		}
 	}
 
@@ -243,15 +235,7 @@ class SystemInformationsButtonsPanel extends JPanel {
 		MainPanel.addOngletFromChild(this, panel);
 	}
 
-	boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
-	}
-
 	URL getMonitoringUrl() {
 		return monitoringUrl;
-	}
-
-	RemoteCollector getRemoteCollector() {
-		return remoteCollector;
 	}
 }

@@ -46,13 +46,12 @@ import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
-import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des jobs (Quartz).
  * @author Emeric Vernat
  */
-class JobInformationsPanel extends JPanel {
+class JobInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -237,15 +236,14 @@ class JobInformationsPanel extends JPanel {
 		}
 	}
 
-	JobInformationsPanel(List<JobInformations> jobInformationsList, Counter rangeJobCounter) {
-		super(new BorderLayout());
+	JobInformationsPanel(RemoteCollector remoteCollector,
+			List<JobInformations> jobInformationsList, Counter rangeJobCounter) {
+		super(remoteCollector, new BorderLayout());
 		assert jobInformationsList != null;
 		assert rangeJobCounter != null;
 		this.jobInformationsList = jobInformationsList;
 		this.jobCounter = rangeJobCounter;
 		this.table = new MTable<JobInformations>();
-
-		setOpaque(false);
 
 		addScrollPane();
 
@@ -259,7 +257,7 @@ class JobInformationsPanel extends JPanel {
 					Desktop.getDesktop().browse(
 							new URI("http://www.quartz-scheduler.org/docs/index.html"));
 				} catch (final Exception ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -397,10 +395,6 @@ class JobInformationsPanel extends JPanel {
 
 	static JLabel toBar(int mean, long elapsedTime) {
 		return JavaInformationsPanel.toBar("", 100d * elapsedTime / mean);
-	}
-
-	final boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
 	}
 
 	final MTable<JobInformations> getTable() {

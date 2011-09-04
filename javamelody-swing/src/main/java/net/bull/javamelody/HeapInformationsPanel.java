@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
@@ -31,7 +30,7 @@ import net.bull.javamelody.table.MTableScrollPane;
  * Panel de l'histogramme mémoire.
  * @author Emeric Vernat
  */
-class HeapInformationsPanel extends JPanel {
+class HeapInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -39,12 +38,9 @@ class HeapInformationsPanel extends JPanel {
 	private final MTable<HeapHistogram.ClassInfo> table;
 
 	HeapInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(new BorderLayout());
-		assert remoteCollector != null;
+		super(remoteCollector, new BorderLayout());
 		this.heapHistogram = remoteCollector.collectHeapHistogram();
 		this.table = new MTable<HeapHistogram.ClassInfo>();
-
-		setOpaque(false);
 
 		addScrollPane();
 

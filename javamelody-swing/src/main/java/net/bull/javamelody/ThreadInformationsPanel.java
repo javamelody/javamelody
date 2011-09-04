@@ -44,17 +44,14 @@ import javax.swing.event.ListSelectionListener;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
-import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel des threads.
  * @author Emeric Vernat
  */
-class ThreadInformationsPanel extends JPanel {
+class ThreadInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final RemoteCollector remoteCollector;
 	@SuppressWarnings("all")
 	private final List<ThreadInformations> threadInformationsList;
 	private final boolean stackTraceEnabled;
@@ -128,17 +125,13 @@ class ThreadInformationsPanel extends JPanel {
 
 	ThreadInformationsPanel(RemoteCollector remoteCollector,
 			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled) {
-		super(new BorderLayout());
-		assert remoteCollector != null;
+		super(remoteCollector, new BorderLayout());
 		assert threadInformationsList != null;
-		this.remoteCollector = remoteCollector;
 		this.threadInformationsList = threadInformationsList;
 		this.stackTraceEnabled = stackTraceEnabled;
 		this.cpuTimeEnabled = !threadInformationsList.isEmpty()
 				&& threadInformationsList.get(0).getCpuTimeMillis() != -1;
 		this.table = new MTable<ThreadInformations>();
-
-		setOpaque(false);
 
 		addScrollPane();
 
@@ -217,7 +210,7 @@ class ThreadInformationsPanel extends JPanel {
 								threadInformations.getGlobalThreadId(), null);
 						showMessage(message);
 					} catch (final IOException ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			}
@@ -279,17 +272,5 @@ class ThreadInformationsPanel extends JPanel {
 
 	MTable<ThreadInformations> getTable() {
 		return table;
-	}
-
-	final boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
-	}
-
-	final void showMessage(final String message) {
-		MSwingUtilities.showMessage(this, message);
-	}
-
-	RemoteCollector getRemoteCollector() {
-		return remoteCollector;
 	}
 }

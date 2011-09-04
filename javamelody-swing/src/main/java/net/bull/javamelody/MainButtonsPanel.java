@@ -32,7 +32,6 @@ import java.net.URL;
 import java.util.List;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import net.bull.javamelody.util.MSwingUtilities;
 
@@ -40,7 +39,7 @@ import net.bull.javamelody.util.MSwingUtilities;
  * Panel des boutons principaux.
  * @author Emeric Vernat
  */
-class MainButtonsPanel extends JPanel {
+class MainButtonsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -49,12 +48,9 @@ class MainButtonsPanel extends JPanel {
 	private final List<JavaInformations> javaInformationsList;
 
 	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
-		super(new FlowLayout(FlowLayout.CENTER));
-		assert remoteCollector != null;
+		super(remoteCollector, new FlowLayout(FlowLayout.CENTER));
 		this.collector = remoteCollector.getCollector();
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
-
-		setOpaque(false);
 
 		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
@@ -89,7 +85,7 @@ class MainButtonsPanel extends JPanel {
 				try {
 					actionPdf();
 				} catch (final Exception ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -100,7 +96,7 @@ class MainButtonsPanel extends JPanel {
 				try {
 					Desktop.getDesktop().browse(new URI(monitoringUrl.toExternalForm()));
 				} catch (final Exception ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -113,7 +109,7 @@ class MainButtonsPanel extends JPanel {
 							new URI(monitoringUrl.toExternalForm() + "?resource="
 									+ I18N.getString("help_url")));
 				} catch (final Exception ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});

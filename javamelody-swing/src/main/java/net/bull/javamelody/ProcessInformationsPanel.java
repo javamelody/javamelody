@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
@@ -32,7 +31,7 @@ import net.bull.javamelody.table.MTableScrollPane;
  * Panel de la liste des process.
  * @author Emeric Vernat
  */
-class ProcessInformationsPanel extends JPanel {
+class ProcessInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -40,12 +39,9 @@ class ProcessInformationsPanel extends JPanel {
 	private final MTable<ProcessInformations> table;
 
 	ProcessInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(new BorderLayout());
-		assert remoteCollector != null;
+		super(remoteCollector, new BorderLayout());
 		this.processInformationsList = remoteCollector.collectProcessInformations();
 		this.table = new MTable<ProcessInformations>();
-
-		setOpaque(false);
 
 		addScrollPane();
 
