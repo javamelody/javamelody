@@ -126,7 +126,7 @@ class HtmlSessionInformationsReport {
 		writeln(A_HREF_PART_SESSIONS
 				+ "&amp;action=invalidate_sessions' onclick=\"javascript:return confirm('"
 				+ I18N.getStringForJavascript("confirm_invalidate_sessions") + "');\">");
-		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' /> #invalidate_sessions#</a>");
+		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_sessions#' title='#invalidate_sessions#' /> #invalidate_sessions#</a>");
 		writeln("</div>");
 	}
 
