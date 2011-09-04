@@ -20,10 +20,15 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -46,8 +51,8 @@ class SessionInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private final List<SessionInformations> sessionsInformations;
-	private final MTable<SessionInformations> table;
+	private List<SessionInformations> sessionsInformations;
+	private MTable<SessionInformations> table;
 
 	private class CountryTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -89,9 +94,6 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	SessionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
-		this.sessionsInformations = remoteCollector.collectSessionInformations(null);
-		this.table = new MTable<SessionInformations>();
-
 		setOpaque(false);
 
 		// TODO
@@ -103,36 +105,26 @@ class SessionInformationsPanel extends MelodyPanel {
 		//			return;
 		//		}
 
+		refresh();
+	}
+
+	final void refresh() throws IOException {
+		removeAll();
+
+		this.sessionsInformations = getRemoteCollector().collectSessionInformations(null);
+		this.table = new MTable<SessionInformations>();
+
 		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("Sessions"),
 				"system-users.png");
 		add(titleLabel, BorderLayout.NORTH);
 
 		addScrollPane();
 
-		addButton();
-		//	TODO	write("<th class='noPrint'>#Invalider#</th>");
-		// TODO invalider toutes les sessions
-
-		long totalSerializedSize = 0;
-		int nbSerializableSessions = 0;
-		for (final SessionInformations sessionInformations : sessionsInformations) {
-			final int size = sessionInformations.getSerializedSize();
-			if (size >= 0) {
-				totalSerializedSize += size;
-				nbSerializableSessions++;
-			}
-		}
-		final long meanSerializedSize;
-		if (nbSerializableSessions > 0) {
-			meanSerializedSize = totalSerializedSize / nbSerializableSessions;
-		} else {
-			meanSerializedSize = -1;
-		}
-		final JLabel summaryLabel = new JLabel("<html><div align='right'>"
-				+ I18N.getFormattedString("nb_sessions", sessionsInformations.size()) + "<br/>"
-				+ I18N.getFormattedString("taille_moyenne_sessions", meanSerializedSize));
-		summaryLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		add(summaryLabel, BorderLayout.SOUTH);
+		final JPanel southPanel = new JPanel(new BorderLayout());
+		southPanel.setOpaque(false);
+		southPanel.add(createButtonsPanel(), BorderLayout.CENTER);
+		southPanel.add(createSummaryLabel(), BorderLayout.SOUTH);
+		add(southPanel, BorderLayout.SOUTH);
 	}
 
 	private void addScrollPane() {
@@ -173,7 +165,73 @@ class SessionInformationsPanel extends MelodyPanel {
 		add(tableScrollPane, BorderLayout.CENTER);
 	}
 
-	private void addButton() {
+	private JLabel createSummaryLabel() {
+		long totalSerializedSize = 0;
+		int nbSerializableSessions = 0;
+		for (final SessionInformations sessionInformations : sessionsInformations) {
+			final int size = sessionInformations.getSerializedSize();
+			if (size >= 0) {
+				totalSerializedSize += size;
+				nbSerializableSessions++;
+			}
+		}
+		final long meanSerializedSize;
+		if (nbSerializableSessions > 0) {
+			meanSerializedSize = totalSerializedSize / nbSerializableSessions;
+		} else {
+			meanSerializedSize = -1;
+		}
+		final JLabel summaryLabel = new JLabel("<html><div align='right'>"
+				+ I18N.getFormattedString("nb_sessions", sessionsInformations.size()) + "<br/>"
+				+ I18N.getFormattedString("taille_moyenne_sessions", meanSerializedSize));
+		summaryLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		return summaryLabel;
+	}
+
+	private JPanel createButtonsPanel() {
+		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
+				ImageIconCache.getImageIcon("action_refresh.png"));
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					refresh();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		final MButton pdfButton = new MButton(I18N.getString("PDF"),
+				ImageIconCache.getImageIcon("pdf.png"));
+		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		final MButton invalidateAllSessionsButton = new MButton(
+				I18N.getString("invalidate_sessions"), ImageIconCache.getScaledImageIcon(
+						"user-trash.png", 16, 16));
+		invalidateAllSessionsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getFormattedString("confirm_invalidate_sessions"))) {
+					try {
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.INVALIDATE_SESSIONS, null, null, null, null);
+						showMessage(message);
+						refresh();
+					} catch (final IOException ex) {
+						showException(ex);
+					}
+				}
+			}
+		});
 		final MButton invalidateSessionButton = new MButton(I18N.getString("invalidate_session"),
 				ImageIconCache.getScaledImageIcon("user-trash.png", 16, 16));
 		final MTable<SessionInformations> myTable = table;
@@ -192,21 +250,37 @@ class SessionInformationsPanel extends MelodyPanel {
 				if (sessionInformations != null
 						&& confirm(I18N.getFormattedString("confirm_invalidate_session"))) {
 					try {
-						// TODO refresh
 						final String message = getRemoteCollector().executeActionAndCollectData(
 								Action.INVALIDATE_SESSION, null, sessionInformations.getId(), null,
 								null);
 						showMessage(message);
+						refresh();
 					} catch (final IOException ex) {
 						showException(ex);
 					}
 				}
 			}
 		});
-		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		buttonPanel.setOpaque(false);
-		buttonPanel.add(invalidateSessionButton);
-		add(buttonPanel, BorderLayout.EAST);
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonsPanel.setOpaque(false);
+		buttonsPanel.add(refreshButton);
+		buttonsPanel.add(pdfButton);
+		buttonsPanel.add(invalidateAllSessionsButton);
+		buttonsPanel.add(invalidateSessionButton);
+		return buttonsPanel;
+	}
+
+	final void actionPdf() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		try {
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
+					.getCollector().getApplication(), output);
+			pdfOtherReport.writeSessionInformations(sessionsInformations);
+		} finally {
+			output.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 
 	MTable<SessionInformations> getTable() {
