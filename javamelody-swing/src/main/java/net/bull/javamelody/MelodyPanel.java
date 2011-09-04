@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.awt.LayoutManager;
+import java.io.File;
 
 import javax.swing.JPanel;
 
@@ -59,5 +60,13 @@ class MelodyPanel extends JPanel {
 
 	RemoteCollector getRemoteCollector() {
 		return remoteCollector;
+	}
+
+	File createTempFileForPdf() {
+		final String application = getRemoteCollector().getCollector().getApplication();
+		final File tempFile = new File(System.getProperty("java.io.tmpdir"),
+				PdfReport.getFileName(application));
+		tempFile.deleteOnExit();
+		return tempFile;
 	}
 }

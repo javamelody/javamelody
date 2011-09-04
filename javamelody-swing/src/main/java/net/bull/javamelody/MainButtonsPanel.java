@@ -33,8 +33,6 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
-import net.bull.javamelody.util.MSwingUtilities;
-
 /**
  * Panel des boutons principaux.
  * @author Emeric Vernat
@@ -122,9 +120,7 @@ class MainButtonsPanel extends MelodyPanel {
 		final boolean collectorServer = true;
 		// TODO récupérer range sélectionné
 		final Range range = Period.TOUT.getRange();
-		final File tempFile = new File(System.getProperty("java.io.tmpdir"),
-				PdfReport.getFileName(collector.getApplication()));
-		tempFile.deleteOnExit();
+		final File tempFile = createTempFileForPdf();
 		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
 		try {
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
