@@ -35,6 +35,7 @@ import net.bull.javamelody.table.MBasicTable;
  * @author Emeric Vernat
  */
 public class MCsvLocalWriter extends MCsvWriter {
+	// TODO separator selon la locale
 	/** Caractère de séparation dans les fichiers csv (local). */
 	public static final char CSV_LOCAL_SEPARATOR = ';';
 
