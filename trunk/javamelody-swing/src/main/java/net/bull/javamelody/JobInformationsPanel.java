@@ -342,15 +342,7 @@ class JobInformationsPanel extends MelodyPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_pause_job"))) {
 					final JobInformations jobInformations = getTable().getSelectedObject();
-					try {
-						// TODO refresh
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.PAUSE_JOB, null, null, null,
-								jobInformations.getGlobalJobId());
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionOnJob(Action.PAUSE_JOB, jobInformations.getGlobalJobId());
 				}
 			}
 		});
@@ -360,15 +352,7 @@ class JobInformationsPanel extends MelodyPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_resume_job"))) {
 					final JobInformations jobInformations = getTable().getSelectedObject();
-					try {
-						// TODO refresh
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.RESUME_JOB, null, null, null,
-								jobInformations.getGlobalJobId());
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionOnJob(Action.RESUME_JOB, jobInformations.getGlobalJobId());
 				}
 			}
 		});
@@ -378,14 +362,7 @@ class JobInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_pause_all_jobs"))) {
-					try {
-						// TODO refresh
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.PAUSE_JOB, null, null, null, "all");
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionOnJob(Action.PAUSE_JOB, "all");
 				}
 			}
 		});
@@ -395,14 +372,7 @@ class JobInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_resume_all_jobs"))) {
-					try {
-						// TODO refresh
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.RESUME_JOB, null, null, null, "all");
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionOnJob(Action.RESUME_JOB, "all");
 				}
 			}
 		});
@@ -432,5 +402,16 @@ class JobInformationsPanel extends MelodyPanel {
 
 	final MTable<JobInformations> getTable() {
 		return table;
+	}
+
+	final void actionOnJob(Action action, String jobId) {
+		try {
+			// TODO refresh
+			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
+					null, null, jobId);
+			showMessage(message);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 }
