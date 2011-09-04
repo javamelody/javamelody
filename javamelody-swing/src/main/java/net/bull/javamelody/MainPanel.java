@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.net.URL;
@@ -35,6 +36,7 @@ import net.bull.javamelody.util.MSwingUtilities;
  * @author Emeric Vernat
  */
 class MainPanel extends JPanel {
+	private static final Color BACKGROUND = new Color(230, 230, 230);
 	private static final long serialVersionUID = 1L;
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
@@ -57,6 +59,8 @@ class MainPanel extends JPanel {
 	static void addOngletFromChild(Component child, JPanel panel) {
 		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
 		// TODO
+		panel.setOpaque(true);
+		panel.setBackground(BACKGROUND);
 		MSwingUtilities.run(panel).setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 }
