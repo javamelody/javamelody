@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URI;
 import java.text.DateFormat;
 import java.util.Date;
@@ -340,7 +341,16 @@ class JobInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_pause_job"))) {
-					// TODO
+					final JobInformations jobInformations = getTable().getSelectedObject();
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.PAUSE_JOB, null, null, null,
+								jobInformations.getGlobalJobId());
+						showMessage(message);
+					} catch (final IOException ex) {
+						showException(ex);
+					}
 				}
 			}
 		});
@@ -349,7 +359,16 @@ class JobInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_resume_job"))) {
-					// TODO
+					final JobInformations jobInformations = getTable().getSelectedObject();
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.RESUME_JOB, null, null, null,
+								jobInformations.getGlobalJobId());
+						showMessage(message);
+					} catch (final IOException ex) {
+						showException(ex);
+					}
 				}
 			}
 		});
@@ -359,7 +378,14 @@ class JobInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_pause_all_jobs"))) {
-					// TODO
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.PAUSE_JOB, null, null, null, "all");
+						showMessage(message);
+					} catch (final IOException ex) {
+						showException(ex);
+					}
 				}
 			}
 		});
@@ -369,7 +395,14 @@ class JobInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_resume_all_jobs"))) {
-					// TODO
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.RESUME_JOB, null, null, null, "all");
+						showMessage(message);
+					} catch (final IOException ex) {
+						showException(ex);
+					}
 				}
 			}
 		});
