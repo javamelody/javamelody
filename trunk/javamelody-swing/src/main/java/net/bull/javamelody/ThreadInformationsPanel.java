@@ -157,7 +157,6 @@ class ThreadInformationsPanel extends MelodyPanel {
 			table.addColumn("cpuTimeMillis", I18N.getString("Temps_cpu"));
 			table.addColumn("userTimeMillis", I18N.getString("Temps_user"));
 		}
-		final MTable<ThreadInformations> myTable = table;
 		table.setColumnCellRenderer("state", new StateTableCellRenderer());
 
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
@@ -166,7 +165,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					final ThreadInformations threadInformations = myTable.getSelectedObject();
+					final ThreadInformations threadInformations = getTable().getSelectedObject();
 					showStackTraceInPopup(threadInformations);
 				}
 			}
@@ -181,11 +180,10 @@ class ThreadInformationsPanel extends MelodyPanel {
 	private void addButton() {
 		final MButton killThreadButton = new MButton(I18N.getString("Tuer"),
 				ImageIconCache.getImageIcon("stop.png"));
-		final MTable<ThreadInformations> myTable = table;
-		myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				final ThreadInformations threadInformations = myTable.getSelectedObject();
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
 				killThreadButton.setEnabled(threadInformations != null);
 				if (threadInformations != null) {
 					killThreadButton.setToolTipText(I18N.getFormattedString("kill_thread",
@@ -195,11 +193,11 @@ class ThreadInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		killThreadButton.setEnabled(myTable.getSelectedObject() != null);
+		killThreadButton.setEnabled(getTable().getSelectedObject() != null);
 		killThreadButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				final ThreadInformations threadInformations = myTable.getSelectedObject();
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
 				if (threadInformations != null
 						&& confirm(I18N.getFormattedString("confirm_kill_thread",
 								threadInformations.getName()))) {

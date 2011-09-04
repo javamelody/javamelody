@@ -234,19 +234,18 @@ class SessionInformationsPanel extends MelodyPanel {
 		});
 		final MButton invalidateSessionButton = new MButton(I18N.getString("invalidate_session"),
 				ImageIconCache.getScaledImageIcon("user-trash.png", 16, 16));
-		final MTable<SessionInformations> myTable = table;
-		myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				final SessionInformations sessionInformations = myTable.getSelectedObject();
+				final SessionInformations sessionInformations = getTable().getSelectedObject();
 				invalidateSessionButton.setEnabled(sessionInformations != null);
 			}
 		});
-		invalidateSessionButton.setEnabled(myTable.getSelectedObject() != null);
+		invalidateSessionButton.setEnabled(getTable().getSelectedObject() != null);
 		invalidateSessionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				final SessionInformations sessionInformations = myTable.getSelectedObject();
+				final SessionInformations sessionInformations = getTable().getSelectedObject();
 				if (sessionInformations != null
 						&& confirm(I18N.getFormattedString("confirm_invalidate_session"))) {
 					try {
