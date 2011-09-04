@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -52,6 +53,8 @@ import net.bull.javamelody.util.MSwingUtilities;
 class ThreadInformationsPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("all")
+	private final RemoteCollector remoteCollector;
 	@SuppressWarnings("all")
 	private final List<ThreadInformations> threadInformationsList;
 	private final boolean stackTraceEnabled;
@@ -123,10 +126,12 @@ class ThreadInformationsPanel extends JPanel {
 		}
 	}
 
-	ThreadInformationsPanel(List<ThreadInformations> threadInformationsList,
-			boolean stackTraceEnabled) {
+	ThreadInformationsPanel(RemoteCollector remoteCollector,
+			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled) {
 		super(new BorderLayout());
+		assert remoteCollector != null;
 		assert threadInformationsList != null;
+		this.remoteCollector = remoteCollector;
 		this.threadInformationsList = threadInformationsList;
 		this.stackTraceEnabled = stackTraceEnabled;
 		this.cpuTimeEnabled = !threadInformationsList.isEmpty()
@@ -205,7 +210,15 @@ class ThreadInformationsPanel extends JPanel {
 				if (threadInformations != null
 						&& confirm(I18N.getFormattedString("confirm_kill_thread",
 								threadInformations.getName()))) {
-					// TODO
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.KILL_THREAD, null, null,
+								threadInformations.getGlobalThreadId(), null);
+						showMessage(message);
+					} catch (final IOException ex) {
+						MSwingUtilities.showException(ex);
+					}
 				}
 			}
 		});
@@ -213,10 +226,6 @@ class ThreadInformationsPanel extends JPanel {
 		buttonPanel.setOpaque(false);
 		buttonPanel.add(killThreadButton);
 		add(buttonPanel, BorderLayout.EAST);
-	}
-
-	final boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
 	}
 
 	final void showStackTraceInPopup(ThreadInformations threadInformations) {
@@ -270,5 +279,17 @@ class ThreadInformationsPanel extends JPanel {
 
 	MTable<ThreadInformations> getTable() {
 		return table;
+	}
+
+	final boolean confirm(String message) {
+		return MSwingUtilities.showConfirmation(this, message);
+	}
+
+	final void showMessage(final String message) {
+		MSwingUtilities.showMessage(this, message);
+	}
+
+	RemoteCollector getRemoteCollector() {
+		return remoteCollector;
 	}
 }

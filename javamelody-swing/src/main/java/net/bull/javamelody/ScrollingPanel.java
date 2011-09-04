@@ -192,7 +192,8 @@ class ScrollingPanel extends JPanel {
 			final List<ThreadInformations> threadInformationsList = javaInformations
 					.getThreadInformationsList();
 			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
-					threadInformationsList, javaInformations.isStackTraceEnabled());
+					getRemoteCollector(), threadInformationsList,
+					javaInformations.isStackTraceEnabled());
 			threadInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("Threads_sur", javaInformations.getHost())
