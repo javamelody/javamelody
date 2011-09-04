@@ -20,6 +20,9 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,6 +30,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
@@ -37,7 +42,7 @@ import net.bull.javamelody.table.MTableScrollPane;
  * Panel de la liste des sessions.
  * @author Emeric Vernat
  */
-class SessionInformationsPanel extends JPanel {
+class SessionInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -83,8 +88,7 @@ class SessionInformationsPanel extends JPanel {
 	}
 
 	SessionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(new BorderLayout());
-		assert remoteCollector != null;
+		super(remoteCollector, new BorderLayout());
 		this.sessionsInformations = remoteCollector.collectSessionInformations(null);
 		this.table = new MTable<SessionInformations>();
 
@@ -104,6 +108,8 @@ class SessionInformationsPanel extends JPanel {
 		add(titleLabel, BorderLayout.NORTH);
 
 		addScrollPane();
+
+		addButton();
 		//	TODO	write("<th class='noPrint'>#Invalider#</th>");
 		// TODO invalider toutes les sessions
 
@@ -165,6 +171,42 @@ class SessionInformationsPanel extends JPanel {
 		table.setList(sessionsInformations);
 
 		add(tableScrollPane, BorderLayout.CENTER);
+	}
+
+	private void addButton() {
+		final MButton invalidateSessionButton = new MButton(I18N.getString("invalidate_session"),
+				ImageIconCache.getScaledImageIcon("user-trash.png", 16, 16));
+		final MTable<SessionInformations> myTable = table;
+		myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final SessionInformations sessionInformations = myTable.getSelectedObject();
+				invalidateSessionButton.setEnabled(sessionInformations != null);
+			}
+		});
+		invalidateSessionButton.setEnabled(myTable.getSelectedObject() != null);
+		invalidateSessionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final SessionInformations sessionInformations = myTable.getSelectedObject();
+				if (sessionInformations != null
+						&& confirm(I18N.getFormattedString("confirm_invalidate_session"))) {
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.INVALIDATE_SESSION, null, sessionInformations.getId(), null,
+								null);
+						showMessage(message);
+					} catch (final IOException ex) {
+						showException(ex);
+					}
+				}
+			}
+		});
+		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonPanel.setOpaque(false);
+		buttonPanel.add(invalidateSessionButton);
+		add(buttonPanel, BorderLayout.EAST);
 	}
 
 	MTable<SessionInformations> getTable() {
