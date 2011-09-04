@@ -376,17 +376,16 @@ class JobInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final MTable<JobInformations> myTable = table;
-		myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				final JobInformations jobInformations = myTable.getSelectedObject();
+				final JobInformations jobInformations = getTable().getSelectedObject();
 				pauseJobButton.setEnabled(jobInformations != null);
 				resumeJobButton.setEnabled(jobInformations != null);
 			}
 		});
-		pauseJobButton.setEnabled(myTable.getSelectedObject() != null);
-		resumeJobButton.setEnabled(myTable.getSelectedObject() != null);
+		pauseJobButton.setEnabled(getTable().getSelectedObject() != null);
+		resumeJobButton.setEnabled(getTable().getSelectedObject() != null);
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.setOpaque(false);
 		buttonPanel.add(pauseJobButton);
