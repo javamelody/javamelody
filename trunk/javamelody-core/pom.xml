@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>org.jrobin</groupId>
 			<artifactId>jrobin</artifactId>
-			<version>1.5.9</version>
+			<version>1.5.14-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -210,11 +210,7 @@
 	</dependencies>
 	<repositories>
 		<repository>
-			<!--
-				proxy qui est plus rapide et plus stable que
-				http://download.java.net/maven/1 et que
-				http://download.java.net/maven/2
-			-->
+			<!-- pour jrobin -->
 			<id>m.g.o-public</id>
 			<url>http://maven.glassfish.org/content/groups/public/</url>
 			<releases>
