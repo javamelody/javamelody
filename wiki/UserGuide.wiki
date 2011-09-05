@@ -923,7 +923,11 @@ or
 			</exclusion>
 		</exclusions>
 	</dependency>
-	...
+}}}
+
+Since v1.31, the repository http://maven.glassfish.org is not needed anymore for javamelody.
+
+{{{
 	<repositories>
 		<!-- for javamelody and for jrobin -->
 		<repository>
