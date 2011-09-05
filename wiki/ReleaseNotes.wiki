@@ -1,4 +1,8 @@
 #labels Featured
+*The latest release of javamelody artefacts are now available in the Maven central repository*: [http://search.maven.org/#search|ga|1|a%3A%22javamelody-core%22 javamelody-core in central] . And so, you don't need anymore to use in your pom.xml or settings.xml the [http://maven.glassfish.org] repository for javamelody.
+
+(In fact, it seems that some obsolete artefacts of javamelody were previously published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
+
 === 1.31.0 ===
   * fix issue 128: Fix the shutdown process in JIRA 4.3.4 and clean it for Confluence/Bamboo/Jenkins/Hudson.
   * fix issue 129: ArrayIndexOutOfBoundsException in GWTRequestWrapper in a particular case.
