@@ -2,6 +2,7 @@
   * [http://www.slideshare.net/djkarlsen/significance-of-metrics Slides] and [http://vimeo.com/channels/rootsconf#24706626 video] of David Karlsen at the Roots Conference
   * [http://dhartford.blogspot.com/2011/02/javamelody-performance-usage-statistics.html dhartford]
   * [http://ejvyas.blogspot.com/2009/12/java-melody-monitoring-of-javaee.html Vyas]
+  * [http://mdshannan1.blogspot.com/2011/09/use-java-melody-to-see-into-production.html Intesar]
   * [http://pradeepjanakiraman.wordpress.com/2010/02/04/java-melody-pretty-cool/ Pradeep]
   * [http://etcshadow.wordpress.com/2010/09/03/java-melody/ /etc/shadow]
   * [http://olamy.blogspot.com/2009/11/using-javamelody-in-your-application.html Olivier Lamy (Maven PMC)]
