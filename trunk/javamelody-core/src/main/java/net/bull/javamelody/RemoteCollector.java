@@ -141,7 +141,10 @@ class RemoteCollector {
 				break;
 			}
 		}
-		// si found est toujours null, alors la session a été invalidée
+		if (found == null) {
+			// si found est toujours null, alors la session a été invalidée
+			return Collections.emptyList();
+		}
 		return Collections.singletonList(found);
 	}
 
