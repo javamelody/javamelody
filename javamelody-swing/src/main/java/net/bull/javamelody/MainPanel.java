@@ -24,6 +24,7 @@ import java.awt.Component;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -61,6 +62,7 @@ class MainPanel extends JPanel {
 		// TODO
 		panel.setOpaque(true);
 		panel.setBackground(BACKGROUND);
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		MSwingUtilities.run(panel).setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 }
