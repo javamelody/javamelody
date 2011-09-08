@@ -21,7 +21,9 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
@@ -38,10 +40,12 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.bull.javamelody.SessionInformations.SessionAttribute;
 import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
+import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Panel de la liste des sessions.
@@ -53,6 +57,7 @@ class SessionInformationsPanel extends MelodyPanel {
 	@SuppressWarnings("all")
 	private List<SessionInformations> sessionsInformations;
 	private MTable<SessionInformations> table;
+	private MTable<SessionAttribute> attributesTable;
 
 	private class CountryTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -104,6 +109,7 @@ class SessionInformationsPanel extends MelodyPanel {
 
 		this.sessionsInformations = getRemoteCollector().collectSessionInformations(null);
 		this.table = new MTable<SessionInformations>();
+		this.attributesTable = new MTable<SessionAttribute>();
 
 		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("Sessions"),
 				"system-users.png");
@@ -113,8 +119,9 @@ class SessionInformationsPanel extends MelodyPanel {
 
 		final JPanel southPanel = new JPanel(new BorderLayout());
 		southPanel.setOpaque(false);
-		southPanel.add(createButtonsPanel(), BorderLayout.CENTER);
-		southPanel.add(createSummaryLabel(), BorderLayout.SOUTH);
+		southPanel.add(createButtonsPanel(), BorderLayout.NORTH);
+		southPanel.add(createSummaryLabel(), BorderLayout.CENTER);
+		southPanel.add(createAttributesPanel(), BorderLayout.SOUTH);
 		add(southPanel, BorderLayout.SOUTH);
 	}
 
@@ -154,6 +161,34 @@ class SessionInformationsPanel extends MelodyPanel {
 		table.setList(sessionsInformations);
 
 		add(tableScrollPane, BorderLayout.CENTER);
+	}
+
+	private JPanel createAttributesPanel() {
+		final JPanel attributesPanel = new JPanel(new BorderLayout());
+		attributesPanel.setOpaque(false);
+		final JLabel attributesLabel = new JLabel(I18N.getString("Attributs"));
+		attributesLabel.setFont(attributesLabel.getFont().deriveFont(Font.BOLD));
+		attributesPanel.add(attributesLabel, BorderLayout.NORTH);
+		final MTableScrollPane<SessionAttribute> attributesTableScrollPane = new MTableScrollPane<SessionAttribute>(
+				attributesTable);
+		attributesTable.addColumn("name", I18N.getString("Nom"));
+		attributesTable.addColumn("type", I18N.getString("Type"));
+		attributesTable.addColumn("serializable", I18N.getString("Serialisable"));
+		attributesTable.addColumn("serializedSize", I18N.getString("Taille_serialisee"));
+		attributesTable.addColumn("content", I18N.getString("Contenu"));
+		attributesTable.setPreferredScrollableViewportSize(new Dimension(-1, 100));
+		attributesPanel.add(attributesTableScrollPane, BorderLayout.CENTER);
+
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					refreshAttributes();
+				}
+			}
+		});
+
+		return attributesPanel;
 	}
 
 	private JLabel createSummaryLabel() {
@@ -273,7 +308,32 @@ class SessionInformationsPanel extends MelodyPanel {
 		Desktop.getDesktop().open(tempFile);
 	}
 
+	final void refreshAttributes() {
+		getAttributesTable().setList(null);
+
+		final SessionInformations sessionInformations = getTable().getSelectedObject();
+		if (sessionInformations != null) {
+			try {
+				final List<SessionInformations> list = getRemoteCollector()
+						.collectSessionInformations(sessionInformations.getId());
+				if (list.isEmpty()) {
+					final String message = I18N.getFormattedString("session_invalidee",
+							sessionInformations.getId());
+					MSwingUtilities.showMessage(this, message);
+				} else {
+					getAttributesTable().setList(list.get(0).getAttributes());
+				}
+			} catch (final IOException ex) {
+				showException(ex);
+			}
+		}
+	}
+
 	MTable<SessionInformations> getTable() {
 		return table;
+	}
+
+	MTable<SessionAttribute> getAttributesTable() {
+		return attributesTable;
 	}
 }
