@@ -16,57 +16,63 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.bull.javamelody;
+package net.bull.javamelody.swing;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.swing.JMenuItem;
 
 import net.bull.javamelody.util.MSwingUtilities;
 import net.bull.javamelody.util.MWaitCursor;
 
 /**
- * Bouton.
+ * MenuItem.
+ *
  * @author Emeric Vernat
  */
-public class MButton extends JButton {
+public class MMenuItem extends JMenuItem {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructeur.
 	 */
-	public MButton() {
-		super();
+	public MMenuItem() {
+		this(null);
 	}
 
 	/**
 	 * Constructeur.
-	 * @param text String
+	 *
+	 * @param text
+	 *           String
 	 */
-	public MButton(String text) {
+	public MMenuItem(final String text) {
 		super(text);
 	}
 
 	/**
 	 * Constructeur.
-	 * @param text String
-	 * @param icon Icon
+	 *
+	 * @param text
+	 *           String
+	 * @param icon
+	 *           Icon
 	 */
-	public MButton(String text, Icon icon) {
+	public MMenuItem(final String text, final Icon icon) {
 		super(text, icon);
 	}
 
 	/**
-	 * Méthode interne pour notifier tous les listeners qui ont enregistré leur intérêt
-	 * par button.addActionListener pour les événements d'action sur ce bouton.
+	 * Méthode interne pour notifier tous les listeners qui ont enregistré leur intérêt par menuItem.addActionListener pour les évènements d'action sur cet item.
 	 *
-	 * La surcharge de cette méthode permet pour les listeners d'actions sur des MButton
-	 * que le curseur sablier est automatiquement affiché.
-	 * @param event ActionEvent
+	 * Dans la surcharge de cette méthode, le curseur sablier est ici automatiquement affiché.
+	 *
+	 * @param event
+	 *           ActionEvent
 	 */
 	@Override
-	protected void fireActionPerformed(ActionEvent event) {
+	protected void fireActionPerformed(final ActionEvent event) {
 		try {
 			final MWaitCursor waitCursor = new MWaitCursor(this);
 			try {

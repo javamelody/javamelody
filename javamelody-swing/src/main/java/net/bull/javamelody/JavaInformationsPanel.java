@@ -40,6 +40,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 import net.bull.javamelody.PdfJavaInformationsReport.Bar;
+import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.util.SpringUtilities;
 
 import com.lowagie.text.Font;

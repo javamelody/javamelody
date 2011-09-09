@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import net.bull.javamelody.swing.MButton;
+
 /**
  * Panel des boutons principaux.
  * @author Emeric Vernat
