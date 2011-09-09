@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
-import net.bull.javamelody.MMenuItem;
 import net.bull.javamelody.print.MCsvLocalWriter;
 import net.bull.javamelody.print.MHtmlWriter;
 import net.bull.javamelody.print.MJavaPrinter;
@@ -35,6 +34,7 @@ import net.bull.javamelody.print.MPdfWriter;
 import net.bull.javamelody.print.MPrinter;
 import net.bull.javamelody.print.MRtfWriter;
 import net.bull.javamelody.print.MXmlWriter;
+import net.bull.javamelody.swing.MMenuItem;
 import net.bull.javamelody.util.MSwingUtilities;
 
 import org.apache.log4j.Logger;

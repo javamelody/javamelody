@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 
+import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.table.MDateTableCellRenderer;
 import net.bull.javamelody.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.table.MTable;

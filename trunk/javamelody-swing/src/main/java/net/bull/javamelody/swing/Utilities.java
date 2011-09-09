@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.bull.javamelody;
+package net.bull.javamelody.swing;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,18 +28,25 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import net.bull.javamelody.ImageIconCache;
 import net.bull.javamelody.util.MSwingUtilities;
 
 /**
  * Classe utilitaire.
  * @author Emeric Vernat
  */
-final class Utilities {
+public final class Utilities {
 	private Utilities() {
 		super();
 	}
 
-	static JLabel createParagraphTitle(String title, String iconName) {
+	/**
+	 * Création d'un JLabel de paragraphe.
+	 * @param title String
+	 * @param iconName String
+	 * @return JLabel
+	 */
+	public static JLabel createParagraphTitle(String title, String iconName) {
 		final JLabel label = new JLabel(title);
 		label.setIcon(ImageIconCache.getScaledImageIcon(iconName, 24, 24));
 		label.setFont(label.getFont().deriveFont(Font.BOLD, label.getFont().getSize() + 4));
@@ -48,7 +55,11 @@ final class Utilities {
 		return label;
 	}
 
-	static void adjustTableHeight(final JTable table) {
+	/**
+	 * Fixe la taille exacte d'une JTable à celle nécessaire pour afficher les données.
+	 * @param table JTable
+	 */
+	public static void adjustTableHeight(final JTable table) {
 		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

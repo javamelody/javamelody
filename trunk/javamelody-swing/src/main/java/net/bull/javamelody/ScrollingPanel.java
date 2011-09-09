@@ -36,6 +36,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.Utilities;
+
 /**
  * Panel principal.
  * @author Emeric Vernat

@@ -34,6 +34,8 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.table.MTable;
 import net.bull.javamelody.table.MTableScrollPane;
 
