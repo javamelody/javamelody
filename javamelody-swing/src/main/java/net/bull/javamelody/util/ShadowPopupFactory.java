@@ -530,17 +530,29 @@ public final class ShadowPopupFactory extends PopupFactory {
 		/**
 		 * The drop shadow is created from a PNG image with 8 bit alpha channel.
 		 */
+		@SuppressWarnings("all")
 		private static final Image SHADOW = new ImageIcon(
 				ShadowPopupBorder.class.getResource("/icons/shadow.png")).getImage();
 
 		// Instance Creation *****************************************************
 
-		// Returns the singleton instance used to draw all borders.
+		/**
+		 * Returns the singleton instance used to draw all borders.
+		 * @return ShadowPopupBorder
+		 */
 		public static ShadowPopupBorder getInstance() {
 			return INSTANCE;
 		}
 
-		// Paints the border for the specified component with the specified position and size.
+		/**
+		 * Paints the border for the specified component with the specified position and size.
+		 * @param c the component for which this border is being painted
+		 * @param g the paint graphics
+		 * @param x the x position of the painted border
+		 * @param y the y position of the painted border
+		 * @param width the width of the painted border
+		 * @param height the height of the painted border
+		 */
 		@Override
 		public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
 			// fake drop shadow effect in case of heavy weight popups
@@ -567,7 +579,11 @@ public final class ShadowPopupFactory extends PopupFactory {
 					null, c);
 		}
 
-		// Returns the insets of the border.
+		/**
+		 * Returns the insets of the border.
+		 * @param c nothing
+		 * @return Insets
+		 */
 		@Override
 		public Insets getBorderInsets(Component c) {
 			return new Insets(0, 0, SHADOW_SIZE, SHADOW_SIZE);
