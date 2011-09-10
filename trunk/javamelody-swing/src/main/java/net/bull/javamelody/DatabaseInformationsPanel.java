@@ -32,16 +32,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.table.TableColumn;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
+import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
+import net.bull.javamelody.swing.table.MTableModel;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
 /**
@@ -81,10 +84,55 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	private void addScrollPane() {
 		final MTableScrollPane<DatabaseInformations> tableScrollPane = new MTableScrollPane<DatabaseInformations>(
 				table);
-		//		table.addColumn("name", I18N.getString("Thread"));
-		// TODO
+		final String[][] values = databaseInformations.getResult();
+		table.setModel(new MTableModel<String[]>(table) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Object getValueAt(int rowIndex, int columnIndex) {
+				return values[rowIndex + 1][columnIndex];
+			}
+
+			@Override
+			public int getRowCount() {
+				return values.length - 1;
+			}
+		});
+
+		for (final String header : values[0]) {
+			final TableColumn tableColumn = new TableColumn(table.getColumnCount());
+			tableColumn.setIdentifier(header);
+			tableColumn.setHeaderValue("<html>" + header.replace("\n", "<br/>"));
+			tableColumn.setCellRenderer(new MMultiLineTableCellRenderer() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void setValue(Object value) {
+					super.setValue(value);
+					if (value != null && isNumber((String) value)) {
+						setHorizontalAlignment(SwingConstants.RIGHT);
+					} else {
+						setHorizontalAlignment(SwingConstants.LEFT);
+					}
+				}
+			});
+			table.addColumn(tableColumn);
+		}
+
+		table.adjustColumnWidths();
 
 		add(tableScrollPane, BorderLayout.CENTER);
+	}
+
+	static boolean isNumber(String text) {
+		final int length = text.length();
+		for (int i = 0; i < length; i++) {
+			final char c = text.charAt(i);
+			if (!Character.isDigit(c) && c != '.') {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private JPanel createButtonsPanel() {
@@ -146,7 +194,6 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonsPanel.setOpaque(false);
 		buttonsPanel.add(requestComboBox);
-		buttonsPanel.add(Box.createHorizontalGlue());
 		buttonsPanel.add(refreshButton);
 		buttonsPanel.add(pdfButton);
 		return buttonsPanel;
