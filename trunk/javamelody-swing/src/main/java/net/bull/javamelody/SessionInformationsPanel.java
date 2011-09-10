@@ -101,7 +101,6 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	SessionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
-		setOpaque(false);
 
 		refresh();
 	}
@@ -113,6 +112,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		this.table = new MTable<SessionInformations>();
 		this.attributesTable = new MTable<SessionAttribute>();
 
+		setName(I18N.getString("Sessions"));
 		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("Sessions"),
 				"system-users.png");
 		add(titleLabel, BorderLayout.NORTH);
