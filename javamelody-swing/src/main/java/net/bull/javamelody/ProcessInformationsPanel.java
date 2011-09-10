@@ -35,12 +35,19 @@ class ProcessInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private final List<List<ProcessInformations>> processInformationsList;
-	private final MTable<ProcessInformations> table;
+	private List<List<ProcessInformations>> processInformationsList;
+	private MTable<ProcessInformations> table;
 
 	ProcessInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
-		this.processInformationsList = remoteCollector.collectProcessInformations();
+
+		refresh();
+	}
+
+	private void refresh() throws IOException {
+		removeAll();
+
+		this.processInformationsList = getRemoteCollector().collectProcessInformations();
 		this.table = new MTable<ProcessInformations>();
 
 		addScrollPane();
