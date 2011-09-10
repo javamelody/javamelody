@@ -41,7 +41,7 @@ import javax.swing.SwingConstants;
 
 import net.bull.javamelody.PdfJavaInformationsReport.Bar;
 import net.bull.javamelody.swing.MButton;
-import net.bull.javamelody.util.SpringUtilities;
+import net.bull.javamelody.swing.util.SpringUtilities;
 
 import com.lowagie.text.Font;
 

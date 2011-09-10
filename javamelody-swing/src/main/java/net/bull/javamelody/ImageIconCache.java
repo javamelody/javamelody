@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
 
-import net.bull.javamelody.util.MSwingUtilities;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Cache d'objets ImageIcon.

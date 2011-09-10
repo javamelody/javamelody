@@ -29,7 +29,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.ImageIconCache;
-import net.bull.javamelody.util.MSwingUtilities;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Classe utilitaire.

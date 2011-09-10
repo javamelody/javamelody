@@ -23,8 +23,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 import javax.swing.JMenuItem;
 
-import net.bull.javamelody.util.MSwingUtilities;
-import net.bull.javamelody.util.MWaitCursor;
+import net.bull.javamelody.swing.util.MSwingUtilities;
+import net.bull.javamelody.swing.util.MWaitCursor;
 
 /**
  * MenuItem.

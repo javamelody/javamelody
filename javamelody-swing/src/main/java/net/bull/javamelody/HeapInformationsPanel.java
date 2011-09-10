@@ -23,8 +23,8 @@ import java.io.IOException;
 
 import javax.swing.JLabel;
 
-import net.bull.javamelody.table.MTable;
-import net.bull.javamelody.table.MTableScrollPane;
+import net.bull.javamelody.swing.table.MTable;
+import net.bull.javamelody.swing.table.MTableScrollPane;
 
 /**
  * Panel de l'histogramme mémoire.

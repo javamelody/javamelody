@@ -29,8 +29,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import net.bull.javamelody.util.MSwingUtilities;
-import net.bull.javamelody.util.ShadowPopupFactory;
+import net.bull.javamelody.swing.util.MSwingUtilities;
+import net.bull.javamelody.swing.util.ShadowPopupFactory;
 
 /**
  * Classe Main.
