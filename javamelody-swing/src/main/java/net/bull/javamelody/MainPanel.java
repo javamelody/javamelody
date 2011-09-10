@@ -28,8 +28,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.WindowConstants;
 
+import net.bull.javamelody.swing.MTabbedPane;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
@@ -40,29 +40,37 @@ class MainPanel extends JPanel {
 	private static final Color BACKGROUND = new Color(230, 230, 230);
 	private static final long serialVersionUID = 1L;
 
+	private final MTabbedPane tabbedPane = new MTabbedPane();
+
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
 	MainPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
 		super(new BorderLayout());
+
 		final ScrollingPanel scrollingPanel = new ScrollingPanel(remoteCollector, monitoringUrl);
 		final JScrollPane scrollPane = new JScrollPane(scrollingPanel);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-		final JPanel southPanel = new JPanel(new BorderLayout());
-		southPanel.setOpaque(false);
-		//		southPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		southPanel.add(scrollPane, BorderLayout.CENTER);
 
-		add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
-		add(southPanel, BorderLayout.CENTER);
+		final JPanel tab = new JPanel(new BorderLayout());
+		tab.setOpaque(false);
+		tab.add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
+		tab.add(scrollPane, BorderLayout.CENTER);
+
+		addOnglet(tab);
+		add(tabbedPane, BorderLayout.CENTER);
 	}
 
 	static void addOngletFromChild(Component child, JPanel panel) {
-		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
-		// TODO
 		panel.setOpaque(true);
 		panel.setBackground(BACKGROUND);
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		MSwingUtilities.run(panel).setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
+		mainPanel.addOnglet(panel);
+	}
+
+	private void addOnglet(JPanel panel) {
+		tabbedPane.addTab(panel.getName(), panel);
+		tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 	}
 }
