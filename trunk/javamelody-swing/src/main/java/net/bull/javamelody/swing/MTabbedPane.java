@@ -83,6 +83,7 @@ public class MTabbedPane extends JTabbedPane {
 		initListeners();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void insertTab(String title, Icon icon, Component component, String tip, int index) {
 		super.insertTab(title, icon, component, tip, index);
