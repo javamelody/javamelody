@@ -57,7 +57,9 @@ class MainPanel extends JPanel {
 		tab.add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
 		tab.add(scrollPane, BorderLayout.CENTER);
 
-		addOnglet(tab);
+		// TODO translation
+		tabbedPane.addTab("Main", tab);
+		tabbedPane.setTabComponentAt(0, null);
 		add(tabbedPane, BorderLayout.CENTER);
 	}
 
