@@ -189,11 +189,6 @@ public final class ShadowPopupFactory extends PopupFactory {
 		private static final int SHADOW_SIZE = 5;
 
 		/**
-		 * Indicates whether we can make snapshots from screen or not.
-		 */
-		private static boolean canSnapshot = true;
-
-		/**
 		 * The component mouse coordinates are relative to, may be null.
 		 */
 		private Component owner;
@@ -254,10 +249,6 @@ public final class ShadowPopupFactory extends PopupFactory {
 					cache.add(popup);
 				}
 			}
-		}
-
-		public static boolean canSnapshot() {
-			return canSnapshot;
 		}
 
 		/**
@@ -397,9 +388,6 @@ public final class ShadowPopupFactory extends PopupFactory {
 					return;
 				}
 
-				final int layeredPaneWidth = layeredPane.getWidth();
-				final int layeredPaneHeight = layeredPane.getHeight();
-
 				POINT.x = x;
 				POINT.y = y;
 				SwingUtilities.convertPointFromScreen(POINT, layeredPane);
@@ -420,9 +408,9 @@ public final class ShadowPopupFactory extends PopupFactory {
 
 				paintShadow(vShadowBg, layeredPane);
 			} catch (final AWTException e) {
-				canSnapshot = false;
+				return;
 			} catch (final SecurityException e) {
-				canSnapshot = false;
+				return;
 			}
 		}
 
