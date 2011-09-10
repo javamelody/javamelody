@@ -216,6 +216,10 @@ class RemoteCollector {
 		}
 	}
 
+	String getApplication() {
+		return application;
+	}
+
 	Collector getCollector() {
 		return collector;
 	}

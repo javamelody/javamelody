@@ -302,7 +302,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
 		try {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
-					.getCollector().getApplication(), output);
+					.getApplication(), output);
 			pdfOtherReport.writeSessionInformations(sessionsInformations);
 		} finally {
 			output.close();
