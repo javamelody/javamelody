@@ -34,12 +34,19 @@ class HeapInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private final HeapHistogram heapHistogram;
-	private final MTable<HeapHistogram.ClassInfo> table;
+	private HeapHistogram heapHistogram;
+	private MTable<HeapHistogram.ClassInfo> table;
 
 	HeapInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
-		this.heapHistogram = remoteCollector.collectHeapHistogram();
+
+		refresh();
+	}
+
+	private void refresh() throws IOException {
+		removeAll();
+
+		this.heapHistogram = getRemoteCollector().collectHeapHistogram();
 		this.table = new MTable<HeapHistogram.ClassInfo>();
 
 		addScrollPane();

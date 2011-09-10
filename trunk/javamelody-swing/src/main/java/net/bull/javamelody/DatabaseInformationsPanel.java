@@ -34,12 +34,19 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private final DatabaseInformations databaseInformations;
-	private final MTable<DatabaseInformations> table;
+	private DatabaseInformations databaseInformations;
+	private MTable<DatabaseInformations> table;
 
 	DatabaseInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
-		this.databaseInformations = remoteCollector.collectDatabaseInformations(0);
+
+		refresh();
+	}
+
+	private void refresh() throws IOException {
+		removeAll();
+
+		this.databaseInformations = getRemoteCollector().collectDatabaseInformations(0);
 		this.table = new MTable<DatabaseInformations>();
 
 		addScrollPane();

@@ -35,12 +35,19 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private final List<List<ConnectionInformations>> connectionInformationsList;
-	private final MTable<ConnectionInformations> table;
+	private List<List<ConnectionInformations>> connectionInformationsList;
+	private MTable<ConnectionInformations> table;
 
 	ConnectionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
-		this.connectionInformationsList = remoteCollector.collectConnectionInformations();
+
+		refresh();
+	}
+
+	private void refresh() throws IOException {
+		removeAll();
+
+		this.connectionInformationsList = getRemoteCollector().collectConnectionInformations();
 		this.table = new MTable<ConnectionInformations>();
 
 		addScrollPane();
