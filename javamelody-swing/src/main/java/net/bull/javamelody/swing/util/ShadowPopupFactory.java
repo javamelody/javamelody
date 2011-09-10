@@ -302,37 +302,37 @@ public final class ShadowPopupFactory extends PopupFactory {
 		/**
 		 * Reinitializes this ShadowPopup using the given parameters.
 		 *
-		 * @param owner component mouse coordinates are relative to, may be null
-		 * @param contents the contents of the popup
-		 * @param x the desired x location of the popup
-		 * @param y the desired y location of the popup
-		 * @param popup the popup to wrap
+		 * @param newOwner component mouse coordinates are relative to, may be null
+		 * @param newContents the contents of the popup
+		 * @param newX the desired x location of the popup
+		 * @param newY the desired y location of the popup
+		 * @param newPopup the popup to wrap
 		 */
-		private void reset(Component owner, Component contents, int x, int y, Popup popup) {
-			this.owner = owner;
-			this.contents = contents;
-			this.popup = popup;
-			this.x = x;
-			this.y = y;
-			if (owner instanceof JComboBox) {
+		private void reset(Component newOwner, Component newContents, int newX, int newY, Popup newPopup) {
+			this.owner = newOwner;
+			this.contents = newContents;
+			this.popup = newPopup;
+			this.x = newX;
+			this.y = newY;
+			if (newOwner instanceof JComboBox) {
 				return;
 			}
 			// Do not install the shadow border when the contents
 			// has a preferred size less than or equal to 0.
 			// We can't use the size, because it is(0, 0) for new popups.
-			final Dimension contentsPrefSize = contents.getPreferredSize();
+			final Dimension contentsPrefSize = newContents.getPreferredSize();
 			if (contentsPrefSize.width <= 0 || contentsPrefSize.height <= 0) {
 				return;
 			}
-			for (Container p = contents.getParent(); p != null; p = p.getParent()) {
+			for (Container p = newContents.getParent(); p != null; p = p.getParent()) {
 				if (p instanceof JWindow || p instanceof Panel) {
 					// Workaround for the gray rect problem.
-					p.setBackground(contents.getBackground());
+					p.setBackground(newContents.getBackground());
 					heavyWeightContainer = p;
 					break;
 				}
 			}
-			final JComponent parent = (JComponent) contents.getParent();
+			final JComponent parent = (JComponent) newContents.getParent();
 			oldOpaque = parent.isOpaque();
 			oldBorder = parent.getBorder();
 			parent.setOpaque(false);
