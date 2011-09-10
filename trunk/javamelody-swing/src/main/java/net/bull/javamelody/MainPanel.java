@@ -30,7 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
-import net.bull.javamelody.util.MSwingUtilities;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel principal.

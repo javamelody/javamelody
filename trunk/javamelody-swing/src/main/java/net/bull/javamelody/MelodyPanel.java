@@ -23,7 +23,7 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
-import net.bull.javamelody.util.MSwingUtilities;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel parent.
