@@ -19,10 +19,27 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 
+import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
@@ -41,13 +58,13 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	DatabaseInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
 
-		refresh();
+		refresh(0);
 	}
 
-	private void refresh() throws IOException {
+	final void refresh(int requestIndex) throws IOException {
 		removeAll();
 
-		this.databaseInformations = getRemoteCollector().collectDatabaseInformations(0);
+		this.databaseInformations = getRemoteCollector().collectDatabaseInformations(requestIndex);
 		this.table = new MTable<DatabaseInformations>();
 
 		setName(I18N.getString("database"));
@@ -58,8 +75,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 
 		addScrollPane();
 
-		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
-		add(label, BorderLayout.SOUTH);
+		add(createButtonsPanel(), BorderLayout.SOUTH);
 	}
 
 	private void addScrollPane() {
@@ -69,5 +85,87 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		// TODO
 
 		add(tableScrollPane, BorderLayout.CENTER);
+	}
+
+	private JPanel createButtonsPanel() {
+		final JComboBox requestComboBox = new JComboBox(databaseInformations.getRequestNames()
+				.toArray());
+		requestComboBox.setSelectedIndex(databaseInformations.getSelectedRequestIndex());
+		requestComboBox.setRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value, int index,
+					boolean isSelected, boolean cellHasFocus) {
+				final String requestKey = (String) value;
+				final String label = I18N.getString(requestKey);
+				return super.getListCellRendererComponent(list, label, index, isSelected,
+						cellHasFocus);
+			}
+		});
+		requestComboBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					final int requestIndex = requestComboBox.getSelectedIndex();
+					try {
+						refresh(requestIndex);
+					} catch (final IOException ex) {
+						showException(ex);
+					}
+				}
+			}
+		});
+
+		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
+				ImageIconCache.getImageIcon("action_refresh.png"));
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					refresh(getDatabaseInformations().getSelectedRequestIndex());
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		final MButton pdfButton = new MButton(I18N.getString("PDF"),
+				ImageIconCache.getImageIcon("pdf.png"));
+		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonsPanel.setOpaque(false);
+		buttonsPanel.add(requestComboBox);
+		buttonsPanel.add(Box.createHorizontalGlue());
+		buttonsPanel.add(refreshButton);
+		buttonsPanel.add(pdfButton);
+		return buttonsPanel;
+	}
+
+	final void actionPdf() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		try {
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
+					.getApplication(), output);
+			pdfOtherReport.writeDatabaseInformations(databaseInformations);
+		} finally {
+			output.close();
+		}
+		Desktop.getDesktop().open(tempFile);
+	}
+
+	DatabaseInformations getDatabaseInformations() {
+		return databaseInformations;
 	}
 }
