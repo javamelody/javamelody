@@ -63,7 +63,7 @@ class MelodyPanel extends JPanel {
 	}
 
 	File createTempFileForPdf() {
-		final String application = getRemoteCollector().getCollector().getApplication();
+		final String application = getRemoteCollector().getApplication();
 		final File tempFile = new File(System.getProperty("java.io.tmpdir"),
 				PdfReport.getFileName(application));
 		tempFile.deleteOnExit();
