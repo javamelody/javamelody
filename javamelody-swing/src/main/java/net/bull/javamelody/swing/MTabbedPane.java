@@ -116,7 +116,7 @@ public class MTabbedPane extends JTabbedPane {
 		// we only look at the right button
 		if (SwingUtilities.isRightMouseButton(event)) {
 			final JPopupMenu menu = new JPopupMenu();
-
+			// TODO ajouter Close (si tabComponentAt non null), Close others, Close all
 			final int tabCount = getTabCount();
 			final int selectedIndex = getSelectedIndex();
 			JMenuItem menuItem;
