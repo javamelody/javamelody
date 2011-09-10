@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import javax.swing.JLabel;
 
+import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
@@ -49,10 +50,18 @@ class HeapInformationsPanel extends MelodyPanel {
 		this.heapHistogram = getRemoteCollector().collectHeapHistogram();
 		this.table = new MTable<HeapHistogram.ClassInfo>();
 
+		setName(I18N.getFormattedString("heap_histo_du",
+				I18N.createDateAndTimeFormat().format(heapHistogram.getTime())));
+		final JLabel titleLabel = Utilities.createParagraphTitle(
+				I18N.getFormattedString("heap_histo_du",
+						I18N.createDateAndTimeFormat().format(heapHistogram.getTime())),
+				"memory.png");
+		add(titleLabel, BorderLayout.NORTH);
+
 		addScrollPane();
 
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
-		add(label, BorderLayout.WEST);
+		add(label, BorderLayout.SOUTH);
 	}
 
 	private void addScrollPane() {
@@ -61,6 +70,6 @@ class HeapInformationsPanel extends MelodyPanel {
 		//		table.addColumn("name", I18N.getString("Thread"));
 		// TODO
 
-		add(tableScrollPane, BorderLayout.NORTH);
+		add(tableScrollPane, BorderLayout.CENTER);
 	}
 }

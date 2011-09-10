@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import javax.swing.JLabel;
 
+import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
@@ -49,10 +50,16 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		this.databaseInformations = getRemoteCollector().collectDatabaseInformations(0);
 		this.table = new MTable<DatabaseInformations>();
 
+		setName(I18N.getString("database"));
+		final String selectedRequestName = databaseInformations.getSelectedRequestName();
+		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("database") + " : "
+				+ I18N.getString(selectedRequestName), "db.png");
+		add(titleLabel, BorderLayout.NORTH);
+
 		addScrollPane();
 
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
-		add(label, BorderLayout.WEST);
+		add(label, BorderLayout.SOUTH);
 	}
 
 	private void addScrollPane() {
@@ -61,6 +68,6 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		//		table.addColumn("name", I18N.getString("Thread"));
 		// TODO
 
-		add(tableScrollPane, BorderLayout.NORTH);
+		add(tableScrollPane, BorderLayout.CENTER);
 	}
 }

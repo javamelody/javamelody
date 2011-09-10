@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
+import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
@@ -50,10 +51,15 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		this.connectionInformationsList = getRemoteCollector().collectConnectionInformations();
 		this.table = new MTable<ConnectionInformations>();
 
+		setName(I18N.getString("Connexions_jdbc_ouvertes"));
+		final JLabel titleLabel = Utilities.createParagraphTitle(
+				I18N.getString("Connexions_jdbc_ouvertes"), "db.png");
+		add(titleLabel, BorderLayout.NORTH);
+
 		addScrollPane();
 
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
-		add(label, BorderLayout.WEST);
+		add(label, BorderLayout.SOUTH);
 	}
 
 	private void addScrollPane() {
@@ -62,6 +68,6 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		//		table.addColumn("name", I18N.getString("Thread"));
 		// TODO
 
-		add(tableScrollPane, BorderLayout.NORTH);
+		add(tableScrollPane, BorderLayout.CENTER);
 	}
 }
