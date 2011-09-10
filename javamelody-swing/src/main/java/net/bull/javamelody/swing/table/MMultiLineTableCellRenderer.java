@@ -55,8 +55,9 @@ public class MMultiLineTableCellRenderer extends MDefaultTableCellRenderer {
 						sb.append("<br>");
 					}
 				}
-				setToolTipText(text);
-				setText(sb.toString());
+				final String string = sb.toString();
+				setToolTipText(string);
+				setText(string);
 			}
 		}
 	}
