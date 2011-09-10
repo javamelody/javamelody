@@ -410,27 +410,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 				RECT.width = width;
 				RECT.height = SHADOW_SIZE;
 
-				if (RECT.x + RECT.width > layeredPaneWidth) {
-					RECT.width = layeredPaneWidth - RECT.x;
-				}
-				if (RECT.y + RECT.height > layeredPaneHeight) {
-					RECT.height = layeredPaneHeight - RECT.y;
-				}
-				if (!RECT.isEmpty()) {
-					final Graphics g = hShadowBg.createGraphics();
-					g.translate(-RECT.x, -RECT.y);
-					g.setClip(RECT);
-					if (layeredPane instanceof JComponent) {
-						final JComponent c = (JComponent) layeredPane;
-						final boolean doubleBuffered = c.isDoubleBuffered();
-						c.setDoubleBuffered(false);
-						c.paintAll(g);
-						c.setDoubleBuffered(doubleBuffered);
-					} else {
-						layeredPane.paintAll(g);
-					}
-					g.dispose();
-				}
+				paintShadow(hShadowBg, layeredPane);
 
 				// If needed paint dirty region of the vertical snapshot.
 				RECT.x = POINT.x + width - SHADOW_SIZE;
@@ -438,31 +418,46 @@ public final class ShadowPopupFactory extends PopupFactory {
 				RECT.width = SHADOW_SIZE;
 				RECT.height = height - SHADOW_SIZE;
 
-				if (RECT.x + RECT.width > layeredPaneWidth) {
-					RECT.width = layeredPaneWidth - RECT.x;
-				}
-				if (RECT.y + RECT.height > layeredPaneHeight) {
-					RECT.height = layeredPaneHeight - RECT.y;
-				}
-				if (!RECT.isEmpty()) {
-					final Graphics g = vShadowBg.createGraphics();
-					g.translate(-RECT.x, -RECT.y);
-					g.setClip(RECT);
-					if (layeredPane instanceof JComponent) {
-						final JComponent c = (JComponent) layeredPane;
-						final boolean doubleBuffered = c.isDoubleBuffered();
-						c.setDoubleBuffered(false);
-						c.paintAll(g);
-						c.setDoubleBuffered(doubleBuffered);
-					} else {
-						layeredPane.paintAll(g);
-					}
-					g.dispose();
-				}
+				paintShadow(vShadowBg, layeredPane);
 			} catch (final AWTException e) {
 				canSnapshot = false;
 			} catch (final SecurityException e) {
 				canSnapshot = false;
+			}
+		}
+
+		/**
+		 * If needed paint dirty region of the snapshot
+		 * 
+		 * @param shadowBg
+		 *           BufferedImage
+		 * @param layeredPane
+		 *           Container
+		 */
+		private void paintShadow(final BufferedImage shadowBg, final Container layeredPane) {
+			final int layeredPaneWidth = layeredPane.getWidth();
+			final int layeredPaneHeight = layeredPane.getHeight();
+
+			if ((RECT.x + RECT.width) > layeredPaneWidth) {
+				RECT.width = layeredPaneWidth - RECT.x;
+			}
+			if ((RECT.y + RECT.height) > layeredPaneHeight) {
+				RECT.height = layeredPaneHeight - RECT.y;
+			}
+			if (!RECT.isEmpty()) {
+				final Graphics g = shadowBg.createGraphics();
+				g.translate(-RECT.x, -RECT.y);
+				g.setClip(RECT);
+				if (layeredPane instanceof JComponent) {
+					final JComponent c = (JComponent) layeredPane;
+					final boolean doubleBuffered = c.isDoubleBuffered();
+					c.setDoubleBuffered(false);
+					c.paintAll(g);
+					c.setDoubleBuffered(doubleBuffered);
+				} else {
+					layeredPane.paintAll(g);
+				}
+				g.dispose();
 			}
 		}
 
