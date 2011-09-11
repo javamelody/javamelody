@@ -18,7 +18,6 @@
  */
 package net.bull.javamelody.swing;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,14 +26,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 /**
- * TabbedPane dont les onglets peuvent être fermés.<br>
+ * TabbedPane.<br>
  * On ne laisse qu'un constructeur qui positionne TAB_PLACEMENT à TOP et TAB_LAYOUT_POLICY à
  * SCROLL_TAB_LAYOUT.
  *
@@ -83,13 +81,6 @@ public class MTabbedPane extends JTabbedPane {
 		initListeners();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void insertTab(String title, Icon icon, Component component, String tip, int index) {
-		super.insertTab(title, icon, component, tip, index);
-		setTabComponentAt(index, new MButtonTabComponent(this));
-	}
-
 	/**
 	 * Initialisation des listeners.
 	 */
@@ -115,26 +106,28 @@ public class MTabbedPane extends JTabbedPane {
 	void mouseClicked(MouseEvent event) {
 		// we only look at the right button
 		if (SwingUtilities.isRightMouseButton(event)) {
-			final JPopupMenu menu = new JPopupMenu();
-			// TODO ajouter Close (si tabComponentAt non null), Close others, Close all
-			final int tabCount = getTabCount();
-			final int selectedIndex = getSelectedIndex();
-			JMenuItem menuItem;
-			final MenuSelectionHandler menuSelectionHandler = new MenuSelectionHandler();
-			for (int i = 0; i < tabCount; i++) {
-				menuItem = new JMenuItem(getTitleAt(i), getIconAt(i));
-				if (i == selectedIndex) {
-					menuItem.setFont(menuItem.getFont().deriveFont(Font.BOLD));
-				}
-				if (!isEnabledAt(i)) {
-					menuItem.setEnabled(false);
-				}
-				menuItem.setName(String.valueOf(i));
-				menuItem.addActionListener(menuSelectionHandler);
-				menu.add(menuItem);
-			}
-
+			final JPopupMenu menu = createPopupMenu();
 			menu.show(this, event.getX(), event.getY());
 		}
+	}
+
+	protected JPopupMenu createPopupMenu() {
+		final JPopupMenu menu = new JPopupMenu();
+		final MenuSelectionHandler menuSelectionHandler = new MenuSelectionHandler();
+		final int tabCount = getTabCount();
+		final int selectedIndex = getSelectedIndex();
+		for (int i = 0; i < tabCount; i++) {
+			final JMenuItem menuItem = new JMenuItem(getTitleAt(i), getIconAt(i));
+			if (i == selectedIndex) {
+				menuItem.setFont(menuItem.getFont().deriveFont(Font.BOLD));
+			}
+			if (!isEnabledAt(i)) {
+				menuItem.setEnabled(false);
+			}
+			menuItem.setName(String.valueOf(i));
+			menuItem.addActionListener(menuSelectionHandler);
+			menu.add(menuItem);
+		}
+		return menu;
 	}
 }
