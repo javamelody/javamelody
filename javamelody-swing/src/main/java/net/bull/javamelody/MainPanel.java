@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import net.bull.javamelody.swing.MTabbedPane;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
@@ -40,7 +39,7 @@ class MainPanel extends JPanel {
 	private static final Color BACKGROUND = new Color(230, 230, 230);
 	private static final long serialVersionUID = 1L;
 
-	private final MTabbedPane tabbedPane = new MTabbedPane();
+	private final TabbedPane tabbedPane = new TabbedPane();
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
