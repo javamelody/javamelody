@@ -308,7 +308,8 @@ public final class ShadowPopupFactory extends PopupFactory {
 		 * @param newY the desired y location of the popup
 		 * @param newPopup the popup to wrap
 		 */
-		private void reset(Component newOwner, Component newContents, int newX, int newY, Popup newPopup) {
+		private void reset(Component newOwner, Component newContents, int newX, int newY,
+				Popup newPopup) {
 			this.owner = newOwner;
 			this.contents = newContents;
 			this.popup = newPopup;
