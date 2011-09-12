@@ -94,7 +94,9 @@ class HtmlJndiTreeReport {
 					odd = !odd; // NOPMD
 					writeBinding(binding);
 					writeln("</tr>");
-				} catch (final NamingException e) {
+				} catch (final Exception e) {
+					// catch Exception et non catch NamingException car glassfish 3.1 par exemple
+					// lance parfois des RuntimeException encapsulant des NamingException lors du next()
 					continue;
 				}
 			}
