@@ -54,7 +54,7 @@ class PdfProcessInformationsReport {
 
 		this.processInformationsList = processInformationsList;
 		this.document = document;
-		this.windows = isWindowsProcessList(processInformationsList);
+		this.windows = HtmlProcessInformationsReport.isWindowsProcessList(processInformationsList);
 	}
 
 	void toPdf() throws DocumentException {
@@ -147,16 +147,6 @@ class PdfProcessInformationsReport {
 		addCell(processInformations.getCpuTime());
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(processInformations.getCommand());
-	}
-
-	private static boolean isWindowsProcessList(List<ProcessInformations> processInformationsList) {
-		// une liste de process est issue de windows et non linux si toutes les valeurs de tty sont nulles
-		for (final ProcessInformations processInformations : processInformationsList) {
-			if (processInformations.getTty() != null) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private static String getI18nString(String key) {
