@@ -102,7 +102,13 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		for (final String header : values[0]) {
 			final TableColumn tableColumn = new TableColumn(table.getColumnCount());
 			tableColumn.setIdentifier(header);
-			tableColumn.setHeaderValue("<html>" + header.replace("\n", "<br/>"));
+			if (header.indexOf('\n') != -1) {
+				tableColumn.setHeaderValue(header.substring(0, header.indexOf('\n')));
+				// on ne peut pas mettre <html> et <br/> car les exports ne seraient pas bons
+				// tableColumn.setHeaderValue("<html>" + header.replace("\n", "<br/>"));
+			} else {
+				tableColumn.setHeaderValue(header);
+			}
 			tableColumn.setCellRenderer(new MMultiLineTableCellRenderer() {
 				private static final long serialVersionUID = 1L;
 
