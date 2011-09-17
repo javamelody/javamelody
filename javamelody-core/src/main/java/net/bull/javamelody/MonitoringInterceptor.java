@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import javax.interceptor.AroundInvoke;
@@ -31,7 +32,9 @@ import javax.interceptor.InvocationContext;
  * ou alors par l'annotation @Interceptors dans les sources java des implémentations d'ejb.
  * @author Emeric Vernat
  */
-public class MonitoringInterceptor {
+public class MonitoringInterceptor implements Serializable {
+	// MonitoringInterceptor doit être Serializable si ejb a @Stateful (cf issue 137)
+	private static final long serialVersionUID = 1L;
 	private static final Counter EJB_COUNTER = MonitoringProxy.getEjbCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(EJB_COUNTER.getName());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
