@@ -132,7 +132,7 @@ class HtmlProcessInformationsReport {
 		writeln("</div>");
 	}
 
-	private static boolean isWindowsProcessList(List<ProcessInformations> processInformationsList) {
+	static boolean isWindowsProcessList(List<ProcessInformations> processInformationsList) {
 		// une liste de process est issue de windows et non linux si toutes les valeurs de tty sont nulles
 		for (final ProcessInformations processInformations : processInformationsList) {
 			if (processInformations.getTty() != null) {
