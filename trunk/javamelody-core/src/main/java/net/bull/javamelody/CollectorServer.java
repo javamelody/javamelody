@@ -172,7 +172,7 @@ class CollectorServer {
 		return getRemoteCollectorByApplication(application).collectConnectionInformations();
 	}
 
-	List<List<ProcessInformations>> collectProcessInformations(String application)
+	Map<String, List<ProcessInformations>> collectProcessInformations(String application)
 			throws IOException {
 		return getRemoteCollectorByApplication(application).collectProcessInformations();
 	}

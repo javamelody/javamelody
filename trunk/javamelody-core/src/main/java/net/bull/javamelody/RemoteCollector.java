@@ -27,7 +27,9 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Collecteur de données pour une application sur un ou plusieurs serveur(s) distant() : utilisé par serveur de collecte et par IHM Swing.
@@ -185,17 +187,18 @@ class RemoteCollector {
 		return connectionInformations;
 	}
 
-	List<List<ProcessInformations>> collectProcessInformations() throws IOException {
+	Map<String, List<ProcessInformations>> collectProcessInformations() throws IOException {
 		// récupération à la demande des processus
-		final List<List<ProcessInformations>> processInformations = new ArrayList<List<ProcessInformations>>();
+		final String title = I18N.getString("Processus");
+		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
 		for (final URL url : urls) {
 			final URL processUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
 					+ '=' + HttpParameters.PROCESSES_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(processUrl);
 			final List<ProcessInformations> processList = labradorRetriever.call();
-			processInformations.add(processList);
+			processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processList);
 		}
-		return processInformations;
+		return processesByTitle;
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists() {
@@ -214,6 +217,14 @@ class RemoteCollector {
 			counter.setDisplayed(newCounter.isDisplayed());
 			counter.addRequestsAndErrors(newCounter);
 		}
+	}
+
+	static String getHostAndPort(URL url) {
+		if (url.getPort() != -1) {
+			return url.getHost() + ':' + url.getPort();
+		}
+		// port est -1 si c'est le port par défaut (80)
+		return url.getHost();
 	}
 
 	String getApplication() {
