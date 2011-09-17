@@ -10,6 +10,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
+  # Add an action for threads dump as text format
   # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
   # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?)
