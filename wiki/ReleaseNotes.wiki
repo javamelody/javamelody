@@ -5,6 +5,9 @@
 
 (In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
+=== Next release (trunk) ===
+  * fix issue 137: MonitoringInterceptor when Stateful EJB, Java EE 6
+
 === 1.31.0 ===
   * fix issue 128: Fix the shutdown process in JIRA 4.3.4 and clean it for Confluence/Bamboo/Jenkins/Hudson.
   * fix issue 129: ArrayIndexOutOfBoundsException in GWTRequestWrapper in a particular case.
