@@ -417,7 +417,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 
 		/**
 		 * If needed paint dirty region of the snapshot
-		 * 
+		 *
 		 * @param shadowBg
 		 *           BufferedImage
 		 * @param layeredPane
@@ -427,10 +427,10 @@ public final class ShadowPopupFactory extends PopupFactory {
 			final int layeredPaneWidth = layeredPane.getWidth();
 			final int layeredPaneHeight = layeredPane.getHeight();
 
-			if ((RECT.x + RECT.width) > layeredPaneWidth) {
+			if (RECT.x + RECT.width > layeredPaneWidth) {
 				RECT.width = layeredPaneWidth - RECT.x;
 			}
-			if ((RECT.y + RECT.height) > layeredPaneHeight) {
+			if (RECT.y + RECT.height > layeredPaneHeight) {
 				RECT.height = layeredPaneHeight - RECT.y;
 			}
 			if (!RECT.isEmpty()) {
