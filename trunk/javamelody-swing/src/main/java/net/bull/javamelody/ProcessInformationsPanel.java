@@ -19,11 +19,30 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
+import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
@@ -36,8 +55,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
-	private List<List<ProcessInformations>> processInformationsList;
-	private MTable<ProcessInformations> table;
+	private Map<String, List<ProcessInformations>> processInformationsByTitle;
 
 	ProcessInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector, new BorderLayout());
@@ -45,29 +63,127 @@ class ProcessInformationsPanel extends MelodyPanel {
 		refresh();
 	}
 
-	private void refresh() throws IOException {
+	final void refresh() throws IOException {
 		removeAll();
 
-		this.processInformationsList = getRemoteCollector().collectProcessInformations();
-		this.table = new MTable<ProcessInformations>();
+		this.processInformationsByTitle = getRemoteCollector().collectProcessInformations();
 
 		setName(I18N.getString("Processus"));
-		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("Processus"),
-				"processes.png");
-		add(titleLabel, BorderLayout.NORTH);
 
-		addScrollPane();
+		add(createScrollPanes(), BorderLayout.CENTER);
 
-		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
-		add(label, BorderLayout.SOUTH);
+		add(createButtonsPanel(), BorderLayout.SOUTH);
 	}
 
-	private void addScrollPane() {
-		final MTableScrollPane<ProcessInformations> tableScrollPane = new MTableScrollPane<ProcessInformations>(
-				table);
-		//		table.addColumn("name", I18N.getString("Thread"));
-		// TODO
+	private JPanel createScrollPanes() {
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setOpaque(false);
+		for (final Map.Entry<String, List<ProcessInformations>> entry : processInformationsByTitle
+				.entrySet()) {
+			final String title;
+			if (processInformationsByTitle.size() == 1) {
+				title = I18N.getString("Processus");
+			} else {
+				title = entry.getKey();
+			}
+			final List<ProcessInformations> processInformationsList = entry.getValue();
+			final boolean windows = HtmlProcessInformationsReport
+					.isWindowsProcessList(processInformationsList);
+			final MTable<ProcessInformations> table = new MTable<ProcessInformations>();
+			final MTableScrollPane<ProcessInformations> tableScrollPane = new MTableScrollPane<ProcessInformations>(
+					table);
+			table.addColumn("user", I18N.getString("Utilisateur"));
+			table.addColumn("pid", I18N.getString("PID"));
+			if (!windows) {
+				table.addColumn("cpuPercentage", I18N.getString("cpu"));
+				table.addColumn("memPercentage", I18N.getString("mem"));
+			}
+			table.addColumn("vsz", I18N.getString("vsz"));
+			if (!windows) {
+				table.addColumn("rss", I18N.getString("rss"));
+				table.addColumn("tty", I18N.getString("tty"));
+				table.addColumn("stat", I18N.getString("stat"));
+				table.addColumn("start", I18N.getString("start"));
+			}
+			table.addColumn("cpuTime", I18N.getString("cpuTime"));
+			table.addColumn("command", I18N.getString("command"));
 
-		add(tableScrollPane, BorderLayout.CENTER);
+			table.setList(processInformationsList);
+
+			final JLabel titleLabel = Utilities.createParagraphTitle(title, "processes.png");
+			panel.add(titleLabel);
+			panel.add(tableScrollPane);
+
+			if (windows) {
+				final JLabel label = new JLabel(" ps command reference");
+				label.setForeground(Color.BLUE.darker());
+				label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				label.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						try {
+							Desktop.getDesktop().browse(
+									new URI("http://en.wikipedia.org/wiki/Ps_(Unix)"));
+						} catch (final Exception ex) {
+							showException(ex);
+						}
+					}
+				});
+				panel.add(label);
+			}
+		}
+
+		for (final Component component : panel.getComponents()) {
+			((JComponent) component).setAlignmentX(Component.LEFT_ALIGNMENT);
+		}
+		return panel;
+	}
+
+	private JPanel createButtonsPanel() {
+		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
+				ImageIconCache.getImageIcon("action_refresh.png"));
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					refresh();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		final MButton pdfButton = new MButton(I18N.getString("PDF"),
+				ImageIconCache.getImageIcon("pdf.png"));
+		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonsPanel.setOpaque(false);
+		buttonsPanel.add(refreshButton);
+		buttonsPanel.add(pdfButton);
+		return buttonsPanel;
+	}
+
+	final void actionPdf() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		try {
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
+					.getApplication(), output);
+			pdfOtherReport.writeProcessInformations(processInformationsByTitle);
+		} finally {
+			output.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 }
