@@ -18,8 +18,11 @@
  */
 package net.bull.javamelody.swing;
 
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -36,6 +39,16 @@ import net.bull.javamelody.swing.util.MSwingUtilities;
  * @author Emeric Vernat
  */
 public final class Utilities {
+	static final MouseWheelListener DELEGATE_TO_PARENT_MOUSE_WHEEL_LISTENER = new MouseWheelListener() {
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent event) {
+			// on reporte l'évènement mouseWheelMoved de ce scrollPane vers son parent
+			final Container parent = event.getComponent().getParent();
+			parent.dispatchEvent(SwingUtilities.convertMouseEvent(event.getComponent(), event,
+					parent));
+		}
+	};
+
 	private Utilities() {
 		super();
 	}
@@ -67,6 +80,11 @@ public final class Utilities {
 				final JScrollPane scrollPane = MSwingUtilities.getAncestorOfClass(
 						JScrollPane.class, table);
 				scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+				// puisqu'il n'y a pas d'ascenceur sur ce scrollPane,
+				// il est inutile que la mollette de souris serve à bouger cet ascenseur,
+				// mais il est très utile en revanche que ce scrollPane ne bloque pas l'utilisation
+				// de la mollette de souris pour le scrollPane global de l'onglet principal
+				scrollPane.addMouseWheelListener(DELEGATE_TO_PARENT_MOUSE_WHEEL_LISTENER);
 			}
 		});
 	}
