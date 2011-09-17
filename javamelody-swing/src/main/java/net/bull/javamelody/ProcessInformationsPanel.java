@@ -115,7 +115,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 			panel.add(titleLabel);
 			panel.add(tableScrollPane);
 
-			if (windows) {
+			if (!windows) {
 				final JLabel label = new JLabel(" ps command reference");
 				label.setForeground(Color.BLUE.darker());
 				label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
