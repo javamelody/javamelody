@@ -366,7 +366,7 @@ class CollectorController {
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			return new ArrayList<List<ProcessInformations>>(
+			return new LinkedHashMap<String, List<ProcessInformations>>(
 					collectorServer.collectProcessInformations(application));
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -405,11 +405,7 @@ class CollectorController {
 	}
 
 	private static String getHostAndPort(URL url) {
-		if (url.getPort() != -1) {
-			return url.getHost() + ':' + url.getPort();
-		}
-		// port est -1 si c'est le port par défaut (80)
-		return url.getHost();
+		return RemoteCollector.getHostAndPort(url);
 	}
 
 	void writeMessage(HttpServletRequest req, HttpServletResponse resp, String application,
