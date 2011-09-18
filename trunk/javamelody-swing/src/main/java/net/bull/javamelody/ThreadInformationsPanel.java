@@ -203,15 +203,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 				if (threadInformations != null
 						&& confirm(I18N.getFormattedString("confirm_kill_thread",
 								threadInformations.getName()))) {
-					try {
-						// TODO refresh
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.KILL_THREAD, null, null,
-								threadInformations.getGlobalThreadId(), null);
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionKillThread(threadInformations);
 				}
 			}
 		});
@@ -219,6 +211,17 @@ class ThreadInformationsPanel extends MelodyPanel {
 		buttonPanel.setOpaque(false);
 		buttonPanel.add(killThreadButton);
 		add(buttonPanel, BorderLayout.EAST);
+	}
+
+	final void actionKillThread(final ThreadInformations threadInformations) {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.KILL_THREAD, null, null, threadInformations.getGlobalThreadId(), null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 
 	final void showStackTraceInPopup(ThreadInformations threadInformations) {

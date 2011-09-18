@@ -116,20 +116,23 @@ class ScrollingPanel extends MelodyPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (confirm(I18N.getString("confirm_vider_toutes_stats"))) {
-						try {
-							// TODO refresh
-							final String message = getRemoteCollector()
-									.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null,
-											null, null);
-							showMessage(message);
-						} catch (final IOException ex) {
-							showException(ex);
-						}
+						actionClearAllCounters();
 					}
 				}
 			});
 			clearAllCountersPanel.add(clearAllCountersButton);
 			add(clearAllCountersPanel);
+		}
+	}
+
+	final void actionClearAllCounters() {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.CLEAR_COUNTER, "all", null, null, null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
 		}
 	}
 

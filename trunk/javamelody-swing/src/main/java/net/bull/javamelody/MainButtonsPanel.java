@@ -42,15 +42,8 @@ import net.bull.javamelody.swing.MButton;
 class MainButtonsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final Collector collector;
-	@SuppressWarnings("all")
-	private final List<JavaInformations> javaInformationsList;
-
 	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
 		super(remoteCollector, new FlowLayout(FlowLayout.CENTER));
-		this.collector = remoteCollector.getCollector();
-		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 
 		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
@@ -65,7 +58,7 @@ class MainButtonsPanel extends MelodyPanel {
 		final MButton monitoringButton = new MButton("Monitoring",
 				ImageIconCache.getScaledImageIcon("systemmonitor.png", 16, 16));
 		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
-				collector.getApplication()));
+				remoteCollector.getApplication()));
 		add(refreshButton);
 		add(pdfButton);
 		add(onlineHelpButton);
@@ -78,6 +71,13 @@ class MainButtonsPanel extends MelodyPanel {
 					myPeriod.getLinkLabel()));
 			add(myPeriodButton);
 		}
+
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionRefresh();
+			}
+		});
 
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
@@ -115,6 +115,15 @@ class MainButtonsPanel extends MelodyPanel {
 		});
 	}
 
+	void actionRefresh() {
+		try {
+			getRemoteCollector().collectData();
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException e) {
+			showException(e);
+		}
+	}
+
 	void actionPdf() throws IOException {
 		// ici on prend un comportement similaire au serveur de collecte
 		// en ne mettant pas les requêtes en cours puisque de toute façon on n'a pas
@@ -125,6 +134,9 @@ class MainButtonsPanel extends MelodyPanel {
 		final File tempFile = createTempFileForPdf();
 		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
 		try {
+			final Collector collector = getRemoteCollector().getCollector();
+			final List<JavaInformations> javaInformationsList = getRemoteCollector()
+					.getJavaInformationsList();
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
 					javaInformationsList, range, output);
 			pdfReport.toPdf();

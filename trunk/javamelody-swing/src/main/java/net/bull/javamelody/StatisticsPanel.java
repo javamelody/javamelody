@@ -378,18 +378,23 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getFormattedString("confirm_vider_stats", myCounter.getName()))) {
-					try {
-						// TODO refresh
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.CLEAR_COUNTER, myCounter.getName(), null, null, null);
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionClearCounter(myCounter);
 				}
 			}
 		});
 		return clearCounterButton;
+	}
+
+	final void actionClearCounter(final Counter myCounter) {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.CLEAR_COUNTER, myCounter.getName(), null, null, null);
+			showMessage(message);
+			// TODO à tester
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 
 	CounterRequestAggregation getCounterRequestAggregation() {

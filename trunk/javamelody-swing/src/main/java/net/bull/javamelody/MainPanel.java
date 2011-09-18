@@ -35,31 +35,49 @@ import net.bull.javamelody.swing.util.MSwingUtilities;
  * Panel principal.
  * @author Emeric Vernat
  */
-class MainPanel extends JPanel {
+class MainPanel extends MelodyPanel {
 	private static final Color BACKGROUND = new Color(230, 230, 230);
 	private static final long serialVersionUID = 1L;
 
 	private final TabbedPane tabbedPane = new TabbedPane();
+	private final URL monitoringUrl;
+	private final JScrollPane scrollPane;
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
 	MainPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
-		super(new BorderLayout());
+		super(remoteCollector, new BorderLayout());
+		assert monitoringUrl != null;
+		this.monitoringUrl = monitoringUrl;
 
-		final ScrollingPanel scrollingPanel = new ScrollingPanel(remoteCollector, monitoringUrl);
-		final JScrollPane scrollPane = new JScrollPane(scrollingPanel);
+		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
-		final JPanel tab = new JPanel(new BorderLayout());
-		tab.setOpaque(false);
-		tab.add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
-		tab.add(scrollPane, BorderLayout.CENTER);
+		final JPanel mainTabPanel = new JPanel(new BorderLayout());
+		mainTabPanel.setOpaque(false);
+		mainTabPanel.add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
+		mainTabPanel.add(scrollPane, BorderLayout.CENTER);
 
 		// TODO translation
-		tabbedPane.addTab("Main", tab);
+		tabbedPane.addTab("Main", mainTabPanel);
 		tabbedPane.setTabComponentAt(0, null);
 		add(tabbedPane, BorderLayout.CENTER);
+
+		refreshMainTab();
+	}
+
+	private void refreshMainTab() throws IOException {
+		final int position = scrollPane.getVerticalScrollBar().getValue();
+		final ScrollingPanel scrollingPanel = new ScrollingPanel(getRemoteCollector(),
+				monitoringUrl);
+		scrollPane.setViewportView(scrollingPanel);
+		scrollPane.getVerticalScrollBar().setValue(position);
+	}
+
+	static void refreshMainTabFromChild(Component child) throws IOException {
+		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
+		mainPanel.refreshMainTab();
 	}
 
 	static void addOngletFromChild(Component child, JPanel panel) {
