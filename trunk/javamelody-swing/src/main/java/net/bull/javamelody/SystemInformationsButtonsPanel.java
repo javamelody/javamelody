@@ -53,6 +53,42 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 		final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
 		southPanel.setOpaque(false);
 
+		northPanel.add(createGcButton());
+		northPanel.add(createHeapDumpButton());
+		northPanel.add(createHeapHistoButton());
+
+		if (isSessionsEnabled()) {
+			northPanel.add(createInvalidateSessionsButton());
+			northPanel.add(createSessionsButton());
+		}
+		if (doesWebXmlExists()) {
+			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
+			southPanel.add(createWebXmlButton());
+		}
+
+		southPanel.add(createMBeansButton());
+		southPanel.add(createProcessesButton());
+
+		final String serverInfo = javaInformationsList.get(0).getServerInfo();
+		if (serverInfo != null && !serverInfo.contains("Winstone")) {
+			// on n'affiche pas le lien JNDI si serveur Winstone car cela n'a pas d'intérêt
+			// pour Hudson/Jenkins sous Winstone, et surtout car (Winstone)Context.listBindings
+			// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
+
+			southPanel.add(createJndiButton());
+		}
+
+		if (isDatabaseEnabled()) {
+			southPanel.add(createConnectionsButton());
+
+			southPanel.add(createDatabaseButton());
+		}
+
+		add(northPanel, BorderLayout.NORTH);
+		add(southPanel, BorderLayout.SOUTH);
+	}
+
+	private MButton createGcButton() {
 		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"),
 				ImageIconCache.getScaledImageIcon("broom.png", 20, 20));
 		gcButton.addActionListener(new ActionListener() {
@@ -63,7 +99,10 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 				}
 			}
 		});
-		northPanel.add(gcButton);
+		return gcButton;
+	}
+
+	private MButton createHeapDumpButton() {
 		final MButton heapDumpButton = new MButton(I18N.getString("heap_dump"),
 				ImageIconCache.getScaledImageIcon("heapdump.png", 20, 20));
 		heapDumpButton.addActionListener(new ActionListener() {
@@ -74,7 +113,10 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 				}
 			}
 		});
-		northPanel.add(heapDumpButton);
+		return heapDumpButton;
+	}
+
+	private MButton createHeapHistoButton() {
 		final MButton heapHistoButton = new MButton(I18N.getString("heaphisto"),
 				ImageIconCache.getScaledImageIcon("memory.png", 20, 20));
 		heapHistoButton.addActionListener(new ActionListener() {
@@ -87,53 +129,57 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 				}
 			}
 		});
-		northPanel.add(heapHistoButton);
+		return heapHistoButton;
+	}
 
-		if (isSessionsEnabled()) {
-			final MButton invalidateSessionsButton = new MButton(
-					I18N.getString("invalidate_sessions"), ImageIconCache.getScaledImageIcon(
-							"user-trash.png", 20, 20));
-			invalidateSessionsButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (confirm(I18N.getString("confirm_invalidate_sessions"))) {
-						executeAction(Action.INVALIDATE_SESSIONS);
-					}
+	private MButton createInvalidateSessionsButton() {
+		final MButton invalidateSessionsButton = new MButton(I18N.getString("invalidate_sessions"),
+				ImageIconCache.getScaledImageIcon("user-trash.png", 20, 20));
+		invalidateSessionsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_invalidate_sessions"))) {
+					executeAction(Action.INVALIDATE_SESSIONS);
 				}
-			});
-			northPanel.add(invalidateSessionsButton);
-			final MButton sessionsButton = new MButton(I18N.getString("sessions"),
-					ImageIconCache.getScaledImageIcon("system-users.png", 20, 20));
-			sessionsButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						addOnglet(new SessionInformationsPanel(getRemoteCollector()));
-					} catch (final IOException ex) {
-						showException(ex);
-					}
-				}
-			});
-			northPanel.add(sessionsButton);
-		}
-		if (doesWebXmlExists()) {
-			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
-			final MButton webXmlButton = new MButton(I18N.getString("web.xml"),
-					ImageIconCache.getScaledImageIcon("xml.png", 20, 20));
-			webXmlButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						Desktop.getDesktop().browse(
-								new URI(getMonitoringUrl().toExternalForm() + "?part=web.xml"));
-					} catch (final Exception ex) {
-						showException(ex);
-					}
-				}
-			});
-			southPanel.add(webXmlButton);
-		}
+			}
+		});
+		return invalidateSessionsButton;
+	}
 
+	private MButton createSessionsButton() {
+		final MButton sessionsButton = new MButton(I18N.getString("sessions"),
+				ImageIconCache.getScaledImageIcon("system-users.png", 20, 20));
+		sessionsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addOnglet(new SessionInformationsPanel(getRemoteCollector()));
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		return sessionsButton;
+	}
+
+	private MButton createWebXmlButton() {
+		final MButton webXmlButton = new MButton(I18N.getString("web.xml"),
+				ImageIconCache.getScaledImageIcon("xml.png", 20, 20));
+		webXmlButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().browse(
+							new URI(getMonitoringUrl().toExternalForm() + "?part=web.xml"));
+				} catch (final Exception ex) {
+					showException(ex);
+				}
+			}
+		});
+		return webXmlButton;
+	}
+
+	private MButton createMBeansButton() {
 		final MButton mbeansButton = new MButton(I18N.getString("MBeans"),
 				ImageIconCache.getScaledImageIcon("mbeans.png", 20, 20));
 		mbeansButton.addActionListener(new ActionListener() {
@@ -142,7 +188,10 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 				// TODO
 			}
 		});
-		southPanel.add(mbeansButton);
+		return mbeansButton;
+	}
+
+	private MButton createProcessesButton() {
 		final MButton processesButton = new MButton(I18N.getString("processes"),
 				ImageIconCache.getScaledImageIcon("processes.png", 20, 20));
 		processesButton.addActionListener(new ActionListener() {
@@ -155,58 +204,51 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 				}
 			}
 		});
-		southPanel.add(processesButton);
+		return processesButton;
+	}
 
-		final String serverInfo = javaInformationsList.get(0).getServerInfo();
-		if (serverInfo != null && !serverInfo.contains("Winstone")) {
-			// on n'affiche pas le lien JNDI si serveur Winstone car cela n'a pas d'intérêt
-			// pour Hudson/Jenkins sous Winstone, et surtout car (Winstone)Context.listBindings
-			// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
+	private MButton createJndiButton() {
+		final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"),
+				ImageIconCache.getScaledImageIcon("jndi.png", 20, 20));
+		jndiButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		return jndiButton;
+	}
 
-			final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"),
-					ImageIconCache.getScaledImageIcon("jndi.png", 20, 20));
-			jndiButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO
+	private MButton createConnectionsButton() {
+		final MButton connectionsButton = new MButton(I18N.getString("Connexions_jdbc_ouvertes"),
+				ImageIconCache.getScaledImageIcon("db.png", 20, 20));
+		connectionsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addOnglet(new ConnectionInformationsPanel(getRemoteCollector()));
+				} catch (final IOException ex) {
+					showException(ex);
 				}
-			});
-			southPanel.add(jndiButton);
-		}
+			}
+		});
+		return connectionsButton;
+	}
 
-		if (isDatabaseEnabled()) {
-			final MButton connectionsButton = new MButton(
-					I18N.getString("Connexions_jdbc_ouvertes"), ImageIconCache.getScaledImageIcon(
-							"db.png", 20, 20));
-			connectionsButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						addOnglet(new ConnectionInformationsPanel(getRemoteCollector()));
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+	private MButton createDatabaseButton() {
+		final MButton databaseButton = new MButton(I18N.getString("database"),
+				ImageIconCache.getScaledImageIcon("db.png", 20, 20));
+		databaseButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addOnglet(new DatabaseInformationsPanel(getRemoteCollector()));
+				} catch (final IOException ex) {
+					showException(ex);
 				}
-			});
-			southPanel.add(connectionsButton);
-
-			final MButton databaseButton = new MButton(I18N.getString("database"),
-					ImageIconCache.getScaledImageIcon("db.png", 20, 20));
-			databaseButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						addOnglet(new DatabaseInformationsPanel(getRemoteCollector()));
-					} catch (final IOException ex) {
-						showException(ex);
-					}
-				}
-			});
-			southPanel.add(databaseButton);
-		}
-
-		add(northPanel, BorderLayout.NORTH);
-		add(southPanel, BorderLayout.SOUTH);
+			}
+		});
+		return databaseButton;
 	}
 
 	private boolean isDatabaseEnabled() {
@@ -222,7 +264,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 		return javaInformationsList.get(0).getSessionCount() >= 0;
 	}
 
-	void executeAction(final Action action) {
+	final void executeAction(final Action action) {
 		try {
 			// TODO refresh
 			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
@@ -233,7 +275,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 		}
 	}
 
-	void addOnglet(JPanel panel) {
+	final void addOnglet(JPanel panel) {
 		MainPanel.addOngletFromChild(this, panel);
 	}
 
