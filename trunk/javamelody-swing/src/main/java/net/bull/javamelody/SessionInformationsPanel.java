@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -54,6 +55,9 @@ import net.bull.javamelody.swing.util.MSwingUtilities;
  * @author Emeric Vernat
  */
 class SessionInformationsPanel extends MelodyPanel {
+	private static final ImageIcon INVALIDATE_SESSION_ICON = ImageIconCache.getScaledImageIcon(
+			"user-trash.png", 16, 16);
+
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -273,8 +277,7 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	private MButton createInvalidateAllSessionsButton() {
 		final MButton invalidateAllSessionsButton = new MButton(
-				I18N.getString("invalidate_sessions"), ImageIconCache.getScaledImageIcon(
-						"user-trash.png", 16, 16));
+				I18N.getString("invalidate_sessions"), INVALIDATE_SESSION_ICON);
 		invalidateAllSessionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -295,7 +298,7 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	private MButton createInvalidateSessionButton() {
 		final MButton invalidateSessionButton = new MButton(I18N.getString("invalidate_session"),
-				ImageIconCache.getScaledImageIcon("user-trash.png", 16, 16));
+				INVALIDATE_SESSION_ICON);
 		invalidateSessionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

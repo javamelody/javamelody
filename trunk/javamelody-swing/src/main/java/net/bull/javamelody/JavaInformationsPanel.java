@@ -53,6 +53,7 @@ class JavaInformationsPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
 
+	private static final ImageIcon XML_ICON = ImageIconCache.getScaledImageIcon("xml.png", 14, 14);
 	private static final long serialVersionUID = 1L;
 
 	private final boolean noDatabase = Parameters.isNoDatabase();
@@ -336,8 +337,7 @@ class JavaInformationsPanel extends MelodyPanel {
 			dependendiesDetailsPanel.setOpaque(false);
 			dependendiesDetailsPanel.add(dependenciesLabel, BorderLayout.NORTH);
 			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
-				final MButton pomXmlButton = new MButton(I18N.getString("pom.xml"),
-						ImageIconCache.getScaledImageIcon("xml.png", 14, 14));
+				final MButton pomXmlButton = new MButton(I18N.getString("pom.xml"), XML_ICON);
 				dependendiesDetailsPanel.add(pomXmlButton, BorderLayout.WEST);
 				dependendiesDetailsPanel.add(new JLabel(""), BorderLayout.CENTER);
 				pomXmlButton.addActionListener(new ActionListener() {

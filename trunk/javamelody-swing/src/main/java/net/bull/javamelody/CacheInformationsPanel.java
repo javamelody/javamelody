@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -44,6 +45,9 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class CacheInformationsPanel extends MelodyPanel {
+	private static final ImageIcon CLEAR_CACHES_ICON = ImageIconCache.getScaledImageIcon(
+			"user-trash.png", 18, 18);
+
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -121,7 +125,7 @@ class CacheInformationsPanel extends MelodyPanel {
 
 	private void addButton() {
 		final MButton purgeCachesButton = new MButton(I18N.getString("Purge_caches"),
-				ImageIconCache.getScaledImageIcon("user-trash.png", 18, 18));
+				CLEAR_CACHES_ICON);
 		purgeCachesButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
