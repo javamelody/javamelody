@@ -427,10 +427,10 @@ class JobInformationsPanel extends MelodyPanel {
 
 	final void actionOnJob(Action action, String jobId) {
 		try {
-			// TODO refresh
 			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
 					null, null, jobId);
 			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {
 			showException(ex);
 		}

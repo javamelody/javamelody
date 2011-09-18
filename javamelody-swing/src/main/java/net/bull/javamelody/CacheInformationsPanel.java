@@ -126,14 +126,7 @@ class CacheInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_purge_caches"))) {
-					// TODO refresh
-					try {
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.CLEAR_CACHES, null, null, null, null);
-						showMessage(message);
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionClearCaches();
 				}
 			}
 		});
@@ -141,5 +134,16 @@ class CacheInformationsPanel extends MelodyPanel {
 		buttonPanel.setOpaque(false);
 		buttonPanel.add(purgeCachesButton);
 		add(buttonPanel, BorderLayout.EAST);
+	}
+
+	final void actionClearCaches() {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.CLEAR_CACHES, null, null, null, null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 }
