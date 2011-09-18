@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -55,6 +56,10 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class JobInformationsPanel extends MelodyPanel {
+	private static final ImageIcon RESUME_ICON = ImageIconCache.getScaledImageIcon(
+			"control_play_blue.png", 18, 18);
+	private static final ImageIcon PAUSE_ICON = ImageIconCache.getScaledImageIcon(
+			"control_pause_blue.png", 18, 18);
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -336,12 +341,10 @@ class JobInformationsPanel extends MelodyPanel {
 	}
 
 	private void addButtons() {
-		final Icon pauseIcon = ImageIconCache.getScaledImageIcon("control_pause_blue.png", 18, 18);
-		final Icon resumeIcon = ImageIconCache.getScaledImageIcon("control_play_blue.png", 18, 18);
-		final MButton pauseJobButton = createPauseJobButton(pauseIcon);
-		final MButton resumeJobButton = createResumeJobButton(resumeIcon);
-		final MButton pauseAllJobsButton = createPauseAllJobsButton(pauseIcon);
-		final MButton resumeAllJobsButton = createResumeAllJobsButton(resumeIcon);
+		final MButton pauseJobButton = createPauseJobButton(PAUSE_ICON);
+		final MButton resumeJobButton = createResumeJobButton(RESUME_ICON);
+		final MButton pauseAllJobsButton = createPauseAllJobsButton(PAUSE_ICON);
+		final MButton resumeAllJobsButton = createResumeAllJobsButton(RESUME_ICON);
 
 		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override

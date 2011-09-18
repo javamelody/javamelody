@@ -31,6 +31,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import net.bull.javamelody.swing.MButton;
@@ -40,6 +41,8 @@ import net.bull.javamelody.swing.MButton;
  * @author Emeric Vernat
  */
 class MainButtonsPanel extends MelodyPanel {
+	private static final ImageIcon MONITORING_ICON = ImageIconCache.getScaledImageIcon(
+			"systemmonitor.png", 16, 16);
 	private static final long serialVersionUID = 1L;
 
 	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
@@ -55,8 +58,7 @@ class MainButtonsPanel extends MelodyPanel {
 				ImageIconCache.getImageIcon("action_help.png"));
 		onlineHelpButton.setToolTipText(I18N.getString("Afficher_aide_en_ligne"));
 		// TODO traductions
-		final MButton monitoringButton = new MButton("Monitoring",
-				ImageIconCache.getScaledImageIcon("systemmonitor.png", 16, 16));
+		final MButton monitoringButton = new MButton("Monitoring", MONITORING_ICON);
 		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
 				remoteCollector.getApplication()));
 		add(refreshButton);

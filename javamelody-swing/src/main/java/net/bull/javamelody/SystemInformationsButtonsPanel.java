@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import net.bull.javamelody.swing.MButton;
@@ -37,6 +38,25 @@ import net.bull.javamelody.swing.MButton;
  * @author Emeric Vernat
  */
 class SystemInformationsButtonsPanel extends MelodyPanel {
+	private static final ImageIcon XML_ICON = ImageIconCache.getScaledImageIcon("xml.png", 20, 20);
+	private static final ImageIcon SESSIONS_ICON = ImageIconCache.getScaledImageIcon(
+			"system-users.png", 20, 20);
+	private static final ImageIcon PROCESSES_ICON = ImageIconCache.getScaledImageIcon(
+			"processes.png", 20, 20);
+	private static final ImageIcon MBEANS_ICON = ImageIconCache.getScaledImageIcon("mbeans.png",
+			20, 20);
+	private static final ImageIcon JNDI_ICON = ImageIconCache
+			.getScaledImageIcon("jndi.png", 20, 20);
+	private static final ImageIcon INVALIDATE_SESSION_ICON = ImageIconCache.getScaledImageIcon(
+			"user-trash.png", 20, 20);
+	private static final ImageIcon HEAP_HISTO_ICON = ImageIconCache.getScaledImageIcon(
+			"memory.png", 20, 20);
+	private static final ImageIcon HEAP_DUMP_ICON = ImageIconCache.getScaledImageIcon(
+			"heapdump.png", 20, 20);
+	private static final ImageIcon GC_ICON = ImageIconCache.getScaledImageIcon("broom.png", 20, 20);
+	private static final ImageIcon DATABASE_ICON = ImageIconCache.getScaledImageIcon("db.png", 20,
+			20);
+
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -89,8 +109,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createGcButton() {
-		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"),
-				ImageIconCache.getScaledImageIcon("broom.png", 20, 20));
+		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"), GC_ICON);
 		gcButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -103,8 +122,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createHeapDumpButton() {
-		final MButton heapDumpButton = new MButton(I18N.getString("heap_dump"),
-				ImageIconCache.getScaledImageIcon("heapdump.png", 20, 20));
+		final MButton heapDumpButton = new MButton(I18N.getString("heap_dump"), HEAP_DUMP_ICON);
 		heapDumpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -117,8 +135,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createHeapHistoButton() {
-		final MButton heapHistoButton = new MButton(I18N.getString("heaphisto"),
-				ImageIconCache.getScaledImageIcon("memory.png", 20, 20));
+		final MButton heapHistoButton = new MButton(I18N.getString("heaphisto"), HEAP_HISTO_ICON);
 		heapHistoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -134,7 +151,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 
 	private MButton createInvalidateSessionsButton() {
 		final MButton invalidateSessionsButton = new MButton(I18N.getString("invalidate_sessions"),
-				ImageIconCache.getScaledImageIcon("user-trash.png", 20, 20));
+				INVALIDATE_SESSION_ICON);
 		invalidateSessionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -147,8 +164,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createSessionsButton() {
-		final MButton sessionsButton = new MButton(I18N.getString("sessions"),
-				ImageIconCache.getScaledImageIcon("system-users.png", 20, 20));
+		final MButton sessionsButton = new MButton(I18N.getString("sessions"), SESSIONS_ICON);
 		sessionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -163,8 +179,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createWebXmlButton() {
-		final MButton webXmlButton = new MButton(I18N.getString("web.xml"),
-				ImageIconCache.getScaledImageIcon("xml.png", 20, 20));
+		final MButton webXmlButton = new MButton(I18N.getString("web.xml"), XML_ICON);
 		webXmlButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -180,8 +195,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createMBeansButton() {
-		final MButton mbeansButton = new MButton(I18N.getString("MBeans"),
-				ImageIconCache.getScaledImageIcon("mbeans.png", 20, 20));
+		final MButton mbeansButton = new MButton(I18N.getString("MBeans"), MBEANS_ICON);
 		mbeansButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -192,8 +206,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createProcessesButton() {
-		final MButton processesButton = new MButton(I18N.getString("processes"),
-				ImageIconCache.getScaledImageIcon("processes.png", 20, 20));
+		final MButton processesButton = new MButton(I18N.getString("processes"), PROCESSES_ICON);
 		processesButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -208,8 +221,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createJndiButton() {
-		final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"),
-				ImageIconCache.getScaledImageIcon("jndi.png", 20, 20));
+		final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"), JNDI_ICON);
 		jndiButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -221,7 +233,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 
 	private MButton createConnectionsButton() {
 		final MButton connectionsButton = new MButton(I18N.getString("Connexions_jdbc_ouvertes"),
-				ImageIconCache.getScaledImageIcon("db.png", 20, 20));
+				DATABASE_ICON);
 		connectionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -236,8 +248,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createDatabaseButton() {
-		final MButton databaseButton = new MButton(I18N.getString("database"),
-				ImageIconCache.getScaledImageIcon("db.png", 20, 20));
+		final MButton databaseButton = new MButton(I18N.getString("database"), DATABASE_ICON);
 		databaseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
