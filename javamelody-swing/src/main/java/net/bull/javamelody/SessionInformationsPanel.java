@@ -217,6 +217,28 @@ class SessionInformationsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
+		final MButton refreshButton = createRefreshButton();
+		final MButton pdfButton = createPdfButton();
+		final MButton invalidateAllSessionsButton = createInvalidateAllSessionsButton();
+		final MButton invalidateSessionButton = createInvalidateSessionButton();
+		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final SessionInformations sessionInformations = getTable().getSelectedObject();
+				invalidateSessionButton.setEnabled(sessionInformations != null);
+			}
+		});
+		invalidateSessionButton.setEnabled(getTable().getSelectedObject() != null);
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonsPanel.setOpaque(false);
+		buttonsPanel.add(refreshButton);
+		buttonsPanel.add(pdfButton);
+		buttonsPanel.add(invalidateAllSessionsButton);
+		buttonsPanel.add(invalidateSessionButton);
+		return buttonsPanel;
+	}
+
+	private MButton createRefreshButton() {
 		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
 		refreshButton.addActionListener(new ActionListener() {
@@ -229,6 +251,10 @@ class SessionInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		return refreshButton;
+	}
+
+	private MButton createPdfButton() {
 		final MButton pdfButton = new MButton(I18N.getString("PDF"),
 				ImageIconCache.getImageIcon("pdf.png"));
 		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
@@ -242,6 +268,10 @@ class SessionInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		return pdfButton;
+	}
+
+	private MButton createInvalidateAllSessionsButton() {
 		final MButton invalidateAllSessionsButton = new MButton(
 				I18N.getString("invalidate_sessions"), ImageIconCache.getScaledImageIcon(
 						"user-trash.png", 16, 16));
@@ -260,16 +290,12 @@ class SessionInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		return invalidateAllSessionsButton;
+	}
+
+	private MButton createInvalidateSessionButton() {
 		final MButton invalidateSessionButton = new MButton(I18N.getString("invalidate_session"),
 				ImageIconCache.getScaledImageIcon("user-trash.png", 16, 16));
-		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				final SessionInformations sessionInformations = getTable().getSelectedObject();
-				invalidateSessionButton.setEnabled(sessionInformations != null);
-			}
-		});
-		invalidateSessionButton.setEnabled(getTable().getSelectedObject() != null);
 		invalidateSessionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -288,13 +314,7 @@ class SessionInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		buttonsPanel.setOpaque(false);
-		buttonsPanel.add(refreshButton);
-		buttonsPanel.add(pdfButton);
-		buttonsPanel.add(invalidateAllSessionsButton);
-		buttonsPanel.add(invalidateSessionButton);
-		return buttonsPanel;
+		return invalidateSessionButton;
 	}
 
 	final void actionPdf() throws IOException {
