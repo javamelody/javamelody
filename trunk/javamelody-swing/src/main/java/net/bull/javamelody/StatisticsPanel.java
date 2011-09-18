@@ -325,6 +325,19 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 			//			}
 		}
 
+		eastPanel.add(createDetailsButton());
+
+		if (isErrorCounter()) {
+			eastPanel.add(createLastErrorsButton());
+		}
+		if (range.getPeriod() == Period.TOUT) {
+			eastPanel.add(createClearCounterButton());
+		}
+
+		mainPanel.add(eastPanel, BorderLayout.EAST);
+	}
+
+	private MButton createDetailsButton() {
 		final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
 		detailsButton.addActionListener(new ActionListener() {
 			@Override
@@ -337,49 +350,46 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 				}
 			}
 		});
-		eastPanel.add(detailsButton);
+		return detailsButton;
+	}
 
-		if (isErrorCounter()) {
-			final MButton lastErrorsButton = new MButton(I18N.getString("Dernieres_erreurs"),
-					PLUS_ICON);
-			lastErrorsButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					showLastErrors();
-					if (lastErrorsButton.getIcon() == PLUS_ICON) {
-						lastErrorsButton.setIcon(MINUS_ICON);
-					} else {
-						lastErrorsButton.setIcon(PLUS_ICON);
+	private MButton createLastErrorsButton() {
+		final MButton lastErrorsButton = new MButton(I18N.getString("Dernieres_erreurs"), PLUS_ICON);
+		lastErrorsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showLastErrors();
+				if (lastErrorsButton.getIcon() == PLUS_ICON) {
+					lastErrorsButton.setIcon(MINUS_ICON);
+				} else {
+					lastErrorsButton.setIcon(PLUS_ICON);
+				}
+			}
+		});
+		return lastErrorsButton;
+	}
+
+	private MButton createClearCounterButton() {
+		final MButton clearCounterButton = new MButton(I18N.getString("Reinitialiser"));
+		clearCounterButton
+				.setToolTipText(I18N.getFormattedString("Vider_stats", counter.getName()));
+		final Counter myCounter = counter;
+		clearCounterButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getFormattedString("confirm_vider_stats", myCounter.getName()))) {
+					try {
+						// TODO refresh
+						final String message = getRemoteCollector().executeActionAndCollectData(
+								Action.CLEAR_COUNTER, myCounter.getName(), null, null, null);
+						showMessage(message);
+					} catch (final IOException ex) {
+						showException(ex);
 					}
 				}
-			});
-			eastPanel.add(lastErrorsButton);
-		}
-		if (range.getPeriod() == Period.TOUT) {
-			final MButton clearCounterButton = new MButton(I18N.getString("Reinitialiser"));
-			clearCounterButton.setToolTipText(I18N.getFormattedString("Vider_stats",
-					counter.getName()));
-			final Counter myCounter = counter;
-			clearCounterButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (confirm(I18N.getFormattedString("confirm_vider_stats", myCounter.getName()))) {
-						try {
-							// TODO refresh
-							final String message = getRemoteCollector()
-									.executeActionAndCollectData(Action.CLEAR_COUNTER,
-											myCounter.getName(), null, null, null);
-							showMessage(message);
-						} catch (final IOException ex) {
-							showException(ex);
-						}
-					}
-				}
-			});
-			eastPanel.add(clearCounterButton);
-		}
-
-		mainPanel.add(eastPanel, BorderLayout.EAST);
+			}
+		});
+		return clearCounterButton;
 	}
 
 	CounterRequestAggregation getCounterRequestAggregation() {
