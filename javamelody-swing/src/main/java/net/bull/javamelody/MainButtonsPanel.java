@@ -70,6 +70,7 @@ class MainButtonsPanel extends MelodyPanel {
 			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode",
 					myPeriod.getLinkLabel()));
 			add(myPeriodButton);
+			// TODO ajouter listener
 		}
 
 		refreshButton.addActionListener(new ActionListener() {
