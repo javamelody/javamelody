@@ -338,46 +338,11 @@ class JobInformationsPanel extends MelodyPanel {
 	private void addButtons() {
 		final Icon pauseIcon = ImageIconCache.getScaledImageIcon("control_pause_blue.png", 18, 18);
 		final Icon resumeIcon = ImageIconCache.getScaledImageIcon("control_play_blue.png", 18, 18);
-		final MButton pauseJobButton = new MButton(I18N.getString("Pause_job"), pauseIcon);
-		pauseJobButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_pause_job"))) {
-					final JobInformations jobInformations = getTable().getSelectedObject();
-					actionOnJob(Action.PAUSE_JOB, jobInformations.getGlobalJobId());
-				}
-			}
-		});
-		final MButton resumeJobButton = new MButton(I18N.getString("Resume_job"), resumeIcon);
-		resumeJobButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_resume_job"))) {
-					final JobInformations jobInformations = getTable().getSelectedObject();
-					actionOnJob(Action.RESUME_JOB, jobInformations.getGlobalJobId());
-				}
-			}
-		});
+		final MButton pauseJobButton = createPauseJobButton(pauseIcon);
+		final MButton resumeJobButton = createResumeJobButton(resumeIcon);
+		final MButton pauseAllJobsButton = createPauseAllJobsButton(pauseIcon);
+		final MButton resumeAllJobsButton = createResumeAllJobsButton(resumeIcon);
 
-		final MButton pauseAllJobsButton = new MButton(I18N.getString("Pause_all_jobs"), pauseIcon);
-		pauseAllJobsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_pause_all_jobs"))) {
-					actionOnJob(Action.PAUSE_JOB, "all");
-				}
-			}
-		});
-		final MButton resumeAllJobsButton = new MButton(I18N.getString("Resume_all_jobs"),
-				resumeIcon);
-		resumeAllJobsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_resume_all_jobs"))) {
-					actionOnJob(Action.RESUME_JOB, "all");
-				}
-			}
-		});
 		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -395,6 +360,61 @@ class JobInformationsPanel extends MelodyPanel {
 		buttonPanel.add(pauseAllJobsButton);
 		buttonPanel.add(resumeAllJobsButton);
 		add(buttonPanel, BorderLayout.EAST);
+	}
+
+	private MButton createPauseJobButton(final Icon pauseIcon) {
+		final MButton pauseJobButton = new MButton(I18N.getString("Pause_job"), pauseIcon);
+		pauseJobButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_pause_job"))) {
+					final JobInformations jobInformations = getTable().getSelectedObject();
+					actionOnJob(Action.PAUSE_JOB, jobInformations.getGlobalJobId());
+				}
+			}
+		});
+		return pauseJobButton;
+	}
+
+	private MButton createResumeJobButton(final Icon resumeIcon) {
+		final MButton resumeJobButton = new MButton(I18N.getString("Resume_job"), resumeIcon);
+		resumeJobButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_resume_job"))) {
+					final JobInformations jobInformations = getTable().getSelectedObject();
+					actionOnJob(Action.RESUME_JOB, jobInformations.getGlobalJobId());
+				}
+			}
+		});
+		return resumeJobButton;
+	}
+
+	private MButton createPauseAllJobsButton(final Icon pauseIcon) {
+		final MButton pauseAllJobsButton = new MButton(I18N.getString("Pause_all_jobs"), pauseIcon);
+		pauseAllJobsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_pause_all_jobs"))) {
+					actionOnJob(Action.PAUSE_JOB, "all");
+				}
+			}
+		});
+		return pauseAllJobsButton;
+	}
+
+	private MButton createResumeAllJobsButton(final Icon resumeIcon) {
+		final MButton resumeAllJobsButton = new MButton(I18N.getString("Resume_all_jobs"),
+				resumeIcon);
+		resumeAllJobsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(I18N.getString("confirm_resume_all_jobs"))) {
+					actionOnJob(Action.RESUME_JOB, "all");
+				}
+			}
+		});
+		return resumeAllJobsButton;
 	}
 
 	static JLabel toBar(int mean, long elapsedTime) {
