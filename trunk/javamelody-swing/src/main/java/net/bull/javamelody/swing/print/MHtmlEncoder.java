@@ -132,7 +132,7 @@ final class MHtmlEncoder {
 		for (i = 0; i < len; i++) {
 			c = s.charAt(i);
 			// petite optimisation (qui represente 90% des cas...)
-			if ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || '0' <= c && c <= '9') {
+			if (isSimpleLetterOrDigit(c)) {
 				sb.append(c);
 			} else {
 				// cherche dans le tableau des caractères
@@ -149,5 +149,9 @@ final class MHtmlEncoder {
 				}
 			}
 		}
+	}
+
+	private static boolean isSimpleLetterOrDigit(char c) {
+		return 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || '0' <= c && c <= '9';
 	}
 }
