@@ -19,7 +19,11 @@
 package net.bull.javamelody;
 
 import java.awt.LayoutManager;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.swing.JPanel;
 
@@ -68,5 +72,9 @@ class MelodyPanel extends JPanel {
 				PdfReport.getFileName(application));
 		tempFile.deleteOnExit();
 		return tempFile;
+	}
+
+	OutputStream createFileOutputStream(File tempFile) throws IOException {
+		return new BufferedOutputStream(new FileOutputStream(tempFile));
 	}
 }
