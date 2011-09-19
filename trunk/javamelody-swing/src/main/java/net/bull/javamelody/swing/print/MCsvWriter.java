@@ -95,7 +95,8 @@ public class MCsvWriter extends MPrinter {
 			index = result.indexOf('"', index + 2);
 		}
 		if (text.indexOf(csvSeparator) != -1 || text.indexOf('"') != -1) {
-			result = '"' + result + '"';
+			final String tmp = '"' + result + '"';
+			result = tmp;
 		}
 		return result;
 	}
@@ -194,7 +195,8 @@ public class MCsvWriter extends MPrinter {
 		if (table.getName() != null) {
 			String title = formatCsv(table.getName(), csvSeparator);
 			if (title.startsWith("ID")) {
-				title = '"' + title + '"';
+				final String tmp = '"' + title + '"';
+				title = tmp;
 			}
 			out.write(title);
 			out.write(eol);
