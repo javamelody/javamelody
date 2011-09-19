@@ -20,11 +20,16 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +39,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
@@ -253,6 +260,40 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		detailsPanel.validate();
 	}
 
+	void showRequestsAggregatedOrFilteredByClassName(String requestId, final MButton detailsButton) {
+		final List<CounterRequest> requests = new CounterRequestAggregation(counter)
+				.getRequestsAggregatedOrFilteredByClassName(requestId);
+		table.setList(requests);
+		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
+				table);
+		add(tableScrollPane, BorderLayout.CENTER);
+
+		if (detailsButton != null) {
+			final MTable<CounterRequest> myTable = table;
+			table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					detailsButton.setEnabled(myTable.getSelectedObject() != null);
+				}
+			});
+			detailsButton.setEnabled(myTable.getSelectedObject() != null);
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() == 2) {
+						detailsButton.doClick();
+					}
+				}
+			});
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					actionCounterSummaryPerClass(true);
+				}
+			});
+		}
+	}
+
 	void showLastErrors() {
 		if (lastErrorsPanel == null) {
 			lastErrorsPanel = new CounterErrorPanel(counter);
@@ -315,14 +356,8 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		eastPanel.add(new JLabel(text));
 
 		if (counter.isBusinessFacadeCounter()) {
-			// TODO
-			//			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
-			//					+ "' class='noPrint'>#Resume_par_classe#</a>");
-			//			if (PDF_ENABLED) {
-			//				writeln(separator);
-			//				writeln("<a href='?part=runtimeDependencies&amp;format=pdf&amp;counter="
-			//						+ counterName + "' class='noPrint'>#Dependances#</a>");
-			//			}
+			eastPanel.add(createCounterSummaryPerClassButton());
+			eastPanel.add(createRuntimeDependenciesButton());
 		}
 
 		eastPanel.add(createDetailsButton());
@@ -335,6 +370,34 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		}
 
 		mainPanel.add(eastPanel, BorderLayout.EAST);
+	}
+
+	private MButton createCounterSummaryPerClassButton() {
+		final MButton counterSummaryPerClassButton = new MButton(
+				I18N.getString("Resume_par_classe"));
+		counterSummaryPerClassButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionCounterSummaryPerClass(false);
+			}
+		});
+		return counterSummaryPerClassButton;
+	}
+
+	private MButton createRuntimeDependenciesButton() {
+		final MButton runtimeDependenciesButton = new MButton(I18N.getString("Dependances"),
+				ImageIconCache.getImageIcon("pdf.png"));
+		runtimeDependenciesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionRuntimeDependencies();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		return runtimeDependenciesButton;
 	}
 
 	private MButton createDetailsButton() {
@@ -395,6 +458,31 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		} catch (final IOException ex) {
 			showException(ex);
 		}
+	}
+
+	final void actionCounterSummaryPerClass(boolean detailsForAClass) {
+		final String requestId;
+		if (detailsForAClass) {
+			requestId = table.getSelectedObject().getId();
+		} else {
+			requestId = null;
+		}
+		final CounterSummaryPerClassPanel panel = new CounterSummaryPerClassPanel(
+				getRemoteCollector(), counter, range, requestId);
+		MainPanel.addOngletFromChild(this, panel);
+	}
+
+	final void actionRuntimeDependencies() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final OutputStream output = createFileOutputStream(tempFile);
+		try {
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
+					.getApplication(), output);
+			pdfOtherReport.writeRuntimeDependencies(counter, range);
+		} finally {
+			output.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 
 	CounterRequestAggregation getCounterRequestAggregation() {
