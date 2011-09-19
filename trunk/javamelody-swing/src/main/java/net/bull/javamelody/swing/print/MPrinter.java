@@ -36,8 +36,7 @@ import javax.swing.JTable;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
- * Classe d'impression et d'export. <br/>
- * Cette classe s'utilise avec la méthode statique printOrExport. <br/>
+ * Classe d'impression et d'export.
  *
  * @author Emeric Vernat
  */
@@ -56,38 +55,36 @@ public abstract class MPrinter {
 	 * Construit le titre à inclure dans l'impression/export.
 	 *
 	 * @param component
-	 *           java.awt.Component
+	 *           Component
 	 * @return String
 	 */
 	protected String buildTitle(final Component component) {
 		Component current = component;
 		final StringBuilder title = new StringBuilder();
-		String localTitle;
 		while (current != null) {
-			if (current instanceof JTabbedPane) {
-				final JTabbedPane tabbedPane = (JTabbedPane) current;
-				localTitle = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
-				if (localTitle != null && localTitle.length() != 0) {
-					if (title.length() != 0) {
-						title.insert(0, " - ");
-					}
-					title.insert(0, localTitle);
-				}
-			} else if (current instanceof JFrame) {
+			final String currentTitle = getTitleIfKnownComponent(current);
+			if (currentTitle != null && currentTitle.length() != 0) {
 				if (title.length() != 0) {
 					title.insert(0, " - ");
 				}
-				title.insert(0, ((JFrame) current).getTitle());
-			} else if (current instanceof JDialog) {
-				if (title.length() != 0) {
-					title.insert(0, " - ");
-				}
-				title.insert(0, ((JDialog) current).getTitle());
+				title.insert(0, currentTitle);
 			}
 			current = current.getParent();
 		}
 
 		return title.length() != 0 ? title.toString() : null;
+	}
+
+	private String getTitleIfKnownComponent(Component current) {
+		if (current instanceof JTabbedPane) {
+			final JTabbedPane tabbedPane = (JTabbedPane) current;
+			return tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+		} else if (current instanceof JFrame) {
+			return ((JFrame) current).getTitle();
+		} else if (current instanceof JDialog) {
+			return ((JDialog) current).getTitle();
+		}
+		return null;
 	}
 
 	/**
