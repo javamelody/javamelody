@@ -19,21 +19,14 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
@@ -116,21 +110,9 @@ class ProcessInformationsPanel extends MelodyPanel {
 			panel.add(tableScrollPane);
 
 			if (!windows) {
-				final JLabel label = new JLabel(" ps command reference");
-				label.setForeground(Color.BLUE.darker());
-				label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-				label.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						try {
-							Desktop.getDesktop().browse(
-									new URI("http://en.wikipedia.org/wiki/Ps_(Unix)"));
-						} catch (final Exception ex) {
-							showException(ex);
-						}
-					}
-				});
-				panel.add(label);
+				final MHyperLink hyperLink = new MHyperLink(" ps command reference",
+						"http://en.wikipedia.org/wiki/Ps_(Unix)");
+				panel.add(hyperLink);
 			}
 		}
 
@@ -176,7 +158,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 
 	final void actionPdf() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		final OutputStream output = createFileOutputStream(tempFile);
 		try {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
 					.getApplication(), output);

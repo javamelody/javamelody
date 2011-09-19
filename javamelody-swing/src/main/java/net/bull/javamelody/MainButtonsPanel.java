@@ -22,9 +22,7 @@ import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -135,7 +133,7 @@ class MainButtonsPanel extends MelodyPanel {
 		// TODO récupérer range sélectionné
 		final Range range = Period.TOUT.getRange();
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		final OutputStream output = createFileOutputStream(tempFile);
 		try {
 			final Collector collector = getRemoteCollector().getCollector();
 			final List<JavaInformations> javaInformationsList = getRemoteCollector()

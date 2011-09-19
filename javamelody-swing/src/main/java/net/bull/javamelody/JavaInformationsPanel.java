@@ -19,13 +19,9 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -41,6 +37,7 @@ import javax.swing.SwingConstants;
 
 import net.bull.javamelody.PdfJavaInformationsReport.Bar;
 import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.util.SpringUtilities;
 
 import com.lowagie.text.Font;
@@ -85,9 +82,10 @@ class JavaInformationsPanel extends MelodyPanel {
 		final long maxMemory = memoryInformations.getMaxMemory();
 		addLabel(I18N.getString("memoire_utilisee"));
 		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
+		final String divide = " / ";
 		addJLabel(toBar(
-				integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo") + " / "
-						+ integerFormat.format(maxMemory / 1024 / 1024) + ' '
+				integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo")
+						+ divide + integerFormat.format(maxMemory / 1024 / 1024) + ' '
 						+ I18N.getString("Mo"), memoryInformations.getUsedMemoryPercentage()));
 		if (javaInformations.getSessionCount() >= 0) {
 			addLabel(I18N.getString("nb_sessions_http"));
@@ -111,7 +109,7 @@ class JavaInformationsPanel extends MelodyPanel {
 				addJLabel(toBar(integerFormat.format(usedConnectionCount),
 						javaInformations.getUsedConnectionPercentage()));
 			} else {
-				addValue(integerFormat.format(usedConnectionCount) + " / "
+				addValue(integerFormat.format(usedConnectionCount) + divide
 						+ integerFormat.format(maxConnectionCount));
 			}
 		}
@@ -233,22 +231,9 @@ class JavaInformationsPanel extends MelodyPanel {
 			addLabel(I18N.getString("DataSource_jdbc"));
 			addValue(javaInformations.getDataSourceDetails());
 			addLabel("");
-			final JLabel dataSourceReferenceLabel = new JLabel("DataSource reference");
-			dataSourceReferenceLabel.setForeground(Color.BLUE.darker());
-			dataSourceReferenceLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			dataSourceReferenceLabel.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					try {
-						Desktop.getDesktop()
-								.browse(new URI(
-										"http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html"));
-					} catch (final Exception ex) {
-						showException(ex);
-					}
-				}
-			});
-			gridPanel.add(dataSourceReferenceLabel);
+			final MHyperLink dataSourceReferenceHyperLink = new MHyperLink("DataSource reference",
+					"http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
+			gridPanel.add(dataSourceReferenceHyperLink);
 		}
 	}
 
@@ -329,8 +314,8 @@ class JavaInformationsPanel extends MelodyPanel {
 			nbDependenciesLabel.setText(nbDependenciesLabel.getText() + " ; ");
 			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
 			panel.add(detailsButton, BorderLayout.EAST);
-			final JLabel dependenciesLabel = new JLabel("<html>"
-					+ javaInformations.getDependencies().replace("\n", "<br/>"));
+			final JLabel dependenciesLabel = new JLabel(
+					replaceLineFeedWithHtmlBr(javaInformations.getDependencies()));
 			final JPanel dependendiesDetailsPanel = new JPanel(new BorderLayout());
 			panel.add(dependendiesDetailsPanel, BorderLayout.SOUTH);
 			dependendiesDetailsPanel.setVisible(false);
@@ -375,22 +360,14 @@ class JavaInformationsPanel extends MelodyPanel {
 	}
 
 	private void addLabel(String text) {
-		String tmp = text;
-		if (tmp.indexOf('\n') != -1) {
-			// JLabel accepte la syntaxe html
-			tmp = "<html>" + tmp.replace("\n", "<br/>");
-		}
+		final String tmp = replaceLineFeedWithHtmlBr(text);
 		final JLabel label = new JLabel(tmp + ": ");
 		label.setVerticalAlignment(SwingConstants.TOP);
 		addJLabel(label);
 	}
 
 	private void addValue(String value) {
-		String tmp = value;
-		if (tmp.indexOf('\n') != -1) {
-			// JLabel accepte la syntaxe html
-			tmp = "<html>" + tmp.replace("\n", "<br/>");
-		}
+		final String tmp = replaceLineFeedWithHtmlBr(value);
 		addJLabel(new JLabel(tmp));
 	}
 
@@ -399,11 +376,7 @@ class JavaInformationsPanel extends MelodyPanel {
 	}
 
 	static JLabel toBar(String text, double percentValue) { // NOPMD
-		String tmp = text;
-		if (tmp.indexOf('\n') != -1) {
-			// JLabel accepte la syntaxe html
-			tmp = "<html>" + tmp.replace("\n", "<br/>");
-		}
+		final String tmp = replaceLineFeedWithHtmlBr(text);
 		final JLabel label = new JLabel(tmp);
 		label.setIconTextGap(10);
 		try {
@@ -415,6 +388,14 @@ class JavaInformationsPanel extends MelodyPanel {
 		final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
 		label.setToolTipText(I18N.createPercentFormat().format(myPercent) + '%');
 		return label;
+	}
+
+	private static String replaceLineFeedWithHtmlBr(String text) {
+		if (text.indexOf('\n') != -1) {
+			// JLabel accepte la syntaxe html
+			return "<html>" + text.replace("\n", "<br/>");
+		}
+		return text;
 	}
 
 	URL getMonitoringUrl() {

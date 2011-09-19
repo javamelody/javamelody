@@ -19,17 +19,13 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.URI;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +41,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
 import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDateTableCellRenderer;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
@@ -255,21 +252,9 @@ class JobInformationsPanel extends MelodyPanel {
 
 		addScrollPane();
 
-		final JLabel label = new JLabel(" Configuration reference");
-		label.setForeground(Color.BLUE.darker());
-		label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		label.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				try {
-					Desktop.getDesktop().browse(
-							new URI("http://www.quartz-scheduler.org/docs/index.html"));
-				} catch (final Exception ex) {
-					showException(ex);
-				}
-			}
-		});
-		add(label, BorderLayout.WEST);
+		final MHyperLink hyperLink = new MHyperLink(" Configuration reference",
+				"http://www.quartz-scheduler.org/docs/index.html");
+		add(hyperLink, BorderLayout.WEST);
 
 		if (Parameters.isSystemActionsEnabled()) {
 			addButtons();

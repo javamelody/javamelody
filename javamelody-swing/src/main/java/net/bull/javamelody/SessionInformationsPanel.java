@@ -26,9 +26,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -322,7 +320,7 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	final void actionPdf() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		final OutputStream output = createFileOutputStream(tempFile);
 		try {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
 					.getApplication(), output);
