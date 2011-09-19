@@ -92,8 +92,6 @@ public class MHtmlWriter extends MPrinter {
 	 */
 	protected void writeHtml(final MBasicTable table, final OutputStream outputStream,
 			final boolean isSelection) throws IOException {
-		final int rowCount = table.getRowCount();
-		final int columnCount = table.getColumnCount();
 		final Writer out = new OutputStreamWriter(outputStream);
 
 		final String eol = isSelection ? "\n" : System.getProperty("line.separator");
@@ -110,21 +108,8 @@ public class MHtmlWriter extends MPrinter {
 		out.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
 		out.write("<html>");
 		out.write(eol);
-		out.write("<head>");
-		out.write(eol);
-		out.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
-		out.write(eol);
-		out.write("<title>");
 		final String title = buildTitle(table);
-		if (title != null) {
-			out.write(title);
-		}
-		out.write("</title>");
-		out.write(eol);
-		out.write("<style type=\"text/css\"><!--.smallFont {  font-size: smaller}--></style>");
-		out.write(eol);
-		out.write("</head>");
-		out.write(eol);
+		writeHtmlHead(title, out, eol);
 		out.write("<body>");
 		out.write(eol);
 		if (title != null) {
@@ -134,21 +119,30 @@ public class MHtmlWriter extends MPrinter {
 		}
 		out.write(eol);
 
+		writeHtmlTable(table, isSelection, out, eol);
+		out.write("</body>");
+		out.write(eol);
+		out.write("</html>");
+		out.flush();
+	}
+
+	private void writeHtmlTable(final MBasicTable table, final boolean isSelection,
+			final Writer out, final String eol) throws IOException {
 		out.write("<table width=\"100%\" border=\"1\" cellspacing=\"0\" bordercolor=\"#000000\" cellpadding=\"2\">");
 		out.write(eol);
 		out.write(eol);
 		out.write("  <tr align=\"center\" class=\"smallFont\">");
 		out.write(eol);
 
-		String text;
-		Object value;
+		final int rowCount = table.getRowCount();
+		final int columnCount = table.getColumnCount();
 		// titres des colonnes
 		for (int i = 0; i < columnCount; i++) {
 			out.write("    <th id=");
 			out.write(String.valueOf(i));
 			out.write("> ");
-			value = table.getColumnModel().getColumn(i).getHeaderValue();
-			text = value != null ? value.toString() : "";
+			final Object value = table.getColumnModel().getColumn(i).getHeaderValue();
+			String text = value != null ? value.toString() : "";
 			text = formatHtml(text);
 			out.write(text);
 			out.write(" </th>");
@@ -170,20 +164,7 @@ public class MHtmlWriter extends MPrinter {
 			out.write(" class=\"smallFont\">");
 			out.write(eol);
 			for (int i = 0; i < columnCount; i++) {
-				value = getValueAt(table, k, i);
-				out.write("    <td");
-				if (value instanceof Number || value instanceof Date) {
-					out.write(" align=\"right\"");
-				} else if (value instanceof Boolean) {
-					out.write(" align=\"center\"");
-				}
-				out.write("> ");
-
-				text = getTextAt(table, k, i);
-				text = formatHtml(text);
-				out.write(text != null && text.trim().length() != 0 ? text : "&nbsp;"); // NOPMD
-				out.write(" </td>");
-				out.write(eol);
+				writeHtmlTd(table, out, eol, k, i);
 			}
 			out.write("  </tr>");
 			out.write(eol);
@@ -192,9 +173,41 @@ public class MHtmlWriter extends MPrinter {
 		out.write(eol);
 		out.write("</table>");
 		out.write(eol);
-		out.write("</body>");
+	}
+
+	private void writeHtmlTd(final MBasicTable table, final Writer out, final String eol, int k,
+			int i) throws IOException {
+		final Object value = getValueAt(table, k, i);
+		out.write("    <td");
+		if (value instanceof Number || value instanceof Date) {
+			out.write(" align=\"right\"");
+		} else if (value instanceof Boolean) {
+			out.write(" align=\"center\"");
+		}
+		out.write("> ");
+
+		String text = getTextAt(table, k, i);
+		text = formatHtml(text);
+		out.write(text != null && text.trim().length() != 0 ? text : "&nbsp;"); // NOPMD
+		out.write(" </td>");
 		out.write(eol);
-		out.write("</html>");
-		out.flush();
+	}
+
+	private void writeHtmlHead(final String title, final Writer out, final String eol)
+			throws IOException {
+		out.write("<head>");
+		out.write(eol);
+		out.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
+		out.write(eol);
+		out.write("<title>");
+		if (title != null) {
+			out.write(title);
+		}
+		out.write("</title>");
+		out.write(eol);
+		out.write("<style type=\"text/css\"><!--.smallFont {  font-size: smaller}--></style>");
+		out.write(eol);
+		out.write("</head>");
+		out.write(eol);
 	}
 }
