@@ -2,7 +2,6 @@ package net.bull.javamelody.swing.print;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -162,12 +161,15 @@ public class MExtensionFileFilter extends FileFilter {
 				final StringBuilder sb = new StringBuilder();
 				sb.append(description == null ? "(" : description + " (");
 				// build the description from the extension list
-				final Iterator<String> it = filters.keySet().iterator();
-				sb.append("*.");
-				sb.append(it.next());
-				while (it.hasNext()) {
-					sb.append(", *.");
-					sb.append(it.next());
+				boolean first = true;
+				for (final String filterKey : filters.keySet()) {
+					if (first) {
+						first = false;
+					} else {
+						sb.append(", ");
+					}
+					sb.append("*.");
+					sb.append(filterKey);
 				}
 				sb.append(')');
 				temp = sb.toString();
