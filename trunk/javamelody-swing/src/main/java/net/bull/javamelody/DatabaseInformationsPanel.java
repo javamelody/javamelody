@@ -26,9 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -207,7 +205,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 
 	final void actionPdf() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = new BufferedOutputStream(new FileOutputStream(tempFile));
+		final OutputStream output = createFileOutputStream(tempFile);
 		try {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
 					.getApplication(), output);
