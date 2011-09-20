@@ -11,10 +11,11 @@ There is no promise of dates or that a particular feature will ever be done.
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
   # Add an action for threads dump as text format
+  # In the collector server, refuse to add twice one instance of an application (for example, individually and then in a cluster)
   # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
   # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?)
-  # In the collector server, do not display all the applications at the top if there are more than 10 or 20 of them, and display them in a separate page for example.
+  # In the collector server, do not display all the applications at the top if there are more than 10 or 20 of them, and display them in a separate page or in a combobox for example.
   # Cannot remove in the GUI an application from the collector server when the application is no longer using javamelody. When trying to select it, the collector server is showing an error 500 with the message "Data unavailable for the application". (Meanwhile, it is possible to remove the application directly from the applications.properties file in the temp directory.)
   # Drill-down in child requests, for example in the detail of a request
   # Add a pdf report of the detail of a request
