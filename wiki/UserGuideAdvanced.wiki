@@ -184,8 +184,8 @@ For standard documentation, see [UserGuide]
 	(for example "{{{http://<host_qa>/myapp/}}}" for "qa" and "{{{http://<host_production>/myapp/}}}" for "production").
 	If an application to monitor is deployed on several instances of servers (in a cluster or in a farm),
 	urls should be separated by ','
-	(for example "{{{http://<host1>/myapp/,http://<host2>/myapp/}}}" for "cluster").
-	Note: it is not possible to monitor one application in several collect servers.
+	(for example "{{{http://<host1>/myapp/,http://<host2>/myapp/}}}" for "cluster"). Of course, you can otherwise add each instance individually.
+	Note: it is not possible to monitor one application in several collect servers or twice in one collect server.
 
 	In order for the collect server to monitor an application, the monitoring should be setup in this application
 	as written at the start of this chapter.
