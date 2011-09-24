@@ -36,7 +36,7 @@ import net.bull.javamelody.swing.util.MSwingUtilities;
  * @author Emeric Vernat
  */
 class MainPanel extends MelodyPanel {
-	private static final Color BACKGROUND = new Color(230, 230, 230);
+	private static final Color BACKGROUND = Color.decode("#E6E6E6");
 	private static final long serialVersionUID = 1L;
 
 	private final TabbedPane tabbedPane = new TabbedPane();
