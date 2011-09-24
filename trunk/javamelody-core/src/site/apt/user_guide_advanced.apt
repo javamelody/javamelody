@@ -195,8 +195,10 @@ Documentation avancée de Java Melody
 	Si l'application est déployée sur plusieurs instances de serveurs (en cluster ou en ferme),
 	il faut séparer les urls d'accès aux serveurs de l'application par une ','
 	(par exemple "http://<host1>/myapp/,http://<host2>/myapp/" pour "cluster").
+	Bien sûr, il est possible sinon d'ajouter chaque instance individuellement.
+	
 	En remarque, il n'est pas possible de monitorer plusieurs fois une même application,
-	par exemple dans plusieurs serveurs de collecte.
+	par exemple dans plusieurs serveurs de collecte ou deux fois dans un même serveur de collecte.
 	
 	Pour que le serveur de collecte puisse monitorer une application,
 	il est nécessaire de mettre en oeuvre le monitoring dans cette application comme indiqué au début de ce chapitre.
