@@ -110,7 +110,6 @@ class SessionInformationsPanel extends MelodyPanel {
 		removeAll();
 
 		this.sessionsInformations = getRemoteCollector().collectSessionInformations(null);
-		this.table = new MTable<SessionInformations>();
 		this.attributesTable = new MTable<SessionAttribute>();
 
 		setName(I18N.getString("Sessions"));
@@ -118,7 +117,12 @@ class SessionInformationsPanel extends MelodyPanel {
 				"system-users.png");
 		add(titleLabel, BorderLayout.NORTH);
 
-		addScrollPane();
+		final MTableScrollPane<SessionInformations> scrollPane = createScrollPane();
+		this.table = scrollPane.getTable();
+
+		table.setList(sessionsInformations);
+
+		add(scrollPane, BorderLayout.CENTER);
 
 		final JPanel southPanel = new JPanel(new BorderLayout());
 		southPanel.setOpaque(false);
@@ -128,7 +132,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		add(southPanel, BorderLayout.SOUTH);
 	}
 
-	private void addScrollPane() {
+	private MTableScrollPane<SessionInformations> createScrollPane() {
 		boolean displayUser = false;
 		for (final SessionInformations sessionInformations : sessionsInformations) {
 			if (sessionInformations.getRemoteUser() != null) {
@@ -136,34 +140,32 @@ class SessionInformationsPanel extends MelodyPanel {
 				break;
 			}
 		}
-		final MTableScrollPane<SessionInformations> tableScrollPane = new MTableScrollPane<SessionInformations>(
-				table);
-		table.addColumn("id", I18N.getString("Session_id"));
-		table.addColumn("lastAccess", I18N.getString("Dernier_acces"));
-		table.addColumn("age", I18N.getString("Age"));
-		table.addColumn("expirationDate", I18N.getString("Expiration"));
-		table.addColumn("attributeCount", I18N.getString("Nb_attributs"));
-		table.addColumn("serializable", I18N.getString("Serialisable"));
-		table.addColumn("serializedSize", I18N.getString("Taille_serialisee"));
-		table.addColumn("remoteAddr", I18N.getString("Adresse_IP"));
-		table.addColumn("countryDisplay", I18N.getString("Pays"));
+		final MTableScrollPane<SessionInformations> tableScrollPane = new MTableScrollPane<SessionInformations>();
+		final MTable<SessionInformations> myTable = tableScrollPane.getTable();
+		myTable.addColumn("id", I18N.getString("Session_id"));
+		myTable.addColumn("lastAccess", I18N.getString("Dernier_acces"));
+		myTable.addColumn("age", I18N.getString("Age"));
+		myTable.addColumn("expirationDate", I18N.getString("Expiration"));
+		myTable.addColumn("attributeCount", I18N.getString("Nb_attributs"));
+		myTable.addColumn("serializable", I18N.getString("Serialisable"));
+		myTable.addColumn("serializedSize", I18N.getString("Taille_serialisee"));
+		myTable.addColumn("remoteAddr", I18N.getString("Adresse_IP"));
+		myTable.addColumn("countryDisplay", I18N.getString("Pays"));
 
 		if (displayUser) {
-			table.addColumn("remoteUser", I18N.getString("Utilisateur"));
+			myTable.addColumn("remoteUser", I18N.getString("Utilisateur"));
 		}
 
 		final MDateTableCellRenderer durationTableCellRenderer = new MDateTableCellRenderer();
 		durationTableCellRenderer.setDateFormat(I18N.createDurationFormat());
-		table.setColumnCellRenderer("lastAccess", durationTableCellRenderer);
-		table.setColumnCellRenderer("age", durationTableCellRenderer);
+		myTable.setColumnCellRenderer("lastAccess", durationTableCellRenderer);
+		myTable.setColumnCellRenderer("age", durationTableCellRenderer);
 		final MDateTableCellRenderer dateAndTimeTableCellRenderer = new MDateTableCellRenderer();
 		dateAndTimeTableCellRenderer.setDateFormat(I18N.createDateAndTimeFormat());
-		table.setColumnCellRenderer("expirationDate", dateAndTimeTableCellRenderer);
-		table.setColumnCellRenderer("countryDisplay", new CountryTableCellRenderer());
+		myTable.setColumnCellRenderer("expirationDate", dateAndTimeTableCellRenderer);
+		myTable.setColumnCellRenderer("countryDisplay", new CountryTableCellRenderer());
 
-		table.setList(sessionsInformations);
-
-		add(tableScrollPane, BorderLayout.CENTER);
+		return tableScrollPane;
 	}
 
 	private JPanel createAttributesPanel() {

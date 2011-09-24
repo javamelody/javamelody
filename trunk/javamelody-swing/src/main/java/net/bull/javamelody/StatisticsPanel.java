@@ -224,7 +224,8 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 
 	public void showGlobalRequests() {
 		if (counter.getRequestsCount() == 0) {
-			addNoRequests();
+			final JLabel noRequestsLabel = createNoRequestsLabel();
+			mainPanel.add(noRequestsLabel, BorderLayout.CENTER);
 		} else {
 			List<CounterRequest> requests = counterRequestAggregation.getRequests();
 			final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();
@@ -240,7 +241,8 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 			table.setList(requests);
 
 			addScrollPane();
-			addRequestsSizeAndButtons();
+			final JPanel requestsSizeAndButtonsPanel = createRequestsSizeAndButtonsPanel();
+			mainPanel.add(requestsSizeAndButtonsPanel, BorderLayout.EAST);
 		}
 	}
 
@@ -304,7 +306,7 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		lastErrorsPanel.validate();
 	}
 
-	private void addNoRequests() {
+	private JLabel createNoRequestsLabel() {
 		final String key;
 		if (isJobCounter()) {
 			key = "Aucun_job";
@@ -313,7 +315,7 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		} else {
 			key = "Aucune_requete";
 		}
-		mainPanel.add(new JLabel(' ' + I18N.getString(key)), BorderLayout.CENTER);
+		return new JLabel(' ' + I18N.getString(key));
 	}
 
 	private void addScrollPane() {
@@ -323,7 +325,7 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		mainPanel.add(tableScrollPane, BorderLayout.NORTH);
 	}
 
-	private void addRequestsSizeAndButtons() {
+	private JPanel createRequestsSizeAndButtonsPanel() {
 		final CounterRequest globalRequest = this.counterRequestAggregation.getGlobalRequest();
 		final long end;
 		if (range.getEndDate() != null) {
@@ -350,23 +352,23 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		final String text = I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute),
 				integerFormat.format(counterRequestAggregation.getRequests().size()));
 
-		final JPanel eastPanel = Utilities.createButtonsPanel(new JLabel(text));
+		final JPanel panel = Utilities.createButtonsPanel(new JLabel(text));
 
 		if (counter.isBusinessFacadeCounter()) {
-			eastPanel.add(createCounterSummaryPerClassButton());
-			eastPanel.add(createRuntimeDependenciesButton());
+			panel.add(createCounterSummaryPerClassButton());
+			panel.add(createRuntimeDependenciesButton());
 		}
 
-		eastPanel.add(createDetailsButton());
+		panel.add(createDetailsButton());
 
 		if (isErrorCounter()) {
-			eastPanel.add(createLastErrorsButton());
+			panel.add(createLastErrorsButton());
 		}
 		if (range.getPeriod() == Period.TOUT) {
-			eastPanel.add(createClearCounterButton());
+			panel.add(createClearCounterButton());
 		}
 
-		mainPanel.add(eastPanel, BorderLayout.EAST);
+		return panel;
 	}
 
 	private MButton createCounterSummaryPerClassButton() {

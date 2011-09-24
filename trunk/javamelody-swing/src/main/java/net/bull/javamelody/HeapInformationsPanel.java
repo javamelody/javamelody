@@ -23,8 +23,8 @@ import java.io.IOException;
 
 import javax.swing.JLabel;
 
+import net.bull.javamelody.HeapHistogram.ClassInfo;
 import net.bull.javamelody.swing.Utilities;
-import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
 /**
@@ -36,7 +36,6 @@ class HeapInformationsPanel extends MelodyPanel {
 
 	@SuppressWarnings("all")
 	private HeapHistogram heapHistogram;
-	private MTable<HeapHistogram.ClassInfo> table;
 
 	HeapInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
@@ -48,7 +47,6 @@ class HeapInformationsPanel extends MelodyPanel {
 		removeAll();
 
 		this.heapHistogram = getRemoteCollector().collectHeapHistogram();
-		this.table = new MTable<HeapHistogram.ClassInfo>();
 
 		setName(I18N.getFormattedString("heap_histo_du",
 				I18N.createDateAndTimeFormat().format(heapHistogram.getTime())));
@@ -58,18 +56,19 @@ class HeapInformationsPanel extends MelodyPanel {
 				"memory.png");
 		add(titleLabel, BorderLayout.NORTH);
 
-		addScrollPane();
+		final MTableScrollPane<ClassInfo> scrollPane = createScrollPane();
+
+		add(scrollPane, BorderLayout.CENTER);
 
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
 		add(label, BorderLayout.SOUTH);
 	}
 
-	private void addScrollPane() {
-		final MTableScrollPane<HeapHistogram.ClassInfo> tableScrollPane = new MTableScrollPane<HeapHistogram.ClassInfo>(
-				table);
+	private MTableScrollPane<HeapHistogram.ClassInfo> createScrollPane() {
+		final MTableScrollPane<HeapHistogram.ClassInfo> tableScrollPane = new MTableScrollPane<HeapHistogram.ClassInfo>();
 		//		table.addColumn("name", I18N.getString("Thread"));
 		// TODO
 
-		add(tableScrollPane, BorderLayout.CENTER);
+		return tableScrollPane;
 	}
 }

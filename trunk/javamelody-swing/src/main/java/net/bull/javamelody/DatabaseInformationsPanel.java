@@ -53,7 +53,6 @@ class DatabaseInformationsPanel extends MelodyPanel {
 
 	@SuppressWarnings("all")
 	private DatabaseInformations databaseInformations;
-	private MTable<DatabaseInformations> table;
 
 	DatabaseInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
@@ -65,7 +64,6 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		removeAll();
 
 		this.databaseInformations = getRemoteCollector().collectDatabaseInformations(requestIndex);
-		this.table = new MTable<DatabaseInformations>();
 
 		setName(I18N.getString("database"));
 		final String selectedRequestName = databaseInformations.getSelectedRequestName();
@@ -73,16 +71,18 @@ class DatabaseInformationsPanel extends MelodyPanel {
 				+ I18N.getString(selectedRequestName), "db.png");
 		add(titleLabel, BorderLayout.NORTH);
 
-		addScrollPane();
+		final MTableScrollPane<DatabaseInformations> scrollPane = createScrollPane();
+
+		add(scrollPane, BorderLayout.CENTER);
 
 		add(createButtonsPanel(), BorderLayout.SOUTH);
 	}
 
-	private void addScrollPane() {
-		final MTableScrollPane<DatabaseInformations> tableScrollPane = new MTableScrollPane<DatabaseInformations>(
-				table);
+	private MTableScrollPane<DatabaseInformations> createScrollPane() {
+		final MTableScrollPane<DatabaseInformations> tableScrollPane = new MTableScrollPane<DatabaseInformations>();
+		final MTable<DatabaseInformations> myTable = tableScrollPane.getTable();
 		final String[][] values = databaseInformations.getResult();
-		table.setModel(new MTableModel<String[]>(table) {
+		myTable.setModel(new MTableModel<String[]>(myTable) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -97,7 +97,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		});
 
 		for (final String header : values[0]) {
-			final TableColumn tableColumn = new TableColumn(table.getColumnCount());
+			final TableColumn tableColumn = new TableColumn(myTable.getColumnCount());
 			tableColumn.setIdentifier(header);
 			if (header.indexOf('\n') != -1) {
 				tableColumn.setHeaderValue(header.substring(0, header.indexOf('\n')));
@@ -119,12 +119,12 @@ class DatabaseInformationsPanel extends MelodyPanel {
 					}
 				}
 			});
-			table.addColumn(tableColumn);
+			myTable.addColumn(tableColumn);
 		}
 
-		table.adjustColumnWidths();
+		myTable.adjustColumnWidths();
 
-		add(tableScrollPane, BorderLayout.CENTER);
+		return tableScrollPane;
 	}
 
 	static boolean isNumber(String text) {

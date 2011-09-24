@@ -247,53 +247,58 @@ class JobInformationsPanel extends MelodyPanel {
 		assert rangeJobCounter != null;
 		this.jobInformationsList = jobInformationsList;
 		this.jobCounter = rangeJobCounter;
-		this.table = new MTable<JobInformations>();
 
-		addScrollPane();
+		final MTableScrollPane<JobInformations> scrollPane = createScrollPane();
+		this.table = scrollPane.getTable();
+		table.setList(jobInformationsList);
+		Utilities.adjustTableHeight(table);
+
+		add(scrollPane, BorderLayout.NORTH);
 
 		final MHyperLink hyperLink = new MHyperLink(" Configuration reference",
 				"http://www.quartz-scheduler.org/docs/index.html");
 		add(hyperLink, BorderLayout.WEST);
 
 		if (Parameters.isSystemActionsEnabled()) {
-			addButtons();
+			final JPanel buttonsPanel = createButtonsPanel();
+			add(buttonsPanel, BorderLayout.EAST);
 		}
 	}
 
-	private void addScrollPane() {
-		final MTableScrollPane<JobInformations> tableScrollPane = new MTableScrollPane<JobInformations>(
-				table);
-		table.addColumn("group", I18N.getString("JobGroup"));
-		table.addColumn("name", I18N.getString("JobName"));
-		table.addColumn("jobClassName", I18N.getString("JobClassName"));
-		final TableColumn stackTraceTableColumn = new TableColumn(table.getColumnCount());
-		stackTraceTableColumn.setIdentifier(table.getColumnCount());
+	private MTableScrollPane<JobInformations> createScrollPane() {
+		final MTableScrollPane<JobInformations> tableScrollPane = new MTableScrollPane<JobInformations>();
+		final MTable<JobInformations> myTable = tableScrollPane.getTable();
+		myTable.addColumn("group", I18N.getString("JobGroup"));
+		myTable.addColumn("name", I18N.getString("JobName"));
+		myTable.addColumn("jobClassName", I18N.getString("JobClassName"));
+		final TableColumn stackTraceTableColumn = new TableColumn(myTable.getColumnCount());
+		stackTraceTableColumn.setIdentifier(myTable.getColumnCount());
 		stackTraceTableColumn.setHeaderValue(I18N.getString("JobLastException"));
-		table.addColumn(stackTraceTableColumn);
-		final TableColumn meanTimeTableColumn = new TableColumn(table.getColumnCount());
-		meanTimeTableColumn.setIdentifier(table.getColumnCount());
+		myTable.addColumn(stackTraceTableColumn);
+		final TableColumn meanTimeTableColumn = new TableColumn(myTable.getColumnCount());
+		meanTimeTableColumn.setIdentifier(myTable.getColumnCount());
 		meanTimeTableColumn.setHeaderValue(I18N.getString("JobMeanTime"));
-		table.addColumn(meanTimeTableColumn);
-		table.addColumn("elapsedTime", I18N.getString("JobElapsedTime"));
-		table.addColumn("previousFireTime", I18N.getString("JobPreviousFireTime"));
-		table.addColumn("nextFireTime", I18N.getString("JobNextFireTime"));
-		table.addColumn("repeatInterval", I18N.getString("JobPeriodOrCronExpression"));
-		table.addColumn("paused", I18N.getString("JobPaused"));
+		myTable.addColumn(meanTimeTableColumn);
+		myTable.addColumn("elapsedTime", I18N.getString("JobElapsedTime"));
+		myTable.addColumn("previousFireTime", I18N.getString("JobPreviousFireTime"));
+		myTable.addColumn("nextFireTime", I18N.getString("JobNextFireTime"));
+		myTable.addColumn("repeatInterval", I18N.getString("JobPeriodOrCronExpression"));
+		myTable.addColumn("paused", I18N.getString("JobPaused"));
 
-		table.setColumnCellRenderer("name", new NameTableCellRenderer());
+		myTable.setColumnCellRenderer("name", new NameTableCellRenderer());
 		stackTraceTableColumn.setCellRenderer(new StackTraceTableCellRenderer());
 		meanTimeTableColumn.setCellRenderer(new MeanTimeTableCellRenderer());
-		table.setColumnCellRenderer("elapsedTime", new ElapsedTimeTableCellRenderer());
+		myTable.setColumnCellRenderer("elapsedTime", new ElapsedTimeTableCellRenderer());
 
 		final MDateTableCellRenderer fireTimeTableCellRenderer = new MDateTableCellRenderer();
 		fireTimeTableCellRenderer.setDateFormat(I18N.createDateAndTimeFormat());
-		table.setColumnCellRenderer("previousFireTime", fireTimeTableCellRenderer);
-		table.setColumnCellRenderer("nextFireTime", fireTimeTableCellRenderer);
-		table.setColumnCellRenderer("repeatInterval", new RepeatIntervalTableCellRenderer());
+		myTable.setColumnCellRenderer("previousFireTime", fireTimeTableCellRenderer);
+		myTable.setColumnCellRenderer("nextFireTime", fireTimeTableCellRenderer);
+		myTable.setColumnCellRenderer("repeatInterval", new RepeatIntervalTableCellRenderer());
 		// rq: on n'affiche pas le maximum, l'écart-type ou le pourcentage d'erreurs,
 		// uniquement car cela ferait trop de colonnes dans la page
 
-		table.addMouseListener(new MouseAdapter() {
+		myTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
@@ -308,10 +313,7 @@ class JobInformationsPanel extends MelodyPanel {
 			}
 		});
 
-		add(tableScrollPane, BorderLayout.NORTH);
-
-		table.setList(jobInformationsList);
-		Utilities.adjustTableHeight(table);
+		return tableScrollPane;
 	}
 
 	final CounterRequest getCounterRequest(JobInformations jobInformations) {
@@ -324,7 +326,7 @@ class JobInformationsPanel extends MelodyPanel {
 		return result;
 	}
 
-	private void addButtons() {
+	private JPanel createButtonsPanel() {
 		final MButton pauseJobButton = createPauseJobButton(PAUSE_ICON);
 		final MButton resumeJobButton = createResumeJobButton(RESUME_ICON);
 		final MButton pauseAllJobsButton = createPauseAllJobsButton(PAUSE_ICON);
@@ -340,9 +342,8 @@ class JobInformationsPanel extends MelodyPanel {
 		});
 		pauseJobButton.setEnabled(getTable().getSelectedObject() != null);
 		resumeJobButton.setEnabled(getTable().getSelectedObject() != null);
-		final JPanel buttonPanel = Utilities.createButtonsPanel(pauseJobButton, resumeJobButton,
-				pauseAllJobsButton, resumeAllJobsButton);
-		add(buttonPanel, BorderLayout.EAST);
+		return Utilities.createButtonsPanel(pauseJobButton, resumeJobButton, pauseAllJobsButton,
+				resumeAllJobsButton);
 	}
 
 	private MButton createPauseJobButton(final Icon pauseIcon) {
