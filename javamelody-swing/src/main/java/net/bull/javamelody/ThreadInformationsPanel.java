@@ -245,7 +245,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 		textArea.setEditable(false);
 		// background nécessaire avec la plupart des look and feels dont Nimbus,
 		// sinon il reste blanc malgré editable false
-		textArea.setBackground(Color.decode("#E7E7E7"));
+		textArea.setBackground(Color.decode("#E6E6E6"));
 		final JScrollPane scrollPane = new JScrollPane(textArea);
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
 		buttonPanel.setOpaque(false);

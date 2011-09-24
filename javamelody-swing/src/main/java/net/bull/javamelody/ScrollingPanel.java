@@ -67,7 +67,7 @@ class ScrollingPanel extends MelodyPanel {
 		setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setOpaque(true);
-		setBackground(new Color(230, 230, 230));
+		setBackground(Color.decode("#E6E6E6"));
 		add(new ChartsPanel());
 
 		addCounters();
