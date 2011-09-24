@@ -92,7 +92,7 @@ public final class MSwingUtilities {
 	 * Ex : un composant panel désire une référence sur sa JFrame parente, alors l'instruction suivante suffit : getAncestorOfClass(JFrame.class, panel)
 	 *
 	 * @return Component
-	 * @param <Type>
+	 * @param <T>
 	 *           le type du composant recherché
 	 * @param componentClass
 	 *           Class
@@ -100,9 +100,8 @@ public final class MSwingUtilities {
 	 *           Component
 	 */
 	@SuppressWarnings("unchecked")
-	public static <Type> Type getAncestorOfClass(final Class<Type> componentClass,
-			final Component component) {
-		return (Type) SwingUtilities.getAncestorOfClass(componentClass, component);
+	public static <T> T getAncestorOfClass(final Class<T> componentClass, final Component component) {
+		return (T) SwingUtilities.getAncestorOfClass(componentClass, component);
 	}
 
 	/**
