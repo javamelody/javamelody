@@ -48,7 +48,7 @@ class MainPanel extends MelodyPanel {
 	// TODO si maximize enlevé, la taile de la fenêtre est trop grande
 
 	MainPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		assert monitoringUrl != null;
 		this.monitoringUrl = monitoringUrl;
 

@@ -127,7 +127,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 
 	ThreadInformationsPanel(RemoteCollector remoteCollector,
 			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		assert threadInformationsList != null;
 		this.threadInformationsList = threadInformationsList;
 		this.stackTraceEnabled = stackTraceEnabled;

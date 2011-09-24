@@ -51,7 +51,7 @@ class CacheInformationsPanel extends MelodyPanel {
 
 	CacheInformationsPanel(RemoteCollector remoteCollector,
 			List<CacheInformations> cacheInformationsList) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		assert cacheInformationsList != null;
 		this.cacheInformationsList = cacheInformationsList;
 		this.hitsRatioEnabled = HtmlCacheInformationsReport
