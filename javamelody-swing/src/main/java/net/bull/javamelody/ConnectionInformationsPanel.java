@@ -37,7 +37,6 @@ class ConnectionInformationsPanel extends MelodyPanel {
 
 	@SuppressWarnings("all")
 	private List<List<ConnectionInformations>> connectionInformationsList;
-	private MTable<ConnectionInformations> table;
 
 	ConnectionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
@@ -49,25 +48,25 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		removeAll();
 
 		this.connectionInformationsList = getRemoteCollector().collectConnectionInformations();
-		this.table = new MTable<ConnectionInformations>();
 
 		setName(I18N.getString("Connexions_jdbc_ouvertes"));
 		final JLabel titleLabel = Utilities.createParagraphTitle(
 				I18N.getString("Connexions_jdbc_ouvertes"), "db.png");
 		add(titleLabel, BorderLayout.NORTH);
 
-		addScrollPane();
+		final MTableScrollPane<ConnectionInformations> scrollPane = createScrollPane();
+		add(scrollPane, BorderLayout.CENTER);
 
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
 		add(label, BorderLayout.SOUTH);
 	}
 
-	private void addScrollPane() {
-		final MTableScrollPane<ConnectionInformations> tableScrollPane = new MTableScrollPane<ConnectionInformations>(
-				table);
-		//		table.addColumn("name", I18N.getString("Thread"));
+	private MTableScrollPane<ConnectionInformations> createScrollPane() {
+		final MTableScrollPane<ConnectionInformations> tableScrollPane = new MTableScrollPane<ConnectionInformations>();
+		final MTable<ConnectionInformations> myTable = tableScrollPane.getTable();
+		myTable.addColumn("threadId", I18N.getString("Thread"));
 		// TODO
 
-		add(tableScrollPane, BorderLayout.CENTER);
+		return tableScrollPane;
 	}
 }

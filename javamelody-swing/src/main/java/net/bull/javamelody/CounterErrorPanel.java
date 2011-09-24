@@ -91,15 +91,23 @@ class CounterErrorPanel extends JPanel {
 
 		if (counter.getErrorsCount() == 0) {
 			this.table = null;
-			addNoErrors();
+			final JLabel noErrorsLabel = createNoErrorsLabel();
+			add(noErrorsLabel, BorderLayout.CENTER);
 		} else {
-			this.table = new MTable<CounterError>();
-			addScrollPane();
+			final MTableScrollPane<CounterError> scrollPane = createScrollPane();
+			this.table = scrollPane.getTable();
+			final List<CounterError> errors = counter.getErrors();
+			table.setList(errors);
+			Utilities.adjustTableHeight(table);
+
+			add(scrollPane, BorderLayout.CENTER);
 		}
 
 	}
 
-	private void addScrollPane() {
+	private MTableScrollPane<CounterError> createScrollPane() {
+		final MTableScrollPane<CounterError> tableScrollPane = new MTableScrollPane<CounterError>();
+		final MTable<CounterError> myTable = tableScrollPane.getTable();
 		final List<CounterError> errors = counter.getErrors();
 		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);
 		final boolean displayHttpRequest = HtmlCounterErrorReport.shouldDisplayHttpRequest(errors);
@@ -111,21 +119,21 @@ class CounterErrorPanel extends JPanel {
 			add(warnLabel, BorderLayout.NORTH);
 		}
 
-		table.addColumn("date", I18N.getString("Date"));
+		myTable.addColumn("date", I18N.getString("Date"));
 		if (displayHttpRequest) {
-			table.addColumn("httpRequest", I18N.getString("Requete"));
+			myTable.addColumn("httpRequest", I18N.getString("Requete"));
 		}
 		if (displayUser) {
-			table.addColumn("remoteUser", I18N.getString("Utilisateur"));
+			myTable.addColumn("remoteUser", I18N.getString("Utilisateur"));
 		}
-		table.addColumn("message", I18N.getString("Erreur"));
+		myTable.addColumn("message", I18N.getString("Erreur"));
 
 		final MDateTableCellRenderer dateTableCellRenderer = new MDateTableCellRenderer();
 		dateTableCellRenderer.setDateFormat(DateFormat.getDateTimeInstance(DateFormat.SHORT,
 				DateFormat.MEDIUM, I18N.getCurrentLocale()));
-		table.setColumnCellRenderer("date", dateTableCellRenderer);
-		table.setColumnCellRenderer("message", new MessageWithStackTraceTableCellRenderer());
-		table.addMouseListener(new MouseAdapter() {
+		myTable.setColumnCellRenderer("date", dateTableCellRenderer);
+		myTable.setColumnCellRenderer("message", new MessageWithStackTraceTableCellRenderer());
+		myTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
@@ -138,17 +146,11 @@ class CounterErrorPanel extends JPanel {
 			}
 		});
 
-		table.setList(errors);
-
-		Utilities.adjustTableHeight(table);
-
-		final MTableScrollPane<CounterError> tableScrollPane = new MTableScrollPane<CounterError>(
-				table);
-		add(tableScrollPane, BorderLayout.CENTER);
+		return tableScrollPane;
 	}
 
-	private void addNoErrors() {
-		add(new JLabel(' ' + I18N.getString("Aucune_erreur")), BorderLayout.CENTER);
+	private JLabel createNoErrorsLabel() {
+		return new JLabel(' ' + I18N.getString("Aucune_erreur"));
 	}
 
 	MTable<CounterError> getTable() {

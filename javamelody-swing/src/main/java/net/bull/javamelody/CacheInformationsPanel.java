@@ -47,7 +47,6 @@ class CacheInformationsPanel extends MelodyPanel {
 	private final List<CacheInformations> cacheInformationsList;
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
-	private final MTable<CacheInformations> table;
 
 	CacheInformationsPanel(RemoteCollector remoteCollector,
 			List<CacheInformations> cacheInformationsList) {
@@ -58,9 +57,13 @@ class CacheInformationsPanel extends MelodyPanel {
 				.isHitsRatioEnabled(cacheInformationsList);
 		this.configurationEnabled = HtmlCacheInformationsReport
 				.isConfigurationEnabled(cacheInformationsList);
-		this.table = new MTable<CacheInformations>();
 
-		addScrollPane();
+		final MTableScrollPane<CacheInformations> scrollPane = createScrollPane();
+		final MTable<CacheInformations> table = scrollPane.getTable();
+		table.setList(cacheInformationsList);
+		Utilities.adjustTableHeight(table);
+
+		add(scrollPane, BorderLayout.NORTH);
 
 		final MHyperLink hyperLink = new MHyperLink(
 				" Configuration reference",
@@ -68,43 +71,40 @@ class CacheInformationsPanel extends MelodyPanel {
 		add(hyperLink, BorderLayout.WEST);
 
 		if (Parameters.isSystemActionsEnabled()) {
-			addButton();
+			final JPanel buttonsPanel = createButtonsPanel();
+			add(buttonsPanel, BorderLayout.EAST);
 		}
 	}
 
-	private void addScrollPane() {
-		final MTableScrollPane<CacheInformations> tableScrollPane = new MTableScrollPane<CacheInformations>(
-				table);
-		table.addColumn("name", I18N.getString("Cache"));
+	private MTableScrollPane<CacheInformations> createScrollPane() {
+		final MTableScrollPane<CacheInformations> tableScrollPane = new MTableScrollPane<CacheInformations>();
+		final MTable<CacheInformations> myTable = tableScrollPane.getTable();
+		myTable.addColumn("name", I18N.getString("Cache"));
 		if (configurationEnabled) {
-			table.addColumn("inMemoryPercentUsed", I18N.getString("Pourcentage_memoire_utilise"));
+			myTable.addColumn("inMemoryPercentUsed", I18N.getString("Pourcentage_memoire_utilise"));
 		}
-		table.addColumn("inMemoryObjectCount", I18N.getString("Nb_objets_en_memoire"));
-		table.addColumn("onDiskObjectCount", I18N.getString("Nb_objets_sur_disque"));
+		myTable.addColumn("inMemoryObjectCount", I18N.getString("Nb_objets_en_memoire"));
+		myTable.addColumn("onDiskObjectCount", I18N.getString("Nb_objets_sur_disque"));
 		if (hitsRatioEnabled) {
-			table.addColumn("inMemoryHitsRatio",
+			myTable.addColumn("inMemoryHitsRatio",
 					"<html>" + I18N.getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
-			table.addColumn("hitsRatio",
-					"<html>" + I18N.getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+			myTable.addColumn("hitsRatio", "<html>"
+					+ I18N.getString("Efficacite_cache").replaceAll("\n", "<br/>"));
 			// la hauteur des entêtes de colonnes est calculée selon la hauteur pour la première colonne
 			// (see BasicTableHeaderUI.getHeaderHeight()),
 			// donc on agrandit la hauteur de la première entête de colonne, pour qu'elle soit adaptée
 			// aux deux ci-dessus
-			table.getColumn("name").setHeaderValue(
-					"<html><font size=1><br/></font>" + table.getColumn("name").getHeaderValue()
+			myTable.getColumn("name").setHeaderValue(
+					"<html><font size=1><br/></font>" + myTable.getColumn("name").getHeaderValue()
 							+ "<font size=1><br/>&nbsp;</font>");
 		}
 		if (configurationEnabled) {
-			table.addColumn("configuration", I18N.getString("Configuration"));
+			myTable.addColumn("configuration", I18N.getString("Configuration"));
 		}
-
-		add(tableScrollPane, BorderLayout.NORTH);
-
-		table.setList(cacheInformationsList);
-		Utilities.adjustTableHeight(table);
+		return tableScrollPane;
 	}
 
-	private void addButton() {
+	private JPanel createButtonsPanel() {
 		final MButton purgeCachesButton = new MButton(I18N.getString("Purge_caches"),
 				CLEAR_CACHES_ICON);
 		purgeCachesButton.addActionListener(new ActionListener() {
@@ -115,8 +115,7 @@ class CacheInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final JPanel buttonPanel = Utilities.createButtonsPanel(purgeCachesButton);
-		add(buttonPanel, BorderLayout.EAST);
+		return Utilities.createButtonsPanel(purgeCachesButton);
 	}
 
 	final void actionClearCaches() {
