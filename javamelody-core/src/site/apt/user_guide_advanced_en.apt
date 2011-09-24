@@ -184,7 +184,9 @@ Advanced documentation of Java Melody
 	If an application to monitor is deployed on several instances of servers (in a cluster or in a farm),
 	urls should be separated by ','
 	(for example "http://<host1>/myapp/,http://<host2>/myapp/" for "cluster").
-	Note: it is not possible to monitor one application in several collect servers.
+	Of course, you can otherwise add each instance individually.
+	
+	Note: it is not possible to monitor one application in several collect servers or twice in one collect server.
 
 	In order for the collect server to monitor an application, the monitoring should be setup in this application
 	as written at the start of this chapter.
