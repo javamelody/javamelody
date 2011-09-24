@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -351,9 +350,7 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 		final String text = I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute),
 				integerFormat.format(counterRequestAggregation.getRequests().size()));
 
-		final JPanel eastPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		eastPanel.setOpaque(false);
-		eastPanel.add(new JLabel(text));
+		final JPanel eastPanel = Utilities.createButtonsPanel(new JLabel(text));
 
 		if (counter.isBusinessFacadeCounter()) {
 			eastPanel.add(createCounterSummaryPerClassButton());

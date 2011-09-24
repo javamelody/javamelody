@@ -207,9 +207,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		buttonPanel.setOpaque(false);
-		buttonPanel.add(killThreadButton);
+		final JPanel buttonPanel = Utilities.createButtonsPanel(killThreadButton);
 		add(buttonPanel, BorderLayout.EAST);
 	}
 

@@ -107,8 +107,6 @@ class ScrollingPanel extends MelodyPanel {
 			addCounter(counter);
 		}
 		if (range.getPeriod() == Period.TOUT && counters.size() > 1) {
-			final JPanel clearAllCountersPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-			clearAllCountersPanel.setOpaque(false);
 			final MButton clearAllCountersButton = new MButton(
 					I18N.getString("Reinitialiser_toutes_stats"));
 			clearAllCountersButton.setToolTipText(I18N.getString("Vider_toutes_stats"));
@@ -120,7 +118,8 @@ class ScrollingPanel extends MelodyPanel {
 					}
 				}
 			});
-			clearAllCountersPanel.add(clearAllCountersButton);
+			final JPanel clearAllCountersPanel = Utilities
+					.createButtonsPanel(clearAllCountersButton);
 			add(clearAllCountersPanel);
 		}
 	}

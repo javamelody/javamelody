@@ -20,7 +20,6 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -341,12 +340,8 @@ class JobInformationsPanel extends MelodyPanel {
 		});
 		pauseJobButton.setEnabled(getTable().getSelectedObject() != null);
 		resumeJobButton.setEnabled(getTable().getSelectedObject() != null);
-		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		buttonPanel.setOpaque(false);
-		buttonPanel.add(pauseJobButton);
-		buttonPanel.add(resumeJobButton);
-		buttonPanel.add(pauseAllJobsButton);
-		buttonPanel.add(resumeAllJobsButton);
+		final JPanel buttonPanel = Utilities.createButtonsPanel(pauseJobButton, resumeJobButton,
+				pauseAllJobsButton, resumeAllJobsButton);
 		add(buttonPanel, BorderLayout.EAST);
 	}
 

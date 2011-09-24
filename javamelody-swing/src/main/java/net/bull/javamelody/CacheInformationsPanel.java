@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -116,9 +115,7 @@ class CacheInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		buttonPanel.setOpaque(false);
-		buttonPanel.add(purgeCachesButton);
+		final JPanel buttonPanel = Utilities.createButtonsPanel(purgeCachesButton);
 		add(buttonPanel, BorderLayout.EAST);
 	}
 

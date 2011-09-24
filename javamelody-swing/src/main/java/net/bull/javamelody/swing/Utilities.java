@@ -20,12 +20,15 @@ package net.bull.javamelody.swing;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
@@ -66,6 +69,20 @@ public final class Utilities {
 		// séparateur avec composants au-dessus et en-dessous
 		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		return label;
+	}
+
+	/**
+	 * Création panel non opaque et alignés à droite.
+	 * @param components JComponent...
+	 * @return JPanel
+	 */
+	public static JPanel createButtonsPanel(JComponent... components) {
+		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		buttonsPanel.setOpaque(false);
+		for (final JComponent component : components) {
+			buttonsPanel.add(component);
+		}
+		return buttonsPanel;
 	}
 
 	/**

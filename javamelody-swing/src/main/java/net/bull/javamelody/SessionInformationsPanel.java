@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -231,13 +230,8 @@ class SessionInformationsPanel extends MelodyPanel {
 			}
 		});
 		invalidateSessionButton.setEnabled(getTable().getSelectedObject() != null);
-		final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		buttonsPanel.setOpaque(false);
-		buttonsPanel.add(refreshButton);
-		buttonsPanel.add(pdfButton);
-		buttonsPanel.add(invalidateAllSessionsButton);
-		buttonsPanel.add(invalidateSessionButton);
-		return buttonsPanel;
+		return Utilities.createButtonsPanel(refreshButton, pdfButton, invalidateAllSessionsButton,
+				invalidateSessionButton);
 	}
 
 	private MButton createRefreshButton() {
