@@ -44,7 +44,7 @@ class CounterSummaryPerClassPanel extends MelodyPanel {
 
 	CounterSummaryPerClassPanel(RemoteCollector remoteCollector, Counter counter, Range range,
 			String requestId) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		assert counter != null;
 		assert range != null;
 		// requestId peut être null (pour les statistisques aggrégées par classes)

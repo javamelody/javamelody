@@ -51,7 +51,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 	private Map<String, List<ProcessInformations>> processInformationsByTitle;
 
 	ProcessInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 
 		refresh();
 	}

@@ -63,7 +63,7 @@ class JavaInformationsPanel extends MelodyPanel {
 
 	JavaInformationsPanel(RemoteCollector remoteCollector, JavaInformations javaInformations,
 			URL monitoringUrl) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		assert javaInformations != null;
 		this.javaInformations = javaInformations;
 		this.monitoringUrl = monitoringUrl;

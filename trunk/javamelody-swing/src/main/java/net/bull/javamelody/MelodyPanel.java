@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -38,6 +39,10 @@ class MelodyPanel extends JPanel {
 
 	@SuppressWarnings("all")
 	private final RemoteCollector remoteCollector;
+
+	MelodyPanel(RemoteCollector remoteCollector) {
+		this(remoteCollector, new BorderLayout());
+	}
 
 	MelodyPanel(RemoteCollector remoteCollector, LayoutManager layout) {
 		super(layout);

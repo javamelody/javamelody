@@ -64,7 +64,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	private final URL monitoringUrl;
 
 	SystemInformationsButtonsPanel(RemoteCollector remoteCollector, URL monitoringUrl) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
 

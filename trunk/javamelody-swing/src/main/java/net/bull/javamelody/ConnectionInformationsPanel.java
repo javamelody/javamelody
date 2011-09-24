@@ -40,7 +40,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	private MTable<ConnectionInformations> table;
 
 	ConnectionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 
 		refresh();
 	}

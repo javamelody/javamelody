@@ -56,7 +56,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	private MTable<DatabaseInformations> table;
 
 	DatabaseInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 
 		refresh(0);
 	}

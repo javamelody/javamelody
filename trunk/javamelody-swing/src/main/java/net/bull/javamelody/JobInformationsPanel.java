@@ -242,7 +242,7 @@ class JobInformationsPanel extends MelodyPanel {
 
 	JobInformationsPanel(RemoteCollector remoteCollector,
 			List<JobInformations> jobInformationsList, Counter rangeJobCounter) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 		assert jobInformationsList != null;
 		assert rangeJobCounter != null;
 		this.jobInformationsList = jobInformationsList;

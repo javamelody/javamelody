@@ -101,7 +101,7 @@ class SessionInformationsPanel extends MelodyPanel {
 	}
 
 	SessionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 
 		refresh();
 	}

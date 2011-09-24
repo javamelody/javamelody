@@ -59,7 +59,7 @@ class ScrollingPanel extends MelodyPanel {
 	private final Range range = Period.TOUT.getRange();
 
 	ScrollingPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
-		super(remoteCollector, new FlowLayout());
+		super(remoteCollector);
 		this.collector = remoteCollector.getCollector();
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;

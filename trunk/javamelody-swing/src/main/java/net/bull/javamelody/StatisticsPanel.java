@@ -156,7 +156,7 @@ class StatisticsPanel extends MelodyPanel { // NOPMD
 
 	private StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range,
 			CounterRequestAggregation counterRequestAggregation) {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 
 		assert counter != null;
 		assert range != null;

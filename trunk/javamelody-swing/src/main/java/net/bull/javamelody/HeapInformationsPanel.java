@@ -39,7 +39,7 @@ class HeapInformationsPanel extends MelodyPanel {
 	private MTable<HeapHistogram.ClassInfo> table;
 
 	HeapInformationsPanel(RemoteCollector remoteCollector) throws IOException {
-		super(remoteCollector, new BorderLayout());
+		super(remoteCollector);
 
 		refresh();
 	}
