@@ -55,6 +55,9 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
 class StatisticsPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+	static final Color DARKER_GREEN = Color.GREEN.darker();
+	static final Font LABEL_BOLD_FONT = new JLabel().getFont().deriveFont(Font.BOLD);
+	static final Font LABEL_PLAIN_FONT = new JLabel().getFont().deriveFont(Font.PLAIN);
 
 	private static final long serialVersionUID = 1L;
 
@@ -94,19 +97,19 @@ class StatisticsPanel extends MelodyPanel {
 			if (mean < myCounterRequestAggregation.getWarningThreshold() || mean == 0) {
 				// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
 				// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
-				setForeground(Color.GREEN.darker());
-				setFont(getFont().deriveFont(Font.PLAIN));
+				setForeground(DARKER_GREEN);
+				setFont(LABEL_PLAIN_FONT);
 			} else if (mean < myCounterRequestAggregation.getSevereThreshold()) {
 				// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
 				// attention à cette requête qui est plus longue que les autres
 				setForeground(Color.ORANGE);
-				setFont(getFont().deriveFont(Font.BOLD));
+				setFont(LABEL_BOLD_FONT);
 			} else {
 				// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
 				// cette requête est très longue par rapport aux autres ;
 				// il peut être opportun de l'optimiser si possible
 				setForeground(Color.RED);
-				setFont(getFont().deriveFont(Font.BOLD));
+				setFont(LABEL_BOLD_FONT);
 			}
 			super.setValue(mean);
 		}
