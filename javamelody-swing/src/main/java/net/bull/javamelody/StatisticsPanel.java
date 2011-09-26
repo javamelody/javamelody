@@ -19,9 +19,7 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -37,16 +35,12 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
-import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
-import net.bull.javamelody.swing.table.MIntegerTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
-import net.bull.javamelody.swing.table.MTableScrollPane;
 
 /**
  * Panel des statistiques.
@@ -55,9 +49,6 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
 class StatisticsPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
-	static final Color DARKER_GREEN = Color.GREEN.darker();
-	static final Font LABEL_BOLD_FONT = new JLabel().getFont().deriveFont(Font.BOLD);
-	static final Font LABEL_PLAIN_FONT = new JLabel().getFont().deriveFont(Font.PLAIN);
 
 	private static final long serialVersionUID = 1L;
 
@@ -65,93 +56,10 @@ class StatisticsPanel extends MelodyPanel {
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final Counter counter;
 	private final Range range;
-	private final MTable<CounterRequest> table;
+	private final StatisticsTablePanel tablePanel;
 	private final JPanel mainPanel;
 	private StatisticsPanel detailsPanel;
 	private JPanel lastErrorsPanel;
-
-	private static final class ResponseSizeMeanTableCellRenderer extends MIntegerTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		ResponseSizeMeanTableCellRenderer() {
-			super();
-		}
-
-		@Override
-		public void setValue(final Object value) {
-			super.setValue((Integer) value / 1024);
-		}
-	}
-
-	private class MeanTableCellRenderer extends MIntegerTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		MeanTableCellRenderer() {
-			super();
-		}
-
-		@Override
-		public void setValue(Object value) {
-			final Integer mean = (Integer) value;
-			final CounterRequestAggregation myCounterRequestAggregation = getCounterRequestAggregation();
-			if (mean < myCounterRequestAggregation.getWarningThreshold() || mean == 0) {
-				// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
-				// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
-				setForeground(DARKER_GREEN);
-				setFont(LABEL_PLAIN_FONT);
-			} else if (mean < myCounterRequestAggregation.getSevereThreshold()) {
-				// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
-				// attention à cette requête qui est plus longue que les autres
-				setForeground(Color.ORANGE);
-				setFont(LABEL_BOLD_FONT);
-			} else {
-				// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
-				// cette requête est très longue par rapport aux autres ;
-				// il peut être opportun de l'optimiser si possible
-				setForeground(Color.RED);
-				setFont(LABEL_BOLD_FONT);
-			}
-			super.setValue(mean);
-		}
-	}
-
-	private class DurationPercentageTableCellRenderer extends MDefaultTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		DurationPercentageTableCellRenderer() {
-			super();
-			setHorizontalAlignment(SwingConstants.RIGHT);
-		}
-
-		@Override
-		public void setValue(final Object value) {
-			final CounterRequest globalRequest = getCounterRequestAggregation().getGlobalRequest();
-			if (globalRequest.getDurationsSum() == 0) {
-				setText("0");
-			} else {
-				setText(String.valueOf(100 * (Long) value / globalRequest.getDurationsSum()));
-			}
-		}
-	}
-
-	private class CpuPercentageTableCellRenderer extends MDefaultTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		CpuPercentageTableCellRenderer() {
-			super();
-			setHorizontalAlignment(SwingConstants.RIGHT);
-		}
-
-		@Override
-		public void setValue(final Object value) {
-			final CounterRequest globalRequest = getCounterRequestAggregation().getGlobalRequest();
-			if (globalRequest.getCpuTimeSum() == 0) {
-				setText("0");
-			} else {
-				setText(String.valueOf(100 * (Long) value / globalRequest.getCpuTimeSum()));
-			}
-		}
-	}
 
 	StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range) {
 		this(remoteCollector, counter, range, null);
@@ -167,16 +75,16 @@ class StatisticsPanel extends MelodyPanel {
 		this.range = range;
 
 		if (counter.getRequestsCount() == 0) {
-			this.table = null;
+			this.tablePanel = null;
 			this.counterRequestAggregation = null;
 		} else {
-			this.table = new MTable<CounterRequest>();
 			if (counterRequestAggregation == null) {
 				this.counterRequestAggregation = new CounterRequestAggregation(counter);
 			} else {
 				this.counterRequestAggregation = counterRequestAggregation;
 			}
-			addColumns();
+			this.tablePanel = new StatisticsTablePanel(getRemoteCollector(), counter,
+					this.counterRequestAggregation);
 		}
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.mainPanel.setOpaque(false);
@@ -188,41 +96,6 @@ class StatisticsPanel extends MelodyPanel {
 		//		writeRequests(counterName, counter.getChildCounterName(), requests,
 		//				isRequestGraphDisplayed(counter), true, false);
 		//		writeln("</div>");
-	}
-
-	private void addColumns() {
-		table.addColumn("name", I18N.getString("Requete"));
-		final MIntegerTableCellRenderer meanCellRenderer = new MeanTableCellRenderer();
-		if (counterRequestAggregation.isTimesDisplayed()) {
-			table.addColumn("durationsSum", I18N.getString("temps_cumule"));
-			table.addColumn("hits", I18N.getString("Hits"));
-			table.addColumn("mean", I18N.getString("Temps_moyen"));
-			table.addColumn("maximum", I18N.getString("Temps_max"));
-			table.addColumn("standardDeviation", I18N.getString("Ecart_type"));
-			table.setColumnCellRenderer("durationsSum", new DurationPercentageTableCellRenderer());
-			table.setColumnCellRenderer("mean", meanCellRenderer);
-		} else {
-			table.addColumn("hits", I18N.getString("Hits"));
-		}
-		if (counterRequestAggregation.isCpuTimesDisplayed()) {
-			table.addColumn("cpuTimeSum", I18N.getString("temps_cpu_cumule"));
-			table.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
-			table.setColumnCellRenderer("cpuTimeSum", new CpuPercentageTableCellRenderer());
-			table.setColumnCellRenderer("cpuTimeMean", meanCellRenderer);
-		}
-		if (!isErrorAndNotJobCounter()) {
-			table.addColumn("systemErrorPercentage", I18N.getString("erreur_systeme"));
-		}
-		if (counterRequestAggregation.isResponseSizeDisplayed()) {
-			table.addColumn("responseSizeMean", I18N.getString("Taille_moyenne"));
-			table.setColumnCellRenderer("responseSizeMean", new ResponseSizeMeanTableCellRenderer());
-		}
-		if (counterRequestAggregation.isChildHitsDisplayed()) {
-			table.addColumn("childHitsMean",
-					I18N.getFormattedString("hits_fils_moyens", counter.getChildCounterName()));
-			table.addColumn("childDurationsMean",
-					I18N.getFormattedString("temps_fils_moyen", counter.getChildCounterName()));
-		}
 	}
 
 	public void showGlobalRequests() {
@@ -241,9 +114,9 @@ class StatisticsPanel extends MelodyPanel {
 						counterRequestAggregation.getWarningRequest(),
 						counterRequestAggregation.getSevereRequest());
 			}
-			table.setList(requests);
 
-			addScrollPane();
+			showRequests(requests);
+
 			final JPanel requestsSizeAndButtonsPanel = createRequestsSizeAndButtonsPanel();
 			mainPanel.add(requestsSizeAndButtonsPanel, BorderLayout.EAST);
 		}
@@ -255,8 +128,7 @@ class StatisticsPanel extends MelodyPanel {
 					counterRequestAggregation);
 			detailsPanel.setVisible(false);
 			final List<CounterRequest> requests = counterRequestAggregation.getRequests();
-			detailsPanel.table.setList(requests);
-			detailsPanel.addScrollPane();
+			detailsPanel.showRequests(requests);
 
 			add(detailsPanel, BorderLayout.CENTER);
 		}
@@ -267,21 +139,19 @@ class StatisticsPanel extends MelodyPanel {
 	void showRequestsAggregatedOrFilteredByClassName(String requestId, final MButton detailsButton) {
 		final List<CounterRequest> requests = new CounterRequestAggregation(counter)
 				.getRequestsAggregatedOrFilteredByClassName(requestId);
-		table.setList(requests);
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
-				table);
-		add(tableScrollPane, BorderLayout.CENTER);
+		tablePanel.setList(requests);
+		add(tablePanel, BorderLayout.CENTER);
 
 		if (detailsButton != null) {
-			final MTable<CounterRequest> myTable = table;
-			table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			final MTable<CounterRequest> myTable = tablePanel.getTable();
+			myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 				@Override
 				public void valueChanged(ListSelectionEvent e) {
 					detailsButton.setEnabled(myTable.getSelectedObject() != null);
 				}
 			});
 			detailsButton.setEnabled(myTable.getSelectedObject() != null);
-			table.addMouseListener(new MouseAdapter() {
+			myTable.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					if (e.getClickCount() == 2) {
@@ -321,11 +191,10 @@ class StatisticsPanel extends MelodyPanel {
 		return new JLabel(' ' + I18N.getString(key));
 	}
 
-	private void addScrollPane() {
-		Utilities.adjustTableHeight(table);
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
-				table);
-		mainPanel.add(tableScrollPane, BorderLayout.NORTH);
+	private void showRequests(List<CounterRequest> requests) {
+		tablePanel.setList(requests);
+		Utilities.adjustTableHeight(tablePanel.getTable());
+		mainPanel.add(tablePanel, BorderLayout.NORTH);
 	}
 
 	private JPanel createRequestsSizeAndButtonsPanel() {
@@ -465,7 +334,7 @@ class StatisticsPanel extends MelodyPanel {
 	final void actionCounterSummaryPerClass(boolean detailsForAClass) {
 		final String requestId;
 		if (detailsForAClass) {
-			requestId = table.getSelectedObject().getId();
+			requestId = tablePanel.getTable().getSelectedObject().getId();
 		} else {
 			requestId = null;
 		}
@@ -485,10 +354,6 @@ class StatisticsPanel extends MelodyPanel {
 			output.close();
 		}
 		Desktop.getDesktop().open(tempFile);
-	}
-
-	CounterRequestAggregation getCounterRequestAggregation() {
-		return counterRequestAggregation;
 	}
 
 	private boolean isErrorCounter() {
