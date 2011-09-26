@@ -375,7 +375,7 @@ class JavaInformationsPanel extends MelodyPanel {
 		gridPanel.add(jLabel);
 	}
 
-	static JLabel toBar(String text, double percentValue) { // NOPMD
+	static JLabel toBar(String text, double percentValue) {
 		final String tmp = replaceLineFeedWithHtmlBr(text);
 		final JLabel label = new JLabel(tmp);
 		label.setIconTextGap(10);
