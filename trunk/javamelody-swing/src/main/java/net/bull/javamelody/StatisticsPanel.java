@@ -52,7 +52,7 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * Panel des statistiques.
  * @author Emeric Vernat
  */
-class StatisticsPanel extends MelodyPanel { // NOPMD
+class StatisticsPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
 
