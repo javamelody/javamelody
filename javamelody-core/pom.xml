@@ -336,6 +336,7 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<!-- en commentaire pour éviter warning du plugin maven dans eclipse
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -355,6 +356,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
