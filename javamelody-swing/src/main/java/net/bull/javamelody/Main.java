@@ -58,7 +58,7 @@ public final class Main {
 					showFrame();
 				} catch (final Throwable t) { // NOPMD
 					MSwingUtilities.showException(t);
-					System.exit(1); // NOPMD
+					exit();
 				}
 			}
 		});
@@ -100,5 +100,10 @@ public final class Main {
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings("all")
+	static void exit() {
+		System.exit(1); // NOPMD
 	}
 }
