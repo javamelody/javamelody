@@ -98,6 +98,10 @@ class HtmlReport {
 		writeHtmlFooter();
 	}
 
+	void writeThreadsDump() throws IOException {
+		htmlCoreReport.writeThreadsDump();
+	}
+
 	void writeCounterSummaryPerClass(String counterName, String requestId) throws IOException {
 		writeHtmlHeader();
 		htmlCoreReport.writeCounterSummaryPerClass(counterName, requestId);
