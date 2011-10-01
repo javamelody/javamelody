@@ -182,6 +182,22 @@ class CollectorServer {
 	}
 
 	void addCollectorApplication(String application, List<URL> urls) throws IOException {
+		final Map<String, List<URL>> collectorUrlsByApplications = Parameters
+				.getCollectorUrlsByApplications();
+		for (final URL addedUrl : urls) {
+			final String addedUrlInExternalForm = addedUrl.toExternalForm();
+			for (final Map.Entry<String, List<URL>> entry : collectorUrlsByApplications.entrySet()) {
+				for (final URL existingUrl : entry.getValue()) {
+					if (existingUrl.toExternalForm().equals(addedUrlInExternalForm)) {
+						throw new IOException("The URL "
+								+ addedUrlInExternalForm.substring(0,
+										addedUrlInExternalForm.lastIndexOf('/'))
+								+ " has already been added in the application " + entry.getKey()
+								+ ". You can't monitor an application instance twice.");
+					}
+				}
+			}
+		}
 		collectForApplication(application, urls);
 		Parameters.addCollectorApplication(application, urls);
 	}
