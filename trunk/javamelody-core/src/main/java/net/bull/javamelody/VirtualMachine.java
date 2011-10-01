@@ -102,7 +102,7 @@ final class VirtualMachine {
 		} catch (final ClassNotFoundException e) {
 			// exception ignored, try looking else where
 			File file = new File(System.getProperty("java.home"));
-			if (file.getName().equalsIgnoreCase("jre")) {
+			if ("jre".equalsIgnoreCase(file.getName())) {
 				file = file.getParentFile();
 			}
 			final String[] defaultToolsLocation = { "lib", "tools.jar" };
