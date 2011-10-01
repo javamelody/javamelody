@@ -36,11 +36,14 @@ import net.bull.javamelody.swing.table.MListTable;
  */
 public class MXmlWriter extends MPrinter {
 	/** {@inheritDoc} */
-	@SuppressWarnings("rawtypes")
 	@Override
 	public void print(MBasicTable table, OutputStream out) throws IOException {
 		// xml possible qu'avec MTable
-		writeXml((MListTable) table, out);
+		if (table instanceof MListTable) {
+			writeXml((MListTable<?>) table, out);
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	/** {@inheritDoc} */

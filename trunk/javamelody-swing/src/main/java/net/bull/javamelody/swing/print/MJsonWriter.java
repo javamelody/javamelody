@@ -39,7 +39,11 @@ public class MJsonWriter extends MPrinter {
 	@Override
 	public void print(MBasicTable table, OutputStream out) throws IOException {
 		// json possible qu'avec MListTable
-		writeJson((MListTable<?>) table, out);
+		if (table instanceof MListTable) {
+			writeJson((MListTable<?>) table, out);
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	/** {@inheritDoc} */
