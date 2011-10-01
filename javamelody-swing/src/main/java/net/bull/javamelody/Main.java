@@ -62,6 +62,7 @@ public final class Main {
 				}
 			}
 		});
+		// TODO menu pour mettre en full screen
 	}
 
 	static void showFrame() throws IOException {
