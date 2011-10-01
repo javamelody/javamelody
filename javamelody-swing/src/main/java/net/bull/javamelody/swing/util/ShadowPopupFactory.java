@@ -357,9 +357,10 @@ public final class ShadowPopupFactory extends PopupFactory {
 		 * and the robot's origin seems to be adjusted with the default screen
 		 * device.
 		 *
+		 * @return boolean
 		 * @see #show()
 		 */
-		private void snapshot() {
+		private boolean snapshot() {
 			try {
 				final Dimension size = heavyWeightContainer.getPreferredSize();
 				final int width = size.width;
@@ -368,7 +369,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 				// Avoid unnecessary and illegal screen captures
 				// for degenerated popups.
 				if (width <= 0 || height <= SHADOW_SIZE) {
-					return;
+					return false;
 				}
 
 				final Robot robot = new Robot(); // uses the default screen device
@@ -386,7 +387,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 				final Container layeredPane = getLayeredPane();
 				if (layeredPane == null) {
 					// This could happen if owner is null.
-					return;
+					return false;
 				}
 
 				POINT.x = x;
@@ -409,10 +410,11 @@ public final class ShadowPopupFactory extends PopupFactory {
 
 				paintShadow(vShadowBg, layeredPane);
 			} catch (final AWTException e) {
-				return;
+				return true;
 			} catch (final SecurityException e) {
-				return;
+				return true;
 			}
+			return false;
 		}
 
 		/**
