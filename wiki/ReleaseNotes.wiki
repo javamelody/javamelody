@@ -8,6 +8,7 @@
 === Next release (trunk) ===
   * fix issue 137: MonitoringInterceptor when Stateful EJB, Java EE 6
   * fix issue 141: exception while collecting data java.io.IOException: Read failed, file xyz not mapped for I/O (after out of disk space)
+  * added: Add an url to test sending a pdf report by mail (issue 145)
 
 === 1.31.0 ===
   * fix issue 128: Fix the shutdown process in JIRA 4.3.4 and clean it for Confluence/Bamboo/Jenkins/Hudson.
