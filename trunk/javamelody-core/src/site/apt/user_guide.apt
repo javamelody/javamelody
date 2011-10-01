@@ -843,6 +843,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 </Context>
 +-------------------------------+	
 
+	Après le démarrage du serveur, il est possible de tester l'envoi de mail en appelant cette action:
+	http://<host>/<context>/monitoring?action=mail_test
+
 ** 14. Utilisateur base de données
 
 	Depuis la page html du monitoring, il est possible d'accéder à des informations et à des
