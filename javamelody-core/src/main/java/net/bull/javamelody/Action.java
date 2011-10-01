@@ -43,6 +43,10 @@ import org.quartz.Scheduler;
  */
 enum Action { // NOPMD
 	/**
+	 * Test d'envoi du rapport pdf par mail.
+	 */
+	MAIL_TEST(""),
+	/**
 	 * Réinitialisation d'un compteur non périodique.
 	 */
 	CLEAR_COUNTER("http"),
@@ -130,7 +134,8 @@ enum Action { // NOPMD
 
 	/**
 	 * Exécute l'action.
-	 * @param collector Collector pour une réinitialisation
+	 * @param collector Collector pour une réinitialisation et test de mail
+	 * @param collectorServer Serveur de collecte pour test de mail (null s'il n'y en a pas)
 	 * @param counterName Nom du compteur pour une réinitialisation
 	 * @param sessionId Identifiant de session pour invalidation (null sinon)
 	 * @param threadId Identifiant du thread sous la forme pid_ip_id
@@ -139,8 +144,8 @@ enum Action { // NOPMD
 	 * @throws IOException e
 	 */
 	// CHECKSTYLE:OFF
-	String execute(Collector collector, String counterName, String sessionId, String threadId, // NOPMD
-			String jobId) throws IOException {
+	String execute(Collector collector, CollectorServer collectorServer, String counterName, // NOPMD
+			String sessionId, String threadId, String jobId) throws IOException {
 		// CHECKSTYLE:ON
 		String messageForReport;
 		switch (this) {
@@ -148,6 +153,10 @@ enum Action { // NOPMD
 			assert collector != null;
 			assert counterName != null;
 			messageForReport = clearCounter(collector, counterName);
+			break;
+		case MAIL_TEST:
+			assert collector != null;
+			messageForReport = mailTest(collector, collectorServer);
 			break;
 		case GC:
 			if (GC_ENABLED) {
@@ -222,6 +231,34 @@ enum Action { // NOPMD
 			messageForReport = I18N.getFormattedString("Statistiques_reinitialisees", counterName);
 		}
 		return messageForReport;
+	}
+
+	private String mailTest(Collector collector, CollectorServer collectorServer) {
+		// note: a priori, inutile de traduire cela
+		if (!HtmlCoreReport.isPdfEnabled()) {
+			throw new IllegalStateException("itext classes not found: add the itext dependency");
+		}
+		if (Parameters.getParameter(Parameter.MAIL_SESSION) == null) {
+			throw new IllegalStateException(
+					"mail-session has no value: add the mail-session parameter");
+		}
+		if (Parameters.getParameter(Parameter.ADMIN_EMAILS) == null) {
+			throw new IllegalStateException(
+					"admin-emails has no value: add the admin-emails parameter");
+		}
+		try {
+			if (collectorServer == null) {
+				// serveur local
+				new MailReport().sendReportMailForLocalServer(collector, Period.JOUR);
+			} else {
+				// serveur de collecte
+				new MailReport().sendReportMail(collector, true, collectorServer
+						.getJavaInformationsByApplication(collector.getApplication()), Period.JOUR);
+			}
+		} catch (final Exception e) {
+			throw new RuntimeException(e); // NOPMD
+		}
+		return "Mail sent with pdf report for the day to admins";
 	}
 
 	private File heapDump() throws IOException {

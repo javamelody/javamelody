@@ -96,7 +96,8 @@ class CollectorController {
 					collectorServer.removeCollectorApplication(application);
 					messageForReport = I18N.getFormattedString("application_enlevee", application);
 					showAlertAndRedirectTo(resp, messageForReport, "?");
-				} else if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER) {
+				} else if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER
+						&& Action.valueOfIgnoreCase(actionParameter) != Action.MAIL_TEST) {
 					// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
 					// et on récupère les informations à jour (notamment mémoire et nb de sessions)
 					messageForReport = forwardActionAndUpdateData(req, application);
