@@ -10,7 +10,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
   # *Translations* (Italian, Spanish...)
-  # Add an action for threads dump as text format
+  # ~~Add an action for threads dump as text format~~ (done)
   # ~~In the collector server, refuse to add twice one instance of an application (for example, individually and then in a cluster), because it would not work~~ (done)
   # If the transaction isolation level is not read committed (unusual), display a warning about slowness or bugs
   # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
