@@ -784,7 +784,7 @@ or
 </Context>
 }}}
 
-In v1.32+, once the server is started, you can send a test mail by calling this action: {{{http://<host>/<context>/monitoring?action=mail_test}}}
+	In v1.32+, once the server is started, you can send a test mail by calling this action: {{{http://<host>/<context>/monitoring?action=mail_test}}}
 
 === 14. Database user ===
 
