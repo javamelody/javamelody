@@ -9,7 +9,8 @@
   * fix issue 137: MonitoringInterceptor when Stateful EJB, Java EE 6
   * fix issue 141: exception while collecting data java.io.IOException: Read failed, file xyz not mapped for I/O (after out of disk space)
   * fix: In the collector server, refuse to add twice one instance of an application (for example, individually and then in a cluster), because it would not work (revision 2157).
-  * added: Add an url to test sending a pdf report by mail (issue 145)
+  * added: Add link "Dump threads as text" below the list of threads (revision 2163)
+  * added: Provide an url to test sending a pdf report by mail (issue 145)
 
 === 1.31.0 ===
   * fix issue 128: Fix the shutdown process in JIRA 4.3.4 and clean it for Confluence/Bamboo/Jenkins/Hudson.
