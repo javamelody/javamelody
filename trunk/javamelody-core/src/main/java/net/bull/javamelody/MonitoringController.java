@@ -105,15 +105,15 @@ class MonitoringController {
 				I18N.bindLocale(httpRequest.getLocale());
 				// par sécurité
 				final Action action = Action.valueOfIgnoreCase(actionParameter);
-				if (action != Action.CLEAR_COUNTER) {
+				if (action != Action.CLEAR_COUNTER && action != Action.MAIL_TEST) {
 					Action.checkSystemActionsEnabled();
 				}
 				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
 				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
-				messageForReport = action.execute(collector, counterName, sessionId, threadId,
-						jobId);
+				messageForReport = action.execute(collector, collectorServer, counterName,
+						sessionId, threadId, jobId);
 				anchorNameForRedirect = action.getContextName(counterName);
 				return messageForReport;
 			} finally {
