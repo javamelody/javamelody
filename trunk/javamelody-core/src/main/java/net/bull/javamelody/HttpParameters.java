@@ -25,6 +25,7 @@ package net.bull.javamelody;
 final class HttpParameters {
 	static final String HTML_CHARSET = "UTF-8";
 	static final String HTML_CONTENT_TYPE = "text/html; charset=" + HTML_CHARSET;
+	static final String TEXT_CONTENT_TYPE = "text/plain; charset=" + HTML_CHARSET;
 	static final String CONTENT_DISPOSITION = "Content-Disposition";
 	static final String ACTION_PARAMETER = "action";
 	static final String PART_PARAMETER = "part";
@@ -57,6 +58,7 @@ final class HttpParameters {
 	static final String JNDI_PART = "jndi";
 	static final String MBEANS_PART = "mbeans";
 	static final String THREADS_PART = "threads";
+	static final String THREADS_DUMP_PART = "threadsDump";
 	static final String COUNTER_SUMMARY_PER_CLASS_PART = "counterSummaryPerClass";
 	static final String RUNTIME_DEPENDENCIES_PART = "runtimeDependencies";
 

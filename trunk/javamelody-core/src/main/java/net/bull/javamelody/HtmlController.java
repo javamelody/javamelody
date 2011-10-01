@@ -38,6 +38,8 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.TEXT_CONTENT_TYPE;
+import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
 
@@ -94,6 +96,9 @@ class HtmlController {
 					javaInformationsList, range, writer);
 			if (part == null) {
 				htmlReport.toHtml(messageForReport, anchorNameForRedirect);
+			} else if (THREADS_DUMP_PART.equalsIgnoreCase(part)) {
+				httpResponse.setContentType(TEXT_CONTENT_TYPE);
+				htmlReport.writeThreadsDump();
 			} else {
 				doHtmlPart(httpRequest, part, htmlReport);
 			}

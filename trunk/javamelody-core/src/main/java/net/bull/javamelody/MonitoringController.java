@@ -40,6 +40,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -505,7 +506,8 @@ class MonitoringController {
 				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
 				&& (httpRequest.getParameter(PART_PARAMETER) == null
 						|| CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
-								.getParameter(PART_PARAMETER)) || THREADS_PART
+								.getParameter(PART_PARAMETER))
+						|| THREADS_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)) || THREADS_DUMP_PART
 							.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
 	}
 }

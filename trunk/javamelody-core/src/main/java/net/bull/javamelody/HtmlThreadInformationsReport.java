@@ -77,6 +77,7 @@ class HtmlThreadInformationsReport {
 		writeln("</tbody></table>");
 		writeln("<div align='right'>");
 		writeln("#Temps_threads#");
+		writeln("<br/><a href='?part=threadsDump'><img src='?resource=text.png' alt='#Dump_threads_en_texte#'/>&nbsp;#Dump_threads_en_texte#</a>");
 		writeln("</div>");
 	}
 
@@ -96,6 +97,24 @@ class HtmlThreadInformationsReport {
 				separator = ", ";
 			}
 			write("</div>");
+		}
+	}
+
+	void writeThreadsDump() throws IOException {
+		if (stackTraceEnabled) {
+			for (final ThreadInformations threadInformations : threadInformationsList) {
+				writer.write(threadInformations.getName());
+				if (threadInformations.isDaemon()) {
+					writer.write(" daemon");
+				}
+				writer.write(" prio=" + threadInformations.getPriority());
+				for (final StackTraceElement element : threadInformations.getStackTrace()) {
+					writer.write("\n\t");
+					writer.write(element.toString());
+				}
+				writer.write("\n\n");
+			}
+			writer.write("\n");
 		}
 	}
 
