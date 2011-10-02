@@ -31,6 +31,7 @@ import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.PrintStream;
 
 import javax.swing.FocusManager;
 import javax.swing.ImageIcon;
@@ -55,7 +56,7 @@ public final class MSwingUtilities {
 	 * @param throwable Throwable
 	 */
 	public static void showException(Throwable throwable) {
-		throwable.printStackTrace(System.err);
+		throwable.printStackTrace(getSystemErrorStream());
 		JOptionPane.showMessageDialog(null, throwable.toString(),
 				UIManager.getString("OptionPane.messageDialogTitle"), JOptionPane.ERROR_MESSAGE);
 		// on pourrait affichage une boîte de dialogue plus évoluée pour permettre d'afficher la stack trace en détail
@@ -146,9 +147,16 @@ public final class MSwingUtilities {
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
 		} catch (final Exception exception) {
-			exception.printStackTrace(System.err); // NOPMD
+			exception.printStackTrace(getSystemErrorStream()); // NOPMD
 		}
 		return frame;
+	}
+
+	/**
+	 * @return System.err
+	 */
+	private static PrintStream getSystemErrorStream() {
+		return System.err;
 	}
 
 	/**

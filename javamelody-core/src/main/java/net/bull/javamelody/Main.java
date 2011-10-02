@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
@@ -106,7 +107,7 @@ public final class Main {
 		System.setProperty("java.awt.headless", "true");
 
 		final File me = whoAmI();
-		System.out.println("Running from: " + me);
+		getSystemOutputStream().println("Running from: " + me);
 		System.setProperty("executable-war", me.getAbsolutePath()); // remember the location so that we can access it from within webapp
 
 		// put winstone jar in a file system so that we can load jars from there
@@ -193,8 +194,8 @@ public final class Main {
 		try {
 			return whoAmIFromJnlp();
 		} catch (final Exception x) {
-			System.err.println("INFO: ZipFile.name trick did not work (" + x.toString()
-					+ "), using fallback");
+			getSystemErrorStream().println(
+					"INFO: ZipFile.name trick did not work (" + x.toString() + "), using fallback");
 		}
 		final File myself = File.createTempFile("javamelody", ".jar");
 		myself.deleteOnExit();
@@ -211,6 +212,20 @@ public final class Main {
 			is.close();
 		}
 		return myself;
+	}
+
+	/**
+	 * @return System.out
+	 */
+	private static PrintStream getSystemOutputStream() {
+		return System.out;
+	}
+
+	/**
+	 * @return System.err
+	 */
+	private static PrintStream getSystemErrorStream() {
+		return System.err;
 	}
 
 	private static File whoAmIFromJnlp() throws Exception {
