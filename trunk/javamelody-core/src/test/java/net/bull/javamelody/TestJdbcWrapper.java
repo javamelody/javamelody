@@ -52,8 +52,61 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
-	private static final String EQUALS = "equals";
+	private static final class MyDataSource implements DataSource {
+		private final BasicDataSource tomcatDataSource;
+
+		MyDataSource(BasicDataSource tomcatDataSource) {
+			this.tomcatDataSource = tomcatDataSource;
+		}
+
+		/** {@inheritDoc} */
+		public <T> T unwrap(Class<T> iface) throws SQLException {
+			return null;
+		}
+
+		/** {@inheritDoc} */
+		public boolean isWrapperFor(Class<?> iface) throws SQLException {
+			return false;
+		}
+
+		/** {@inheritDoc} */
+		public void setLoginTimeout(int seconds) throws SQLException {
+			tomcatDataSource.setLoginTimeout(seconds);
+		}
+
+		/** {@inheritDoc} */
+		public void setLogWriter(PrintWriter out) throws SQLException {
+			tomcatDataSource.setLogWriter(out);
+		}
+
+		/** {@inheritDoc} */
+		public int getLoginTimeout() throws SQLException {
+			return tomcatDataSource.getLoginTimeout();
+		}
+
+		/** {@inheritDoc} */
+		public PrintWriter getLogWriter() throws SQLException {
+			return tomcatDataSource.getLogWriter();
+		}
+
+		/** {@inheritDoc} */
+		public Connection getConnection(String username, String password) throws SQLException {
+			return tomcatDataSource.getConnection();
+		}
+
+		/** {@inheritDoc} */
+		public Connection getConnection() throws SQLException {
+			return tomcatDataSource.getConnection();
+		}
+
+		/** {@inheritDoc} */
+		public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+			return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		}
+	}
+
 	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
+	private static final String EQUALS = "equals";
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;
 
@@ -86,12 +139,9 @@ public class TestJdbcWrapper {
 	}
 
 	/** Test.
-	 * @throws IllegalAccessException e
-	 * @throws NoSuchFieldException e
-	 * @throws SQLException e */
+	 * @throws Exception e */
 	@Test
-	public void testCreateDataSourceProxy() throws NoSuchFieldException, IllegalAccessException,
-			SQLException {
+	public void testCreateDataSourceProxy() throws Exception { // NOPMD
 		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
 		cleanUp();
 
@@ -119,52 +169,7 @@ public class TestJdbcWrapper {
 				.isEmpty());
 		assertEquals("getMaxConnectionCount", 456, JdbcWrapper.getMaxConnectionCount());
 
-		final DataSource dataSource2 = new DataSource() {
-			/** {@inheritDoc} */
-			public <T> T unwrap(Class<T> iface) throws SQLException {
-				return null;
-			}
-
-			/** {@inheritDoc} */
-			public boolean isWrapperFor(Class<?> iface) throws SQLException {
-				return false;
-			}
-
-			/** {@inheritDoc} */
-			public void setLoginTimeout(int seconds) throws SQLException {
-				tomcatDataSource.setLoginTimeout(seconds);
-			}
-
-			/** {@inheritDoc} */
-			public void setLogWriter(PrintWriter out) throws SQLException {
-				tomcatDataSource.setLogWriter(out);
-			}
-
-			/** {@inheritDoc} */
-			public int getLoginTimeout() throws SQLException {
-				return tomcatDataSource.getLoginTimeout();
-			}
-
-			/** {@inheritDoc} */
-			public PrintWriter getLogWriter() throws SQLException {
-				return tomcatDataSource.getLogWriter();
-			}
-
-			/** {@inheritDoc} */
-			public Connection getConnection(String username, String password) throws SQLException {
-				return tomcatDataSource.getConnection();
-			}
-
-			/** {@inheritDoc} */
-			public Connection getConnection() throws SQLException {
-				return tomcatDataSource.getConnection();
-			}
-
-			/** {@inheritDoc} */
-			public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-				return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-			}
-		};
+		final DataSource dataSource2 = new MyDataSource(tomcatDataSource);
 		jdbcWrapper.createDataSourceProxy(dataSource2);
 	}
 
