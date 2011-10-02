@@ -144,6 +144,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
 		add(label, BorderLayout.WEST);
 
+		// TODO ajouter bouton "Dump threads as text"
+
 		if (Parameters.isSystemActionsEnabled()) {
 			final JPanel buttonsPanel = createButtonsPanel();
 			add(buttonsPanel, BorderLayout.EAST);
