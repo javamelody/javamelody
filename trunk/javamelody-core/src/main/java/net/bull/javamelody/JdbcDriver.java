@@ -23,8 +23,10 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Driver jdbc "proxy" pour le monitoring.
@@ -118,5 +120,10 @@ public class JdbcDriver implements Driver {
 	public String toString() {
 		return getClass().getSimpleName() + "[lastConnectUrl=" + Parameters.getLastConnectUrl()
 				+ ", lastConnectInfo=" + Parameters.getLastConnectInfo() + ']';
+	}
+
+	/** {@inheritDoc} */
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	}
 }

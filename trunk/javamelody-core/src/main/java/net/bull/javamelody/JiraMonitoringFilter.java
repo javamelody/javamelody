@@ -141,8 +141,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
 					.invoke(null);
 			final Boolean result = (Boolean) permissionManager.getClass()
-					.getMethod("hasPermission", new Class[] { Integer.TYPE, userClass })
-					.invoke(permissionManager, new Object[] { SYSTEM_ADMIN, user });
+					.getMethod("hasPermission", Integer.TYPE, userClass)
+					.invoke(permissionManager, SYSTEM_ADMIN, user);
 			return result;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
@@ -160,11 +160,10 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = containerManagerClass.getMethod("getComponent",
-					new Class[] { String.class })
-					.invoke(null, new Object[] { "permissionManager" });
+					String.class).invoke(null, "permissionManager");
 			final Boolean result = (Boolean) permissionManager.getClass()
-					.getMethod("isConfluenceAdministrator", new Class[] { userClass })
-					.invoke(permissionManager, new Object[] { user });
+					.getMethod("isConfluenceAdministrator", userClass)
+					.invoke(permissionManager, user);
 			return result;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
@@ -181,18 +180,16 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object bambooPermissionManager = containerManagerClass.getMethod("getComponent",
-					new Class[] { String.class }).invoke(null,
-					new Object[] { "bambooPermissionManager" });
+					String.class).invoke(null, "bambooPermissionManager");
 			final Class<?> globalApplicationSecureObjectClass = Class
 					.forName("com.atlassian.bamboo.security.GlobalApplicationSecureObject");
 			final Object globalApplicationSecureObject = globalApplicationSecureObjectClass
 					.getField("INSTANCE").get(null);
 			final Boolean result = (Boolean) bambooPermissionManager
 					.getClass()
-					.getMethod("hasPermission",
-							new Class[] { String.class, String.class, Object.class })
-					.invoke(bambooPermissionManager,
-							new Object[] { user.toString(), "ADMIN", globalApplicationSecureObject });
+					.getMethod("hasPermission", String.class, String.class, Object.class)
+					.invoke(bambooPermissionManager, user.toString(), "ADMIN",
+							globalApplicationSecureObject);
 			return result;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
