@@ -869,7 +869,7 @@ public final class JdbcWrapper {
 		} else {
 			myInterfaces = interfaces;
 		}
-		final Class<?>[] interfacesArray = myInterfaces.toArray(new Class[myInterfaces.size()]);
+		final Class<?>[] interfacesArray = myInterfaces.toArray(new Class<?>[myInterfaces.size()]);
 
 		// ce handler désencapsule les InvocationTargetException des 3 proxy
 		final InvocationHandler ih = new DelegatingInvocationHandler(invocationHandler);

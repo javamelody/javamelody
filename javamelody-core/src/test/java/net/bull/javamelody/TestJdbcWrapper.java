@@ -31,10 +31,12 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -156,6 +158,11 @@ public class TestJdbcWrapper {
 			/** {@inheritDoc} */
 			public Connection getConnection() throws SQLException {
 				return tomcatDataSource.getConnection();
+			}
+
+			/** {@inheritDoc} */
+			public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+				return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 			}
 		};
 		jdbcWrapper.createDataSourceProxy(dataSource2);
