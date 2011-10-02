@@ -1,7 +1,7 @@
 #labels Featured
 === Maven central repository ===
 
-*The latest release of javamelody artefacts are now available in the Maven central repository*: [http://search.maven.org/#search|ga|1|a%3A%22javamelody-core%22 javamelody-core in central] . And so, you don't need anymore to use in your pom.xml or settings.xml the [http://maven.glassfish.org] repository for javamelody.
+*The latest release of javamelody artifacts are now available in the Maven central repository*: [http://search.maven.org/#search|ga|1|a%3A%22javamelody-core%22 javamelody-core in central] . And so, you don't need anymore to use in your pom.xml or settings.xml the [http://maven.glassfish.org] repository for javamelody.
 
 (In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
