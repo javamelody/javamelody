@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,6 +41,7 @@ import org.quartz.Scheduler;
 /**
  * Énumération des actions possibles dans l'IHM.
  * @author Emeric Vernat
+ * @author <a href="mailto:davidkarlsen@gmail.com">David J. M. Karlsen (IBM heapdump support)<a>
  */
 enum Action { // NOPMD
 	/**
@@ -83,6 +85,8 @@ enum Action { // NOPMD
 	 */
 	RESUME_JOB("jobs");
 
+	static final String JAVA_VENDOR = System.getProperty("java.vendor");
+
 	/**
 	 * Booléen selon que l'action 'Garbage collector' est possible.
 	 */
@@ -92,8 +96,8 @@ enum Action { // NOPMD
 	 * Booléen selon que l'action 'Heap dump' est possible.
 	 */
 	static final boolean HEAP_DUMP_ENABLED = "1.6".compareTo(System.getProperty("java.version")) < 0
-			&& (System.getProperty("java.vendor").contains("Sun") || System.getProperty(
-					"java.vendor").contains("Oracle"));
+			&& (JAVA_VENDOR.contains("Sun") || JAVA_VENDOR.contains("Oracle") || JAVA_VENDOR
+					.contains("IBM"));
 
 	private static final String ALL = "all";
 
@@ -174,12 +178,17 @@ enum Action { // NOPMD
 			break;
 		case HEAP_DUMP:
 			if (HEAP_DUMP_ENABLED) {
-				// heap dump à générer dans le répertoire temporaire sur le serveur
-				// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
-				// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
-				final String heapDumpPath = heapDump().getPath();
-				messageForReport = I18N.getFormattedString("heap_dump_genere",
-						heapDumpPath.replace('\\', '/'));
+				if (JAVA_VENDOR.contains("IBM")) {
+					ibmHeapDump();
+					messageForReport = I18N.getString("heap_dump_genere_ibm");
+				} else {
+					// heap dump à générer dans le répertoire temporaire sur le serveur
+					// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
+					// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
+					final String heapDumpPath = heapDump().getPath();
+					messageForReport = I18N.getFormattedString("heap_dump_genere",
+							heapDumpPath.replace('\\', '/'));
+				}
 			} else {
 				messageForReport = I18N.getString("heap_dump_not_good");
 			}
@@ -286,6 +295,18 @@ enum Action { // NOPMD
 			throw new IllegalStateException(e);
 		}
 		return heapDumpFile;
+	}
+
+	private void ibmHeapDump() {
+		try {
+			final Class<?> dumpClass = getClass().getClassLoader().loadClass("com.ibm.jvm.Dump"); // NOPMD
+			final Class<?>[] argTypes = null;
+			final Method dump = dumpClass.getMethod("HeapDump", argTypes);
+			final Object[] args = null;
+			dump.invoke(null, args);
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	// cette méthode doit s'appeler "gc" pour que findbugs ne fasse pas de warning
