@@ -28,7 +28,6 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -139,10 +138,11 @@ class DatabaseInformationsPanel extends MelodyPanel {
 		return true;
 	}
 
+	// SuppressWarnings pour jdk 1.7 en conservant compatibilité avec javac 1.6
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private JPanel createButtonsPanel() {
-		final List<String> requestNames = databaseInformations.getRequestNames();
-		final JComboBox<String> requestComboBox = new JComboBox<String>(
-				requestNames.toArray(new String[requestNames.size()]));
+		final JComboBox requestComboBox = new JComboBox(databaseInformations.getRequestNames()
+				.toArray());
 		requestComboBox.setSelectedIndex(databaseInformations.getSelectedRequestIndex());
 		requestComboBox.setRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
