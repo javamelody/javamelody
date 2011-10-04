@@ -56,6 +56,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -122,6 +123,15 @@ public class TestMonitoringFilter { // NOPMD
 	public void setUp() {
 		// rq: pas setUpFirst ici car setUp est rappelée dans les méthodes
 		tearDown();
+		try {
+			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
+			field.setAccessible(true);
+			field.set(null, false);
+		} catch (final IllegalAccessException e) {
+			throw new IllegalStateException(e);
+		} catch (final NoSuchFieldException e) {
+			throw new IllegalStateException(e);
+		}
 		config = createNiceMock(FilterConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();

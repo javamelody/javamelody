@@ -28,6 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Field;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSession;
@@ -63,6 +65,15 @@ public class TestSessionListener {
 	@Before
 	public void setUp() {
 		Utils.initialize();
+		try {
+			final Field field = SessionListener.class.getDeclaredField("instanceCreated");
+			field.setAccessible(true);
+			field.set(null, false);
+		} catch (final IllegalAccessException e) {
+			throw new IllegalStateException(e);
+		} catch (final NoSuchFieldException e) {
+			throw new IllegalStateException(e);
+		}
 		sessionListener = new SessionListener();
 		clearSessions();
 	}

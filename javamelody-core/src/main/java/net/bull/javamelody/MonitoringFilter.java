@@ -43,6 +43,11 @@ import javax.servlet.http.HttpSession;
  * @author Emeric Vernat
  */
 public class MonitoringFilter implements Filter {
+
+	private static boolean instanceCreated;
+
+	private final boolean instanceEnabled;
+
 	// Ces variables httpCounter et errorCounter conservent un état qui est global au filtre
 	// et à l'application (donc thread-safe).
 	private Counter httpCounter;
@@ -56,8 +61,31 @@ public class MonitoringFilter implements Filter {
 	private FilterConfig filterConfig;
 	private String monitoringUrl;
 
+	/**
+	 * Constructeur.
+	 */
+	public MonitoringFilter() {
+		super();
+		if (instanceCreated) {
+			// ce filter a déjà été chargé précédemment et est chargé une 2ème fois donc on désactive cette 2ème instance
+			// (cela peut arriver par exemple dans glassfish v3 lorsque le filter est déclaré dans le fichier web.xml
+			// et déclaré par ailleurs dans le fichier web-fragment.xml à l'intérieur du jar)
+			instanceEnabled = false;
+		} else {
+			instanceEnabled = true;
+			setInstanceCreated(true);
+		}
+	}
+
+	private static void setInstanceCreated(boolean newInstanceCreated) {
+		instanceCreated = newInstanceCreated;
+	}
+
 	/** {@inheritDoc} */
 	public void init(FilterConfig config) throws ServletException {
+		if (!instanceEnabled) {
+			return;
+		}
 		this.filterConfig = config;
 		Parameters.initialize(config);
 		monitoringDisabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
@@ -88,7 +116,7 @@ public class MonitoringFilter implements Filter {
 
 	/** {@inheritDoc} */
 	public void destroy() {
-		if (monitoringDisabled) {
+		if (monitoringDisabled || !instanceEnabled) {
 			return;
 		}
 		try {
@@ -110,7 +138,7 @@ public class MonitoringFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)
-				|| monitoringDisabled) {
+				|| monitoringDisabled || !instanceEnabled) {
 			// si ce n'est pas une requête http ou si le monitoring est désactivé, on fait suivre
 			chain.doFilter(request, response);
 			return;

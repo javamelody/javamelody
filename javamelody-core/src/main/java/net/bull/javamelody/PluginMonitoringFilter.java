@@ -42,21 +42,24 @@ public abstract class PluginMonitoringFilter extends MonitoringFilter {
 	public void init(FilterConfig config) throws ServletException {
 		super.init(config);
 
-		final TimerTask sessionTimerTask = new TimerTask() {
-			/** {@inheritDoc} */
-			@Override
-			public void run() {
-				try {
-					unregisterInvalidatedSessions();
-				} catch (final Throwable t) { // NOPMD
-					LOG.warn("exception while checking sessions", t);
+		final FilterContext filterContext = getFilterContext();
+		if (filterContext != null) {
+			final TimerTask sessionTimerTask = new TimerTask() {
+				/** {@inheritDoc} */
+				@Override
+				public void run() {
+					try {
+						unregisterInvalidatedSessions();
+					} catch (final Throwable t) { // NOPMD
+						LOG.warn("exception while checking sessions", t);
+					}
 				}
-			}
-		};
-		final int resolutionSeconds = Parameters.getResolutionSeconds();
-		final int periodMillis = resolutionSeconds * 1000;
-		final Timer timer = getFilterContext().getTimer();
-		timer.schedule(sessionTimerTask, periodMillis - 5 * 1000, periodMillis);
+			};
+			final int resolutionSeconds = Parameters.getResolutionSeconds();
+			final int periodMillis = resolutionSeconds * 1000;
+			final Timer timer = filterContext.getTimer();
+			timer.schedule(sessionTimerTask, periodMillis - 5 * 1000, periodMillis);
+		}
 	}
 
 	/** {@inheritDoc} */
