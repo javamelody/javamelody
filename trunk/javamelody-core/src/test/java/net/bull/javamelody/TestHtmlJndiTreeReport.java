@@ -78,7 +78,12 @@ public class TestHtmlJndiTreeReport {
 	 * @throws NamingException e */
 	@Test
 	public void testToHtmlWithContextPath() throws IOException, NamingException {
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
+		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
+		replay(servletContext);
+		Parameters.initialize(servletContext);
 		doToHtml("comp");
+		verify(servletContext);
 	}
 
 	private void doToHtml(String contextPath) throws NamingException, IOException {

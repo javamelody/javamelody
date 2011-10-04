@@ -54,7 +54,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	@SuppressWarnings("all")
 	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<String, HttpSession>();
 
-	private static boolean enabled;
+	private static boolean instanceCreated;
+
+	private final boolean instanceEnabled;
 
 	static final class SessionInformationsComparator implements Comparator<SessionInformations>,
 			Serializable {
@@ -77,15 +79,23 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	 */
 	public SessionListener() {
 		super();
-		setEnabled(true);
+		if (instanceCreated) {
+			// ce listener a déjà été chargé précédemment et est chargé une 2ème fois donc on désactive cette 2ème instance
+			// (cela peut arriver par exemple dans glassfish v3 lorsque le listener est déclaré dans le fichier web.xml
+			// et déclaré par ailleurs dans le fichier web-fragment.xml à l'intérieur du jar)
+			instanceEnabled = false;
+		} else {
+			instanceEnabled = true;
+			setInstanceCreated(true);
+		}
 	}
 
-	private static void setEnabled(boolean newEnabled) {
-		enabled = newEnabled;
+	private static void setInstanceCreated(boolean newInstanceCreated) {
+		instanceCreated = newInstanceCreated;
 	}
 
 	static int getSessionCount() {
-		if (!enabled) {
+		if (!instanceCreated) {
 			return -1;
 		}
 		// nous pourrions nous contenter d'utiliser SESSION_MAP_BY_ID.size()
@@ -95,7 +105,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	static long getSessionAgeSum() {
-		if (!enabled) {
+		if (!instanceCreated) {
 			return -1;
 		}
 		final long now = System.currentTimeMillis();
@@ -163,6 +173,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void contextInitialized(ServletContextEvent event) {
+		if (!instanceEnabled) {
+			return;
+		}
 		// lecture de la propriété système java.io.tmpdir uniquement
 		// pour lancer une java.security.AccessControlException si le SecurityManager est activé,
 		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters
@@ -197,6 +210,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void sessionCreated(HttpSessionEvent event) {
+		if (!instanceEnabled) {
+			return;
+		}
 		// pour être notifié des passivations et activations, on enregistre un HttpSessionActivationListener (this)
 		final HttpSession session = event.getSession();
 		// Since tomcat 6.0.21, because of https://issues.apache.org/bugzilla/show_bug.cgi?id=45255
@@ -224,6 +240,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void sessionDestroyed(HttpSessionEvent event) {
+		if (!instanceEnabled) {
+			return;
+		}
 		final HttpSession session = event.getSession();
 
 		// plus de removeAttribute
@@ -239,6 +258,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void sessionDidActivate(HttpSessionEvent event) {
+		if (!instanceEnabled) {
+			return;
+		}
 		// pour getSessionCount
 		SESSION_COUNT.incrementAndGet();
 
@@ -248,6 +270,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void sessionWillPassivate(HttpSessionEvent event) {
+		if (!instanceEnabled) {
+			return;
+		}
 		// pour getSessionCount
 		SESSION_COUNT.decrementAndGet();
 
