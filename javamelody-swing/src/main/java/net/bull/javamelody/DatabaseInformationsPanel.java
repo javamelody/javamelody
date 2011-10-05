@@ -148,7 +148,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+			public Component getListCellRendererComponent(JList list, Object value, int index,
 					boolean isSelected, boolean cellHasFocus) {
 				final String requestKey = (String) value;
 				final String label = I18N.getString(requestKey);
