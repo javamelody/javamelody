@@ -18,19 +18,28 @@
  */
 package net.bull.javamelody.swing;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
@@ -104,5 +113,43 @@ public final class Utilities {
 				scrollPane.addMouseWheelListener(DELEGATE_TO_PARENT_MOUSE_WHEEL_LISTENER);
 			}
 		});
+	}
+
+	/**
+	 * Affiche un texte scrollable non éditable dans une popup.
+	 * @param component Parent
+	 * @param title Titre de la popup
+	 * @param text Texte
+	 */
+	public static void showTextInPopup(Component component, String title, String text) {
+		final JTextArea textArea = new JTextArea();
+		textArea.setText(text);
+		textArea.setEditable(false);
+		// background nécessaire avec la plupart des look and feels dont Nimbus,
+		// sinon il reste blanc malgré editable false
+		textArea.setBackground(Color.decode("#E6E6E6"));
+		final JScrollPane scrollPane = new JScrollPane(textArea);
+		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
+		buttonPanel.setOpaque(false);
+		// TODO traduction
+		final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
+		clipBoardButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textArea.selectAll();
+				textArea.copy();
+				textArea.setCaretPosition(0);
+			}
+		});
+		buttonPanel.add(clipBoardButton);
+		final Window window = SwingUtilities.getWindowAncestor(component);
+		final JDialog dialog = new JDialog((JFrame) window, title, true);
+		final JPanel contentPane = new JPanel(new BorderLayout());
+		contentPane.add(scrollPane, BorderLayout.CENTER);
+		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		dialog.setContentPane(contentPane);
+		dialog.pack();
+		dialog.setLocationRelativeTo(window);
+		dialog.setVisible(true);
 	}
 }
