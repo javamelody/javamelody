@@ -70,8 +70,14 @@ class MainButtonsPanel extends MelodyPanel {
 			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode",
 					myPeriod.getLinkLabel()));
 			add(myPeriodButton);
-			// TODO ajouter listener
+			myPeriodButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					actionChangePeriod(myPeriod.getRange());
+				}
+			});
 		}
+		// TODO ajouter bouton pour custom period
 
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
@@ -83,11 +89,7 @@ class MainButtonsPanel extends MelodyPanel {
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					actionPdf();
-				} catch (final Exception ex) {
-					showException(ex);
-				}
+				actionPdf();
 			}
 		});
 
@@ -125,25 +127,43 @@ class MainButtonsPanel extends MelodyPanel {
 		}
 	}
 
-	void actionPdf() throws IOException {
-		// ici on prend un comportement similaire au serveur de collecte
-		// en ne mettant pas les requêtes en cours puisque de toute façon on n'a pas
-		// les données dans les counters
-		final boolean collectorServer = true;
-		// TODO récupérer range sélectionné
-		final Range range = Period.TOUT.getRange();
-		final File tempFile = createTempFileForPdf();
-		final OutputStream output = createFileOutputStream(tempFile);
+	void actionChangePeriod(Range newRange) {
+		final Range currentRange = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
 		try {
-			final Collector collector = getRemoteCollector().getCollector();
-			final List<JavaInformations> javaInformationsList = getRemoteCollector()
-					.getJavaInformationsList();
-			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
-					javaInformationsList, range, output);
-			pdfReport.toPdf();
-		} finally {
-			output.close();
+			MainPanel.getParentMainPanelFromChild(this).setSelectedRange(newRange);
+
+			getRemoteCollector().collectData();
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException e) {
+			showException(e);
+			// si le changement de période n'a pas abouti, alors on remet l'ancienne période
+			MainPanel.getParentMainPanelFromChild(this).setSelectedRange(currentRange);
 		}
-		Desktop.getDesktop().open(tempFile);
+	}
+
+	void actionPdf() {
+		try {
+			// ici on prend un comportement similaire au serveur de collecte
+			// en ne mettant pas les requêtes en cours puisque de toute façon on n'a pas
+			// les données dans les counters
+			final boolean collectorServer = true;
+			final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
+			final File tempFile = createTempFileForPdf();
+			final OutputStream output = createFileOutputStream(tempFile);
+			try {
+				final Collector collector = getRemoteCollector().getCollector();
+				final List<JavaInformations> javaInformationsList = getRemoteCollector()
+						.getJavaInformationsList();
+				final PdfReport pdfReport = new PdfReport(collector, collectorServer,
+						javaInformationsList, range, output);
+				pdfReport.toPdf();
+			} finally {
+				output.close();
+			}
+			Desktop.getDesktop().open(tempFile);
+		} catch (final Exception ex) {
+			showException(ex);
+		}
+
 	}
 }
