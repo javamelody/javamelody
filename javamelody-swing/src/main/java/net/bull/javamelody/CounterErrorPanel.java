@@ -139,7 +139,7 @@ class CounterErrorPanel extends JPanel {
 				if (e.getClickCount() == 2) {
 					final CounterError counterError = getTable().getSelectedObject();
 					if (counterError.getStackTrace() != null) {
-						ThreadInformationsPanel.showTextInPopup(CounterErrorPanel.this,
+						Utilities.showTextInPopup(CounterErrorPanel.this,
 								counterError.getMessage(), counterError.getStackTrace());
 					}
 				}

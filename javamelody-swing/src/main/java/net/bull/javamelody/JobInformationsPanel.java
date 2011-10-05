@@ -305,9 +305,8 @@ class JobInformationsPanel extends MelodyPanel {
 					final JobInformations jobInformations = getTable().getSelectedObject();
 					final CounterRequest counterRequest = getCounterRequest(jobInformations);
 					if (counterRequest.getStackTrace() != null) {
-						ThreadInformationsPanel.showTextInPopup(JobInformationsPanel.this,
+						Utilities.showTextInPopup(JobInformationsPanel.this,
 								counterRequest.getName(), counterRequest.getStackTrace());
-
 					}
 				}
 			}
