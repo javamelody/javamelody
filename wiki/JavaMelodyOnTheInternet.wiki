@@ -1,3 +1,7 @@
+*Stackoverflow*:
+  * [http://stackoverflow.com/questions/242958/best-tools-to-monitor-tomcat Best tools to monitor tomcat] (javamelody has "Best answer")
+  * [http://stackoverflow.com/questions/130067/best-server-performance-monitoring-tool-for-java-servers Best server performance monitoring tool for java servers] ("I've evaluated New Relic and App Dynamics and I've chosen Javamelody. It has more features is easier. We're using it on production servers and can't imagine work without it. You can find each particular method or SQL query which is a bottleneck." – peperg)
+
 *A selection of blogs*:
   * [http://www.slideshare.net/djkarlsen/significance-of-metrics Slides] and [http://vimeo.com/channels/rootsconf#24706626 video] of David Karlsen at the Roots Conference
   * [http://dhartford.blogspot.com/2011/02/javamelody-performance-usage-statistics.html dhartford]
