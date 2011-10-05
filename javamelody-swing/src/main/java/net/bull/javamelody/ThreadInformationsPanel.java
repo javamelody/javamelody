@@ -19,10 +19,7 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -30,14 +27,9 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -144,12 +136,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
 		add(label, BorderLayout.WEST);
 
-		// TODO ajouter bouton "Dump threads as text"
-
-		if (Parameters.isSystemActionsEnabled()) {
-			final JPanel buttonsPanel = createButtonsPanel();
-			add(buttonsPanel, BorderLayout.EAST);
-		}
+		final JPanel buttonsPanel = createButtonsPanel();
+		add(buttonsPanel, BorderLayout.EAST);
 	}
 
 	private MTableScrollPane<ThreadInformations> createScrollPane() {
@@ -184,34 +172,53 @@ class ThreadInformationsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton killThreadButton = new MButton(I18N.getString("Tuer"),
-				ImageIconCache.getImageIcon("stop.png"));
-		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				final ThreadInformations threadInformations = getTable().getSelectedObject();
-				killThreadButton.setEnabled(threadInformations != null);
-				if (threadInformations != null) {
-					killThreadButton.setToolTipText(I18N.getFormattedString("kill_thread",
-							threadInformations.getName()));
-				} else {
-					killThreadButton.setToolTipText(null);
+		final JPanel buttonsPanel = Utilities.createButtonsPanel();
+
+		if (Parameters.isSystemActionsEnabled()) {
+			final MButton killThreadButton = new MButton(I18N.getString("Tuer"),
+					ImageIconCache.getImageIcon("stop.png"));
+			getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					final ThreadInformations threadInformations = getTable().getSelectedObject();
+					killThreadButton.setEnabled(threadInformations != null);
+					if (threadInformations != null) {
+						killThreadButton.setToolTipText(I18N.getFormattedString("kill_thread",
+								threadInformations.getName()));
+					} else {
+						killThreadButton.setToolTipText(null);
+					}
 				}
-			}
-		});
-		killThreadButton.setEnabled(getTable().getSelectedObject() != null);
-		killThreadButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				final ThreadInformations threadInformations = getTable().getSelectedObject();
-				if (threadInformations != null
-						&& confirm(I18N.getFormattedString("confirm_kill_thread",
-								threadInformations.getName()))) {
-					actionKillThread(threadInformations);
+			});
+			killThreadButton.setEnabled(getTable().getSelectedObject() != null);
+			killThreadButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					final ThreadInformations threadInformations = getTable().getSelectedObject();
+					if (threadInformations != null
+							&& confirm(I18N.getFormattedString("confirm_kill_thread",
+									threadInformations.getName()))) {
+						actionKillThread(threadInformations);
+					}
 				}
-			}
-		});
-		return Utilities.createButtonsPanel(killThreadButton);
+			});
+
+			buttonsPanel.add(killThreadButton);
+		}
+
+		if (stackTraceEnabled) {
+			final MButton dumpThreadsButton = new MButton(I18N.getString("Dump_threads_en_texte"),
+					ImageIconCache.getImageIcon("text.png"));
+			dumpThreadsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					actionDumpThreads();
+				}
+			});
+			buttonsPanel.add(dumpThreadsButton);
+		}
+
+		return buttonsPanel;
 	}
 
 	final void actionKillThread(final ThreadInformations threadInformations) {
@@ -220,6 +227,16 @@ class ThreadInformationsPanel extends MelodyPanel {
 					Action.KILL_THREAD, null, null, threadInformations.getGlobalThreadId(), null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
+	}
+
+	final void actionDumpThreads() {
+		try {
+			final ThreadsDumpPanel panel = new ThreadsDumpPanel(getRemoteCollector(),
+					threadInformationsList);
+			MainPanel.addOngletFromChild(this, panel);
 		} catch (final IOException ex) {
 			showException(ex);
 		}
@@ -238,40 +255,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 			}
 			final String title = threadInformations.getName();
 			final String text = sb.toString();
-			showTextInPopup(this, title, text);
+			Utilities.showTextInPopup(this, title, text);
 		}
-	}
-
-	static void showTextInPopup(Component component, String title, String text) {
-		final JTextArea textArea = new JTextArea();
-		textArea.setText(text);
-		textArea.setEditable(false);
-		// background nécessaire avec la plupart des look and feels dont Nimbus,
-		// sinon il reste blanc malgré editable false
-		textArea.setBackground(Color.decode("#E6E6E6"));
-		final JScrollPane scrollPane = new JScrollPane(textArea);
-		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
-		buttonPanel.setOpaque(false);
-		// TODO traduction
-		final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
-		clipBoardButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				textArea.selectAll();
-				textArea.copy();
-				textArea.setCaretPosition(0);
-			}
-		});
-		buttonPanel.add(clipBoardButton);
-		final Window window = SwingUtilities.getWindowAncestor(component);
-		final JDialog dialog = new JDialog((JFrame) window, title, true);
-		final JPanel contentPane = new JPanel(new BorderLayout());
-		contentPane.add(scrollPane, BorderLayout.CENTER);
-		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		dialog.setContentPane(contentPane);
-		dialog.pack();
-		dialog.setLocationRelativeTo(window);
-		dialog.setVisible(true);
 	}
 
 	MTable<ThreadInformations> getTable() {
