@@ -42,6 +42,8 @@ class MainPanel extends MelodyPanel {
 	private final TabbedPane tabbedPane = new TabbedPane();
 	private final URL monitoringUrl;
 	private final JScrollPane scrollPane;
+	// TODO période sélectionnée par défaut à récupérer dans fichier jnlp
+	private Range selectedRange = Period.TOUT.getRange();
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
@@ -72,13 +74,30 @@ class MainPanel extends MelodyPanel {
 	private void refreshMainTab() throws IOException {
 		final int position = scrollPane.getVerticalScrollBar().getValue();
 		final ScrollingPanel scrollingPanel = new ScrollingPanel(getRemoteCollector(),
-				monitoringUrl);
+				getSelectedRange(), monitoringUrl);
 		scrollPane.setViewportView(scrollingPanel);
 		scrollPane.getVerticalScrollBar().setValue(position);
 	}
 
+	private void addOnglet(JPanel panel) {
+		tabbedPane.addTab(panel.getName(), panel);
+		tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+	}
+
+	final Range getSelectedRange() {
+		return selectedRange;
+	}
+
+	void setSelectedRange(Range selectedRange) {
+		this.selectedRange = selectedRange;
+	}
+
+	static MainPanel getParentMainPanelFromChild(Component child) {
+		return MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
+	}
+
 	static void refreshMainTabFromChild(Component child) throws IOException {
-		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
+		final MainPanel mainPanel = getParentMainPanelFromChild(child);
 		mainPanel.refreshMainTab();
 	}
 
@@ -86,12 +105,7 @@ class MainPanel extends MelodyPanel {
 		panel.setOpaque(true);
 		panel.setBackground(BACKGROUND);
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		final MainPanel mainPanel = MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
+		final MainPanel mainPanel = getParentMainPanelFromChild(child);
 		mainPanel.addOnglet(panel);
-	}
-
-	private void addOnglet(JPanel panel) {
-		tabbedPane.addTab(panel.getName(), panel);
-		tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 	}
 }

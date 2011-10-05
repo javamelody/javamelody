@@ -54,14 +54,15 @@ class ScrollingPanel extends MelodyPanel {
 	private final Collector collector;
 	@SuppressWarnings("all")
 	private final List<JavaInformations> javaInformationsList;
+	private final Range range;
 	private final URL monitoringUrl;
-	// TODO range selon sélection (jour par défaut)
-	private final Range range = Period.TOUT.getRange();
 
-	ScrollingPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
+	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl)
+			throws IOException {
 		super(remoteCollector);
 		this.collector = remoteCollector.getCollector();
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
+		this.range = range;
 		this.monitoringUrl = monitoringUrl;
 
 		setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
