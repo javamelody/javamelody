@@ -40,7 +40,7 @@ JavaMelody search in mailing lists on the Internet (or [http://markmail.org/sear
 
 [http://groups.google.com/group/javamelody JavaMelody users' group]
 
-[http://wiki.hudson-ci.org/display/HUDSON/Monitoring Hudson plugin]
+[http://wiki.jenkins-ci.org/display/HUDSON/Monitoring Jenkins / Hudson plugin]
 
 [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin]
 
