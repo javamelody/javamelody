@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -52,6 +53,7 @@ class ThreadsDumpPanel extends MelodyPanel {
 
 		setName(I18N.getString("Threads"));
 		final JTextArea textArea = new JTextArea();
+		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, textArea.getFont().getSize() - 1));
 		textArea.setEditable(false);
 		textArea.setText(threadsDump);
 		textArea.setCaretPosition(0);
