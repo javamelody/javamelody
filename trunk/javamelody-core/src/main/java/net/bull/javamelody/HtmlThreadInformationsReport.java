@@ -77,7 +77,9 @@ class HtmlThreadInformationsReport {
 		writeln("</tbody></table>");
 		writeln("<div align='right'>");
 		writeln("#Temps_threads#");
-		writeln("<br/><a href='?part=threadsDump'><img src='?resource=text.png' alt='#Dump_threads_en_texte#'/>&nbsp;#Dump_threads_en_texte#</a>");
+		if (stackTraceEnabled) {
+			writeln("<br/><a href='?part=threadsDump'><img src='?resource=text.png' alt='#Dump_threads_en_texte#'/>&nbsp;#Dump_threads_en_texte#</a>");
+		}
 		writeln("</div>");
 	}
 
@@ -103,14 +105,22 @@ class HtmlThreadInformationsReport {
 	void writeThreadsDump() throws IOException {
 		if (stackTraceEnabled) {
 			for (final ThreadInformations threadInformations : threadInformationsList) {
+				writer.write('\"');
 				writer.write(threadInformations.getName());
+				writer.write('\"');
 				if (threadInformations.isDaemon()) {
 					writer.write(" daemon");
 				}
-				writer.write(" prio=" + threadInformations.getPriority());
-				for (final StackTraceElement element : threadInformations.getStackTrace()) {
-					writer.write("\n\t");
-					writer.write(element.toString());
+				writer.write(" prio=");
+				writer.write(String.valueOf(threadInformations.getPriority()));
+				writer.write(' ');
+				writer.write(String.valueOf(threadInformations.getState()));
+				final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
+				if (stackTrace != null && !stackTrace.isEmpty()) {
+					for (final StackTraceElement element : stackTrace) {
+						writer.write("\n\t");
+						writer.write(element.toString());
+					}
 				}
 				writer.write("\n\n");
 			}
