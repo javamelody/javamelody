@@ -16,14 +16,14 @@
 		<!-- servlet api 3.0: <async-supported>true</async-supported> -->
 		<!-- pour mettre des paramètres pour le filtre, voir le user guide -->
 		<init-param>
-			<param-name>system-actions-enabled</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
 			<param-name>log</param-name>
 			<param-value>true</param-value>
 		</init-param>
 		<!--
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>false</param-value>
+		</init-param>
 		<init-param>
 			<param-name>displayed-counters</param-name>
 			<param-value>http,sql,error,log,spring,services</param-value>
@@ -43,6 +43,7 @@
 	</listener>
 	
 	<!-- normalement cette servlet est utilisée dans un serveur de collecte séparé de l'application monitorée
+	-->
 	<servlet>
 		<servlet-name>monitoringServer</servlet-name>
 		<servlet-class>net.bull.javamelody.CollectorServlet</servlet-class>
@@ -52,7 +53,6 @@
 		<servlet-name>monitoringServer</servlet-name>
 		<url-pattern>/monitoringServer</url-pattern>
 	</servlet-mapping>
-	-->
 	<!-- exemple d'authentification par identifiant et mot de passe:
 	<login-config>
 		<auth-method>BASIC</auth-method>
