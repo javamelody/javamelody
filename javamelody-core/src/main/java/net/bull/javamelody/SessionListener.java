@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,6 +36,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionActivationListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+
+import org.jrobin.graph.RrdGraphConstants;
 
 /**
  * Listener de session http pour le monitoring.
@@ -185,6 +188,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 		LOG.debug("JavaMelody listener init started");
 
+		fixJRobinDefaultFontIfChineseWindows();
+
 		// on initialise le monitoring des DataSource jdbc même si cette initialisation
 		// sera refaite dans MonitoringFilter au cas où ce listener ait été oublié dans web.xml
 		final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
@@ -194,6 +199,21 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 
 		LOG.debug("JavaMelody listener init done");
+	}
+
+	private void fixJRobinDefaultFontIfChineseWindows() {
+		final String propertyKey = "os.name";
+		if ("zh".equals(Locale.getDefault().getLanguage())
+				&& System.getProperty(propertyKey).toLowerCase().contains("windows")) {
+			final String os = System.getProperty(propertyKey);
+			try {
+				System.setProperty(propertyKey, "not ms ...");
+				LOG.debug("Font of jrobin graphics initialized to Monospaced on Windows for Chinese or Japanese: "
+						+ RrdGraphConstants.DEFAULT_FONT_NAME);
+			} finally {
+				System.setProperty(propertyKey, os);
+			}
+		}
 	}
 
 	/** {@inheritDoc} */
