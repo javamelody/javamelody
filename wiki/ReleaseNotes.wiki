@@ -6,7 +6,7 @@
 (In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
 === Next release (trunk) ===
-  * *Major change: System actions are now enabled by default* because they are useful. If you want to disable them as it was before by default, then you can add a system-actions-enabled parameter with value false: see the user guide or add a system property -Djavamelody.system-actions-enabled=false (revision 2202).
+  * *Major change: System actions are now enabled by default* because they are useful. If you want to disable them, as it was before by default, then you can add a system-actions-enabled parameter with value false: see the user guide or add a system property -Djavamelody.system-actions-enabled=false (revision 2202).
   * fix issue 137: MonitoringInterceptor when Stateful EJB, Java EE 6
   * fix issue 141: exception while collecting data java.io.IOException: Read failed, file xyz not mapped for I/O (after out of disk space)
   * fix issue 147: When monitoring filter is incorrectly defined in web.xml for recent appserver, parameters inside filter are sometimes ignored
