@@ -481,7 +481,7 @@ class CollectorController {
 			}
 			actionUrls.add(new URL(actionUrl.toString()));
 		}
-		return collectorServer.collectForApplication(application, actionUrls);
+		return collectorServer.collectForApplicationForAction(application, actionUrls);
 	}
 
 	String getApplication(HttpServletRequest req, HttpServletResponse resp) {
