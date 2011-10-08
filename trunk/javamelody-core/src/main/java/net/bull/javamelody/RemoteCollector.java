@@ -231,6 +231,10 @@ class RemoteCollector {
 		return application;
 	}
 
+	List<URL> getURLs() {
+		return urls;
+	}
+
 	Collector getCollector() {
 		return collector;
 	}

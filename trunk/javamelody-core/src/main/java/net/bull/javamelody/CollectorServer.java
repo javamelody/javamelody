@@ -108,12 +108,11 @@ class CollectorServer {
 		}
 	}
 
-	String collectForApplication(String application, List<URL> urls) throws IOException {
-		LOGGER.info("collect for the application " + application + " on " + urls);
-		assert application != null;
-		assert urls != null;
-		final long start = System.currentTimeMillis();
+	String collectForApplicationForAction(String application, List<URL> urls) throws IOException {
+		return collectForApplication(new RemoteCollector(application, urls));
+	}
 
+	String collectForApplication(String application, List<URL> urls) throws IOException {
 		final boolean remoteCollectorAvailable = isApplicationDataAvailable(application);
 		final RemoteCollector remoteCollector;
 		if (!remoteCollectorAvailable) {
@@ -121,7 +120,9 @@ class CollectorServer {
 		} else {
 			remoteCollector = getRemoteCollectorByApplication(application);
 		}
-		final String messageForReport = remoteCollector.collectData();
+
+		final String messageForReport = collectForApplication(remoteCollector);
+
 		if (!remoteCollectorAvailable) {
 			// on initialise les remoteCollectors au fur et à mesure
 			// puisqu'on ne peut pas forcément au démarrage
@@ -135,6 +136,18 @@ class CollectorServer {
 						+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
 			}
 		}
+		return messageForReport;
+	}
+
+	private String collectForApplication(RemoteCollector remoteCollector) throws IOException {
+		final String application = remoteCollector.getApplication();
+		final List<URL> urls = remoteCollector.getURLs();
+		LOGGER.info("collect for the application " + application + " on " + urls);
+		assert application != null;
+		assert urls != null;
+		final long start = System.currentTimeMillis();
+
+		final String messageForReport = remoteCollector.collectData();
 		final List<JavaInformations> javaInformationsList = remoteCollector
 				.getJavaInformationsList();
 		final Collector collector = remoteCollector.getCollector();
