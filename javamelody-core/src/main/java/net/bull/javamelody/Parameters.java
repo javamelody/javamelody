@@ -294,7 +294,8 @@ final class Parameters {
 	 * @return boolean
 	 */
 	static boolean isSystemActionsEnabled() {
-		return Boolean.parseBoolean(Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED));
+		final String parameter = Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED);
+		return parameter == null || Boolean.parseBoolean(parameter);
 	}
 
 	/**

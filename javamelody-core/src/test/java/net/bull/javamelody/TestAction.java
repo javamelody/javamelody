@@ -237,8 +237,8 @@ public class TestAction {
 		} catch (final Exception e) {
 			systemActionsEnabled = false;
 		}
-		// test: par défaut les actions systèmes sont considérées désactivées
-		if (systemActionsEnabled) {
+		// test: par défaut les actions systèmes sont considérées activées
+		if (!systemActionsEnabled) {
 			fail("checkSystemActionsEnabled");
 		}
 		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
