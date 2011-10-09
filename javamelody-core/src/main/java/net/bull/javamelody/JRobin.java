@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.io.File;
@@ -27,6 +28,7 @@ import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -190,6 +192,11 @@ final class JRobin {
 
 			// create common part of graph definition
 			final RrdGraphDef graphDef = new RrdGraphDef();
+			if (Locale.CHINESE.getLanguage().equals(I18N.getCurrentLocale().getLanguage())) {
+				graphDef.setSmallFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
+				graphDef.setLargeFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+			}
+
 			initGraphSource(graphDef, height);
 
 			initGraphPeriodAndSize(range, width, height, graphDef);
