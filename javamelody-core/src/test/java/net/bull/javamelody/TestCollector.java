@@ -466,7 +466,7 @@ public class TestCollector {
 
 			// pour être sûr qu'il y a une application
 			final List<URL> urls = Parameters
-					.parseUrl("http://localhost/test,http://localhost:8090/test");
+					.parseUrl("http://localhost/test1,http://localhost:8090/test1");
 			Parameters.addCollectorApplication(application, urls);
 
 			collectorServer.collectWithoutErrors();
