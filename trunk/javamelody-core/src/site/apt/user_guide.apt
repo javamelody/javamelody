@@ -50,7 +50,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	[]
 
 	Version de serveur requise en exécution : api servlet 2.4 minimum (ou JavaEE 1.4), 
-		comme Tomcat 5.5, 6 ou 7, GlassFish v2 ou v3, JBoss 4, 5 ou 6, Jonas 4 ou 5, WebLogic 9, 10 ou 11
+		comme Tomcat 5.5, 6 ou 7, GlassFish v2 ou v3, JBoss 4, 5, 6 ou 7, Jonas 4 ou 5, WebLogic 9, 10 ou 11
 
 	Dépendance requise : JRobin (LGPL) pour les courbes d'évolution
 	
@@ -58,7 +58,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 		Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring,
 		Ehcache pour le monitoring des caches, Quartz pour le monitoring des jobs en batchs
 
-	Langage : français, anglais, allemand et portugais
+	Langage : français, anglais, allemand, portugais et chinois
 
 	Navigateur : Le rapport html de JavaMelody est optimisé pour {{{http://www.mozilla.com}Firefox}},
 	{{{http://www.google.com/chrome}Chrome}} ou MSIE8 (MSIE7 non recommandé).
