@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.lowagie.text.BadElementException;
@@ -262,6 +263,18 @@ class PdfDocumentFactory {
 	}
 
 	static Font getFont(float size, int style) {
+		if (Locale.CHINESE.getLanguage().equals(I18N.getCurrentLocale().getLanguage())) {
+			try {
+				final BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
+						BaseFont.NOT_EMBEDDED);
+				return new Font(bfChinese, size, style);
+			} catch (final DocumentException e) {
+				throw new IllegalStateException(e);
+			} catch (final IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
 		return FontFactory.getFont(FontFactory.HELVETICA, size, style);
 	}
 }
