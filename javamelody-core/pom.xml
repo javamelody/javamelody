@@ -69,26 +69,8 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
+			<version>1.2.16</version>
 			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<artifactId>jmxri</artifactId>
-					<groupId>com.sun.jmx</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jmxtools</artifactId>
-					<groupId>com.sun.jdmk</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jms</artifactId>
-					<groupId>javax.jms</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>mail</artifactId>
-					<groupId>javax.mail</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
