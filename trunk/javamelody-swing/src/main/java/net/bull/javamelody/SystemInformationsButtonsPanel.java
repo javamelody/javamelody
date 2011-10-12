@@ -275,7 +275,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 		return javaInformationsList.get(0).getSessionCount() >= 0;
 	}
 
-	final void executeAction(final Action action) {
+	final void executeAction(Action action) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
 					null, null, null);
