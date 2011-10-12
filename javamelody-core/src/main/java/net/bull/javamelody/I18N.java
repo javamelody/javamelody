@@ -72,7 +72,7 @@ final class I18N {
 	 * Retourne les traductions pour la locale courante.
 	 * @return Locale
 	 */
-	private static ResourceBundle getResourceBundle() {
+	static ResourceBundle getResourceBundle() {
 		final Locale currentLocale = getCurrentLocale();
 		if (Locale.ENGLISH.getLanguage().equals(currentLocale.getLanguage())) {
 			// there is no translations_en.properties because translations.properties is in English
