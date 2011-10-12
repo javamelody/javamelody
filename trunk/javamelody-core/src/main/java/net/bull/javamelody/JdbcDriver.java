@@ -122,7 +122,11 @@ public class JdbcDriver implements Driver {
 				+ ", lastConnectInfo=" + Parameters.getLastConnectInfo() + ']';
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Définition de la méthode getParentLogger ajoutée dans l'interface Driver en jdk 1.7.
+	 * @return Logger
+	 * @throws SQLFeatureNotSupportedException e
+	 */
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	}
