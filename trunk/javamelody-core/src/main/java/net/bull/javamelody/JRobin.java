@@ -192,7 +192,8 @@ final class JRobin {
 
 			// create common part of graph definition
 			final RrdGraphDef graphDef = new RrdGraphDef();
-			if (Locale.CHINESE.getLanguage().equals(I18N.getCurrentLocale().getLanguage())) {
+			if (Locale.CHINESE.getLanguage().equals(
+					I18N.getResourceBundle().getLocale().getLanguage())) {
 				graphDef.setSmallFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
 				graphDef.setLargeFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
 			}

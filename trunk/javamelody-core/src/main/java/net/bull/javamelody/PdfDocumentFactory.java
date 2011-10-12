@@ -263,7 +263,7 @@ class PdfDocumentFactory {
 	}
 
 	static Font getFont(float size, int style) {
-		if (Locale.CHINESE.getLanguage().equals(I18N.getCurrentLocale().getLanguage())) {
+		if (Locale.CHINESE.getLanguage().equals(I18N.getResourceBundle().getLocale().getLanguage())) {
 			try {
 				final BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
 						BaseFont.NOT_EMBEDDED);
