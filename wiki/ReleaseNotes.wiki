@@ -9,7 +9,7 @@
   * *Major change: System actions are now enabled by default*, including in the centralized collect server, because they are useful. If you want to disable them, as it was before by default, then you can add a system-actions-enabled parameter with value false: see the user guide or add a system property -Djavamelody.system-actions-enabled=false (revision 2202).
   * fix issue 137: MonitoringInterceptor when Stateful EJB, Java EE 6
   * fix issue 141: exception while collecting data java.io.IOException: Read failed, file xyz not mapped for I/O (after out of disk space)
-  * fix issue 147: When monitoring filter is incorrectly defined in web.xml for recent appserver, parameters inside filter are sometimes ignored
+  * fix issue 147: When the monitoring filter is incorrectly defined in web.xml for recent appserver, parameters inside filter are sometimes ignored
   * fix: In the collector server, refuse to add twice one instance of an application (for example, individually and then in a cluster), because it would not work (revision 2157).
   * added: Chinese translation, and fix display of Chinese characters in the JRobin graphics and in the PDF reports (issue 150)
   * added: Action "Generate a heap dump" added for IBM JDK like for Oracle JDK, patch by David Karlsen in the [http://groups.google.com/group/javamelody/browse_thread/thread/49787fb45384b915 users' group] (revision 2180)
