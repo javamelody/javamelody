@@ -73,7 +73,16 @@ final class I18N {
 	 * @return Locale
 	 */
 	private static ResourceBundle getResourceBundle() {
-		return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, getCurrentLocale());
+		final Locale currentLocale = getCurrentLocale();
+		if (Locale.ENGLISH.getLanguage().equals(currentLocale.getLanguage())) {
+			// there is no translations_en.properties because translations.properties is in English
+			// but if user is English, do not let getBundle fallback on server's default locale
+			return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, Locale.ROOT);
+		}
+		// and if user is not English, use the bundle if it exists for his/her Locale
+		// or the bundle for the server's default locale if it exists
+		// or default (English) bundle otherwise
+		return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, currentLocale);
 	}
 
 	/**
