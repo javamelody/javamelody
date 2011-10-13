@@ -242,7 +242,7 @@ or MSIE8 (MSIE7 not recommended).
 		<filter-name>monitoring</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 		<init-param>
-			<param-name>system-actions-enabled</param-name>
+			<param-name>log</param-name>
 			<param-value>true</param-value>
 		</init-param>
 	</filter>
@@ -255,7 +255,7 @@ or MSIE8 (MSIE7 not recommended).
 {{{
 	<?xml version="1.0" encoding="UTF-8" ?>
 	<Context docBase="path_to/mywebapp.war" path="mywebapp" reloadable="false" >
-		<Parameter name='javamelody.system-actions-enabled' value='true' override='false'/>
+		<Parameter name='javamelody.log' value='true' override='false'/>
 	</Context>
 }}}
 
@@ -263,10 +263,10 @@ or MSIE8 (MSIE7 not recommended).
 	  (java launch command or administration user interface of the server or $CATALINA_HOME/conf/catalina.properties if tomcat), for example:
 
 {{{
-	... -Djavamelody.system-actions-enabled=true
+	... -Djavamelody.log=true
 }}}
 
-	The parameter {{{system-actions-enabled}}} ({{{false}}} by default for security) enables the system actions garbage collector, http sessions, heap dump, memory histogram, process list, jndi tree, opened jdbc connections, database (near the bottom of reports).
+	The parameter {{{system-actions-enabled}}} ({{{true}}} by default) enables or disables the system actions garbage collector, http sessions, heap dump, memory histogram, process list, jndi tree, opened jdbc connections, database (near the bottom of reports).
 	These actions have confirmations when necessary.
 
 	The parameter {{{url-exclude-pattern}}} is a
