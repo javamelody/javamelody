@@ -253,7 +253,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 		<filter-name>monitoring</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 		<init-param>
-			<param-name>system-actions-enabled</param-name>
+			<param-name>log</param-name>
 			<param-value>true</param-value>
 		</init-param>
 	</filter>
@@ -267,7 +267,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 +-------------------------------+
 	<?xml version="1.0" encoding="UTF-8" ?>
 	<Context docBase="<pathto>/mywebapp.war" path="mywebapp" reloadable="false" >
-		<Parameter name='javamelody.system-actions-enabled' value='true' override='false'/>
+		<Parameter name='javamelody.log' value='true' override='false'/>
 	</Context>
 +-------------------------------+
 
@@ -277,12 +277,12 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	  for example:
 
 +-------------------------------+
-	... -Djavamelody.system-actions-enabled=true
+	... -Djavamelody.log=true
 +-------------------------------+
 
 	[]
 
-	The parameter <<<system-actions-enabled>>> (<<<false>>> by default for security) enables the
+	The parameter <<<system-actions-enabled>>> (<<<true>>> by default) enables or disables the
 	system actions <garbage collector>, <http sessions>, <heap dump>, <memory histogram>,
 	<process list>, <jndi tree>, <opened jdbc connections>, <database> (near the bottom of reports).
 	These actions have confirmations when necessary.
