@@ -42,7 +42,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	* 1.5 at least
 
-	* 1.6 recommended for following functions: heap dump, memory histogram, stack traces and
+	* 1.6 or 1.7 recommended for following functions: heap dump, memory histogram, stack traces and
 	system load average
 	
 	* JDK or JRE from Sun or JRockit from Oracle/BEA or J9 from IBM
@@ -50,7 +50,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	[]
 
 	Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
-		like Tomcat 5.5, 6 or 7, GlassFish v2 or v3, JBoss 4, 5, 6 or 7, Jonas 4 or 5, WebLogic 9, 10 or 11
+		like Tomcat 5.5, 6 or 7, GlassFish v2 or v3, JBoss 4, 5, 6 or 7, Jonas 4 or 5, Jetty 6 or 7, WebLogic 9, 10 or 11
 
 	Required dependency: JRobin (LGPL) for evolution charts
 	
