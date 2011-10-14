@@ -125,6 +125,7 @@ public final class Utilities {
 		final JTextArea textArea = new JTextArea();
 		textArea.setText(text);
 		textArea.setEditable(false);
+		textArea.setCaretPosition(0);
 		// background nécessaire avec la plupart des look and feels dont Nimbus,
 		// sinon il reste blanc malgré editable false
 		textArea.setBackground(Color.decode("#E6E6E6"));
