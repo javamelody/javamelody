@@ -56,6 +56,7 @@ class ScrollingPanel extends MelodyPanel {
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
 	private final URL monitoringUrl;
+	private final long start = System.currentTimeMillis();
 
 	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl)
 			throws IOException {
@@ -90,11 +91,8 @@ class ScrollingPanel extends MelodyPanel {
 			addCaches();
 		}
 
-		// TODO
-		//		writeMessageIfNotNull(message, null, anchorNameForRedirect);
-		//		writeDurationAndOverhead();
-
 		add(new JLabel(" "));
+		addDurationAndOverhead();
 		add(new JLabel(" "));
 
 		for (final Component component : getComponents()) {
@@ -325,6 +323,32 @@ class ScrollingPanel extends MelodyPanel {
 
 			add(flowPanel);
 			add(jobInformationsPanel);
+		}
+	}
+
+	private void addDurationAndOverhead() {
+		final long displayDuration = System.currentTimeMillis() - start;
+		final JLabel lastCollectDurationLabel = new JLabel("  "
+				+ I18N.getString("temps_derniere_collecte") + ": "
+				+ collector.getLastCollectDuration() + ' ' + I18N.getString("ms"));
+		final JLabel displayDurationLabel = new JLabel("  " + I18N.getString("temps_affichage")
+				+ ": " + displayDuration + ' ' + I18N.getString("ms"));
+		final JLabel overheadLabel = new JLabel("  "
+				+ I18N.getString("Estimation_overhead_memoire") + ": < "
+				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
+				+ I18N.getString("Mo"));
+		final Font font = overheadLabel.getFont().deriveFont(10f);
+		lastCollectDurationLabel.setFont(font);
+		displayDurationLabel.setFont(font);
+		overheadLabel.setFont(font);
+		add(lastCollectDurationLabel);
+		add(displayDurationLabel);
+		add(overheadLabel);
+		if (Parameters.JAVAMELODY_VERSION != null) {
+			add(new JLabel(" "));
+			final JLabel versionLabel = new JLabel("  JavaMelody " + Parameters.JAVAMELODY_VERSION);
+			versionLabel.setFont(font);
+			add(versionLabel);
 		}
 	}
 
