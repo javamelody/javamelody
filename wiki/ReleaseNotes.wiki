@@ -6,7 +6,7 @@
 (In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
 === 1.32.1 ===
-  * fix issue 151: a Java 1.6 dependency was introduced in 1.32.0
+  * fix issue 151: a Java 1.6 dependency was introduced in 1.32.0 (NoSuchFieldError: ROOT)
 
 === 1.32.0 ===
   * *Major change: System actions are now enabled by default*, including in the centralized collect server, because they are useful. If you want to disable them, as it was before by default, then you can add a system-actions-enabled parameter with value false: see the user guide or add a system property -Djavamelody.system-actions-enabled=false (revision 2202).
