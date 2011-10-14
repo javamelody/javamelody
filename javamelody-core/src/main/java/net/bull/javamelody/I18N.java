@@ -43,6 +43,8 @@ final class I18N {
 			.getResourcePath("translations").replace('/', '.').substring(1);
 	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<Locale>();
 	private static final boolean JAVA_16 = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
+	// Locale.ROOT needs 1.6
+	private static final Locale ROOT_LOCALE = new Locale("");
 
 	private I18N() {
 		super();
@@ -77,7 +79,7 @@ final class I18N {
 		if (Locale.ENGLISH.getLanguage().equals(currentLocale.getLanguage())) {
 			// there is no translations_en.properties because translations.properties is in English
 			// but if user is English, do not let getBundle fallback on server's default locale
-			return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, Locale.ROOT);
+			return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, ROOT_LOCALE);
 		}
 		// and if user is not English, use the bundle if it exists for his/her Locale
 		// or the bundle for the server's default locale if it exists
