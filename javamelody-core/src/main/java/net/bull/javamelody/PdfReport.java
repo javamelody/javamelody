@@ -64,7 +64,7 @@ class PdfReport {
 		this.range = range;
 
 		try {
-			pdfDocumentFactory = new PdfDocumentFactory(collector.getApplication(), output);
+			pdfDocumentFactory = new PdfDocumentFactory(collector.getApplication(), range, output);
 			this.document = pdfDocumentFactory.createDocument();
 		} catch (final DocumentException e) {
 			throw createIOException(e);

@@ -71,6 +71,7 @@ class PdfDocumentFactory {
 	}
 
 	private final String application;
+	private final Range range;
 	private final OutputStream output;
 	private final Map<String, Image> paragraphImagesByResourceName = new HashMap<String, Image>();
 	private final Map<String, Image> smallImagesByResourceName = new HashMap<String, Image>();
@@ -140,11 +141,13 @@ class PdfDocumentFactory {
 		}
 	}
 
-	PdfDocumentFactory(String application, OutputStream output) {
+	PdfDocumentFactory(String application, Range range, OutputStream output) {
 		super();
 		assert application != null;
 		assert output != null;
+		// range peut être null
 		this.application = application;
+		this.range = range;
 		this.output = output;
 	}
 
@@ -165,7 +168,13 @@ class PdfDocumentFactory {
 		// mais marge de 40 en bas pour ne pas empiéter sur les numéros de pages
 		final Document document = new Document(pageSize, 20, 20, 20, 40);
 
-		final String title = I18N.getFormattedString("Monitoring_sur", application);
+		final String title;
+		if (range == null) {
+			title = I18N.getFormattedString("Monitoring_sur", application);
+		} else {
+			title = I18N.getFormattedString("Monitoring_sur", application) + " - "
+					+ range.getLabel();
+		}
 		createWriter(document, title);
 
 		// we add some meta information to the document (after writer)
