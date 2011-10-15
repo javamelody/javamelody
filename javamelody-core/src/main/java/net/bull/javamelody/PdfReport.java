@@ -182,10 +182,16 @@ class PdfReport {
 	}
 
 	private String buildSummary() {
-		final String startDate = I18N.createDateAndTimeFormat().format(
-				collector.getCounters().get(0).getStartDate());
-		final String tmp = I18N.getFormattedString("Statistiques", "JavaMelody",
-				I18N.getCurrentDateAndTime(), startDate, collector.getApplication());
+		final String tmp;
+		if (range.getPeriod() == Period.TOUT) {
+			final String startDate = I18N.createDateAndTimeFormat().format(
+					collector.getCounters().get(0).getStartDate());
+			tmp = I18N.getFormattedString("Statistiques", "JavaMelody",
+					I18N.getCurrentDateAndTime(), startDate, collector.getApplication());
+		} else {
+			tmp = I18N.getFormattedString("Statistiques_sans_depuis", "JavaMelody",
+					I18N.getCurrentDateAndTime(), collector.getApplication());
+		}
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
 			return tmp + " (" + javaInformationsList.get(0).getContextDisplayName() + ')';
 		}
