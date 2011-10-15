@@ -927,11 +927,10 @@ or
 	</dependency>
 }}}
 
-Since v1.31, the repository http://maven.glassfish.org is not needed anymore for javamelody.
+Since v1.31, the repository http://maven.glassfish.org is not needed anymore for javamelody ; it was:
 
 {{{
 	<repositories>
-		<!-- for javamelody and for jrobin -->
 		<repository>
 			<id>m.g.o-public</id>
 			<url>http://maven.glassfish.org/content/groups/public/</url>
