@@ -26,7 +26,7 @@
   * issue 133: [UserGuideAdvanced#Usage_of_in_JBoss_AS_7_%28which_uses_OSGI%29 Documentation] added on OSGI configuration when using JBoss AS 7
   * To display the username in the list of http sessions, look at ACEGI_SECURITY_LAST_USERNAME and SPRING_SECURITY_LAST_USERNAME if getRemoteUser() was null (In particular, for Jenkins/Hudson. Revision 2003).
 
-  * The JRobin dependency is now available in the same maven repository as JavaMelody: [http://maven.glassfish.org/content/groups/public/org/jrobin/jrobin/1.5.9/]. So it is not necessary to add the jrobin repository or the jrobin dependency in your pom.xml. The jrobin dependency is included transitively with javamelody-core. Reference: [UserGuide#Dependencies]
+  * The JRobin dependency is now available in the maven glassfish repository as JavaMelody: [http://maven.glassfish.org/content/groups/public/org/jrobin/jrobin/1.5.9/]. So it is not necessary to add the jrobin repository or the jrobin dependency in your pom.xml. The jrobin dependency is included transitively with javamelody-core. Reference: [UserGuide#Dependencies]
 
 === 1.30.0 ===
 
