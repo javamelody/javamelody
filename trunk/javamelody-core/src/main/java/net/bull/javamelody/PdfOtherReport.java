@@ -42,7 +42,7 @@ class PdfOtherReport {
 		assert output != null;
 
 		try {
-			pdfDocumentFactory = new PdfDocumentFactory(application, output);
+			pdfDocumentFactory = new PdfDocumentFactory(application, null, output);
 			this.document = pdfDocumentFactory.createDocument();
 		} catch (final DocumentException e) {
 			throw createIOException(e);

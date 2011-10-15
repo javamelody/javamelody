@@ -246,7 +246,7 @@ public class TestPdfReport {
 		assertNotEmptyAndClear(output);
 
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(
-				collector.getApplication(), output);
+				collector.getApplication(), null, output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
@@ -291,7 +291,7 @@ public class TestPdfReport {
 		counter.addRequest("test include graph", 1, 1, false, 1000);
 		errorCounter.addRequestForSystemError("error", 1, 1, null);
 		collector.collectWithoutErrors(javaInformationsList);
-		final Document document = new PdfDocumentFactory(TEST_APP, output).createDocument();
+		final Document document = new PdfDocumentFactory(TEST_APP, null, output).createDocument();
 		document.open();
 		final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
 				Period.TOUT.getRange(), true, document);
@@ -310,7 +310,7 @@ public class TestPdfReport {
 	@Test
 	public void testEmptyPdfCounterRequestContext() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null, output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
@@ -329,7 +329,7 @@ public class TestPdfReport {
 	@Test
 	public void testPdfThreadInformationsReport() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null, output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		boolean stackTraceEnabled = true;

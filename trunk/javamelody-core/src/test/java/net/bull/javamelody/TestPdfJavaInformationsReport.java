@@ -55,7 +55,7 @@ public class TestPdfJavaInformationsReport {
 	@Test
 	public void testTomcatInformations() throws Exception { // NOPMD
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null, output);
 		final List<MBeanServer> mBeanServerList = MBeanServerFactory.findMBeanServer(null);
 		final MBeanServer mBeanServer;
 		if (mBeanServerList.isEmpty()) {
