@@ -31,6 +31,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
@@ -47,23 +48,45 @@ class ChartsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+	private static final ImageIcon THROBBER_ICON = new ImageIcon(
+			ChartsPanel.class.getResource("/icons/throbber.gif"));
 	private static final int NB_COLS = 3;
 	private static final int CHART_HEIGHT = 50;
 	private static final int CHART_WIDTH = 200;
 
 	private JPanel otherJRobinsPanel;
 
-	ChartsPanel(RemoteCollector remoteCollector) throws IOException {
+	ChartsPanel(RemoteCollector remoteCollector) {
 		super(remoteCollector);
 
-		final Map<String, byte[]> jrobins = getRemoteCollector().collectJRobins(CHART_WIDTH,
-				CHART_HEIGHT);
-		final JPanel mainJRobinsPanel = createJRobinPanel(jrobins);
-		add(mainJRobinsPanel, BorderLayout.NORTH);
+		final JLabel throbberLabel = new JLabel(THROBBER_ICON);
+		add(throbberLabel, BorderLayout.NORTH);
 		add(createButtonsPanel(), BorderLayout.CENTER);
+
+		// SwingWorker pour afficher le reste de l'écran et pour éviter de faire attendre rien que pour les graphiques
+		final SwingWorker<Map<String, byte[]>, Object> swingWorker = new SwingWorker<Map<String, byte[]>, Object>() {
+			@Override
+			protected Map<String, byte[]> doInBackground() throws IOException {
+				return getRemoteCollector().collectJRobins(CHART_WIDTH, CHART_HEIGHT);
+			}
+
+			@Override
+			protected void done() {
+				try {
+					final Map<String, byte[]> jrobins = get();
+					final JPanel mainJRobinsPanel = createJRobinPanel(jrobins);
+					remove(throbberLabel);
+					add(mainJRobinsPanel, BorderLayout.NORTH);
+					revalidate();
+				} catch (final Exception e) {
+					MSwingUtilities.showException(e);
+				}
+			}
+		};
+		swingWorker.execute();
 	}
 
-	private JPanel createJRobinPanel(Map<String, byte[]> jrobins) {
+	final JPanel createJRobinPanel(Map<String, byte[]> jrobins) {
 		final JPanel centerPanel = new JPanel(new GridLayout(-1, NB_COLS));
 		centerPanel.setOpaque(false);
 		for (final Map.Entry<String, byte[]> entry : jrobins.entrySet()) {
