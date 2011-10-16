@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.bull.javamelody.Counter.CounterRequestContextComparator;
@@ -729,6 +730,14 @@ class Collector { // NOPMD
 
 	Collection<JRobin> getOtherJRobins() {
 		return Collections.unmodifiableCollection(otherJRobins.values());
+	}
+
+	Set<String> getCounterJRobinNames() {
+		return Collections.unmodifiableSet(counterJRobins.keySet());
+	}
+
+	Set<String> getOtherJRobinNames() {
+		return Collections.unmodifiableSet(otherJRobins.keySet());
 	}
 
 	/**

@@ -210,6 +210,22 @@ class RemoteCollector {
 		return result;
 	}
 
+	List<String> collectJRobinNames() throws IOException {
+		final URL url = urls.get(0);
+		final URL jrobinNamesUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
+				+ '=' + HttpParameters.JROBINS_PART);
+		final LabradorRetriever labradorRetriever = new LabradorRetriever(jrobinNamesUrl);
+		return labradorRetriever.call();
+	}
+
+	List<String> collectOtherJRobinNames() throws IOException {
+		final URL url = urls.get(0);
+		final URL otherJRobinNamesUrl = new URL(url.toString() + '&'
+				+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.OTHER_JROBINS_PART);
+		final LabradorRetriever labradorRetriever = new LabradorRetriever(otherJRobinNamesUrl);
+		return labradorRetriever.call();
+	}
+
 	private void addRequestsAndErrors(List<Counter> counters) {
 		for (final Counter newCounter : counters) {
 			final Counter counter = collector.getCounterByName(newCounter.getName());

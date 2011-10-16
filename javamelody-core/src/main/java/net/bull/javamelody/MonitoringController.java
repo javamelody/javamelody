@@ -31,7 +31,9 @@ import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
+import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -280,7 +282,36 @@ class MonitoringController {
 
 	private Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
+		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest);
+		if (resultForSystemActions != null) {
+			return resultForSystemActions;
+		}
+
+		final String part = httpRequest.getParameter(PART_PARAMETER);
 		final Range range = getRangeForSerializable(httpRequest);
+		if (THREADS_PART.equalsIgnoreCase(part)) {
+			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
+					.getThreadInformationsList());
+		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			final Counter counter = collector.getRangeCounter(range, counterName).clone();
+			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
+					.getRequestsAggregatedOrFilteredByClassName(requestId);
+			return new ArrayList<CounterRequest>(requestList);
+		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing
+			return new ArrayList<String>(collector.getCounterJRobinNames());
+		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing
+			return new ArrayList<String>(collector.getOtherJRobinNames());
+		}
+
+		return createDefaultSerializable(javaInformationsList, range);
+	}
+
+	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest)
+			throws Exception { // NOPMD
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -311,19 +342,8 @@ class MonitoringController {
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<ConnectionInformations>(
 					JdbcWrapper.getConnectionInformationsList());
-		} else if (THREADS_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
-					.getThreadInformationsList());
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			final Counter counter = collector.getRangeCounter(range, counterName).clone();
-			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
-					.getRequestsAggregatedOrFilteredByClassName(requestId);
-			return new ArrayList<CounterRequest>(requestList);
 		}
-
-		return createDefaultSerializable(javaInformationsList, range);
+		return null;
 	}
 
 	Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList, Range range)

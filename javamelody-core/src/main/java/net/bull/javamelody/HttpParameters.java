@@ -61,6 +61,8 @@ final class HttpParameters {
 	static final String THREADS_DUMP_PART = "threadsDump";
 	static final String COUNTER_SUMMARY_PER_CLASS_PART = "counterSummaryPerClass";
 	static final String RUNTIME_DEPENDENCIES_PART = "runtimeDependencies";
+	static final String JROBINS_PART = "jrobinNames";
+	static final String OTHER_JROBINS_PART = "otherJRobinNames";
 
 	/**
 	 * Constructeur privé: pas d'instance.
