@@ -66,11 +66,11 @@ class ScrollingPanel extends MelodyPanel {
 		this.range = range;
 		this.monitoringUrl = monitoringUrl;
 
-		setBorder(BorderFactory.createEmptyBorder(0, 3, 0, 3));
+		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setOpaque(true);
 		setBackground(Color.decode("#E6E6E6"));
-		add(new ChartsPanel());
+		add(new ChartsPanel(remoteCollector));
 
 		addCounters();
 
@@ -93,7 +93,6 @@ class ScrollingPanel extends MelodyPanel {
 
 		add(new JLabel(" "));
 		addDurationAndOverhead();
-		add(new JLabel(" "));
 
 		for (final Component component : getComponents()) {
 			((JComponent) component).setAlignmentX(Component.LEFT_ALIGNMENT);

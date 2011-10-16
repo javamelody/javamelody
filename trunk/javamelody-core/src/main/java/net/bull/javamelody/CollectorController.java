@@ -32,7 +32,9 @@ import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
+import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -352,7 +354,41 @@ class CollectorController {
 
 	private Serializable createSerializable(HttpServletRequest httpRequest, String application,
 			MonitoringController monitoringController) throws Exception { // NOPMD
+		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest,
+				application);
+		if (resultForSystemActions != null) {
+			return resultForSystemActions;
+		}
+
 		final Range range = monitoringController.getRangeForSerializable(httpRequest);
+		final String part = httpRequest.getParameter(PART_PARAMETER);
+		if (THREADS_PART.equalsIgnoreCase(part)) {
+			return new ArrayList<List<ThreadInformations>>(
+					collectorServer.getThreadInformationsLists(application));
+		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
+			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			final Collector collector = getCollectorByApplication(application);
+			final Counter counter = collector.getRangeCounter(range, counterName);
+			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
+					.getRequestsAggregatedOrFilteredByClassName(requestId);
+			return new ArrayList<CounterRequest>(requestList);
+		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing
+			final Collector collector = getCollectorByApplication(application);
+			return new ArrayList<String>(collector.getCounterJRobinNames());
+		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing
+			final Collector collector = getCollectorByApplication(application);
+			return new ArrayList<String>(collector.getOtherJRobinNames());
+		}
+
+		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+		return monitoringController.createDefaultSerializable(javaInformationsList, range);
+	}
+
+	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest,
+			String application) throws IOException {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -380,21 +416,8 @@ class CollectorController {
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<List<ConnectionInformations>>(
 					collectorServer.collectConnectionInformations(application));
-		} else if (THREADS_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<List<ThreadInformations>>(
-					collectorServer.getThreadInformationsLists(application));
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			final Collector collector = getCollectorByApplication(application);
-			final Counter counter = collector.getRangeCounter(range, counterName);
-			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
-					.getRequestsAggregatedOrFilteredByClassName(requestId);
-			return new ArrayList<CounterRequest>(requestList);
 		}
-
-		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		return monitoringController.createDefaultSerializable(javaInformationsList, range);
+		return null;
 	}
 
 	private HtmlReport createHtmlReport(HttpServletRequest req, HttpServletResponse resp,
