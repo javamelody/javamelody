@@ -80,6 +80,7 @@ class ChartsPanel extends MelodyPanel {
 					revalidate();
 				} catch (final Exception e) {
 					MSwingUtilities.showException(e);
+					remove(throbberLabel);
 				}
 			}
 		};
