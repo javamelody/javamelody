@@ -90,6 +90,7 @@ class MainPanel extends MelodyPanel {
 
 	void setSelectedRange(Range selectedRange) {
 		this.selectedRange = selectedRange;
+		// TODO changer les urls dans l'instance de getRemoteCollector() pour changer la période
 	}
 
 	static MainPanel getParentMainPanelFromChild(Component child) {
