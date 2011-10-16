@@ -25,19 +25,16 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import net.bull.javamelody.swing.AsyncIconLabel;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel des graphiques principaux.
@@ -51,43 +48,27 @@ class ChartsPanel extends MelodyPanel {
 
 	private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 	private static final int NB_COLS = 3;
+	private static final int CHART_HEIGHT = 50;
+	private static final int CHART_WIDTH = 200;
 
-	@SuppressWarnings("all")
-	private static final Map<String, List<String>> JROBIN_NAMES_BY_APPLICATION = new HashMap<String, List<String>>();
-	@SuppressWarnings("all")
-	private static final Map<String, List<String>> OTHER_JROBIN_NAMES_BY_APPLICATION = new HashMap<String, List<String>>();
-
-	@SuppressWarnings("all")
-	private final List<String> jrobinNames;
-	@SuppressWarnings("all")
-	private final List<String> otherJRobinNames;
-
-	private final String urlPart;
 	private JPanel otherJRobinsPanel;
 
 	ChartsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
 
-		final URL url = getRemoteCollector().getURLs().get(0);
-		final String string = url.toString();
-		this.urlPart = string.substring(0, string.indexOf('?')) + "?width=200&height=50&"
-				+ HttpParameters.GRAPH_PARAMETER + '=';
-
-		this.jrobinNames = getJRobinNames();
-		this.otherJRobinNames = getOtherJRobinNames();
-
-		// TODO langue et session pour charger l'image >> LabradorRetriever
-		final JPanel mainJRobinsPanel = createJRobinPanel(this.jrobinNames);
+		final Map<String, byte[]> jrobins = getRemoteCollector().collectJRobins(CHART_WIDTH,
+				CHART_HEIGHT);
+		final JPanel mainJRobinsPanel = createJRobinPanel(jrobins);
 		add(mainJRobinsPanel, BorderLayout.NORTH);
 		add(createButtonsPanel(), BorderLayout.CENTER);
 	}
 
-	private JPanel createJRobinPanel(List<String> myJRobinNames) {
+	private JPanel createJRobinPanel(Map<String, byte[]> jrobins) {
 		final JPanel centerPanel = new JPanel(new GridLayout(-1, NB_COLS));
 		centerPanel.setOpaque(false);
-		for (final String jrobinName : myJRobinNames) {
-			final URL graphUrl = getGraphUrl(jrobinName);
-			final AsyncIconLabel label = new AsyncIconLabel(graphUrl);
+		for (final Map.Entry<String, byte[]> entry : jrobins.entrySet()) {
+			final ImageIcon icon = new ImageIcon(entry.getValue());
+			final JLabel label = new JLabel(icon);
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 			label.setCursor(HAND_CURSOR);
 			// TODO MouseListener pour zoom
@@ -100,48 +81,20 @@ class ChartsPanel extends MelodyPanel {
 		return graphicsPanel;
 	}
 
-	private URL getGraphUrl(String jrobinName) {
-		try {
-			return new URL(urlPart + jrobinName);
-		} catch (final MalformedURLException e) {
-			// ne devrait pas arriver
-			throw new IllegalStateException(e);
-		}
-	}
-
-	private List<String> getJRobinNames() throws IOException {
-		final RemoteCollector remoteCollector = getRemoteCollector();
-		List<String> result = JROBIN_NAMES_BY_APPLICATION.get(remoteCollector.getApplication());
-		if (result == null) {
-			// on suppose que la liste des graphiques ne changera pas après le lancement du client Swing
-			result = remoteCollector.collectJRobinNames();
-			JROBIN_NAMES_BY_APPLICATION.put(remoteCollector.getApplication(), result);
-		}
-		return result;
-	}
-
-	private List<String> getOtherJRobinNames() throws IOException {
-		final RemoteCollector remoteCollector = getRemoteCollector();
-		List<String> result = OTHER_JROBIN_NAMES_BY_APPLICATION.get(remoteCollector
-				.getApplication());
-		if (result == null) {
-			// on suppose que la liste des graphiques ne changera pas après le lancement du client Swing
-			result = remoteCollector.collectOtherJRobinNames();
-			OTHER_JROBIN_NAMES_BY_APPLICATION.put(remoteCollector.getApplication(), result);
-		}
-		return result;
-	}
-
 	private JPanel createButtonsPanel() {
 		final MButton detailsButton = new MButton(I18N.getString("Autres_courbes"), PLUS_ICON);
 		detailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showOtherJRobinsPanel();
-				if (detailsButton.getIcon() == PLUS_ICON) {
-					detailsButton.setIcon(MINUS_ICON);
-				} else {
-					detailsButton.setIcon(PLUS_ICON);
+				try {
+					showOtherJRobinsPanel();
+					if (detailsButton.getIcon() == PLUS_ICON) {
+						detailsButton.setIcon(MINUS_ICON);
+					} else {
+						detailsButton.setIcon(PLUS_ICON);
+					}
+				} catch (final IOException ex) {
+					MSwingUtilities.showException(ex);
 				}
 			}
 		});
@@ -149,9 +102,11 @@ class ChartsPanel extends MelodyPanel {
 		return Utilities.createButtonsPanel(detailsButton);
 	}
 
-	final void showOtherJRobinsPanel() {
+	final void showOtherJRobinsPanel() throws IOException {
 		if (otherJRobinsPanel == null) {
-			otherJRobinsPanel = createJRobinPanel(otherJRobinNames);
+			final Map<String, byte[]> otherJRobins = getRemoteCollector().collectOtherJRobins(
+					CHART_WIDTH, CHART_HEIGHT);
+			otherJRobinsPanel = createJRobinPanel(otherJRobins);
 			otherJRobinsPanel.setVisible(false);
 			add(otherJRobinsPanel, BorderLayout.SOUTH);
 		}

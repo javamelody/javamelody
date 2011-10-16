@@ -27,6 +27,7 @@ import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
@@ -45,6 +46,7 @@ import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
+import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +54,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,12 +378,28 @@ class CollectorController {
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
+			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
+			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
 			final Collector collector = getCollectorByApplication(application);
-			return new ArrayList<String>(collector.getCounterJRobinNames());
+			final Collection<JRobin> jrobins = collector.getCounterJRobins();
+			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
+			for (final JRobin jrobin : jrobins) {
+				final byte[] image = jrobin.graph(range, width, height);
+				images.put(jrobin.getName(), image);
+			}
+			return (Serializable) images;
 		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
+			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
+			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
 			final Collector collector = getCollectorByApplication(application);
-			return new ArrayList<String>(collector.getOtherJRobinNames());
+			final Collection<JRobin> jrobins = collector.getOtherJRobins();
+			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
+			for (final JRobin jrobin : jrobins) {
+				final byte[] image = jrobin.graph(range, width, height);
+				images.put(jrobin.getName(), image);
+			}
+			return (Serializable) images;
 		}
 
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
