@@ -55,8 +55,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -301,10 +304,26 @@ class MonitoringController {
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
-			return new ArrayList<String>(collector.getCounterJRobinNames());
+			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
+			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
+			final Collection<JRobin> jrobins = collector.getCounterJRobins();
+			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
+			for (final JRobin jrobin : jrobins) {
+				final byte[] image = jrobin.graph(range, width, height);
+				images.put(jrobin.getName(), image);
+			}
+			return (Serializable) images;
 		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
-			return new ArrayList<String>(collector.getOtherJRobinNames());
+			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
+			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
+			final Collection<JRobin> jrobins = collector.getOtherJRobins();
+			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
+			for (final JRobin jrobin : jrobins) {
+				final byte[] image = jrobin.graph(range, width, height);
+				images.put(jrobin.getName(), image);
+			}
+			return (Serializable) images;
 		}
 
 		return createDefaultSerializable(javaInformationsList, range);

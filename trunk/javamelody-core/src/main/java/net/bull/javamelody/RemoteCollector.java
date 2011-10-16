@@ -210,18 +210,21 @@ class RemoteCollector {
 		return result;
 	}
 
-	List<String> collectJRobinNames() throws IOException {
+	Map<String, byte[]> collectJRobins(int width, int height) throws IOException {
 		final URL url = urls.get(0);
 		final URL jrobinNamesUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-				+ '=' + HttpParameters.JROBINS_PART);
+				+ '=' + HttpParameters.JROBINS_PART + '&' + HttpParameters.WIDTH_PARAMETER + '='
+				+ width + '&' + HttpParameters.HEIGHT_PARAMETER + '=' + height);
 		final LabradorRetriever labradorRetriever = new LabradorRetriever(jrobinNamesUrl);
 		return labradorRetriever.call();
 	}
 
-	List<String> collectOtherJRobinNames() throws IOException {
+	Map<String, byte[]> collectOtherJRobins(int width, int height) throws IOException {
 		final URL url = urls.get(0);
 		final URL otherJRobinNamesUrl = new URL(url.toString() + '&'
-				+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.OTHER_JROBINS_PART);
+				+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.OTHER_JROBINS_PART + '&'
+				+ HttpParameters.WIDTH_PARAMETER + '=' + width + '&'
+				+ HttpParameters.HEIGHT_PARAMETER + '=' + height);
 		final LabradorRetriever labradorRetriever = new LabradorRetriever(otherJRobinNamesUrl);
 		return labradorRetriever.call();
 	}
