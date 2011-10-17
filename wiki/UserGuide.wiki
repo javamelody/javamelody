@@ -65,7 +65,7 @@ like Tomcat 5.5, 6 or 7, GlassFish v2 or v3, JBoss 4, 5, 6 or 7, Jonas 4 or 5, J
 
 Required dependency: JRobin (LGPL) for evolution charts
 
-Optional dependencies: iText (LGPL or MPL) for reports in pdf format in addition to html, Spring AOP, AOP alliance, Spring core, Spring beans and Commons logging for monitoring of Spring beans, Ehcache for monitoring of caches, Quartz for monitoring of batch jobs
+Optional dependencies: iText v2.1.x (LGPL or MPL) for reports in pdf format in addition to html, Spring AOP, AOP alliance, Spring core, Spring beans and Commons logging for monitoring of Spring beans, Ehcache for monitoring of caches, Quartz for monitoring of batch jobs
 
 Language: English, French, German, Portuguese and Chinese
 
@@ -173,8 +173,8 @@ or MSIE8 (MSIE7 not recommended).
 
 === 4. PDF report generation ===
 
-	To generate PDF reports as well as html reports, adding the library iText is required
-	(licence LGPL or MPL, the iText jar file alone is enough, without the other dependencies like iText-rtf).
+	To generate PDF reports as well as html reports, adding the library iText [http://search.maven.org/remotecontent?filepath=com/lowagie/itext/2.1.7/itext-2.1.7.pom v2.1.x] is required
+	(licence [http://search.maven.org/remotecontent?filepath=com/lowagie/itext/2.1.7/itext-2.1.7.pom LGPL or MPL], the iText jar file alone is enough, without the other dependencies like iText-rtf).
 	
 	Copy the file {{{itext-2.1.7.jar}}}, located in the directory {{{src/test/test-webapp/WEB-INF/lib/}}} of the supplied javamelody.zip file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor. The PDF link will be available at the top of the html report.
