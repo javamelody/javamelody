@@ -378,9 +378,14 @@ class CollectorController {
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
+			final Collector collector = getCollectorByApplication(application);
 			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final Collector collector = getCollectorByApplication(application);
+			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
+			if (graphName != null) {
+				final JRobin jrobin = collector.getJRobin(graphName);
+				return jrobin.graph(range, width, height);
+			}
 			final Collection<JRobin> jrobins = collector.getCounterJRobins();
 			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
 			for (final JRobin jrobin : jrobins) {

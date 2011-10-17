@@ -306,6 +306,11 @@ class MonitoringController {
 			// pour UI Swing
 			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
+			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
+			if (graphName != null) {
+				final JRobin jrobin = collector.getJRobin(graphName);
+				return jrobin.graph(range, width, height);
+			}
 			final Collection<JRobin> jrobins = collector.getCounterJRobins();
 			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
 			for (final JRobin jrobin : jrobins) {
