@@ -24,6 +24,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Map;
 
@@ -51,8 +53,8 @@ class ChartsPanel extends MelodyPanel {
 	private static final ImageIcon THROBBER_ICON = new ImageIcon(
 			ChartsPanel.class.getResource("/icons/throbber.gif"));
 	private static final int NB_COLS = 3;
-	private static final int CHART_HEIGHT = 50;
 	private static final int CHART_WIDTH = 200;
+	private static final int CHART_HEIGHT = 50;
 
 	private JPanel otherJRobinsPanel;
 
@@ -91,11 +93,22 @@ class ChartsPanel extends MelodyPanel {
 		final JPanel centerPanel = new JPanel(new GridLayout(-1, NB_COLS));
 		centerPanel.setOpaque(false);
 		for (final Map.Entry<String, byte[]> entry : jrobins.entrySet()) {
-			final ImageIcon icon = new ImageIcon(entry.getValue());
+			final String jrobinName = entry.getKey();
+			final byte[] imageData = entry.getValue();
+			final ImageIcon icon = new ImageIcon(imageData);
 			final JLabel label = new JLabel(icon);
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 			label.setCursor(HAND_CURSOR);
-			// TODO MouseListener pour zoom
+			label.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					try {
+						showZoomedChart(jrobinName);
+					} catch (final IOException ex) {
+						MSwingUtilities.showException(ex);
+					}
+				}
+			});
 			centerPanel.add(label);
 		}
 
@@ -136,5 +149,10 @@ class ChartsPanel extends MelodyPanel {
 		}
 		otherJRobinsPanel.setVisible(!otherJRobinsPanel.isVisible());
 		otherJRobinsPanel.validate();
+	}
+
+	final void showZoomedChart(String jrobinName) throws IOException {
+		final ChartPanel panel = new ChartPanel(getRemoteCollector(), jrobinName);
+		MainPanel.addOngletFromChild(this, panel);
 	}
 }

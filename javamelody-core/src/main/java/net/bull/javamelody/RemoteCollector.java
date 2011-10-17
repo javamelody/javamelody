@@ -18,9 +18,19 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JROBINS_PART;
+import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
+import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -122,8 +132,8 @@ class RemoteCollector {
 			// récupération à la demande des sessions
 			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
 			for (final URL url : urls) {
-				final URL sessionsUrl = new URL(url.toString() + '&'
-						+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.SESSIONS_PART);
+				final URL sessionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+						+ SESSIONS_PART);
 				final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
 				final List<SessionInformations> sessions = labradorRetriever.call();
 				sessionsInformations.addAll(sessions);
@@ -133,9 +143,8 @@ class RemoteCollector {
 		}
 		SessionInformations found = null;
 		for (final URL url : urls) {
-			final URL sessionsUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.SESSIONS_PART + '&'
-					+ HttpParameters.SESSION_ID_PARAMETER + '=' + sessionId);
+			final URL sessionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ SESSIONS_PART + '&' + SESSION_ID_PARAMETER + '=' + sessionId);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(sessionsUrl);
 			final SessionInformations session = (SessionInformations) labradorRetriever.call();
 			if (session != null) {
@@ -154,8 +163,8 @@ class RemoteCollector {
 		// récupération à la demande des HeapHistogram
 		HeapHistogram heapHistoTotal = null;
 		for (final URL url : urls) {
-			final URL heapHistoUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.HEAP_HISTO_PART);
+			final URL heapHistoUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ HEAP_HISTO_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(heapHistoUrl);
 			final HeapHistogram heapHisto = labradorRetriever.call();
 			if (heapHistoTotal == null) {
@@ -178,8 +187,8 @@ class RemoteCollector {
 		// récupération à la demande des connections
 		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
 		for (final URL url : urls) {
-			final URL connectionsUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.CONNECTIONS_PART);
+			final URL connectionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ CONNECTIONS_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(connectionsUrl);
 			final List<ConnectionInformations> connections = labradorRetriever.call();
 			connectionInformations.add(connections);
@@ -192,8 +201,8 @@ class RemoteCollector {
 		final String title = I18N.getString("Processus");
 		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
 		for (final URL url : urls) {
-			final URL processUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-					+ '=' + HttpParameters.PROCESSES_PART);
+			final URL processUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ PROCESSES_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(processUrl);
 			final List<ProcessInformations> processList = labradorRetriever.call();
 			processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processList);
@@ -212,20 +221,28 @@ class RemoteCollector {
 
 	Map<String, byte[]> collectJRobins(int width, int height) throws IOException {
 		final URL url = urls.get(0);
-		final URL jrobinNamesUrl = new URL(url.toString() + '&' + HttpParameters.PART_PARAMETER
-				+ '=' + HttpParameters.JROBINS_PART + '&' + HttpParameters.WIDTH_PARAMETER + '='
-				+ width + '&' + HttpParameters.HEIGHT_PARAMETER + '=' + height);
+		final URL jrobinNamesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+				+ JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width + '&' + HEIGHT_PARAMETER + '='
+				+ height);
 		final LabradorRetriever labradorRetriever = new LabradorRetriever(jrobinNamesUrl);
 		return labradorRetriever.call();
 	}
 
 	Map<String, byte[]> collectOtherJRobins(int width, int height) throws IOException {
 		final URL url = urls.get(0);
-		final URL otherJRobinNamesUrl = new URL(url.toString() + '&'
-				+ HttpParameters.PART_PARAMETER + '=' + HttpParameters.OTHER_JROBINS_PART + '&'
-				+ HttpParameters.WIDTH_PARAMETER + '=' + width + '&'
-				+ HttpParameters.HEIGHT_PARAMETER + '=' + height);
+		final URL otherJRobinNamesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+				+ OTHER_JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width + '&' + HEIGHT_PARAMETER
+				+ '=' + height);
 		final LabradorRetriever labradorRetriever = new LabradorRetriever(otherJRobinNamesUrl);
+		return labradorRetriever.call();
+	}
+
+	byte[] collectJRobin(String graphName, int width, int height) throws IOException {
+		final URL url = urls.get(0);
+		final URL jrobinUrl = new URL(url.toString() + '&' + GRAPH_PARAMETER + '=' + graphName
+				+ '&' + PART_PARAMETER + '=' + JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width
+				+ '&' + HEIGHT_PARAMETER + '=' + height);
+		final LabradorRetriever labradorRetriever = new LabradorRetriever(jrobinUrl);
 		return labradorRetriever.call();
 	}
 
