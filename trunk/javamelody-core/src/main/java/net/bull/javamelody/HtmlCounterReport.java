@@ -93,7 +93,10 @@ class HtmlCounterReport {
 			if (request != null) {
 				writeRequest(request);
 
-				if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)) {
+				if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)
+						&& !request.getName().toLowerCase().startsWith("alter ")) {
+					// inutile d'essayer d'avoir le plan d'exécution des requêtes sql
+					// telles que "alter session set ..." (cf issue 152)
 					writeSqlRequestExplainPlan(request.getName());
 				}
 			}
