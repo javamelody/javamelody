@@ -5,6 +5,10 @@
 
 (In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
+=== Next release (trunk) ===
+
+  * fix issue 152: Error with execution plan for "ALTER SESSION..."
+
 === 1.32.1 ===
   * fix issue 151: a Java 1.6 dependency was introduced in 1.32.0 (NoSuchFieldError: ROOT)
 
