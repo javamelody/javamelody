@@ -365,6 +365,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Si une DataSource, dont le nom JNDI est de la forme "jdbc/MaDataSource", est configurée dans le serveur d'application
 	(contexte xml de la webapp dans Tomcat par exemple), les requêtes sql seront automatiquement monitorées en plus des requêtes http
 	sans nécessiter de paramétrage (testé en Tomcat 5.5 et 6, glassfish 3, jboss 5, weblogic 11g, jetty 6).
+	En remarque, si JndiObjectFactoryBean est utilisé pour la DataSource dans Spring, alors SessionListener doit être
+	avant ContextLoaderListener dans le fichier web.xml ou bien monitoring-spring.xml doit être utilisé comme dit ci-dessous.
 
 	Si un driver jdbc est utilisé directement sans DataSource, il faut déclarer 'net.bull.javamelody.JdbcDriver'
 	comme classe de driver et il faut ajouter la propriété jdbc 'driver' avec pour valeur la classe du vrai driver.
