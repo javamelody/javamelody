@@ -29,7 +29,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -66,10 +65,8 @@ public class ImageFileChooser extends JFileChooser {
 	 * @param openOrSave boolean
 	 * @param fileName String
 	 * @return File
-	 * @throws IOException   Si format, ou taille en ko, ou taille en dimension invalide
 	 */
-	public static File chooseImage(Component parent, boolean openOrSave, String fileName)
-			throws IOException {
+	public static File chooseImage(Component parent, boolean openOrSave, String fileName) {
 		int result;
 		if (fileName != null) {
 			IMAGE_FILE_CHOOSER.setSelectedFile(new File(fileName));
@@ -81,7 +78,7 @@ public class ImageFileChooser extends JFileChooser {
 		}
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File file = IMAGE_FILE_CHOOSER.getSelectedFile();
-			file = IMAGE_FILE_CHOOSER.checkFile(file, openOrSave);
+			file = IMAGE_FILE_CHOOSER.checkFile(file);
 			return file;
 		}
 		return null;
@@ -90,36 +87,33 @@ public class ImageFileChooser extends JFileChooser {
 	/**
 	 * Vérifie qu'un fichier est bien une image valide.
 	 * @param file File
-	 * @throws IOException   Si format, ou taille en ko, ou taille en pixels invalide
 	 */
-	public static void checkImage(File file) throws IOException {
-		IMAGE_FILE_CHOOSER.checkFile(file, true);
+	public static void checkImage(File file) {
+		IMAGE_FILE_CHOOSER.checkFile(file);
 	}
 
 	/**
-	 * En lecture, vérifie le format du fichier sélectionné.
 	 * En enregistrement, vérifie le format avec l'extension et retourne un nouveau fichier sinon.
 	 * @param file File
-	 * @param openOrSave boolean
 	 * @return File
-	 * @throws IOException   Si format invalide
 	 */
-	private File checkFile(File file, boolean openOrSave) throws IOException {
+	private File checkFile(File file) {
 		final String extension = getExtension(file.getName()).toLowerCase();
 		if (!Arrays.asList(extensions).contains(extension)) {
-			if (openOrSave) {
-				final StringBuilder sb = new StringBuilder(
-						"L'extension du fichier sélectionné n'est pas un format d'image accepté");
-				sb.append(" (");
-				for (final Iterator<String> it = Arrays.asList(extensions).iterator(); it.hasNext();) {
-					sb.append(it.next());
-					if (it.hasNext()) {
-						sb.append(", ");
-					}
-				}
-				sb.append(')');
-				throw new IOException(sb.toString());
-			}
+			// En lecture, vérifie le format du fichier sélectionné.
+			//			if (openOrSave) {
+			//				final StringBuilder sb = new StringBuilder(
+			//						"L'extension du fichier sélectionné n'est pas un format d'image accepté");
+			//				sb.append(" (");
+			//				for (final Iterator<String> it = Arrays.asList(extensions).iterator(); it.hasNext();) {
+			//					sb.append(it.next());
+			//					if (it.hasNext()) {
+			//						sb.append(", ");
+			//					}
+			//				}
+			//				sb.append(')');
+			//				throw new IOException(sb.toString());
+			//			}
 			// si pas d'extension ou extension inconnue, on prend png par défaut
 			return new File(file.getPath() + ".png");
 		}
