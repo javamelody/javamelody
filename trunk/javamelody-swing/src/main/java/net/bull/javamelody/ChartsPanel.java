@@ -36,6 +36,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 
 import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.MTransferableLabel;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
@@ -96,7 +97,9 @@ class ChartsPanel extends MelodyPanel {
 			final String jrobinName = entry.getKey();
 			final byte[] imageData = entry.getValue();
 			final ImageIcon icon = new ImageIcon(imageData);
-			final JLabel label = new JLabel(icon);
+			final JLabel label = new MTransferableLabel(icon);
+			// ce name sera utilisé comme nom de fichier pour le drag and drop de l'image
+			label.setName(I18N.getString(jrobinName));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 			label.setCursor(HAND_CURSOR);
 			label.addMouseListener(new MouseAdapter() {

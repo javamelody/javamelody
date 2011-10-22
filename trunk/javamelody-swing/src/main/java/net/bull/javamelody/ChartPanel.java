@@ -19,16 +19,24 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingWorker;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.MTransferableLabel;
 import net.bull.javamelody.swing.Utilities;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel d'un graphique zoomé.
@@ -40,6 +48,9 @@ class ChartPanel extends MelodyPanel {
 	private static final int CHART_WIDTH = 960;
 	private static final int CHART_HEIGHT = 400;
 	private final String graphName;
+	private ImageIcon imageIcon;
+	private MTransferableLabel imageLabel;
+	private int zoomValue;
 
 	ChartPanel(RemoteCollector remoteCollector, String graphName) throws IOException {
 		super(remoteCollector);
@@ -54,10 +65,44 @@ class ChartPanel extends MelodyPanel {
 
 		final byte[] imageData = getRemoteCollector().collectJRobin(graphName, CHART_WIDTH,
 				CHART_HEIGHT);
-		final JLabel label = new JLabel(new ImageIcon(imageData));
-		add(label, BorderLayout.CENTER);
+		this.imageIcon = new ImageIcon(imageData);
+		this.imageLabel = new MTransferableLabel(imageIcon);
+		// ce name sera utilisé comme nom de fichier pour le drag and drop de l'image
+		this.imageLabel.setName(I18N.getString(graphName));
 
-		add(createButtonsPanel(), BorderLayout.SOUTH);
+		final JScrollPane scrollPane = new JScrollPane(imageLabel);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		add(scrollPane, BorderLayout.CENTER);
+
+		final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		southPanel.setOpaque(false);
+		southPanel.add(createSlider());
+		southPanel.add(createButtonsPanel());
+		add(southPanel, BorderLayout.SOUTH);
+	}
+
+	private JSlider createSlider() {
+		final JSlider slider = new JSlider();
+		slider.setOpaque(false);
+		slider.setMinimum(10);
+		slider.setMaximum(200);
+		slider.setValue(100);
+		slider.setLabelTable(slider.createStandardLabels(50));
+		slider.setMajorTickSpacing(100);
+		slider.setMinorTickSpacing(10);
+		slider.setExtent(20);
+		// slider.setPaintLabels(true);
+		// slider.setPaintTicks(true);
+		// slider.setSnapToTicks(true);
+		slider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				final int value = slider.getValue();
+				refreshZoom(value);
+			}
+		});
+		return slider;
 	}
 
 	private JPanel createButtonsPanel() {
@@ -74,7 +119,69 @@ class ChartPanel extends MelodyPanel {
 			}
 		});
 
-		// TODO boutons périodes et slider pour rezoom
+		// TODO traduction
+		final MButton exportButton = new MButton("Exporter...");
+		exportButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showExportDialog();
+			}
+		});
+
+		// TODO boutons périodes
 		return Utilities.createButtonsPanel(refreshButton);
+	}
+
+	final void refreshZoom(final int value) {
+		this.zoomValue = value;
+		final int width = Math.max(1, imageIcon.getIconWidth() * value / 100);
+		final int height = Math.max(1, imageIcon.getIconHeight() * value / 100);
+		final ImageIcon scaledImageIcon = MSwingUtilities.getScaledInstance(imageIcon, width,
+				height);
+		// setIcon appelle déjà revalidate() et repaint()
+		getImageLabel().setIcon(scaledImageIcon);
+		// SwingWorker pour recharger le graphique dans la bonne dimension en tâche de fond
+		final SwingWorker<byte[], Object> swingWorker = new SwingWorker<byte[], Object>() {
+			@Override
+			protected byte[] doInBackground() throws IOException, InterruptedException {
+				return collectJRobin(value, width, height);
+			}
+
+			@Override
+			protected void done() {
+				try {
+					final byte[] imageData = get();
+					// si la valeur de zoom a déjà rechangé, imageData peut être null
+					if (imageData != null) {
+						getImageLabel().setIcon(new ImageIcon(imageData));
+					}
+				} catch (final Exception e) {
+					MSwingUtilities.showException(e);
+				}
+			}
+		};
+		swingWorker.execute();
+	}
+
+	final byte[] collectJRobin(int value, int width, int height) throws IOException,
+			InterruptedException {
+		// on attend 300 ms avant de voir si l'utilisateur se stabilise sur une valeur de zoom
+		// et sinon inutile de charger l'image avec cette valeur de zoom
+		Thread.sleep(300);
+		//		if (zoomValue == value && imageLabel.getIcon().getIconWidth() != width
+		//				&& imageLabel.getIcon().getIconHeight() != height) {
+		if (zoomValue == value) {
+			zoomValue = -1;
+			return getRemoteCollector().collectJRobin(graphName, width, height);
+		}
+		return null;
+	}
+
+	final void showExportDialog() {
+		getImageLabel().showExportDialog();
+	}
+
+	final MTransferableLabel getImageLabel() {
+		return imageLabel;
 	}
 }
