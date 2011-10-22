@@ -124,12 +124,16 @@ class ChartPanel extends MelodyPanel {
 		exportButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showExportDialog();
+				try {
+					export();
+				} catch (final IOException ex) {
+					MSwingUtilities.showException(ex);
+				}
 			}
 		});
 
 		// TODO boutons périodes
-		return Utilities.createButtonsPanel(refreshButton);
+		return Utilities.createButtonsPanel(refreshButton, exportButton);
 	}
 
 	final void refreshZoom(final int value) {
@@ -177,8 +181,8 @@ class ChartPanel extends MelodyPanel {
 		return null;
 	}
 
-	final void showExportDialog() {
-		getImageLabel().showExportDialog();
+	final void export() throws IOException {
+		getImageLabel().export();
 	}
 
 	final MTransferableLabel getImageLabel() {

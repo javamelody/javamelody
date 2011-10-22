@@ -24,6 +24,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -133,9 +135,21 @@ public class MTransferableLabel extends JLabel {
 
 	/**
 	 * Affiche la boîte de dialogue d'export de l'image.
+	 * @throws IOException e
 	 */
-	public void showExportDialog() {
-		// TODO export avec ImageFileChooser
+	public void export() throws IOException {
+		final byte[] imageData = getImageData();
+		if (imageData != null) {
+			final File file = ImageFileChooser.chooseImage(this, false, getName() + ".png");
+			if (file != null) {
+				final FileOutputStream fileOutputStream = new FileOutputStream(file);
+				try {
+					fileOutputStream.write(imageData);
+				} finally {
+					fileOutputStream.close();
+				}
+			}
+		}
 	}
 
 	private void init() {
