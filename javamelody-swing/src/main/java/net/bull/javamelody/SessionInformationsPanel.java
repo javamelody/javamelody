@@ -45,7 +45,6 @@ import net.bull.javamelody.swing.table.MDateTableCellRenderer;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
-import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel de la liste des sessions.
@@ -338,7 +337,7 @@ class SessionInformationsPanel extends MelodyPanel {
 				if (list.isEmpty()) {
 					final String message = I18N.getFormattedString("session_invalidee",
 							sessionInformations.getId());
-					MSwingUtilities.showMessage(this, message);
+					showMessage(message);
 				} else {
 					getAttributesTable().setList(list.get(0).getAttributes());
 				}
