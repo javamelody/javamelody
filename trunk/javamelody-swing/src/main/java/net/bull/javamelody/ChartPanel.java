@@ -127,7 +127,7 @@ class ChartPanel extends MelodyPanel {
 				try {
 					export();
 				} catch (final IOException ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
@@ -160,7 +160,7 @@ class ChartPanel extends MelodyPanel {
 						getImageLabel().setIcon(new ImageIcon(imageData));
 					}
 				} catch (final Exception e) {
-					MSwingUtilities.showException(e);
+					showException(e);
 				}
 			}
 		};

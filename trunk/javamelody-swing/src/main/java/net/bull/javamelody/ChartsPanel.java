@@ -38,7 +38,6 @@ import javax.swing.SwingWorker;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MTransferableLabel;
 import net.bull.javamelody.swing.Utilities;
-import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel des graphiques principaux.
@@ -82,7 +81,7 @@ class ChartsPanel extends MelodyPanel {
 					add(mainJRobinsPanel, BorderLayout.NORTH);
 					revalidate();
 				} catch (final Exception e) {
-					MSwingUtilities.showException(e);
+					showException(e);
 					remove(throbberLabel);
 				}
 			}
@@ -108,7 +107,7 @@ class ChartsPanel extends MelodyPanel {
 					try {
 						showZoomedChart(jrobinName);
 					} catch (final IOException ex) {
-						MSwingUtilities.showException(ex);
+						showException(ex);
 					}
 				}
 			});
@@ -134,7 +133,7 @@ class ChartsPanel extends MelodyPanel {
 						detailsButton.setIcon(PLUS_ICON);
 					}
 				} catch (final IOException ex) {
-					MSwingUtilities.showException(ex);
+					showException(ex);
 				}
 			}
 		});
