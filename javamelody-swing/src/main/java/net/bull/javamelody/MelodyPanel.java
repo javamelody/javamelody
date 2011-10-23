@@ -28,8 +28,6 @@ import java.io.OutputStream;
 
 import javax.swing.JPanel;
 
-import net.bull.javamelody.swing.util.MSwingUtilities;
-
 /**
  * Panel parent.
  * @author Emeric Vernat
@@ -52,19 +50,19 @@ class MelodyPanel extends JPanel {
 	}
 
 	final boolean confirm(String message) {
-		return MSwingUtilities.showConfirmation(this, message);
+		return MainFrame.showConfirmation(this, message);
 	}
 
 	final void showMessage(final String message) {
-		MSwingUtilities.showMessage(this, message);
+		MainFrame.showMessage(this, message);
 	}
 
 	/**
 	 * Affiche la trace de l'exception dans la console d'erreur et affiche une boîte de dialogue pour afficher l'exception.
 	 * @param throwable Throwable
 	 */
-	static void showException(Throwable throwable) {
-		MSwingUtilities.showException(throwable);
+	void showException(Throwable throwable) {
+		MainFrame.showException(this, throwable);
 	}
 
 	RemoteCollector getRemoteCollector() {
