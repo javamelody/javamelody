@@ -18,13 +18,11 @@
  */
 package net.bull.javamelody;
 
-import java.awt.Frame;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -66,9 +64,6 @@ public final class Main {
 	}
 
 	static void showFrame() throws IOException {
-		final JFrame frame = new JFrame();
-		frame.setTitle("Java Melody");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// TODO mettre les instances de MainPanel dans des onglets
 		final List<URL> urls = Arrays.asList(new URL(
 				"http://localhost:8090/test/monitoring?format=serialized"));
@@ -77,12 +72,8 @@ public final class Main {
 		final String collectorUrl = urls.get(0).toExternalForm();
 		final URL monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
 		final MainPanel contentPane = new MainPanel(remoteCollector, monitoringUrl);
+		final MainFrame frame = new MainFrame();
 		frame.setContentPane(contentPane);
-		frame.setIconImage(ImageIconCache.getImageIcon("systemmonitor.png").getImage());
-		// définit la taille
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
 
