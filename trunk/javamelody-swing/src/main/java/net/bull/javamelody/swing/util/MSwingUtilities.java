@@ -19,13 +19,11 @@
 package net.bull.javamelody.swing.util;
 
 import java.awt.AWTEvent;
-import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
@@ -196,15 +194,16 @@ public final class MSwingUtilities {
 		final Component focusOwner = getPermanentFocusOwner();
 		final Window focusedWindow = SwingUtilities.getWindowAncestor(focusOwner);
 		if (focusedWindow instanceof Dialog && ((Dialog) focusedWindow).isModal()) {
-			try {
-				final Robot robot = new Robot();
-				robot.keyPress(KeyEvent.VK_ALT);
-				robot.keyPress(KeyEvent.VK_F4);
-				robot.keyRelease(KeyEvent.VK_F4);
-				robot.keyRelease(KeyEvent.VK_ALT);
-			} catch (final AWTException e) {
-				throw new IllegalStateException(e);
-			}
+			//			try {
+			//				final Robot robot = new Robot();
+			//				robot.keyPress(KeyEvent.VK_ALT);
+			//				robot.keyPress(KeyEvent.VK_F4);
+			//				robot.keyRelease(KeyEvent.VK_F4);
+			//				robot.keyRelease(KeyEvent.VK_ALT);
+			//			} catch (final AWTException e) {
+			//				throw new IllegalStateException(e);
+			//			}
+			focusedWindow.dispose();
 		}
 	}
 
