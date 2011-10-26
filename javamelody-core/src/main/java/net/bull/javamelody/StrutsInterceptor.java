@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 /**
@@ -61,7 +62,17 @@ public final class StrutsInterceptor extends AbstractInterceptor {
 		boolean systemError = false;
 		try {
 			// Requested action name.
-			final String actionName = invocation.getInvocationContext().getName();
+			// final String actionName = invocation.getInvocationContext().getName();
+			final String actionName;
+			final ActionProxy proxy = invocation.getProxy();
+			final String action = proxy.getActionName();
+			final String method = proxy.getMethod();
+			final String namespace = proxy.getNamespace();
+			if (method == null || "execute".equals(method)) {
+				actionName = namespace + '/' + action;
+			} else {
+				actionName = namespace + '/' + action + '!' + method;
+			}
 
 			STRUTS_COUNTER.bindContextIncludingCpu(actionName);
 			return invocation.invoke();
