@@ -47,8 +47,6 @@ class MainPanel extends MelodyPanel {
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
-	// TODO si maximize enlevé, la taile de la fenêtre est trop grande
-
 	MainPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
 		super(remoteCollector);
 		assert monitoringUrl != null;
