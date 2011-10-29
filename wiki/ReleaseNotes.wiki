@@ -9,6 +9,7 @@
 
   * fix issue 146 and issue 153: Incorrect Struts statistics when two actions have the same name but are in different packages. Note: the consequence is that the names of all the Struts actions are changed in the statistics.
   * fix issue 152: Error with execution plan for "ALTER SESSION..."
+  * fix issue 157: In the Grails plugin, do not add groovy meta programming on services if javamelody is disabled
 
 === 1.32.1 ===
   * fix issue 151: a Java 1.6 dependency was introduced in 1.32.0 (NoSuchFieldError: ROOT)
