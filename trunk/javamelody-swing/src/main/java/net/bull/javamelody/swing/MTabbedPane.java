@@ -77,7 +77,8 @@ public class MTabbedPane extends JTabbedPane {
 	 * Constructeur.
 	 */
 	public MTabbedPane() {
-		super(TOP, SCROLL_TAB_LAYOUT);
+		super(TOP);
+		// pas SCROLL_TAB_LAYOUT car en Look and feel Nimbus la bordure sous les onglets ne s'afficherait pas
 		initListeners();
 	}
 
