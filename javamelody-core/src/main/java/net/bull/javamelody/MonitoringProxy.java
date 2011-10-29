@@ -75,8 +75,8 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	/**
 	 * Constructeur privé : instanciation pour méthode createProxy ci-dessous.
 	 * @param facade Object
-	* @param name override of the interface name in the statistics
-	 	 */
+	 * @param name override of the interface name in the statistics
+	 */
 	private MonitoringProxy(Object facade, String name) {
 		super();
 		this.facade = facade;
@@ -88,7 +88,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	}
 
 	/**
-	 *
+	 * Création d'un proxy de monitoring pour une façade.
 	 * @param <T> Type de la façade (une interface en général).
 	 * @param facade Instance de la façade
 	 * @return Proxy de la façade
@@ -98,7 +98,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	}
 
 	/**
-	 *
+	 * Création d'un proxy de monitoring pour une façade, en spécifiant le nom qui sera affiché dans le monitoring.
 	 * @param <T> Type de la façade (une interface en général).
 	 * @param facade Instance de la façade
 	 * @param name override of the interface name in the statistics
