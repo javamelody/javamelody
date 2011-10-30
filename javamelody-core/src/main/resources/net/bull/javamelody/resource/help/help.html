@@ -146,7 +146,7 @@ To find the cause:<ul>
 <li>If the flat level(s) has ended, you can find the statistics of http (and sql) requests involved,
  in the detailed tables of '<img width='16' height='16' src='?resource=dbweb.png' alt='http'/> Http (and sql) statistics',
  except if the application server has been stopped before the end of these requests.</li>
-<li>The drill-down display in the detail of an http request can help you to find the root cause in the façades or the sql requests.</li>
+<li>The drill-down display in the detail of an http request can help you to find the root cause in the faï¿½ades or the sql requests.</li>
 <li>If an Oracle database is used, the display of the execution plan in the detail of the sql request can help you to find the cause of the time of this request
 <br/>(if the display of the execution plan says that a table "plan_table" must be created: 
 you can use the script @$ORACLE_HOME/rdbms/admin/catplan.sql as user SYS if v10g or above
@@ -196,13 +196,13 @@ Http statistics</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
 Sql statistics (jdbc)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='ejb'/>
-Ejb statistics (if ejb3 façades on JavaEE 5+)</li>
+Ejb statistics (if ejb3 faï¿½ades on JavaEE 5+)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='spring'/>
-Spring statistics (if spring façades)</li>
+Spring statistics (if spring faï¿½ades)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='guice'/>
-Guice statistics (if guice façades)</li>
+Guice statistics (if guice faï¿½ades)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
-Statistics of façades interfaces (without ejb3, spring or guice)</li>
+Statistics of faï¿½ades interfaces (without ejb3, spring or guice)</li>
 <li><img width='24' height='24' src='?resource=struts.png' alt='struts'/>
 Statistics of struts actions</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
@@ -359,8 +359,10 @@ For each of the caches, some statistics are displayed:
 the number of objects in memory and on disk at the moment, the efficiency of the memory cache
 (percentage since the start of the server of the memory cache hits compared to the disk cache hits),
 the global cache efficiency (percentage of the memory cache or disk cache hits compared to all cache access
-including misses for data not in cache).
+including misses for data not in cache) depending on the ehcache version.
 The configuration of each cache is also displayed for information.
+<br/>Since ehcache v2.1, the caches statistics are not enabled by default.
+So you need to enable them by adding statistics="true" in all the configurations of the caches, in order to display the efficiency values of the caches.
 <br/>A button is available to clear all caches.
 
 <h3><img width='24' height='24' src='?resource=jobs.png' alt='Jobs'/>

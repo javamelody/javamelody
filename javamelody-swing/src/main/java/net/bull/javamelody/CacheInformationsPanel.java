@@ -24,8 +24,11 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MHyperLink;
@@ -70,10 +73,22 @@ class CacheInformationsPanel extends MelodyPanel {
 				"http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary");
 		add(hyperLink, BorderLayout.WEST);
 
+		final JPanel eastPanel = new JPanel();
+		eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+		eastPanel.setOpaque(false);
+		if (!hitsRatioEnabled) {
+			final JLabel statisticsEnabledLabel = new JLabel(
+					I18N.getString("caches_statistics_enable") + ' ');
+			statisticsEnabledLabel.setAlignmentX(SwingConstants.WEST);
+			eastPanel.add(statisticsEnabledLabel);
+		}
+
 		if (Parameters.isSystemActionsEnabled()) {
 			final JPanel buttonsPanel = createButtonsPanel();
-			add(buttonsPanel, BorderLayout.EAST);
+			buttonsPanel.setAlignmentX(SwingConstants.RIGHT);
+			eastPanel.add(buttonsPanel);
 		}
+		add(eastPanel, BorderLayout.EAST);
 	}
 
 	private MTableScrollPane<CacheInformations> createScrollPane() {
