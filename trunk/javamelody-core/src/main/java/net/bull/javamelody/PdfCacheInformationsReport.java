@@ -74,6 +74,12 @@ class PdfCacheInformationsReport {
 			writeCacheInformations(cacheInformations);
 		}
 		document.add(currentTable);
+		if (!hitsRatioEnabled) {
+			final Paragraph statisticsEnabledParagraph = new Paragraph(
+					I18N.getString("caches_statistics_enable"), PdfDocumentFactory.TABLE_CELL_FONT);
+			statisticsEnabledParagraph.setAlignment(Element.ALIGN_RIGHT);
+			document.add(statisticsEnabledParagraph);
+		}
 		addConfigurationReference();
 	}
 

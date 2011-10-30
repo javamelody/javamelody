@@ -314,6 +314,8 @@ Os caches de dados exibem a lista de caches no aplicativo java, desde que a bibl
 Para cada um dos caches, algumas estatísticas são exibidas:
 o número de objetos em memória e em disco no momento, a eficiência da memória cache (percentual desde o início do servidor de acessos ao cache de memória em comparação com os acessos ao cache em disco),
 a eficiência global do cache (percentagem do cache de memória ou cache de disco comparado com todos os acessos ao cache, incluindo dados não presentes no cache). A configuração de cada cache também é exibida para obter informações.
+<br/>Since ehcache v2.1, the caches statistics are not enabled by default.
+So you need to enable them by adding statistics="true" in all the configurations of the caches, in order to display the efficiency values of the caches.
 <br/>Um botão está disponível para limpar todos os caches.
 
 <h3><img width='24' height='24' src='?resource=jobs.png' alt='Jobs'/>

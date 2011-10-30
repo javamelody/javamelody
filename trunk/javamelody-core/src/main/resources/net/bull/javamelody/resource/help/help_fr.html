@@ -363,8 +363,10 @@ Pour chacun des caches, des statistiques sont indiquées :
 le nombre d'objets en mémoire et sur disque à cet instant, l'efficacité du cache mémoire 
 (pourcentage depuis le démarrage du serveur des demandes satisfaites par le cache en mémoire par rapport à celles satisfaites par le cache sur disque),
 l'efficacité du cache au global (pourcentage des demandes satisfaites par le cache en mémoire ou sur disque par rapport
-à toutes les demandes y compris celles non satisfaites pour les données non présentes en cache).
+à toutes les demandes y compris celles non satisfaites pour les données non présentes en cache) selon la version d'ehcache.
 La configuration de chaque cache est également rappelée.
+<br/>Depuis ehcache v2.1, les statistisques d'ehcache ne sont pas activées par défaut.
+Il est donc nécessaire de les activer en ajoutant statistics="true" dans toutes les configurations des caches, pour afficher les valeurs d'efficacité des caches.
 <br/>Un bouton permet de purger tous les caches.
 
 <h3><img width='24' height='24' src='?resource=jobs.png' alt='Jobs'/>
