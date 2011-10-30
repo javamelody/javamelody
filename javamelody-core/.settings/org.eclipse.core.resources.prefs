@@ -1,7 +1,9 @@
-#Sat Jun 25 19:28:19 CEST 2011
+#Sun Oct 30 15:58:45 CET 2011
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
+encoding//src/main/resources/net/bull/javamelody/resource/help/help_fr.html=ISO-8859-1
+encoding//src/main/resources/net/bull/javamelody/resource/help/help_pt.html=ISO-8859-1
 encoding//src/site/apt=UTF-8
 encoding//src/test/java=UTF-8
 encoding//src/test/resources=UTF-8
