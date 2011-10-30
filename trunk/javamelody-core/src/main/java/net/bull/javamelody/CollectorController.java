@@ -387,24 +387,16 @@ class CollectorController {
 				return jrobin.graph(range, width, height);
 			}
 			final Collection<JRobin> jrobins = collector.getCounterJRobins();
-			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
-			for (final JRobin jrobin : jrobins) {
-				final byte[] image = jrobin.graph(range, width, height);
-				images.put(jrobin.getName(), image);
-			}
-			return (Serializable) images;
+			return (Serializable) MonitoringController.convertJRobinsToImages(jrobins, range,
+					width, height);
 		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
 			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
 			final Collector collector = getCollectorByApplication(application);
 			final Collection<JRobin> jrobins = collector.getOtherJRobins();
-			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
-			for (final JRobin jrobin : jrobins) {
-				final byte[] image = jrobin.graph(range, width, height);
-				images.put(jrobin.getName(), image);
-			}
-			return (Serializable) images;
+			return (Serializable) MonitoringController.convertJRobinsToImages(jrobins, range,
+					width, height);
 		}
 
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);

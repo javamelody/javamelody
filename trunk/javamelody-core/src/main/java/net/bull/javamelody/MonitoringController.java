@@ -312,26 +312,26 @@ class MonitoringController {
 				return jrobin.graph(range, width, height);
 			}
 			final Collection<JRobin> jrobins = collector.getCounterJRobins();
-			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
-			for (final JRobin jrobin : jrobins) {
-				final byte[] image = jrobin.graph(range, width, height);
-				images.put(jrobin.getName(), image);
-			}
-			return (Serializable) images;
+			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
 		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
 			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
 			final Collection<JRobin> jrobins = collector.getOtherJRobins();
-			final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
-			for (final JRobin jrobin : jrobins) {
-				final byte[] image = jrobin.graph(range, width, height);
-				images.put(jrobin.getName(), image);
-			}
-			return (Serializable) images;
+			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
 		}
 
 		return createDefaultSerializable(javaInformationsList, range);
+	}
+
+	static Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
+			int width, int height) throws IOException {
+		final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
+		for (final JRobin jrobin : jrobins) {
+			final byte[] image = jrobin.graph(range, width, height);
+			images.put(jrobin.getName(), image);
+		}
+		return images;
 	}
 
 	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest)
