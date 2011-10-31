@@ -220,7 +220,27 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	private JPanel createButtonsPanel() {
 		final MButton refreshButton = createRefreshButton();
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					refresh();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
 		final MButton pdfButton = createPdfButton();
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
 		final MButton invalidateAllSessionsButton = createInvalidateAllSessionsButton();
 		final MButton invalidateSessionButton = createInvalidateSessionButton();
 		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -233,39 +253,6 @@ class SessionInformationsPanel extends MelodyPanel {
 		invalidateSessionButton.setEnabled(getTable().getSelectedObject() != null);
 		return Utilities.createButtonsPanel(refreshButton, pdfButton, invalidateAllSessionsButton,
 				invalidateSessionButton);
-	}
-
-	private MButton createRefreshButton() {
-		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
-				ImageIconCache.getImageIcon("action_refresh.png"));
-		refreshButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					refresh();
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
-		return refreshButton;
-	}
-
-	private MButton createPdfButton() {
-		final MButton pdfButton = new MButton(I18N.getString("PDF"),
-				ImageIconCache.getImageIcon("pdf.png"));
-		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
-		pdfButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					actionPdf();
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
-		return pdfButton;
 	}
 
 	private MButton createInvalidateAllSessionsButton() {

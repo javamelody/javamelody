@@ -28,6 +28,8 @@ import java.io.OutputStream;
 
 import javax.swing.JPanel;
 
+import net.bull.javamelody.swing.MButton;
+
 /**
  * Panel parent.
  * @author Emeric Vernat
@@ -61,15 +63,15 @@ class MelodyPanel extends JPanel {
 	 * Affiche la trace de l'exception dans la console d'erreur et affiche une boîte de dialogue pour afficher l'exception.
 	 * @param throwable Throwable
 	 */
-	void showException(Throwable throwable) {
+	final void showException(Throwable throwable) {
 		MainFrame.showException(this, throwable);
 	}
 
-	RemoteCollector getRemoteCollector() {
+	final RemoteCollector getRemoteCollector() {
 		return remoteCollector;
 	}
 
-	File createTempFileForPdf() {
+	final File createTempFileForPdf() {
 		final String application = getRemoteCollector().getApplication();
 		final File tempFile = new File(System.getProperty("java.io.tmpdir"),
 				PdfReport.getFileName(application));
@@ -77,7 +79,21 @@ class MelodyPanel extends JPanel {
 		return tempFile;
 	}
 
-	OutputStream createFileOutputStream(File tempFile) throws IOException {
+	final OutputStream createFileOutputStream(File tempFile) throws IOException {
 		return new BufferedOutputStream(new FileOutputStream(tempFile));
+	}
+
+	final MButton createRefreshButton() {
+		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
+				ImageIconCache.getImageIcon("action_refresh.png"));
+		refreshButton.setToolTipText(I18N.getString("Rafraichir"));
+		return refreshButton;
+	}
+
+	final MButton createPdfButton() {
+		final MButton pdfButton = new MButton(I18N.getString("PDF"),
+				ImageIconCache.getImageIcon("pdf.png"));
+		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		return pdfButton;
 	}
 }
