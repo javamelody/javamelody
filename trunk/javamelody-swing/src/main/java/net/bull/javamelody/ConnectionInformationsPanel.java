@@ -253,8 +253,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
-				ImageIconCache.getImageIcon("action_refresh.png"));
+		final MButton refreshButton = createRefreshButton();
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

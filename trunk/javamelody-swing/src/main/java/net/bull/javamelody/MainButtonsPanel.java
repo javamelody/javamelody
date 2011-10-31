@@ -46,9 +46,7 @@ class MainButtonsPanel extends MelodyPanel {
 	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
 		super(remoteCollector, new FlowLayout(FlowLayout.CENTER));
 
-		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
-				ImageIconCache.getImageIcon("action_refresh.png"));
-		refreshButton.setToolTipText(I18N.getString("Rafraichir"));
+		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = new MButton(I18N.getString("PDF"),
 				ImageIconCache.getImageIcon("pdf.png"));
 		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
