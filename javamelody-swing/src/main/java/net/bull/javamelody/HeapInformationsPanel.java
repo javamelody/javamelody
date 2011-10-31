@@ -269,9 +269,7 @@ class HeapInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final MButton pdfButton = new MButton(I18N.getString("PDF"),
-				ImageIconCache.getImageIcon("pdf.png"));
-		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		final MButton pdfButton = createPdfButton();
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

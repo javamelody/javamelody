@@ -47,9 +47,7 @@ class MainButtonsPanel extends MelodyPanel {
 		super(remoteCollector, new FlowLayout(FlowLayout.CENTER));
 
 		final MButton refreshButton = createRefreshButton();
-		final MButton pdfButton = new MButton(I18N.getString("PDF"),
-				ImageIconCache.getImageIcon("pdf.png"));
-		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		final MButton pdfButton = createPdfButton();
 		final MButton onlineHelpButton = new MButton(I18N.getString("Aide_en_ligne"),
 				ImageIconCache.getImageIcon("action_help.png"));
 		onlineHelpButton.setToolTipText(I18N.getString("Afficher_aide_en_ligne"));
