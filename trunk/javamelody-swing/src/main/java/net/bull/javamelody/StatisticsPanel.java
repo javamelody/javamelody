@@ -275,11 +275,7 @@ class StatisticsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showDetailRequests();
-				if (detailsButton.getIcon() == PLUS_ICON) {
-					detailsButton.setIcon(MINUS_ICON);
-				} else {
-					detailsButton.setIcon(PLUS_ICON);
-				}
+				changePlusMinusIcon(detailsButton);
 			}
 		});
 		return detailsButton;
@@ -291,11 +287,7 @@ class StatisticsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showLastErrors();
-				if (lastErrorsButton.getIcon() == PLUS_ICON) {
-					lastErrorsButton.setIcon(MINUS_ICON);
-				} else {
-					lastErrorsButton.setIcon(PLUS_ICON);
-				}
+				changePlusMinusIcon(lastErrorsButton);
 			}
 		});
 		return lastErrorsButton;
@@ -352,6 +344,14 @@ class StatisticsPanel extends MelodyPanel {
 			output.close();
 		}
 		Desktop.getDesktop().open(tempFile);
+	}
+
+	final void changePlusMinusIcon(MButton detailsButton) {
+		if (detailsButton.getIcon() == PLUS_ICON) {
+			detailsButton.setIcon(MINUS_ICON);
+		} else {
+			detailsButton.setIcon(PLUS_ICON);
+		}
 	}
 
 	private boolean isErrorCounter() {

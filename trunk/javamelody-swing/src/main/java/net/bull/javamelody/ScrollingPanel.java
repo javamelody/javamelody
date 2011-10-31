@@ -172,11 +172,7 @@ class ScrollingPanel extends MelodyPanel {
 					javaInformationsPanel.showDetails(repeatHost);
 					javaInformationsPanel.validate();
 				}
-				if (javaInformationsDetailsButton.getIcon() == PLUS_ICON) {
-					javaInformationsDetailsButton.setIcon(MINUS_ICON);
-				} else {
-					javaInformationsDetailsButton.setIcon(PLUS_ICON);
-				}
+				changePlusMinusIcon(javaInformationsDetailsButton);
 			}
 		});
 		westJavaInformationsPanel.add(javaInformationsDetailsButton);
@@ -205,11 +201,7 @@ class ScrollingPanel extends MelodyPanel {
 				public void actionPerformed(ActionEvent e) {
 					threadInformationsPanel.setVisible(!threadInformationsPanel.isVisible());
 					validate();
-					if (detailsButton.getIcon() == PLUS_ICON) {
-						detailsButton.setIcon(MINUS_ICON);
-					} else {
-						detailsButton.setIcon(PLUS_ICON);
-					}
+					changePlusMinusIcon(detailsButton);
 				}
 			});
 
@@ -269,11 +261,7 @@ class ScrollingPanel extends MelodyPanel {
 				public void actionPerformed(ActionEvent e) {
 					cacheInformationsPanel.setVisible(!cacheInformationsPanel.isVisible());
 					validate();
-					if (detailsButton.getIcon() == PLUS_ICON) {
-						detailsButton.setIcon(MINUS_ICON);
-					} else {
-						detailsButton.setIcon(PLUS_ICON);
-					}
+					changePlusMinusIcon(detailsButton);
 				}
 			});
 
@@ -307,11 +295,7 @@ class ScrollingPanel extends MelodyPanel {
 				public void actionPerformed(ActionEvent e) {
 					jobInformationsPanel.setVisible(!jobInformationsPanel.isVisible());
 					validate();
-					if (detailsButton.getIcon() == PLUS_ICON) {
-						detailsButton.setIcon(MINUS_ICON);
-					} else {
-						detailsButton.setIcon(PLUS_ICON);
-					}
+					changePlusMinusIcon(detailsButton);
 				}
 			});
 
@@ -348,6 +332,14 @@ class ScrollingPanel extends MelodyPanel {
 			final JLabel versionLabel = new JLabel("  JavaMelody " + Parameters.JAVAMELODY_VERSION);
 			versionLabel.setFont(font);
 			add(versionLabel);
+		}
+	}
+
+	final void changePlusMinusIcon(MButton detailsButton) {
+		if (detailsButton.getIcon() == PLUS_ICON) {
+			detailsButton.setIcon(MINUS_ICON);
+		} else {
+			detailsButton.setIcon(PLUS_ICON);
 		}
 	}
 
