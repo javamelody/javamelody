@@ -81,7 +81,7 @@ public final class Utilities {
 	}
 
 	/**
-	 * Création panel non opaque et alignés à droite.
+	 * Création panel non opaque et avec des composants alignés à droite.
 	 * @param components JComponent...
 	 * @return JPanel
 	 */
