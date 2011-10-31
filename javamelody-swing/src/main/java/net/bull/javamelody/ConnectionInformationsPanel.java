@@ -57,7 +57,6 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	private MTable<ConnectionInformations> table;
 
 	private class OpeningDateTableCellRenderer extends MDateTableCellRenderer {
-		private static final String BR = "<br/>";
 		private static final long serialVersionUID = 1L;
 
 		OpeningDateTableCellRenderer() {
@@ -75,22 +74,12 @@ class ConnectionInformationsPanel extends MelodyPanel {
 				final MTable<ConnectionInformations> myTable = getTable();
 				final ConnectionInformations connectionInformations = myTable.getList().get(
 						myTable.convertRowIndexToModel(row));
+				final String description = getDateFormat().format(
+						connectionInformations.getOpeningDate());
 				final List<StackTraceElement> stackTrace = connectionInformations
 						.getOpeningStackTrace();
-				if (stackTrace != null && !stackTrace.isEmpty()) {
-					// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
-					final StringBuilder sb = new StringBuilder();
-					sb.append("<html>");
-					sb.append(getDateFormat().format(connectionInformations.getOpeningDate()));
-					sb.append(BR);
-					for (final StackTraceElement stackTraceElement : stackTrace) {
-						sb.append(stackTraceElement);
-						sb.append(BR);
-					}
-					setToolTipText(sb.toString());
-				} else {
-					setToolTipText(null);
-				}
+				setToolTipText(ThreadInformationsPanel.convertStackTraceToHtml(description,
+						stackTrace));
 			}
 			// et texte selon la valeur (nom du thread)
 			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
@@ -120,21 +109,8 @@ class ConnectionInformationsPanel extends MelodyPanel {
 				final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(connectionInformations);
 				if (threadInformations != null) {
 					text = threadInformations.getName();
-					final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
-					if (stackTrace != null && !stackTrace.isEmpty()) {
-						// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
-						final StringBuilder sb = new StringBuilder();
-						sb.append("<html>");
-						sb.append(threadInformations.getName());
-						sb.append("<br/>");
-						for (final StackTraceElement stackTraceElement : stackTrace) {
-							sb.append(stackTraceElement);
-							sb.append("<br/>");
-						}
-						setToolTipText(sb.toString());
-					} else {
-						setToolTipText(null);
-					}
+					setToolTipText(ThreadInformationsPanel.convertStackTraceToHtml(
+							threadInformations.getName(), threadInformations.getStackTrace()));
 				} else {
 					setToolTipText(null);
 					text = null;

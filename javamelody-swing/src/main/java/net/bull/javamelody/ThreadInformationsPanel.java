@@ -69,21 +69,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 				final MTable<ThreadInformations> myTable = getTable();
 				final ThreadInformations threadInformations = myTable.getList().get(
 						myTable.convertRowIndexToModel(row));
-				final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
-				if (stackTrace != null && !stackTrace.isEmpty()) {
-					// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
-					final StringBuilder sb = new StringBuilder();
-					sb.append("<html>");
-					sb.append(threadInformations.getName());
-					sb.append("<br/>");
-					for (final StackTraceElement stackTraceElement : stackTrace) {
-						sb.append(stackTraceElement);
-						sb.append("<br/>");
-					}
-					setToolTipText(sb.toString());
-				} else {
-					setToolTipText(null);
-				}
+				setToolTipText(convertStackTraceToHtml(threadInformations.getName(),
+						threadInformations.getStackTrace()));
 			}
 			// et texte selon la valeur (nom du thread)
 			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
@@ -257,6 +244,22 @@ class ThreadInformationsPanel extends MelodyPanel {
 			final String text = sb.toString();
 			Utilities.showTextInPopup(this, title, text);
 		}
+	}
+
+	static String convertStackTraceToHtml(String description, List<StackTraceElement> stackTrace) {
+		if (stackTrace != null && !stackTrace.isEmpty()) {
+			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
+			final StringBuilder sb = new StringBuilder();
+			sb.append("<html>");
+			sb.append(description);
+			sb.append("<br/>");
+			for (final StackTraceElement stackTraceElement : stackTrace) {
+				sb.append(stackTraceElement);
+				sb.append("<br/>");
+			}
+			return sb.toString();
+		}
+		return null;
 	}
 
 	MTable<ThreadInformations> getTable() {
