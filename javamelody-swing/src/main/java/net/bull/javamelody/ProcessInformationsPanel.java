@@ -121,23 +121,24 @@ class ProcessInformationsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton refreshButton = createRefreshButton();
-		refreshButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					refresh();
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
 		final MButton pdfButton = createPdfButton();
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+
+		final MButton refreshButton = createRefreshButton();
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					refresh();
 				} catch (final IOException ex) {
 					showException(ex);
 				}

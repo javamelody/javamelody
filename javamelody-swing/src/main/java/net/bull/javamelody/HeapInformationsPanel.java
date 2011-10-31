@@ -269,17 +269,6 @@ class HeapInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		final MButton pdfButton = createPdfButton();
-		pdfButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					actionPdf();
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
 
 		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"), GC_ICON);
 		gcButton.addActionListener(new ActionListener() {
@@ -297,6 +286,18 @@ class HeapInformationsPanel extends MelodyPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getString("confirm_heap_dump"))) {
 					executeAction(Action.HEAP_DUMP);
+				}
+			}
+		});
+
+		final MButton pdfButton = createPdfButton();
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
 				}
 			}
 		});

@@ -130,8 +130,8 @@ public final class Utilities {
 		// sinon il reste blanc malgré editable false
 		textArea.setBackground(Color.decode("#E6E6E6"));
 		final JScrollPane scrollPane = new JScrollPane(textArea);
+
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
-		buttonPanel.setOpaque(false);
 		// TODO traduction
 		final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
 		clipBoardButton.addActionListener(new ActionListener() {
@@ -142,7 +142,9 @@ public final class Utilities {
 				textArea.setCaretPosition(0);
 			}
 		});
+		buttonPanel.setOpaque(false);
 		buttonPanel.add(clipBoardButton);
+
 		final Window window = SwingUtilities.getWindowAncestor(component);
 		final JDialog dialog = new JDialog((JFrame) window, title, true);
 		final JPanel contentPane = new JPanel(new BorderLayout());
