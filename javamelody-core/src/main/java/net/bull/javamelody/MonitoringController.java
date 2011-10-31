@@ -283,7 +283,7 @@ class MonitoringController {
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 	}
 
-	private Serializable createSerializable(HttpServletRequest httpRequest,
+	Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
 		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest);
 		if (resultForSystemActions != null) {
@@ -324,8 +324,8 @@ class MonitoringController {
 		return createDefaultSerializable(javaInformationsList, range);
 	}
 
-	static Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
-			int width, int height) throws IOException {
+	private static Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins,
+			Range range, int width, int height) throws IOException {
 		final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
 		for (final JRobin jrobin : jrobins) {
 			final byte[] image = jrobin.graph(range, width, height);

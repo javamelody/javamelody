@@ -27,7 +27,6 @@ import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
@@ -46,7 +45,6 @@ import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +52,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -376,27 +373,9 @@ class CollectorController {
 			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
-		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
+		} else if (JROBINS_PART.equalsIgnoreCase(part) || OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
-			final Collector collector = getCollectorByApplication(application);
-			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
-			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			if (graphName != null) {
-				final JRobin jrobin = collector.getJRobin(graphName);
-				return jrobin.graph(range, width, height);
-			}
-			final Collection<JRobin> jrobins = collector.getCounterJRobins();
-			return (Serializable) MonitoringController.convertJRobinsToImages(jrobins, range,
-					width, height);
-		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing
-			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
-			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final Collector collector = getCollectorByApplication(application);
-			final Collection<JRobin> jrobins = collector.getOtherJRobins();
-			return (Serializable) MonitoringController.convertJRobinsToImages(jrobins, range,
-					width, height);
+			return monitoringController.createSerializable(httpRequest, null);
 		}
 
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
