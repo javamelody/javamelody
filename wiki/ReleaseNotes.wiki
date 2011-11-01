@@ -10,6 +10,7 @@
   * fix issue 146 and issue 153: Incorrect Struts statistics when two actions have the same name but are in different packages. Note: the consequence is that the names of all the Struts actions are changed in the statistics.
   * fix issue 152: Error with execution plan for "ALTER SESSION..."
   * fix issue 157: In the Grails plugin, do not add groovy meta programming on services if javamelody is disabled. ([http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/GrailsMelodyGrailsPlugin.groovy rev 76158])
+  * fix Jenkins issue  11293: Monitoring plugin not installed because of NoClassDefFoundError: org.slf4j.ILoggerFactory on IBM J9 JVM ([https://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/pom.xml rev 40073])
   * added for issue 158: note in the UI and in the online help to say that since ehcache v2.1, the cache statistics need to be enabled in order to display efficiency values
 
 === 1.32.1 ===
