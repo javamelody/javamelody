@@ -309,7 +309,10 @@ class MonitoringController {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			if (graphName != null) {
 				final JRobin jrobin = collector.getJRobin(graphName);
-				return jrobin.graph(range, width, height);
+				if (jrobin != null) {
+					return jrobin.graph(range, width, height);
+				}
+				return null;
 			}
 			final Collection<JRobin> jrobins = collector.getCounterJRobins();
 			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
