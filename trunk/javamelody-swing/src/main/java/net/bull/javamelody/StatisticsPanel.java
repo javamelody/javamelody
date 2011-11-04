@@ -90,7 +90,7 @@ class StatisticsPanel extends MelodyPanel {
 		this.mainPanel.setOpaque(false);
 		add(this.mainPanel, BorderLayout.NORTH);
 
-		// TODO graphique en tooltip et détail des requêtes
+		// TODO détail des requêtes
 		//		// 3. détails par requêtes (non visible par défaut)
 		//		writeRequests(counterName, counter.getChildCounterName(), requests,
 		//				isRequestGraphDisplayed(counter), true, false);
