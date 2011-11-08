@@ -47,6 +47,7 @@ class ChartPanel extends MelodyPanel {
 
 	private static final int CHART_WIDTH = 960;
 	private static final int CHART_HEIGHT = 400;
+	private final String graphLabel;
 	private final String graphName;
 	private ImageIcon imageIcon;
 	private MTransferableLabel imageLabel;
@@ -55,7 +56,15 @@ class ChartPanel extends MelodyPanel {
 	ChartPanel(RemoteCollector remoteCollector, String graphName) throws IOException {
 		super(remoteCollector);
 		this.graphName = graphName;
-		setName(I18N.getString(graphName));
+		this.graphLabel = I18N.getString(graphName);
+
+		refresh();
+	}
+
+	ChartPanel(RemoteCollector remoteCollector, CounterRequest request) throws IOException {
+		super(remoteCollector);
+		this.graphName = request.getId();
+		this.graphLabel = truncate(request.getName(), 50);
 
 		refresh();
 	}
@@ -63,21 +72,30 @@ class ChartPanel extends MelodyPanel {
 	final void refresh() throws IOException {
 		removeAll();
 
-		final byte[] imageData = getRemoteCollector().collectJRobin(graphName, CHART_WIDTH,
-				CHART_HEIGHT);
-		this.imageIcon = new ImageIcon(imageData);
-		this.imageLabel = new MTransferableLabel(imageIcon);
-		// ce name sera utilisé comme nom de fichier pour le drag and drop de l'image
-		this.imageLabel.setName(I18N.getString(graphName));
-
-		final JScrollPane scrollPane = new JScrollPane(imageLabel);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		add(scrollPane, BorderLayout.CENTER);
+		setName(graphLabel);
 
 		final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		southPanel.setOpaque(false);
-		southPanel.add(createSlider());
+
+		final byte[] imageData = getRemoteCollector().collectJRobin(graphName, CHART_WIDTH,
+				CHART_HEIGHT);
+		if (imageData != null) {
+			this.imageIcon = new ImageIcon(imageData);
+			this.imageLabel = new MTransferableLabel(imageIcon);
+			// ce name sera utilisé comme nom de fichier pour le drag and drop de l'image
+			this.imageLabel.setName(graphLabel);
+
+			final JScrollPane scrollPane = new JScrollPane(imageLabel);
+			scrollPane
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			add(scrollPane, BorderLayout.CENTER);
+
+			southPanel.add(createSlider());
+		} else {
+			this.imageIcon = null;
+			this.imageLabel = null;
+		}
 		southPanel.add(createButtonsPanel());
 		add(southPanel, BorderLayout.SOUTH);
 	}
@@ -118,21 +136,25 @@ class ChartPanel extends MelodyPanel {
 			}
 		});
 
-		// TODO traduction
-		final MButton exportButton = new MButton("Exporter...");
-		exportButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					export();
-				} catch (final IOException ex) {
-					showException(ex);
+		if (getImageLabel() != null) {
+			// TODO traduction
+			final MButton exportButton = new MButton("Exporter...");
+			exportButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						export();
+					} catch (final IOException ex) {
+						showException(ex);
+					}
 				}
-			}
-		});
+			});
+			// TODO boutons périodes
+			return Utilities.createButtonsPanel(refreshButton, exportButton);
+		}
 
 		// TODO boutons périodes
-		return Utilities.createButtonsPanel(refreshButton, exportButton);
+		return Utilities.createButtonsPanel(refreshButton);
 	}
 
 	final void refreshZoom(final int value) {
@@ -186,5 +208,9 @@ class ChartPanel extends MelodyPanel {
 
 	final MTransferableLabel getImageLabel() {
 		return imageLabel;
+	}
+
+	private static String truncate(String string, int maxLength) {
+		return string.substring(0, Math.min(string.length(), maxLength));
 	}
 }

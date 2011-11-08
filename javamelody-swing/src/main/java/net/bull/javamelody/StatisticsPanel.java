@@ -128,6 +128,21 @@ class StatisticsPanel extends MelodyPanel {
 			final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 			detailsPanel.showRequests(requests);
 
+			final MTable<CounterRequest> myTable = detailsPanel.tablePanel.getTable();
+			myTable.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() == 2) {
+						final CounterRequest request = myTable.getSelectedObject();
+						try {
+							showRequestDetail(request);
+						} catch (final IOException ex) {
+							showException(ex);
+						}
+					}
+				}
+			});
+
 			add(detailsPanel, BorderLayout.CENTER);
 		}
 		detailsPanel.setVisible(!detailsPanel.isVisible());
@@ -140,8 +155,10 @@ class StatisticsPanel extends MelodyPanel {
 		tablePanel.setList(requests);
 		add(tablePanel, BorderLayout.CENTER);
 
+		final MTable<CounterRequest> myTable = tablePanel.getTable();
 		if (detailsButton != null) {
-			final MTable<CounterRequest> myTable = tablePanel.getTable();
+			// le double-clique sur une ligne de la table des requêtes aggrégrées par classe
+			// permet d'afficher la table des requêtes filtrées par la classe sélectionnée
 			myTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 				@Override
 				public void valueChanged(ListSelectionEvent e) {
@@ -161,6 +178,22 @@ class StatisticsPanel extends MelodyPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					actionCounterSummaryPerClass(true);
+				}
+			});
+		} else {
+			// et sinon, le double-clique sur la table des requêtes filtrées pour une classe
+			// permet d'afficher le détail d'une requête
+			myTable.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() == 2) {
+						final CounterRequest request = myTable.getSelectedObject();
+						try {
+							showRequestDetail(request);
+						} catch (final IOException ex) {
+							showException(ex);
+						}
+					}
 				}
 			});
 		}
@@ -364,5 +397,10 @@ class StatisticsPanel extends MelodyPanel {
 
 	private boolean isErrorAndNotJobCounter() {
 		return isErrorCounter() && !isJobCounter();
+	}
+
+	void showRequestDetail(CounterRequest request) throws IOException {
+		final ChartPanel panel = new ChartPanel(getRemoteCollector(), request);
+		MainPanel.addOngletFromChild(this, panel);
 	}
 }

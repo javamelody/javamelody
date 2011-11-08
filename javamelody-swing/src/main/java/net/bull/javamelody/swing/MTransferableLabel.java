@@ -41,6 +41,7 @@ import javax.swing.event.MouseInputAdapter;
  * @author Emeric Vernat
  */
 public class MTransferableLabel extends JLabel {
+	private static final String FORBIDDEN_CHARACTERS_IN_FILENAMES = "\\/:*?\"<>|";
 	private static final long serialVersionUID = 1L;
 
 	class FileTransfer extends TransferHandler {
@@ -140,7 +141,7 @@ public class MTransferableLabel extends JLabel {
 	public void export() throws IOException {
 		final byte[] imageData = getImageData();
 		if (imageData != null) {
-			final File file = ImageFileChooser.chooseImage(this, false, getName() + ".png");
+			final File file = ImageFileChooser.chooseImage(this, false, getFileName());
 			if (file != null) {
 				final FileOutputStream fileOutputStream = new FileOutputStream(file);
 				try {
@@ -150,6 +151,12 @@ public class MTransferableLabel extends JLabel {
 				}
 			}
 		}
+	}
+
+	private String getFileName() {
+		// comme nom de fichier, on prend le name du label
+		// en enlevant les caractères interdits dans les noms de fichier et en ajoutant ".png" comme extension
+		return getName().replaceAll('[' + FORBIDDEN_CHARACTERS_IN_FILENAMES + ']', " ") + ".png";
 	}
 
 	private void init() {
@@ -162,7 +169,7 @@ public class MTransferableLabel extends JLabel {
 	FileTransferable createFileTransferable() {
 		final byte[] imageData = getImageData();
 		if (imageData != null) {
-			return new FileTransferable(getName() + ".png", imageData);
+			return new FileTransferable(getFileName(), imageData);
 		}
 		return null;
 	}
