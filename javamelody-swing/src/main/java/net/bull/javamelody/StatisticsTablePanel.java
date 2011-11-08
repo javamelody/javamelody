@@ -35,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JToolTip;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalToolTipUI;
 
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
@@ -160,6 +161,11 @@ class StatisticsTablePanel extends MelodyPanel {
 	private class ImageToolTipUI extends MetalToolTipUI {
 		ImageToolTipUI() {
 			super();
+			// parce que ImageToolTipUI hérite de MetalToolTipUI et non de SynthToolTipUI
+			// on fixe la couleur pour la propriété "ToolTip.background"
+			// sinon ce tooltip aura une moche couleur grise à la place d'un jaune beige
+			// (quand il n'y pas d'image jrobin)
+			UIManager.put("ToolTip.background", UIManager.getColor("info"));
 		}
 
 		@Override
