@@ -53,18 +53,11 @@ class ChartPanel extends MelodyPanel {
 	private MTransferableLabel imageLabel;
 	private int zoomValue;
 
-	ChartPanel(RemoteCollector remoteCollector, String graphName) throws IOException {
+	ChartPanel(RemoteCollector remoteCollector, String graphName, String graphLabel)
+			throws IOException {
 		super(remoteCollector);
 		this.graphName = graphName;
-		this.graphLabel = I18N.getString(graphName);
-
-		refresh();
-	}
-
-	ChartPanel(RemoteCollector remoteCollector, CounterRequest request) throws IOException {
-		super(remoteCollector);
-		this.graphName = request.getId();
-		this.graphLabel = truncate(request.getName(), 50);
+		this.graphLabel = graphLabel;
 
 		refresh();
 	}
@@ -208,9 +201,5 @@ class ChartPanel extends MelodyPanel {
 
 	final MTransferableLabel getImageLabel() {
 		return imageLabel;
-	}
-
-	private static String truncate(String string, int maxLength) {
-		return string.substring(0, Math.min(string.length(), maxLength));
 	}
 }

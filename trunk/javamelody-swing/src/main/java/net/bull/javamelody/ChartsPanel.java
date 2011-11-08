@@ -154,7 +154,9 @@ class ChartsPanel extends MelodyPanel {
 	}
 
 	final void showZoomedChart(String jrobinName) throws IOException {
-		final ChartPanel panel = new ChartPanel(getRemoteCollector(), jrobinName);
+		final String graphName = jrobinName;
+		final String graphLabel = I18N.getString(jrobinName);
+		final ChartPanel panel = new ChartPanel(getRemoteCollector(), graphName, graphLabel);
 		MainPanel.addOngletFromChild(this, panel);
 	}
 }
