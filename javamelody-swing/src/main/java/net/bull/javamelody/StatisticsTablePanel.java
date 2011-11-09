@@ -251,7 +251,18 @@ class StatisticsTablePanel extends MelodyPanel {
 	}
 
 	private void addColumns() {
-		table.addColumn("name", I18N.getString("Requete"));
+		final String nameColumnHeader;
+		if (isJobCounter()) {
+			nameColumnHeader = I18N.getString("Job");
+		} else if (isErrorCounter()) {
+			nameColumnHeader = I18N.getString("Erreur");
+		} else {
+			nameColumnHeader = I18N.getString("Requete");
+		}
+		table.addColumn("name", nameColumnHeader);
+		// MMultiLineTableCellRenderer n'est pas défini ici pour la colonne "name"
+		// car les dimensions de certains scrollPane ne seraient pas corrects
+
 		final MIntegerTableCellRenderer meanCellRenderer = new MeanTableCellRenderer();
 		if (counterRequestAggregation.isTimesDisplayed()) {
 			table.addColumn("durationsSum", I18N.getString("temps_cumule"));
