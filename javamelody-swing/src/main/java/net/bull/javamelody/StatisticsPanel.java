@@ -35,12 +35,16 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
+import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
+import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel des statistiques.
@@ -129,6 +133,25 @@ class StatisticsPanel extends MelodyPanel {
 			detailsPanel.showRequests(requests);
 
 			final MTable<CounterRequest> myTable = detailsPanel.tablePanel.getTable();
+			// ajoute un renderer multi-lignes pour la colonne "name" dans le tableau de "Détails",
+			// ce qui est utile pour les requêtes sql ou les erreurs http par exemple
+			myTable.setColumnCellRenderer("name", new MMultiLineTableCellRenderer());
+			// double invokeLater nécessaire pour que les dimensions et l'affichage soient corrects
+			// avec le MMultiLineTableCellRenderer (tester par exemple l'erreur de compilation dans la page jsp avec tomcat)
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							Utilities.adjustTableHeight(myTable);
+							final JScrollPane scrollPane = MSwingUtilities.getAncestorOfClass(
+									JScrollPane.class, myTable);
+							scrollPane.repaint();
+						}
+					});
+				}
+			});
 			myTable.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {

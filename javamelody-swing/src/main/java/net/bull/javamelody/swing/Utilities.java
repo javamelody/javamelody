@@ -108,10 +108,12 @@ public final class Utilities {
 				final JScrollPane scrollPane = MSwingUtilities.getAncestorOfClass(
 						JScrollPane.class, table);
 				scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-				// puisqu'il n'y a pas d'ascenceur sur ce scrollPane,
+				// Puisqu'il n'y a pas d'ascenceur sur ce scrollPane,
 				// il est inutile que la mollette de souris serve à bouger cet ascenseur,
 				// mais il est très utile en revanche que ce scrollPane ne bloque pas l'utilisation
-				// de la mollette de souris pour le scrollPane global de l'onglet principal
+				// de la mollette de souris pour le scrollPane global de l'onglet principal.
+				// On commence par enlever le listener au cas où la méthode soit appelée deux fois sur la même table.
+				scrollPane.removeMouseWheelListener(DELEGATE_TO_PARENT_MOUSE_WHEEL_LISTENER);
 				scrollPane.addMouseWheelListener(DELEGATE_TO_PARENT_MOUSE_WHEEL_LISTENER);
 			}
 		});
