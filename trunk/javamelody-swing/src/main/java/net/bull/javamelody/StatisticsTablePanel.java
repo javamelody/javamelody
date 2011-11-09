@@ -227,16 +227,21 @@ class StatisticsTablePanel extends MelodyPanel {
 		assert counterRequestAggregation != null;
 		this.counter = counter;
 		this.counterRequestAggregation = counterRequestAggregation;
-		this.table = new MTable<CounterRequest>() {
-			private static final long serialVersionUID = 1L;
 
-			@Override
-			public JToolTip createToolTip() {
-				final ImageToolTip imageToolTip = new ImageToolTip();
-				imageToolTip.setComponent(this);
-				return imageToolTip;
-			}
-		};
+		if (CounterRequestDetailPanel.isRequestGraphDisplayed(counter)) {
+			this.table = new MTable<CounterRequest>() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public JToolTip createToolTip() {
+					final ImageToolTip imageToolTip = new ImageToolTip();
+					imageToolTip.setComponent(this);
+					return imageToolTip;
+				}
+			};
+		} else {
+			this.table = new MTable<CounterRequest>();
+		}
 
 		addColumns();
 

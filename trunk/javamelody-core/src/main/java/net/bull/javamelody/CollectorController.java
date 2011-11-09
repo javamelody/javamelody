@@ -24,6 +24,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
@@ -365,6 +366,9 @@ class CollectorController {
 		if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<List<ThreadInformations>>(
 					collectorServer.getThreadInformationsLists(application));
+		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			return collectorServer.collectSqlRequestExplainPlan(application, requestId);
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);

@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
@@ -243,6 +244,14 @@ class RemoteCollector {
 				+ '&' + PART_PARAMETER + '=' + JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width
 				+ '&' + HEIGHT_PARAMETER + '=' + height);
 		final LabradorRetriever labradorRetriever = new LabradorRetriever(jrobinUrl);
+		return labradorRetriever.call();
+	}
+
+	String collectSqlRequestExplainPlan(String requestId) throws IOException {
+		final URL url = urls.get(0);
+		final URL explainPlanUrl = new URL(url.toString() + '&' + GRAPH_PARAMETER + '=' + requestId
+				+ '&' + PART_PARAMETER + '=' + EXPLAIN_PLAN_PART);
+		final LabradorRetriever labradorRetriever = new LabradorRetriever(explainPlanUrl);
 		return labradorRetriever.call();
 	}
 
