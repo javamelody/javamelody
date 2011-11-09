@@ -63,6 +63,7 @@ final class HttpParameters {
 	static final String RUNTIME_DEPENDENCIES_PART = "runtimeDependencies";
 	static final String JROBINS_PART = "jrobins";
 	static final String OTHER_JROBINS_PART = "otherJRobins";
+	static final String EXPLAIN_PLAN_PART = "explainPlan";
 
 	/**
 	 * Constructeur privé: pas d'instance.

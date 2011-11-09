@@ -25,6 +25,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
@@ -322,9 +323,35 @@ class MonitoringController {
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
 			final Collection<JRobin> jrobins = collector.getOtherJRobins();
 			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
+		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing,
+			// le paramètre envoyé par le client contient l'id de la requête à partir duquel on retrouve la requête
+			// et non la requête sql elle-même, pour éviter que le client puisse demander le plan d'exécution
+			// d'une requête sql de son choix en base de données (sécurité)
+			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
+			assert graphName != null;
+			return getSqlRequestExplainPlan(graphName, range);
 		}
 
 		return createDefaultSerializable(javaInformationsList, range);
+	}
+
+	private Serializable getSqlRequestExplainPlan(String graphName, Range range) throws IOException {
+		final String sqlCounterName = JdbcWrapper.SINGLETON.getSqlCounter().getName();
+		final Counter sqlCounter = collector.getRangeCounter(range, sqlCounterName);
+		for (final CounterRequest request : sqlCounter.getRequests()) {
+			if (request.getId().equals(graphName)) {
+				final String sqlRequest = request.getName();
+				try {
+					// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
+					return DatabaseInformations.explainPlanFor(sqlRequest);
+				} catch (final Exception ex) {
+					return ex.toString();
+				}
+			}
+		}
+		// requête sql non trouvée dans ces statistiques
+		return null;
 	}
 
 	private static Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins,
