@@ -16,6 +16,7 @@
 <a href="jsp/service.jsp">statistics services</a><br/>
 <a href="jsp/jspDispatch.jsp">statistics jsp dispatch</a><br/>
 <a href="jsp/error.jsp">statistics error</a><br/>
+<a href="jsp/errorCompile.jsp">statistics error (compile)</a><br/>
 <a href="jsp/log.jsp">statistics log</a><br/>
 <a href="jsp/needsSession.jsp">session init</a><br/>
 <a href="jsp/cache.jsp">cache</a><br/>
