@@ -40,6 +40,7 @@ class HtmlReport {
 	private static final String SCRIPT_END = "</script>";
 
 	private final Collector collector;
+	private final CollectorServer collectorServer;
 	private final Range range;
 	private final Writer writer;
 	private final HtmlCoreReport htmlCoreReport;
@@ -53,6 +54,7 @@ class HtmlReport {
 		assert writer != null;
 
 		this.collector = collector;
+		this.collectorServer = collectorServer;
 		this.range = range;
 		this.writer = writer;
 		this.htmlCoreReport = new HtmlCoreReport(collector, collectorServer, javaInformationsList,
@@ -197,7 +199,7 @@ class HtmlReport {
 		writeln("</div>");
 
 		new HtmlCounterRequestGraphReport(range, writer).writeRequestAndGraphDetail(collector,
-				graphName);
+				collectorServer, graphName);
 
 		writeHtmlFooter();
 	}
