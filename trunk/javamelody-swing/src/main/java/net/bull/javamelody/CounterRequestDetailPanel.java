@@ -51,7 +51,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 			// inutile d'essayer d'avoir le plan d'exécution des requêtes sql
 			// telles que "alter session set ..." (cf issue 152)
 			final String sqlRequestExplainPlan = remoteCollector
-					.collectSqlRequestExplainPlan(request.getId());
+					.collectSqlRequestExplainPlan(request.getName());
 			if (sqlRequestExplainPlan != null) {
 				final JPanel panel = createSqlRequestExplainPlanPanel(sqlRequestExplainPlan);
 				add(panel, BorderLayout.SOUTH);

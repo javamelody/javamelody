@@ -325,33 +325,21 @@ class MonitoringController {
 			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
 		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing,
-			// le paramètre envoyé par le client contient l'id de la requête à partir duquel on retrouve la requête
-			// et non la requête sql elle-même, pour éviter que le client puisse demander le plan d'exécution
-			// d'une requête sql de son choix en base de données (sécurité)
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			assert graphName != null;
-			return getSqlRequestExplainPlan(graphName, range);
+			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
+			assert sqlRequest != null;
+			return getSqlRequestExplainPlan(sqlRequest);
 		}
 
 		return createDefaultSerializable(javaInformationsList, range);
 	}
 
-	private Serializable getSqlRequestExplainPlan(String graphName, Range range) throws IOException {
-		final String sqlCounterName = JdbcWrapper.SINGLETON.getSqlCounter().getName();
-		final Counter sqlCounter = collector.getRangeCounter(range, sqlCounterName);
-		for (final CounterRequest request : sqlCounter.getRequests()) {
-			if (request.getId().equals(graphName)) {
-				final String sqlRequest = request.getName();
-				try {
-					// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
-					return DatabaseInformations.explainPlanFor(sqlRequest);
-				} catch (final Exception ex) {
-					return ex.toString();
-				}
-			}
+	private static Serializable getSqlRequestExplainPlan(String sqlRequest) {
+		try {
+			// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
+			return DatabaseInformations.explainPlanFor(sqlRequest);
+		} catch (final Exception ex) {
+			return ex.toString();
 		}
-		// requête sql non trouvée dans ces statistiques
-		return null;
 	}
 
 	private static Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins,

@@ -247,11 +247,12 @@ class RemoteCollector {
 		return labradorRetriever.call();
 	}
 
-	String collectSqlRequestExplainPlan(String requestId) throws IOException {
+	String collectSqlRequestExplainPlan(String sqlRequest) throws IOException {
 		final URL url = urls.get(0);
-		final URL explainPlanUrl = new URL(url.toString() + '&' + GRAPH_PARAMETER + '=' + requestId
-				+ '&' + PART_PARAMETER + '=' + EXPLAIN_PLAN_PART);
-		final LabradorRetriever labradorRetriever = new LabradorRetriever(explainPlanUrl);
+		final URL explainPlanUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+				+ EXPLAIN_PLAN_PART);
+		final Map<String, String> headers = Collections.singletonMap(REQUEST_PARAMETER, sqlRequest);
+		final LabradorRetriever labradorRetriever = new LabradorRetriever(explainPlanUrl, headers);
 		return labradorRetriever.call();
 	}
 

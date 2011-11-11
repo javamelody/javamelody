@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,15 +50,21 @@ class LabradorRetriever {
 	private static final int READ_TIMEOUT = 60000;
 
 	private final URL url;
+	private final Map<String, String> headers;
 
 	// Rq: les configurations suivantes sont celles par défaut, on ne les change pas
 	//	    static { HttpURLConnection.setFollowRedirects(true);
 	//	    URLConnection.setDefaultAllowUserInteraction(true); }
 
 	LabradorRetriever(URL url) {
+		this(url, null);
+	}
+
+	LabradorRetriever(URL url, Map<String, String> headers) {
 		super();
 		assert url != null;
 		this.url = url;
+		this.headers = headers;
 	}
 
 	<T> T call() throws IOException {
@@ -67,7 +74,7 @@ class LabradorRetriever {
 		}
 		final long start = System.currentTimeMillis();
 		try {
-			final URLConnection connection = openConnection(url);
+			final URLConnection connection = openConnection(url, headers);
 			// pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
 			// cela permet d'avoir les messages dans la bonne langue)
 			connection.setRequestProperty("Accept-Language", I18N.getCurrentLocale().getLanguage());
@@ -119,7 +126,7 @@ class LabradorRetriever {
 		assert httpResponse != null;
 		final long start = System.currentTimeMillis();
 		try {
-			final URLConnection connection = openConnection(url);
+			final URLConnection connection = openConnection(url, headers);
 			// pour traductions
 			connection.setRequestProperty("Accept-Language",
 					httpRequest.getHeader("Accept-Language"));
@@ -148,10 +155,12 @@ class LabradorRetriever {
 	/**
 	 * Ouvre la connection http.
 	 * @param url URL
+	 * @param headers Entêtes http
 	 * @return Object
 	 * @throws IOException   Exception de communication
 	 */
-	private static URLConnection openConnection(URL url) throws IOException {
+	private static URLConnection openConnection(URL url, Map<String, String> headers)
+			throws IOException {
 		final URLConnection connection = url.openConnection();
 		connection.setUseCaches(false);
 		if (CONNECTION_TIMEOUT > 0) {
@@ -163,6 +172,11 @@ class LabradorRetriever {
 		// grâce à cette propriété, l'application retournera un flux compressé si la taille
 		// dépasse x Ko
 		connection.setRequestProperty("Accept-Encoding", "gzip");
+		if (headers != null) {
+			for (final Map.Entry<String, String> entry : headers.entrySet()) {
+				connection.setRequestProperty(entry.getKey(), entry.getValue());
+			}
+		}
 		return connection;
 	}
 
