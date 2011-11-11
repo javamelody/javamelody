@@ -35,7 +35,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -44,7 +43,6 @@ import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
-import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**
  * Panel des statistiques.
@@ -63,7 +61,7 @@ class StatisticsPanel extends MelodyPanel {
 	private final StatisticsTablePanel tablePanel;
 	private final JPanel mainPanel;
 	private StatisticsPanel detailsPanel;
-	private JPanel lastErrorsPanel;
+	private CounterErrorPanel lastErrorsPanel;
 
 	StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range) {
 		this(remoteCollector, counter, range, null);
@@ -136,20 +134,12 @@ class StatisticsPanel extends MelodyPanel {
 			// ajoute un renderer multi-lignes pour la colonne "name" dans le tableau de "Détails",
 			// ce qui est utile pour les requêtes sql ou les erreurs http par exemple
 			myTable.setColumnCellRenderer("name", new MMultiLineTableCellRenderer());
-			// double invokeLater nécessaire pour que les dimensions et l'affichage soient corrects
+			// invokeLater nécessaire pour que les dimensions et l'affichage soient corrects
 			// avec le MMultiLineTableCellRenderer (tester par exemple l'erreur de compilation dans la page jsp avec tomcat)
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							Utilities.adjustTableHeight(myTable);
-							final JScrollPane scrollPane = MSwingUtilities.getAncestorOfClass(
-									JScrollPane.class, myTable);
-							scrollPane.repaint();
-						}
-					});
+					Utilities.adjustTableHeight(myTable);
 				}
 			});
 			myTable.addMouseListener(new MouseAdapter() {

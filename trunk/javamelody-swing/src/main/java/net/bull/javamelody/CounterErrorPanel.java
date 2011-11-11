@@ -29,10 +29,11 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDateTableCellRenderer;
-import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
+import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
@@ -48,7 +49,7 @@ class CounterErrorPanel extends JPanel {
 	private final Counter counter;
 	private final MTable<CounterError> table;
 
-	private final class MessageWithStackTraceTableCellRenderer extends MDefaultTableCellRenderer {
+	private final class MessageWithStackTraceTableCellRenderer extends MMultiLineTableCellRenderer {
 		private static final long serialVersionUID = 1L;
 
 		MessageWithStackTraceTableCellRenderer() {
@@ -133,6 +134,16 @@ class CounterErrorPanel extends JPanel {
 				DateFormat.MEDIUM, I18N.getCurrentLocale()));
 		myTable.setColumnCellRenderer("date", dateTableCellRenderer);
 		myTable.setColumnCellRenderer("message", new MessageWithStackTraceTableCellRenderer());
+		// invokeLater nécessaire pour que les dimensions et l'affichage soient corrects
+		// avec le MessageWithStackTraceTableCellRenderer extends MMultiLineTableCellRenderer
+		// (tester par exemple l'erreur de compilation dans la page jsp avec tomcat)
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Utilities.adjustTableHeight(myTable);
+			}
+		});
+
 		myTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

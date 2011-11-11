@@ -19,7 +19,6 @@
 package net.bull.javamelody.swing.table;
 
 import java.awt.Component;
-import java.util.StringTokenizer;
 
 import javax.swing.JTable;
 
@@ -48,13 +47,7 @@ public class MMultiLineTableCellRenderer extends MDefaultTableCellRenderer {
 				if (getHorizontalAlignment() == CENTER) {
 					sb.append("<center>");
 				}
-				final StringTokenizer st = new StringTokenizer(text, "\n");
-				while (st.hasMoreTokens()) {
-					sb.append(st.nextToken());
-					if (st.hasMoreTokens()) {
-						sb.append("<br>");
-					}
-				}
+				sb.append(text.replace("\n", "<br/>").replace(" ", "&nbsp;"));
 				final String string = sb.toString();
 				setToolTipText(string);
 				setText(string);
