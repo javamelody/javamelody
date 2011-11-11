@@ -185,8 +185,9 @@ class CollectorServer {
 		return getRemoteCollectorByApplication(application).collectConnectionInformations();
 	}
 
-	String collectSqlRequestExplainPlan(String application, String requestId) throws IOException {
-		return getRemoteCollectorByApplication(application).collectSqlRequestExplainPlan(requestId);
+	String collectSqlRequestExplainPlan(String application, String sqlRequest) throws IOException {
+		return getRemoteCollectorByApplication(application)
+				.collectSqlRequestExplainPlan(sqlRequest);
 	}
 
 	Map<String, List<ProcessInformations>> collectProcessInformations(String application)

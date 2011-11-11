@@ -367,8 +367,8 @@ class CollectorController {
 			return new ArrayList<List<ThreadInformations>>(
 					collectorServer.getThreadInformationsLists(application));
 		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			return collectorServer.collectSqlRequestExplainPlan(application, requestId);
+			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
+			return collectorServer.collectSqlRequestExplainPlan(application, sqlRequest);
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
