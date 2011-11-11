@@ -86,7 +86,8 @@ class HtmlCounterReport {
 			write("</a>");
 		}
 
-		void writeRequestAndGraphDetail(Collector collector, String graphName) throws IOException {
+		void writeRequestAndGraphDetail(Collector collector, CollectorServer collectorServer,
+				String graphName) throws IOException {
 			counters = collector.getRangeCountersToBeDisplayed(range);
 			requestsById = mapAllRequestsById();
 			final CounterRequest request = requestsById.get(graphName);
@@ -97,7 +98,7 @@ class HtmlCounterReport {
 						&& !request.getName().toLowerCase().startsWith("alter ")) {
 					// inutile d'essayer d'avoir le plan d'exécution des requêtes sql
 					// telles que "alter session set ..." (cf issue 152)
-					writeSqlRequestExplainPlan(request.getName());
+					writeSqlRequestExplainPlan(collector, collectorServer, request);
 				}
 			}
 			if (request == null || getCounterByRequestId(request) != null
@@ -124,9 +125,16 @@ class HtmlCounterReport {
 			}
 		}
 
-		private void writeSqlRequestExplainPlan(String sqlRequest) throws IOException {
+		private void writeSqlRequestExplainPlan(Collector collector,
+				CollectorServer collectorServer, CounterRequest sqlRequest) throws IOException {
 			try {
-				final String explainPlan = DatabaseInformations.explainPlanFor(sqlRequest);
+				final String explainPlan;
+				if (collectorServer == null) {
+					explainPlan = DatabaseInformations.explainPlanFor(sqlRequest.getName());
+				} else {
+					explainPlan = collectorServer.collectSqlRequestExplainPlan(
+							collector.getApplication(), sqlRequest.getName());
+				}
 				// rq : si explainPlan était un tableau (ex: mysql),
 				// on pourrait utiliser HtmlDatabaseInformationsReport.TableReport
 				if (explainPlan != null) {
