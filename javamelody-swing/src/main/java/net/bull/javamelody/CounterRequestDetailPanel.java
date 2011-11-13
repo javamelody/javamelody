@@ -36,15 +36,21 @@ class CounterRequestDetailPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request,
-			Counter parentCounter) throws IOException {
+			Counter parentCounter, Range range) throws IOException {
 		super(remoteCollector);
+
 		final String graphName = request.getId();
 		final String graphLabel = truncate(request.getName(), 50);
+		setName(graphLabel);
+
+		final CounterRequestDetailTablePanel counterRequestDetailTablePanel = new CounterRequestDetailTablePanel(
+				remoteCollector, request, range);
+		add(counterRequestDetailTablePanel, BorderLayout.NORTH);
+
 		if (isRequestGraphDisplayed(parentCounter)) {
 			final ChartPanel chartPanel = new ChartPanel(remoteCollector, graphName, graphLabel);
 			add(chartPanel, BorderLayout.CENTER);
 		}
-		setName(graphLabel);
 
 		if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)
 				&& !request.getName().toLowerCase().startsWith("alter ")) {
