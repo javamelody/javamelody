@@ -35,8 +35,8 @@ import javax.swing.JTextArea;
 class CounterRequestDetailPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
-	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request,
-			Counter parentCounter, Range range) throws IOException {
+	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request, Range range)
+			throws IOException {
 		super(remoteCollector);
 
 		final String graphName = request.getId();
@@ -47,7 +47,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 				remoteCollector, request, range);
 		add(counterRequestDetailTablePanel, BorderLayout.NORTH);
 
-		if (CounterRequestTable.isRequestGraphDisplayed(parentCounter)) {
+		if (CounterRequestTable.isRequestGraphDisplayed(getCounterByRequestId(request))) {
 			final ChartPanel chartPanel = new ChartPanel(remoteCollector, graphName, graphLabel);
 			add(chartPanel, BorderLayout.CENTER);
 		}
@@ -82,6 +82,10 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		final JScrollPane scrollPane = new JScrollPane(textArea);
 		panel.add(scrollPane, BorderLayout.CENTER);
 		return panel;
+	}
+
+	private Counter getCounterByRequestId(CounterRequest request) {
+		return getRemoteCollector().getCollector().getCounterByRequestId(request);
 	}
 
 	private static String truncate(String string, int maxLength) {
