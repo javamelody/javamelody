@@ -47,7 +47,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 				remoteCollector, request, range);
 		add(counterRequestDetailTablePanel, BorderLayout.NORTH);
 
-		if (isRequestGraphDisplayed(parentCounter)) {
+		if (CounterRequestTable.isRequestGraphDisplayed(parentCounter)) {
 			final ChartPanel chartPanel = new ChartPanel(remoteCollector, graphName, graphLabel);
 			add(chartPanel, BorderLayout.CENTER);
 		}
@@ -82,11 +82,6 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		final JScrollPane scrollPane = new JScrollPane(textArea);
 		panel.add(scrollPane, BorderLayout.CENTER);
 		return panel;
-	}
-
-	static boolean isRequestGraphDisplayed(Counter parentCounter) {
-		return !(parentCounter.isErrorCounter() && !parentCounter.isJobCounter())
-				&& !parentCounter.isJspOrStrutsCounter();
 	}
 
 	private static String truncate(String string, int maxLength) {
