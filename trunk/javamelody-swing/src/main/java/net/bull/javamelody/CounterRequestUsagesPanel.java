@@ -20,7 +20,6 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -34,31 +33,26 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumn;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
-import net.bull.javamelody.swing.table.MDoubleTableCellRenderer;
-import net.bull.javamelody.swing.table.MIntegerTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
 
+import com.lowagie.text.Font;
+
 /**
- * Panel du tableau de requêtes dans le détail d'une requête.
+ * Panel des utilisations d'une requêtes.
  * @author Emeric Vernat
  */
-class CounterRequestDetailTablePanel extends MelodyPanel {
+class CounterRequestUsagesPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
-
-	private final CounterRequest request;
-
-	@SuppressWarnings("all")
-	private final Map<String, Long> childRequestsExecutions;
 
 	private final Range range;
 
@@ -67,33 +61,7 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 	private final MTable<CounterRequest> table;
 
-	private final class ChildValueTableCellRenderer extends MIntegerTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		ChildValueTableCellRenderer() {
-			super();
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable jtable, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
-			final MTable<CounterRequest> myTable = getTable();
-			final CounterRequest counterRequest = myTable.getList().get(
-					myTable.convertRowIndexToModel(row));
-			final Integer myValue;
-			if (counterRequest.hasChildHits()) {
-				myValue = (Integer) value;
-			} else {
-				myValue = null;
-			}
-			return super.getTableCellRendererComponent(jtable, myValue, isSelected, hasFocus, row,
-					column);
-		}
-	}
-
 	private final class NameTableCellRenderer extends MDefaultTableCellRenderer {
-		private static final int CHILD_MARGIN = 10;
-
 		private static final long serialVersionUID = 1L;
 
 		@SuppressWarnings("all")
@@ -111,29 +79,7 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 					myTable.convertRowIndexToModel(row));
 			final Counter counter = getCounterByRequestId(counterRequest);
 			if (counter != null && counter.getIconName() != null) {
-				final Icon icon;
-				final ImageIcon counterIcon = getIcon(counter.getIconName());
-				if (counterRequest.equals(getRequest())) {
-					icon = counterIcon;
-				} else {
-					// ajoute une marge à gauche de l'icône
-					icon = new Icon() {
-						@Override
-						public void paintIcon(Component c, Graphics g, int x, int y) {
-							g.drawImage(counterIcon.getImage(), CHILD_MARGIN + x, y, null);
-						}
-
-						@Override
-						public int getIconWidth() {
-							return counterIcon.getIconWidth() + CHILD_MARGIN;
-						}
-
-						@Override
-						public int getIconHeight() {
-							return counterIcon.getIconHeight();
-						}
-					};
-				}
+				final Icon icon = getIcon(counter.getIconName());
 				setIcon(icon);
 			} else {
 				setIcon(null);
@@ -152,61 +98,34 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 		}
 	}
 
-	private final class NbExecutionsTableCellRenderer extends MDoubleTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		NbExecutionsTableCellRenderer() {
-			super();
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable jtable, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
-			final MTable<CounterRequest> myTable = getTable();
-			final CounterRequest counterRequest = myTable.getList().get(
-					myTable.convertRowIndexToModel(row));
-			final CounterRequest parentRequest = getRequest();
-
-			final Float executionsByRequest;
-			if (counterRequest.equals(parentRequest)) {
-				executionsByRequest = null;
-			} else {
-				final Long nbExecutions = getChildRequestExecutions(counterRequest);
-				executionsByRequest = (float) nbExecutions / parentRequest.getHits();
-			}
-
-			return super.getTableCellRendererComponent(jtable, executionsByRequest, isSelected,
-					hasFocus, row, column);
-		}
-	}
-
-	CounterRequestDetailTablePanel(RemoteCollector remoteCollector, CounterRequest request,
-			Range range) throws IOException {
+	CounterRequestUsagesPanel(RemoteCollector remoteCollector, CounterRequest request, Range range)
+			throws IOException {
 		super(remoteCollector);
-		this.request = request;
-		this.childRequestsExecutions = request.getChildRequestsExecutionsByRequestId();
 		this.range = range;
-
 		this.counters = remoteCollector.getCollector().getRangeCountersToBeDisplayed(range);
 
-		setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
+		final String graphLabel = truncate(
+				I18N.getString("Utilisations_de") + ' ' + request.getName(), 50);
+		setName(graphLabel);
+
+		final JLabel label = new JLabel(' ' + I18N.getString("Utilisations_de") + ' '
+				+ request.getName());
+		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
+		label.setFont(label.getFont().deriveFont(Font.BOLD));
+		add(label, BorderLayout.NORTH);
 
 		this.table = new CounterRequestTable(remoteCollector);
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
 		final List<CounterRequest> requests = new ArrayList<CounterRequest>();
-		requests.add(request);
-
-		if (!childRequestsExecutions.isEmpty()) {
-			final Map<String, CounterRequest> requestsById = mapAllRequestsById();
-			for (final Map.Entry<String, Long> entry : childRequestsExecutions.entrySet()) {
-				final CounterRequest childRequest = requestsById.get(entry.getKey());
-				if (childRequest != null) {
-					requests.add(childRequest);
+		for (final Counter counter : counters) {
+			for (final CounterRequest counterRequest : counter.getOrderedRequests()) {
+				if (counterRequest.containsChildRequest(request.getId())) {
+					requests.add(counterRequest);
 				}
 			}
 		}
+
 		table.setList(requests);
-		Utilities.adjustTableHeight(table);
 		add(scrollPane, BorderLayout.CENTER);
 
 		add(createButtonsPanel(), BorderLayout.SOUTH);
@@ -239,8 +158,7 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				final CounterRequest counterRequest = getTable().getSelectedObject();
-				openButton.setEnabled(counterRequest != null
-						&& !counterRequest.equals(getRequest()));
+				openButton.setEnabled(counterRequest != null);
 			}
 		});
 		openButton.setEnabled(false);
@@ -276,58 +194,8 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 		table.addColumn("name", I18N.getString("Requete"));
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
-		if (!childRequestsExecutions.isEmpty()) {
-			final TableColumn nbExecutionsColumn = new TableColumn(table.getColumnCount());
-			nbExecutionsColumn.setIdentifier(table.getColumnCount());
-			nbExecutionsColumn.setHeaderValue(I18N.getString("Hits_par_requete"));
-			table.addColumn(nbExecutionsColumn);
-
-			nbExecutionsColumn.setCellRenderer(new NbExecutionsTableCellRenderer());
-		}
-		table.addColumn("mean", I18N.getString("Temps_moyen"));
-		table.addColumn("maximum", I18N.getString("Temps_max"));
-		table.addColumn("standardDeviation", I18N.getString("Ecart_type"));
-		table.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
-		table.addColumn("systemErrorPercentage", I18N.getString("erreur_systeme"));
-		table.setColumnCellRenderer("cpuTimeMean", new MIntegerTableCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void setValue(Object value) {
-				final Integer cpuTimeMean = (Integer) value;
-				if (cpuTimeMean >= 0) {
-					super.setValue(cpuTimeMean);
-				} else {
-					super.setValue(null);
-				}
-			}
-		});
-
-		final Counter parentCounter = getCounterByRequestId(request);
-		final boolean allChildHitsDisplayed = parentCounter != null
-				&& parentCounter.getChildCounterName() != null;
-		if (allChildHitsDisplayed) {
-			final String childCounterName = parentCounter.getChildCounterName();
-			table.addColumn("childHitsMean",
-					I18N.getFormattedString("hits_fils_moyens", childCounterName));
-			table.addColumn("childDurationsMean",
-					I18N.getFormattedString("temps_fils_moyen", childCounterName));
-			final ChildValueTableCellRenderer childValueTableCellRenderer = new ChildValueTableCellRenderer();
-			table.setColumnCellRenderer("childHitsMean", childValueTableCellRenderer);
-			table.setColumnCellRenderer("childDurationsMean", childValueTableCellRenderer);
-		}
 
 		return tableScrollPane;
-	}
-
-	private Map<String, CounterRequest> mapAllRequestsById() {
-		final Map<String, CounterRequest> result = new HashMap<String, CounterRequest>();
-		for (final Counter counter : counters) {
-			for (final CounterRequest counterRequest : counter.getRequests()) {
-				result.put(counterRequest.getId(), counterRequest);
-			}
-		}
-		return result;
 	}
 
 	final Counter getCounterByRequestId(CounterRequest counterRequest) {
@@ -344,14 +212,6 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 		return table;
 	}
 
-	final CounterRequest getRequest() {
-		return request;
-	}
-
-	final Long getChildRequestExecutions(CounterRequest counterRequest) {
-		return childRequestsExecutions.get(counterRequest.getId());
-	}
-
 	final void showRequestDetail(CounterRequest counterRequest) throws IOException {
 		final CounterRequestDetailPanel panel = new CounterRequestDetailPanel(getRemoteCollector(),
 				counterRequest, range);
@@ -362,5 +222,9 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 		final CounterRequestUsagesPanel panel = new CounterRequestUsagesPanel(getRemoteCollector(),
 				counterRequest, range);
 		MainPanel.addOngletFromChild(this, panel);
+	}
+
+	private static String truncate(String string, int maxLength) {
+		return string.substring(0, Math.min(string.length(), maxLength));
 	}
 }
