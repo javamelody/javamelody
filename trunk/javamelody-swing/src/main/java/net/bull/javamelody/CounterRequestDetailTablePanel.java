@@ -21,6 +21,8 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -32,9 +34,13 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
+import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.swing.table.MDoubleTableCellRenderer;
@@ -183,7 +189,7 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 		this.counters = remoteCollector.getCollector().getRangeCountersToBeDisplayed(range);
 
-		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
 		this.table = new CounterRequestTable(remoteCollector);
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
@@ -203,15 +209,54 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 		Utilities.adjustTableHeight(table);
 		add(scrollPane, BorderLayout.CENTER);
 
-		// TODO
-		//		if (doesRequestDisplayUsages(request)) {
-		//			writeln("<div align='right' class='noPrint'>");
-		//			writeln("<a href='?part=usages&amp;graph=" + request.getId() + "'>");
-		//			writeln("<img src='?resource=find.png' alt='#Chercher_utilisations#' ");
-		//			writeln("title='#Chercher_utilisations#'/> #Chercher_utilisations#</a></div>");
-		//		} else {
-		//			writeln("<br/>");
-		//		}
+		add(createButtonsPanel(), BorderLayout.SOUTH);
+	}
+
+	private JPanel createButtonsPanel() {
+		// TODO traduction
+		final MButton openButton = new MButton("Ouvrir",
+				ImageIconCache.getImageIcon("action_open.png"));
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final CounterRequest counterRequest = getTable().getSelectedObject();
+				try {
+					showRequestDetail(counterRequest);
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					openButton.doClick();
+				}
+			}
+		});
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final CounterRequest counterRequest = getTable().getSelectedObject();
+				openButton.setEnabled(counterRequest != null
+						&& !counterRequest.equals(getRequest()));
+			}
+		});
+		openButton.setEnabled(false);
+
+		if (doesRequestDisplayUsages(request)) {
+			final MButton usagesButton = new MButton(I18N.getString("Chercher_utilisations"),
+					ImageIconCache.getImageIcon("find.png"));
+			usagesButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO
+				}
+			});
+			return Utilities.createButtonsPanel(openButton, usagesButton);
+		}
+		return Utilities.createButtonsPanel(openButton);
 	}
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
@@ -261,22 +306,6 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 			table.setColumnCellRenderer("childDurationsMean", childValueTableCellRenderer);
 		}
 
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					final CounterRequest counterRequest = getTable().getSelectedObject();
-					if (!counterRequest.equals(getRequest())) {
-						try {
-							showRequestDetail(counterRequest);
-						} catch (final IOException ex) {
-							showException(ex);
-						}
-					}
-				}
-			}
-		});
-
 		return tableScrollPane;
 	}
 
@@ -298,6 +327,12 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 			}
 		}
 		return null;
+	}
+
+	private boolean doesRequestDisplayUsages(CounterRequest counterRequest) {
+		final Counter parentCounter = getCounterByRequestId(counterRequest);
+		return parentCounter != null && !parentCounter.isErrorCounter()
+				&& !Counter.HTTP_COUNTER_NAME.equals(parentCounter.getName());
 	}
 
 	final MTable<CounterRequest> getTable() {
