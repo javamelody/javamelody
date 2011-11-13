@@ -135,6 +135,16 @@ class Collector { // NOPMD
 		return null;
 	}
 
+	Counter getCounterByRequestId(CounterRequest request) {
+		final String requestId = request.getId();
+		for (final Counter counter : counters) {
+			if (counter.isRequestIdFromThisCounter(requestId)) {
+				return counter;
+			}
+		}
+		return null;
+	}
+
 	List<CounterRequestContext> getRootCurrentContexts() {
 		final List<CounterRequestContext> rootCurrentContexts = new ArrayList<CounterRequestContext>();
 		for (final Counter counter : counters) {

@@ -320,13 +320,7 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 	}
 
 	final Counter getCounterByRequestId(CounterRequest counterRequest) {
-		final String requestId = counterRequest.getId();
-		for (final Counter counter : counters) {
-			if (counter.isRequestIdFromThisCounter(requestId)) {
-				return counter;
-			}
-		}
-		return null;
+		return getRemoteCollector().getCollector().getCounterByRequestId(counterRequest);
 	}
 
 	private boolean doesRequestDisplayUsages(CounterRequest counterRequest) {
@@ -348,9 +342,8 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 	}
 
 	final void showRequestDetail(CounterRequest counterRequest) throws IOException {
-		final Counter parentCounter = getCounterByRequestId(counterRequest);
 		final CounterRequestDetailPanel panel = new CounterRequestDetailPanel(getRemoteCollector(),
-				counterRequest, parentCounter, range);
+				counterRequest, range);
 		MainPanel.addOngletFromChild(this, panel);
 	}
 }
