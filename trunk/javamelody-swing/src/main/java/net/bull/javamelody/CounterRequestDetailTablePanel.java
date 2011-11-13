@@ -168,8 +168,8 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
+		this.table = new CounterRequestTable(remoteCollector);
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
-		this.table = scrollPane.getTable();
 		final List<CounterRequest> requests = new ArrayList<CounterRequest>();
 		requests.add(request);
 
@@ -198,27 +198,25 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>();
-		final MTable<CounterRequest> myTable = tableScrollPane.getTable();
+		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
+				table);
 
-		// TODO graphique pour requêtes filles comme dans StatisticTablePanel
-
-		myTable.addColumn("name", I18N.getString("Requete"));
-		myTable.setColumnCellRenderer("name", new NameTableCellRenderer());
+		table.addColumn("name", I18N.getString("Requete"));
+		table.setColumnCellRenderer("name", new NameTableCellRenderer());
 		if (!childRequestsExecutions.isEmpty()) {
-			final TableColumn nbExecutionsColumn = new TableColumn(myTable.getColumnCount());
-			nbExecutionsColumn.setIdentifier(myTable.getColumnCount());
+			final TableColumn nbExecutionsColumn = new TableColumn(table.getColumnCount());
+			nbExecutionsColumn.setIdentifier(table.getColumnCount());
 			nbExecutionsColumn.setHeaderValue(I18N.getString("Hits_par_requete"));
-			myTable.addColumn(nbExecutionsColumn);
+			table.addColumn(nbExecutionsColumn);
 
 			nbExecutionsColumn.setCellRenderer(new NbExecutionsTableCellRenderer());
 		}
-		myTable.addColumn("mean", I18N.getString("Temps_moyen"));
-		myTable.addColumn("maximum", I18N.getString("Temps_max"));
-		myTable.addColumn("standardDeviation", I18N.getString("Ecart_type"));
-		myTable.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
-		myTable.addColumn("systemErrorPercentage", I18N.getString("erreur_systeme"));
-		myTable.setColumnCellRenderer("cpuTimeMean", new MIntegerTableCellRenderer() {
+		table.addColumn("mean", I18N.getString("Temps_moyen"));
+		table.addColumn("maximum", I18N.getString("Temps_max"));
+		table.addColumn("standardDeviation", I18N.getString("Ecart_type"));
+		table.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
+		table.addColumn("systemErrorPercentage", I18N.getString("erreur_systeme"));
+		table.setColumnCellRenderer("cpuTimeMean", new MIntegerTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -237,20 +235,20 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 				&& parentCounter.getChildCounterName() != null;
 		if (allChildHitsDisplayed) {
 			final String childCounterName = parentCounter.getChildCounterName();
-			myTable.addColumn("childHitsMean",
+			table.addColumn("childHitsMean",
 					I18N.getFormattedString("hits_fils_moyens", childCounterName));
-			myTable.addColumn("childDurationsMean",
+			table.addColumn("childDurationsMean",
 					I18N.getFormattedString("temps_fils_moyen", childCounterName));
 			final ChildValueTableCellRenderer childValueTableCellRenderer = new ChildValueTableCellRenderer();
-			myTable.setColumnCellRenderer("childHitsMean", childValueTableCellRenderer);
-			myTable.setColumnCellRenderer("childDurationsMean", childValueTableCellRenderer);
+			table.setColumnCellRenderer("childHitsMean", childValueTableCellRenderer);
+			table.setColumnCellRenderer("childDurationsMean", childValueTableCellRenderer);
 		}
 
-		myTable.addMouseListener(new MouseAdapter() {
+		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					final CounterRequest counterRequest = myTable.getSelectedObject();
+					final CounterRequest counterRequest = getTable().getSelectedObject();
 					if (!counterRequest.equals(getRequest())) {
 						try {
 							showRequestDetail(counterRequest);
