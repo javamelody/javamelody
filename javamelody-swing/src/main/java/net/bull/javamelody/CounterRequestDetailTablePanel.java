@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -30,8 +31,8 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
-import javax.swing.border.Border;
 import javax.swing.table.TableColumn;
 
 import net.bull.javamelody.swing.Utilities;
@@ -46,9 +47,6 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class CounterRequestDetailTablePanel extends MelodyPanel {
-	@SuppressWarnings("all")
-	static final Border CHILD_BORDER = BorderFactory.createEmptyBorder(0, 10, 0, 0);
-
 	private static final long serialVersionUID = 1L;
 
 	private final CounterRequest request;
@@ -88,10 +86,12 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 	}
 
 	private final class NameTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final int CHILD_MARGIN = 10;
+
 		private static final long serialVersionUID = 1L;
 
 		@SuppressWarnings("all")
-		private final Map<String, Icon> iconByName = new HashMap<String, Icon>();
+		private final Map<String, ImageIcon> iconByName = new HashMap<String, ImageIcon>();
 
 		NameTableCellRenderer() {
 			super();
@@ -103,15 +103,32 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 			final MTable<CounterRequest> myTable = getTable();
 			final CounterRequest counterRequest = myTable.getList().get(
 					myTable.convertRowIndexToModel(row));
-			if (counterRequest.equals(getRequest())) {
-				setBorder(null);
-			} else {
-				// TODO ne marche pas ?
-				setBorder(CHILD_BORDER);
-			}
 			final Counter counter = getCounterByRequestId(counterRequest);
 			if (counter != null && counter.getIconName() != null) {
-				setIcon(getIcon(counter.getIconName()));
+				final Icon icon;
+				final ImageIcon counterIcon = getIcon(counter.getIconName());
+				if (counterRequest.equals(getRequest())) {
+					icon = counterIcon;
+				} else {
+					// ajoute une marge à gauche de l'icône
+					icon = new Icon() {
+						@Override
+						public void paintIcon(Component c, Graphics g, int x, int y) {
+							g.drawImage(counterIcon.getImage(), CHILD_MARGIN + x, y, null);
+						}
+
+						@Override
+						public int getIconWidth() {
+							return counterIcon.getIconWidth() + CHILD_MARGIN;
+						}
+
+						@Override
+						public int getIconHeight() {
+							return counterIcon.getIconHeight();
+						}
+					};
+				}
+				setIcon(icon);
 			} else {
 				setIcon(null);
 			}
@@ -119,8 +136,8 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 					column);
 		}
 
-		private Icon getIcon(String iconName) {
-			Icon icon = iconByName.get(iconName);
+		private ImageIcon getIcon(String iconName) {
+			ImageIcon icon = iconByName.get(iconName);
 			if (icon == null) {
 				icon = ImageIconCache.getScaledImageIcon(iconName, 16, 16);
 				iconByName.put(iconName, icon);
