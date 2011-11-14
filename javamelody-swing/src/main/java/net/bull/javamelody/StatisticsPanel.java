@@ -63,13 +63,16 @@ class StatisticsPanel extends MelodyPanel {
 	private StatisticsPanel detailsPanel;
 	private CounterErrorPanel lastErrorsPanel;
 
-	StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range) {
-		this(remoteCollector, counter, range, null);
+	StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range,
+			boolean includeGraph) {
+		this(remoteCollector, counter, range, null, includeGraph);
 	}
 
 	private StatisticsPanel(RemoteCollector remoteCollector, Counter counter, Range range,
-			CounterRequestAggregation counterRequestAggregation) {
+			CounterRequestAggregation counterRequestAggregation, boolean includeGraph) {
 		super(remoteCollector);
+
+		// TODO boolean includeDetailLink, boolean includeSummaryPerClassLink comme dans HtmlCounterReport ?
 
 		assert counter != null;
 		assert range != null;
@@ -86,7 +89,7 @@ class StatisticsPanel extends MelodyPanel {
 				this.counterRequestAggregation = counterRequestAggregation;
 			}
 			this.tablePanel = new StatisticsTablePanel(getRemoteCollector(), counter,
-					this.counterRequestAggregation);
+					this.counterRequestAggregation, includeGraph);
 		}
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.mainPanel.setOpaque(false);
@@ -124,8 +127,9 @@ class StatisticsPanel extends MelodyPanel {
 
 	void showDetailRequests() {
 		if (detailsPanel == null) {
+			final boolean includeGraph = CounterRequestTable.isRequestGraphDisplayed(counter);
 			detailsPanel = new StatisticsPanel(getRemoteCollector(), counter, range,
-					counterRequestAggregation);
+					counterRequestAggregation, includeGraph);
 			detailsPanel.setVisible(false);
 			final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 			detailsPanel.showRequests(requests);
