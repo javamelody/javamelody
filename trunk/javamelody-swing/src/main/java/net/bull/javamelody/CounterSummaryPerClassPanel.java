@@ -72,7 +72,7 @@ class CounterSummaryPerClassPanel extends MelodyPanel {
 		}
 
 		final StatisticsPanel statisticsPanel = new StatisticsPanel(getRemoteCollector(), counter,
-				range);
+				range, requestId != null);
 		statisticsPanel.showRequestsAggregatedOrFilteredByClassName(requestId, detailsButton);
 		add(statisticsPanel, BorderLayout.CENTER);
 

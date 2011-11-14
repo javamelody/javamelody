@@ -131,7 +131,7 @@ class StatisticsTablePanel extends MelodyPanel {
 	}
 
 	StatisticsTablePanel(RemoteCollector remoteCollector, Counter counter,
-			CounterRequestAggregation counterRequestAggregation) {
+			CounterRequestAggregation counterRequestAggregation, boolean includeGraph) {
 		super(remoteCollector);
 
 		assert counter != null;
@@ -139,7 +139,7 @@ class StatisticsTablePanel extends MelodyPanel {
 		this.counter = counter;
 		this.counterRequestAggregation = counterRequestAggregation;
 
-		if (CounterRequestTable.isRequestGraphDisplayed(counter)) {
+		if (includeGraph) {
 			this.table = new CounterRequestTable(remoteCollector);
 		} else {
 			this.table = new MTable<CounterRequest>();
