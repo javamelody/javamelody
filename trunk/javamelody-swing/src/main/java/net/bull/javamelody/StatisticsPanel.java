@@ -72,8 +72,6 @@ class StatisticsPanel extends MelodyPanel {
 			CounterRequestAggregation counterRequestAggregation, boolean includeGraph) {
 		super(remoteCollector);
 
-		// TODO boolean includeDetailLink, boolean includeSummaryPerClassLink comme dans HtmlCounterReport ?
-
 		assert counter != null;
 		assert range != null;
 		this.counter = counter;
@@ -94,11 +92,6 @@ class StatisticsPanel extends MelodyPanel {
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.mainPanel.setOpaque(false);
 		add(this.mainPanel, BorderLayout.NORTH);
-
-		// TODO détail des requêtes
-		//		// 3. détails par requêtes (non visible par défaut)
-		//		writeRequests(counterName, counter.getChildCounterName(), requests,
-		//				isRequestGraphDisplayed(counter), true, false);
 	}
 
 	public void showGlobalRequests() {
@@ -112,6 +105,8 @@ class StatisticsPanel extends MelodyPanel {
 				// il y a au moins une "request" d'erreur puisque la liste n'est pas vide
 				assert !requests.isEmpty();
 				requests = Collections.singletonList(requests.get(0));
+				final MTable<CounterRequest> myTable = tablePanel.getTable();
+				addMouseClickedListener(myTable);
 			} else {
 				requests = Arrays.asList(globalRequest,
 						counterRequestAggregation.getWarningRequest(),
@@ -146,19 +141,7 @@ class StatisticsPanel extends MelodyPanel {
 					Utilities.adjustTableHeight(myTable);
 				}
 			});
-			myTable.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() == 2) {
-						final CounterRequest request = myTable.getSelectedObject();
-						try {
-							showRequestDetail(request);
-						} catch (final IOException ex) {
-							showException(ex);
-						}
-					}
-				}
-			});
+			addMouseClickedListener(myTable);
 
 			add(detailsPanel, BorderLayout.CENTER);
 		}
@@ -200,20 +183,24 @@ class StatisticsPanel extends MelodyPanel {
 		} else {
 			// et sinon, le double-clique sur la table des requêtes filtrées pour une classe
 			// permet d'afficher le détail d'une requête
-			myTable.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() == 2) {
-						final CounterRequest request = myTable.getSelectedObject();
-						try {
-							showRequestDetail(request);
-						} catch (final IOException ex) {
-							showException(ex);
-						}
+			addMouseClickedListener(myTable);
+		}
+	}
+
+	private void addMouseClickedListener(final MTable<CounterRequest> myTable) {
+		myTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					final CounterRequest request = myTable.getSelectedObject();
+					try {
+						showRequestDetail(request);
+					} catch (final IOException ex) {
+						showException(ex);
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 
 	void showLastErrors() {
