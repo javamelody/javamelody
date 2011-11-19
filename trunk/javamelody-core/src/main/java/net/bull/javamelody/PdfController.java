@@ -220,11 +220,11 @@ class PdfController {
 		final StringBuilder sb = new StringBuilder(length + length / 4);
 		// attachment et non inline pour proposer l'enregistrement (sauf IE6)
 		// et non l'affichage direct dans le navigateur
-		sb.append("attachment;filename*=\"");
+		sb.append("attachment;filename=\"");
 		char c;
 		for (int i = 0; i < length; i++) {
 			c = fileName.charAt(i);
-			if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9') {
+			if (isEncodingNotNeeded(c)) {
 				sb.append(c);
 			} else {
 				sb.append('%');
@@ -236,5 +236,10 @@ class PdfController {
 		}
 		sb.append('"');
 		return sb.toString();
+	}
+
+	private static boolean isEncodingNotNeeded(char c) {
+		return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '.'
+				|| c == '_';
 	}
 }
