@@ -342,12 +342,14 @@ class MonitoringController {
 		}
 	}
 
-	private static Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins,
-			Range range, int width, int height) throws IOException {
+	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
+			int width, int height) throws IOException {
 		final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
 		for (final JRobin jrobin : jrobins) {
-			final byte[] image = jrobin.graph(range, width, height);
-			images.put(jrobin.getName(), image);
+			if (collector.isJRobinDisplayed(jrobin)) {
+				final byte[] image = jrobin.graph(range, width, height);
+				images.put(jrobin.getName(), image);
+			}
 		}
 		return images;
 	}

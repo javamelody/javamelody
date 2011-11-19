@@ -205,8 +205,7 @@ class PdfReport {
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
 		int i = 0;
 		for (final JRobin jrobin : jrobins) {
-			final String jrobinName = jrobin.getName();
-			if (isJRobinDisplayed(jrobinName)) {
+			if (collector.isJRobinDisplayed(jrobin)) {
 				if (i % 3 == 0 && i != 0) {
 					// un retour après httpSessions et avant activeThreads pour l'alignement
 					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
@@ -228,8 +227,7 @@ class PdfReport {
 		jrobinTable.setWidthPercentage(100);
 		jrobinTable.getDefaultCell().setBorder(0);
 		for (final JRobin jrobin : collector.getCounterJRobins()) {
-			final String jrobinName = jrobin.getName();
-			if (isJRobinDisplayed(jrobinName)) {
+			if (collector.isJRobinDisplayed(jrobin)) {
 				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
 				final Image image = Image.getInstance(jrobin.graph(range, 960, 370));
 				jrobinTable.addCell(image);
@@ -276,19 +274,6 @@ class PdfReport {
 					+ range.getLabel(), pdfCounterReport.getCounterIconName());
 			pdfCounterReport.writeErrorDetails();
 		}
-	}
-
-	private boolean isJRobinDisplayed(String jrobinName) {
-		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
-		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
-		//			return false;
-		//		}
-		for (final Counter counter : collector.getCounters()) {
-			if (jrobinName.startsWith(counter.getName())) {
-				return counter.isDisplayed();
-			}
-		}
-		return true;
 	}
 
 	private List<PdfCounterRequestContextReport> writeCurrentRequests(

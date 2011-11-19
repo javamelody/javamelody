@@ -741,6 +741,20 @@ class Collector { // NOPMD
 		return Collections.unmodifiableCollection(otherJRobins.values());
 	}
 
+	boolean isJRobinDisplayed(JRobin jrobin) {
+		final String jrobinName = jrobin.getName();
+		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
+		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
+		//			return false;
+		//		}
+		for (final Counter counter : getCounters()) {
+			if (jrobinName.startsWith(counter.getName())) {
+				return counter.isDisplayed();
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Purge les données pour un compteur à partir de son nom.
 	 * @param counterName Nom du compteur
