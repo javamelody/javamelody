@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -39,6 +40,10 @@ import com.lowagie.text.pdf.PdfPTable;
  * @author Emeric Vernat
  */
 class PdfReport {
+	static final int SMALL_GRAPH_WIDTH = 200;
+	static final int SMALL_GRAPH_HEIGHT = 50;
+	static final int LARGE_GRAPH_WIDTH = 960;
+	static final int LARGE_GRAPH_HEIGHT = 370;
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
@@ -48,6 +53,9 @@ class PdfReport {
 	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
 	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
 	private final long start = System.currentTimeMillis();
+	private Map<String, byte[]> smallGraphs;
+	private Map<String, byte[]> smallOtherGraphs;
+	private Map<String, byte[]> largeGraphs;
 
 	PdfReport(Collector collector, boolean collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, OutputStream output)
@@ -82,6 +90,13 @@ class PdfReport {
 				+ I18N.getCurrentDate().replace('/', '_') + ".pdf";
 	}
 
+	void preInitGraphs(Map<String, byte[]> newSmallGraphs, Map<String, byte[]> newSmallOtherGraphs,
+			Map<String, byte[]> newLargeGraphs) {
+		this.smallGraphs = newSmallGraphs;
+		this.smallOtherGraphs = newSmallOtherGraphs;
+		this.largeGraphs = newLargeGraphs;
+	}
+
 	void toPdf() throws IOException {
 		try {
 			document.open();
@@ -108,7 +123,7 @@ class PdfReport {
 
 	private void writeContent() throws IOException, DocumentException {
 		addParagraph(buildSummary(), "systemmonitor.png");
-		writeGraphs(collector.getCounterJRobins());
+		writeGraphs(collector.getCounterJRobins(), smallGraphs);
 
 		final List<PdfCounterReport> pdfCounterReports = writeCounters();
 
@@ -145,7 +160,7 @@ class PdfReport {
 
 		document.newPage();
 		addParagraph(getI18nString("Statistiques_detaillees"), "systemmonitor.png");
-		writeGraphs(collector.getOtherJRobins());
+		writeGraphs(collector.getOtherJRobins(), smallOtherGraphs);
 		document.newPage();
 		writeGraphDetails();
 
@@ -198,23 +213,40 @@ class PdfReport {
 		return tmp;
 	}
 
-	private void writeGraphs(Collection<JRobin> jrobins) throws IOException, DocumentException {
+	private void writeGraphs(Collection<JRobin> jrobins, Map<String, byte[]> mySmallGraphs)
+			throws IOException, DocumentException {
 		final Paragraph jrobinParagraph = new Paragraph("", PdfDocumentFactory.getFont(9f,
 				Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
 		int i = 0;
-		for (final JRobin jrobin : jrobins) {
-			if (collector.isJRobinDisplayed(jrobin)) {
+		if (mySmallGraphs != null) {
+			// si les graphiques ont été préinitialisés (en Swing) alors on les utilise
+			for (final byte[] imageData : mySmallGraphs.values()) {
 				if (i % 3 == 0 && i != 0) {
 					// un retour après httpSessions et avant activeThreads pour l'alignement
 					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
 				}
-				final Image image = Image.getInstance(jrobin.graph(range, 200, 50));
+				final Image image = Image.getInstance(imageData);
 				image.scalePercent(50);
 				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
 				jrobinParagraph.add(new Phrase(" "));
 				i++;
+			}
+		} else {
+			for (final JRobin jrobin : jrobins) {
+				if (collector.isJRobinDisplayed(jrobin)) {
+					if (i % 3 == 0 && i != 0) {
+						// un retour après httpSessions et avant activeThreads pour l'alignement
+						jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
+					}
+					final Image image = Image.getInstance(jrobin.graph(range, SMALL_GRAPH_WIDTH,
+							SMALL_GRAPH_HEIGHT));
+					image.scalePercent(50);
+					jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
+					jrobinParagraph.add(new Phrase(" "));
+					i++;
+				}
 			}
 		}
 		jrobinParagraph.add(new Phrase("\n"));
@@ -226,11 +258,20 @@ class PdfReport {
 		jrobinTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 		jrobinTable.setWidthPercentage(100);
 		jrobinTable.getDefaultCell().setBorder(0);
-		for (final JRobin jrobin : collector.getCounterJRobins()) {
-			if (collector.isJRobinDisplayed(jrobin)) {
-				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
-				final Image image = Image.getInstance(jrobin.graph(range, 960, 370));
+		if (largeGraphs != null) {
+			// si les graphiques ont été préinitialisés (en Swing) alors on les utilise
+			for (final byte[] imageData : largeGraphs.values()) {
+				final Image image = Image.getInstance(imageData);
 				jrobinTable.addCell(image);
+			}
+		} else {
+			for (final JRobin jrobin : collector.getCounterJRobins()) {
+				if (collector.isJRobinDisplayed(jrobin)) {
+					// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
+					final Image image = Image.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH,
+							LARGE_GRAPH_HEIGHT));
+					jrobinTable.addCell(image);
+				}
 			}
 		}
 		document.add(jrobinTable);
