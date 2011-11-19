@@ -299,7 +299,8 @@ public final class JdbcWrapper {
 		this.servletContext = context;
 		final String serverInfo = servletContext.getServerInfo();
 		jboss = serverInfo.contains("JBoss");
-		glassfish = serverInfo.contains("GlassFish");
+		glassfish = serverInfo.contains("GlassFish")
+				|| serverInfo.contains("Sun Java System Application Server");
 		weblogic = serverInfo.contains("WebLogic");
 		jonas = System.getProperty("jonas.name") != null;
 		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
