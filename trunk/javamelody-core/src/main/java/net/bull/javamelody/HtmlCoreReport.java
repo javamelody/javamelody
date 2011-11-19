@@ -326,8 +326,8 @@ class HtmlCoreReport {
 	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
 		int i = 0;
 		for (final JRobin jrobin : jrobins) {
-			final String jrobinName = jrobin.getName();
-			if (isJRobinDisplayed(jrobinName)) {
+			if (collector.isJRobinDisplayed(jrobin)) {
+				final String jrobinName = jrobin.getName();
 				writeln("<a href='?part=graph&amp;graph=" + jrobinName
 						+ "'><img class='synthese' src='?width=200&amp;height="
 						+ JRobin.SMALL_HEIGHT + "&amp;graph=" + jrobinName + "' alt=\""
@@ -520,19 +520,6 @@ class HtmlCoreReport {
 			}
 		}
 		return false;
-	}
-
-	private boolean isJRobinDisplayed(String jrobinName) {
-		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
-		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
-		//			return false;
-		//		}
-		for (final Counter counter : collector.getCounters()) {
-			if (jrobinName.startsWith(counter.getName())) {
-				return counter.isDisplayed();
-			}
-		}
-		return true;
 	}
 
 	private void writeCaches() throws IOException {
