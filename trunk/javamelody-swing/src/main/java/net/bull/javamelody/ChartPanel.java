@@ -24,10 +24,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
@@ -70,6 +73,7 @@ class ChartPanel extends MelodyPanel {
 		final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		southPanel.setOpaque(false);
 
+		zoomValue = 0;
 		final byte[] imageData = getRemoteCollector().collectJRobin(graphName, CHART_WIDTH,
 				CHART_HEIGHT);
 		if (imageData != null) {
@@ -132,6 +136,18 @@ class ChartPanel extends MelodyPanel {
 		if (getImageLabel() != null) {
 			// TODO traduction
 			final MButton exportButton = new MButton("Exporter...");
+			exportButton.setToolTipText(exportButton.getText() + " (F12)");
+			exportButton.setActionCommand("export");
+			exportButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+					KeyStroke.getKeyStroke("F12"), "doExport");
+			exportButton.getActionMap().put("doExport", new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					exportButton.doClick();
+				}
+			});
 			exportButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
