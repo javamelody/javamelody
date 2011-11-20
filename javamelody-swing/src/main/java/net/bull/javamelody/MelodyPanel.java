@@ -20,13 +20,17 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import net.bull.javamelody.swing.MButton;
 
@@ -86,14 +90,36 @@ class MelodyPanel extends JPanel {
 	final MButton createRefreshButton() {
 		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
-		refreshButton.setToolTipText(I18N.getString("Rafraichir"));
+		refreshButton.setToolTipText(I18N.getString("Rafraichir") + " (F5)");
+		refreshButton.setActionCommand("refresh");
+		refreshButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+				KeyStroke.getKeyStroke("F5"), "doRefresh");
+		refreshButton.getActionMap().put("doRefresh", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				refreshButton.doClick();
+			}
+		});
 		return refreshButton;
 	}
 
 	final MButton createPdfButton() {
 		final MButton pdfButton = new MButton(I18N.getString("PDF"),
 				ImageIconCache.getImageIcon("pdf.png"));
-		pdfButton.setToolTipText(I18N.getString("afficher_PDF"));
+		pdfButton.setToolTipText(I18N.getString("afficher_PDF") + " (F12)");
+		pdfButton.setActionCommand("pdf");
+		pdfButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F12"),
+				"doPdf");
+		pdfButton.getActionMap().put("doPdf", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pdfButton.doClick();
+			}
+		});
 		return pdfButton;
 	}
 }
