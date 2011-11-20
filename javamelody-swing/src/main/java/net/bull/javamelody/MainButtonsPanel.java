@@ -30,8 +30,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 
 import net.bull.javamelody.swing.MButton;
 
@@ -49,9 +52,8 @@ class MainButtonsPanel extends MelodyPanel {
 
 		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = createPdfButton();
-		final MButton onlineHelpButton = new MButton(I18N.getString("Aide_en_ligne"),
-				ImageIconCache.getImageIcon("action_help.png"));
-		onlineHelpButton.setToolTipText(I18N.getString("Afficher_aide_en_ligne"));
+		final MButton onlineHelpButton = createOnlineHelpButton();
+
 		// TODO traductions
 		final MButton monitoringButton = new MButton("Monitoring", MONITORING_ICON);
 		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
@@ -113,6 +115,24 @@ class MainButtonsPanel extends MelodyPanel {
 				}
 			}
 		});
+	}
+
+	private MButton createOnlineHelpButton() {
+		final MButton onlineHelpButton = new MButton(I18N.getString("Aide_en_ligne"),
+				ImageIconCache.getImageIcon("action_help.png"));
+		onlineHelpButton.setToolTipText(I18N.getString("Afficher_aide_en_ligne") + " (F1)");
+		onlineHelpButton.setActionCommand("help");
+		onlineHelpButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+				KeyStroke.getKeyStroke("F1"), "doHelp");
+		onlineHelpButton.getActionMap().put("doHelp", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				onlineHelpButton.doClick();
+			}
+		});
+		return onlineHelpButton;
 	}
 
 	void actionRefresh() {
