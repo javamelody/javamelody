@@ -45,6 +45,9 @@
 					<include name="ejb-api-3.0.jar" />
 					<include name="dbcp-6.0.18.jar" />
 					<include name="hibernate-3.2.6.ga.jar" />
+					<include name="jsf-impl-2.0.2.jar" />
+					<include name="jsf-api-2.1.jar" />
+					<include name="el-api-1.0.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="jrobin-1.5.9.1.jar" />
