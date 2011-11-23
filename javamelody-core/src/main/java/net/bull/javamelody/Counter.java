@@ -65,6 +65,10 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	static final String STRUTS_COUNTER_NAME = "struts";
 	/**
+	 * Nom du counter des actions JSF RI (Mojarra).
+	 */
+	static final String JSF_COUNTER_NAME = "jsf";
+	/**
 	 * Nom du counter des jobs.
 	 */
 	static final String JOB_COUNTER_NAME = "job";
