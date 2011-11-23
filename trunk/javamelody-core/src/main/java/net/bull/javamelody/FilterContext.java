@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
  * @author Emeric Vernat
  */
 class FilterContext {
+	private static final boolean MOJARRA_AVAILABLE = isMojarraAvailable();
+
 	private final Collector collector;
 	private final Timer timer;
 
@@ -87,6 +89,10 @@ class FilterContext {
 				JobGlobalListener.initJobGlobalListener();
 			}
 
+			if (MOJARRA_AVAILABLE) {
+				JsfActionListener.initJsfActionListener();
+			}
+
 			final List<Counter> counters = initCounters();
 			final String application = Parameters.getCurrentApplication();
 			this.collector = new Collector(application, counters);
@@ -116,18 +122,19 @@ class FilterContext {
 		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		final Counter strutsCounter = MonitoringProxy.getStrutsCounter();
+		final Counter jsfCounter = MonitoringProxy.getJsfCounter();
 		final Counter logCounter = LoggingHandler.getLogCounter();
 		final Counter jspCounter = JspWrapper.getJspCounter();
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, strutsCounter, jspCounter, errorCounter,
-					logCounter, jobCounter);
+					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
+					errorCounter, logCounter, jobCounter);
 		} else {
 			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, strutsCounter, jspCounter, errorCounter,
-					logCounter);
+					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
+					errorCounter, logCounter);
 		}
 
 		setRequestTransformPatterns(counters);
@@ -143,6 +150,7 @@ class FilterContext {
 			guiceCounter.setDisplayed(guiceCounter.isUsed());
 			servicesCounter.setDisplayed(servicesCounter.isUsed());
 			strutsCounter.setDisplayed(strutsCounter.isUsed());
+			jsfCounter.setDisplayed(jsfCounter.isUsed());
 			jspCounter.setDisplayed(jspCounter.isUsed());
 		} else {
 			setDisplayedCounters(counters, displayedCounters);
@@ -243,6 +251,15 @@ class FilterContext {
 			LogbackAppender.getSingleton().register();
 		}
 		LOG.debug("log listeners initialized");
+	}
+
+	private static boolean isMojarraAvailable() {
+		try {
+			Class.forName("com.sun.faces.application.ActionListenerImpl");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	private static void logSystemInformationsAndParameters() {

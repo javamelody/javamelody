@@ -101,6 +101,11 @@ public enum Parameter {
 	STRUTS_TRANSFORM_PATTERN("struts-transform-pattern"),
 
 	/**
+	 * Expression régulière (null par défaut) pour transformer la description d'une action JSF.
+	 */
+	JSF_TRANSFORM_PATTERN("jsf-transform-pattern"),
+
+	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une erreur http.
 	 */
 	ERROR_TRANSFORM_PATTERN("error-transform-pattern"),
