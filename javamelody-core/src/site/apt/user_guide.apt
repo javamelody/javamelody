@@ -311,14 +311,14 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Et les paramètres <<<ejb-transform-pattern>>>, <<<spring-transform-pattern>>>, <<<guice-transform-pattern>>>,
 	<<<error-transform-pattern>>>, <<<log-transform-pattern>>>, <<<job-transform-pattern>>>,
-	<<<struts-transform-pattern>>> et <<<jsp-transform-pattern>>> permettent de transformer les descriptions des méthodes ejb3,
+	<<<jsf-transform-pattern>>>, <<<struts-transform-pattern>>> et <<<jsp-transform-pattern>>> permettent de transformer les descriptions des méthodes ejb3,
 	des méthodes spring, des méthodes guice, des erreurs systèmes http, des logs d'erreurs systèmes,
-	des noms de jobs, des actions struts ou des pages jsp (pour agréger par composants ejb au lieu d'agréger par
-	méthodes ejb par exemple).
+	des noms de jobs, des actions jsf, des actions struts, ou des pages jsp
+	(pour agréger par composants ejb au lieu d'agréger par méthodes ejb par exemple).
 	
 	Le paramètre <<<displayed-counters>>> permet de modifier les compteurs affichés pour les
 	statistiques et les graphiques (<<<http,sql,error,log>>> par défaut). Les compteurs affichés 
-	par défaut sont donc ceux de codes http, sql, error et log. Les compteurs de codes struts, jsp, ejb,
+	par défaut sont donc ceux de codes http, sql, error et log. Les compteurs de codes jsf, struts, jsp, ejb,
 	spring, guice et services s'affichent automatiquement quand ils sont utilisés (voir ci-dessous
 	pour ejb, spring, guice ou struts et dans le guide utilisateur avancé pour les services sans ejb ni spring
 	ni guice). Le paramètre <<<displayed-counters>>> permet donc de cacher certains compteurs avec
@@ -712,7 +712,13 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	toutes les façades, vous pouvez créer et ajouter à vos façades une interface
 	<<<com.xyz.someapp.service.Monitored>>> avant de l'utiliser dans votre module comme ci-dessus.
 
-** 11. Actions Struts 2
+** 11. Actions JSF
+
+	Si l'application à monitorer contient des actions JSF basées sur Mojarra (JSF Reference Implementation),
+	un compteur est créé automatiquement pour les statistiqes d'exécution des actions.
+	Aucune action de votre part n'est nécessaire pour avoir les statistiques JSF.
+
+** 12. Actions Struts 2
 
 	Si l'application à monitorer contient des actions {{{http://struts.apache.org/} Struts 2}},
 	un compteur peut être créé pour les statistiques d'exécution des actions.
@@ -738,7 +744,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Puis dans tous vos packages Struts, utiliser le package "default" par <<<extends="default">>>
 
-** 12. Jobs en batchs (si Quartz)
+** 13. Jobs en batchs (si Quartz)
 
 	Les jobs sont automatiquement monitorés quand ils sont ordonnancés avec {{{http://www.quartz-scheduler.org/} Quartz}}.
 
@@ -758,7 +764,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Sans cette propriété "exposeSchedulerInRepository", les jobs ordonnancés avec Spring ne seront
 	ni monitorés ni affichés dans le rapport.
 
-** 13. Rapports hebdomadaires, quotidiens ou mensuels par mail
+** 14. Rapports hebdomadaires, quotidiens ou mensuels par mail
 
 	Un rapport hebdomadaire, quotidien ou mensuel au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
 	Cette fonctionnalité nécessite la librairie iText dans votre webapp (licence LGPL ou MPL, le fichier jar iText
@@ -848,7 +854,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Après le démarrage du serveur, il est possible de tester l'envoi de mail en appelant cette action:
 	http://<host>/<context>/monitoring?action=mail_test
 
-** 14. Utilisateur base de données
+** 15. Utilisateur base de données
 
 	Depuis la page html du monitoring, il est possible d'accéder à des informations et à des
 	statistiques sur la base de données (si postgresql, mysql ou oracle),
@@ -865,7 +871,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	sql suivante en tant qu'utilisateur 'system' pour accorder le droit à l'utilisateur 'myapplication' :
 	<<<grant select any dictionary to myapplication>>>
 
-** 15. Sécurité
+** 16. Sécurité
 
 	La page de monitoring étant uniquement en consultation et ne contenant pas d'informations comme login ou mot de passe,
 	il n'est pas absolument nécessaire que cette page soit en accès restreint. Toutefois, il est possible de restreindre
@@ -917,7 +923,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 </tomcat-users>
 +-------------------------------+
 
-** 16. SecurityManager
+** 17. SecurityManager
 
 	Si vous êtes l'une des rares personnes avec un SecurityManager activé dans votre serveur,
 	il y aura une exception comme celle ci-dans la sortie du serveur au démarrage de la webapp
@@ -948,7 +954,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<<<javamelody-x.jar>>> par le nom exact du fichier jar de JavaMelody.
 
 
-** 17. Résultat complet
+** 18. Résultat complet
 
 	Pour consulter le monitoring, déployer le war et ouvrir la page suivante dans un navigateur web après avoir démarré le serveur :
 

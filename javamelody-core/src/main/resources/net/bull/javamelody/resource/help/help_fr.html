@@ -70,7 +70,7 @@ Les courbes présentées sont :<ul>
 <li>le nombre de connexions jdbc actives (ou nombre de requêtes sql en cours)</li>
 <li>le nombre de connexions jdbc utilisées (ou nombre de transactions sql ouvertes);
   dans le cas où il n'y a pas de datasource, c'est en fait le nombre de connexions jdbc ouvertes dans le pool de connexions</li>
-<li>pour chacun des compteurs de requêtes (http, sql et éventuellement ejb, spring, guice, interfaces, actions struts, pages jsp) :<ul>
+<li>pour chacun des compteurs de requêtes (http, sql et éventuellement ejb, spring, guice, interfaces, actions jsf, actions struts, pages jsp) :<ul>
 	<li>le nombre de hits par minute (ou nombre d'exécutions de requêtes par minute)</li>
 	<li>le temps moyen en millisecondes</li>
 	<li>le pourcentage d'erreurs systèmes
@@ -205,6 +205,8 @@ Statistiques spring (si façades spring)</li>
 Statistiques guice (si façades guice)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
 Statistiques d'interfaces façades (sans ejb3 ni spring ni guice)</li>
+<li><img width='24' height='24' src='?resource=jsp.png' alt='jsf'/>
+Statistiques d'actions jsf</li>
 <li><img width='24' height='24' src='?resource=struts.png' alt='struts'/>
 Statistiques d'actions struts</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
@@ -236,7 +238,7 @@ s'il est élevé, les temps sont très variés, s'il est faible les temps sont rappr
 <li>le temps cpu moyen en millisecondes</li>
 <li>le pourcentage d'erreurs systèmes</li>
 </ul>
-et si il s'agit des statistiques http, ejb, spring, guice, interfaces, actions struts ou jsp :<ul>
+et si il s'agit des statistiques http, ejb, spring, guice, interfaces, actions jsf, actions struts ou jsp :<ul>
 <li>la taille moyenne en kilo-octets du flux de réponse (seulement pour http)</li>
 <li>le nombre moyen de hits sql, par exécution de requête http, ejb...</li>
 <li>le temps moyen passé à exécuter des requêtes sql, par exécution de requête http, ejb...</li>
