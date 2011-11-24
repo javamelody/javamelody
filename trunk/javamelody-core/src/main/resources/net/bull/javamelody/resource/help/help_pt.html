@@ -68,7 +68,7 @@ que existam vários núcleos e/ou vários processadores</li>
 <li>O número de conexões JDBC ativas (ou número de requisições SQL correntes)</li>
 <li>O número de conexões JDBC usadas (ou número de transações SQL abertas);
   no caso onde não há fonte de dados (datasource com JDBC sem pool), ele é, de fato, o número de conexões JDBC abertas no pool de conexões</li>
-<li>Para cada contador de requisições (HTTP, SQL e possivelmente EJB, Spring, Guice, ações de struts, páginas JSP):<ul>
+<li>Para cada contador de requisições (HTTP, SQL e possivelmente EJB, Spring, Guice, ações de jsf, ações de struts, páginas JSP):<ul>
 	<li>O tempo médio em milissegundos</li>
 	<li>O percentual de erros do sistema
 	(Este valor, para um contador, é a média para o último período de medição)</li>
@@ -173,6 +173,8 @@ Estatísticas Spring (se Spring façades)</li>
 Estatísticas Guice (se Guice façades)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
 Estatísticas de interfaces façades (sem EJB3, Spring ou Guice)</li>
+<li><img width='24' height='24' src='?resource=jsp.png' alt='jsf'/>
+Estatísticas de ações jsf</li>
 <li><img width='24' height='24' src='?resource=struts.png' alt='struts'/>
 Estatísticas de ações struts</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='JSP'/>
@@ -199,7 +201,7 @@ Este gráfico pode ser ampliado, clicando sobre o conteúdo da requisição </li>
 
 <li>o percentual de erros de sistema</li>
 </ul>
-e se é um HTTP, EJB, Spring, Guice interfaces, ações struts ou estatística JSP:<ul>
+e se é um HTTP, EJB, Spring, Guice interfaces, ações jsf, ações struts ou estatística JSP:<ul>
 <li>o tamanho médio em quilo-bytes para a o fluxo de resposta (somente para HTTP)</li>
 <li>o número médio de acessos SQL , por execução da requisição HTTP(, EJB...)</li>
 <li>o tempo médio de execução de requisições SQL, por execução da requisição de HTTP(, EJB...)</li>

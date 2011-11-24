@@ -69,7 +69,7 @@ The charts displayed are:<ul>
 <li>the number of active jdbc connections (or number of current sql requests)</li>
 <li>the number of used jdbc connections (or number of opened sql transactions);
   in the case where there is no datasource, it is in fact the number of opened jdbc connections in the connection pool</li>
-<li>for each counter of requests (http, sql and possibly ejb, spring, guice, struts actions, jsp pages) :<ul>
+<li>for each counter of requests (http, sql and possibly ejb, spring, guice, jsf actions, struts actions, jsp pages) :<ul>
 	<li>the number of hits per minute (or number of executions of requests per minute)</li>
 	<li>the mean time in milliseconds</li>
 	<li>the percentage of system errors
@@ -203,6 +203,8 @@ Spring statistics (if spring fa�ades)</li>
 Guice statistics (if guice fa�ades)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
 Statistics of fa�ades interfaces (without ejb3, spring or guice)</li>
+<li><img width='24' height='24' src='?resource=jsp.png' alt='jsf'/>
+Statistics of jsf actions</li>
 <li><img width='24' height='24' src='?resource=struts.png' alt='struts'/>
 Statistics of struts actions</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
@@ -233,7 +235,7 @@ if it is high, the execution times are varied, and if it is low the execution ti
 <li>the mean cpu time in milliseconds</li>
 <li>the percentage of system errors</li>
 </ul>
-and if it is an http, ejb, spring, guice, interfaces, struts actions or jsp statistic:<ul>
+and if it is an http, ejb, spring, guice, interfaces, jsf actions, struts actions or jsp statistic:<ul>
 <li>the mean size in kilo-bytes of the response stream (only for http)</li>
 <li>the mean number of sql hits, by execution of http(, ejb...) request</li>
 <li>the mean time executing sql requests, by execution of http(, ejb...) request</li>
