@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import javax.faces.component.ActionSource2;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import com.sun.faces.application.ActionListenerImpl;
@@ -44,18 +43,6 @@ public class JsfActionListener extends ActionListenerImpl {
 		JSF_COUNTER.setDisplayed(!COUNTER_HIDDEN);
 		JSF_COUNTER.setUsed(true);
 		LOG.debug("jsf action listener initialized");
-	}
-
-	static void initJsfActionListener() {
-		final FacesContext facesContext = FacesContext.getCurrentInstance();
-		if (facesContext != null && facesContext.getApplication() != null) {
-			// ceci est a priori équivalent à l'ajout d'un action-listener dans WEB-INF/faces-config.xml de l'application :
-			// <application><action-listener>net.bull.javamelody.JsfActionListener</action-listener></application>
-			// et on ne peut pas avoir un fichier META-INF/faces-config.xml dans le jar de javamelody avec cet action-listener
-			// car dans Apache MyFaces, cela ferait certainement une ClassNotFoundException rendant javamelody inutilisable
-			final JsfActionListener jsfActionListener = new JsfActionListener();
-			facesContext.getApplication().setActionListener(jsfActionListener);
-		}
 	}
 
 	/** {@inheritDoc} */
