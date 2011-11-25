@@ -695,6 +695,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If the application to monitor contains some JSF actions based on Mojarra (JSF Reference Implementation),
 	a counter is automatically created for statistics of execution of actions.
+	A JSF ActionListener is automatically added for the JSF application.
 	You don't need to do anything to have JSF statistics.
 
 ** 12. Struts 2 Actions
