@@ -257,7 +257,7 @@ class FilterContext {
 		try {
 			Class.forName("com.sun.faces.application.ActionListenerImpl");
 			return true;
-		} catch (final ClassNotFoundException e) {
+		} catch (final Throwable e) { // NOPMD
 			return false;
 		}
 	}
