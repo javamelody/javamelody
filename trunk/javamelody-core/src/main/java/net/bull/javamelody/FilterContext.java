@@ -90,7 +90,7 @@ class FilterContext {
 			}
 
 			if (MOJARRA_AVAILABLE) {
-				JsfActionListener.initJsfActionListener();
+				JsfActionHelper.initJsfActionListener();
 			}
 
 			final List<Counter> counters = initCounters();
