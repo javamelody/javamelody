@@ -17,7 +17,7 @@
     * [#8._Business_facades_(ejb-jar.xml_file_if_EJB3) 8. Business facades (ejb-jar.xml file if EJB3)]
     * [#9._Business_facades_(if_Spring) 9. Business facades (if Spring)]
     * [#10._Business_facades_(if_Guice) 10. Business facades (if Guice)]
-    * [#11._Actions_Struts_2 11. Actions Struts 2]
+    * [#11._Struts_2_Actions 11. Struts 2 Actions]
     * [#12._Batch_jobs_(if_Quartz) 12. Batch jobs (if Quartz)]
     * [#13._Weekly,_daily_or_monthly_reports_by_mail 13. Weekly, daily or monthly reports by mail]
     * [#14._Database_user 14. Database user]
@@ -652,7 +652,7 @@ or
 	you can create and add to your facades an interface {{{com.xyz.someapp.service.Monitored}}}
 	and then use it in your module as above.
 
-=== 11. Actions Struts 2 ===
+=== 11. Struts 2 Actions ===
 
 	If the application to monitor contains some [http://struts.apache.org/ Struts 2] actions,
 	a counter can be created for statistics of execution of actions.
