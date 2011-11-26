@@ -38,6 +38,7 @@ import javax.swing.SwingWorker;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MTransferableLabel;
 import net.bull.javamelody.swing.Utilities;
+import net.bull.javamelody.swing.util.MWaitCursor;
 
 /**
  * Panel des graphiques principaux.
@@ -104,10 +105,13 @@ class ChartsPanel extends MelodyPanel {
 			label.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
+					final MWaitCursor waitCursor = new MWaitCursor(centerPanel);
 					try {
 						showZoomedChart(jrobinName);
 					} catch (final IOException ex) {
 						showException(ex);
+					} finally {
+						waitCursor.restore();
 					}
 				}
 			});
