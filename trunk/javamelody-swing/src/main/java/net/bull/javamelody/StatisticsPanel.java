@@ -43,6 +43,7 @@ import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
+import net.bull.javamelody.swing.util.MWaitCursor;
 
 /**
  * Panel des statistiques.
@@ -192,11 +193,14 @@ class StatisticsPanel extends MelodyPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
+					final MWaitCursor waitCursor = new MWaitCursor(myTable);
 					final CounterRequest request = myTable.getSelectedObject();
 					try {
 						showRequestDetail(request);
 					} catch (final IOException ex) {
 						showException(ex);
+					} finally {
+						waitCursor.restore();
 					}
 				}
 			}
