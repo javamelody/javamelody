@@ -350,7 +350,7 @@ class StatisticsPanel extends MelodyPanel {
 		return clearCounterButton;
 	}
 
-	final void actionClearCounter(final Counter myCounter) {
+	final void actionClearCounter(Counter myCounter) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
 					Action.CLEAR_COUNTER, myCounter.getName(), null, null, null);
