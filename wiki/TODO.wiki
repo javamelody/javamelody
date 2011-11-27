@@ -15,7 +15,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # If the transaction isolation level is not read committed (unusual), display a warning about slowness or bugs
   # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
-  # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?)
+  # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?). See issue 149.
   # In the collector server, do not display all the applications at the top if there are more than 10 or 20 of them, and display them in a separate page or in a combobox for example.
   # Cannot remove in the GUI an application from the collector server when the application is no longer using javamelody. When trying to select it, the collector server is showing an error 500 with the message "Data unavailable for the application". (Meanwhile, it is possible to remove the application directly from the applications.properties file in the temp directory.)
   # Inline drill-down in child requests, for example in the detail of a request
@@ -31,7 +31,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # Downloadable *demo* of JavaMelody in [http://java.sun.com/developer/releases/petstore/ java pet store] with step by step instruction to install in glassfish or [http://static.springsource.org/docs/petclinic.html Spring pet clinic] in tomcat for example
   # Basic server monitoring: in downloads, provide a simple war file to monitor only an application server (cpu, memory, system informations, mbeans, threads) without monitoring any application (http requests, http sessions, etc)
   # Cloud Watch metrics for an application in Amazon EC2, possibly by using Beans Talk.
-  # Statistics of JSF actions like for Struts actions
+  # ~~Statistics of JSF actions like for Struts actions~~ (done)
   # ~~Possibly document the external API: [ReleaseNotes#1.24.0 lastValue and jmxValue] ; and also xml and json format on some pages~~ (done)
   # Possibly document the rewrap-datasources parameter for Tomcat and Jonas
   # Format the sql requests before display in the sql statistics
@@ -46,6 +46,7 @@ There is no promise of dates or that a particular feature will ever be done.
   # (_started_) Rich *desktop UI* able to connect to multiple servers via CollectorServer and to centralized collect servers, with [http://java.sun.com/docs/books/tutorial/uiswing/ swing] and [http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp java web start]
   # *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]* plugin to display some graphs in those tools
   # ~~Add the Nagios plugin by Shawn Bower in the user guide in addition to the [ExternalAPI#PNG_and_lastValue External API], if it works well.~~ (done)
+  # Add a plugin interceptor to monitor sql requests in mybatis when no other sql monitoring, such as a datasource from JNDI, is used
   # Play framework, see [http://stackoverflow.com/questions/7409112/javamelody-and-play-framework stackoverflow]
   # Extract informations from bonecp such as max connections like from dbcp
   # Maven:
