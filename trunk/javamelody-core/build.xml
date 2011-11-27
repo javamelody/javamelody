@@ -45,9 +45,9 @@
 					<include name="ejb-api-3.0.jar" />
 					<include name="dbcp-6.0.18.jar" />
 					<include name="hibernate-3.2.6.ga.jar" />
-					<include name="jsf-impl-2.0.2.jar" />
-					<include name="jsf-api-2.1.jar" />
-					<include name="el-api-1.0.jar" />
+					<include name="jsf-impl-2.1.5.jar" />
+					<include name="javax.faces-api-2.1.jar" />
+					<include name="javax.el-api-2.2.1.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="jrobin-1.5.9.1.jar" />
@@ -225,7 +225,7 @@
 		<echo message="Compilation et exécution des tests unitaires" level="info" />
 		<mkdir dir="build/test-classes" />
 		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
-			srcdir="src/test/java" destdir="build/test-classes">
+			srcdir="src/test/java" destdir="build/test-classes" includeantruntime="false">
 			<classpath>
 				<path path="build/classes" />
 				<path path="${class.path}" />
