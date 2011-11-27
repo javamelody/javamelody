@@ -373,7 +373,12 @@ public final class JdbcWrapper {
 
 		// on ignore les requêtes explain exécutées par DatabaseInformations
 		if (!sqlCounter.isDisplayed() || requestName.startsWith("explain ")) {
-			return method.invoke(statement, args);
+			ACTIVE_CONNECTION_COUNT.incrementAndGet();
+			try {
+				return method.invoke(statement, args);
+			} finally {
+				ACTIVE_CONNECTION_COUNT.decrementAndGet();
+			}
 		}
 
 		final long start = System.currentTimeMillis();
@@ -781,7 +786,9 @@ public final class JdbcWrapper {
 	 */
 	public Connection createConnectionProxy(Connection connection) {
 		assert connection != null;
-		if (isSqlMonitoringDisabled()) {
+		// même si le counter sql n'est pas affiché on crée un proxy de la connexion
+		// pour avoir les graphiques USED_CONNECTION_COUNT et ACTIVE_CONNECTION_COUNT (cf issue 160)
+		if (isMonitoringDisabled()) {
 			return connection;
 		}
 		// on limite la taille pour éviter une éventuelle saturation mémoire
