@@ -101,7 +101,7 @@ public final class Utilities {
 	public static void adjustTableHeight(final JTable table) {
 		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
 		// on utilise invokeLater pour configurer le scrollPane car lors de l'exécution ce cette méthode
-		// la table n'est pas encore dans son scrollPane parent 
+		// la table n'est pas encore dans son scrollPane parent
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
