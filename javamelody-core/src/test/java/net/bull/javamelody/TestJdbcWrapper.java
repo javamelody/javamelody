@@ -204,7 +204,7 @@ public class TestJdbcWrapper {
 		try {
 			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
-			assertEquals("getUsedConnectionCount", usedConnectionCount + 1,
+			assertEquals("getUsedConnectionCount1", usedConnectionCount + 1,
 					JdbcWrapper.getUsedConnectionCount());
 			assertNotNull("createConnectionProxy", connection);
 			assertEquals(EQUALS, connection, connection);
@@ -222,10 +222,14 @@ public class TestJdbcWrapper {
 
 			jdbcWrapper.getSqlCounter().setDisplayed(false);
 			connection = jdbcWrapper.createConnectionProxy(connection);
+			assertEquals("getUsedConnectionCount2", usedConnectionCount + 2,
+					JdbcWrapper.getUsedConnectionCount());
 			jdbcWrapper.getSqlCounter().setDisplayed(true);
 			Utils.setProperty(Parameter.DISABLED, "true");
 			try {
 				connection = jdbcWrapper.createConnectionProxy(connection);
+				assertEquals("getUsedConnectionCount3", usedConnectionCount + 2,
+						JdbcWrapper.getUsedConnectionCount());
 			} finally {
 				Utils.setProperty(Parameter.DISABLED, "false");
 			}
@@ -237,7 +241,7 @@ public class TestJdbcWrapper {
 					JdbcWrapper.getConnectionInformationsList());
 		} finally {
 			connection.close();
-			assertEquals("getUsedConnectionCount", usedConnectionCount,
+			assertEquals("getUsedConnectionCount4", usedConnectionCount + 1,
 					JdbcWrapper.getUsedConnectionCount());
 		}
 
