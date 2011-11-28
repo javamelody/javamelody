@@ -5,7 +5,7 @@
 
 (In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
-=== Next release (trunk) ===
+=== 1.33.0 ===
 
   * fix issue 146 and issue 153: Incorrect Struts statistics when two actions have the same name but are in different packages. Note: the consequence is that the names of all the Struts actions are changed in the statistics.
   * fix issue 152: Error with execution plan for "ALTER SESSION..."
