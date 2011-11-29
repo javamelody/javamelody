@@ -6,6 +6,12 @@ JavaMelody is opensource:
 Priorities and todos may change any time.
 There is no promise of dates or that a particular feature will ever be done.
 
+Follow JRobin issues: 
+  * [http://issues.opennms.org/browse/JRB-20],
+  * [http://sourceforge.net/tracker/?func=detail&aid=3403733&group_id=82668&atid=566807],
+  * and [http://sourceforge.net/mailarchive/message.php?msg_id=28038427] (submit 2 issues in JIRA if necessary)
+
+And
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
   # More unit tests
   # More integration tests (all JDK/JRE and versions, all OS, all application servers and versions, all navigators)
