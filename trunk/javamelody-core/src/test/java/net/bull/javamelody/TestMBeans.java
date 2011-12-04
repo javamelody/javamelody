@@ -168,8 +168,8 @@ public class TestMBeans {
 	 * @throws JMException e */
 	@Test
 	public void testGetAttributeDescription() throws JMException {
-		assertNotNull("getAttributeDescription", mbeans.getAttributeDescription("maxThreads",
-				mbeans.getMBeanInfo(mbeansList.get(0)).getAttributes()));
+		mbeans.getAttributeDescription("maxThreads", mbeans.getMBeanInfo(mbeansList.get(0))
+				.getAttributes());
 	}
 
 	/** Test. */
