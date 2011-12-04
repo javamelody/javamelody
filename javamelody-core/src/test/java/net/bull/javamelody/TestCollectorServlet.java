@@ -201,7 +201,9 @@ public class TestCollectorServlet {
 		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
 		expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
-		Parameters.removeCollectorApplication(appName);
+		if (appName != null) {
+			Parameters.removeCollectorApplication(appName);
+		}
 		expect(request.getParameter("appName")).andReturn(appName).anyTimes();
 		expect(request.getParameter("appUrls")).andReturn(appUrls).anyTimes();
 		if (!allowed) {
