@@ -78,9 +78,10 @@ public class TestCollectorServlet {
 
 	/**
 	 * Initialisation.
+	 * @throws IOException e
 	 */
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		tearDown();
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", TRUE);
@@ -93,21 +94,24 @@ public class TestCollectorServlet {
 
 	/**
 	 * Terminaison.
+	 * @throws IOException e
 	 */
 	@After
-	public void tearDown() {
+	public void tearDown() throws IOException {
 		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
 		// plus si ils utilisent JRobin
 		if (collectorServlet != null) {
 			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 			collectorServlet.destroy();
 		}
+		Parameters.removeCollectorApplication(TEST);
 	}
 
 	/** Test.
-	 * @throws ServletException e */
+	 * @throws ServletException e
+	 * @throws IOException e */
 	@Test
-	public void testInit() throws ServletException {
+	public void testInit() throws ServletException, IOException {
 		replay(config);
 		replay(context);
 		collectorServlet.init(config);
@@ -197,6 +201,7 @@ public class TestCollectorServlet {
 		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
 		expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
+		Parameters.removeCollectorApplication(appName);
 		expect(request.getParameter("appName")).andReturn(appName).anyTimes();
 		expect(request.getParameter("appUrls")).andReturn(appUrls).anyTimes();
 		if (!allowed) {
@@ -346,6 +351,7 @@ public class TestCollectorServlet {
 			expect(request.getHeaders("Accept-Encoding")).andReturn(
 					Collections.enumeration(Collections.singleton("text/html"))).anyTimes();
 		}
+		Parameters.removeCollectorApplication(TEST);
 		expect(request.getParameter("appName")).andReturn(TEST).anyTimes();
 		expect(request.getParameter("appUrls")).andReturn(
 				"http://localhost/test,http://localhost:8080/test2").anyTimes();

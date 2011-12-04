@@ -490,6 +490,7 @@ public class TestCollector {
 			Parameters.addCollectorApplication(application, urls);
 		} finally {
 			collectorServer.stop();
+			Parameters.removeCollectorApplication(application);
 		}
 
 		try {
