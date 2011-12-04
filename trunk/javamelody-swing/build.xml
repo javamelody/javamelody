@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright 2008-2010 by Emeric Vernat
+ *
+ *     This file is part of Java Melody.
+ *
+ * Java Melody is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Java Melody is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Auteur: Emeric Vernat -->
+<project basedir="." default="all" name="JavaMelody Swing">
+	<!-- Initialisation des tâches -->
+	<target name="init">
+		<echo message="-- Script Ant JavaMelody Swing --" level="info" />
+
+		<ant dir="../javamelody-core" antfile="build.xml" target="jar" />
+
+		<pathconvert property="class.path">
+			<path>
+				<fileset dir="../javamelody-core">
+					<include name="javamelody.jar" />
+				</fileset>
+				<fileset dir="../javamelody-core/src/test/test-webapp/WEB-INF/lib">
+					<include name="itext-2.1.7.jar" />
+					<include name="log4j-1.2.16.jar" />
+				</fileset>
+				<fileset dir="src/main/lib">
+					<include name="itext-rtf-2.1.7.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+	</target>
+
+	<!-- Compilation -->
+	<target name="build" depends="init">
+		<echo message="Compilation" level="info" />
+		<mkdir dir="build/classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/main/java" destdir="build/classes" classpath="${class.path}" includeantruntime="false">
+			<compilerarg value="-Xlint" />
+		</javac>
+	</target>
+
+	<!-- Nettoyage du répertoire de compilation, de documentation et du jar -->
+	<target name="clean">
+		<echo message="Nettoyage du répertoire de compilation, de documentation et du jar" level="info" />
+		<delete dir="build" />
+		<delete dir="doc" />
+		<delete file="javamelody-swing.jar" />
+	</target>
+
+	<!-- Construction du jar -->
+	<target name="jar" depends="build">
+		<echo message="Construction du jar" level="info" />
+		<delete file="javamelody-swing.jar" />
+		<jar destfile="javamelody-swing.jar">
+			<zipfileset dir="build/classes" />
+			<zipfileset dir="src/main/resources" excludes="**/Thumbs.db" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody-swing">
+					<attribute name="Implementation-Title" value="Java Melody Swing" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction de la javadoc (api public) -->
+	<target name="javadoc" depends="init,build">
+		<echo message="Construction de la javadoc" level="info" />
+		<macrodef name="myjavadoc">
+			<attribute name="destdir" />
+			<attribute name="windowtitle" />
+			<attribute name="classpath" />
+			<element name="javadoc-elements" implicit="true" />
+			<sequential>
+				<echo message="@{windowtitle}" level="info" />
+				<delete dir="@{destdir}" />
+				<javadoc destdir="@{destdir}" windowtitle="@{windowtitle}" classpath="@{classpath}" 
+					encoding="UTF-8" charset="UTF-8" access="public" 
+					author="on" version="on" use="on" maxmemory="128m">
+					<link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistloc="./j2se/" />
+					<link offline="true" href="http://java.sun.com/javaee/5/docs/api/" packagelistloc="./j2ee/" />
+					<doctitle>
+						<![CDATA[@{windowtitle}]]>
+					</doctitle>
+					<javadoc-elements />
+				</javadoc>
+			</sequential>
+		</macrodef>
+
+		<myjavadoc destdir="doc" windowtitle="Java Melody" classpath="${class.path}">
+			<packageset dir="src/main/java" />
+		</myjavadoc>
+	</target>
+
+	<!-- Construction du zip -->
+	<target name="zip" depends="clean,jar,javadoc">
+		<echo message="Construction du zip" level="info" />
+		<delete file="javamelody-swing.zip" />
+		<zip destfile="javamelody-swing.zip">
+			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,javamelody-swing.zip" />
+		</zip>
+	</target>
+
+	<!-- Tout (zip, clean) -->
+	<target name="all" depends="zip">
+		<antcall target="clean" />
+	</target>
+</project>
