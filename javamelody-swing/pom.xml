@@ -168,6 +168,36 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<configuration>
+							<tasks>
+								<!-- appel de Ant et copie du résultat dans le site -->
+								<ant antfile="build.xml" target="zip" />
+								<copy file="javamelody-swing.zip" tofile="target/site/javamelody-swing.zip" />
+								<copy file="javamelody-swing.jar" tofile="target/site/javamelody-swing.jar" />
+								<ant antfile="build.xml" target="clean" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<!-- nécessaire car maven définit java_home avec le jre pour ant ! -->
+						<groupId>sun.jdk</groupId>
+						<artifactId>tools</artifactId>
+						<version>1.6.0</version>
+						<scope>system</scope>
+						<systemPath>${java.home}/../lib/tools.jar</systemPath>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
