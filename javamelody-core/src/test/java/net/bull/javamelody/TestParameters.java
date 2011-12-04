@@ -201,16 +201,20 @@ public class TestParameters {
 		final String application = "testapp";
 		Parameters.removeCollectorApplication(application);
 		final int size = Parameters.getCollectorUrlsByApplications().size();
-		Parameters.addCollectorApplication(application,
-				Parameters.parseUrl("http://localhost:8090/test"));
-		assertEquals("addCollectorApplication", size + 1, Parameters
-				.getCollectorUrlsByApplications().size());
-		Parameters.removeCollectorApplication(application);
-		assertEquals("removeCollectorApplication", size, Parameters
-				.getCollectorUrlsByApplications().size());
-		// pour que le test ait une application à lire la prochaine fois
-		Parameters.addCollectorApplication(application,
-				Parameters.parseUrl("http://localhost:8090/test"));
+		try {
+			Parameters.addCollectorApplication(application,
+					Parameters.parseUrl("http://localhost:8090/test"));
+			assertEquals("addCollectorApplication", size + 1, Parameters
+					.getCollectorUrlsByApplications().size());
+			Parameters.removeCollectorApplication(application);
+			assertEquals("removeCollectorApplication", size, Parameters
+					.getCollectorUrlsByApplications().size());
+			// pour que le test ait une application à lire la prochaine fois
+			Parameters.addCollectorApplication(application,
+					Parameters.parseUrl("http://localhost:8090/test"));
+		} finally {
+			Parameters.removeCollectorApplication(application);
+		}
 	}
 
 	/** Test.
