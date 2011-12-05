@@ -4,6 +4,8 @@
 
 	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources or you can [http://code.google.com/p/javamelody/downloads/list download] the zip file of a release which includes the sources of that release.
 
+	You can also browse the sources at [http://grepcode.com/file/repo1.maven.org/maven2/net.bull.javamelody/javamelody-core/1.31.0/net/bull/javamelody/MonitoringFilter.java grepcode] with point and click, except that grepcode does not display the latest version in general.
+
 === Building from sources ===
 
 	The zip file available in "[http://code.google.com/p/javamelody/downloads/list Download]" contains the java sources with an [http://ant.apache.org ant] script build.xml and a pom.xml file for [http://maven.apache.org maven]
