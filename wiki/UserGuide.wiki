@@ -17,13 +17,14 @@
     * [#8._Business_facades_(ejb-jar.xml_file_if_EJB3) 8. Business facades (ejb-jar.xml file if EJB3)]
     * [#9._Business_facades_(if_Spring) 9. Business facades (if Spring)]
     * [#10._Business_facades_(if_Guice) 10. Business facades (if Guice)]
-    * [#11._Struts_2_Actions 11. Struts 2 Actions]
-    * [#12._Batch_jobs_(if_Quartz) 12. Batch jobs (if Quartz)]
-    * [#13._Weekly,_daily_or_monthly_reports_by_mail 13. Weekly, daily or monthly reports by mail]
-    * [#14._Database_user 14. Database user]
-    * [#15._Security 15. Security]
-    * [#16. 16. SecurityManager]
-    * [#17._Full_results 17. Full results]
+    * [#11._JSF_Actions 11. JSF Actions]
+    * [#12._Struts_2_Actions 12. Struts 2 Actions]
+    * [#13._Batch_jobs_(if_Quartz) 13. Batch jobs (if Quartz)]
+    * [#14._Weekly,_daily_or_monthly_reports_by_mail 14. Weekly, daily or monthly reports by mail]
+    * [#15._Database_user 15. Database user]
+    * [#16._Security 16. Security]
+    * [#17. 17. SecurityManager]
+    * [#18._Full_results 18. Full results]
   * [#Dependencies Dependencies]
   * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JBoss AS 7, JonAS 5, debugging logs...)]
   * [#Compilation_and_development Compilation and development]
@@ -283,10 +284,10 @@ or MSIE8 (MSIE7 not recommended).
 	to transform descriptions of sql requests (not binded identifiers for a "in" clause for example)
 	in order to be able to aggregate on these requests.
 
-	And the parameters {{{ejb-transform-pattern}}}, {{{spring-transform-pattern}}}, {{{guice-transform-pattern}}}, {{{error-transform-pattern}}}, {{{log-transform-pattern}}}, {{{job-transform-pattern}}}, {{{struts-transform-pattern}}} and {{{jsp-transform-pattern}}} can transform descriptions of
-	ejb3 methods, of spring methods, of guice methods, of http system errors, of system error logs, of names of jobs, of struts actions or of jsp pages (in order to aggregate by ejb components and not by ejb methods for example)
+	And the parameters {{{ejb-transform-pattern}}}, {{{spring-transform-pattern}}}, {{{guice-transform-pattern}}}, {{{error-transform-pattern}}}, {{{log-transform-pattern}}}, {{{job-transform-pattern}}}, {{{jsf-transform-pattern}}}, {{{struts-transform-pattern}}} and {{{jsp-transform-pattern}}} can transform descriptions of
+	ejb3 methods, of spring methods, of guice methods, of http system errors, of system error logs, of names of jobs, of jsf actions, of struts actions or of jsp pages (in order to aggregate by ejb components and not by ejb methods for example)
 
-	The parameter {{{displayed-counters}}} can modify the displayed counters for the statistics and for the graphics ({{{http,sql,error,log}}} by default). So the counters displayed by default are those with keys http, sql, error and log. The counters with keys struts, jsp, ejb, spring, guice and services are automatically displayed when they are used (see below for ejb, spring, guice or struts and see the UserGuideAdvanced for services without ejb, spring and guice).
+	The parameter {{{displayed-counters}}} can modify the displayed counters for the statistics and for the graphics ({{{http,sql,error,log}}} by default). So the counters displayed by default are those with keys http, sql, error and log. The counters with keys jsf, struts, jsp, ejb, spring, guice and services are automatically displayed when they are used (see below for ejb, spring, guice or struts and see the UserGuideAdvanced for services without ejb, spring and guice).
 	So the parameter {{{displayed-counters}}} can hide some counters with for example the value {{{http,sql,ejb,spring}}}.
 
 	The parameter {{{log}}} can activate logs of http requests at the INFO level ({{{false}}} by default).
@@ -652,7 +653,14 @@ or
 	you can create and add to your facades an interface {{{com.xyz.someapp.service.Monitored}}}
 	and then use it in your module as above.
 
-=== 11. Struts 2 Actions ===
+=== 11. JSF Actions ===
+
+	If the application to monitor contains some JSF actions based on Mojarra (JSF Reference Implementation),
+	a counter is automatically created for statistics of execution of actions.
+	A JSF ActionListener is automatically added for the JSF application.
+	You don't need to do anything to have JSF statistics.
+
+=== 12. Struts 2 Actions ===
 
 	If the application to monitor contains some [http://struts.apache.org/ Struts 2] actions,
 	a counter can be created for statistics of execution of actions.
@@ -678,7 +686,7 @@ or
 
 	Then, in all your Struts packages, use the "default" package with {{{extends="default"}}}
 
-=== 12. Batch jobs (if Quartz) ===
+=== 13. Batch jobs (if Quartz) ===
 
 	Batch jobs are automatically monitored when they are scheduled with [http://www.quartz-scheduler.org/ Quartz].
 
@@ -698,7 +706,7 @@ or
 	Without this "exposeSchedulerInRepository" property, the jobs scheduled using Spring are neither
 	monitored nor displayed in report.
 
-=== 13. Weekly, daily or monthly reports by mail ===
+=== 14. Weekly, daily or monthly reports by mail ===
 
 	A weekly, daily or monthly report in pdf format can be sent by mail to one or several people.
 	This functionality needs the library iText in your webapp (licence LGPL or MPL, the iText jar file
@@ -786,7 +794,7 @@ or
 
 	In v1.32+, once the server is started, you can send a test mail by calling this action: {{{http://<host>/<context>/monitoring?action=mail_test}}}
 
-=== 14. Database user ===
+=== 15. Database user ===
 
 	From the html page of the monitoring, it is possible to display information and statistics
 	on the database (if postgresql, mysql or oracle),
@@ -803,7 +811,7 @@ or
 	in order to grant the right to the user 'myapplication':
 	{{{grant select any dictionary to myapplication}}}
 
-=== 15. Security ===
+=== 16. Security ===
 
 	The monitoring page is only in consultation and does not contain data such as login or password,
 	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
@@ -854,7 +862,7 @@ or
 </tomcat-users>
 }}}
 
-=== 16. SecurityManager ===
+=== 17. SecurityManager ===
 
 	If your are one of the rare people with a security manager enabled in your server, there will be
 	an exception like the following one in the server output at the start of the webapp with JavaMelody:
@@ -882,7 +890,7 @@ or
 	and replace {{{<your_webapp>}}} with the name of your webapp and replace
 	{{{javamelody-x.jar}}} with the exact name of the JavaMelody jar file.
 
-=== 17. Full results ===
+=== 18. Full results ===
 
 	To view the monitoring: deploy the war and open the following page in a web navigator after starting the server:
 
