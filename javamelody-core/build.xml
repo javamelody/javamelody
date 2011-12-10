@@ -275,7 +275,7 @@
 		<echo message="Compilation des classes de tests" level="info" />
 		<mkdir dir="build/test-classes" />
 		<javac encoding="UTF-8" debug="on" deprecation="off" nowarn="off" source="1.5" target="1.5" 
-			srcdir="src/test/java" destdir="build/test-classes">
+			srcdir="src/test/java" destdir="build/test-classes" includeantruntime="false">
 			<classpath>
 				<path path="build/classes" />
 				<path path="${class.path}" />
