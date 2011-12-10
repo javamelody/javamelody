@@ -517,6 +517,8 @@ public final class JdbcWrapper {
 	private boolean isJBossOrGlassfishDataSource(String dataSourceClassName) {
 		return jboss
 				&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSourceClassName)
+				|| jboss
+				&& "org.jboss.jca.adapters.jdbc.WrapperDataSource".equals(dataSourceClassName)
 				|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSourceClassName);
 	}
 
