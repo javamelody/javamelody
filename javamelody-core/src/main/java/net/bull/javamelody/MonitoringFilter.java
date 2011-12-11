@@ -334,8 +334,14 @@ public class MonitoringFilter implements Filter {
 		// car requestURI == <context>/<servlet>/<pathInfo>,
 		// et dans le cas où il y a plusieurs servlets (par domaine fonctionnel ou technique)
 		// pathInfo ne contient pas l'indication utile de la servlet
-		final String tmp = httpRequest.getRequestURI().substring(
-				httpRequest.getContextPath().length());
+		String tmp = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+		// si la requête http contient un ";", par exemple ";jsessionid=12345567890ABCDEF"
+		// quand le navigateur web n'accepte pas les cookies, alors on ignore ce qu'il y a à partir de ";"
+		// et on ne garde que la requête http elle-même
+		final int lastIndexOfSemiColon = tmp.lastIndexOf(';');
+		if (lastIndexOfSemiColon != -1) {
+			tmp = tmp.substring(0, lastIndexOfSemiColon);
+		}
 		final String method;
 		if ("XMLHttpRequest".equals(httpRequest.getHeader("X-Requested-With"))) {
 			method = "ajax " + httpRequest.getMethod();
