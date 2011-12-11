@@ -247,7 +247,7 @@
 					<linkXref>true</linkXref>
 					<sourceEncoding>UTF-8</sourceEncoding>
 					<minimumPriority>4</minimumPriority>
-					<minimumTokens>75</minimumTokens>
+					<minimumTokens>100</minimumTokens>
 					<rulesets>
 						<ruleset>${basedir}/.pmd</ruleset>
 					</rulesets>
