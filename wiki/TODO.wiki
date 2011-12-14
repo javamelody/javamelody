@@ -58,5 +58,5 @@ And
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
-    # ~~Publish JavaMelody in maven central repository (seems not doable without jrobin in central repo and without renaming package to googlecode)~~ (done, it is maven central now.)
+    # ~~Publish JavaMelody in maven central repository (seems not doable without jrobin in central repo and without renaming package to googlecode)~~ (done, it is in maven central now.)
   # More to come...
