@@ -164,7 +164,9 @@ final class LOG {
 			// org.apache.log4j.Logger mais pas org.apache.log4j.AppenderSkeleton
 			Class.forName("org.apache.log4j.AppenderSkeleton");
 			return true;
-		} catch (final ClassNotFoundException e) {
+		} catch (final Throwable e) { // NOPMD
+			// catch Throwable et non catch ClassNotFoundException
+			// pour certaines configurations de JBoss qui inclut Log4J (cf issue 166)
 			return false;
 		}
 	}
