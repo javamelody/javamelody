@@ -8,6 +8,7 @@
 === Next release (trunk) ===
 
   * fix issue 164: JBoss 7 support for SQL monitoring with JNDI datasource
+  * fix issue 166: jboss-as-client and javamelody log4j conflict (java.lang.IncompatibleClassChangeError)
   * fix: if the http request contains for example ";jsessionid=1234567890ABCDEF", when the browser does not accept cookies, then that part is automatically ignored for the statistics (revision 2363)
 
 === 1.33.0 ===
