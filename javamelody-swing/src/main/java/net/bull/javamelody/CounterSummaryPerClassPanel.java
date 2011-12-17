@@ -24,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.swing.JPanel;
 
@@ -115,14 +114,12 @@ class CounterSummaryPerClassPanel extends MelodyPanel {
 
 	final void actionPdf() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = createFileOutputStream(tempFile);
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
 		try {
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
-					.getApplication(), output);
 			final Collector collector = getRemoteCollector().getCollector();
 			pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
 		} finally {
-			output.close();
+			pdfOtherReport.close();
 		}
 		Desktop.getDesktop().open(tempFile);
 	}

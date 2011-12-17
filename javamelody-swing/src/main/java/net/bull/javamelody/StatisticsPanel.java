@@ -26,7 +26,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -376,13 +375,11 @@ class StatisticsPanel extends MelodyPanel {
 
 	final void actionRuntimeDependencies() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = createFileOutputStream(tempFile);
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
 		try {
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
-					.getApplication(), output);
 			pdfOtherReport.writeRuntimeDependencies(counter, range);
 		} finally {
-			output.close();
+			pdfOtherReport.close();
 		}
 		Desktop.getDesktop().open(tempFile);
 	}

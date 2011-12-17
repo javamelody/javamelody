@@ -87,6 +87,12 @@ class MelodyPanel extends JPanel {
 		return new BufferedOutputStream(new FileOutputStream(tempFile));
 	}
 
+	final PdfOtherReport createPdfOtherReport(File file) throws IOException {
+		final String application = getRemoteCollector().getApplication();
+		final OutputStream output = createFileOutputStream(file);
+		return new PdfOtherReport(application, output);
+	}
+
 	final MButton createRefreshButton() {
 		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));

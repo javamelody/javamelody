@@ -34,12 +34,14 @@ import com.lowagie.text.Element;
  * @author Emeric Vernat
  */
 class PdfOtherReport {
+	private final OutputStream output;
 	private final Document document;
 	private final PdfDocumentFactory pdfDocumentFactory;
 
 	PdfOtherReport(String application, OutputStream output) throws IOException {
 		super();
 		assert output != null;
+		this.output = output;
 
 		try {
 			pdfDocumentFactory = new PdfDocumentFactory(application, null, output);
@@ -47,6 +49,10 @@ class PdfOtherReport {
 		} catch (final DocumentException e) {
 			throw createIOException(e);
 		}
+	}
+
+	void close() throws IOException {
+		output.close();
 	}
 
 	void writeSessionInformations(List<SessionInformations> sessionsInformations)
