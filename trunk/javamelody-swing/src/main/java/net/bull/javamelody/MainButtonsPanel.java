@@ -166,18 +166,18 @@ class MainButtonsPanel extends MelodyPanel {
 			final boolean collectorServer = true;
 			final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
 			final File tempFile = createTempFileForPdf();
+			final RemoteCollector remoteCollector = getRemoteCollector();
+			final Collector collector = remoteCollector.getCollector();
+			final List<JavaInformations> javaInformationsList = remoteCollector
+					.getJavaInformationsList();
+			final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
+					PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
+			final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
+					PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
+			final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
+					PdfReport.LARGE_GRAPH_WIDTH, PdfReport.LARGE_GRAPH_HEIGHT);
 			final OutputStream output = createFileOutputStream(tempFile);
 			try {
-				final RemoteCollector remoteCollector = getRemoteCollector();
-				final Collector collector = remoteCollector.getCollector();
-				final List<JavaInformations> javaInformationsList = remoteCollector
-						.getJavaInformationsList();
-				final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
-						PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
-				final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
-						PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
-				final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
-						PdfReport.LARGE_GRAPH_WIDTH, PdfReport.LARGE_GRAPH_HEIGHT);
 				final PdfReport pdfReport = new PdfReport(collector, collectorServer,
 						javaInformationsList, range, output);
 				pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
