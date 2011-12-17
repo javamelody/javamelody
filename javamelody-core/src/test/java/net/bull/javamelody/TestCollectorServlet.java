@@ -24,6 +24,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
@@ -294,7 +295,7 @@ public class TestCollectorServlet {
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, "services");
+		parameters.put(COUNTER_PARAMETER, Counter.HTTP_COUNTER_NAME);
 		doPart(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
@@ -314,6 +315,9 @@ public class TestCollectorServlet {
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, THREADS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
+		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
 		doPart(parameters);
 	}
 
