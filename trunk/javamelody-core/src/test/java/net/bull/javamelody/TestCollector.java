@@ -308,6 +308,30 @@ public class TestCollector {
 		}
 	}
 
+	/** Test. */
+	@Test
+	public void testGetCounterByName() {
+		final Counter counter = createCounter();
+		final Collector collector = new Collector("test collector2",
+				Collections.singletonList(counter));
+		assertNotNull("getCounterByName", collector.getCounterByName(counter.getName()));
+
+		assertNull("getCounterByName", collector.getCounterByName("unknown"));
+	}
+
+	/** Test. */
+	@Test
+	public void testGetCounterByRequestId() {
+		final Counter counter = createCounter();
+		final Collector collector = new Collector("test collector3",
+				Collections.singletonList(counter));
+		counter.addRequest("test request", 0, 0, false, 1000);
+		final CounterRequest request = counter.getRequests().get(0);
+		assertEquals("getCounterByRequestId", counter, collector.getCounterByRequestId(request));
+		assertNull("getCounterByRequestId",
+				collector.getCounterByRequestId(new CounterRequest("test", "unknown")));
+	}
+
 	/** Test.
 	 * @throws IOException e */
 	@Test

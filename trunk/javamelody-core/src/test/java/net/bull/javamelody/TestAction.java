@@ -77,7 +77,7 @@ public class TestAction {
 	 * @throws SchedulerException e */
 	@Test
 	public void testExecute() throws IOException, SchedulerException {
-		final Counter counter = new Counter("test html report", null);
+		final Counter counter = new Counter(Counter.HTTP_COUNTER_NAME, null);
 		counter.addRequest("test1", 0, 1, false, 1000);
 		counter.addRequest("test2", 1000, 900, false, 1000);
 		counter.addRequest("test3", 10000, 1000, true, 10000);
@@ -121,6 +121,31 @@ public class TestAction {
 		killThread(collector, counterName, sessionId, threadId, jobId);
 
 		jobs(collector, counterName, sessionId, threadId, jobId);
+
+		mailTest(collector);
+	}
+
+	private void mailTest(Collector collector) throws IOException {
+		try {
+			Action.MAIL_TEST.execute(collector, null, null, null, null, null);
+		} catch (final IllegalStateException e) {
+			// ok, il manque un paramètre
+			assertNotNull(e.toString(), e);
+		}
+		Utils.setProperty(Parameter.MAIL_SESSION, "mail/Session");
+		try {
+			Action.MAIL_TEST.execute(collector, null, null, null, null, null);
+		} catch (final IllegalStateException e) {
+			// ok, il manque encore un paramètre
+			assertNotNull(e.toString(), e);
+		}
+		Utils.setProperty(Parameter.ADMIN_EMAILS, "admin@blah blah.fr");
+		try {
+			Action.MAIL_TEST.execute(collector, null, null, null, null, null);
+		} catch (final Exception e) {
+			// ok, de toute façon il n'y a pas de Session dans JNDI
+			assertNotNull(e.toString(), e);
+		}
 	}
 
 	private void jobs(Collector collector, String counterName, String sessionId, String threadId,
