@@ -295,7 +295,7 @@ public class TestCollectorServlet {
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, Counter.HTTP_COUNTER_NAME);
+		parameters.put(COUNTER_PARAMETER, "services");
 		doPart(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
