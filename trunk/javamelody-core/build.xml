@@ -91,7 +91,6 @@
 		<delete file="javamelody.war" />
 		<delete file="jira-javamelody.jar" />
 		<delete file="test.war" />
-		<delete includes="TEST-*.xml" dir="." />
 	</target>
 
 	<!-- Construction du jar -->
@@ -238,7 +237,8 @@
 			</classpath>
 			<compilerarg value="-Xlint" />
 		</javac>
-		<delete includes="TEST-*.xml" dir="."/>
+		<delete dir="build/test-results"/>
+		<mkdir dir="build/test-results" />
 		<junit printsummary="true" showoutput="false">
 			<formatter type="plain" usefile="false" />
 			<formatter type="xml"/>
@@ -263,7 +263,7 @@
 				</fileset>
 			</classpath>
 			<sysproperty key="catalina.home" value="unknown" />
-			<batchtest haltonerror="false" haltonfailure="false"
+			<batchtest todir="build/test-results" haltonerror="false" haltonfailure="false"
 				errorProperty="test.failed" failureProperty="test.failed">
 				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/JobTestImpl.class,**/SpringTestFacade*.class,**/Utils.class" />
 			</batchtest>
