@@ -479,6 +479,9 @@ public class TestCounter {
 		counter.clear();
 		counter.writeToFile();
 		// test pour un counter non vide
+		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+		errorCounter.addErrors(Collections.singletonList(new CounterError("erreur", null)));
+		errorCounter.writeToFile();
 		counter.addRequest("test writeToFile", 100, 50, false, 1000);
 		final String before = counter.toString();
 		counter.writeToFile();
