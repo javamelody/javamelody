@@ -49,6 +49,7 @@ class PdfReport {
 	private final Range range;
 	private final Document document;
 	private final boolean collectorServer;
+	private final OutputStream output;
 	private final PdfDocumentFactory pdfDocumentFactory;
 	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
 	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
@@ -70,6 +71,7 @@ class PdfReport {
 		this.collectorServer = collectorServer;
 		this.javaInformationsList = javaInformationsList;
 		this.range = range;
+		this.output = output;
 
 		try {
 			pdfDocumentFactory = new PdfDocumentFactory(collector.getApplication(), range, output);
@@ -112,6 +114,10 @@ class PdfReport {
 		}
 
 		document.close();
+	}
+
+	void close() throws IOException {
+		output.close();
 	}
 
 	private static IOException createIOException(DocumentException e) {
