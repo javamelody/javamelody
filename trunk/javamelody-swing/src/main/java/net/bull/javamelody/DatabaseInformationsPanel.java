@@ -27,7 +27,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -198,13 +197,11 @@ class DatabaseInformationsPanel extends MelodyPanel {
 
 	final void actionPdf() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = createFileOutputStream(tempFile);
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
 		try {
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
-					.getApplication(), output);
 			pdfOtherReport.writeDatabaseInformations(databaseInformations);
 		} finally {
-			output.close();
+			pdfOtherReport.close();
 		}
 		Desktop.getDesktop().open(tempFile);
 	}

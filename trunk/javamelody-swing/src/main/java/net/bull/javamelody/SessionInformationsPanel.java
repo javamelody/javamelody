@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -302,13 +301,11 @@ class SessionInformationsPanel extends MelodyPanel {
 
 	final void actionPdf() throws IOException {
 		final File tempFile = createTempFileForPdf();
-		final OutputStream output = createFileOutputStream(tempFile);
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
 		try {
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getRemoteCollector()
-					.getApplication(), output);
 			pdfOtherReport.writeSessionInformations(sessionsInformations);
 		} finally {
-			output.close();
+			pdfOtherReport.close();
 		}
 		Desktop.getDesktop().open(tempFile);
 	}
