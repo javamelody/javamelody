@@ -91,6 +91,7 @@
 		<delete file="javamelody.war" />
 		<delete file="jira-javamelody.jar" />
 		<delete file="test.war" />
+		<delete includes="TEST-*.xml" dir="." />
 	</target>
 
 	<!-- Construction du jar -->
@@ -237,8 +238,10 @@
 			</classpath>
 			<compilerarg value="-Xlint" />
 		</javac>
+		<delete includes="TEST-*.xml" dir="."/>
 		<junit printsummary="true" showoutput="false">
 			<formatter type="plain" usefile="false" />
+			<formatter type="xml"/>
 			<classpath>
 				<path path="build/test-classes" />
 				<path path="build/classes" />
