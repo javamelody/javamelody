@@ -329,6 +329,8 @@ public class TestCollectorServlet {
 		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
 		parameters.put(COUNTER_PARAMETER, "all");
 		doPart(parameters);
+		parameters.put(ACTION_PARAMETER, Action.MAIL_TEST.toString());
+		doPart(parameters);
 		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
 		parameters.put(SESSION_ID_PARAMETER, "aSessionId");
 		doPart(parameters);
