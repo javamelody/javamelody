@@ -388,7 +388,8 @@ public class TestMonitoringFilter { // NOPMD
 	@Test
 	public void testDoFilterWithGWT() throws ServletException, IOException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		expect(request.getContentType()).andReturn("text/x-gwt-rpc").anyTimes();
+		final String textGwtRpc = "text/x-gwt-rpc";
+		expect(request.getContentType()).andReturn(textGwtRpc).anyTimes();
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
 				"1|2|3|4|5|6|7|8|9|10".getBytes());
 		final ServletInputStream inputStream = new ServletInputStream() {
@@ -401,8 +402,26 @@ public class TestMonitoringFilter { // NOPMD
 		expect(request.getInputStream()).andReturn(inputStream).anyTimes();
 		doFilter(request);
 
+		final HttpServletRequest request2a = createNiceMock(HttpServletRequest.class);
+		expect(request2a.getContentType()).andReturn(textGwtRpc).anyTimes();
+		final ByteArrayInputStream byteArrayInputStream2a = new ByteArrayInputStream(
+				"1|2|3|4|5|6".getBytes());
+		final ServletInputStream inputStream2a = new ServletInputStream() {
+			/** {@inheritDoc} */
+			@Override
+			public int read() throws IOException {
+				return byteArrayInputStream2a.read();
+			}
+		};
+		expect(request2a.getInputStream()).andReturn(inputStream2a).anyTimes();
+		replay(request2a);
+		final GWTRequestWrapper wrapper2a = new GWTRequestWrapper(request2a);
+		wrapper2a.getInputStream().read();
+		wrapper2a.getReader().read();
+		verify(request2a);
+
 		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
-		expect(request2.getContentType()).andReturn("text/x-gwt-rpc").anyTimes();
+		expect(request2.getContentType()).andReturn(textGwtRpc).anyTimes();
 		final ByteArrayInputStream byteArrayInputStream2 = new ByteArrayInputStream(
 				"1|2|3|4|5|6||8|9|10".getBytes());
 		final ServletInputStream inputStream2 = new ServletInputStream() {
@@ -421,7 +440,7 @@ public class TestMonitoringFilter { // NOPMD
 
 		byteArrayInputStream2.reset();
 		final HttpServletRequest request3 = createNiceMock(HttpServletRequest.class);
-		expect(request3.getContentType()).andReturn("text/x-gwt-rpc").anyTimes();
+		expect(request3.getContentType()).andReturn(textGwtRpc).anyTimes();
 		expect(request3.getCharacterEncoding()).andReturn("utf-8").anyTimes();
 		expect(request3.getInputStream()).andReturn(inputStream2).anyTimes();
 		replay(request3);
