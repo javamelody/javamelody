@@ -236,7 +236,8 @@ class LabradorRetriever {
 			final String message = request.contains("/test2") ? null
 					: "ceci est message pour le rapport";
 			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null), new Counter(
-					Counter.ERROR_COUNTER_NAME, null), new JavaInformations(null, true), message);
+					"services", null), new Counter(Counter.ERROR_COUNTER_NAME, null),
+					new JavaInformations(null, true), message);
 		} else {
 			result = createMockResultOfPartCall(request);
 		}
