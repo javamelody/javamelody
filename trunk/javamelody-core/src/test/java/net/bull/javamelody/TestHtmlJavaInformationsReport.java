@@ -18,6 +18,8 @@
  */
 package net.bull.javamelody; // NOPMD
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -52,6 +54,22 @@ public class TestHtmlJavaInformationsReport {
 		// c'est trop tard, et c'est pourquoi cela doit être défini au lancement de junit)
 		System.setProperty("catalina.home", "unknown");
 		writer = new StringWriter();
+	}
+
+	/** Test. */
+	@Test
+	public void testGetApplicationServerIconName() {
+		assertNotNull("getApplicationServerIconName",
+				HtmlJavaInformationsReport.getApplicationServerIconName("Tomcat"));
+		assertNull("getApplicationServerIconName",
+				HtmlJavaInformationsReport.getApplicationServerIconName("unknown"));
+	}
+
+	/** Test. */
+	@Test
+	public void testGetOSIconName() {
+		assertNotNull("getOSIconName", HtmlJavaInformationsReport.getOSIconName("Linux"));
+		assertNull("getOSIconName", HtmlJavaInformationsReport.getOSIconName("unknown"));
 	}
 
 	/** Test.
