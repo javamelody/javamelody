@@ -39,6 +39,7 @@ import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -614,6 +615,8 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, THREADS_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, THREADS_DUMP_PART);
 		monitoring(parameters);
 
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
