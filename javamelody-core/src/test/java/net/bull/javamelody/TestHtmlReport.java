@@ -389,7 +389,7 @@ public class TestHtmlReport {
 					Period.TOUT, writer);
 			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
 			htmlReport.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 		} finally {
@@ -481,7 +481,7 @@ public class TestHtmlReport {
 			}
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.FALSE.toString());
 			final List<JavaInformations> javaInformationsList3 = Collections
 					.singletonList(new JavaInformations(null, true));
 			final HtmlReport htmlReport3 = new HtmlReport(collector, null, javaInformationsList3,
@@ -489,7 +489,6 @@ public class TestHtmlReport {
 			htmlReport3.toHtml(null, null);
 			assertNotEmptyAndClear(writer);
 		} finally {
-			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.FALSE.toString());
 			scheduler.shutdown();
 			JobGlobalListener.getJobCounter().clear();
 			JobGlobalListener.destroyJobGlobalListener();
