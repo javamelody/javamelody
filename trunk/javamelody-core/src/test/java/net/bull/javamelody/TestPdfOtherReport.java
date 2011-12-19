@@ -60,6 +60,7 @@ public class TestPdfOtherReport {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			pdfOtherReport.writeHeapHistogram(heapHistogram);
+			pdfOtherReport.close();
 		} finally {
 			input.close();
 		}
@@ -70,6 +71,7 @@ public class TestPdfOtherReport {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 			final HeapHistogram heapHistogram = new HeapHistogram(input2, true);
 			pdfOtherReport.writeHeapHistogram(heapHistogram);
+			pdfOtherReport.close();
 		} finally {
 			input2.close();
 		}

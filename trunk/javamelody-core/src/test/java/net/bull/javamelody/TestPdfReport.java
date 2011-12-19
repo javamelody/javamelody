@@ -94,6 +94,7 @@ public class TestPdfReport {
 		PdfReport pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT,
 				output);
 		pdfReport.toPdf();
+		pdfReport.close();
 		assertNotEmptyAndClear(output);
 
 		counter.bindContext("test 1", "complete test 1", null, -1);
