@@ -266,14 +266,14 @@ public class TestAction {
 		if (!systemActionsEnabled) {
 			fail("checkSystemActionsEnabled");
 		}
-		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
 		systemActionsEnabled = true;
 		try {
 			Action.checkSystemActionsEnabled();
 		} catch (final Exception e) {
 			systemActionsEnabled = false;
 		}
-		if (!systemActionsEnabled) {
+		if (systemActionsEnabled) {
 			fail("checkSystemActionsEnabled");
 		}
 	}
