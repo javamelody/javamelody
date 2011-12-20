@@ -25,7 +25,7 @@ Other pages are available as you can see in those monitoring pages.
 
 For example: http://localhost:8080/mywebapp/monitoring?part=counterSummaryPerClass&counter=guice&period=jour
 
-The "part" parameter can be "threads", "currentRequests", "counterSummaryPerClass" and if system actions are [UserGuide#6._Optional_parameters enabled] it can be "heaphisto", "sessions", "web.xml", "mbeans", "processes", "jndi", "connections" or "database".
+The "part" parameter can be "threads", "currentRequests", "counterSummaryPerClass" and if system actions are [UserGuide#6._Optional_parameters enabled] (true by default), it can be "heaphisto", "sessions", "web.xml", "mbeans", "processes", "jndi", "connections" or "database".
 
 
 === PDF ===
@@ -39,7 +39,7 @@ And you can also change the "period" parameter like for the HTML format.
 Other PDF reports are available. For example:
 http://localhost:8080/mywebapp/monitoring?format=pdf&part=runtimeDependencies&counter=spring&period=jour
 
-The "part" parameter for the PDF format can be replaced in the URL with "counterSummaryPerClass", "runtimeDependencies" and if system actions are [UserGuide#6._Optional_parameters enabled] it can be replaced with "heaphisto", "sessions", "mbeans", "processes" or "database".
+The "part" parameter for the PDF format can be replaced in the URL with "counterSummaryPerClass", "runtimeDependencies", "heaphisto", "sessions", "mbeans", "processes" or "database".
 
 
 === PNG and lastValue ===
@@ -68,7 +68,7 @@ Note: There is also a [https://github.com/sbower/nagios_javamelody_plugin Nagios
 
 For each MBean (JMX) attribute, a link on the left of the attribute in the MBeans page is provided to have only the current value of an attribute in plain text. For example, the following URL retrieves the bytes sent and the process cpu time for a Tomcat server: http://localhost:8080/mywebapp/monitoring?jmxValue=Catalina:type=GlobalRequestProcessor,name=http-8080.bytesSent|java.lang:type=OperatingSystem.ProcessCpuTime
 
-To use the URL for a MBean value, the system actions must be [UserGuide#6._Optional_parameters enabled].
+To use the URL for a MBean value, the system actions must be [UserGuide#6._Optional_parameters enabled] (true by default).
 
 
 === XML ===
@@ -87,7 +87,7 @@ Other data is available and the URLs are the same as for the HTML pages except t
 For example, some aggregated statistics in a counter are available with the following URL:
 http://localhost:8080/mywebapp/monitoring?format=xml&part=counterSummaryPerClass&counter=guice&period=jour
 
-The "part" parameter in the URL can be replaced with "threads", "counterSummaryPerClass" and if system actions are [UserGuide#6._Optional_parameters enabled] it can be replaced with "heaphisto", "sessions", "processes", "connections" or "database". ("counterSummaryPerClass" needs a "counter" parameter, "sessions" may need a "sessionId" parameter to have session details and "database" may need a "request" parameter to select a predefined database report).
+The "part" parameter in the URL can be replaced with "threads", "counterSummaryPerClass" and if system actions are [UserGuide#6._Optional_parameters enabled] (true by default), it can be replaced with "heaphisto", "sessions", "processes", "connections" or "database". ("counterSummaryPerClass" needs a "counter" parameter, "sessions" may need a "sessionId" parameter to have session details and "database" may need a "request" parameter to select a predefined database report).
 
 The response data is automatically compressed in gzip by JavaMelody, if the response size is more than 50 KB and if the client supports it (if the "Accept-Encoding" header contains "gzip" such as for browsers).
 
