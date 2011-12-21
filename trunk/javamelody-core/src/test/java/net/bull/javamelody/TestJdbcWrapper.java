@@ -295,6 +295,12 @@ public class TestJdbcWrapper {
 	@Test
 	public void testRewrapDataSource() throws Exception { // NOPMD
 		final DataSource dataSource = new BasicDataSource();
+		rewrapDataSource(dataSource);
+		final DataSource dataSource2 = createNiceMock(DataSource.class);
+		rewrapDataSource(dataSource2);
+	}
+
+	private void rewrapDataSource(final DataSource dataSource) throws Exception { // NOPMD
 		// on utilise java.lang.reflect car la méthode est privée mais on veut vraiment la tester un minimum
 		final Method rewrapDataSourceMethod = JdbcWrapper.class.getDeclaredMethod(
 				"rewrapDataSource", String.class, DataSource.class);
