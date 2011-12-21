@@ -18,10 +18,13 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
@@ -41,6 +44,7 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
@@ -130,6 +134,8 @@ public class TestJdbcWrapper {
 	public void testRebindDataSources() {
 		// test rebind et stop (sans conteneur)
 		jdbcWrapper.rebindDataSources();
+		Utils.setProperty(Parameter.REWRAP_DATASOURCES, "true");
+		jdbcWrapper.rebindDataSources();
 		jdbcWrapper.stop();
 	}
 
@@ -140,6 +146,15 @@ public class TestJdbcWrapper {
 		final Context context = jdbcWrapper.createContextProxy(new InitialContext());
 		assertNotNull("createContextProxy", context);
 		context.close();
+
+		final Context mockContext = createNiceMock(Context.class);
+		final Context proxyContext = JdbcWrapper.SINGLETON.createContextProxy(mockContext);
+		final DataSource dataSource = createNiceMock(DataSource.class);
+		final String jndiName = "java:comp/env/jdbc/DataSource";
+		expect(mockContext.lookup(jndiName)).andReturn(dataSource).anyTimes();
+		replay(mockContext);
+		proxyContext.lookup(jndiName);
+		verify(mockContext);
 	}
 
 	/** Test.
@@ -151,7 +166,7 @@ public class TestJdbcWrapper {
 
 		assertTrue("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
-		assertSame("getMaxConnectionCount", -1, JdbcWrapper.getMaxConnectionCount());
+		assertEquals("getMaxConnectionCount", -1, JdbcWrapper.getMaxConnectionCount());
 
 		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
 		dbcpDataSource.setUrl("jdbc:h2:~/.h2/test");
@@ -160,7 +175,7 @@ public class TestJdbcWrapper {
 		assertNotNull("createDataSourceProxy", dbcpProxy);
 		assertFalse("getBasicDataSourceProperties", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
-		assertSame("getMaxConnectionCount", 123, JdbcWrapper.getMaxConnectionCount());
+		assertEquals("getMaxConnectionCount", 123, JdbcWrapper.getMaxConnectionCount());
 
 		final BasicDataSource tomcatDataSource = new BasicDataSource();
 		tomcatDataSource.setUrl("jdbc:h2:~/.h2/test");
@@ -245,7 +260,7 @@ public class TestJdbcWrapper {
 					JdbcWrapper.getUsedConnectionCount());
 		}
 
-		assertSame("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
+		assertEquals("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
 
 		final InvocationHandler dummy = new InvocationHandler() {
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -273,6 +288,18 @@ public class TestJdbcWrapper {
 		final Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
 		jdbcWrapper.rewrapConnection(connection);
 		connection.close();
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testRewrapDataSource() throws Exception { // NOPMD
+		final DataSource dataSource = new BasicDataSource();
+		// on utilise java.lang.reflect car la méthode est privée mais on veut vraiment la tester un minimum
+		final Method rewrapDataSourceMethod = JdbcWrapper.class.getDeclaredMethod(
+				"rewrapDataSource", String.class, DataSource.class);
+		rewrapDataSourceMethod.setAccessible(true);
+		rewrapDataSourceMethod.invoke(jdbcWrapper, "test", dataSource);
 	}
 
 	/** Test.
@@ -332,5 +359,19 @@ public class TestJdbcWrapper {
 				JdbcWrapper.isHashCodeMethod("nothashCode", new Object[] {}));
 		assertFalse("isHashCodeMethod4",
 				JdbcWrapper.isHashCodeMethod("hashCode", new Object[] { "" }));
+	}
+
+	/** Test. */
+	@Test
+	public void testInitServletContext() {
+		final String[] servers = { "JBoss", "GlassFish", "Sun Java System Application Server",
+				"WebLogic", };
+		for (final String serverName : servers) {
+			final ServletContext servletContext = createNiceMock(ServletContext.class);
+			expect(servletContext.getServerInfo()).andReturn(serverName).anyTimes();
+			replay(servletContext);
+			jdbcWrapper.initServletContext(servletContext);
+			verify(servletContext);
+		}
 	}
 }
