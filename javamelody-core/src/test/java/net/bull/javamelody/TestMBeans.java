@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.management.JMException;
@@ -169,7 +168,6 @@ public class TestMBeans {
 	 * @throws JMException e */
 	@Test
 	public void testGetAttributeDescription() throws JMException {
-		System.out.println(Arrays.asList(mbeans.getMBeanInfo(mbeansList.get(0)).getAttributes()));
 		assertNotNull("getAttributeDescription", mbeans.getAttributeDescription("maxThreads",
 				mbeans.getMBeanInfo(mbeansList.get(0)).getAttributes()));
 		assertNull("getAttributeDescription", mbeans.getAttributeDescription("unknown", mbeans
