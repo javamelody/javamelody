@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 
 import org.junit.Before;
@@ -122,5 +123,12 @@ public class TestJdbcDriver {
 		final String string = driver.toString();
 		assertNotNull("toString not null", string);
 		assertFalse("toString not empty", string.isEmpty());
+	}
+
+	/** Test.
+	 * @throws SQLFeatureNotSupportedException e */
+	@Test
+	public void testGetParentLogger() throws SQLFeatureNotSupportedException {
+		assertNotNull("getParentLogger", driver.getParentLogger());
 	}
 }
