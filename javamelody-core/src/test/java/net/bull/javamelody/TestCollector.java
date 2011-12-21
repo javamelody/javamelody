@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -187,17 +186,10 @@ public class TestCollector {
 			fail("getCounterJRobins");
 		}
 		final Range range = Period.JOUR.getRange();
-		final Range customRange = Range.createCustomRange(new Date(System.currentTimeMillis() - 24L
-				* 60 * 60 * 1000), new Date());
 		for (final JRobin jrobin : collector.getCounterJRobins()) {
 			final JRobin robin = collector.getJRobin(jrobin.getName());
 			assertNotNull("getJRobin non null", robin);
-			jrobin.graph(range, 500, 200);
 			jrobin.graph(range, 80, 80);
-			jrobin.graph(customRange, 500, 200);
-			jrobin.graph(customRange, 80, 80);
-
-			jrobin.getLastValue();
 			robin.deleteFile();
 		}
 		for (final JRobin jrobin : collector.getOtherJRobins()) {
@@ -236,39 +228,6 @@ public class TestCollector {
 			}
 			TomcatInformations.initMBeans();
 		}
-	}
-
-	/** Test.
-	 * @throws IOException e */
-	@Test
-	public void testJRobinResetFile() throws IOException {
-		final String application = TEST;
-		final String jrobinName = "name";
-		final File dir = Parameters.getStorageDirectory(application);
-		// ce fichier sera celui utilisé par JRobin
-		final File rrdFile = new File(dir, jrobinName + ".rrd");
-		assertTrue("delete", !rrdFile.exists() || rrdFile.delete());
-		final FileOutputStream out = new FileOutputStream(rrdFile);
-		try {
-			// il faut un minimum de quantité de données pour avoir RrdException "Invalid file header"
-			// et non une IOException dans NIO
-			for (int i = 0; i < 100; i++) {
-				out.write("n'est pas un fichier rrd".getBytes());
-			}
-		} finally {
-			out.close();
-		}
-		final JRobin jrobin = JRobin.createInstance(application, jrobinName, "request");
-		// addValue devrait appeler resetFile car RrdException "Invalid file header"
-		// puis devrait relancer une IOException
-		try {
-			jrobin.addValue(1);
-		} catch (final IOException e) {
-			assertTrue("cause", e.getCause() != null && e.getCause().getMessage() != null
-					&& e.getCause().getMessage().contains("Invalid file header"));
-		}
-		// après ce resetFile, on devrait pouvoir appeler addValue
-		jrobin.addValue(1);
 	}
 
 	/** Test. */
@@ -423,10 +382,9 @@ public class TestCollector {
 		}
 	}
 
-	/** Test.
-	 * @throws IOException e */
+	/** Test. */
 	@Test
-	public void testStop() throws IOException {
+	public void testStop() {
 		final Collector collector = createCollectorWithOneCounter();
 		collector.stop();
 		if (collector.getCounters().size() == 0) {
@@ -444,10 +402,6 @@ public class TestCollector {
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
 		collector2.stop();
 		setProperty(Parameter.STORAGE_DIRECTORY, "javamelody");
-
-		// à défaut de pouvoir appeler JRobin.stop() car les autres tests ne pourront plus
-		// utiliser JRobin, on appelle au moins JRobin.getJRobinFileSyncTimer()
-		JRobin.getJRobinFileSyncTimer();
 	}
 
 	/** Test. */
