@@ -2,7 +2,7 @@
 <%	
 	final java.util.Properties properties = new java.util.Properties();
 	final String query = "DROP ALIAS if exists SLEEP; CREATE ALIAS SLEEP FOR \"java.lang.Thread.sleep(long)\"; call sleep(.1)";
-	final String url = "jdbc:h2:C:/Applis/h2/test-webapp";
+	final String url = "jdbc:h2:/Applis/h2/test-webapp";
 	properties.put("user", "sa");
     properties.put("password", "");
     properties.put("driver", "org.h2.Driver");
