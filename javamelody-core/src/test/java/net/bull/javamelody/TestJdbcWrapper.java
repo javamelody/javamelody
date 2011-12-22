@@ -294,13 +294,15 @@ public class TestJdbcWrapper {
 	 * @throws Exception e */
 	@Test
 	public void testRewrapDataSource() throws Exception { // NOPMD
-		final DataSource dataSource = new BasicDataSource();
+		final BasicDataSource basicDataSource = new BasicDataSource();
+		basicDataSource.setDriverClassName("org.h2.Driver");
+		basicDataSource.setUrl(H2_DATABASE_URL);
+		rewrapDataSource(basicDataSource);
+		final DataSource dataSource = createNiceMock(DataSource.class);
 		rewrapDataSource(dataSource);
-		final DataSource dataSource2 = createNiceMock(DataSource.class);
-		rewrapDataSource(dataSource2);
 	}
 
-	private void rewrapDataSource(final DataSource dataSource) throws Exception { // NOPMD
+	private void rewrapDataSource(DataSource dataSource) throws Exception { // NOPMD
 		// on utilise java.lang.reflect car la méthode est privée mais on veut vraiment la tester un minimum
 		final Method rewrapDataSourceMethod = JdbcWrapper.class.getDeclaredMethod(
 				"rewrapDataSource", String.class, DataSource.class);

@@ -492,6 +492,11 @@ public final class JdbcWrapper {
 			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI.
 			// Et dans certains JIRA la datasource est bien une instance de org.apache.commons.dbcp.BasicDataSource
 			// cf http://groups.google.com/group/javamelody/browse_thread/thread/da8336b908f1e3bd/6cf3048f1f11866e?show_docid=6cf3048f1f11866e
+
+			// on récupère une connection avant de la refermer,
+			// car sinon la datasource interne n'est pas encore créée
+			// et le rewrap ne peut pas fonctionner
+			dataSource.getConnection().close();
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage + jndiName);
 		} else if ("org.apache.openejb.resource.jdbc.BasicManagedDataSource"
