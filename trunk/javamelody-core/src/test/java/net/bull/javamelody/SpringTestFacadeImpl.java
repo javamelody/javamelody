@@ -55,10 +55,11 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 				//				statement.setInt(1, 36);
 				//				statement.executeQuery();
 
-				// 1 seconde pour avoir une requête sql
-				statement.executeQuery("select sleep(.01)");
+				statement
+						.execute("DROP ALIAS if exists SLEEP; CREATE ALIAS SLEEP FOR \"java.lang.Thread.sleep(long)\"");
+				statement.execute("call sleep(.01)");
 				for (int i = 0; i < 5; i++) {
-					statement.executeQuery("select sleep(.02)");
+					statement.execute("call sleep(.02)");
 				}
 			} finally {
 				statement.close();
