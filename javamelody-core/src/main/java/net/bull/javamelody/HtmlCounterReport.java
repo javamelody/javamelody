@@ -475,9 +475,9 @@ class HtmlCounterReport {
 
 		// 4. logs (non visible par défaut)
 		if (isErrorCounter()) {
-			writeln("<div id='logs" + counterName + "' style='display: none;'>");
+			writeln("<div id='logs" + counterName + "' style='display: none;'><div>");
 			new HtmlCounterErrorReport(counter, writer).toHtml();
-			writeln("</div>");
+			writeln("</div></div>");
 		}
 	}
 
