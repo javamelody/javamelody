@@ -18,10 +18,16 @@
 		</property>
 	</bean>
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <!--
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://127.0.0.1:3306/test?socketTimeout=5000&amp;connectTimeout=5000" />
         <property name="username" value="root" />
         <property name="password" value="root" />
+	-->
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:C:\Applis\h2\test-webapp" />
+        <property name="username" value="sa" />
+        <property name="password" value="" />
         <property name="maxIdle" value="13" />
     </bean>
 	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">

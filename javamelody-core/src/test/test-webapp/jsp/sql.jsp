@@ -5,11 +5,12 @@
 	final java.sql.Connection connection = ds.getConnection();
 	connection.setAutoCommit(false);
 	try {
+		connection.createStatement().execute("DROP ALIAS if exists SLEEP; CREATE ALIAS SLEEP FOR \"java.lang.Thread.sleep(long)\"");
 		// 1 seconde pour avoir une 1ère requête
-		connection.createStatement().executeQuery("select sleep(1)");
+		connection.createStatement().execute("CALL SLEEP(1000)");
 		// 4 secondes pour une 2ème requête,
-		// on ne peut pas mettre 5s en raison du timeout paramétré sur la datasource
-		connection.createStatement().executeQuery("select \nsleep(4)");
+		// si mysql, on ne peut pas mettre 5s en raison du timeout paramétré sur la datasource
+		connection.createStatement().execute("CALL SLEEP(4000)");
 	} finally {
 		connection.rollback();
 		connection.close();
