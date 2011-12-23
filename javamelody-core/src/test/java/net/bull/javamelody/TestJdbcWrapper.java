@@ -123,7 +123,7 @@ public class TestJdbcWrapper {
 	@Before
 	public void setUp() throws SQLException {
 		Utils.initialize();
-		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "true");
+		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
 		driver = new JdbcDriver();
 		DriverManager.registerDriver(driver);
 		jdbcWrapper = JdbcWrapper.SINGLETON;
@@ -384,5 +384,20 @@ public class TestJdbcWrapper {
 			jdbcWrapper.initServletContext(servletContext);
 			verify(servletContext);
 		}
+	}
+
+	/** Test. */
+	@Test
+	public void testIsSqlMonitoringDisabled() {
+		Utils.setProperty(Parameter.DISABLED, "false");
+		jdbcWrapper.getSqlCounter().setDisplayed(true);
+		assertFalse("isSqlMonitoringDisabled1", jdbcWrapper.isSqlMonitoringDisabled());
+		Utils.setProperty(Parameter.DISABLED, "true");
+		assertTrue("isSqlMonitoringDisabled2", jdbcWrapper.isSqlMonitoringDisabled());
+		Utils.setProperty(Parameter.DISABLED, "false");
+		jdbcWrapper.getSqlCounter().setDisplayed(false);
+		assertTrue("isSqlMonitoringDisabled3", jdbcWrapper.isSqlMonitoringDisabled());
+		jdbcWrapper.getSqlCounter().setDisplayed(true);
+		assertFalse("isSqlMonitoringDisabled4", jdbcWrapper.isSqlMonitoringDisabled());
 	}
 }
