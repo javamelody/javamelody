@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 
 import org.junit.Test;
@@ -226,7 +225,7 @@ public class TestTomcatInformations {
 		TomcatInformations.initMBeans();
 		assertNotNull("buildTomcatInformationsList",
 				TomcatInformations.buildTomcatInformationsList());
-		final MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
+		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
 		mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
 				new ObjectName("Catalina:type=ThreadPool,name=http-8080")).getObjectName());
