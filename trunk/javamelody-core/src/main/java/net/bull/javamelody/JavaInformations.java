@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
@@ -382,9 +381,7 @@ class JavaInformations implements Serializable { // NOPMD
 					connection.close();
 				}
 			}
-		} catch (final NamingException e) {
-			result.append(e.toString());
-		} catch (final SQLException e) {
+		} catch (final Exception e) {
 			result.append(e.toString());
 		}
 		if (result.length() > 0) {
