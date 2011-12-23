@@ -27,7 +27,6 @@ import java.util.List;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
@@ -53,7 +52,7 @@ public class TestMBeans {
 	public void setUp() throws JMException {
 		Utils.initialize();
 		mbeans = new MBeans();
-		mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
+		mBeanServer = MBeans.getPlatformMBeanServer();
 		final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
 				"Catalina:type=ThreadPool"));
 		mbeansList.add(mBean1.getObjectName());
