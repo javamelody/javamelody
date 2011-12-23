@@ -169,7 +169,7 @@ public class TestJdbcWrapper {
 		assertEquals("getMaxConnectionCount", -1, JdbcWrapper.getMaxConnectionCount());
 
 		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
-		dbcpDataSource.setUrl("jdbc:h2:~/.h2/test");
+		dbcpDataSource.setUrl(H2_DATABASE_URL);
 		dbcpDataSource.setMaxActive(123);
 		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
 		assertNotNull("createDataSourceProxy", dbcpProxy);
@@ -178,7 +178,7 @@ public class TestJdbcWrapper {
 		assertEquals("getMaxConnectionCount", 123, JdbcWrapper.getMaxConnectionCount());
 
 		final BasicDataSource tomcatDataSource = new BasicDataSource();
-		tomcatDataSource.setUrl("jdbc:h2:~/.h2/test");
+		tomcatDataSource.setUrl(H2_DATABASE_URL);
 		tomcatDataSource.setMaxActive(456);
 		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy("test", tomcatDataSource);
 		assertNotNull("createDataSourceProxy", tomcatProxy);
@@ -295,9 +295,11 @@ public class TestJdbcWrapper {
 	@Test
 	public void testRewrapDataSource() throws Exception { // NOPMD
 		final BasicDataSource basicDataSource = new BasicDataSource();
-		basicDataSource.setDriverClassName("org.h2.Driver");
 		basicDataSource.setUrl(H2_DATABASE_URL);
 		rewrapDataSource(basicDataSource);
+		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
+		dbcpDataSource.setUrl(H2_DATABASE_URL);
+		rewrapDataSource(dbcpDataSource);
 		final DataSource dataSource = createNiceMock(DataSource.class);
 		rewrapDataSource(dataSource);
 	}
