@@ -30,7 +30,6 @@ import java.util.List;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 
 import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
@@ -77,13 +76,7 @@ public class TestHtmlJavaInformationsReport {
 	 * @throws JMException e */
 	@Test
 	public void testTomcatInformations() throws IOException, JMException {
-		final List<MBeanServer> mBeanServerList = MBeanServerFactory.findMBeanServer(null);
-		final MBeanServer mBeanServer;
-		if (mBeanServerList.isEmpty()) {
-			mBeanServer = MBeanServerFactory.createMBeanServer();
-		} else {
-			mBeanServer = mBeanServerList.get(0);
-		}
+		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
 		try {
 			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
