@@ -92,10 +92,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Redémarrer le serveur.
 	Vous pouvez alors ouvrir le rapport à partir de l'adresse <<<http://host:port/monitoring>>>
 	(le lien "Monitoring" est également disponible dans le menu "Administration").
-	C'est tout.
+	C'est tout en général.
 	
-	Notes : Les connexions jdbc et les requêtes SQL sont monitorées dans JIRA, et elles sont 
-	monitorées dans Confluence et Bamboo si une datasource jdbc est utilisée et non la
+	Notes : Les connexions jdbc et les requêtes SQL sont monitorées automatiquement dans JIRA 4.3.x ou avant,
+	et elles sont monitorées dans Confluence et Bamboo si une datasource jdbc est utilisée et non la
 	connexion jdbc directe par défaut.
 	
 	Pour configurer Confluence avec une datasource, voir {{{http://confluence.atlassian.com/display/DOC/Database+Configuration}ici}}.
@@ -107,6 +107,26 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<property name="hibernate.connection.driver">org.hsqldb.jdbcDriver</property>
     <property name="hibernate.connection.driver_class">net.bull.javamelody.JdbcDriver</property>
     >>>
+
+	Depuis JIRA 4.4, la configuration de la base de données a été changée par Atlassian comme indiqué {{{http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration}ici}}.
+	Si vous utilisez JIRA 4.4 ou plus, il est nécessaire de modifier le fichier "Application Data/JIRA/dbconfig.xml": remplacez simplement la ligne suivante
+	<<<
+	<driver-class>xyz</driver-class>
+    >>>
+	avec les 2 lignes suivantes
+	<<<
+	<driver-class>net.bull.javamelody.JdbcDriver</driver-class>
+	<connection-properties>driver=xyz</connection-properties>
+    >>>
+	où "xyz" est le driver jdbc utilisé selon votre base de données (par exemple, "org.hsqldb.jdbcDriver" pour la base de données par défaut)
+	
+	Ou vous pouvez utiliser une datasource jndi dans JIRA 4.4 ou plus et elle sera automatiquement monitorée.
+	Pour utiliser une datasource jndi, remplacez dans le fichier dbconfig.xml "<jdbc-datasource>...</jdbc-datasource>"
+	par "<jndi-datasource><jndi-name>java:comp/env/jdbc/JiraDS</jndi-name></jndi-datasource>" (faire une sauvegarde auparavant),
+	et ajoutez un élément Resource de datasource dans l'élément Context du fichier de Tomcat "JIRA/conf/server.xml".
+	Voir cet {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}exemple de datasource pour mysql}} ;
+	les valeurs dans votre élément Resource doivent s'inspirer des valeurs qui viennent d'être enlevées de votre fichier dbconfig.xml.
+	Et ainsi la datasource jndi sera automatiquement monitorée après un redémarrage.
 
 * Plugin Grails
 
