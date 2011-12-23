@@ -330,6 +330,7 @@ public class TestJdbcWrapper {
 				jdbcWrapper.getSqlCounter().setDisplayed(false);
 				statement.execute("select 4");
 				jdbcWrapper.getSqlCounter().setDisplayed(true);
+				statement.execute("explain select 3");
 				try {
 					statement.execute("invalid sql");
 				} catch (final SQLException e) {
