@@ -25,6 +25,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,8 +59,12 @@ public class TestLabradorRetriever {
 			} finally {
 				output.close();
 			}
-			final LabradorRetriever labradorRetriever = new LabradorRetriever(file.toURI().toURL());
+			final URL url = file.toURI().toURL();
+			final LabradorRetriever labradorRetriever = new LabradorRetriever(url);
 			labradorRetriever.call();
+			final Map<String, String> headers = Collections.emptyMap();
+			final LabradorRetriever labradorRetriever2 = new LabradorRetriever(url, headers);
+			labradorRetriever2.call();
 		} finally {
 			if (!file.delete()) {
 				fail("file.delete");
