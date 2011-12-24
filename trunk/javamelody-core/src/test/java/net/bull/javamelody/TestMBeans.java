@@ -167,12 +167,12 @@ public class TestMBeans {
 	 * @throws JMException e */
 	@Test
 	public void testGetAttributeDescription() throws JMException {
-		assertNotNull(
-				"getAttributeDescription",
-				mbeans.getAttributeDescription("currentThreadCount",
-						mbeans.getMBeanInfo(mbeansList.get(0)).getAttributes()));
-		assertNull("getAttributeDescription", mbeans.getAttributeDescription("unknown", mbeans
-				.getMBeanInfo(mbeansList.get(0)).getAttributes()));
+		final MBeanAttributeInfo[] attributes = mbeans.getMBeanInfo(mbeansList.get(0))
+				.getAttributes();
+		for (final MBeanAttributeInfo attribute : attributes) {
+			mbeans.getAttributeDescription(attribute.getName(), attributes);
+		}
+		assertNull("getAttributeDescription", mbeans.getAttributeDescription("unknown", attributes));
 	}
 
 	/** Test. */
