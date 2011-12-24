@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
@@ -809,6 +810,10 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(HEIGHT_PARAMETER, "80");
 		parameters.put(PART_PARAMETER, JROBINS_PART);
 		monitoring(parameters);
+		parameters.put(GRAPH_PARAMETER, "cpu");
+		parameters.put(PART_PARAMETER, JROBINS_PART);
+		monitoring(parameters);
+		parameters.remove(GRAPH_PARAMETER);
 		parameters.put(PART_PARAMETER, OTHER_JROBINS_PART);
 		monitoring(parameters);
 		parameters.remove(WIDTH_PARAMETER);

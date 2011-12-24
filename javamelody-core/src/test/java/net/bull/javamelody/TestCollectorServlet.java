@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
@@ -324,6 +325,10 @@ public class TestCollectorServlet {
 		parameters.put(HEIGHT_PARAMETER, "80");
 		parameters.put(PART_PARAMETER, JROBINS_PART);
 		doPart(parameters);
+		parameters.put(GRAPH_PARAMETER, "cpu");
+		parameters.put(PART_PARAMETER, JROBINS_PART);
+		doPart(parameters);
+		parameters.remove(GRAPH_PARAMETER);
 		parameters.put(PART_PARAMETER, OTHER_JROBINS_PART);
 		doPart(parameters);
 		parameters.remove(WIDTH_PARAMETER);
