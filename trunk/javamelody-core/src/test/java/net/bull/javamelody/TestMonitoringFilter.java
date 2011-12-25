@@ -833,6 +833,9 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(REQUEST_PARAMETER, "0");
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
+		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
+		monitoring(parameters);
 		parameters.remove(REQUEST_PARAMETER);
 		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
 		monitoring(parameters);
@@ -851,9 +854,6 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 
 		parameters.put(ACTION_PARAMETER, Action.GC.toString());
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
-		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
 		monitoring(parameters);
 	}
 
