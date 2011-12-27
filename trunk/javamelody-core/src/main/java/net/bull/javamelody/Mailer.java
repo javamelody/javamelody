@@ -68,17 +68,8 @@ class Mailer {
 	private Session getSession() throws NamingException {
 		if (session == null) {
 			synchronized (this) {
-				final InitialContext ctx = new InitialContext();
 				try {
-					try {
-						session = (Session) ctx.lookup("java:comp/env/" + jndiName);
-					} catch (final NameNotFoundException e) {
-						try {
-							session = (Session) ctx.lookup("java:/" + jndiName);
-						} catch (final NameNotFoundException e2) {
-							session = (Session) ctx.lookup(jndiName);
-						}
-					}
+					session = (Session) lookupFromJndiName();
 				} catch (final ClassCastException e) {
 					// la déclaration d'une session mail dans un contexte tomcat par exemple
 					// nécessite d'avoir les jars javamail et activation dans le répertoire lib
@@ -88,13 +79,27 @@ class Mailer {
 					// Pour pallier cela, on contourne ClassCastException en récupérant
 					// les propriétés dans la session mail du serveur sans faire de cast
 					// puis on recrée une session mail locale avec les jars de la webapp.
-					session = Session.getInstance(getPropertiesFromSession(ctx.lookup(jndiName)));
+					session = Session.getInstance(getPropertiesFromSession(lookupFromJndiName()));
 				}
-				ctx.close();
 			}
 			fromAddress = InternetAddress.getLocalAddress(session);
 		}
 		return session;
+	}
+
+	private Object lookupFromJndiName() throws NamingException {
+		final InitialContext ctx = new InitialContext();
+		try {
+			return ctx.lookup("java:comp/env/" + jndiName);
+		} catch (final NameNotFoundException e) {
+			try {
+				return ctx.lookup("java:/" + jndiName);
+			} catch (final NameNotFoundException e2) {
+				return ctx.lookup(jndiName);
+			}
+		} finally {
+			ctx.close();
+		}
 	}
 
 	// pour tests unitaires
