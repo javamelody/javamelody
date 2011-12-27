@@ -124,6 +124,32 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	See this {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}example of datasource for mysql}} ;
 	the values in your Resource element should be inspired by the values that were just removed from your dbconfig.xml file.
 	And so the jndi datasource will be automatically monitored after restart.
+	
+	
+	You can send weekly, daily or monthly reports in pdf format by mail to one or several people.
+	This is explained in the chapter "Weekly, daily or monthly reports by mail".
+	
+	For example, for JIRA:
+	
+	Copy the "mail-1.4.4.jar" and "activation-1.1.1.jar" files from the "JIRA/atlassian-jira/WEB-INF/lib/" directory
+	to the "JIRA/lib/" directory.
+	And add the following lines inside the Context element of the "JIRA/conf/server.xml" file:
+	
++-------------------------------+
+...
+<Context ... > 
+	...
+	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="<serveur smtp>"
+		mail.smtp.user="<login>"
+		mail.from="JIRA JavaMelody plugin"
+	/>
+	<Parameter name='javamelody.admin-emails' value='admin1@company.com,admin2@company.com' override='false'/>
+	<Parameter name='javamelody.mail-session' value='java:comp/env/mail/MySession' override='false'/>
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+</Context>
+...
++-------------------------------+
 
 * Grails Plugin
 
