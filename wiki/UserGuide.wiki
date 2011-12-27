@@ -130,7 +130,7 @@ or MSIE8 (MSIE7 not recommended).
 
 
 	You can also send *weekly, daily or monthly reports* in pdf format by mail to one or several people.
-	This is explained in the chapter [UserGuide#14._Weekly,_daily_or_monthly_reports_by_mail].
+	This is explained in the chapter [UserGuide#14._Weekly,_daily_or_monthly_reports_by_mail Weekly, daily or monthly reports by mail].
 
 	For example, for JIRA:
 	
