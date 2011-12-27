@@ -107,7 +107,7 @@ or MSIE8 (MSIE7 not recommended).
 	<property name="hibernate.connection.driver_class">net.bull.javamelody.JdbcDriver</property>
 	}}}
 
-	Since JIRA 4.4, the database configuration has been changed by Atlassian as said [http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration here].
+	Since *JIRA 4.4*, the database configuration has been changed by Atlassian as said [http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration here].
 	If you are using JIRA 4.4 or later, you need to change the "Application Data/JIRA/dbconfig.xml" file: simply replace the following line
 	{{{
 	<driver-class>xyz</driver-class>
