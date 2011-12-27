@@ -128,6 +128,32 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	les valeurs dans votre élément Resource doivent s'inspirer des valeurs qui viennent d'être enlevées de votre fichier dbconfig.xml.
 	Et ainsi la datasource jndi sera automatiquement monitorée après un redémarrage.
 
+
+	Un rapport hebdomadaire, quotidien ou mensuel au format pdf peut être envoyé par mail à un ou plusieurs responsable(s) technique(s).
+	Cela est expliqué dans le chapitre "Rapports hebdomadaires, quotidiens ou mensuels par mail".
+	
+	Par exemple, pour JIRA:
+	
+	Copier les fichiers "mail-1.4.4.jar" et "activation-1.1.1.jar" depuis le répertoire "JIRA/atlassian-jira/WEB-INF/lib/" directory
+	vers le répertoire "JIRA/lib/".
+	Et ajouter les lignes suivantes dans l'élément Context du fichier "JIRA/conf/server.xml":
+	
++-------------------------------+
+...
+<Context ... >
+	...
+	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="<serveur smtp>"
+		mail.smtp.user="<login>"
+		mail.from="Plugin JIRA JavaMelody"
+	/>
+	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
+	<Parameter name='javamelody.mail-session' value='java:comp/env/mail/MySession' override='false'/>
+	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+</Context>
+...
++-------------------------------+
+
 * Plugin Grails
 
 	Si vous voulez monitorer une application développée avec {{{http://www.grails.org}Grails}}, vous pouvez installer JavaMelody en une commande
