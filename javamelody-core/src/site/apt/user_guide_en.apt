@@ -139,13 +139,13 @@ Description and documentation of Java Melody : monitoring of Java EE application
 ...
 <Context ... > 
 	...
-	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
+	<Resource name="mail/JavaMelodySession" auth="Container" type="javax.mail.Session"
 		mail.smtp.host="<serveur smtp>"
 		mail.smtp.user="<login>"
 		mail.from="JIRA JavaMelody plugin"
 	/>
 	<Parameter name='javamelody.admin-emails' value='admin1@company.com,admin2@company.com' override='false'/>
-	<Parameter name='javamelody.mail-session' value='java:comp/env/mail/MySession' override='false'/>
+	<Parameter name='javamelody.mail-session' value='java:comp/env/mail/JavaMelodySession' override='false'/>
 	<Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
 </Context>
 ...
