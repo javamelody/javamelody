@@ -143,7 +143,7 @@ or MSIE8 (MSIE7 not recommended).
 	<Context ... > 
 		...
 		<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
-			mail.smtp.host="<serveur smtp>"
+			mail.smtp.host="<smtp server>"
 			mail.smtp.user="<login>"
 			mail.from="JIRA JavaMelody plugin"
 		/>
