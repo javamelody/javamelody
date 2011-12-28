@@ -136,7 +136,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	
 	Copier les fichiers "mail-1.4.4.jar" et "activation-1.1.1.jar" depuis le répertoire "JIRA/atlassian-jira/WEB-INF/lib/" directory
 	vers le répertoire "JIRA/lib/".
-	Et ajouter les lignes suivantes dans l'élément Context du fichier "JIRA/conf/server.xml":
+	Et ajouter les lignes Resource et Parameter suivantes dans l'élément Context du fichier "JIRA/conf/server.xml":
 	
 +-------------------------------+
 ...
