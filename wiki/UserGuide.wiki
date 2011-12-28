@@ -136,7 +136,7 @@ or MSIE8 (MSIE7 not recommended).
 	
 	Copy the "mail-1.4.4.jar" and "activation-1.1.1.jar" files from the "JIRA/atlassian-jira/WEB-INF/lib/" directory
 	to the "JIRA/lib/" directory.
-	And add the following lines inside the Context element of the "JIRA/conf/server.xml" file:
+	And add the following Resource and Parameter lines inside the Context element of the "JIRA/conf/server.xml" file:
 	
 {{{
 	...
