@@ -925,7 +925,13 @@ public class TestMonitoringFilter { // NOPMD
 						Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 			}
 			for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+				if (REQUEST_PARAMETER.equals(entry.getKey())) {
+					expect(request.getHeader(entry.getKey())).andReturn(entry.getValue())
+							.anyTimes();
+				} else {
+					expect(request.getParameter(entry.getKey())).andReturn(entry.getValue())
+							.anyTimes();
+				}
 			}
 			if (parameters.isEmpty()) {
 				// dans au moins un cas on met un cookie
