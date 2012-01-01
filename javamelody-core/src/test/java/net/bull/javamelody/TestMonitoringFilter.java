@@ -51,11 +51,9 @@ import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -77,7 +75,6 @@ import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -942,65 +939,6 @@ public class TestMonitoringFilter { // NOPMD
 				httpResponse2);
 		verify(httpRequest2);
 		verify(httpResponse2);
-	}
-
-	/** Test.
-	 * @throws IOException e
-	 * @throws ServletException e */
-	@Test
-	public void testJspWrapper() throws ServletException, IOException {
-		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
-
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-		final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
-		final RequestDispatcher requestDispatcherWithError = createNiceMock(RequestDispatcher.class);
-		final RequestDispatcher requestDispatcherWithException = createNiceMock(RequestDispatcher.class);
-		final String url1 = "test.jsp";
-		final String url2 = "test.jsp?param=test2";
-		final String url3 = "test.jsp?param=test3";
-		final String url4 = null;
-		expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
-		expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcherWithError);
-		requestDispatcherWithError.forward(request, response);
-		expectLastCall().andThrow(new UnknownError("erreur dans forward"));
-		expect(request.getRequestDispatcher(url3)).andReturn(requestDispatcherWithException);
-		requestDispatcherWithException.forward(request, response);
-		expectLastCall().andThrow(new IllegalStateException("erreur dans forward"));
-		expect(request.getRequestDispatcher(url4)).andReturn(null);
-		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
-
-		replay(request);
-		replay(response);
-		replay(requestDispatcher);
-		replay(requestDispatcherWithError);
-		replay(requestDispatcherWithException);
-		final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
-				.getRequestDispatcher(url1);
-		wrappedRequestDispatcher.toString();
-		wrappedRequestDispatcher.include(wrappedRequest, response);
-		final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
-				.getRequestDispatcher(url2);
-		try {
-			wrappedRequestDispatcher2.forward(request, response);
-		} catch (final UnknownError e) {
-			assertNotNull("ok", e);
-		}
-		final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
-				.getRequestDispatcher(url3);
-		try {
-			wrappedRequestDispatcher3.forward(request, response);
-		} catch (final IllegalStateException e) {
-			assertNotNull("ok", e);
-		}
-		final RequestDispatcher wrappedRequestDispatcher4 = wrappedRequest
-				.getRequestDispatcher(url4);
-		assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher4);
-		verify(request);
-		verify(response);
-		verify(requestDispatcher);
-		// verify ne marche pas ici car on fait une Error, verify(requestDispatcherWithError);
-		verify(requestDispatcherWithException);
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
