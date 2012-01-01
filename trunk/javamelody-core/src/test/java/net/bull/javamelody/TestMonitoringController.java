@@ -25,6 +25,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Arrays;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,6 +43,14 @@ public class TestMonitoringController {
 	@Before
 	public void setUp() {
 		Utils.initialize();
+		final ServletContext context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(2).anyTimes();
+		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
+		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
+		expect(context.getContextPath()).andReturn("/test").anyTimes();
+		replay(context);
+		Parameters.initialize(context);
 	}
 
 	/** Test. */
