@@ -907,40 +907,6 @@ public class TestMonitoringFilter { // NOPMD
 		}
 	}
 
-	/** Test. */
-	@Test
-	public void testWriteHtmlToLastShutdownFile() {
-		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
-		new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
-	}
-
-	/** Test. */
-	@Test
-	public void testAddPdfContentTypeAndDisposition() {
-		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter));
-		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
-		final HttpServletResponse httpResponse = createNiceMock(HttpServletResponse.class);
-		expect(httpRequest.getHeader("user-agent")).andReturn("Firefox").anyTimes();
-		replay(httpRequest);
-		replay(httpResponse);
-		new MonitoringController(collector, null).addPdfContentTypeAndDisposition(httpRequest,
-				httpResponse);
-		verify(httpRequest);
-		verify(httpResponse);
-
-		final HttpServletRequest httpRequest2 = createNiceMock(HttpServletRequest.class);
-		final HttpServletResponse httpResponse2 = createNiceMock(HttpServletResponse.class);
-		expect(httpRequest2.getHeader("user-agent")).andReturn("MSIE").anyTimes();
-		replay(httpRequest2);
-		replay(httpResponse2);
-		new MonitoringController(collector, null).addPdfContentTypeAndDisposition(httpRequest2,
-				httpResponse2);
-		verify(httpRequest2);
-		verify(httpResponse2);
-	}
-
 	private static void setProperty(Parameter parameter, String value) {
 		Utils.setProperty(parameter, value);
 	}
