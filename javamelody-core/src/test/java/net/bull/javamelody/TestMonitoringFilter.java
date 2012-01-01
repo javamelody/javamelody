@@ -87,7 +87,6 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.ehcache.CacheManager;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -108,8 +107,6 @@ public class TestMonitoringFilter { // NOPMD
 	private static final String CONTEXT_PATH = "/test";
 	private static final String GRAPH = "graph";
 	private static final String TRUE = "true";
-	private FilterConfig config;
-	private ServletContext context;
 	private MonitoringFilter monitoringFilter;
 
 	/**
@@ -135,8 +132,8 @@ public class TestMonitoringFilter { // NOPMD
 		} catch (final NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-		config = createNiceMock(FilterConfig.class);
-		context = createNiceMock(ServletContext.class);
+		final FilterConfig config = createNiceMock(FilterConfig.class);
+		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		expect(config.getFilterName()).andReturn(FILTER_NAME).anyTimes();
 		// anyTimes sur getInitParameter car TestJdbcDriver a pu fixer la propriété système à false
@@ -160,13 +157,6 @@ public class TestMonitoringFilter { // NOPMD
 		replay(config);
 		replay(context);
 		monitoringFilter.init(config);
-	}
-
-	/**
-	 * Finalisation.
-	 */
-	@After
-	public void tearDown() {
 		verify(config);
 		verify(context);
 	}
