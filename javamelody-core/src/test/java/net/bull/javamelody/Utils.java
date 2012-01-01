@@ -20,6 +20,9 @@ package net.bull.javamelody;
 
 import java.util.HashSet;
 
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdException;
 import org.jrobin.core.RrdFileBackendFactory;
@@ -63,6 +66,8 @@ final class Utils {
 				System.getProperties().remove(systemProperty.toString());
 			}
 		}
+		Parameters.initialize((FilterConfig) null);
+		Parameters.initialize((ServletContext) null);
 		// pour avoir les informations sur les connections, l'initialisation de la classe JdbcWrapper
 		// doit se faire avec les actions systèmes activées
 		System.setProperty(SYSTEM_ACTIONS_PROPERTY_NAME, "true");
