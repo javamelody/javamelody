@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -29,6 +33,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+
+import javax.servlet.ServletContext;
 
 import net.sf.ehcache.CacheManager;
 
@@ -126,6 +132,14 @@ public class TestAction {
 	}
 
 	private void mailTest(Collector collector) throws IOException {
+		final ServletContext context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(2).anyTimes();
+		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
+		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
+		expect(context.getContextPath()).andReturn("/test").anyTimes();
+		replay(context);
+		Parameters.initialize(context);
 		try {
 			Action.MAIL_TEST.execute(collector, null, null, null, null, null);
 		} catch (final IllegalStateException e) {
@@ -146,6 +160,7 @@ public class TestAction {
 			// ok, de toute façon il n'y a pas de Session dans JNDI
 			assertNotNull(e.toString(), e);
 		}
+		verify(context);
 	}
 
 	private void jobs(Collector collector, String counterName, String sessionId, String threadId,

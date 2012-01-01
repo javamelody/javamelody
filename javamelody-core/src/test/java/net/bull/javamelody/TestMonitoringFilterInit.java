@@ -38,7 +38,6 @@ import org.junit.Test;
  */
 public class TestMonitoringFilterInit {
 	private static final String FILTER_NAME = "monitoring";
-	private static final String CONTEXT_PATH = "/test";
 	private static final String TRUE = "true";
 	private FilterConfig config;
 	private ServletContext context;
@@ -80,7 +79,7 @@ public class TestMonitoringFilterInit {
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
-		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+		expect(context.getContextPath()).andReturn("/test").anyTimes();
 		monitoringFilter = new MonitoringFilter();
 	}
 
