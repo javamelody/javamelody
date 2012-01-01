@@ -166,7 +166,7 @@ public class TestCollectorServlet {
 					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
 							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(pattern)
 					.anyTimes();
-			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
+			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR).anyTimes();
 		}
 		replay(config);
 		replay(context);
@@ -217,7 +217,7 @@ public class TestCollectorServlet {
 					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
 							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("none")
 					.anyTimes();
-			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
+			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR).anyTimes();
 		}
 		replay(config);
 		replay(context);
