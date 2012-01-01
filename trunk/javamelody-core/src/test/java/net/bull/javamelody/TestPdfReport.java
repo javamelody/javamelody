@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import net.sf.ehcache.CacheManager;
@@ -97,6 +98,10 @@ public class TestPdfReport {
 		pdfReport.close();
 		assertNotEmptyAndClear(output);
 
+		// pour les PDFs suivants, inutile de regénérer toutes les images
+		// ce qui prendrait beaucoup de temps
+		final Map<String, byte[]> graphs = Collections.emptyMap();
+
 		counter.bindContext("test 1", "complete test 1", null, -1);
 		sqlCounter.bindContext("sql1", "sql 1", null, -1);
 		sqlCounter.addRequest("sql1", 100, 100, false, -1);
@@ -105,10 +110,12 @@ public class TestPdfReport {
 		counter.addRequest(buildLongRequestName(), 10000, 5000, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
 		pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
 		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
@@ -116,6 +123,7 @@ public class TestPdfReport {
 		errorCounter.addRequestForSystemError("error", -1, -1, null);
 		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
 		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
@@ -127,6 +135,7 @@ public class TestPdfReport {
 
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
@@ -146,6 +155,8 @@ public class TestPdfReport {
 					.singletonList(new JavaInformations(null, true));
 			final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList,
 					Period.TOUT, output);
+			final Map<String, byte[]> graphs = Collections.emptyMap();
+			pdfReport.preInitGraphs(graphs, graphs, graphs);
 			pdfReport.toPdf();
 			assertNotEmptyAndClear(output);
 		} finally {
@@ -193,6 +204,8 @@ public class TestPdfReport {
 					.singletonList(new JavaInformations(null, true));
 			final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList,
 					Period.TOUT, output);
+			final Map<String, byte[]> graphs = Collections.emptyMap();
+			pdfReport.preInitGraphs(graphs, graphs, graphs);
 			pdfReport.toPdf();
 			assertNotEmptyAndClear(output);
 
@@ -219,6 +232,7 @@ public class TestPdfReport {
 					.singletonList(new JavaInformations(null, true));
 			final PdfReport pdfReport2 = new PdfReport(collector, false, javaInformationsList2,
 					Period.TOUT, output);
+			pdfReport2.preInitGraphs(graphs, graphs, graphs);
 			pdfReport2.toPdf();
 			assertNotEmptyAndClear(output);
 		} finally {
@@ -235,6 +249,8 @@ public class TestPdfReport {
 		TestCounter.bindRootContexts("first request", counter, 3);
 		pdfReport = new PdfReport(collector, false, Collections.singletonList(javaInformations),
 				Period.TOUT, output);
+		final Map<String, byte[]> graphs = Collections.emptyMap();
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
@@ -243,6 +259,7 @@ public class TestPdfReport {
 		myCounter.bindContext("my context", "my context", null, -1);
 		pdfReport = new PdfReport(collector2, false, Collections.singletonList(javaInformations),
 				Period.TOUT, output);
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
