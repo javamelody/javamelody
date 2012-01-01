@@ -53,6 +53,10 @@ public class TestDatabaseInformations {
 		}
 	}
 
+	static void initJdbcDriverParameters() {
+		Parameters.initJdbcDriverParameters(TestJdbcWrapper.H2_DATABASE_URL, new Properties());
+	}
+
 	/** setup. */
 	@Before
 	public void setUp() {

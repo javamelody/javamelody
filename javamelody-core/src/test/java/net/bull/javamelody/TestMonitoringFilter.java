@@ -103,8 +103,8 @@ import ch.qos.logback.classic.Logger;
  */
 // CHECKSTYLE:OFF
 public class TestMonitoringFilter { // NOPMD
-	private static final String FILTER_NAME = "monitoring";
 	// CHECKSTYLE:ON
+	private static final String FILTER_NAME = "monitoring";
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
 	private static final String PERIOD_COOKIE_NAME = "javamelody.period";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
@@ -116,20 +116,19 @@ public class TestMonitoringFilter { // NOPMD
 	private MonitoringFilter monitoringFilter;
 
 	/**
-	 * Initialisation.
+	 * Initialisation (deux Before ne garantissent pas l'ordre dans Eclipse).
 	 */
-	@Before
-	public void setUpFirst() {
+	public TestMonitoringFilter() {
+		super();
 		Utils.initialize();
 	}
 
 	/**
 	 * Initialisation.
+	 * @throws ServletException e
 	 */
 	@Before
-	public void setUp() {
-		// rq: pas setUpFirst ici car setUp est rappelée dans les méthodes
-		tearDown();
+	public void setUp() throws ServletException {
 		try {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
@@ -161,6 +160,9 @@ public class TestMonitoringFilter { // NOPMD
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		monitoringFilter = new MonitoringFilter();
+		replay(config);
+		replay(context);
+		monitoringFilter.init(config);
 	}
 
 	/**
@@ -168,47 +170,6 @@ public class TestMonitoringFilter { // NOPMD
 	 */
 	@After
 	public void tearDown() {
-		destroy();
-	}
-
-	private void destroy() {
-		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
-		// plus si ils utilisent JRobin
-		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
-		if (monitoringFilter != null) {
-			monitoringFilter.destroy();
-		}
-	}
-
-	/** Test.
-	 * @throws ServletException e */
-	@Test
-	public void testInit() throws ServletException {
-		try {
-			init();
-			setUp();
-			expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode())).andReturn(
-					"http,sql").anyTimes();
-			expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode())).andReturn(
-					"[0-9]").anyTimes();
-			init();
-			setUp();
-			expect(config.getInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode())).andReturn(
-					"/static/*").anyTimes();
-			init();
-			setUp();
-			expect(config.getInitParameter(Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(
-					"127\\.0\\.0\\.1").anyTimes();
-			init();
-		} finally {
-			destroy();
-		}
-	}
-
-	private void init() throws ServletException {
-		replay(config);
-		replay(context);
-		monitoringFilter.init(config);
 		verify(config);
 		verify(context);
 	}
@@ -217,23 +178,20 @@ public class TestMonitoringFilter { // NOPMD
 	 * @throws ServletException e */
 	@Test
 	public void testLog() throws ServletException {
-		try {
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
-			expect(request.getRequestURI()).andReturn("/test/request");
-			expect(request.getContextPath()).andReturn(CONTEXT_PATH);
-			expect(request.getQueryString()).andReturn("param1=1");
-			expect(request.getMethod()).andReturn("GET");
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
+		expect(request.getRequestURI()).andReturn("/test/request");
+		expect(request.getContextPath()).andReturn(CONTEXT_PATH);
+		expect(request.getQueryString()).andReturn("param1=1");
+		expect(request.getMethod()).andReturn("GET");
 
-			replay(config);
-			replay(context);
-			monitoringFilter.init(config);
-			monitoringFilter.log(request, "test", 1000, false, 10000);
-			verify(config);
-			verify(context);
-		} finally {
-			destroy();
-		}
+		setProperty(Parameter.LOG, TRUE);
+
+		setUp();
+
+		replay(request);
+		monitoringFilter.log(request, "test", 1000, false, 10000);
+		verify(request);
 	}
 
 	/** Test.
@@ -241,31 +199,27 @@ public class TestMonitoringFilter { // NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoFilterNoHttp() throws ServletException, IOException {
-		try {
-			final FilterChain servletChain = createNiceMock(FilterChain.class);
-			final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
-			final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
-			replay(servletRequest);
-			replay(servletResponse);
-			replay(servletChain);
-			monitoringFilter.doFilter(servletRequest, servletResponse, servletChain);
-			verify(servletRequest);
-			verify(servletResponse);
-			verify(servletChain);
+		final FilterChain servletChain = createNiceMock(FilterChain.class);
+		final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
+		final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
+		replay(servletRequest);
+		replay(servletResponse);
+		replay(servletChain);
+		monitoringFilter.doFilter(servletRequest, servletResponse, servletChain);
+		verify(servletRequest);
+		verify(servletResponse);
+		verify(servletChain);
 
-			final FilterChain servletChain2 = createNiceMock(FilterChain.class);
-			final HttpServletRequest servletRequest2 = createNiceMock(HttpServletRequest.class);
-			final ServletResponse servletResponse2 = createNiceMock(ServletResponse.class);
-			replay(servletRequest2);
-			replay(servletResponse2);
-			replay(servletChain2);
-			monitoringFilter.doFilter(servletRequest2, servletResponse2, servletChain2);
-			verify(servletRequest2);
-			verify(servletResponse2);
-			verify(servletChain2);
-		} finally {
-			destroy();
-		}
+		final FilterChain servletChain2 = createNiceMock(FilterChain.class);
+		final HttpServletRequest servletRequest2 = createNiceMock(HttpServletRequest.class);
+		final ServletResponse servletResponse2 = createNiceMock(ServletResponse.class);
+		replay(servletRequest2);
+		replay(servletResponse2);
+		replay(servletChain2);
+		monitoringFilter.doFilter(servletRequest2, servletResponse2, servletChain2);
+		verify(servletRequest2);
+		verify(servletResponse2);
+		verify(servletChain2);
 	}
 
 	/** Test.
@@ -276,11 +230,14 @@ public class TestMonitoringFilter { // NOPMD
 		// displayed-counters
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		try {
+			setUp();
 			doFilter(createNiceMock(HttpServletRequest.class));
 			setProperty(Parameter.DISPLAYED_COUNTERS, "");
+			setUp();
 			doFilter(createNiceMock(HttpServletRequest.class));
 			setProperty(Parameter.DISPLAYED_COUNTERS, "unknown");
 			try {
+				setUp();
 				doFilter(createNiceMock(HttpServletRequest.class));
 			} catch (final IllegalArgumentException e) {
 				assertNotNull("ok", e);
@@ -292,16 +249,19 @@ public class TestMonitoringFilter { // NOPMD
 		// url exclue
 		setProperty(Parameter.URL_EXCLUDE_PATTERN, ".*");
 		try {
+			setUp();
 			doFilter(createNiceMock(HttpServletRequest.class));
 		} finally {
 			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
 		}
 
 		// standard
+		setUp();
 		doFilter(createNiceMock(HttpServletRequest.class));
 
 		// log
-		setProperty(Parameter.LOG, "true");
+		setUp();
+		setProperty(Parameter.LOG, TRUE);
 		try {
 			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.WARN);
 			doFilter(createNiceMock(HttpServletRequest.class));
@@ -323,7 +283,7 @@ public class TestMonitoringFilter { // NOPMD
 		doFilter(request);
 
 		// erreur système http, avec log
-		setProperty(Parameter.LOG, "true");
+		setProperty(Parameter.LOG, TRUE);
 		try {
 			final String test = "test";
 			doFilter(createNiceMock(HttpServletRequest.class), new UnknownError(test));
@@ -465,77 +425,62 @@ public class TestMonitoringFilter { // NOPMD
 
 	private void doFilter(HttpServletRequest request, Throwable exceptionInDoFilter)
 			throws ServletException, IOException {
-		setUp();
-
-		try {
-			final FilterChain chain = createNiceMock(FilterChain.class);
-			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
-			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			if (exceptionInDoFilter != null) {
-				// cela fera une erreur système http comptée dans les stats
-				expect(request.getMethod()).andThrow(exceptionInDoFilter);
-			} else {
-				expect(request.getMethod()).andReturn("GET").anyTimes();
-			}
-			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-
-			replay(config);
-			replay(context);
-			replay(request);
-			replay(response);
-			replay(chain);
-			monitoringFilter.init(config);
-			if (exceptionInDoFilter != null) {
-				try {
-					monitoringFilter.doFilter(request, response, chain);
-				} catch (final Throwable t) { // NOPMD
-					assertNotNull("ok", t);
-				}
-			} else {
-				monitoringFilter.doFilter(request, response, chain);
-			}
-			verify(config);
-			verify(context);
-			verify(request);
-			verify(response);
-			verify(chain);
-		} finally {
-			destroy();
+		final FilterChain chain = createNiceMock(FilterChain.class);
+		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+		if (exceptionInDoFilter != null) {
+			// cela fera une erreur système http comptée dans les stats
+			expect(request.getMethod()).andThrow(exceptionInDoFilter);
+		} else {
+			expect(request.getMethod()).andReturn("GET").anyTimes();
 		}
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+
+		replay(request);
+		replay(response);
+		replay(chain);
+		if (exceptionInDoFilter != null) {
+			try {
+				monitoringFilter.doFilter(request, response, chain);
+			} catch (final Throwable t) { // NOPMD
+				assertNotNull("ok", t);
+			}
+		} else {
+			monitoringFilter.doFilter(request, response, chain);
+		}
+		verify(request);
+		verify(response);
+		verify(chain);
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testFilterServletResponseWrapper() throws IOException {
-		try {
-			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-			expect(response.getOutputStream()).andReturn(
-					new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
-			expect(response.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
-			final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
-					response);
-			replay(response);
-			assertNotNull("getOutputStream", wrappedResponse.getOutputStream());
-			assertNotNull("getOutputStream bis", wrappedResponse.getOutputStream());
-			assertNotNull("getOutputStream", wrappedResponse.getCharacterEncoding());
-			wrappedResponse.close();
-			verify(response);
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		expect(response.getOutputStream()).andReturn(
+				new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
+		expect(response.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
+		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
+				response);
+		replay(response);
+		assertNotNull("getOutputStream", wrappedResponse.getOutputStream());
+		assertNotNull("getOutputStream bis", wrappedResponse.getOutputStream());
+		assertNotNull("getOutputStream", wrappedResponse.getCharacterEncoding());
+		wrappedResponse.close();
+		verify(response);
 
-			final HttpServletResponse response2 = createNiceMock(HttpServletResponse.class);
-			expect(response2.getOutputStream()).andReturn(
-					new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
-			expect(response2.getCharacterEncoding()).andReturn(null).anyTimes();
-			final CounterServletResponseWrapper wrappedResponse2 = new CounterServletResponseWrapper(
-					response);
-			replay(response2);
-			assertNotNull("getWriter", wrappedResponse2.getWriter());
-			assertNotNull("getWriter bis", wrappedResponse2.getWriter());
-			wrappedResponse2.close();
-			verify(response2);
-		} finally {
-			destroy();
-		}
+		final HttpServletResponse response2 = createNiceMock(HttpServletResponse.class);
+		expect(response2.getOutputStream()).andReturn(
+				new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
+		expect(response2.getCharacterEncoding()).andReturn(null).anyTimes();
+		final CounterServletResponseWrapper wrappedResponse2 = new CounterServletResponseWrapper(
+				response);
+		replay(response2);
+		assertNotNull("getWriter", wrappedResponse2.getWriter());
+		assertNotNull("getWriter bis", wrappedResponse2.getWriter());
+		wrappedResponse2.close();
+		verify(response2);
 	}
 
 	/** Test.
@@ -548,34 +493,42 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "htmlbody"));
 		setProperty(Parameter.DISABLED, Boolean.TRUE.toString());
 		try {
+			setUp();
 			monitoring(Collections.<String, String> emptyMap(), false);
 		} finally {
+			monitoringFilter.destroy();
 			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		try {
+			setUp();
 			monitoring(Collections.<String, String> emptyMap());
 		} finally {
 			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
+			setUp();
 			monitoring(Collections.<String, String> emptyMap(), false);
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
+			setUp();
 			monitoring(Collections.<String, String> emptyMap(), false);
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
 		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
 		try {
+			setUp();
 			monitoring(Collections.<String, String> emptyMap(), false);
 		} finally {
 			setProperty(Parameter.MONITORING_PATH, "/monitoring");
 		}
 		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
+		setUp();
 		monitoring(Collections.<String, String> emptyMap());
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
+		setUp();
 		monitoring(Collections.<String, String> emptyMap());
 	}
 
@@ -870,6 +823,7 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
+		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
@@ -894,6 +848,7 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
+		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
@@ -909,111 +864,84 @@ public class TestMonitoringFilter { // NOPMD
 
 	private void monitoring(Map<String, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
-		setUp();
-
-		try {
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
-			expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-			expect(request.getRemoteAddr()).andReturn("here").anyTimes();
-			final Random random = new Random();
-			if (random.nextBoolean()) {
-				expect(request.getHeaders("Accept-Encoding")).andReturn(
-						Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
-			} else {
-				expect(request.getHeaders("Accept-Encoding")).andReturn(
-						Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
-			}
-			for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-				if (REQUEST_PARAMETER.equals(entry.getKey())) {
-					expect(request.getHeader(entry.getKey())).andReturn(entry.getValue())
-							.anyTimes();
-				} else {
-					expect(request.getParameter(entry.getKey())).andReturn(entry.getValue())
-							.anyTimes();
-				}
-			}
-			if (parameters.isEmpty()) {
-				// dans au moins un cas on met un cookie
-				final Cookie[] cookies = { new Cookie("dummy", "dummy"),
-						new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };
-				expect(request.getCookies()).andReturn(cookies).anyTimes();
-			}
-			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
-					.anyTimes();
-			final StringWriter stringWriter = new StringWriter();
-			expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
-			final FilterChain chain = createNiceMock(FilterChain.class);
-
-			replay(config);
-			replay(context);
-			replay(request);
-			replay(response);
-			replay(chain);
-			monitoringFilter.init(config);
-			monitoringFilter.doFilter(request, response, chain);
-			verify(config);
-			verify(context);
-			verify(request);
-			verify(response);
-			verify(chain);
-
-			if (checkResultContent) {
-				assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
-			}
-		} finally {
-			destroy();
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
+		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+		expect(request.getRemoteAddr()).andReturn("here").anyTimes();
+		final Random random = new Random();
+		if (random.nextBoolean()) {
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+		} else {
+			expect(request.getHeaders("Accept-Encoding")).andReturn(
+					Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 		}
-	}
+		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+			if (REQUEST_PARAMETER.equals(entry.getKey())) {
+				expect(request.getHeader(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+			} else {
+				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+			}
+		}
+		if (parameters.isEmpty()) {
+			// dans au moins un cas on met un cookie
+			final Cookie[] cookies = { new Cookie("dummy", "dummy"),
+					new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };
+			expect(request.getCookies()).andReturn(cookies).anyTimes();
+		}
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))
+				.anyTimes();
+		final StringWriter stringWriter = new StringWriter();
+		expect(response.getWriter()).andReturn(new PrintWriter(stringWriter)).anyTimes();
+		final FilterChain chain = createNiceMock(FilterChain.class);
 
-	/** Test.
-	 * @throws ServletException e */
-	@Test
-	public void testWriteHtmlToLastShutdownFile() throws ServletException {
-		try {
-			replay(config);
-			replay(context);
-			monitoringFilter.init(config);
-			final Counter sqlCounter = new Counter("sql", "db.png");
-			final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
-			new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
-			verify(config);
-			verify(context);
-		} finally {
-			destroy();
+		replay(request);
+		replay(response);
+		replay(chain);
+		monitoringFilter.doFilter(request, response, chain);
+		verify(request);
+		verify(response);
+		verify(chain);
+
+		if (checkResultContent) {
+			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
 	}
 
 	/** Test. */
 	@Test
-	public void testAddPdfContentTypeAndDisposition() {
-		try {
-			final Counter sqlCounter = new Counter("sql", "db.png");
-			final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter));
-			final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
-			final HttpServletResponse httpResponse = createNiceMock(HttpServletResponse.class);
-			expect(httpRequest.getHeader("user-agent")).andReturn("Firefox").anyTimes();
-			replay(httpRequest);
-			replay(httpResponse);
-			new MonitoringController(collector, null).addPdfContentTypeAndDisposition(httpRequest,
-					httpResponse);
-			verify(httpRequest);
-			verify(httpResponse);
+	public void testWriteHtmlToLastShutdownFile() {
+		final Counter sqlCounter = new Counter("sql", "db.png");
+		final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
+		new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
+	}
 
-			final HttpServletRequest httpRequest2 = createNiceMock(HttpServletRequest.class);
-			final HttpServletResponse httpResponse2 = createNiceMock(HttpServletResponse.class);
-			expect(httpRequest2.getHeader("user-agent")).andReturn("MSIE").anyTimes();
-			replay(httpRequest2);
-			replay(httpResponse2);
-			new MonitoringController(collector, null).addPdfContentTypeAndDisposition(httpRequest2,
-					httpResponse2);
-			verify(httpRequest2);
-			verify(httpResponse2);
-		} finally {
-			destroy();
-		}
+	/** Test. */
+	@Test
+	public void testAddPdfContentTypeAndDisposition() {
+		final Counter sqlCounter = new Counter("sql", "db.png");
+		final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter));
+		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
+		final HttpServletResponse httpResponse = createNiceMock(HttpServletResponse.class);
+		expect(httpRequest.getHeader("user-agent")).andReturn("Firefox").anyTimes();
+		replay(httpRequest);
+		replay(httpResponse);
+		new MonitoringController(collector, null).addPdfContentTypeAndDisposition(httpRequest,
+				httpResponse);
+		verify(httpRequest);
+		verify(httpResponse);
+
+		final HttpServletRequest httpRequest2 = createNiceMock(HttpServletRequest.class);
+		final HttpServletResponse httpResponse2 = createNiceMock(HttpServletResponse.class);
+		expect(httpRequest2.getHeader("user-agent")).andReturn("MSIE").anyTimes();
+		replay(httpRequest2);
+		replay(httpResponse2);
+		new MonitoringController(collector, null).addPdfContentTypeAndDisposition(httpRequest2,
+				httpResponse2);
+		verify(httpRequest2);
+		verify(httpResponse2);
 	}
 
 	/** Test.
@@ -1023,60 +951,56 @@ public class TestMonitoringFilter { // NOPMD
 	public void testJspWrapper() throws ServletException, IOException {
 		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
 
-		try {
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-			final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
-			final RequestDispatcher requestDispatcherWithError = createNiceMock(RequestDispatcher.class);
-			final RequestDispatcher requestDispatcherWithException = createNiceMock(RequestDispatcher.class);
-			final String url1 = "test.jsp";
-			final String url2 = "test.jsp?param=test2";
-			final String url3 = "test.jsp?param=test3";
-			final String url4 = null;
-			expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
-			expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcherWithError);
-			requestDispatcherWithError.forward(request, response);
-			expectLastCall().andThrow(new UnknownError("erreur dans forward"));
-			expect(request.getRequestDispatcher(url3)).andReturn(requestDispatcherWithException);
-			requestDispatcherWithException.forward(request, response);
-			expectLastCall().andThrow(new IllegalStateException("erreur dans forward"));
-			expect(request.getRequestDispatcher(url4)).andReturn(null);
-			final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
+		final RequestDispatcher requestDispatcherWithError = createNiceMock(RequestDispatcher.class);
+		final RequestDispatcher requestDispatcherWithException = createNiceMock(RequestDispatcher.class);
+		final String url1 = "test.jsp";
+		final String url2 = "test.jsp?param=test2";
+		final String url3 = "test.jsp?param=test3";
+		final String url4 = null;
+		expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
+		expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcherWithError);
+		requestDispatcherWithError.forward(request, response);
+		expectLastCall().andThrow(new UnknownError("erreur dans forward"));
+		expect(request.getRequestDispatcher(url3)).andReturn(requestDispatcherWithException);
+		requestDispatcherWithException.forward(request, response);
+		expectLastCall().andThrow(new IllegalStateException("erreur dans forward"));
+		expect(request.getRequestDispatcher(url4)).andReturn(null);
+		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
 
-			replay(request);
-			replay(response);
-			replay(requestDispatcher);
-			replay(requestDispatcherWithError);
-			replay(requestDispatcherWithException);
-			final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
-					.getRequestDispatcher(url1);
-			wrappedRequestDispatcher.toString();
-			wrappedRequestDispatcher.include(wrappedRequest, response);
-			final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
-					.getRequestDispatcher(url2);
-			try {
-				wrappedRequestDispatcher2.forward(request, response);
-			} catch (final UnknownError e) {
-				assertNotNull("ok", e);
-			}
-			final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
-					.getRequestDispatcher(url3);
-			try {
-				wrappedRequestDispatcher3.forward(request, response);
-			} catch (final IllegalStateException e) {
-				assertNotNull("ok", e);
-			}
-			final RequestDispatcher wrappedRequestDispatcher4 = wrappedRequest
-					.getRequestDispatcher(url4);
-			assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher4);
-			verify(request);
-			verify(response);
-			verify(requestDispatcher);
-			// verify ne marche pas ici car on fait une Error, verify(requestDispatcherWithError);
-			verify(requestDispatcherWithException);
-		} finally {
-			destroy();
+		replay(request);
+		replay(response);
+		replay(requestDispatcher);
+		replay(requestDispatcherWithError);
+		replay(requestDispatcherWithException);
+		final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
+				.getRequestDispatcher(url1);
+		wrappedRequestDispatcher.toString();
+		wrappedRequestDispatcher.include(wrappedRequest, response);
+		final RequestDispatcher wrappedRequestDispatcher2 = wrappedRequest
+				.getRequestDispatcher(url2);
+		try {
+			wrappedRequestDispatcher2.forward(request, response);
+		} catch (final UnknownError e) {
+			assertNotNull("ok", e);
 		}
+		final RequestDispatcher wrappedRequestDispatcher3 = wrappedRequest
+				.getRequestDispatcher(url3);
+		try {
+			wrappedRequestDispatcher3.forward(request, response);
+		} catch (final IllegalStateException e) {
+			assertNotNull("ok", e);
+		}
+		final RequestDispatcher wrappedRequestDispatcher4 = wrappedRequest
+				.getRequestDispatcher(url4);
+		assertNull("getRequestDispatcher(null)", wrappedRequestDispatcher4);
+		verify(request);
+		verify(response);
+		verify(requestDispatcher);
+		// verify ne marche pas ici car on fait une Error, verify(requestDispatcherWithError);
+		verify(requestDispatcherWithException);
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
