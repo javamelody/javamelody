@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -139,6 +140,16 @@ public class TestPdfReport {
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
+
+		I18N.bindLocale(Locale.CHINA);
+		try {
+			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
+			pdfReport.preInitGraphs(graphs, graphs, graphs);
+			pdfReport.toPdf();
+			assertNotEmptyAndClear(output);
+		} finally {
+			I18N.unbindLocale();
+		}
 	}
 
 	private void cache(Collector collector, ByteArrayOutputStream output) throws IOException {
