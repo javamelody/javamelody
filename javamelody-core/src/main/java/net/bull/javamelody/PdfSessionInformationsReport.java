@@ -48,8 +48,8 @@ class PdfSessionInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
-	private final Font severeCellFont = PdfDocumentFactory.SEVERE_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations, Document document) {

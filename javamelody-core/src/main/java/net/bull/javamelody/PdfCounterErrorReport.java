@@ -40,9 +40,9 @@ class PdfCounterErrorReport {
 	private final Document document;
 	private final DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,
 			DateFormat.MEDIUM, I18N.getCurrentLocale());
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
-	private final Font severeFont = PdfDocumentFactory.SEVERE_CELL_FONT;
-	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font severeFont = PdfFonts.SEVERE_CELL.getFont();
+	private final Font normalFont = PdfFonts.NORMAL.getFont();
 	private PdfPTable currentTable;
 
 	PdfCounterErrorReport(Counter counter, Document document) {

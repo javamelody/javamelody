@@ -49,8 +49,8 @@ class PdfJavaInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final List<JavaInformations> javaInformationsList;
 	private final Document document;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
-	private final Font boldCellFont = PdfDocumentFactory.BOLD_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font boldCellFont = PdfFonts.BOLD_CELL.getFont();
 	private PdfPTable currentTable;
 
 	static final class Bar {
@@ -316,7 +316,7 @@ class PdfJavaInformationsReport {
 			addCell(getI18nString("DataSource_jdbc") + ':');
 			addCell(javaInformations.getDataSourceDetails());
 			addCell("");
-			final Anchor anchor = new Anchor("DataSource reference", PdfDocumentFactory.BLUE_FONT);
+			final Anchor anchor = new Anchor("DataSource reference", PdfFonts.BLUE.getFont());
 			anchor.setName("DataSource reference");
 			anchor.setReference("http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
 			currentTable.addCell(anchor);

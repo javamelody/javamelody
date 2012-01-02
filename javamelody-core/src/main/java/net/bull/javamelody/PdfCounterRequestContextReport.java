@@ -53,8 +53,9 @@ class PdfCounterRequestContextReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final long timeOfSnapshot = System.currentTimeMillis();
 	private final boolean stackTraceEnabled;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
-	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font normalFont = PdfFonts.NORMAL.getFont();
+	private final Font infoCellFont = PdfFonts.INFO_CELL.getFont();
 	private PdfPTable currentTable;
 	private final PdfDocumentFactory pdfDocumentFactory;
 
@@ -250,7 +251,7 @@ class PdfCounterRequestContextReport {
 			}
 			final Font slaFont;
 			if (counterReport == null) {
-				slaFont = PdfDocumentFactory.INFO_CELL_FONT;
+				slaFont = infoCellFont;
 			} else {
 				slaFont = counterReport.getSlaFont(duration);
 			}
