@@ -344,59 +344,41 @@ public class TestMonitoringFilter { // NOPMD
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final String textGwtRpc = "text/x-gwt-rpc";
 		expect(request.getContentType()).andReturn(textGwtRpc).anyTimes();
-		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-				"1|2|3|4|5|6|7|8|9|10".getBytes());
-		final ServletInputStream inputStream = new ServletInputStream() {
-			/** {@inheritDoc} */
-			@Override
-			public int read() throws IOException {
-				return byteArrayInputStream.read();
-			}
-		};
-		expect(request.getInputStream()).andReturn(inputStream).anyTimes();
+		expect(request.getInputStream()).andReturn(
+				createInputStreamForString("1|2|3|4|5|6|7|8|9|10")).anyTimes();
 		doFilter(request);
 
 		final HttpServletRequest request2a = createNiceMock(HttpServletRequest.class);
-		expect(request2a.getContentType()).andReturn(textGwtRpc).anyTimes();
-		final ByteArrayInputStream byteArrayInputStream2a = new ByteArrayInputStream(
-				"1|2|3|4|5|6".getBytes());
-		final ServletInputStream inputStream2a = new ServletInputStream() {
-			/** {@inheritDoc} */
-			@Override
-			public int read() throws IOException {
-				return byteArrayInputStream2a.read();
-			}
-		};
-		expect(request2a.getInputStream()).andReturn(inputStream2a).anyTimes();
-		replay(request2a);
-		final GWTRequestWrapper wrapper2a = new GWTRequestWrapper(request2a);
-		wrapper2a.getInputStream().read();
-		wrapper2a.getReader().read();
-		verify(request2a);
+		expect(request2a.getContentType()).andReturn("not/x-gwt-rpc").anyTimes();
+		expect(request2a.getInputStream()).andReturn(
+				createInputStreamForString("1|2|3|4|5|6|7|8|9|10")).anyTimes();
+		doFilter(request2a);
+
+		final HttpServletRequest request2b = createNiceMock(HttpServletRequest.class);
+		expect(request2b.getContentType()).andReturn(textGwtRpc).anyTimes();
+		expect(request2b.getInputStream()).andReturn(createInputStreamForString("1|2|3|4|5|6"))
+				.anyTimes();
+		replay(request2b);
+		final GWTRequestWrapper wrapper2b = new GWTRequestWrapper(request2b);
+		wrapper2b.getInputStream().read();
+		wrapper2b.getReader().read();
+		verify(request2b);
 
 		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
 		expect(request2.getContentType()).andReturn(textGwtRpc).anyTimes();
-		final ByteArrayInputStream byteArrayInputStream2 = new ByteArrayInputStream(
-				"1|2|3|4|5|6||8|9|10".getBytes());
-		final ServletInputStream inputStream2 = new ServletInputStream() {
-			/** {@inheritDoc} */
-			@Override
-			public int read() throws IOException {
-				return byteArrayInputStream2.read();
-			}
-		};
-		expect(request2.getInputStream()).andReturn(inputStream2).anyTimes();
+		expect(request2.getInputStream()).andReturn(
+				createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
 		replay(request2);
 		final GWTRequestWrapper wrapper2 = new GWTRequestWrapper(request2);
 		wrapper2.getInputStream().read();
 		wrapper2.getReader().read();
 		verify(request2);
 
-		byteArrayInputStream2.reset();
 		final HttpServletRequest request3 = createNiceMock(HttpServletRequest.class);
 		expect(request3.getContentType()).andReturn(textGwtRpc).anyTimes();
 		expect(request3.getCharacterEncoding()).andReturn("utf-8").anyTimes();
-		expect(request3.getInputStream()).andReturn(inputStream2).anyTimes();
+		expect(request3.getInputStream()).andReturn(
+				createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
 		replay(request3);
 		final GWTRequestWrapper wrapper3 = new GWTRequestWrapper(request3);
 		wrapper3.getInputStream().read();
@@ -404,6 +386,19 @@ public class TestMonitoringFilter { // NOPMD
 		wrapper3.getReader().read();
 		wrapper3.getReader().read();
 		verify(request3);
+	}
+
+	private ServletInputStream createInputStreamForString(final String string) {
+		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+				string.getBytes());
+		final ServletInputStream inputStream = new ServletInputStream() {
+			/** {@inheritDoc} */
+			@Override
+			public int read() throws IOException {
+				return byteArrayInputStream.read();
+			}
+		};
+		return inputStream;
 	}
 
 	private void doFilter(HttpServletRequest request) throws ServletException, IOException {
@@ -415,11 +410,10 @@ public class TestMonitoringFilter { // NOPMD
 		final FilterChain chain = createNiceMock(FilterChain.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
+		expect(request.getMethod()).andReturn("GET").anyTimes();
 		if (exceptionInDoFilter != null) {
 			// cela fera une erreur système http comptée dans les stats
-			expect(request.getMethod()).andThrow(exceptionInDoFilter);
-		} else {
-			expect(request.getMethod()).andReturn("GET").anyTimes();
+			expect(request.getRemoteUser()).andThrow(exceptionInDoFilter);
 		}
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 
