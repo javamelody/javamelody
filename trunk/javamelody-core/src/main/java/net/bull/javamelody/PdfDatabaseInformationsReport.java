@@ -36,7 +36,7 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfDatabaseInformationsReport {
 	private final DatabaseInformations databaseInformations;
 	private final Document document;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfDatabaseInformationsReport(DatabaseInformations databaseInformations, Document document) {

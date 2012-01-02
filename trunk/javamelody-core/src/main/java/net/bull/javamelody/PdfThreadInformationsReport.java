@@ -45,7 +45,7 @@ class PdfThreadInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean stackTraceEnabled;
 	private final boolean cpuTimeEnabled;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 	private final PdfDocumentFactory pdfDocumentFactory;
 
@@ -116,7 +116,7 @@ class PdfThreadInformationsReport {
 				separator = ", ";
 			}
 			sb.append('\n');
-			document.add(new Phrase(sb.toString(), PdfDocumentFactory.SEVERE_CELL_FONT));
+			document.add(new Phrase(sb.toString(), PdfFonts.SEVERE_CELL.getFont()));
 		}
 	}
 

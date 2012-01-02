@@ -42,10 +42,11 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfRuntimeDependenciesReport {
 	private final Counter counter;
 	private final Document document;
-	private final Font warningCellFont = PdfDocumentFactory.WARNING_CELL_FONT;
-	private final Font severeCellFont = PdfDocumentFactory.SEVERE_CELL_FONT;
-	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font warningCellFont = PdfFonts.WARNING_CELL.getFont();
+	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
+	private final Font normalFont = PdfFonts.NORMAL.getFont();
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font boldCellFont = PdfFonts.BOLD_CELL.getFont();
 	private PdfPTable currentTable;
 	private List<String> calledBeans;
 	private double standardDeviation;
@@ -272,7 +273,7 @@ class PdfRuntimeDependenciesReport {
 		defaultCell.setPaddingLeft(0);
 		defaultCell.setPaddingRight(0);
 		for (final String header : headers) {
-			table.addCell(new Phrase(header, PdfDocumentFactory.BOLD_CELL_FONT));
+			table.addCell(new Phrase(header, boldCellFont));
 			// pas la première entête de colonne
 			defaultCell.setRotation(90);
 		}

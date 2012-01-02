@@ -30,6 +30,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
@@ -51,8 +52,9 @@ class PdfReport {
 	private final boolean collectorServer;
 	private final OutputStream output;
 	private final PdfDocumentFactory pdfDocumentFactory;
-	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font normalFont = PdfFonts.NORMAL.getFont();
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font boldFont = PdfFonts.BOLD.getFont();
 	private final long start = System.currentTimeMillis();
 	private Map<String, byte[]> smallGraphs;
 	private Map<String, byte[]> smallOtherGraphs;
@@ -221,8 +223,8 @@ class PdfReport {
 
 	private void writeGraphs(Collection<JRobin> jrobins, Map<String, byte[]> mySmallGraphs)
 			throws IOException, DocumentException {
-		final Paragraph jrobinParagraph = new Paragraph("", PdfDocumentFactory.getFont(9f,
-				Font.NORMAL));
+		final Paragraph jrobinParagraph = new Paragraph("", FontFactory.getFont(
+				FontFactory.HELVETICA, 9f, Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
 		int i = 0;
@@ -356,7 +358,7 @@ class PdfReport {
 		String eol = "";
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			add(new Phrase(eol + I18N.getFormattedString("Threads_sur", javaInformations.getHost())
-					+ ": ", PdfDocumentFactory.BOLD_FONT));
+					+ ": ", boldFont));
 			add(new Phrase(I18N.getFormattedString("thread_count",
 					javaInformations.getThreadCount(), javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()), normalFont));
@@ -383,7 +385,7 @@ class PdfReport {
 					.getCacheInformationsList();
 			final String msg = I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
 					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount());
-			add(new Phrase(eol + msg, PdfDocumentFactory.BOLD_FONT));
+			add(new Phrase(eol + msg, boldFont));
 
 			if (includeDetails) {
 				new PdfCacheInformationsReport(cacheInformationsList, document).toPdf();
@@ -412,7 +414,7 @@ class PdfReport {
 					.getJobInformationsList();
 			final String msg = I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
 					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount());
-			add(new Phrase(eol + msg, PdfDocumentFactory.BOLD_FONT));
+			add(new Phrase(eol + msg, boldFont));
 
 			if (includeDetails) {
 				new PdfJobInformationsReport(jobInformationsList, rangeJobCounter, document)

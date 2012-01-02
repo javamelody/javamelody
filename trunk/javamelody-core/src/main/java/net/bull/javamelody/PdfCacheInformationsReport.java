@@ -41,7 +41,7 @@ class PdfCacheInformationsReport {
 	private final List<CacheInformations> cacheInformationsList;
 	private final Document document;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
@@ -76,7 +76,7 @@ class PdfCacheInformationsReport {
 		document.add(currentTable);
 		if (!hitsRatioEnabled) {
 			final Paragraph statisticsEnabledParagraph = new Paragraph(
-					I18N.getString("caches_statistics_enable"), PdfDocumentFactory.TABLE_CELL_FONT);
+					I18N.getString("caches_statistics_enable"), cellFont);
 			statisticsEnabledParagraph.setAlignment(Element.ALIGN_RIGHT);
 			document.add(statisticsEnabledParagraph);
 		}
@@ -84,12 +84,11 @@ class PdfCacheInformationsReport {
 	}
 
 	private void addConfigurationReference() throws DocumentException {
-		final Anchor ehcacheAnchor = new Anchor("Configuration reference",
-				PdfDocumentFactory.BLUE_FONT);
+		final Anchor ehcacheAnchor = new Anchor("Configuration reference", PdfFonts.BLUE.getFont());
 		ehcacheAnchor.setName("Ehcache configuration reference");
 		ehcacheAnchor
 				.setReference("http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary");
-		ehcacheAnchor.setFont(PdfDocumentFactory.BLUE_FONT);
+		ehcacheAnchor.setFont(PdfFonts.BLUE.getFont());
 		final Paragraph ehcacheParagraph = new Paragraph();
 		ehcacheParagraph.add(ehcacheAnchor);
 		ehcacheParagraph.setAlignment(Element.ALIGN_RIGHT);

@@ -51,7 +51,7 @@ class PdfJobInformationsReport {
 	private final Document document;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
@@ -85,11 +85,10 @@ class PdfJobInformationsReport {
 	}
 
 	private void addConfigurationReference() throws DocumentException {
-		final Anchor quartzAnchor = new Anchor("Configuration reference",
-				PdfDocumentFactory.BLUE_FONT);
+		final Anchor quartzAnchor = new Anchor("Configuration reference", PdfFonts.BLUE.getFont());
 		quartzAnchor.setName("Quartz configuration reference");
 		quartzAnchor.setReference("http://www.quartz-scheduler.org/docs/index.html");
-		quartzAnchor.setFont(PdfDocumentFactory.BLUE_FONT);
+		quartzAnchor.setFont(PdfFonts.BLUE.getFont());
 		final Paragraph quartzParagraph = new Paragraph();
 		quartzParagraph.add(quartzAnchor);
 		quartzParagraph.setAlignment(Element.ALIGN_RIGHT);

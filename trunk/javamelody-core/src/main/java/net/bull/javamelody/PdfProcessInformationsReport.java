@@ -43,7 +43,7 @@ class PdfProcessInformationsReport {
 	private final boolean windows;
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfProcessInformationsReport(List<ProcessInformations> processInformationsList,
@@ -68,10 +68,10 @@ class PdfProcessInformationsReport {
 	}
 
 	private void addPsCommandReference() throws DocumentException {
-		final Anchor psAnchor = new Anchor("ps command reference", PdfDocumentFactory.BLUE_FONT);
+		final Anchor psAnchor = new Anchor("ps command reference", PdfFonts.BLUE.getFont());
 		psAnchor.setName("ps command reference");
 		psAnchor.setReference("http://en.wikipedia.org/wiki/Ps_(Unix)");
-		psAnchor.setFont(PdfDocumentFactory.BLUE_FONT);
+		psAnchor.setFont(PdfFonts.BLUE.getFont());
 		final Paragraph psParagraph = new Paragraph();
 		psParagraph.add(psAnchor);
 		psParagraph.setAlignment(Element.ALIGN_RIGHT);

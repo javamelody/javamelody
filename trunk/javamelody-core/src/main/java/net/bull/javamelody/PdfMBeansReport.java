@@ -44,9 +44,9 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfMBeansReport {
 	private MBeans mbeans;
 	private final Document document;
-	private final Font boldFont = PdfDocumentFactory.BOLD_FONT;
-	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
+	private final Font boldFont = PdfFonts.BOLD.getFont();
+	private final Font normalFont = PdfFonts.NORMAL.getFont();
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private int margin;
 	private PdfPTable currentTable;
 

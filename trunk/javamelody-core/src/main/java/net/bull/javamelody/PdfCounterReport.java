@@ -49,11 +49,11 @@ class PdfCounterReport {
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
-	private final Font infoCellFont = PdfDocumentFactory.INFO_CELL_FONT;
-	private final Font warningCellFont = PdfDocumentFactory.WARNING_CELL_FONT;
-	private final Font severeCellFont = PdfDocumentFactory.SEVERE_CELL_FONT;
-	private final Font normalFont = PdfDocumentFactory.NORMAL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font infoCellFont = PdfFonts.INFO_CELL.getFont();
+	private final Font warningCellFont = PdfFonts.WARNING_CELL.getFont();
+	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
+	private final Font normalFont = PdfFonts.NORMAL.getFont();
 	private PdfPTable currentTable;
 
 	PdfCounterReport(Collector collector, Counter counter, Range range, boolean includeGraph,

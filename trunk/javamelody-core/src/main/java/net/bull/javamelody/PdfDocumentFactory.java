@@ -18,12 +18,10 @@
  */
 package net.bull.javamelody;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.lowagie.text.BadElementException;
@@ -33,7 +31,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
@@ -53,28 +50,12 @@ import com.lowagie.text.pdf.PdfWriter;
  * @author Emeric Vernat
  */
 class PdfDocumentFactory {
-	static final Font NORMAL_FONT = getFont(8f, Font.NORMAL);
-	static final Font BOLD_FONT = getFont(8f, Font.BOLD);
-	static final Font PARAGRAPH_TITLE_FONT = getFont(10f, Font.BOLD);
-	static final Font TABLE_CELL_FONT = getFont(5.5f, Font.NORMAL);
-	static final Font BOLD_CELL_FONT = getFont(5.5f, Font.BOLD);
-	static final Font BLUE_FONT = getFont(5.5f, Font.NORMAL);
-	static final Font INFO_CELL_FONT = FontFactory.getFont(FontFactory.HELVETICA, 5.5f,
-			Font.NORMAL, Color.GREEN);
-	static final Font WARNING_CELL_FONT = FontFactory.getFont(FontFactory.HELVETICA, 5.5f,
-			Font.BOLD, Color.ORANGE);
-	static final Font SEVERE_CELL_FONT = FontFactory.getFont(FontFactory.HELVETICA, 5.5f,
-			Font.BOLD, Color.RED);
-	private static final Font TABLE_HEADER_FONT = getFont(5.5f, Font.BOLD);
-	static {
-		BLUE_FONT.setColor(Color.BLUE);
-	}
-
 	private final String application;
 	private final Range range;
 	private final OutputStream output;
 	private final Map<String, Image> paragraphImagesByResourceName = new HashMap<String, Image>();
 	private final Map<String, Image> smallImagesByResourceName = new HashMap<String, Image>();
+	private final Font paragraphTitleFont = PdfFonts.PARAGRAPH_TITLE.getFont();
 
 	private static class PdfAdvancedPageNumberEvents extends PdfPageEventHelper {
 		// This is the contentbyte object of the writer
@@ -208,13 +189,13 @@ class PdfDocumentFactory {
 
 	Element createParagraphElement(String paragraphTitle, String iconName)
 			throws DocumentException, IOException {
-		final Paragraph paragraph = new Paragraph("", PARAGRAPH_TITLE_FONT);
+		final Paragraph paragraph = new Paragraph("", paragraphTitleFont);
 		paragraph.setSpacingBefore(5);
 		paragraph.setSpacingAfter(5);
 		if (iconName != null) {
 			paragraph.add(new Chunk(getParagraphImage(iconName), 0, -5));
 		}
-		final Phrase element = new Phrase(' ' + paragraphTitle, PARAGRAPH_TITLE_FONT);
+		final Phrase element = new Phrase(' ' + paragraphTitle, paragraphTitleFont);
 		element.setLeading(12);
 		paragraph.add(element);
 		// chapter pour avoir la liste des signets
@@ -263,27 +244,12 @@ class PdfDocumentFactory {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		defaultCell.setPaddingLeft(0);
 		defaultCell.setPaddingRight(0);
+		final Font tableHeaderFont = PdfFonts.TABLE_HEADER.getFont();
 		for (final String header : headers) {
-			table.addCell(new Phrase(header, TABLE_HEADER_FONT));
+			table.addCell(new Phrase(header, tableHeaderFont));
 		}
 		defaultCell.setPaddingLeft(2);
 		defaultCell.setPaddingRight(2);
 		return table;
-	}
-
-	static Font getFont(float size, int style) {
-		if (Locale.CHINESE.getLanguage().equals(I18N.getResourceBundle().getLocale().getLanguage())) {
-			try {
-				final BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
-						BaseFont.NOT_EMBEDDED);
-				return new Font(bfChinese, size, style);
-			} catch (final DocumentException e) {
-				throw new IllegalStateException(e);
-			} catch (final IOException e) {
-				throw new IllegalStateException(e);
-			}
-		}
-
-		return FontFactory.getFont(FontFactory.HELVETICA, size, style);
 	}
 }

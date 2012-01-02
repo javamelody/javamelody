@@ -41,8 +41,8 @@ class PdfHeapHistogramReport {
 	private final HeapHistogram heapHistogram;
 	private final Document document;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final Font cellFont = PdfDocumentFactory.TABLE_CELL_FONT;
-	private final Font boldFont = PdfDocumentFactory.BOLD_CELL_FONT;
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final Font boldFont = PdfFonts.BOLD_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfHeapHistogramReport(HeapHistogram heapHistogram, Document document) {
