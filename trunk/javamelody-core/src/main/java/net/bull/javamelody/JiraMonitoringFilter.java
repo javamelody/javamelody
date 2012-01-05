@@ -135,7 +135,14 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private static boolean hasJiraSystemAdminPermission(Object user) {
 		try {
 			final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
-			final Class<?> userClass = Class.forName("com.opensymphony.user.User");
+			Class<?> userClass;
+			try {
+				// before JIRA 5:
+				userClass = Class.forName("com.opensymphony.user.User");
+			} catch (final ClassNotFoundException e) {
+				// since JIRA 5:
+				userClass = Class.forName("com.atlassian.crowd.embedded.api.User");
+			}
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
