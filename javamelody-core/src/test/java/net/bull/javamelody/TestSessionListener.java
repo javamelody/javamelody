@@ -182,11 +182,16 @@ public class TestSessionListener {
 	/** Test. */
 	@Test
 	public void testSessionCreated() {
-		sessionListener.sessionCreated(createSessionEvent());
+		final HttpSessionEvent sessionEvent = createSessionEvent();
+		sessionListener.sessionCreated(sessionEvent);
 		if (SessionListener.getSessionCount() != 1) {
 			fail("sessionCreated");
 		}
 		if (SessionListener.getAllSessionsInformations().isEmpty()) {
+			fail("sessionCreated");
+		}
+		sessionListener.sessionCreated(sessionEvent);
+		if (SessionListener.getSessionCount() != 1) {
 			fail("sessionCreated");
 		}
 	}
