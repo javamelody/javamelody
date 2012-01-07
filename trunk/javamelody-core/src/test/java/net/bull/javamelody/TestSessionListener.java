@@ -243,6 +243,21 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
+	public void registerSessionIfNeeded() {
+		final HttpSession session = createSession();
+		sessionListener.registerSessionIfNeeded(session);
+		sessionListener.registerSessionIfNeeded(session);
+		sessionListener.registerSessionIfNeeded(null);
+
+		sessionListener.unregisterInvalidatedSessions();
+
+		sessionListener.unregisterSessionIfNeeded(session);
+		sessionListener.unregisterSessionIfNeeded(session);
+		sessionListener.unregisterSessionIfNeeded(null);
+	}
+
+	/** Test. */
+	@Test
 	public void testToString() {
 		final String string = sessionListener.toString();
 		assertNotNull("toString not null", string);
