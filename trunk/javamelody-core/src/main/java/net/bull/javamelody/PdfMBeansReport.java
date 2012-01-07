@@ -72,9 +72,9 @@ class PdfMBeansReport {
 		writeTreeForCurrentMBeans();
 
 		// pour JBoss 5.0.x, les MBeans de JBoss sont dans un autre MBeanServer
-		final MBeanServer plateformMBeanServer = MBeans.getPlatformMBeanServer();
+		final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
 		for (final MBeanServer mbeanServer : MBeans.getMBeanServers()) {
-			if (mbeanServer != plateformMBeanServer) {
+			if (mbeanServer != platformMBeanServer) {
 				setMBeans(new MBeans(mbeanServer));
 				document.newPage();
 				document.add(new Chunk(mbeanServer.getDefaultDomain(), boldFont));
