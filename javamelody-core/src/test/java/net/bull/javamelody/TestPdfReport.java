@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -99,10 +100,22 @@ public class TestPdfReport {
 		pdfReport.close();
 		assertNotEmptyAndClear(output);
 
-		// pour les PDFs suivants, inutile de regénérer toutes les images
-		// ce qui prendrait beaucoup de temps
-		final Map<String, byte[]> graphs = Collections.emptyMap();
+		final JRobin jrobin = collector.getCounterJRobins().iterator().next();
+		final byte[] graph = jrobin.graph(Period.JOUR.getRange(), 50, 50);
+		final Map<String, byte[]> graphs = new HashMap<String, byte[]>();
+		graphs.put("1", graph);
+		graphs.put("2", graph);
+		graphs.put("3", graph);
+		graphs.put("4", graph);
 
+		pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
+		pdfReport.preInitGraphs(graphs, graphs, graphs);
+		pdfReport.toPdf();
+		assertNotEmptyAndClear(output);
+
+		// pour les PDFs suivants, inutile de regénérer toutes les images,
+		// ce qui prendrait beaucoup de temps, donc on utilise preInitGraphs
+		final Map<String, byte[]> emptyGraphs = Collections.emptyMap();
 		counter.bindContext("test 1", "complete test 1", null, -1);
 		sqlCounter.bindContext("sql1", "sql 1", null, -1);
 		sqlCounter.addRequest("sql1", 100, 100, false, -1);
@@ -111,12 +124,12 @@ public class TestPdfReport {
 		counter.addRequest(buildLongRequestName(), 10000, 5000, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
 		pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
+		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
 		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
+		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
@@ -124,7 +137,7 @@ public class TestPdfReport {
 		errorCounter.addRequestForSystemError("error", -1, -1, null);
 		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
 		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
+		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 
@@ -136,7 +149,7 @@ public class TestPdfReport {
 
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
+		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
 		pdfReport.toPdf();
 		assertNotEmptyAndClear(output);
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
@@ -144,7 +157,7 @@ public class TestPdfReport {
 		I18N.bindLocale(Locale.CHINA);
 		try {
 			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-			pdfReport.preInitGraphs(graphs, graphs, graphs);
+			pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
 			pdfReport.toPdf();
 			assertNotEmptyAndClear(output);
 		} finally {
