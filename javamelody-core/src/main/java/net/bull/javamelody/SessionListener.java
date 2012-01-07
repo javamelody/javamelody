@@ -223,6 +223,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 			for (final Map.Entry<String, HttpSession> entry : SESSION_MAP_BY_ID.entrySet()) {
 				final String id = entry.getKey();
 				final HttpSession other = entry.getValue();
+				// si la map des sessions selon leurs id, il existe une session dont la clé
+				// n'est plus égale à son id courant, alors on l'enlève de la map
+				// (et elle sera remise dans la map avec son nouvel id ci-dessous)
 				if (!id.equals(other.getId())) {
 					SESSION_MAP_BY_ID.remove(id);
 				}
