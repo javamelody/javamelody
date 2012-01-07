@@ -250,7 +250,8 @@ class LabradorRetriever {
 				&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
 			result = null;
 		} else if (request.contains(HttpParameters.SESSIONS_PART)
-				|| request.contains(HttpParameters.PROCESSES_PART)) {
+				|| request.contains(HttpParameters.PROCESSES_PART)
+				|| request.contains(HttpParameters.CONNECTIONS_PART)) {
 			result = Collections.emptyList();
 		} else if (request.contains(HttpParameters.DATABASE_PART)) {
 			try {

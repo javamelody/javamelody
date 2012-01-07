@@ -212,16 +212,11 @@ public class TestCollectorServletWithParts {
 		parameters.put(COUNTER_PARAMETER, "services");
 		doPart(parameters);
 		parameters.remove(COUNTER_PARAMETER);
-		final TestDatabaseInformations testDatabaseInformations = new TestDatabaseInformations();
-		testDatabaseInformations.setUp();
-		try {
-			parameters.put(PART_PARAMETER, DATABASE_PART);
-			doPart(parameters);
-			parameters.put(REQUEST_PARAMETER, "0");
-			doPart(parameters);
-		} finally {
-			testDatabaseInformations.tearDown();
-		}
+		TestDatabaseInformations.initJdbcDriverParameters();
+		parameters.put(PART_PARAMETER, DATABASE_PART);
+		doPart(parameters);
+		parameters.put(REQUEST_PARAMETER, "0");
+		doPart(parameters);
 		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
