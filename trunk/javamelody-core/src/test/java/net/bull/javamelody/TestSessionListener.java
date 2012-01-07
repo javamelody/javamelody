@@ -231,6 +231,18 @@ public class TestSessionListener {
 
 	/** Test. */
 	@Test
+	public void testWithInstanceDisabled() {
+		final SessionListener sessionListener2 = new SessionListener();
+		sessionListener2.contextInitialized(null);
+		sessionListener2.sessionCreated(null);
+		sessionListener2.sessionWillPassivate(null);
+		sessionListener2.sessionDidActivate(null);
+		sessionListener2.sessionDestroyed(null);
+		sessionListener2.contextDestroyed(null);
+	}
+
+	/** Test. */
+	@Test
 	public void testToString() {
 		final String string = sessionListener.toString();
 		assertNotNull("toString not null", string);
