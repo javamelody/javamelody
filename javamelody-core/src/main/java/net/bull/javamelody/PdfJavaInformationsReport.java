@@ -99,12 +99,9 @@ class PdfJavaInformationsReport {
 			}
 
 			final int emptyBlocks = FULL_BLOCKS - fullBlockCount - (partialBlockIndex > 0 ? 1 : 0);
-
-			if (emptyBlocks > 0) {
-				final BufferedImage emptyBody = getBarImage(String.valueOf(0));
-				for (int i = 0; i < emptyBlocks; i++) {
-					addImage(emptyBody);
-				}
+			final BufferedImage emptyBody = getBarImage(String.valueOf(0));
+			for (int i = 0; i < emptyBlocks; i++) {
+				addImage(emptyBody);
 			}
 
 			addImage(getBarImage(fullBlockCount == FULL_BLOCKS ? "b" : "b0"));

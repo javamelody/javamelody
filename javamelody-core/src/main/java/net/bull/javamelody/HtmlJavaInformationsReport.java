@@ -401,12 +401,9 @@ class HtmlJavaInformationsReport {
 		}
 
 		final int emptyBlocks = FULL_BLOCKS - fullBlockCount - (partialBlockIndex > 0 ? 1 : 0);
-
-		if (emptyBlocks > 0) {
-			final String emptyBody = MessageFormat.format(body, 0);
-			for (int i = 0; i < emptyBlocks; i++) {
-				sb.append(emptyBody);
-			}
+		final String emptyBody = MessageFormat.format(body, 0);
+		for (int i = 0; i < emptyBlocks; i++) {
+			sb.append(emptyBody);
 		}
 
 		sb.append(MessageFormat.format(body, fullBlockCount == FULL_BLOCKS ? "b" : "b0"));
