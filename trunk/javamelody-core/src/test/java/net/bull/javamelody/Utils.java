@@ -68,6 +68,7 @@ final class Utils {
 		}
 		Parameters.initialize((FilterConfig) null);
 		Parameters.initialize((ServletContext) null);
+		Parameters.initJdbcDriverParameters(null, null);
 		// pour avoir les informations sur les connections, l'initialisation de la classe JdbcWrapper
 		// doit se faire avec les actions systèmes activées
 		System.setProperty(SYSTEM_ACTIONS_PROPERTY_NAME, "true");
