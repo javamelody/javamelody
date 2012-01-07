@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -31,25 +32,36 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestRemoteCollector {
-	/** Check. */
+	private RemoteCollector remoteCollector;
+
+	/** Check.
+	 * @throws MalformedURLException e */
 	@Before
-	public void setUp() {
+	public void setUp() throws MalformedURLException {
 		Utils.initialize();
+		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		final List<URL> urls = Collections.singletonList(new URL("http://localhost:8090/test"));
+		this.remoteCollector = new RemoteCollector("test", urls);
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testExecute() throws IOException {
-		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
-		final List<URL> urls = Collections.singletonList(new URL("http://localhost:8090/test"));
-		final RemoteCollector remoteCollector = new RemoteCollector("test", urls);
-
 		remoteCollector.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null, null, null);
 		remoteCollector.executeActionAndCollectData(Action.INVALIDATE_SESSION, null, "nothing",
 				null, null);
 		remoteCollector
 				.executeActionAndCollectData(Action.KILL_THREAD, null, null, "nothing", null);
 		remoteCollector.executeActionAndCollectData(Action.PAUSE_JOB, null, null, null, "nothing");
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testGetJRobin() throws IOException {
+		remoteCollector.collectJRobin("cpu", 50, 50);
+		remoteCollector.collectJRobins(50, 50);
+		remoteCollector.collectOtherJRobins(50, 50);
 	}
 }
