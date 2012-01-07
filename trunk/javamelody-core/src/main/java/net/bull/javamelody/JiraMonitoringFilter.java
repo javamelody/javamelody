@@ -39,6 +39,7 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private static final int SYSTEM_ADMIN = 44;
 	// valeur de DefaultAuthenticator.LOGGED_IN_KEY
 	private static final String LOGGED_IN_KEY = "seraph_defaultauthenticator_user";
+	private static Class<?> jiraUserClass;
 	// initialisation ici et non dans la méthode init, car on ne sait pas très bien
 	// quand la méthode init serait appelée dans les systèmes de plugins
 	private final boolean jira = isJira();
@@ -135,14 +136,7 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private static boolean hasJiraSystemAdminPermission(Object user) {
 		try {
 			final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
-			Class<?> userClass;
-			try {
-				// before JIRA 5:
-				userClass = Class.forName("com.opensymphony.user.User");
-			} catch (final ClassNotFoundException e) {
-				// since JIRA 5:
-				userClass = Class.forName("com.atlassian.crowd.embedded.api.User");
-			}
+			final Class<?> userClass = getJiraUserClass();
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
@@ -157,6 +151,19 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		//		return user != null
 		//				&& com.atlassian.jira.ManagerFactory.getPermissionManager().hasPermission(
 		//						SYSTEM_ADMIN, (com.opensymphony.user.User) user);
+	}
+
+	private static synchronized Class<?> getJiraUserClass() throws ClassNotFoundException { // NOPMD
+		if (jiraUserClass == null) {
+			try {
+				// before JIRA 5:
+				jiraUserClass = Class.forName("com.opensymphony.user.User");
+			} catch (final ClassNotFoundException e) {
+				// since JIRA 5:
+				jiraUserClass = Class.forName("com.atlassian.crowd.embedded.api.User");
+			}
+		}
+		return jiraUserClass;
 	}
 
 	private static boolean hasConfluenceAdminPermission(Object user) {
