@@ -12,6 +12,7 @@
   * fix issue 170: Plugin for JIRA / Confluence / Bamboo: Compatibility with JIRA 5.0 RC
   * fix: if the http request contains for example ";jsessionid=1234567890ABCDEF", when the browser does not accept cookies, then that part is automatically ignored for the statistics (revision 2363)
   * fix fonts in the PDF reports for Chinese people, when the first PDF report was made for non Chinese people (revision 2441)
+  * add a graphic over time of the "Transactions per minute" in "Other charts" of the reports. This graphic is similar to "Http hits per minute" and to "Sql hits per minute", but for database(s) transactions (more precisely, for the number of opened connections per minute). The values in this graphic are typically about one tenth of the values of "Sql hits per minute", depending on the mean number of sql requests per transaction in the monitored application.
 
 === 1.33.0 ===
 
