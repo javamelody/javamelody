@@ -67,6 +67,7 @@ class JavaInformations implements Serializable { // NOPMD
 	private final int usedConnectionCount;
 	private final int maxConnectionCount;
 	private final int activeConnectionCount;
+	private final long transactionCount;
 	private final long processCpuTimeMillis;
 	private final double systemLoadAverage;
 	private final long unixOpenFileDescriptorCount;
@@ -141,6 +142,7 @@ class JavaInformations implements Serializable { // NOPMD
 		usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		activeConnectionCount = JdbcWrapper.getActiveConnectionCount();
 		maxConnectionCount = JdbcWrapper.getMaxConnectionCount();
+		transactionCount = JdbcWrapper.getTransactionCount();
 		systemLoadAverage = buildSystemLoadAverage();
 		processCpuTimeMillis = buildProcessCpuTimeMillis();
 		unixOpenFileDescriptorCount = buildOpenFileDescriptorCount();
@@ -488,6 +490,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 	int getMaxConnectionCount() {
 		return maxConnectionCount;
+	}
+
+	long getTransactionCount() {
+		return transactionCount;
 	}
 
 	double getUsedConnectionPercentage() {

@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -59,6 +60,7 @@ public final class JdbcWrapper {
 	// au lieu d'utiliser int avec des synchronized partout, on utilise AtomicInteger
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();
 	static final AtomicInteger USED_CONNECTION_COUNT = new AtomicInteger();
+	static final AtomicLong TRANSACTION_COUNT = new AtomicLong();
 	static final AtomicInteger ACTIVE_THREAD_COUNT = new AtomicInteger();
 	static final AtomicInteger RUNNING_BUILD_COUNT = new AtomicInteger();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
@@ -159,6 +161,7 @@ public final class JdbcWrapper {
 			assert connection != null;
 			this.connection = connection;
 			USED_CONNECTION_COUNT.incrementAndGet();
+			TRANSACTION_COUNT.incrementAndGet();
 		}
 
 		/** {@inheritDoc} */
@@ -265,6 +268,10 @@ public final class JdbcWrapper {
 
 	static int getActiveConnectionCount() {
 		return ACTIVE_CONNECTION_COUNT.get();
+	}
+
+	static long getTransactionCount() {
+		return TRANSACTION_COUNT.get();
 	}
 
 	static int getActiveThreadCount() {
