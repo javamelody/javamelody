@@ -193,14 +193,14 @@ public class TestJdbcWrapper {
 	}
 
 	private static void cleanUp() throws NoSuchFieldException, IllegalAccessException {
-		final Field tomcatField = JdbcWrapper.class
+		final Field tomcatField = JdbcWrapperHelper.class
 				.getDeclaredField("TOMCAT_BASIC_DATASOURCES_PROPERTIES");
 		tomcatField.setAccessible(true);
 		Object dsProperties = tomcatField.get(null);
 		final Field propertiesField = dsProperties.getClass().getDeclaredField("properties");
 		propertiesField.setAccessible(true);
 		((Map<?, ?>) propertiesField.get(dsProperties)).clear();
-		final Field dbcpField = JdbcWrapper.class
+		final Field dbcpField = JdbcWrapperHelper.class
 				.getDeclaredField("DBCP_BASIC_DATASOURCES_PROPERTIES");
 		dbcpField.setAccessible(true);
 		dsProperties = dbcpField.get(null);
