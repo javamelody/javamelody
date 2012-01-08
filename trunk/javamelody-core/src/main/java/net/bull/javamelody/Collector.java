@@ -265,6 +265,7 @@ class Collector { // NOPMD
 			// si pas d'informations, on ne met pas 0 : on ne met rien
 			if (!javaInformationsList.isEmpty()) {
 				collectJavaInformations(javaInformationsList);
+				collectOtherJavaInformations(javaInformationsList);
 			}
 			long memorySize = 0;
 			for (final Counter counter : counters) {
@@ -287,6 +288,35 @@ class Collector { // NOPMD
 			throws IOException {
 		long usedMemory = 0;
 		long processesCpuTimeMillis = 0;
+		int availableProcessors = 0;
+		int sessionCount = 0;
+		int activeThreadCount = 0;
+		int activeConnectionCount = 0;
+		int usedConnectionCount = 0;
+
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
+			usedMemory = add(memoryInformations.getUsedMemory(), usedMemory);
+			sessionCount = add(javaInformations.getSessionCount(), sessionCount);
+			activeThreadCount = add(javaInformations.getActiveThreadCount(), activeThreadCount);
+			activeConnectionCount = add(javaInformations.getActiveConnectionCount(),
+					activeConnectionCount);
+			usedConnectionCount = add(javaInformations.getUsedConnectionCount(),
+					usedConnectionCount);
+
+			// il y a au moins 1 coeur
+			availableProcessors = add(Math.max(javaInformations.getAvailableProcessors(), 1),
+					availableProcessors);
+			// processesCpuTime n'est supporté que par le jdk sun
+			processesCpuTimeMillis = add(javaInformations.getProcessCpuTimeMillis(),
+					processesCpuTimeMillis);
+		}
+		collectJRobinValues(usedMemory, processesCpuTimeMillis, availableProcessors, sessionCount,
+				activeThreadCount, activeConnectionCount, usedConnectionCount);
+	}
+
+	private void collectOtherJavaInformations(List<JavaInformations> javaInformationsList)
+			throws IOException {
 		long usedNonHeapMemory = 0;
 		int loadedClassesCount = 0;
 		long garbageCollectionTimeMillis = 0;
@@ -296,9 +326,6 @@ class Collector { // NOPMD
 		int sessionCount = 0;
 		long sessionAgeSum = 0;
 		int threadCount = 0;
-		int activeThreadCount = 0;
-		int activeConnectionCount = 0;
-		int usedConnectionCount = 0;
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
 		int tomcatBusyThreads = 0;
@@ -308,21 +335,12 @@ class Collector { // NOPMD
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
-			usedMemory = add(memoryInformations.getUsedMemory(), usedMemory);
 			sessionCount = add(javaInformations.getSessionCount(), sessionCount);
 			sessionAgeSum = add(javaInformations.getSessionAgeSum(), sessionAgeSum);
 			threadCount = add(javaInformations.getThreadCount(), threadCount);
-			activeThreadCount = add(javaInformations.getActiveThreadCount(), activeThreadCount);
-			activeConnectionCount = add(javaInformations.getActiveConnectionCount(),
-					activeConnectionCount);
-			usedConnectionCount = add(javaInformations.getUsedConnectionCount(),
-					usedConnectionCount);
 			// il y a au moins 1 coeur
 			availableProcessors = add(Math.max(javaInformations.getAvailableProcessors(), 1),
 					availableProcessors);
-			// processesCpuTime n'est supporté que par le jdk sun
-			processesCpuTimeMillis = add(javaInformations.getProcessCpuTimeMillis(),
-					processesCpuTimeMillis);
 			usedNonHeapMemory = add(memoryInformations.getUsedNonHeapMemory(), usedNonHeapMemory);
 			loadedClassesCount = add(memoryInformations.getLoadedClassesCount(), loadedClassesCount);
 			usedPhysicalMemorySize = add(memoryInformations.getUsedPhysicalMemorySize(),
@@ -344,58 +362,29 @@ class Collector { // NOPMD
 				tomcatUsed = true;
 			}
 		}
-		collectJRobinValues(usedMemory, processesCpuTimeMillis, availableProcessors, sessionCount,
-				activeThreadCount, activeConnectionCount, usedConnectionCount);
 
 		if (tomcatUsed) {
 			// collecte des informations de Tomcat
 			collectTomcatValues(tomcatBusyThreads, bytesReceived, bytesSent);
 		}
 		// collecte du pourcentage de temps en ramasse-miette
-		collectGcTime(garbageCollectionTimeMillis, availableProcessors);
+		if (garbageCollectionTimeMillis >= 0) {
+			// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
+			final int gcPercentage = Math
+					.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
+							/ periodMillis / availableProcessors), 100);
+			getOtherJRobin("gc").addValue(gcPercentage);
+			this.gcTimeMillis = garbageCollectionTimeMillis;
+		}
 
 		collectorOtherJRobinsValues(usedNonHeapMemory, loadedClassesCount, usedPhysicalMemorySize,
 				usedSwapSpaceSize, threadCount, systemLoadAverage, unixOpenFileDescriptorCount);
+
 		collectSessionsMeanAge(sessionAgeSum, sessionCount);
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
 		// différenciation des indisponibilités prévues de celles non prévues
-	}
-
-	private static double add(double t1, double t2) {
-		// avec des serveurs monitorés sur des OS/JVM multiples (windows, linux par exemple),
-		// des valeurs peuvent être négatives ie non disponibles pour une JVM/OS
-		// et positives ie disponibles pour une autre JVM/OS
-		// (par exemple, systemLoadAverage est négatif sur windows et positif sur linux,
-		// et dans ce cas, si windows et linux alors on ne somme pas et on garde linux,
-		// si linux et windows alors on garde linux,
-		// si linux et linux alors on somme linux+linux qui est positif
-		// si windows et windows alors on somme windows+windows qui est négatif
-		if (t1 < 0d && t2 > 0d) {
-			return t2;
-		} else if (t1 > 0d && t2 < 0d) {
-			return t1;
-		}
-		return t1 + t2;
-	}
-
-	private static long add(long t1, long t2) {
-		if (t1 < 0L && t2 > 0L) {
-			return t2;
-		} else if (t1 > 0L && t2 < 0L) {
-			return t1;
-		}
-		return t1 + t2;
-	}
-
-	private static int add(int t1, int t2) {
-		if (t1 < 0 && t2 > 0) {
-			return t2;
-		} else if (t1 > 0 && t2 < 0) {
-			return t1;
-		}
-		return t1 + t2;
 	}
 
 	private void collectJRobinValues(long usedMemory, long processesCpuTimeMillis,
@@ -405,7 +394,21 @@ class Collector { // NOPMD
 		getCounterJRobin("usedMemory").addValue(usedMemory);
 
 		// collecte du pourcentage d'utilisation cpu
-		collectCpu(processesCpuTimeMillis, availableProcessors);
+		if (processesCpuTimeMillis >= 0) {
+			// processesCpuTimeMillis est la somme pour tous les serveurs (et pour tous les coeurs)
+			// donc ce temps peut être n fois supérieur à periodMillis
+			// où n est le nombre total de coeurs sur tous les serveurs (si cluster);
+			// et cpuPercentage s'approchera à pleine charge de 100
+			// quel que soit le nombre de serveurs ou de coeurs;
+			// cpuPercentage ne peut être supérieur à 100
+			// car ce serait une valeur aberrante due aux imprécisions de mesure
+
+			// en gros, %cpu = delta(somme(Temps cpu)) / période / nb total de coeurs
+			final int cpuPercentage = Math.min((int) ((processesCpuTimeMillis - this.cpuTimeMillis)
+					* 100 / periodMillis / availableProcessors), 100);
+			getCounterJRobin("cpu").addValue(cpuPercentage);
+			this.cpuTimeMillis = processesCpuTimeMillis;
+		}
 
 		// si ce collector est celui des nodes Hudson/Jenkins, il n'y a pas de requêtes http
 		// donc il ne peut pas y avoir de sessions http ou de threads actifs
@@ -427,37 +430,6 @@ class Collector { // NOPMD
 		// pour le graphique
 		if (getCounterByName(Counter.BUILDS_COUNTER_NAME) != null) {
 			getCounterJRobin("runningBuilds").addValue(JdbcWrapper.getRunningBuildCount());
-		}
-	}
-
-	private void collectCpu(long processesCpuTimeMillis, int availableProcessors)
-			throws IOException {
-		if (processesCpuTimeMillis >= 0) {
-			// processesCpuTimeMillis est la somme pour tous les serveurs (et pour tous les coeurs)
-			// donc ce temps peut être n fois supérieur à periodMillis
-			// où n est le nombre total de coeurs sur tous les serveurs (si cluster);
-			// et cpuPercentage s'approchera à pleine charge de 100
-			// quel que soit le nombre de serveurs ou de coeurs;
-			// cpuPercentage ne peut être supérieur à 100
-			// car ce serait une valeur aberrante due aux imprécisions de mesure
-
-			// en gros, %cpu = delta(somme(Temps cpu)) / période / nb total de coeurs
-			final int cpuPercentage = Math.min((int) ((processesCpuTimeMillis - this.cpuTimeMillis)
-					* 100 / periodMillis / availableProcessors), 100);
-			getCounterJRobin("cpu").addValue(cpuPercentage);
-			this.cpuTimeMillis = processesCpuTimeMillis;
-		}
-	}
-
-	private void collectGcTime(long garbageCollectionTimeMillis, int availableProcessors)
-			throws IOException {
-		if (garbageCollectionTimeMillis >= 0) {
-			// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
-			final int gcPercentage = Math
-					.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
-							/ periodMillis / availableProcessors), 100);
-			getOtherJRobin("gc").addValue(gcPercentage);
-			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
 	}
 
@@ -502,6 +474,41 @@ class Collector { // NOPMD
 			}
 			getOtherJRobin("httpSessionsMeanAge").addValue(sessionAgeMeanInMinutes);
 		}
+	}
+
+	private static double add(double t1, double t2) {
+		// avec des serveurs monitorés sur des OS/JVM multiples (windows, linux par exemple),
+		// des valeurs peuvent être négatives ie non disponibles pour une JVM/OS
+		// et positives ie disponibles pour une autre JVM/OS
+		// (par exemple, systemLoadAverage est négatif sur windows et positif sur linux,
+		// et dans ce cas, si windows et linux alors on ne somme pas et on garde linux,
+		// si linux et windows alors on garde linux,
+		// si linux et linux alors on somme linux+linux qui est positif
+		// si windows et windows alors on somme windows+windows qui est négatif
+		if (t1 < 0d && t2 > 0d) {
+			return t2;
+		} else if (t1 > 0d && t2 < 0d) {
+			return t1;
+		}
+		return t1 + t2;
+	}
+
+	private static long add(long t1, long t2) {
+		if (t1 < 0L && t2 > 0L) {
+			return t2;
+		} else if (t1 > 0L && t2 < 0L) {
+			return t1;
+		}
+		return t1 + t2;
+	}
+
+	private static int add(int t1, int t2) {
+		if (t1 < 0 && t2 > 0) {
+			return t2;
+		} else if (t1 > 0 && t2 < 0) {
+			return t1;
+		}
+		return t1 + t2;
 	}
 
 	private long collectCounterData(Counter counter) throws IOException {
