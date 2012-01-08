@@ -53,6 +53,7 @@ class Collector { // NOPMD
 	private final Map<Counter, CounterRequest> globalRequestsByCounter = new HashMap<Counter, CounterRequest>();
 	private final Map<String, CounterRequest> requestsById = new HashMap<String, CounterRequest>();
 	private final Map<Counter, Counter> dayCountersByCounter = new LinkedHashMap<Counter, Counter>();
+	private long transactionCount;
 	private long cpuTimeMillis;
 	private long gcTimeMillis;
 	private long tomcatBytesReceived;
@@ -326,6 +327,7 @@ class Collector { // NOPMD
 		int sessionCount = 0;
 		long sessionAgeSum = 0;
 		int threadCount = 0;
+		long databaseTransactionCount = 0;
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
 		int tomcatBusyThreads = 0;
@@ -338,6 +340,8 @@ class Collector { // NOPMD
 			sessionCount = add(javaInformations.getSessionCount(), sessionCount);
 			sessionAgeSum = add(javaInformations.getSessionAgeSum(), sessionAgeSum);
 			threadCount = add(javaInformations.getThreadCount(), threadCount);
+			databaseTransactionCount = add(javaInformations.getTransactionCount(),
+					databaseTransactionCount);
 			// il y a au moins 1 coeur
 			availableProcessors = add(Math.max(javaInformations.getAvailableProcessors(), 1),
 					availableProcessors);
@@ -381,6 +385,12 @@ class Collector { // NOPMD
 				usedSwapSpaceSize, threadCount, systemLoadAverage, unixOpenFileDescriptorCount);
 
 		collectSessionsMeanAge(sessionAgeSum, sessionCount);
+
+		// collecte du nombre de transactions base de données par minute
+		final double periodMinutes = periodMillis / 60000d;
+		getOtherJRobin("transactionsRate").addValue(
+				(databaseTransactionCount - this.transactionCount) / periodMinutes);
+		this.transactionCount = databaseTransactionCount;
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
