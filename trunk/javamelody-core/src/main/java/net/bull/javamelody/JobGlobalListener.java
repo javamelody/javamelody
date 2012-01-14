@@ -20,16 +20,12 @@ package net.bull.javamelody;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * Listener sur les exécutions de jobs quartz, configuré automatiquement par MonitoringFilter.
@@ -46,19 +42,7 @@ final class JobGlobalListener implements JobListener {
 	static void initJobGlobalListener() {
 		try {
 			final JobGlobalListener jobGlobalListener = new JobGlobalListener();
-			final Scheduler defaultScheduler;
-			if (Boolean.parseBoolean(Parameters
-					.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
-				defaultScheduler = null;
-			} else {
-				defaultScheduler = StdSchedulerFactory.getDefaultScheduler();
-				defaultScheduler.addGlobalJobListener(jobGlobalListener);
-			}
-			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-				if (scheduler != defaultScheduler) {
-					scheduler.addGlobalJobListener(jobGlobalListener);
-				}
-			}
+			QuartzAdapter.getSingleton().addGlobalJobListener(jobGlobalListener);
 			LOG.debug("job global listener initialized");
 		} catch (final SchedulerException e) {
 			// initialisation du JobGlobalListener échouée, tant pis, il n'y aura pas les temps pour quartz
@@ -67,30 +51,9 @@ final class JobGlobalListener implements JobListener {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	static void destroyJobGlobalListener() {
 		try {
-			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-				final List<JobListener> globalJobListeners = scheduler.getGlobalJobListeners();
-				for (final JobListener jobListener : new ArrayList<JobListener>(globalJobListeners)) {
-					if (jobListener instanceof JobGlobalListener) {
-						try {
-							scheduler.removeGlobalJobListener(jobListener);
-						} catch (final NoSuchMethodError e1) {
-							// pour Quartz 1.7, 1.8 et +,
-							// cette méthode n'existe pas avant Quartz 1.6
-							try {
-								final Class<? extends Scheduler> schedulerClass = scheduler
-										.getClass();
-								schedulerClass.getMethod("removeGlobalJobListener", String.class)
-										.invoke(scheduler, jobListener.getName());
-							} catch (final Exception e2) {
-								throw new IllegalArgumentException(e2); // NOPMD
-							}
-						}
-					}
-				}
-			}
+			QuartzAdapter.getSingleton().removeGlobalJobListener();
 		} catch (final SchedulerException e) {
 			throw new IllegalStateException(e);
 		}
@@ -101,7 +64,7 @@ final class JobGlobalListener implements JobListener {
 		// on calcule nous même le fullName du job pour être sûr que c'est le même que celui calculé
 		// dans HtmlJobInformationsReport.getCounterRequest
 		final JobDetail jobDetail = context.getJobDetail();
-		final String jobFullName = jobDetail.getGroup() + '.' + jobDetail.getName();
+		final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(jobDetail);
 		JOB_COUNTER.bindContextIncludingCpu(jobFullName);
 	}
 
