@@ -377,8 +377,8 @@ enum Action { // NOPMD
 		try {
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-					if (jobDetail.getFullName().hashCode() == myJobId) {
-						scheduler.pauseJob(jobDetail.getName(), jobDetail.getGroup());
+					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail).hashCode() == myJobId) {
+						QuartzAdapter.getSingleton().pauseJob(jobDetail, scheduler);
 						return true;
 					}
 				}
@@ -424,8 +424,8 @@ enum Action { // NOPMD
 		try {
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-					if (jobDetail.getFullName().hashCode() == myJobId) {
-						scheduler.resumeJob(jobDetail.getName(), jobDetail.getGroup());
+					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail).hashCode() == myJobId) {
+						QuartzAdapter.getSingleton().resumeJob(jobDetail, scheduler);
 						return true;
 					}
 				}

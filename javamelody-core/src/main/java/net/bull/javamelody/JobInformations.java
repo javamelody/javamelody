@@ -66,8 +66,8 @@ class JobInformations implements Serializable {
 		assert jobDetail != null;
 		assert scheduler != null;
 		// rq: jobExecutionContext est non null si le job est en cours d'exécution ou null sinon
-		this.group = jobDetail.getGroup();
-		this.name = jobDetail.getName();
+		this.group = QuartzAdapter.getSingleton().getJobGroup(jobDetail);
+		this.name = QuartzAdapter.getSingleton().getJobName(jobDetail);
 		this.description = jobDetail.getDescription();
 		this.jobClassName = jobDetail.getJobClass().getName();
 		if (jobExecutionContext == null) {
@@ -75,7 +75,8 @@ class JobInformations implements Serializable {
 		} else {
 			elapsedTime = System.currentTimeMillis() - jobExecutionContext.getFireTime().getTime();
 		}
-		final Trigger[] triggers = scheduler.getTriggersOfJob(name, group);
+		final List<Trigger> triggers = QuartzAdapter.getSingleton().getTriggersOfJob(jobDetail,
+				scheduler);
 		this.nextFireTime = getNextFireTime(triggers);
 		this.previousFireTime = getPreviousFireTime(triggers);
 
@@ -90,7 +91,7 @@ class JobInformations implements Serializable {
 				simpleTriggerRepeatInterval = ((SimpleTrigger) trigger).getRepeatInterval(); // NOPMD
 			}
 			jobPaused = jobPaused
-					&& scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) == Trigger.STATE_PAUSED;
+					&& QuartzAdapter.getSingleton().isTriggerPaused(trigger, scheduler);
 		}
 		this.repeatInterval = simpleTriggerRepeatInterval;
 		this.cronExpression = cronTriggerExpression;
@@ -118,12 +119,15 @@ class JobInformations implements Serializable {
 				final Map<String, JobExecutionContext> currentlyExecutingJobsByFullName = new LinkedHashMap<String, JobExecutionContext>();
 				for (final JobExecutionContext currentlyExecutingJob : (List<JobExecutionContext>) scheduler
 						.getCurrentlyExecutingJobs()) {
-					currentlyExecutingJobsByFullName.put(currentlyExecutingJob.getJobDetail()
-							.getFullName(), currentlyExecutingJob);
+					final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(
+							currentlyExecutingJob.getJobDetail());
+					currentlyExecutingJobsByFullName.put(jobFullName, currentlyExecutingJob);
 				}
 				for (final JobDetail jobDetail : getAllJobsOfScheduler(scheduler)) {
+					final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(
+							jobDetail);
 					final JobExecutionContext jobExecutionContext = currentlyExecutingJobsByFullName
-							.get(jobDetail.getFullName());
+							.get(jobFullName);
 					result.add(new JobInformations(jobDetail, jobExecutionContext, scheduler));
 				}
 			}
@@ -139,33 +143,17 @@ class JobInformations implements Serializable {
 	}
 
 	static List<JobDetail> getAllJobsOfScheduler(Scheduler scheduler) {
-		final List<JobDetail> result = new ArrayList<JobDetail>();
 		try {
-			for (final String jobGroupName : scheduler.getJobGroupNames()) {
-				for (final String jobName : scheduler.getJobNames(jobGroupName)) {
-					final JobDetail jobDetail;
-					try {
-						jobDetail = scheduler.getJobDetail(jobName, jobGroupName);
-						// le job peut être terminé et supprimé depuis la ligne ci-dessus
-						if (jobDetail != null) {
-							result.add(jobDetail);
-						}
-					} catch (final Exception e) {
-						// si les jobs sont persistés en base de données, il peut y avoir une exception
-						// dans getJobDetail, par exemple si la classe du job n'existe plus dans l'application
-						LOG.debug(e.toString(), e);
-					}
-				}
-			}
+			return QuartzAdapter.getSingleton().getAllJobsOfScheduler(scheduler);
 		} catch (final Exception e) {
 			// si les jobs sont persistés en base de données, il peut y avoir une exception
 			// dans scheduler.getJobGroupNames(), par exemple si la base est arrêtée
 			LOG.warn(e.toString(), e);
+			return Collections.emptyList();
 		}
-		return result;
 	}
 
-	private static Date getPreviousFireTime(Trigger[] triggers) {
+	private static Date getPreviousFireTime(List<Trigger> triggers) {
 		Date triggerPreviousFireTime = null;
 		for (final Trigger trigger : triggers) {
 			if (triggerPreviousFireTime == null || trigger.getPreviousFireTime() != null
@@ -176,7 +164,7 @@ class JobInformations implements Serializable {
 		return triggerPreviousFireTime;
 	}
 
-	private static Date getNextFireTime(Trigger[] triggers) {
+	private static Date getNextFireTime(List<Trigger> triggers) {
 		Date triggerNextFireTime = null;
 		for (final Trigger trigger : triggers) {
 			if (triggerNextFireTime == null || trigger.getNextFireTime() != null
@@ -237,7 +225,7 @@ class JobInformations implements Serializable {
 
 	private static String buildGlobalJobId(JobDetail jobDetail) {
 		return PID.getPID() + '_' + Parameters.getHostAddress() + '_'
-				+ jobDetail.getFullName().hashCode();
+				+ QuartzAdapter.getSingleton().getJobFullName(jobDetail).hashCode();
 	}
 
 	/** {@inheritDoc} */
