@@ -63,7 +63,7 @@ final class JobGlobalListener implements JobListener {
 	public void jobToBeExecuted(JobExecutionContext context) {
 		// on calcule nous même le fullName du job pour être sûr que c'est le même que celui calculé
 		// dans HtmlJobInformationsReport.getCounterRequest
-		final JobDetail jobDetail = context.getJobDetail();
+		final JobDetail jobDetail = QuartzAdapter.getSingleton().getContextJobDetail(context);
 		final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(jobDetail);
 		JOB_COUNTER.bindContextIncludingCpu(jobFullName);
 	}

@@ -20,12 +20,16 @@ package net.bull.javamelody;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -56,6 +60,39 @@ class QuartzAdapter {
 
 	String getJobFullName(JobDetail jobDetail) {
 		return getJobGroup(jobDetail) + '.' + getJobName(jobDetail);
+	}
+
+	String getJobDescription(JobDetail jobDetail) {
+		return jobDetail.getDescription();
+	}
+
+	Class<?> getJobClass(JobDetail jobDetail) {
+		return jobDetail.getJobClass();
+	}
+
+	Date getTriggerPreviousFireTime(Trigger trigger) {
+		return trigger.getPreviousFireTime();
+	}
+
+	Date getTriggerNextFireTime(Trigger trigger) {
+		return trigger.getNextFireTime();
+	}
+
+	String getCronTriggerExpression(CronTrigger trigger) {
+		// getCronExpression gives a PMD false+
+		return trigger.getCronExpression(); // NOPMD
+	}
+
+	long getSimpleTriggerRepeatInterval(SimpleTrigger trigger) {
+		return trigger.getRepeatInterval(); // NOPMD
+	}
+
+	JobDetail getContextJobDetail(JobExecutionContext context) {
+		return context.getJobDetail();
+	}
+
+	Date getContextFireTime(JobExecutionContext context) {
+		return context.getFireTime();
 	}
 
 	void addGlobalJobListener(JobListener jobGlobalListener) throws SchedulerException {

@@ -66,17 +66,18 @@ class JobInformations implements Serializable {
 		assert jobDetail != null;
 		assert scheduler != null;
 		// rq: jobExecutionContext est non null si le job est en cours d'exécution ou null sinon
-		this.group = QuartzAdapter.getSingleton().getJobGroup(jobDetail);
-		this.name = QuartzAdapter.getSingleton().getJobName(jobDetail);
-		this.description = jobDetail.getDescription();
-		this.jobClassName = jobDetail.getJobClass().getName();
+		final QuartzAdapter quartzAdapter = QuartzAdapter.getSingleton();
+		this.group = quartzAdapter.getJobGroup(jobDetail);
+		this.name = quartzAdapter.getJobName(jobDetail);
+		this.description = quartzAdapter.getJobDescription(jobDetail);
+		this.jobClassName = quartzAdapter.getJobClass(jobDetail).getName();
 		if (jobExecutionContext == null) {
 			elapsedTime = -1;
 		} else {
-			elapsedTime = System.currentTimeMillis() - jobExecutionContext.getFireTime().getTime();
+			elapsedTime = System.currentTimeMillis()
+					- quartzAdapter.getContextFireTime(jobExecutionContext).getTime();
 		}
-		final List<Trigger> triggers = QuartzAdapter.getSingleton().getTriggersOfJob(jobDetail,
-				scheduler);
+		final List<Trigger> triggers = quartzAdapter.getTriggersOfJob(jobDetail, scheduler);
 		this.nextFireTime = getNextFireTime(triggers);
 		this.previousFireTime = getPreviousFireTime(triggers);
 
@@ -85,13 +86,13 @@ class JobInformations implements Serializable {
 		boolean jobPaused = true;
 		for (final Trigger trigger : triggers) {
 			if (trigger instanceof CronTrigger) {
-				// getCronExpression gives a PMD false+
-				cronTriggerExpression = ((CronTrigger) trigger).getCronExpression(); // NOPMD
+				cronTriggerExpression = quartzAdapter
+						.getCronTriggerExpression((CronTrigger) trigger);
 			} else if (trigger instanceof SimpleTrigger) {
-				simpleTriggerRepeatInterval = ((SimpleTrigger) trigger).getRepeatInterval(); // NOPMD
+				simpleTriggerRepeatInterval = quartzAdapter
+						.getSimpleTriggerRepeatInterval((SimpleTrigger) trigger);
 			}
-			jobPaused = jobPaused
-					&& QuartzAdapter.getSingleton().isTriggerPaused(trigger, scheduler);
+			jobPaused = jobPaused && quartzAdapter.isTriggerPaused(trigger, scheduler);
 		}
 		this.repeatInterval = simpleTriggerRepeatInterval;
 		this.cronExpression = cronTriggerExpression;
@@ -119,8 +120,10 @@ class JobInformations implements Serializable {
 				final Map<String, JobExecutionContext> currentlyExecutingJobsByFullName = new LinkedHashMap<String, JobExecutionContext>();
 				for (final JobExecutionContext currentlyExecutingJob : (List<JobExecutionContext>) scheduler
 						.getCurrentlyExecutingJobs()) {
+					final JobDetail jobDetail = QuartzAdapter.getSingleton().getContextJobDetail(
+							currentlyExecutingJob);
 					final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(
-							currentlyExecutingJob.getJobDetail());
+							jobDetail);
 					currentlyExecutingJobsByFullName.put(jobFullName, currentlyExecutingJob);
 				}
 				for (final JobDetail jobDetail : getAllJobsOfScheduler(scheduler)) {
@@ -154,25 +157,25 @@ class JobInformations implements Serializable {
 	}
 
 	private static Date getPreviousFireTime(List<Trigger> triggers) {
-		Date triggerPreviousFireTime = null;
+		Date previousFireTime = null;
 		for (final Trigger trigger : triggers) {
-			if (triggerPreviousFireTime == null || trigger.getPreviousFireTime() != null
-					&& triggerPreviousFireTime.before(trigger.getPreviousFireTime())) {
-				triggerPreviousFireTime = trigger.getPreviousFireTime();
+			if (previousFireTime == null || trigger.getPreviousFireTime() != null
+					&& previousFireTime.before(trigger.getPreviousFireTime())) {
+				previousFireTime = QuartzAdapter.getSingleton().getTriggerPreviousFireTime(trigger);
 			}
 		}
-		return triggerPreviousFireTime;
+		return previousFireTime;
 	}
 
 	private static Date getNextFireTime(List<Trigger> triggers) {
-		Date triggerNextFireTime = null;
+		Date nextFireTime = null;
 		for (final Trigger trigger : triggers) {
-			if (triggerNextFireTime == null || trigger.getNextFireTime() != null
-					&& triggerNextFireTime.after(trigger.getNextFireTime())) {
-				triggerNextFireTime = trigger.getNextFireTime();
+			if (nextFireTime == null || trigger.getNextFireTime() != null
+					&& nextFireTime.after(trigger.getNextFireTime())) {
+				nextFireTime = QuartzAdapter.getSingleton().getTriggerNextFireTime(trigger);
 			}
 		}
-		return triggerNextFireTime;
+		return nextFireTime;
 	}
 
 	String getGlobalJobId() {
