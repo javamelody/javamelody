@@ -40,6 +40,8 @@ import org.quartz.impl.matchers.GroupMatcher;
 /**
  * Classe ayant la même API, que le QuartzAdapter par défaut des versions avant 2,<br/>
  * mais avec une autre implémentation adaptée aux versions 2.0.0, 2.1.2 et suivantes.
+ *
+ * @author rogerc@customercentrix.com
  * @author Emeric Vernat
  */
 class Quartz2Adapter extends QuartzAdapter {
