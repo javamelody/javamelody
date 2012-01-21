@@ -59,7 +59,7 @@ class MainPanel extends MelodyPanel {
 		final String collectorUrl = initialURLs.get(0).toExternalForm();
 		this.monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
 
-		// TODO période sélectionnée par défaut à récupérer dans fichier jnlp
+		// TODO période sélectionnée par défaut à récupérer dans fichier jnlp, avec le cookie de session
 		setSelectedRange(Period.TOUT.getRange());
 
 		CounterStorage.disableStorage();
