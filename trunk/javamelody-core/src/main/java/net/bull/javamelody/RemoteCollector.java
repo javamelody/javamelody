@@ -51,6 +51,7 @@ class RemoteCollector {
 	private List<URL> urls;
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
+	private boolean aggregationDisabled;
 
 	/**
 	 * Constructeur.
@@ -87,7 +88,7 @@ class RemoteCollector {
 					sb.append(serializable).append('\n');
 				}
 			}
-			if (this.collector == null) {
+			if (this.collector == null || aggregationDisabled) {
 				this.collector = new Collector(application, counters);
 			} else {
 				addRequestsAndErrors(counters);
@@ -292,5 +293,10 @@ class RemoteCollector {
 
 	List<JavaInformations> getJavaInformationsList() {
 		return javaInformationsList;
+	}
+
+	// cette méthode est utilisée dans l'ihm Swing
+	void disableAggregation() {
+		aggregationDisabled = true;
 	}
 }
