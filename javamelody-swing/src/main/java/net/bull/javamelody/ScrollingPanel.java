@@ -27,6 +27,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -58,8 +60,7 @@ class ScrollingPanel extends MelodyPanel {
 	private final URL monitoringUrl;
 	private final long start = System.currentTimeMillis();
 
-	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl)
-			throws IOException {
+	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl) {
 		super(remoteCollector);
 		this.collector = remoteCollector.getCollector();
 		this.javaInformationsList = remoteCollector.getJavaInformationsList();
@@ -80,8 +81,9 @@ class ScrollingPanel extends MelodyPanel {
 
 		if (isJobEnabled()) {
 			addParagraphTitle(I18N.getString("Jobs"), "jobs.png");
-			final Counter rangeJobCounter = collector.getRangeCounter(range,
-					Counter.JOB_COUNTER_NAME);
+			// on ne peut utiliser collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME),
+			// en revanche collector.getCounterByName(Counter.JOB_COUNTER_NAME) contient ici les bonnes données
+			final Counter rangeJobCounter = collector.getCounterByName(Counter.JOB_COUNTER_NAME);
 			addJobs(rangeJobCounter);
 			addCounter(rangeJobCounter);
 		}
@@ -99,8 +101,8 @@ class ScrollingPanel extends MelodyPanel {
 		}
 	}
 
-	private void addCounters() throws IOException {
-		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
+	private void addCounters() {
+		final List<Counter> counters = getCountersToBeDisplayed();
 		for (final Counter counter : counters) {
 			addCounter(counter);
 		}
@@ -120,6 +122,20 @@ class ScrollingPanel extends MelodyPanel {
 					.createButtonsPanel(clearAllCountersButton);
 			add(clearAllCountersPanel);
 		}
+	}
+
+	private List<Counter> getCountersToBeDisplayed() {
+		// on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
+		// en revanche collector.getCounters() contient ici les bonnes données
+		final List<Counter> result = new ArrayList<Counter>(collector.getCounters());
+		final Iterator<Counter> it = result.iterator();
+		while (it.hasNext()) {
+			final Counter counter = it.next();
+			if (!counter.isDisplayed() || counter.isJobCounter()) {
+				it.remove();
+			}
+		}
+		return Collections.unmodifiableList(result);
 	}
 
 	final void actionClearAllCounters() {
