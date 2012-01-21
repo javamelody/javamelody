@@ -48,7 +48,7 @@ import java.util.Map;
  */
 class RemoteCollector {
 	private final String application;
-	private final List<URL> urls;
+	private List<URL> urls;
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
 
@@ -279,6 +279,11 @@ class RemoteCollector {
 
 	List<URL> getURLs() {
 		return urls;
+	}
+
+	void setURLs(List<URL> newURLs) {
+		assert urls != null;
+		this.urls = newURLs;
 	}
 
 	Collector getCollector() {

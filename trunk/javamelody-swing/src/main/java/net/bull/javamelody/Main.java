@@ -68,10 +68,7 @@ public final class Main {
 		final List<URL> urls = Arrays.asList(new URL(
 				"http://localhost:8090/test/monitoring?format=serialized"));
 		final RemoteCollector remoteCollector = new RemoteCollector("test", urls);
-		remoteCollector.collectData();
-		final String collectorUrl = urls.get(0).toExternalForm();
-		final URL monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
-		final MainPanel contentPane = new MainPanel(remoteCollector, monitoringUrl);
+		final MainPanel contentPane = new MainPanel(remoteCollector);
 		final MainFrame frame = new MainFrame();
 		frame.setContentPane(contentPane);
 		frame.setVisible(true);

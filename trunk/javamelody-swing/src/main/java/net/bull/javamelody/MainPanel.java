@@ -18,11 +18,15 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -41,16 +45,24 @@ class MainPanel extends MelodyPanel {
 
 	private final TabbedPane tabbedPane = new TabbedPane();
 	private final URL monitoringUrl;
+	@SuppressWarnings("all")
+	private final List<URL> initialURLs;
 	private final JScrollPane scrollPane;
-	// TODO période sélectionnée par défaut à récupérer dans fichier jnlp
-	private Range selectedRange = Period.TOUT.getRange();
+	private Range selectedRange;
 
 	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
 
-	MainPanel(RemoteCollector remoteCollector, URL monitoringUrl) throws IOException {
+	MainPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
-		assert monitoringUrl != null;
-		this.monitoringUrl = monitoringUrl;
+		// initialURLs avant setSelectedRange
+		this.initialURLs = remoteCollector.getURLs();
+		final String collectorUrl = initialURLs.get(0).toExternalForm();
+		this.monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
+
+		// TODO période sélectionnée par défaut à récupérer dans fichier jnlp
+		setSelectedRange(Period.TOUT.getRange());
+
+		remoteCollector.collectData();
 
 		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -86,9 +98,15 @@ class MainPanel extends MelodyPanel {
 		return selectedRange;
 	}
 
-	void setSelectedRange(Range selectedRange) {
+	final void setSelectedRange(Range selectedRange) throws IOException {
 		this.selectedRange = selectedRange;
-		// TODO changer les urls dans l'instance de getRemoteCollector() pour changer la période
+		final List<URL> newUrls = new ArrayList<URL>(initialURLs.size());
+		for (final URL url : initialURLs) {
+			final URL newUrl = new URL(url.toString() + '&' + PERIOD_PARAMETER + '='
+					+ selectedRange.getValue());
+			newUrls.add(newUrl);
+		}
+		getRemoteCollector().setURLs(newUrls);
 	}
 
 	static MainPanel getParentMainPanelFromChild(Component child) {
