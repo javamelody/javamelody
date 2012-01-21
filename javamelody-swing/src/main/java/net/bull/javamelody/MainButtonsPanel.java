@@ -154,7 +154,11 @@ class MainButtonsPanel extends MelodyPanel {
 		} catch (final IOException e) {
 			showException(e);
 			// si le changement de période n'a pas abouti, alors on remet l'ancienne période
-			MainPanel.getParentMainPanelFromChild(this).setSelectedRange(currentRange);
+			try {
+				MainPanel.getParentMainPanelFromChild(this).setSelectedRange(currentRange);
+			} catch (final IOException e2) {
+				showException(e2);
+			}
 		}
 	}
 
