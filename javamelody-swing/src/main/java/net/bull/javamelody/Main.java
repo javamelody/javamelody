@@ -18,6 +18,8 @@
  */
 package net.bull.javamelody;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -29,6 +31,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import net.bull.javamelody.swing.util.MSwingUtilities;
 import net.bull.javamelody.swing.util.ShadowPopupFactory;
+
+import org.apache.log4j.Logger;
 
 /**
  * Classe Main.
@@ -44,6 +48,8 @@ public final class Main {
 	 * @param args Arguments du programme
 	 */
 	public static void main(String[] args) {
+		log("starting");
+
 		initLookAndFeel();
 		ShadowPopupFactory.install();
 		MSwingUtilities.initEscapeClosesDialogs();
@@ -67,11 +73,24 @@ public final class Main {
 		// TODO mettre les instances de MainPanel dans des onglets
 		final List<URL> urls = Arrays.asList(new URL(
 				"http://localhost:8090/test/monitoring?format=serialized"));
+		log("Monitoring of " + urls);
+		log("creating frame");
 		final RemoteCollector remoteCollector = new RemoteCollector("test", urls);
 		final MainPanel contentPane = new MainPanel(remoteCollector);
 		final MainFrame frame = new MainFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				log("closing");
+			}
+		});
 		frame.setContentPane(contentPane);
 		frame.setVisible(true);
+		log("frame displayed");
+	}
+
+	static void log(String message) {
+		Logger.getLogger(Main.class).info(message);
 	}
 
 	/**
