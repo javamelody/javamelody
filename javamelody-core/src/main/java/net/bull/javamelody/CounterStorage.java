@@ -34,6 +34,7 @@ import java.util.zip.GZIPOutputStream;
  * @author Emeric Vernat
  */
 class CounterStorage {
+	private static boolean storageDisabled;
 	private final Counter counter;
 
 	/**
@@ -52,6 +53,9 @@ class CounterStorage {
 	 * @throws IOException Exception d'entrée/sortie
 	 */
 	int writeToFile() throws IOException {
+		if (storageDisabled) {
+			return -1;
+		}
 		final File file = getFile();
 		if (counter.getRequestsCount() == 0 && counter.getErrorsCount() == 0 && !file.exists()) {
 			// s'il n'y a pas de requête, inutile d'écrire des fichiers de compteurs vides
@@ -87,6 +91,9 @@ class CounterStorage {
 	 * @throws IOException e
 	 */
 	Counter readFromFile() throws IOException {
+		if (storageDisabled) {
+			return null;
+		}
 		final File file = getFile();
 		if (file.exists()) {
 			final FileInputStream in = new FileInputStream(file);
@@ -120,5 +127,10 @@ class CounterStorage {
 		final IOException ex = new IOException(e.getMessage());
 		ex.initCause(e);
 		return ex;
+	}
+
+	// cette méthode est utilisée dans l'ihm Swing
+	static void disableStorage() {
+		storageDisabled = true;
 	}
 }

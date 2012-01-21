@@ -62,6 +62,8 @@ class MainPanel extends MelodyPanel {
 		// TODO période sélectionnée par défaut à récupérer dans fichier jnlp
 		setSelectedRange(Period.TOUT.getRange());
 
+		CounterStorage.disableStorage();
+		remoteCollector.disableAggregation();
 		remoteCollector.collectData();
 
 		scrollPane = new JScrollPane();
@@ -81,7 +83,7 @@ class MainPanel extends MelodyPanel {
 		refreshMainTab();
 	}
 
-	private void refreshMainTab() throws IOException {
+	private void refreshMainTab() {
 		final int position = scrollPane.getVerticalScrollBar().getValue();
 		final ScrollingPanel scrollingPanel = new ScrollingPanel(getRemoteCollector(),
 				getSelectedRange(), monitoringUrl);
@@ -113,7 +115,7 @@ class MainPanel extends MelodyPanel {
 		return MSwingUtilities.getAncestorOfClass(MainPanel.class, child);
 	}
 
-	static void refreshMainTabFromChild(Component child) throws IOException {
+	static void refreshMainTabFromChild(Component child) {
 		final MainPanel mainPanel = getParentMainPanelFromChild(child);
 		mainPanel.refreshMainTab();
 	}
