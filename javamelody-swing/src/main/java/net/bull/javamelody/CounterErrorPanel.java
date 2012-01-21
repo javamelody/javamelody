@@ -59,7 +59,11 @@ class CounterErrorPanel extends JPanel {
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
-			// tooltip selon la stackTrace
+			// texte selon la valeur (message de l'erreur)
+			super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row, column);
+			// et tooltip selon la stackTrace
+			// (l'appel à setToolTipText doit être après getTableCellRendererComponent
+			// car MMultiLineTableCellRenderer change le toolTipText dans setValue)
 			if (row == -1) {
 				setToolTipText(null);
 			} else {
@@ -75,9 +79,7 @@ class CounterErrorPanel extends JPanel {
 									"<br/>"));
 				}
 			}
-			// et texte selon la valeur (message de l'erreur)
-			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
-					column);
+			return this;
 		}
 	}
 
