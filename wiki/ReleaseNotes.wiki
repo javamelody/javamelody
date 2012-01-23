@@ -7,7 +7,7 @@
 
 === Next release (trunk) ===
 
-  * fix issue 121: Incompatibility with *Quartz 2* (thanks to _rogerc at costumercentrix.com_)
+  * fix issue 121 and issue 175: Incompatibility with *Quartz 2* (thanks to _rogerc at costumercentrix.com_)
   * fix issue 164: *JBoss 7* support for SQL monitoring with JNDI datasource (thanks to _sarnowski at new-thoughts.org_)
   * fix issue 166: jboss-as-client and javamelody log4j conflict (java.lang.IncompatibleClassChangeError)
   * fix issue 170: Plugin for JIRA / Confluence / Bamboo: Compatibility with JIRA 5.0 RC
