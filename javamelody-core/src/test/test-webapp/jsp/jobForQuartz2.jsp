@@ -23,6 +23,8 @@ JobDetail job = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random
 Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger" + random.nextInt()).startNow().build();
 //Schedule the job with the trigger
 scheduler.scheduleJob(job, trigger);
+Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("trigger" + random.nextInt()).forJob(job).startNow().build();
+scheduler.scheduleJob(trigger2);
 
 //Define a Trigger that will fire "later"
 JobDetail job2 = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random.nextInt()).build();
