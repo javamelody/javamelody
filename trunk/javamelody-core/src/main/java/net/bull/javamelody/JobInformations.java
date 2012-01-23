@@ -159,9 +159,11 @@ class JobInformations implements Serializable {
 	private static Date getPreviousFireTime(List<Trigger> triggers) {
 		Date previousFireTime = null;
 		for (final Trigger trigger : triggers) {
-			if (previousFireTime == null || trigger.getPreviousFireTime() != null
-					&& previousFireTime.before(trigger.getPreviousFireTime())) {
-				previousFireTime = QuartzAdapter.getSingleton().getTriggerPreviousFireTime(trigger);
+			final Date triggerPreviousFireTime = QuartzAdapter.getSingleton()
+					.getTriggerPreviousFireTime(trigger);
+			if (previousFireTime == null || triggerPreviousFireTime != null
+					&& previousFireTime.before(triggerPreviousFireTime)) {
+				previousFireTime = triggerPreviousFireTime;
 			}
 		}
 		return previousFireTime;
@@ -170,9 +172,11 @@ class JobInformations implements Serializable {
 	private static Date getNextFireTime(List<Trigger> triggers) {
 		Date nextFireTime = null;
 		for (final Trigger trigger : triggers) {
-			if (nextFireTime == null || trigger.getNextFireTime() != null
-					&& nextFireTime.after(trigger.getNextFireTime())) {
-				nextFireTime = QuartzAdapter.getSingleton().getTriggerNextFireTime(trigger);
+			final Date triggerNextFireTime = QuartzAdapter.getSingleton().getTriggerNextFireTime(
+					trigger);
+			if (nextFireTime == null || triggerNextFireTime != null
+					&& nextFireTime.after(triggerNextFireTime)) {
+				nextFireTime = triggerNextFireTime;
 			}
 		}
 		return nextFireTime;
