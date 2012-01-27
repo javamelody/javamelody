@@ -32,3 +32,4 @@ Navigateur : Le rapport html de JavaMelody est optimisé pour Firefox, Chrome ou
 
 Pour le guide d'installation et le guide développeur voir le fichier texte src/site/apt/user_guide.apt
 Pour d'autres guides voir le répertoire src/site/resources/
+
