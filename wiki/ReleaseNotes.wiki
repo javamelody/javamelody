@@ -1,10 +1,6 @@
 #labels Featured
 === Maven central repository ===
 
-*The latest release of javamelody artifacts are now available in the Maven central repository*: [http://search.maven.org/#search|ga|1|a%3A%22javamelody-core%22 javamelody-core in central] . And so, you don't need anymore to use in your pom.xml or settings.xml the [http://maven.glassfish.org] repository for javamelody.
-
-(In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
-
 === 1.34.0 ===
 
   * fix issue 121 and issue 175: Incompatibility with *Quartz 2* (thanks to _rogerc at costumercentrix.com_)
@@ -14,6 +10,10 @@
   * fix: if the http request contains for example ";jsessionid=1234567890ABCDEF", when the browser does not accept cookies, then that part is automatically ignored for the statistics (revision 2363)
   * fix fonts in the PDF reports for Chinese people, when the first PDF report was made for non Chinese people (revision 2441)
   * added: graphic over time of the "*Transactions per minute*" in "Other charts" of the reports. This graphic is similar to "Http hits per minute" and to "Sql hits per minute", but for database(s) transactions (more precisely, for the number of opened jdbc connections per minute). The values in this graphic are typically about one tenth of the values in "Sql hits per minute", depending on the mean number of sql requests per transaction in the monitored application (revision 2467).
+
+*The latest release of javamelody artifacts are now available in the Maven central repository*: [http://search.maven.org/#search|ga|1|a%3A%22javamelody-core%22 javamelody-core in central] . And so, you don't need anymore to use in your pom.xml or settings.xml the [http://maven.glassfish.org] repository for javamelody.
+
+(In fact, it seems that some obsolete artefacts of javamelody were recently published by Sonatype in Maven central from an old java.net repository. Seeing that, I published the latest javamelody artefacts in Maven central.)
 
 === 1.33.0 ===
 
