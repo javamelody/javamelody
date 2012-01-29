@@ -114,7 +114,7 @@ class HtmlJobInformationsReport {
 		writeStackTrace(counterRequest.getStackTrace());
 		if (counterRequest.getMean() >= 0) {
 			write(nextColumnAlignRight);
-			write(durationFormat.format(new Date(counterRequest.getMean())));
+			write(formatDuration(counterRequest.getMean()));
 		} else {
 			write("</td><td>&nbsp;");
 		}
@@ -133,6 +133,12 @@ class HtmlJobInformationsReport {
 			writePauseJobAndResumeJobLinks(jobInformations);
 		}
 		write("</td>");
+	}
+
+	private String formatDuration(int durationAsMillis) {
+		// int to long sans cast pour findbugs
+		final long duration = 1L * durationAsMillis;
+		return durationFormat.format(new Date(duration));
 	}
 
 	private void writeNameWithDescription(JobInformations jobInformations) throws IOException {
