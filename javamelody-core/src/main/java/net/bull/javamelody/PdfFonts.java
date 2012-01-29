@@ -50,10 +50,8 @@ enum PdfFonts {
 		SEVERE_CELL.font.setColor(Color.RED);
 	}
 
-	@SuppressWarnings("all")
-	private final Font font;
-	@SuppressWarnings("all")
-	private Font chineseFont;
+	private final transient Font font;
+	private transient Font chineseFont;
 
 	PdfFonts(Font font) {
 		this.font = font;
