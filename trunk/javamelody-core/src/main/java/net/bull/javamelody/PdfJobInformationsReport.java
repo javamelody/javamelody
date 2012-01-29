@@ -130,7 +130,7 @@ class PdfJobInformationsReport {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
 		// counterRequest ne peut pas être null ici
-		addCell(durationFormat.format(new Date(counterRequest.getMean())));
+		addCell(formatDuration(counterRequest.getMean()));
 		// rq: on n'affiche pas ici le nb d'exécutions, le maximum, l'écart-type
 		// ou le pourcentage d'erreurs, uniquement car cela ferait trop de colonnes dans la page
 		writeJobTimes(jobInformations, counterRequest);
@@ -140,6 +140,12 @@ class PdfJobInformationsReport {
 		} else {
 			addCell(getI18nString("non"));
 		}
+	}
+
+	private String formatDuration(int durationAsMillis) {
+		// int to long sans cast pour findbugs
+		final long duration = 1L * durationAsMillis;
+		return durationFormat.format(new Date(duration));
 	}
 
 	private void writeJobTimes(JobInformations jobInformations, CounterRequest counterRequest)
