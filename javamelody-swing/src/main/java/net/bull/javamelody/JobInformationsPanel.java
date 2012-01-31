@@ -84,7 +84,7 @@ class JobInformationsPanel extends MelodyPanel {
 						myTable.convertRowIndexToModel(row));
 				final CounterRequest counterRequest = getCounterRequest(jobInformations);
 				if (counterRequest.getMean() >= 0) {
-					date = new Date(counterRequest.getMean());
+					date = new Date(1L * counterRequest.getMean());
 				} else {
 					date = null;
 				}
