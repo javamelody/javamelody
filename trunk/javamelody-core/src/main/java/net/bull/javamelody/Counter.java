@@ -96,6 +96,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	private final String childCounterName;
 	@SuppressWarnings("all")
 	private final ConcurrentMap<String, CounterRequest> requests = new ConcurrentHashMap<String, CounterRequest>();
+	// note : même si rootCurrentContextsByThreadId n'est pas transient la map est normalement vide avant sérialisation
+	// (on garde en non transient pour ne pas avoir null après désérialisation ce qui pourrait donner des NPE)
 	@SuppressWarnings("all")
 	private final ConcurrentMap<Long, CounterRequestContext> rootCurrentContextsByThreadId = new ConcurrentHashMap<Long, CounterRequestContext>();
 	//CHECKSTYLE:OFF
@@ -850,7 +852,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		// on clone le counter avant de le sérialiser pour ne pas avoir de problèmes de concurrences d'accès
 		final Counter counter = this.clone();
 		// on n'écrit pas rootCurrentContextsByThreadId en fichier
-		// puisque ces données ne seront plus vrais dans quelques secondes (clear pour être sûr ici)
+		// puisque ces données ne seront plus vraies dans quelques secondes (clear pour être sûr ici)
 		counter.rootCurrentContextsByThreadId.clear();
 		estimatedMemorySize = new CounterStorage(counter).writeToFile();
 	}
