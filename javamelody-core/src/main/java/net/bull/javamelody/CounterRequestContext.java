@@ -268,6 +268,12 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		return clone;
 	}
 
+	private Object readResolve() {
+		// cette classe est sérialisable uniquement pour ne pas avoir de warning dans findbugs v2 sur Counter.rootCurrentContextsByThreadId
+		// mais elle n'est pas sérialisée
+		throw new IllegalStateException(getClass() + " must not be serialized");
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
