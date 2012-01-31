@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -32,7 +33,10 @@ import net.bull.javamelody.CounterRequest.ICounterRequestContext;
  * Par exemple, le contexte d'une requête http a zéro ou plusieurs requêtes sql.
  * @author Emeric Vernat
  */
-class CounterRequestContext implements ICounterRequestContext, Cloneable {
+class CounterRequestContext implements ICounterRequestContext, Cloneable, Serializable {
+	// cette classe est sérialisable uniquement pour ne pas avoir de warning dans findbugs v2 sur Counter.rootCurrentContextsByThreadId
+	// mais elle n'est pas sérialisée
+	private static final long serialVersionUID = 1L;
 	private static final Long ONE = 1L;
 	// attention de ne pas sérialiser ce counter vers le serveur de collecte, le vrai ayant été cloné
 	private final transient Counter parentCounter;
