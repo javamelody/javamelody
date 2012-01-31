@@ -92,7 +92,7 @@ public class MHtmlWriter extends MPrinter {
 	 */
 	protected void writeHtml(final MBasicTable table, final OutputStream outputStream,
 			final boolean isSelection) throws IOException {
-		final Writer out = new OutputStreamWriter(outputStream);
+		final Writer out = new OutputStreamWriter(outputStream, "UTF-8");
 
 		final String eol = isSelection ? "\n" : System.getProperty("line.separator");
 		// eol = "\n" si sélection, "\r\n" sinon pour un fichier windows et "\n" pour un fichier unix

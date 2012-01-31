@@ -133,7 +133,8 @@ public class MCsvWriter extends MPrinter {
 		// récupération des informations utiles
 		final int columnCount = table.getColumnModel().getColumnCount();
 		final int rowCount = table.getRowCount();
-		final Writer out = new OutputStreamWriter(outputStream);
+		final String charset = System.getProperty("file.encoding");
+		final Writer out = new OutputStreamWriter(outputStream, charset);
 
 		final char csvSeparator = CSV_SEPARATOR;
 		// le séparateur des .csv (',' à l'américaine)
