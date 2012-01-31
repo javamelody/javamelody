@@ -475,6 +475,7 @@
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<configuration>
 					<xmlOutput>true</xmlOutput>
+					<omitVisitors>DefaultEncodingDetector</omitVisitors>
 				</configuration>
 			</plugin>
 			<plugin>
