@@ -95,7 +95,8 @@ public class MCsvLocalWriter extends MCsvWriter {
 		final int columnCount = table.getColumnModel().getColumnCount();
 		final int rowCount = table.getRowCount();
 		// charset local
-		final Writer out = new OutputStreamWriter(outputStream);
+		final String charset = System.getProperty("file.encoding");
+		final Writer out = new OutputStreamWriter(outputStream, charset);
 
 		final String eol = System.getProperty("line.separator");
 

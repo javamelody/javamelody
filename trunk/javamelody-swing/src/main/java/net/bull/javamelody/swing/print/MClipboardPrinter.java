@@ -71,7 +71,8 @@ public class MClipboardPrinter extends MHtmlWriter {
 		final ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream(2048);
 		try {
 			writeHtml(table, byteArrayOut, true);
-			final StringSelection contents = new StringSelection(byteArrayOut.toString());
+			final String charset = System.getProperty("file.encoding");
+			final StringSelection contents = new StringSelection(byteArrayOut.toString(charset));
 			clipboard.setContents(contents, contents);
 		} catch (final IOException e) {
 			MSwingUtilities.showException(e);
