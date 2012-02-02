@@ -21,10 +21,6 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,13 +30,9 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
 
-import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.swing.table.MDoubleTableCellRenderer;
@@ -52,20 +44,13 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * Panel du tableau de requêtes dans le détail d'une requête.
  * @author Emeric Vernat
  */
-class CounterRequestDetailTablePanel extends MelodyPanel {
+class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final CounterRequest request;
 
 	@SuppressWarnings("all")
 	private final Map<String, Long> childRequestsExecutions;
-
-	private final Range range;
-
-	@SuppressWarnings("all")
-	private final List<Counter> counters;
-
-	private final MTable<CounterRequest> table;
 
 	private final class ChildValueTableCellRenderer extends MIntegerTableCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -182,16 +167,12 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 	CounterRequestDetailTablePanel(RemoteCollector remoteCollector, CounterRequest request,
 			Range range) throws IOException {
-		super(remoteCollector);
+		super(remoteCollector, range);
 		this.request = request;
 		this.childRequestsExecutions = request.getChildRequestsExecutionsByRequestId();
-		this.range = range;
-
-		this.counters = remoteCollector.getCollector().getRangeCountersToBeDisplayed(range);
 
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
-		this.table = new CounterRequestTable(remoteCollector);
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
 		final List<CounterRequest> requests = new ArrayList<CounterRequest>();
 		requests.add(request);
@@ -205,72 +186,15 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 				}
 			}
 		}
-		table.setList(requests);
-		Utilities.adjustTableHeight(table);
+		getTable().setList(requests);
+		Utilities.adjustTableHeight(getTable());
 		add(scrollPane, BorderLayout.CENTER);
 
 		add(createButtonsPanel(), BorderLayout.SOUTH);
 	}
 
-	private JPanel createButtonsPanel() {
-		// TODO traduction
-		final MButton openButton = new MButton("Ouvrir",
-				ImageIconCache.getImageIcon("action_open.png"));
-		openButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				final CounterRequest counterRequest = getTable().getSelectedObject();
-				try {
-					showRequestDetail(counterRequest);
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					openButton.doClick();
-				}
-			}
-		});
-		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				final CounterRequest counterRequest = getTable().getSelectedObject();
-				openButton.setEnabled(counterRequest != null
-						&& !counterRequest.equals(getRequest()));
-			}
-		});
-		openButton.setEnabled(false);
-
-		final MButton usagesButton = new MButton(I18N.getString("Chercher_utilisations"),
-				ImageIconCache.getImageIcon("find.png"));
-		usagesButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				final CounterRequest counterRequest = getTable().getSelectedObject();
-				try {
-					showRequestUsages(counterRequest);
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
-		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				final CounterRequest counterRequest = getTable().getSelectedObject();
-				usagesButton.setEnabled(counterRequest != null
-						&& doesRequestDisplayUsages(counterRequest));
-			}
-		});
-		usagesButton.setEnabled(false);
-		return Utilities.createButtonsPanel(openButton, usagesButton);
-	}
-
 	private MTableScrollPane<CounterRequest> createScrollPane() {
+		final MTable<CounterRequest> table = getTable();
 		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
 				table);
 
@@ -322,26 +246,12 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 	private Map<String, CounterRequest> mapAllRequestsById() {
 		final Map<String, CounterRequest> result = new HashMap<String, CounterRequest>();
-		for (final Counter counter : counters) {
+		for (final Counter counter : getCounters()) {
 			for (final CounterRequest counterRequest : counter.getRequests()) {
 				result.put(counterRequest.getId(), counterRequest);
 			}
 		}
 		return result;
-	}
-
-	final Counter getCounterByRequestId(CounterRequest counterRequest) {
-		return getRemoteCollector().getCollector().getCounterByRequestId(counterRequest);
-	}
-
-	final boolean doesRequestDisplayUsages(CounterRequest counterRequest) {
-		final Counter parentCounter = getCounterByRequestId(counterRequest);
-		return parentCounter != null && !parentCounter.isErrorCounter()
-				&& !Counter.HTTP_COUNTER_NAME.equals(parentCounter.getName());
-	}
-
-	final MTable<CounterRequest> getTable() {
-		return table;
 	}
 
 	final CounterRequest getRequest() {
@@ -350,17 +260,5 @@ class CounterRequestDetailTablePanel extends MelodyPanel {
 
 	final Long getChildRequestExecutions(CounterRequest counterRequest) {
 		return childRequestsExecutions.get(counterRequest.getId());
-	}
-
-	final void showRequestDetail(CounterRequest counterRequest) throws IOException {
-		final CounterRequestDetailPanel panel = new CounterRequestDetailPanel(getRemoteCollector(),
-				counterRequest, range);
-		MainPanel.addOngletFromChild(this, panel);
-	}
-
-	final void showRequestUsages(CounterRequest counterRequest) throws IOException {
-		final CounterRequestUsagesPanel panel = new CounterRequestUsagesPanel(getRemoteCollector(),
-				counterRequest, range);
-		MainPanel.addOngletFromChild(this, panel);
 	}
 }
