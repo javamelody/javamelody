@@ -228,6 +228,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Et redémarrer le serveur.
 	
 	Vous pouvez ensuite compléter le paramétrage comme ci-dessous en fonction des besoins.
+	Et avant de l'utiliser en production, vous voudrez probablement sécuriser la page de monitoring
+	par vos propres moyens ou allez au chapitre "Sécurité".
 
 ** 4. Génération de rapports PDF
 
@@ -920,8 +922,9 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 ** 16. Sécurité
 
-	La page de monitoring étant uniquement en consultation et ne contenant pas d'informations comme login ou mot de passe,
-	il n'est pas absolument nécessaire que cette page soit en accès restreint. Toutefois, il est possible de restreindre
+	La page de monitoring ne contient pas d'informations comme login ou mot de passe, mais avant de l'utiliser en
+	production, vous voudrez certainement que cette page soit en accès restreint. Vous pouvez la sécuriser 
+	par vos propres moyens. Autrement, il est possible de restreindre
 	son accès par une expression régulière sur l'adresse ip du client avec le paramètre <<<allowed-addr-pattern>>>
 	(expression régulière avec une plage d'adresses ip internes ou des adresses ip fixes d'administrateurs).
 	Par exemple, "172\.16\..*" pour autoriser les adresses IP comme "172.16.x.y".
