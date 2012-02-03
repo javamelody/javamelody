@@ -221,7 +221,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	if you use tomcat, you can add "java.awt.headless=true" in the file $CATALINA_HOME/conf/catalina.properties).
 	And restart the server.
 	
-	Then you can complete the settings as below according to your needs.
+	Then you can complete the settings as below according to your needs. And before using it in production,
+	you probably want to secure the monitoring page using your own means or see the security chapter.
 
 ** 4. PDF report generation
 
@@ -898,10 +899,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 ** 16. Security
 
-	The monitoring page is only in consultation and does not contain data such as login or password,
-	so it is not necessary for this page to be in restricted access. However, it is possible to restrict
-	its access by a regular expression on ip address of client with the parameter <<<allowed-addr-pattern>>>
-	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
+	The monitoring page does not contain data such as login or password, but before using it in production,
+	you may probably want that this page is in restricted access. You may secure it by using your own means.
+	Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter
+	<<<allowed-addr-pattern>>> (regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
 	For example, "172\.16\..*" to allow the ip addresses like "172.16.x.y".
 
 	If some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
