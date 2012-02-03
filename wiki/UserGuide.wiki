@@ -860,7 +860,7 @@ or
 
 === 16. Security ===
 
-	The monitoring page does not contain data such as login or password, but before using it in production, you may probably want that this page is in restricted access. You may secure it by using your own means. Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
+	The monitoring page does not contain data such as passwords, but before using it in production, you may probably want that this page is in restricted access. You may secure it by using your own means. Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
 	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
 	For example, "{{{172\.16\..*}}}" to allow the ip addresses like "{{{172.16.x.y}}}".
 
