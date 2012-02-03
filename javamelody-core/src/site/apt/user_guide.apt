@@ -922,7 +922,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 ** 16. Sécurité
 
-	La page de monitoring ne contient pas d'informations comme login ou mot de passe, mais avant de l'utiliser en
+	La page de monitoring ne contient pas d'informations comme mots de passe, mais avant de l'utiliser en
 	production, vous voudrez certainement que cette page soit en accès restreint. Vous pouvez la sécuriser 
 	par vos propres moyens. Autrement, il est possible de restreindre
 	son accès par une expression régulière sur l'adresse ip du client avec le paramètre <<<allowed-addr-pattern>>>
@@ -1029,7 +1029,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	<dependency>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-core</artifactId>
-		<version>1.30.0</version>
+		<version>1.34.0</version>
 	</dependency>
 	<!-- itext, option to add PDF export -->
 	<dependency>
@@ -1051,20 +1051,6 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 			</exclusion>
 		</exclusions>
 	</dependency>
-	...
-	<repositories>
-		<!-- for javamelody and for jrobin -->
-		<repository>
-			<id>m.g.o-public</id>
-			<url>http://maven.glassfish.org/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 +-------------------------------+
 
 	Les dépendances jrobin (inclus avec javamelody-core) et si souhaité <<<xstream>>>
