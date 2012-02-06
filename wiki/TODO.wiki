@@ -56,6 +56,7 @@ And
   # Add a plugin interceptor to monitor sql requests in mybatis when no other sql monitoring, such as a datasource from JNDI, is used
   # Play framework, see [http://stackoverflow.com/questions/7409112/javamelody-and-play-framework stackoverflow]
   # Extract informations from bonecp such as max connections like from dbcp
+  # Possibility to add graphics based on configurable MBeans values (such as business metrics)
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
