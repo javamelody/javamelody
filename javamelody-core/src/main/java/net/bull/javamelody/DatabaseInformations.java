@@ -75,7 +75,9 @@ class DatabaseInformations implements Serializable {
 								"rollbackSegmentStatistics", "statistics", "events");
 				break;
 			case DB2:
-				tmp = Arrays.asList("current_queries");
+				tmp = Arrays.asList("mon_current_sql", "mon_db_summary", "mon_lockwaits",
+						"mon_service_subclass_summary", "mon_current_uow", "mon_workload_summary",
+						"mon_get_connection", "current_queries");
 				break;
 			case H2:
 				tmp = Arrays.asList("memory", "sessions", "locks", "settings");
