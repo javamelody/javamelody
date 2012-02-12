@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * Jenkins/Hudson monitoring plugin: Add graphic of "Build queue length" in the monitoring of nodes, next to the graphic of "Running builds" (revision 2515)
+
 === 1.34.0 ===
 
   * fix issue 121 and issue 175: Incompatibility with *Quartz 2* (thanks to _rogerc at costumercentrix.com_)
