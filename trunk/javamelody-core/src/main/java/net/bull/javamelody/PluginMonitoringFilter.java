@@ -35,7 +35,7 @@ import javax.servlet.http.HttpSession;
  * @author Emeric Vernat
  */
 public abstract class PluginMonitoringFilter extends MonitoringFilter {
-	private final SessionListener emulatedSessionListener = new SessionListener();
+	private final SessionListener emulatedSessionListener = new SessionListener(true);
 
 	/** {@inheritDoc} */
 	@Override
