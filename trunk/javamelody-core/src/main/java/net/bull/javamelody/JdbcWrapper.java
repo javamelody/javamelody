@@ -63,6 +63,7 @@ public final class JdbcWrapper {
 	static final AtomicLong TRANSACTION_COUNT = new AtomicLong();
 	static final AtomicInteger ACTIVE_THREAD_COUNT = new AtomicInteger();
 	static final AtomicInteger RUNNING_BUILD_COUNT = new AtomicInteger();
+	static final AtomicInteger BUILD_QUEUE_LENGTH = new AtomicInteger();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
 
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
@@ -280,6 +281,10 @@ public final class JdbcWrapper {
 
 	static int getRunningBuildCount() {
 		return RUNNING_BUILD_COUNT.get();
+	}
+
+	static int getBuildQueueLength() {
+		return BUILD_QUEUE_LENGTH.get();
 	}
 
 	static List<ConnectionInformations> getConnectionInformationsList() {

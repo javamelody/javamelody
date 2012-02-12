@@ -440,6 +440,7 @@ class Collector { // NOPMD
 		// pour le graphique
 		if (getCounterByName(Counter.BUILDS_COUNTER_NAME) != null) {
 			getCounterJRobin("runningBuilds").addValue(JdbcWrapper.getRunningBuildCount());
+			getCounterJRobin("buildQueueLength").addValue(JdbcWrapper.getBuildQueueLength());
 		}
 	}
 
