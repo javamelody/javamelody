@@ -58,6 +58,7 @@ final class Parameters {
 	private static ServletContext servletContext;
 	private static String lastConnectUrl;
 	private static Properties lastConnectInfo;
+	private static boolean dnsLookupDisabled;
 
 	private Parameters() {
 		super();
@@ -77,6 +78,8 @@ final class Parameters {
 					+ JAVA_VERSION);
 		}
 		servletContext = context;
+
+		dnsLookupDisabled = Boolean.parseBoolean(getParameter(Parameter.DNS_LOOKUPS_DISABLED));
 	}
 
 	static void initJdbcDriverParameters(String connectUrl, Properties connectInfo) {
@@ -208,6 +211,10 @@ final class Parameters {
 	 * @return nom réseau de la machine
 	 */
 	static String getHostName() {
+		if (dnsLookupDisabled) {
+			return "localhost";
+		}
+
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException ex) {
@@ -219,6 +226,10 @@ final class Parameters {
 	 * @return adresse ip de la machine
 	 */
 	static String getHostAddress() {
+		if (dnsLookupDisabled) {
+			return "127.0.0.1"; // NOPMD
+		}
+
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (final UnknownHostException ex) {
