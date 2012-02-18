@@ -219,7 +219,12 @@ public enum Parameter {
 	/**
 	 * Expérimental, ne pas utiliser.
 	 */
-	CONTEXT_FACTORY_ENABLED("context-factory-enabled");
+	CONTEXT_FACTORY_ENABLED("context-factory-enabled"),
+
+	/**
+	 * true | false, false will return localhost/127.0.0.1 for hostname/hostaddress, true will attempt dns lookup, default true.
+	 */
+	DNS_LOOKUPS_DISABLED("dns-lookups-disabled");
 
 	private final String code;
 
