@@ -1,10 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix issue 178: In Jenkins/Hudson plugin and in JIRA/Confluence/Bamboo plugin, since v1.32, "Nb of http sessions" is 0 and "View http sessions" is always empty.
-  * Jenkins/Hudson monitoring plugin: Add graphic of "Build queue length" in the monitoring of nodes, next to the graphic of "Running builds" (revision 2515)
-  * added some "database reports" for DB2, in the "System information" part: MON_CURRENT_SQL, MON_DB_SUMMARY, MON_LOCKWAITS, MON_SERVICE_SUBCLASS_SUMMARY, MON_CURRENT_UOW, MON_WORKLOAD_SUMMARY, MON_GET_CONNECTION and fix of SNAPSHOT_DYN_SQL (issue 179, thanks to _Peter James and his DBA from humanservices.gov.au_)
-  * added a parameter to allow disabling of dns lookups with InetAddress.getLocalHost() to prevent long hangs on startup/shutdown (issue 181, thanks to _r6squeegee_)
+  * fix issue 178: In [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins/Hudson plugin] and in [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin], since v1.32, "Nb of http sessions" is 0 and "View http sessions" is always empty.
+  * [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins/Hudson monitoring plugin]: Add graphic of "Build queue length" in the monitoring of nodes, next to the graphic of "Running builds" (revision 2515)
+  * added some "database reports" for *DB2*, in the "System information" part: MON_CURRENT_SQL, MON_DB_SUMMARY, MON_LOCKWAITS, MON_SERVICE_SUBCLASS_SUMMARY, MON_CURRENT_UOW, MON_WORKLOAD_SUMMARY, MON_GET_CONNECTION and fix of SNAPSHOT_DYN_SQL (issue 179, thanks to _Peter James and his DBA from humanservices.gov.au_)
+  * added a parameter to allow disabling of dns lookups with InetAddress.getLocalHost() to prevent long hangs on startup/shutdown in some particular environments (issue 181, thanks to _r6squeegee_)
   * added: in the [http://www.grails.org/plugin/grails-melody Grails Melody plugin], read the configuration parameters from both Config.groovy and GrailsMelodyConfig.groovy (issue 180, thanks to _padcom_)
 
 === 1.34.0 ===
