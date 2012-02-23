@@ -219,7 +219,25 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		if (session == null) {
 			return null;
 		}
-		return session.getAttribute(LOGGED_IN_KEY);
+		Object result = session.getAttribute(LOGGED_IN_KEY);
+		if (result != null
+				&& "com.atlassian.confluence.user.SessionSafePrincipal".equals(result.getClass()
+						.getName())) {
+			// since confluence 4.1.4 (or 4.1.?)
+			final String userName = result.toString();
+			// note: httpRequest.getRemoteUser() null in general
+			try {
+				final Class<?> containerManagerClass = Class
+						.forName("com.atlassian.spring.container.ContainerManager");
+				final Object userAccessor = containerManagerClass.getMethod("getComponent",
+						String.class).invoke(null, "userAccessor");
+				result = userAccessor.getClass().getMethod("getUser", String.class)
+						.invoke(userAccessor, userName);
+			} catch (final Exception e) {
+				throw new IllegalStateException(e);
+			}
+		}
+		return result;
 	}
 
 	private static boolean isJira() {
