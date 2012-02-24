@@ -180,8 +180,8 @@
 		<!-- Description Jira/Confluence/Bamboo pour le plugin.
 		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
 		<copy file="src/main/jira/atlassian-plugin.xml" todir="build/" overwrite="true" />
-		<replace file="build/atlassian-plugin.xml" propertyFile="VERSION.properties">
-			<replacefilter token="${version}" property="version" />
+		<replace file="build/atlassian-plugin.xml" propertyFile="VERSION.properties" failOnNoReplacements="true">
+			<replacefilter token="@version@" property="version" />
 		</replace>
 		<delete file="jira-javamelody.jar" />
 		<jar destfile="jira-javamelody.jar">
