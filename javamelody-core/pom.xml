@@ -161,10 +161,8 @@
 			<version>1.2.2</version>
 			<optional>true</optional>
 		</dependency>
-		<!--
-			Dépendance optionnelle spring aop (qui inclus spring core, spring
-			beans, aop alliance et commons-logging)
-		-->
+		<!-- Dépendance optionnelle spring aop (qui inclus spring core, spring 
+			beans, aop alliance et commons-logging) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -251,17 +249,12 @@
 	</repositories>
 
 	<distributionManagement>
-		<!--
-			"mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn,
-			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy"
-			suffit, https://maven2-repository.dev.java.net/
-			http://wiki.hudson-ci.org/display/HUDSON/Hosting+Plugins
-		-->
+		<!-- "mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn, 
+			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit, https://maven2-repository.dev.java.net/ 
+			http://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins -->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>java.net-m2-repository</id>
-			<!--
-				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url url>java-net:/maven2-repository/trunk/repository/</url -->
 			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
@@ -284,21 +277,15 @@
 				<version>1.9</version>
 			</extension>
 		</extensions>
-		<!--
-			/!\ Maven >= 3.0 :
-			http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
-
-			<sourceEncoding>UTF-8</sourceEncoding>
-		-->
+		<!-- /!\ Maven >= 3.0 : http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding 
+			<sourceEncoding>UTF-8</sourceEncoding> -->
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
 			</resource>
-			<!--
-				uniquement pour inclure les fichiers de licence et user_guide dans
-				le jar produit par maven (celui qui contient pom.properties et
-				pom.xml avec la version)
-			-->
+			<!-- uniquement pour inclure les fichiers de licence et user_guide dans 
+				le jar produit par maven (celui qui contient pom.properties et pom.xml avec 
+				la version) -->
 			<resource>
 				<directory>${project.basedir}</directory>
 				<includes>
