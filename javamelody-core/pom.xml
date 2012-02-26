@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
@@ -73,18 +74,18 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>2.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-		<dependency>
-				<groupId>javax.faces</groupId>
-				<artifactId>javax.faces-api</artifactId>
-				<version>2.1</version>
-    			<scope>provided</scope>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
 		</dependency>
- 		<dependency>
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>javax.faces-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
@@ -330,11 +331,8 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<!--
-				pour produire un jar lors du goal package comme celui produit par
-				ant mais avec pom.properties et pom.xml pour publication dans un
-				repository
-			-->
+			<!-- pour produire un jar lors du goal package comme celui produit par 
+				ant mais avec pom.properties et pom.xml pour publication dans un repository -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -379,8 +377,10 @@
 						<configuration>
 							<tasks>
 								<!-- écrit la version du pom dans VERSION.properties -->
-								<echo message="# Version of JavaMelody${line.separator}" file="VERSION.properties" />
-								<echo message="version=${project.version}${line.separator}" append="true" file="VERSION.properties" />
+								<echo message="# Version of JavaMelody${line.separator}"
+									file="VERSION.properties" />
+								<echo message="version=${project.version}${line.separator}"
+									append="true" file="VERSION.properties" />
 								<copy file="VERSION.properties" tofile="target/classes/VERSION.properties" />
 
 								<!-- appel de Ant et copie du résultat dans le site -->
@@ -440,12 +440,8 @@
 		</plugins>
 	</build>
 	<reporting>
-		<!--
-			/!\ Maven >= 2.1 :
-			http://docs.codehaus.org/display/MAVEN/Reporting+Encoding+Configuration
-
-			<outputEncoding>UTF-8</outputEncoding>
-		-->
+		<!-- /!\ Maven >= 2.1 : http://docs.codehaus.org/display/MAVEN/Reporting+Encoding+Configuration 
+			<outputEncoding>UTF-8</outputEncoding> -->
 		<plugins>
 			<!-- Javadoc -->
 			<plugin>
