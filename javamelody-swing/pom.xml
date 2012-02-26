@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<!--
 	<parent>
@@ -111,17 +112,12 @@
 	</dependencies>
 
 	<distributionManagement>
-		<!--
-			"mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn,
-			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy"
-			suffit, https://maven2-repository.dev.java.net/
-			http://wiki.hudson-ci.org/display/HUDSON/Hosting+Plugins
-		-->
+		<!-- "mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn, 
+			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit, https://maven2-repository.dev.java.net/ 
+			http://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins -->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>java.net-m2-repository</id>
-			<!--
-				url>svn:https://svn.dev.java.net/svn/maven2-repository/trunk/www/repository/</url url>java-net:/maven2-repository/trunk/repository/</url -->
 			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
@@ -144,12 +140,8 @@
 				<version>1.9</version>
 			</extension>
 		</extensions>
-		<!--
-			/!\ Maven >= 3.0 :
-			http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
-
-			<sourceEncoding>UTF-8</sourceEncoding>
-		-->
+		<!-- /!\ Maven >= 3.0 : http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding 
+			<sourceEncoding>UTF-8</sourceEncoding> -->
 		<plugins>
 			<!-- Configuration compilation -->
 			<plugin>
@@ -201,12 +193,8 @@
 		</plugins>
 	</build>
 	<reporting>
-		<!--
-			/!\ Maven >= 2.1 :
-			http://docs.codehaus.org/display/MAVEN/Reporting+Encoding+Configuration
-
-			<outputEncoding>UTF-8</outputEncoding>
-		-->
+		<!-- /!\ Maven >= 2.1 : http://docs.codehaus.org/display/MAVEN/Reporting+Encoding+Configuration 
+			<outputEncoding>UTF-8</outputEncoding> -->
 		<plugins>
 			<!-- Javadoc -->
 			<plugin>
