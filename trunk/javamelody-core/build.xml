@@ -251,11 +251,11 @@
 			</classpath>
 			<compilerarg value="-Xlint" />
 		</javac>
-		<delete dir="build/test-results"/>
+		<delete dir="build/test-results" />
 		<mkdir dir="build/test-results" />
 		<junit printsummary="true" showoutput="false">
 			<formatter type="plain" usefile="false" />
-			<formatter type="xml"/>
+			<formatter type="xml" />
 			<classpath>
 				<path path="build/test-classes" />
 				<path path="build/classes" />
