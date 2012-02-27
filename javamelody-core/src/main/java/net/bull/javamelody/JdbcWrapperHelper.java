@@ -287,7 +287,8 @@ final class JdbcWrapperHelper {
 			NamingException {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
 		assert servletContext != null;
-		if (servletContext.getServerInfo().contains("Tomcat")
+		final String serverInfo = servletContext.getServerInfo();
+		if ((serverInfo.contains("Tomcat") || serverInfo.contains("vFabric"))
 				&& System.getProperty("jonas.name") == null) {
 			// on n'exécute cela que si c'est tomcat
 			// et si ce n'est pas tomcat dans jonas
@@ -316,7 +317,7 @@ final class JdbcWrapperHelper {
 			readOnlyContexts.putAll(myLock);
 
 			return null;
-		} else if (servletContext.getServerInfo().contains("jetty")) {
+		} else if (serverInfo.contains("jetty")) {
 			// on n'exécute cela que si c'est jetty
 			final Context jdbcContext = (Context) new InitialContext().lookup("java:comp");
 			final Field field = getAccessibleField(jdbcContext, "_env");
