@@ -4,6 +4,7 @@
   * fix issue 185: In [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin], fix the compatibility of checking the admin permission with Confluence 4.1.4 and after.
   * fix: In the plugin managers of JIRA/Confluence/Bamboo, display the correct version of the plugin (revision 2530)
   * fix issue 178: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins/Hudson plugin] and in [https://plugins.atlassian.com/plugin/details/20909 JIRA/Confluence/Bamboo plugin], since v1.32, "Nb of http sessions" is 0 and "View http sessions" is always empty.
+  * fix [https://groups.google.com/group/javamelody/browse_thread/thread/aa7198fab0ccbd51 JNDI error] in the vFabric server (revision 2540)
   * added: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins/Hudson plugin], new graphic of "Build queue length" in the monitoring of nodes, next to the graphic of "Running builds" (revision 2515)
   * added some "database reports" for *DB2*, in the "System information" part: MON_CURRENT_SQL, MON_DB_SUMMARY, MON_LOCKWAITS, MON_SERVICE_SUBCLASS_SUMMARY, MON_CURRENT_UOW, MON_WORKLOAD_SUMMARY, MON_GET_CONNECTION and fix of SNAPSHOT_DYN_SQL (issue 179, thanks to _Peter James and his DBA from humanservices.gov.au_)
   * added a parameter to allow disabling of dns lookups with InetAddress.getLocalHost() to prevent long hangs on startup/shutdown in some particular environments (issue 181, thanks to _r6squeegee_)
