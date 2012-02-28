@@ -172,7 +172,7 @@ public class MonitoringFilter implements Filter {
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		boolean systemError = false;
 		Throwable systemException = null;
-		String requestName = getCompleteRequestName(wrappedRequest, false);
+		String requestName = getRequestName(wrappedRequest);
 		final String completeRequestName = getCompleteRequestName(wrappedRequest, true);
 		try {
 			JdbcWrapper.ACTIVE_THREAD_COUNT.incrementAndGet();
@@ -243,6 +243,10 @@ public class MonitoringFilter implements Filter {
 				CounterError.unbindRequest();
 			}
 		}
+	}
+
+	protected String getRequestName(HttpServletRequest request) {
+		return getCompleteRequestName(request, false);
 	}
 
 	protected final String getMonitoringUrl(HttpServletRequest httpRequest) {

@@ -98,7 +98,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	 * @return Proxy de la façade
 	 */
 	public static <T> T createProxy(T facade) {
-		return JdbcWrapper.createProxy(facade, new MonitoringProxy(facade));
+		return createProxy(facade, new MonitoringProxy(facade));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	 * @return Proxy de la façade
 	 */
 	public static <T> T createProxy(T facade, String name) {
-		return JdbcWrapper.createProxy(facade, new MonitoringProxy(facade, name));
+		return createProxy(facade, new MonitoringProxy(facade, name));
 	}
 
 	static Counter getServicesCounter() {
@@ -149,12 +149,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 			return method.invoke(facade, args);
 		}
 		// nom identifiant la requête
-		final String requestName;
-		if (name == null) {
-			requestName = method.getDeclaringClass().getSimpleName() + '.' + method.getName();
-		} else {
-			requestName = name + '.' + method.getName();
-		}
+		final String requestName = getRequestName(method);
 
 		boolean systemError = false;
 		try {
@@ -171,5 +166,23 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 			// on enregistre la requête dans les statistiques
 			SERVICES_COUNTER.addRequestForCurrentContext(systemError);
 		}
+	}
+
+	protected String getRequestName(Method method) {
+		final String requestName;
+		if (name == null) {
+			requestName = method.getDeclaringClass().getSimpleName() + '.' + method.getName();
+		} else {
+			requestName = name + '.' + method.getName();
+		}
+		return requestName;
+	}
+
+	protected String getName() {
+		return name;
+	}
+
+	protected static <T> T createProxy(T facade, MonitoringProxy monitoringProxy) {
+		return JdbcWrapper.createProxy(facade, monitoringProxy);
 	}
 }

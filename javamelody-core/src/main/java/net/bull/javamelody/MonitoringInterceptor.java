@@ -65,9 +65,7 @@ public class MonitoringInterceptor implements Serializable {
 			return context.proceed();
 		}
 		// nom identifiant la requête
-		final Method method = context.getMethod();
-		final String requestName = method.getDeclaringClass().getSimpleName() + '.'
-				+ method.getName();
+		final String requestName = getRequestName(context);
 
 		boolean systemError = false;
 		try {
@@ -82,5 +80,18 @@ public class MonitoringInterceptor implements Serializable {
 			// on enregistre la requête dans les statistiques
 			EJB_COUNTER.addRequestForCurrentContext(systemError);
 		}
+	}
+
+	/**
+	 * Determine request name for an invocation context.
+	 *
+	 * @param context the invocation context (not null)
+	 * @return the request name for this invocation
+	 */
+	protected String getRequestName(InvocationContext context) {
+		final Method method = context.getMethod();
+		final String requestName = method.getDeclaringClass().getSimpleName() + '.'
+				+ method.getName();
+		return requestName;
 	}
 }

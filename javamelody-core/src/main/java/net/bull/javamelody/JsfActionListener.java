@@ -55,18 +55,7 @@ public class JsfActionListener extends ActionListenerImpl {
 
 		boolean systemError = false;
 		try {
-			final String actionName;
-			if (event.getComponent() instanceof ActionSource2) {
-				// actionSource est une UICommand en général
-				final ActionSource2 actionSource = (ActionSource2) event.getComponent();
-				if (actionSource.getActionExpression() != null) {
-					actionName = actionSource.getActionExpression().getExpressionString();
-				} else {
-					actionName = actionSource.getClass().getName();
-				}
-			} else {
-				actionName = event.getComponent().getClass().getName();
-			}
+			final String actionName = getRequestName(event);
 
 			JSF_COUNTER.bindContextIncludingCpu(actionName);
 
@@ -81,5 +70,21 @@ public class JsfActionListener extends ActionListenerImpl {
 			// on enregistre la requête dans les statistiques
 			JSF_COUNTER.addRequestForCurrentContext(systemError);
 		}
+	}
+
+	protected String getRequestName(ActionEvent event) {
+		final String actionName;
+		if (event.getComponent() instanceof ActionSource2) {
+			// actionSource est une UICommand en général
+			final ActionSource2 actionSource = (ActionSource2) event.getComponent();
+			if (actionSource.getActionExpression() != null) {
+				actionName = actionSource.getActionExpression().getExpressionString();
+			} else {
+				actionName = actionSource.getClass().getName();
+			}
+		} else {
+			actionName = event.getComponent().getClass().getName();
+		}
+		return actionName;
 	}
 }
