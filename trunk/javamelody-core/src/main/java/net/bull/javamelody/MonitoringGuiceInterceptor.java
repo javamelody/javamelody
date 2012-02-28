@@ -62,7 +62,7 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 			return invocation.proceed();
 		}
 		// nom identifiant la requête
-		final String requestName = getMonitorName(invocation);
+		final String requestName = getRequestName(invocation);
 
 		boolean systemError = false;
 		try {
@@ -80,12 +80,12 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 	}
 
 	/**
-	 * Determine monitor name for a method invocation.
+	 * Determine request name for a method invocation.
 	 *
 	 * @param invocation the method invocation (not null)
-	 * @return the monitor name for this invocation
+	 * @return the request name for this invocation
 	 */
-	private static String getMonitorName(MethodInvocation invocation) {
+	protected String getRequestName(MethodInvocation invocation) {
 		final String classPart = getClassPart(invocation);
 		final String methodPart = getMethodPart(invocation);
 		return classPart + '.' + methodPart;

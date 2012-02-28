@@ -62,17 +62,7 @@ public final class StrutsInterceptor extends AbstractInterceptor {
 		boolean systemError = false;
 		try {
 			// Requested action name.
-			// final String actionName = invocation.getInvocationContext().getName();
-			final String actionName;
-			final ActionProxy proxy = invocation.getProxy();
-			final String action = proxy.getActionName();
-			final String method = proxy.getMethod();
-			final String namespace = proxy.getNamespace();
-			if (method == null || "execute".equals(method)) {
-				actionName = namespace + '/' + action;
-			} else {
-				actionName = namespace + '/' + action + '!' + method;
-			}
+			final String actionName = getRequestName(invocation);
 
 			STRUTS_COUNTER.bindContextIncludingCpu(actionName);
 			return invocation.invoke();
@@ -85,5 +75,20 @@ public final class StrutsInterceptor extends AbstractInterceptor {
 			// on enregistre la requête dans les statistiques
 			STRUTS_COUNTER.addRequestForCurrentContext(systemError);
 		}
+	}
+
+	protected String getRequestName(ActionInvocation invocation) {
+		// final String actionName = invocation.getInvocationContext().getName();
+		final String actionName;
+		final ActionProxy proxy = invocation.getProxy();
+		final String action = proxy.getActionName();
+		final String method = proxy.getMethod();
+		final String namespace = proxy.getNamespace();
+		if (method == null || "execute".equals(method)) {
+			actionName = namespace + '/' + action;
+		} else {
+			actionName = namespace + '/' + action + '!' + method;
+		}
+		return actionName;
 	}
 }
