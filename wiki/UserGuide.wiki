@@ -80,15 +80,15 @@ or MSIE8 (MSIE7 not recommended).
 [http://www.slideshare.net/djkarlsen/significance-of-metrics Roots conference slides by David Karlsen]
 
 
-== Hudson / Jenkins Plugin ==
+== Jenkins / Hudson Plugin ==
 
-	If you want to monitor a [http://hudson-ci.org/ Hudson] server or a [http://jenkins-ci.org/ Jenkins] server, you can install JavaMelody by pointing and clicking with a [http://wiki.jenkins-ci.org/display/Jenkins/Monitoring Hudson / Jenkins plugin]. For this, open Hudson / Jenkins and click "Manage Hudson / Jenkins", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Hudson / Jenkins after the installation of the plugin. You can then open the report from the "Manage Hudson / Jenkins" page or from the address {{{http://yourhost/monitoring}}}. You can also open the report for the nodes from the address {{{http://yourhost/monitoring/nodes}}}. That's it.
+	If you want to monitor a [http://jenkins-ci.org/ Jenkins] server or a [http://hudson-ci.org/ Hudson] server, you can install JavaMelody by pointing and clicking with a [http://wiki.jenkins-ci.org/display/Jenkins/Monitoring Jenkins / Hudson plugin]. For this, open Jenkins / Hudson and click "Manage Jenkins / Hudson", "Manage plugins", "Available" then check the plugin called "Monitoring" and click the "Install" button at the bottom of the page. Restart Jenkins / Hudson after the installation of the plugin. You can then open the report from the "Manage Jenkins / Hudson" page or from the address {{{http://yourhost/monitoring}}}. You can also open the report for the nodes from the address {{{http://yourhost/monitoring/nodes}}}. That's it.
 
 == Atlassian JIRA, Confluence and Bamboo Plugin ==
 
 	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA],
 	[http://www.atlassian.com/software/confluence/ Confluence] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily
-	with a JIRA/Confluence/Bamboo plugin. For this, [https://plugins.atlassian.com/plugin/details/20909 download] the jar file of the plugin
+	with a JIRA/Confluence/Bamboo plugin. For this, [https://plugins.atlassian.com/plugins/net.bull.javamelody download] the jar file of the plugin
 	and copy the file in the "{{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}}" directory for JIRA, in "{{{Bamboo/webapp/WEB-INF/lib}}}" for Bamboo or with the "Plugin manager" in the "Administration" menu for Confluence.
 
 	Restart the server.
