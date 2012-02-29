@@ -15,6 +15,7 @@
   * [http://olamy.blogspot.com/2009/11/using-javamelody-in-your-application.html Olivier Lamy (Maven PMC)]
   * [http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/ Touk on monitoring Spring services when using AspectJ]
   * [http://sourceforge.net/apps/wordpress/cia/2010/03/04/javamelody-for-chilled-application-monitoring/ Pether Sörling]
+  * [http://kualigan.blogspot.com/2012/02/adding-java-melody-to-kuali-project.html Adding JavaMelody to a Kuali project, Kualigan]
   * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
   * [http://panbhatt.blogspot.com/2011/01/monitoring-your-server-java.html Panbhatt]
   * [http://looking4q.blogspot.com/2011/01/monitorize-your-own-applications-with.html Alberto]
