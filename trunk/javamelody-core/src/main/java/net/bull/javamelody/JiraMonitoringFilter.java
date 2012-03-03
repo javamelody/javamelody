@@ -195,15 +195,25 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object bambooPermissionManager = containerManagerClass.getMethod("getComponent",
 					String.class).invoke(null, "bambooPermissionManager");
-			final Class<?> globalApplicationSecureObjectClass = Class
-					.forName("com.atlassian.bamboo.security.GlobalApplicationSecureObject");
-			final Object globalApplicationSecureObject = globalApplicationSecureObjectClass
-					.getField("INSTANCE").get(null);
-			final Boolean result = (Boolean) bambooPermissionManager
-					.getClass()
-					.getMethod("hasPermission", String.class, String.class, Object.class)
-					.invoke(bambooPermissionManager, user.toString(), "ADMIN",
-							globalApplicationSecureObject);
+
+			Boolean result;
+			try {
+				// since Bamboo 3.1 (issue 192):
+				result = (Boolean) bambooPermissionManager.getClass()
+						.getMethod("isSystemAdmin", String.class)
+						.invoke(bambooPermissionManager, user.toString());
+			} catch (final NoSuchMethodException e) {
+				// before Bamboo 3.1 (issue 192):
+				final Class<?> globalApplicationSecureObjectClass = Class
+						.forName("com.atlassian.bamboo.security.GlobalApplicationSecureObject");
+				final Object globalApplicationSecureObject = globalApplicationSecureObjectClass
+						.getField("INSTANCE").get(null);
+				result = (Boolean) bambooPermissionManager
+						.getClass()
+						.getMethod("hasPermission", String.class, String.class, Object.class)
+						.invoke(bambooPermissionManager, user.toString(), "ADMIN",
+								globalApplicationSecureObject);
+			}
 			return result;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
