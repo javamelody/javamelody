@@ -97,6 +97,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	public SessionListener(boolean instanceEnabled) {
 		super();
 		this.instanceEnabled = instanceEnabled;
+		setInstanceCreated(true);
 	}
 
 	private static void setInstanceCreated(boolean newInstanceCreated) {
