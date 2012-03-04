@@ -316,7 +316,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 == Deployment on Tomcat without modification of monitored webapps (beta) ==
 
 	If there is one or several webapp(s) to monitor which are deployed on Tomcat 6,
-	it is possible to monitor this or these webapp(s) without modification of this or these webapp(s).
+	it is possible to monitor this or these webapp(s) without modification of this or these webapp(s), except that it may not work well since javamelody 1.32 and the fix for issue 147.
 	That is to say without modification of the war file or of the directory of these webapps.
 	
 	For this, copy the files {{{javamelody.jar}}} and {{{jrobin-x.jar}}} and optionally {{{itext-x.jar}}} in the lib directory of Tomcat 6 (and not in the WEB-INF/lib directories of the webapps).
