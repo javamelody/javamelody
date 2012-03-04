@@ -864,7 +864,7 @@ or
 	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
 	For example, "{{{192\.168\..*}}}|123\.123\.123\.123" to allow the ip addresses in the "{{{192.168.*.*}}}" range plus any pc hiding behind the gateway 123.123.123.123.
 
-	Note that if you use a http proxy server like Apache in front of the server, the ip address of the client will be the one of Apache. So you may not use allowed-addr-pattern in this case, or do not use Apache for this page, or you may enable mod_proxy_ajp in order that the monitored server knows the ip address of the clients. Example of httpd conf:
+	Note that if you use a http proxy server like Apache in front of the server, the ip address of the client will be the one of Apache. So you may not use allowed-addr-pattern in this case, or do not use Apache to access this page, or you may enable mod_proxy_ajp in order that the monitored server knows the ip address of the clients. Example of httpd conf:
 
 {{{
 	<location /webapp>
