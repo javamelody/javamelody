@@ -247,7 +247,9 @@ class DatabaseInformations implements Serializable {
 				.values();
 		if (!dataSources.isEmpty()) {
 			final Connection connection = dataSources.iterator().next().getConnection();
-			connection.setAutoCommit(false);
+			// on ne doit pas changer autoCommit pour la connection d'une DataSource
+			// (ou alors il faudrait remettre l'autoCommit après, issue 189)
+			// connection.setAutoCommit(false);
 			return connection;
 		}
 		return null;
