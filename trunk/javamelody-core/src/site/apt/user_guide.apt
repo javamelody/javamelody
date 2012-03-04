@@ -927,10 +927,22 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	par vos propres moyens. Autrement, il est possible de restreindre
 	son accès par une expression régulière sur l'adresse ip du client avec le paramètre <<<allowed-addr-pattern>>>
 	(expression régulière avec une plage d'adresses ip internes ou des adresses ip fixes d'administrateurs).
-	Par exemple, "172\.16\..*" pour autoriser les adresses IP comme "172.16.x.y".
-	Ce paramètre se définit comme les autres paramètres ci-dessus.
+	Par exemple, "192\.168\..*|123\.123\.123\.123" pour autoriser les adresses IP comme "192.168.*.*"
+	et tout pc se cachant derrière la passerelle 123.123.123.123. 
+
+    En remarque, si un serveur proxy http comme Apache est utilisé devant le serveur,
+    l'adresse ip du client sera celle d'Apache. Dans ce cas, ne pas utiliser <<<allowed-addr-pattern>>>,
+    ou ne pas utiliser Apache pour accéder à cette page, ou bien il est possible d'activer mod_proxy_ajp
+    afin que le serveur monitoré connaisse les adresses ip des clients.
+    Exemple de configuration httpd avec ajp :
+
++-------------------------------+
+	<location /webapp>
+		ajp://localhost:8080/webapp
+	</location> 
++-------------------------------+
 	
-	Si des <<<security-constraint>>> et <<<security-role>>>(s) sont définis dans le fichier <<<web.xml>>> de l'application, il vous est
+	Ou si des <<<security-constraint>>> et <<<security-role>>>(s) sont définis dans le fichier <<<web.xml>>> de l'application, il vous est
 	également possible dans ce fichier <<<web.xml>>> de restreindre l'accès à la page de monitoring au rôle "monitoring" par exemple
 	(sauf si un serveur de collecte est utilisé comme indiqué dans le chapitre suivant, auquel cas il convient d'utiliser
 	le paramètre allowed-addr-pattern).

@@ -903,9 +903,22 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	you may probably want that this page is in restricted access. You may secure it by using your own means.
 	Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter
 	<<<allowed-addr-pattern>>> (regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
-	For example, "172\.16\..*" to allow the ip addresses like "172.16.x.y".
+	For example, "192\.168\..*|123\.123\.123\.123" to allow the ip addresses in the "192.168.*.*" range
+	plus any pc hiding behind the gateway 123.123.123.123. 
 
-	If some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
+    Note that if you use a http proxy server like Apache in front of the server,
+    the ip address of the client will be the one of Apache. So you may not use
+    <<<allowed-addr-pattern>>> in this case, or do not use Apache to access this page,
+    or you may enable mod_proxy_ajp in order that the monitored server knows the ip address of the clients.
+    Example of httpd conf with ajp: 
+
++-------------------------------+
+	<location /webapp>
+		ajp://localhost:8080/webapp
+	</location> 
++-------------------------------+
+
+	Or if some <<<security-constraint>>> et <<<security-role>>>(s) are defined in the <<<web.xml>>> file of the application,
 	you can also restrict in the <<<web.xml>>> file the access to the monitoring page to "monitoring" role
 	for example (except if a collect server is used as written in the following chapter, in which case
 	the parameter <<<allowed-addr-pattern>>> could be used).
@@ -941,11 +954,11 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	For example, if tomcat is used with the default realm, modify the content of the conf/tomcat-users.xml file as follows:
 	
 +-------------------------------+
-<?xml version='1.0' encoding='utf-8'?>
-<tomcat-users>
-  <role rolename="monitoring"/>
-  <user username="monitoring" password="monitoring" roles="monitoring"/>
-</tomcat-users>
+	<?xml version='1.0' encoding='utf-8'?>
+	<tomcat-users>
+	  <role rolename="monitoring"/>
+	  <user username="monitoring" password="monitoring" roles="monitoring"/>
+	</tomcat-users>
 +-------------------------------+
 
 ** 17. SecurityManager
