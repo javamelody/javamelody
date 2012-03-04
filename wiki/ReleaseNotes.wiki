@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
+  * fix issue 193: Make "Deployment on Tomcat without modification of monitored webapps" work like before v1.32
 
 === 1.35.0 ===
 
