@@ -23,7 +23,9 @@ import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -46,7 +48,9 @@ public class MonitoringFilter implements Filter {
 
 	private static boolean instanceCreated;
 
-	private final boolean instanceEnabled;
+	private static final List<String> CONTEXT_PATHS = new ArrayList<String>();
+
+	private boolean instanceEnabled;
 
 	// Ces variables httpCounter et errorCounter conservent un état qui est global au filtre
 	// et à l'application (donc thread-safe).
@@ -69,7 +73,8 @@ public class MonitoringFilter implements Filter {
 		if (instanceCreated) {
 			// ce filter a déjà été chargé précédemment et est chargé une 2ème fois donc on désactive cette 2ème instance
 			// (cela peut arriver par exemple dans glassfish v3 lorsque le filter est déclaré dans le fichier web.xml
-			// et déclaré par ailleurs dans le fichier web-fragment.xml à l'intérieur du jar)
+			// et déclaré par ailleurs dans le fichier web-fragment.xml à l'intérieur du jar, issue 147),
+			// mais il peut être réactivé dans init (issue 193)
 			instanceEnabled = false;
 		} else {
 			instanceEnabled = true;
@@ -83,9 +88,16 @@ public class MonitoringFilter implements Filter {
 
 	/** {@inheritDoc} */
 	public void init(FilterConfig config) throws ServletException {
+		final String contextPath = config.getServletContext().getContextPath();
 		if (!instanceEnabled) {
-			return;
+			if (!CONTEXT_PATHS.contains(contextPath)) {
+				// si jars dans tomcat/lib, il y a plusieurs instances mais dans des webapps différentes (issue 193)
+				instanceEnabled = true;
+			} else {
+				return;
+			}
 		}
+		CONTEXT_PATHS.add(contextPath);
 		this.filterConfig = config;
 		Parameters.initialize(config);
 		monitoringDisabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
