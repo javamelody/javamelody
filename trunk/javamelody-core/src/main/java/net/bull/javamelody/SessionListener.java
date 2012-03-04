@@ -50,13 +50,16 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	// au lieu d'utiliser un int avec des synchronized partout, on utilise un AtomicInteger
 	private static final AtomicInteger SESSION_COUNT = new AtomicInteger();
 
+	@SuppressWarnings("all")
+	private static final List<String> CONTEXT_PATHS = new ArrayList<String>();
+
 	// attention : this est mis en session, cette map doit donc restée statique
 	@SuppressWarnings("all")
 	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<String, HttpSession>();
 
 	private static boolean instanceCreated;
 
-	private final boolean instanceEnabled;
+	private boolean instanceEnabled;
 
 	static final class SessionInformationsComparator implements Comparator<SessionInformations>,
 			Serializable {
@@ -83,6 +86,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 			// ce listener a déjà été chargé précédemment et est chargé une 2ème fois donc on désactive cette 2ème instance
 			// (cela peut arriver par exemple dans glassfish v3 lorsque le listener est déclaré dans le fichier web.xml
 			// et déclaré par ailleurs dans le fichier web-fragment.xml à l'intérieur du jar)
+			// mais il peut être réactivé dans contextInitialized (issue 193)
 			instanceEnabled = false;
 		} else {
 			instanceEnabled = true;
@@ -183,9 +187,16 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void contextInitialized(ServletContextEvent event) {
+		final String contextPath = event.getServletContext().getContextPath();
 		if (!instanceEnabled) {
-			return;
+			if (!CONTEXT_PATHS.contains(contextPath)) {
+				// si jars dans tomcat/lib, il y a plusieurs instances mais dans des webapps différentes (issue 193)
+				instanceEnabled = true;
+			} else {
+				return;
+			}
 		}
+		CONTEXT_PATHS.add(contextPath);
 		// lecture de la propriété système java.io.tmpdir uniquement
 		// pour lancer une java.security.AccessControlException si le SecurityManager est activé,
 		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters
