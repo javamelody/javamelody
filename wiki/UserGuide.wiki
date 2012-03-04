@@ -872,7 +872,7 @@ or
 	</location> 
 }}}
 
-	If some {{{security-constraint}}} et {{{security-role}}}(s) are defined in the {{{web.xml}}} file of the application,
+	Or if some {{{security-constraint}}} et {{{security-role}}}(s) are defined in the {{{web.xml}}} file of the application,
 	you can also restrict in the {{{web.xml}}} file the access to the monitoring page to "monitoring" role
 	for example (except if a collect server is used as written in the following chapter, in which case
 	the parameter {{{allowed-addr-pattern}}} could be used).
