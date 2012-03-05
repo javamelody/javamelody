@@ -938,7 +938,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 +-------------------------------+
 	<location /webapp>
-		ajp://localhost:8080/webapp
+		ProxyPass ajp://localhost:8080/webapp
 	</location> 
 +-------------------------------+
 	
