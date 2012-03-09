@@ -7,7 +7,7 @@ But if you have a private server, you can easily configure it to make nightly bu
 
 The following explains how to do this with [http://jenkins-ci.org/ Jenkins] which is a very good and free continuous integration server.
 
-  * First, if you don't have Jenkins, get it from http://jenkins-ci.org/ and be sure to have [http://maven.apache.org maven] configured in "Manage Jenkins / Configure system".
+  * First, if you don't have Jenkins, get it from http://jenkins-ci.org/ and be sure to have [http://maven.apache.org maven 3.0.4] or later configured in "Manage Jenkins / Configure system".
   * After installation, open the Jenkins server page in your browser and click on the _New job_ link.
   * Write _JavaMelody_ in "job name", select _Build a maven2 project_ and click "OK".
   * In "Source Code Management" of the configuration page, select _Subversion_.
