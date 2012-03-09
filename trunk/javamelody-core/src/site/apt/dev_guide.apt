@@ -27,7 +27,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	Après décompression du fichier zip ou après le checkout, vous pouvez utiliser le target "all" du script ant
 	(sans maven) pour recompiler à partir des sources et produire les fichiers javamelody.jar, jira-javamelody.jar et
 	javamelody.war qui sont ceux également disponibles dans la partie "Download". Vous devez
-	définir la variable d'environnement JAVA_HOME avec le chemin d'un JDK v1.6 pour compiler les
+	définir la variable d'environnement JAVA_HOME avec le chemin d'un JDK v1.7 pour compiler les
 	sources. Par exemple :
 	
 +-------------------------------+
@@ -41,7 +41,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 
 * Importer dans Eclipse les sources de la version en cours de développement
 
-	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.7 utilisant un JDK 1.6 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
+	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.7 utilisant un JDK 1.7 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
 	
 	* Lancer la tâche Import dans le menu File
 	
@@ -85,7 +85,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	
 * Développement
 
-	Le développement se fait avec {{{http://www.eclipse.org}Eclipse}} dans sa dernière version et avec le jdk 1.6 au minimum pour la compilation.
+	Le développement se fait avec {{{http://www.eclipse.org}Eclipse}} dans sa dernière version et avec le jdk 1.7 au minimum pour la compilation.
 	
 	Le gestionnaire de sources est Subversion accessible par
 	
