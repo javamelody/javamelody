@@ -10,7 +10,7 @@
 
 Description and documentation of Java Melody : monitoring of Java EE applications
 
-	({{{user_guide.html} Français }})
+	({{{./user_guide.html} Français }})
 
 	The goal of JavaMelody is to monitor Java or Java EE application servers in QA and production environments.
 	
@@ -169,7 +169,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	If you deploy your application with a war file or with an equivalent directory, read the following chapters.
 	
-	But if you deploy your application with an ear file, probably because you use EJBs, follow the {{{user_guide_advanced_en.html} advanced documentation}}.
+	But if you deploy your application with an ear file, probably because you use EJBs, follow the {{{./user_guide_advanced_en.html} advanced documentation}}.
 	
 	Please note that the javamelody.war file is not used in installation here.
 	
@@ -636,8 +636,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	* Alternative in order to use AspectJ, in case that proxies don't work (thanks to {{{http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/} Witek Wołejszo}})
 	Sometimes proxies can't work is some circumstances, for example if you don't use interfaces.
 	In this case, it is possible to use AspectJ with the following context file
-	{{{net/bull/javamelody/monitoring-spring-aspectj.xml}}} instead of
-	{{{net/bull/javamelody/monitoring-spring.xml}}}.
+	<<<net/bull/javamelody/monitoring-spring-aspectj.xml>>> instead of
+	<<<net/bull/javamelody/monitoring-spring.xml>>>.
 	You can then use the @MonitoredWithSpring annotation as said above,
 	or you can use other pointcuts like the following with a common interface (or super-class):
 
@@ -1056,8 +1056,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
 * Advanced documentation (setup with an ear, centralized collect server, JBoss AS 7, JonAS 5, debugging logs...)
 
 	To setup with an ear, to deploy a centralized collect server, to use JBoss AS 7, JonAS 5 or to enable
-	debugging logs, see the {{{user_guide_advanced_en.html} advanced documentation}}
+	debugging logs, see the {{{./user_guide_advanced_en.html} advanced documentation}}
 	
 * Compilation and development
 
-	{{{dev_guide_en.html} Developer guide}}
+	{{{./dev_guide_en.html} Developer guide}}

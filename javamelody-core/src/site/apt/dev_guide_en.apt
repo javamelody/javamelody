@@ -10,7 +10,7 @@
 
 Compilation and development of Java Melody : monitoring d'applications Java EE
 
-	({{{dev_guide.html} Français }}, {{{user_guide_en.html} User guide }})
+	({{{./dev_guide.html} Français }}, {{{./user_guide_en.html} User guide }})
 
 * Browsing the sources
 
@@ -96,7 +96,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
     The official languages of the project is french for javadoc but english for technical terms
     (This provides a clean separation between functional and technical vocabulary, given that you speak French obviously).
     
-    The technical diagrams in the OpenOffice {{{Map.odp}map}} may help to understand.
+    The technical diagrams in the OpenOffice {{{./Map.odp}map}} may help to understand.
 
 
 * Tests
@@ -104,7 +104,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
     The JUnit tests can be launched with the "test" target of the ant script, or with maven or in some
     {{{http://code.google.com/p/javamelody/wiki/ContinuousIntegration}Continuous Integration}}. 
 
-    The manual tests are written in the OpenOffice {{{Test plan.ods}Test plan}}. 
+    The manual tests are written in the OpenOffice {{{./Test plan.ods}Test plan}}. 
     
     
 * Plugins

@@ -12,11 +12,11 @@ Java Melody : monitoring of Java applications
 
 [screenshots/graphs_small.PNG]
 
-	License : {{{license.html} LGPL (opensource) }}
+	License : {{{./license.html} LGPL (opensource) }}
 
 	URL : http://javamelody.googlecode.com/
 
-	( {{{screenshots.html}Screenshots}}, {{{user_guide_en.html}User guide}}, {{{index.html}Français}} )
+	( {{{./screenshots.html}Screenshots}}, {{{./user_guide_en.html}User guide}}, {{{./index.html}Français}} )
 	
 	The goal of JavaMelody is to monitor Java or Java EE application servers in QA and production environments.
 	It is not a tool to simulate requests from users,
