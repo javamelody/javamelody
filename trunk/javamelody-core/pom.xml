@@ -365,7 +365,10 @@
 							<tasks>
 								<!-- écrit la version du pom dans VERSION.properties -->
 								<echo message="# Version of JavaMelody${line.separator}" file="VERSION.properties" />
-								<echo message="version=${project.version}${line.separator}" append="true" file="VERSION.properties" />
+								<echo message="version=${project.version}" append="true" file="VERSION.properties" />
+								<!-- avec antrun 1.7, CR ne peut être écrit en même temps que LF -->
+								<echo message="&#13;" append="true" file="VERSION.properties" />
+								<echo message="&#10;" append="true" file="VERSION.properties" />
 								<copy file="VERSION.properties" tofile="target/classes/VERSION.properties" />
 
 								<!-- appel de Ant et copie du résultat dans le site -->
