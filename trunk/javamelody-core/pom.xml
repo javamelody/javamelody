@@ -258,7 +258,7 @@
 		</repository>
 		<snapshotRepository>
 			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
-			<id>local</id>
+			<id>snapshot</id>
 			<url>file:.</url>
 		</snapshotRepository>
 	</distributionManagement>
