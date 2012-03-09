@@ -705,17 +705,9 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 
-		final Connection connection = TestDatabaseInformations.initH2();
-		try {
-			parameters.put(PART_PARAMETER, DATABASE_PART);
-			monitoring(parameters);
-		} finally {
-			try {
-				connection.close();
-			} catch (final SQLException e) {
-				LOG.warn(e.toString(), e);
-			}
-		}
+		TestDatabaseInformations.initJdbcDriverParameters();
+		parameters.put(PART_PARAMETER, DATABASE_PART);
+		monitoring(parameters);
 
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
@@ -734,7 +726,9 @@ public class TestMonitoringFilter { // NOPMD
 	/** Test.
 	 * @throws ServletException e
 	 * @throws IOException e */
+	// CHECKSTYLE:OFF
 	@Test
+	// CHECKSTYLE:ON
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
@@ -763,6 +757,7 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.remove(SESSION_ID_PARAMETER);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
+		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
 		parameters.put(REQUEST_PARAMETER, "0");
@@ -786,7 +781,6 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(PART_PARAMETER, null);
 		parameters.put(COLLECTOR_PARAMETER, "stop");
 		monitoring(parameters);
-
 		parameters.put(ACTION_PARAMETER, Action.GC.toString());
 		monitoring(parameters);
 	}
