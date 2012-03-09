@@ -22,7 +22,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	et un fichier pom.xml pour {{{http://maven.apache.org}maven}}
 	ainsi que la javadoc, le projet eclipse, les fichiers jars.
 	Si vous souhaitez recompiler la version en cours de développement et non une version livrée, il vous faire un checkout anonyme depuis 
-	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (avec Eclipse ou bien {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} si Windows)
+	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (avec votre IDE tel qu'Eclipse ou bien {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} si Windows)
 
 	Après décompression du fichier zip ou après le checkout, vous pouvez utiliser le target "all" du script ant
 	(sans maven) pour recompiler à partir des sources et produire les fichiers javamelody.jar, jira-javamelody.jar et
@@ -36,11 +36,12 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	
 	Vous pouvez aussi utiliser les goals maven "clean site" pour produire un site maven contenant des documentations
 	et des rapports sur l'analyse du code ou les tests unitaires (checkstyle, findbugs, pmd, cpd, junit, cobertura).
+	Il vous faudra Maven 3.0.4 ou plus pour cela.
 
 
 * Importer dans Eclipse les sources de la version en cours de développement
 
-	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.6 utilisant un JDK 1.6 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
+	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.7 utilisant un JDK 1.6 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
 	
 	* Lancer la tâche Import dans le menu File
 	
@@ -118,12 +119,12 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
     {{{http://javamelody.googlecode.com/svn/trunk/javamelody-core/}http://javamelody.googlecode.com/svn/trunk/javamelody-core/}}.
     Comme indiqué ci-dessus, utiliser le target "all" du script ant pour construire le fichier jira-javamelody.jar.
 	
-	* {{{http://wiki.jenkins-ci.org/display/JENKINS/Monitoring}Hudson / Jenkins plugin}} :
-	Le gestionnaire des sources pour le plugin Monitoring dans Hudson / Jenkins est Subversion à
+	* {{{http://wiki.jenkins-ci.org/display/JENKINS/Monitoring}Jenkins / Hudson plugin}} :
+	Le gestionnaire des sources pour le plugin Monitoring dans Jenkins / Hudson est Subversion à
 	{{{http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}}
 	(mirroir Git à {{{https://github.com/jenkinsci/monitoring-plugin}https://github.com/jenkinsci/monitoring-plugin}}).
 	Utiliser les commandes maven "mvn hpi:run" et "mvn package" comme pour tous les
-	{{{http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial}Hudson / Jenkins plugins}}.
+	{{{http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial}Jenkins / Hudson plugins}}.
 	
 	* {{{http://www.grails.org/plugin/grails-melody}Grails plugin}} :
 	Le gestionnaire des sources pour le plugin JavaMelody dans Grails est Subversion à
