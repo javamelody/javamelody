@@ -27,7 +27,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 	After decompressing the zip file or after the checkout, you can use the "all" target of the ant script (without maven)
 	to recompile from sources and to build the javamelody.jar, jira-javamelody.jar and javamelody.war files which are
 	those available in "Download". You must define the environment variable JAVA_HOME with the path
-	of a JDK 1.6 to compile the sources. For example:
+	of a JDK 1.7 to compile the sources. For example:
 	
 +-------------------------------+
 	<path_to_ant>/bin/ant -f <path_to_javamelody>/build.xml all
@@ -40,7 +40,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 
 * Import in Eclipse the sources of current development version
 
-	To import from the SVN server the sources of the version currently in development, with Eclipse 3.7 using a JDK 1.6 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
+	To import from the SVN server the sources of the version currently in development, with Eclipse 3.7 using a JDK 1.7 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
 	
 	* Click the task Import in File menu
 	
@@ -84,7 +84,7 @@ Compilation and development of Java Melody : monitoring d'applications Java EE
 
 * Development
 
-	The development is done with {{{http://www.eclipse.org}Eclipse}} in its latest version and with the jdk 1.6 at least for compilation.
+	The development is done with {{{http://www.eclipse.org}Eclipse}} in its latest version and with the jdk 1.7 at least for compilation.
 	
 	The manager of sources is Subversion at
 	
