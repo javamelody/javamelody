@@ -239,12 +239,10 @@ public class TestSessionListener {
 	public void testWithInstanceDisabled() {
 		final SessionListener sessionListener1 = new SessionListener();
 		final SessionListener sessionListener2 = new SessionListener();
-		final ServletContextEvent servletContextEvent = createNiceMock(ServletContextEvent.class);
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
-		expect(servletContextEvent.getServletContext()).andReturn(servletContext).anyTimes();
+		final ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
 		expect(servletContext.getContextPath()).andReturn("/test").anyTimes();
 		expect(servletContext.getServerInfo()).andReturn("Glassfish").anyTimes();
-		replay(servletContextEvent);
 		replay(servletContext);
 		sessionListener1.contextInitialized(servletContextEvent);
 		sessionListener2.contextInitialized(servletContextEvent);
@@ -254,7 +252,6 @@ public class TestSessionListener {
 		sessionListener2.sessionDestroyed(null);
 		sessionListener2.contextDestroyed(servletContextEvent);
 		verify(servletContext);
-		verify(servletContextEvent);
 	}
 
 	/** Test. */
