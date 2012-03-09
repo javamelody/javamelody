@@ -10,14 +10,14 @@
 
 Documentation avancée de Java Melody
 
-	({{{user_guide_advanced_en.html} English }}, {{{user_guide.html} Guide d'utilisation }})
+	({{{./user_guide_advanced_en.html} English }}, {{{./user_guide.html} Guide d'utilisation }})
 
 * Mise en oeuvre de JavaMelody dans un fichier ear au lieu d'un fichier war
 
 	(Ecrit à partir d'une contribution de 'dhartford')
 
 	Si vous déployez votre application avec un fichier war ou avec un répertoire équivalent,
-	suivez uniquement le {{{user_guide.html} guide d'utilisation}}.
+	suivez uniquement le {{{./user_guide.html} guide d'utilisation}}.
 	
 	Si vous déployez votre application avec un fichier ear, probablement parce que vous utilisez des EJBs,
 	ce chapitre vous guidera pour mettre en oeuvre JavaMelody dans votre ear.
@@ -62,7 +62,7 @@ Documentation avancée de Java Melody
 
 	Il est nécessaire d'avoir le war d'une unique webapp dans votre ear.
 	Si vous n'avez pas de war, créez le avec un simple fichier <<<web.xml>>> dans le répertoire WEB-INF du war.
-	Et modifiez le fichier <<<web.xml>>> dans ce war comme écrit dans le chapitre "Fichier <<<web.xml>>>" du {{{user_guide.html} guide d'utilisation}}.
+	Et modifiez le fichier <<<web.xml>>> dans ce war comme écrit dans le chapitre "Fichier <<<web.xml>>>" du {{{./user_guide.html} guide d'utilisation}}.
 	
 	** 3. Premiers résultats
 	
@@ -78,7 +78,7 @@ Documentation avancée de Java Melody
 
 	** 4 à 17. Autres paramétrages (paramètres optionnels, JDBC, EJB3, Spring, etc)
 
-	Pour compléter le paramétrage, suivez simplement les chapitres 4 à 17 du {{{user_guide.html} guide d'utilisation}}.
+	Pour compléter le paramétrage, suivez simplement les chapitres 4 à 17 du {{{./user_guide.html} guide d'utilisation}}.
 	Puisque vous utilisez un fichier ear, vous pouvez être intéressé notamment par le chapitre "Façades métiers (fichier ejb-jar.xml si EJB3)".
 	
 	
@@ -122,7 +122,7 @@ Documentation avancée de Java Melody
 	optionnels peuvent être ajoutés dans le fichier de contexte xml du serveur de collecte
 	en indiquant le préfixe <<<javamelody>>>. Ils peuvent aussi être ajoutés en tant que propriétés
 	systèmes. Ils ont les mêmes effets sur le serveur de collecte
-	que dans le cas du paramétrage du monitoring d'une application indiqué dans le {{{user_guide.html} guide d'utilisation}}.
+	que dans le cas du paramétrage du monitoring d'une application indiqué dans le {{{./user_guide.html} guide d'utilisation}}.
 	En particulier le paramètre <<<resolution-seconds>>> définit la période d'appels des urls d'applications
 	depuis le serveur de collecte et la résolution des courbes dans le monitoring.
 	Le paramètre <<<system-actions-enabled>>> nécessite d'être ajouté avec la valeur "true" à la fois
@@ -537,5 +537,5 @@ org.osgi.framework.system.packages com.sun.management; \
 
 * Compilation et développement
 
-	{{{dev_guide.html} Guide du dévelopeur}}
+	{{{./dev_guide.html} Guide du dévelopeur}}
 	

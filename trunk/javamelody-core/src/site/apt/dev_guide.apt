@@ -10,7 +10,7 @@
 
 Compilation et développement de Java Melody : monitoring d'applications Java EE
 
-	({{{dev_guide_en.html} English }}, {{{user_guide.html} Guide d'utilisation }})
+	({{{./dev_guide_en.html} English }}, {{{./user_guide.html} Guide d'utilisation }})
 
 * Voir les sources
 
@@ -99,7 +99,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 	(Cela donne une séparation claire entre le vocabulaire fonctionnel et le vocabulaire technique,
 	puisque vous parlez français bien sûr).
 	
-    Les diagrammes techniques dans {{{Map.odp}map}} (OpenOffice) peuvent aider à comprendre.
+    Les diagrammes techniques dans {{{./Map.odp}map}} (OpenOffice) peuvent aider à comprendre.
 	
 	
 * Tests
@@ -108,7 +108,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
     ou avec maven ou dans en
     {{{http://code.google.com/p/javamelody/wiki/ContinuousIntegration}Intégration continue}}. 
 
-    Les tests manuels sont écrits dans {{{Test plan.ods}Test plan}} (OpenOffice). 
+    Les tests manuels sont écrits dans {{{./Test plan.ods}Test plan}} (OpenOffice). 
     
     
 * Plugins

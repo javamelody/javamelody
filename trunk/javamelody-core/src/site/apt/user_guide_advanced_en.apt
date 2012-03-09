@@ -10,13 +10,13 @@
 
 Advanced documentation of Java Melody
 
-	({{{user_guide_advanced.html} Français }}, {{{user_guide_en.html} User guide }})
+	({{{./user_guide_advanced.html} Français }}, {{{./user_guide_en.html} User guide }})
 
 * Setup JavaMelody in an ear file in place of a war file
 
 	(Written based on a contribution by 'dhartford')
 
-	If you deploy your application with a war file or with an equivalent directory, just follow the {{{user_guide_en.html} user guide}}.
+	If you deploy your application with a war file or with an equivalent directory, just follow the {{{./user_guide_en.html} user guide}}.
 	
 	If you deploy your application with an ear file, probably because you use EJBs, this chapter will guide you to setup JavaMelody in your ear.
 	Note that if you have class loading issues with an ear, the use of a single war instead of an ear could help
@@ -59,7 +59,7 @@ Advanced documentation of Java Melody
 
 	You need to have the war of a single monitored webapp in your ear.
 	If you do not have a war, create it with a simple <<<web.xml>>> file in the WEB-INF directory of the war.
-	And modify the <<<web.xml>>> file of this war like written in chapter "<<<web.xml>>> file" of the {{{user_guide_en.html} user guide}}.
+	And modify the <<<web.xml>>> file of this war like written in chapter "<<<web.xml>>> file" of the {{{./user_guide_en.html} user guide}}.
 	
 	** 3. First results
 	
@@ -74,7 +74,7 @@ Advanced documentation of Java Melody
 
 	** 4 to 17. Other settings (optional parameters, JDBC, EJB3, Spring, etc)
 
-	To complete the settings, just follow the chapters 4 to 17 of the {{{user_guide_en.html} user guide}}.
+	To complete the settings, just follow the chapters 4 to 17 of the {{{./user_guide_en.html} user guide}}.
 	As you use an ear file, you may be interested by the chapter "Business façades (ejb-jar.xml file if EJB3)" for example.
 	
 	
@@ -115,7 +115,7 @@ Advanced documentation of Java Melody
 	can be added in the xml context file of the collect server with the prefix <<<javamelody>>>.
 	They can also be added as system properties with the prefix <<<javamelody>>>.
 	They have the same effects on the collect server than those of a monitored application as
-	written in the {{{user_guide_en.html} user guide}}. In particular the parameter
+	written in the {{{./user_guide_en.html} user guide}}. In particular the parameter
 	<<<resolution-seconds>>> defines the period of calls to urls of applications from collect server and the resolution
 	of charts in the monitoring. The parameter <<<system-actions-enabled>>> needs to be added with
 	the value "true" both in the collect server and in the monitored applications.
@@ -517,5 +517,5 @@ org.osgi.framework.system.packages com.sun.management; \
 
 * Compilation and development
 
-	{{{dev_guide_en.html} Developer guide}}
+	{{{./dev_guide_en.html} Developer guide}}
 	

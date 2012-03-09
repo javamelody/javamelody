@@ -10,7 +10,7 @@
 
 Description et documentation de Java Melody : monitoring d'applications Java EE
 
-	({{{user_guide_en.html} English }})
+	({{{./user_guide_en.html} English }})
 
 	Cet outil de monitoring a pour but de monitorer les serveurs d'applications Java / JavaEE en recette et en production.
 
@@ -174,7 +174,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	suivez les chapitres suivants.
 	
 	Mais si vous déployez votre application avec un fichier ear, probablement parce que vous utilisez des EJBs,
-	suivez la {{{user_guide_advanced.html} documentation avancée}}.
+	suivez la {{{./user_guide_advanced.html} documentation avancée}}.
 	
 	Remarque: le fichier javamelody.war n'est pas utilisé pour l'installation ici.
 	
@@ -653,8 +653,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	* Alternative pour utiliser AspectJ, dans le cas où les proxys ne fonctionnent pas (merci à {{{http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/} Witek Wołejszo}})
 	Parfois les proxys ne peuvent pas fonctionner dans certaines circonstances, par exemple si vous n'utilisez pas d'interfaces.
 	Dans ce cas, il est possible d'utiliser AspectJ avec le fichier de contexte suivant
-	{{{net/bull/javamelody/monitoring-spring-aspectj.xml}}} à la place de
-	{{{net/bull/javamelody/monitoring-spring.xml}}}.
+	<<<net/bull/javamelody/monitoring-spring-aspectj.xml>>> à la place de
+	<<<net/bull/javamelody/monitoring-spring.xml>>>.
 	Vous pouvez alors utiliser l'annotation @MonitoredWithSpring comme indiqué ci-dessus,
 	ou vous pouvez utiliser d'autres pointcuts comme le suivant avec une interface commune (ou une super-classe):
 
@@ -1085,8 +1085,8 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Pour mettre en oeuvre JavaMelody avec un ear, pour déployer un serveur de collecte centralisé,
 	pour utiliser JBoss AS 7, JonAS 5 ou pour activer les logs de débogage,
-	consulter la {{{user_guide_advanced.html} documentation avancée}}
+	consulter la {{{./user_guide_advanced.html} documentation avancée}}
 	
 * Compilation et développement
 
-	{{{dev_guide.html} Guide du dévelopeur}}
+	{{{./dev_guide.html} Guide du dévelopeur}}
