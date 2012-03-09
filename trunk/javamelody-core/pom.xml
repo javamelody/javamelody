@@ -275,12 +275,9 @@
 			<extension>
 				<groupId>org.jvnet.wagon-svn</groupId>
 				<artifactId>wagon-svn</artifactId>
-				<!-- For some reason RELEASE doesn't work in Netbeans -->
 				<version>1.9</version>
 			</extension>
 		</extensions>
-		<!-- /!\ Maven >= 3.0 : http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding 
-			<sourceEncoding>UTF-8</sourceEncoding> -->
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
