@@ -362,7 +362,7 @@
 					<execution>
 						<phase>prepare-package</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<!-- écrit la version du pom dans VERSION.properties -->
 								<echo message="# Version of JavaMelody${line.separator}" file="VERSION.properties" />
 								<echo message="version=${project.version}" append="true" file="VERSION.properties" />
@@ -377,7 +377,7 @@
 								<copy file="javamelody.jar" tofile="target/site/javamelody.jar" />
 								<copy file="javamelody.war" tofile="target/site/javamelody.war" />
 								<ant antfile="build.xml" target="clean" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
