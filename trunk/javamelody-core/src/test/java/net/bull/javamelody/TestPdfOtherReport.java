@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -153,17 +152,13 @@ public class TestPdfOtherReport {
 	public void testWriteDatabaseInformations() throws IOException, SQLException, NamingException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		final Connection connection = TestDatabaseInformations.initH2();
-		try {
-			PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-			pdfOtherReport.writeDatabaseInformations(new DatabaseInformations(0)); // h2.memory
-			assertNotEmptyAndClear(output);
-			pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-			pdfOtherReport.writeDatabaseInformations(new DatabaseInformations(3)); // h2.settings
-			assertNotEmptyAndClear(output);
-		} finally {
-			connection.close();
-		}
+		TestDatabaseInformations.initJdbcDriverParameters();
+		PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeDatabaseInformations(new DatabaseInformations(0)); // h2.memory
+		assertNotEmptyAndClear(output);
+		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeDatabaseInformations(new DatabaseInformations(3)); // h2.settings
+		assertNotEmptyAndClear(output);
 	}
 
 	/** Test.
