@@ -120,6 +120,7 @@ class HtmlReport {
 		writer.write("<html><head><title>"
 				+ I18N.getFormattedString("Monitoring_sur", collector.getApplication())
 				+ "</title>");
+		writeln("");
 		if (includeCssInline) {
 			writeln("<style type='text/css'>");
 			final InputStream in = new BufferedInputStream(getClass().getResourceAsStream(
