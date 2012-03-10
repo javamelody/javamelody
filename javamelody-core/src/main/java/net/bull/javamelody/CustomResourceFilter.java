@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * Then add files "customMonitoring.css" and "static/bullets/red.png" at the root of the web content in your webapp.<br/>
  * You can replace every web resource in <a href='http://code.google.com/p/javamelody/source/browse/#svn%2Ftrunk%2Fjavamelody-core%2Fsrc%2Fmain%2Fresources%2Fnet%2Fbull%2Fjavamelody%2Fresource'>
  * this directory and sub-directories</a>
- * 
+ *
  * @author Emeric Vernat
  */
 public class CustomResourceFilter implements Filter {
