@@ -107,7 +107,9 @@ This is an internal reminder of the steps of the release process.
     * revert files if needed
     * mvn release:prepare release:perform
     * tag is created in [http://javamelody.googlecode.com/svn/tags/]
-  * *deploy files in [http://code.google.com/p/javamelody/downloads/list downloads]* of googlecode with the "deploy" target of build.xml
+  * *deploy files in [http://code.google.com/p/javamelody/downloads/list downloads]* of googlecode
+    * password in [https://code.google.com/hosting/settings settings]
+    * "deploy" target of build.xml
   * remove "Featured" label of the previous release in [http://code.google.com/p/javamelody/downloads/list downloads] and add release notes url in descriptions of the new release
   * update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes] with version
   * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing
