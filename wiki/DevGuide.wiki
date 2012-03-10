@@ -100,7 +100,7 @@ After some weeks for example, in order to update your sources with the new devel
 
 === Release process ===
 
-This is an internal reminder of the steps of the release process
+This is an internal reminder of the steps of the release process.
 
   * Edit Maven password
   * *javamelody-core* ([https://javamelody.googlecode.com/svn/trunk/javamelody-core])
@@ -108,25 +108,26 @@ This is an internal reminder of the steps of the release process
     * mvn release:prepare release:perform
     * tag is created in [http://javamelody.googlecode.com/svn/tags/]
   * *deploy files in [http://code.google.com/p/javamelody/downloads/list downloads]* of googlecode with the "deploy" target of build.xml
-  * remove "Featured" label of previous release
+  * remove "Featured" label of the previous release in [http://code.google.com/p/javamelody/downloads/list downloads] and add release notes url in descriptions of the new release
+  * update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes] with version
   * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing
   * *publish artefacts in Maven central*
-    * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-1.35.0.pom -Dfile=javamelody-core-1.35.0.jar
-    * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-1.35.0.pom -Dfile=javamelody-core-1.35.0-sources.jar -Dclassifier=sources
-    * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-1.35.0.pom -Dfile=javamelody-core-1.35.0-javadoc.jar -Dclassifier=javadoc
+    * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version.jar
+    * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version-sources.jar -Dclassifier=sources
+    * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version-javadoc.jar -Dclassifier=javadoc
     * https://oss.sonatype.org/index.html#stagingRepositories : close and release
   * *jenkins / hudson plugin* ([https://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring])
     * increment javamelody-core version in pom.xml
     * mvn release:prepare release:perform
   * *jira / confluence / bamboo plugin*
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
-    * add version with jar url, source tag
+    * add version with jira-javamelody-version.jar url, source tag
   * *grails plugin* ([https://svn.codehaus.org:443/grails-plugins/grails-grails-melody/trunk])
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
-    * increment plugin version dans GrailsMelodyGrailsPlugin.groovy
+    * increment plugin version in GrailsMelodyGrailsPlugin.groovy
     * edit user / password in .grails\settings.groovy
     * grails release-plugin "-repository=grailsplugins"
     * Edit plugin in http://www.grails.org/plugin/grails-melody
   * *wait artefacts* to be available in Maven central [http://search.maven.org/]
   * *twitter announce* [https://twitter.com/#!/java_melody]
-  * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody]
+  * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody] ([https://groups.google.com/forum/?fromgroups#!topic/javamelody/w-8Xhi7G5x8 example])
