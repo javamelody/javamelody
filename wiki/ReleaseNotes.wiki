@@ -4,6 +4,7 @@
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
   * fix issue 193: Make "Deployment on Tomcat without modification of monitored webapps" work like before v1.32
   * fix issue 189: Javamelody should not set autoCommit to false on datasource connections
+  added: Possibility to customize styles, icons and other resources in the html reports (issue 196)
 
 === 1.35.0 ===
 
