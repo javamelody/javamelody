@@ -327,6 +327,22 @@
 		</zip>
 	</target>
 
+	<!-- (Reserved) Upload des fichiers d'une livraison vers "Download" sur javamelody.googlecode.com -->
+	<target name="deploy" depends="zip">
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="src/main/lib/ant-googlecode-0.0.3.jar" name="gcupload" />
+		<input message="googlecode username:" addproperty="gc.user" defaultvalue="evernat@free.fr" />
+		<!-- generated password : https://code.google.com/hosting/settings -->
+		<input message="googlecode password:" addproperty="gc.pass" />
+		<!-- <property name="gc.label" value="Deprecated" /> -->
+		<property name="gc.label" value="Featured" />
+		<echo message="Début de l'upload" />
+		<gcupload filename="javamelody.zip" targetfilename="javamelody-${version}.zip" summary="Zip of project" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="javamelody.war" targetfilename="javamelody-${version}.war" summary="War of the collect server" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="jira-javamelody.jar" targetfilename="jira-javamelody-${version}.jar" summary="Jira, Confluence and Bamboo monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="javamelody.jar" targetfilename="javamelody-${version}.jar" summary="Jar for integration in a webapp" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<echo message="Upload des fichiers ${version} sur googlecode terminé" />
+	</target>
+
 	<!-- Tout (zip, clean) -->
 	<target name="all" depends="zip">
 		<antcall target="clean" />
