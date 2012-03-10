@@ -119,6 +119,7 @@ This is an internal reminder of the steps of the release process.
   * *jenkins / hudson plugin* ([https://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring])
     * increment javamelody-core version in pom.xml
     * mvn release:prepare release:perform
+    * edit release notes for version: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring
   * *jira / confluence / bamboo plugin*
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
     * add version with jira-javamelody-version.jar url, source tag
