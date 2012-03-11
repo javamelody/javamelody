@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+		<!--
+		<property name="excludedDatasources">
+			<set>
+				<value>excludedDataSourceName</value>
+			</set>
+		</property>
+		-->
+ 	</bean>
+
+	<!--
+ 	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">
+		<property name="targetName" value="targetDataSource" />
+	</bean>
+	-->
+</beans>
