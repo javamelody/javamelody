@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +46,7 @@ class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
 	static enum Database {
-		POSTGRESQL, MYSQL, ORACLE, DB2, H2, HSQLDB;
+		POSTGRESQL, MYSQL, MYSQL4, ORACLE, DB2, H2, HSQLDB;
 
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
@@ -63,6 +64,9 @@ class DatabaseInformations implements Serializable {
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
+			case MYSQL4:
+				// les noms des requêtes sont les mêmes, mais la requête SQL correspondant à "innodb_status"
+				// n'est pas identique entre MYSQL 5+ et MYSQL 4 (issue 195)
 				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
 						"innodb_status");
 				break;
@@ -97,14 +101,26 @@ class DatabaseInformations implements Serializable {
 			return result;
 		}
 
+		String getUrlIdentifier() {
+			if (this == MYSQL4) {
+				return MYSQL.toString().toLowerCase(Locale.getDefault());
+			}
+			return this.toString().toLowerCase(Locale.getDefault());
+		}
+
 		String getRequestByName(String requestName) {
 			return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME).getString(requestName);
 		}
 
 		static Database getDatabaseForConnection(Connection connection) throws SQLException {
-			final String url = connection.getMetaData().getURL();
+			final DatabaseMetaData metaData = connection.getMetaData();
+			final String url = metaData.getURL();
 			for (final Database database : Database.values()) {
-				if (url.contains(database.toString().toLowerCase(Locale.getDefault()))) {
+				if (url.contains(database.getUrlIdentifier())) {
+					if (database == MYSQL && metaData.getDatabaseMajorVersion() <= 4) {
+						// si mysql et version 4 alors c'est MYSQL4 et non MYSQL
+						return MYSQL4;
+					}
 					return database;
 				}
 			}
