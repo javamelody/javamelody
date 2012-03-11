@@ -499,6 +499,34 @@ org.osgi.framework.system.packages com.sun.management; \
 	But if you want to clear only the statistics, delete the *.gz files in the subdirectories of the storage directory.
 	And if you want to clear only the graphs, delete the *.rrd files in the subdirectories of the storage directory.
 
+* Customizing styles, icons and other resources in the html reports
+	
+	It can be helpful to customize styles, icons, effects and javascript or help files in the html reports (pdf reports excluded).
+	The reports can be adapted to the styles of some enterprise applications with the CSS file.
+	For example, add the following, before the monitoring filter, in the web.xml file of your webapp, in order to use your own css or icons: 
+
++-------------------------------+
+ <filter>
+	<filter-name>customResourceFilter</filter-name>
+	<filter-class>net.bull.javamelody.CustomResourceFilter</filter-class>
+	<init-param>
+		<param-name>monitoring.css</param-name>
+		<param-value>/customMonitoring.css</param-value>
+	</init-param>
+	<init-param>
+		<param-name>bullets/green.png</param-name>
+		<param-value>/static/bullets/red.png</param-value>
+	</init-param>
+ </filter>
+ <filter-mapping>
+	<filter-name>customResourceFilter</filter-name>
+	<url-pattern>/monitoring</url-pattern>
+ </filter-mapping>
++-------------------------------+
+
+	Then add files "customMonitoring.css" and "static/bullets/red.png" at the root of the web content in your webapp.
+	You can replace every web resource in this directory and its sub-directories: "src/main/resources/net/bull/javamelody/resource".
+	
 * Report written before last shutdown
 	
 	Sometimes a server is stopped in emergency or when there is a problem for example with the used memory.

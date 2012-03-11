@@ -518,6 +518,34 @@ org.osgi.framework.system.packages com.sun.management; \
 	Mais pour réinitialiser seulement les statistiques, supprimer les fichiers *.gz dans les sous-répertoires du répertoire de stockage.
 	Et pour réinitialiser seulement les courbes, supprimer les fichiers *.rrd dans les sous-répertoires du répertoire de stockage.
 
+* Personnalisation des styles, icônes et autres ressources dans les rapports html
+	
+	Il peut être utile de personnaliser les styles, icônes, effets et les fichiers javascript ou d'aide dans les rapports html (rapports pdf exclus).
+	Les rapports peuvent être adaptés aux styles d'une application d'entreprise avec le fichier CSS.
+	Par exemple, ajouter ce qui suit, avant le filtre de monitoring, dans le fichier web.xml de votre webapp, pour utiliser vos propres CSS ou icônes: 
+
++-------------------------------+
+ <filter>
+	<filter-name>customResourceFilter</filter-name>
+	<filter-class>net.bull.javamelody.CustomResourceFilter</filter-class>
+	<init-param>
+		<param-name>monitoring.css</param-name>
+		<param-value>/customMonitoring.css</param-value>
+	</init-param>
+	<init-param>
+		<param-name>bullets/green.png</param-name>
+		<param-value>/static/bullets/red.png</param-value>
+	</init-param>
+ </filter>
+ <filter-mapping>
+	<filter-name>customResourceFilter</filter-name>
+	<url-pattern>/monitoring</url-pattern>
+ </filter-mapping>
++-------------------------------+
+
+	Puis ajouter les fichiers "customMonitoring.css" et "static/bullets/red.png" à la racine du contenu web de la webapp.
+	Il est possible de remplacer toutes les ressources web dans ce répertoire et ses sous-répertoires: "src/main/resources/net/bull/javamelody/resource".
+
 * Rapport écrit avant le dernier arrêt
 	
 	Quelquefois un serveur est arrêté en urgence ou quand il y a un souci avec la mémoire utilisée.
