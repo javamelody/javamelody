@@ -462,6 +462,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	</context-param>
 +-------------------------------+
 
+	Si jamais, il y a un conflit dans votre application entre le fichier tout-en-un monitoring-spring.xml et AOP ou @Autowired,
+	alors il est possible d'utiliser le fichier monitoring-spring-datasource.xml, à la place de monitoring-spring.xml.
+	Ce fichier contient seulement un post-processor pour les datasources et un exemple de SpringDataSourceFactoryBean.
+
 ** 8. Façades métiers (fichier ejb-jar.xml si EJB3)
 
 	Si l'application à monitorer contient des façades métiers en EJB3 (Java EE 5) avec des annotations <<<@Stateless>>>,
