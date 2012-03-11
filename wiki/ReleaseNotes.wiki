@@ -4,6 +4,7 @@
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
   * fix issue 193: Make "Deployment on Tomcat without modification of monitored webapps" work like before v1.32
   * fix issue 189: Javamelody should not set autoCommit to false on datasource connections
+  * fix issue 195: In the database reports, compatibility of "innodb status" with both Mysql 5.5 and Mysql 4
   * added: Possibility to customize styles, icons and other resources in the html reports (issue 196) _Doc TODO_. Please submit your best [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/resource/monitoring.css CSS file] to the [http://groups.google.com/group/javamelody users' group].
 
 === 1.35.0 ===
