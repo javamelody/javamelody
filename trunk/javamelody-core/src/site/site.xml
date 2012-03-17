@@ -6,14 +6,14 @@
 			<menu ref="parent" />
 		-->
 		<menu name="Overview in english">
-			<item name="Introduction" href="index_en.html" />
+			<item name="Introduction" href="index.html" />
 			<item name="Screenshots" href="screenshots.html" />
 			<item name="User guide" href="user_guide_en.html" />
 			<item name="Online help" href="Online_help_of_the_monitoring.pdf" />
 			<item name="Technical diagrams" href="Map.odp" />
 		</menu>
 		<menu name="Présentation en français">
-			<item name="Introduction" href="index.html" />
+			<item name="Introduction" href="index_fr.html" />
 			<item name="Copies d'écrans" href="screenshots.html" />
 			<item name="Guide d'utilisation" href="user_guide.html" />
 			<item name="Slides copies d'écrans" href="Screenshots.odp" />
@@ -21,7 +21,7 @@
 			<item name="Diagrammes techniques" href="Map.odp" />
 			<!--<item name="Tâches" href="Fonctions.odt" />-->
 		</menu>
-		<menu name="Download / Téléchargements">
+		<menu name="Download nightly build">
 			<item name="Download jar for webapp" href="javamelody.jar" />
 			<item name="Download war for collect server" href="javamelody.war" />
 			<item name="Download zip of projects" href="javamelody.zip" />
@@ -29,7 +29,7 @@
 		<menu ref="reports" />
 	</body>
 	<poweredBy>
-		<logo name="Download" href="javamelody.zip" img="images/download.gif" />
-		<logo name="Home page" href="http://javamelody.googlecode.com" img="images/systemmonitor.png" />
+		<logo name="Download nightly build" href="javamelody.zip" img="images/download.gif" />
+		<logo name="Home page" href="http://javamelody.googlecode.com/" img="images/systemmonitor.png" />
 	</poweredBy>
 </project>
