@@ -1,11 +1,22 @@
 == Continuous Integration of JavaMelody ==
 
-[http://en.wikipedia.org/wiki/Continuous_integration Continuous integration] can be used to continuously make nightly builds of JavaMelody and to make reports like user guide, unit tests or browsable sources.
+[http://en.wikipedia.org/wiki/Continuous_integration Continuous integration] can be used to continuously make nightly builds of JavaMelody and to make reports like unit tests, javadoc or browsable sources.
 
-There is no public continuous integration server for the JavaMelody project yet (if you can have one, please post the url to evernat at free.fr).
-But if you have a private server, you can easily configure it to make nightly builds and reports.
+=== Built on CloudBees ===
 
-The following explains how to do this with [http://jenkins-ci.org/ Jenkins] which is a very good and free continuous integration server.
+There is now a public Jenkins Continuous Integration server hosted by [http://www.cloudbees.com CloudBees] for the JavaMelody project.
+
+You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk).
+
+You can also browse the [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], the [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports].
+
+There is also a [https://javamelody.ci.cloudbees.com/job/jenkins%20plugin/ continuous integration] for the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins Monitoring plugin].
+
+=== Private Continuous Integration ===
+
+If you have a private CI server, you can easily configure it to make nightly builds and reports.
+
+The following explains how to do this with [http://jenkins-ci.org/ Jenkins] which is a very good continuous integration server.
 
   * First, if you don't have Jenkins, get it from http://jenkins-ci.org/ and be sure to have [http://maven.apache.org maven 3.0.4] or later configured in "Manage Jenkins / Configure system".
   * After installation, open the Jenkins server page in your browser and click on the _New job_ link.
