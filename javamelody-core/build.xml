@@ -322,7 +322,8 @@
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody.zip" />
 		<zip destfile="javamelody.zip">
-			<zipfileset dir="." excludes="**/classes/**,build/**,target/**,**/Thumbs.db,javamelody.zip,test.war" />
+			<!-- On ne prend surtout pas le gros répertoire .repository dans l'intégration continue Jenkins -->
+			<zipfileset dir="." excludes=".repository,**/classes/**,build/**,target/**,**/Thumbs.db,javamelody.zip,test.war" />
 			<!-- jar jrobin copié selon indication du user_guide -->
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
 		</zip>
