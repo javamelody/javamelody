@@ -24,6 +24,7 @@
 		<menu name="Download nightly build">
 			<item name="Download jar for webapp" href="javamelody.jar" />
 			<item name="Download war for collect server" href="javamelody.war" />
+			<item name="Download jar for JIRA/Confluence" href="jira-javamelody.jar" />
 			<item name="Download zip of projects" href="javamelody.zip" />
 		</menu>
 		<menu ref="reports" />

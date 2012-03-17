@@ -376,6 +376,7 @@
 								<copy file="javamelody.zip" tofile="target/site/javamelody.zip" />
 								<copy file="javamelody.jar" tofile="target/site/javamelody.jar" />
 								<copy file="javamelody.war" tofile="target/site/javamelody.war" />
+								<copy file="jira-javamelody.jar" tofile="target/site/jira-javamelody.jar" />
 								<ant antfile="build.xml" target="clean" />
 							</target>
 						</configuration>
