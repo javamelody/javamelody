@@ -5,6 +5,13 @@
 			http://maven.apache.org/plugins/maven-site-plugin/examples/sitedescriptor.html
 			<menu ref="parent" />
 		-->
+		<menu name="Overview in english">
+			<item name="Introduction" href="index_en.html" />
+			<item name="Screenshots" href="screenshots.html" />
+			<item name="User guide" href="user_guide_en.html" />
+			<item name="Online help" href="Online_help_of_the_monitoring.pdf" />
+			<item name="Technical diagrams" href="Map.odp" />
+		</menu>
 		<menu name="Présentation en français">
 			<item name="Introduction" href="index.html" />
 			<item name="Copies d'écrans" href="screenshots.html" />
@@ -14,25 +21,15 @@
 			<item name="Diagrammes techniques" href="Map.odp" />
 			<!--<item name="Tâches" href="Fonctions.odt" />-->
 		</menu>
-		<menu name="Overview in english">
-			<item name="Introduction" href="index_en.html" />
-			<item name="Screenshots" href="screenshots.html" />
-			<item name="User guide" href="user_guide_en.html" />
-			<item name="Online help" href="Online_help_of_the_monitoring.pdf" />
-			<item name="Technical diagrams" href="Map.odp" />
-		</menu>
-		<menu name="Téléchargements / Download">
-			<item name="Télécharger jar pour webapp" href="javamelody.jar" />
-			<item name="Télécharger war du serveur de collecte" href="javamelody.war" />
-			<item name="Télécharger zip du projet" href="javamelody.zip" />
+		<menu name="Download / Téléchargements">
+			<item name="Download jar for webapp" href="javamelody.jar" />
+			<item name="Download war for collect server" href="javamelody.war" />
+			<item name="Download zip of projects" href="javamelody.zip" />
 		</menu>
 		<menu ref="reports" />
 	</body>
 	<poweredBy>
 		<logo name="Download" href="javamelody.zip" img="images/download.gif" />
-<!--
-		<logo name="Bull" href="http://www.bull.com/fr/" img="images/logobull.png" />
-		<logo name="Novaforge" href="http://www.bull.com/fr/services/novaforge.php" img="images/Novaforge2.png" />
-		-->
+		<logo name="Home page" href="http://javamelody.googlecode.com" img="images/systemmonitor.png" />
 	</poweredBy>
 </project>
