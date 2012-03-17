@@ -432,6 +432,8 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
 					<reportPlugins>
 						<!-- Javadoc -->
 						<plugin>
@@ -556,15 +558,6 @@
 									</reports>
 								</reportSet>
 							</reportSets>
-						</plugin>
-						<!-- Site -->
-						<plugin>
-							<artifactId>maven-site-plugin</artifactId>
-							<version>3.0</version>
-							<configuration>
-								<inputEncoding>UTF-8</inputEncoding>
-								<outputEncoding>UTF-8</outputEncoding>
-							</configuration>
 						</plugin>
 					</reportPlugins>
 				</configuration>
