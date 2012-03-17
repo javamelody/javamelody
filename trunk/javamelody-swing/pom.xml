@@ -34,6 +34,9 @@
 		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
 		<url>http://javamelody.googlecode.com/svn/trunk/</url>
 	</scm>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -122,7 +125,7 @@
 		</repository>
 		<snapshotRepository>
 			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
-			<id>local</id>
+			<id>snapshot</id>
 			<url>file:.</url>
 		</snapshotRepository>
 	</distributionManagement>
@@ -147,6 +150,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -156,12 +160,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<phase>prepare-package</phase>
@@ -190,102 +196,119 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+
+			<!-- Site -->
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+					<reportPlugins>
+						<!-- Javadoc -->
+						<plugin>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.8.1</version>
+							<configuration>
+								<charset>UTF-8</charset>
+								<encoding>UTF-8</encoding>
+								<docencoding>UTF-8</docencoding>
+								<links>
+									<link>http://java.sun.com/javase/6/docs/api/</link>
+									<link>http://java.sun.com/javaee/5/docs/api/</link>
+								</links>
+							</configuration>
+						</plugin>
+						<!-- Références croisées -->
+						<plugin>
+							<artifactId>maven-jxr-plugin</artifactId>
+							<version>2.3</version>
+							<configuration>
+								<inputEncoding>UTF-8</inputEncoding>
+								<outputEncoding>UTF-8</outputEncoding>
+								<linkJavadoc>false</linkJavadoc>
+							</configuration>
+						</plugin>
+						<!-- Vérification des règles de codage -->
+						<plugin>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.9.1</version>
+							<configuration>
+								<enableRSS>false</enableRSS>
+								<configLocation>${basedir}/.checkstyle.xml</configLocation>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>findbugs-maven-plugin</artifactId>
+							<version>2.4.0</version>
+							<configuration>
+								<xmlOutput>true</xmlOutput>
+							</configuration>
+						</plugin>
+						<plugin>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<version>2.7.1</version>
+							<configuration>
+								<enableRulesSummary>false</enableRulesSummary>
+								<source>1.5</source>
+								<targetJdk>1.5</targetJdk>
+								<linkXref>true</linkXref>
+								<sourceEncoding>UTF-8</sourceEncoding>
+								<minimumPriority>4</minimumPriority>
+								<minimumTokens>100</minimumTokens>
+								<rulesets>
+									<ruleset>${basedir}/.pmd</ruleset>
+								</rulesets>
+							</configuration>
+						</plugin>
+						<!-- Métriques -->
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>javancss-maven-plugin</artifactId>
+							<version>2.0</version>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>jdepend-maven-plugin</artifactId>
+							<version>2.0-beta-2</version>
+						</plugin>
+						<!-- Information sur le projet -->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.4</version>
+							<reportSets>
+								<reportSet>
+									<reports>
+										<report>summary</report>
+										<report>license</report>
+										<report>mailing-list</report>
+										<report>issue-tracking</report>
+										<report>scm</report>
+										<report>cim</report>
+										<report>plugin-management</report>
+										<report>plugins</report>
+									</reports>
+								</reportSet>
+							</reportSets>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
-		<!-- /!\ Maven >= 2.1 : http://docs.codehaus.org/display/MAVEN/Reporting+Encoding+Configuration 
-			<outputEncoding>UTF-8</outputEncoding> -->
 		<plugins>
-			<!-- Javadoc -->
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<charset>UTF-8</charset>
-					<encoding>UTF-8</encoding>
-					<docencoding>UTF-8</docencoding>
-					<links>
-						<link>http://java.sun.com/javase/6/docs/api/</link>
-						<link>http://java.sun.com/javaee/5/docs/api/</link>
-					</links>
-				</configuration>
-			</plugin>
-			<!-- Vérification des règles de codage -->
-			<plugin>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<!-- erreur cacheFile en 2.7 -->
-				<version>2.6</version>
-				<configuration>
-					<enableRSS>false</enableRSS>
-					<configLocation>${basedir}/.checkstyle.xml</configLocation>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<configuration>
-					<xmlOutput>true</xmlOutput>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<configuration>
-					<enableRulesSummary>false</enableRulesSummary>
-					<source>1.5</source>
-					<targetJdk>1.5</targetJdk>
-					<linkXref>true</linkXref>
-					<sourceEncoding>UTF-8</sourceEncoding>
-					<minimumPriority>4</minimumPriority>
-					<minimumTokens>100</minimumTokens>
-					<rulesets>
-						<ruleset>${basedir}/.pmd</ruleset>
-					</rulesets>
-				</configuration>
-			</plugin>
-			<!-- Métriques -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>javancss-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jdepend-maven-plugin</artifactId>
-			</plugin>
 			<!-- Références croisées -->
+			<!-- section reporting Temporaire : https://jira.codehaus.org/browse/MCHECKSTYLE-150 et autres -->
 			<plugin>
 				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
 				<configuration>
 					<inputEncoding>UTF-8</inputEncoding>
 					<outputEncoding>UTF-8</outputEncoding>
 					<linkJavadoc>false</linkJavadoc>
-				</configuration>
-			</plugin>
-			<!-- Information sur le projet -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<!-- v2.2 does not work, ArrayIndexOutOfBounds, http://jira.codehaus.org/browse/MPIR-194 -->
-				<version>2.1</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>summary</report>
-							<report>license</report>
-							<report>mailing-list</report>
-							<report>issue-tracking</report>
-							<report>scm</report>
-							<report>cim</report>
-							<report>plugin-management</report>
-							<report>plugins</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<!-- Site -->
-			<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<configuration>
-					<inputEncoding>UTF-8</inputEncoding>
-					<outputEncoding>UTF-8</outputEncoding>
 				</configuration>
 			</plugin>
 		</plugins>
