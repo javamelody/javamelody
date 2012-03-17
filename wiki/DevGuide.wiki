@@ -8,7 +8,7 @@
 
 	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources from svn or you can [http://code.google.com/p/javamelody/downloads/list download] the zip file of a release which includes the sources of that release.
 
-	You can also browse the [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc] and the [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports] from the [http://www.cloudbees.com/ Cloudbees] Jenkins CI (snapshot from trunk).
+	You can also browse the [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], the [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports] from the [http://www.cloudbees.com/ Cloudbees] Jenkins CI (snapshot from trunk).
 
 	You can also browse the sources at [http://grepcode.com/file/repo1.maven.org/maven2/net.bull.javamelody/javamelody-core/1.31.0/net/bull/javamelody/MonitoringFilter.java grepcode] with point and click, except that grepcode does not display the latest version in general.
 
