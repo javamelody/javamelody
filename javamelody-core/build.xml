@@ -175,7 +175,8 @@
 	</target>
 
 	<!-- Construction du jar du plugin Jira -->
-	<target name="jira-jar" depends="jar">
+	<target name="jira-jar" depends="jar" if="version">
+		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier VERSION.properties existe -->
 		<echo message="Construction du jar pour le plugin Jira" level="info" />
 		<!-- Description Jira/Confluence/Bamboo pour le plugin.
 		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
