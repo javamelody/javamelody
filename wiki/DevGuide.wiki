@@ -1,6 +1,10 @@
-= Compilation and development of Java Melody =
+= Nightly build, compilation and development of Java Melody =
 
-=== Browsing the sources ===
+=== Download nightly build ===
+
+	You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk), from [http://www.cloudbees.com/ Cloudbees] Jenkins CI.
+
+=== Browsing the sources and javadoc ===
 
 	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources from svn or you can [http://code.google.com/p/javamelody/downloads/list download] the zip file of a release which includes the sources of that release.
 
