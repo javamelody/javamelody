@@ -172,13 +172,13 @@
 					<execution>
 						<phase>prepare-package</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<!-- appel de Ant et copie du résultat dans le site -->
 								<ant antfile="build.xml" target="zip" />
 								<copy file="javamelody-swing.zip" tofile="target/site/javamelody-swing.zip" />
 								<copy file="javamelody-swing.jar" tofile="target/site/javamelody-swing.jar" />
 								<ant antfile="build.xml" target="clean" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
