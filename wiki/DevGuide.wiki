@@ -2,7 +2,7 @@
 
 === Download nightly build ===
 
-	You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk), from [http://www.cloudbees.com/ CloudBees] Jenkins CI.
+	You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk), from [http://www.cloudbees.com/ CloudBees] Jenkins CI. <a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>
 
 === Browsing the sources and javadoc ===
 
