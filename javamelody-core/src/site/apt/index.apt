@@ -1,87 +1,86 @@
 	-----
-	Java Melody : monitoring d'applications Java EE
+	Java Melody : monitoring of Java EE applications
 	-----
 	Auteur : Emeric Vernat (evernat@free.fr)
 	-----
-	2009-01-01
+	2009-05-01
 	-----
 
 ~~ http://maven.apache.org/doxia/references/apt-format.html
 
-Java Melody : monitoring d'applications Java
+Java Melody : monitoring of Java applications
 
 [screenshots/graphs_small.PNG]
 
-	Licence : {{{./license.html} LGPL (opensource) }}
-	
+	License : {{{./license.html} LGPL (opensource) }}
+
 	URL : http://javamelody.googlecode.com/
-	
-	( {{{./screenshots.html}Copies d'écrans}}, {{{./user_guide.html}Guide d'utilisation}}, {{{./index_en.html}English}} )
-	
-	JavaMelody a pour but de monitorer les serveurs d'applications Java / Java EE en recette et en production. 
-	Ce n'est pas un outil de simulation de requêtes utilisateur,
-	c'est un outil de mesure et de statistiques sur le fonctionnement réel d'une application
-	selon l'usage qui en est fait par les utilisateurs.
-	
-	JavaMelody est opensource (LGPL) et prêt pour une mise en production : déjà en production dans une application de 25 années hommes.
-	JavaMelody est facile à intégrer dans la plupart des applications et est léger (pas de profileur et pas de base de données).
 
-	JavaMelody est en grande partie basé sur des statistiques de requêtes et sur des courbes d'évolution.
+	( {{{./screenshots.html}Screenshots}}, {{{./user_guide_en.html}User guide}}, {{{./index_fr.html}Français}} )
 	
-	Il permet ainsi d'améliorer les applications en recette et en production et d'aider à :
+	The goal of JavaMelody is to monitor Java or Java EE application servers in QA and production environments.
+	It is not a tool to simulate requests from users,
+	it is a tool to measure and calculate statistics on real operation of an application
+	depending on the usage of the application by users.
 	
-	* factualiser les temps de réponse moyens et les nombres d'exécutions
+	JavaMelody is opensource (LGPL) and production ready: in production in an application of 25 person years.
+	JavaMelody is easy to integrate in most applications and is lightweight (no profiling and no database).
+
+	JavaMelody is mainly based on statistics of requests and on evolution charts.
 	
-	* prendre des décisions quand les tendances sont mauvaises, avant que les problèmes ne soient trop graves
+	It allows to improve applications in QA and production and helps to:
 	
-	* optimiser sur la base des temps de réponse les plus pénalisants
+	* give facts about the average response times and number of executions
 	
-	* trouver les causes à l'origine des temps de réponse
+	* make decisions when trends are bad, before problems become too serious
 	
-	* vérifier l'amélioration réelle après des optimisations
+	* optimize based on the more limiting response times
+	
+	* find the root causes of response times
+	
+	* verify the real improvement after optimizations
 
 	[]
 
-	Il inclut des courbes de synthèse montrant l'évolution au fil du temps des indicateurs suivants :
+	It includes summary charts showing the evolution over time of the following indicators:
 
-	* Nombre d'exécutions, temps d'exécutions moyens et pourcentage d'erreurs pour les
-	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers (si EJB3, Spring ou Guice)
+	* Number of executions, mean execution times and percentage of errors of http requests,
+	sql requests, struts actions, jsp pages or methods of business façades (if EJB3, Spring or Guice)
+	
+	* Java memory
 
-	* Mémoire Java
+	* Java CPU
 
-	* CPU Java
+	* Number of user sessions
 
-	* Nombre de sessions utilisateurs
-
-	* Nombre de connexions jdbc
+	* Number of jdbc connections
 
 	[]
 	
-	Ces courbes peuvent être visualisées sur la journée en cours, la semaine, le mois, l'année ou une période personnalisée.
+	These charts can be viewed on the current day, week, month, year or custom period.
 
-	JavaMelody inclut des statistiques sur les compteurs définis (à l'heure d'aujourd'hui
-	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers si EJB3,
-	Spring ou Guice) avec pour chaque compteur :
+	JavaMelody includes statistics of predefined counters (currently http requests, sql requests,
+	struts actions, jsp pages and methods of business façades if EJB3, Spring or Guice) with, for each counter :
 
-	* Une synthèse globale indiquant le nombre d'exécutions global, le temps d'exécution moyen, le temps cpu et le pourcentage d'erreurs. 
+	* A summary indicating the overall number of executions, the average execution time, the cpu time and the percentage of errors. 
 
-	* Et le pourcentage du temps passé dans les requêtes dont le temps moyen dépasse un seuil d'alerte paramétrable. 
+	* And the percentage of time spent in the requests for which the average time exceeds a configurable threshold.
 
-	* Et la liste complète des requêtes, agrégées sans les paramètres dynamiques, avec pour chacune le nombre d'exécutions,
-	le temps d'exécution moyen, le temps cpu moyen, le pourcentage d'erreurs ainsi qu'une courbe d'évolution dans le temps des temps d'exécution. 
+	* And the complete list of requests, aggregated without dynamic parameters with, for each, the number of executions,
+	the mean execution time, the mean cpu time, the percentage of errors and an evolution chart of execution time over time. 
 
-	* De plus, chaque requête HTTP indique la taille du flux de réponse, le nombre moyen d'exécutions SQL et le temps d'exécution SQL moyen. 
+	* Furthermore, each http request indicates the size of the flow response, the mean number of sql executions and the mean sql time. 
 	
 	[]
 	
-	Il inclut également des statistiques sur les erreurs http, sur les warnings et erreurs dans les logs,
-	sur les caches de données si ehcache et sur les jobs en batchs si quartz.
+	It also includes statistics on http errors, on warnings and errors in logs,
+	on data caches if ehcache and batch jobs if quartz.
 
-	Un serveur de collecte optionnel et indépendant peut si nécessaire être utilisé pour décharger l'application de la gestion du stockage,
-	et de la génération des rapports et pour centraliser les données d'applications en cluster ou de plusieurs applications.
+	An optional and independent collect server may be used if necessary to unload the application of storage management,
+	and of report generation and to centralize the data of clustered applications or of several applications.
 
-	Grâce à ses technologies peu intrusives et si nécessaire avec son serveur de collecte, le monitoring est conçu pour être utilisé 
-	sur des applications en environnement de production même avec de fortes charges
-	(c'est-à-dire en régime soutenu de plus de 20 requêtes http transactionnelles par seconde).
-	Si vous n'êtes pas convaincu, imaginez que votre base de données s'arrêtera bien avant le monitoring, et que vous gagnerez plus à optimiser
-	quelques requêtes sql ou http sur la base de l'utilisation réelle en production que ce vous perdrez avec le monitoring.
+	With its low-intrusive technology and if necessary with the collect server, the monitoring is designed to be used
+	on applications in production environment even with heavy loads
+	(ie loads of more than 20 transactional http requests per second).
+	If you're not convinced, imagine that your database will stop well before the monitoring, and that you earn more to
+	optimize some sql or http requests based on real usage in production than what you lose with the monitoring.
