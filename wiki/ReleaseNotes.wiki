@@ -3,8 +3,7 @@
 
 <a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>Thanks to [http://www.cloudbees.com CloudBees], there is now a public Jenkins Continuous Integration server for the JavaMelody project.
 	
-		You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk).
-		You can also browse the [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], the [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports].
+	You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk). You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], the [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports].
 
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
   * fix issue 193: Make "Deployment on Tomcat without modification of monitored webapps" work like before v1.32
