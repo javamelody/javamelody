@@ -116,7 +116,7 @@
 		<delete file="javamelody-swing.zip" />
 		<zip destfile="javamelody-swing.zip">
 			<!-- On ne prend surtout pas le gros répertoire .repository dans l'intégration continue Jenkins -->
-			<zipfileset dir="." excludes=".repository,**/classes/**,build/**,target/**,**/Thumbs.db,javamelody-swing.zip" />
+			<zipfileset dir="." excludes=".repository/**,**/classes/**,build/**,target/**,**/Thumbs.db,javamelody-swing.zip" />
 		</zip>
 	</target>
 
