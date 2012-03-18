@@ -404,7 +404,7 @@
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 					<!-- Ce paramètre permet aussi de tester l'appel à RuntimeMXBean.getInputArguments() -->
-					<argLine>-Xmx128m -Dcatalina.home=unknown</argLine>
+					<argLine>-Xmx128m -Dcatalina.home=unknown -Djava.io.tmpdir=target/tmp</argLine>
 				</configuration>
 			</plugin>
 
