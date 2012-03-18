@@ -4,7 +4,8 @@
 
 === Built on CloudBees ===
 
-There is now a public Jenkins Continuous Integration server hosted by [http://www.cloudbees.com CloudBees] for the JavaMelody project. <a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>
+<a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>
+There is now a public Jenkins Continuous Integration server hosted by [http://www.cloudbees.com CloudBees] for the JavaMelody project:
 
 You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk).
 
