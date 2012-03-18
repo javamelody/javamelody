@@ -8,7 +8,7 @@ There is now a public Jenkins Continuous Integration server hosted by [http://ww
 
 You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk).
 
-You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], the [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports].
+You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports].
 
 There is also a [https://javamelody.ci.cloudbees.com/job/jenkins%20plugin/ continuous integration] for the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins Monitoring plugin].
 
