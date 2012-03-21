@@ -3,13 +3,14 @@
 
 <a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>Thanks to [http://www.cloudbees.com CloudBees], there is now a public Jenkins Continuous Integration server for the JavaMelody project:
 	
-	You can download the [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk). You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports]. There is also a [https://javamelody.ci.cloudbees.com/job/jenkins%20plugin/ continuous integration] for the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins Monitoring plugin].
+	You can download the latest [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk). You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports]. There is also a [https://javamelody.ci.cloudbees.com/job/jenkins%20plugin/ continuous integration] for the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins Monitoring plugin].
 
 
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
   * fix issue 193: Make "Deployment on Tomcat without modification of monitored webapps" work like before v1.32
   * fix issue 189: Javamelody should not set autoCommit to false on datasource connections
   * fix issue 195: In the database reports, compatibility of "innodb status" with both Mysql 5.5 and Mysql 4
+  * fix issue 201: Unable to render MBeans tree when some JMX-retrieval exception occurs
   * added: monitoring-spring-datasource.xml, as an alternative to monitoring-spring.xml, to monitor only the datasources when there is some conflict (issue 172). _Doc TODO_
   * added: Possibility to customize styles, icons and other resources in the html reports (issue 196) _Doc TODO_. Please submit your best [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/resource/monitoring.css CSS file] to the [http://groups.google.com/group/javamelody users' group].
 
