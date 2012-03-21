@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-<a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>Thanks to [http://www.cloudbees.com CloudBees], there is now a public Jenkins Continuous Integration server for the JavaMelody project:
+<a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>Thanks to [http://www.cloudbees.com CloudBees], there is now a public [http://jenkins-ci.org Jenkins] Continuous Integration server for the JavaMelody project:
 	
 	You can download the latest [https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build] (snapshot from trunk). You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports]. There is also a [https://javamelody.ci.cloudbees.com/job/jenkins%20plugin/ continuous integration] for the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins Monitoring plugin].
 
