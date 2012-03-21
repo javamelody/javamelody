@@ -134,8 +134,7 @@ final class MBeans {
 		return mbeanServer.getMBeanInfo(name);
 	}
 
-	Map<String, Object> getAttributes(ObjectName name, MBeanAttributeInfo[] attributeInfos)
-			throws JMException {
+	Map<String, Object> getAttributes(ObjectName name, MBeanAttributeInfo[] attributeInfos) {
 		final List<String> attributeNames = new ArrayList<String>(attributeInfos.length);
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
@@ -146,13 +145,18 @@ final class MBeans {
 		}
 		final String[] attributeNamesArray = attributeNames.toArray(new String[attributeNames
 				.size()]);
-		// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
-		final List<Object> attributes = mbeanServer.getAttributes(name, attributeNamesArray);
 		final Map<String, Object> result = new TreeMap<String, Object>();
-		for (final Object object : attributes) {
-			final Attribute attribute = (Attribute) object;
-			final Object value = convertValueIfNeeded(attribute.getValue());
-			result.put(attribute.getName(), value);
+		try {
+			// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
+			final List<Object> attributes = mbeanServer.getAttributes(name, attributeNamesArray);
+			for (final Object object : attributes) {
+				final Attribute attribute = (Attribute) object;
+				final Object value = convertValueIfNeeded(attribute.getValue());
+				result.put(attribute.getName(), value);
+			}
+		} catch (final Exception e) {
+			// issue 201: do not stop to render MBeans tree when exception in mbeanServer.getAttributes
+			result.put("exception", e.toString());
 		}
 		return result;
 	}
