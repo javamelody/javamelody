@@ -5,6 +5,7 @@
    <param name="username" value="@jdbc.username@" />
    <param name="password" value="@jdbc.password@" />
    <param name="url" value="@jdbc.url@" />
+   <param name="defaultAutoCommit" value="false" />
 
    <!-- Connection Pool settings -->
    <param name="maxActive" value="2" />
