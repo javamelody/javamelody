@@ -20,7 +20,7 @@
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>javamelody.log</param-name>
+		<param-name>javamelody.http-transform-pattern</param-name>
 		<param-value>[A-F,0-9]+\.cache</param-value>
 	</context-param>
 
