@@ -305,7 +305,9 @@ class DatabaseInformations implements Serializable {
 					return getPlanOutput(connection, statementId);
 				}
 			} finally {
-				connection.rollback();
+				if (!connection.getAutoCommit()) {
+					connection.rollback();
+				}
 				connection.close();
 			}
 		}
