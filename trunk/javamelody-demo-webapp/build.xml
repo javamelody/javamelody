@@ -28,7 +28,7 @@
 		<tstamp>
 			<format property="TODAY_yyyyMMdd" pattern="yyyy-MM-dd" />
 		</tstamp>
-		<echo file="build/VERSION.properties" message="VERSION=SNAPSHOT-${TODAY_yyyyMMdd}" />
+		<echo file="build/VERSION.properties" message="version=SNAPSHOT-${TODAY_yyyyMMdd}" />
 
 		<ant dir="../javamelody-core" antfile="build.xml" target="clean" />
 		<ant dir="../javamelody-core" antfile="build.xml" target="jar" />
@@ -56,6 +56,8 @@
 			<zipfileset file="build/cloudbees-web.xml" prefix="WEB-INF" />
 			<zipfileset file="build/VERSION.properties" prefix="WEB-INF/classes" />
 			<zipfileset file="../javamelody-core/javamelody.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="../javamelody-core/src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="../javamelody-core/src/test/test-webapp/WEB-INF/lib/xstream-1.3.1.jar" prefix="WEB-INF/lib" />
 			<zipfileset src="appwhite1-gwt.war" excludes="WEB-INF/web.xml,WEB-INF/lib/ojdbc*.jar,WEB-INF/lib/javamelody*.jar" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
