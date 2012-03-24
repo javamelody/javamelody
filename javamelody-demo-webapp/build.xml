@@ -30,6 +30,7 @@
 		</tstamp>
 		<echo file="build/VERSION.properties" message="VERSION=SNAPSHOT-${TODAY_yyyyMMdd}" />
 
+		<ant dir="../javamelody-core" antfile="build.xml" target="clean" />
 		<ant dir="../javamelody-core" antfile="build.xml" target="jar" />
 	</target>
 
