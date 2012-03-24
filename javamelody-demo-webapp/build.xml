@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright 2008-2012 by Emeric Vernat
+ *
+ *     This file is part of Java Melody.
+ *
+ * Java Melody is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Java Melody is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Auteur: Emeric Vernat -->
+<project basedir="." default="war" name="JavaMelody Demo Webapp">
+	<!-- Initialisation des tâches -->
+	<target name="init">
+		<echo message="-- Script Ant JavaMelody Demo Webapp --" level="info" />
+
+		<mkdir dir="build" />
+		<tstamp>
+			<format property="TODAY_yyyyMMdd" pattern="yyyy-MM-dd" />
+		</tstamp>
+		<echo file="build/VERSION.properties" message="VERSION=SNAPSHOT-${TODAY_yyyyMMdd}" />
+
+		<ant dir="../javamelody-core" antfile="build.xml" target="jar" />
+	</target>
+
+	<!-- Nettoyage du répertoire de compilation, de documentation et du jar -->
+	<target name="clean">
+		<echo message="Nettoyage" level="info" />
+		<delete dir="build" />
+		<delete file="javamelody-demo-webapp.war" />
+	</target>
+
+	<!-- Construction du war -->
+	<target name="war" depends="init">
+		<echo message="Construction du war" level="info" />
+		<delete file="javamelody-demo-webapp.war" />
+		<copy file="cloudbees-web.xml" todir="build/" overwrite="true" />
+		<replace file="build/cloudbees-web.xml" failOnNoReplacements="true">
+			<replacefilter token="@jdbc.username@" value="${jdbc.username}" />
+			<replacefilter token="@jdbc.password@" value="${jdbc.password}" />
+			<replacefilter token="@jdbc.url@" value="${jdbc.url}" />
+		</replace>
+		<jar destfile="javamelody-demo-webapp.war">
+			<zipfileset file="web.xml" prefix="WEB-INF" />
+			<zipfileset file="build/cloudbees-web.xml" prefix="WEB-INF" />
+			<zipfileset file="build/VERSION.properties" prefix="WEB-INF/classes" />
+			<zipfileset file="../javamelody-core/javamelody.jar" prefix="WEB-INF/lib" />
+			<zipfileset src="appwhite1-gwt.war" excludes="WEB-INF/web.xml,WEB-INF/lib/ojdbc*.jar,WEB-INF/lib/javamelody*.jar" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody-demo-webapp">
+					<attribute name="Implementation-Title" value="Java Melody Demo Webapp" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+		<delete dir="build" />
+	</target>
+</project>
