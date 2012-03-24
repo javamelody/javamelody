@@ -19,6 +19,11 @@
 		<param-name>javamelody.log</param-name>
 		<param-value>true</param-value>
 	</context-param>
+	<context-param>
+		<param-name>javamelody.log</param-name>
+		<param-value>[A-F,0-9]+\.cache</param-value>
+	</context-param>
+
 	<!-- <context-param> <param-name>javamelody.disabled</param-name> <param-value>true</param-value> 
 		</context-param> -->
 
