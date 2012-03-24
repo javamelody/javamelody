@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+
+	<!-- configuration datasource -->
+	<context-param>
+		<param-name>appwhite1.datasource</param-name>
+		<param-value>java:comp/env/jdbc/demo_javamelody</param-value>
+	</context-param>
+
+	<!-- configuration pour monitoring javamelody -->
+	<context-param>
+		<param-name>javamelody.system-actions-enabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.log</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<!-- <context-param> <param-name>javamelody.disabled</param-name> <param-value>true</param-value> 
+		</context-param> -->
+
+	<!-- these are for MDC of Log4j and for display of the user in the monitoring -->
+	<filter>
+		<filter-name>remoteUser</filter-name>
+		<filter-class>fr.spi4j.lib.security.RemoteUserFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>remoteUser</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- these are for monitoring (TODO une fois que la PIC aura migré de Hudson 
+		vers Jenkins, on pourra remplacer le tomcat 6 en 9090 par tomcat 7 et ensuite 
+		enlever MonitoringFilter et SessionListener) puisqu'ils sont déjà dans web-fragment.xml, 
+		mais il faudra aussi remplacer monitoring par javamelody dans log4j.properties -->
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+
+	<!-- these are for getting the session for the current thread -->
+	<filter>
+		<filter-name>httpSessionInThread</filter-name>
+		<filter-class>fr.spi4j.filter.HttpSessionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>httpSessionInThread</filter-name>
+		<url-pattern>/appli1/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Initialisation de la webapp -->
+	<listener>
+		<listener-class>fr.appwhite1.InitializationListener</listener-class>
+	</listener>
+
+	<!-- Services -->
+	<servlet>
+		<servlet-name>PersonneService</servlet-name>
+		<servlet-class>fr.appwhite1.server.services.annuaire.PersonneServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PersonneService</servlet-name>
+		<url-pattern>/appli1/PersonneService</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>GradeService</servlet-name>
+		<servlet-class>fr.appwhite1.server.services.ref.GradeServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GradeService</servlet-name>
+		<url-pattern>/appli1/GradeService</url-pattern>
+	</servlet-mapping>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Appli1.html</welcome-file>
+	</welcome-file-list>
+
+	<!-- time out des sessions en minutes (il est recommandé 30 ou 60 minutes 
+		pour le timeout) -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<resource-ref>
+		<res-ref-name>jdbc/demo_javamelody</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+</web-app>
