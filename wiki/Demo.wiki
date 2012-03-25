@@ -1,3 +1,4 @@
+#labels Featured
 There is a public demo of JavaMelody. It is based on the latest source in trunk and is continuously deployed with DEV@CLOUD by [http://www.cloudbees.com CloudBees]. It features http (GWT), services and SQL (Mysql) monitoring in particular.
 
   * First, you can play with this quick and dirty [http://demo.javamelody.cloudbees.net/ GWT application] to have some data
