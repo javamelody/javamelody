@@ -8,7 +8,7 @@
 	And there is a public *demo of JavaMelody*. It is based on the latest source in trunk and is continuously deployed with DEV@CLOUD. It features http (GWT), services (java interfaces) and SQL (Mysql) monitoring in particular.
   * First, you can play with this quick and dirty [http://demo.javamelody.cloudbees.net/ GWT application] to have some data
   * Then you can view the charts and the statistics in the [http://demo.javamelody.cloudbees.net/monitoring monitoring reports] (no password)
-  * Some JavaMelody features are not in the demo, see the [Screenshots] for some other features.
+  * Some JavaMelody features are not in the demo, see the [Screenshots] for other features.
 
 	Other notes:
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
