@@ -3,4 +3,4 @@ There is a public demo of JavaMelody. It is based on the latest source in trunk 
 
   * First, you can play with this quick and dirty [http://demo.javamelody.cloudbees.net/ GWT application] to have some data
   * Then you can view the charts and the statistics in the [http://demo.javamelody.cloudbees.net/monitoring monitoring reports] (no password)
-  * Some JavaMelody features are not in the demo, see the [Screenshots] for some other features.
+  * Some JavaMelody features are not in the demo, see the [Screenshots] for other features.
