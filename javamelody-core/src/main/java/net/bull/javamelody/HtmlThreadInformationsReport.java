@@ -84,12 +84,7 @@ class HtmlThreadInformationsReport {
 	}
 
 	void writeDeadlocks() throws IOException {
-		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
-		for (final ThreadInformations thread : threadInformationsList) {
-			if (thread.isDeadlocked()) {
-				deadlockedThreads.add(thread);
-			}
-		}
+		final List<ThreadInformations> deadlockedThreads = getDeadLockedThreads();
 		if (!deadlockedThreads.isEmpty()) {
 			write("<div class='severe'>#Threads_deadlocks#");
 			String separator = " ";
@@ -103,6 +98,17 @@ class HtmlThreadInformationsReport {
 	}
 
 	void writeThreadsDump() throws IOException {
+		final List<ThreadInformations> deadlockedThreads = getDeadLockedThreads();
+		if (!deadlockedThreads.isEmpty()) {
+			write("#Threads_deadlocks#");
+			String separator = " ";
+			for (final ThreadInformations thread : deadlockedThreads) {
+				writer.write(separator);
+				writer.write(thread.getName());
+				separator = ", ";
+			}
+			writer.write("\n\n");
+		}
 		if (stackTraceEnabled) {
 			for (final ThreadInformations threadInformations : threadInformationsList) {
 				writer.write('\"');
@@ -126,6 +132,16 @@ class HtmlThreadInformationsReport {
 			}
 			writer.write("\n");
 		}
+	}
+
+	private List<ThreadInformations> getDeadLockedThreads() {
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		for (final ThreadInformations thread : threadInformationsList) {
+			if (thread.isDeadlocked()) {
+				deadlockedThreads.add(thread);
+			}
+		}
+		return deadlockedThreads;
 	}
 
 	private void writeThreadInformations(ThreadInformations threadInformations) throws IOException {
