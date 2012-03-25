@@ -1,0 +1,5 @@
+There is a public demo of JavaMelody. It is based on the latest source in trunk and is continuously deployed with DEV@CLOUD by [http://www.cloudbees.com CloudBees]. It features http (GWT), services and SQL (Mysql) monitoring in particular.
+
+  * First, you can play with this quick and dirty [http://demo.javamelody.cloudbees.net/ GWT application] to have some data
+  * Then you can view the charts and the statistics in the [http://demo.javamelody.cloudbees.net/monitoring monitoring reports]
+  * Some JavaMelody features are not in the demo, see the [Screenshots] for some other features.
