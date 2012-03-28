@@ -219,8 +219,8 @@
 				<javadoc destdir="@{destdir}" windowtitle="@{windowtitle}" classpath="@{classpath}" 
 					encoding="UTF-8" charset="UTF-8" access="public" 
 					author="on" version="on" use="on" maxmemory="128m">
-					<link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistloc="./j2se/" />
-					<link offline="true" href="http://java.sun.com/javaee/5/docs/api/" packagelistloc="./j2ee/" />
+					<link offline="true" href="http://docs.oracle.com/javase/7/docs/api/" packagelistloc="./j2se/" />
+					<link offline="true" href="http://docs.oracle.com/javaee/6/api/" packagelistloc="./j2ee/" />
 					<doctitle>
 						<![CDATA[@{windowtitle}]]>
 					</doctitle>
