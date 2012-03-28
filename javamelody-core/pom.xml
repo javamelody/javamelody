@@ -223,32 +223,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<!-- pour jrobin -->
-			<id>m.g.o-public</id>
-			<url>http://maven.glassfish.org/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<!-- pour jrobin (plus nécessaire car jrobin est disponible dans maven.glassfish.org)
-		<repository>
-			<id>opennms-repo</id>
-			<name>OpenNMS Repository</name>
-			<url>http://repo.opennms.org/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>-->
-	</repositories>
 
 	<distributionManagement>
 		<!-- "mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn, 
