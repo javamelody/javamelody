@@ -401,6 +401,22 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
+				<configuration>
+					<offlineLinks>
+						<offlineLink>
+							<url>http://docs.oracle.com/javase/7/docs/api/</url>
+							<location>${project.basedir}/j2se/</location>
+						</offlineLink>
+						<offlineLink>
+							<url>http://docs.oracle.com/javaee/6/api/</url>
+							<location>${project.basedir}/j2ee/</location>
+						</offlineLink>
+					</offlineLinks>
+				</configuration>
+			</plugin>
 
 			<!-- Site -->
 			<plugin>
@@ -418,10 +434,6 @@
 								<charset>UTF-8</charset>
 								<encoding>UTF-8</encoding>
 								<docencoding>UTF-8</docencoding>
-								<links>
-									<link>http://java.sun.com/javase/6/docs/api/</link>
-									<link>http://java.sun.com/javaee/5/docs/api/</link>
-								</links>
 							</configuration>
 						</plugin>
 						<!-- Références croisées -->
