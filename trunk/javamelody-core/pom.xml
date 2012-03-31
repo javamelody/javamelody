@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.36.0-SNAPSHOT</version>
+	<version>1.36.0</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - Core</name>
 	<description>Monitoring of JavaEE applications</description>
@@ -27,9 +27,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://javamelody.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://javamelody.googlecode.com/svn/tags/javamelody-core-1.36.0</connection>
+		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/tags/javamelody-core-1.36.0</developerConnection>
+		<url>http://javamelody.googlecode.com/svn/tags/javamelody-core-1.36.0</url>
 	</scm>
 	<organization>
 		<name>Emeric Vernat</name>
@@ -341,8 +341,8 @@
 								<echo message="# Version of JavaMelody${line.separator}" file="VERSION.properties" />
 								<echo message="version=${project.version}" append="true" file="VERSION.properties" />
 								<!-- avec antrun 1.7, CR ne peut être écrit en même temps que LF -->
-								<echo message="&#13;" append="true" file="VERSION.properties" />
-								<echo message="&#10;" append="true" file="VERSION.properties" />
+								<echo message="&#xD;" append="true" file="VERSION.properties" />
+								<echo message="&#xA;" append="true" file="VERSION.properties" />
 								<copy file="VERSION.properties" tofile="target/classes/VERSION.properties" />
 
 								<!-- appel de Ant et copie du résultat dans le site -->
