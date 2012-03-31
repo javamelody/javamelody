@@ -1,12 +1,12 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.36.0 ===
 
 <a href='http://www.cloudbees.com/'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/images/Button-Built-on-CB-1.png' width='20%' alt='Built on CloudBees' /></a>Thanks to [http://www.cloudbees.com CloudBees], there is now a public [http://jenkins-ci.org Jenkins] *Continuous Integration* server for the JavaMelody project:
 	
 	Anytime, you can download the latest *[https://javamelody.ci.cloudbees.com/job/javamelody/ nightly build]* (beta, snapshot from trunk). You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports]. There is also a [https://javamelody.ci.cloudbees.com/job/jenkins%20plugin/ continuous integration] for the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins Monitoring plugin].
 
 	And there is a public *demo of JavaMelody*. It is based on the latest source in trunk and is continuously deployed with DEV@CLOUD. It features http (GWT), services (java interfaces) and SQL (jdbc, Mysql) monitoring in particular.
-  * First, you can play with this quick and dirty [http://demo.javamelody.cloudbees.net/ GWT application] to have some data
+  * First, you can play with this quick and dirty [http://demo.javamelody.cloudbees.net/ GWT application] to have some data (thanks Benjamin)
   * Then you can view the charts and the statistics in the [http://demo.javamelody.cloudbees.net/monitoring monitoring reports] (no password)
   * Some JavaMelody features are not in the demo, see the [Screenshots] for other features.
 
@@ -20,7 +20,7 @@
   * fix issue 204: There should not be a blocking exception, when initializing the JSF action listener does not work
   * added: monitoring-spring-datasource.xml, as an alternative to monitoring-spring.xml, to monitor only the datasources when there is some conflict (issue 172). _Doc TODO_
   * added: Possibility to customize styles, icons and other resources in the html reports (issue 196) _Doc TODO_. Please submit your best [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/resource/monitoring.css CSS file] to the [http://groups.google.com/group/javamelody users' group].
-  * added: if there are deadlocked threads in the JVM, print a warning message with the names of the deadlocked threads at the top of threads dump (revision 2678)
+  * added: if there are deadlocked threads in the JVM, print a warning message with the names of the deadlocked threads at the top of threads dump, like in the html and pdf reports (revision 2678)
 
 === 1.35.0 ===
 
