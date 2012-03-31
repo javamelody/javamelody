@@ -36,14 +36,20 @@ final class JsfActionHelper {
 	static void initJsfActionListener() {
 		// cette indirection entre FilterContext et JsfActionListener est probablement nécessaire pour la JVM IBM J9
 		// afin de ne pas dépendre des classes FacesContext et ActionListenerImpl et afin de ne pas avoir de ClassNotFound dans J9
-		final FacesContext facesContext = FacesContext.getCurrentInstance();
-		if (facesContext != null && facesContext.getApplication() != null) {
-			// ceci est a priori équivalent à l'ajout d'un action-listener dans WEB-INF/faces-config.xml de l'application :
-			// <application><action-listener>net.bull.javamelody.JsfActionListener</action-listener></application>
-			// et on ne peut pas avoir un fichier META-INF/faces-config.xml dans le jar de javamelody avec cet action-listener
-			// car dans Apache MyFaces, cela ferait certainement une ClassNotFoundException rendant javamelody inutilisable
-			final JsfActionListener jsfActionListener = new JsfActionListener();
-			facesContext.getApplication().setActionListener(jsfActionListener);
+		try {
+			final FacesContext facesContext = FacesContext.getCurrentInstance();
+			if (facesContext != null && facesContext.getApplication() != null) {
+				// ceci est a priori équivalent à l'ajout d'un action-listener dans WEB-INF/faces-config.xml de l'application :
+				// <application><action-listener>net.bull.javamelody.JsfActionListener</action-listener></application>
+				// et on ne peut pas avoir un fichier META-INF/faces-config.xml dans le jar de javamelody avec cet action-listener
+				// car dans Apache MyFaces, cela ferait certainement une ClassNotFoundException rendant javamelody inutilisable
+				final JsfActionListener jsfActionListener = new JsfActionListener();
+				facesContext.getApplication().setActionListener(jsfActionListener);
+			}
+		} catch (final Exception e) {
+			// issue 204: initialisation du JsfActionListener échouée, tant pis, il n'y aura pas les statistiques pour JSF
+			LOG.info("initialization of jsf action listener failed, skipping", e);
 		}
+
 	}
 }
