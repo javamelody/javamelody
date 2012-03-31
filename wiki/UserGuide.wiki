@@ -421,6 +421,10 @@ or MSIE8 (MSIE7 not recommended).
 	</context-param>
 }}}
 
+	If ever, there is a conflict in your application between the all-in-one monitoring-spring.xml and AOP or @Autowired,
+	then you can use the monitoring-spring-datasource.xml file, instead of monitoring-spring.xml.
+	This file contains only the datasource post-processor and an example of SpringDataSourceFactoryBean.
+
 === 8. Business facades (ejb-jar.xml file if EJB3) ===
 
 	If the application to monitor contains some business façades in EJB3 (Java EE 5) with annotations {{{@Stateless}}},
