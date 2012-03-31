@@ -59,7 +59,7 @@ public class TestCustomResourceFilter { // NOPMD
 		config = createNiceMock(FilterConfig.class);
 		expect(config.getInitParameterNames()).andReturn(
 				Collections.enumeration(Arrays.asList(MONITORING_CSS)));
-		for (Map.Entry<String, String> entry : CUSTOM_RESOURCES.entrySet()) {
+		for (final Map.Entry<String, String> entry : CUSTOM_RESOURCES.entrySet()) {
 			expect(config.getInitParameter(entry.getKey())).andReturn(entry.getValue());
 		}
 
