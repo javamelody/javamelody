@@ -278,7 +278,7 @@
 				</fileset>
 			</classpath>
 			<sysproperty key="catalina.home" value="unknown" />
-			<sysproperty key="java.io.tmpdir" value="build/tmp" />
+			<sysproperty key="java.io.tmpdir" value="${basedir}/build/tmp" />
 			<batchtest todir="build/test-results" haltonerror="false" haltonfailure="false"
 				errorProperty="test.failed" failureProperty="test.failed">
 				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/JobTestImpl.class,**/SpringTestFacade*.class,**/Utils.class" />
