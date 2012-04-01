@@ -50,7 +50,7 @@ And
   # *Alerts* based on thresholds, with mails to administrators
   # ~~*CSV* exports of tables~~ (done in the rich desktop UI. Note that there are also [ExternalAPI XML and JSON] exports possible in the web UI)
   # (_started_) Rich *desktop UI* able to connect to multiple servers via CollectorServer and to centralized collect servers, with [http://java.sun.com/docs/books/tutorial/uiswing/ swing] and [http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp java web start]
-  # *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]* plugin to display some graphs in those tools
+  # *[http://munin.projects.linpro.no/ Munin]/[http://www.nagios.org/ Nagios]/[www.zabbix.com Zabbix]* plugin to display some graphs in those tools
   # ~~Add the Nagios plugin by Shawn Bower in the user guide in addition to the [ExternalAPI#PNG_and_lastValue External API], if it works well.~~ (done)
   # When monitoring-spring.xml is used (or monitoring-spring-aspectj.xml), add a page to display beans in the Spring context by adding a bean which implements ApplicationContextAware
   # Add a plugin interceptor to monitor sql requests in mybatis when no other sql monitoring, such as a datasource from JNDI, is used
