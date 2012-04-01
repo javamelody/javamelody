@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.File;
 import java.util.HashSet;
 
 import javax.servlet.FilterConfig;
@@ -74,5 +75,6 @@ final class Utils {
 		System.setProperty(SYSTEM_ACTIONS_PROPERTY_NAME, "true");
 		JdbcWrapper.USED_CONNECTION_INFORMATIONS.clear();
 		System.getProperties().remove(SYSTEM_ACTIONS_PROPERTY_NAME);
+		new File(System.getProperty("java.io.tmpdir")).mkdir();
 	}
 }
