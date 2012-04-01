@@ -137,6 +137,6 @@ This is an internal reminder of the steps of the release process.
     * edit user / password in .grails\settings.groovy
     * grails release-plugin "-repository=grailsplugins"
     * Edit plugin in http://www.grails.org/plugin/grails-melody
-  * *wait artefacts* to be available in Maven central [http://search.maven.org/]
+  * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
   * *twitter announce* [https://twitter.com/#!/java_melody]
   * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody] ([https://groups.google.com/forum/?fromgroups#!topic/javamelody/w-8Xhi7G5x8 example])
