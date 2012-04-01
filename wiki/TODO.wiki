@@ -58,6 +58,7 @@ And
   # Extract informations from bonecp such as max connections like from dbcp
   # Custom processing in counters's events (issue 173)
   # Possibility to add graphics based on configurable MBeans values (such as business metrics)
+  # In the list of dependencies of the webapp, add a link to a new page to display for each dependency the name with a link to the dependency's url, Maven ID with groupId:artifactId:version, the name of the license with a link to its URL (like Jenkins)
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
