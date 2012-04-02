@@ -75,6 +75,6 @@ final class Utils {
 		System.setProperty(SYSTEM_ACTIONS_PROPERTY_NAME, "true");
 		JdbcWrapper.USED_CONNECTION_INFORMATIONS.clear();
 		System.getProperties().remove(SYSTEM_ACTIONS_PROPERTY_NAME);
-		new File(System.getProperty("java.io.tmpdir")).mkdir();
+		new File(System.getProperty("java.io.tmpdir")).mkdirs();
 	}
 }
