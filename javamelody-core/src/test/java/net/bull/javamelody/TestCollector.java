@@ -64,6 +64,7 @@ public class TestCollector {
 	@Before
 	public void setUp() {
 		Utils.initialize();
+		Parameters.getStorageDirectory(TEST).mkdirs();
 		final File[] files = Parameters.getStorageDirectory(TEST).listFiles();
 		if (files != null) {
 			for (final File file : files) {
