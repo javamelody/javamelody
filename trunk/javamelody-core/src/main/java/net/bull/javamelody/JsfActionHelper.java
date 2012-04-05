@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionListener;
 
 /**
  * Helper pour l'ActionListener JSF RI (Mojarra).
@@ -43,13 +44,15 @@ final class JsfActionHelper {
 				// <application><action-listener>net.bull.javamelody.JsfActionListener</action-listener></application>
 				// et on ne peut pas avoir un fichier META-INF/faces-config.xml dans le jar de javamelody avec cet action-listener
 				// car dans Apache MyFaces, cela ferait certainement une ClassNotFoundException rendant javamelody inutilisable
-				final JsfActionListener jsfActionListener = new JsfActionListener();
+				final ActionListener delegateActionListener = facesContext.getApplication()
+						.getActionListener();
+				final JsfActionListener jsfActionListener = new JsfActionListener(
+						delegateActionListener);
 				facesContext.getApplication().setActionListener(jsfActionListener);
 			}
 		} catch (final Exception e) {
 			// issue 204: initialisation du JsfActionListener échouée, tant pis, il n'y aura pas les statistiques pour JSF
 			LOG.info("initialization of jsf action listener failed, skipping", e);
 		}
-
 	}
 }
