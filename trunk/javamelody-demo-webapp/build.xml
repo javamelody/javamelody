@@ -34,15 +34,24 @@
 		<ant dir="../javamelody-core" antfile="build.xml" target="jar" />
 	</target>
 
-	<!-- Nettoyage du répertoire de compilation, de documentation et du jar -->
+	<!-- Nettoyage du répertoire de compilation et du war -->
 	<target name="clean">
 		<echo message="Nettoyage" level="info" />
 		<delete dir="build" />
 		<delete file="javamelody-demo-webapp.war" />
 	</target>
 
+	<target name="build" depends="init">
+		<echo message="Compilation" level="info" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src" destdir="build" includeantruntime="false"
+			classpath="../javamelody-core/src/main/lib/servlet-api-2.5.jar">
+			<compilerarg value="-Xlint" />
+		</javac>
+	</target>
+
 	<!-- Construction du war -->
-	<target name="war" depends="init">
+	<target name="war" depends="build">
 		<echo message="Construction du war" level="info" />
 		<delete file="javamelody-demo-webapp.war" />
 		<copy file="cloudbees-web.xml" todir="build/" overwrite="true" />
@@ -55,6 +64,7 @@
 			<zipfileset file="web.xml" prefix="WEB-INF" />
 			<zipfileset file="build/cloudbees-web.xml" prefix="WEB-INF" />
 			<zipfileset file="build/VERSION.properties" prefix="WEB-INF/classes" />
+			<zipfileset file="build/*.class" prefix="WEB-INF/classes" />
 			<zipfileset file="../javamelody-core/javamelody.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="../javamelody-core/src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="../javamelody-core/src/test/test-webapp/WEB-INF/lib/xstream-1.3.1.jar" prefix="WEB-INF/lib" />
