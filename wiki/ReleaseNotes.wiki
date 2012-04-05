@@ -21,7 +21,7 @@
   * fix issue 189: Should not set autoCommit to false on datasource connections
   * fix issue 195: In the database reports, compatibility of "innodb status" with both Mysql 5.5 and Mysql 4
   * fix issue 201: Unable to render MBeans tree when some JMX-retrieval exception occurs
-  * fix issue 204: There should not be a blocking exception, when initializing the JSF action listener does not work
+  * fix issue 204: There should not be any blocking exception when initializing the JSF action listener
   * added: monitoring-spring-datasource.xml, as an alternative to monitoring-spring.xml, to monitor only the datasources when there is some conflict (issue 172). See [UserGuide#7._JDBC doc] at the end of the JDBC chapter.
   * added: Possibility to customize styles, icons and other resources in the html reports (issue 196) See [UserGuideAdvanced#Customizing_styles,_icons_and_other_resources_in_the_html_report doc]. Please submit your best [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/resource/monitoring.css CSS file] to the [http://groups.google.com/group/javamelody users' group].
   * added: if there are deadlocked threads in the JVM, print a warning message with the names of the deadlocked threads at the top of threads dump, like in the html and pdf reports (revision 2678)
