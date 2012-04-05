@@ -46,10 +46,7 @@
 		<url-pattern>/monitoring</url-pattern>
 	</filter-mapping>
 
-	<!-- these are for monitoring (TODO une fois que la PIC aura migré de Hudson 
-		vers Jenkins, on pourra remplacer le tomcat 6 en 9090 par tomcat 7 et ensuite 
-		enlever MonitoringFilter et SessionListener) puisqu'ils sont déjà dans web-fragment.xml, 
-		mais il faudra aussi remplacer monitoring par javamelody dans log4j.properties -->
+	<!-- these are for monitoring -->
 	<filter>
 		<filter-name>monitoring</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
