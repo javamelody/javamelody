@@ -25,14 +25,18 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.core.PriorityOrdered;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
 /**
  * Post-processor Spring pour une éventuelle DataSource défini dans le fichier xml Spring.
  * @author Emeric Vernat
  */
-public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
+public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
 	private Set<String> excludedDatasources;
+	// l'interface PriorityOrdered place la priorité assez haute dans le contexte Spring
+	// quelle que soit la valeur de order
+	private int order = LOWEST_PRECEDENCE;
 
 	/**
 	 * Définit les noms des datasources Spring exclues.
@@ -49,6 +53,19 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor {
 		//			</set>
 		//		</property>
 		// 	</bean>
+	}
+
+	/** {@inheritDoc} */
+	public int getOrder() {
+		return order;
+	}
+
+	/**
+	 * Définit la priorité dans le contexte Spring.
+	 * @param order int
+	 */
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	/** {@inheritDoc} */
