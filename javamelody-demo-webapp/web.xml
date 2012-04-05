@@ -53,6 +53,15 @@
 		<listener-class>net.bull.javamelody.SessionListener</listener-class>
 	</listener>
 
+	<filter>
+		<filter-name>killThreadForbidden</filter-name>
+		<filter-class>KillThreadForbiddenFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>killThreadForbidden</filter-name>
+		<url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+
 	<!-- these are for getting the session for the current thread -->
 	<filter>
 		<filter-name>httpSessionInThread</filter-name>
