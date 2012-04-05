@@ -20,37 +20,38 @@ package net.bull.javamelody;
 
 import javax.faces.component.ActionSource2;
 import javax.faces.event.ActionEvent;
-
-import com.sun.faces.application.ActionListenerImpl;
+import javax.faces.event.ActionListener;
 
 /**
  * ActionListener JSF RI (Mojarra) pour avoir les temps moyens des actions JSF.
  * @author Emeric Vernat
  */
-public class JsfActionListener extends ActionListenerImpl {
+public class JsfActionListener implements ActionListener {
 	private static final Counter JSF_COUNTER = MonitoringProxy.getJsfCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(JSF_COUNTER.getName());
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
+	private final ActionListener delegateActionListener;
 
 	/**
 	 * Constructeur.
+	 * @param delegateActionListener ActionListener
 	 */
-	public JsfActionListener() {
+	public JsfActionListener(ActionListener delegateActionListener) {
 		super();
 		// quand cet ActionListener est utilisé, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		JSF_COUNTER.setDisplayed(!COUNTER_HIDDEN);
 		JSF_COUNTER.setUsed(true);
 		LOG.debug("jsf action listener initialized");
+		this.delegateActionListener = delegateActionListener;
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public void processAction(ActionEvent event) { // throws FacesException
 		// cette méthode est appelée par JSF RI (Mojarra)
 		if (DISABLED || !JSF_COUNTER.isDisplayed()) {
-			super.processAction(event);
+			delegateActionListener.processAction(event);
 		}
 
 		boolean systemError = false;
@@ -59,7 +60,7 @@ public class JsfActionListener extends ActionListenerImpl {
 
 			JSF_COUNTER.bindContextIncludingCpu(actionName);
 
-			super.processAction(event);
+			delegateActionListener.processAction(event);
 
 		} catch (final Error e) {
 			// on catche Error pour avoir les erreurs systèmes
