@@ -16,7 +16,7 @@
   * Some JavaMelody features are not in the demo, see the [Screenshots] for other features.
 
 	Other notes:
-  * fix blocking issue 194 and issue 143, issue 199, issue 200: The jrobin v1.5.9 artifacts are now available in the Maven central repository as you can see [http://search.maven.org/#artifactdetails|org.jrobin|jrobin|1.5.9|jar here]. The external (and currently unreachable) repository in the pom is now useless and removed.
+  * fix blocking issue 194 and issue 143, issue 199, issue 200: The jrobin v1.5.9 artifacts are now available in the *Maven central* repository as you can see [http://search.maven.org/#artifactdetails|org.jrobin|jrobin|1.5.9|jar here]. The external (and currently unreachable) repository in the pom is now useless and removed.
   * fix minor issue 192: In a Bamboo server v3.1+, internal server error when viewed by non-admin user.
   * fix issue 193: Make "Deployment on Tomcat without modification of monitored webapps" work like before v1.32
   * fix issue 189: Should not set autoCommit to false on datasource connections
