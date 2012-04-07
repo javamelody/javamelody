@@ -16,24 +16,25 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<issueManagement>
-		<system>google</system>
-		<url>http://code.google.com/p/javamelody/issues/list</url>
-	</issueManagement>
 	<developers>
 		<developer>
 			<name>Emeric Vernat</name>
 			<email>evernat@free.fr</email>
 		</developer>
 	</developers>
+	<issueManagement>
+		<system>google</system>
+		<url>http://code.google.com/p/javamelody/issues/list</url>
+	</issueManagement>
 	<scm>
 		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
 		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
 		<url>http://javamelody.googlecode.com/svn/trunk/</url>
 	</scm>
-	<organization>
-		<name>Emeric Vernat</name>
-	</organization>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://javamelody.ci.cloudbees.com/job/javamelody/</url>
+	</ciManagement>
 	<mailingLists>
 		<mailingList>
 			<name>User List</name>
@@ -42,6 +43,9 @@
 			<archive>http://groups.google.com/group/javamelody</archive>
 		</mailingList>
 	</mailingLists>
+	<organization>
+		<name>Emeric Vernat</name>
+	</organization>
 	<prerequisites>
 		<maven>3.0.4</maven>
 	</prerequisites>
