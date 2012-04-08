@@ -18,7 +18,7 @@ img {border : 0px; vertical-align : middle;}
 @media screen and (-webkit-device-pixel-ratio: 1.5),
 	   screen and (-webkit-device-pixel-ratio: 1.0),
 	   screen and (-webkit-device-pixel-ratio: 0.75),
-	   screen and not (-webkit-min-device-width: 801px)  {
+	   screen and not (-webkit-min-device-width: 1024px)  {
 	/* android and iphone and not others WebKits */
 	.synthese {
 		width: 229px;
