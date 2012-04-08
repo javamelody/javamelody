@@ -15,7 +15,7 @@ img {border : 0px; vertical-align : middle;}
 	-webkit-box-shadow: 2px 2px 3px #888;
 	filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);
 }
-@media only screen and (max-device-width: 480px) {
+@media only screen and (-webkit-max-device-width: 480px) {
 	/* android and iphone */
 	.synthese {
 		width: 229px;
