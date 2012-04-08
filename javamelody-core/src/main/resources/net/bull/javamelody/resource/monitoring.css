@@ -15,8 +15,11 @@ img {border : 0px; vertical-align : middle;}
 	-webkit-box-shadow: 2px 2px 3px #888;
 	filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);
 }
-@media screen and (-webkit-device-pixel-ratio: 1.5), screen and (-webkit-device-pixel-ratio: 1.0), screen and (-webkit-device-pixel-ratio: 0.75)  {
-	/* android and iphone */
+@media screen and (-webkit-device-pixel-ratio: 1.5),
+	   screen and (-webkit-device-pixel-ratio: 1.0),
+	   screen and (-webkit-device-pixel-ratio: 0.75),
+	   screen and (not -webkit-device-pixel-ratio: 0)  {
+	/* android and iphone and not others WebKits */
 	.synthese {
 		width: 229px;
 	}
