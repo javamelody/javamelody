@@ -187,7 +187,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	/** {@inheritDoc} */
 	public void contextInitialized(ServletContextEvent event) {
-		final String contextPath = event.getServletContext().getContextPath();
+		final String contextPath = Parameters.getContextPath(event.getServletContext());
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
 				// si jars dans tomcat/lib, il y a plusieurs instances mais dans des webapps différentes (issue 193)

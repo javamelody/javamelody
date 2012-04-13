@@ -149,7 +149,9 @@ public class TestSessionListener {
 	@Test
 	public void testContextInitialized() {
 		ServletContext servletContext = createNiceMock(ServletContext.class);
-		expect(servletContext.getServerInfo()).andReturn("Mock");
+		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
+		expect(servletContext.getMajorVersion()).andReturn(2).anyTimes();
+		expect(servletContext.getMinorVersion()).andReturn(5).anyTimes();
 		ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
 		replay(servletContext);
 		sessionListener.contextInitialized(servletContextEvent);
@@ -158,7 +160,9 @@ public class TestSessionListener {
 
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
 		servletContext = createNiceMock(ServletContext.class);
-		expect(servletContext.getServerInfo()).andReturn("Mock");
+		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
+		expect(servletContext.getMajorVersion()).andReturn(2).anyTimes();
+		expect(servletContext.getMinorVersion()).andReturn(5).anyTimes();
 		servletContextEvent = new ServletContextEvent(servletContext);
 		replay(servletContext);
 		sessionListener.contextInitialized(servletContextEvent);
@@ -243,6 +247,8 @@ public class TestSessionListener {
 		final ServletContextEvent servletContextEvent = new ServletContextEvent(servletContext);
 		expect(servletContext.getContextPath()).andReturn("/test").anyTimes();
 		expect(servletContext.getServerInfo()).andReturn("Glassfish").anyTimes();
+		expect(servletContext.getMajorVersion()).andReturn(2).anyTimes();
+		expect(servletContext.getMinorVersion()).andReturn(5).anyTimes();
 		replay(servletContext);
 		sessionListener1.contextInitialized(servletContextEvent);
 		sessionListener2.contextInitialized(servletContextEvent);
