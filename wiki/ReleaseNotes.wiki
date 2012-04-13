@@ -4,6 +4,7 @@
   * fix issue 207: Incompatibility with servlet api 2.4 (Tomcat 5.5) in javamelody 1.36
   * fix issue 205 and issue 206: delegate the JSF ActionListener to the next JSF ActionListener if one was defined in the faces-config.xml file (thanks to _Patrick Dobler_)
   * fix: the SpringDataSourceBeanPostProcessor now implements PriorityOrdered to be initialized sooner (revision 2724)
+  * fix issue 187: can't protect Melody grails plugin with spring security core (thanks to _Burt Beckwith_)
 
 === 1.36.0 ===
 
