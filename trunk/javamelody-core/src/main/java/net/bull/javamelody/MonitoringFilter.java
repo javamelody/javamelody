@@ -88,7 +88,7 @@ public class MonitoringFilter implements Filter {
 
 	/** {@inheritDoc} */
 	public void init(FilterConfig config) throws ServletException {
-		final String contextPath = config.getServletContext().getContextPath();
+		final String contextPath = Parameters.getContextPath(config.getServletContext());
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
 				// si jars dans tomcat/lib, il y a plusieurs instances mais dans des webapps différentes (issue 193)
