@@ -48,6 +48,7 @@
 					<include name="jsf-impl-2.1.5.jar" />
 					<include name="javax.faces-api-2.1.jar" />
 					<include name="javax.el-api-2.2.1.jar" />
+					<include name="tomcat-jdbc-7.0.27.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="jrobin-1.5.9.1.jar" />
