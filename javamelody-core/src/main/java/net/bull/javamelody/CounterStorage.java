@@ -23,9 +23,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -127,6 +129,29 @@ class CounterStorage {
 		final IOException ex = new IOException(e.getMessage());
 		ex.initCause(e);
 		return ex;
+	}
+
+	static boolean deleteObsoleteCounterFiles(String application) {
+		final File storageDir = Parameters.getStorageDirectory(application);
+		final Calendar nowMinusOneYearAndADay = Calendar.getInstance();
+		nowMinusOneYearAndADay.add(Calendar.YEAR, -1);
+		nowMinusOneYearAndADay.add(Calendar.DAY_OF_YEAR, -1);
+		boolean result = true;
+		// filtre pour ne garder que les fichiers d'extension .ser.gz et pour éviter d'instancier des File inutiles
+		final FilenameFilter filenameFilter = new FilenameFilter() {
+			/** {@inheritDoc} */
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".ser.gz");
+			}
+		};
+		for (final File file : storageDir.listFiles(filenameFilter)) {
+			if (file.lastModified() < nowMinusOneYearAndADay.getTimeInMillis()) {
+				result = result && file.delete();
+			}
+		}
+
+		// on retourne true si tous les fichiers .ser.gz obsolètes ont été supprimés, false sinon
+		return result;
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing
