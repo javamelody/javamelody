@@ -43,8 +43,6 @@ import javax.naming.Referenceable;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
-
 /**
  * Cette classe est utile pour construire des proxy de DataSources ou de Connections jdbc.<br>
  * Et notamment elle rebinde dans l'annuaire JNDI la dataSource jdbc en la remplaçant
@@ -651,14 +649,7 @@ public final class JdbcWrapper {
 	 */
 	public DataSource createDataSourceProxy(String name, final DataSource dataSource) {
 		assert dataSource != null;
-		if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSource.getClass().getName())
-				&& dataSource instanceof BasicDataSource) {
-			JdbcWrapperHelper.pullTomcatDataSourceProperties(name, dataSource);
-		} else if ("org.apache.commons.dbcp.BasicDataSource"
-				.equals(dataSource.getClass().getName())
-				&& dataSource instanceof org.apache.commons.dbcp.BasicDataSource) {
-			JdbcWrapperHelper.pullDbcpDataSourceProperties(name, dataSource);
-		}
+		JdbcWrapperHelper.pullDataSourceProperties(name, dataSource);
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

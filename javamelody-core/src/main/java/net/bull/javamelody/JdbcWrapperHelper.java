@@ -41,10 +41,12 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
  * @author Emeric Vernat
  */
 final class JdbcWrapperHelper {
+	private static final String MAX_ACTIVE_PROPERTY_NAME = "maxActive";
 	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<String, DataSource>();
 	private static final Map<String, DataSource> JNDI_DATASOURCES_BACKUP = new LinkedHashMap<String, DataSource>();
 	private static final BasicDataSourcesProperties TOMCAT_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
+	private static final BasicDataSourcesProperties TOMCAT_JDBC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 
 	/**
 	 * Propriétés des BasicDataSources si elles viennent de Tomcat-DBCP ou de DBCP seul.
@@ -64,7 +66,8 @@ final class JdbcWrapperHelper {
 		int getMaxActive() {
 			int result = 0;
 			for (final Map<String, Object> dataSourceProperties : properties.values()) {
-				final Integer maxActive = (Integer) dataSourceProperties.get("maxActive");
+				final Integer maxActive = (Integer) dataSourceProperties
+						.get(MAX_ACTIVE_PROPERTY_NAME);
 				if (maxActive == null) {
 					return -1;
 				}
@@ -199,6 +202,8 @@ final class JdbcWrapperHelper {
 			return TOMCAT_BASIC_DATASOURCES_PROPERTIES.getMaxActive();
 		} else if (!DBCP_BASIC_DATASOURCES_PROPERTIES.isEmpty()) {
 			return DBCP_BASIC_DATASOURCES_PROPERTIES.getMaxActive();
+		} else if (!TOMCAT_JDBC_DATASOURCES_PROPERTIES.isEmpty()) {
+			return TOMCAT_JDBC_DATASOURCES_PROPERTIES.getMaxActive();
 		}
 		return -1;
 	}
@@ -208,11 +213,28 @@ final class JdbcWrapperHelper {
 			return TOMCAT_BASIC_DATASOURCES_PROPERTIES.getDataSourcesProperties();
 		} else if (!DBCP_BASIC_DATASOURCES_PROPERTIES.isEmpty()) {
 			return DBCP_BASIC_DATASOURCES_PROPERTIES.getDataSourcesProperties();
+		} else if (!TOMCAT_JDBC_DATASOURCES_PROPERTIES.isEmpty()) {
+			return TOMCAT_JDBC_DATASOURCES_PROPERTIES.getDataSourcesProperties();
 		}
 		return Collections.emptyMap();
 	}
 
-	static void pullTomcatDataSourceProperties(String name, DataSource dataSource) {
+	static void pullDataSourceProperties(String name, DataSource dataSource) {
+		final String dataSourceClassName = dataSource.getClass().getName();
+		if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
+				&& dataSource instanceof BasicDataSource) {
+			pullTomcatDbcpDataSourceProperties(name, dataSource);
+		} else if ("org.apache.commons.dbcp.BasicDataSource"
+				.equals(dataSource.getClass().getName())
+				&& dataSource instanceof org.apache.commons.dbcp.BasicDataSource) {
+			pullCommonsDbcpDataSourceProperties(name, dataSource);
+		} else if ("org.apache.tomcat.jdbc.pool.DataSource".equals(dataSource.getClass().getName())
+				&& dataSource instanceof org.apache.tomcat.jdbc.pool.DataSource) {
+			pullTomcatJdbcDataSourceProperties(name, dataSource);
+		}
+	}
+
+	private static void pullTomcatDbcpDataSourceProperties(String name, DataSource dataSource) {
 		// si tomcat et si dataSource standard, alors on récupère des infos
 		final BasicDataSource tcDataSource = (BasicDataSource) dataSource;
 		final BasicDataSourcesProperties properties = TOMCAT_BASIC_DATASOURCES_PROPERTIES;
@@ -220,7 +242,7 @@ final class JdbcWrapperHelper {
 		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
 
 		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, "maxActive", tcDataSource.getMaxActive());
+		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tcDataSource.getMaxActive());
 		properties.put(name, "poolPreparedStatements", tcDataSource.isPoolPreparedStatements());
 
 		properties.put(name, "defaultCatalog", tcDataSource.getDefaultCatalog());
@@ -246,7 +268,7 @@ final class JdbcWrapperHelper {
 		properties.put(name, "validationQuery", tcDataSource.getValidationQuery());
 	}
 
-	static void pullDbcpDataSourceProperties(String name, DataSource dataSource) {
+	private static void pullCommonsDbcpDataSourceProperties(String name, DataSource dataSource) {
 		// si dbcp et si dataSource standard, alors on récupère des infos
 		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = (org.apache.commons.dbcp.BasicDataSource) dataSource;
 		final BasicDataSourcesProperties properties = DBCP_BASIC_DATASOURCES_PROPERTIES;
@@ -254,7 +276,7 @@ final class JdbcWrapperHelper {
 		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
 
 		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, "maxActive", dbcpDataSource.getMaxActive());
+		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, dbcpDataSource.getMaxActive());
 		properties.put(name, "poolPreparedStatements", dbcpDataSource.isPoolPreparedStatements());
 
 		properties.put(name, "defaultCatalog", dbcpDataSource.getDefaultCatalog());
@@ -278,6 +300,45 @@ final class JdbcWrapperHelper {
 		properties.put(name, "timeBetweenEvictionRunsMillis",
 				dbcpDataSource.getTimeBetweenEvictionRunsMillis());
 		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
+	}
+
+	private static void pullTomcatJdbcDataSourceProperties(String name, DataSource dataSource) {
+		// si tomcat-jdbc, alors on récupère des infos
+		final org.apache.tomcat.jdbc.pool.DataSource jdbcDataSource = (org.apache.tomcat.jdbc.pool.DataSource) dataSource;
+		final BasicDataSourcesProperties properties = TOMCAT_JDBC_DATASOURCES_PROPERTIES;
+		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
+		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
+
+		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
+		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, jdbcDataSource.getMaxActive());
+
+		properties.put(name, "defaultCatalog", jdbcDataSource.getDefaultCatalog());
+		properties.put(name, "defaultAutoCommit", jdbcDataSource.getDefaultAutoCommit());
+		properties.put(name, "defaultReadOnly", jdbcDataSource.getDefaultReadOnly());
+		properties.put(name, "defaultTransactionIsolation",
+				jdbcDataSource.getDefaultTransactionIsolation());
+		properties.put(name, "driverClassName", jdbcDataSource.getDriverClassName());
+		properties.put(name, "connectionProperties", jdbcDataSource.getConnectionProperties());
+		properties.put(name, "initSQL", jdbcDataSource.getInitSQL());
+		properties.put(name, "initialSize", jdbcDataSource.getInitialSize());
+		properties.put(name, "maxIdle", jdbcDataSource.getMaxIdle());
+		properties.put(name, "maxWait", jdbcDataSource.getMaxWait());
+		properties.put(name, "maxAge", jdbcDataSource.getMaxAge());
+		properties.put(name, "faireQueue", jdbcDataSource.isFairQueue());
+		properties.put(name, "jmxEnabled", jdbcDataSource.isJmxEnabled());
+		properties.put(name, "minEvictableIdleTimeMillis",
+				jdbcDataSource.getMinEvictableIdleTimeMillis());
+		properties.put(name, "minIdle", jdbcDataSource.getMinIdle());
+		properties.put(name, "numTestsPerEvictionRun", jdbcDataSource.getNumTestsPerEvictionRun());
+		properties.put(name, "testOnBorrow", jdbcDataSource.isTestOnBorrow());
+		properties.put(name, "testOnConnect", jdbcDataSource.isTestOnConnect());
+		properties.put(name, "testOnReturn", jdbcDataSource.isTestOnReturn());
+		properties.put(name, "testWhileIdle", jdbcDataSource.isTestWhileIdle());
+		properties.put(name, "timeBetweenEvictionRunsMillis",
+				jdbcDataSource.getTimeBetweenEvictionRunsMillis());
+		properties.put(name, "validationInterval", jdbcDataSource.getValidationInterval());
+		properties.put(name, "validationQuery", jdbcDataSource.getValidationQuery());
+		properties.put(name, "validatorClassName", jdbcDataSource.getValidatorClassName());
 	}
 
 	@SuppressWarnings("all")

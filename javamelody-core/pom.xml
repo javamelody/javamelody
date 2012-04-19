@@ -167,6 +167,12 @@
 			<version>1.2.2</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>7.0.27</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance optionnelle spring aop (qui inclus spring core, spring 
 			beans, aop alliance et commons-logging) -->
 		<dependency>
