@@ -6,7 +6,7 @@
   * fix: the SpringDataSourceBeanPostProcessor now implements PriorityOrdered to be initialized sooner (revision 2724)
   * fix issue 187: can't protect Melody grails plugin with spring security core (thanks to _Burt Beckwith_)
   * fix ~~[http://jira.grails.org/browse/GPMELODY-4 GPMELODY-4]~~: Load the Melody grails plugin after shiro (thanks to _Tomas Lin_).
-  * added: Reduce the possibility of storage overload by deleting automatically the obsolete RRD files (not updated for the last 3 months), which were for requests which do not exist anymore (revision 2750). Note: the size of existing RRD files is fixed for ever and old .ser.gz files are already automatically deleted after a year.
+  * added: Reduce the possibility of storage overload by deleting automatically the obsolete RRD files (not updated for the last 3 months), which were for requests which do not exist anymore (revision 2750 and 2753). Note: the size of existing RRD files is fixed for ever and old .ser.gz files are already automatically deleted after a year.
   * added: Display the properties of the new [http://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html Tomcat jdbc] datasources in System informations like for Tomcat DBCP, in particular display the max number of active connections next to the current number of active connections (issue 29).
 
 === 1.36.0 ===
