@@ -31,7 +31,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -341,46 +340,6 @@ public class TestCollector {
 	private int getSizeOfCountersToBeDisplayed(Collector collector, Period period)
 			throws IOException {
 		return collector.getRangeCountersToBeDisplayed(period.getRange()).size();
-	}
-
-	/** Test.
-	 * @throws IOException e */
-	@Test
-	public void testBuildNewDayCounter() throws IOException {
-		final Counter counter = createCounter();
-		counter.setApplication("test counter");
-		final File storageDir = Parameters.getStorageDirectory(counter.getApplication());
-		final File obsoleteFile = new File(storageDir, "obsolete.ser.gz");
-		final File notObsoleteFile = new File(storageDir, "notobsolete.ser.gz");
-		checkSetup(storageDir, obsoleteFile, notObsoleteFile);
-		final Calendar nowMinus1YearAnd2Days = Calendar.getInstance();
-		nowMinus1YearAnd2Days.add(Calendar.YEAR, -1);
-		nowMinus1YearAnd2Days.add(Calendar.DAY_OF_YEAR, -2);
-		if (!obsoleteFile.setLastModified(nowMinus1YearAnd2Days.getTimeInMillis())) {
-			fail("setLastModified");
-		}
-		final Counter newDayCounter = new PeriodCounterFactory(counter).buildNewDayCounter();
-		assertNotNull("buildNewDayCounter", newDayCounter);
-		// le fichier doit avoir été supprimé
-		if (obsoleteFile.exists()) {
-			fail("obsolete file still exists");
-		}
-		if (!notObsoleteFile.delete()) {
-			notObsoleteFile.deleteOnExit();
-		}
-	}
-
-	private void checkSetup(final File storageDir, final File obsoleteFile,
-			final File notObsoleteFile) throws IOException {
-		if (!storageDir.exists() && !storageDir.mkdirs()) {
-			fail("mkdir");
-		}
-		if (!obsoleteFile.exists() && !obsoleteFile.createNewFile()) {
-			fail("createNewFile");
-		}
-		if (!notObsoleteFile.exists() && !notObsoleteFile.createNewFile()) {
-			fail("createNewFile");
-		}
 	}
 
 	/** Test. */
