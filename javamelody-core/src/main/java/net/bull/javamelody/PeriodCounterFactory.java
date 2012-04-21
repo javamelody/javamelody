@@ -41,11 +41,6 @@ class PeriodCounterFactory {
 	}
 
 	Counter buildNewDayCounter() throws IOException {
-		// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
-		// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
-		CounterStorage.deleteObsoleteCounterFiles(currentDayCounter.getApplication());
-		JRobin.deleteObsoleteJRobinFiles(currentDayCounter.getApplication());
-
 		final Calendar start = Calendar.getInstance();
 		start.setTime(currentDayCounter.getStartDate());
 		if (start.get(Calendar.MONTH) != Calendar.getInstance().get(Calendar.MONTH)) {

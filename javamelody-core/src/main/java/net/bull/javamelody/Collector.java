@@ -693,6 +693,11 @@ class Collector { // NOPMD
 		final int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 		calendar.setTime(dayCounter.getStartDate());
 		if (calendar.get(Calendar.DAY_OF_YEAR) != currentDayOfYear) {
+			// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
+			// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
+			CounterStorage.deleteObsoleteCounterFiles(getApplication());
+			JRobin.deleteObsoleteJRobinFiles(getApplication());
+
 			// le jour a changé, on crée un compteur vide qui sera enregistré dans un nouveau fichier
 			dayCounter = new PeriodCounterFactory(dayCounter).buildNewDayCounter();
 			dayCountersByCounter.put(counter, dayCounter);
