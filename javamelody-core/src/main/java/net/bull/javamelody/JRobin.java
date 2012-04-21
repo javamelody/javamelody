@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -390,6 +391,50 @@ final class JRobin {
 		final IOException ex = new IOException(e.getMessage());
 		ex.initCause(e);
 		return ex;
+	}
+
+	static boolean deleteObsoleteJRobinFiles(String application) throws IOException {
+		final File storageDir = Parameters.getStorageDirectory(application);
+		final Calendar nowMinusThreeMonthsAndADay = Calendar.getInstance();
+		nowMinusThreeMonthsAndADay.add(Calendar.MONTH, -3);
+		nowMinusThreeMonthsAndADay.add(Calendar.DAY_OF_YEAR, -1);
+		final long timestamp = Util.getTimestamp(nowMinusThreeMonthsAndADay);
+		boolean result = true;
+		// filtre pour ne garder que les fichiers d'extension .rrd et pour éviter d'instancier des File inutiles
+		final FilenameFilter filenameFilter = new FilenameFilter() {
+			/** {@inheritDoc} */
+			public boolean accept(File dir, String fileName) {
+				return fileName.endsWith(".rrd");
+			}
+		};
+		final RrdDbPool rrdPool;
+		try {
+			rrdPool = RrdDbPool.getInstance();
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+		final int counterRequestIdLength = new CounterRequest("", "").getId().length();
+		for (final File file : storageDir.listFiles(filenameFilter)) {
+			// on ne supprime que les fichiers rrd de requêtes (les autres sont peu nombreux)
+			if (file.getName().length() > counterRequestIdLength
+					&& file.lastModified() < nowMinusThreeMonthsAndADay.getTimeInMillis()) {
+				try {
+					final RrdDb rrdDb = rrdPool.requestRrdDb(file.getPath());
+					final boolean obsolete = rrdDb.getLastUpdateTime() < timestamp;
+					rrdPool.release(rrdDb);
+					if (obsolete) {
+						result = result && file.delete();
+					}
+				} catch (final IOException e) {
+					continue;
+				} catch (final RrdException e) {
+					continue;
+				}
+			}
+		}
+
+		// on retourne true si tous les fichiers .rrd obsolètes ont été supprimés, false sinon
+		return result;
 	}
 
 	//  public void test() throws RrdException, IOException {
