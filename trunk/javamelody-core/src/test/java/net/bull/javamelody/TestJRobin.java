@@ -122,6 +122,13 @@ public class TestJRobin {
 	/** Test.
 	 * @throws IOException e */
 	@Test
+	public void testDeleteObsoleteJRobinFiles() throws IOException {
+		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
 	public void testStop() throws IOException {
 		// à défaut de pouvoir appeler JRobin.stop() car les autres tests ne pourront plus
 		// utiliser JRobin, on appelle au moins JRobin.getJRobinFileSyncTimer()
