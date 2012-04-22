@@ -22,6 +22,7 @@
   # [#Oracle_long_requests Oracle long requests]
   # [#Pdf Pdf]
   # [#Online_help Online help]
+  # [#Demo Demo]
 
 <div align='center'>
 === Charts ===
@@ -89,5 +90,8 @@
 
 === Online help ===
 <a href='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/aide_en_ligne.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/screenshots/aide_en_ligne.png' width='50%' alt='Aide en ligne' /></a>
+
+=== Demo ===
+There is more than screenshots: a public [Demo]
 
 </div>
