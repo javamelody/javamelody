@@ -99,8 +99,9 @@ class MainFrame extends JFrame {
 			} finally {
 				mainFrame.setBlurContentPane(false);
 			}
+		} else {
+			MSwingUtilities.showMessage(component, message);
 		}
-		MSwingUtilities.showMessage(component, message);
 	}
 
 	public static void showException(Component component, Throwable throwable) {
@@ -113,8 +114,9 @@ class MainFrame extends JFrame {
 			} finally {
 				mainFrame.setGrayContentPane(false);
 			}
+		} else {
+			MSwingUtilities.showException(throwable);
 		}
-		MSwingUtilities.showException(throwable);
 	}
 
 	@SuppressWarnings("all")
