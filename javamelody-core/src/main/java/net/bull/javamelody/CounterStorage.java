@@ -131,12 +131,11 @@ class CounterStorage {
 		return ex;
 	}
 
-	static boolean deleteObsoleteCounterFiles(String application) {
+	static long deleteObsoleteCounterFiles(String application) {
 		final File storageDir = Parameters.getStorageDirectory(application);
 		final Calendar nowMinusOneYearAndADay = Calendar.getInstance();
 		nowMinusOneYearAndADay.add(Calendar.YEAR, -1);
 		nowMinusOneYearAndADay.add(Calendar.DAY_OF_YEAR, -1);
-		boolean result = true;
 		// filtre pour ne garder que les fichiers d'extension .ser.gz et pour éviter d'instancier des File inutiles
 		final FilenameFilter filenameFilter = new FilenameFilter() {
 			/** {@inheritDoc} */
@@ -144,14 +143,19 @@ class CounterStorage {
 				return name.endsWith(".ser.gz");
 			}
 		};
+		long diskUsage = 0;
 		for (final File file : storageDir.listFiles(filenameFilter)) {
+			boolean deleted = false;
 			if (file.lastModified() < nowMinusOneYearAndADay.getTimeInMillis()) {
-				result = result && file.delete();
+				deleted = file.delete();
+			}
+			if (!deleted) {
+				diskUsage += file.length();
 			}
 		}
 
 		// on retourne true si tous les fichiers .ser.gz obsolètes ont été supprimés, false sinon
-		return result;
+		return diskUsage;
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing

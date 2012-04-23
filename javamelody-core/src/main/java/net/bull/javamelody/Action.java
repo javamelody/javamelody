@@ -83,7 +83,11 @@ enum Action { // NOPMD
 	/**
 	 * Enlève la pause d'un job quartz.
 	 */
-	RESUME_JOB("jobs");
+	RESUME_JOB("jobs"),
+	/**
+	 * Purge les fichiers .rrd et .ser.gz obsolètes.
+	 */
+	PURGE_OBSOLETE_FILES("bottom");
 
 	static final String JAVA_VENDOR = System.getProperty("java.vendor");
 
@@ -219,6 +223,13 @@ enum Action { // NOPMD
 		case RESUME_JOB:
 			assert jobId != null;
 			messageForReport = resumeJob(jobId);
+			break;
+		case PURGE_OBSOLETE_FILES:
+			assert collector != null;
+			collector.deleteObsoleteFiles();
+			messageForReport = I18N.getString("fichiers_obsoletes_purges") + '\n'
+					+ I18N.getString("Usage_disque") + ": "
+					+ (collector.getDiskUsage() / 1024 / 1024 + 1) + ' ' + I18N.getString("Mo");
 			break;
 		default:
 			throw new IllegalStateException(toString());

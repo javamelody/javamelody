@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,6 +61,7 @@ class Collector { // NOPMD
 	private long tomcatBytesSent;
 	private long lastCollectDuration;
 	private long estimatedMemorySize;
+	private long diskUsage;
 	private boolean firstCollectDone;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 
@@ -168,6 +170,21 @@ class Collector { // NOPMD
 
 	long getEstimatedMemorySize() {
 		return estimatedMemorySize;
+	}
+
+	long getDiskUsage() {
+		if (diskUsage == 0) {
+			// si diskUsage == 0, le serveur a été démarré ce jour et la taille totale des fichiers
+			// n'a pas encore été calculée lors de la purge des fichiers obsolètes,
+			// donc on la calcule ici
+			final File storageDir = Parameters.getStorageDirectory(application);
+			long sum = 0;
+			for (final File file : storageDir.listFiles()) {
+				sum += file.length();
+			}
+			diskUsage = sum;
+		}
+		return diskUsage;
 	}
 
 	List<Counter> getRangeCounters(Range range) throws IOException {
@@ -696,8 +713,7 @@ class Collector { // NOPMD
 			try {
 				// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
 				// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
-				CounterStorage.deleteObsoleteCounterFiles(getApplication());
-				JRobin.deleteObsoleteJRobinFiles(getApplication());
+				deleteObsoleteFiles();
 			} finally {
 				// le jour a changé, on crée un compteur vide qui sera enregistré dans un nouveau fichier
 				dayCounter = new PeriodCounterFactory(dayCounter).buildNewDayCounter();
@@ -705,6 +721,13 @@ class Collector { // NOPMD
 			}
 		}
 		return dayCounter;
+	}
+
+	void deleteObsoleteFiles() throws IOException {
+		final long rrdDiskUsage = CounterStorage.deleteObsoleteCounterFiles(getApplication());
+		final long serGzDiskUsage = JRobin.deleteObsoleteJRobinFiles(getApplication());
+		diskUsage = rrdDiskUsage + serGzDiskUsage;
+		// il manque la taille du fichier "last_shutdown.html", mais on n'est pas à ça près
 	}
 
 	private void removeRequest(Counter counter, CounterRequest newRequest) {
