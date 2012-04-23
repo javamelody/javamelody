@@ -456,7 +456,8 @@ class PdfReport {
 				+ getI18nString("temps_affichage") + ": " + displayDuration + ' '
 				+ getI18nString("ms") + '\n' + getI18nString("Estimation_overhead_memoire")
 				+ ": < " + (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
-				+ getI18nString("Mo");
+				+ getI18nString("Mo") + '\n' + getI18nString("Usage_disque") + ": "
+				+ (collector.getDiskUsage() / 1024 / 1024 + 1) + ' ' + getI18nString("Mo");
 		final String string;
 		if (Parameters.JAVAMELODY_VERSION != null) {
 			string = tmp + "\n\n" + "JavaMelody " + Parameters.JAVAMELODY_VERSION;

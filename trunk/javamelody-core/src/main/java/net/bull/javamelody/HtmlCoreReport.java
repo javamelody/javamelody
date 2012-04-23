@@ -732,11 +732,17 @@ class HtmlCoreReport {
 
 	private void writeDurationAndOverhead() throws IOException {
 		final long displayDuration = System.currentTimeMillis() - start;
+		writeln("<a name='bottom'></a>");
 		writeln("<br/><div style='font-size:10pt;'>");
 		writeln("#temps_derniere_collecte#: " + collector.getLastCollectDuration() + " #ms#<br/>");
 		writeln("#temps_affichage#: " + displayDuration + " #ms#<br/>");
 		writeln("#Estimation_overhead_memoire#: < "
 				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + " #Mo#");
+		writeln("<br/>#Usage_disque#: " + (collector.getDiskUsage() / 1024 / 1024 + 1) + " #Mo#");
+		if (Parameters.isSystemActionsEnabled()) {
+			writeln("&nbsp;&nbsp;&nbsp;<a href='?action=purge_obsolete_files'>");
+			writeln("<img width='14' height='14' src='?resource=user-trash.png' alt='#Purger_les_fichiers_obsoletes#' title='#Purger_les_fichiers_obsoletes#'/></a>");
+		}
 		if (Parameters.JAVAMELODY_VERSION != null) {
 			writeln("<br/><br/>JavaMelody " + Parameters.JAVAMELODY_VERSION);
 		}

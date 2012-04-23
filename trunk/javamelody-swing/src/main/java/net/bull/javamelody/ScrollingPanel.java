@@ -48,6 +48,8 @@ import net.bull.javamelody.swing.Utilities;
 class ScrollingPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+	private static final ImageIcon PURGE_OBSOLETE_FILES_ICON = ImageIconCache.getScaledImageIcon(
+			"user-trash.png", 12, 12);
 	private static final String DETAILS_KEY = "Details";
 
 	private static final long serialVersionUID = 1L;
@@ -328,28 +330,54 @@ class ScrollingPanel extends MelodyPanel {
 	}
 
 	private void addDurationAndOverhead() {
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		final long displayDuration = System.currentTimeMillis() - start;
-		final JLabel lastCollectDurationLabel = new JLabel("  "
-				+ I18N.getString("temps_derniere_collecte") + ": "
-				+ collector.getLastCollectDuration() + ' ' + I18N.getString("ms"));
-		final JLabel displayDurationLabel = new JLabel("  " + I18N.getString("temps_affichage")
-				+ ": " + displayDuration + ' ' + I18N.getString("ms"));
-		final JLabel overheadLabel = new JLabel("  "
-				+ I18N.getString("Estimation_overhead_memoire") + ": < "
-				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
+		final JLabel lastCollectDurationLabel = new JLabel(
+				I18N.getString("temps_derniere_collecte") + ": "
+						+ collector.getLastCollectDuration() + ' ' + I18N.getString("ms"));
+		final JLabel displayDurationLabel = new JLabel(I18N.getString("temps_affichage") + ": "
+				+ displayDuration + ' ' + I18N.getString("ms"));
+		final JLabel overheadLabel = new JLabel(I18N.getString("Estimation_overhead_memoire")
+				+ ": < " + (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
 				+ I18N.getString("Mo"));
 		final Font font = overheadLabel.getFont().deriveFont(10f);
 		lastCollectDurationLabel.setFont(font);
 		displayDurationLabel.setFont(font);
 		overheadLabel.setFont(font);
-		add(lastCollectDurationLabel);
-		add(displayDurationLabel);
-		add(overheadLabel);
+		final MButton purgeObsoleteFilesButton = new MButton();
+		purgeObsoleteFilesButton.setIcon(PURGE_OBSOLETE_FILES_ICON);
+		purgeObsoleteFilesButton.setToolTipText(I18N.getString("Purger_les_fichiers_obsoletes"));
+		purgeObsoleteFilesButton.setBorder(null);
+		purgeObsoleteFilesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				purgeObsoleteFiles();
+			}
+		});
+		panel.add(lastCollectDurationLabel);
+		panel.add(displayDurationLabel);
+		panel.add(overheadLabel);
+		panel.add(purgeObsoleteFilesButton);
 		if (Parameters.JAVAMELODY_VERSION != null) {
-			add(new JLabel(" "));
-			final JLabel versionLabel = new JLabel("  JavaMelody " + Parameters.JAVAMELODY_VERSION);
+			panel.add(new JLabel(" "));
+			final JLabel versionLabel = new JLabel("JavaMelody " + Parameters.JAVAMELODY_VERSION);
 			versionLabel.setFont(font);
-			add(versionLabel);
+			panel.add(versionLabel);
+		}
+		panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+		panel.setOpaque(false);
+		add(panel);
+	}
+
+	final void purgeObsoleteFiles() {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.PURGE_OBSOLETE_FILES, null, null, null, null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
 		}
 	}
 
