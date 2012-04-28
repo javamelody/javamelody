@@ -59,6 +59,7 @@ And
   # Custom processing in counters's events (issue 173)
   # Possibility to add graphics based on configurable MBeans values (such as business metrics)
   # In the list of dependencies of the webapp, add a link to a new page to display for each dependency the name with a link to the dependency's url, Maven ID with groupId:artifactId:version, the name of the license with a link to its URL (like Jenkins)
+  # In the list of Quartz jobs, if a job is an InterruptableJob and is currently executing, display a red cross next to the progress bar (like Jenkins jobs) to be able to [http://grepcode.com/file/repo1.maven.org/maven2/org.quartz-scheduler/quartz/2.1.3/org/quartz/Scheduler.java#Scheduler.interrupt%28org.quartz.JobKey%29 interrupt] the job in [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/QuartzAdapter.java QuartzAdapter] and [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/quartz/net/bull/javamelody/Quartz2Adapter.java Quartz2Adapter].
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
