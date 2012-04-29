@@ -31,7 +31,7 @@
 }}}
 
 	You can also use the maven goals "clean site" to build a maven site with documentations and reports on analysis of sources
-	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura). You will Maven 3.0.4 or later for that.
+	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura). You will need Maven 3.0.4 or later for that.
 
 
 === Import in Eclipse the sources of current development version ===
