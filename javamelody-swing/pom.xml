@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-parent</artifactId>
-		<version>1.37.0-SNAPSHOT</version>
+		<version>1.38.0-SNAPSHOT</version>
 	</parent>
 	-->
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-swing</artifactId>
-	<version>1.37.0-SNAPSHOT</version>
+	<version>1.38.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - Swing</name>
 	<description>Swing UI for Java Melody</description>
