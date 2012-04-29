@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.37.0</version>
+	<version>1.38.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - Core</name>
 	<description>Monitoring of JavaEE applications</description>
@@ -27,9 +27,9 @@
 		<url>http://code.google.com/p/javamelody/issues/list</url>
 	</issueManagement>
 	<scm>
-		<connection>scm:svn:http://javamelody.googlecode.com/svn/tags/javamelody-core-1.37.0</connection>
-		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/tags/javamelody-core-1.37.0</developerConnection>
-		<url>http://javamelody.googlecode.com/svn/tags/javamelody-core-1.37.0</url>
+		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://javamelody.googlecode.com/svn/trunk/</url>
 	</scm>
 	<ciManagement>
 		<system>Jenkins</system>
