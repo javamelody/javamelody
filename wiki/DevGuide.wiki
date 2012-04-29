@@ -131,12 +131,12 @@ This is an internal reminder of the steps of the release process.
   * *jira / confluence / bamboo plugin*
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
     * add version with jira-javamelody-version.jar url, source tag
+  * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
   * *grails plugin* ([https://svn.codehaus.org:443/grails-plugins/grails-grails-melody/trunk])
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
     * increment plugin version in GrailsMelodyGrailsPlugin.groovy
     * edit user / password in .grails\settings.groovy
     * grails release-plugin "-repository=grailsplugins"
     * Edit plugin in http://www.grails.org/plugin/grails-melody
-  * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
   * *twitter announce* [https://twitter.com/#!/java_melody]
   * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody] ([https://groups.google.com/forum/?fromgroups#!topic/javamelody/w-8Xhi7G5x8 example])
