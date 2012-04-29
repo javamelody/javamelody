@@ -1,5 +1,5 @@
 #labels Featured
-=== Next release (trunk) ===
+=== 1.37.0 ===
 
   * fix issue 207: Incompatibility with servlet api 2.4 (Tomcat 5.5) in javamelody 1.36
   * fix issue 205 and issue 206: delegate the JSF ActionListener to the next JSF ActionListener if one was defined in the faces-config.xml file (thanks to _Patrick Dobler_)
