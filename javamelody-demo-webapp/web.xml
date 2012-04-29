@@ -38,11 +38,11 @@
 	</filter-mapping>
 
 	<filter>
-		<filter-name>killThreadForbidden</filter-name>
-		<filter-class>KillThreadForbiddenFilter</filter-class>
+		<filter-name>forbiddenActions</filter-name>
+		<filter-class>ForbiddenActionsFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>killThreadForbidden</filter-name>
+		<filter-name>forbiddenActions</filter-name>
 		<url-pattern>/monitoring</url-pattern>
 	</filter-mapping>
 
