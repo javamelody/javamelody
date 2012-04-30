@@ -316,6 +316,7 @@ public class MonitoringFilter implements Filter {
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
 		if (isRequestNotAllowed(httpRequest)) {
+			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
 		}
@@ -342,6 +343,8 @@ public class MonitoringFilter implements Filter {
 					filterContext.getTimer().cancel();
 				}
 				collector.stop();
+				LOG.debug("Stopping the javamelody thread in this webapp, because a collector server from "
+						+ httpRequest.getRemoteAddr() + " wants to collect the data itself");
 			}
 
 			for (final Counter counter : collector.getCounters()) {
