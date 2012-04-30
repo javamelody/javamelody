@@ -338,17 +338,17 @@ public class MonitoringFilter implements Filter {
 			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
 			// le stockage et les courbes, donc on arrête le timer s'il est démarré
 			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
+			for (final Counter counter : collector.getCounters()) {
+				counter.clear();
+			}
+
 			if (!collector.isStopped()) {
+				LOG.debug("Stopping the javamelody thread in this webapp, because a collector server from "
+						+ httpRequest.getRemoteAddr() + " wants to collect the data itself");
 				if (filterContext.getTimer() != null) {
 					filterContext.getTimer().cancel();
 				}
 				collector.stop();
-				LOG.debug("Stopping the javamelody thread in this webapp, because a collector server from "
-						+ httpRequest.getRemoteAddr() + " wants to collect the data itself");
-			}
-
-			for (final Counter counter : collector.getCounters()) {
-				counter.clear();
 			}
 		}
 	}
