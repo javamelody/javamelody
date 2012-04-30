@@ -337,10 +337,16 @@ public class MonitoringFilter implements Filter {
 			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
 			// le stockage et les courbes, donc on arrête le timer s'il est démarré
 			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
-			if (filterContext.getTimer() != null) {
-				filterContext.getTimer().cancel();
+			if (!collector.isStopped()) {
+				if (filterContext.getTimer() != null) {
+					filterContext.getTimer().cancel();
+				}
+				collector.stop();
 			}
-			collector.stop();
+
+			for (final Counter counter : collector.getCounters()) {
+				counter.clear();
+			}
 		}
 	}
 

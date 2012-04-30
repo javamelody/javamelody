@@ -63,6 +63,7 @@ class Collector { // NOPMD
 	private long estimatedMemorySize;
 	private long diskUsage;
 	private boolean firstCollectDone;
+	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 
 	/**
@@ -835,6 +836,7 @@ class Collector { // NOPMD
 			for (final Counter counter : counters) {
 				counter.clear();
 			}
+			stopped = true;
 			// ici on ne fait pas de nettoyage de la liste counters car cette méthode
 			// est appelée sur la webapp monitorée quand il y a un serveur de collecte
 			// et que cette liste est envoyée au serveur de collecte,
@@ -843,6 +845,10 @@ class Collector { // NOPMD
 			// directement même si il y a par ailleurs un serveur de collecte
 			// (dans ce dernier cas les données sont bien sûr partielles)
 		}
+	}
+
+	boolean isStopped() {
+		return stopped;
 	}
 
 	static void stopJRobin() {
