@@ -61,11 +61,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Contrôleur au sens MVC de l'ihm de monitoring dans le serveur collecte.
  * @author Emeric Vernat
  */
 class CollectorController {
+	private static final Logger LOGGER = Logger.getLogger("javamelody");
+
 	private static final String COOKIE_NAME = "javamelody.application";
 
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
@@ -97,6 +101,7 @@ class CollectorController {
 				final String messageForReport;
 				if ("remove_application".equalsIgnoreCase(actionParameter)) {
 					collectorServer.removeCollectorApplication(application);
+					LOGGER.info("monitored application removed: " + application);
 					messageForReport = I18N.getFormattedString("application_enlevee", application);
 					showAlertAndRedirectTo(resp, messageForReport, "?");
 				} else if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER
