@@ -46,7 +46,7 @@
 	<target name="build" depends="init">
 		<echo message="Compilation" level="info" />
 		<mkdir dir="build/classes" />
-		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.7" target="1.7" 
 			srcdir="src/main/java" destdir="build/classes" classpath="${class.path}" includeantruntime="false">
 			<compilerarg value="-Xlint" />
 		</javac>
