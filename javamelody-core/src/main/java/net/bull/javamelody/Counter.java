@@ -119,6 +119,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(CounterRequest request1, CounterRequest request2) {
 			if (request1.getDurationsSum() > request2.getDurationsSum()) {
 				return 1;
@@ -138,6 +139,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(CounterRequest request1, CounterRequest request2) {
 			if (request1.getHits() > request2.getHits()) {
 				return 1;
@@ -156,6 +158,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(CounterError error1, CounterError error2) {
 			return (int) (error1.getTime() - error2.getTime());
 		}
@@ -175,6 +178,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(CounterRequestContext context1, CounterRequestContext context2) {
 			if (context1.getDuration(timeOfSnapshot) > context2.getDuration(timeOfSnapshot)) {
 				return 1;

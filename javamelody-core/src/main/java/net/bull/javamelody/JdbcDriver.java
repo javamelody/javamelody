@@ -61,6 +61,7 @@ public class JdbcDriver implements Driver {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Connection connect(String url, Properties info) throws SQLException {
 		final String proxiedDriver = info.getProperty("driver");
 		if (proxiedDriver == null) {
@@ -83,6 +84,7 @@ public class JdbcDriver implements Driver {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean acceptsURL(String url) throws SQLException {
 		// test sur dbcp nécessaire pour le cas où le monitoring est utilisé avec le web.xml global
 		// et le répertoire lib global de tomcat et également pour les anomalies 1&2 (sonar, grails)
@@ -96,21 +98,25 @@ public class JdbcDriver implements Driver {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getMajorVersion() {
 		return -1;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getMinorVersion() {
 		return -1;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
 		return new DriverPropertyInfo[0];
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean jdbcCompliant() {
 		return true;
 	}
@@ -127,6 +133,7 @@ public class JdbcDriver implements Driver {
 	 * @return Logger
 	 * @throws SQLFeatureNotSupportedException e
 	 */
+	@Override
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	}

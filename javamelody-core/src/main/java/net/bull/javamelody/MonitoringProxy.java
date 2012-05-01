@@ -144,6 +144,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	 * @return Object
 	 * @throws Throwable t
 	 */
+	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		if (DISABLED || !SERVICES_COUNTER.isDisplayed()) {
 			return method.invoke(facade, args);

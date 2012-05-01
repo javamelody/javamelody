@@ -56,6 +56,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, Pri
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getOrder() {
 		return order;
 	}
@@ -69,11 +70,13 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, Pri
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
 		if (excludedDatasources != null && excludedDatasources.contains(beanName)) {
 			LOG.debug("Spring datasource excluded: " + beanName);
@@ -139,6 +142,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, Pri
 	private Object createProxy(final Object bean, final String beanName) {
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				Object result = method.invoke(bean, args);
 				if (result instanceof DataSource) {

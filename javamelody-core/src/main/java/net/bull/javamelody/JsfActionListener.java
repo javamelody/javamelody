@@ -48,6 +48,7 @@ public class JsfActionListener implements ActionListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void processAction(ActionEvent event) { // throws FacesException
 		// cette méthode est appelée par JSF RI (Mojarra)
 		if (DISABLED || !JSF_COUNTER.isDisplayed()) {

@@ -56,6 +56,7 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 	 * @return return object from the method
 	 * @throws Throwable anything thrown by the method
 	 */
+	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		// cette méthode est appelée par guice aop
 		if (DISABLED || !GUICE_COUNTER.isDisplayed()) {

@@ -100,6 +100,7 @@ final class JspWrapper implements InvocationHandler {
 	 * @return Object
 	 * @throws Throwable t
 	 */
+	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		final String methodName = method.getName();
 		if (!"include".equals(methodName) && !"forward".equals(methodName)) {

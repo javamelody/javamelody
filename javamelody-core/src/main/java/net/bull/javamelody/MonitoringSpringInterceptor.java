@@ -59,6 +59,7 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 	 * @return return object from the method
 	 * @throws Throwable anything thrown by the method
 	 */
+	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		// cette méthode est appelée par spring aop
 		if (DISABLED || !SPRING_COUNTER.isDisplayed()) {

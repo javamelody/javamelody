@@ -176,6 +176,7 @@ public class HibernateBatcherFactory implements BatcherFactory {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Batcher createBatcher(ConnectionManager connectionManager, Interceptor interceptor) {
 		final boolean sqlMonitoringDisabled = JdbcWrapper.SINGLETON.isSqlMonitoringDisabled();
 		final Settings settings = connectionManager.getFactory().getSettings();

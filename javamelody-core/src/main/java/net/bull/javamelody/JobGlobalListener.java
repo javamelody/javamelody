@@ -60,6 +60,7 @@ final class JobGlobalListener implements JobListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void jobToBeExecuted(JobExecutionContext context) {
 		// on calcule nous même le fullName du job pour être sûr que c'est le même que celui calculé
 		// dans HtmlJobInformationsReport.getCounterRequest
@@ -69,11 +70,13 @@ final class JobGlobalListener implements JobListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void jobExecutionVetoed(JobExecutionContext context) {
 		JOB_COUNTER.unbindContext();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
 		// sera recalculé: final long jobRunTime = context.getJobRunTime();
 		final String stackTrace;
@@ -89,6 +92,7 @@ final class JobGlobalListener implements JobListener {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getName() {
 		return getClass().getName();
 	}
