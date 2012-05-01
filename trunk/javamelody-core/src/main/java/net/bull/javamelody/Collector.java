@@ -180,8 +180,9 @@ class Collector { // NOPMD
 			// donc on la calcule ici
 			final File storageDir = Parameters.getStorageDirectory(application);
 			long sum = 0;
-			if (storageDir != null) {
-				for (final File file : storageDir.listFiles()) {
+			final File[] files = storageDir.listFiles();
+			if (files != null) {
+				for (final File file : files) {
 					sum += file.length();
 				}
 			}
