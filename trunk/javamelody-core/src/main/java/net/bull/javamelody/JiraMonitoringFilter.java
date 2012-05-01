@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -45,6 +46,25 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private final boolean jira = isJira();
 	private final boolean confluence = isConfluence();
 	private final boolean bamboo = isBamboo();
+
+	/** {@inheritDoc} */
+	@Override
+	public void init(FilterConfig config) throws ServletException {
+		super.init(config);
+
+		if (jira) {
+			LOG.debug("JavaMelody is monitoring JIRA");
+		} else if (confluence) {
+			LOG.debug("JavaMelody is monitoring Confluence");
+		} else if (bamboo) {
+			LOG.debug("JavaMelody is monitoring Bamboo");
+		} else {
+			LOG.debug("JavaMelody is monitoring unknown, access to monitoring reports is not secured by JavaMelody");
+		}
+		if (PLUGIN_AUTHENTICATION_DISABLED) {
+			LOG.debug("Authentication for monitoring reports has been disabled");
+		}
+	}
 
 	/** {@inheritDoc} */
 	@Override
