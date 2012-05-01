@@ -76,7 +76,7 @@ public class CollectorServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
 			IOException {
 		final long start = System.currentTimeMillis();
-		if (isAddressAllowed(req)) {
+		if (isAddressNotAllowed(req)) {
 			LOGGER.info("Forbidden access to monitoring from " + req.getRemoteAddr());
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
@@ -111,7 +111,7 @@ public class CollectorServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		if (isAddressAllowed(req)) {
+		if (isAddressNotAllowed(req)) {
 			LOGGER.info("Forbidden access to monitoring from " + req.getRemoteAddr());
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
@@ -158,7 +158,7 @@ public class CollectorServlet extends HttpServlet {
 				message);
 	}
 
-	private boolean isAddressAllowed(HttpServletRequest req) {
+	private boolean isAddressNotAllowed(HttpServletRequest req) {
 		return allowedAddrPattern != null
 				&& !allowedAddrPattern.matcher(req.getRemoteAddr()).matches();
 	}
