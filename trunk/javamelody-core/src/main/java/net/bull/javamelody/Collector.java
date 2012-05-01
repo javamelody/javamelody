@@ -277,7 +277,7 @@ class Collector { // NOPMD
 			LOG.warn("exception while collecting data", t);
 		}
 		// note : on n'inclue pas "new JavaInformations" de collectLocalContextWithoutErrors
-		// mais il est inférieur à 1 ms (sans bdd)
+		// dans la durée de la collecte mais il est inférieur à 1 ms (sans bdd)
 		lastCollectDuration = Math.max(0, System.currentTimeMillis() - start);
 		firstCollectDone = true;
 	}
@@ -718,6 +718,7 @@ class Collector { // NOPMD
 				// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
 				// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
 				deleteObsoleteFiles();
+				LOG.debug("Obsolete files deleted. JavaMelody disk usage: " + diskUsage / 1024 + " KB");
 			} finally {
 				// le jour a changé, on crée un compteur vide qui sera enregistré dans un nouveau fichier
 				dayCounter = new PeriodCounterFactory(dayCounter).buildNewDayCounter();
