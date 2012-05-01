@@ -234,6 +234,11 @@ enum Action { // NOPMD
 		default:
 			throw new IllegalStateException(toString());
 		}
+		if (messageForReport != null) {
+			// log pour information en debug
+			LOG.debug("Action '" + this + "' executed. Result: "
+					+ messageForReport.replace('\n', ' '));
+		}
 		return messageForReport;
 	}
 
