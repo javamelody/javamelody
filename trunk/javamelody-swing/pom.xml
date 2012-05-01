@@ -152,8 +152,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -190,7 +190,7 @@
 						<!-- nécessaire car maven définit java_home avec le jre pour ant ! -->
 						<groupId>sun.jdk</groupId>
 						<artifactId>tools</artifactId>
-						<version>1.6.0</version>
+						<version>1.7.0</version>
 						<scope>system</scope>
 						<systemPath>${java.home}/../lib/tools.jar</systemPath>
 					</dependency>
@@ -251,8 +251,8 @@
 							<version>2.7.1</version>
 							<configuration>
 								<enableRulesSummary>false</enableRulesSummary>
-								<source>1.5</source>
-								<targetJdk>1.5</targetJdk>
+								<source>1.7</source>
+								<targetJdk>1.7</targetJdk>
 								<linkXref>true</linkXref>
 								<sourceEncoding>UTF-8</sourceEncoding>
 								<minimumPriority>4</minimumPriority>
