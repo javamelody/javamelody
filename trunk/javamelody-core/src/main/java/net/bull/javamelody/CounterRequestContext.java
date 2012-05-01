@@ -125,16 +125,19 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getChildHits() {
 		return childHits;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getChildDurationsSum() {
 		return childDurationsSum;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Map<String, Long> getChildRequestsExecutionsByRequestId() {
 		if (childRequestsExecutionsByRequestId == null) {
 			return Collections.emptyMap();

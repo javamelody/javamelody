@@ -56,6 +56,7 @@ public class MonitoringInitialContextFactory implements InitialContextFactory {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException { // NOPMD
 		try {
 			final Class<?> clazz = Class.forName(initialContextFactory);

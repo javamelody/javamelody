@@ -80,6 +80,7 @@ public final class JdbcWrapper {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(ConnectionInformations connection1, ConnectionInformations connection2) {
 			return connection1.getOpeningDate().compareTo(connection2.getOpeningDate());
 		}
@@ -107,6 +108,7 @@ public final class JdbcWrapper {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			// performance : on évite method.invoke pour equals & hashCode
 			final String methodName = method.getName();
@@ -164,6 +166,7 @@ public final class JdbcWrapper {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			// performance : on évite method.invoke pour equals & hashCode
 			final String methodName = method.getName();
@@ -226,6 +229,7 @@ public final class JdbcWrapper {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			try {
 				return delegate.invoke(proxy, method, args);
@@ -549,6 +553,7 @@ public final class JdbcWrapper {
 		assert context != null;
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				Object result = method.invoke(context, args);
 				if (result instanceof DataSource) {
@@ -565,6 +570,7 @@ public final class JdbcWrapper {
 		assert driver != null;
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				Object result = method.invoke(driver, args);
 				if (result instanceof Connection) {
@@ -582,6 +588,7 @@ public final class JdbcWrapper {
 		final boolean rewrapConnection = jboss || glassfish;
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				final Object result = method.invoke(javaxConnectionManager, args);
 				if (result instanceof Connection) {
@@ -652,6 +659,7 @@ public final class JdbcWrapper {
 		JdbcWrapperHelper.pullDataSourceProperties(name, dataSource);
 		final InvocationHandler invocationHandler = new InvocationHandler() {
 			/** {@inheritDoc} */
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				Object result = method.invoke(dataSource, args);
 				if (result instanceof Connection) {

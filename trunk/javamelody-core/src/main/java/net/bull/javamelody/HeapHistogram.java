@@ -240,6 +240,7 @@ class HeapHistogram implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(ClassInfo classInfo1, ClassInfo classInfo2) {
 			if (classInfo1.getBytes() > classInfo2.getBytes()) {
 				return 1;

@@ -428,6 +428,7 @@ final class JdbcWrapperHelper {
 	private static void setFieldAccessible(final Field field) {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
 					/** {@inheritDoc} */
+					@Override
 					public Object run() {
 						field.setAccessible(true);
 						return null;

@@ -105,6 +105,7 @@ class JavaInformations implements Serializable { // NOPMD
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(ThreadInformations thread1, ThreadInformations thread2) {
 			return thread1.getName().compareToIgnoreCase(thread2.getName());
 		}
@@ -115,6 +116,7 @@ class JavaInformations implements Serializable { // NOPMD
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(CacheInformations cache1, CacheInformations cache2) {
 			return cache1.getName().compareToIgnoreCase(cache2.getName());
 		}
@@ -125,6 +127,7 @@ class JavaInformations implements Serializable { // NOPMD
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(JobInformations job1, JobInformations job2) {
 			return job1.getName().compareToIgnoreCase(job2.getName());
 		}

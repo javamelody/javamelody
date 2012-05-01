@@ -64,6 +64,7 @@ public class CustomResourceFilter implements Filter {
 	private final Map<String, String> customResources = new HashMap<String, String>();
 
 	/** {@inheritDoc} */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void init(FilterConfig filterConfig) throws ServletException {
 		final List<String> parameterNames = Collections.list(filterConfig.getInitParameterNames());
@@ -73,6 +74,7 @@ public class CustomResourceFilter implements Filter {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		final String resource = request.getParameter("resource");
@@ -89,6 +91,7 @@ public class CustomResourceFilter implements Filter {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void destroy() {
 		// nothing
 	}

@@ -115,6 +115,7 @@ final class JRobin {
 	private static void setFieldAccessible(final Field field) {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
 					/** {@inheritDoc} */
+					@Override
 					public Object run() {
 						field.setAccessible(true);
 						return null;
@@ -402,6 +403,7 @@ final class JRobin {
 		// filtre pour ne garder que les fichiers d'extension .rrd et pour éviter d'instancier des File inutiles
 		final FilenameFilter filenameFilter = new FilenameFilter() {
 			/** {@inheritDoc} */
+			@Override
 			public boolean accept(File dir, String fileName) {
 				return fileName.endsWith(".rrd");
 			}

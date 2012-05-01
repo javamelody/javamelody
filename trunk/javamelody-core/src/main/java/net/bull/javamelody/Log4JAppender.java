@@ -73,6 +73,7 @@ public class Log4JAppender extends AppenderSkeleton {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void close() {
 		// rien à faire
 	}
@@ -80,6 +81,7 @@ public class Log4JAppender extends AppenderSkeleton {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean requiresLayout() {
 		return false;
 	}

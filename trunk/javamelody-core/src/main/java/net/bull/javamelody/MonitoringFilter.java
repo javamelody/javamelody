@@ -87,6 +87,7 @@ public class MonitoringFilter implements Filter {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void init(FilterConfig config) throws ServletException {
 		final String contextPath = Parameters.getContextPath(config.getServletContext());
 		if (!instanceEnabled) {
@@ -127,6 +128,7 @@ public class MonitoringFilter implements Filter {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void destroy() {
 		if (monitoringDisabled || !instanceEnabled) {
 			return;
@@ -147,6 +149,7 @@ public class MonitoringFilter implements Filter {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)

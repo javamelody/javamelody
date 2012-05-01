@@ -66,6 +66,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
+		@Override
 		public int compare(SessionInformations session1, SessionInformations session2) {
 			if (session1.getLastAccess().before(session2.getLastAccess())) {
 				return 1;
@@ -186,6 +187,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		final String contextPath = Parameters.getContextPath(event.getServletContext());
 		if (!instanceEnabled) {
@@ -218,6 +220,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		SESSION_MAP_BY_ID.clear();
@@ -230,6 +233,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	// (System.currentTimeMillis() - httpRequest.getSession().getLastAccessedTime())
 
 	/** {@inheritDoc} */
+	@Override
 	public void sessionCreated(HttpSessionEvent event) {
 		if (!instanceEnabled) {
 			return;
@@ -263,6 +267,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sessionDestroyed(HttpSessionEvent event) {
 		if (!instanceEnabled) {
 			return;
@@ -281,6 +286,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sessionDidActivate(HttpSessionEvent event) {
 		if (!instanceEnabled) {
 			return;
@@ -293,6 +299,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sessionWillPassivate(HttpSessionEvent event) {
 		if (!instanceEnabled) {
 			return;

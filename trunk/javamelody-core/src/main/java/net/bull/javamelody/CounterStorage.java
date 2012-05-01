@@ -139,6 +139,7 @@ class CounterStorage {
 		// filtre pour ne garder que les fichiers d'extension .ser.gz et pour éviter d'instancier des File inutiles
 		final FilenameFilter filenameFilter = new FilenameFilter() {
 			/** {@inheritDoc} */
+			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".ser.gz");
 			}
