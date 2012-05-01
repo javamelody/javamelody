@@ -122,6 +122,7 @@ class QuartzAdapter {
 		if (Boolean.parseBoolean(Parameters
 				.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
 			defaultScheduler = null;
+			LOG.debug("Initialization of Quartz default listener has been disabled");
 		} else {
 			defaultScheduler = StdSchedulerFactory.getDefaultScheduler();
 			defaultScheduler.addGlobalJobListener(jobGlobalListener);

@@ -225,6 +225,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		SESSION_MAP_BY_ID.clear();
 		SESSION_COUNT.set(0);
+		LOG.debug("JavaMelody listener destroy done");
 	}
 
 	// Rq : avec les sessions, on pourrait faire des statistiques sur la durée moyenne des sessions

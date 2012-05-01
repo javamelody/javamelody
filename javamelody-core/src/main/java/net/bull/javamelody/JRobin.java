@@ -334,6 +334,8 @@ final class JRobin {
 				// le fichier RRD a été corrompu, par exemple en tuant le process java au milieu
 				// d'un write, donc on efface le fichier corrompu et on le recrée pour corriger
 				// le problème
+				LOG.debug("A JRobin file was found corrupted and was reset: "
+						+ new File(rrdFileName).getPath());
 				resetFile();
 				addValue(value);
 			}

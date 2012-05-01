@@ -146,6 +146,7 @@ public class MonitoringFilter implements Filter {
 			filterConfig = null;
 			filterContext = null;
 		}
+		LOG.debug("JavaMelody filter destroy done");
 	}
 
 	/** {@inheritDoc} */
