@@ -50,6 +50,8 @@ class CollectorServer {
 		boolean initOk = false;
 		this.timer = new Timer("collector", true);
 		try {
+			LOGGER.info("reading applications list from: "
+					+ Parameters.getCollectorApplicationsFile());
 			final Map<String, List<URL>> urlsByApplication = Parameters
 					.getCollectorUrlsByApplications();
 			LOGGER.info("monitored applications: " + urlsByApplication.keySet());
