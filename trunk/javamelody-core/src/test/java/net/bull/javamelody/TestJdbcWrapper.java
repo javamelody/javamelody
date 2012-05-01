@@ -64,41 +64,49 @@ public class TestJdbcWrapper {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public <T> T unwrap(Class<T> iface) throws SQLException {
 			return null;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public boolean isWrapperFor(Class<?> iface) throws SQLException {
 			return false;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public void setLoginTimeout(int seconds) throws SQLException {
 			tomcatDataSource.setLoginTimeout(seconds);
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public void setLogWriter(PrintWriter out) throws SQLException {
 			tomcatDataSource.setLogWriter(out);
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int getLoginTimeout() throws SQLException {
 			return tomcatDataSource.getLoginTimeout();
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public PrintWriter getLogWriter() throws SQLException {
 			return tomcatDataSource.getLogWriter();
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Connection getConnection(String username, String password) throws SQLException {
 			return tomcatDataSource.getConnection();
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Connection getConnection() throws SQLException {
 			return tomcatDataSource.getConnection();
 		}
@@ -108,6 +116,7 @@ public class TestJdbcWrapper {
 		 * @return Logger
 		 * @throws SQLFeatureNotSupportedException e
 		 */
+		@Override
 		public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 			return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		}
@@ -263,6 +272,7 @@ public class TestJdbcWrapper {
 		assertEquals("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
 
 		final InvocationHandler dummy = new InvocationHandler() {
+			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 				return null;
 			}

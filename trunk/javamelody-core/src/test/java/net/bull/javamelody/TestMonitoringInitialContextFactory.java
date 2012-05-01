@@ -82,6 +82,7 @@ public class TestMonitoringInitialContextFactory implements InitialContextFactor
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException { // NOPMD
 		return initialContext;
 	}

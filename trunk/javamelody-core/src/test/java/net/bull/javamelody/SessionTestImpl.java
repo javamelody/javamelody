@@ -72,42 +72,50 @@ public class SessionTestImpl implements HttpSession {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object getAttribute(String name) {
 		return attributes.get(name);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Enumeration<?> getAttributeNames() {
 		return Collections.enumeration(attributes.keySet());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getCreationTime() {
 		return System.currentTimeMillis() - 300000;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getId() {
 		return id;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getLastAccessedTime() {
 		return lastAccess;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getMaxInactiveInterval() {
 		return 20 * 60;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public ServletContext getServletContext() {
 		return null;
 	}
 
 	/** @deprecated déprécié
 	 *  @return HttpSessionContext */
+	@Override
 	@Deprecated
 	public javax.servlet.http.HttpSessionContext getSessionContext() {
 		return null;
@@ -116,6 +124,7 @@ public class SessionTestImpl implements HttpSession {
 	/** @deprecated déprécié
 	 * @param name String
 	 * @return Object */
+	@Override
 	@Deprecated
 	public Object getValue(String name) {
 		return null;
@@ -123,17 +132,20 @@ public class SessionTestImpl implements HttpSession {
 
 	/** @deprecated déprécié
 	 * @return String[] */
+	@Override
 	@Deprecated
 	public String[] getValueNames() {
 		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void invalidate() {
 		invalidated = true;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isNew() {
 		return false;
 	}
@@ -141,29 +153,34 @@ public class SessionTestImpl implements HttpSession {
 	/** @deprecated déprécié
 	 * @param name String
 	 * @param value Object */
+	@Override
 	@Deprecated
 	public void putValue(String name, Object value) {
 		// rien
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void removeAttribute(String name) {
 		// rien
 	}
 
 	/** @deprecated déprécié
 	 * @param name String */
+	@Override
 	@Deprecated
 	public void removeValue(String name) {
 		// rien
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setAttribute(String name, Object value) {
 		attributes.put(name, value);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setMaxInactiveInterval(int interval) {
 		// rien
 	}

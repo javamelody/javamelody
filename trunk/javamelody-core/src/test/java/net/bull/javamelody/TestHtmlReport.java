@@ -318,6 +318,7 @@ public class TestHtmlReport {
 		// une deuxième connexion créée sur un thread qui n'existera plus quand le rapport sera généré
 		final ExecutorService executorService = Executors.newFixedThreadPool(1);
 		final Callable<Connection> task = new Callable<Connection>() {
+			@Override
 			public Connection call() {
 				return TestDatabaseInformations.initH2();
 			}

@@ -50,34 +50,42 @@ public class TestCompressionServletResponseWrapper {
 		private final ServletOutputStream outputStream = new FilterServletOutputStream(
 				new ByteArrayOutputStream());
 
+		@Override
 		public ServletOutputStream getOutputStream() throws IOException {
 			return outputStream;
 		}
 
+		@Override
 		public PrintWriter getWriter() throws IOException {
 			return null;
 		}
 
+		@Override
 		public void addCookie(Cookie cookie) {
 			// rien
 		}
 
+		@Override
 		public void addDateHeader(String name, long date) {
 			// rien
 		}
 
+		@Override
 		public void addHeader(String name, String value) {
 			// rien
 		}
 
+		@Override
 		public void addIntHeader(String name, int value) {
 			// rien
 		}
 
+		@Override
 		public boolean containsHeader(String name) {
 			return false;
 		}
 
+		@Override
 		public String encodeRedirectURL(String url) {
 			return null;
 		}
@@ -85,11 +93,13 @@ public class TestCompressionServletResponseWrapper {
 		/** @deprecated déprécié
 		 * @param url String
 		 * @return String */
+		@Override
 		@Deprecated
 		public String encodeRedirectUrl(String url) {
 			return null;
 		}
 
+		@Override
 		public String encodeURL(String url) {
 			return null;
 		}
@@ -97,35 +107,43 @@ public class TestCompressionServletResponseWrapper {
 		/** @deprecated déprécié
 		 * @param url String
 		 * @return String */
+		@Override
 		@Deprecated
 		public String encodeUrl(String url) {
 			return null;
 		}
 
+		@Override
 		public void sendError(int sc) throws IOException {
 			// rien
 		}
 
+		@Override
 		public void sendError(int sc, String msg) throws IOException {
 			// rien
 		}
 
+		@Override
 		public void sendRedirect(String location) throws IOException {
 			// rien
 		}
 
+		@Override
 		public void setDateHeader(String name, long date) {
 			// rien
 		}
 
+		@Override
 		public void setHeader(String name, String value) {
 			// rien
 		}
 
+		@Override
 		public void setIntHeader(String name, int value) {
 			// rien
 		}
 
+		@Override
 		public void setStatus(int sc) {
 			// rien
 		}
@@ -133,59 +151,73 @@ public class TestCompressionServletResponseWrapper {
 		/** @deprecated déprécié
 		 * @param sc int
 		 * @param sm String */
+		@Override
 		@Deprecated
 		public void setStatus(int sc, String sm) {
 			// rien
 		}
 
+		@Override
 		public void flushBuffer() throws IOException {
 			// rien
 		}
 
+		@Override
 		public int getBufferSize() {
 			return 0;
 		}
 
+		@Override
 		public String getCharacterEncoding() {
 			return null;
 		}
 
+		@Override
 		public String getContentType() {
 			return null;
 		}
 
+		@Override
 		public Locale getLocale() {
 			return null;
 		}
 
+		@Override
 		public boolean isCommitted() {
 			return false;
 		}
 
+		@Override
 		public void reset() {
 			// rien
 		}
 
+		@Override
 		public void resetBuffer() {
 			// rien
 		}
 
+		@Override
 		public void setBufferSize(int size) {
 			// rien
 		}
 
+		@Override
 		public void setCharacterEncoding(String charset) {
 			// rien
 		}
 
+		@Override
 		public void setContentLength(int len) {
 			// rien
 		}
 
+		@Override
 		public void setContentType(String type) {
 			// rien
 		}
 
+		@Override
 		public void setLocale(Locale loc) {
 			// rien
 		}

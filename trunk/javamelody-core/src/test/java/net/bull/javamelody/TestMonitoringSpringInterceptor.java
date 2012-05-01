@@ -91,6 +91,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Date myMethod() {
 			return new Date();
 		}
@@ -98,6 +99,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Date myOtherMethod() {
 			return new Date();
 		}
@@ -110,6 +112,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Date myMethod() {
 			return new Date();
 		}
@@ -117,6 +120,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Date myOtherMethod() {
 			return new Date();
 		}
@@ -131,6 +135,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Date myMethod() {
 			return new Date();
 		}
@@ -138,6 +143,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public Date myOtherMethod() {
 			return new Date();
 		}
@@ -150,6 +156,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		@MonitoredWithGuice
 		public Date myMethod() {
 			return new Date();
@@ -158,6 +165,7 @@ public class TestMonitoringSpringInterceptor {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		@MonitoredWithGuice(name = "test method")
 		public Date myOtherMethod() {
 			return new Date();
