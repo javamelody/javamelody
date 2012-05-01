@@ -249,6 +249,7 @@ public class TestAction {
 						+ "_noip_id", jobId));
 		final Thread myThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
+			@Override
 			public void run() {
 				try {
 					Thread.sleep(10000);

@@ -41,26 +41,31 @@ public class TestTomcatInformations {
 	 */
 	public static class ThreadPool implements ThreadPoolMBean {
 		/** {@inheritDoc} */
+		@Override
 		public int getmaxThreads() {
 			return 200;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int getcurrentThreadsBusy() {
 			return 22;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int getcurrentThreadCount() {
 			return 42;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public String[] getdummy() {
 			return new String[] { "1", "2" };
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public Object gettoStringException() {
 			return new Object() {
 				@Override
@@ -72,11 +77,13 @@ public class TestTomcatInformations {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int[] getintArrayAsInJRockit() {
 			return new int[] { 1 };
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public double[] getdoubleArrayAsInJRockit() {
 			return new double[] { 1d };
 		}
@@ -136,16 +143,19 @@ public class TestTomcatInformations {
 		private int requestCount = 100;
 
 		/** {@inheritDoc} */
+		@Override
 		public long getbytesReceived() {
 			return 0;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public long getbytesSent() {
 			return 100000;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int getrequestCount() {
 			return requestCount;
 		}
@@ -159,16 +169,19 @@ public class TestTomcatInformations {
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int geterrorCount() {
 			return 1;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public long getprocessingTime() {
 			return 2000;
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public long getmaxTime() {
 			return 10000;
 		}

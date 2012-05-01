@@ -136,6 +136,7 @@ public class TestHtmlHeapHistogramReport {
 		VirtualMachine.isJRockit();
 		// ces méthodes ne peuvent fonctionner dans maven et/ou junit
 		final Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				virtualMachine();
 			}

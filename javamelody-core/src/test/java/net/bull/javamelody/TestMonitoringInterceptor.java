@@ -48,10 +48,12 @@ public class TestMonitoringInterceptor {
 			this.throwError = throwError;
 		}
 
+		@Override
 		public void setParameters(Object[] params) {
 			// rien
 		}
 
+		@Override
 		public Object proceed() {
 			if (throwError) {
 				throw new OutOfMemoryError("test");
@@ -59,14 +61,17 @@ public class TestMonitoringInterceptor {
 			return null;
 		}
 
+		@Override
 		public Object getTarget() {
 			return null;
 		}
 
+		@Override
 		public Object[] getParameters() {
 			return null;
 		}
 
+		@Override
 		public Method getMethod() {
 			try {
 				return TestMonitoringInterceptor.class.getMethod("testInvoke");
@@ -77,6 +82,7 @@ public class TestMonitoringInterceptor {
 			}
 		}
 
+		@Override
 		public Map<String, Object> getContextData() {
 			return null;
 		}

@@ -37,6 +37,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Date nowWithSql() throws SQLException {
 		//		final javax.sql.DataSource dataSource = (javax.sql.DataSource) new javax.naming.InitialContext()
 		//				.lookup("java:comp/env/jdbc/TestDB");
@@ -75,6 +76,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Date now() {
 		return new Date();
 	}
@@ -82,6 +84,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void throwError() {
 		throw new OutOfMemoryError("test");
 	}
@@ -89,6 +92,7 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void throwException() {
 		throw new IllegalStateException("test");
 	}
