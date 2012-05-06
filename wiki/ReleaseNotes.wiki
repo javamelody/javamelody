@@ -1,4 +1,7 @@
 #labels Featured
+=== Next release (trunk) ===
+  * fix minor issue 210: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], there was sometimes an error in log about "jira-web-item".
+
 === 1.37.0 ===
 
   * fix issue 207: Incompatibility with servlet api 2.4 (Tomcat 5.5) in javamelody 1.36.0
