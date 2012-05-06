@@ -188,7 +188,7 @@
 		<delete file="jira-javamelody.jar" />
 		<jar destfile="jira-javamelody.jar">
 			<zipfileset src="javamelody.jar" excludes="META-INF/web-fragment.xml" />
-			<zipfileset src="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" />
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" excludes="**/cmap_info.txt"/>
 			<zipfileset src="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
 			<zipfileset src="src/test/test-webapp/WEB-INF/lib/xstream-1.3.1.jar" />
 			<zipfileset src="src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" />
