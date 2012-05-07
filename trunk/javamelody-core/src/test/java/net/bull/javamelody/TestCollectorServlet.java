@@ -78,6 +78,7 @@ public class TestCollectorServlet {
 			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 			collectorServlet.destroy();
 		}
+		Parameters.getStorageDirectory(TEST).mkdirs();
 		Parameters.removeCollectorApplication(TEST);
 	}
 
