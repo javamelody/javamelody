@@ -1,6 +1,7 @@
   * [http://javamelody.googlecode.com/ Home]
   * [Demo Demo]
   * [Screenshots Screenshots]
+  * [Donate Donate]
   * ----
   * [ReleaseNotes Release notes]
   * [UserGuide User's guide]
