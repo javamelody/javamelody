@@ -204,8 +204,8 @@
 		<!-- Dépendance optionnelle hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.6.ga</version>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.6.9.Final</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->
