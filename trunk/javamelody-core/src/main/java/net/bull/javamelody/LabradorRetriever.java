@@ -78,6 +78,10 @@ class LabradorRetriever {
 			// pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
 			// cela permet d'avoir les messages dans la bonne langue)
 			connection.setRequestProperty("Accept-Language", I18N.getCurrentLocale().getLanguage());
+			if (url.getUserInfo() != null) {
+				final String authorization = Base64Coder.encodeString(url.getUserInfo());
+				connection.setRequestProperty("Authorization", "Basic " + authorization);
+			}
 			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
 			// puisque le filtre de monitoring n'est pas censé créer des sessions
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
@@ -130,6 +134,10 @@ class LabradorRetriever {
 			// pour traductions
 			connection.setRequestProperty("Accept-Language",
 					httpRequest.getHeader("Accept-Language"));
+			if (url.getUserInfo() != null) {
+				final String authorization = Base64Coder.encodeString(url.getUserInfo());
+				connection.setRequestProperty("Authorization", "Basic " + authorization);
+			}
 			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
 			// puisque le filtre de monitoring n'est pas censé créer des sessions
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
