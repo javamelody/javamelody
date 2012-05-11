@@ -947,9 +947,7 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 +-------------------------------+
 	
 	Ou si des <<<security-constraint>>> et <<<security-role>>>(s) sont définis dans le fichier <<<web.xml>>> de l'application, il vous est
-	également possible dans ce fichier <<<web.xml>>> de restreindre l'accès à la page de monitoring au rôle "monitoring" par exemple
-	(sauf si un serveur de collecte est utilisé comme indiqué dans le chapitre suivant, auquel cas il convient d'utiliser
-	le paramètre allowed-addr-pattern).
+	également possible dans ce fichier <<<web.xml>>> de restreindre l'accès à la page de monitoring au rôle "monitoring" par exemple.
 	
 	Exemple de contenu du fichier web.xml pour authentification par identifiant et mot de passe :
 	

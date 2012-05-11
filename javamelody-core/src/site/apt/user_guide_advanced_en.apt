@@ -199,7 +199,7 @@ Advanced documentation of Java Melody
 	And with this setup again, it is possible to restrict access to the monitoring of the application only to the
 	collect server by its ip address, forbidding access to the monitoring of the application to any others.
 	For example, if the monitored application is on the same server as the collect server, the following parameter
-	can be added in the <<<web.xml>>> file to restrict access and to allow only the local collect server:
+	can be added in the <<<web.xml>>> file of the monitored application to restrict access and to allow only the local collect server:
 
 +-------------------------------+
 	<init-param>
@@ -215,7 +215,47 @@ Advanced documentation of Java Melody
 	(A system property like <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> can also be added
 	with the ip address of the collect server.)
 
-	If you do not want that the people having access to the collect server to be able to add or remove
+	Instead of using <<<allowed-addr-pattern>>>, you may want to secure access with http basic authentication
+	(username and password) in the monitored application. For that, add the following in the <<<web.xml>>> file
+	of the monitored application:
+	
++-------------------------------+
+        <login-config>
+                <auth-method>BASIC</auth-method>
+                <realm-name>Monitoring</realm-name>
+        </login-config>
+        <security-role>
+                <role-name>monitoring</role-name>
+        </security-role>
+        <security-constraint>
+                <web-resource-collection>
+                        <web-resource-name>Monitoring</web-resource-name>
+                        <url-pattern>/monitoring</url-pattern>
+                </web-resource-collection>
+                <auth-constraint>
+                        <role-name>monitoring</role-name>
+                </auth-constraint>
+        </security-constraint>
++-------------------------------+
+
+    The realm and the user used by the collect server must be defined in the monitored application server,
+    and the user must have the "monitoring" role to have access.
+    For example, if tomcat is used with the default realm in the monitored application server,
+    modify the content of the conf/tomcat-users.xml file as follows: 
+
++-------------------------------+
+        <?xml version='1.0' encoding='utf-8'?>
+        <tomcat-users>
+             <role rolename="monitoring"/>
+             <user username="monitoring" password="monitoring" roles="monitoring"/>
+        </tomcat-users>
++-------------------------------+
+
+	Then, when you add the monitored application in the collector server, define the username and the password in the URL.
+	For example, the URL of the monitored application, as given to the collect server, could be:
+	http://myusername:mypassword@myhost:8080/mywebapp
+
+	Furthermore, if you do not want that the people having access to the collect server to be able to add or remove
 	applications to monitor, you can forbid the writing to the file "applications.properties" which
 	contains the list of the applications to monitor. This file is located in the storage directory, 
 	"temp/javamelody/applications.properties" for example.

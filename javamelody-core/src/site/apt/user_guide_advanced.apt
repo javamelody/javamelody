@@ -212,8 +212,8 @@ Documentation avancée de Java Melody
 	Toujours lors de cette mise en oeuvre dans l'application, il est possible de restreindre l'accès au monitoring
 	de l'application au seul serveur de collecte selon son adresse ip, en interdisant ainsi l'accès au monitoring
 	de l'application aux utilisateurs ou autres. Par exemple, si l'application monitorée est sur le même serveur
-	que le serveur de collecte, l'ajout du paramètre suivant dans le fichier <<<web.xml>>> restreint l'accès et autorise
-	seulement le serveur de collecte local :
+	que le serveur de collecte, l'ajout du paramètre suivant dans le fichier <<<web.xml>>> de l'application monitorée
+	restreint l'accès et autorise seulement le serveur de collecte local :
 
 +-------------------------------+
 	<init-param>
@@ -229,7 +229,47 @@ Documentation avancée de Java Melody
 	(Une propriété système comme <<<-Djavamelody.allowed-addr-pattern=127\.0\.0\.1>>> peut aussi
 	être ajoutée avec l'adresse ip du serveur de collecte.)
 
-	Si vous ne souhaitez pas que les personnes ayant accès au serveur de collecte puisse ajouter
+	Au lieu d'utiliser <<<allowed-addr-pattern>>>, il est possible de sécuriser l'accès avec une authentification
+	http basic (nom d'utilisateur et mot de passe) dans l'application monitorée.
+	Pour cela, ajouter ce qui suit dans le fichier <<<web.xml>>> de l'application monitorée:
+	
++-------------------------------+
+        <login-config>
+                <auth-method>BASIC</auth-method>
+                <realm-name>Monitoring</realm-name>
+        </login-config>
+        <security-role>
+                <role-name>monitoring</role-name>
+        </security-role>
+        <security-constraint>
+                <web-resource-collection>
+                        <web-resource-name>Monitoring</web-resource-name>
+                        <url-pattern>/monitoring</url-pattern>
+                </web-resource-collection>
+                <auth-constraint>
+                        <role-name>monitoring</role-name>
+                </auth-constraint>
+        </security-constraint>
++-------------------------------+
+
+    Le royaume et l'utilisateur utilisés par le serveur de collecte doivent être définis dans le serveur d'application monitoré,
+    et l'utilisateur doit avoir le rôle "monitoring" pour avoir accès.
+	Par exemple, si tomcat est utilisé avec le royaume par défaut dans le serveur d'application monitoré,
+	modifiez le contenu du fichier tomcat conf/tomcat-users.xml ainsi :
+
++-------------------------------+
+        <?xml version='1.0' encoding='utf-8'?>
+        <tomcat-users>
+             <role rolename="monitoring"/>
+             <user username="monitoring" password="monitoring" roles="monitoring"/>
+        </tomcat-users>
++-------------------------------+
+
+	Ensuite, quand l'application monitorée est ajoutée dans le serveur de collecte, il faut définir le nom d'utilisateur et le mot de passe dans l'URL.
+	Par exemple, l'URL de l'application monitorée, telle que donnée au serveur de collecte, peut être :
+	http://myusername:mypassword@myhost:8080/mywebapp
+	
+	Par ailleurs, si vous ne souhaitez pas que les personnes ayant accès au serveur de collecte puisse ajouter
 	ou enlever des applications à monitorer, vous pouvez interdire l'écriture du fichier
 	"applications.properties" listant les applications à monitorer. Ce fichier est situé dans le
 	répertoire de stockage, par exemple "temp/javamelody/applications.properties".
