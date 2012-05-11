@@ -1,6 +1,8 @@
 #labels Featured
 === Next release (trunk) ===
+
   * fix minor issue 210: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin] with a JIRA server, there was sometimes an error in log about "jira-web-item".
+  * added: When using the optional collect server, enable use of http Basic authentication to secure access to the monitored webapp, for example when the ip-address of the collect server is not known upfront (issue 214).
 
 === 1.37.0 ===
 
