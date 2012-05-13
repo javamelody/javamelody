@@ -292,6 +292,8 @@
 					<source>1.5</source>
 					<target>1.5</target>
 					<encoding>UTF-8</encoding>
+					<!-- pour éviter warning dans Maven sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
+					<testCompilerArgument>-XDignore.symbol.file</testCompilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
