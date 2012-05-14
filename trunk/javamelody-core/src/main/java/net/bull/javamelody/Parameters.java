@@ -147,7 +147,12 @@ final class Parameters {
 			sb.delete(sb.length() - 1, sb.length());
 			properties.put(entry.getKey(), sb.toString());
 		}
-		final FileOutputStream output = new FileOutputStream(getCollectorApplicationsFile());
+		final File collectorApplicationsFile = getCollectorApplicationsFile();
+		final File directory = collectorApplicationsFile.getParentFile();
+		if (!directory.mkdirs() && !directory.exists()) {
+			throw new IOException("JavaMelody directory can't be created: " + directory.getPath());
+		}
+		final FileOutputStream output = new FileOutputStream(collectorApplicationsFile);
 		try {
 			properties.store(output, "urls of the applications to monitor");
 		} finally {
