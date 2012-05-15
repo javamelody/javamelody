@@ -88,11 +88,12 @@ Documentation avancée de Java Melody
 	Ce serveur permet de centraliser dans une même interface et avec un stockage unique
 	le monitoring de plusieurs applications (recette et production par exemple)
 	et / ou le monitoring d'une application avec plusieurs instances de serveurs (cluster par exemple).
-	Ainsi les rapports, le stockage et les courbes sont déportées de l'application
+	Ainsi les rapports, le stockage et les courbes sont déportées de l'application monitorée
 	vers le serveur de collecte.
 
 	Remarque: le serveur de collecte centralisé avec javamelody.war fonctionne seulement si le monitoring
 	fonctionne dors et déjà avec javamelody.jar dans l'application cible à http://<host>:<port>/<context>/monitoring.
+	Une application ne doit pas être monitorée depuis deux serveurs de collecte.
 
 ** 1. Fichier war de la webapp de monitoring
 
