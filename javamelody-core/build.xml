@@ -206,6 +206,31 @@
 		</jar>
 	</target>
 
+	<!-- Construction du jar javamelody-objectfactory pour GlassFish v3 -->
+	<target name="objectfactory-jar" depends="init">
+		<mkdir dir="build/objectfactory-classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/main/objectfactory" destdir="build/objectfactory-classes" includeantruntime="false">
+			<compilerarg value="-Xlint" />
+		</javac>
+		<delete file="javamelody-objectfactory.jar" />
+		<jar destfile="javamelody-objectfactory.jar">
+			<zipfileset dir="build/objectfactory-classes" />
+			<zipfileset dir="src/main/objectfactory" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
 	<!-- Construction de la javadoc (api public) -->
 	<target name="javadoc" depends="init,build">
 		<echo message="Construction de la javadoc" level="info" />
