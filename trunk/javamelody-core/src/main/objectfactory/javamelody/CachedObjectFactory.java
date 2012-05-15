@@ -37,10 +37,11 @@ import javax.naming.spi.ObjectFactory;
  * <br/>
  * Example usage in GlassFish: <br/>
  * 1) Your JDBC Resource (DataSource) is defined in GlassFish as "jdbc/MyDataSource_uncached" <br/>
- * 2) asadmin create-custom-resource --restype javax.naming.spi.ObjectFactory --factoryclass javamelody.CachedObjectFactory --property jndi-ref=jdbc/MyDataSource_uncached jdbc/MyDataSource <br/>
+ * 2) Add http://javamelody.googlecode.com/files/javamelody-objectfactory.jar in lib of GlassFish <br/>
+ * 3) asadmin create-custom-resource --restype javax.naming.spi.ObjectFactory --factoryclass javamelody.CachedObjectFactory --property jndi-ref=jdbc/MyDataSource_uncached jdbc/MyDataSource <br/>
  *    or see sample-resource.xml beside this file <br/>
- * 3) Define the target of the custom resource in GlassFish if needed <br/>
- * 4) Webapp uses "jdbc/MyDataSource" to lookup from JNDI (which is the custom resource referencing "jdbc/MyDataSource_uncached")<br/>
+ * 4) Define the target of the custom resource in GlassFish if needed <br/>
+ * 5) Webapp uses "jdbc/MyDataSource" to lookup from JNDI (which is the custom resource referencing "jdbc/MyDataSource_uncached")<br/>
  * @author bhun.kho
  * @author Emeric Vernat
  */
