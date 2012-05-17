@@ -56,6 +56,67 @@ class LabradorRetriever {
 	//	    static { HttpURLConnection.setFollowRedirects(true);
 	//	    URLConnection.setDefaultAllowUserInteraction(true); }
 
+	private static class CounterInputStream extends InputStream {
+		private final InputStream inputStream;
+		private int dataLength;
+
+		CounterInputStream(InputStream inputStream) {
+			super();
+			this.inputStream = inputStream;
+		}
+
+		int getDataLength() {
+			return dataLength;
+		}
+
+		@Override
+		public int read() throws IOException {
+			final int result = inputStream.read();
+			if (result != -1) {
+				dataLength += 1;
+			}
+			return result;
+		}
+
+		@Override
+		public int read(byte[] bytes) throws IOException {
+			final int result = inputStream.read(bytes);
+			if (result != -1) {
+				dataLength += result;
+			}
+			return result;
+		}
+
+		@Override
+		public int read(byte[] bytes, int off, int len) throws IOException {
+			final int result = inputStream.read(bytes, off, len);
+			if (result != -1) {
+				dataLength += result;
+			}
+			return result;
+		}
+
+		@Override
+		public long skip(long n) throws IOException {
+			return inputStream.skip(n);
+		}
+
+		@Override
+		public int available() throws IOException {
+			return inputStream.available();
+		}
+
+		@Override
+		public void close() throws IOException {
+			inputStream.close();
+		}
+
+		@Override
+		public boolean markSupported() {
+			return false; // Assume that mark is NO good for a counterInputStream
+		}
+	}
+
 	LabradorRetriever(URL url) {
 		this(url, null);
 	}
@@ -73,6 +134,7 @@ class LabradorRetriever {
 			return this.<T> createMockResultOfCall();
 		}
 		final long start = System.currentTimeMillis();
+		int dataLength = -1;
 		try {
 			final URLConnection connection = openConnection(url, headers);
 			// pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
@@ -90,8 +152,17 @@ class LabradorRetriever {
 
 			//		final String setCookie = connection.getHeaderField("Set-Cookie");
 			//		if (setCookie != null) { cookie = setCookie; }
-			@SuppressWarnings("unchecked")
-			final T result = (T) read(connection);
+			final CounterInputStream counterInputStream = new CounterInputStream(
+					connection.getInputStream());
+
+			final T result;
+			try {
+				@SuppressWarnings("unchecked")
+				final T tmp = (T) read(connection, counterInputStream);
+				result = tmp;
+			} finally {
+				dataLength = counterInputStream.getDataLength();
+			}
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("read on " + url + " : " + result);
 			}
@@ -109,8 +180,8 @@ class LabradorRetriever {
 		} catch (final ClassNotFoundException e) {
 			throw createIOException(e);
 		} finally {
-			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms for "
-					+ url);
+			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
+					+ dataLength / 1024 + " KB read for " + url);
 		}
 	}
 
@@ -129,6 +200,7 @@ class LabradorRetriever {
 		assert httpRequest != null;
 		assert httpResponse != null;
 		final long start = System.currentTimeMillis();
+		int dataLength = -1;
 		try {
 			final URLConnection connection = openConnection(url, headers);
 			// pour traductions
@@ -144,8 +216,10 @@ class LabradorRetriever {
 
 			connection.connect();
 
+			final CounterInputStream counterInputStream = new CounterInputStream(
+					connection.getInputStream());
+			InputStream input = counterInputStream;
 			try {
-				InputStream input = connection.getInputStream();
 				if ("gzip".equals(connection.getContentEncoding())) {
 					input = new GZIPInputStream(input);
 				}
@@ -153,10 +227,11 @@ class LabradorRetriever {
 				TransportFormat.pump(input, httpResponse.getOutputStream());
 			} finally {
 				close(connection);
+				dataLength = counterInputStream.getDataLength();
 			}
 		} finally {
-			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms for "
-					+ url);
+			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
+					+ dataLength / 1024 + " KB read for " + url);
 		}
 	}
 
@@ -192,12 +267,13 @@ class LabradorRetriever {
 	 * Lit l'objet renvoyé dans le flux de réponse.
 	 * @return Object
 	 * @param connection URLConnection
+	 * @param inputStream InputStream à utiliser à la place de connection.getInputStream() 
 	 * @throws IOException   Exception de communication
 	 * @throws ClassNotFoundException   Une classe transmise par le serveur n'a pas été trouvée
 	 */
-	private static Serializable read(URLConnection connection) throws IOException,
-			ClassNotFoundException {
-		InputStream input = connection.getInputStream();
+	private static Serializable read(URLConnection connection, InputStream inputStream)
+			throws IOException, ClassNotFoundException {
+		InputStream input = inputStream;
 		try {
 			if ("gzip".equals(connection.getContentEncoding())) {
 				// si la taille du flux dépasse x Ko et que l'application a retourné un flux compressé
