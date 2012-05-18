@@ -57,7 +57,7 @@ public class TestBase64Coder {
 		final sun.misc.BASE64Encoder sunEncoder = new sun.misc.BASE64Encoder();
 		final sun.misc.BASE64Decoder sunDecoder = new sun.misc.BASE64Decoder();
 		final Random rnd = new Random(0x538afb92);
-		for (int i = 0; i < 50000; i++) {
+		for (int i = 0; i < 100; i++) {
 			final int len = rnd.nextInt(maxDataBlockLen + 1);
 			final byte[] b0 = new byte[len];
 			rnd.nextBytes(b0);
@@ -83,7 +83,7 @@ public class TestBase64Coder {
 		final sun.misc.BASE64Encoder sunEncoder = new sun.misc.BASE64Encoder();
 		final sun.misc.BASE64Decoder sunDecoder = new sun.misc.BASE64Decoder();
 		final Random rnd = new Random(0x39ac7d6e);
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100; i++) {
 			final int len = rnd.nextInt(maxDataBlockLen + 1);
 			final byte[] b0 = new byte[len];
 			rnd.nextBytes(b0);
