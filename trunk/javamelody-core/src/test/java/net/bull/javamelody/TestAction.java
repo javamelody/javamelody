@@ -104,6 +104,8 @@ public class TestAction {
 		}
 		assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector, null,
 				counterName, sessionId, threadId, jobId));
+		assertNotNull("message PURGE_OBSOLETE_FILES", Action.PURGE_OBSOLETE_FILES.execute(
+				collector, null, counterName, sessionId, threadId, jobId));
 		final String heapDump1 = Action.HEAP_DUMP.execute(collector, null, counterName, sessionId,
 				threadId, jobId);
 		assertNotNull("message HEAP_DUMP", heapDump1);
