@@ -718,8 +718,6 @@ class Collector { // NOPMD
 				// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
 				// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
 				deleteObsoleteFiles();
-				LOG.debug("Obsolete files deleted. JavaMelody disk usage: " + diskUsage / 1024
-						+ " KB");
 			} finally {
 				// le jour a changé, on crée un compteur vide qui sera enregistré dans un nouveau fichier
 				dayCounter = new PeriodCounterFactory(dayCounter).buildNewDayCounter();
@@ -734,6 +732,7 @@ class Collector { // NOPMD
 		final long serGzDiskUsage = JRobin.deleteObsoleteJRobinFiles(getApplication());
 		diskUsage = rrdDiskUsage + serGzDiskUsage;
 		// il manque la taille du fichier "last_shutdown.html", mais on n'est pas à ça près
+		LOG.debug("Obsolete files deleted. JavaMelody disk usage: " + diskUsage / 1024 + " KB");
 	}
 
 	private void removeRequest(Counter counter, CounterRequest newRequest) {
