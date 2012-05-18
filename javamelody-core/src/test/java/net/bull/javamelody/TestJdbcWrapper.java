@@ -177,34 +177,34 @@ public class TestJdbcWrapper {
 				.isEmpty());
 		assertEquals("getMaxConnectionCount0", -1, JdbcWrapper.getMaxConnectionCount());
 
-		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
-		dbcpDataSource.setUrl(H2_DATABASE_URL);
-		dbcpDataSource.setMaxActive(123);
-		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
-		assertNotNull("createDataSourceProxy1", dbcpProxy);
+		final org.apache.tomcat.jdbc.pool.DataSource tomcatJdbcDataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+		tomcatJdbcDataSource.setUrl(H2_DATABASE_URL);
+		tomcatJdbcDataSource.setDriverClassName("org.h2.Driver");
+		tomcatJdbcDataSource.setMaxActive(123);
+		final DataSource tomcatJdbcProxy = jdbcWrapper.createDataSourceProxy("test2",
+				tomcatJdbcDataSource);
+		assertNotNull("createDataSourceProxy1", tomcatJdbcProxy);
+		tomcatJdbcProxy.getConnection().close();
 		assertFalse("getBasicDataSourceProperties1", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
 		assertEquals("getMaxConnectionCount1", 123, JdbcWrapper.getMaxConnectionCount());
 
-		final BasicDataSource tomcatDataSource = new BasicDataSource();
-		tomcatDataSource.setUrl(H2_DATABASE_URL);
-		tomcatDataSource.setMaxActive(456);
-		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy("test", tomcatDataSource);
-		assertNotNull("createDataSourceProxy2", tomcatProxy);
-		assertNotNull("getLogWriter2", tomcatProxy.getLogWriter());
-		tomcatProxy.getConnection().close();
+		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
+		dbcpDataSource.setUrl(H2_DATABASE_URL);
+		dbcpDataSource.setMaxActive(456);
+		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
+		assertNotNull("createDataSourceProxy2", dbcpProxy);
 		assertFalse("getBasicDataSourceProperties2", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
 		assertEquals("getMaxConnectionCount2", 456, JdbcWrapper.getMaxConnectionCount());
 
-		final BasicDataSource tomcatJdbcDataSource = new BasicDataSource();
-		tomcatJdbcDataSource.setUrl(H2_DATABASE_URL);
-		tomcatJdbcDataSource.setMaxActive(789);
-		final DataSource tomcatJdbcProxy = jdbcWrapper.createDataSourceProxy("test",
-				tomcatJdbcDataSource);
-		assertNotNull("createDataSourceProxy3", tomcatJdbcProxy);
-		assertNotNull("getLogWriter3", tomcatJdbcProxy.getLogWriter());
-		tomcatJdbcProxy.getConnection().close();
+		final BasicDataSource tomcatDataSource = new BasicDataSource();
+		tomcatDataSource.setUrl(H2_DATABASE_URL);
+		tomcatDataSource.setMaxActive(789);
+		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy("test", tomcatDataSource);
+		assertNotNull("createDataSourceProxy3", tomcatProxy);
+		assertNotNull("getLogWriter2", tomcatProxy.getLogWriter());
+		tomcatProxy.getConnection().close();
 		assertFalse("getBasicDataSourceProperties3", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
 		assertEquals("getMaxConnectionCount3", 789, JdbcWrapper.getMaxConnectionCount());
