@@ -251,6 +251,8 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(ACTION_PARAMETER, Action.MAIL_TEST.toString());
 		doPart(parameters);
+		parameters.put(ACTION_PARAMETER, Action.PURGE_OBSOLETE_FILES.toString());
+		doPart(parameters);
 		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
 		parameters.put(SESSION_ID_PARAMETER, "aSessionId");
 		doPart(parameters);

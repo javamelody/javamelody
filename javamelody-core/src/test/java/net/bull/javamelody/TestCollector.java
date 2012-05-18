@@ -342,6 +342,14 @@ public class TestCollector {
 		return collector.getRangeCountersToBeDisplayed(period.getRange()).size();
 	}
 
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testDeleteObsoleteFiles() throws IOException {
+		final Collector collector = createCollectorWithOneCounter();
+		collector.deleteObsoleteFiles();
+	}
+
 	/** Test. */
 	@Test
 	public void testStop() {
