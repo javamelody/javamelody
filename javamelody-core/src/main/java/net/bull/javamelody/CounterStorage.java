@@ -27,7 +27,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -132,34 +135,40 @@ class CounterStorage {
 	}
 
 	static long deleteObsoleteCounterFiles(String application) {
-		final File storageDir = Parameters.getStorageDirectory(application);
 		final Calendar nowMinusOneYearAndADay = Calendar.getInstance();
 		nowMinusOneYearAndADay.add(Calendar.YEAR, -1);
 		nowMinusOneYearAndADay.add(Calendar.DAY_OF_YEAR, -1);
 		// filtre pour ne garder que les fichiers d'extension .ser.gz et pour éviter d'instancier des File inutiles
-		final FilenameFilter filenameFilter = new FilenameFilter() {
-			/** {@inheritDoc} */
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".ser.gz");
-			}
-		};
 		long diskUsage = 0;
-		final File[] files = storageDir.listFiles(filenameFilter);
-		if (files != null) {
-			for (final File file : files) {
-				boolean deleted = false;
-				if (file.lastModified() < nowMinusOneYearAndADay.getTimeInMillis()) {
-					deleted = file.delete();
-				}
-				if (!deleted) {
-					diskUsage += file.length();
-				}
+		for (final File file : listSerGzFiles(application)) {
+			boolean deleted = false;
+			if (file.lastModified() < nowMinusOneYearAndADay.getTimeInMillis()) {
+				deleted = file.delete();
+			}
+			if (!deleted) {
+				diskUsage += file.length();
 			}
 		}
 
 		// on retourne true si tous les fichiers .ser.gz obsolètes ont été supprimés, false sinon
 		return diskUsage;
+	}
+
+	private static List<File> listSerGzFiles(String application) {
+		final File storageDir = Parameters.getStorageDirectory(application);
+		// filtre pour ne garder que les fichiers d'extension .rrd et pour éviter d'instancier des File inutiles
+		final FilenameFilter filenameFilter = new FilenameFilter() {
+			/** {@inheritDoc} */
+			@Override
+			public boolean accept(File dir, String fileName) {
+				return fileName.endsWith(".ser.gz");
+			}
+		};
+		final File[] files = storageDir.listFiles(filenameFilter);
+		if (files == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.asList(files);
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing
