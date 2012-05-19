@@ -145,13 +145,16 @@ class CounterStorage {
 			}
 		};
 		long diskUsage = 0;
-		for (final File file : storageDir.listFiles(filenameFilter)) {
-			boolean deleted = false;
-			if (file.lastModified() < nowMinusOneYearAndADay.getTimeInMillis()) {
-				deleted = file.delete();
-			}
-			if (!deleted) {
-				diskUsage += file.length();
+		final File[] files = storageDir.listFiles(filenameFilter);
+		if (files != null) {
+			for (final File file : files) {
+				boolean deleted = false;
+				if (file.lastModified() < nowMinusOneYearAndADay.getTimeInMillis()) {
+					deleted = file.delete();
+				}
+				if (!deleted) {
+					diskUsage += file.length();
+				}
 			}
 		}
 
