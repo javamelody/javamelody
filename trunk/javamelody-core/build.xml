@@ -276,7 +276,7 @@
 					<include name="easymock-2.0.jar" />
 				</fileset>
 			</classpath>
-			<!-- -XDignore.symbol.file pour éviter warning dans Maven sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
+			<!-- -XDignore.symbol.file pour éviter warning sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
 			<compilerarg value="-XDignore.symbol.file=true -Xlint" />
 		</javac>
 		<delete dir="build/test-results" />
@@ -296,6 +296,7 @@
 					<include name="easymock-2.0.jar" />
 					<include name="dom4j-1.6.1.jar" />
 					<include name="commons-collections-2.1.1.jar" />
+					<include name="tomcat-juli-7.0.27.jar" />
 					<include name="jta-1.0.1B.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
