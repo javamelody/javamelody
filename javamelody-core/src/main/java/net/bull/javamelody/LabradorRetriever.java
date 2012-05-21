@@ -267,7 +267,7 @@ class LabradorRetriever {
 	 * Lit l'objet renvoyé dans le flux de réponse.
 	 * @return Object
 	 * @param connection URLConnection
-	 * @param inputStream InputStream à utiliser à la place de connection.getInputStream() 
+	 * @param inputStream InputStream à utiliser à la place de connection.getInputStream()
 	 * @throws IOException   Exception de communication
 	 * @throws ClassNotFoundException   Une classe transmise par le serveur n'a pas été trouvée
 	 */
