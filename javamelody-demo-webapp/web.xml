@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app 
+	[
+		<!ENTITY services_appli1 SYSTEM "services_appli1.xml"> 
+		<!ENTITY services_referentiel1 SYSTEM "services_referentiel1.xml">
+	]>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 
+	<!-- Services -->
+	&services_appli1;
+	&services_referentiel1;
+	
 	<!-- configuration datasource -->
 	<context-param>
 		<param-name>appwhite1.datasource</param-name>
@@ -20,12 +29,20 @@
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
+		<param-name>javamelody.sql-transform-pattern</param-name>
+		<!-- regexp pour agréger les paramètres bindés dans les critères de requêtes 
+			SQL tels que "in (?, ?, ?, ?)" et ainsi pour éviter que ces requêtes ayant 
+			un nombre variable de paramètres soient considérées comme différentes ;
+			de fait cela agrège aussi les values des inserts -->
+		<param-value>\([\?, ]+\)</param-value>
+	</context-param>
+	<!-- <context-param> <param-name>javamelody.disabled</param-name> <param-value>true</param-value> 
+		</context-param> -->
+	<!-- parametrage du monitoring pour GWT -->
+	<context-param>
 		<param-name>javamelody.http-transform-pattern</param-name>
 		<param-value>[A-F,0-9]+\.cache</param-value>
 	</context-param>
-
-	<!-- <context-param> <param-name>javamelody.disabled</param-name> <param-value>true</param-value> 
-		</context-param> -->
 
 	<!-- these are for MDC of Log4j and for display of the user in the monitoring -->
 	<filter>
@@ -66,31 +83,13 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>httpSessionInThread</filter-name>
-		<url-pattern>/appli1/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<!-- Initialisation de la webapp -->
 	<listener>
 		<listener-class>fr.appwhite1.InitializationListener</listener-class>
 	</listener>
-
-	<!-- Services -->
-	<servlet>
-		<servlet-name>PersonneService</servlet-name>
-		<servlet-class>fr.appwhite1.server.services.annuaire.PersonneServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>PersonneService</servlet-name>
-		<url-pattern>/appli1/PersonneService</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>GradeService</servlet-name>
-		<servlet-class>fr.appwhite1.server.services.ref.GradeServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>GradeService</servlet-name>
-		<url-pattern>/appli1/GradeService</url-pattern>
-	</servlet-mapping>
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
