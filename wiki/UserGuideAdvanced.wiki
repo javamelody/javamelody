@@ -286,7 +286,7 @@ To monitor them, it is needed to do the following, for each JDBC DataSource:
   * In the GlassFish admin console, rename your JDBC Resource (DataSource) from "jdbc/MyDataSource" to "jdbc/MyDataSource_uncached" for example
   * In the GlassFish admin console, create a JNDI custom resource like this:
 
-http://code.google.com/p/javamelody/wiki/images/GlassFish_create-custom-resource.png
+http://code.google.com/p/javamelody/source/browse/wiki/images/GlassFish_create-custom-resource.png
 
 or use the following asadmin command 
 
