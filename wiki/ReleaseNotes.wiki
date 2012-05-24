@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix major issue 138: It is now possible to monitor SQL requests and jdbc connections with a JNDI DataSource in GlassFish v3, (thanks to _Pieter_ for the analysis and to _Bhun Kho_ for the initial workaround). This can work with whatever version of JavaMelody from 1.23 to the latest. _DOC TODO_
+  * fix major issue 138: It is now possible to monitor SQL requests and jdbc connections with a JNDI DataSource in GlassFish v3, (thanks to _Pieter_ for the analysis and to _Bhun Kho_ for the initial workaround). This can work with whatever version of JavaMelody from 1.23 to the latest. Documentation is [UserGuideAdvanced#Monitoring_of_sql_requests_and_of_jdbc_connections_in_v3+ here]
   * fix minor issue 210: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin] with a JIRA server, there was sometimes an error in log about "jira-web-item".
   * added: When using the optional collect server, enable use of http Basic authentication to secure access to the monitored webapp, for example when the ip-address of the collect server is not known upfront (issue 214, thanks to _purnhar_). _Doc TODO_
   * added: When using the optional collect server, the size of the stream, between the monitored webapp and the collect server, is now written in the log of the collect server for each call. (Note that the stream is compressed if more than 50 KB ; when compressed, the log gives the compressed size. revision 2828)
