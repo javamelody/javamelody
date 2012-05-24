@@ -284,12 +284,10 @@ To monitor them, it is needed to do the following, for each JDBC DataSource:
   * It is supposed that the DataSource is for example currently named "jdbc/MyDataSource" in GlassFish
   * Download [http://javamelody.googlecode.com/files/javamelody-objectfactory.jar javamelody-objectfactory.jar] and copy this file in the lib directory of your GlassFish server
   * In the GlassFish admin console, rename your JDBC Resource (DataSource) from "jdbc/MyDataSource" to "jdbc/MyDataSource_uncached" for example
-  * In the GlassFish admin console, create a JNDI custom resource like this:
+  * Also in the GlassFish admin console, create a JNDI custom resource like this:
 
 <a href='http://javamelody.googlecode.com/svn/wiki/images/GlassFish_create-custom-resource.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/wiki/images/GlassFish_create-custom-resource.png' width='80%' alt='New Custom Resource' />
 </a>
-
-
 
 or use the following asadmin command 
 
@@ -297,8 +295,8 @@ or use the following asadmin command
 
 or you can use the {{{ asadmin add-resources /path/to/sample-resource.xml }}} command with the file [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/objectfactory/javamelody/sample-resource.xml sample-resource.xml]
 
-  * Then in the details of the resource in the GlassFish admin console, define the target of the custom resource if needed
-  * Test: Webapp uses "jdbc/MyDataSource" to lookup from JNDI (which is the custom resource referencing "jdbc/MyDataSource_uncached"). Statistics of the SQL requests should be display in the monitoring report.
+  * Then in the details of the resource in the GlassFish admin console, define the target of the custom resource if the monitored webapp is deployed on another target instance than the Admin Server
+  * Test: Webapp uses "jdbc/MyDataSource" as before to lookup from JNDI (and now it is the custom resource referencing "jdbc/MyDataSource_uncached"). After some usage of the webapp, the statistics of the SQL requests should be displayed in the monitoring report.
 
 
 == Usage of JavaMelody in JBoss AS 7 (which uses OSGI) ==
