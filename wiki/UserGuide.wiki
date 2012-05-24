@@ -26,7 +26,7 @@
     * [#17. 17. SecurityManager]
     * [#18._Full_results 18. Full results]
   * [#Dependencies Dependencies]
-  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, JBoss AS 7, JonAS 5, debugging logs...)]
+  * [#Advanced_documentation_(setup_with_an_ear,_centralized_collect_s Advanced documentation (setup with an ear, centralized collect server, monitoring of sql requests in GlassFish v3, JBoss AS 7, JonAS 5, debugging logs...)]
   * [#Compilation_and_development Compilation and development]
 
 == Introduction ==
@@ -1023,9 +1023,9 @@ The dependencies {{{jrobin}}} (included in javamelody-core) and if you wish {{{x
 	</dependency>
 }}}
 
-== Advanced documentation (setup with an ear, centralized collect server, monitoring of sql requests in GlassFish v3, JBoss AS 7, JonAS 5, debugging logs...) ==
+== Advanced documentation (setup with an ear, centralized collect server, sql requests in GlassFish v3, JBoss AS 7, JonAS 5, debugging logs...) ==
 
-	To setup with an ear, to deploy a centralized collect server, to use JBoss AS 7, JonAS 5 or to enable debugging logs, see [UserGuideAdvanced]
+	To setup with an ear, to deploy a centralized collect server, to monitor sql requests in GlassFish v3, to use JBoss AS 7, JonAS 5 or to enable debugging logs, see [UserGuideAdvanced]
 
 == Compilation and development ==
 
