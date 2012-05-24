@@ -17,6 +17,7 @@ For standard documentation, see [UserGuide]
     * [#5._Security_with_a_collect_server 5. Security with a collect server]
   * [#Business_facades_(without_EJB3_and_without_Spring_and_without_Gu Business facades (without EJB3 and without Spring and without Guice)]
   * [#Alternative_for_monitoring_of_sql_requests Alternative for monitoring of sql requests]
+  * [#Monitoring_of_sql_requests_and_of_jdbc_connections_in_GlassFish_v3+ Monitoring of sql requests and of jdbc connections in GlassFish v3+]
   * [#Usage_of_in_JBoss_AS_7_(which_uses_OSGI) Usage of JavaMelody in JBoss AS 7 (which uses OSGI)]
   * [#Usage_of_in_JonAS_5_(which_uses_OSGI) Usage of JavaMelody in JonAS 5 (which uses OSGI)]
   * [#Deployment_on_Tomcat_without_modification_of_monitored_webapps_( Deployment on Tomcat without modification of monitored webapps (beta)]
@@ -274,6 +275,27 @@ For standard documentation, see [UserGuide]
 {{{
 	<property name="hibernate.jdbc.factory_class">net.bull.javamelody.HibernateBatcherFactory</property>
 }}}
+
+== Monitoring of sql requests and of jdbc connections in GlassFish v3+ ==
+
+If you use a JDBC DataSource from JNDI with GlassFish v3 or more, the SQL requests and the JDBC connections are probably not monitored.
+
+To monitor them, it is needed to do the following, for each JDBC DataSource:
+  * It is supposed that the DataSource is for example currently named "jdbc/MyDataSource" in GlassFish
+  * Download [http://javamelody.googlecode.com/files/javamelody-objectfactory.jar javamelody-objectfactory.jar] and copy this file in the lib directory of your GlassFish server
+  * In the GlassFish admin console, rename your JDBC Resource (DataSource) from "jdbc/MyDataSource" to "jdbc/MyDataSource_uncached" for example
+  * In the GlassFish admin console, create a JNDI custom resource like this:
+
+http://code.google.com/p/javamelody/wiki/images/GlassFish_create-custom-resource.png
+
+or use the following asadmin command 
+
+{{{ asadmin create-custom-resource --restype javax.naming.spi.ObjectFactory --factoryclass javamelody.CachedObjectFactory --property jndi-ref=jdbc/MyDataSource_uncached jdbc/MyDataSource }}}
+
+or you can use the {{{ asadmin add-resources /path/to/sample-resource.xml }}} command with the file [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/objectfactory/javamelody/sample-resource.xml sample-resource.xml]
+
+  * In the details of the resource in the GlassFish admin console, define the target of the custom resource if needed
+  * Test: Webapp uses "jdbc/MyDataSource" to lookup from JNDI (which is the custom resource referencing "jdbc/MyDataSource_uncached"). Statistics of the SQL requests should be display in the monitoring report.
 
 
 == Usage of JavaMelody in JBoss AS 7 (which uses OSGI) ==
