@@ -298,7 +298,7 @@ or you can use the {{{ asadmin add-resources /path/to/sample-resource.xml }}} co
   * Then in the details of the resource in the GlassFish admin console, define the target of the custom resource if the monitored webapp is deployed on another target instance than the Admin Server
   * Test: Webapp uses "jdbc/MyDataSource" as before to lookup from JNDI (and now it is the custom resource referencing "jdbc/MyDataSource_uncached"). After some usage of the webapp, the statistics of the SQL requests should be displayed in the monitoring report.
 
-This should with every versions of JavaMelody since v1.23.
+This should work with every versions of JavaMelody since v1.23.
 
 == Usage of JavaMelody in JBoss AS 7 (which uses OSGI) ==
 
