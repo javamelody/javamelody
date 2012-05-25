@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.MalformedObjectNameException;
@@ -114,6 +115,10 @@ final class TomcatInformations implements Serializable {
 		} catch (final InstanceNotFoundException e) {
 			// nécessaire pour JBoss 6.0 quand appelé depuis MonitoringFilter.destroy via
 			// writeHtmlToLastShutdownFile
+			return Collections.emptyList();
+		} catch (final AttributeNotFoundException e) {
+			// issue 220 and end of issue 133:
+			// AttributeNotFoundException: No attribute called maxThreads (in some JBossAS or JBossWeb)
 			return Collections.emptyList();
 		} catch (final JMException e) {
 			// n'est pas censé arriver
