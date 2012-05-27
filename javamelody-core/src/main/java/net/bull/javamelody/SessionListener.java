@@ -342,6 +342,10 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
 			unregisterSessionIfNeeded(session);
 		}
+		// issue 198: in JIRA 4.4.*, sessionCreated is called two times with different sessionId
+		// but with the same attributes in the second than the attributes added in the first,
+		// so SESSION_COUNT is periodically counted again
+		SESSION_COUNT.set(SESSION_MAP_BY_ID.size());
 	}
 
 	void removeAllActivationListeners() {
