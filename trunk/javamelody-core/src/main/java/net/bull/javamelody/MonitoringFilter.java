@@ -177,13 +177,14 @@ public class MonitoringFilter implements Filter {
 
 	private void doFilter(FilterChain chain, HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws IOException, ServletException {
-		HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest);
+		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
+				httpResponse);
+		HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest,
+				wrappedResponse);
 		if (httpRequest.getContentType() != null
 				&& httpRequest.getContentType().startsWith("text/x-gwt-rpc")) {
 			wrappedRequest = new GWTRequestWrapper(wrappedRequest);
 		}
-		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
-				httpResponse);
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		boolean systemError = false;
