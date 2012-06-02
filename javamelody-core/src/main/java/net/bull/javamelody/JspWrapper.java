@@ -22,9 +22,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.servlet.AsyncContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Wrapping de l'interface javax.servlet.RequestDispatcher pour avoir les temps moyens de rendu
@@ -42,12 +44,16 @@ final class JspWrapper implements InvocationHandler {
 	private final RequestDispatcher requestDispatcher;
 
 	private static class HttpRequestWrapper extends HttpServletRequestWrapper {
+		private final HttpServletResponse response;
+
 		/**
 		 * Constructs a request object wrapping the given request.
 		 * @param request HttpServletRequest
+		 * @param response HttpServletResponse
 		 */
-		HttpRequestWrapper(HttpServletRequest request) {
+		HttpRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
 			super(request);
+			this.response = response;
 		}
 
 		/** {@inheritDoc} */
@@ -61,6 +67,17 @@ final class JspWrapper implements InvocationHandler {
 			final InvocationHandler invocationHandler = new JspWrapper(String.valueOf(path),
 					requestDispatcher);
 			return JdbcWrapper.createProxy(requestDispatcher, invocationHandler);
+		}
+
+		@Override
+		public AsyncContext startAsync() {
+			// issue 217: after MonitoringFilter.doFilter, response is instance of CounterServletResponseWrapper,
+			// and if response.getWriter() has been called before calling request.startAsync(),
+			// then asyncContext.getResponse() should return the instance of CounterServletResponseWrapper
+			// and not the initial response without the wrapper,
+			// otherwise asyncContext.getResponse().getWriter() will throw something like
+			// "IllegalStateException: getOutputStream() has already been called for this response"
+			return super.startAsync(this, response);
 		}
 	}
 
@@ -81,11 +98,12 @@ final class JspWrapper implements InvocationHandler {
 		this.requestDispatcher = requestDispatcher;
 	}
 
-	static HttpServletRequest createHttpRequestWrapper(HttpServletRequest request) {
+	static HttpServletRequest createHttpRequestWrapper(HttpServletRequest request,
+			HttpServletResponse response) {
 		if (DISABLED || COUNTER_HIDDEN) {
 			return request;
 		}
-		return new HttpRequestWrapper(request);
+		return new HttpRequestWrapper(request, response);
 	}
 
 	static Counter getJspCounter() {

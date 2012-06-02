@@ -75,7 +75,8 @@ public class TestJspWrapper {
 		requestDispatcherWithException.forward(request, response);
 		expectLastCall().andThrow(new IllegalStateException("erreur dans forward"));
 		expect(request.getRequestDispatcher(url4)).andReturn(null);
-		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request);
+		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request,
+				response);
 
 		replay(request);
 		replay(response);
