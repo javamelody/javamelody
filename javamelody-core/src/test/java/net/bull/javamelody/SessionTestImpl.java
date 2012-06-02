@@ -79,7 +79,7 @@ public class SessionTestImpl implements HttpSession {
 
 	/** {@inheritDoc} */
 	@Override
-	public Enumeration<?> getAttributeNames() {
+	public Enumeration<String> getAttributeNames() {
 		return Collections.enumeration(attributes.keySet());
 	}
 
