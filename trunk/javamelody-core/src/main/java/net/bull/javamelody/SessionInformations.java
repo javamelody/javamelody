@@ -112,7 +112,6 @@ class SessionInformations implements Serializable {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	SessionInformations(HttpSession session, boolean includeAttributes) {
 		super();
 		assert session != null;

@@ -65,7 +65,6 @@ public class CustomResourceFilter implements Filter {
 
 	/** {@inheritDoc} */
 	@Override
-	@SuppressWarnings("unchecked")
 	public void init(FilterConfig filterConfig) throws ServletException {
 		final List<String> parameterNames = Collections.list(filterConfig.getInitParameterNames());
 		for (final String parameterName : parameterNames) {

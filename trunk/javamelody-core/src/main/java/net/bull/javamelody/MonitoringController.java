@@ -553,7 +553,6 @@ class MonitoringController {
 	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
 		// est-ce que le navigateur déclare accepter la compression gzip ?
 		boolean supportCompression = false;
-		@SuppressWarnings("unchecked")
 		final List<String> acceptEncodings = Collections.list(httpRequest
 				.getHeaders("Accept-Encoding"));
 		for (final String name : acceptEncodings) {

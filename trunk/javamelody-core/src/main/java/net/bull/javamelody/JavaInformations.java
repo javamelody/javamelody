@@ -435,7 +435,6 @@ class JavaInformations implements Serializable { // NOPMD
 
 	private static List<String> buildDependenciesList() {
 		final String directory = "/WEB-INF/lib/";
-		@SuppressWarnings("unchecked")
 		final Set<String> dependencies = Parameters.getServletContext().getResourcePaths(directory);
 		if (dependencies == null || dependencies.isEmpty()) {
 			return Collections.emptyList();
