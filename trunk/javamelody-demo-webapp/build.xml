@@ -45,7 +45,7 @@
 		<echo message="Compilation" level="info" />
 		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
 			srcdir="src" destdir="build" includeantruntime="false"
-			classpath="../javamelody-core/src/main/lib/servlet-api-2.5.jar">
+			classpath="../javamelody-core/src/main/lib/javax.servlet-api-3.0.1.jar">
 			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
