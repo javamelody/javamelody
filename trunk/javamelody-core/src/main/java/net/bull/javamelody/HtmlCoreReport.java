@@ -102,6 +102,7 @@ class HtmlCoreReport {
 		void writeAddAndRemoveApplicationLinks(String currentApplication) throws IOException {
 			if (currentApplication == null) {
 				writeln("<div align='center'><h3>#add_application#</h3>");
+				writeln("#collect_server_intro#");
 			} else {
 				final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				writeln(separator);
