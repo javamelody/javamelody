@@ -28,7 +28,7 @@ And
   # Add a pdf report of the detail of a request
   # Add the 90th or 95th percentile in zoomed graphics, besides the mean (org.jrobin.data.DataProcessor.getPercentile)
   # ~~Stack-traces: Link to open a popup with the stack-trace (in addition to the tooltip)~~ (canceled, there is an action "Dump threads as text" now)
-  # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-franc/wiki/CxfMonitoring#Spring_configuration this one]
+  # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-france/wiki/CxfMonitoring#Spring_configuration this one]
   # ~~Test the compatibility or the non-compatibility with Quartz 2.0~~ (done, see issue 121)
   # ~~Test the monitoring of sql requests with a datasource from jndi in *[https://groups.google.com/group/javamelody/t/39da9d1d1fe5f275 Glassfish 3]*~~ (done, see issue 138)
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
