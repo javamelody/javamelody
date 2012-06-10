@@ -93,7 +93,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	That's it in general.
 	
 	Notes: The jdbc connections and the SQL requests are monitored automatically in JIRA 4.3.x or before,
-	and they are monitored in Confluence and Bamboo if a jdbc datasource is used, and not the default jdbc connection.
+	and they are monitored in JIRA 4.4+, Confluence and Bamboo if a jdbc datasource from jndi is used, and not the default jdbc connection.
 	
 	To configure Confluence with a datasource, see {{{http://confluence.atlassian.com/display/DOC/Database+Configuration}this}}.
 	
@@ -106,19 +106,8 @@ Description and documentation of Java Melody : monitoring of Java EE application
     >>>
 	
 	Since JIRA 4.4, the database configuration has been changed by Atlassian as said {{{http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration}here}}.
-	If you are using JIRA 4.4 or later, you need to change the "Application Data/JIRA/dbconfig.xml" file: simply replace the following line
-	<<<
-	<driver-class>xyz</driver-class>
-    >>>
-	with the following 2 lines
-	<<<
-	<driver-class>net.bull.javamelody.JdbcDriver</driver-class>
-	<connection-properties>driver=xyz</connection-properties>
-    >>>
-	where "xyz" is the jdbc driver used depending on your database (for example, "org.hsqldb.jdbcDriver" for the default database)
-	
-	Or you could just use a jndi datasource in JIRA 4.4 or later and it will be automatically monitored.
-	To use a jndi datasource, replace in the dbconfig.xml file "<jdbc-datasource>...</jdbc-datasource>"
+	If you are using JIRA 4.4 or later, you need to use a jdbc datasource from jndi in order to monitor jdbc connections and SQL requests. 
+	To use a datasource, replace in the dbconfig.xml file "<jdbc-datasource>...</jdbc-datasource>"
 	with "<jndi-datasource><jndi-name>java:comp/env/jdbc/JiraDS</jndi-name></jndi-datasource>" (take a backup before),
 	and add a Resource element for a datasource inside the Context element of the Tomcat's "JIRA/conf/server.xml" file.
 	See this {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}example of datasource for mysql}} ;
@@ -126,7 +115,7 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	And so the jndi datasource will be automatically monitored after restart.
 	
 	
-	You can send weekly, daily or monthly reports in pdf format by mail to one or several people.
+	In JIRA, Confluence and Bamboo, you can send weekly, daily or monthly reports in pdf format by mail to one or several people.
 	This is explained in the chapter "Weekly, daily or monthly reports by mail".
 	
 	For example, for JIRA:
