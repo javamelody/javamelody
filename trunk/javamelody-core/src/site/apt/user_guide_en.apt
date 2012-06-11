@@ -109,9 +109,27 @@ Description and documentation of Java Melody : monitoring of Java EE application
 	If you are using JIRA 4.4 or later, you need to use a jdbc datasource from jndi in order to monitor jdbc connections and SQL requests. 
 	To use a datasource, replace in the dbconfig.xml file "<jdbc-datasource>...</jdbc-datasource>"
 	with "<jndi-datasource><jndi-name>java:comp/env/jdbc/JiraDS</jndi-name></jndi-datasource>" (take a backup before),
-	and add a Resource element for a datasource inside the Context element of the Tomcat's "JIRA/conf/server.xml" file.
-	See this {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}example of datasource for mysql}} ;
-	the values in your Resource element should be inspired by the values that were just removed from your dbconfig.xml file.
+	and add a Resource element for a datasource inside the Context element of the Tomcat's "JIRA/conf/server.xml" file:
+	
++-------------------------------+
+...
+<Context ... > 
+	...
+	<Resource name="jdbc/JiraDS" auth="Container" type="javax.sql.DataSource"
+		username="[enter db username]"
+		password="[enter db password]"
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost/jiradb?useUnicode=true&amp;characterEncoding=UTF8"
+		maxActive="20"
+		maxIdle="10"
+		validationQuery="select 1"
+	/>
+</Context>
+...
++-------------------------------+
+	
+	Or see this {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}example of datasource from Atlassian}}. 
+	The values in your Resource element should be inspired by the values that were just removed from your dbconfig.xml file.
 	And so the jndi datasource will be automatically monitored after restart.
 	
 	
