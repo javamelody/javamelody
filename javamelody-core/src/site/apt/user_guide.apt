@@ -111,9 +111,27 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 	Depuis JIRA 4.4, la configuration de la base de données a été changée par Atlassian comme indiqué {{{http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration}ici}}.
 	Pour utiliser une datasource, remplacez dans le fichier dbconfig.xml "<jdbc-datasource>...</jdbc-datasource>"
 	par "<jndi-datasource><jndi-name>java:comp/env/jdbc/JiraDS</jndi-name></jndi-datasource>" (faire une sauvegarde auparavant),
-	et ajoutez un élément Resource de datasource dans l'élément Context du fichier de Tomcat "JIRA/conf/server.xml".
-	Voir cet {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}exemple de datasource pour mysql}} ;
-	les valeurs dans votre élément Resource doivent s'inspirer des valeurs qui viennent d'être enlevées de votre fichier dbconfig.xml.
+	et ajoutez un élément Resource de datasource dans l'élément Context du fichier de Tomcat "JIRA/conf/server.xml":
+	
++-------------------------------+
+...
+<Context ... > 
+	...
+	<Resource name="jdbc/JiraDS" auth="Container" type="javax.sql.DataSource"
+		username="[enter db username]"
+		password="[enter db password]"
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost/jiradb?useUnicode=true&amp;characterEncoding=UTF8"
+		maxActive="20"
+		maxIdle="10"
+		validationQuery="select 1"
+	/>
+</Context>
+...
++-------------------------------+
+	
+	Ou voir cet {{{http://confluence.atlassian.com/display/JIRA043/Connecting+JIRA+to+MySQL#ConnectingJIRAtoMySQL-51ConfigureyourapplicationservertoconnecttoMySQL}exemple de datasource d'Atlassian}}.
+	Les valeurs dans votre élément Resource doivent s'inspirer des valeurs qui viennent d'être enlevées de votre fichier dbconfig.xml.
 	Et ainsi la datasource jndi sera automatiquement monitorée après un redémarrage.
 
 
