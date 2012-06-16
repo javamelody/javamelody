@@ -284,7 +284,7 @@ To monitor them, it is needed to do the following, for each JDBC DataSource:
   * It is supposed that the DataSource is for example currently named "jdbc/MyDataSource" in GlassFish
   * Download [http://javamelody.googlecode.com/files/javamelody-objectfactory.jar javamelody-objectfactory.jar] and copy this file in the lib directory of your GlassFish server
   * In the GlassFish admin console, rename your JDBC Resource (DataSource) from "jdbc/MyDataSource" to "jdbc/MyDataSource_uncached" for example
-  * Also in the GlassFish admin console, create a JNDI custom resource like this:
+  * Also in the GlassFish admin console, create a JNDI custom resource like this, without forgetting then "jndi-ref" property:
 
 <a href='http://javamelody.googlecode.com/svn/wiki/images/GlassFish_create-custom-resource.png' target='_blank'><img src='http://javamelody.googlecode.com/svn/wiki/images/GlassFish_create-custom-resource.png' width='80%' alt='New Custom Resource' />
 </a>
