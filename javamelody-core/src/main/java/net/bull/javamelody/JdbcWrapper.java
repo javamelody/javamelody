@@ -212,6 +212,30 @@ public final class JdbcWrapper {
 		}
 	}
 
+	private static class ConnectionManagerInvocationHandler implements InvocationHandler,
+			Serializable {
+		// classe sérialisable pour glassfish v2.1.1, issue 229: Exception in NamingManagerImpl copyMutableObject()
+		private static final long serialVersionUID = 1L;
+
+		@SuppressWarnings("all")
+		private final Object javaxConnectionManager;
+
+		ConnectionManagerInvocationHandler(Object javaxConnectionManager) {
+			super();
+			this.javaxConnectionManager = javaxConnectionManager;
+		}
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			final Object result = method.invoke(javaxConnectionManager, args);
+			if (result instanceof Connection) {
+				final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
+				jdbcWrapper.createConnectionProxyOrRewrapIfJBossOrGlassfish((Connection) result);
+			}
+			return result;
+		}
+	}
+
 	// ce handler désencapsule les InvocationTargetException des 3 proxy
 	private static class DelegatingInvocationHandler implements InvocationHandler, Serializable {
 		// classe sérialisable pour MonitoringProxy
@@ -585,23 +609,8 @@ public final class JdbcWrapper {
 	// pour jboss, glassfish ou jonas
 	private Object createJavaxConnectionManagerProxy(final Object javaxConnectionManager) {
 		assert javaxConnectionManager != null;
-		final boolean rewrapConnection = jboss || glassfish;
-		final InvocationHandler invocationHandler = new InvocationHandler() {
-			/** {@inheritDoc} */
-			@Override
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-				final Object result = method.invoke(javaxConnectionManager, args);
-				if (result instanceof Connection) {
-					if (rewrapConnection) {
-						rewrapConnection((Connection) result);
-					} else {
-						return createConnectionProxy((Connection) result);
-					}
-				}
-				return result;
-			}
-
-		};
+		final InvocationHandler invocationHandler = new ConnectionManagerInvocationHandler(
+				javaxConnectionManager);
 		return createProxy(javaxConnectionManager, invocationHandler);
 	}
 
@@ -669,6 +678,15 @@ public final class JdbcWrapper {
 			}
 		};
 		return createProxy(dataSource, invocationHandler);
+	}
+
+	Connection createConnectionProxyOrRewrapIfJBossOrGlassfish(Connection connection)
+			throws IllegalAccessException {
+		if (jboss || glassfish) {
+			rewrapConnection(connection);
+			return connection;
+		}
+		return createConnectionProxy(connection);
 	}
 
 	/**
