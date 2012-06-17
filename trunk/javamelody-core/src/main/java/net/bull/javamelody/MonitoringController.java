@@ -211,7 +211,7 @@ class MonitoringController {
 				// in which case we must not compress a second time,
 				// in particular for org.kohsuke.stapler.compression.CompressionFilter
 				// from https://github.com/stapler/stapler in Jenkins (issue JENKINS-14050)
-				&& !(httpResponse.getClass().getSimpleName().startsWith("Compression"))) {
+				&& !httpResponse.getClass().getSimpleName().startsWith("Compression")) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
 			// (à moins que la compression http ne soit pas supportée
