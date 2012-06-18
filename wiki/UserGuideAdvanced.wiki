@@ -211,7 +211,7 @@ For standard documentation, see [UserGuide]
 
 	If the monitored application is a Hudson, Jenkins, JIRA, Confluence or Bamboo server, the system property -Djavamelody.plugin-authentication-disabled=true can be added to the monitored server in order to disable authentication of the monitoring page in the javamelody plugin and to be able to add the server to a centralized collect server. (A system property like -Djavamelody.allowed-addr-pattern=127\.0\.0\.1 can also be added with the ip address of the collect server.)
 
-Instead of using {{{allowed-addr-pattern}}}, for example when you don't know upfront the ip address of the collect server, you may want to secure access with http basic authentication (username and password) in the monitored application. For that, add the following in the {{{web.xml}}} file of the monitored application:
+	Instead of using {{{allowed-addr-pattern}}}, for example when you don't know upfront the ip address of the collect server, you may want to secure access with http basic authentication (username and password) in the monitored application. For that, add the following in the {{{web.xml}}} file of the monitored application:
 
 {{{
         <login-config>
@@ -232,7 +232,7 @@ Instead of using {{{allowed-addr-pattern}}}, for example when you don't know upf
         </security-constraint>
 }}}
 
-    The realm and the user used by the collect server must be defined in the monitored application server, and the user must have the "monitoring" role to have access. For example, if tomcat is used with the default realm in the monitored application server, modify the content of the conf/tomcat-users.xml file as follows: 
+	The realm and the user used by the collect server must be defined in the monitored application server, and the user must have the "monitoring" role to have access. For example, if tomcat is used with the default realm in the monitored application server, modify the content of the conf/tomcat-users.xml file as follows: 
 
 {{{
         <?xml version='1.0' encoding='utf-8'?>
