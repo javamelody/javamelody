@@ -8,7 +8,7 @@
   * fix issue 198: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], monitoring of http sessions was not working after a few minutes or a few hours with JIRA 4.4 or Confluence 4.1
   * fix minor issue 210: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin] with a JIRA server, there was sometimes an error in log about "jira-web-item".
   * In JIRA 5.0, changing the dbconfig.xml with a JdbcDriver does not work anymore to monitor jdbc connections and SQL requests: the [UserGuide#Atlassian_JIRA,_Confluence_and_Bamboo_Plugin user guide] has been updated to use a datasource from jndi instead (issue 225).
-  * added: When using the [UserGuideAdvanced#Optional_centralization_server_setup optional collect server], enable use of http Basic authentication to secure access to the monitored webapp, for example when the ip-address of the collect server is not known upfront (issue 214, thanks to _purnhar_). _Doc TODO_
+  * added: When using the [UserGuideAdvanced#Optional_centralization_server_setup optional collect server], enable use of http Basic authentication to secure access to the monitored webapp, for example when the ip-address of the collect server is not known upfront (issue 214, thanks to _purnhar_). Documentation is [UserGuideAdvanced#5._Security_with_a_collect_server here].
   * added: When using the [UserGuideAdvanced#Optional_centralization_server_setup optional collect server], the size of the stream, between the monitored webapp and the collect server, is now written in the log of the collect server for each call. (Note that the stream is compressed if more than 50 KB ; when compressed, the log gives the compressed size. revision 2828)
 
 === 1.37.0 ===
