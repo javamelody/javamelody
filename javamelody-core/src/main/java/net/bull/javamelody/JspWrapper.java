@@ -44,16 +44,12 @@ final class JspWrapper implements InvocationHandler {
 	private final RequestDispatcher requestDispatcher;
 
 	private static class HttpRequestWrapper extends HttpServletRequestWrapper {
-		private final HttpServletResponse response;
-
 		/**
 		 * Constructs a request object wrapping the given request.
 		 * @param request HttpServletRequest
-		 * @param response HttpServletResponse
 		 */
-		HttpRequestWrapper(HttpServletRequest request, HttpServletResponse response) {
+		HttpRequestWrapper(HttpServletRequest request) {
 			super(request);
-			this.response = response;
 		}
 
 		/** {@inheritDoc} */
@@ -67,6 +63,20 @@ final class JspWrapper implements InvocationHandler {
 			final InvocationHandler invocationHandler = new JspWrapper(String.valueOf(path),
 					requestDispatcher);
 			return JdbcWrapper.createProxy(requestDispatcher, invocationHandler);
+		}
+	}
+
+	private static class HttpRequestWrapper3 extends HttpRequestWrapper {
+		private final HttpServletResponse response;
+
+		/**
+		 * Constructs a request object wrapping the given request.
+		 * @param request HttpServletRequest
+		 * @param response HttpServletResponse
+		 */
+		HttpRequestWrapper3(HttpServletRequest request, HttpServletResponse response) {
+			super(request);
+			this.response = response;
 		}
 
 		@Override
@@ -103,7 +113,10 @@ final class JspWrapper implements InvocationHandler {
 		if (DISABLED || COUNTER_HIDDEN) {
 			return request;
 		}
-		return new HttpRequestWrapper(request, response);
+		if (Parameters.getServletContext().getMajorVersion() >= 3) {
+			return new HttpRequestWrapper3(request, response);
+		}
+		return new HttpRequestWrapper(request);
 	}
 
 	static Counter getJspCounter() {
