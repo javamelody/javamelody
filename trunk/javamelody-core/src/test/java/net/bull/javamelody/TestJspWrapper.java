@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +59,7 @@ public class TestJspWrapper {
 	public void testJspWrapper() throws ServletException, IOException {
 		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
 
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
@@ -75,14 +77,16 @@ public class TestJspWrapper {
 		requestDispatcherWithException.forward(request, response);
 		expectLastCall().andThrow(new IllegalStateException("erreur dans forward"));
 		expect(request.getRequestDispatcher(url4)).andReturn(null);
-		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request,
-				response);
 
 		replay(request);
 		replay(response);
 		replay(requestDispatcher);
 		replay(requestDispatcherWithError);
 		replay(requestDispatcherWithException);
+		replay(servletContext);
+		Parameters.initialize(servletContext);
+		final HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request,
+				response);
 		final RequestDispatcher wrappedRequestDispatcher = wrappedRequest
 				.getRequestDispatcher(url1);
 		wrappedRequestDispatcher.toString();
@@ -109,5 +113,6 @@ public class TestJspWrapper {
 		verify(requestDispatcher);
 		// verify ne marche pas ici car on fait une Error, verify(requestDispatcherWithError);
 		verify(requestDispatcherWithException);
+		verify(servletContext);
 	}
 }
