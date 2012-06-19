@@ -90,6 +90,10 @@ class MonitoringController {
 		}
 		JavaInformations.setWebXmlExistsAndPomXmlExists(webXmlExists, pomXmlExists);
 	}
+
+	private static final boolean GZIP_COMPRESSION_DISABLED = Boolean.parseBoolean(Parameters
+			.getParameter(Parameter.GZIP_COMPRESSION_DISABLED));
+
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;
@@ -207,15 +211,16 @@ class MonitoringController {
 		// par CollectorServlet.doCompressedPart
 		if (isCompressionSupported(httpRequest)
 				&& !(httpResponse instanceof CompressionServletResponseWrapper)
-				// this checks if another filter already compress the stream,
-				// in which case we must not compress a second time,
+				// this checks if if it is the Hudson / Jenkins plugin
+				// (another filter may already compress the stream, in which case we must not compress a second time,
 				// in particular for org.kohsuke.stapler.compression.CompressionFilter
-				// from https://github.com/stapler/stapler in Jenkins (issue JENKINS-14050)
-				&& !httpResponse.getClass().getSimpleName().startsWith("Compression")) {
+				// from https://github.com/stapler/stapler in Jenkins v1.470+ (issue JENKINS-14050)
+				&& !GZIP_COMPRESSION_DISABLED) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
 			// (à moins que la compression http ne soit pas supportée
 			// comme par ex s'il y a un proxy squid qui ne supporte que http 1.0)
+
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
