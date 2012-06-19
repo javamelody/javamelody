@@ -143,6 +143,11 @@ public enum Parameter {
 	QUARTZ_DEFAULT_LISTENER_DISABLED("quartz-default-listener-disabled"),
 
 	/**
+	 * Paramètre pour désactiver la compression des flux http ("false" par défaut).
+	 */
+	GZIP_COMPRESSION_DISABLED("gzip-compression-disabled"),
+
+	/**
 	 * Active les actions Ramasse-miettes, Invalidation sessions et Heap-dump (false par défaut).
 	 */
 	SYSTEM_ACTIONS_ENABLED("system-actions-enabled"),
