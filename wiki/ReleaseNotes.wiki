@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix [https://issues.jenkins-ci.org/browse/JENKINS-14050 Jenkins issue 14050], but also when security is enabled in Jenkins: Unreadable HTML response for the monitoring reports in the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin]
+  * fix [https://issues.jenkins-ci.org/browse/JENKINS-14050 Jenkins issue 14050], and also when security is enabled in Jenkins: Unreadable HTML response for the monitoring reports in the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin]
   * fix issue 230: NoClassDefFoundError: javax/servlet/AsyncContext in Tomcat 5.5
 
 === 1.38.O ===
