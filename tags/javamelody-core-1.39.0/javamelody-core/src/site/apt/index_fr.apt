@@ -1,0 +1,87 @@
+	-----
+	Java Melody : monitoring d'applications Java EE
+	-----
+	Auteur : Emeric Vernat (evernat@free.fr)
+	-----
+	2009-01-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Java Melody : monitoring d'applications Java
+
+[screenshots/graphs_small.PNG]
+
+	Licence : {{{./license.html} LGPL (opensource) }}
+	
+	URL : http://javamelody.googlecode.com/
+	
+	( {{{./screenshots.html}Copies d'écrans}}, {{{./user_guide.html}Guide d'utilisation}}, {{{./index.html}English}} )
+	
+	JavaMelody a pour but de monitorer les serveurs d'applications Java / Java EE en recette et en production. 
+	Ce n'est pas un outil de simulation de requêtes utilisateur,
+	c'est un outil de mesure et de statistiques sur le fonctionnement réel d'une application
+	selon l'usage qui en est fait par les utilisateurs.
+	
+	JavaMelody est opensource (LGPL) et prêt pour une mise en production : déjà en production dans une application de 25 années hommes.
+	JavaMelody est facile à intégrer dans la plupart des applications et est léger (pas de profileur et pas de base de données).
+
+	JavaMelody est en grande partie basé sur des statistiques de requêtes et sur des courbes d'évolution.
+	
+	Il permet ainsi d'améliorer les applications en recette et en production et d'aider à :
+	
+	* factualiser les temps de réponse moyens et les nombres d'exécutions
+	
+	* prendre des décisions quand les tendances sont mauvaises, avant que les problèmes ne soient trop graves
+	
+	* optimiser sur la base des temps de réponse les plus pénalisants
+	
+	* trouver les causes à l'origine des temps de réponse
+	
+	* vérifier l'amélioration réelle après des optimisations
+
+	[]
+
+	Il inclut des courbes de synthèse montrant l'évolution au fil du temps des indicateurs suivants :
+
+	* Nombre d'exécutions, temps d'exécutions moyens et pourcentage d'erreurs pour les
+	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers (si EJB3, Spring ou Guice)
+
+	* Mémoire Java
+
+	* CPU Java
+
+	* Nombre de sessions utilisateurs
+
+	* Nombre de connexions jdbc
+
+	[]
+	
+	Ces courbes peuvent être visualisées sur la journée en cours, la semaine, le mois, l'année ou une période personnalisée.
+
+	JavaMelody inclut des statistiques sur les compteurs définis (à l'heure d'aujourd'hui
+	requêtes HTTP, requêtes SQL, actions struts, pages jsp et méthodes de façades métiers si EJB3,
+	Spring ou Guice) avec pour chaque compteur :
+
+	* Une synthèse globale indiquant le nombre d'exécutions global, le temps d'exécution moyen, le temps cpu et le pourcentage d'erreurs. 
+
+	* Et le pourcentage du temps passé dans les requêtes dont le temps moyen dépasse un seuil d'alerte paramétrable. 
+
+	* Et la liste complète des requêtes, agrégées sans les paramètres dynamiques, avec pour chacune le nombre d'exécutions,
+	le temps d'exécution moyen, le temps cpu moyen, le pourcentage d'erreurs ainsi qu'une courbe d'évolution dans le temps des temps d'exécution. 
+
+	* De plus, chaque requête HTTP indique la taille du flux de réponse, le nombre moyen d'exécutions SQL et le temps d'exécution SQL moyen. 
+	
+	[]
+	
+	Il inclut également des statistiques sur les erreurs http, sur les warnings et erreurs dans les logs,
+	sur les caches de données si ehcache et sur les jobs en batchs si quartz.
+
+	Un serveur de collecte optionnel et indépendant peut si nécessaire être utilisé pour décharger l'application de la gestion du stockage,
+	et de la génération des rapports et pour centraliser les données d'applications en cluster ou de plusieurs applications.
+
+	Grâce à ses technologies peu intrusives et si nécessaire avec son serveur de collecte, le monitoring est conçu pour être utilisé 
+	sur des applications en environnement de production même avec de fortes charges
+	(c'est-à-dire en régime soutenu de plus de 20 requêtes http transactionnelles par seconde).
+	Si vous n'êtes pas convaincu, imaginez que votre base de données s'arrêtera bien avant le monitoring, et que vous gagnerez plus à optimiser
+	quelques requêtes sql ou http sur la base de l'utilisation réelle en production que ce vous perdrez avec le monitoring.
