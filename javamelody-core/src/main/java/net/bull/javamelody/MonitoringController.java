@@ -261,7 +261,8 @@ class MonitoringController {
 		// et on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
 		// par CollectorServlet.doCompressedPart
 		if (isCompressionSupported(httpRequest)
-				&& !(httpResponse instanceof CompressionServletResponseWrapper)) {
+				&& !(httpResponse instanceof CompressionServletResponseWrapper)
+				&& !GZIP_COMPRESSION_DISABLED) {
 			// comme les données peuvent être volumineuses avec toutes les requêtes sql et http
 			// et les threads on compresse le flux de réponse en gzip à partir de 50 Ko
 			// (à moins que la compression http ne soit pas supportée
