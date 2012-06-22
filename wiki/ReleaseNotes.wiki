@@ -1,4 +1,8 @@
 #labels Featured
+=== Next release (trunk) ===
+
+  * fix issue 231: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], incompatibility with Bamboo remote agents.
+
 === 1.39.0 ===
 
   * fix [https://issues.jenkins-ci.org/browse/JENKINS-14050 Jenkins issue 14050], and also when security is enabled in Jenkins: Unreadable HTML response for the monitoring reports in the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin]. Compression of the monitoring reports is now disabled in the plugin and the reports will be compressed by Jenkins starting with v1.470.
