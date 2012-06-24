@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -109,6 +108,7 @@ public class MonitoringFilter implements Filter {
 		LOG.debug("JavaMelody filter init started");
 
 		this.filterContext = new FilterContext();
+		config.getServletContext().setAttribute(ReportServlet.FILTER_CONTEXT_KEY, filterContext);
 		final Collector collector = filterContext.getCollector();
 		this.httpCounter = collector.getCounterByName(Counter.HTTP_COUNTER_NAME);
 		this.errorCounter = collector.getCounterByName(Counter.ERROR_COUNTER_NAME);
@@ -327,17 +327,8 @@ public class MonitoringFilter implements Filter {
 		}
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
-		monitoringController.executeActionIfNeeded(httpRequest);
-		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
-		// pour avoir des informations à jour
-		final JavaInformations javaInformations;
-		if (MonitoringController.isJavaInformationsNeeded(httpRequest)) {
-			javaInformations = new JavaInformations(filterConfig.getServletContext(), true);
-		} else {
-			javaInformations = null;
-		}
-		monitoringController.doReport(httpRequest, httpResponse,
-				Collections.singletonList(javaInformations));
+		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
+				filterConfig.getServletContext());
 
 		if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
 			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,

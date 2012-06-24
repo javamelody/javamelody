@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -132,6 +133,22 @@ class MonitoringController {
 			}
 		}
 		return null;
+	}
+
+	void doActionIfNeededAndReport(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, ServletContext servletContext) throws IOException {
+		executeActionIfNeeded(httpRequest);
+
+		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
+		// pour avoir des informations à jour
+		final JavaInformations javaInformations;
+		if (MonitoringController.isJavaInformationsNeeded(httpRequest)) {
+			javaInformations = new JavaInformations(servletContext, true);
+		} else {
+			javaInformations = null;
+		}
+
+		doReport(httpRequest, httpResponse, Collections.singletonList(javaInformations));
 	}
 
 	void doReport(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
