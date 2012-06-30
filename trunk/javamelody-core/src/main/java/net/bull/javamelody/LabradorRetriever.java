@@ -161,6 +161,7 @@ class LabradorRetriever {
 				final T tmp = (T) read(connection, counterInputStream);
 				result = tmp;
 			} finally {
+				counterInputStream.close();
 				dataLength = counterInputStream.getDataLength();
 			}
 			if (LOGGER.isDebugEnabled()) {
@@ -226,8 +227,12 @@ class LabradorRetriever {
 				httpResponse.setContentType(connection.getContentType());
 				TransportFormat.pump(input, httpResponse.getOutputStream());
 			} finally {
-				close(connection);
-				dataLength = counterInputStream.getDataLength();
+				try {
+					input.close();
+				} finally {
+					close(connection);
+					dataLength = counterInputStream.getDataLength();
+				}
 			}
 		} finally {
 			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
@@ -289,7 +294,11 @@ class LabradorRetriever {
 			}
 			return transportFormat.readSerializableFrom(input);
 		} finally {
-			close(connection);
+			try {
+				input.close();
+			} finally {
+				close(connection);
+			}
 		}
 	}
 
