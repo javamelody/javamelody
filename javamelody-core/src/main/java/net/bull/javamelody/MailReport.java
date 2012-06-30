@@ -115,6 +115,8 @@ class MailReport {
 				calendar.add(Calendar.MONTH, 1);
 			}
 			break;
+		case ANNEE:
+			throw new IllegalArgumentException(String.valueOf(period));
 		case TOUT:
 			throw new IllegalArgumentException(String.valueOf(period));
 		default:
