@@ -78,7 +78,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<DatabaseInformations> createScrollPane() {
-		final MTableScrollPane<DatabaseInformations> tableScrollPane = new MTableScrollPane<DatabaseInformations>();
+		final MTableScrollPane<DatabaseInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<DatabaseInformations> myTable = tableScrollPane.getTable();
 		final String[][] values = databaseInformations.getResult();
 		myTable.setModel(new MTableModel<String[]>(myTable) {

@@ -129,7 +129,7 @@ class ScrollingPanel extends MelodyPanel {
 	private List<Counter> getCountersToBeDisplayed() {
 		// on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
 		// en revanche collector.getCounters() contient ici les bonnes données
-		final List<Counter> result = new ArrayList<Counter>(collector.getCounters());
+		final List<Counter> result = new ArrayList<>(collector.getCounters());
 		final Iterator<Counter> it = result.iterator();
 		while (it.hasNext()) {
 			final Counter counter = it.next();
@@ -171,8 +171,7 @@ class ScrollingPanel extends MelodyPanel {
 			add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl));
 		}
 
-		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<JavaInformationsPanel>(
-				list.size());
+		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<>(list.size());
 		final JPanel westJavaInformationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		westJavaInformationsPanel.setOpaque(false);
 		for (final JavaInformations javaInformations : list) {
@@ -237,7 +236,7 @@ class ScrollingPanel extends MelodyPanel {
 	}
 
 	private void addThreadDeadlocks(List<ThreadInformations> threadInformationsList) {
-		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<>();
 		for (final ThreadInformations thread : threadInformationsList) {
 			if (thread.isDeadlocked()) {
 				deadlockedThreads.add(thread);

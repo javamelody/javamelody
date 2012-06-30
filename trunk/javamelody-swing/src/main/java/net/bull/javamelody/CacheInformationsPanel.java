@@ -92,7 +92,7 @@ class CacheInformationsPanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<CacheInformations> createScrollPane() {
-		final MTableScrollPane<CacheInformations> tableScrollPane = new MTableScrollPane<CacheInformations>();
+		final MTableScrollPane<CacheInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<CacheInformations> myTable = tableScrollPane.getTable();
 		myTable.addColumn("name", I18N.getString("Cache"));
 		if (configurationEnabled) {

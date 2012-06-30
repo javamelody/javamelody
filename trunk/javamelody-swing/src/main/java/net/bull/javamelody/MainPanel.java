@@ -103,7 +103,7 @@ class MainPanel extends MelodyPanel {
 
 	final void setSelectedRange(Range selectedRange) throws IOException {
 		this.selectedRange = selectedRange;
-		final List<URL> newUrls = new ArrayList<URL>(initialURLs.size());
+		final List<URL> newUrls = new ArrayList<>(initialURLs.size());
 		for (final URL url : initialURLs) {
 			final URL newUrl = new URL(url.toString() + '&' + PERIOD_PARAMETER + '='
 					+ selectedRange.getValue());

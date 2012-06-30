@@ -82,7 +82,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 			final List<ProcessInformations> processInformationsList = entry.getValue();
 			final boolean windows = HtmlProcessInformationsReport
 					.isWindowsProcessList(processInformationsList);
-			final MTableScrollPane<ProcessInformations> tableScrollPane = new MTableScrollPane<ProcessInformations>();
+			final MTableScrollPane<ProcessInformations> tableScrollPane = new MTableScrollPane<>();
 			final MTable<ProcessInformations> table = tableScrollPane.getTable();
 			table.addColumn("user", I18N.getString("Utilisateur"));
 			table.addColumn("pid", I18N.getString("PID"));

@@ -97,7 +97,7 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 		add(label, BorderLayout.NORTH);
 
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
-		final List<CounterRequest> requests = new ArrayList<CounterRequest>();
+		final List<CounterRequest> requests = new ArrayList<>();
 		for (final Counter counter : getCounters()) {
 			for (final CounterRequest counterRequest : counter.getOrderedRequests()) {
 				if (counterRequest.containsChildRequest(request.getId())) {
@@ -114,8 +114,7 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
 		final MTable<CounterRequest> table = getTable();
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
-				table);
+		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<>(table);
 
 		table.addColumn("name", I18N.getString("Requete"));
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());

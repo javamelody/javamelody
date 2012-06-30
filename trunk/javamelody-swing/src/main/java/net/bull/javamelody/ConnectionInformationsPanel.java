@@ -146,8 +146,8 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		}
 
 		// on mélange toutes les connexions des éventuels différents serveurs ensemble mais c'est pas bien grave
-		this.connectionInformationsList = new ArrayList<ConnectionInformations>();
-		this.threadInformationsByConnectionInformations = new HashMap<ConnectionInformations, ThreadInformations>();
+		this.connectionInformationsList = new ArrayList<>();
+		this.threadInformationsByConnectionInformations = new HashMap<>();
 		int i = 0;
 		for (final List<ConnectionInformations> connections : allConnectionInformations) {
 			connectionInformationsList.addAll(connections);
@@ -194,7 +194,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<ConnectionInformations> createScrollPane() {
-		final MTableScrollPane<ConnectionInformations> tableScrollPane = new MTableScrollPane<ConnectionInformations>();
+		final MTableScrollPane<ConnectionInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ConnectionInformations> myTable = tableScrollPane.getTable();
 		myTable.addColumn("openingDate", I18N.getString("Date_et_stack_trace_ouverture"));
 		if (stackTraceEnabled) {

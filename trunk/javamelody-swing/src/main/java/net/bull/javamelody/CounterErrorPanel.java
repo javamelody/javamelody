@@ -109,7 +109,7 @@ class CounterErrorPanel extends JPanel {
 	}
 
 	private MTableScrollPane<CounterError> createScrollPane() {
-		final MTableScrollPane<CounterError> tableScrollPane = new MTableScrollPane<CounterError>();
+		final MTableScrollPane<CounterError> tableScrollPane = new MTableScrollPane<>();
 		final MTable<CounterError> myTable = tableScrollPane.getTable();
 		final List<CounterError> errors = counter.getErrors();
 		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);

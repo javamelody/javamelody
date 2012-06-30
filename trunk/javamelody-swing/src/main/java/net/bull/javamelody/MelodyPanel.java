@@ -87,6 +87,7 @@ class MelodyPanel extends JPanel {
 		return new BufferedOutputStream(new FileOutputStream(tempFile));
 	}
 
+	@SuppressWarnings("resource")
 	final PdfOtherReport createPdfOtherReport(File file) throws IOException {
 		final String application = getRemoteCollector().getApplication();
 		final OutputStream output = createFileOutputStream(file);

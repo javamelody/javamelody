@@ -238,7 +238,7 @@ class JavaInformationsPanel extends MelodyPanel {
 	}
 
 	private void writeTomcatInformations(List<TomcatInformations> tomcatInformationsList) {
-		final List<TomcatInformations> list = new ArrayList<TomcatInformations>();
+		final List<TomcatInformations> list = new ArrayList<>();
 		for (final TomcatInformations tomcatInformations : tomcatInformationsList) {
 			if (tomcatInformations.getRequestCount() > 0) {
 				list.add(tomcatInformations);

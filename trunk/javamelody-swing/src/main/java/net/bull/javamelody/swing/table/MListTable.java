@@ -108,7 +108,7 @@ public class MListTable<T> extends MBasicTable {
 		int selectedRow;
 		final int rowCount = getRowCount();
 		final int length = selectedRows.length;
-		final List<T> selectedList = new ArrayList<T>(length);
+		final List<T> selectedList = new ArrayList<>(length);
 		for (int i = 0; i < length; i++) {
 			selectedRow = selectedRows[i];
 			// getSelectedRows peut renvoyer des lignes qui ne sont plus
@@ -173,7 +173,7 @@ public class MListTable<T> extends MBasicTable {
 	 */
 	public void setSelectedObject(final T newSelectedObject) {
 		if (newSelectedObject != null) {
-			final List<T> newSelectedList = new ArrayList<T>(1);
+			final List<T> newSelectedList = new ArrayList<>(1);
 			newSelectedList.add(newSelectedObject);
 			setSelectedList(newSelectedList);
 		} else {

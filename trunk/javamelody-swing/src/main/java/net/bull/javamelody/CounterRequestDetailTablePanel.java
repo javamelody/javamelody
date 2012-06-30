@@ -174,7 +174,7 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
-		final List<CounterRequest> requests = new ArrayList<CounterRequest>();
+		final List<CounterRequest> requests = new ArrayList<>();
 		requests.add(request);
 
 		if (!childRequestsExecutions.isEmpty()) {
@@ -195,8 +195,7 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
 		final MTable<CounterRequest> table = getTable();
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
-				table);
+		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<>(table);
 
 		table.addColumn("name", I18N.getString("Requete"));
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
@@ -245,7 +244,7 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 	}
 
 	private Map<String, CounterRequest> mapAllRequestsById() {
-		final Map<String, CounterRequest> result = new HashMap<String, CounterRequest>();
+		final Map<String, CounterRequest> result = new HashMap<>();
 		for (final Counter counter : getCounters()) {
 			for (final CounterRequest counterRequest : counter.getRequests()) {
 				result.put(counterRequest.getId(), counterRequest);
