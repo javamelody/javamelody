@@ -20,7 +20,6 @@ package net.bull.javamelody.swing.table;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ListSelectionModel;
@@ -151,12 +150,8 @@ public class MListTable<T> extends MBasicTable {
 
 		final ListSelectionModel listSelectionModel = getSelectionModel();
 		final List<T> list = getList();
-		Object object;
-		int rowIndex;
-
-		for (final Iterator<T> it = newSelectedList.iterator(); it.hasNext();) {
-			object = it.next();
-			rowIndex = list.indexOf(object);
+		for (final T object : newSelectedList) {
+			int rowIndex = list.indexOf(object);
 			rowIndex = convertRowIndexToView(rowIndex);
 			if (rowIndex > -1) {
 				listSelectionModel.addSelectionInterval(rowIndex, rowIndex);
