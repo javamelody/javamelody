@@ -108,7 +108,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		removeAll();
 
 		this.sessionsInformations = getRemoteCollector().collectSessionInformations(null);
-		this.attributesTable = new MTable<SessionAttribute>();
+		this.attributesTable = new MTable<>();
 
 		setName(I18N.getString("Sessions"));
 		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("Sessions"),
@@ -138,7 +138,7 @@ class SessionInformationsPanel extends MelodyPanel {
 				break;
 			}
 		}
-		final MTableScrollPane<SessionInformations> tableScrollPane = new MTableScrollPane<SessionInformations>();
+		final MTableScrollPane<SessionInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<SessionInformations> myTable = tableScrollPane.getTable();
 		myTable.addColumn("id", I18N.getString("Session_id"));
 		myTable.addColumn("lastAccess", I18N.getString("Dernier_acces"));
@@ -172,7 +172,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		final JLabel attributesLabel = new JLabel(I18N.getString("Attributs"));
 		attributesLabel.setFont(attributesLabel.getFont().deriveFont(Font.BOLD));
 		attributesPanel.add(attributesLabel, BorderLayout.NORTH);
-		final MTableScrollPane<SessionAttribute> attributesTableScrollPane = new MTableScrollPane<SessionAttribute>(
+		final MTableScrollPane<SessionAttribute> attributesTableScrollPane = new MTableScrollPane<>(
 				attributesTable);
 		attributesTable.addColumn("name", I18N.getString("Nom"));
 		attributesTable.addColumn("type", I18N.getString("Type"));

@@ -31,7 +31,7 @@ import net.bull.javamelody.swing.util.MSwingUtilities;
  * @author Emeric Vernat
  */
 public final class ImageIconCache {
-	private static final Map<String, ImageIcon> CACHE = new ConcurrentHashMap<String, ImageIcon>();
+	private static final Map<String, ImageIcon> CACHE = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructeur.

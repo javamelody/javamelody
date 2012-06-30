@@ -40,7 +40,7 @@ public class MExtensionFileFilter extends FileFilter {
 	 */
 	public MExtensionFileFilter() {
 		super();
-		this.filters = new HashMap<String, MExtensionFileFilter>(0);
+		this.filters = new HashMap<>(0);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class MExtensionFileFilter extends FileFilter {
 	 */
 	public final void addExtension(final String extension) {
 		if (filters == null) {
-			filters = new HashMap<String, MExtensionFileFilter>(1);
+			filters = new HashMap<>(1);
 		}
 
 		filters.put(extension.toLowerCase(Locale.getDefault()), this);

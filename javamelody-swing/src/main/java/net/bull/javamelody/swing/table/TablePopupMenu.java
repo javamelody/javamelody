@@ -81,7 +81,7 @@ class TablePopupMenu extends JPopupMenu {
 	 */
 	private List<MPrinter> getPrinters() {
 		// ne sont pas inclus le printer "Clipboard" qui est utilisé directement avec Ctrl+C, les printers PDF/RTF paysages et le printer CSV US
-		final List<MPrinter> printers = new ArrayList<MPrinter>();
+		final List<MPrinter> printers = new ArrayList<>();
 		printers.add(new MCsvLocalWriter());
 		try {
 			Class.forName("com.lowagie.text.Document");

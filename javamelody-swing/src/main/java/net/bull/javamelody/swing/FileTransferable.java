@@ -21,9 +21,11 @@ package net.bull.javamelody.swing;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -76,12 +78,12 @@ class FileTransferable extends ArrayList<File> implements Transferable {
 		if (flavor.equals(FLAVORS[FILE])) {
 			final File tmpFile = get(0);
 			if (!tmpFile.exists()) {
-				final FileOutputStream output = new FileOutputStream(tmpFile);
 				try {
-					output.write(data);
+					try (final OutputStream output = new BufferedOutputStream(new FileOutputStream(
+							tmpFile))) {
+						output.write(data);
+					}
 				} finally {
-					output.close();
-
 					// prévoit de supprimer le fichier temporaire à la fermeture de
 					// l'application puisqu'on ne peut le faire dans exportDone
 					tmpFile.deleteOnExit();

@@ -23,10 +23,12 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -143,11 +145,9 @@ public class MTransferableLabel extends JLabel {
 		if (imageData != null) {
 			final File file = ImageFileChooser.chooseImage(this, false, getFileName());
 			if (file != null) {
-				final FileOutputStream fileOutputStream = new FileOutputStream(file);
-				try {
+				try (final OutputStream fileOutputStream = new BufferedOutputStream(
+						new FileOutputStream(file))) {
 					fileOutputStream.write(imageData);
-				} finally {
-					fileOutputStream.close();
 				}
 			}
 		}

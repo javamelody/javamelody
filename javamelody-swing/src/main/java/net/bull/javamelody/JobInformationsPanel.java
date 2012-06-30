@@ -266,7 +266,7 @@ class JobInformationsPanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<JobInformations> createScrollPane() {
-		final MTableScrollPane<JobInformations> tableScrollPane = new MTableScrollPane<JobInformations>();
+		final MTableScrollPane<JobInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<JobInformations> myTable = tableScrollPane.getTable();
 		myTable.addColumn("group", I18N.getString("JobGroup"));
 		myTable.addColumn("name", I18N.getString("JobName"));

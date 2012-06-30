@@ -128,7 +128,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<ThreadInformations> createScrollPane() {
-		final MTableScrollPane<ThreadInformations> tableScrollPane = new MTableScrollPane<ThreadInformations>();
+		final MTableScrollPane<ThreadInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ThreadInformations> myTable = tableScrollPane.getTable();
 		myTable.addColumn("name", I18N.getString("Thread"));
 		myTable.addColumn("daemon", I18N.getString("Demon"));

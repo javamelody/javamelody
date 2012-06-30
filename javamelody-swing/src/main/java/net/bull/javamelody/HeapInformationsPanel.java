@@ -227,7 +227,7 @@ class HeapInformationsPanel extends MelodyPanel {
 
 	private MTableScrollPane<HeapHistogram.ClassInfo> createScrollPane(long totalInstances,
 			long totalBytes, boolean deltaDisplayed, boolean sourceDisplayed) {
-		final MTableScrollPane<HeapHistogram.ClassInfo> tableScrollPane = new MTableScrollPane<HeapHistogram.ClassInfo>();
+		final MTableScrollPane<HeapHistogram.ClassInfo> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ClassInfo> myTable = tableScrollPane.getTable();
 
 		myTable.addColumn("name", I18N.getString("Classe"));

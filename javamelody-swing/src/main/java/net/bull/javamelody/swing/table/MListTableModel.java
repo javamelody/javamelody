@@ -113,7 +113,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 	 * @see #setList
 	 */
 	public List<T> getList() {
-		return new ArrayList<T>(list);
+		return new ArrayList<>(list);
 	}
 
 	/**
@@ -125,9 +125,9 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 	 */
 	public void setList(final List<T> newList) {
 		if (newList != null) {
-			list = new ArrayList<T>(newList);
+			list = new ArrayList<>(newList);
 		} else {
-			list = new ArrayList<T>(0);
+			list = new ArrayList<>(0);
 		}
 		fireTableDataChanged();
 	}

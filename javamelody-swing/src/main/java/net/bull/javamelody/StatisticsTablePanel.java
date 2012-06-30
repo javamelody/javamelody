@@ -142,13 +142,12 @@ class StatisticsTablePanel extends MelodyPanel {
 		if (includeGraph) {
 			this.table = new CounterRequestTable(remoteCollector);
 		} else {
-			this.table = new MTable<CounterRequest>();
+			this.table = new MTable<>();
 		}
 
 		addColumns();
 
-		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<CounterRequest>(
-				table);
+		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<>(table);
 		add(tableScrollPane, BorderLayout.CENTER);
 	}
 

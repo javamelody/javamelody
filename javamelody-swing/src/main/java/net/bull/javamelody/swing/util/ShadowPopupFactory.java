@@ -230,7 +230,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 			ShadowPopup result;
 			synchronized (ShadowPopup.class) {
 				if (cache == null) {
-					cache = new ArrayList<ShadowPopup>(MAX_CACHE_SIZE);
+					cache = new ArrayList<>(MAX_CACHE_SIZE);
 				}
 				if (!cache.isEmpty()) {
 					result = cache.remove(0);

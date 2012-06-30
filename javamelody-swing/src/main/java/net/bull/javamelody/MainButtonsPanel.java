@@ -180,14 +180,15 @@ class MainButtonsPanel extends MelodyPanel {
 					PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
 			final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
 					PdfReport.LARGE_GRAPH_WIDTH, PdfReport.LARGE_GRAPH_HEIGHT);
-			final OutputStream output = createFileOutputStream(tempFile);
-			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
-					javaInformationsList, range, output);
-			try {
-				pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
-				pdfReport.toPdf();
-			} finally {
-				pdfReport.close();
+			try (final OutputStream output = createFileOutputStream(tempFile)) {
+				final PdfReport pdfReport = new PdfReport(collector, collectorServer,
+						javaInformationsList, range, output);
+				try {
+					pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
+					pdfReport.toPdf();
+				} finally {
+					pdfReport.close();
+				}
 			}
 			Desktop.getDesktop().open(tempFile);
 		} catch (final Exception ex) {
