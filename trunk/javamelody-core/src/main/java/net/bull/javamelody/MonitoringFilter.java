@@ -88,6 +88,7 @@ public class MonitoringFilter implements Filter {
 	/** {@inheritDoc} */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
+		final long start = System.currentTimeMillis();
 		final String contextPath = Parameters.getContextPath(config.getServletContext());
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
@@ -124,12 +125,14 @@ public class MonitoringFilter implements Filter {
 					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
 		}
 
-		LOG.debug("JavaMelody filter init done");
+		final long duration = System.currentTimeMillis() - start;
+		LOG.debug("JavaMelody filter init done in " + duration + " ms");
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void destroy() {
+		final long start = System.currentTimeMillis();
 		if (monitoringDisabled || !instanceEnabled) {
 			return;
 		}
@@ -146,7 +149,8 @@ public class MonitoringFilter implements Filter {
 			filterConfig = null;
 			filterContext = null;
 		}
-		LOG.debug("JavaMelody filter destroy done");
+		final long duration = System.currentTimeMillis() - start;
+		LOG.debug("JavaMelody filter destroy done in " + duration + " ms");
 	}
 
 	/** {@inheritDoc} */
