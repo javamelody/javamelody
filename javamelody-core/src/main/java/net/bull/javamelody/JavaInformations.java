@@ -374,7 +374,9 @@ class JavaInformations implements Serializable { // NOPMD
 				final String name = entry.getKey();
 				final DataSource dataSource = entry.getValue();
 				final Connection connection = dataSource.getConnection();
-				connection.setAutoCommit(false);
+				// on ne doit pas changer autoCommit pour la connection d'une DataSource
+				// (ou alors il faudrait remettre l'autoCommit après, issue 233)
+				// connection.setAutoCommit(false);
 				try {
 					if (result.length() > 0) {
 						result.append("\n\n");
