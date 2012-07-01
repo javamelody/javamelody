@@ -52,6 +52,7 @@ public class ReportServlet extends HttpServlet {
 			allowedAddrPattern = Pattern.compile(Parameters
 					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
 		}
+		LOG.debug("JavaMelody report servlet initialized");
 	}
 
 	/** {@inheritDoc} */

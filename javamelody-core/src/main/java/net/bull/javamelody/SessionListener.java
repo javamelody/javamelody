@@ -189,6 +189,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	/** {@inheritDoc} */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
+		final long start = System.currentTimeMillis();
 		final String contextPath = Parameters.getContextPath(event.getServletContext());
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
@@ -216,7 +217,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 			jdbcWrapper.rebindDataSources();
 		}
 
-		LOG.debug("JavaMelody listener init done");
+		final long duration = System.currentTimeMillis() - start;
+		LOG.debug("JavaMelody listener init done in " + duration + " ms");
 	}
 
 	/** {@inheritDoc} */
