@@ -36,7 +36,7 @@
 
 === Import in Eclipse the sources of current development version ===
 
-To import from the SVN server the sources of the version currently in development, with Eclipse 3.7 using a JDK 1.7 and the subversion plugin (maven plugin m2e is also recommended to simplify these steps):
+To import from the SVN server the sources of the version currently in development, with Eclipse 4.2 using a JDK 1.7 and the subversion plugin (maven plugin m2e is also recommended to simplify these steps):
 	
 	* Click the task Import in File menu
 	
