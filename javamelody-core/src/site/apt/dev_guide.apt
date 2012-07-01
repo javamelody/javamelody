@@ -41,7 +41,7 @@ Compilation et développement de Java Melody : monitoring d'applications Java EE
 
 * Importer dans Eclipse les sources de la version en cours de développement
 
-	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 3.7 utilisant un JDK 1.7 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
+	Pour importer depuis le serveur SVN les sources de la version en cours de développement, avec Eclipse 4.2 utilisant un JDK 1.7 et le plugin SVN (le plugin maven m2eclipse est également conseillé pour simplifier ces étapes):
 	
 	* Lancer la tâche Import dans le menu File
 	
