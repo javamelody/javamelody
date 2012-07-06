@@ -342,12 +342,18 @@ JBoss AS 7 uses OSGI and so you need to add a configuration in JBoss to use Java
 Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
 {{{
     ...
-    <dependencies>
-        <module name="system" export="false" services="import">
-            <exports>
-                <include-set>
+    <module xmlns="urn:jboss:module:1.1" name="sun.jdk">
+        <resources>
+            <!-- currently jboss modules has not way of importing services from
+            classes.jar so we duplicate them here -->
+            <resource-root path="service-loader-resources"/>
+        </resources>
+        <dependencies>
+            <system export="true">
+                <paths>
                     <path name="com/sun/management"/>
                     <path name="com/sun/script/javascript"/>
+    ...
 }}}
 Otherwise you will have a java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean
 
