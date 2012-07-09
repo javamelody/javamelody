@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -43,13 +44,15 @@ import net.bull.javamelody.swing.MButton;
  * @author Emeric Vernat
  */
 class MainButtonsPanel extends MelodyPanel {
+	private static final Color BACKGROUND = new Color(186, 207, 226);
 	private static final ImageIcon MONITORING_ICON = ImageIconCache.getScaledImageIcon(
 			"systemmonitor.png", 16, 16);
 	private static final long serialVersionUID = 1L;
 
 	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
 		super(remoteCollector, new FlowLayout(FlowLayout.CENTER));
-
+		setOpaque(true);
+		setBackground(BACKGROUND);
 		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = createPdfButton();
 		final MButton onlineHelpButton = createOnlineHelpButton();
