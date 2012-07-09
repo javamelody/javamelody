@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -142,6 +143,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	private JPanel createButtonsPanel() {
 		final JComboBox requestComboBox = new JComboBox(databaseInformations.getRequestNames()
 				.toArray());
+		requestComboBox.setFont(requestComboBox.getFont().deriveFont(Font.BOLD));
 		requestComboBox.setSelectedIndex(databaseInformations.getSelectedRequestIndex());
 		requestComboBox.setRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
@@ -192,7 +194,8 @@ class DatabaseInformationsPanel extends MelodyPanel {
 			}
 		});
 
-		return Utilities.createButtonsPanel(requestComboBox, refreshButton, pdfButton);
+		return Utilities.createButtonsPanel(requestComboBox, new JLabel("             "),
+				refreshButton, pdfButton);
 	}
 
 	final void actionPdf() throws IOException {
