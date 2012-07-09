@@ -101,8 +101,7 @@ class HtmlCounterReport {
 					writeSqlRequestExplainPlan(collector, collectorServer, request);
 				}
 			}
-			if (request == null || getCounterByRequestId(request) != null
-					&& isRequestGraphDisplayed(getCounterByRequestId(request))) {
+			if (isGraphDisplayed(collector, request)) {
 				writeln("<div id='track' class='noPrint'>");
 				writeln("<div class='selected' id='handle'>");
 				writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
@@ -123,6 +122,14 @@ class HtmlCounterReport {
 						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 				writeln("</font></blockquote></blockquote>");
 			}
+		}
+
+		private boolean isGraphDisplayed(Collector collector, CounterRequest request) {
+			return request == null || getCounterByRequestId(request) != null
+					&& isRequestGraphDisplayed(getCounterByRequestId(request))
+					// on vérifie aussi que l'instance de jrobin existe pour faire le graph,
+					// notamment si les statistiques ont été réinitialisées, ce qui vide les instances de jrobin
+					&& collector.getJRobin(request.getId()) != null;
 		}
 
 		private void writeSqlRequestExplainPlan(Collector collector,
