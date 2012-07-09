@@ -23,6 +23,9 @@ import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
@@ -88,6 +92,28 @@ class MainPanel extends MelodyPanel {
 		final int position = scrollPane.getVerticalScrollBar().getValue();
 		final ScrollingPanel scrollingPanel = new ScrollingPanel(getRemoteCollector(),
 				getSelectedRange(), monitoringUrl);
+		final TabbedPane finalTabbedPane = tabbedPane;
+		final JScrollPane finalScrollPane = scrollPane;
+		// le clique droit sur le panel principal fonctionne comme sur les autres panels du TabbedPane
+		// (malgré le scrollPane du panel principal)
+		scrollingPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				// we only look at the right button
+				if (SwingUtilities.isRightMouseButton(event)) {
+					final Point viewPosition = finalScrollPane.getViewport().getViewPosition();
+					final int x = event.getX() - viewPosition.x + finalScrollPane.getX()
+							+ finalScrollPane.getParent().getX() + 3;
+					final int y = event.getY() - viewPosition.y + finalScrollPane.getY()
+							+ finalScrollPane.getParent().getY() + 3;
+					final MouseEvent newEvent = new MouseEvent(finalTabbedPane, event.getID(),
+							event.getWhen(), event.getModifiersEx(), x, y, event.getXOnScreen(),
+							event.getYOnScreen(), event.getClickCount(), event.isPopupTrigger(),
+							event.getButton());
+					finalTabbedPane.processMouseEvent(newEvent);
+				}
+			}
+		});
 		scrollPane.setViewportView(scrollingPanel);
 		scrollPane.getVerticalScrollBar().setValue(position);
 	}
