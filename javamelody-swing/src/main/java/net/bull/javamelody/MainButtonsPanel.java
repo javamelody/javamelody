@@ -184,6 +184,10 @@ class MainButtonsPanel extends MelodyPanel {
 				final PdfReport pdfReport = new PdfReport(collector, collectorServer,
 						javaInformationsList, range, output);
 				try {
+					// PdfReport utilise collector.getRangeCountersToBeDisplayed(range),
+					// mais les counters contiennent les bonnes données pour la période TOUT
+					// et non pas celle de la variable "range"
+					pdfReport.setCounterRange(Period.TOUT.getRange());
 					pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
 					pdfReport.toPdf();
 				} finally {

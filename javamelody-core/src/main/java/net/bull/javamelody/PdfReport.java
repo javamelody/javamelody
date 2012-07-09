@@ -48,6 +48,7 @@ class PdfReport {
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
+	private Range counterRange;
 	private final Document document;
 	private final boolean collectorServer;
 	private final OutputStream output;
@@ -73,6 +74,7 @@ class PdfReport {
 		this.collectorServer = collectorServer;
 		this.javaInformationsList = javaInformationsList;
 		this.range = range;
+		this.counterRange = range; // par défaut, c'est le même range
 		this.output = output;
 
 		try {
@@ -99,6 +101,10 @@ class PdfReport {
 		this.smallGraphs = newSmallGraphs;
 		this.smallOtherGraphs = newSmallOtherGraphs;
 		this.largeGraphs = newLargeGraphs;
+	}
+
+	void setCounterRange(Range counterRange) {
+		this.counterRange = counterRange;
 	}
 
 	void toPdf() throws IOException {
@@ -153,7 +159,7 @@ class PdfReport {
 		PdfCounterReport pdfJobCounterReport = null;
 		Counter rangeJobCounter = null;
 		if (isJobEnabled()) {
-			rangeJobCounter = collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME);
+			rangeJobCounter = collector.getRangeCounter(counterRange, Counter.JOB_COUNTER_NAME);
 			add(new Phrase("\n", normalFont));
 			addParagraph(getI18nString("Jobs"), "jobs.png");
 			writeJobs(rangeJobCounter, false);
@@ -288,7 +294,7 @@ class PdfReport {
 
 	private List<PdfCounterReport> writeCounters() throws IOException, DocumentException {
 		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
-		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
+		for (final Counter counter : collector.getRangeCountersToBeDisplayed(counterRange)) {
 			pdfCounterReports.add(writeCounter(counter));
 		}
 		return pdfCounterReports;
