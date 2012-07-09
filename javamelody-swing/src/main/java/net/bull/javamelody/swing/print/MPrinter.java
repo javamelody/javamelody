@@ -261,7 +261,12 @@ public abstract class MPrinter {
 	 *            Erreur disque
 	 */
 	protected void showDocument(final File targetFile) throws IOException {
-		Desktop.getDesktop().open(targetFile);
+		try {
+			Desktop.getDesktop().open(targetFile);
+		} catch (final IOException e) {
+			throw new IOException("Is there an associated application for \""
+					+ targetFile.getName() + "\"?\n" + e.getMessage(), e);
+		}
 
 		// on pourrait imprimer le fichier directement (par exemple CSV avec Excel) en supposant que Desktop.getDesktop().isDesktopSupported()
 		// et Desktop.getDesktop().isSupported(Desktop.Action.PRINT) retournent true
