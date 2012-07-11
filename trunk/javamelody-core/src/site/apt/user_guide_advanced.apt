@@ -429,7 +429,9 @@ org.osgi.framework.system.packages com.sun.management; \
 	
 	* Cette fonctionnalité est pour l'instant considérée en phase bêta
 	
-	* Elle fonctionne uniquement en Tomcat 6 (Tomcat 5.5 n'est donc pas supporté)
+	* Elle fonctionne uniquement en Tomcat 6 ou 7 (Tomcat 5.5 n'est donc pas supporté)
+	
+	* Le redéploiement à chaud n'est pas supporté avec cette technique
 	
 	* Il ne paraît pas conseillé d'utiliser le monitoring par Spring AOP dans ce cas
 

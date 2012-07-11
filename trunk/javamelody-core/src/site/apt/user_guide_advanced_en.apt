@@ -412,7 +412,9 @@ org.osgi.framework.system.packages com.sun.management; \
 	
 	* This feature is considered as beta for now
 	
-	* It works only in Tomcat 6 (Tomcat 5.5 is not supported)
+	* It works only in Tomcat 6 or 7 (Tomcat 5.5 is not supported)
+	
+	* Hot redeployment is not supported when using this technique
 	
 	* It does not seem advisable to use the monitoring by Spring AOP in this case
 	
