@@ -16,7 +16,7 @@ img {border : 0px; vertical-align : middle;}
 	filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);
 }
 
-th {background-color:#F0F0F0; font-size: 10pt;}
+th {background-color:#F0F0F0; font-size: 10pt; cursor:pointer;}
 table {
 	border-color:gray;
 	-moz-border-radius:5px;
