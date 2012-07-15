@@ -19,20 +19,27 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 
 import net.bull.javamelody.swing.MButton;
+import net.bull.javamelody.swing.MMenuItem;
 
 /**
  * Panel parent.
@@ -40,6 +47,8 @@ import net.bull.javamelody.swing.MButton;
  */
 class MelodyPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private static final ImageIcon MORE_ICON = new ImageIcon(
+			MainButtonsPanel.class.getResource("/icons/down-arrow.png"));
 
 	@SuppressWarnings("all")
 	private final RemoteCollector remoteCollector;
@@ -128,5 +137,51 @@ class MelodyPanel extends JPanel {
 			}
 		});
 		return pdfButton;
+	}
+
+	final MButton createXmlJsonButton(final Serializable serializable) {
+		final MButton xmlJsonButton = new MButton("", MORE_ICON);
+		xmlJsonButton.setPreferredSize(new Dimension(xmlJsonButton.getPreferredSize().width - 12,
+				xmlJsonButton.getPreferredSize().height));
+
+		final ActionListener menuActionListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final TransportFormat format = TransportFormat.valueOf(e.getActionCommand());
+				try {
+					final String application = getRemoteCollector().getApplication();
+					final File tempFile = new File(System.getProperty("java.io.tmpdir"), PdfReport
+							.getFileName(application).replace(".pdf", "." + format.getCode()));
+					tempFile.deleteOnExit();
+					try (final OutputStream output = createFileOutputStream(tempFile)) {
+						format.writeSerializableTo(serializable, output);
+					}
+					Desktop.getDesktop().open(tempFile);
+				} catch (final Exception ex) {
+					showException(ex);
+				}
+			}
+		};
+
+		xmlJsonButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final JPopupMenu popupMenu = new JPopupMenu();
+				final MMenuItem xmlMenuItem = new MMenuItem("XML", ImageIconCache
+						.getImageIcon("xml.png"));
+				final MMenuItem jsonMenuItem = new MMenuItem("JSON", ImageIconCache
+						.getImageIcon("xml.png"));
+				xmlMenuItem.setActionCommand(TransportFormat.XML.toString());
+				jsonMenuItem.setActionCommand(TransportFormat.JSON.toString());
+
+				xmlMenuItem.addActionListener(menuActionListener);
+				jsonMenuItem.addActionListener(menuActionListener);
+
+				popupMenu.add(xmlMenuItem);
+				popupMenu.add(jsonMenuItem);
+				popupMenu.show(xmlJsonButton, 2, xmlJsonButton.getHeight());
+			}
+		});
+		return xmlJsonButton;
 	}
 }

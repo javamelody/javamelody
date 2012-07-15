@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -240,6 +241,7 @@ class SessionInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		final MButton xmlJsonButton = createXmlJsonButton((Serializable) sessionsInformations);
 		final MButton invalidateAllSessionsButton = createInvalidateAllSessionsButton();
 		final MButton invalidateSessionButton = createInvalidateSessionButton();
 		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -250,8 +252,8 @@ class SessionInformationsPanel extends MelodyPanel {
 			}
 		});
 		invalidateSessionButton.setEnabled(getTable().getSelectedObject() != null);
-		return Utilities.createButtonsPanel(refreshButton, pdfButton, invalidateAllSessionsButton,
-				invalidateSessionButton);
+		return Utilities.createButtonsPanel(refreshButton, pdfButton, xmlJsonButton,
+				invalidateAllSessionsButton, invalidateSessionButton);
 	}
 
 	private MButton createInvalidateAllSessionsButton() {

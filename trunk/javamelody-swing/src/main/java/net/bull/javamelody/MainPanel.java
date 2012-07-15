@@ -54,8 +54,6 @@ class MainPanel extends MelodyPanel {
 	private final JScrollPane scrollPane;
 	private Range selectedRange;
 
-	// TODO mettre exporter en pdf, rtf, xml et json dans un menu contextuel
-
 	MainPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
 		// initialURLs avant setSelectedRange
