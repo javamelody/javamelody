@@ -300,8 +300,10 @@ class HeapInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		final MButton xmlJsonButton = createXmlJsonButton(heapHistogram);
 
-		return Utilities.createButtonsPanel(refreshButton, pdfButton, gcButton, heapDumpButton);
+		return Utilities.createButtonsPanel(refreshButton, pdfButton, xmlJsonButton, gcButton,
+				heapDumpButton);
 	}
 
 	final void actionPdf() throws IOException {

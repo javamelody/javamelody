@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -131,6 +132,13 @@ class ProcessInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		final Serializable serializable;
+		if (processInformationsByTitle.size() == 1) {
+			serializable = (Serializable) processInformationsByTitle.values().iterator().next();
+		} else {
+			serializable = (Serializable) processInformationsByTitle;
+		}
+		final MButton xmlJsonButton = createXmlJsonButton(serializable);
 
 		final MButton refreshButton = createRefreshButton();
 		refreshButton.addActionListener(new ActionListener() {
@@ -144,7 +152,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 			}
 		});
 
-		return Utilities.createButtonsPanel(refreshButton, pdfButton);
+		return Utilities.createButtonsPanel(refreshButton, pdfButton, xmlJsonButton);
 	}
 
 	final void actionPdf() throws IOException {

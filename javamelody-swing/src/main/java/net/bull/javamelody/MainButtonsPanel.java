@@ -26,8 +26,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +57,7 @@ class MainButtonsPanel extends MelodyPanel {
 		setBackground(BACKGROUND);
 		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = createPdfButton();
+		final MButton xmlJsonButton = createXmlJsonButton(createDefaultSerializable());
 		final MButton onlineHelpButton = createOnlineHelpButton();
 
 		// TODO traductions
@@ -63,6 +66,7 @@ class MainButtonsPanel extends MelodyPanel {
 				remoteCollector.getApplication()));
 		add(refreshButton);
 		add(pdfButton);
+		add(xmlJsonButton);
 		add(onlineHelpButton);
 		add(monitoringButton);
 		add(new JLabel("        " + I18N.getString("Choix_periode") + " : "));
@@ -201,6 +205,21 @@ class MainButtonsPanel extends MelodyPanel {
 		} catch (final Exception ex) {
 			showException(ex);
 		}
+	}
 
+	private Serializable createDefaultSerializable() {
+		final RemoteCollector remoteCollector = getRemoteCollector();
+		final Collector collector = remoteCollector.getCollector();
+		final List<JavaInformations> javaInformationsList = remoteCollector
+				.getJavaInformationsList();
+		final List<Counter> counters = collector.getCounters();
+		final List<Serializable> serialized = new ArrayList<>(counters.size()
+				+ javaInformationsList.size());
+		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
+		for (final Counter counter : counters) {
+			serialized.add(counter.clone());
+		}
+		serialized.addAll(javaInformationsList);
+		return (Serializable) serialized;
 	}
 }

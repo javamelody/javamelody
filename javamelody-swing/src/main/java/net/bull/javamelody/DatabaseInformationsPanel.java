@@ -193,9 +193,10 @@ class DatabaseInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
+		final MButton xmlJsonButton = createXmlJsonButton(databaseInformations);
 
 		return Utilities.createButtonsPanel(requestComboBox, new JLabel("             "),
-				refreshButton, pdfButton);
+				refreshButton, pdfButton, xmlJsonButton);
 	}
 
 	final void actionPdf() throws IOException {
