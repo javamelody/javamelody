@@ -172,10 +172,7 @@ class HeapInformationsPanel extends MelodyPanel {
 
 		setName(I18N.getFormattedString("heap_histo_du",
 				I18N.createDateAndTimeFormat().format(heapHistogram.getTime())));
-		final JLabel titleLabel = Utilities.createParagraphTitle(
-				I18N.getFormattedString("heap_histo_du",
-						I18N.createDateAndTimeFormat().format(heapHistogram.getTime())),
-				"memory.png");
+		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "memory.png");
 		add(titleLabel, BorderLayout.NORTH);
 
 		final JPanel heapTabPanel = createTabPanel(heapHistogram.getHeapHistogram(),

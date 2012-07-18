@@ -112,8 +112,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		this.attributesTable = new MTable<>();
 
 		setName(I18N.getString("Sessions"));
-		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("Sessions"),
-				"system-users.png");
+		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "system-users.png");
 		add(titleLabel, BorderLayout.NORTH);
 
 		final MTableScrollPane<SessionInformations> scrollPane = createScrollPane();

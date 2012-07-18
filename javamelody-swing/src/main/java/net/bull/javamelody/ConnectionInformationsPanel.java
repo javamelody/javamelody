@@ -168,8 +168,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		}
 
 		setName(I18N.getString("Connexions_jdbc_ouvertes"));
-		final JLabel titleLabel = Utilities.createParagraphTitle(
-				I18N.getString("Connexions_jdbc_ouvertes"), "db.png");
+		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "db.png");
 		add(titleLabel, BorderLayout.NORTH);
 
 		final JLabel introLabel = new JLabel(' ' + I18N.getString("connexions_intro"));

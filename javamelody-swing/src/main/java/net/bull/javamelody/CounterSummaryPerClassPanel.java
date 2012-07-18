@@ -58,10 +58,9 @@ class CounterSummaryPerClassPanel extends MelodyPanel {
 		removeAll();
 
 		final String counterLabel = I18N.getString(counter.getName() + "Label");
-		final String title = I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
-				+ range.getLabel();
-		setName(title);
-		add(Utilities.createParagraphTitle(title, counter.getIconName()), BorderLayout.NORTH);
+		setName(I18N.getFormattedString("Statistiques_compteur", counterLabel) + " - "
+				+ range.getLabel());
+		add(Utilities.createParagraphTitle(getName(), counter.getIconName()), BorderLayout.NORTH);
 
 		final MButton detailsButton;
 		if (requestId == null) {
