@@ -225,7 +225,11 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 		jndiButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				try {
+					addOnglet(new JndiBindingsPanel(getRemoteCollector()));
+				} catch (final IOException ex) {
+					showException(ex);
+				}
 			}
 		});
 		return jndiButton;
