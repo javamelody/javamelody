@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -111,11 +112,12 @@ public class TestHtmlJndiTreeReport {
 				new Binding("java:/test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("test null classname", null, null)).once();
 		expect(enumeration.next()).andThrow(new NamingException("test")).once();
-		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(context, contextPath,
-				writer);
 
 		replay(context);
 		replay(enumeration);
+		final List<JndiBinding> bindings = JndiBinding.listBindings(context, contextPath);
+		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(bindings, contextPath,
+				writer);
 		htmlJndiTreeReport.toHtml();
 		verify(context);
 		verify(enumeration);

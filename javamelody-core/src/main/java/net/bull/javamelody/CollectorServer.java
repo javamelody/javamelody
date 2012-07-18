@@ -197,6 +197,10 @@ class CollectorServer {
 		return getRemoteCollectorByApplication(application).collectProcessInformations();
 	}
 
+	List<JndiBinding> collectJndiBindings(String application, String path) throws IOException {
+		return getRemoteCollectorByApplication(application).collectJndiBindings(path);
+	}
+
 	List<List<ThreadInformations>> getThreadInformationsLists(String application) {
 		return getRemoteCollectorByApplication(application).getThreadInformationsLists();
 	}

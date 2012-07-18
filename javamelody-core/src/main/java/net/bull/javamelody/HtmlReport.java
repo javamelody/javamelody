@@ -26,8 +26,6 @@ import java.io.Writer;
 import java.util.List;
 
 import javax.management.JMException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
@@ -273,9 +271,9 @@ class HtmlReport {
 		}
 	}
 
-	void writeJndi(String path) throws IOException, NamingException {
+	void writeJndi(List<JndiBinding> jndiBindings, String path) throws IOException {
 		writeHtmlHeader();
-		new HtmlJndiTreeReport(new InitialContext(), path, writer).toHtml();
+		new HtmlJndiTreeReport(jndiBindings, path, writer).toHtml();
 		writeHtmlFooter();
 	}
 

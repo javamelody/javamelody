@@ -24,9 +24,11 @@ import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
@@ -210,6 +212,17 @@ class RemoteCollector {
 			processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processList);
 		}
 		return processesByTitle;
+	}
+
+	List<JndiBinding> collectJndiBindings(String path) throws IOException {
+		// récupération à la demande des bindings JNDI,
+		// contrairement aux requêtes en cours ou aux processus, un serveur de l'application suffira
+		// car l'arbre JNDI est en général identique dans tout l'éventuel cluster
+		final URL url = urls.get(0);
+		final URL jndiUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + JNDI_PART
+				+ (path != null ? '&' + PATH_PARAMETER + '=' + path : ""));
+		final LabradorRetriever labradorRetriever = new LabradorRetriever(jndiUrl);
+		return labradorRetriever.call();
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists() {
