@@ -332,36 +332,40 @@ class LabradorRetriever {
 					"services", null), new Counter(Counter.ERROR_COUNTER_NAME, null),
 					new JavaInformations(null, true), message);
 		} else {
-			result = createMockResultOfPartCall(request);
+			result = LabradorMock.createMockResultOfPartCall(request);
 		}
 		return (T) result;
 	}
 
-	private Object createMockResultOfPartCall(String request) throws IOException {
-		final Object result;
-		if (request.contains(HttpParameters.SESSIONS_PART)
-				&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
-			result = null;
-		} else if (request.contains(HttpParameters.SESSIONS_PART)
-				|| request.contains(HttpParameters.PROCESSES_PART)
-				|| request.contains(HttpParameters.CONNECTIONS_PART)) {
-			result = Collections.emptyList();
-		} else if (request.contains(HttpParameters.DATABASE_PART)) {
-			try {
-				result = new DatabaseInformations(0);
-			} catch (final Exception e) {
-				throw new IllegalStateException(e);
+	private static class LabradorMock { // NOPMD
+		static Object createMockResultOfPartCall(String request) throws IOException { // NOPMD
+			final Object result;
+			if (request.contains(HttpParameters.SESSIONS_PART)
+					&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
+				result = null;
+			} else if (request.contains(HttpParameters.SESSIONS_PART)
+					|| request.contains(HttpParameters.PROCESSES_PART)
+					|| request.contains(HttpParameters.JNDI_PART)
+					|| request.contains(HttpParameters.CONNECTIONS_PART)) {
+				result = Collections.emptyList();
+			} else if (request.contains(HttpParameters.DATABASE_PART)) {
+				try {
+					result = new DatabaseInformations(0);
+				} catch (final Exception e) {
+					throw new IllegalStateException(e);
+				}
+			} else if (request.contains(HttpParameters.HEAP_HISTO_PART)) {
+				final InputStream input = LabradorMock.class.getResourceAsStream("/heaphisto.txt");
+				try {
+					result = new HeapHistogram(input, false);
+				} finally {
+					input.close();
+				}
+			} else {
+				result = null;
 			}
-		} else if (request.contains(HttpParameters.HEAP_HISTO_PART)) {
-			final InputStream input = getClass().getResourceAsStream("/heaphisto.txt");
-			try {
-				result = new HeapHistogram(input, false);
-			} finally {
-				input.close();
-			}
-		} else {
-			result = null;
+			return result;
 		}
-		return result;
+
 	}
 }

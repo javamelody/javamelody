@@ -252,7 +252,14 @@ class HtmlController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
-			htmlReport.writeJndi(path);
+			final List<JndiBinding> jndiBindings;
+			if (!isFromCollectorServer()) {
+				jndiBindings = JndiBinding.listBindings(path);
+			} else {
+				jndiBindings = collectorServer
+						.collectJndiBindings(collector.getApplication(), path);
+			}
+			htmlReport.writeJndi(jndiBindings, path);
 		} catch (final Exception e) {
 			LOG.warn("jndi report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);

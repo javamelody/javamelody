@@ -132,6 +132,7 @@ enum TransportFormat {
 			xstream.alias("counterError", CounterError.class);
 			xstream.alias("processInformations", ProcessInformations.class);
 			xstream.alias("databaseInformations", DatabaseInformations.class);
+			xstream.alias("jndiBinding", JndiBinding.class);
 			final MapConverter mapConverter = new MapConverter(xstream.getMapper()) {
 				/** {@inheritDoc} */
 				@SuppressWarnings("rawtypes")

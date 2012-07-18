@@ -20,41 +20,28 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.Writer;
-
-import javax.naming.Binding;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+import java.util.List;
 
 /**
  * Partie du rapport html pour l'arbre JNDI.
  * @author Emeric Vernat
  */
 class HtmlJndiTreeReport {
-	private static final String JNDI_PREFIX = "java:";
-	private final Context context;
+	private final List<JndiBinding> jndiBindings;
 	private final String path;
 	private final Writer writer;
 
-	HtmlJndiTreeReport(Context context, String path, Writer writer) {
+	HtmlJndiTreeReport(List<JndiBinding> jndiBindings, String path, Writer writer) {
 		super();
-		assert context != null;
+		assert jndiBindings != null;
 		assert writer != null;
 
-		this.context = context;
-		if (path != null) {
-			this.path = path;
-		} else if (Parameters.getServletContext().getServerInfo().contains("GlassFish")) {
-			// dans glassfish 3.0.1, context.listBindings("java:") ne retourne aucun binding à part
-			// lui-même, donc par défaut dans glassfish on prend le path "comp" et non ""
-			this.path = "comp";
-		} else {
-			this.path = "";
-		}
+		this.jndiBindings = jndiBindings;
+		this.path = JndiBinding.normalizePath(path);
 		this.writer = writer;
 	}
 
-	void toHtml() throws IOException, NamingException {
+	void toHtml() throws IOException {
 		writeLinks();
 		writeln("<br/>");
 
@@ -69,67 +56,32 @@ class HtmlJndiTreeReport {
 		writeTable();
 	}
 
-	private void writeTable() throws IOException, NamingException {
+	private void writeTable() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Arbre_JNDI#'>");
 		write("<thead><tr><th>#Nom#</th><th>#Type#</th>");
 		writeln("</tr></thead><tbody>");
-		final String jndiName;
-		if (Parameters.getServletContext().getServerInfo().contains("WebLogic")) {
-			// path + '/' nécessaire pour WebLogic 10.3.1.0 mais pas supporté dans JBoss
-			jndiName = JNDI_PREFIX + path + '/';
-		} else {
-			jndiName = JNDI_PREFIX + path;
-		}
-		final NamingEnumeration<Binding> enumeration = context.listBindings(jndiName);
-		try {
-			boolean odd = false;
-			while (enumeration.hasMore()) {
-				try {
-					final Binding binding = enumeration.next();
-					if (odd) {
-						write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-					} else {
-						write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-					}
-					odd = !odd; // NOPMD
-					writeBinding(binding);
-					writeln("</tr>");
-				} catch (final Exception e) {
-					// catch Exception et non catch NamingException car glassfish 3.1 par exemple
-					// lance parfois des RuntimeException encapsulant des NamingException lors du next()
-					continue;
-				}
-			}
-			writeln("</tbody></table>");
-		} finally {
-			// Comme indiqué dans la javadoc enumeration.close() n'est pas nécessaire après que hasMore()
-			// a retourné false. De plus, cela provoquerait une exception dans glassfish 3.0.1
-			// "javax.naming.OperationNotSupportedException: close() not implemented"
-			// enumeration.close();
 
-			context.close();
+		boolean odd = false;
+		for (final JndiBinding binding : jndiBindings) {
+			if (odd) {
+				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
+			} else {
+				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
+			}
+			odd = !odd; // NOPMD
+			writeBinding(binding);
+			writeln("</tr>");
 		}
+		writeln("</tbody></table>");
 	}
 
-	private void writeBinding(Binding binding) throws IOException {
-		final String name = getBindingName(binding);
-		// si on veux corriger http://java.net/jira/browse/GLASSFISH-12831
-		// sous glassfish 3.0.1 et non 3.1, les bindings d'un contexte contienne le contexte lui-même
-		//		if (name.length() == 0) {
-		//			return;
-		//		}
+	private void writeBinding(JndiBinding binding) throws IOException {
+		final String name = binding.getName();
 		write("<td>");
 		final String encodedName = htmlEncode(name);
 		final String className = binding.getClassName();
-		if (binding.getObject() instanceof Context || "javax.naming.Context".equals(className)) {
-			// "javax.naming.Context".equals(className) nécessaire pour le path "comp" dans JBoss 6.0
-			final String contextPath;
-			if (path.length() > 0) {
-				contextPath = path + '/' + name;
-			} else {
-				// nécessaire pour jonas 5.1.0
-				contextPath = name;
-			}
+		final String contextPath = binding.getContextPath();
+		if (contextPath != null) {
 			writer.write("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
 			writer.write("<img width='16' height='16' src='?resource=folder.png' alt='"
 					+ encodedName + "' />&nbsp;");
@@ -142,21 +94,6 @@ class HtmlJndiTreeReport {
 		write("<td>");
 		writer.write(className != null ? htmlEncode(className) : "&nbsp;");
 		write("</td>");
-	}
-
-	private String getBindingName(Binding binding) {
-		// nécessaire pour glassfish 3.0.1
-		String result = binding.getName();
-		if (result.startsWith(JNDI_PREFIX)) {
-			result = result.substring(JNDI_PREFIX.length());
-		}
-		if (result.startsWith(path)) {
-			result = result.substring(path.length());
-		}
-		if (result.length() > 0 && result.charAt(0) == '/') {
-			result = result.substring(1);
-		}
-		return result;
 	}
 
 	private void writeLinks() throws IOException {

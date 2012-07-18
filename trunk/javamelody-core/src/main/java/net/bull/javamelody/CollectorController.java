@@ -170,6 +170,7 @@ class CollectorController {
 	}
 
 	private void doPdfProcesses(HttpServletResponse resp, String application) throws IOException {
+		// TODO utiliser plutôt collectorServer.collectProcessInformations(application)
 		final String title = I18N.getString("Processus");
 		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
 		for (final URL url : getUrlsByApplication(application)) {
@@ -221,8 +222,6 @@ class CollectorController {
 					"connexions_intro", "db.png");
 		} else if (PROCESSES_PART.equalsIgnoreCase(partParameter)) {
 			doProcesses(req, resp, application);
-		} else if (JNDI_PART.equalsIgnoreCase(partParameter)) {
-			doJndi(req, resp, application);
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 			monitoringController.doReport(req, resp, javaInformationsList);
@@ -248,6 +247,9 @@ class CollectorController {
 		I18N.writelnTo("<a href='?part=processes&amp;format=pdf' title='#afficher_PDF#'>", writer);
 		I18N.writelnTo("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>", writer);
 		writer.write("</div>");
+
+		// TODO utiliser plutôt collectorServer.collectProcessInformations(application)
+
 		final String title = I18N.getString("Processus");
 		for (final URL url : getUrlsByApplication(application)) {
 			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=processes.png' alt='"
@@ -261,23 +263,6 @@ class CollectorController {
 		}
 		htmlReport.writeHtmlFooter();
 		writer.close();
-	}
-
-	private void doJndi(HttpServletRequest req, HttpServletResponse resp, String application)
-			throws IOException {
-		// contrairement aux requêtes en cours ou aux processus, un serveur de l'application suffira
-		// car l'arbre JNDI est en général identique dans tout l'éventuel cluster
-		final URL url = getUrlsByApplication(application).get(0);
-		final String pathParameter = req.getParameter(PATH_PARAMETER) != null ? req
-				.getParameter(PATH_PARAMETER) : "";
-		final String jndiParameters = '&' + PART_PARAMETER + '=' + JNDI_PART + '&' + PATH_PARAMETER
-				+ '=' + pathParameter;
-		final String htmlFormat = "html";
-		final URL currentRequestsUrl = new URL(url.toString()
-				.replace(TransportFormat.SERIALIZED.getCode(), htmlFormat)
-				.replace(TransportFormat.XML.getCode(), htmlFormat)
-				+ jndiParameters);
-		new LabradorRetriever(currentRequestsUrl).copyTo(req, resp);
 	}
 
 	private void doJmxValue(HttpServletRequest req, HttpServletResponse resp, String application,
@@ -410,6 +395,12 @@ class CollectorController {
 			Action.checkSystemActionsEnabled();
 			return new LinkedHashMap<String, List<ProcessInformations>>(
 					collectorServer.collectProcessInformations(application));
+		} else if (JNDI_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String path = httpRequest.getParameter(PATH_PARAMETER);
+			return new ArrayList<JndiBinding>(
+					collectorServer.collectJndiBindings(application, path));
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
