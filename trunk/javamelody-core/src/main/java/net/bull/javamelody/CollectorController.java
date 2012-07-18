@@ -170,15 +170,8 @@ class CollectorController {
 	}
 
 	private void doPdfProcesses(HttpServletResponse resp, String application) throws IOException {
-		// TODO utiliser plutôt collectorServer.collectProcessInformations(application)
-		final String title = I18N.getString("Processus");
-		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
-		for (final URL url : getUrlsByApplication(application)) {
-			final URL proxyUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ PROCESSES_PART);
-			final List<ProcessInformations> processes = new LabradorRetriever(proxyUrl).call();
-			processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processes);
-		}
+		final Map<String, List<ProcessInformations>> processesByTitle = collectorServer
+				.collectProcessInformations(application);
 		new PdfOtherReport(application, resp.getOutputStream())
 				.writeProcessInformations(processesByTitle);
 	}
@@ -248,17 +241,15 @@ class CollectorController {
 		I18N.writelnTo("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>", writer);
 		writer.write("</div>");
 
-		// TODO utiliser plutôt collectorServer.collectProcessInformations(application)
-
-		final String title = I18N.getString("Processus");
-		for (final URL url : getUrlsByApplication(application)) {
+		final Map<String, List<ProcessInformations>> processesByTitle = collectorServer
+				.collectProcessInformations(application);
+		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle.entrySet()) {
+			final String title = entry.getKey();
 			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=processes.png' alt='"
-					+ title + "'/>&nbsp;" + title + " (" + getHostAndPort(url) + ")</h3>";
+					+ title + "'/>&nbsp;" + title + "</h3>";
 			writer.write(htmlTitle);
 			writer.flush();
-			final URL proxyUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ PROCESSES_PART);
-			final List<ProcessInformations> processes = new LabradorRetriever(proxyUrl).call();
+			final List<ProcessInformations> processes = entry.getValue();
 			new HtmlProcessInformationsReport(processes, writer).writeTable();
 		}
 		htmlReport.writeHtmlFooter();
