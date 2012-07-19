@@ -22,14 +22,20 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
@@ -50,6 +56,8 @@ class JndiBindingsPanel extends MelodyPanel {
 	private List<JndiBinding> jndiBindings;
 
 	private String path;
+
+	private Deque<String> previousPaths = new ArrayDeque<>();
 
 	private MTable<JndiBinding> table;
 
@@ -117,20 +125,57 @@ class JndiBindingsPanel extends MelodyPanel {
 
 		myTable.setColumnCellRenderer("name", new NameTableCellRenderer());
 
-		// TODO si contextPath non null, ajouter double-clique + bouton ouvrir
-		//		final String contextPath = binding.getContextPath();
-		//		if (contextPath != null) {
-		//			writer.write("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
-		//			writer.write("<img width='16' height='16' src='?resource=folder.png' alt='"
-		//					+ encodedName + "' />&nbsp;");
-		//			writer.write(encodedName);
-		//			writer.write("</a>");
-		//		}
-
 		return tableScrollPane;
 	}
 
 	private JPanel createButtonsPanel() {
+		// TODO traduction
+		final MButton openButton = new MButton("Ouvrir",
+				ImageIconCache.getImageIcon("action_open.png"));
+		final MButton backButton = new MButton("Retour",
+				ImageIconCache.getImageIcon("action_back.png"));
+
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final JndiBinding binding = getTable().getSelectedObject();
+				try {
+					openContext(binding);
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					openButton.doClick();
+				}
+			}
+		});
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final JndiBinding binding = getTable().getSelectedObject();
+				openButton.setEnabled(binding != null && binding.getContextPath() != null);
+			}
+		});
+		openButton.setEnabled(false);
+
+		backButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					goBack();
+					backButton.setEnabled(getPath() != null);
+				} catch (final IOException e1) {
+					showException(e1);
+				}
+			}
+		});
+		backButton.setEnabled(getPath() != null);
+
 		final MButton xmlJsonButton = createXmlJsonButton((Serializable) jndiBindings);
 
 		final MButton refreshButton = createRefreshButton();
@@ -145,10 +190,27 @@ class JndiBindingsPanel extends MelodyPanel {
 			}
 		});
 
-		return Utilities.createButtonsPanel(refreshButton, xmlJsonButton);
+		return Utilities.createButtonsPanel(backButton, openButton, refreshButton, xmlJsonButton);
+	}
+
+	void goBack() throws IOException {
+		path = previousPaths.pollLast();
+		refresh();
+	}
+
+	void openContext(JndiBinding binding) throws IOException {
+		if (path != null) {
+			previousPaths.add(path);
+		}
+		path = binding.getContextPath();
+		refresh();
 	}
 
 	MTable<JndiBinding> getTable() {
 		return table;
+	}
+
+	String getPath() {
+		return path;
 	}
 }
