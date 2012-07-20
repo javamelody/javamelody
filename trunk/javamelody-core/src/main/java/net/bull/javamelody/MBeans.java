@@ -304,7 +304,13 @@ final class MBeans {
 	String getAttributeDescription(String name, MBeanAttributeInfo[] attributeInfos) {
 		for (final MBeanAttributeInfo attributeInfo : attributeInfos) {
 			if (name.equals(attributeInfo.getName())) {
-				return attributeInfo.getDescription();
+				final String attributeDescription = attributeInfo.getDescription();
+				if (name.equals(attributeDescription)) {
+					// les attributs des MBeans de java.lang ont des descriptions égales aux noms,
+					// ce sont des descriptions inutiles
+					return null;
+				}
+				return attributeDescription;
 			}
 		}
 		return null;
