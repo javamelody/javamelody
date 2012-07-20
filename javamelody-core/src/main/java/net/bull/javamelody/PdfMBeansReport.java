@@ -148,9 +148,7 @@ class PdfMBeansReport {
 		addCell(mbeans.formatAttributeValue(attributeValue));
 		final String attributeDescription = mbeans.getAttributeDescription(attributeName,
 				attributeInfos);
-		// les attributs des MBeans de java.lang ont des descriptions égales aux noms,
-		// ce sont des descriptions inutiles
-		if (attributeDescription != null && !attributeDescription.equals(attributeName)) {
+		if (attributeDescription != null) {
 			addCell('(' + attributeDescription + ')');
 		} else {
 			addCell("");
