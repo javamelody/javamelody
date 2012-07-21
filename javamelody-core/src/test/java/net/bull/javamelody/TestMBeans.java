@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.management.JMException;
-import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
+import net.bull.javamelody.MBean.MBeanAttribute;
 import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
 import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 
@@ -107,27 +107,6 @@ public class TestMBeans {
 				mbeans.getMapObjectNamesByDomainAndFirstProperty());
 	}
 
-	/** Test.
-	 * @throws JMException e */
-	@Test
-	public void testGetMBeanInfo() throws JMException {
-		assertNotNull("getMBeanInfo", mbeans.getMBeanInfo(mbeansList.get(0)));
-	}
-
-	/** Test.
-	 * @throws JMException e
-	 * @throws IllegalAccessException e */
-	@Test
-	public void testGetAttributes() throws JMException, IllegalAccessException {
-		final MBeanAttributeInfo[] attributes = mbeans.getMBeanInfo(mbeansList.get(0))
-				.getAttributes();
-		assertNotNull("getAttributes", mbeans.getAttributes(mbeansList.get(0), attributes));
-		JdbcWrapperHelper.setFieldValue(attributes[attributes.length - 1], "name", "Password");
-		assertNotNull("getAttributes", mbeans.getAttributes(mbeansList.get(0), attributes));
-		JdbcWrapperHelper.setFieldValue(attributes[attributes.length - 1], "isRead", Boolean.FALSE);
-		assertNotNull("getAttributes", mbeans.getAttributes(mbeansList.get(0), attributes));
-	}
-
 	/** Test. */
 	@Test
 	public void testGetConvertedAttribute() {
@@ -166,20 +145,15 @@ public class TestMBeans {
 	/** Test.
 	 * @throws JMException e */
 	@Test
-	public void testGetAttributeDescription() throws JMException {
-		final MBeanAttributeInfo[] attributes = mbeans.getMBeanInfo(mbeansList.get(0))
-				.getAttributes();
-		for (final MBeanAttributeInfo attribute : attributes) {
-			mbeans.getAttributeDescription(attribute.getName(), attributes);
+	public void testMBean() throws JMException {
+		final MBean mbean = mbeans.getMBean(mbeansList.get(0));
+		assertNotNull("mbean name", mbean.getName());
+		assertNull("mbean description", mbean.getDescription());
+		final List<MBeanAttribute> attributes = mbean.getAttributes();
+		for (final MBeanAttribute attribute : attributes) {
+			assertNotNull("attribute name", attribute.getName());
+			assertNotNull("attribute description", attribute.getDescription());
+			assertNotNull("attribute formattedValue", attribute.getFormattedValue());
 		}
-		assertNull("getAttributeDescription", mbeans.getAttributeDescription("unknown", attributes));
-	}
-
-	/** Test. */
-	@Test
-	public void testFormatMBeansDescription() {
-		assertNull("mbeansDescription", mbeans.formatMBeansDescription(null));
-		assertNotNull("mbeansDescription", mbeans.formatMBeansDescription("abc"));
-		assertNotNull("mbeansDescription", mbeans.formatMBeansDescription("a  b     c"));
 	}
 }
