@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.management.JMException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import net.bull.javamelody.MBean.MBeanAttribute;
 
 /**
  * Partie du rapport html pour les MBeans.
@@ -113,21 +113,8 @@ class HtmlMBeansReport {
 					} else {
 						write(BR);
 					}
-					String mbean = name.toString();
-					final String mbeanId = getNextId();
-					final int indexOfComma = mbean.indexOf(',');
-					if (indexOfComma != -1) {
-						mbean = mbean.substring(indexOfComma + 1);
-						writeShowHideLink(mbeanId, htmlEncode(mbean));
-						writeln("<div id='" + mbeanId
-								+ "' style='display: none; margin-left: 20px;'>");
-						// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
-						// dans une table
-						writeAttributes(name);
-						writeln("</div>");
-					} else {
-						writeAttributes(name);
-					}
+					final MBean mbean = mbeans.getMBean(name);
+					writeMBean(mbean);
 				}
 				writeln("</div></div>");
 			}
@@ -140,11 +127,26 @@ class HtmlMBeansReport {
 		return 'x' + pid + '_' + sequence++;
 	}
 
-	private void writeAttributes(ObjectName name) throws JMException, IOException {
-		final MBeanInfo mbeanInfo = mbeans.getMBeanInfo(name);
-		final MBeanAttributeInfo[] attributeInfos = mbeanInfo.getAttributes();
-		final Map<String, Object> attributes = mbeans.getAttributes(name, attributeInfos);
-		final String description = mbeans.formatMBeansDescription(mbeanInfo.getDescription());
+	private void writeMBean(MBean mbean) throws IOException {
+		String mbeanName = mbean.getName();
+		final String mbeanId = getNextId();
+		final int indexOfComma = mbeanName.indexOf(',');
+		if (indexOfComma != -1) {
+			mbeanName = mbeanName.substring(indexOfComma + 1);
+			writeShowHideLink(mbeanId, htmlEncode(mbeanName));
+			writeln("<div id='" + mbeanId + "' style='display: none; margin-left: 20px;'>");
+			// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
+			// dans une table
+			writeAttributes(mbean);
+			writeln("</div>");
+		} else {
+			writeAttributes(mbean);
+		}
+	}
+
+	private void writeAttributes(MBean mbean) throws IOException {
+		final String description = mbean.getDescription();
+		final List<MBeanAttribute> attributes = mbean.getAttributes();
 		if (description != null || !attributes.isEmpty()) {
 			writeln("<table border='0' cellspacing='0' cellpadding='3' summary=''>");
 			if (description != null) {
@@ -152,32 +154,30 @@ class HtmlMBeansReport {
 				writer.write(htmlEncode(description));
 				write(")</td></tr>");
 			}
-			for (final Map.Entry<String, Object> entryAttributes : attributes.entrySet()) {
-				final String attributeName = entryAttributes.getKey();
-				final Object attributeValue = entryAttributes.getValue();
-				writeAttribute(name, attributeName, attributeValue, attributeInfos);
+			for (final MBeanAttribute attribute : attributes) {
+				writeAttribute(mbean, attribute);
 			}
 			writeln("</table>");
 		}
 	}
 
-	private void writeAttribute(ObjectName name, String attributeName, Object attributeValue,
-			MBeanAttributeInfo[] attributeInfos) throws IOException {
+	private void writeAttribute(MBean mbean, MBeanAttribute attribute) throws IOException {
+		final String attributeName = attribute.getName();
+		final String formattedValue = attribute.getFormattedValue();
+		final String description = attribute.getDescription();
 		write("<tr valign='top'><td>");
 		writer.write("<a href='?jmxValue="
-				+ name.toString().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
+				+ mbean.getName().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
 				+ "' ");
 		writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
 		writer.write(htmlEncode(attributeName));
 		write("</td><td>");
 		// \n sera encodé dans <br/> dans htmlEncode
-		writer.write(htmlEncode(mbeans.formatAttributeValue(attributeValue)));
+		writer.write(htmlEncode(formattedValue));
 		write("</td><td>");
-		final String attributeDescription = mbeans.getAttributeDescription(attributeName,
-				attributeInfos);
-		if (attributeDescription != null) {
+		if (description != null) {
 			write("(");
-			writer.write(htmlEncode(attributeDescription));
+			writer.write(htmlEncode(description));
 			write(")");
 		} else {
 			write("&nbsp;");

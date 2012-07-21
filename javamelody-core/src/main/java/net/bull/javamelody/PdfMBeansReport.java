@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.management.JMException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import net.bull.javamelody.MBean.MBeanAttribute;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -101,26 +101,29 @@ class PdfMBeansReport {
 				final List<ObjectName> objectNames = entryObjectNamesByFirstProperty.getValue();
 				for (final ObjectName name : objectNames) {
 					margin = 25;
-					String mbean = name.toString();
-					final int indexOfComma = mbean.indexOf(',');
-					if (indexOfComma != -1) {
-						mbean = mbean.substring(indexOfComma + 1);
-						addText(mbean);
-						margin = 37;
-						writeAttributes(name);
-					} else {
-						writeAttributes(name);
-					}
+					final MBean mbean = mbeans.getMBean(name);
+					writeMBean(mbean);
 				}
 			}
 		}
 	}
 
-	private void writeAttributes(ObjectName name) throws JMException, DocumentException {
-		final MBeanInfo mbeanInfo = mbeans.getMBeanInfo(name);
-		final MBeanAttributeInfo[] attributeInfos = mbeanInfo.getAttributes();
-		final Map<String, Object> attributes = mbeans.getAttributes(name, attributeInfos);
-		final String description = mbeans.formatMBeansDescription(mbeanInfo.getDescription());
+	private void writeMBean(MBean mbean) throws DocumentException {
+		String mbeanName = mbean.getName();
+		final int indexOfComma = mbeanName.indexOf(',');
+		if (indexOfComma != -1) {
+			mbeanName = mbeanName.substring(indexOfComma + 1);
+			addText(mbeanName);
+			margin = 37;
+			writeAttributes(mbean);
+		} else {
+			writeAttributes(mbean);
+		}
+	}
+
+	private void writeAttributes(MBean mbean) throws DocumentException {
+		final String description = mbean.getDescription();
+		final List<MBeanAttribute> attributes = mbean.getAttributes();
 		if (description != null || !attributes.isEmpty()) {
 			currentTable = createAttributesTable();
 			if (description != null) {
@@ -128,10 +131,8 @@ class PdfMBeansReport {
 				addCell('(' + description + ')');
 				currentTable.getDefaultCell().setColspan(1);
 			}
-			for (final Map.Entry<String, Object> entryAttributes : attributes.entrySet()) {
-				final String attributeName = entryAttributes.getKey();
-				final Object attributeValue = entryAttributes.getValue();
-				writeAttribute(attributeName, attributeValue, attributeInfos);
+			for (final MBeanAttribute attribute : attributes) {
+				writeAttribute(attribute);
 			}
 			final Paragraph paragraph = new Paragraph();
 			paragraph.setIndentationLeft(margin);
@@ -141,15 +142,11 @@ class PdfMBeansReport {
 		}
 	}
 
-	private void writeAttribute(String attributeName, Object attributeValue,
-			MBeanAttributeInfo[] attributeInfos) {
-
-		addCell(attributeName);
-		addCell(mbeans.formatAttributeValue(attributeValue));
-		final String attributeDescription = mbeans.getAttributeDescription(attributeName,
-				attributeInfos);
-		if (attributeDescription != null) {
-			addCell('(' + attributeDescription + ')');
+	private void writeAttribute(MBeanAttribute attribute) {
+		addCell(attribute.getName());
+		addCell(attribute.getFormattedValue());
+		if (attribute.getDescription() != null) {
+			addCell('(' + attribute.getDescription() + ')');
 		} else {
 			addCell("");
 		}
