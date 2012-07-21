@@ -22,6 +22,8 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +41,8 @@ import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
+import net.bull.javamelody.MBean.MBeanAttribute;
+
 /**
  * Objet récupérant une instance de MBeanServer lors de sa construction
  * et permettant de récupérer différentes données sur les MBeans.
@@ -46,6 +50,12 @@ import javax.management.openmbean.TabularData;
  */
 final class MBeans {
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
+	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = new Comparator<MBeanAttribute>() {
+		@Override
+		public int compare(MBeanAttribute o1, MBeanAttribute o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	};
 	private final MBeanServer mbeanServer;
 
 	MBeans() {
@@ -130,11 +140,16 @@ final class MBeans {
 		return mapObjectNamesByDomainAndFirstProperty;
 	}
 
-	MBeanInfo getMBeanInfo(ObjectName name) throws JMException {
-		return mbeanServer.getMBeanInfo(name);
+	MBean getMBean(ObjectName name) throws JMException {
+		final String mbeanName = name.toString();
+		final MBeanInfo mbeanInfo = mbeanServer.getMBeanInfo(name);
+		final String description = formatMBeansDescription(mbeanInfo.getDescription());
+		final MBeanAttributeInfo[] attributeInfos = mbeanInfo.getAttributes();
+		final List<MBeanAttribute> attributes = getAttributes(name, attributeInfos);
+		return new MBean(mbeanName, description, attributes);
 	}
 
-	Map<String, Object> getAttributes(ObjectName name, MBeanAttributeInfo[] attributeInfos) {
+	private List<MBeanAttribute> getAttributes(ObjectName name, MBeanAttributeInfo[] attributeInfos) {
 		final List<String> attributeNames = new ArrayList<String>(attributeInfos.length);
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
@@ -145,23 +160,33 @@ final class MBeans {
 		}
 		final String[] attributeNamesArray = attributeNames.toArray(new String[attributeNames
 				.size()]);
-		final Map<String, Object> result = new TreeMap<String, Object>();
+		final List<MBeanAttribute> result = new ArrayList<MBeanAttribute>();
 		try {
 			// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
 			final List<Object> attributes = mbeanServer.getAttributes(name, attributeNamesArray);
 			for (final Object object : attributes) {
 				final Attribute attribute = (Attribute) object;
 				final Object value = convertValueIfNeeded(attribute.getValue());
-				result.put(attribute.getName(), value);
+				final String attributeDescription = getAttributeDescription(attribute.getName(),
+						attributeInfos);
+				final String formattedAttributeValue = formatAttributeValue(value);
+				final MBeanAttribute mbeanAttribute = new MBeanAttribute(attribute.getName(),
+						attributeDescription, formattedAttributeValue);
+				result.add(mbeanAttribute);
+			}
+			if (attributes.size() > 1) {
+				Collections.sort(result, ATTRIBUTE_COMPARATOR);
 			}
 		} catch (final Exception e) {
 			// issue 201: do not stop to render MBeans tree when exception in mbeanServer.getAttributes
-			result.put("exception", e.toString());
+			final MBeanAttribute mbeanAttribute = new MBeanAttribute("exception", null,
+					e.toString());
+			result.add(mbeanAttribute);
 		}
 		return result;
 	}
 
-	String formatAttributeValue(Object attributeValue) {
+	private String formatAttributeValue(Object attributeValue) {
 		try {
 			if (attributeValue instanceof List) {
 				final StringBuilder sb = new StringBuilder();
@@ -184,7 +209,7 @@ final class MBeans {
 		}
 	}
 
-	String formatMBeansDescription(String description) {
+	private String formatMBeansDescription(String description) {
 		// les descriptions des MBeans de java.lang n'apportent aucune information utile
 		if (description == null || JAVA_LANG_MBEAN_DESCRIPTION.equals(description)) {
 			return null;
@@ -301,11 +326,12 @@ final class MBeans {
 		return sb.toString();
 	}
 
-	String getAttributeDescription(String name, MBeanAttributeInfo[] attributeInfos) {
+	private String getAttributeDescription(String name, MBeanAttributeInfo[] attributeInfos) {
 		for (final MBeanAttributeInfo attributeInfo : attributeInfos) {
 			if (name.equals(attributeInfo.getName())) {
 				final String attributeDescription = attributeInfo.getDescription();
-				if (name.equals(attributeDescription)) {
+				if (attributeDescription == null || name.equals(attributeDescription)
+						|| attributeDescription.length() == 0) {
 					// les attributs des MBeans de java.lang ont des descriptions égales aux noms,
 					// ce sont des descriptions inutiles
 					return null;
