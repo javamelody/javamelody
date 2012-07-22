@@ -173,8 +173,8 @@ class HtmlController {
 						.getSessionInformationsBySessionId(sessionId));
 			}
 		} else {
-			sessionsInformations = collectorServer.collectSessionInformations(
-					collector.getApplication(), sessionId);
+			sessionsInformations = collectorServer.collectSessionInformations(getApplication(),
+					sessionId);
 		}
 		if (sessionId == null || sessionsInformations.isEmpty()) {
 			htmlReport.writeSessions(sessionsInformations, messageForReport, SESSIONS_PART);
@@ -202,7 +202,7 @@ class HtmlController {
 			if (!isFromCollectorServer()) {
 				heapHistogram = VirtualMachine.createHeapHistogram();
 			} else {
-				heapHistogram = collectorServer.collectHeapHistogram(collector.getApplication());
+				heapHistogram = collectorServer.collectHeapHistogram(getApplication());
 			}
 		} catch (final Exception e) {
 			LOG.warn("heaphisto report failed", e);
@@ -222,7 +222,7 @@ class HtmlController {
 				htmlReport.writeProcesses(processInformationsList);
 			} else {
 				final Map<String, List<ProcessInformations>> processInformationsByTitle = collectorServer
-						.collectProcessInformations(collector.getApplication());
+						.collectProcessInformations(getApplication());
 				htmlReport.writeProcesses(processInformationsByTitle);
 			}
 			htmlReport.writeProcesses(ProcessInformations.buildProcessInformations());
@@ -241,7 +241,7 @@ class HtmlController {
 				databaseInformations = new DatabaseInformations(index);
 			} else {
 				databaseInformations = collectorServer.collectDatabaseInformations(
-						collector.getApplication(), index);
+						getApplication(), index);
 			}
 			htmlReport.writeDatabase(databaseInformations);
 		} catch (final Exception e) {
@@ -264,8 +264,7 @@ class HtmlController {
 			if (!isFromCollectorServer()) {
 				jndiBindings = JndiBinding.listBindings(path);
 			} else {
-				jndiBindings = collectorServer
-						.collectJndiBindings(collector.getApplication(), path);
+				jndiBindings = collectorServer.collectJndiBindings(getApplication(), path);
 			}
 			htmlReport.writeJndi(jndiBindings, path);
 		} catch (final Exception e) {
@@ -283,7 +282,7 @@ class HtmlController {
 				htmlReport.writeMBeans(nodes);
 			} else {
 				final Map<String, List<MBeanNode>> allMBeans = collectorServer
-						.collectMBeans(collector.getApplication());
+						.collectMBeans(getApplication());
 				htmlReport.writeMBeans(allMBeans);
 			}
 		} catch (final Exception e) {
@@ -294,7 +293,7 @@ class HtmlController {
 
 	void writeHtmlToLastShutdownFile() {
 		try {
-			final File dir = Parameters.getStorageDirectory(collector.getApplication());
+			final File dir = Parameters.getStorageDirectory(getApplication());
 			if (!dir.mkdirs() && !dir.exists()) {
 				throw new IOException("JavaMelody directory can't be created: " + dir.getPath());
 			}
@@ -313,6 +312,10 @@ class HtmlController {
 		} catch (final IOException e) {
 			LOG.warn("exception while writing the last shutdown report", e);
 		}
+	}
+
+	private String getApplication() {
+		return collector.getApplication();
 	}
 
 	private boolean isFromCollectorServer() {
