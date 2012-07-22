@@ -124,7 +124,8 @@ class PdfOtherReport {
 		try {
 			document.open();
 			addParagraph(getI18nString("MBeans"), "mbeans.png");
-			new PdfMBeansReport(document).toPdf();
+			final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
+			new PdfMBeansReport(nodes, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
 		} catch (final JMException e) {

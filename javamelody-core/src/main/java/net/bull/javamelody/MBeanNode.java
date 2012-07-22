@@ -19,19 +19,21 @@
 package net.bull.javamelody;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Instance de données sérialisables représentant un MBean et construite à partir d'un ObjectName.
+ * Instance de données sérialisables représentant un noeud de MBean et construite à partir d'un ObjectName.
  * @author Emeric Vernat
  */
-class MBean implements Serializable {
+class MBeanNode implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String name;
 
 	private final String description;
+
+	private final List<MBeanNode> children;
 
 	private final List<MBeanAttribute> attributes;
 
@@ -64,10 +66,19 @@ class MBean implements Serializable {
 		}
 	}
 
-	MBean(String name, String description, List<MBeanAttribute> attributes) {
+	MBeanNode(String name) {
+		super();
+		this.name = name;
+		this.description = null;
+		this.children = new ArrayList<MBeanNode>();
+		this.attributes = null;
+	}
+
+	MBeanNode(String name, String description, List<MBeanAttribute> attributes) {
 		super();
 		this.name = name;
 		this.description = description;
+		this.children = null;
 		this.attributes = attributes;
 	}
 
@@ -79,7 +90,11 @@ class MBean implements Serializable {
 		return description;
 	}
 
+	List<MBeanNode> getChildren() {
+		return children != null ? children : null;
+	}
+
 	List<MBeanAttribute> getAttributes() {
-		return Collections.unmodifiableList(attributes);
+		return attributes != null ? attributes : null;
 	}
 }

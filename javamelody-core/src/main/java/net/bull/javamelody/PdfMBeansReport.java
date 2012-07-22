@@ -19,13 +19,8 @@
 package net.bull.javamelody;
 
 import java.util.List;
-import java.util.Map;
 
-import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import net.bull.javamelody.MBean.MBeanAttribute;
+import net.bull.javamelody.MBeanNode.MBeanAttribute;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -42,7 +37,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * @author Emeric Vernat
  */
 class PdfMBeansReport {
-	private MBeans mbeans;
+	private final List<MBeanNode> mbeans;
 	private final Document document;
 	private final Font boldFont = PdfFonts.BOLD.getFont();
 	private final Font normalFont = PdfFonts.NORMAL.getFont();
@@ -50,78 +45,68 @@ class PdfMBeansReport {
 	private int margin;
 	private PdfPTable currentTable;
 
-	PdfMBeansReport(Document document) {
+	PdfMBeansReport(List<MBeanNode> mbeans, Document document) {
 		super();
+		assert mbeans != null;
 		assert document != null;
+		this.mbeans = mbeans;
 		this.document = document;
-		// MBeans pour la plateforme
-		setMBeans(new MBeans());
 	}
 
-	void toPdf() throws JMException, DocumentException {
+	void toPdf() throws DocumentException {
 		writeTree();
 	}
 
 	/**
 	 * Affiche l'arbre des MBeans.
-	 * @throws JMException e
 	 * @throws DocumentException e
 	 */
-	void writeTree() throws JMException, DocumentException {
+	void writeTree() throws DocumentException {
 		// MBeans pour la plateforme
-		writeTreeForCurrentMBeans();
+		margin = 0;
+		final MBeanNode platformNode = mbeans.get(0);
+		writeTree(platformNode.getChildren());
 
-		// pour JBoss 5.0.x, les MBeans de JBoss sont dans un autre MBeanServer
-		final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
-		for (final MBeanServer mbeanServer : MBeans.getMBeanServers()) {
-			if (mbeanServer != platformMBeanServer) {
-				setMBeans(new MBeans(mbeanServer));
+		for (final MBeanNode node : mbeans) {
+			if (node != platformNode) {
 				document.newPage();
-				document.add(new Chunk(mbeanServer.getDefaultDomain(), boldFont));
-				writeTreeForCurrentMBeans();
+				document.add(new Chunk(node.getName(), boldFont));
+				margin = 0;
+				writeTree(node.getChildren());
 			}
 		}
 	}
 
-	private void writeTreeForCurrentMBeans() throws JMException, DocumentException {
-		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = mbeans
-				.getMapObjectNamesByDomainAndFirstProperty();
-		for (final Map.Entry<String, Map<String, List<ObjectName>>> entryObjectNamesByDomainAndFirstProperty : mapObjectNamesByDomainAndFirstProperty
-				.entrySet()) {
-			final String domain = entryObjectNamesByDomainAndFirstProperty.getKey();
-			margin = 0;
-			addText(domain);
-			final Map<String, List<ObjectName>> mapObjectNamesByFirstProperty = entryObjectNamesByDomainAndFirstProperty
-					.getValue();
-			for (final Map.Entry<String, List<ObjectName>> entryObjectNamesByFirstProperty : mapObjectNamesByFirstProperty
-					.entrySet()) {
-				final String firstProperty = entryObjectNamesByFirstProperty.getKey();
-				margin = 12;
-				addText(firstProperty);
-				final List<ObjectName> objectNames = entryObjectNamesByFirstProperty.getValue();
-				for (final ObjectName name : objectNames) {
-					margin = 25;
-					final MBean mbean = mbeans.getMBean(name);
-					writeMBean(mbean);
-				}
+	private void writeTree(List<MBeanNode> nodes) throws DocumentException {
+		final int marginBackup = margin;
+		for (final MBeanNode node : nodes) {
+			margin = marginBackup;
+
+			final List<MBeanNode> children = node.getChildren();
+			if (children != null) {
+				addText(node.getName());
+				margin += 12;
+				writeTree(children);
+			} else {
+				writeMBeanNode(node);
 			}
 		}
 	}
 
-	private void writeMBean(MBean mbean) throws DocumentException {
+	private void writeMBeanNode(MBeanNode mbean) throws DocumentException {
 		String mbeanName = mbean.getName();
 		final int indexOfComma = mbeanName.indexOf(',');
 		if (indexOfComma != -1) {
 			mbeanName = mbeanName.substring(indexOfComma + 1);
 			addText(mbeanName);
-			margin = 37;
+			margin += 13;
 			writeAttributes(mbean);
 		} else {
 			writeAttributes(mbean);
 		}
 	}
 
-	private void writeAttributes(MBean mbean) throws DocumentException {
+	private void writeAttributes(MBeanNode mbean) throws DocumentException {
 		final String description = mbean.getDescription();
 		final List<MBeanAttribute> attributes = mbean.getAttributes();
 		if (description != null || !attributes.isEmpty()) {
@@ -145,15 +130,12 @@ class PdfMBeansReport {
 	private void writeAttribute(MBeanAttribute attribute) {
 		addCell(attribute.getName());
 		addCell(attribute.getFormattedValue());
-		if (attribute.getDescription() != null) {
-			addCell('(' + attribute.getDescription() + ')');
+		final String description = attribute.getDescription();
+		if (description != null) {
+			addCell('(' + description + ')');
 		} else {
 			addCell("");
 		}
-	}
-
-	private void setMBeans(MBeans mBeans) {
-		this.mbeans = mBeans;
 	}
 
 	private static PdfPTable createAttributesTable() {

@@ -278,12 +278,13 @@ class HtmlReport {
 	}
 
 	void writeMBeans(boolean withoutHeaders) throws IOException, JMException {
+		final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
 		if (withoutHeaders) {
 			// pour affichage dans serveur de collecte
-			new HtmlMBeansReport(writer).writeTree();
+			new HtmlMBeansReport(nodes, writer).writeTree();
 		} else {
 			writeHtmlHeader();
-			new HtmlMBeansReport(writer).toHtml();
+			new HtmlMBeansReport(nodes, writer).toHtml();
 			writeHtmlFooter();
 		}
 	}
