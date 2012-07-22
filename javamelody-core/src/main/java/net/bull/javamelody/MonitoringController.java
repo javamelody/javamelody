@@ -219,6 +219,7 @@ class MonitoringController {
 
 	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
+		// méthode utilisée dans le monitoring Hudson/Jenkins
 		new PdfController(collector, collectorServer).addPdfContentTypeAndDisposition(httpRequest,
 				httpResponse);
 	}

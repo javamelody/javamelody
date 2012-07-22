@@ -216,6 +216,15 @@ class HtmlController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
+			if (!isFromCollectorServer()) {
+				final List<ProcessInformations> processInformationsList = ProcessInformations
+						.buildProcessInformations();
+				htmlReport.writeProcesses(processInformationsList);
+			} else {
+				final Map<String, List<ProcessInformations>> processInformationsByTitle = collectorServer
+						.collectProcessInformations(collector.getApplication());
+				htmlReport.writeProcesses(processInformationsByTitle);
+			}
 			htmlReport.writeProcesses(ProcessInformations.buildProcessInformations());
 		} catch (final Exception e) {
 			LOG.warn("processes report failed", e);
