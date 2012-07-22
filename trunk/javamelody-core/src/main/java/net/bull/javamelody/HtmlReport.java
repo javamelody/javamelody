@@ -249,6 +249,22 @@ class HtmlReport {
 		writeHtmlFooter();
 	}
 
+	void writeProcesses(Map<String, List<ProcessInformations>> processesByTitle) throws IOException {
+		assert processesByTitle != null;
+		writeHtmlHeader();
+		new HtmlProcessInformationsReport(new ArrayList<ProcessInformations>(), writer)
+				.writeLinks();
+		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle.entrySet()) {
+			final String title = entry.getKey();
+			final List<ProcessInformations> processes = entry.getValue();
+			writer.write("<h3><img width='24' height='24' src='?resource=processes.png' alt='"
+					+ title + "'/>&nbsp;" + title + "</h3>");
+
+			new HtmlProcessInformationsReport(processes, writer).writeTable();
+		}
+		writeHtmlFooter();
+	}
+
 	void writeDatabase(DatabaseInformations databaseInformations) throws IOException {
 		assert databaseInformations != null;
 		writeHtmlHeader();
@@ -272,21 +288,24 @@ class HtmlReport {
 	}
 
 	void writeJndi(List<JndiBinding> jndiBindings, String path) throws IOException {
+		assert jndiBindings != null;
 		writeHtmlHeader();
 		new HtmlJndiTreeReport(jndiBindings, path, writer).toHtml();
 		writeHtmlFooter();
 	}
 
-	void writeMBeans(List<MBeanNode> nodes) throws IOException {
+	void writeMBeans(List<MBeanNode> mbeans) throws IOException {
+		assert mbeans != null;
 		writeHtmlHeader();
-		new HtmlMBeansReport(nodes, writer).toHtml();
+		new HtmlMBeansReport(mbeans, writer).toHtml();
 		writeHtmlFooter();
 	}
 
-	void writeMBeans(Map<String, List<MBeanNode>> allMBeans) throws IOException {
+	void writeMBeans(Map<String, List<MBeanNode>> mbeansByTitle) throws IOException {
+		assert mbeansByTitle != null;
 		writeHtmlHeader();
 		new HtmlMBeansReport(new ArrayList<MBeanNode>(), writer).writeLinks();
-		for (final Map.Entry<String, List<MBeanNode>> entry : allMBeans.entrySet()) {
+		for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
 			final String title = entry.getKey();
 			final List<MBeanNode> nodes = entry.getValue();
 			writer.write("<h3><img width='24' height='24' src='?resource=mbeans.png' alt='" + title

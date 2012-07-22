@@ -55,7 +55,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -142,9 +141,7 @@ class CollectorController {
 			doJmxValue(req, resp, application, req.getParameter(JMX_VALUE));
 		} else if (TransportFormat.isATransportFormat(formatParameter)) {
 			doCompressedSerializable(req, resp, application, monitoringController);
-		} else if ("pdf".equalsIgnoreCase(formatParameter)) {
-			doPdf(req, resp, application, monitoringController);
-		} else if (partParameter == null) {
+		} else if (partParameter == null || "pdf".equalsIgnoreCase(formatParameter)) {
 			// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
 			// pour être à jour
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
@@ -152,29 +149,6 @@ class CollectorController {
 		} else {
 			doCompressedPart(req, resp, application, monitoringController, partParameter);
 		}
-	}
-
-	private void doPdf(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController) throws IOException {
-		if (PROCESSES_PART.equalsIgnoreCase(req.getParameter(PART_PARAMETER))) {
-			monitoringController.addPdfContentTypeAndDisposition(req, resp);
-			try {
-				doPdfProcesses(resp, application);
-			} finally {
-				resp.getOutputStream().flush();
-			}
-		} else {
-			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-			monitoringController.doReport(req, resp, javaInformationsList);
-		}
-	}
-
-	private void doPdfProcesses(HttpServletResponse resp, String application) throws IOException {
-		// TODO déplacer doPdfProcesses et doProcesses dans PdfController et HtmlController ?
-		final Map<String, List<ProcessInformations>> processesByTitle = collectorServer
-				.collectProcessInformations(application);
-		new PdfOtherReport(application, resp.getOutputStream())
-				.writeProcessInformations(processesByTitle);
 	}
 
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -212,34 +186,10 @@ class CollectorController {
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
 					"connexions_intro", "db.png");
-		} else if (PROCESSES_PART.equalsIgnoreCase(partParameter)) {
-			doProcesses(req, resp, application);
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
 			monitoringController.doReport(req, resp, javaInformationsList);
 		}
-	}
-
-	private void doProcesses(HttpServletRequest req, HttpServletResponse resp, String application)
-			throws IOException {
-		final PrintWriter writer = createWriterFromOutputStream(resp);
-		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
-		htmlReport.writeHtmlHeader();
-		new HtmlProcessInformationsReport(new ArrayList<ProcessInformations>(), writer)
-				.writeLinks();
-		final Map<String, List<ProcessInformations>> processesByTitle = collectorServer
-				.collectProcessInformations(application);
-		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle.entrySet()) {
-			final String title = entry.getKey();
-			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=processes.png' alt='"
-					+ title + "'/>&nbsp;" + title + "</h3>";
-			writer.write(htmlTitle);
-			writer.flush();
-			final List<ProcessInformations> processes = entry.getValue();
-			new HtmlProcessInformationsReport(processes, writer).writeTable();
-		}
-		htmlReport.writeHtmlFooter();
-		writer.close();
 	}
 
 	private void doJmxValue(HttpServletRequest req, HttpServletResponse resp, String application,

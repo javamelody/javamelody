@@ -139,9 +139,15 @@ class PdfController {
 		Action.checkSystemActionsEnabled();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
 				httpResponse.getOutputStream());
-		final List<ProcessInformations> processInformations = ProcessInformations
-				.buildProcessInformations();
-		pdfOtherReport.writeProcessInformations(processInformations);
+		if (!isFromCollectorServer()) {
+			final List<ProcessInformations> processInformations = ProcessInformations
+					.buildProcessInformations();
+			pdfOtherReport.writeProcessInformations(processInformations);
+		} else {
+			final Map<String, List<ProcessInformations>> processesByTitle = collectorServer
+					.collectProcessInformations(collector.getApplication());
+			pdfOtherReport.writeProcessInformations(processesByTitle);
+		}
 	}
 
 	private void doDatabase(HttpServletResponse httpResponse, final int index) throws Exception { // NOPMD
@@ -190,7 +196,6 @@ class PdfController {
 
 	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
-		// méthode utilisée dans le monitoring Hudson/Jenkins
 		httpResponse.setContentType("application/pdf");
 		httpResponse.addHeader(
 				CONTENT_DISPOSITION,
