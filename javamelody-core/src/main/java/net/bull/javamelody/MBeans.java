@@ -169,11 +169,13 @@ final class MBeans {
 	}
 
 	private void sortMBeanNodes(List<MBeanNode> nodes) {
-		Collections.sort(nodes, NODE_COMPARATOR);
+		if (nodes.size() > 1) {
+			Collections.sort(nodes, NODE_COMPARATOR);
+		}
 
 		for (final MBeanNode node : nodes) {
 			final List<MBeanNode> children = node.getChildren();
-			if (children != null && children.size() > 1) {
+			if (children != null) {
 				sortMBeanNodes(children);
 			}
 			final List<MBeanAttribute> attributes = node.getAttributes();
