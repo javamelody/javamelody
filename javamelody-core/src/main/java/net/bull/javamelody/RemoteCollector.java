@@ -231,8 +231,7 @@ class RemoteCollector {
 		final String title = I18N.getString("MBeans");
 		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<String, List<MBeanNode>>();
 		for (final URL url : urls) {
-			final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ MBEANS_PART);
+			final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + MBEANS_PART);
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(mbeansUrl);
 			final List<MBeanNode> mbeans = labradorRetriever.call();
 			mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
