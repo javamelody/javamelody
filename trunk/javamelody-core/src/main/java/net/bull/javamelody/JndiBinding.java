@@ -146,4 +146,11 @@ class JndiBinding implements Serializable {
 		}
 		return result;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[name=" + getName() + ", className=" + getClassName()
+				+ ", contextPath=" + getContextPath() + ']';
+	}
 }

@@ -64,6 +64,13 @@ class MBeanNode implements Serializable {
 		String getFormattedValue() {
 			return formattedValue;
 		}
+
+		/** {@inheritDoc} */
+		@Override
+		public String toString() {
+			return getClass().getSimpleName() + "[name=" + getName() + ", formattedValue="
+					+ getFormattedValue() + ']';
+		}
 	}
 
 	MBeanNode(String name) {
@@ -96,5 +103,11 @@ class MBeanNode implements Serializable {
 
 	List<MBeanAttribute> getAttributes() {
 		return attributes != null ? attributes : null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[name=" + getName() + ']';
 	}
 }
