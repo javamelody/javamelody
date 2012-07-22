@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -154,9 +155,7 @@ class HtmlController {
 		} else if (JNDI_PART.equalsIgnoreCase(part)) {
 			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
-			doMBeans(htmlReport, withoutHeaders);
+			doMBeans(htmlReport);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -266,11 +265,18 @@ class HtmlController {
 		}
 	}
 
-	private void doMBeans(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
+	private void doMBeans(HtmlReport htmlReport) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
-			htmlReport.writeMBeans(withoutHeaders);
+			if (!isFromCollectorServer()) {
+				final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
+				htmlReport.writeMBeans(nodes);
+			} else {
+				final Map<String, List<MBeanNode>> allMBeans = collectorServer
+						.collectMBeans(collector.getApplication());
+				htmlReport.writeMBeans(allMBeans);
+			}
 		} catch (final Exception e) {
 			LOG.warn("mbeans report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);

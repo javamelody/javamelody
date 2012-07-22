@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
+import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
@@ -223,6 +224,20 @@ class RemoteCollector {
 				+ (path != null ? '&' + PATH_PARAMETER + '=' + path : ""));
 		final LabradorRetriever labradorRetriever = new LabradorRetriever(jndiUrl);
 		return labradorRetriever.call();
+	}
+
+	Map<String, List<MBeanNode>> collectMBeans() throws IOException {
+		// récupération à la demande des MBeans
+		final String title = I18N.getString("MBeans");
+		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<String, List<MBeanNode>>();
+		for (final URL url : urls) {
+			final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ MBEANS_PART);
+			final LabradorRetriever labradorRetriever = new LabradorRetriever(mbeansUrl);
+			final List<MBeanNode> mbeans = labradorRetriever.call();
+			mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
+		}
+		return mbeansByTitle;
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists() {

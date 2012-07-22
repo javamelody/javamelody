@@ -170,6 +170,7 @@ class CollectorController {
 	}
 
 	private void doPdfProcesses(HttpServletResponse resp, String application) throws IOException {
+		// TODO déplacer doPdfProcesses et doProcesses dans PdfController et HtmlController ?
 		final Map<String, List<ProcessInformations>> processesByTitle = collectorServer
 				.collectProcessInformations(application);
 		new PdfOtherReport(application, resp.getOutputStream())
@@ -208,8 +209,6 @@ class CollectorController {
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CURRENT_REQUESTS_PART, "Requetes_en_cours",
 					null, "hourglass.png");
-		} else if (MBEANS_PART.equalsIgnoreCase(partParameter)) {
-			doMultiHtmlProxy(req, resp, application, MBEANS_PART, "MBeans", null, "mbeans.png");
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
 					"connexions_intro", "db.png");
@@ -226,6 +225,7 @@ class CollectorController {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
 		htmlReport.writeHtmlHeader();
+		// TODO utiliser HtmlProcessInformationsReport.writeLinks()
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(
 				"<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
@@ -392,6 +392,10 @@ class CollectorController {
 			final String path = httpRequest.getParameter(PATH_PARAMETER);
 			return new ArrayList<JndiBinding>(
 					collectorServer.collectJndiBindings(application, path));
+		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return (Serializable) collectorServer.collectMBeans(application);
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();

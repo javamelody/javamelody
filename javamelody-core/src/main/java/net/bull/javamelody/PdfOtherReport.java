@@ -23,8 +23,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.JMException;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -120,15 +118,25 @@ class PdfOtherReport {
 		document.close();
 	}
 
-	void writeMBeans() throws IOException {
+	void writeMBeans(List<MBeanNode> mbeans) throws IOException {
 		try {
 			document.open();
 			addParagraph(getI18nString("MBeans"), "mbeans.png");
-			final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
-			new PdfMBeansReport(nodes, document).toPdf();
+			new PdfMBeansReport(mbeans, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
-		} catch (final JMException e) {
+		}
+		document.close();
+	}
+
+	void writeMBeans(Map<String, List<MBeanNode>> mbeansByTitle) throws IOException {
+		try {
+			document.open();
+			for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
+				addParagraph(entry.getKey(), "mbeans.png");
+				new PdfMBeansReport(entry.getValue(), document).toPdf();
+			}
+		} catch (final DocumentException e) {
 			throw createIOException(e);
 		}
 		document.close();

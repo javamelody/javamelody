@@ -35,6 +35,7 @@ import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
+import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
@@ -410,6 +411,10 @@ class MonitoringController {
 			Action.checkSystemActionsEnabled();
 			final String path = httpRequest.getParameter(PATH_PARAMETER);
 			return new ArrayList<JndiBinding>(JndiBinding.listBindings(path));
+		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();

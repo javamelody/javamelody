@@ -269,9 +269,7 @@ public class TestHtmlReport {
 		htmlReport
 				.writeSessions(Collections.<SessionInformations> emptyList(), null, SESSIONS_PART);
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeMBeans(false);
-		assertNotEmptyAndClear(writer);
-		htmlReport.writeMBeans(true);
+		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
 				.getResourceAsStream("/tasklist.txt"), true));

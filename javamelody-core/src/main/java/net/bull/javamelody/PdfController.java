@@ -33,6 +33,7 @@ import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -161,12 +162,16 @@ class PdfController {
 	private void doMBeans(HttpServletResponse httpResponse) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		if (isFromCollectorServer()) {
-			throw new IllegalStateException("Not supported on the collect server");
-		}
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(collector.getApplication(),
 				httpResponse.getOutputStream());
-		pdfOtherReport.writeMBeans();
+		if (!isFromCollectorServer()) {
+			final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
+			pdfOtherReport.writeMBeans(nodes);
+		} else {
+			final Map<String, List<MBeanNode>> allMBeans = collectorServer.collectMBeans(collector
+					.getApplication());
+			pdfOtherReport.writeMBeans(allMBeans);
+		}
 	}
 
 	private void doHeapHisto(HttpServletResponse httpResponse) throws Exception { // NOPMD

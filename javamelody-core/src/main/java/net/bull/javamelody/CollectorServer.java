@@ -201,6 +201,10 @@ class CollectorServer {
 		return getRemoteCollectorByApplication(application).collectJndiBindings(path);
 	}
 
+	Map<String, List<MBeanNode>> collectMBeans(String application) throws IOException {
+		return getRemoteCollectorByApplication(application).collectMBeans();
+	}
+
 	List<List<ThreadInformations>> getThreadInformationsLists(String application) {
 		return getRemoteCollectorByApplication(application).getThreadInformationsLists();
 	}
