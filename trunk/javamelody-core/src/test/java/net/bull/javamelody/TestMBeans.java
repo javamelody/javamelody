@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,6 @@ import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
-import net.bull.javamelody.MBean.MBeanAttribute;
 import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
 import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 
@@ -100,11 +98,11 @@ public class TestMBeans {
 		assertNotNull("getAttribute", mbeans.getAttribute(mbeansList.get(0), "currentThreadsBusy"));
 	}
 
-	/** Test. */
+	/** Test.
+	 * @throws JMException e */
 	@Test
-	public void testGetMapObjectNamesByDomainAndFirstProperty() {
-		assertNotNull("getMapObjectNamesByDomainAndFirstProperty",
-				mbeans.getMapObjectNamesByDomainAndFirstProperty());
+	public void testGetAllMBeanNodes() throws JMException {
+		assertNotNull("getAllMBeanNodes", MBeans.getAllMBeanNodes());
 	}
 
 	/** Test. */
@@ -139,21 +137,6 @@ public class TestMBeans {
 			MBeans.getConvertedAttributes("noAttribute");
 		} catch (final IllegalArgumentException e) {
 			assertNotNull("e", e);
-		}
-	}
-
-	/** Test.
-	 * @throws JMException e */
-	@Test
-	public void testMBean() throws JMException {
-		final MBean mbean = mbeans.getMBean(mbeansList.get(0));
-		assertNotNull("mbean name", mbean.getName());
-		assertNull("mbean description", mbean.getDescription());
-		final List<MBeanAttribute> attributes = mbean.getAttributes();
-		for (final MBeanAttribute attribute : attributes) {
-			assertNotNull("attribute name", attribute.getName());
-			assertNotNull("attribute description", attribute.getDescription());
-			assertNotNull("attribute formattedValue", attribute.getFormattedValue());
 		}
 	}
 }

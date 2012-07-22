@@ -41,7 +41,7 @@ import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
-import net.bull.javamelody.MBean.MBeanAttribute;
+import net.bull.javamelody.MBeanNode.MBeanAttribute;
 
 /**
  * Objet récupérant une instance de MBeanServer lors de sa construction
@@ -50,6 +50,12 @@ import net.bull.javamelody.MBean.MBeanAttribute;
  */
 final class MBeans {
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
+	private static final Comparator<MBeanNode> NODE_COMPARATOR = new Comparator<MBeanNode>() {
+		@Override
+		public int compare(MBeanNode o1, MBeanNode o2) {
+			return o1.getName() != null ? o1.getName().compareTo(o2.getName()) : 0;
+		}
+	};
 	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = new Comparator<MBeanAttribute>() {
 		@Override
 		public int compare(MBeanAttribute o1, MBeanAttribute o2) {
@@ -62,7 +68,7 @@ final class MBeans {
 		this(getPlatformMBeanServer());
 	}
 
-	MBeans(MBeanServer mbeanServer) {
+	private MBeans(MBeanServer mbeanServer) {
 		super();
 		this.mbeanServer = mbeanServer;
 	}
@@ -77,6 +83,29 @@ final class MBeans {
 
 	Object getAttribute(ObjectName name, String attribute) throws JMException {
 		return mbeanServer.getAttribute(name, attribute);
+	}
+
+	static List<MBeanNode> getAllMBeanNodes() throws JMException {
+		initJRockitMBeansIfNeeded();
+
+		final List<MBeanNode> result = new ArrayList<MBeanNode>();
+		final MBeanServer platformMBeanServer = getPlatformMBeanServer();
+		final MBeanNode platformNode = new MBeanNode("");
+		// MBeans pour la plateforme
+		final MBeans platformMBeans = new MBeans();
+		platformNode.getChildren().addAll(platformMBeans.getMBeanNodes());
+		result.add(platformNode);
+
+		// pour JBoss 5.0.x, les MBeans de JBoss sont dans un autre MBeanServer
+		for (final MBeanServer mbeanServer : getMBeanServers()) {
+			if (!mbeanServer.equals(platformMBeanServer)) {
+				final MBeanNode node = new MBeanNode(mbeanServer.getDefaultDomain());
+				final MBeans mbeans = new MBeans(mbeanServer);
+				node.getChildren().addAll(mbeans.getMBeanNodes());
+				result.add(node);
+			}
+		}
+		return result;
 	}
 
 	private static void initJRockitMBeansIfNeeded() {
@@ -98,11 +127,8 @@ final class MBeans {
 		}
 	}
 
-	Map<String, Map<String, List<ObjectName>>> getMapObjectNamesByDomainAndFirstProperty() {
-		initJRockitMBeansIfNeeded();
-
-		// TreeMap et non HashMap ou LinkedHashMap pour trier par ordre des clés
-		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = new TreeMap<String, Map<String, List<ObjectName>>>();
+	private List<MBeanNode> getMBeanNodes() throws JMException {
+		final List<MBeanNode> result = new ArrayList<MBeanNode>();
 		final Set<ObjectName> names = mbeanServer.queryNames(null, null);
 		for (final ObjectName name : names) {
 			final String domain = name.getDomain();
@@ -110,11 +136,10 @@ final class MBeans {
 				// la partie "jboss.deployment" dans JBoss (5.0.x) est plutôt inutile et trop lourde
 				continue;
 			}
-			Map<String, List<ObjectName>> mapObjectNamesByFirstProperty = mapObjectNamesByDomainAndFirstProperty
-					.get(domain);
-			if (mapObjectNamesByFirstProperty == null) {
-				mapObjectNamesByFirstProperty = new TreeMap<String, List<ObjectName>>();
-				mapObjectNamesByDomainAndFirstProperty.put(domain, mapObjectNamesByFirstProperty);
+			MBeanNode domainNode = getMBeanNodeFromList(result, domain);
+			if (domainNode == null) {
+				domainNode = new MBeanNode(domain);
+				result.add(domainNode);
 			}
 			final String keyPropertyListString = name.getKeyPropertyListString();
 			final String firstPropertyValue;
@@ -130,23 +155,51 @@ final class MBeans {
 				// la partie "jonas:j2eeType=Servlet" dans Jonas (5.1.0) est trop lourde
 				continue;
 			}
-			List<ObjectName> objectNames = mapObjectNamesByFirstProperty.get(firstPropertyValue);
-			if (objectNames == null) {
-				objectNames = new ArrayList<ObjectName>();
-				mapObjectNamesByFirstProperty.put(firstPropertyValue, objectNames);
+			MBeanNode firstPropertyNode = getMBeanNodeFromList(domainNode.getChildren(),
+					firstPropertyValue);
+			if (firstPropertyNode == null) {
+				firstPropertyNode = new MBeanNode(firstPropertyValue);
+				domainNode.getChildren().add(firstPropertyNode);
 			}
-			objectNames.add(name);
+			final MBeanNode mbean = getMBeanNode(name);
+			firstPropertyNode.getChildren().add(mbean);
 		}
-		return mapObjectNamesByDomainAndFirstProperty;
+		sortMBeanNodes(result);
+		return result;
 	}
 
-	MBean getMBean(ObjectName name) throws JMException {
+	private void sortMBeanNodes(List<MBeanNode> nodes) {
+		Collections.sort(nodes, NODE_COMPARATOR);
+
+		for (final MBeanNode node : nodes) {
+			final List<MBeanNode> children = node.getChildren();
+			if (children != null && children.size() > 1) {
+				sortMBeanNodes(children);
+			}
+			final List<MBeanAttribute> attributes = node.getAttributes();
+			if (attributes != null && attributes.size() > 1) {
+				Collections.sort(attributes, ATTRIBUTE_COMPARATOR);
+			}
+		}
+	}
+
+	private static MBeanNode getMBeanNodeFromList(List<MBeanNode> list, String name) {
+		for (final MBeanNode node : list) {
+			if (node.getName().equals(name)) {
+				return node;
+			}
+		}
+		return null;
+	}
+
+	private MBeanNode getMBeanNode(ObjectName name) throws JMException {
 		final String mbeanName = name.toString();
 		final MBeanInfo mbeanInfo = mbeanServer.getMBeanInfo(name);
 		final String description = formatMBeansDescription(mbeanInfo.getDescription());
 		final MBeanAttributeInfo[] attributeInfos = mbeanInfo.getAttributes();
 		final List<MBeanAttribute> attributes = getAttributes(name, attributeInfos);
-		return new MBean(mbeanName, description, attributes);
+		// les attributs seront triés par ordre alphabétique dans getMBeanNodes
+		return new MBeanNode(mbeanName, description, attributes);
 	}
 
 	private List<MBeanAttribute> getAttributes(ObjectName name, MBeanAttributeInfo[] attributeInfos) {
@@ -173,9 +226,6 @@ final class MBeans {
 				final MBeanAttribute mbeanAttribute = new MBeanAttribute(attribute.getName(),
 						attributeDescription, formattedAttributeValue);
 				result.add(mbeanAttribute);
-			}
-			if (attributes.size() > 1) {
-				Collections.sort(result, ATTRIBUTE_COMPARATOR);
 			}
 		} catch (final Exception e) {
 			// issue 201: do not stop to render MBeans tree when exception in mbeanServer.getAttributes
@@ -362,7 +412,7 @@ final class MBeans {
 	 * Retourne la liste de tous les javax.management.MBeanServer.
 	 * @return List
 	 */
-	static List<MBeanServer> getMBeanServers() {
+	private static List<MBeanServer> getMBeanServers() {
 		// par exemple avec JBoss 5.0.x, il y a un MBeanServer de la plateforme (defaultDomain null)
 		// et un MBeanServer de JBoss (defaultDomain "jboss")
 		return MBeanServerFactory.findMBeanServer(null);

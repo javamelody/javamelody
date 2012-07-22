@@ -21,13 +21,8 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
-import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import net.bull.javamelody.MBean.MBeanAttribute;
+import net.bull.javamelody.MBeanNode.MBeanAttribute;
 
 /**
  * Partie du rapport html pour les MBeans.
@@ -36,98 +31,72 @@ import net.bull.javamelody.MBean.MBeanAttribute;
 class HtmlMBeansReport {
 	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private static final String BR = "<br/>";
-	private MBeans mbeans;
+	private final List<MBeanNode> mbeans;
 	private final Writer writer;
 	private final String pid = PID.getPID();
 	private int sequence;
 
-	HtmlMBeansReport(Writer writer) {
+	HtmlMBeansReport(List<MBeanNode> mbeans, Writer writer) {
 		super();
+		assert mbeans != null;
 		assert writer != null;
+		this.mbeans = mbeans;
 		this.writer = writer;
-		// MBeans pour la plateforme
-		setMBeans(new MBeans());
 	}
 
-	void toHtml() throws IOException, JMException {
+	void toHtml() throws IOException {
 		writeLinks();
 		writeln(BR);
 
 		writeln("<img src='?resource=mbeans.png' width='24' height='24' alt='#MBeans#' />&nbsp;");
 		writeln("<b>#MBeans#</b>");
+		writeln("<br/><br/>");
+
 		writeTree();
 	}
 
-	/**
-	 * Affiche l'arbre des MBeans.
-	 * @throws IOException e
-	 * @throws JMException e
-	 */
-	void writeTree() throws IOException, JMException {
+	void writeTree() throws IOException {
+		final String endDiv = "</div>";
+
 		// MBeans pour la plateforme
-		writeTreeForCurrentMBeans();
-
-		// pour JBoss 5.0.x, les MBeans de JBoss sont dans un autre MBeanServer
-		final MBeanServer plateformMBeanServer = MBeans.getPlatformMBeanServer();
-		for (final MBeanServer mbeanServer : MBeans.getMBeanServers()) {
-			if (mbeanServer != plateformMBeanServer) {
-				setMBeans(new MBeans(mbeanServer));
-				writeln(BR);
-				writer.write("<b>" + htmlEncode(mbeanServer.getDefaultDomain()) + "</b>");
-				writeTreeForCurrentMBeans();
-			}
-		}
-	}
-
-	private void writeTreeForCurrentMBeans() throws IOException, JMException {
+		final MBeanNode platformNode = mbeans.get(0);
 		writeln("<div style='margin-left: 20px'>");
-		final Map<String, Map<String, List<ObjectName>>> mapObjectNamesByDomainAndFirstProperty = mbeans
-				.getMapObjectNamesByDomainAndFirstProperty();
-		for (final Map.Entry<String, Map<String, List<ObjectName>>> entryObjectNamesByDomainAndFirstProperty : mapObjectNamesByDomainAndFirstProperty
-				.entrySet()) {
-			final String domain = entryObjectNamesByDomainAndFirstProperty.getKey();
-			final String domainId = getNextId();
-			write(BR);
-			writeShowHideLink(domainId, htmlEncode(domain));
-			writeln("<div id='" + domainId + "' style='display: none; margin-left: 20px;'><div>");
-			final Map<String, List<ObjectName>> mapObjectNamesByFirstProperty = entryObjectNamesByDomainAndFirstProperty
-					.getValue();
-			boolean firstInDomain = true;
-			for (final Map.Entry<String, List<ObjectName>> entryObjectNamesByFirstProperty : mapObjectNamesByFirstProperty
-					.entrySet()) {
-				final String firstProperty = entryObjectNamesByFirstProperty.getKey();
-				final String firstPropertyId = getNextId();
-				if (firstInDomain) {
-					firstInDomain = false;
-				} else {
-					write(BR);
-				}
-				writeShowHideLink(firstPropertyId, htmlEncode(firstProperty));
-				writeln("<div id='" + firstPropertyId
-						+ "' style='display: none; margin-left: 20px;'><div>");
-				final List<ObjectName> objectNames = entryObjectNamesByFirstProperty.getValue();
-				boolean firstMBean = true;
-				for (final ObjectName name : objectNames) {
-					if (firstMBean) {
-						firstMBean = false;
-					} else {
-						write(BR);
-					}
-					final MBean mbean = mbeans.getMBean(name);
-					writeMBean(mbean);
-				}
-				writeln("</div></div>");
+		writeTree(platformNode.getChildren());
+		writeln(endDiv);
+
+		for (final MBeanNode node : mbeans) {
+			if (node != platformNode) {
+				writer.write("<br/><b>" + htmlEncode(node.getName()) + "</b>");
+				writeln("<div style='margin-left: 20px'><br/>");
+				writeTree(platformNode.getChildren());
+				writeln(endDiv);
 			}
-			writeln("</div></div>");
 		}
-		writeln("</div>");
 	}
 
-	private String getNextId() {
-		return 'x' + pid + '_' + sequence++;
+	private void writeTree(List<MBeanNode> nodes) throws IOException {
+		boolean first = true;
+		for (final MBeanNode node : nodes) {
+			final String name = node.getName();
+			if (first) {
+				first = false;
+			} else {
+				write(BR);
+			}
+			final List<MBeanNode> children = node.getChildren();
+			if (children != null) {
+				final String id = getNextId();
+				writeShowHideLink(id, htmlEncode(name));
+				writeln("<div id='" + id + "' style='display: none; margin-left: 20px;'><div>");
+				writeTree(children);
+				writeln("</div></div>");
+			} else {
+				writeMBeanNode(node);
+			}
+		}
 	}
 
-	private void writeMBean(MBean mbean) throws IOException {
+	private void writeMBeanNode(MBeanNode mbean) throws IOException {
 		String mbeanName = mbean.getName();
 		final String mbeanId = getNextId();
 		final int indexOfComma = mbeanName.indexOf(',');
@@ -144,7 +113,7 @@ class HtmlMBeansReport {
 		}
 	}
 
-	private void writeAttributes(MBean mbean) throws IOException {
+	private void writeAttributes(MBeanNode mbean) throws IOException {
 		final String description = mbean.getDescription();
 		final List<MBeanAttribute> attributes = mbean.getAttributes();
 		if (description != null || !attributes.isEmpty()) {
@@ -161,7 +130,7 @@ class HtmlMBeansReport {
 		}
 	}
 
-	private void writeAttribute(MBean mbean, MBeanAttribute attribute) throws IOException {
+	private void writeAttribute(MBeanNode mbean, MBeanAttribute attribute) throws IOException {
 		final String attributeName = attribute.getName();
 		final String formattedValue = attribute.getFormattedValue();
 		final String description = attribute.getDescription();
@@ -185,6 +154,10 @@ class HtmlMBeansReport {
 		write("</td></tr>");
 	}
 
+	private String getNextId() {
+		return 'x' + pid + '_' + sequence++;
+	}
+
 	private void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
@@ -201,10 +174,6 @@ class HtmlMBeansReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writer.write("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private void setMBeans(MBeans mBeans) {
-		this.mbeans = mBeans;
 	}
 
 	private static String htmlEncode(String text) {

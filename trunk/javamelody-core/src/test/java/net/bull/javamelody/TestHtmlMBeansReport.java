@@ -109,7 +109,8 @@ public class TestHtmlMBeansReport {
 			MBeanServerFactory.createMBeanServer("jboss");
 
 			final StringWriter writer = new StringWriter();
-			final HtmlMBeansReport report = new HtmlMBeansReport(writer);
+			final List<MBeanNode> mbeans = MBeans.getAllMBeanNodes();
+			final HtmlMBeansReport report = new HtmlMBeansReport(mbeans, writer);
 			report.toHtml();
 			assertNotEmptyAndClear(writer);
 		} catch (final IllegalAccessException e) {
