@@ -338,7 +338,9 @@ class LabradorRetriever {
 	}
 
 	private static class LabradorMock { // NOPMD
+		// CHECKSTYLE:OFF
 		static Object createMockResultOfPartCall(String request) throws IOException { // NOPMD
+			// CHECKSTYLE:ON
 			final Object result;
 			if (request.contains(HttpParameters.SESSIONS_PART)
 					&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
@@ -346,7 +348,8 @@ class LabradorRetriever {
 			} else if (request.contains(HttpParameters.SESSIONS_PART)
 					|| request.contains(HttpParameters.PROCESSES_PART)
 					|| request.contains(HttpParameters.JNDI_PART)
-					|| request.contains(HttpParameters.CONNECTIONS_PART)) {
+					|| request.contains(HttpParameters.CONNECTIONS_PART)
+					|| request.contains(HttpParameters.MBEANS_PART)) {
 				result = Collections.emptyList();
 			} else if (request.contains(HttpParameters.DATABASE_PART)) {
 				try {
