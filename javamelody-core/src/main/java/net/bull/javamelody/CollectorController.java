@@ -395,7 +395,8 @@ class CollectorController {
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			return (Serializable) collectorServer.collectMBeans(application);
+			return new LinkedHashMap<String, List<MBeanNode>>(
+					collectorServer.collectMBeans(application));
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
