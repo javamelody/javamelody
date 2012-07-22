@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Map;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
@@ -116,23 +117,9 @@ enum TransportFormat {
 				// sinon format xml, utilise la dépendance XPP3 par défaut
 				xstream = new XStream();
 			}
-			xstream.alias("counter", Counter.class);
-			xstream.alias("request", CounterRequest.class);
-			xstream.alias("javaInformations", JavaInformations.class);
-			xstream.alias("memoryInformations", MemoryInformations.class);
-			xstream.alias("tomcatInformations", TomcatInformations.class);
-			xstream.alias("threadInformations", ThreadInformations.class);
-			xstream.alias("heapHisto", HeapHistogram.class);
-			xstream.alias("connectionInformations", ConnectionInformations.class);
-			xstream.alias("classInfo", HeapHistogram.ClassInfo.class);
-			xstream.alias("sessionInformations", SessionInformations.class);
-			xstream.alias("attribute", SessionInformations.SessionAttribute.class);
-			xstream.alias("cacheInformations", CacheInformations.class);
-			xstream.alias("jobInformations", JobInformations.class);
-			xstream.alias("counterError", CounterError.class);
-			xstream.alias("processInformations", ProcessInformations.class);
-			xstream.alias("databaseInformations", DatabaseInformations.class);
-			xstream.alias("jndiBinding", JndiBinding.class);
+			for (final Map.Entry<String, Class<?>> entry : XStreamAlias.getMap().entrySet()) {
+				xstream.alias(entry.getKey(), entry.getValue());
+			}
 			final MapConverter mapConverter = new MapConverter(xstream.getMapper()) {
 				/** {@inheritDoc} */
 				@SuppressWarnings("rawtypes")

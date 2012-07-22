@@ -23,9 +23,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.management.JMException;
+import java.util.Map;
 
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
@@ -277,16 +277,24 @@ class HtmlReport {
 		writeHtmlFooter();
 	}
 
-	void writeMBeans(boolean withoutHeaders) throws IOException, JMException {
-		final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
-		if (withoutHeaders) {
-			// pour affichage dans serveur de collecte
+	void writeMBeans(List<MBeanNode> nodes) throws IOException {
+		writeHtmlHeader();
+		new HtmlMBeansReport(nodes, writer).toHtml();
+		writeHtmlFooter();
+	}
+
+	void writeMBeans(Map<String, List<MBeanNode>> allMBeans) throws IOException {
+		writeHtmlHeader();
+		new HtmlMBeansReport(new ArrayList<MBeanNode>(), writer).writeLinks();
+		for (final Map.Entry<String, List<MBeanNode>> entry : allMBeans.entrySet()) {
+			final String title = entry.getKey();
+			final List<MBeanNode> nodes = entry.getValue();
+			writer.write("<h3><img width='24' height='24' src='?resource=mbeans.png' alt='" + title
+					+ "'/>&nbsp;" + title + "</h3>");
+
 			new HtmlMBeansReport(nodes, writer).writeTree();
-		} else {
-			writeHtmlHeader();
-			new HtmlMBeansReport(nodes, writer).toHtml();
-			writeHtmlFooter();
 		}
+		writeHtmlFooter();
 	}
 
 	private void writeln(String html) throws IOException {

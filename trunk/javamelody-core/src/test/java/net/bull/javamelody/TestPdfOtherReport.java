@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.management.JMException;
 import javax.naming.NamingException;
 
 import org.junit.Before;
@@ -162,12 +163,13 @@ public class TestPdfOtherReport {
 	}
 
 	/** Test.
-	 * @throws IOException e */
+	 * @throws IOException e
+	 * @throws JMException e */
 	@Test
-	public void testWriteMBeans() throws IOException {
+	public void testWriteMBeans() throws IOException, JMException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeMBeans();
+		pdfOtherReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(output);
 	}
 

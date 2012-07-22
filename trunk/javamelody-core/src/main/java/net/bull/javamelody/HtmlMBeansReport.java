@@ -158,7 +158,7 @@ class HtmlMBeansReport {
 		return 'x' + pid + '_' + sequence++;
 	}
 
-	private void writeLinks() throws IOException {
+	void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
