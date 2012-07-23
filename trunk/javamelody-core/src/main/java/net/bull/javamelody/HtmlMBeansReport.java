@@ -68,7 +68,7 @@ class HtmlMBeansReport {
 			if (node != platformNode) {
 				writer.write("<br/><b>" + htmlEncode(node.getName()) + "</b>");
 				writeln("<div style='margin-left: 20px'><br/>");
-				writeTree(platformNode.getChildren());
+				writeTree(node.getChildren());
 				writeln(endDiv);
 			}
 		}
