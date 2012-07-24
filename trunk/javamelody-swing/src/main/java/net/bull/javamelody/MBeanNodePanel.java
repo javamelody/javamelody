@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -31,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import net.bull.javamelody.MBeanNode.MBeanAttribute;
@@ -86,8 +88,8 @@ class MBeanNodePanel extends JPanel {
 			if (e.getClickCount() == 2) {
 				final MTable<MBeanAttribute> table = (MTable<MBeanAttribute>) e.getComponent();
 				final MBeanAttribute attribute = table.getSelectedObject();
-				Utilities.showTextInPopup(table, attribute.getName(),
-						attribute.getFormattedValue());
+				Utilities
+						.showTextInPopup(table, attribute.getName(), attribute.getFormattedValue());
 			}
 		}
 	};
@@ -114,6 +116,9 @@ class MBeanNodePanel extends JPanel {
 				name = name.substring(indexOfComma + 1);
 			}
 			label = new JLabel(name);
+			if (node.getDescription() != null) {
+				label.setToolTipText("<html>" + name + "<br/>(" + node.getDescription() + ')');
+			}
 			label.setIcon(PLUS_ICON);
 			label.setForeground(FOREGROUND);
 			label.setCursor(HAND_CURSOR);
@@ -138,7 +143,13 @@ class MBeanNodePanel extends JPanel {
 			add(detailPanel, BorderLayout.SOUTH);
 		}
 		detailPanel.setVisible(!detailPanel.isVisible());
-		if (label.getIcon() == PLUS_ICON) {
+		if (detailPanel.isVisible()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					scrollToVisible();
+				}
+			});
 			label.setIcon(MINUS_ICON);
 		} else {
 			label.setIcon(PLUS_ICON);
@@ -174,6 +185,12 @@ class MBeanNodePanel extends JPanel {
 		table.addMouseListener(TABLE_MOUSE_LISTENER);
 		attributesPanel.add(table, BorderLayout.CENTER);
 		return attributesPanel;
+	}
+
+	void scrollToVisible() {
+		final Rectangle localBounds = SwingUtilities.getLocalBounds(MBeanNodePanel.this);
+		localBounds.grow(0, 15);
+		scrollRectToVisible(localBounds);
 	}
 
 	static JPanel createNodeTreePanel(List<MBeanNode> nodes) {
