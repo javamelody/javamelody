@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -48,6 +49,8 @@ class MBeanNodePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private static final Color FOREGROUND = Color.BLUE.darker();
+
+	private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
 	private static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 
@@ -100,11 +103,11 @@ class MBeanNodePanel extends JPanel {
 			label = new JLabel(name);
 			label.setIcon(PLUS_ICON);
 			label.setForeground(FOREGROUND);
+			label.setCursor(HAND_CURSOR);
 			label.addMouseListener(MOUSE_LISTENER);
 			add(label, BorderLayout.CENTER);
 		} else {
-			final List<MBeanAttribute> attributes = node.getAttributes();
-			detailPanel = createAttributesPanel(attributes);
+			detailPanel = createAttributesPanel();
 			add(detailPanel, BorderLayout.CENTER);
 		}
 	}
@@ -115,8 +118,7 @@ class MBeanNodePanel extends JPanel {
 			if (children != null) {
 				detailPanel = createNodeTreePanel(children);
 			} else {
-				final List<MBeanAttribute> attributes = node.getAttributes();
-				detailPanel = createAttributesPanel(attributes);
+				detailPanel = createAttributesPanel();
 			}
 			detailPanel.setBorder(LEFT_MARGIN_BORDER);
 			detailPanel.setVisible(false);
@@ -131,7 +133,8 @@ class MBeanNodePanel extends JPanel {
 		validate();
 	}
 
-	private JPanel createAttributesPanel(List<MBeanAttribute> attributes) {
+	private JPanel createAttributesPanel() {
+		final List<MBeanAttribute> attributes = node.getAttributes();
 		boolean descriptionDisplayed = false;
 		for (final MBeanAttribute attribute : attributes) {
 			if (attribute.getDescription() != null) {
@@ -141,6 +144,11 @@ class MBeanNodePanel extends JPanel {
 		}
 		final JPanel attributesPanel = new JPanel(new BorderLayout());
 		attributesPanel.setOpaque(false);
+		if (node.getDescription() != null) {
+			final JLabel descriptionLabel = new JLabel('(' + node.getDescription() + ')');
+			attributesPanel.add(descriptionLabel, BorderLayout.NORTH);
+		}
+
 		final MTable<MBeanAttribute> table = new MTable<>();
 		table.addColumn("name", I18N.getString("Nom"));
 		table.addColumn("formattedValue", I18N.getString("Contenu"));
