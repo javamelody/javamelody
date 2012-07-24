@@ -197,7 +197,7 @@ final class MBeans {
 	private MBeanNode getMBeanNode(ObjectName name) throws JMException {
 		final String mbeanName = name.toString();
 		final MBeanInfo mbeanInfo = mbeanServer.getMBeanInfo(name);
-		final String description = formatMBeansDescription(mbeanInfo.getDescription());
+		final String description = formatDescription(mbeanInfo.getDescription());
 		final MBeanAttributeInfo[] attributeInfos = mbeanInfo.getAttributes();
 		final List<MBeanAttribute> attributes = getAttributes(name, attributeInfos);
 		// les attributs seront triés par ordre alphabétique dans getMBeanNodes
@@ -261,14 +261,14 @@ final class MBeans {
 		}
 	}
 
-	private String formatMBeansDescription(String description) {
+	private String formatDescription(String description) {
 		// les descriptions des MBeans de java.lang n'apportent aucune information utile
 		if (description == null || JAVA_LANG_MBEAN_DESCRIPTION.equals(description)) {
 			return null;
 		}
 		int indexOf = description.indexOf("  ");
 		if (indexOf != -1) {
-			// certaines descriptions de Tomcat 6 contiennent de nombreux espaces qui se suivent
+			// certaines descriptions de MBeans ou d'attributs dans Tomcat 6 et 7 contiennent de nombreux espaces qui se suivent
 			final StringBuilder sb = new StringBuilder(description);
 			while (indexOf != -1) {
 				sb.deleteCharAt(indexOf);
@@ -381,7 +381,9 @@ final class MBeans {
 	private String getAttributeDescription(String name, MBeanAttributeInfo[] attributeInfos) {
 		for (final MBeanAttributeInfo attributeInfo : attributeInfos) {
 			if (name.equals(attributeInfo.getName())) {
-				final String attributeDescription = attributeInfo.getDescription();
+				// certaines descriptions d'attributs comme les NamingResources dans Tomcat 7 contiennent aussi des espaces qui se suivent
+				final String attributeDescription = formatDescription(attributeInfo
+						.getDescription());
 				if (attributeDescription == null || name.equals(attributeDescription)
 						|| attributeDescription.length() == 0) {
 					// les attributs des MBeans de java.lang ont des descriptions égales aux noms,
