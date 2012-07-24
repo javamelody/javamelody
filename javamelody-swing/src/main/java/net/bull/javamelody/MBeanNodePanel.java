@@ -157,6 +157,18 @@ class MBeanNodePanel extends JPanel {
 		validate();
 	}
 
+	void expand() {
+		if (detailPanel == null || !detailPanel.isVisible()) {
+			onClick();
+		}
+	}
+
+	void collapse() {
+		if (label != null && detailPanel != null && detailPanel.isVisible()) {
+			onClick();
+		}
+	}
+
 	private JPanel createAttributesPanel() {
 		final List<MBeanAttribute> attributes = node.getAttributes();
 		boolean descriptionDisplayed = false;

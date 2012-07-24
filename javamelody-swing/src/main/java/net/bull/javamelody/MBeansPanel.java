@@ -20,8 +20,11 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -32,9 +35,11 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
@@ -47,6 +52,12 @@ class MBeansPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	private static final Font BOLD_FONT = new JLabel().getFont().deriveFont(Font.BOLD);
+
+	private static final ImageIcon EXPAND_ALL_ICON = new ImageIcon(
+			MainButtonsPanel.class.getResource("/icons/expand-all.png"));
+
+	private static final ImageIcon COLLAPSE_ALL_ICON = new ImageIcon(
+			MainButtonsPanel.class.getResource("/icons/collapse-all.png"));
 
 	@SuppressWarnings("all")
 	private Map<String, List<MBeanNode>> mbeansByTitle;
@@ -119,6 +130,32 @@ class MBeansPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
+		final MButton expandAllButton = new MButton("", EXPAND_ALL_ICON);
+		// TODO translation
+		expandAllButton.setToolTipText("Expand all");
+		expandAllButton.setPreferredSize(new Dimension(
+				expandAllButton.getPreferredSize().width - 4,
+				expandAllButton.getPreferredSize().height + 3));
+		expandAllButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionExpandAll();
+			}
+		});
+
+		final MButton collapseAllButton = new MButton("", COLLAPSE_ALL_ICON);
+		// TODO translation
+		collapseAllButton.setToolTipText("Collapse all");
+		collapseAllButton.setPreferredSize(new Dimension(
+				collapseAllButton.getPreferredSize().width - 4, collapseAllButton
+						.getPreferredSize().height + 3));
+		collapseAllButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionCollapseAll();
+			}
+		});
+
 		final MButton pdfButton = createPdfButton();
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
@@ -145,7 +182,48 @@ class MBeansPanel extends MelodyPanel {
 			}
 		});
 
-		return Utilities.createButtonsPanel(refreshButton, pdfButton, xmlJsonButton);
+		return Utilities.createButtonsPanel(expandAllButton, collapseAllButton, refreshButton,
+				pdfButton, xmlJsonButton);
+	}
+
+	final void actionExpandAll() {
+		expandAll(this);
+	}
+
+	final void actionCollapseAll() {
+		collapseAll(this);
+	}
+
+	private void expandAll(Container container) {
+		for (final Component component : container.getComponents()) {
+			if (component instanceof MBeanNodePanel) {
+				((MBeanNodePanel) component).expand();
+			}
+			if (component instanceof Container) {
+				expandAll((Container) component);
+			}
+			if (component instanceof JScrollPane) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						// pour annuler le scrollToVisible des MBeanNodePanel,
+						// on repositionne le scrollPane tout en haut
+						((JScrollPane) component).getViewport().setViewPosition(new Point(0, 0));
+					}
+				});
+			}
+		}
+	}
+
+	private void collapseAll(Container container) {
+		for (final Component component : container.getComponents()) {
+			if (component instanceof MBeanNodePanel) {
+				((MBeanNodePanel) component).collapse();
+			}
+			if (component instanceof Container) {
+				collapseAll((Container) component);
+			}
+		}
 	}
 
 	final void actionPdf() throws IOException {
