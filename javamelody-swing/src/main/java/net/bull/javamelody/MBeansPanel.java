@@ -112,7 +112,7 @@ class MBeansPanel extends MelodyPanel {
 				final JLabel nodeLabel = new JLabel(node.getName());
 				nodeLabel.setFont(BOLD_FONT);
 				treePanel.add(nodeLabel);
-				treePanel.add(MBeanNodePanel.createNodeTreePanel(platformNode.getChildren()));
+				treePanel.add(MBeanNodePanel.createNodeTreePanel(node.getChildren()));
 			}
 		}
 		return treePanel;
