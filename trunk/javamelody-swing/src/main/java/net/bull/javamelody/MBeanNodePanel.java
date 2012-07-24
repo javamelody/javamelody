@@ -71,11 +71,24 @@ class MBeanNodePanel extends JPanel {
 		}
 	};
 
-	private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
+	private static final MouseListener LABEL_MOUSE_LISTENER = new MouseAdapter() {
 		@Override
 		public void mouseClicked(MouseEvent event) {
 			final MBeanNodePanel nodePanel = (MBeanNodePanel) event.getComponent().getParent();
 			nodePanel.onClick();
+		}
+	};
+
+	private static final MouseListener TABLE_MOUSE_LISTENER = new MouseAdapter() {
+		@SuppressWarnings("unchecked")
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (e.getClickCount() == 2) {
+				final MTable<MBeanAttribute> table = (MTable<MBeanAttribute>) e.getComponent();
+				final MBeanAttribute attribute = table.getSelectedObject();
+				Utilities.showTextInPopup(table, attribute.getName(),
+						attribute.getFormattedValue());
+			}
 		}
 	};
 
@@ -104,7 +117,7 @@ class MBeanNodePanel extends JPanel {
 			label.setIcon(PLUS_ICON);
 			label.setForeground(FOREGROUND);
 			label.setCursor(HAND_CURSOR);
-			label.addMouseListener(MOUSE_LISTENER);
+			label.addMouseListener(LABEL_MOUSE_LISTENER);
 			add(label, BorderLayout.CENTER);
 		} else {
 			detailPanel = createAttributesPanel();
@@ -158,16 +171,7 @@ class MBeanNodePanel extends JPanel {
 			table.setColumnCellRenderer("description", DESCRIPTION_CELL_RENDERER);
 		}
 		table.setList(attributes);
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					final MBeanAttribute attribute = table.getSelectedObject();
-					Utilities.showTextInPopup(table, attribute.getName(),
-							attribute.getFormattedValue());
-				}
-			}
-		});
+		table.addMouseListener(TABLE_MOUSE_LISTENER);
 		attributesPanel.add(table, BorderLayout.CENTER);
 		return attributesPanel;
 	}
