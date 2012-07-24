@@ -32,12 +32,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import net.bull.javamelody.MBeanNode.MBeanAttribute;
+import net.bull.javamelody.swing.Utilities;
+import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
+import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
+import net.bull.javamelody.swing.table.MTable;
+
 /**
  * Panel des MBeanNode.
  * @author Emeric Vernat
  */
 class MBeanNodePanel extends JPanel {
-	static final Border LEFT_MARGIN_BORDER = BorderFactory.createEmptyBorder(0, 40, 0, 0);
+	static final Border LEFT_MARGIN_BORDER = BorderFactory.createEmptyBorder(0, 30, 0, 0);
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +52,21 @@ class MBeanNodePanel extends JPanel {
 	private static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 
 	private static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
+
+	private static final MMultiLineTableCellRenderer FORMATTED_VALUE_CELL_RENDERER = new MMultiLineTableCellRenderer();
+
+	private static final MDefaultTableCellRenderer DESCRIPTION_CELL_RENDERER = new MDefaultTableCellRenderer() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		protected void setValue(Object value) {
+			if (value != null) {
+				super.setValue('(' + value.toString() + ')');
+			} else {
+				super.setValue(null);
+			}
+		}
+	};
 
 	private static final MouseListener MOUSE_LISTENER = new MouseAdapter() {
 		@Override
@@ -59,7 +80,7 @@ class MBeanNodePanel extends JPanel {
 
 	private JLabel label;
 
-	private JPanel childrenPanel;
+	private JPanel detailPanel;
 
 	MBeanNodePanel(MBeanNode node) {
 		super(new BorderLayout());
@@ -82,30 +103,65 @@ class MBeanNodePanel extends JPanel {
 			label.addMouseListener(MOUSE_LISTENER);
 			add(label, BorderLayout.CENTER);
 		} else {
-			// TODO afficher attributs
+			final List<MBeanAttribute> attributes = node.getAttributes();
+			detailPanel = createAttributesPanel(attributes);
+			add(detailPanel, BorderLayout.CENTER);
 		}
 	}
 
 	void onClick() {
-		final List<MBeanNode> children = node.getChildren();
-		if (children != null) {
-			if (childrenPanel == null) {
-				childrenPanel = createNodeTreePanel(children);
-				childrenPanel.setBorder(LEFT_MARGIN_BORDER);
-				childrenPanel.setVisible(false);
-				add(childrenPanel, BorderLayout.SOUTH);
+		if (detailPanel == null) {
+			final List<MBeanNode> children = node.getChildren();
+			if (children != null) {
+				detailPanel = createNodeTreePanel(children);
+			} else {
+				final List<MBeanAttribute> attributes = node.getAttributes();
+				detailPanel = createAttributesPanel(attributes);
 			}
-
-			childrenPanel.setVisible(!childrenPanel.isVisible());
-		} else {
-			// TODO affichier attributs
+			detailPanel.setBorder(LEFT_MARGIN_BORDER);
+			detailPanel.setVisible(false);
+			add(detailPanel, BorderLayout.SOUTH);
 		}
+		detailPanel.setVisible(!detailPanel.isVisible());
 		if (label.getIcon() == PLUS_ICON) {
 			label.setIcon(MINUS_ICON);
 		} else {
 			label.setIcon(PLUS_ICON);
 		}
 		validate();
+	}
+
+	private JPanel createAttributesPanel(List<MBeanAttribute> attributes) {
+		boolean descriptionDisplayed = false;
+		for (final MBeanAttribute attribute : attributes) {
+			if (attribute.getDescription() != null) {
+				descriptionDisplayed = true;
+				break;
+			}
+		}
+		final JPanel attributesPanel = new JPanel(new BorderLayout());
+		attributesPanel.setOpaque(false);
+		final MTable<MBeanAttribute> table = new MTable<>();
+		table.addColumn("name", I18N.getString("Nom"));
+		table.addColumn("formattedValue", I18N.getString("Contenu"));
+		table.setColumnCellRenderer("formattedValue", FORMATTED_VALUE_CELL_RENDERER);
+		if (descriptionDisplayed) {
+			table.addColumn("description", "");
+			table.setColumnCellRenderer("description", DESCRIPTION_CELL_RENDERER);
+		}
+		table.setList(attributes);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					final MBeanAttribute attribute = table.getSelectedObject();
+					Utilities.showTextInPopup(table, attribute.getName(),
+							attribute.getFormattedValue());
+				}
+			}
+		});
+		attributesPanel.add(table, BorderLayout.CENTER);
+		return attributesPanel;
 	}
 
 	static JPanel createNodeTreePanel(List<MBeanNode> nodes) {
