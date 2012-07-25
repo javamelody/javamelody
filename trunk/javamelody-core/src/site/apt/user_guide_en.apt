@@ -396,7 +396,10 @@ Description and documentation of Java Melody : monitoring of Java EE application
 
 	The parameter <<<monitoring-path>>> (<<</monitoring>>> by default) is used to change the path in the URL to open
 	the report of the monitoring. For example, <<<http://.../admin/performance>>> in place of <<<http://.../monitoring>>>
-	
+
+	The parameter <<<gzip-compression-disabled>>> disables the compression of the monitoring reports
+	(<<<false>>> by default, the reports are compressed by default if the browser supports it).
+
 	The parameter <<<no-database>>> just disables the monitoring of jdbc connections, the monitoring
 	of sql requests and the reports on the database in system information.
 	Set it to true to disable all that.

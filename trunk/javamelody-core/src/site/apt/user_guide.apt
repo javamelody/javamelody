@@ -404,7 +404,10 @@ Description et documentation de Java Melody : monitoring d'applications Java EE
 
 	Le paramètre <<<monitoring-path>>> (<<</monitoring>>> par défaut) permet de changer le chemin dans l'URL d'accès
 	au rapport du monitoring. Par exemple, <<<http://.../admin/performance>>> au lieu de <<<http://.../monitoring>>>
-	
+
+	Le paramètre <<<gzip-compression-disabled>>> permet de désactiver la compression des rapports de monitoring
+	(<<<false>>> par défaut, les rapports sont compressés par défaut si le navigateur le supporte)
+
 	Le paramètre <<<no-database>>> permet de désactiver le monitoring des connexions jdbc,
 	le monitoring des requêtes sql et les rapports sur la base de données. Le mettre à true
 	pour désactiver tout cela.
