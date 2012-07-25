@@ -79,6 +79,7 @@ The monitoring data is available as XML over http if the [UserGuide#Dependencies
 
 The following URL retrieves data in XML format as a list of counters, with statistics of requests, and also some current system information:
 http://localhost:8080/mywebapp/monitoring?format=xml&period=jour
+You can also try with the public demo: http://demo.javamelody.cloudbees.net/monitoring?format=xml&period=jour
 
 Like for the HMTL format, you can replace the "period" parameter with "semaine", "mois", "annee" and "tout" for the week, month, year and all periods. Or you can use a custom period.
 
@@ -87,11 +88,12 @@ Other data is available and the URLs are the same as for the HTML pages except t
 For example, some aggregated statistics in a counter are available with the following URL:
 http://localhost:8080/mywebapp/monitoring?format=xml&part=counterSummaryPerClass&counter=guice&period=jour
 
-The "part" parameter in the URL can be replaced with "threads", "counterSummaryPerClass" and if system actions are [UserGuide#6._Optional_parameters enabled] (true by default), it can be replaced with "heaphisto", "sessions", "processes", "connections" or "database". ("counterSummaryPerClass" needs a "counter" parameter, "sessions" may need a "sessionId" parameter to have session details and "database" may need a "request" parameter to select a predefined database report).
+The "part" parameter in the URL can be replaced with "threads", "counterSummaryPerClass" and if system actions are [UserGuide#6._Optional_parameters enabled] (true by default), it can be replaced with "heaphisto", "sessions", "mbeans", "jndi", "processes", "connections" or "database". ("counterSummaryPerClass" needs a "counter" parameter, "sessions" may need a "sessionId" parameter to have session details, "database" may need a "request" parameter to select a predefined database report and "jndi" may need a "path" parameter to select a jndi context path).
 
 The response data is automatically compressed in gzip by JavaMelody, if the response size is more than 50 KB and if the client supports it (if the "Accept-Encoding" header contains "gzip" such as for browsers).
 
-JavaMelody version needs to be 1.29.0 or later for the XML or JSON API to work correctly.
+JavaMelody version needs to be 1.29 or later for the XML or JSON API to work correctly.
+JavaMelody version needs to be 1.40 or later for the XML or JSON API of "mbeans" and "jndi".
 
 
 === JSON ===
@@ -109,7 +111,7 @@ This format is recommended only for the communication between a collect server a
 
 === API when using a collect server ===
 
-Most of the API above works when using a [UserGuideAdvanced#Optional_centralization_server_setup centralized collect server], including lastValue, jmxValue, XML and JSON (prefer a collect server using a war file of JavaMelody v1.29.0 or later to work correctly).
+Most of the API above works when using a [UserGuideAdvanced#Optional_centralization_server_setup centralized collect server], including lastValue, jmxValue, XML and JSON (prefer a collect server using a war file of JavaMelody v1.29 or later to work correctly).
 
 You just need to add an "application" parameter with the name of the app, like "&application=myapp" in all the URLs above.
 
