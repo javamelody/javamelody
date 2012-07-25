@@ -4,6 +4,7 @@
   * Upgrade xstream to 1.4.2 in the optional collect server, and in the [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin]. _TO DO upgrade xstream version in the [UserGuide#Dependencies]_
   * fix issue 231: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], incompatibility with Bamboo remote agents.
   * fix issue 233: The monitoring reports should not set autoCommit(false) on JDBC connections obtained from datasources.
+  * added in the external API: XML and JSON exports of MBeans, and of JNDI tree given a JNDI context path. Documentation is [ExternalAPI#XML here]
 
 === 1.39.0 ===
 
