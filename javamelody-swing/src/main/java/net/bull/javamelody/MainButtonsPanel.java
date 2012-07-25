@@ -71,10 +71,12 @@ class MainButtonsPanel extends MelodyPanel {
 		add(monitoringButton);
 		add(new JLabel("        " + I18N.getString("Choix_periode") + " : "));
 		for (final Period myPeriod : Period.values()) {
-			final MButton myPeriodButton = new MButton(myPeriod.getLinkLabel(),
+			final String linkLabel = myPeriod.getLinkLabel();
+			final MButton myPeriodButton = new MButton(linkLabel,
 					ImageIconCache.getImageIcon(myPeriod.getIconName()));
-			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode",
-					myPeriod.getLinkLabel()));
+			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode", linkLabel)
+					+ " (Alt-" + linkLabel.charAt(0) + ')');
+			myPeriodButton.setMnemonic(linkLabel.charAt(0));
 			add(myPeriodButton);
 			myPeriodButton.addActionListener(new ActionListener() {
 				@Override
