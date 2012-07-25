@@ -114,6 +114,14 @@ class MainPanel extends MelodyPanel {
 		});
 		scrollPane.setViewportView(scrollingPanel);
 		scrollPane.getVerticalScrollBar().setValue(position);
+		// cette récupération du focus dans le panel du scrollPane permet d'utiliser les flèches hauts et bas
+		// pour scroller dès l'affichage du panel
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				scrollingPanel.requestFocus();
+			}
+		});
 	}
 
 	private void addOnglet(JPanel panel) {
