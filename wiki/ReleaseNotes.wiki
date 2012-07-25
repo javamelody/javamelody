@@ -5,7 +5,7 @@
   * fix issue 231: In [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], incompatibility with Bamboo remote agents.
   * fix issue 233: The monitoring reports should not set autoCommit(false) on JDBC connections obtained from datasources.
   * added in the external API: XML and JSON exports of MBeans, and of JNDI tree given a JNDI context path. Documentation is [ExternalAPI#XML here]. For example: [http://demo.javamelody.cloudbees.net/monitoring?format=xml&part=mbeans MBeans] and [http://demo.javamelody.cloudbees.net/monitoring?format=json&part=jndi&path=comp JNDI].
-  * added: The new parameter {{{gzip-compression-disabled}}} disables the compression of the monitoring reports, for example if there is another mechanism which would compress a second time (false by default: the reports are compressed by default if the browser supports it). Documented with the other optional parameters in the [UserGuide#6._Optional_parameters user guide].
+  * added: The new parameter {{{gzip-compression-disabled}}} makes possible to disable the compression of the monitoring reports, for example if there is another mechanism which would compress a second time (false by default: the reports are compressed by default if the browser supports it). Documented with the other optional parameters in the [UserGuide#6._Optional_parameters user guide].
 
 === 1.39.0 ===
 
