@@ -382,6 +382,10 @@ or MSIE8 (MSIE7 not recommended).
 	The parameter {{{monitoring-path}}} ({{{/monitoring}}} by default) is used to change the path in the URL to open
 	the report of the monitoring. For example, {{{http://.../admin/performance}}} in place of {{{http://.../monitoring}}}
 	
+	The parameter {{{gzip-compression-disabled}}} disables the compression of the monitoring reports,
+	for example if there is another mechanism which would compress a second time
+	({{{false}}} by default, the reports are compressed by default if the browser supports it).
+
 	The parameter {{{no-database}}} just disables the monitoring of jdbc connections, the monitoring of sql requests and the reports on the database in system information.
 	Set it to true to disable all that.
 	
