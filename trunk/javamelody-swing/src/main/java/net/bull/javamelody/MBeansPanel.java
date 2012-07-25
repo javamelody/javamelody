@@ -87,6 +87,14 @@ class MBeansPanel extends MelodyPanel {
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		scrollPane.setViewportView(panel);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+		// cette récupération du focus dans le panel du scrollPane permet d'utiliser les flèches hauts et bas
+		// pour scroller dès l'affichage du panel
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				panel.requestFocus();
+			}
+		});
 
 		panel.setOpaque(false);
 		for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
