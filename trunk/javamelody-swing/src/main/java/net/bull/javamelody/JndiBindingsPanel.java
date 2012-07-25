@@ -132,7 +132,7 @@ class JndiBindingsPanel extends MelodyPanel {
 		// TODO traduction
 		final MButton openButton = new MButton("Ouvrir",
 				ImageIconCache.getImageIcon("action_open.png"));
-		final MButton backButton = new MButton("Retour",
+		final MButton backButton = new MButton(I18N.getString("Retour"),
 				ImageIconCache.getImageIcon("action_back.png"));
 
 		openButton.addActionListener(new ActionListener() {
