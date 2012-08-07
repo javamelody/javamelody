@@ -75,7 +75,8 @@ class MainPanel extends MelodyPanel {
 
 		final JPanel mainTabPanel = new JPanel(new BorderLayout());
 		mainTabPanel.setOpaque(false);
-		mainTabPanel.add(new MainButtonsPanel(remoteCollector, monitoringUrl), BorderLayout.NORTH);
+		mainTabPanel.add(new MainButtonsPanel(remoteCollector, getSelectedRange(), monitoringUrl),
+				BorderLayout.NORTH);
 		mainTabPanel.add(scrollPane, BorderLayout.CENTER);
 
 		// TODO translation
@@ -142,6 +143,24 @@ class MainPanel extends MelodyPanel {
 			newUrls.add(newUrl);
 		}
 		getRemoteCollector().setURLs(newUrls);
+	}
+
+	void changeRange(Range newRange) {
+		final Range currentRange = getSelectedRange();
+		try {
+			setSelectedRange(newRange);
+
+			getRemoteCollector().collectData();
+			refreshMainTab();
+		} catch (final IOException e) {
+			showException(e);
+			// si le changement de période n'a pas abouti, alors on remet l'ancienne période
+			try {
+				setSelectedRange(currentRange);
+			} catch (final IOException e2) {
+				showException(e2);
+			}
+		}
 	}
 
 	static MainPanel getParentMainPanelFromChild(Component child) {
