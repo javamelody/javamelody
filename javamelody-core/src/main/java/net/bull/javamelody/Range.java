@@ -55,7 +55,37 @@ final class Range implements Serializable {
 	}
 
 	static Range createCustomRange(Date startDate, Date endDate) {
-		return new Range(null, startDate, endDate);
+		Date normalizedStartDate = startDate;
+		Date normalizedEndDate = endDate;
+		final Calendar minimum = Calendar.getInstance();
+		minimum.add(Calendar.YEAR, -2);
+		if (normalizedStartDate.getTime() < minimum.getTimeInMillis()) {
+			// pour raison de performance, on limite à 2 ans (et non 2000 ans)
+			normalizedStartDate = minimum.getTime();
+		}
+		if (normalizedStartDate.getTime() > System.currentTimeMillis()) {
+			// pour raison de performance, on limite à aujourd'hui (et non 2000 ans)
+			normalizedStartDate = new Date();
+		}
+
+		if (normalizedEndDate.getTime() > System.currentTimeMillis()) {
+			// pour raison de performance, on limite à aujourd'hui (et non 2000 ans)
+			normalizedEndDate = new Date();
+		}
+		if (normalizedStartDate.after(normalizedEndDate)) {
+			normalizedEndDate = normalizedStartDate;
+		}
+
+		// la date de fin est incluse jusqu'à 23h59m59s
+		// (et le formatage de cette date reste donc au même jour)
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(normalizedEndDate);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		normalizedEndDate = calendar.getTime();
+
+		return new Range(null, normalizedStartDate, normalizedEndDate);
 	}
 
 	static Range parse(String value) {
@@ -72,16 +102,6 @@ final class Range implements Serializable {
 		} catch (final ParseException e) {
 			startDate = new Date();
 		}
-		final Calendar minimum = Calendar.getInstance();
-		minimum.add(Calendar.YEAR, -2);
-		if (startDate.getTime() < minimum.getTimeInMillis()) {
-			// pour raison de performance, on limite à 2 ans (et non 2000 ans)
-			startDate = minimum.getTime();
-		}
-		if (startDate.getTime() > System.currentTimeMillis()) {
-			// pour raison de performance, on limite à aujourd'hui (et non 2000 ans)
-			startDate = new Date();
-		}
 
 		Date endDate;
 		if (index < value.length() - 1) {
@@ -90,27 +110,11 @@ final class Range implements Serializable {
 			} catch (final ParseException e) {
 				endDate = new Date();
 			}
-			if (endDate.getTime() > System.currentTimeMillis()) {
-				// pour raison de performance, on limite à aujourd'hui (et non 2000 ans)
-				endDate = new Date();
-			}
 		} else {
 			endDate = new Date();
 		}
-		if (startDate.after(endDate)) {
-			endDate = startDate;
-		}
 
-		// la date de fin est incluse jusqu'à 23h59m59s
-		// (et le formatage de cette date reste donc au même jour)
-		final Calendar calendar = Calendar.getInstance();
-		calendar.setTime(endDate);
-		calendar.set(Calendar.HOUR_OF_DAY, 23);
-		calendar.set(Calendar.MINUTE, 59);
-		calendar.set(Calendar.SECOND, 59);
-		final Date includedEndDate = calendar.getTime();
-
-		return Range.createCustomRange(startDate, includedEndDate);
+		return Range.createCustomRange(startDate, endDate);
 	}
 
 	Period getPeriod() {

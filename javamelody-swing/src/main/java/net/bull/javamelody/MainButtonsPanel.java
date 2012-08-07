@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
@@ -37,6 +38,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import net.bull.javamelody.swing.MButton;
@@ -51,10 +53,17 @@ class MainButtonsPanel extends MelodyPanel {
 			"systemmonitor.png", 16, 16);
 	private static final long serialVersionUID = 1L;
 
-	MainButtonsPanel(RemoteCollector remoteCollector, final URL monitoringUrl) {
-		super(remoteCollector, new FlowLayout(FlowLayout.CENTER));
+	MainButtonsPanel(RemoteCollector remoteCollector, Range selectedRange, final URL monitoringUrl) {
+		super(remoteCollector, new BorderLayout());
 		setOpaque(true);
 		setBackground(BACKGROUND);
+
+		final JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		centerPanel.setOpaque(false);
+		add(centerPanel, BorderLayout.CENTER);
+		final CustomPeriodPanel customPeriodPanel = new CustomPeriodPanel(remoteCollector,
+				selectedRange);
+		add(customPeriodPanel, BorderLayout.SOUTH);
 		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = createPdfButton();
 		final MButton xmlJsonButton = createXmlJsonButton(createDefaultSerializable());
@@ -64,28 +73,13 @@ class MainButtonsPanel extends MelodyPanel {
 		final MButton monitoringButton = new MButton("Monitoring", MONITORING_ICON);
 		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
 				remoteCollector.getApplication()));
-		add(refreshButton);
-		add(pdfButton);
-		add(xmlJsonButton);
-		add(onlineHelpButton);
-		add(monitoringButton);
-		add(new JLabel("        " + I18N.getString("Choix_periode") + " : "));
-		for (final Period myPeriod : Period.values()) {
-			final String linkLabel = myPeriod.getLinkLabel();
-			final MButton myPeriodButton = new MButton(linkLabel,
-					ImageIconCache.getImageIcon(myPeriod.getIconName()));
-			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode", linkLabel)
-					+ " (Alt-" + linkLabel.charAt(0) + ')');
-			myPeriodButton.setMnemonic(linkLabel.charAt(0));
-			add(myPeriodButton);
-			myPeriodButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					actionChangePeriod(myPeriod.getRange());
-				}
-			});
-		}
-		// TODO ajouter bouton pour custom period
+		centerPanel.add(refreshButton);
+		centerPanel.add(pdfButton);
+		centerPanel.add(xmlJsonButton);
+		centerPanel.add(onlineHelpButton);
+		centerPanel.add(monitoringButton);
+
+		addPeriodButtons(centerPanel, customPeriodPanel);
 
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
@@ -126,6 +120,45 @@ class MainButtonsPanel extends MelodyPanel {
 		});
 	}
 
+	private void addPeriodButtons(JPanel centerPanel, final CustomPeriodPanel customPeriodPanel) {
+		centerPanel.add(new JLabel("        " + I18N.getString("Choix_periode") + " : "));
+		for (final Period myPeriod : Period.values()) {
+			final String linkLabel = myPeriod.getLinkLabel();
+			final MButton myPeriodButton = new MButton(linkLabel,
+					ImageIconCache.getImageIcon(myPeriod.getIconName()));
+			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode", linkLabel)
+					+ " (Alt-" + linkLabel.charAt(0) + ')');
+			myPeriodButton.setMnemonic(linkLabel.charAt(0));
+			centerPanel.add(myPeriodButton);
+			myPeriodButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					actionChangePeriod(myPeriod.getRange());
+				}
+			});
+		}
+
+		final String customPeriodLinkLabel = I18N.getString("personnalisee");
+		final MButton customPeriodButton = new MButton(customPeriodLinkLabel,
+				ImageIconCache.getImageIcon("calendar.png"));
+		customPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode",
+				customPeriodLinkLabel) + " (Alt-" + customPeriodLinkLabel.charAt(0) + ')');
+		customPeriodButton.setMnemonic(customPeriodLinkLabel.charAt(0));
+		centerPanel.add(customPeriodButton);
+
+		customPeriodPanel.setVisible(false);
+		customPeriodButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				customPeriodPanel.setVisible(!customPeriodPanel.isVisible());
+				if (customPeriodPanel.isVisible()) {
+					customPeriodPanel.requestFocusInStartField();
+				}
+				validate();
+			}
+		});
+	}
+
 	private MButton createOnlineHelpButton() {
 		final MButton onlineHelpButton = new MButton(I18N.getString("Aide_en_ligne"),
 				ImageIconCache.getImageIcon("action_help.png"));
@@ -154,21 +187,7 @@ class MainButtonsPanel extends MelodyPanel {
 	}
 
 	void actionChangePeriod(Range newRange) {
-		final Range currentRange = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
-		try {
-			MainPanel.getParentMainPanelFromChild(this).setSelectedRange(newRange);
-
-			getRemoteCollector().collectData();
-			MainPanel.refreshMainTabFromChild(this);
-		} catch (final IOException e) {
-			showException(e);
-			// si le changement de période n'a pas abouti, alors on remet l'ancienne période
-			try {
-				MainPanel.getParentMainPanelFromChild(this).setSelectedRange(currentRange);
-			} catch (final IOException e2) {
-				showException(e2);
-			}
-		}
+		MainPanel.getParentMainPanelFromChild(this).changeRange(newRange);
 	}
 
 	void actionPdf() {
