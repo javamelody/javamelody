@@ -57,7 +57,7 @@ class JndiBindingsPanel extends MelodyPanel {
 
 	private String path;
 
-	private Deque<String> previousPaths = new ArrayDeque<>();
+	private final Deque<String> previousPaths = new ArrayDeque<>();
 
 	private MTable<JndiBinding> table;
 
