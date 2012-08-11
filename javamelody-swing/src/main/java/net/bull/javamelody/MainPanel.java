@@ -54,16 +54,14 @@ class MainPanel extends MelodyPanel {
 	private final JScrollPane scrollPane;
 	private Range selectedRange;
 
-	MainPanel(RemoteCollector remoteCollector) throws IOException {
+	MainPanel(RemoteCollector remoteCollector, Range selectedRange) throws IOException {
 		super(remoteCollector);
 		// initialURLs avant setSelectedRange
 		this.initialURLs = remoteCollector.getURLs();
 		final String collectorUrl = initialURLs.get(0).toExternalForm();
 		this.monitoringUrl = new URL(collectorUrl.substring(0, collectorUrl.indexOf('?')));
 
-		// TODO période sélectionnée par défaut à récupérer dans fichier jnlp,
-		// avec le cookie de session et warning et severe thresholds
-		setSelectedRange(Period.TOUT.getRange());
+		setSelectedRange(selectedRange);
 
 		CounterStorage.disableStorage();
 		remoteCollector.disableAggregation();
