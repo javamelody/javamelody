@@ -69,14 +69,19 @@ public final class Main {
 	}
 
 	static void showFrame() throws IOException {
-		// TODO mettre les instances de MainPanel dans des onglets
-		final List<URL> urls = Arrays.asList(new URL(
-				"http://localhost:8090/test/monitoring?format=serialized"));
-		log("Monitoring of " + urls);
+		// TODO application et url à récupérer dans JNLP
+		// TODO récupérer aussi dans JNLP le cookie de session et les warning et severe thresholds
+		final String application = "test";
+		final String url = "http://localhost:8090/test/monitoring?format=serialized";
+		final String range = "tout";
+		final List<URL> urls = Arrays.asList(new URL(url));
+		final Range selectedRange = Range.parse(range);
+		log("Monitoring of " + application + " on " + url);
 		log("creating frame");
-		final RemoteCollector remoteCollector = new RemoteCollector("test", urls);
-		final MainPanel contentPane = new MainPanel(remoteCollector);
+		final RemoteCollector remoteCollector = new RemoteCollector(application, urls);
+		final MainPanel contentPane = new MainPanel(remoteCollector, selectedRange);
 		final MainFrame frame = new MainFrame();
+		frame.setTitle(I18N.getFormattedString("Monitoring_sur", application));
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
