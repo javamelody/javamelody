@@ -48,6 +48,7 @@ final class HttpParameters {
 	static final String CURRENT_REQUESTS_PART = "currentRequests";
 	static final String WEB_XML_PART = "web.xml";
 	static final String POM_XML_PART = "pom.xml";
+	static final String JNLP_PART = "jnlp";
 	static final String SESSIONS_PART = "sessions";
 	static final String DATABASE_PART = "database";
 	static final String CONNECTIONS_PART = "connections";

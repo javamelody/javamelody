@@ -32,6 +32,7 @@ import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
+import static net.bull.javamelody.HttpParameters.JNLP_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
@@ -57,6 +58,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -185,6 +187,8 @@ class MonitoringController {
 				doWebXml(httpResponse);
 			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
 				doPomXml(httpResponse);
+			} else if (JNLP_PART.equalsIgnoreCase(part)) {
+				doJnlp(httpRequest, httpResponse);
 			} else if (httpRequest.getParameter(JMX_VALUE) != null) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
@@ -589,6 +593,39 @@ class MonitoringController {
 			return null;
 		}
 		return new BufferedInputStream(pomXml);
+	}
+
+	private void doJnlp(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+			throws IOException {
+		final PrintWriter writer = httpResponse.getWriter();
+		httpResponse.setContentType("application/x-java-jnlp-file");
+		final String codebase = httpRequest.getRequestURL().toString();
+		writer.println("<jnlp spec='1.0+' codebase='" + codebase + "'>");
+		writer.println("   <information>");
+		writer.println("      <title>JavaMelody</title>");
+		writer.println("      <vendor>JavaMelody</vendor>");
+		writer.println("      <description>Monitoring</description>");
+		writer.println("      <icon href='" + codebase + "?resource=systemmonitor.png'/>");
+		writer.println("   </information>");
+		writer.println("   <security> <all-permissions/> </security>");
+		writer.println("   <update check='always' policy='always'/>");
+		writer.println("   <resources>");
+		writer.println("      <j2se version='1.7+' max-heap-size='300m'/>");
+		final String jarFilename;
+		if (Parameters.JAVAMELODY_VERSION != null) {
+			jarFilename = "javamelody-swing-" + Parameters.JAVAMELODY_VERSION + ".jar";
+		} else {
+			jarFilename = "javamelody-swing.jar";
+		}
+		writer.println("      <jar href='http://javamelody.googlecode.com/files/" + jarFilename
+				+ "' />");
+		writer.println("      <property name='javamelody.application' value='"
+				+ collector.getApplication() + "'/>");
+		writer.println("      <property name='javamelody.url' value='" + codebase
+				+ "?format=serialized'/>");
+		writer.println("   </resources>");
+		writer.println("   <application-desc main-class='net.bull.javamelody.Main' />");
+		writer.println("</jnlp>");
 	}
 
 	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
