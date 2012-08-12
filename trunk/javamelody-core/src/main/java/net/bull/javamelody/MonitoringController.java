@@ -188,7 +188,8 @@ class MonitoringController {
 			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
 				doPomXml(httpResponse);
 			} else if (JNLP_PART.equalsIgnoreCase(part)) {
-				doJnlp(httpRequest, httpResponse);
+				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+				doJnlp(httpRequest, httpResponse, range);
 			} else if (httpRequest.getParameter(JMX_VALUE) != null) {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
@@ -595,8 +596,8 @@ class MonitoringController {
 		return new BufferedInputStream(pomXml);
 	}
 
-	private void doJnlp(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-			throws IOException {
+	private void doJnlp(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			Range range) throws IOException {
 		final PrintWriter writer = httpResponse.getWriter();
 		httpResponse.setContentType("application/x-java-jnlp-file");
 		final String codebase = httpRequest.getRequestURL().toString();
@@ -619,10 +620,23 @@ class MonitoringController {
 		}
 		writer.println("      <jar href='http://javamelody.googlecode.com/files/" + jarFilename
 				+ "' />");
+		final String endValueTag = "'/>";
 		writer.println("      <property name='javamelody.application' value='"
-				+ collector.getApplication() + "'/>");
+				+ collector.getApplication() + endValueTag);
 		writer.println("      <property name='javamelody.url' value='" + codebase
 				+ "?format=serialized'/>");
+		writer.println("      <property name='javamelody.range' value='" + range.getValue()
+				+ endValueTag);
+		if (Parameters.getParameter(Parameter.WARNING_THRESHOLD_MILLIS) != null) {
+			writer.println("      <property name='javamelody."
+					+ Parameter.WARNING_THRESHOLD_MILLIS.getCode() + "' value='"
+					+ Parameters.getParameter(Parameter.WARNING_THRESHOLD_MILLIS) + endValueTag);
+		}
+		if (Parameters.getParameter(Parameter.SEVERE_THRESHOLD_MILLIS) != null) {
+			writer.println("      <property name='javamelody."
+					+ Parameter.SEVERE_THRESHOLD_MILLIS.getCode() + "' value='"
+					+ Parameters.getParameter(Parameter.SEVERE_THRESHOLD_MILLIS) + endValueTag);
+		}
 		writer.println("   </resources>");
 		writer.println("   <application-desc main-class='net.bull.javamelody.Main' />");
 		writer.println("</jnlp>");
