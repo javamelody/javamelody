@@ -53,6 +53,8 @@ public final class Main {
 		initLookAndFeel();
 		ShadowPopupFactory.install();
 		MSwingUtilities.initEscapeClosesDialogs();
+		// on définit le répertoire courant, car par exemple dans JavaWebStart il n'est pas bon par défaut
+		System.setProperty("user.dir", System.getProperty("user.home"));
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
