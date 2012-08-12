@@ -71,7 +71,7 @@ public final class Main {
 	}
 
 	static void showFrame() throws IOException {
-		// TODO récupérer aussi dans JNLP le cookie de session et les warning et severe thresholds
+		// TODO récupérer aussi dans JNLP le cookie de session
 		final String application = System.getProperty("javamelody.application");
 		final String url = System.getProperty("javamelody.url");
 		final String range = System.getProperty("javamelody.range");
