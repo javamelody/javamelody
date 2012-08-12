@@ -71,11 +71,14 @@ public final class Main {
 	}
 
 	static void showFrame() throws IOException {
-		// TODO application et url à récupérer dans JNLP
 		// TODO récupérer aussi dans JNLP le cookie de session et les warning et severe thresholds
-		final String application = "test";
-		final String url = "http://localhost:8090/test/monitoring?format=serialized";
-		final String range = "tout";
+		final String application = System.getProperty("javamelody.application");
+		final String url = System.getProperty("javamelody.url");
+		final String range = System.getProperty("javamelody.range");
+		if (application == null || url == null || range == null) {
+			throw new IllegalStateException(
+					"There must be 3 system properties: javamelody.application, javamelody.url, javamelody.range");
+		}
 		final List<URL> urls = Arrays.asList(new URL(url));
 		final Range selectedRange = Range.parse(range);
 		log("Monitoring of " + application + " on " + url);
