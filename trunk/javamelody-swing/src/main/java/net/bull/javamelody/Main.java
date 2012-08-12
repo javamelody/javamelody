@@ -18,6 +18,7 @@
  */
 package net.bull.javamelody;
 
+import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -51,6 +52,9 @@ public final class Main {
 		log("starting");
 
 		initLookAndFeel();
+		// une touche bleu-clair pour avoir une teinte moins grisatre
+		UIManager.put("control", new Color(225, 225, 250));
+
 		ShadowPopupFactory.install();
 		MSwingUtilities.initEscapeClosesDialogs();
 		// on définit le répertoire courant, car par exemple dans JavaWebStart il n'est pas bon par défaut
