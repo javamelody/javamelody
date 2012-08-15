@@ -309,17 +309,18 @@ class RemoteCollector {
 		return urls;
 	}
 
-	void setURLs(List<URL> newURLs) {
-		assert urls != null;
-		this.urls = newURLs;
-	}
-
 	Collector getCollector() {
 		return collector;
 	}
 
 	List<JavaInformations> getJavaInformationsList() {
 		return javaInformationsList;
+	}
+
+	// cette méthode est utilisée dans l'ihm Swing
+	void setURLs(List<URL> newURLs) {
+		assert urls != null;
+		this.urls = newURLs;
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing
