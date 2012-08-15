@@ -39,14 +39,6 @@ public class MonitoredWithInterfacePointcut implements Pointcut {
 	};
 
 	/**
-	 * Constructeur.
-	 */
-	public MonitoredWithInterfacePointcut() {
-		super();
-		this.interfaceClass = null;
-	}
-
-	/**
 	 * @return a class filter based on interfaceName.
 	 */
 	@Override
