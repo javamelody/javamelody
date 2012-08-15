@@ -103,6 +103,7 @@ class PdfReport {
 		this.largeGraphs = newLargeGraphs;
 	}
 
+	// cette méthode est utilisée dans l'ihm Swing
 	void setCounterRange(Range counterRange) {
 		this.counterRange = counterRange;
 	}
