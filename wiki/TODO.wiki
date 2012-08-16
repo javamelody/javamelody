@@ -63,6 +63,7 @@ And
   # Having some monitoring is good but sometimes not enough or too late in the development cycle (and sending alerts are not better for developers). A parameter such as "max-sql-hits" could be added for dev environments, for continuous integration tests or for QA servers, in order to enable a hard rule: no more than X executions of SQL requests per service execution or per http request execution, otherwise throw an exception immediately like a blocking issue. A good practice would be X=10, or X=20 for example can be chosen to be "comprehensive" for some time.
   # If the "sql-transform-pattern" parameter is used, the sql requests may contain the '$' character, and then the execution plan (with Oracle) does not work on these requests :-(
   # Check with a file if 2 instances use the same storage directory (and warn about data corruption)
+  # Add a pdf report for the JNDI bindings
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
