@@ -27,6 +27,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
@@ -63,7 +64,7 @@ public class MJavaPrinter extends MPrinter {
 	/** {@inheritDoc} */
 	@Override
 	public String getName() {
-		return "Imprimer";
+		return I18NAdapter.getString("imprimer");
 	}
 
 	/** {@inheritDoc} */

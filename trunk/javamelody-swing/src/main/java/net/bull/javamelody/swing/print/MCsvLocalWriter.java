@@ -25,8 +25,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.util.Date;
 
-import javax.swing.Icon;
-
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
@@ -35,27 +34,15 @@ import net.bull.javamelody.swing.table.MBasicTable;
  * @author Emeric Vernat
  */
 public class MCsvLocalWriter extends MCsvWriter {
-	// TODO separator selon la locale
 	/** Caractère de séparation dans les fichiers csv (local). */
-	public static final char CSV_LOCAL_SEPARATOR = ';';
+	public static final char CSV_LOCAL_SEPARATOR = I18NAdapter.getString("CSV_LOCAL_SEPARATOR")
+			.charAt(0);
 
 	/** {@inheritDoc} */
 	@Override
 	public void print(final MBasicTable table, final OutputStream out) throws IOException {
 		writeCsvLocal(table, out, CSV_LOCAL_SEPARATOR);
 		// le séparateur des .csv (';' à la française));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getName() {
-		return "Exporter en CSV";
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Icon getIcon() {
-		return MSEXCEL_ICON;
 	}
 
 	/**

@@ -69,8 +69,7 @@ class MainButtonsPanel extends MelodyPanel {
 		final MButton xmlJsonButton = createXmlJsonButton(createDefaultSerializable());
 		final MButton onlineHelpButton = createOnlineHelpButton();
 
-		// TODO traductions
-		final MButton monitoringButton = new MButton("Monitoring", MONITORING_ICON);
+		final MButton monitoringButton = new MButton(I18N.getString("Monitoring"), MONITORING_ICON);
 		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
 				remoteCollector.getApplication()));
 		centerPanel.add(refreshButton);

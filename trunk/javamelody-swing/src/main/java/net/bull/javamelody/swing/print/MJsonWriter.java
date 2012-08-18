@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.swing.Icon;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.ImageIconCache;
 import net.bull.javamelody.TransportFormatAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
@@ -49,7 +50,7 @@ public class MJsonWriter extends MPrinter {
 	/** {@inheritDoc} */
 	@Override
 	public String getName() {
-		return "Exporter en JSON";
+		return I18NAdapter.getString("export_json");
 	}
 
 	/** {@inheritDoc} */

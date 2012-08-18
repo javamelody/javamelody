@@ -43,6 +43,7 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.ImageIconCache;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
@@ -136,8 +137,8 @@ public final class Utilities {
 		final JScrollPane scrollPane = new JScrollPane(textArea);
 
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
-		// TODO traduction
-		final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
+		final MButton clipBoardButton = new MButton(
+				I18NAdapter.getString("Copier_dans_presse-papiers"));
 		clipBoardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

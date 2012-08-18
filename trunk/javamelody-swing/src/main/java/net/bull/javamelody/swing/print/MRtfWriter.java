@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 import com.lowagie.text.DocWriter;
@@ -107,7 +108,7 @@ public class MRtfWriter extends MPdfWriter {
 	 */
 	@Override
 	public String getName() {
-		return isLandscape() ? "Exporter en RTF paysage" : "Exporter en RTF";
+		return I18NAdapter.getString(isLandscape() ? "export_rtf_landscape" : "export_rtf");
 	}
 
 	/**

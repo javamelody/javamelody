@@ -171,12 +171,12 @@ class MelodyPanel extends JPanel {
 						.getImageIcon("xml.png"));
 				final MMenuItem jsonMenuItem = new MMenuItem("JSON", ImageIconCache
 						.getImageIcon("xml.png"));
+				xmlMenuItem.setToolTipText(I18N.getString("export_xml"));
+				jsonMenuItem.setToolTipText(I18N.getString("export_json"));
 				xmlMenuItem.setActionCommand(TransportFormat.XML.toString());
 				jsonMenuItem.setActionCommand(TransportFormat.JSON.toString());
-
 				xmlMenuItem.addActionListener(menuActionListener);
 				jsonMenuItem.addActionListener(menuActionListener);
-
 				popupMenu.add(xmlMenuItem);
 				popupMenu.add(jsonMenuItem);
 				popupMenu.show(xmlJsonButton, 2, xmlJsonButton.getHeight());

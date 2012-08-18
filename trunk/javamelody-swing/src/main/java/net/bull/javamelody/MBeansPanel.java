@@ -139,8 +139,7 @@ class MBeansPanel extends MelodyPanel {
 
 	private JPanel createButtonsPanel() {
 		final MButton expandAllButton = new MButton("", EXPAND_ALL_ICON);
-		// TODO translation
-		expandAllButton.setToolTipText("Expand all");
+		expandAllButton.setToolTipText(I18N.getString("Tout_montrer"));
 		expandAllButton.setPreferredSize(new Dimension(
 				expandAllButton.getPreferredSize().width - 4,
 				expandAllButton.getPreferredSize().height + 3));
@@ -152,8 +151,7 @@ class MBeansPanel extends MelodyPanel {
 		});
 
 		final MButton collapseAllButton = new MButton("", COLLAPSE_ALL_ICON);
-		// TODO translation
-		collapseAllButton.setToolTipText("Collapse all");
+		collapseAllButton.setToolTipText(I18N.getString("Tout_reduire"));
 		collapseAllButton.setPreferredSize(new Dimension(
 				collapseAllButton.getPreferredSize().width - 4, collapseAllButton
 						.getPreferredSize().height + 3));

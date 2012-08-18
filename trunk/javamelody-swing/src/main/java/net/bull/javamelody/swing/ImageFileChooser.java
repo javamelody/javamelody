@@ -36,6 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.print.MExtensionFileFilter;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
@@ -53,8 +54,7 @@ public class ImageFileChooser extends JFileChooser {
 	 */
 	public ImageFileChooser() {
 		super();
-		// TODO traduction
-		setFileFilter(new MExtensionFileFilter(extensions, "Fichiers images"));
+		setFileFilter(new MExtensionFileFilter(extensions, I18NAdapter.getString("Fichiers_images")));
 		setAccessory(new ImageFilePreviewer(this));
 	}
 

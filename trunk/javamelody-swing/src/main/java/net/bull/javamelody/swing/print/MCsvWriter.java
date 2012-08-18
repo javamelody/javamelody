@@ -31,6 +31,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
@@ -57,7 +58,7 @@ public class MCsvWriter extends MPrinter {
 	/** {@inheritDoc} */
 	@Override
 	public String getName() {
-		return "Exporter en CSV";
+		return I18NAdapter.getString("export_csv");
 	}
 
 	/** {@inheritDoc} */
