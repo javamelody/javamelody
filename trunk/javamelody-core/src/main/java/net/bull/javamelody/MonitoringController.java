@@ -637,6 +637,11 @@ class MonitoringController {
 					+ Parameter.SEVERE_THRESHOLD_MILLIS.getCode() + "' value='"
 					+ Parameters.getParameter(Parameter.SEVERE_THRESHOLD_MILLIS) + endValueTag);
 		}
+		if (!Parameters.isSystemActionsEnabled()) {
+			writer.println("      <property name='javamelody."
+					+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode() + "' value='"
+					+ Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED) + endValueTag);
+		}
 		writer.println("   </resources>");
 		writer.println("   <application-desc main-class='net.bull.javamelody.Main' />");
 		writer.println("</jnlp>");

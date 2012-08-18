@@ -166,7 +166,6 @@ class ScrollingPanel extends MelodyPanel {
 	private void addSystemInformations() {
 		addParagraphTitle(I18N.getString("Informations_systemes"), "systeminfo.png");
 		final List<JavaInformations> list = javaInformationsList;
-		// TODO mettre propriété système system-actions-enabled dans jnlp
 		if (Parameters.isSystemActionsEnabled()) {
 			add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl));
 		}
