@@ -105,6 +105,7 @@ public abstract class MPrinter {
 			text = text.replaceFirst("<html>", "");
 			text = text.replaceFirst("<center>", "");
 			text = text.replaceAll("<br/>", "\n");
+			text = text.replaceAll("&nbsp;", " ");
 			text = text.replaceFirst("<font color='#[0-9]*+'>", "");
 		}
 		return text;
