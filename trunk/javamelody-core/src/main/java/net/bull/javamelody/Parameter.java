@@ -229,7 +229,13 @@ public enum Parameter {
 	/**
 	 * true | false, false will return localhost/127.0.0.1 for hostname/hostaddress, true will attempt dns lookup, default true.
 	 */
-	DNS_LOOKUPS_DISABLED("dns-lookups-disabled");
+	DNS_LOOKUPS_DISABLED("dns-lookups-disabled"),
+
+	/**
+	 * URL http du fichier jar javamelody-swing (null par défaut : le fichier sera téléchargé depuis http://javamelody.googlecode.com selon la version). <br/>
+	 * Ce paramètre est surtout utile quand les utilisateurs n'ont pas accès à Internet pour télécharger sur googlecode.
+	 */
+	JAVAMELODY_SWING_URL("javamelody-swing-url");
 
 	private final String code;
 

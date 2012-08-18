@@ -612,14 +612,16 @@ class MonitoringController {
 		writer.println("   <update check='always' policy='always'/>");
 		writer.println("   <resources>");
 		writer.println("      <j2se version='1.7+' max-heap-size='300m'/>");
-		final String jarFilename;
-		if (Parameters.JAVAMELODY_VERSION != null) {
-			jarFilename = "javamelody-swing-" + Parameters.JAVAMELODY_VERSION + ".jar";
+		final String jarFileUrl;
+		if (Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL) != null) {
+			jarFileUrl = Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL);
+		} else if (Parameters.JAVAMELODY_VERSION != null) {
+			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-"
+					+ Parameters.JAVAMELODY_VERSION + ".jar";
 		} else {
-			jarFilename = "javamelody-swing.jar";
+			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing.jar";
 		}
-		writer.println("      <jar href='http://javamelody.googlecode.com/files/" + jarFilename
-				+ "' />");
+		writer.println("      <jar href='" + jarFileUrl + "' />");
 		final String endValueTag = "'/>";
 		writer.println("      <property name='javamelody.application' value='"
 				+ collector.getApplication() + endValueTag);
