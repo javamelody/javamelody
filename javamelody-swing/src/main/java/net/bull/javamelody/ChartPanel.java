@@ -157,11 +157,10 @@ class ChartPanel extends MelodyPanel {
 					}
 				}
 			});
-			// TODO boutons périodes
 			return Utilities.createButtonsPanel(refreshButton, exportButton);
 		}
 
-		// TODO boutons périodes
+		// TODO ajouter boutons périodes ? ainsi que ci-dessus 
 		return Utilities.createButtonsPanel(refreshButton);
 	}
 
