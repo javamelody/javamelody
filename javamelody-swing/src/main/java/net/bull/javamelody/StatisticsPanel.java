@@ -354,7 +354,6 @@ class StatisticsPanel extends MelodyPanel {
 			final String message = getRemoteCollector().executeActionAndCollectData(
 					Action.CLEAR_COUNTER, myCounter.getName(), null, null, null);
 			showMessage(message);
-			// TODO à tester
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {
 			showException(ex);
