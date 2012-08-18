@@ -25,4 +25,8 @@
 <b>Reports</b><br/>
 <a href="monitoring">javamelody</a><br/>
 <a href="monitoringServer">javamelody par serveur de collecte</a><br/>
+<br/>
+<b>Rich Desktop UI</b><br/>
+<a href="monitoring?part=jnlp">javamelody swing</a><br/>
+<a href="player.jnlp">gestionnaire d'applications</a><br/>
 </body></html>
