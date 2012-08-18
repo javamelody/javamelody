@@ -132,7 +132,7 @@
 	</target>
 
 	<!-- Construction du zip -->
-	<target name="zip" depends="clean,jar,javadoc">
+	<target name="zip" depends="clean,signjar,javadoc">
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody-swing.zip" />
 		<zip destfile="javamelody-swing.zip">
