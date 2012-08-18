@@ -344,20 +344,23 @@ class ScrollingPanel extends MelodyPanel {
 		lastCollectDurationLabel.setFont(font);
 		displayDurationLabel.setFont(font);
 		overheadLabel.setFont(font);
-		final MButton purgeObsoleteFilesButton = new MButton();
-		purgeObsoleteFilesButton.setIcon(PURGE_OBSOLETE_FILES_ICON);
-		purgeObsoleteFilesButton.setToolTipText(I18N.getString("Purger_les_fichiers_obsoletes"));
-		purgeObsoleteFilesButton.setBorder(null);
-		purgeObsoleteFilesButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				purgeObsoleteFiles();
-			}
-		});
 		panel.add(lastCollectDurationLabel);
 		panel.add(displayDurationLabel);
 		panel.add(overheadLabel);
-		panel.add(purgeObsoleteFilesButton);
+		if (Parameters.isSystemActionsEnabled()) {
+			final MButton purgeObsoleteFilesButton = new MButton();
+			purgeObsoleteFilesButton.setIcon(PURGE_OBSOLETE_FILES_ICON);
+			purgeObsoleteFilesButton
+					.setToolTipText(I18N.getString("Purger_les_fichiers_obsoletes"));
+			purgeObsoleteFilesButton.setBorder(null);
+			purgeObsoleteFilesButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					purgeObsoleteFiles();
+				}
+			});
+			panel.add(purgeObsoleteFilesButton);
+		}
 		if (Parameters.JAVAMELODY_VERSION != null) {
 			panel.add(new JLabel(" "));
 			final JLabel versionLabel = new JLabel("JavaMelody " + Parameters.JAVAMELODY_VERSION);
