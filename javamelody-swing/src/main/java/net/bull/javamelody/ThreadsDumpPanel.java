@@ -61,8 +61,7 @@ class ThreadsDumpPanel extends MelodyPanel {
 
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
 		buttonPanel.setOpaque(false);
-		// TODO traduction
-		final MButton clipBoardButton = new MButton("Copier dans presse-papiers");
+		final MButton clipBoardButton = new MButton(I18N.getString("Copier_dans_presse-papiers"));
 		clipBoardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

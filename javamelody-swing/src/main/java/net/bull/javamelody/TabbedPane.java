@@ -91,10 +91,9 @@ public class TabbedPane extends MTabbedPane {
 	protected JPopupMenu createPopupMenu() {
 		final JPopupMenu menu = super.createPopupMenu();
 		final CloseMenuSelectionHandler closeMenuSelectionHandler = new CloseMenuSelectionHandler();
-		// TODO traductions
-		final JMenuItem closeMenuItem = new JMenuItem(CLOSE);
-		final JMenuItem closeOthersMenuItem = new JMenuItem(CLOSE_OTHERS);
-		final JMenuItem closeAllMenuItem = new JMenuItem(CLOSE_ALL);
+		final JMenuItem closeMenuItem = new JMenuItem(I18N.getString("Fermer"));
+		final JMenuItem closeOthersMenuItem = new JMenuItem(I18N.getString("Fermer_les_autres"));
+		final JMenuItem closeAllMenuItem = new JMenuItem(I18N.getString("Fermer_tout"));
 		closeMenuItem.setName(CLOSE);
 		closeOthersMenuItem.setName(CLOSE_OTHERS);
 		closeAllMenuItem.setName(CLOSE_ALL);

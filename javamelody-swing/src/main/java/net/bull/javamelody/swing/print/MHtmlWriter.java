@@ -29,6 +29,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.ListSelectionModel;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
@@ -52,7 +53,7 @@ public class MHtmlWriter extends MPrinter {
 	/** {@inheritDoc} */
 	@Override
 	public String getName() {
-		return "Exporter en HTML";
+		return I18NAdapter.getString("export_html");
 	}
 
 	/** {@inheritDoc} */

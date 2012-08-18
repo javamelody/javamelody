@@ -55,8 +55,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 	}
 
 	protected JPanel createButtonsPanel() {
-		// TODO traduction
-		final MButton openButton = new MButton("Ouvrir",
+		final MButton openButton = new MButton(I18N.getString("Ouvrir"),
 				ImageIconCache.getImageIcon("action_open.png"));
 		openButton.addActionListener(new ActionListener() {
 			@Override

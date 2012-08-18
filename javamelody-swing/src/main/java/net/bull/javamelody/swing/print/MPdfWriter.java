@@ -26,6 +26,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.TableColumnModel;
 
+import net.bull.javamelody.I18NAdapter;
 import net.bull.javamelody.swing.table.MBasicTable;
 
 import com.lowagie.text.BadElementException;
@@ -137,7 +138,7 @@ public class MPdfWriter extends MPrinter {
 	 */
 	@Override
 	public String getName() {
-		return landscape ? "Exporter en PDF paysage" : "Exporter en PDF";
+		return I18NAdapter.getString(landscape ? "export_pdf_landscape" : "export_pdf");
 	}
 
 	/**

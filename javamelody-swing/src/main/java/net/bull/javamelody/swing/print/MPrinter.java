@@ -216,8 +216,6 @@ public abstract class MPrinter {
 	 */
 	public abstract String getName();
 
-	// TODO traduction des getName
-
 	/**
 	 * Méthode abstraite : les instances doivent renvoyer l'extension du fichier exporté.
 	 *
