@@ -269,6 +269,8 @@ public class TestCollectorServletWithParts {
 	private void doPart(Map<String, String> parameters) throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
+		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
 		if (MBEANS_PART.equals(parameters.get(PART_PARAMETER))) {
 			expect(request.getHeaders("Accept-Encoding")).andReturn(
 					Collections.enumeration(Collections.singleton("application/gzip"))).anyTimes();
@@ -292,9 +294,12 @@ public class TestCollectorServletWithParts {
 		expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
 		replay(request);
 		replay(response);
+		replay(servletContext);
+		Parameters.initialize(servletContext);
 		collectorServlet.doPost(request, response);
 		collectorServlet.doGet(request, response);
 		verify(request);
 		verify(response);
+		verify(servletContext);
 	}
 }
