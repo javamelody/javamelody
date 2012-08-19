@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -27,7 +31,9 @@ import java.util.List;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.servlet.ServletContext;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -229,6 +235,13 @@ public class TestTomcatInformations {
 		long getmaxTime();
 	}
 
+	/** Test. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+		Utils.setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, Boolean.TRUE.toString());
+	}
+
 	/** Test.
 	 * @throws JMException e */
 	@Test
@@ -260,7 +273,15 @@ public class TestTomcatInformations {
 
 			final Counter counter = new Counter("http", null);
 			final Collector collector = new Collector("test", Arrays.asList(counter));
+			final ServletContext context = createNiceMock(ServletContext.class);
+			expect(context.getServerInfo()).andReturn("Mock").anyTimes();
+			expect(context.getMajorVersion()).andReturn(3).anyTimes();
+			expect(context.getMinorVersion()).andReturn(0).anyTimes();
+			expect(context.getContextPath()).andReturn("/test").anyTimes();
+			replay(context);
+			Parameters.initialize(context);
 			collector.collectLocalContextWithoutErrors();
+			verify(context);
 		} finally {
 			for (final ObjectName registeredMBean : mBeans) {
 				mBeanServer.unregisterMBean(registeredMBean);
