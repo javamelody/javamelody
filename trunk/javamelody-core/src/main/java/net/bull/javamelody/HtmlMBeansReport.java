@@ -56,6 +56,9 @@ class HtmlMBeansReport {
 	}
 
 	void writeTree() throws IOException {
+		if (mbeans.isEmpty()) {
+			return;
+		}
 		final String endDiv = "</div>";
 
 		// MBeans pour la plateforme
