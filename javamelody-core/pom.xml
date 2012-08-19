@@ -240,7 +240,7 @@
 			http://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins -->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>java.net-m2-repository</id>
+			<id>maven.jenkins-ci.org</id>
 			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
 		</repository>
 		<snapshotRepository>
