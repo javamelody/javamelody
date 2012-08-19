@@ -31,6 +31,7 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
+import static net.bull.javamelody.HttpParameters.JNLP_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
@@ -584,6 +585,8 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, JNLP_PART);
+		monitoring(parameters);
 		parameters.remove(PART_PARAMETER);
 		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
 		monitoring(parameters);
@@ -841,6 +844,7 @@ public class TestMonitoringFilter { // NOPMD
 			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
+		expect(request.getRequestURL()).andReturn(new StringBuffer("/test/monitoring")).anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(request.getRemoteAddr()).andReturn("here").anyTimes();
 		final Random random = new Random();
