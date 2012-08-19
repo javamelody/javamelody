@@ -246,7 +246,7 @@ class HtmlCounterReport {
 			writeln("<th class='sorttable_numeric'>#erreur_systeme#</th>");
 			final Counter parentCounter = getCounterByRequestId(request);
 			final boolean allChildHitsDisplayed = parentCounter != null
-					&& parentCounter.getChildCounterName() != null;
+					&& parentCounter.getChildCounterName() != null && request.hasChildHits();
 			if (allChildHitsDisplayed) {
 				final String childCounterName = parentCounter.getChildCounterName();
 				writeln("<th class='sorttable_numeric'>"

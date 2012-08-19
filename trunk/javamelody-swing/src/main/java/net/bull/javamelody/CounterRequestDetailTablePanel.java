@@ -228,7 +228,7 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 
 		final Counter parentCounter = getCounterByRequestId(request);
 		final boolean allChildHitsDisplayed = parentCounter != null
-				&& parentCounter.getChildCounterName() != null;
+				&& parentCounter.getChildCounterName() != null && request.hasChildHits();
 		if (allChildHitsDisplayed) {
 			final String childCounterName = parentCounter.getChildCounterName();
 			table.addColumn("childHitsMean",
