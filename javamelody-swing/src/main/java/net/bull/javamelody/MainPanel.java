@@ -77,8 +77,7 @@ class MainPanel extends MelodyPanel {
 				BorderLayout.NORTH);
 		mainTabPanel.add(scrollPane, BorderLayout.CENTER);
 
-		// TODO translation
-		tabbedPane.addTab("Main", mainTabPanel);
+		tabbedPane.addTab(I18N.getString("Tableau_de_bord"), mainTabPanel);
 		tabbedPane.setTabComponentAt(0, null);
 		add(tabbedPane, BorderLayout.CENTER);
 
