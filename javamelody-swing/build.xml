@@ -141,6 +141,21 @@
 		</zip>
 	</target>
 
+	<!-- (Reserved) Upload du fichier jar d'une livraison vers "Download" sur javamelody.googlecode.com -->
+	<target name="deploy" depends="signjar">
+		<property file="../javamelody-core/VERSION.properties" />
+		<echo message="JavaMelody version: ${version}" level="info" />
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="../javamelody-core/src/main/lib/ant-googlecode-0.0.3.jar" name="gcupload" />
+		<input message="googlecode username:" addproperty="gc.user" defaultvalue="evernat@free.fr" />
+		<!-- generated password : https://code.google.com/hosting/settings -->
+		<input message="googlecode password:" addproperty="gc.pass" />
+		<!-- Rich Desktop UI: not to be downloaded directly -->
+		<property name="gc.label" value="Deprecated" />
+		<echo message="Début de l'upload" />
+		<gcupload filename="javamelody-swing.jar" targetfilename="javamelody-swing-${version}.jar" summary="Rich Desktop User Interface - Not to be downloaded directly" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<echo message="Upload du fichier javamelody-swing-${version}.jar sur googlecode terminé" />
+	</target>
+
 	<!-- Tout (zip, clean) -->
 	<target name="all" depends="zip">
 		<antcall target="clean" />
