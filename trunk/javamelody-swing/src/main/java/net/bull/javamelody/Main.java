@@ -75,7 +75,6 @@ public final class Main {
 	}
 
 	static void showFrame() throws IOException {
-		// TODO récupérer aussi dans JNLP le cookie de session
 		final String application = System.getProperty("javamelody.application");
 		final String url = System.getProperty("javamelody.url");
 		final String range = System.getProperty("javamelody.range");
@@ -88,6 +87,7 @@ public final class Main {
 		log("Monitoring of " + application + " on " + url);
 		log("creating frame");
 		final RemoteCollector remoteCollector = new RemoteCollector(application, urls);
+		remoteCollector.setCookies(System.getProperty("cookies"));
 		final MainPanel contentPane = new MainPanel(remoteCollector, selectedRange);
 		final MainFrame frame = new MainFrame();
 		frame.setTitle(I18N.getFormattedString("Monitoring_sur", application));
