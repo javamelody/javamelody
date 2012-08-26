@@ -1,0 +1,82 @@
+<atlassian-plugin key="net.bull.javamelody"
+	name="JavaMelody Monitoring Plugin" pluginsVersion="1">
+	<plugin-info>
+		<description>Monitoring of JIRA, Confluence or Bamboo server with JavaMelody.</description>
+		<version>@version@</version>
+		<application-version min="4.0" />
+		<vendor name="JavaMelody" url="http://javamelody.googlecode.com/" />
+	</plugin-info>
+
+	<!-- location="after-encoding" and weight="1" (and not location="before-decoration"
+		 and weight="200") for issue 23 when gzip compression is enabled in JIRA -->
+	<servlet-filter name="MonitoringFilter" key="MonitoringFilter"
+		class="net.bull.javamelody.JiraMonitoringFilter" location="after-encoding"
+		weight="1">
+		<description>Monitoring Filter.</description>
+		<url-pattern>/*</url-pattern>
+		<init-param>
+			<param-name>http-transform-pattern</param-name>
+			<!-- URLs are aggregated if contain an issue number (jira) or a build number (bamboo)
+			like "-xxx", if contain a fixforversion number like "/fixforversion/xxx" (jira),
+			if contain an attachment name like "/attachment/xxx/abcdef" (jira),
+			if contain a component number like "/component/xxx" (jira),
+			if contain a label like "/label/xxx" (confluence),
+			if contain "/x/ABCDEF" (confluence),
+			if contain an unit test name like "/test/abcdef" (bamboo),
+			or if contain an artifact name like "/artifact/abcdef" (bamboo) -->
+			<param-value>-\d+|/\d+|chment/.+|onent/.+|abel/.+|/x/.+|est/.+|ifact/.+</param-value>
+		</init-param>
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>rewrap-datasources</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<!-- issue 128: jira 4.3.4 shutdown -->
+			<param-name>quartz-default-listener-disabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>analytics-id</param-name>
+			<param-value>UA-1335263-8</param-value>
+		</init-param>
+	</servlet-filter>
+
+	<servlet-context-listener name="SessionListener"
+		key="SessionListener" class="net.bull.javamelody.SessionListener">
+		<description>Monitoring Session Listener.</description>
+	</servlet-context-listener>
+
+	<resource type="i18n" name="i18n" location="javamelody_i18n" />
+
+	<!-- doc: http://confluence.atlassian.com/display/JIRA/Web+Fragments -->
+	<web-item key="net.bull.javamelody.jira-web-item" name="Monitoring"
+		section="system.admin/system" i18n-name-key="net.bull.javamelody.web-item"
+		weight="10">
+		<!-- issue 210 (jira-web-item error in logs): remove this icon element because icon is not displayed
+		in JIRA 5 and because it causes an ERROR log for some screens such as project config.
+		<icon height="16" width="16">
+			<link>/monitoring?resource=systemmonitor.png</link>
+		</icon> -->
+		<label key="net.bull.javamelody.label">Monitoring</label>
+		<link linkId="net.bull.javamelody.link">/monitoring</link>
+		<!-- Pour compatibilite avec Confluence, on ne met pas cette condition qui n'est pas
+			 necessaire si la section est system.admin/system
+		<condition
+			class="com.atlassian.jira.plugin.webfragment.conditions.UserIsSysAdminCondition" />-->
+	</web-item>
+
+	<!-- doc: http://confluence.atlassian.co.jp/display/DOC/Web+UI+Plugins -->
+	<web-item key="net.bull.javamelody.confluence-web-item" name="Monitoring"
+		section="system.admin/administration" i18n-name-key="net.bull.javamelody.web-item"
+		weight="10">
+		<icon height="16" width="16">
+			<link>/monitoring?resource=systemmonitor.png</link>
+		</icon>
+		<label key="net.bull.javamelody.label">Monitoring</label>
+		<link linkId="net.bull.javamelody.link">/monitoring</link>
+	</web-item>
+</atlassian-plugin>

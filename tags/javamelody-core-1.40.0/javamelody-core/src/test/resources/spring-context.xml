@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	
+	<bean name="springTestFacade" class="net.bull.javamelody.SpringTestFacadeImpl" />
+	<bean name="annotatedTestClassSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestClass" />
+	<bean name="annotatedTestClassSpring2" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestClass2" />
+	<bean name="annotatedTestOtherClassSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestOtherClass" />
+	<bean name="annotatedTestMethodSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestMethod" />
+
+	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
+				<property name="interfaceName" value="net.bull.javamelody.SpringTestFacade" />
+			</bean>
+		</property>
+	</bean>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <!--
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/test?socketTimeout=5000&amp;connectTimeout=5000" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />
+	-->
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:./target/h2/test-webapp" />
+        <property name="username" value="sa" />
+        <property name="password" value="" />
+        <property name="maxIdle" value="13" />
+    </bean>
+	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">
+		<property name="targetName" value="dataSource" />
+	</bean>
+    <!--
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/TestDB" />
+	</bean>
+	-->
+    <bean id="dataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/TestDB" />
+		<property name="lookupOnStartup" value="false" />
+		<property name="expectedType" value="javax.sql.DataSource" />
+	</bean>
+
+	<bean id="springDataSourceBeanPostProcessor2" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+		<property name="excludedDatasources">
+			<set>
+				<value>dataSource</value>
+				<value>dataSource2</value>
+			</set>
+		</property>
+	</bean>
+</beans>
