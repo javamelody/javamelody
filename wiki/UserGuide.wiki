@@ -1013,30 +1013,13 @@ or
 	</dependency>
 }}}
 
-Since v1.31, the repository http://maven.glassfish.org is not needed anymore for javamelody ; it was:
-
-{{{
-	<repositories>
-		<repository>
-			<id>m.g.o-public</id>
-			<url>http://maven.glassfish.org/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-}}}
-
 The dependencies {{{jrobin}}} (included in javamelody-core) and if you wish {{{xstream}}} as an option for the remoting with the collector server are:
 
 {{{
 	<dependency>
 		<groupId>com.thoughtworks.xstream</groupId>
 		<artifactId>xstream</artifactId>
-		<version>1.3.1</version>
+		<version>1.4.2</version>
 	</dependency>
 	<dependency>
 		<groupId>org.jrobin</groupId>
