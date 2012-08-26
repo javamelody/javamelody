@@ -57,4 +57,20 @@ class HttpCookieManager {
 			req.setAttribute(cookieName, "added");
 		}
 	}
+
+	String getCookiesAsString(HttpServletRequest req) {
+		final Cookie[] cookies = req.getCookies();
+		if (cookies != null) {
+			final StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < cookies.length; i++) {
+				final Cookie cookie = cookies[i];
+				sb.append(cookie.getName()).append('=').append(cookie.getValue());
+				if (i < cookies.length - 1) {
+					sb.append("; ");
+				}
+			}
+			return sb.toString();
+		}
+		return null;
+	}
 }

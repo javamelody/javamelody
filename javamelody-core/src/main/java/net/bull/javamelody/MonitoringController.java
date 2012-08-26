@@ -644,6 +644,10 @@ class MonitoringController {
 					+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode() + "' value='"
 					+ Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED) + endValueTag);
 		}
+		final String cookies = httpCookieManager.getCookiesAsString(httpRequest);
+		if (cookies != null) {
+			writer.println("      <property name='cookies' value='" + cookies + endValueTag);
+		}
 		writer.println("   </resources>");
 		writer.println("   <application-desc main-class='net.bull.javamelody.Main' />");
 		writer.println("</jnlp>");
