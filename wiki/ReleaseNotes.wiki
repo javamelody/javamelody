@@ -1,6 +1,8 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
 === 1.40.0 ===
 
   * Upgrade xstream to 1.4.2 in the optional collect server, and in the [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin].
