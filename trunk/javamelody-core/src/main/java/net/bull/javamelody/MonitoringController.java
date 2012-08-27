@@ -58,7 +58,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -598,59 +597,11 @@ class MonitoringController {
 
 	private void doJnlp(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			Range range) throws IOException {
-		final PrintWriter writer = httpResponse.getWriter();
 		httpResponse.setContentType("application/x-java-jnlp-file");
 		final String codebase = httpRequest.getRequestURL().toString();
-		writer.println("<jnlp spec='1.0+' codebase='" + codebase + "'>");
-		writer.println("   <information>");
-		writer.println("      <title>JavaMelody</title>");
-		writer.println("      <vendor>JavaMelody</vendor>");
-		writer.println("      <description>Monitoring</description>");
-		writer.println("      <icon href='" + codebase + "?resource=systemmonitor.png'/>");
-		writer.println("   </information>");
-		writer.println("   <security> <all-permissions/> </security>");
-		writer.println("   <update check='always' policy='always'/>");
-		writer.println("   <resources>");
-		writer.println("      <j2se version='1.7+' max-heap-size='300m'/>");
-		final String jarFileUrl;
-		if (Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL) != null) {
-			jarFileUrl = Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL);
-		} else if (Parameters.JAVAMELODY_VERSION != null) {
-			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-"
-					+ Parameters.JAVAMELODY_VERSION + ".jar";
-		} else {
-			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing.jar";
-		}
-		writer.println("      <jar href='" + jarFileUrl + "' />");
-		final String endValueTag = "'/>";
-		writer.println("      <property name='javamelody.application' value='"
-				+ collector.getApplication() + endValueTag);
-		writer.println("      <property name='javamelody.url' value='" + codebase
-				+ "?format=serialized'/>");
-		writer.println("      <property name='javamelody.range' value='" + range.getValue()
-				+ endValueTag);
-		if (Parameters.getParameter(Parameter.WARNING_THRESHOLD_MILLIS) != null) {
-			writer.println("      <property name='javamelody."
-					+ Parameter.WARNING_THRESHOLD_MILLIS.getCode() + "' value='"
-					+ Parameters.getParameter(Parameter.WARNING_THRESHOLD_MILLIS) + endValueTag);
-		}
-		if (Parameters.getParameter(Parameter.SEVERE_THRESHOLD_MILLIS) != null) {
-			writer.println("      <property name='javamelody."
-					+ Parameter.SEVERE_THRESHOLD_MILLIS.getCode() + "' value='"
-					+ Parameters.getParameter(Parameter.SEVERE_THRESHOLD_MILLIS) + endValueTag);
-		}
-		if (!Parameters.isSystemActionsEnabled()) {
-			writer.println("      <property name='javamelody."
-					+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode() + "' value='"
-					+ Parameters.getParameter(Parameter.SYSTEM_ACTIONS_ENABLED) + endValueTag);
-		}
 		final String cookies = httpCookieManager.getCookiesAsString(httpRequest);
-		if (cookies != null) {
-			writer.println("      <property name='cookies' value='" + cookies + endValueTag);
-		}
-		writer.println("   </resources>");
-		writer.println("   <application-desc main-class='net.bull.javamelody.Main' />");
-		writer.println("</jnlp>");
+
+		new JnlpPage(collector, codebase, cookies, range, httpResponse.getWriter()).toJnlp();
 	}
 
 	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
