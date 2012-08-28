@@ -312,19 +312,13 @@ class JavaInformationsPanel extends MelodyPanel {
 		panel.add(nbDependenciesLabel, BorderLayout.CENTER);
 		if (nbDependencies > 0) {
 			nbDependenciesLabel.setText(nbDependenciesLabel.getText() + " ; ");
+			final JPanel buttonsPanel = new JPanel(new BorderLayout());
+			buttonsPanel.setOpaque(false);
 			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
-			panel.add(detailsButton, BorderLayout.EAST);
-			final JLabel dependenciesLabel = new JLabel(
-					replaceLineFeedWithHtmlBr(javaInformations.getDependencies()));
-			final JPanel dependendiesDetailsPanel = new JPanel(new BorderLayout());
-			panel.add(dependendiesDetailsPanel, BorderLayout.SOUTH);
-			dependendiesDetailsPanel.setVisible(false);
-			dependendiesDetailsPanel.setOpaque(false);
-			dependendiesDetailsPanel.add(dependenciesLabel, BorderLayout.NORTH);
+			buttonsPanel.add(detailsButton, BorderLayout.WEST);
 			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
 				final MButton pomXmlButton = new MButton(I18N.getString("pom.xml"), XML_ICON);
-				dependendiesDetailsPanel.add(pomXmlButton, BorderLayout.WEST);
-				dependendiesDetailsPanel.add(new JLabel(""), BorderLayout.CENTER);
+				buttonsPanel.add(pomXmlButton, BorderLayout.EAST);
 				pomXmlButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -337,11 +331,17 @@ class JavaInformationsPanel extends MelodyPanel {
 					}
 				});
 			}
+			panel.add(buttonsPanel, BorderLayout.EAST);
+
+			final JLabel dependenciesLabel = new JLabel(
+					replaceLineFeedWithHtmlBr(javaInformations.getDependencies()));
+			dependenciesLabel.setVisible(false);
+			panel.add(dependenciesLabel, BorderLayout.SOUTH);
 			final JPanel localGridPanel = gridPanel;
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					dependendiesDetailsPanel.setVisible(!dependendiesDetailsPanel.isVisible());
+					dependenciesLabel.setVisible(!dependenciesLabel.isVisible());
 					localGridPanel.validate();
 					if (detailsButton.getIcon() == PLUS_ICON) {
 						detailsButton.setIcon(MINUS_ICON);
