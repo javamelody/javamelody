@@ -38,12 +38,17 @@
 	</context-param>
 	<!-- <context-param> <param-name>javamelody.disabled</param-name> <param-value>true</param-value> 
 		</context-param> -->
-	<!-- parametrage du monitoring pour GWT -->
+	<!-- paramétrage du monitoring pour GWT -->
 	<context-param>
 		<param-name>javamelody.http-transform-pattern</param-name>
 		<param-value>[A-F,0-9]+\.cache</param-value>
 	</context-param>
-
+	<!-- paramétrage de l'ihm swing avec la dernière version construite depuis le trunk -->
+	<context-param>
+		<param-name>javamelody.javamelody-swing-url</param-name>
+		<param-value>https://javamelody.ci.cloudbees.com/job/javamelody-swing%20ant/lastSuccessfulBuild/artifact/javamelody-swing/javamelody-swing.jar</param-value>
+	</context-param>
+	
 	<!-- these are for MDC of Log4j and for display of the user in the monitoring -->
 	<filter>
 		<filter-name>remoteUser</filter-name>
