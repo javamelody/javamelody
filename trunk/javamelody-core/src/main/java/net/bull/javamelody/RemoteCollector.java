@@ -235,14 +235,26 @@ class RemoteCollector {
 		return collectForUrl(jndiUrl);
 	}
 
+	@SuppressWarnings("unchecked")
 	Map<String, List<MBeanNode>> collectMBeans() throws IOException {
 		// récupération à la demande des MBeans
 		final String title = I18N.getString("MBeans");
 		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<String, List<MBeanNode>>();
 		for (final URL url : urls) {
 			final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + MBEANS_PART);
-			final List<MBeanNode> mbeans = collectForUrl(mbeansUrl);
-			mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
+			final Object result = collectForUrl(mbeansUrl);
+			if (result instanceof Map) {
+				// pour les nodes dans Jenkins
+				final Map<String, List<MBeanNode>> mbeansByNodeName = (Map<String, List<MBeanNode>>) result;
+				for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByNodeName.entrySet()) {
+					final String nodeName = entry.getKey();
+					final List<MBeanNode> mbeans = entry.getValue();
+					mbeansByTitle.put(title + " (" + nodeName + ')', mbeans);
+				}
+			} else {
+				final List<MBeanNode> mbeans = (List<MBeanNode>) result;
+				mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
+			}
 		}
 		return mbeansByTitle;
 	}
