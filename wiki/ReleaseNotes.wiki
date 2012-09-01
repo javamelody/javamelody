@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * issue 244 and issue 245 will be fixed in Resin v4.0.31
+  * issue 244 and issue 245 were Resin issues and they will be fixed in Resin v4.0.31
 
 === 1.40.0 ===
 
