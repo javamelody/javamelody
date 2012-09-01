@@ -199,6 +199,7 @@ class RemoteCollector {
 		return connectionInformations;
 	}
 
+	@SuppressWarnings("unchecked")
 	Map<String, List<ProcessInformations>> collectProcessInformations() throws IOException {
 		// récupération à la demande des processus
 		final String title = I18N.getString("Processus");
@@ -206,8 +207,20 @@ class RemoteCollector {
 		for (final URL url : urls) {
 			final URL processUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
 					+ PROCESSES_PART);
-			final List<ProcessInformations> processList = collectForUrl(processUrl);
-			processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processList);
+			final Object result = collectForUrl(processUrl);
+			if (result instanceof Map) {
+				// pour les nodes dans Jenkins
+				final Map<String, List<ProcessInformations>> processByNodeName = (Map<String, List<ProcessInformations>>) result;
+				for (final Map.Entry<String, List<ProcessInformations>> entry : processByNodeName
+						.entrySet()) {
+					final String nodeName = entry.getKey();
+					final List<ProcessInformations> processList = entry.getValue();
+					processesByTitle.put(title + " (" + nodeName + ')', processList);
+				}
+			} else {
+				final List<ProcessInformations> processList = (List<ProcessInformations>) result;
+				processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processList);
+			}
 		}
 		return processesByTitle;
 	}
