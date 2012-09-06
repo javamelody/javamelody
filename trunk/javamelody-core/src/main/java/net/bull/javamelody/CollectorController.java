@@ -103,19 +103,33 @@ class CollectorController {
 					LOGGER.info("monitored application removed: " + application);
 					messageForReport = I18N.getFormattedString("application_enlevee", application);
 					showAlertAndRedirectTo(resp, messageForReport, "?");
-				} else if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER
+					return;
+				}
+
+				final Collector collector = getCollectorByApplication(application);
+				final MonitoringController monitoringController = new MonitoringController(
+						collector, collectorServer);
+				if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER
 						&& Action.valueOfIgnoreCase(actionParameter) != Action.MAIL_TEST
 						&& Action.valueOfIgnoreCase(actionParameter) != Action.PURGE_OBSOLETE_FILES) {
 					// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
 					// et on récupère les informations à jour (notamment mémoire et nb de sessions)
 					messageForReport = forwardActionAndUpdateData(req, application);
-					writeMessage(req, resp, application, messageForReport);
 				} else {
 					// nécessaire si action clear_counter
-					final Collector collector = getCollectorByApplication(application);
-					final MonitoringController monitoringController = new MonitoringController(
-							collector, collectorServer);
 					messageForReport = monitoringController.executeActionIfNeeded(req);
+				}
+
+				if (TransportFormat.isATransportFormat(req.getParameter(FORMAT_PARAMETER))) {
+					final Range range = monitoringController.getRangeForSerializable(req);
+					final List<Object> serializable = new ArrayList<Object>();
+					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+					serializable.addAll((List<?>) monitoringController.createDefaultSerializable(
+							javaInformationsList, range));
+					serializable.add(messageForReport);
+					monitoringController.doCompressedSerializable(req, resp,
+							(Serializable) serializable);
+				} else {
 					writeMessage(req, resp, application, messageForReport);
 				}
 				return;
