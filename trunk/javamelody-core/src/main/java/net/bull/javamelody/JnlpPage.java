@@ -27,14 +27,17 @@ import java.io.Writer;
  */
 class JnlpPage {
 	private final Collector collector;
+	private final CollectorServer collectorServer;
 	private final String codebase;
 	private final String cookies;
 	private final Range range;
 	private final Writer writer;
 
-	JnlpPage(Collector collector, String codebase, String cookies, Range range, Writer writer) {
+	JnlpPage(Collector collector, CollectorServer collectorServer, String codebase, String cookies,
+			Range range, Writer writer) {
 		super();
 		this.collector = collector;
+		this.collectorServer = collectorServer;
 		this.codebase = codebase;
 		this.cookies = cookies;
 		this.range = range;
@@ -65,8 +68,13 @@ class JnlpPage {
 		println("      <jar href='" + jarFileUrl + "' />");
 		println("      <property name='javamelody.application' value='"
 				+ collector.getApplication() + "'/>");
-		println("      <property name='javamelody.url' value='" + codebase
-				+ "?format=serialized'/>");
+		String url;
+		if (collectorServer == null) {
+			url = codebase + "?format=serialized";
+		} else {
+			url = codebase + "?format=serialized&application=" + collector.getApplication();
+		}
+		println("      <property name='javamelody.url' value='" + url + "' />");
 		println("      <property name='javamelody.range' value='" + range.getValue() + "'/>");
 		// les valeurs des paramètres sont importantes notamment pour :
 		// WARNING_THRESHOLD_MILLIS, SEVERE_THRESHOLD_MILLIS, SYSTEM_ACTIONS_ENABLED et NO_DATABASE
