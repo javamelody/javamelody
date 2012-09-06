@@ -262,14 +262,7 @@ class SessionInformationsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (confirm(I18N.getFormattedString("confirm_invalidate_sessions"))) {
-					try {
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.INVALIDATE_SESSIONS, null, null, null, null);
-						showMessage(message);
-						refresh();
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionInvalidateAllSessions();
 				}
 			}
 		});
@@ -285,19 +278,33 @@ class SessionInformationsPanel extends MelodyPanel {
 				final SessionInformations sessionInformations = getTable().getSelectedObject();
 				if (sessionInformations != null
 						&& confirm(I18N.getFormattedString("confirm_invalidate_session"))) {
-					try {
-						final String message = getRemoteCollector().executeActionAndCollectData(
-								Action.INVALIDATE_SESSION, null, sessionInformations.getId(), null,
-								null);
-						showMessage(message);
-						refresh();
-					} catch (final IOException ex) {
-						showException(ex);
-					}
+					actionInvalidateSession(sessionInformations);
 				}
 			}
 		});
 		return invalidateSessionButton;
+	}
+
+	final void actionInvalidateAllSessions() {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.INVALIDATE_SESSIONS, null, null, null, null);
+			showMessage(message);
+			refresh();
+		} catch (final IOException ex) {
+			showException(ex);
+		}
+	}
+
+	final void actionInvalidateSession(final SessionInformations sessionInformations) {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.INVALIDATE_SESSION, null, sessionInformations.getId(), null, null);
+			showMessage(message);
+			refresh();
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 
 	final void actionPdf() throws IOException {
