@@ -601,7 +601,8 @@ class MonitoringController {
 		final String codebase = httpRequest.getRequestURL().toString();
 		final String cookies = httpCookieManager.getCookiesAsString(httpRequest);
 
-		new JnlpPage(collector, codebase, cookies, range, httpResponse.getWriter()).toJnlp();
+		new JnlpPage(collector, collectorServer, codebase, cookies, range, httpResponse.getWriter())
+				.toJnlp();
 	}
 
 	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
