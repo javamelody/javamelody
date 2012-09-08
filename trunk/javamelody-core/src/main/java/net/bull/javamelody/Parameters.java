@@ -177,6 +177,8 @@ final class Parameters {
 			@SuppressWarnings("unchecked")
 			final List<String> propertyNames = (List<String>) Collections.list(properties
 					.propertyNames());
+			// propertyNames ne sont pas ordonnés donc on les trie par ordre alphabétique
+			Collections.sort(propertyNames);
 			for (final String property : propertyNames) {
 				result.put(property, parseUrl(String.valueOf(properties.get(property))));
 			}
