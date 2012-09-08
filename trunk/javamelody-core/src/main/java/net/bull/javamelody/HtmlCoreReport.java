@@ -652,38 +652,56 @@ class HtmlCoreReport {
 		writeln("<div align='center'>");
 		final Collection<String> applications = Parameters.getCollectorUrlsByApplications()
 				.keySet();
-		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
-				.getLastCollectExceptionsByApplication();
 		if (applications.size() > 1) {
-			writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
-			for (final String application : applications) {
-				writeln("<a href='?application=" + application + "' class='tooltip'>");
-				final Throwable lastCollectException = lastCollectExceptionsByApplication
-						.get(application);
-				if (lastCollectException == null) {
-					writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
-					writeln("<em style='text-align: left; font-size: 10pt;'>");
-					writeln("#Application_disponible#");
-					writeln("</em>");
-				} else {
-					writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
-					writeln("<em style='text-align: left; font-size: 10pt;'>");
-					writeln("#Application_indisponible#:<br/>");
-					for (final StackTraceElement stackTraceElement : lastCollectException
-							.getStackTrace()) {
-						writeln(I18N.htmlEncode(stackTraceElement.toString(), true));
-						writeln("<br/>");
-					}
-					writeln("</em>");
+			if (applications.size() > 10) {
+				writeln("<table summary='applications'><tr><td>");
+				writeShowHideLink("chooseApplication", "#Choix_application#");
+				if (Parameters.getCollectorApplicationsFile().canWrite()) {
+					writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
 				}
-				writeln(application + "</a>&nbsp;&nbsp;&nbsp;");
+				writeln("<div id='chooseApplication' style='display: none;'><div>&nbsp;&nbsp;&nbsp;");
+				writeApplicationsLinks(applications, "<br />&nbsp;&nbsp;&nbsp;");
+				writeln("</div></div></td></tr></table>");
+			} else {
+				writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
+				writeApplicationsLinks(applications, "&nbsp;&nbsp;&nbsp;");
+				if (Parameters.getCollectorApplicationsFile().canWrite()) {
+					writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
+				}
 			}
-		}
-
-		if (Parameters.getCollectorApplicationsFile().canWrite()) {
+		} else if (Parameters.getCollectorApplicationsFile().canWrite()) {
 			writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
 		}
 		writeln(END_DIV);
+	}
+
+	private void writeApplicationsLinks(Collection<String> applications, String separator)
+			throws IOException {
+		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
+				.getLastCollectExceptionsByApplication();
+		for (final String application : applications) {
+			final Throwable lastCollectException = lastCollectExceptionsByApplication
+					.get(application);
+			writeln("<a href='?application=" + application + "' class='tooltip'>");
+			if (lastCollectException == null) {
+				writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
+				writeln("<em style='text-align: left; font-size: 10pt;'>");
+				writeln("#Application_disponible#");
+				writeln("</em>");
+			} else {
+				writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
+				writeln("<em style='text-align: left; font-size: 10pt;'>");
+				writeln("#Application_indisponible#:<br/>");
+				for (final StackTraceElement stackTraceElement : lastCollectException
+						.getStackTrace()) {
+					writeln(I18N.htmlEncode(stackTraceElement.toString(), true));
+					writeln("<br/>");
+				}
+				writeln("</em>");
+			}
+			writeln(application + "</a>");
+			writeln(separator);
+		}
 	}
 
 	void writeRefreshAndPeriodLinks(String graphName, String part) throws IOException {
