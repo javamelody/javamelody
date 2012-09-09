@@ -53,6 +53,7 @@ public class JsfActionListener implements ActionListener {
 		// cette méthode est appelée par JSF RI (Mojarra)
 		if (DISABLED || !JSF_COUNTER.isDisplayed()) {
 			delegateActionListener.processAction(event);
+			return;
 		}
 
 		boolean systemError = false;
@@ -62,7 +63,6 @@ public class JsfActionListener implements ActionListener {
 			JSF_COUNTER.bindContextIncludingCpu(actionName);
 
 			delegateActionListener.processAction(event);
-
 		} catch (final Error e) {
 			// on catche Error pour avoir les erreurs systèmes
 			// mais pas Exception qui sont fonctionnelles en général
