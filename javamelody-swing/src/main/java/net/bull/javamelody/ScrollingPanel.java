@@ -77,6 +77,8 @@ class ScrollingPanel extends MelodyPanel {
 
 		addCounters();
 
+		// TODO il manque ici l'affichage des requêtes en cours
+
 		addSystemInformations();
 
 		addThreadInformations();
