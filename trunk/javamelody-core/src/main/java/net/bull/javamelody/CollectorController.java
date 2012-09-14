@@ -109,9 +109,9 @@ class CollectorController {
 				final Collector collector = getCollectorByApplication(application);
 				final MonitoringController monitoringController = new MonitoringController(
 						collector, collectorServer);
-				if (Action.valueOfIgnoreCase(actionParameter) != Action.CLEAR_COUNTER
-						&& Action.valueOfIgnoreCase(actionParameter) != Action.MAIL_TEST
-						&& Action.valueOfIgnoreCase(actionParameter) != Action.PURGE_OBSOLETE_FILES) {
+				final Action action = Action.valueOfIgnoreCase(actionParameter);
+				if (action != Action.CLEAR_COUNTER && action != Action.MAIL_TEST
+						&& action != Action.PURGE_OBSOLETE_FILES) {
 					// on forwarde l'action (gc, invalidate session(s) ou heap dump) sur l'application monitorée
 					// et on récupère les informations à jour (notamment mémoire et nb de sessions)
 					messageForReport = forwardActionAndUpdateData(req, application);
