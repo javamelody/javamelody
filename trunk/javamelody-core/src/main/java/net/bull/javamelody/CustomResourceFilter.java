@@ -79,20 +79,9 @@ public class CustomResourceFilter implements Filter {
 		final String resource = request.getParameter("resource");
 		if (resource != null && customResources.get(resource) != null) {
 			final String customResource = customResources.get(resource);
-			final HttpServletResponse httpResponse = (HttpServletResponse) response;
-			httpResponse.addHeader("Cache-Control", "max-age=3600");
 
-			// un contentType est nécessaire sinon la css n'est pas prise en compte
-			// sous firefox sur un serveur distant
-			if (customResource.endsWith(".css")) {
-				httpResponse.setContentType("text/css");
-			} else {
-				final String mimeType = Parameters.getServletContext().getMimeType(customResource);
-				// mimeType peut être null, cf issue 69
-				if (mimeType != null) {
-					httpResponse.setContentType(mimeType);
-				}
-			}
+			final HttpServletResponse httpResponse = (HttpServletResponse) response;
+			MonitoringController.addHeadersForResource(httpResponse, customResource);
 
 			request.getRequestDispatcher(customResource).include(request, response);
 		} else {
