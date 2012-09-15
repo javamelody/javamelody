@@ -463,27 +463,32 @@ class MonitoringController {
 	}
 
 	private void doResource(HttpServletResponse httpResponse, String resource) throws IOException {
-		httpResponse.addHeader("Cache-Control", "max-age=3600"); // cache navigateur 1h
-		final OutputStream out = httpResponse.getOutputStream();
 		// on enlève tout ".." dans le paramètre par sécurité
 		final String localResource = Parameters.getResourcePath(resource.replace("..", ""));
-		// un contentType est nécessaire sinon la css n'est pas prise en compte
-		// sous firefox sur un serveur distant
-		if (localResource.endsWith(".css")) {
-			httpResponse.setContentType("text/css");
-		} else {
-			final String mimeType = Parameters.getServletContext().getMimeType(localResource);
-			// mimeType peut être null, cf issue 69
-			if (mimeType != null) {
-				httpResponse.setContentType(mimeType);
-			}
-		}
+		addHeadersForResource(httpResponse, localResource);
+
+		final OutputStream out = httpResponse.getOutputStream();
 		final InputStream in = new BufferedInputStream(getClass()
 				.getResourceAsStream(localResource));
 		try {
 			TransportFormat.pump(in, out);
 		} finally {
 			in.close();
+		}
+	}
+
+	static void addHeadersForResource(HttpServletResponse httpResponse, String resource) {
+		httpResponse.addHeader("Cache-Control", "max-age=3600"); // cache navigateur 1h
+		// un contentType est nécessaire sinon la css n'est pas prise en compte
+		// sous firefox sur un serveur distant
+		if (resource.endsWith(".css")) {
+			httpResponse.setContentType("text/css");
+		} else {
+			final String mimeType = Parameters.getServletContext().getMimeType(resource);
+			// mimeType peut être null, cf issue 69
+			if (mimeType != null) {
+				httpResponse.setContentType(mimeType);
+			}
 		}
 	}
 
