@@ -108,9 +108,10 @@ class HtmlCounterReport {
 				writeln("</div></div>");
 
 				writeln("<div align='center'><img class='synthèse' id='img' src='"
-						+ "?width=960&amp;height=400&amp;graph=" + graphName
+						+ "?width=960&amp;height=400&amp;graph=" + I18N.urlEncode(graphName)
 						+ "' alt='zoom'/></div>");
-				writeln("<div align='right'><a href='?part=lastValue&amp;graph=" + graphName
+				writeln("<div align='right'><a href='?part=lastValue&amp;graph="
+						+ I18N.urlEncode(graphName)
 						+ "' title=\"#Lien_derniere_valeur#\">_</a></div>");
 
 				writeGraphDetailScript(graphName);
@@ -387,7 +388,7 @@ class HtmlCounterReport {
 			writeln("  height = Math.round(width * initialHeight / initialWidth) - 48;");
 			// reload the images
 			// rq : on utilise des caractères unicode pour éviter des warnings
-			writeln("  document.getElementById('img').src = '?graph=" + graphName
+			writeln("  document.getElementById('img').src = '?graph=" + I18N.urlEncode(graphName)
 					+ "\\u0026width=' + width + '\\u0026height=' + height;");
 			writeln("  document.getElementById('img').style.width = '';");
 			writeln("}");

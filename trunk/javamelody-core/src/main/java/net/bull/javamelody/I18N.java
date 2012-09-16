@@ -134,6 +134,10 @@ final class I18N {
 				.replace("'", "\\'");
 	}
 
+	static String urlEncode(String text) {
+		return javascriptEncode(text);
+	}
+
 	/**
 	 * Encode pour affichage en html.
 	 * @param text message à encoder

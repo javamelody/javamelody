@@ -133,7 +133,7 @@ class HtmlSessionInformationsReport {
 	private void writeBackAndRefreshLinksForSession(String sessionId) throws IOException {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln(A_HREF_PART_SESSIONS + "&amp;sessionId=" + sessionId + "'>");
+		writeln(A_HREF_PART_SESSIONS + "&amp;sessionId=" + I18N.urlEncode(sessionId) + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln("</div>");
 	}
@@ -142,9 +142,9 @@ class HtmlSessionInformationsReport {
 		final String nextColumnAlignRight = "</td><td align='right'>";
 		final String nextColumnAlignCenter = "</td><td align='center'>";
 		write("<td><a href='?part=sessions&amp;sessionId=");
-		write(session.getId());
+		write(htmlEncode(session.getId()));
 		write("'>");
-		write(session.getId());
+		write(htmlEncode(session.getId()));
 		write("</a>");
 		write(nextColumnAlignRight);
 		write(durationFormat.format(session.getLastAccess()));
@@ -185,7 +185,7 @@ class HtmlSessionInformationsReport {
 		write("</td><td align='center' class='noPrint'>");
 		write(A_HREF_PART_SESSIONS);
 		write("&amp;action=invalidate_session&amp;sessionId=");
-		write(session.getId());
+		write(I18N.urlEncode(session.getId()));
 		write("' onclick=\"javascript:return confirm('"
 				+ I18N.getStringForJavascript("confirm_invalidate_session") + "');\">");
 		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");
@@ -219,11 +219,11 @@ class HtmlSessionInformationsReport {
 		writeln("<br/>");
 
 		if (sessionInformations == null) {
-			writeln(I18N.getFormattedString("session_invalidee", sessionId));
+			writeln(I18N.getFormattedString("session_invalidee", htmlEncode(sessionId)));
 			return;
 		}
 		writeln("<img width='24' height='24' src='?resource=system-users.png' alt='#Sessions#' />&nbsp;");
-		writeln("<b>" + I18N.getFormattedString("Details_session", sessionId) + "</b>");
+		writeln("<b>" + I18N.getFormattedString("Details_session", htmlEncode(sessionId)) + "</b>");
 		writeSessions(Collections.singletonList(sessionInformations));
 
 		writeln("<br/><b>#Attributs#</b>");
