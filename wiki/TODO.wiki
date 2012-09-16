@@ -22,13 +22,13 @@ And
   # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
   # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?). See issue 149.
-  # In the collector server, do not display all the applications at the top if there are more than 10 or 20 of them, and display them in a separate page or in a combobox for example.
+  # ~~In the collector server, do not display all the applications at the top if there are more than 10 of them, and display them with a show and collapse link~~. (done)
   # Cannot remove in the GUI an application from the collector server when the application is no longer using javamelody. When trying to select it, the collector server is showing an error 500 with the message "Data unavailable for the application". (Meanwhile, it is possible to remove the application directly from the applications.properties file in the temp directory.)
   # Inline drill-down in child requests, for example in the detail of a request
   # Add a pdf report of the detail of a request
   # Add the 90th or 95th percentile in zoomed graphics, besides the mean (org.jrobin.data.DataProcessor.getPercentile)
   # ~~Stack-traces: Link to open a popup with the stack-trace (in addition to the tooltip)~~ (canceled, there is an action "Dump threads as text" now)
-  # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-france/wiki/CxfMonitoring#Spring_configuration this one]
+  # Monitor incoming or outgoing web-services when using Apache CXF. See [http://cxf.apache.org/docs/interceptors.html Interceptors] or [http://code.google.com/p/xebia-france/wiki/CxfMonitoring#Spring_configuration this one] (issue 228)
   # ~~Test the compatibility or the non-compatibility with Quartz 2.0~~ (done, see issue 121)
   # ~~Test the monitoring of sql requests with a datasource from jndi in *[https://groups.google.com/group/javamelody/t/39da9d1d1fe5f275 Glassfish 3]*~~ (done, see issue 138)
   # Test the monitoring of sql requests with a datasource from jndi in *Resin*
@@ -64,6 +64,7 @@ And
   # If the "sql-transform-pattern" parameter is used, the sql requests may contain the '$' character, and then the execution plan (with Oracle) does not work on these requests :-(
   # Check with a file if 2 instances use the same storage directory (and warn about data corruption)
   # Add a pdf report for the JNDI bindings
+  # Add a Table Of Contents with links at the top of the main report. In order to not take much vertical space, it can be displayed hovering, or in a combo box, or in a popup...
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
