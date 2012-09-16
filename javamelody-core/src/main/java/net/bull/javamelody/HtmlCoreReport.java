@@ -93,7 +93,8 @@ class HtmlCoreReport {
 			writeln("<input type='hidden' name='period' value=''/>");
 			if (graphName != null) {
 				writeln("<input type='hidden' name='part' value='" + part + "'/>");
-				writeln("<input type='hidden' name='graph' value='" + graphName + "'/>");
+				writeln("<input type='hidden' name='graph' value='" + I18N.urlEncode(graphName)
+						+ "'/>");
 			}
 			writeln("</form><br/>");
 			writeln(END_DIV);
@@ -453,7 +454,8 @@ class HtmlCoreReport {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
 		writeln(separator);
 		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter="
-				+ counter.getName() + (requestId == null ? "" : "&amp;graph=" + requestId);
+				+ counter.getName()
+				+ (requestId == null ? "" : "&amp;graph=" + I18N.urlEncode(requestId));
 		writeln(hrefStart + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 
@@ -715,7 +717,8 @@ class HtmlCoreReport {
 			writeln(separator);
 			writeln("<a href='?'><img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
 			writeln(separator);
-			write("<a href='?part=" + part + graphParameter + graphName + "' title='#Rafraichir#'>");
+			write("<a href='?part=" + part + graphParameter + I18N.urlEncode(graphName)
+					+ "' title='#Rafraichir#'>");
 		}
 		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (graphName == null && PDF_ENABLED) {
@@ -735,8 +738,8 @@ class HtmlCoreReport {
 			if (graphName == null) {
 				write("<a href='?period=" + myPeriod.getCode() + "' ");
 			} else {
-				write("<a href='?part=" + part + graphParameter + graphName + "&amp;period="
-						+ myPeriod.getCode() + "' ");
+				write("<a href='?part=" + part + graphParameter + I18N.urlEncode(graphName)
+						+ "&amp;period=" + myPeriod.getCode() + "' ");
 			}
 			write("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
 					+ "'>");
