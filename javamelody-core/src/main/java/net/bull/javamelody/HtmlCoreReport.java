@@ -447,12 +447,13 @@ class HtmlCoreReport {
 	}
 
 	void writeCounterSummaryPerClass(String counterName, String requestId) throws IOException {
+		final Counter counter = collector.getRangeCounter(range, counterName);
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
 		writeln(separator);
-		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
-				+ (requestId == null ? "" : "&amp;graph=" + requestId);
+		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter="
+				+ counter.getName() + (requestId == null ? "" : "&amp;graph=" + requestId);
 		writeln(hrefStart + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 
@@ -464,7 +465,6 @@ class HtmlCoreReport {
 		}
 		writeln("</div>");
 
-		final Counter counter = collector.getRangeCounter(range, counterName);
 		writeCounterTitle(counter);
 		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
 		htmlCounterReport.writeRequestsAggregatedOrFilteredByClassName(requestId);
