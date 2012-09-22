@@ -324,7 +324,7 @@ public class MonitoringFilter implements Filter {
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
-		if (isRequestNotAllowed(httpRequest)) {
+		if (!isRequestAllowed(httpRequest)) {
 			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
@@ -398,9 +398,10 @@ public class MonitoringFilter implements Filter {
 								.substring(httpRequest.getContextPath().length())).matches();
 	}
 
-	private boolean isRequestNotAllowed(HttpServletRequest httpRequest) {
-		return allowedAddrPattern != null
-				&& !allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
+	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
+	protected boolean isRequestAllowed(HttpServletRequest httpRequest) {
+		return allowedAddrPattern == null
+				|| allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
