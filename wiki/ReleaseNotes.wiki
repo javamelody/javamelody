@@ -5,6 +5,7 @@
   * fix issue 252: Add XSS protection
   * fix issue 248: JsfActionListener sends two requests when javamelody is disabled
   * enhanced the display of the list of applications in the optional collector server, when there are more than 10 applications (revision 3047)
+  * added: allow extend servlet security check (issue 256)
 
 === 1.40.0 ===
 
