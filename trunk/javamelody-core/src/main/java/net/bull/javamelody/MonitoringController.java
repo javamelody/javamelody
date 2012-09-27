@@ -30,6 +30,7 @@ import static net.bull.javamelody.HttpParameters.JNLP_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
@@ -252,6 +253,13 @@ class MonitoringController {
 	private void doCompressedSerializable(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, List<JavaInformations> javaInformationsList)
 			throws IOException {
+		final String part = httpRequest.getParameter(PART_PARAMETER);
+		if (HtmlController.isLocalCollectNeeded(part)
+				&& httpRequest.getParameter(PERIOD_PARAMETER) != null) {
+			// avant de faire l'affichage on fait une collecte, pour que les courbes
+			// et les compteurs par jour soit à jour avec les dernières requêtes
+			collector.collectLocalContextWithoutErrors();
+		}
 		Serializable serializable;
 		try {
 			final SerializableController serializableController = new SerializableController(
