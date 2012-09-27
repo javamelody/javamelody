@@ -121,12 +121,13 @@ class CollectorController {
 				}
 
 				if (TransportFormat.isATransportFormat(req.getParameter(FORMAT_PARAMETER))) {
-					final Range range = monitoringController.getRangeForSerializable(req);
+					final SerializableController serializableController = new SerializableController(
+							collector);
+					final Range range = serializableController.getRangeForSerializable(req);
 					final List<Object> serializable = new ArrayList<Object>();
 					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-					serializable.addAll((List<?>) monitoringController.createDefaultSerializable(
-							javaInformationsList, range));
-					serializable.add(messageForReport);
+					serializable.addAll((List<?>) serializableController.createDefaultSerializable(
+							javaInformationsList, range, messageForReport));
 					monitoringController.doCompressedSerializable(req, resp,
 							(Serializable) serializable);
 				} else {
@@ -278,22 +279,24 @@ class CollectorController {
 			MonitoringController monitoringController) throws IOException {
 		Serializable serializable;
 		try {
-			serializable = createSerializable(httpRequest, application, monitoringController);
+			serializable = createSerializable(httpRequest, application);
 		} catch (final Exception e) {
 			serializable = e;
 		}
 		monitoringController.doCompressedSerializable(httpRequest, httpResponse, serializable);
 	}
 
-	private Serializable createSerializable(HttpServletRequest httpRequest, String application,
-			MonitoringController monitoringController) throws Exception { // NOPMD
+	private Serializable createSerializable(HttpServletRequest httpRequest, String application)
+			throws Exception { // NOPMD
 		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest,
 				application);
 		if (resultForSystemActions != null) {
 			return resultForSystemActions;
 		}
 
-		final Range range = monitoringController.getRangeForSerializable(httpRequest);
+		final Collector collector = getCollectorByApplication(application);
+		final SerializableController serializableController = new SerializableController(collector);
+		final Range range = serializableController.getRangeForSerializable(httpRequest);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<List<ThreadInformations>>(
@@ -304,18 +307,17 @@ class CollectorController {
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			final Collector collector = getCollectorByApplication(application);
 			final Counter counter = collector.getRangeCounter(range, counterName);
 			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (JROBINS_PART.equalsIgnoreCase(part) || OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
-			return monitoringController.createSerializable(httpRequest, null);
+			return serializableController.createSerializable(httpRequest, null, null);
 		}
 
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
-		return monitoringController.createDefaultSerializable(javaInformationsList, range);
+		return serializableController.createDefaultSerializable(javaInformationsList, range, null);
 	}
 
 	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest,
