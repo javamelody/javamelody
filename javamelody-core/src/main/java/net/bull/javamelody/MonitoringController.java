@@ -256,7 +256,7 @@ class MonitoringController {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (HtmlController.isLocalCollectNeeded(part)
 				&& httpRequest.getParameter(PERIOD_PARAMETER) != null) {
-			// avant de faire l'affichage on fait une collecte, pour que les courbes
+			// pour l'ihm swing, on fait une collecte, pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
 			collector.collectLocalContextWithoutErrors();
 		}
