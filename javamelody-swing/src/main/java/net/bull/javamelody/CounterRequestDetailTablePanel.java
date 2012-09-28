@@ -166,17 +166,17 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 
 	CounterRequestDetailTablePanel(RemoteCollector remoteCollector, CounterRequest request) {
 		super(remoteCollector);
-		this.request = request;
-		this.childRequestsExecutions = request.getChildRequestsExecutionsByRequestId();
+		final Map<String, CounterRequest> requestsById = mapAllRequestsById();
+		this.request = requestsById.get(request.getId());
+		this.childRequestsExecutions = this.request.getChildRequestsExecutionsByRequestId();
 
 		setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
 		final List<CounterRequest> requests = new ArrayList<>();
-		requests.add(request);
+		requests.add(this.request);
 
 		if (!childRequestsExecutions.isEmpty()) {
-			final Map<String, CounterRequest> requestsById = mapAllRequestsById();
 			for (final Map.Entry<String, Long> entry : childRequestsExecutions.entrySet()) {
 				final CounterRequest childRequest = requestsById.get(entry.getKey());
 				if (childRequest != null) {

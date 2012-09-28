@@ -21,12 +21,16 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import net.bull.javamelody.swing.MButton;
 
 /**
  * Panel du détail d'une requête.
@@ -35,20 +39,43 @@ import javax.swing.JTextArea;
 class CounterRequestDetailPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
+	private final CounterRequest request;
+
 	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request)
 			throws IOException {
 		super(remoteCollector);
+		this.request = request;
+
+		refresh();
+	}
+
+	final void refresh() throws IOException {
+		removeAll();
 
 		final String graphName = request.getId();
 		final String graphLabel = truncate(request.getName(), 50);
 		setName(graphLabel);
 
+		final RemoteCollector remoteCollector = getRemoteCollector();
 		final CounterRequestDetailTablePanel counterRequestDetailTablePanel = new CounterRequestDetailTablePanel(
 				remoteCollector, request);
 		add(counterRequestDetailTablePanel, BorderLayout.NORTH);
 
 		if (CounterRequestTable.isRequestGraphDisplayed(getCounterByRequestId(request))) {
-			final ChartPanel chartPanel = new ChartPanel(remoteCollector, graphName, graphLabel);
+			final MButton refreshButton = createRefreshButton();
+			refreshButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						getRemoteCollector().collectData();
+						refresh();
+					} catch (final IOException ex) {
+						showException(ex);
+					}
+				}
+			});
+			final ChartPanel chartPanel = new ChartPanel(remoteCollector, graphName, graphLabel,
+					refreshButton);
 			add(chartPanel, BorderLayout.CENTER);
 		}
 
@@ -84,8 +111,8 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		return panel;
 	}
 
-	private Counter getCounterByRequestId(CounterRequest request) {
-		return getRemoteCollector().getCollector().getCounterByRequestId(request);
+	private Counter getCounterByRequestId(CounterRequest counterRequest) {
+		return getRemoteCollector().getCollector().getCounterByRequestId(counterRequest);
 	}
 
 	private static String truncate(String string, int maxLength) {
