@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -165,9 +164,8 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		}
 	}
 
-	CounterRequestDetailTablePanel(RemoteCollector remoteCollector, CounterRequest request,
-			Range range) throws IOException {
-		super(remoteCollector, range);
+	CounterRequestDetailTablePanel(RemoteCollector remoteCollector, CounterRequest request) {
+		super(remoteCollector);
 		this.request = request;
 		this.childRequestsExecutions = request.getChildRequestsExecutionsByRequestId();
 

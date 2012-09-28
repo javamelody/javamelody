@@ -35,7 +35,7 @@ import javax.swing.JTextArea;
 class CounterRequestDetailPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
-	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request, Range range)
+	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request)
 			throws IOException {
 		super(remoteCollector);
 
@@ -44,7 +44,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		setName(graphLabel);
 
 		final CounterRequestDetailTablePanel counterRequestDetailTablePanel = new CounterRequestDetailTablePanel(
-				remoteCollector, request, range);
+				remoteCollector, request);
 		add(counterRequestDetailTablePanel, BorderLayout.NORTH);
 
 		if (CounterRequestTable.isRequestGraphDisplayed(getCounterByRequestId(request))) {

@@ -20,7 +20,6 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,9 +81,8 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 		}
 	}
 
-	CounterRequestUsagesPanel(RemoteCollector remoteCollector, CounterRequest request, Range range)
-			throws IOException {
-		super(remoteCollector, range);
+	CounterRequestUsagesPanel(RemoteCollector remoteCollector, CounterRequest request) {
+		super(remoteCollector);
 
 		final String graphLabel = truncate(
 				I18N.getString("Utilisations_de") + ' ' + request.getName(), 50);
