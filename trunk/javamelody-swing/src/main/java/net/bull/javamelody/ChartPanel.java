@@ -52,15 +52,37 @@ class ChartPanel extends MelodyPanel {
 	private static final int CHART_HEIGHT = 400;
 	private final String graphLabel;
 	private final String graphName;
+	private final MButton refreshButton;
 	private ImageIcon imageIcon;
 	private MTransferableLabel imageLabel;
 	private int zoomValue;
 
 	ChartPanel(RemoteCollector remoteCollector, String graphName, String graphLabel)
 			throws IOException {
+		this(remoteCollector, graphName, graphLabel, null);
+	}
+
+	ChartPanel(RemoteCollector remoteCollector, String graphName, String graphLabel,
+			MButton refreshButton) throws IOException {
 		super(remoteCollector);
 		this.graphName = graphName;
 		this.graphLabel = graphLabel;
+
+		if (refreshButton == null) {
+			this.refreshButton = createRefreshButton();
+			this.refreshButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						refresh();
+					} catch (final IOException ex) {
+						showException(ex);
+					}
+				}
+			});
+		} else {
+			this.refreshButton = refreshButton;
+		}
 
 		refresh();
 	}
@@ -121,18 +143,6 @@ class ChartPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton refreshButton = createRefreshButton();
-		refreshButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					refresh();
-				} catch (final IOException ex) {
-					showException(ex);
-				}
-			}
-		});
-
 		if (getImageLabel() != null) {
 			final MButton exportButton = new MButton(I18N.getString("Exporter") + "...");
 			exportButton.setToolTipText(exportButton.getText() + " (F12)");
