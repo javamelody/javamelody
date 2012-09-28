@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +60,13 @@ public final class Main {
 		MSwingUtilities.initEscapeClosesDialogs();
 		// on définit le répertoire courant, car par exemple dans JavaWebStart il n'est pas bon par défaut
 		System.setProperty("user.dir", System.getProperty("user.home"));
+
+		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				MSwingUtilities.showException(e);
+			}
+		});
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
