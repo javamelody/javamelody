@@ -40,17 +40,16 @@ import net.bull.javamelody.swing.table.MTable;
 abstract class CounterRequestAbstractPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
-	private final Range range;
-
 	@SuppressWarnings("all")
 	private final List<Counter> counters;
 
 	private final MTable<CounterRequest> table;
 
-	CounterRequestAbstractPanel(RemoteCollector remoteCollector, Range range) throws IOException {
+	CounterRequestAbstractPanel(RemoteCollector remoteCollector) {
 		super(remoteCollector);
-		this.range = range;
-		this.counters = remoteCollector.getCollector().getRangeCountersToBeDisplayed(range);
+		// comme dans ScrollingPanel, on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
+		// en revanche collector.getCounters() contient ici les bonnes données
+		this.counters = remoteCollector.getCollector().getCounters();
 		this.table = new CounterRequestTable(remoteCollector);
 	}
 
@@ -91,11 +90,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final CounterRequest counterRequest = getTable().getSelectedObject();
-				try {
-					showRequestUsages(counterRequest);
-				} catch (final IOException ex) {
-					showException(ex);
-				}
+				showRequestUsages(counterRequest);
 			}
 		});
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -130,13 +125,13 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 
 	final void showRequestDetail(CounterRequest counterRequest) throws IOException {
 		final CounterRequestDetailPanel panel = new CounterRequestDetailPanel(getRemoteCollector(),
-				counterRequest, range);
+				counterRequest);
 		MainPanel.addOngletFromChild(this, panel);
 	}
 
-	final void showRequestUsages(CounterRequest counterRequest) throws IOException {
+	final void showRequestUsages(CounterRequest counterRequest) {
 		final CounterRequestUsagesPanel panel = new CounterRequestUsagesPanel(getRemoteCollector(),
-				counterRequest, range);
+				counterRequest);
 		MainPanel.addOngletFromChild(this, panel);
 	}
 }

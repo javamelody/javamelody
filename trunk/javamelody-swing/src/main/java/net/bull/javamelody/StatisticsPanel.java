@@ -405,7 +405,7 @@ class StatisticsPanel extends MelodyPanel {
 
 	void showRequestDetail(CounterRequest request) throws IOException {
 		final CounterRequestDetailPanel panel = new CounterRequestDetailPanel(getRemoteCollector(),
-				request, range);
+				request);
 		MainPanel.addOngletFromChild(this, panel);
 	}
 }
