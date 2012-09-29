@@ -407,11 +407,13 @@ class Collector { // NOPMD
 
 		collectSessionsMeanAge(sessionAgeSum, sessionCount);
 
-		// collecte du nombre de transactions base de données par minute
-		final double periodMinutes = periodMillis / 60000d;
-		getOtherJRobin("transactionsRate").addValue(
-				(databaseTransactionCount - this.transactionCount) / periodMinutes);
-		this.transactionCount = databaseTransactionCount;
+		if (!noDatabase) {
+			// collecte du nombre de transactions base de données par minute
+			final double periodMinutes = periodMillis / 60000d;
+			getOtherJRobin("transactionsRate").addValue(
+					(databaseTransactionCount - this.transactionCount) / periodMinutes);
+			this.transactionCount = databaseTransactionCount;
+		}
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
