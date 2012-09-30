@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -331,6 +332,14 @@ final class JRobin {
 					// release RRD database reference
 					rrdPool.release(rrdDb);
 				}
+			}
+		} catch (final FileNotFoundException e) {
+			if (e.getMessage() != null && e.getMessage().endsWith("[non existent]")) {
+				// cf issue 255
+				LOG.debug("A JRobin file was deleted and created again: "
+						+ new File(rrdFileName).getPath());
+				resetFile();
+				addValue(value);
 			}
 		} catch (final RrdException e) {
 			if (e.getMessage() != null && e.getMessage().startsWith("Invalid file header")) {
