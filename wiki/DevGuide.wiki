@@ -137,7 +137,7 @@ This is an internal reminder of the steps of the release process.
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
     * increment plugin version in GrailsMelodyGrailsPlugin.groovy
     * edit user / password in .grails\settings.groovy
-    * grails release-plugin "-repository=grailsplugins"
+    * grails release-plugin "-repository=grailsplugins" ou sinon grails package-plugin + commit
     * Edit plugin in http://www.grails.org/plugin/grails-melody
   * *twitter announce* [https://twitter.com/#!/java_melody]
   * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody] ([https://groups.google.com/forum/?fromgroups#!topic/javamelody/w-8Xhi7G5x8 example])
