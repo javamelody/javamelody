@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.41.0 ===
+
   * issue 244 and issue 245 were Resin issues when using javamelody and they will be fixed in Resin v4.0.31
   * fix issue 252: Add XSS protection
   * fix issue 255: exception while collecting data java.io.FileNotFoundException: Could not open ....rrd [non existent]
