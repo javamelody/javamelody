@@ -20,7 +20,10 @@ package net.bull.javamelody;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Locale;
+import java.util.Properties;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -64,11 +67,23 @@ enum PdfFonts {
 		return font;
 	}
 
+	private static Font getFont(float size, int style) {
+		return FontFactory.getFont(FontFactory.HELVETICA, size, style);
+	}
+
 	private Font getChineseFont() {
 		if (chineseFont == null) {
 			try {
-				final BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
-						BaseFont.NOT_EMBEDDED);
+				BaseFont bfChinese;
+				try {
+					bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
+							BaseFont.NOT_EMBEDDED);
+				} catch (final DocumentException e) {
+					// now CJKFont.propertiesLoaded==true, load properties renamed (cf issue 258)
+					loadCJKFonts();
+					bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
+							BaseFont.NOT_EMBEDDED);
+				}
 				chineseFont = new Font(bfChinese, font.getSize(), font.getStyle());
 			} catch (final DocumentException e) {
 				throw new IllegalStateException(e);
@@ -79,7 +94,42 @@ enum PdfFonts {
 		return chineseFont;
 	}
 
-	private static Font getFont(float size, int style) {
-		return FontFactory.getFont(FontFactory.HELVETICA, size, style);
+	/**
+	 * Chargement des cjkfonts et cjkencodings. <br/>
+	 * Les fichiers cjkfonts.properties et cjkencoding.properties ont été renommés <br/>
+	 * pour que FlyingSaucer ne croit pas qu'iTextAsian.jar est présent (issue 258). <br/>
+	 * Cette méthode se charge de charger quand même les fichiers renommés pour la fonte en langue chinoise.
+	 */
+	public static void loadCJKFonts() {
+		try {
+			final Class<?> cjkFontClass = Class.forName("com.lowagie.text.pdf.CJKFont");
+			final Field cjkFontsField = cjkFontClass.getDeclaredField("cjkFonts");
+			final Field cjkEncodingsField = cjkFontClass.getDeclaredField("cjkEncodings");
+			cjkFontsField.setAccessible(true);
+			cjkEncodingsField.setAccessible(true);
+			final Properties cjkFonts = (Properties) cjkFontsField.get(null);
+			final Properties cjkEncodings = (Properties) cjkEncodingsField.get(null);
+
+			if (cjkFonts.isEmpty()) {
+				final InputStream is = BaseFont.getResourceStream(BaseFont.RESOURCE_PATH
+						+ "cjkfonts.properties.renamedForIssue258");
+				try {
+					cjkFonts.load(is);
+				} finally {
+					is.close();
+				}
+			}
+			if (cjkEncodings.isEmpty()) {
+				final InputStream is = BaseFont.getResourceStream(BaseFont.RESOURCE_PATH
+						+ "cjkencodings.properties.renamedForIssue258");
+				try {
+					cjkEncodings.load(is);
+				} finally {
+					is.close();
+				}
+			}
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }
