@@ -5,7 +5,7 @@
 
 === 1.41.0 ===
 
-  * issue 244 and issue 245 were Resin issues when using javamelody and they are fixed in Resin v4.0.31
+  * issue 244 and issue 245 were Resin issues when using javamelody and they are fixed in [http://caucho.com/resin-4.0/changes/changes.xtp#4031Sep122012 Resin v4.0.31]
   * fix issue 252: Add XSS protection
   * fix issue 255: exception while collecting data java.io.FileNotFoundException: Could not open ....rrd [non existent]
   * fix issue 248: JsfActionListener sends two requests when javamelody is disabled
