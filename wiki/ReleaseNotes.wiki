@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix issue 258: The IText files causes NullPointerException in FlyingSaucer
 
 === 1.41.0 ===
 
