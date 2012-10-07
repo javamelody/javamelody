@@ -100,7 +100,7 @@ enum PdfFonts {
 	 * pour que FlyingSaucer ne croit pas qu'iTextAsian.jar est présent (issue 258). <br/>
 	 * Cette méthode se charge de charger quand même les fichiers renommés pour la fonte en langue chinoise.
 	 */
-	public static void loadCJKFonts() {
+	private static void loadCJKFonts() {
 		try {
 			final Class<?> cjkFontClass = Class.forName("com.lowagie.text.pdf.CJKFont");
 			final Field cjkFontsField = cjkFontClass.getDeclaredField("cjkFonts");
