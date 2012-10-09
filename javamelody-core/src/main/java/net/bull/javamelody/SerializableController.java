@@ -76,7 +76,10 @@ class SerializableController {
 		httpResponse.setContentType(transportFormat.getMimeType());
 		final String fileName = "JavaMelody_" + getApplication().replace(' ', '_').replace("/", "")
 				+ '_' + I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
-		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=" + fileName);
+		final String contentDisposition = "inline;filename=" + fileName;
+		// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
+		httpResponse.addHeader(CONTENT_DISPOSITION,
+				contentDisposition.replace('\n', '_').replace('\r', '_'));
 
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 	}

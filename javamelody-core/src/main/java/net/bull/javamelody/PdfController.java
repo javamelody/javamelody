@@ -197,10 +197,11 @@ class PdfController {
 	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
 		httpResponse.setContentType("application/pdf");
-		httpResponse.addHeader(
-				CONTENT_DISPOSITION,
-				encodeFileNameToContentDisposition(httpRequest,
-						PdfReport.getFileName(getApplication())));
+		final String contentDisposition = encodeFileNameToContentDisposition(httpRequest,
+				PdfReport.getFileName(getApplication()));
+		// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
+		httpResponse.addHeader(CONTENT_DISPOSITION,
+				contentDisposition.replace('\n', '_').replace('\r', '_'));
 	}
 
 	private String getApplication() {

@@ -90,8 +90,10 @@ public class CollectorServlet extends HttpServlet {
 				return;
 			}
 			if (!collectorServer.isApplicationDataAvailable(application)) {
-				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Data unavailable for the application " + application);
+				resp.sendError(
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Data unavailable for the application "
+								+ I18N.htmlEncode(application, false));
 				return;
 			}
 			collectorController.doMonitoring(req, resp, application);
