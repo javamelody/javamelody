@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 261: Use the thread context-classloader to load the jdbc driver if used directly
   * fix issue 258: The IText files causes NullPointerException in FlyingSaucer
 
 === 1.41.0 ===
