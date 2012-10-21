@@ -105,6 +105,7 @@
 		<delete file="javamelody.jar" />
 		<delete file="javamelody.war" />
 		<delete file="jira-javamelody.jar" />
+		<delete file="liferay-javamelody.war" />
 		<delete file="test.war" />
 	</target>
 
@@ -196,6 +197,42 @@
 			<zipfileset src="src/test/test-webapp/WEB-INF/lib/xmlpull-1.1.3.1.jar" />
 			<zipfileset file="src/main/jira/javamelody_i18n.properties" />
 			<zipfileset file="build/atlassian-plugin.xml" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du war du plugin Liferay -->
+	<target name="liferay-war" depends="jar" if="version">
+		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier VERSION.properties existe -->
+		<echo message="Construction du war pour le plugin Liferay" level="info" />
+		<!-- Description Liferay pour le plugin.
+		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
+		<copy file="src/main/liferay/WEB-INF/liferay-plugin-package.properties" todir="build/" overwrite="true" />
+		<replace file="build/liferay-plugin-package.properties" propertyFile="VERSION.properties" failOnNoReplacements="true">
+			<replacefilter token="@version@" property="version" />
+		</replace>
+		<delete file="liferay-javamelody.war" />
+		<jar destfile="liferay-javamelody.war">
+			<zipfileset file="build/liferay-plugin-package.properties" prefix="WEB-INF"/>
+			<zipfileset dir="src/main/liferay" excludes="WEB-INF/liferay-plugin-package.properties"/>
+
+			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" prefix="WEB-INF/lib" />
+			<!-- pas nécessaire, car déjà dans liferay :
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xstream-1.4.2.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xmlpull-1.1.3.1.jar" prefix="WEB-INF/lib" />
+			-->
+
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${TODAY_FR}" />
