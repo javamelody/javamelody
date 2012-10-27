@@ -210,6 +210,12 @@ public class MonitoringFilter implements Filter {
 			systemException = t;
 			throwException(t);
 		} finally {
+			if (httpCounter == null) {
+				// "the destroy method is only called once all threads within the filter's doFilter method have exited
+				// or after a timeout period has passed"
+				// si timeout, alors on évite ici une NPE (cf  issue 262)
+				return; // NOPMD
+			}
 			try {
 				// Si la durée est négative (arrive bien que rarement en cas de synchronisation d'horloge système),
 				// alors on considère que la durée est 0.
