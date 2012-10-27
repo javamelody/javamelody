@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 242: just after a restart, the statistics of services (spring, ejb, guice) may be incorrectly summed with past values, if they are initialized AFTER the MonitoringFilter
   * fix issue 261: Use the thread context-classloader to load the jdbc driver if used directly
   * fix issue 262: NullPointerException in MonitoringFilter.doFilter(), when the webapp is undeployed and after a timeout
   * fix issue 258: The IText files causes NullPointerException in FlyingSaucer
