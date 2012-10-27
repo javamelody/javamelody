@@ -54,6 +54,7 @@ class Collector { // NOPMD
 	private final Map<Counter, CounterRequest> globalRequestsByCounter = new HashMap<Counter, CounterRequest>();
 	private final Map<String, CounterRequest> requestsById = new HashMap<String, CounterRequest>();
 	private final Map<Counter, Counter> dayCountersByCounter = new LinkedHashMap<Counter, Counter>();
+	private final Map<Counter, Boolean> firstCollectDoneByCounter = new HashMap<Counter, Boolean>();
 	private long transactionCount;
 	private long cpuTimeMillis;
 	private long gcTimeMillis;
@@ -62,7 +63,6 @@ class Collector { // NOPMD
 	private long lastCollectDuration;
 	private long estimatedMemorySize;
 	private long diskUsage;
-	private boolean firstCollectDone;
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 
@@ -279,7 +279,6 @@ class Collector { // NOPMD
 		// note : on n'inclue pas "new JavaInformations" de collectLocalContextWithoutErrors
 		// dans la durée de la collecte mais il est inférieur à 1 ms (sans bdd)
 		lastCollectDuration = Math.max(0, System.currentTimeMillis() - start);
-		firstCollectDone = true;
 	}
 
 	private long collect(List<JavaInformations> javaInformationsList) throws IOException {
@@ -616,6 +615,8 @@ class Collector { // NOPMD
 		int size = requests.size();
 		final Counter dayCounter = getCurrentDayCounter(counter);
 		final int maxRequestsCount = counter.getMaxRequestsCount();
+		final boolean firstCollectDoneForCounter = Boolean.TRUE.equals(firstCollectDoneByCounter
+				.get(counter));
 		for (final CounterRequest newRequest : requests) {
 			if (size > maxRequestsCount && newRequest.getHits() < 10) {
 				// Si le nombre de requêtes est supérieur à 10000
@@ -629,7 +630,7 @@ class Collector { // NOPMD
 				continue;
 			}
 
-			collectCounterRequestData(dayCounter, newRequest);
+			collectCounterRequestData(dayCounter, newRequest, firstCollectDoneForCounter);
 		}
 		while (size > maxRequestsCount && !requests.isEmpty()) {
 			// cas extrême: si le nombre de requêtes est encore trop grand,
@@ -641,11 +642,14 @@ class Collector { // NOPMD
 			dayCounter.addErrors(getDeltaOfErrors(counter, dayCounter));
 		}
 		dayCounter.writeToFile();
+		if (!firstCollectDoneForCounter) {
+			firstCollectDoneByCounter.put(counter, Boolean.TRUE);
+		}
 		return dayCounter.getEstimatedMemorySize();
 	}
 
-	private void collectCounterRequestData(Counter dayCounter, CounterRequest newRequest)
-			throws IOException {
+	private void collectCounterRequestData(Counter dayCounter, CounterRequest newRequest,
+			boolean firstCollectDoneForCounter) throws IOException {
 		final String requestStorageId = newRequest.getId();
 		// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
 		final JRobin requestJRobin;
@@ -674,11 +678,12 @@ class Collector { // NOPMD
 				// agrégation de la requête sur le compteur pour le jour courant
 				dayCounter.addHits(lastPeriodRequest);
 			}
-		} else if (firstCollectDone) {
-			// si c'est la première collecte (!firstCollectDone), alors on n'ajoute pas
+		} else if (firstCollectDoneForCounter) {
+			// si c'est la première collecte pour ce compteur (!firstCollectDoneForCounter), alors on n'ajoute pas
 			// newRequest dans dayCounter car cela ajouterait la première fois tout le contenu
 			// de la période "tout" dans le dayCounter du jour,
-			// mais si c'est une collecte suivante (firstCollectDone), alors on ajoute
+			// (attention : la collecte d'un compteur peut être plus tard, issue 242),
+			// mais si c'est une collecte suivante (firstCollectDoneForCounter), alors on ajoute
 			// newRequest dans dayCounter car il s'agit simplement d'une nouvelle requête
 			// qui n'avait pas encore été rencontrée dans la période "tout"
 			dayCounter.addHits(newRequest);
