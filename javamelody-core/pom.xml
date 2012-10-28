@@ -397,6 +397,10 @@
 					<check>
 						<haltOnFailure>false</haltOnFailure>
 					</check>
+					<formats>
+						<format>xml</format>
+						<format>html</format>
+					</formats>
 				</configuration>
 				<executions>
 					<execution>
