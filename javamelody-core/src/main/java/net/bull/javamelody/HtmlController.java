@@ -228,7 +228,6 @@ class HtmlController {
 						.collectProcessInformations(getApplication());
 				htmlReport.writeProcesses(processInformationsByTitle);
 			}
-			htmlReport.writeProcesses(ProcessInformations.buildProcessInformations());
 		} catch (final Exception e) {
 			LOG.warn("processes report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
