@@ -20,10 +20,12 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayDeque;
@@ -175,6 +177,17 @@ class JndiBindingsPanel extends MelodyPanel {
 		});
 		backButton.setEnabled(getPath() != null);
 
+		final MButton pdfButton = createPdfButton();
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
 		final MButton xmlJsonButton = createXmlJsonButton((Serializable) jndiBindings);
 
 		final MButton refreshButton = createRefreshButton();
@@ -189,7 +202,8 @@ class JndiBindingsPanel extends MelodyPanel {
 			}
 		});
 
-		return Utilities.createButtonsPanel(backButton, openButton, refreshButton, xmlJsonButton);
+		return Utilities.createButtonsPanel(backButton, openButton, refreshButton, pdfButton,
+				xmlJsonButton);
 	}
 
 	void goBack() throws IOException {
@@ -203,6 +217,17 @@ class JndiBindingsPanel extends MelodyPanel {
 		}
 		path = binding.getContextPath();
 		refresh();
+	}
+
+	final void actionPdf() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
+		try {
+			pdfOtherReport.writeJndi(jndiBindings, path != null ? path : "");
+		} finally {
+			pdfOtherReport.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 
 	MTable<JndiBinding> getTable() {
