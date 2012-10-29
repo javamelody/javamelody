@@ -24,8 +24,10 @@ import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
@@ -95,6 +97,8 @@ class PdfController {
 			final int index = DatabaseInformations.parseRequestIndex(httpRequest
 					.getParameter(REQUEST_PARAMETER));
 			doDatabase(httpResponse, index);
+		} else if (JNDI_PART.equalsIgnoreCase(part)) {
+			doJndi(httpResponse, httpRequest.getParameter(PATH_PARAMETER));
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
 			doMBeans(httpResponse);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
@@ -163,6 +167,20 @@ class PdfController {
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
 				httpResponse.getOutputStream());
 		pdfOtherReport.writeDatabaseInformations(databaseInformations);
+	}
+
+	private void doJndi(HttpServletResponse httpResponse, String path) throws Exception { // NOPMD
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
+				httpResponse.getOutputStream());
+		final List<JndiBinding> jndiBindings;
+		if (!isFromCollectorServer()) {
+			jndiBindings = JndiBinding.listBindings(path);
+		} else {
+			jndiBindings = collectorServer.collectJndiBindings(getApplication(), path);
+		}
+		pdfOtherReport.writeJndi(jndiBindings, JndiBinding.normalizePath(path));
 	}
 
 	private void doMBeans(HttpServletResponse httpResponse) throws Exception { // NOPMD

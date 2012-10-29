@@ -118,6 +118,21 @@ class PdfOtherReport {
 		document.close();
 	}
 
+	void writeJndi(List<JndiBinding> jndiBindings, String path) throws IOException {
+		try {
+			document.open();
+			if (path.length() == 0) {
+				addParagraph(getI18nString("Arbre_JNDI"), "jndi.png");
+			} else {
+				addParagraph(I18N.getFormattedString("Arbre_JNDI_pour_contexte", path), "jndi.png");
+			}
+			new PdfJndiReport(jndiBindings, document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
 	void writeMBeans(List<MBeanNode> mbeans) throws IOException {
 		try {
 			document.open();
