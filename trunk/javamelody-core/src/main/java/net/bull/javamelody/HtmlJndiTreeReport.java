@@ -27,6 +27,7 @@ import java.util.List;
  * @author Emeric Vernat
  */
 class HtmlJndiTreeReport {
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final List<JndiBinding> jndiBindings;
 	private final String path;
 	private final Writer writer;
@@ -105,6 +106,12 @@ class HtmlJndiTreeReport {
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=jndi&amp;path=" + htmlEncode(path)
 				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			write("<a href='?part=jndi&amp;path=" + htmlEncode(path)
+					+ "&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln("</div>");
 	}
 
