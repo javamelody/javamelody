@@ -183,7 +183,7 @@ or MSIE8 (MSIE7 not recommended).
 
 	You can browse the monitoring page at {{{http://<host>:<port>/monitoring}}}
 
-	For example, {{{http://localhost:8080/monitoring}}} if the server is local.
+	For example if the server is local: {{{http://localhost:8080/monitoring}}}
 
 	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And patches are welcome.
 
