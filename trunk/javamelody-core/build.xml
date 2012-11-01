@@ -105,7 +105,7 @@
 		<delete file="javamelody.jar" />
 		<delete file="javamelody.war" />
 		<delete file="jira-javamelody.jar" />
-		<delete file="liferay-javamelody.war" />
+		<delete file="liferay-javamelody-hook.war" />
 		<delete file="test.war" />
 	</target>
 
@@ -219,19 +219,17 @@
 		<replace file="build/liferay-plugin-package.properties" propertyFile="VERSION.properties" failOnNoReplacements="true">
 			<replacefilter token="@version@" property="version" />
 		</replace>
-		<delete file="liferay-javamelody.war" />
-		<jar destfile="liferay-javamelody.war">
+		<delete file="liferay-javamelody-hook.war" />
+		<jar destfile="liferay-javamelody-hook.war">
 			<zipfileset file="build/liferay-plugin-package.properties" prefix="WEB-INF"/>
 			<zipfileset dir="src/main/liferay" excludes="WEB-INF/liferay-plugin-package.properties"/>
 
 			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" prefix="WEB-INF/lib" />
-			<!-- pas nécessaire, car déjà dans liferay :
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xstream-1.4.2.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xmlpull-1.1.3.1.jar" prefix="WEB-INF/lib" />
-			-->
 
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -412,6 +410,7 @@
 		<gcupload filename="javamelody.zip" targetfilename="javamelody-${version}.zip" summary="Zip of project" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<gcupload filename="javamelody.war" targetfilename="javamelody-${version}.war" summary="War of the optional collect server" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<gcupload filename="jira-javamelody.jar" targetfilename="jira-javamelody-${version}.jar" summary="Jira, Confluence and Bamboo monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="liferay-javamelody-hook.war" targetfilename="liferay-javamelody-hook-${version}.war" summary="Liferay monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<gcupload filename="javamelody.jar" targetfilename="javamelody-${version}.jar" summary="Jar for integration in a webapp" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<echo message="Upload des fichiers ${version} sur googlecode terminé" />
 	</target>
