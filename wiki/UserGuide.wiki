@@ -176,7 +176,7 @@ or MSIE8 (MSIE7 not recommended).
 == Liferay Plugin ==
 
 	To monitor a [http://www.liferay.com Liferay] server v6.1 or later, you can install a plugin:
-  * Download the latest Liferay plugin file from [../downloads/list Downloads]
+  * Download the latest Liferay plugin file from [http://code.google.com/p/javamelody/downloads/list Downloads]
   * Copy the file into the "deploy" directory of your Liferay server and wait a few seconds
   * Liferay automatically deploys the file and removes it from "deploy"
 	That's it!
