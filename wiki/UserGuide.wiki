@@ -172,6 +172,21 @@ or MSIE8 (MSIE7 not recommended).
 	...
 }}}
 
+== Liferay Plugin ==
+
+	To monitor a [http://www.liferay.com Liferay] server v6.1 or later, you can install a plugin:
+  * Download the latest Liferay plugin file from [../downloads/list Downloads]
+  * Copy the file into the "deploy" directory of your Liferay server and wait a few seconds
+  * Liferay automatically deploys the file and removes it from "deploy"
+That's it!
+
+You can browse the monitoring page at http://<host>:<port>/monitoring
+For example, http://localhost:8080/monitoring if the server is local.
+
+Notes:
+There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored.
+And patches are welcome.
+
 == Grails Plugin ==
 
 	If you want to monitor an application developed with [http://www.grails.org Grails], you can install JavaMelody in just one command with a Grails plugin: [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin].
