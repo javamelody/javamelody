@@ -5,6 +5,7 @@
   * [#Introduction Introduction]
   * [#Hudson_/_Jenkins_Plugin Hudson / Jenkins Plugin]
   * [#Atlassian_JIRA,_Confluence_and_Bamboo_Plugin Atlassian JIRA, Confluence and Bamboo Plugin]
+  * [#Liferay_Plugin Liferay Plugin]
   * [#Grails_Plugin Grails Plugin]
   * [#Setup JavaMelody Setup]
     * [#1._Jar_files 1. Jar files]
@@ -181,6 +182,7 @@ or MSIE8 (MSIE7 not recommended).
 	That's it!
 
 	You can browse the monitoring page at {{{http://<host>:<port>/monitoring}}}
+
 	For example, {{{http://localhost:8080/monitoring}}} if the server is local.
 
 	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And patches are welcome.
