@@ -6,6 +6,7 @@
   * fix issue 262: NullPointerException in MonitoringFilter.doFilter(), when the webapp is undeployed and after a timeout
   * fix issue 258: The IText files causes NullPointerException in FlyingSaucer
   * added: PDF report for the JNDI tree
+  * added: plugin to monitor Liferay v6.1 or later. Documentation is [UserGuide#Liferay_Plugin here]
 
 === 1.41.0 ===
 
