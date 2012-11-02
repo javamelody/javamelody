@@ -177,7 +177,12 @@ public class TestPdfOtherReport {
 	public void testWriteMBeans() throws IOException, JMException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeMBeans(MBeans.getAllMBeanNodes());
+		final List<MBeanNode> allMBeanNodes = MBeans.getAllMBeanNodes();
+		pdfOtherReport.writeMBeans(allMBeanNodes);
+		assertNotEmptyAndClear(output);
+
+		final PdfOtherReport pdfOtherReport2 = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport2.writeMBeans(Collections.singletonMap("TEST_APP", allMBeanNodes));
 		assertNotEmptyAndClear(output);
 	}
 
