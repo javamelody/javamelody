@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +35,11 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.management.JMException;
+import javax.naming.Binding;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -171,6 +179,44 @@ public class TestPdfOtherReport {
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(output);
+	}
+
+	/** Test.
+	 * @throws IOException e
+	 * @throws NamingException e */
+	@Test
+	public void testWriteJndi() throws NamingException, IOException {
+		final String contextPath = "comp/env/";
+		final Context context = createNiceMock(Context.class);
+		@SuppressWarnings("unchecked")
+		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
+		expect(context.listBindings("java:" + contextPath)).andReturn(enumeration).anyTimes();
+		expect(enumeration.hasMore()).andReturn(true).times(6);
+		expect(enumeration.next()).andReturn(new Binding("test value", "test value")).once();
+		expect(enumeration.next()).andReturn(
+				new Binding("test context", createNiceMock(Context.class))).once();
+		expect(enumeration.next()).andReturn(new Binding("", "test")).once();
+		expect(enumeration.next()).andReturn(
+				new Binding("java:/test context", createNiceMock(Context.class))).once();
+		expect(enumeration.next()).andReturn(new Binding("test null classname", null, null)).once();
+		expect(enumeration.next()).andThrow(new NamingException("test")).once();
+
+		final ServletContext servletContext = createNiceMock(ServletContext.class);
+		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
+		replay(servletContext);
+		Parameters.initialize(servletContext);
+
+		replay(context);
+		replay(enumeration);
+
+		final List<JndiBinding> bindings = JndiBinding.listBindings(context, contextPath);
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeJndi(bindings, contextPath);
+
+		verify(context);
+		verify(enumeration);
+		verify(servletContext);
 	}
 
 	/** Test.
