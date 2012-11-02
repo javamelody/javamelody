@@ -760,6 +760,10 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.remove(SESSION_ID_PARAMETER);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, JNDI_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, MBEANS_PART);
+		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
