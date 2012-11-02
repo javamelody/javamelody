@@ -5,7 +5,7 @@
   * fix issue 261: Use the thread context-classloader to load the jdbc driver if used directly
   * fix issue 262: NullPointerException in MonitoringFilter.doFilter(), when the webapp is undeployed and after a timeout
   * fix issue 258: The IText files causes NullPointerException in FlyingSaucer
-  * added: PDF report for the JNDI tree
+  * added: PDF report for the JNDI tree. [http://demo.javamelody.cloudbees.net/monitoring?part=jndi&path=comp Example] in the demo.
   * added: plugin to monitor Liferay v6.1 or later. Documentation is [UserGuide#Liferay_Plugin here]
 
 === 1.41.0 ===
