@@ -65,7 +65,7 @@ And
   # Check with a file if 2 instances use the same storage directory (and warn about data corruption)
   # ~~Add a pdf report for the JNDI bindings~~ (done in revision 3101)
   # Add a Table Of Contents with links at the top of the main report. In order to not take much vertical space, it can be displayed hovering, or in a combo box, or in a popup...
-  # (_started_) Create a plugin for Liferay v6.1 or later (see revision 3094)
+  # ~~Create a plugin for Liferay v6.1 or later~~ (done, [UserGuide#Liferay_Plugin doc])
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
