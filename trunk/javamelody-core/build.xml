@@ -387,7 +387,7 @@
 	</target>
 
 	<!-- Construction du zip -->
-	<target name="zip" depends="clean,jar,war,jira-jar,javadoc">
+	<target name="zip" depends="clean,jar,war,jira-jar,liferay-war,javadoc">
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody.zip" />
 		<zip destfile="javamelody.zip">
