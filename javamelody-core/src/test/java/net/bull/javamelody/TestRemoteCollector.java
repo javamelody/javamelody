@@ -64,4 +64,14 @@ public class TestRemoteCollector {
 		remoteCollector.collectJRobins(50, 50);
 		remoteCollector.collectOtherJRobins(50, 50);
 	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testForSwing() throws IOException {
+		remoteCollector.setCookies("testcookies");
+		remoteCollector.setURLs(remoteCollector.getURLs());
+		remoteCollector.disableAggregation();
+		remoteCollector.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null, null, null);
+	}
 }
