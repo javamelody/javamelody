@@ -862,7 +862,7 @@ public class TestMonitoringFilter { // NOPMD
 				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			}
 		}
-		if (parameters.isEmpty()) {
+		if (parameters.isEmpty() || JNLP_PART.equals(parameters.get(PART_PARAMETER))) {
 			// dans au moins un cas on met un cookie
 			final Cookie[] cookies = { new Cookie("dummy", "dummy"),
 					new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };
