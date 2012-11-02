@@ -203,6 +203,10 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
+		parameters.put(PART_PARAMETER, JNDI_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, MBEANS_PART);
+		doPart(parameters);
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
 		parameters.put(COUNTER_PARAMETER, "services");
 		doPart(parameters);
@@ -249,6 +253,9 @@ public class TestCollectorServletWithParts {
 		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
 		parameters.put(COUNTER_PARAMETER, "all");
 		doPart(parameters);
+		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
+		doPart(parameters);
+		parameters.remove(FORMAT_PARAMETER);
 		parameters.put(ACTION_PARAMETER, Action.MAIL_TEST.toString());
 		doPart(parameters);
 		parameters.put(ACTION_PARAMETER, Action.PURGE_OBSOLETE_FILES.toString());
