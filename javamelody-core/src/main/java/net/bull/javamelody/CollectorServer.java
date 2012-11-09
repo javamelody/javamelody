@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -34,10 +37,15 @@ import org.apache.log4j.Logger;
  * @author Emeric Vernat
  */
 class CollectorServer {
-	private static final Logger LOGGER = Logger.getLogger("javamelody");
+	static final Logger LOGGER = Logger.getLogger("javamelody");
 
-	private final Map<String, RemoteCollector> remoteCollectorsByApplication = new LinkedHashMap<String, RemoteCollector>();
-	private final Map<String, Throwable> lastCollectExceptionsByApplication = new LinkedHashMap<String, Throwable>();
+	private static final int NB_COLLECT_THREADS = 10;
+
+	final Map<String, Throwable> lastCollectExceptionsByApplication = new ConcurrentHashMap<String, Throwable>();
+	private final Map<String, RemoteCollector> remoteCollectorsByApplication = new ConcurrentHashMap<String, RemoteCollector>();
+
+	private final ExecutorService executorService = Executors
+			.newFixedThreadPool(NB_COLLECT_THREADS);
 
 	private final Timer timer;
 
@@ -98,15 +106,20 @@ class CollectorServer {
 		for (final Map.Entry<String, List<URL>> entry : clone.entrySet()) {
 			final String application = entry.getKey();
 			final List<URL> urls = entry.getValue();
-			try {
-				collectForApplication(application, urls);
-				lastCollectExceptionsByApplication.remove(application);
-			} catch (final Throwable e) { // NOPMD
-				// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
-				// et il ne doit y avoir aucune erreur dans cette task
-				LOGGER.warn(e.getMessage(), e);
-				lastCollectExceptionsByApplication.put(application, e);
-			}
+			executorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						collectForApplication(application, urls);
+						lastCollectExceptionsByApplication.remove(application);
+					} catch (final Throwable e) { // NOPMD
+						// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
+						// et il ne doit y avoir aucune erreur dans cette task
+						LOGGER.warn(e.getMessage(), e);
+						lastCollectExceptionsByApplication.put(application, e);
+					}
+				}
+			});
 		}
 	}
 
@@ -338,7 +351,10 @@ class CollectorServer {
 	 * Stoppe les collectes dans ce serveur de collecte et purge les données.
 	 */
 	void stop() {
+		// stoppe le timer
 		timer.cancel();
+		// stoppe les threads de collecte, en attendant qu'ils terminent les tâches en cours
+		executorService.shutdown();
 		for (final RemoteCollector remoteCollector : remoteCollectorsByApplication.values()) {
 			remoteCollector.getCollector().stop();
 		}
