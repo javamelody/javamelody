@@ -34,6 +34,7 @@ final class XStreamAlias {
 		final Map<String, Class<?>> result = new HashMap<String, Class<?>>();
 		result.put("counter", Counter.class);
 		result.put("request", CounterRequest.class);
+		result.put("requestContext", CounterRequestContext.class);
 		result.put("javaInformations", JavaInformations.class);
 		result.put("memoryInformations", MemoryInformations.class);
 		result.put("tomcatInformations", TomcatInformations.class);
