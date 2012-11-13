@@ -22,6 +22,7 @@ import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
@@ -90,9 +91,13 @@ class SerializableController {
 		if (resultForSystemActions != null) {
 			return resultForSystemActions;
 		}
+		final Range range = getRangeForSerializable(httpRequest);
+		final Serializable resultForJRobins = createSerializableForJRobins(httpRequest, range);
+		if (resultForJRobins != null) {
+			return resultForJRobins;
+		}
 
 		final String part = httpRequest.getParameter(PART_PARAMETER);
-		final Range range = getRangeForSerializable(httpRequest);
 		if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
 					.getThreadInformationsList());
@@ -103,7 +108,55 @@ class SerializableController {
 			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
-		} else if (JROBINS_PART.equalsIgnoreCase(part)) {
+		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+			return new ArrayList<CounterRequestContext>(getCurrentRequests());
+		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing,
+			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
+			assert sqlRequest != null;
+			try {
+				// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
+				return DatabaseInformations.explainPlanFor(sqlRequest);
+			} catch (final Exception ex) {
+				return ex.toString();
+			}
+		}
+
+		return createDefaultSerializable(javaInformationsList, range, messageForReport);
+	}
+
+	private List<CounterRequestContext> getCurrentRequests() {
+		final List<Counter> counters = collector.getCounters();
+		final Map<String, Counter> countersByName = new LinkedHashMap<String, Counter>();
+		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
+		for (final Counter counter : counters) {
+			final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
+					counter.getIconName(), counter.getChildCounterName());
+			countersByName.put(cloneLight.getName(), cloneLight);
+		}
+
+		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
+		replaceParentCounters(rootCurrentContexts, countersByName);
+		return rootCurrentContexts;
+	}
+
+	private void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
+			Map<String, Counter> countersByName) {
+		for (final CounterRequestContext context : rootCurrentContexts) {
+			final Counter parentCounterClone = countersByName.get(context.getParentCounter()
+					.getName());
+			context.setParentCounter(parentCounterClone);
+			final List<CounterRequestContext> childContexts = context.getChildContexts();
+			if (!childContexts.isEmpty()) {
+				replaceParentCounters(childContexts, countersByName);
+			}
+		}
+	}
+
+	private Serializable createSerializableForJRobins(HttpServletRequest httpRequest, Range range)
+			throws IOException {
+		final String part = httpRequest.getParameter(PART_PARAMETER);
+		if (JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
 			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
@@ -123,23 +176,8 @@ class SerializableController {
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
 			final Collection<JRobin> jrobins = collector.getOtherJRobins();
 			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
-		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing,
-			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
-			assert sqlRequest != null;
-			return getSqlRequestExplainPlan(sqlRequest);
 		}
-
-		return createDefaultSerializable(javaInformationsList, range, messageForReport);
-	}
-
-	private static Serializable getSqlRequestExplainPlan(String sqlRequest) {
-		try {
-			// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
-			return DatabaseInformations.explainPlanFor(sqlRequest);
-		} catch (final Exception ex) {
-			return ex.toString();
-		}
+		return null;
 	}
 
 	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,

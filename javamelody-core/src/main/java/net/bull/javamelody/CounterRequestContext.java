@@ -34,12 +34,10 @@ import net.bull.javamelody.CounterRequest.ICounterRequestContext;
  * @author Emeric Vernat
  */
 class CounterRequestContext implements ICounterRequestContext, Cloneable, Serializable {
-	// cette classe est sérialisable uniquement pour ne pas avoir de warning dans findbugs v2 sur Counter.rootCurrentContextsByThreadId
-	// mais elle n'est pas sérialisée
 	private static final long serialVersionUID = 1L;
 	private static final Long ONE = 1L;
-	// attention de ne pas sérialiser ce counter vers le serveur de collecte, le vrai ayant été cloné
-	private final transient Counter parentCounter;
+	// attention de ne pas sérialiser le counter d'origine vers le serveur de collecte, le vrai ayant été cloné
+	private Counter parentCounter;
 	private final CounterRequestContext parentContext;
 	private CounterRequestContext currentChildContext;
 	private final String requestName;
@@ -88,6 +86,12 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 
 	Counter getParentCounter() {
 		return parentCounter;
+	}
+
+	void setParentCounter(Counter parentCounter) {
+		assert parentCounter != null
+				&& this.parentCounter.getName().equals(parentCounter.getName());
+		this.parentCounter = parentCounter;
 	}
 
 	CounterRequestContext getParentContext() {
@@ -247,14 +251,24 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		//CHECKSTYLE:ON
 		// ce clone n'est valide que pour un contexte root sans parent
 		assert getParentContext() == null;
-		return clone(null);
+		return clone(null, null);
 	}
 
-	private CounterRequestContext clone(CounterRequestContext parentContextClone) {
-		final Counter counter = getParentCounter();
+	CounterRequestContext cloneUsingParentCounters(Map<String, Counter> parentCounters) {
+		// ce clone n'est valide que pour un contexte root sans parent
+		assert getParentContext() == null;
+		return clone(null, parentCounters);
+	}
+
+	private CounterRequestContext clone(CounterRequestContext parentContextClone,
+			Map<String, Counter> parentCounters) {
+		Counter counter = getParentCounter();
 		// s'il fallait un clone du parentCounter pour sérialiser, on pourrait faire seulement ça:
 		//		final Counter parentCounterClone = new Counter(counter.getName(), counter.getStorageName(),
 		//				counter.getIconName(), counter.getChildCounterName(), null);
+		if (parentCounters != null && parentCounters.containsKey(counter.getName())) {
+			counter = parentCounters.get(counter.getName());
+		}
 		final CounterRequestContext clone = new CounterRequestContext(counter, parentContextClone,
 				getRequestName(), getCompleteRequestName(), getRemoteUser(), getThreadId(),
 				startTime, startCpuTime);
@@ -262,19 +276,13 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		clone.childDurationsSum = getChildDurationsSum();
 		final CounterRequestContext childContext = getCurrentChildContext();
 		if (childContext != null) {
-			clone.currentChildContext = childContext.clone(clone);
+			clone.currentChildContext = childContext.clone(clone, parentCounters);
 		}
 		if (childRequestsExecutionsByRequestId != null) {
 			clone.childRequestsExecutionsByRequestId = new LinkedHashMap<String, Long>(
 					childRequestsExecutionsByRequestId);
 		}
 		return clone;
-	}
-
-	private Object readResolve() {
-		// cette classe est sérialisable uniquement pour ne pas avoir de warning dans findbugs v2 sur Counter.rootCurrentContextsByThreadId
-		// mais elle n'est pas sérialisée
-		throw new IllegalStateException(getClass() + " must not be serialized");
 	}
 
 	/** {@inheritDoc} */
