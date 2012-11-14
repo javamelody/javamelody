@@ -18,13 +18,19 @@
  */
 package net.bull.javamelody;
 
+import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -45,6 +51,9 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 
 	private final MTable<CounterRequest> table;
 
+	@SuppressWarnings("all")
+	private final Map<String, ImageIcon> iconByName = new HashMap<String, ImageIcon>();
+
 	CounterRequestAbstractPanel(RemoteCollector remoteCollector) {
 		super(remoteCollector);
 		// comme dans ScrollingPanel, on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
@@ -53,7 +62,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		this.table = new CounterRequestTable(remoteCollector);
 	}
 
-	protected JPanel createButtonsPanel() {
+	protected JPanel createButtonsPanel(boolean includeUsagesButton) {
 		final MButton openButton = new MButton(I18N.getString("Ouvrir"),
 				ImageIconCache.getImageIcon("action_open.png"));
 		openButton.addActionListener(new ActionListener() {
@@ -84,25 +93,28 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		});
 		openButton.setEnabled(false);
 
-		final MButton usagesButton = new MButton(I18N.getString("Chercher_utilisations"),
-				ImageIconCache.getImageIcon("find.png"));
-		usagesButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				final CounterRequest counterRequest = getTable().getSelectedObject();
-				showRequestUsages(counterRequest);
-			}
-		});
-		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				final CounterRequest counterRequest = getTable().getSelectedObject();
-				usagesButton.setEnabled(counterRequest != null
-						&& doesRequestDisplayUsages(counterRequest));
-			}
-		});
-		usagesButton.setEnabled(false);
-		return Utilities.createButtonsPanel(openButton, usagesButton);
+		if (includeUsagesButton) {
+			final MButton usagesButton = new MButton(I18N.getString("Chercher_utilisations"),
+					ImageIconCache.getImageIcon("find.png"));
+			usagesButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					final CounterRequest counterRequest = getTable().getSelectedObject();
+					showRequestUsages(counterRequest);
+				}
+			});
+			table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					final CounterRequest counterRequest = getTable().getSelectedObject();
+					usagesButton.setEnabled(counterRequest != null
+							&& doesRequestDisplayUsages(counterRequest));
+				}
+			});
+			usagesButton.setEnabled(false);
+			return Utilities.createButtonsPanel(openButton, usagesButton);
+		}
+		return Utilities.createButtonsPanel(openButton);
 	}
 
 	final Counter getCounterByRequestId(CounterRequest counterRequest) {
@@ -133,5 +145,42 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		final CounterRequestUsagesPanel panel = new CounterRequestUsagesPanel(getRemoteCollector(),
 				counterRequest);
 		MainPanel.addOngletFromChild(this, panel);
+	}
+
+	Icon getCounterIcon(Counter counter, final int margin) {
+		if (counter == null || counter.getIconName() == null) {
+			return null;
+		}
+
+		final String iconName = counter.getIconName();
+		ImageIcon iconWithoutMargin = iconByName.get(iconName);
+		if (iconWithoutMargin == null) {
+			iconWithoutMargin = ImageIconCache.getScaledImageIcon(iconName, 16, 16);
+			iconByName.put(iconName, iconWithoutMargin);
+		}
+		final ImageIcon counterIcon = iconWithoutMargin;
+		final Icon icon;
+		if (margin == 0) {
+			icon = counterIcon;
+		} else {
+			// ajoute une marge à gauche de l'icône
+			icon = new Icon() {
+				@Override
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					g.drawImage(counterIcon.getImage(), margin + x, y, null);
+				}
+
+				@Override
+				public int getIconWidth() {
+					return counterIcon.getIconWidth() + margin;
+				}
+
+				@Override
+				public int getIconHeight() {
+					return counterIcon.getIconHeight();
+				}
+			};
+		}
+		return icon;
 	}
 }

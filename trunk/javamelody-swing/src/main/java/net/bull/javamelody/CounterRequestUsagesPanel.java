@@ -21,13 +21,9 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
@@ -47,20 +43,8 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 	private final class NameTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
 
-		@SuppressWarnings("all")
-		private final Map<String, ImageIcon> iconByName = new HashMap<String, ImageIcon>();
-
 		NameTableCellRenderer() {
 			super();
-		}
-
-		private ImageIcon getIcon(String iconName) {
-			ImageIcon icon = iconByName.get(iconName);
-			if (icon == null) {
-				icon = ImageIconCache.getScaledImageIcon(iconName, 16, 16);
-				iconByName.put(iconName, icon);
-			}
-			return icon;
 		}
 
 		@Override
@@ -70,12 +54,7 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 			final CounterRequest counterRequest = myTable.getList().get(
 					myTable.convertRowIndexToModel(row));
 			final Counter counter = getCounterByRequestId(counterRequest);
-			if (counter != null && counter.getIconName() != null) {
-				final Icon icon = getIcon(counter.getIconName());
-				setIcon(icon);
-			} else {
-				setIcon(null);
-			}
+			setIcon(getCounterIcon(counter, 0));
 			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
 					column);
 		}
@@ -107,7 +86,7 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 		getTable().setList(requests);
 		add(scrollPane, BorderLayout.CENTER);
 
-		add(createButtonsPanel(), BorderLayout.SOUTH);
+		add(createButtonsPanel(true), BorderLayout.SOUTH);
 	}
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
