@@ -14,7 +14,7 @@ public class ForbiddenActionsFilter implements Filter {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Collector forbidden in the demo");
 			return;
 		} else if ("processes".equals(request.getParameter("part"))) {
-			// par sécurité pour les mots de passe, etc
+			// par securite pour les mots de passe, etc
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Display of processes forbidden in the demo");
 			return;
 		}
