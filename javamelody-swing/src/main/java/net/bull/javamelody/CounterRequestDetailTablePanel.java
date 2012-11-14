@@ -20,15 +20,12 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
@@ -80,9 +77,6 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 
 		private static final long serialVersionUID = 1L;
 
-		@SuppressWarnings("all")
-		private final Map<String, ImageIcon> iconByName = new HashMap<String, ImageIcon>();
-
 		NameTableCellRenderer() {
 			super();
 		}
@@ -94,45 +88,13 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 			final CounterRequest counterRequest = myTable.getList().get(
 					myTable.convertRowIndexToModel(row));
 			final Counter counter = getCounterByRequestId(counterRequest);
-			if (counter != null && counter.getIconName() != null) {
-				final Icon icon;
-				final ImageIcon counterIcon = getIcon(counter.getIconName());
-				if (counterRequest.equals(getRequest())) {
-					icon = counterIcon;
-				} else {
-					// ajoute une marge à gauche de l'icône
-					icon = new Icon() {
-						@Override
-						public void paintIcon(Component c, Graphics g, int x, int y) {
-							g.drawImage(counterIcon.getImage(), CHILD_MARGIN + x, y, null);
-						}
-
-						@Override
-						public int getIconWidth() {
-							return counterIcon.getIconWidth() + CHILD_MARGIN;
-						}
-
-						@Override
-						public int getIconHeight() {
-							return counterIcon.getIconHeight();
-						}
-					};
-				}
-				setIcon(icon);
+			if (counterRequest.equals(getRequest())) {
+				setIcon(getCounterIcon(counter, 0));
 			} else {
-				setIcon(null);
+				setIcon(getCounterIcon(counter, CHILD_MARGIN));
 			}
 			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
 					column);
-		}
-
-		private ImageIcon getIcon(String iconName) {
-			ImageIcon icon = iconByName.get(iconName);
-			if (icon == null) {
-				icon = ImageIconCache.getScaledImageIcon(iconName, 16, 16);
-				iconByName.put(iconName, icon);
-			}
-			return icon;
 		}
 	}
 
@@ -188,7 +150,7 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		Utilities.adjustTableHeight(getTable());
 		add(scrollPane, BorderLayout.CENTER);
 
-		add(createButtonsPanel(), BorderLayout.SOUTH);
+		add(createButtonsPanel(true), BorderLayout.SOUTH);
 	}
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
