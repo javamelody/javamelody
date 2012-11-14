@@ -46,13 +46,12 @@ import net.bull.javamelody.swing.table.MTable;
 abstract class CounterRequestAbstractPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
+	private static final Map<String, ImageIcon> ICON_BY_NAME = new HashMap<>();
+
 	@SuppressWarnings("all")
 	private final List<Counter> counters;
 
 	private final MTable<CounterRequest> table;
-
-	@SuppressWarnings("all")
-	private final Map<String, ImageIcon> iconByName = new HashMap<String, ImageIcon>();
 
 	CounterRequestAbstractPanel(RemoteCollector remoteCollector) {
 		super(remoteCollector);
@@ -153,10 +152,10 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		}
 
 		final String iconName = counter.getIconName();
-		ImageIcon iconWithoutMargin = iconByName.get(iconName);
+		ImageIcon iconWithoutMargin = ICON_BY_NAME.get(iconName);
 		if (iconWithoutMargin == null) {
 			iconWithoutMargin = ImageIconCache.getScaledImageIcon(iconName, 16, 16);
-			iconByName.put(iconName, iconWithoutMargin);
+			ICON_BY_NAME.put(iconName, iconWithoutMargin);
 		}
 		final ImageIcon counterIcon = iconWithoutMargin;
 		final Icon icon;
