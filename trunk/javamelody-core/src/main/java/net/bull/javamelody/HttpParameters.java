@@ -46,6 +46,7 @@ final class HttpParameters {
 	static final String HEAP_HISTO_PART = "heaphisto";
 	static final String PROCESSES_PART = "processes";
 	static final String CURRENT_REQUESTS_PART = "currentRequests";
+	static final String DEFAULT_WITH_CURRENT_REQUESTS_PART = "defaultWithCurrentRequests";
 	static final String WEB_XML_PART = "web.xml";
 	static final String POM_XML_PART = "pom.xml";
 	static final String JNLP_PART = "jnlp";

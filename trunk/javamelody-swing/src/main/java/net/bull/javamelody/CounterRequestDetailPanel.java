@@ -67,7 +67,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						getRemoteCollector().collectData();
+						getRemoteCollector().collectDataIncludingCurrentRequests();
 						refresh();
 					} catch (final IOException ex) {
 						showException(ex);

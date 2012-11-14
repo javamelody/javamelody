@@ -178,7 +178,7 @@ class MainButtonsPanel extends MelodyPanel {
 
 	void actionRefresh() {
 		try {
-			getRemoteCollector().collectData();
+			getRemoteCollector().collectDataIncludingCurrentRequests();
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException e) {
 			showException(e);
