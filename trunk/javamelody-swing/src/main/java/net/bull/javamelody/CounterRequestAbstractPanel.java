@@ -117,6 +117,9 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 	}
 
 	final Counter getCounterByRequestId(CounterRequest counterRequest) {
+		if (counterRequest == null) {
+			return null;
+		}
 		return getRemoteCollector().getCollector().getCounterByRequestId(counterRequest);
 	}
 
