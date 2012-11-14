@@ -22,6 +22,7 @@ import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
@@ -465,6 +466,8 @@ class MonitoringController {
 				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
 				&& (httpRequest.getParameter(PART_PARAMETER) == null
 						|| CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
+								.getParameter(PART_PARAMETER))
+						|| DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
 								.getParameter(PART_PARAMETER))
 						|| THREADS_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)) || THREADS_DUMP_PART
 							.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));

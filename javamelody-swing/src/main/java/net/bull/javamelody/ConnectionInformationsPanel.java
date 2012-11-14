@@ -134,7 +134,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		final List<List<ConnectionInformations>> allConnectionInformations = getRemoteCollector()
 				.collectConnectionInformations();
 		// collecte aussi les data pour avoir des stack-traces de threads à jour
-		getRemoteCollector().collectData();
+		getRemoteCollector().collectDataIncludingCurrentRequests();
 
 		final List<JavaInformations> javaInformationsList = getRemoteCollector()
 				.getJavaInformationsList();

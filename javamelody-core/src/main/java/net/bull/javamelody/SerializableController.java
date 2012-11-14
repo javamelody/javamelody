@@ -24,6 +24,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
@@ -85,6 +86,7 @@ class SerializableController {
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 	}
 
+	@SuppressWarnings("unchecked")
 	Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList, String messageForReport) throws Exception { // NOPMD
 		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest);
@@ -110,6 +112,12 @@ class SerializableController {
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<CounterRequestContext>(getCurrentRequests());
+		} else if (DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+			final List<Serializable> result = new ArrayList<Serializable>();
+			result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList,
+					range, messageForReport));
+			result.addAll(getCurrentRequests());
+			return (Serializable) result;
 		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing,
 			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);

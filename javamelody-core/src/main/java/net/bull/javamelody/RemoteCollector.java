@@ -20,6 +20,7 @@ package net.bull.javamelody;
 
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
@@ -55,6 +56,7 @@ class RemoteCollector {
 	private List<URL> urls;
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
+	private List<CounterRequestContext> currentRequests;
 	private String cookies;
 	private boolean aggregationDisabled;
 
@@ -75,31 +77,32 @@ class RemoteCollector {
 		return collectDataWithUrls(urls);
 	}
 
+	String collectDataIncludingCurrentRequests() throws IOException {
+		final List<URL> urlsWithCurrentRequests = new ArrayList<URL>();
+		for (final URL url : urls) {
+			urlsWithCurrentRequests.add(new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ DEFAULT_WITH_CURRENT_REQUESTS_PART));
+		}
+		return collectDataWithUrls(urlsWithCurrentRequests);
+	}
+
 	private String collectDataWithUrls(List<URL> urlsForCollect) throws IOException {
-		final List<JavaInformations> list = new ArrayList<JavaInformations>();
+		final List<JavaInformations> javaInfosList = new ArrayList<JavaInformations>();
+		final List<CounterRequestContext> counterRequestContextsList = new ArrayList<CounterRequestContext>();
 		final StringBuilder sb = new StringBuilder();
 		for (final URL url : urlsForCollect) {
-			final List<Serializable> serialized = collectForUrl(url);
 			final List<Counter> counters = new ArrayList<Counter>();
-			for (final Serializable serializable : serialized) {
-				if (serializable instanceof Counter) {
-					final Counter counter = (Counter) serializable;
-					counter.setApplication(application);
-					counters.add(counter);
-				} else if (serializable instanceof JavaInformations) {
-					final JavaInformations newJavaInformations = (JavaInformations) serializable;
-					list.add(newJavaInformations);
-				} else if (serializable instanceof String) {
-					sb.append(serializable).append('\n');
-				}
-			}
+			final List<Serializable> serialized = collectForUrl(url);
+			dispatchSerializables(serialized, counters, javaInfosList, counterRequestContextsList,
+					sb);
 			if (this.collector == null || aggregationDisabled) {
 				this.collector = new Collector(application, counters);
 			} else {
 				addRequestsAndErrors(counters);
 			}
 		}
-		this.javaInformationsList = list;
+		this.javaInformationsList = javaInfosList;
+		this.currentRequests = counterRequestContextsList;
 		final String messageForReport;
 		if (sb.length() == 0) {
 			messageForReport = null;
@@ -107,6 +110,26 @@ class RemoteCollector {
 			messageForReport = sb.toString();
 		}
 		return messageForReport;
+	}
+
+	private void dispatchSerializables(List<Serializable> serialized, List<Counter> counters,
+			List<JavaInformations> javaInfosList,
+			List<CounterRequestContext> counterRequestContextsList, StringBuilder sb) {
+		for (final Serializable serializable : serialized) {
+			if (serializable instanceof Counter) {
+				final Counter counter = (Counter) serializable;
+				counter.setApplication(application);
+				counters.add(counter);
+			} else if (serializable instanceof JavaInformations) {
+				final JavaInformations newJavaInformations = (JavaInformations) serializable;
+				javaInfosList.add(newJavaInformations);
+			} else if (serializable instanceof String) {
+				sb.append(serializable).append('\n');
+			} else if (serializable instanceof CounterRequestContext) {
+				final CounterRequestContext counterRequestContext = (CounterRequestContext) serializable;
+				counterRequestContextsList.add(counterRequestContext);
+			}
+		}
 	}
 
 	String executeActionAndCollectData(Action action, String counterName, String sessionId,
@@ -347,6 +370,10 @@ class RemoteCollector {
 
 	List<JavaInformations> getJavaInformationsList() {
 		return javaInformationsList;
+	}
+
+	List<CounterRequestContext> getCurrentRequests() {
+		return currentRequests;
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing

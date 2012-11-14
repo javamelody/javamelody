@@ -65,7 +65,7 @@ class MainPanel extends MelodyPanel {
 
 		CounterStorage.disableStorage();
 		remoteCollector.disableAggregation();
-		remoteCollector.collectData();
+		remoteCollector.collectDataIncludingCurrentRequests();
 
 		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -147,7 +147,7 @@ class MainPanel extends MelodyPanel {
 		try {
 			setSelectedRange(newRange);
 
-			getRemoteCollector().collectData();
+			getRemoteCollector().collectDataIncludingCurrentRequests();
 			refreshMainTab();
 		} catch (final IOException e) {
 			showException(e);
