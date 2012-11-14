@@ -334,12 +334,6 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		this.allContexts = new ArrayList<>();
 		this.allRequests = new ArrayList<>();
 
-		if (contexts.isEmpty()) {
-			add(new JLabel(' ' + I18N.getString("Aucune_requete_en_cours")));
-			this.buttonsPanel = null;
-			return;
-		}
-
 		for (final CounterRequestContext context : contexts) {
 			allContexts.add(context);
 			for (final CounterRequestContext childContext : context.getChildContexts()) {
