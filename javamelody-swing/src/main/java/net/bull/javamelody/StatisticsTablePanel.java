@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.List;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -71,23 +72,7 @@ class StatisticsTablePanel extends MelodyPanel {
 		public void setValue(Object value) {
 			final Integer mean = (Integer) value;
 			final CounterRequestAggregation myCounterRequestAggregation = getCounterRequestAggregation();
-			if (mean < myCounterRequestAggregation.getWarningThreshold() || mean == 0) {
-				// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
-				// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
-				setForeground(DARKER_GREEN);
-				setFont(LABEL_PLAIN_FONT);
-			} else if (mean < myCounterRequestAggregation.getSevereThreshold()) {
-				// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
-				// attention à cette requête qui est plus longue que les autres
-				setForeground(Color.ORANGE);
-				setFont(LABEL_BOLD_FONT);
-			} else {
-				// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
-				// cette requête est très longue par rapport aux autres ;
-				// il peut être opportun de l'optimiser si possible
-				setForeground(Color.RED);
-				setFont(LABEL_BOLD_FONT);
-			}
+			setStyleBasedOnThresholds(this, mean, myCounterRequestAggregation);
 			super.setValue(mean);
 		}
 	}
@@ -219,5 +204,26 @@ class StatisticsTablePanel extends MelodyPanel {
 
 	private boolean isErrorAndNotJobCounter() {
 		return isErrorCounter() && !isJobCounter();
+	}
+
+	static void setStyleBasedOnThresholds(JComponent target, Integer duration,
+			CounterRequestAggregation aggregation) {
+		if (duration < aggregation.getWarningThreshold() || duration == 0) {
+			// si cette moyenne est < à la moyenne globale + 1 écart-type (paramétrable), c'est bien
+			// (si severeThreshold ou warningThreshold sont à 0 et mean à 0, c'est "info" et non "severe")
+			target.setForeground(DARKER_GREEN);
+			target.setFont(LABEL_PLAIN_FONT);
+		} else if (duration < aggregation.getSevereThreshold()) {
+			// sinon, si cette moyenne est < à la moyenne globale + 2 écart-types (paramétrable),
+			// attention à cette requête qui est plus longue que les autres
+			target.setForeground(Color.ORANGE);
+			target.setFont(LABEL_BOLD_FONT);
+		} else {
+			// sinon, (cette moyenne est > à la moyenne globale + 2 écart-types),
+			// cette requête est très longue par rapport aux autres ;
+			// il peut être opportun de l'optimiser si possible
+			target.setForeground(Color.RED);
+			target.setFont(LABEL_BOLD_FONT);
+		}
 	}
 }

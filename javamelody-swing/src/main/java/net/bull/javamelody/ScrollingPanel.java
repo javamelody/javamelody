@@ -77,7 +77,7 @@ class ScrollingPanel extends MelodyPanel {
 
 		addCounters();
 
-		// TODO il manque ici l'affichage des requêtes en cours
+		addCurrentRequests();
 
 		addSystemInformations();
 
@@ -163,6 +163,22 @@ class ScrollingPanel extends MelodyPanel {
 				range, includeGraph);
 		statisticsPanel.showGlobalRequests();
 		add(statisticsPanel);
+	}
+
+	private void addCurrentRequests() {
+		addParagraphTitle(I18N.getString("Requetes_en_cours"), "hourglass.png");
+
+		final List<CounterRequestContext> currentRequests = getRemoteCollector()
+				.getCurrentRequests();
+		if (currentRequests.isEmpty()) {
+			add(new JLabel(' ' + I18N.getString("Aucune_requete_en_cours")));
+		} else {
+			final CounterRequestContextPanel firstContextPanel = new CounterRequestContextPanel(
+					getRemoteCollector(), currentRequests.subList(0, 1), javaInformationsList);
+			add(firstContextPanel);
+			final JPanel detailsPanel = firstContextPanel.createDetailsPanel(currentRequests);
+			add(detailsPanel);
+		}
 	}
 
 	private void addSystemInformations() {
