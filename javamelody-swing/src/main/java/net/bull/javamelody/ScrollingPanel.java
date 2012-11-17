@@ -168,6 +168,7 @@ class ScrollingPanel extends MelodyPanel {
 	private void addCurrentRequests() {
 		addParagraphTitle(I18N.getString("Requetes_en_cours"), "hourglass.png");
 
+		// TODO et pour un serveur de collecte ?
 		final List<CounterRequestContext> currentRequests = getRemoteCollector()
 				.getCurrentRequests();
 		if (currentRequests.isEmpty()) {
