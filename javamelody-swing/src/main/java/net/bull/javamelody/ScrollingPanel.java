@@ -177,7 +177,20 @@ class ScrollingPanel extends MelodyPanel {
 			final CounterRequestContextPanel firstContextPanel = new CounterRequestContextPanel(
 					getRemoteCollector(), contexts.subList(0, 1), javaInformations);
 			add(firstContextPanel);
-			final JPanel detailsPanel = firstContextPanel.createDetailsPanel(contexts);
+			final MButton detailsButton = new MButton(I18N.getString(DETAILS_KEY), PLUS_ICON);
+			final JPanel detailsPanel = firstContextPanel.createDetailsPanel(contexts,
+					detailsButton);
+
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					detailsPanel.setVisible(!detailsPanel.isVisible());
+					detailsPanel.validate();
+					changePlusMinusIcon(detailsButton);
+				}
+			});
+			detailsPanel.setVisible(false);
+
 			add(detailsPanel);
 		}
 	}
