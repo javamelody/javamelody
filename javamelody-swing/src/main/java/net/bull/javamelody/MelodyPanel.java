@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -152,6 +153,13 @@ class MelodyPanel extends JPanel {
 		final MButton xmlJsonButton = new MButton("", MORE_ICON);
 		xmlJsonButton.setPreferredSize(new Dimension(xmlJsonButton.getPreferredSize().width - 12,
 				xmlJsonButton.getPreferredSize().height));
+		final Serializable mySerializable;
+		if (serializable == null) {
+			// un paramètre null veut dire qu'il faut instancier ici les données par défaut
+			mySerializable = createDefaultSerializable();
+		} else {
+			mySerializable = serializable;
+		}
 
 		final ActionListener menuActionListener = new ActionListener() {
 			@Override
@@ -163,7 +171,7 @@ class MelodyPanel extends JPanel {
 							.getFileName(application).replace(".pdf", "." + format.getCode()));
 					tempFile.deleteOnExit();
 					try (final OutputStream output = createFileOutputStream(tempFile)) {
-						format.writeSerializableTo(serializable, output);
+						format.writeSerializableTo(mySerializable, output);
 					}
 					Desktop.getDesktop().open(tempFile);
 				} catch (final Exception ex) {
@@ -192,5 +200,18 @@ class MelodyPanel extends JPanel {
 			}
 		});
 		return xmlJsonButton;
+	}
+
+	private Serializable createDefaultSerializable() {
+		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
+		final List<Counter> counters = getCollector().getCounters();
+		final List<Serializable> serialized = new ArrayList<>(counters.size()
+				+ javaInformationsList.size());
+		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
+		for (final Counter counter : counters) {
+			serialized.add(counter.clone());
+		}
+		serialized.addAll(javaInformationsList);
+		return (Serializable) serialized;
 	}
 }
