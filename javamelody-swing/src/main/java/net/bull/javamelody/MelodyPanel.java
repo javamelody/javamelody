@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -82,6 +83,14 @@ class MelodyPanel extends JPanel {
 
 	final RemoteCollector getRemoteCollector() {
 		return remoteCollector;
+	}
+
+	final Collector getCollector() {
+		return getRemoteCollector().getCollector();
+	}
+
+	final List<JavaInformations> getJavaInformationsList() {
+		return getRemoteCollector().getJavaInformationsList();
 	}
 
 	final File createTempFileForPdf() {

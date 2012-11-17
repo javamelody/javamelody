@@ -57,7 +57,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		super(remoteCollector);
 		// comme dans ScrollingPanel, on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
 		// en revanche collector.getCounters() contient ici les bonnes données
-		this.counters = remoteCollector.getCollector().getCounters();
+		this.counters = getCollector().getCounters();
 		this.table = new CounterRequestTable(remoteCollector);
 	}
 
@@ -120,7 +120,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		if (counterRequest == null) {
 			return null;
 		}
-		return getRemoteCollector().getCollector().getCounterByRequestId(counterRequest);
+		return getCollector().getCounterByRequestId(counterRequest);
 	}
 
 	final boolean doesRequestDisplayUsages(CounterRequest counterRequest) {

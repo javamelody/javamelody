@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -56,18 +55,12 @@ class ScrollingPanel extends MelodyPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final Collector collector;
-	@SuppressWarnings("all")
-	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
 	private final URL monitoringUrl;
 	private final long start = System.currentTimeMillis();
 
 	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl) {
 		super(remoteCollector);
-		this.collector = remoteCollector.getCollector();
-		this.javaInformationsList = remoteCollector.getJavaInformationsList();
 		this.range = range;
 		this.monitoringUrl = monitoringUrl;
 
@@ -89,7 +82,8 @@ class ScrollingPanel extends MelodyPanel {
 			addParagraphTitle(I18N.getString("Jobs"), "jobs.png");
 			// on ne peut utiliser collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME),
 			// en revanche collector.getCounterByName(Counter.JOB_COUNTER_NAME) contient ici les bonnes données
-			final Counter rangeJobCounter = collector.getCounterByName(Counter.JOB_COUNTER_NAME);
+			final Counter rangeJobCounter = getCollector().getCounterByName(
+					Counter.JOB_COUNTER_NAME);
 			addJobs(rangeJobCounter);
 			addCounter(rangeJobCounter);
 		}
@@ -133,7 +127,7 @@ class ScrollingPanel extends MelodyPanel {
 	private List<Counter> getCountersToBeDisplayed() {
 		// on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
 		// en revanche collector.getCounters() contient ici les bonnes données
-		final List<Counter> result = new ArrayList<>(collector.getCounters());
+		final List<Counter> result = new ArrayList<>(getCollector().getCounters());
 		final Iterator<Counter> it = result.iterator();
 		while (it.hasNext()) {
 			final Counter counter = it.next();
@@ -176,7 +170,7 @@ class ScrollingPanel extends MelodyPanel {
 			add(new JLabel(' ' + I18N.getString("Aucune_requete_en_cours")));
 		} else {
 			// TODO et pour un serveur de collecte ?
-			final Entry<JavaInformations, List<CounterRequestContext>> firstEntry = currentRequests
+			final Map.Entry<JavaInformations, List<CounterRequestContext>> firstEntry = currentRequests
 					.entrySet().iterator().next();
 			final JavaInformations javaInformations = firstEntry.getKey();
 			final List<CounterRequestContext> contexts = firstEntry.getValue();
@@ -190,7 +184,7 @@ class ScrollingPanel extends MelodyPanel {
 
 	private void addSystemInformations() {
 		addParagraphTitle(I18N.getString("Informations_systemes"), "systeminfo.png");
-		final List<JavaInformations> list = javaInformationsList;
+		final List<JavaInformations> list = getJavaInformationsList();
 		if (Parameters.isSystemActionsEnabled()) {
 			add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl));
 		}
@@ -225,7 +219,7 @@ class ScrollingPanel extends MelodyPanel {
 
 	private void addThreadInformations() {
 		addParagraphTitle(I18N.getString("Threads"), "threads.png");
-		for (final JavaInformations javaInformations : javaInformationsList) {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			final List<ThreadInformations> threadInformationsList = javaInformations
 					.getThreadInformationsList();
 			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
@@ -286,7 +280,7 @@ class ScrollingPanel extends MelodyPanel {
 	}
 
 	private void addCaches() {
-		for (final JavaInformations javaInformations : javaInformationsList) {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			if (!javaInformations.isCacheEnabled()) {
 				continue;
 			}
@@ -319,7 +313,7 @@ class ScrollingPanel extends MelodyPanel {
 	}
 
 	private void addJobs(Counter rangeJobCounter) {
-		for (final JavaInformations javaInformations : javaInformationsList) {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			if (!javaInformations.isJobEnabled()) {
 				continue;
 			}
@@ -358,11 +352,11 @@ class ScrollingPanel extends MelodyPanel {
 		final long displayDuration = System.currentTimeMillis() - start;
 		final JLabel lastCollectDurationLabel = new JLabel(
 				I18N.getString("temps_derniere_collecte") + ": "
-						+ collector.getLastCollectDuration() + ' ' + I18N.getString("ms"));
+						+ getCollector().getLastCollectDuration() + ' ' + I18N.getString("ms"));
 		final JLabel displayDurationLabel = new JLabel(I18N.getString("temps_affichage") + ": "
 				+ displayDuration + ' ' + I18N.getString("ms"));
 		final JLabel overheadLabel = new JLabel(I18N.getString("Estimation_overhead_memoire")
-				+ ": < " + (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
+				+ ": < " + (getCollector().getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
 				+ I18N.getString("Mo"));
 		final Font font = overheadLabel.getFont().deriveFont(10f);
 		lastCollectDurationLabel.setFont(font);
@@ -416,7 +410,7 @@ class ScrollingPanel extends MelodyPanel {
 	}
 
 	private boolean isCacheEnabled() {
-		for (final JavaInformations javaInformations : javaInformationsList) {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			if (javaInformations.isCacheEnabled()) {
 				return true;
 			}
@@ -425,7 +419,7 @@ class ScrollingPanel extends MelodyPanel {
 	}
 
 	private boolean isJobEnabled() {
-		for (final JavaInformations javaInformations : javaInformationsList) {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			if (javaInformations.isJobEnabled()) {
 				return true;
 			}

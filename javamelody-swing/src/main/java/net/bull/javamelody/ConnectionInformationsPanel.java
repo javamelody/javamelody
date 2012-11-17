@@ -136,8 +136,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		// collecte aussi les data pour avoir des stack-traces de threads à jour
 		getRemoteCollector().collectDataIncludingCurrentRequests();
 
-		final List<JavaInformations> javaInformationsList = getRemoteCollector()
-				.getJavaInformationsList();
+		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (javaInformations.isStackTraceEnabled()) {
 				stackTraceEnabled = true;

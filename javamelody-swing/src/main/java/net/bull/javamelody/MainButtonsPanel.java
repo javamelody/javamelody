@@ -197,10 +197,9 @@ class MainButtonsPanel extends MelodyPanel {
 			final boolean collectorServer = true;
 			final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
 			final File tempFile = createTempFileForPdf();
+			final Collector collector = getCollector();
+			final List<JavaInformations> javaInformationsList = getJavaInformationsList();
 			final RemoteCollector remoteCollector = getRemoteCollector();
-			final Collector collector = remoteCollector.getCollector();
-			final List<JavaInformations> javaInformationsList = remoteCollector
-					.getJavaInformationsList();
 			final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
 					PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
 			final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
@@ -228,11 +227,8 @@ class MainButtonsPanel extends MelodyPanel {
 	}
 
 	private Serializable createDefaultSerializable() {
-		final RemoteCollector remoteCollector = getRemoteCollector();
-		final Collector collector = remoteCollector.getCollector();
-		final List<JavaInformations> javaInformationsList = remoteCollector
-				.getJavaInformationsList();
-		final List<Counter> counters = collector.getCounters();
+		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
+		final List<Counter> counters = getCollector().getCounters();
 		final List<Serializable> serialized = new ArrayList<>(counters.size()
 				+ javaInformationsList.size());
 		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès

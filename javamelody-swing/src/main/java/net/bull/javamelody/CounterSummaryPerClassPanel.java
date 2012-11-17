@@ -115,7 +115,7 @@ class CounterSummaryPerClassPanel extends MelodyPanel {
 		final File tempFile = createTempFileForPdf();
 		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
 		try {
-			final Collector collector = getRemoteCollector().getCollector();
+			final Collector collector = getCollector();
 			pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
 		} finally {
 			pdfOtherReport.close();
