@@ -27,10 +27,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +64,9 @@ class MainButtonsPanel extends MelodyPanel {
 		add(customPeriodPanel, BorderLayout.SOUTH);
 		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = createPdfButton();
-		final MButton xmlJsonButton = createXmlJsonButton(createDefaultSerializable());
+		// on ne peut pas instancier defaultSerializable ici car sinon,
+		// les données ne seraient plus à jour après une actualisation, donc on passe la valeur spéciale null
+		final MButton xmlJsonButton = createXmlJsonButton(null);
 		final MButton onlineHelpButton = createOnlineHelpButton();
 
 		final MButton monitoringButton = new MButton(I18N.getString("Monitoring"), MONITORING_ICON);
@@ -224,18 +224,5 @@ class MainButtonsPanel extends MelodyPanel {
 		} catch (final Exception ex) {
 			showException(ex);
 		}
-	}
-
-	private Serializable createDefaultSerializable() {
-		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
-		final List<Counter> counters = getCollector().getCounters();
-		final List<Serializable> serialized = new ArrayList<>(counters.size()
-				+ javaInformationsList.size());
-		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
-		for (final Counter counter : counters) {
-			serialized.add(counter.clone());
-		}
-		serialized.addAll(javaInformationsList);
-		return (Serializable) serialized;
 	}
 }
