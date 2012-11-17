@@ -134,17 +134,18 @@ class SerializableController {
 	}
 
 	private List<CounterRequestContext> getCurrentRequests() {
-		final List<Counter> counters = collector.getCounters();
-		final Map<String, Counter> countersByName = new LinkedHashMap<String, Counter>();
-		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
-		for (final Counter counter : counters) {
-			final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
-					counter.getIconName(), counter.getChildCounterName());
-			countersByName.put(cloneLight.getName(), cloneLight);
-		}
-
 		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
-		replaceParentCounters(rootCurrentContexts, countersByName);
+		if (!rootCurrentContexts.isEmpty()) {
+			final List<Counter> counters = collector.getCounters();
+			final Map<String, Counter> countersByName = new LinkedHashMap<String, Counter>();
+			// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
+			for (final Counter counter : counters) {
+				final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
+						counter.getIconName(), counter.getChildCounterName());
+				countersByName.put(cloneLight.getName(), cloneLight);
+			}
+			replaceParentCounters(rootCurrentContexts, countersByName);
+		}
 		return rootCurrentContexts;
 	}
 
