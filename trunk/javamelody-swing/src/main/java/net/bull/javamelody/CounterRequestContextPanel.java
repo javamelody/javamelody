@@ -109,6 +109,58 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		}
 	}
 
+	private final class ThreadTableCellRenderer extends CounterRequestTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		ThreadTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
+			final ThreadInformations threadInformations = counterRequestContext
+					.getThreadInformations();
+			final String threadName;
+			if (threadInformations == null) {
+				threadName = null; // un décalage n'a pas permis de récupérer le thread de ce context
+				setToolTipText(null);
+			} else {
+				threadName = threadInformations.getName();
+				setToolTipText(ThreadInformationsPanel.convertStackTraceToHtml(
+						threadInformations.getName(), threadInformations.getStackTrace()));
+			}
+			return super.getTableCellRendererComponent(jtable, threadName, isSelected, hasFocus,
+					row, column);
+		}
+	}
+
+	private final class ExecutedMethodTableCellRenderer extends CounterRequestTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		ExecutedMethodTableCellRenderer() {
+			super();
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
+			final ThreadInformations threadInformations = counterRequestContext
+					.getThreadInformations();
+			final String executedMethod;
+			if (threadInformations == null) {
+				executedMethod = null; // un décalage n'a pas permis de récupérer le thread de ce context
+			} else {
+				executedMethod = threadInformations.getExecutedMethod();
+			}
+
+			return super.getTableCellRendererComponent(jtable, executedMethod, isSelected,
+					hasFocus, row, column);
+		}
+	}
+
 	private final class RemoteUserTableCellRenderer extends CounterRequestTableCellRenderer {
 		private static final long serialVersionUID = 1L;
 
@@ -393,7 +445,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		final boolean remoteUserDisplayed = isRemoteUserDisplayed();
 		final boolean childHitsDisplayed = isChildHitsDisplayed();
 		final boolean stackTraceEnabled = isStackTraceEnabled();
-		// TODO comment retrouver le thread du bon host ?  write("<thead><tr><th>#Thread#</th>");
+		addCustomColumn(I18N.getString("Thread"), new ThreadTableCellRenderer());
 		if (remoteUserDisplayed) {
 			addCustomColumn(I18N.getString("Utilisateur"), new RemoteUserTableCellRenderer());
 		}
@@ -425,10 +477,10 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 			addCustomColumn(I18N.getFormattedString("temps_fils_moyen", childCounterName),
 					new ChildsDurationsMeanTableCellRenderer());
 		}
-		// TODO méthode exécutée
-		//		if (stackTraceEnabled) {
-		//			write("<th>#Methode_executee#</th>");
-		//		}
+		if (stackTraceEnabled) {
+			addCustomColumn(I18N.getString("Methode_executee"),
+					new ExecutedMethodTableCellRenderer());
+		}
 
 		return tableScrollPane;
 	}

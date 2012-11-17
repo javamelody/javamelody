@@ -111,12 +111,12 @@ class SerializableController {
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<CounterRequestContext>(getCurrentRequests());
+			return new ArrayList<CounterRequestContext>(getCurrentRequests(javaInformationsList));
 		} else if (DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			final List<Serializable> result = new ArrayList<Serializable>();
 			result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList,
 					range, messageForReport));
-			result.addAll(getCurrentRequests());
+			result.addAll(getCurrentRequests(javaInformationsList));
 			return (Serializable) result;
 		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing,
@@ -133,7 +133,8 @@ class SerializableController {
 		return createDefaultSerializable(javaInformationsList, range, messageForReport);
 	}
 
-	private List<CounterRequestContext> getCurrentRequests() {
+	private List<CounterRequestContext> getCurrentRequests(
+			List<JavaInformations> javaInformationsList) {
 		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
 		if (!rootCurrentContexts.isEmpty()) {
 			final List<Counter> counters = collector.getCounters();
@@ -145,6 +146,22 @@ class SerializableController {
 				countersByName.put(cloneLight.getName(), cloneLight);
 			}
 			replaceParentCounters(rootCurrentContexts, countersByName);
+
+			// s'il y a des requêtes en cours ici, c'est que ce n'est pas le serveur de collecte
+			// et qu'il n'y a donc qu'une seule JVM
+			assert javaInformationsList.size() == 1;
+			for (final CounterRequestContext context : rootCurrentContexts) {
+				final long threadId = context.getThreadId();
+				for (final JavaInformations javaInformations : javaInformationsList) {
+					for (final ThreadInformations threadInformations : javaInformations
+							.getThreadInformationsList()) {
+						if (threadInformations.getId() == threadId) {
+							context.setThreadInformations(threadInformations);
+							break;
+						}
+					}
+				}
+			}
 		}
 		return rootCurrentContexts;
 	}
