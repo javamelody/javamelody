@@ -112,7 +112,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 	}
 
 	private Counter getCounterByRequestId(CounterRequest counterRequest) {
-		return getRemoteCollector().getCollector().getCounterByRequestId(counterRequest);
+		return getCollector().getCounterByRequestId(counterRequest);
 	}
 
 	private static String truncate(String string, int maxLength) {

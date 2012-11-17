@@ -65,7 +65,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 
 	SystemInformationsButtonsPanel(RemoteCollector remoteCollector, URL monitoringUrl) {
 		super(remoteCollector);
-		this.javaInformationsList = remoteCollector.getJavaInformationsList();
+		this.javaInformationsList = getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
 
 		final JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
