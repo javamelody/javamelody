@@ -44,8 +44,6 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 	private final String completeRequestName;
 	private final String remoteUser;
 	private final long threadId;
-	// par défaut, threadInformations n'est pas renseigné, mais il pourra être renseigné à partir de threadId
-	private ThreadInformations threadInformations;
 	// attention, si sérialisation vers serveur de collecte, la durée peut être impactée s'il y a désynchronisation d'horloge
 	private final long startTime;
 	private final long startCpuTime;
@@ -94,15 +92,6 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		assert parentCounter != null
 				&& this.parentCounter.getName().equals(parentCounter.getName());
 		this.parentCounter = parentCounter;
-	}
-
-	ThreadInformations getThreadInformations() {
-		return threadInformations;
-	}
-
-	void setThreadInformations(ThreadInformations threadInformations) {
-		assert threadInformations != null && this.threadId == threadInformations.getId();
-		this.threadInformations = threadInformations;
 	}
 
 	CounterRequestContext getParentContext() {
