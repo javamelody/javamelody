@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -168,16 +170,20 @@ class ScrollingPanel extends MelodyPanel {
 	private void addCurrentRequests() {
 		addParagraphTitle(I18N.getString("Requetes_en_cours"), "hourglass.png");
 
-		// TODO et pour un serveur de collecte ?
-		final List<CounterRequestContext> currentRequests = getRemoteCollector()
+		final Map<JavaInformations, List<CounterRequestContext>> currentRequests = getRemoteCollector()
 				.getCurrentRequests();
 		if (currentRequests.isEmpty()) {
 			add(new JLabel(' ' + I18N.getString("Aucune_requete_en_cours")));
 		} else {
+			// TODO et pour un serveur de collecte ?
+			final Entry<JavaInformations, List<CounterRequestContext>> firstEntry = currentRequests
+					.entrySet().iterator().next();
+			final JavaInformations javaInformations = firstEntry.getKey();
+			final List<CounterRequestContext> contexts = firstEntry.getValue();
 			final CounterRequestContextPanel firstContextPanel = new CounterRequestContextPanel(
-					getRemoteCollector(), currentRequests.subList(0, 1), javaInformationsList);
+					getRemoteCollector(), contexts.subList(0, 1), javaInformations);
 			add(firstContextPanel);
-			final JPanel detailsPanel = firstContextPanel.createDetailsPanel(currentRequests);
+			final JPanel detailsPanel = firstContextPanel.createDetailsPanel(contexts);
 			add(detailsPanel);
 		}
 	}

@@ -56,7 +56,7 @@ class RemoteCollector {
 	private List<URL> urls;
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
-	private List<CounterRequestContext> currentRequests;
+	private Map<JavaInformations, List<CounterRequestContext>> currentRequests;
 	private String cookies;
 	private boolean aggregationDisabled;
 
@@ -88,13 +88,13 @@ class RemoteCollector {
 
 	private String collectDataWithUrls(List<URL> urlsForCollect) throws IOException {
 		final List<JavaInformations> javaInfosList = new ArrayList<JavaInformations>();
-		final List<CounterRequestContext> counterRequestContextsList = new ArrayList<CounterRequestContext>();
+		final Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations = new HashMap<JavaInformations, List<CounterRequestContext>>();
 		final StringBuilder sb = new StringBuilder();
 		for (final URL url : urlsForCollect) {
 			final List<Counter> counters = new ArrayList<Counter>();
 			final List<Serializable> serialized = collectForUrl(url);
-			dispatchSerializables(serialized, counters, javaInfosList, counterRequestContextsList,
-					sb);
+			dispatchSerializables(serialized, counters, javaInfosList,
+					counterRequestContextsByJavaInformations, sb);
 			if (this.collector == null || aggregationDisabled) {
 				this.collector = new Collector(application, counters);
 			} else {
@@ -102,7 +102,7 @@ class RemoteCollector {
 			}
 		}
 		this.javaInformationsList = javaInfosList;
-		this.currentRequests = counterRequestContextsList;
+		this.currentRequests = counterRequestContextsByJavaInformations;
 		final String messageForReport;
 		if (sb.length() == 0) {
 			messageForReport = null;
@@ -112,9 +112,14 @@ class RemoteCollector {
 		return messageForReport;
 	}
 
-	private void dispatchSerializables(List<Serializable> serialized, List<Counter> counters,
+	private void dispatchSerializables(
+			List<Serializable> serialized,
+			List<Counter> counters,
 			List<JavaInformations> javaInfosList,
-			List<CounterRequestContext> counterRequestContextsList, StringBuilder sb) {
+			Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations,
+			StringBuilder sb) {
+		JavaInformations latestJavaInformations = null;
+		final List<CounterRequestContext> counterRequestContextsList = new ArrayList<CounterRequestContext>();
 		for (final Serializable serializable : serialized) {
 			if (serializable instanceof Counter) {
 				final Counter counter = (Counter) serializable;
@@ -122,6 +127,7 @@ class RemoteCollector {
 				counters.add(counter);
 			} else if (serializable instanceof JavaInformations) {
 				final JavaInformations newJavaInformations = (JavaInformations) serializable;
+				latestJavaInformations = newJavaInformations;
 				javaInfosList.add(newJavaInformations);
 			} else if (serializable instanceof String) {
 				sb.append(serializable).append('\n');
@@ -129,6 +135,10 @@ class RemoteCollector {
 				final CounterRequestContext counterRequestContext = (CounterRequestContext) serializable;
 				counterRequestContextsList.add(counterRequestContext);
 			}
+		}
+		if (!counterRequestContextsList.isEmpty()) {
+			counterRequestContextsByJavaInformations.put(latestJavaInformations,
+					counterRequestContextsList);
 		}
 	}
 
@@ -372,7 +382,7 @@ class RemoteCollector {
 		return javaInformationsList;
 	}
 
-	List<CounterRequestContext> getCurrentRequests() {
+	Map<JavaInformations, List<CounterRequestContext>> getCurrentRequests() {
 		return currentRequests;
 	}
 

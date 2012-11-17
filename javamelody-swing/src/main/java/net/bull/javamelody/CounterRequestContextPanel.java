@@ -56,7 +56,9 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private final List<JavaInformations> javaInformationsList;
+	private final JavaInformations javaInformations;
+
+	private final Map<Long, ThreadInformations> threadInformationsById;
 
 	private final List<CounterRequestContext> contexts;
 
@@ -120,8 +122,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
-			final ThreadInformations threadInformations = counterRequestContext
-					.getThreadInformations();
+			final ThreadInformations threadInformations = getThreadInformationsByCounterRequestContext(counterRequestContext);
 			final String threadName;
 			if (threadInformations == null) {
 				threadName = null; // un décalage n'a pas permis de récupérer le thread de ce context
@@ -147,8 +148,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
-			final ThreadInformations threadInformations = counterRequestContext
-					.getThreadInformations();
+			final ThreadInformations threadInformations = getThreadInformationsByCounterRequestContext(counterRequestContext);
 			final String executedMethod;
 			if (threadInformations == null) {
 				executedMethod = null; // un décalage n'a pas permis de récupérer le thread de ce context
@@ -376,16 +376,21 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 	}
 
 	CounterRequestContextPanel(RemoteCollector remoteCollector,
-			List<CounterRequestContext> currentRequests, List<JavaInformations> javaInformationsList) {
+			List<CounterRequestContext> currentRequests, JavaInformations javaInformations) {
 		super(remoteCollector);
-		this.javaInformationsList = javaInformationsList;
+		this.javaInformations = javaInformations;
 		this.contexts = currentRequests;
 		Collections.sort(contexts, Collections.reverseOrder(new CounterRequestContextComparator(
 				System.currentTimeMillis())));
 
+		this.threadInformationsById = new HashMap<>();
 		this.allContexts = new ArrayList<>();
 		this.allRequests = new ArrayList<>();
 
+		for (final ThreadInformations threadInformations : javaInformations
+				.getThreadInformationsList()) {
+			threadInformationsById.put(threadInformations.getId(), threadInformations);
+		}
 		for (final CounterRequestContext context : contexts) {
 			allContexts.add(context);
 			for (final CounterRequestContext childContext : context.getChildContexts()) {
@@ -412,7 +417,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 	CounterRequestContextPanel createDetailsPanel(List<CounterRequestContext> currentRequests) {
 		final CounterRequestContextPanel detailsPanel = new CounterRequestContextPanel(
-				getRemoteCollector(), currentRequests, javaInformationsList);
+				getRemoteCollector(), currentRequests, javaInformations);
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
 		final String text = I18N.getFormattedString("nb_requete_en_cours",
 				integerFormat.format(currentRequests.size()))
@@ -495,14 +500,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 	}
 
 	private boolean isStackTraceEnabled() {
-		boolean stackTraceEnabled = false;
-		for (final JavaInformations javaInformations : javaInformationsList) {
-			if (javaInformations.isStackTraceEnabled()) {
-				stackTraceEnabled = true;
-				break;
-			}
-		}
-		return stackTraceEnabled;
+		return javaInformations.isStackTraceEnabled();
 	}
 
 	private boolean isChildHitsDisplayed() {
@@ -545,6 +543,15 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 			aggregationsByCounter.put(counter, aggregation);
 		}
 		return aggregation;
+	}
+
+	ThreadInformations getThreadInformationsByCounterRequestContext(
+			CounterRequestContext counterRequestContext) {
+		if (counterRequestContext.getParentContext() == null) {
+			// on affiche le thread que pour le contexte parent
+			return threadInformationsById.get(counterRequestContext.getThreadId());
+		}
+		return null;
 	}
 
 	List<CounterRequestContext> getAllContexts() {
