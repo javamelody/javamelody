@@ -261,34 +261,17 @@ class ScrollingPanel extends MelodyPanel {
 			flowPanel.add(detailsButton);
 
 			add(flowPanel);
-			addThreadDeadlocks(threadInformationsList);
-			add(threadInformationsPanel);
-		}
-	}
 
-	private void addThreadDeadlocks(List<ThreadInformations> threadInformationsList) {
-		final List<ThreadInformations> deadlockedThreads = new ArrayList<>();
-		for (final ThreadInformations thread : threadInformationsList) {
-			if (thread.isDeadlocked()) {
-				deadlockedThreads.add(thread);
+			for (final ThreadInformations thread : threadInformationsList) {
+				if (thread.isDeadlocked()) {
+					// au moins un thread est en deadlock
+					final JLabel label = threadInformationsPanel.createThreadDeadlocksLabel();
+					add(label);
+					break;
+				}
 			}
-		}
-		if (!deadlockedThreads.isEmpty()) {
-			final StringBuilder sb = new StringBuilder();
-			sb.append("  ");
-			sb.append(I18N.getString("Threads_deadlocks"));
-			String separator = " ";
-			for (final ThreadInformations thread : deadlockedThreads) {
-				sb.append(separator);
-				sb.append(thread.getName());
-				separator = ", ";
-			}
-			final JLabel label = new JLabel(sb.toString());
-			label.setForeground(Color.RED);
-			label.setFont(label.getFont().deriveFont(Font.BOLD));
-			// séparateur avec composants au-dessus
-			label.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-			add(label);
+
+			add(threadInformationsPanel);
 		}
 	}
 

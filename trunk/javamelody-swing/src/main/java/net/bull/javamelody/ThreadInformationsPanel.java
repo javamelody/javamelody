@@ -19,7 +19,9 @@
 package net.bull.javamelody;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -27,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -260,6 +263,26 @@ class ThreadInformationsPanel extends MelodyPanel {
 			return sb.toString();
 		}
 		return null;
+	}
+
+	JLabel createThreadDeadlocksLabel() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("  ");
+		sb.append(I18N.getString("Threads_deadlocks"));
+		String separator = " ";
+		for (final ThreadInformations thread : threadInformationsList) {
+			if (thread.isDeadlocked()) {
+				sb.append(separator);
+				sb.append(thread.getName());
+				separator = ", ";
+			}
+		}
+		final JLabel label = new JLabel(sb.toString());
+		label.setForeground(Color.RED);
+		label.setFont(label.getFont().deriveFont(Font.BOLD));
+		// séparateur avec composants au-dessus
+		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+		return label;
 	}
 
 	MTable<ThreadInformations> getTable() {
