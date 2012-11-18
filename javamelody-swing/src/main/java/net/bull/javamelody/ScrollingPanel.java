@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -354,10 +353,9 @@ class ScrollingPanel extends MelodyPanel {
 		final JLabel overheadLabel = new JLabel(I18N.getString("Estimation_overhead_memoire")
 				+ ": < " + (getCollector().getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
 				+ I18N.getString("Mo"));
-		final Font font = overheadLabel.getFont().deriveFont(10f);
-		lastCollectDurationLabel.setFont(font);
-		displayDurationLabel.setFont(font);
-		overheadLabel.setFont(font);
+		lastCollectDurationLabel.setFont(lastCollectDurationLabel.getFont().deriveFont(10f));
+		displayDurationLabel.setFont(lastCollectDurationLabel.getFont());
+		overheadLabel.setFont(lastCollectDurationLabel.getFont());
 		panel.add(lastCollectDurationLabel);
 		panel.add(displayDurationLabel);
 		panel.add(overheadLabel);
@@ -378,7 +376,7 @@ class ScrollingPanel extends MelodyPanel {
 		if (Parameters.JAVAMELODY_VERSION != null) {
 			panel.add(new JLabel(" "));
 			final JLabel versionLabel = new JLabel("JavaMelody " + Parameters.JAVAMELODY_VERSION);
-			versionLabel.setFont(font);
+			versionLabel.setFont(lastCollectDurationLabel.getFont());
 			panel.add(versionLabel);
 		}
 		panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
