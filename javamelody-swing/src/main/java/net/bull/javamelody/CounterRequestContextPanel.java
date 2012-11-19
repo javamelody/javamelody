@@ -152,7 +152,6 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
-			// TODO à tester
 			final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
 			final String remoteUser = counterRequestContext.getRemoteUser();
 			return super.getTableCellRendererComponent(jtable, remoteUser, isSelected, hasFocus,
