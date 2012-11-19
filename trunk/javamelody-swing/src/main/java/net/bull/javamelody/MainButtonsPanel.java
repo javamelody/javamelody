@@ -213,6 +213,7 @@ class MainButtonsPanel extends MelodyPanel {
 					// PdfReport utilise collector.getRangeCountersToBeDisplayed(range),
 					// mais les counters contiennent les bonnes données pour la période TOUT
 					// et non pas celle de la variable "range"
+					// TODO requêtes en cours non incluses ?
 					pdfReport.setCounterRange(Period.TOUT.getRange());
 					pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
 					pdfReport.toPdf();
