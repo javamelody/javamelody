@@ -40,7 +40,7 @@ import com.lowagie.text.pdf.PdfPTable;
  * Rapport pdf (avec iText).
  * @author Emeric Vernat
  */
-class PdfReport {
+class PdfReport { // NOPMD
 	static final int SMALL_GRAPH_WIDTH = 200;
 	static final int SMALL_GRAPH_HEIGHT = 50;
 	static final int LARGE_GRAPH_WIDTH = 960;
@@ -49,6 +49,7 @@ class PdfReport {
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
 	private Range counterRange;
+	private List<CounterRequestContext> currentRequests;
 	private final Document document;
 	private final boolean collectorServer;
 	private final OutputStream output;
@@ -106,6 +107,11 @@ class PdfReport {
 	// cette méthode est utilisée dans l'ihm Swing
 	void setCounterRange(Range counterRange) {
 		this.counterRange = counterRange;
+	}
+
+	// cette méthode est utilisée dans l'ihm Swing
+	void setCurrentRequests(List<CounterRequestContext> currentRequests) {
+		this.currentRequests = currentRequests;
 	}
 
 	void toPdf() throws IOException {
@@ -336,7 +342,12 @@ class PdfReport {
 			JavaInformations javaInformations, List<PdfCounterReport> pdfCounterReports)
 			throws IOException, DocumentException {
 		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<PdfCounterRequestContextReport>();
-		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
+		final List<CounterRequestContext> rootCurrentContexts;
+		if (currentRequests == null) {
+			rootCurrentContexts = collector.getRootCurrentContexts();
+		} else {
+			rootCurrentContexts = currentRequests;
+		}
 		if (rootCurrentContexts.isEmpty()) {
 			add(new Phrase(getI18nString("Aucune_requete_en_cours"), normalFont));
 		} else {

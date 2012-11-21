@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import net.bull.javamelody.Counter.CounterRequestContextComparator;
 import net.bull.javamelody.swing.MButton;
 
 /**
@@ -191,10 +194,7 @@ class MainButtonsPanel extends MelodyPanel {
 
 	void actionPdf() {
 		try {
-			// ici on prend un comportement similaire au serveur de collecte
-			// en ne mettant pas les requêtes en cours puisque de toute façon on n'a pas
-			// les données dans les counters
-			final boolean collectorServer = true;
+			final boolean collectorServer = false;
 			final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
 			final File tempFile = createTempFileForPdf();
 			final Collector collector = getCollector();
@@ -213,8 +213,17 @@ class MainButtonsPanel extends MelodyPanel {
 					// PdfReport utilise collector.getRangeCountersToBeDisplayed(range),
 					// mais les counters contiennent les bonnes données pour la période TOUT
 					// et non pas celle de la variable "range"
-					// TODO requêtes en cours non incluses ?
 					pdfReport.setCounterRange(Period.TOUT.getRange());
+					// TODO et pour un serveur de collecte ?
+					final List<CounterRequestContext> currentRequests = new ArrayList<>();
+					for (final List<CounterRequestContext> requests : getRemoteCollector()
+							.getCurrentRequests().values()) {
+						currentRequests.addAll(requests);
+					}
+					Collections.sort(currentRequests, Collections
+							.reverseOrder(new CounterRequestContextComparator(System
+									.currentTimeMillis())));
+					pdfReport.setCurrentRequests(currentRequests);
 					pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
 					pdfReport.toPdf();
 				} finally {
