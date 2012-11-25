@@ -221,14 +221,23 @@ class RemoteCollector {
 		return collectForUrl(databaseUrl);
 	}
 
+	@SuppressWarnings("unchecked")
 	List<List<ConnectionInformations>> collectConnectionInformations() throws IOException {
 		// récupération à la demande des connections
 		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
 		for (final URL url : urls) {
 			final URL connectionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
 					+ CONNECTIONS_PART);
-			final List<ConnectionInformations> connections = collectForUrl(connectionsUrl);
-			connectionInformations.add(connections);
+			final Object result = collectForUrl(connectionsUrl);
+			if (result instanceof List && !((List<?>) result).isEmpty()
+					&& ((List<?>) result).get(0) instanceof List) {
+				// pour le serveur de collecte
+				final List<List<ConnectionInformations>> connections = (List<List<ConnectionInformations>>) result;
+				connectionInformations.addAll(connections);
+			} else {
+				final List<ConnectionInformations> connections = (List<ConnectionInformations>) result;
+				connectionInformations.add(connections);
+			}
 		}
 		return connectionInformations;
 	}
@@ -243,13 +252,17 @@ class RemoteCollector {
 					+ PROCESSES_PART);
 			final Object result = collectForUrl(processUrl);
 			if (result instanceof Map) {
-				// pour les nodes dans Jenkins
-				final Map<String, List<ProcessInformations>> processByNodeName = (Map<String, List<ProcessInformations>>) result;
-				for (final Map.Entry<String, List<ProcessInformations>> entry : processByNodeName
+				// pour le serveur de collecte et pour les nodes dans Jenkins
+				final Map<String, List<ProcessInformations>> processByTitle = (Map<String, List<ProcessInformations>>) result;
+				for (final Map.Entry<String, List<ProcessInformations>> entry : processByTitle
 						.entrySet()) {
-					final String nodeName = entry.getKey();
+					String node = entry.getKey();
+					if (!node.startsWith(title)) {
+						// si serveur de collecte alors il y a déjà un titre, mais pas pour les nodes Jenkins
+						node = title + " (" + entry.getKey() + ')';
+					}
 					final List<ProcessInformations> processList = entry.getValue();
-					processesByTitle.put(title + " (" + nodeName + ')', processList);
+					processesByTitle.put(node, processList);
 				}
 			} else {
 				final List<ProcessInformations> processList = (List<ProcessInformations>) result;
@@ -278,12 +291,16 @@ class RemoteCollector {
 			final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + MBEANS_PART);
 			final Object result = collectForUrl(mbeansUrl);
 			if (result instanceof Map) {
-				// pour les nodes dans Jenkins
+				// pour le serveur de collecte et les nodes dans Jenkins
 				final Map<String, List<MBeanNode>> mbeansByNodeName = (Map<String, List<MBeanNode>>) result;
 				for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByNodeName.entrySet()) {
-					final String nodeName = entry.getKey();
+					String node = entry.getKey();
+					if (!node.startsWith(title)) {
+						// si serveur de collecte alors il y a déjà un titre, mais pas pour les nodes Jenkins
+						node = title + " (" + entry.getKey() + ')';
+					}
 					final List<MBeanNode> mbeans = entry.getValue();
-					mbeansByTitle.put(title + " (" + nodeName + ')', mbeans);
+					mbeansByTitle.put(node, mbeans);
 				}
 			} else {
 				final List<MBeanNode> mbeans = (List<MBeanNode>) result;
