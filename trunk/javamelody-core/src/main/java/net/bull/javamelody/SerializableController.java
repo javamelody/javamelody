@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +112,9 @@ class SerializableController {
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<CounterRequestContext>(getCurrentRequests());
+			final Map<JavaInformations, List<CounterRequestContext>> result = new HashMap<JavaInformations, List<CounterRequestContext>>();
+			result.put(javaInformationsList.get(0), getCurrentRequests());
+			return (Serializable) result;
 		} else if (DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			final List<Serializable> result = new ArrayList<Serializable>();
 			result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList,

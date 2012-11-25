@@ -301,6 +301,9 @@ class CollectorController {
 		if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<List<ThreadInformations>>(
 					collectorServer.getThreadInformationsLists(application));
+		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+			return new LinkedHashMap<JavaInformations, List<CounterRequestContext>>(
+					collectorServer.collectCurrentRequests(application));
 		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
 			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
 			return collectorServer.collectSqlRequestExplainPlan(application, sqlRequest);
