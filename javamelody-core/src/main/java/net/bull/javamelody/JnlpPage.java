@@ -68,6 +68,8 @@ class JnlpPage {
 		println("      <jar href='" + jarFileUrl + "' />");
 		println("      <property name='javamelody.application' value='"
 				+ collector.getApplication() + "'/>");
+		println("      <property name='javamelody.collectorServer' value='"
+				+ (collectorServer != null) + "'  />");
 		String url;
 		if (collectorServer == null) {
 			url = codebase + "?format=serialized";

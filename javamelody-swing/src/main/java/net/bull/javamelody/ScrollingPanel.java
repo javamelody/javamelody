@@ -56,12 +56,15 @@ class ScrollingPanel extends MelodyPanel {
 
 	private final Range range;
 	private final URL monitoringUrl;
+	private final boolean collectorServer;
 	private final long start = System.currentTimeMillis();
 
-	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl) {
+	ScrollingPanel(RemoteCollector remoteCollector, Range range, URL monitoringUrl,
+			boolean collectorServer) {
 		super(remoteCollector);
 		this.range = range;
 		this.monitoringUrl = monitoringUrl;
+		this.collectorServer = collectorServer;
 
 		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -71,7 +74,9 @@ class ScrollingPanel extends MelodyPanel {
 
 		addCounters();
 
-		addCurrentRequests();
+		if (!collectorServer) {
+			addCurrentRequests();
+		}
 
 		addSystemInformations();
 
@@ -168,38 +173,36 @@ class ScrollingPanel extends MelodyPanel {
 		if (currentRequests.isEmpty()) {
 			add(new JLabel(' ' + I18N.getString("Aucune_requete_en_cours")));
 		} else {
-			// TODO et pour un serveur de collecte ? appeller RemoteCollector.collectCurrentRequests() avec un bouton
-			final Map.Entry<JavaInformations, List<CounterRequestContext>> firstEntry = currentRequests
-					.entrySet().iterator().next();
-			final JavaInformations javaInformations = firstEntry.getKey();
-			final List<CounterRequestContext> contexts = firstEntry.getValue();
-			final CounterRequestContextPanel firstContextPanel = new CounterRequestContextPanel(
-					getRemoteCollector(), contexts.subList(0, 1), javaInformations);
-			add(firstContextPanel);
-			final MButton detailsButton = new MButton(I18N.getString(DETAILS_KEY), PLUS_ICON);
-			final JPanel detailsPanel = firstContextPanel.createDetailsPanel(contexts,
-					detailsButton);
+			for (final Map.Entry<JavaInformations, List<CounterRequestContext>> entry : currentRequests
+					.entrySet()) {
+				final JavaInformations javaInformations = entry.getKey();
+				final List<CounterRequestContext> contexts = entry.getValue();
+				final CounterRequestContextPanel firstContextPanel = new CounterRequestContextPanel(
+						getRemoteCollector(), contexts.subList(0, 1), javaInformations);
+				add(firstContextPanel);
+				final MButton detailsButton = new MButton(I18N.getString(DETAILS_KEY), PLUS_ICON);
+				final JPanel detailsPanel = firstContextPanel.createDetailsPanel(contexts,
+						detailsButton);
 
-			detailsButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					detailsPanel.setVisible(!detailsPanel.isVisible());
-					detailsPanel.validate();
-					changePlusMinusIcon(detailsButton);
-				}
-			});
-			detailsPanel.setVisible(false);
+				detailsButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						detailsPanel.setVisible(!detailsPanel.isVisible());
+						detailsPanel.validate();
+						changePlusMinusIcon(detailsButton);
+					}
+				});
+				detailsPanel.setVisible(false);
 
-			add(detailsPanel);
+				add(detailsPanel);
+			}
 		}
 	}
 
 	private void addSystemInformations() {
 		addParagraphTitle(I18N.getString("Informations_systemes"), "systeminfo.png");
 		final List<JavaInformations> list = getJavaInformationsList();
-		if (Parameters.isSystemActionsEnabled()) {
-			add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl));
-		}
+		add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl, collectorServer));
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<>(list.size());
 		final JPanel westJavaInformationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));

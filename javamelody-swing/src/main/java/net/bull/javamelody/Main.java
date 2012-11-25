@@ -90,13 +90,15 @@ public final class Main {
 			throw new IllegalStateException(
 					"There must be 3 system properties: javamelody.application, javamelody.url, javamelody.range");
 		}
+		final boolean collectorServer = Boolean.parseBoolean(System
+				.getProperty("javamelody.collectorServer"));
 		final List<URL> urls = Arrays.asList(new URL(url));
 		final Range selectedRange = Range.parse(range);
 		log("Monitoring of " + application + " on " + url);
 		log("creating frame");
 		final RemoteCollector remoteCollector = new RemoteCollector(application, urls);
 		remoteCollector.setCookies(System.getProperty("cookies"));
-		final MainPanel contentPane = new MainPanel(remoteCollector, selectedRange);
+		final MainPanel contentPane = new MainPanel(remoteCollector, selectedRange, collectorServer);
 		final MainFrame frame = new MainFrame();
 		frame.setTitle(I18N.getFormattedString("Monitoring_sur", application));
 		frame.addWindowListener(new WindowAdapter() {

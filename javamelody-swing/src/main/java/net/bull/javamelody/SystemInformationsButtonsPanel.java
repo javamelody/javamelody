@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -38,6 +39,8 @@ import net.bull.javamelody.swing.MButton;
  * @author Emeric Vernat
  */
 class SystemInformationsButtonsPanel extends MelodyPanel {
+	private static final ImageIcon CURRENT_REQUESTS_ICON = ImageIconCache.getScaledImageIcon(
+			"hourglass.png", 20, 20);
 	private static final ImageIcon XML_ICON = ImageIconCache.getScaledImageIcon("xml.png", 20, 20);
 	private static final ImageIcon SESSIONS_ICON = ImageIconCache.getScaledImageIcon(
 			"system-users.png", 20, 20);
@@ -63,49 +66,77 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	private final List<JavaInformations> javaInformationsList;
 	private final URL monitoringUrl;
 
-	SystemInformationsButtonsPanel(RemoteCollector remoteCollector, URL monitoringUrl) {
+	SystemInformationsButtonsPanel(RemoteCollector remoteCollector, URL monitoringUrl,
+			boolean collectorServer) {
 		super(remoteCollector);
 		this.javaInformationsList = getJavaInformationsList();
 		this.monitoringUrl = monitoringUrl;
 
-		final JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-		northPanel.setOpaque(false);
-		final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-		southPanel.setOpaque(false);
-
-		northPanel.add(createGcButton());
-		northPanel.add(createHeapDumpButton());
-		northPanel.add(createHeapHistoButton());
-
-		if (isSessionsEnabled()) {
-			northPanel.add(createInvalidateSessionsButton());
-			northPanel.add(createSessionsButton());
+		if (collectorServer) {
+			final JPanel currentRequestsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+			currentRequestsPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+			currentRequestsPanel.setOpaque(false);
+			currentRequestsPanel.add(createCurrentRequestsButton());
+			add(currentRequestsPanel, BorderLayout.NORTH);
 		}
-		if (doesWebXmlExists()) {
-			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
-			southPanel.add(createWebXmlButton());
+		if (Parameters.isSystemActionsEnabled()) {
+			final JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+			centerPanel.setOpaque(false);
+			final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+			southPanel.setOpaque(false);
+
+			centerPanel.add(createGcButton());
+			centerPanel.add(createHeapDumpButton());
+			centerPanel.add(createHeapHistoButton());
+
+			if (isSessionsEnabled()) {
+				centerPanel.add(createInvalidateSessionsButton());
+				centerPanel.add(createSessionsButton());
+			}
+			if (doesWebXmlExists()) {
+				// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
+				southPanel.add(createWebXmlButton());
+			}
+
+			southPanel.add(createMBeansButton());
+			southPanel.add(createProcessesButton());
+
+			final String serverInfo = javaInformationsList.get(0).getServerInfo();
+			if (serverInfo != null && !serverInfo.contains("Winstone")) {
+				// on n'affiche pas le lien JNDI si serveur Winstone car cela n'a pas d'intérêt
+				// pour Hudson/Jenkins sous Winstone, et surtout car (Winstone)Context.listBindings
+				// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
+
+				southPanel.add(createJndiButton());
+			}
+
+			if (isDatabaseEnabled()) {
+				southPanel.add(createConnectionsButton());
+
+				southPanel.add(createDatabaseButton());
+			}
+
+			add(centerPanel, BorderLayout.CENTER);
+			add(southPanel, BorderLayout.SOUTH);
 		}
+	}
 
-		southPanel.add(createMBeansButton());
-		southPanel.add(createProcessesButton());
-
-		final String serverInfo = javaInformationsList.get(0).getServerInfo();
-		if (serverInfo != null && !serverInfo.contains("Winstone")) {
-			// on n'affiche pas le lien JNDI si serveur Winstone car cela n'a pas d'intérêt
-			// pour Hudson/Jenkins sous Winstone, et surtout car (Winstone)Context.listBindings
-			// renvoie une liste de NameClassPair au lieu d'une liste de Binding comme il le devrait
-
-			southPanel.add(createJndiButton());
-		}
-
-		if (isDatabaseEnabled()) {
-			southPanel.add(createConnectionsButton());
-
-			southPanel.add(createDatabaseButton());
-		}
-
-		add(northPanel, BorderLayout.NORTH);
-		add(southPanel, BorderLayout.SOUTH);
+	private MButton createCurrentRequestsButton() {
+		final MButton currentRequestsButton = new MButton(I18N.getString("Requetes_en_cours"),
+				CURRENT_REQUESTS_ICON);
+		currentRequestsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					final CurrentRequestsForCollectorServerPanel panel = new CurrentRequestsForCollectorServerPanel(
+							getRemoteCollector());
+					addOnglet(panel);
+				} catch (final IOException e1) {
+					showException(e1);
+				}
+			}
+		});
+		return currentRequestsButton;
 	}
 
 	private MButton createGcButton() {
