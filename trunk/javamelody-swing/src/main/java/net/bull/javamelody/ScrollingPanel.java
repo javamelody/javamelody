@@ -168,7 +168,7 @@ class ScrollingPanel extends MelodyPanel {
 		if (currentRequests.isEmpty()) {
 			add(new JLabel(' ' + I18N.getString("Aucune_requete_en_cours")));
 		} else {
-			// TODO et pour un serveur de collecte ?
+			// TODO et pour un serveur de collecte ? appeller RemoteCollector.collectCurrentRequests() avec un bouton
 			final Map.Entry<JavaInformations, List<CounterRequestContext>> firstEntry = currentRequests
 					.entrySet().iterator().next();
 			final JavaInformations javaInformations = firstEntry.getKey();
