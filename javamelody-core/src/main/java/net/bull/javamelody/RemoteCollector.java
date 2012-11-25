@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
@@ -290,6 +291,18 @@ class RemoteCollector {
 			}
 		}
 		return mbeansByTitle;
+	}
+
+	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {
+		// récupération à la demande des requêtes en cours
+		final Map<JavaInformations, List<CounterRequestContext>> requests = new LinkedHashMap<JavaInformations, List<CounterRequestContext>>();
+		for (final URL url : urls) {
+			final URL currentRequestsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ CURRENT_REQUESTS_PART);
+			final Map<JavaInformations, List<CounterRequestContext>> result = collectForUrl(currentRequestsUrl);
+			requests.putAll(result);
+		}
+		return requests;
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists() {

@@ -218,6 +218,11 @@ class CollectorServer {
 		return getRemoteCollectorByApplication(application).collectMBeans();
 	}
 
+	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests(String application)
+			throws IOException {
+		return getRemoteCollectorByApplication(application).collectCurrentRequests();
+	}
+
 	List<List<ThreadInformations>> getThreadInformationsLists(String application) {
 		return getRemoteCollectorByApplication(application).getThreadInformationsLists();
 	}
