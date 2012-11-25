@@ -54,8 +54,12 @@ class MainButtonsPanel extends MelodyPanel {
 			"systemmonitor.png", 16, 16);
 	private static final long serialVersionUID = 1L;
 
-	MainButtonsPanel(RemoteCollector remoteCollector, Range selectedRange, final URL monitoringUrl) {
+	private final boolean collectorServer;
+
+	MainButtonsPanel(RemoteCollector remoteCollector, Range selectedRange, final URL monitoringUrl,
+			boolean collectorServer) {
 		super(remoteCollector, new BorderLayout());
+		this.collectorServer = collectorServer;
 		setOpaque(true);
 		setBackground(BACKGROUND);
 
@@ -194,7 +198,6 @@ class MainButtonsPanel extends MelodyPanel {
 
 	void actionPdf() {
 		try {
-			final boolean collectorServer = false;
 			final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
 			final File tempFile = createTempFileForPdf();
 			final Collector collector = getCollector();
@@ -214,17 +217,18 @@ class MainButtonsPanel extends MelodyPanel {
 					// mais les counters contiennent les bonnes données pour la période TOUT
 					// et non pas celle de la variable "range"
 					pdfReport.setCounterRange(Period.TOUT.getRange());
-					// TODO et pour un serveur de collecte ?
-					final List<CounterRequestContext> currentRequests = new ArrayList<>();
-					for (final List<CounterRequestContext> requests : getRemoteCollector()
-							.getCurrentRequests().values()) {
-						currentRequests.addAll(requests);
-					}
-					Collections.sort(currentRequests, Collections
-							.reverseOrder(new CounterRequestContextComparator(System
-									.currentTimeMillis())));
-					pdfReport.setCurrentRequests(currentRequests);
 					pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
+					if (!collectorServer) {
+						final List<CounterRequestContext> currentRequests = new ArrayList<>();
+						for (final List<CounterRequestContext> requests : getRemoteCollector()
+								.getCurrentRequests().values()) {
+							currentRequests.addAll(requests);
+						}
+						Collections.sort(currentRequests, Collections
+								.reverseOrder(new CounterRequestContextComparator(System
+										.currentTimeMillis())));
+						pdfReport.setCurrentRequests(currentRequests);
+					}
 					pdfReport.toPdf();
 				} finally {
 					pdfReport.close();

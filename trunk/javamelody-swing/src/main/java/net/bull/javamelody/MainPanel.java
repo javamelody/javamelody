@@ -53,9 +53,12 @@ class MainPanel extends MelodyPanel {
 	private final List<URL> initialURLs;
 	private final JScrollPane scrollPane;
 	private Range selectedRange;
+	private final boolean collectorServer;
 
-	MainPanel(RemoteCollector remoteCollector, Range selectedRange) throws IOException {
+	MainPanel(RemoteCollector remoteCollector, Range selectedRange, boolean collectorServer)
+			throws IOException {
 		super(remoteCollector);
+		this.collectorServer = collectorServer;
 		// initialURLs avant setSelectedRange
 		this.initialURLs = remoteCollector.getURLs();
 		final String collectorUrl = initialURLs.get(0).toExternalForm();
@@ -73,8 +76,9 @@ class MainPanel extends MelodyPanel {
 
 		final JPanel mainTabPanel = new JPanel(new BorderLayout());
 		mainTabPanel.setOpaque(false);
-		mainTabPanel.add(new MainButtonsPanel(remoteCollector, getSelectedRange(), monitoringUrl),
-				BorderLayout.NORTH);
+		final MainButtonsPanel mainButtonsPanel = new MainButtonsPanel(remoteCollector,
+				getSelectedRange(), monitoringUrl, collectorServer);
+		mainTabPanel.add(mainButtonsPanel, BorderLayout.NORTH);
 		mainTabPanel.add(scrollPane, BorderLayout.CENTER);
 
 		tabbedPane.addTab(I18N.getString("Tableau_de_bord"), mainTabPanel);
@@ -87,7 +91,7 @@ class MainPanel extends MelodyPanel {
 	private void refreshMainTab() {
 		final int position = scrollPane.getVerticalScrollBar().getValue();
 		final ScrollingPanel scrollingPanel = new ScrollingPanel(getRemoteCollector(),
-				getSelectedRange(), monitoringUrl);
+				getSelectedRange(), monitoringUrl, collectorServer);
 		final TabbedPane finalTabbedPane = tabbedPane;
 		final JScrollPane finalScrollPane = scrollPane;
 		// le clique droit sur le panel principal fonctionne comme sur les autres panels du TabbedPane
