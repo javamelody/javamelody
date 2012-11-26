@@ -97,7 +97,11 @@ class MainButtonsPanel extends MelodyPanel {
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				actionPdf();
+				try {
+					actionPdf();
+				} catch (final Exception ex) {
+					showException(ex);
+				}
 			}
 		});
 
@@ -196,47 +200,43 @@ class MainButtonsPanel extends MelodyPanel {
 		MainPanel.getParentMainPanelFromChild(this).changeRange(newRange);
 	}
 
-	void actionPdf() {
-		try {
-			final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
-			final File tempFile = createTempFileForPdf();
-			final Collector collector = getCollector();
-			final List<JavaInformations> javaInformationsList = getJavaInformationsList();
-			final RemoteCollector remoteCollector = getRemoteCollector();
-			final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
-					PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
-			final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
-					PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
-			final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
-					PdfReport.LARGE_GRAPH_WIDTH, PdfReport.LARGE_GRAPH_HEIGHT);
-			try (final OutputStream output = createFileOutputStream(tempFile)) {
-				final PdfReport pdfReport = new PdfReport(collector, collectorServer,
-						javaInformationsList, range, output);
-				try {
-					// PdfReport utilise collector.getRangeCountersToBeDisplayed(range),
-					// mais les counters contiennent les bonnes données pour la période TOUT
-					// et non pas celle de la variable "range"
-					pdfReport.setCounterRange(Period.TOUT.getRange());
-					pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
-					if (!collectorServer) {
-						final List<CounterRequestContext> currentRequests = new ArrayList<>();
-						for (final List<CounterRequestContext> requests : getRemoteCollector()
-								.getCurrentRequests().values()) {
-							currentRequests.addAll(requests);
-						}
-						Collections.sort(currentRequests, Collections
-								.reverseOrder(new CounterRequestContextComparator(System
-										.currentTimeMillis())));
-						pdfReport.setCurrentRequests(currentRequests);
+	void actionPdf() throws IOException {
+		final Range range = MainPanel.getParentMainPanelFromChild(this).getSelectedRange();
+		final File tempFile = createTempFileForPdf();
+		final Collector collector = getCollector();
+		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
+		final RemoteCollector remoteCollector = getRemoteCollector();
+		final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
+				PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
+		final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
+				PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
+		final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
+				PdfReport.LARGE_GRAPH_WIDTH, PdfReport.LARGE_GRAPH_HEIGHT);
+		try (final OutputStream output = createFileOutputStream(tempFile)) {
+			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
+					javaInformationsList, range, output);
+			try {
+				// PdfReport utilise collector.getRangeCountersToBeDisplayed(range),
+				// mais les counters contiennent les bonnes données pour la période TOUT
+				// et non pas celle de la variable "range"
+				pdfReport.setCounterRange(Period.TOUT.getRange());
+				pdfReport.preInitGraphs(smallGraphs, smallOtherGraphs, largeGraphs);
+				if (!collectorServer) {
+					final List<CounterRequestContext> currentRequests = new ArrayList<>();
+					for (final List<CounterRequestContext> requests : getRemoteCollector()
+							.getCurrentRequests().values()) {
+						currentRequests.addAll(requests);
 					}
-					pdfReport.toPdf();
-				} finally {
-					pdfReport.close();
+					Collections.sort(currentRequests, Collections
+							.reverseOrder(new CounterRequestContextComparator(System
+									.currentTimeMillis())));
+					pdfReport.setCurrentRequests(currentRequests);
 				}
+				pdfReport.toPdf();
+			} finally {
+				pdfReport.close();
 			}
-			Desktop.getDesktop().open(tempFile);
-		} catch (final Exception ex) {
-			showException(ex);
 		}
+		Desktop.getDesktop().open(tempFile);
 	}
 }
