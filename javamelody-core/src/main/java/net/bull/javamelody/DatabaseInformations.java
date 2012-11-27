@@ -46,7 +46,7 @@ class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
 	static enum Database {
-		POSTGRESQL, MYSQL, MYSQL4, ORACLE, DB2, H2, HSQLDB;
+		POSTGRESQL, MYSQL, MYSQL4, ORACLE, DB2, H2, HSQLDB, SQLSERVER;
 
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
@@ -89,6 +89,9 @@ class DatabaseInformations implements Serializable {
 			case HSQLDB:
 				tmp = Arrays.asList("system_sessions", "system_cacheinfo", "system_properties",
 						"system_schemas");
+				break;
+			case SQLSERVER:
+				tmp = Arrays.asList("version", "connections");
 				break;
 			default:
 				throw new IllegalStateException();
