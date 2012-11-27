@@ -730,6 +730,9 @@ class HtmlCoreReport {
 		write("<a href='?resource=#help_url#' target='_blank'");
 		write(" title=\"#Afficher_aide_en_ligne#\"><img src='?resource=action_help.png' alt='#Aide_en_ligne#'/> #Aide_en_ligne#</a>");
 		writeln(separator);
+		write("<a href='?part=jnlp'");
+		write(" title=\"#RDA#\"><img src='?resource=systemmonitor.png' width='16' height='16' alt='#RDA#'/> #Desktop#</a>");
+		writeln(separator);
 		writeln("#Choix_periode# :&nbsp;");
 		// On affiche des liens vers les périodes.
 		// Rq : il n'y a pas de période ni de graph sur la dernière heure puisque
