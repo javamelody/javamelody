@@ -19,7 +19,7 @@
     * Shortcuts, such as F5
     * Started in one-click with the "Desktop" link at the top of the web UI. The required libraries are downloaded automatically on the first launch.
     * Uses JavaWebStart and requires [http://java.com JRE 1.7] on the client
-    * This new UI may be an alternative for advanced users or for exports
+    * This new UI may be an alternative to the web UI for advanced users or for exports
 
 === 1.41.0 ===
 
