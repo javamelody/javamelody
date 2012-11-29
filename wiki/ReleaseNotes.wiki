@@ -10,7 +10,7 @@
   * added: PDF report for the JNDI tree. [http://demo.javamelody.cloudbees.net/monitoring?part=jndi&path=comp&format=pdf Example] in the demo.
   * added: plugin to monitor *Liferay v6.1* or later. Documentation is [UserGuide#Liferay_Plugin here]
 
-  * added: New alternative UI for the monitoring reports with a *Rich Desktop Application*. Highlights :
+  * added: New alternative User Interface for the monitoring reports with a *Rich Desktop Application*. Highlights :
     * All reports and data like in the web UI
     * Exports to PDF, XML and JSON formats, even if the monitored application does not have the dependencies to do the same in the web UI
     * Tabs to view different reports
