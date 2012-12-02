@@ -1,0 +1,1603 @@
+
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:         26077        3279704  <constMethodKlass>
+   2:         28233        2700272  [C
+   3:         26077        2087144  <methodKlass>
+   4:         43836        1974112  <symbolKlass>
+   5:          2619        1519648  <constantPoolKlass>
+   6:          2619        1105152  <instanceKlassKlass>
+   7:          2027         789664  <constantPoolCacheKlass>
+   8:         27908         669792  java.lang.String
+   9:          3193         648904  [B
+  10:           445         532208  [F
+  11:         16718         401232  java.util.HashMap$Entry
+  12:          3653         336616  [I
+  13:          2915         279840  java.lang.Class
+  14:          3125         263584  [Ljava.util.HashMap$Entry;
+  15:          2190         262800  java.net.SocksSocketImpl
+  16:          4199         256680  [S
+  17:          3440         216408  [Ljava.lang.Object;
+  18:          4126         183888  [[I
+  19:          3769         173776  [Ljava.lang.String;
+  20:          1665         119880  java.lang.reflect.Field
+  21:          2917         116680  java.util.HashMap
+  22:          4587         110088  java.util.Hashtable$Entry
+  23:          4490         107760  java.util.concurrent.locks.ReentrantLock$NonfairSync
+  24:          3168         101376  java.util.concurrent.ConcurrentHashMap$Segment
+  25:           296          94720  <objArrayKlassKlass>
+  26:           931          74480  java.lang.reflect.Method
+  27:          7888          63104  java.lang.Object
+  28:           336          56688  [Ljava.util.Hashtable$Entry;
+  29:          2187          52488  java.net.Socket
+  30:          3185          52456  [Ljava.util.concurrent.ConcurrentHashMap$HashEntry;
+  31:          1511          48352  java.util.TreeMap$Entry
+  32:          2810          44960  com.thoughtworks.xstream.io.path.Path
+  33:          1273          40736  java.util.LinkedHashMap$Entry
+  34:           589          37696  java.lang.reflect.Constructor
+  35:           864          34560  com.thoughtworks.xstream.core.util.ConcurrentWeakHashMap$Segment
+  36:          1034          33088  java.lang.ref.Finalizer
+  37:          1340          32160  java.util.ArrayList
+  38:           707          28280  hudson.maven.ExecutedMojo
+  39:          1721          27536  java.util.jar.Attributes$Name
+  40:           853          27296  java.lang.ref.SoftReference
+  41:           478          26768  java.net.URL
+  42:          1562          24992  java.lang.Integer
+  43:          1041          24984  com.thoughtworks.xstream.converters.reflection.FieldKey
+  44:          1469          23504  java.util.jar.Attributes
+  45:          1287          23320  [Ljava.lang.Class;
+  46:           959          23016  java.lang.ref.ReferenceQueue
+  47:          1429          22864  java.util.HashMap$EntrySet
+  48:           471          22608  java.util.TreeMap
+  49:           520          20800  hudson.plugins.violations.TypeConfig
+  50:           826          19824  java.lang.ref.WeakReference
+  51:           116          15952  [Z
+  52:           874          15864  [Lcom.thoughtworks.xstream.core.util.ConcurrentWeakHashMap$HashEntry;
+  53:           198          15840  [Ljava.util.concurrent.ConcurrentHashMap$Segment;
+  54:           285          13680  hudson.tasks.junit.CaseResult
+  55:           414          13248  com.thoughtworks.xstream.core.util.ConcurrentWeakHashMap$WeakKeyReference
+  56:           526          12624  com.thoughtworks.xstream.core.util.PrioritizedList$PrioritizedItem
+  57:           520          12480  sun.reflect.generics.tree.SimpleClassTypeSignature
+  58:           306          12240  java.util.Hashtable
+  59:           297          11880  hudson.maven.reporters.MavenArtifact
+  60:           296          11840  hudson.maven.reporters.MavenArtifactRecord
+  61:           164          11808  java.util.jar.JarFile$JarFileEntry
+  62:           483          11592  java.util.Vector
+  63:           276          11040  java.text.RuleBasedCollator
+  64:           436          10464  java.util.concurrent.ConcurrentHashMap$HashEntry
+  65:           414           9936  com.thoughtworks.xstream.core.util.ConcurrentWeakHashMap$HashEntry
+  66:           241           9640  java.util.WeakHashMap$Entry
+  67:            50           9600  com.sun.org.apache.xerces.internal.impl.dv.xs.XSSimpleTypeDecl
+  68:           297           9504  java.util.LinkedHashMap$ValueIterator
+  69:           196           9408  java.lang.Package
+  70:           294           9408  com.sun.org.apache.xerces.internal.impl.xpath.regex.RangeToken
+  71:           378           9072  java.io.FileDescriptor
+  72:           550           8800  [Lhudson.model.Computer;
+  73:           264           8448  java.net.SocketTimeoutException
+  74:           349           8376  java.util.LinkedList$Entry
+  75:           348           8352  java.util.AbstractList$Itr
+  76:           520           8328  [Lsun.reflect.generics.tree.TypeArgument;
+  77:           335           8040  hudson.tasks.Fingerprinter$FingerprintAction
+  78:            83           7920  [Ljava.util.WeakHashMap$Entry;
+  79:           198           7920  java.util.concurrent.ConcurrentHashMap
+  80:           164           7872  java.util.jar.JarFile
+  81:           325           7800  org.tmatesoft.svn.core.internal.util.SVNHashMap$TableEntry
+  82:           961           7688  java.lang.ref.ReferenceQueue$Lock
+  83:           310           7440  com.sun.org.apache.xerces.internal.xni.QName
+  84:           458           7328  java.util.concurrent.locks.ReentrantLock
+  85:           446           7136  java.util.concurrent.CopyOnWriteArrayList
+  86:           170           6800  sun.misc.URLClassPath$JarLoader
+  87:           277           6648  java.net.InetAddress
+  88:            92           5888  java.util.logging.Logger
+  89:           176           5632  java.util.zip.Inflater
+  90:           117           5616  com.thoughtworks.xstream.core.util.OrderRetainingMap
+  91:           351           5616  java.lang.Long
+  92:           224           5376  org.tmatesoft.svn.core.SVNErrorCode
+  93:            93           5312  [Ljava.lang.reflect.Method;
+  94:           132           5280  java.util.concurrent.ConcurrentHashMap$ValueIterator
+  95:            94           5264  sun.reflect.DelegatingClassLoader
+  96:           192           4608  sun.reflect.NativeConstructorAccessorImpl
+  97:            33           4488  java.text.DecimalFormat
+  98:           275           4400  hudson.model.Hudson$3
+  99:            54           4320  [Lcom.thoughtworks.xstream.core.util.ConcurrentWeakHashMap$Segment;
+ 100:           267           4272  java.util.HashSet
+ 101:           133           4256  java.util.TreeMap$KeyIterator
+ 102:           265           4240  java.lang.Short
+ 103:            44           4224  hudson.maven.MavenModuleSetBuild
+ 104:            81           3888  java.util.WeakHashMap
+ 105:           236           3776  com.thoughtworks.xstream.converters.SingleValueConverterWrapper
+ 106:            94           3760  java.math.BigInteger
+ 107:            39           3744  hudson.maven.MavenBuild
+ 108:           114           3648  java.util.regex.Pattern$Curly
+ 109:            31           3472  java.util.GregorianCalendar
+ 110:           210           3360  java.util.TreeSet
+ 111:            81           3240  org.apache.commons.beanutils.converters.ArrayConverter
+ 112:           196           3232  [Ljava.lang.reflect.Constructor;
+ 113:           202           3232  sun.reflect.DelegatingConstructorAccessorImpl
+ 114:            66           3168  java.util.LinkedHashMap
+ 115:           130           3120  java.util.logging.LogManager$LogNode
+ 116:           130           3120  java.util.regex.Pattern$GroupTail
+ 117:            54           3024  java.security.Provider$Service
+ 118:            30           2992  [J
+ 119:            31           2976  sun.util.calendar.Gregorian$Date
+ 120:           123           2952  sun.security.util.ObjectIdentifier
+ 121:            46           2944  java.text.DecimalFormatSymbols
+ 122:           121           2904  java.util.LinkedList
+ 123:           119           2856  java.security.Provider$ServiceKey
+ 124:             2           2832  [Ljava.io.ObjectInputStream$HandleTable$HandleList;
+ 125:           117           2808  com.thoughtworks.xstream.core.util.OrderRetainingMap$ArraySet
+ 126:           107           2792  [[C
+ 127:           169           2704  sun.reflect.generics.tree.ClassTypeSignature
+ 128:           110           2640  hudson.scm.SubversionChangeLogSet$Path
+ 129:           157           2512  org.apache.commons.beanutils.converters.ConverterFacade
+ 130:            39           2496  java.util.regex.Pattern
+ 131:           155           2480  java.lang.Float
+ 132:            30           2400  [Ljava.lang.ThreadLocal$ThreadLocalMap$Entry;
+ 133:            50           2400  java.util.ResourceBundle$CacheKey
+ 134:            17           2384  [Lorg.tmatesoft.svn.core.internal.util.SVNHashMap$TableEntry;
+ 135:            98           2352  com.sun.org.apache.xerces.internal.util.SymbolHash$Entry
+ 136:           145           2320  java.util.TreeMap$KeySet
+ 137:            96           2304  com.sun.org.apache.xerces.internal.util.XMLStringBuffer
+ 138:           144           2304  com.thoughtworks.xstream.converters.reflection.FieldDictionary$Entry
+ 139:            71           2272  sun.reflect.generics.repository.ClassRepository
+ 140:            54           2160  com.thoughtworks.xstream.core.util.ConcurrentWeakHashMap
+ 141:           133           2128  java.util.concurrent.CopyOnWriteArrayList$COWIterator
+ 142:             3           2112  [Lcom.sun.org.apache.xerces.internal.util.SymbolTable$Entry;
+ 143:            88           2112  com.sun.org.apache.xerces.internal.xni.XMLString
+ 144:            65           2080  hudson.plugins.violations.ViolationsConfig
+ 145:            86           2064  java.util.Date
+ 146:           127           2032  java.util.regex.Pattern$GroupHead
+ 147:            63           2024  [Ljava.lang.reflect.Field;
+ 148:           120           1920  hudson.plugins.violations.TypeSummary
+ 149:            20           1920  [Lcom.sun.org.apache.xerces.internal.xni.QName;
+ 150:            40           1920  java.beans.MethodDescriptor
+ 151:            78           1872  sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+ 152:            29           1856  java.text.SimpleDateFormat
+ 153:            57           1824  java.security.CodeSource
+ 154:            17           1768  java.lang.Thread
+ 155:            20           1760  sun.font.CompositeFont
+ 156:            10           1760  winstone.WinstoneRequest
+ 157:            54           1728  java.io.FilePermission
+ 158:            54           1728  java.security.ProtectionDomain
+ 159:            72           1728  net.java.sezpoz.impl.SerAnnotatedElement
+ 160:           108           1728  java.lang.StringBuffer
+ 161:            71           1704  sun.reflect.generics.tree.ClassSignature
+ 162:            34           1632  sun.util.calendar.ZoneInfo
+ 163:            67           1608  java.io.ExpiringCache$Entry
+ 164:            50           1600  java.util.ResourceBundle$LoaderReference
+ 165:           198           1584  hudson.model.ComputerSet
+ 166:             3           1584  [Ljava.util.TimerTask;
+ 167:            65           1560  com.sun.org.apache.xerces.internal.util.SymbolTable$Entry
+ 168:            94           1504  <compiledICHolderKlass>
+ 169:            37           1480  java.util.ResourceBundle$BundleReference
+ 170:            46           1472  java.lang.ThreadLocal$ThreadLocalMap$Entry
+ 171:            45           1440  com.thoughtworks.xstream.core.util.Pool
+ 172:            22           1408  java.beans.PropertyDescriptor
+ 173:            29           1392  java.text.DateFormatSymbols
+ 174:            57           1368  java.util.Stack
+ 175:            33           1320  java.text.DigitList
+ 176:            55           1320  java.security.Permissions
+ 177:            82           1312  sun.reflect.BootstrapConstructorAccessorImpl
+ 178:            32           1280  com.sun.org.apache.xerces.internal.util.XMLAttributesImpl$Attribute
+ 179:            52           1248  sun.security.util.DerInputBuffer
+ 180:            78           1248  [Ljava.lang.reflect.Type;
+ 181:            52           1248  sun.security.util.DerValue
+ 182:            51           1224  sun.security.x509.RDN
+ 183:            75           1200  java.util.regex.Pattern$Single
+ 184:            30           1200  hudson.tasks.junit.SuiteResult
+ 185:            21           1192  [Lcom.sun.org.apache.xerces.internal.util.SymbolHash$Entry;
+ 186:            74           1184  java.util.regex.Pattern$Ctype
+ 187:            37           1184  hudson.scm.SubversionChangeLogSet$LogEntry
+ 188:            71           1184  [Lsun.reflect.generics.tree.ClassTypeSignature;
+ 189:            37           1184  java.io.ObjectStreamField
+ 190:            49           1176  java.util.Collections$UnmodifiableMap
+ 191:            16           1152  java.util.logging.LogRecord
+ 192:            48           1152  com.sun.org.apache.xerces.internal.impl.xs.traversers.OneAttr
+ 193:            72           1152  java.io.FileInputStream
+ 194:            71           1136  sun.reflect.generics.scope.ClassScope
+ 195:            71           1136  sun.reflect.generics.factory.CoreReflectionFactory
+ 196:             7           1136  [Ljava.lang.Long;
+ 197:            71           1136  [Lsun.reflect.generics.tree.FormalTypeParameter;
+ 198:             7           1136  [Ljava.lang.Short;
+ 199:             7           1136  [Ljava.lang.Integer;
+ 200:            41           1128  [Lcom.sun.org.apache.xerces.internal.impl.xs.traversers.OneAttr;
+ 201:            35           1120  sun.reflect.UnsafeQualifiedStaticObjectFieldAccessorImpl
+ 202:            10           1120  hudson.node_monitors.AbstractNodeMonitorDescriptor$Record
+ 203:            20           1120  [Lsun.font.PhysicalFont;
+ 204:            45           1112  [Ljava.util.regex.Pattern$Node;
+ 205:            45           1080  java.util.regex.Pattern$Branch
+ 206:            45           1080  sun.java2d.loops.SurfaceType
+ 207:            67           1072  java.io.File
+ 208:            65           1040  java.lang.StringBuilder
+ 209:             1           1040  [Lsun.text.normalizer.UnicodeSet;
+ 210:             1           1040  [Ljava.util.logging.LogRecord;
+ 211:             3           1032  com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl
+ 212:            32           1024  hudson.plugins.violations.ViolationsReport
+ 213:            32           1024  hudson.plugins.violations.ViolationsBuildAction
+ 214:            42           1008  hudson.util.CopyOnWriteMap$Tree
+ 215:            63           1008  java.util.Collections$UnmodifiableRandomAccessList
+ 216:            13            936  java.net.URLClassLoader
+ 217:            39            936  hudson.scm.SubversionSCM$SvnInfo
+ 218:            39            936  hudson.scm.SubversionChangeLogSet
+ 219:            39            936  hudson.scm.SubversionTagAction
+ 220:            39            936  hudson.maven.reporters.MavenAggregatedArtifactRecord
+ 221:            28            896  java.util.Locale
+ 222:            36            864  com.sun.org.apache.xerces.internal.impl.xs.traversers.SmallContainer
+ 223:            54            864  java.io.FilePermissionCollection
+ 224:            54            864  [Ljava.security.Principal;
+ 225:            35            840  com.sun.org.apache.xerces.internal.util.AugmentationsImpl$SmallContainer
+ 226:            52            832  sun.security.util.DerInputStream
+ 227:            26            832  java.util.Collections$SynchronizedMap
+ 228:            52            832  java.security.Provider$UString
+ 229:            51            824  [Lsun.reflect.generics.tree.FieldTypeSignature;
+ 230:            51            816  sun.security.x509.AVA
+ 231:            51            816  [Lsun.security.x509.AVA;
+ 232:             9            792  hudson.util.XStream2
+ 233:            14            784  [Ljava.text.Format;
+ 234:            32            768  hudson.plugins.violations.hudson.maven.ViolationsMavenAggregatedBuildAction
+ 235:            32            768  sun.awt.SunHints$Value
+ 236:            36            760  [Ljava.security.cert.Certificate;
+ 237:            31            744  org.jvnet.localizer.Localizable
+ 238:            23            736  sun.font.FontManager$FontRegistrationInfo
+ 239:            45            720  com.thoughtworks.xstream.core.util.ThreadSafeSimpleDateFormat$1
+ 240:            30            720  java.security.Provider$EngineDescription
+ 241:            45            720  com.thoughtworks.xstream.core.util.ThreadSafeSimpleDateFormat
+ 242:            45            720  com.thoughtworks.xstream.converters.reflection.SerializationMethodInvoker
+ 243:            30            720  java.lang.ThreadLocal$ThreadLocalMap
+ 244:            45            720  java.util.regex.Pattern$BranchConn
+ 245:            22            704  java.util.TreeMap$ValueIterator
+ 246:            11            704  hudson.ClassicPluginStrategy$DependencyClassLoader
+ 247:            22            704  hudson.security.Permission
+ 248:            44            704  hudson.model.CauseAction
+ 249:            43            688  org.tmatesoft.svn.core.internal.io.dav.DAVElement
+ 250:            42            672  java.util.regex.Pattern$BitClass
+ 251:             2            672  com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl
+ 252:            28            672  java.security.AccessControlContext
+ 253:            14            672  java.nio.HeapByteBuffer
+ 254:             3            672  org.xmlpull.mxp1.MXParser
+ 255:            41            656  com.sun.org.apache.xerces.internal.impl.xs.traversers.OneElement
+ 256:            41            656  java.util.regex.Pattern$Slice
+ 257:            16            640  com.sun.org.apache.xerces.internal.impl.dv.xs.DecimalDV$XDecimal
+ 258:            10            640  winstone.WinstoneResponse
+ 259:            39            624  java.util.regex.Pattern$CharPropertyNames$1
+ 260:            38            608  org.apache.commons.logging.impl.Jdk14Logger
+ 261:            19            608  java.net.SocketInputStream
+ 262:            25            600  java.util.regex.Pattern$2
+ 263:            25            600  hudson.maven.ModuleDependency
+ 264:             3            576  com.sun.org.apache.xerces.internal.impl.XMLDTDScannerImpl
+ 265:            12            576  java.util.Properties
+ 266:             3            576  com.sun.org.apache.xerces.internal.parsers.XIncludeAwareParserConfiguration
+ 267:             6            576  java.io.ObjectStreamClass
+ 268:            24            576  sun.font.EAttribute
+ 269:            35            560  hudson.model.Cause$UserCause
+ 270:            10            560  sun.security.provider.MD5
+ 271:            14            560  java.awt.Color
+ 272:            35            560  com.sun.org.apache.xerces.internal.util.AugmentationsImpl
+ 273:            17            544  sun.misc.URLClassPath
+ 274:            22            528  sun.security.x509.OIDMap$OIDInfo
+ 275:            33            528  hudson.plugins.violations.hudson.maven.ViolationsMavenReporter
+ 276:            11            528  sun.security.x509.X500Name
+ 277:            11            528  java.util.jar.JarVerifier
+ 278:            11            528  hudson.PluginWrapper
+ 279:             3            528  com.sun.org.apache.xerces.internal.impl.dtd.XMLNSDTDValidator
+ 280:            21            504  sun.security.x509.AVAKeyword
+ 281:            21            504  com.sun.org.apache.xerces.internal.util.SymbolHash
+ 282:             9            504  com.thoughtworks.xstream.core.util.ClassLoaderReference
+ 283:             9            504  com.thoughtworks.xstream.mapper.AnnotationMapper
+ 284:            31            496  java.util.regex.Pattern$Start
+ 285:            31            496  [Ljava.io.Serializable;
+ 286:            20            480  java.lang.StackTraceElement
+ 287:            15            480  org.tmatesoft.svn.core.internal.util.SVNHashMap
+ 288:            10            472  [Ljava.math.BigInteger;
+ 289:            29            464  java.util.HashMap$Values
+ 290:            29            464  hudson.plugins.dependencyanalyzer.DependencyAnalyzerPublisherAction
+ 291:            19            456  java.util.regex.Pattern$6
+ 292:            19            456  sun.reflect.NativeMethodAccessorImpl
+ 293:            19            456  java.text.FieldPosition
+ 294:             7            448  sun.net.www.protocol.jar.URLJarFile
+ 295:             7            448  sun.nio.cs.MS1252$Encoder
+ 296:            14            448  java.text.MessageFormat
+ 297:            11            440  java.util.Hashtable$Enumerator
+ 298:            27            432  com.thoughtworks.xstream.converters.reflection.FieldDictionary
+ 299:            18            432  com.thoughtworks.xstream.converters.reflection.SerializableConverter
+ 300:            18            432  [Ljava.security.ProtectionDomain;
+ 301:            18            432  com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider
+ 302:            27            432  java.util.jar.Manifest
+ 303:            27            432  java.lang.Byte
+ 304:             9            432  [Lsun.awt.SunHints$Value;
+ 305:             1            424  [[[C
+ 306:            13            416  [Ljava.lang.StringBuffer;
+ 307:            13            416  sun.reflect.generics.reflectiveObjects.WildcardTypeImpl
+ 308:            13            416  java.math.BigDecimal
+ 309:            13            416  java.security.MessageDigest$Delegate
+ 310:             9            408  [D
+ 311:            10            400  com.sun.org.apache.xerces.internal.impl.dtd.XMLSimpleType
+ 312:            11            400  [[S
+ 313:            25            400  java.util.regex.Pattern$Dot
+ 314:            10            400  org.jvnet.localizer.ResourceBundleHolder$ResourceBundleImpl
+ 315:            10            400  hudson.tasks.junit.TestResult
+ 316:             8            384  org.apache.commons.beanutils.WeakFastHashMap
+ 317:            16            384  net.sf.ezmorph.object.NumberMorpher
+ 318:            12            384  net.sf.ezmorph.array.ObjectArrayMorpher
+ 319:            12            384  org.apache.commons.beanutils.converters.BooleanConverter
+ 320:            12            384  com.sun.org.apache.xerces.internal.util.XMLResourceIdentifierImpl
+ 321:            16            384  sun.security.x509.AlgorithmId
+ 322:            12            384  org.apache.commons.beanutils.converters.FloatConverter
+ 323:            12            384  org.apache.commons.beanutils.converters.ByteConverter
+ 324:             4            384  com.sun.org.apache.xerces.internal.impl.dv.xs.AbstractDateTimeDV$DateTimeData
+ 325:            12            384  org.apache.commons.beanutils.converters.ShortConverter
+ 326:            12            384  org.apache.commons.beanutils.converters.DoubleConverter
+ 327:            12            384  org.apache.commons.beanutils.converters.LongConverter
+ 328:            12            384  org.apache.commons.beanutils.converters.IntegerConverter
+ 329:            16            384  com.sun.org.apache.xerces.internal.impl.xpath.regex.Op$RangeOp
+ 330:             5            376  [Ljava.beans.MethodDescriptor;
+ 331:            23            368  java.awt.font.TextAttribute
+ 332:            23            368  hudson.util.Iterators$3
+ 333:            15            360  [Ljava.io.ObjectStreamField;
+ 334:            15            360  hudson.model.TimeSeries
+ 335:             9            360  org.apache.commons.beanutils.converters.DateConverter
+ 336:            11            352  java.util.HashMap$KeyIterator
+ 337:            11            352  [Lsun.security.x509.RDN;
+ 338:            22            352  sun.reflect.DelegatingMethodAccessorImpl
+ 339:             3            336  com.sun.org.apache.xerces.internal.impl.XMLEntityManager
+ 340:            14            336  hudson.util.DescriptorList
+ 341:             6            336  com.thoughtworks.xstream.core.util.CompositeClassLoader
+ 342:             2            336  com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDValidator
+ 343:            14            336  com.sun.org.apache.xerces.internal.impl.xpath.regex.Op$ChildOp
+ 344:             3            336  [Lsun.font.EAttribute;
+ 345:            20            336  [Ljava.lang.Byte;
+ 346:             3            336  java.util.TimerThread
+ 347:            21            336  java.util.HashMap$KeySet
+ 348:            14            328  [Ljava.lang.Boolean;
+ 349:            20            320  sun.font.Font2DHandle
+ 350:            20            320  sun.reflect.generics.tree.Wildcard
+ 351:             8            320  com.sun.org.apache.xerces.internal.impl.dtd.XMLEntityDecl
+ 352:            10            320  sun.reflect.generics.reflectiveObjects.TypeVariableImpl
+ 353:            10            320  sun.misc.URLClassPath$1
+ 354:             8            320  sun.nio.cs.UTF_8$Decoder
+ 355:             5            320  sun.security.x509.X509CertImpl
+ 356:            39            312  hudson.scm.SubversionChangeLogParser
+ 357:            13            312  java.net.Inet4Address
+ 358:             4            288  java.util.concurrent.ThreadPoolExecutor
+ 359:             6            288  [Lcom.sun.org.apache.xerces.internal.impl.xs.util.SimpleLocator;
+ 360:             9            288  [Lcom.thoughtworks.xstream.core.util.ThreadSafeSimpleDateFormat;
+ 361:             2            288  hudson.model.Executor
+ 362:            18            288  com.thoughtworks.xstream.converters.extended.JavaClassConverter
+ 363:             3            288  com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser
+ 364:            12            288  com.thoughtworks.xstream.converters.basic.BooleanConverter
+ 365:             6            288  java.io.BufferedReader
+ 366:             9            288  com.thoughtworks.xstream.mapper.XStream11XmlFriendlyMapper
+ 367:            18            288  java.text.DateFormat$Field
+ 368:            18            288  com.thoughtworks.xstream.converters.reflection.SerializableConverter$UnserializableParentsReflectionProvider
+ 369:             3            288  com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDProcessor
+ 370:            12            288  hudson.model.BallColor
+ 371:             6            288  sun.nio.cs.StreamEncoder
+ 372:            12            288  org.apache.commons.beanutils.converters.CharacterConverter
+ 373:             9            288  java.lang.ClassNotFoundException
+ 374:             9            288  com.thoughtworks.xstream.mapper.AttributeMapper
+ 375:            12            288  com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer
+ 376:            12            288  [Ljava.util.Enumeration;
+ 377:             6            288  java.nio.HeapCharBuffer
+ 378:             9            288  sun.security.jca.ProviderConfig
+ 379:             7            280  java.util.PropertyResourceBundle
+ 380:             5            280  sun.security.x509.X509CertInfo
+ 381:             5            280  winstone.RequestHandlerThread
+ 382:            11            264  com.thoughtworks.xstream.core.util.PrioritizedList
+ 383:            16            256  java.util.Arrays$ArrayList
+ 384:             8            256  java.lang.ClassLoader$NativeLibrary
+ 385:            16            256  java.util.regex.Pattern$CharPropertyNames$4
+ 386:             4            256  [Lcom.sun.org.apache.xerces.internal.impl.xs.XSElementDecl;
+ 387:             8            256  sun.misc.ProxyGenerator$PrimitiveTypeInfo
+ 388:             8            256  [Lcom.sun.org.apache.xerces.internal.util.XMLAttributesImpl$Attribute;
+ 389:             5            248  [[Ljava.lang.String;
+ 390:            31            248  hudson.maven.reporters.MavenJavadocArchiver
+ 391:            31            248  hudson.maven.reporters.MavenSiteArchiver
+ 392:             5            240  com.sun.org.apache.xerces.internal.util.XMLAttributesIteratorImpl
+ 393:             5            240  [Ljava.lang.StackTraceElement;
+ 394:             5            240  sun.security.util.MemoryCache$SoftCacheEntry
+ 395:             6            240  org.apache.commons.beanutils.converters.SqlTimestampConverter
+ 396:             6            240  org.apache.commons.beanutils.converters.SqlTimeConverter
+ 397:             2            240  hudson.util.Digester2
+ 398:             5            240  java.util.zip.ZipFile$1
+ 399:             5            240  java.util.zip.ZipFile$ZipFileInputStream
+ 400:             2            240  com.sun.org.apache.xerces.internal.impl.xs.SchemaGrammar$BuiltinSchemaGrammar
+ 401:             3            240  sun.net.www.protocol.jar.URLJarFile$URLJarFileEntry
+ 402:             3            240  [Lcom.sun.org.apache.xerces.internal.impl.xs.XSComplexTypeDecl;
+ 403:            10            240  java.net.URLClassLoader$3
+ 404:             6            240  org.apache.commons.beanutils.converters.SqlDateConverter
+ 405:             9            216  java.util.regex.Pattern$Ques
+ 406:             9            216  hudson.util.RobustReflectionConverter
+ 407:             9            216  sun.reflect.annotation.AnnotationInvocationHandler
+ 408:             9            216  java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject
+ 409:            27            216  com.thoughtworks.xstream.converters.reflection.ImmutableFieldKeySorter
+ 410:             9            216  com.thoughtworks.xstream.mapper.PackageAliasingMapper
+ 411:             9            216  com.thoughtworks.xstream.converters.reflection.ReflectionConverter
+ 412:             9            216  com.thoughtworks.xstream.mapper.EnumMapper
+ 413:             9            216  java.util.logging.Level
+ 414:             9            216  com.thoughtworks.xstream.mapper.ClassAliasingMapper
+ 415:             9            216  com.thoughtworks.xstream.mapper.FieldAliasingMapper
+ 416:             9            216  com.thoughtworks.xstream.mapper.DefaultImplementationsMapper
+ 417:             9            216  com.thoughtworks.xstream.converters.extended.LookAndFeelConverter
+ 418:             9            216  com.thoughtworks.xstream.mapper.LocalConversionMapper
+ 419:             9            216  com.thoughtworks.xstream.mapper.SystemAttributeAliasingMapper
+ 420:             9            216  com.thoughtworks.xstream.mapper.AttributeAliasingMapper
+ 421:             9            216  com.thoughtworks.xstream.converters.extended.TextAttributeConverter
+ 422:             9            216  com.thoughtworks.xstream.core.JVM
+ 423:            13            216  [Ljava.io.File;
+ 424:            13            208  java.lang.ThreadLocal
+ 425:            13            208  java.util.regex.Pattern$CharProperty$1
+ 426:            13            208  com.thoughtworks.xstream.core.util.FastStack
+ 427:            13            208  com.sun.jna.Pointer
+ 428:             1            200  hudson.model.Hudson
+ 429:             5            200  com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$ElementStack2
+ 430:             5            200  com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDDescription
+ 431:             6            200  [[I
+ 432:             5            200  java.beans.BeanDescriptor
+ 433:             5            200  java.beans.GenericBeanInfo
+ 434:             5            200  hudson.node_monitors.AbstractNodeMonitorDescriptor$1
+ 435:             5            200  sun.font.FontFamily
+ 436:             5            200  com.sun.jna.Library$Handler
+ 437:             5            200  com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$ElementStack
+ 438:            12            192  java.util.Collections$UnmodifiableCollection$1
+ 439:             6            192  org.tmatesoft.svn.core.wc.SVNRevision
+ 440:            12            192  sun.misc.CompoundEnumeration
+ 441:            12            192  java.util.concurrent.atomic.AtomicInteger
+ 442:             2            192  sun.net.www.protocol.file.FileURLConnection
+ 443:             8            192  java.math.RoundingMode
+ 444:             6            192  hudson.DescriptorExtensionList
+ 445:             6            192  org.apache.commons.beanutils.converters.BigIntegerConverter
+ 446:            12            192  org.apache.commons.lang.time.FastDateFormat$CharacterLiteral
+ 447:             6            192  org.apache.commons.beanutils.converters.BigDecimalConverter
+ 448:             8            192  sun.nio.cs.Surrogate$Parser
+ 449:             8            192  org.apache.commons.digester.BeanPropertySetterRule
+ 450:             6            192  java.security.PrivilegedActionException
+ 451:             8            192  org.apache.commons.collections.ArrayStack
+ 452:             4            192  sun.nio.cs.UTF_8$Encoder
+ 453:             6            192  hudson.ExtensionList
+ 454:             8            192  com.thoughtworks.xstream.converters.collections.TreeMapConverter$PresortedMap$1
+ 455:            11            176  java.text.NumberFormat$Field
+ 456:            11            176  sun.misc.URLClassPath$FileLoader
+ 457:             2            176  sun.security.jgss.SunProvider
+ 458:            11            176  java.lang.Boolean
+ 459:             5            176  [Ljava.beans.PropertyDescriptor;
+ 460:            11            176  sun.util.resources.LocaleData$1
+ 461:             2            176  sun.security.provider.Sun
+ 462:            11            176  com.sun.org.apache.xerces.internal.impl.xpath.regex.Token$CharToken
+ 463:             1            176  winstone.WebAppConfiguration
+ 464:            11            176  com.sun.org.apache.xerces.internal.impl.xs.util.XInt
+ 465:             7            168  sun.util.LocaleServiceProviderPool
+ 466:             3            168  com.sun.org.apache.xerces.internal.impl.xs.XSElementDecl
+ 467:             2            168  [Ljava.text.DateFormat$Field;
+ 468:             7            168  hudson.security.PermissionGroup
+ 469:             7            168  sun.reflect.UnsafeLongFieldAccessorImpl
+ 470:             3            168  java.util.zip.ZipEntry
+ 471:             3            168  sun.security.provider.SHA
+ 472:             3            168  com.sun.org.apache.xerces.internal.impl.xs.XSComplexTypeDecl
+ 473:             2            160  sun.net.www.protocol.jar.JarURLConnection
+ 474:            10            160  sun.reflect.generics.tree.FormalTypeParameter
+ 475:             4            160  sun.security.rsa.RSAPublicKeyImpl
+ 476:             4            160  sun.nio.cs.US_ASCII$Decoder
+ 477:             5            160  com.sun.org.apache.xerces.internal.impl.xs.XSParticleDecl
+ 478:             5            160  com.sun.jna.NativeLibrary
+ 479:             4            160  com.sun.org.apache.xerces.internal.impl.xs.XSAttributeDecl
+ 480:             5            160  hudson.maven.reporters.SurefireReport
+ 481:            10            160  java.util.Formatter$Flags
+ 482:             5            160  com.sun.org.apache.xerces.internal.impl.dtd.XMLElementDecl
+ 483:             5            160  [[Lsun.awt.FontDescriptor;
+ 484:             4            160  sun.nio.cs.StreamDecoder
+ 485:            10            160  java.lang.Double
+ 486:            10            160  sun.misc.MetaIndex
+ 487:             3            160  [Ljava.lang.Thread;
+ 488:            20            160  com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl
+ 489:             2            160  [Ljava.util.Map;
+ 490:             4            160  java.io.BufferedWriter
+ 491:            10            160  [Ljava.lang.reflect.TypeVariable;
+ 492:            10            160  hudson.maven.reporters.SurefireArchiver
+ 493:            10            160  hudson.util.CopyOnWriteList
+ 494:             5            160  com.sun.org.apache.xerces.internal.impl.validation.ValidationState
+ 495:             4            160  com.sun.org.apache.xerces.internal.impl.xs.SchemaGrammar$BuiltinAttrDecl
+ 496:            10            160  java.util.LinkedHashSet
+ 497:             5            160  hudson.maven.reporters.SurefireAggregatedReport
+ 498:             7            152  [Ljava.math.BigDecimal;
+ 499:             9            144  com.thoughtworks.xstream.core.DefaultConverterLookup
+ 500:             9            144  hudson.util.CopyOnWriteList$ConverterImpl
+ 501:             6            144  java.net.InetAddress$CacheEntry
+ 502:             5            144  [Ljava.lang.annotation.ElementType;
+ 503:             6            144  java.lang.StringCoding$StringEncoder
+ 504:             6            144  org.apache.commons.beanutils.converters.StringConverter
+ 505:             9            144  com.thoughtworks.xstream.converters.collections.MapConverter
+ 506:             9            144  hudson.util.RobustCollectionConverter
+ 507:             9            144  com.thoughtworks.xstream.converters.collections.ArrayConverter
+ 508:             6            144  java.io.FileOutputStream
+ 509:             1            144  hudson.maven.MavenModuleSet
+ 510:             9            144  com.thoughtworks.xstream.converters.collections.PropertiesConverter
+ 511:             9            144  com.thoughtworks.xstream.converters.extended.JavaMethodConverter
+ 512:             6            144  org.apache.commons.beanutils.converters.ClassConverter
+ 513:             9            144  com.thoughtworks.xstream.mapper.OuterClassMapper
+ 514:             6            144  hudson.plugins.cobertura.targets.CoverageMetric
+ 515:             9            144  com.thoughtworks.xstream.mapper.ImplicitCollectionMapper
+ 516:             3            144  org.apache.commons.beanutils.ConvertUtilsBean
+ 517:             9            144  com.thoughtworks.xstream.converters.extended.SubjectConverter
+ 518:             9            144  com.thoughtworks.xstream.mapper.DynamicProxyMapper
+ 519:             9            144  java.net.URLClassLoader$1
+ 520:             6            144  java.io.OutputStreamWriter
+ 521:             9            144  hudson.util.CopyOnWriteMap$Tree$ConverterImpl
+ 522:             9            144  [Ljava.security.CodeSigner;
+ 523:             9            144  com.thoughtworks.xstream.converters.basic.DateConverter
+ 524:             9            144  com.thoughtworks.xstream.mapper.DefaultMapper
+ 525:             9            144  com.thoughtworks.xstream.converters.extended.DurationConverter
+ 526:             9            144  hudson.util.XStream2$AssociatedConverterImpl
+ 527:             9            144  com.thoughtworks.xstream.converters.reflection.SelfStreamingInstanceChecker
+ 528:             6            144  java.util.Collections$SynchronizedRandomAccessList
+ 529:             9            144  com.thoughtworks.xstream.mapper.CachingMapper
+ 530:             9            144  com.thoughtworks.xstream.converters.collections.CollectionConverter
+ 531:             2            144  winstone.FilterConfiguration
+ 532:             9            144  com.thoughtworks.xstream.converters.extended.ThrowableConverter
+ 533:             9            144  com.thoughtworks.xstream.mapper.ImmutableTypesMapper
+ 534:             6            144  java.lang.StringCoding$StringDecoder
+ 535:             9            144  com.thoughtworks.xstream.core.ReferenceByXPathMarshallingStrategy
+ 536:             9            144  com.thoughtworks.xstream.converters.extended.DynamicProxyConverter
+ 537:             9            144  com.thoughtworks.xstream.converters.basic.StringConverter
+ 538:             9            144  com.thoughtworks.xstream.converters.collections.TreeSetConverter
+ 539:             9            144  com.thoughtworks.xstream.converters.reflection.ExternalizableConverter
+ 540:             9            144  com.thoughtworks.xstream.converters.extended.RegexPatternConverter
+ 541:             9            144  java.util.concurrent.ConcurrentHashMap$KeySet
+ 542:             9            144  com.thoughtworks.xstream.converters.enums.EnumMapConverter
+ 543:             6            144  sun.reflect.UnsafeObjectFieldAccessorImpl
+ 544:             9            144  sun.awt.SunHints$Key
+ 545:             3            144  com.sun.org.apache.xerces.internal.impl.xs.XSDDescription
+ 546:             9            144  com.thoughtworks.xstream.converters.collections.TreeMapConverter
+ 547:             9            144  com.thoughtworks.xstream.converters.enums.EnumSetConverter
+ 548:             9            144  com.thoughtworks.xstream.mapper.AnnotationMapper$WeakHashSet
+ 549:             9            144  hudson.util.DescribableList$ConverterImpl
+ 550:             9            144  com.thoughtworks.xstream.mapper.ArrayMapper
+ 551:             6            144  [Lcom.sun.org.apache.xerces.internal.impl.XMLEntityManager$CharacterBuffer;
+ 552:             9            144  com.thoughtworks.xstream.io.xml.XppDriver
+ 553:             3            144  com.sun.org.apache.xerces.internal.impl.XMLEntityScanner
+ 554:             1            136  [Lsun.java2d.loops.RenderCache$Entry;
+ 555:             2            136  [Lorg.apache.commons.lang.time.FastDateFormat$Rule;
+ 556:             1            136  java.awt.image.DirectColorModel
+ 557:             1            136  [Lcom.sun.org.apache.xerces.internal.impl.dv.xs.TypeValidator;
+ 558:             4            128  org.apache.commons.digester.SetPropertiesRule
+ 559:             4            128  sun.security.x509.BasicConstraintsExtension
+ 560:             8            128  java.util.regex.Pattern$CharPropertyNames$3
+ 561:             4            128  sun.reflect.annotation.AnnotationType
+ 562:             2            128  java.security.SecureRandom
+ 563:             8            128  java.lang.annotation.ElementType
+ 564:             4            128  org.apache.commons.digester.SetNextRule
+ 565:             4            128  java.io.PrintStream
+ 566:             2            128  java.awt.Font
+ 567:             4            128  java.util.concurrent.atomic.AtomicReferenceFieldUpdater$AtomicReferenceFieldUpdaterImpl
+ 568:             4            128  com.sun.org.apache.xerces.internal.util.NamespaceSupport
+ 569:             1            128  hudson.maven.MavenModule
+ 570:             8            128  org.apache.commons.lang.time.FastDateFormat$TwoDigitNumberField
+ 571:             3            120  org.apache.commons.beanutils.converters.CalendarConverter
+ 572:             5            120  org.apache.commons.beanutils.converters.FileConverter
+ 573:             5            120  sun.security.x509.CertificateExtensions
+ 574:             3            120  com.sun.org.apache.xerces.internal.impl.XMLErrorReporter
+ 575:             5            120  java.security.CodeSigner
+ 576:             3            120  com.sun.org.apache.xerces.internal.impl.XMLEntityManager$CharacterBufferPool
+ 577:             5            120  hudson.model.Result
+ 578:             3            120  java.util.regex.Pattern$GroupCurly
+ 579:             6            120  [Ljava.net.InetAddress;
+ 580:             5            120  hudson.model.MultiStageTimeSeries
+ 581:             1            120  hudson.TcpSlaveAgentListener
+ 582:             3            120  com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl
+ 583:             3            120  com.sun.org.apache.xerces.internal.impl.xs.XSAttributeGroupDecl
+ 584:             3            120  hudson.util.DoubleLaunchChecker$1
+ 585:             1            120  hudson.WebAppMain$2
+ 586:             5            120  com.sun.org.apache.xerces.internal.impl.xs.traversers.LargeContainer
+ 587:             3            120  com.thoughtworks.xstream.io.xml.XppReader
+ 588:             5            120  org.apache.commons.beanutils.converters.URLConverter
+ 589:             1            120  com.sun.org.apache.xerces.internal.impl.xs.SchemaGrammar$Schema4Annotations
+ 590:             5            120  com.sun.org.apache.xerces.internal.impl.dtd.XMLAttributeDecl
+ 591:             5            120  com.sun.org.apache.xerces.internal.impl.dtd.DTDGrammarBucket
+ 592:             3            120  com.sun.org.apache.xerces.internal.util.XMLAttributesImpl
+ 593:             1            112  hudson.UDPBroadcastThread
+ 594:             7            112  sun.security.x509.NetscapeCertTypeExtension$MapEntry
+ 595:             2            112  com.thoughtworks.xstream.core.ReferenceByXPathUnmarshaller
+ 596:             2            112  winstone.ServletConfiguration
+ 597:             2            112  java.io.ExpiringCache$1
+ 598:             1            112  com.sun.jna.Native$DeleteNativeLibrary
+ 599:             1            112  java.util.logging.LogManager$Cleaner
+ 600:             1            112  winstone.ShutdownHook
+ 601:             1            112  java.util.SimpleTimeZone
+ 602:             1            112  sun.nio.ch.DatagramChannelImpl
+ 603:             7            112  java.util.Collections$UnmodifiableCollection
+ 604:             7            112  winstone.WinstoneResourceBundle
+ 605:             1            104  hudson.model.ViewJob$ReloadThread
+ 606:             6            104  [Lwinstone.Mapping;
+ 607:             1            104  java.lang.ref.Reference$ReferenceHandler
+ 608:             1            104  java.lang.ref.Finalizer$FinalizerThread
+ 609:             4             96  hudson.util.Digester2$ObjectCreateRule2
+ 610:             3             96  com.sun.org.apache.xerces.internal.impl.XMLVersionDetector
+ 611:             1             96  sun.font.AttributeValues
+ 612:             4             96  java.text.EntryPair
+ 613:             1             96  [Lsun.font.FileFont;
+ 614:             2             96  org.apache.commons.logging.impl.LogFactoryImpl
+ 615:             2             96  org.apache.commons.collections.FastHashMap
+ 616:             2             96  java.lang.ThreadGroup
+ 617:             3             96  com.sun.xml.internal.stream.XMLEntityStorage
+ 618:             6             96  com.thoughtworks.xstream.io.xml.AbstractPullReader$Event
+ 619:             6             96  [Ljava.lang.Float;
+ 620:             3             96  winstone.jndi.WinstoneContext
+ 621:             6             96  [Ljava.sql.Time;
+ 622:             3             96  [Lcom.sun.org.apache.xerces.internal.impl.xs.XSAttributeUseImpl;
+ 623:             2             96  java.io.ObjectInputStream$BlockDataInputStream
+ 624:             3             96  com.sun.jna.Function
+ 625:             1             96  [Lsun.font.CompositeFont;
+ 626:             6             96  java.io.ByteArrayOutputStream
+ 627:             6             96  [Ljava.sql.Timestamp;
+ 628:             6             96  sun.java2d.pipe.TextRenderer
+ 629:             4             96  java.lang.OutOfMemoryError
+ 630:             6             96  java.text.FieldPosition$Delegate
+ 631:             6             96  [Ljava.lang.Double;
+ 632:             6             96  [Ljava.util.Date;
+ 633:             6             96  hudson.util.DescribableList
+ 634:             4             96  java.io.InputStreamReader
+ 635:             2             96  sun.text.normalizer.CharTrie
+ 636:             6             96  [Ljava.sql.Date;
+ 637:             4             96  com.sun.org.apache.xerces.internal.impl.xs.XSAttributeUseImpl
+ 638:             6             96  java.util.regex.Pattern$CharPropertyNames$2
+ 639:             4             96  java.util.regex.Pattern$8
+ 640:             6             96  [Ljava.net.URL;
+ 641:             6             96  org.tmatesoft.svn.core.SVNDepth
+ 642:             6             96  [Ljava.util.logging.Handler;
+ 643:             6             96  java.lang.Character
+ 644:             3             96  sun.misc.URLClassPath$JarLoader$2
+ 645:             3             96  sun.misc.SoftCache
+ 646:             4             96  com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+ 647:             6             96  org.jvnet.localizer.ResourceBundleHolder
+ 648:             6             96  [Ljava.lang.Character;
+ 649:             6             96  [Ljava.util.Calendar;
+ 650:             3             96  winstone.Mapping
+ 651:             4             96  sun.misc.JarIndex
+ 652:             4             96  java.util.regex.Pattern$BnM
+ 653:             4             96  java.lang.RuntimePermission
+ 654:             1             96  [Lcom.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
+ 655:             1             88  sun.security.jca.ProviderList$1
+ 656:             1             88  [Lsun.security.util.ObjectIdentifier;
+ 657:             1             88  sun.security.mscapi.SunMSCAPI
+ 658:             1             88  sun.security.rsa.SunRsaSign
+ 659:             1             88  sun.security.smartcardio.SunPCSC
+ 660:             1             88  sun.awt.windows.WFontConfiguration
+ 661:             1             88  org.jcp.xml.dsig.internal.dom.XMLDSigRI
+ 662:             1             88  [[Ljava.lang.Byte;
+ 663:             1             88  com.sun.net.ssl.internal.ssl.Provider
+ 664:             1             88  winstone.ObjectPool
+ 665:             1             88  com.sun.security.sasl.Provider
+ 666:             1             88  com.sun.crypto.provider.SunJCE
+ 667:             5             80  com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl$PrologDriver
+ 668:             5             80  org.tmatesoft.svn.core.io.SVNCapability
+ 669:             5             80  org.tmatesoft.svn.util.SVNLogType
+ 670:             5             80  sun.security.jca.ServiceId
+ 671:             5             80  sun.security.x509.CertificateValidity
+ 672:             5             80  org.apache.commons.discovery.log.SimpleLog
+ 673:             5             80  com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl$TrailingMiscDriver
+ 674:             5             80  com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl$XMLDeclDriver
+ 675:             5             80  sun.security.x509.SerialNumber
+ 676:             5             80  hudson.tasks.test.AggregatedTestResultAction$Child
+ 677:             2             80  sun.nio.cs.MS1252$Decoder
+ 678:            10             80  com.thoughtworks.xstream.converters.basic.NullConverter
+ 679:             2             80  java.io.ObjectInputStream
+ 680:            10             80  com.thoughtworks.xstream.converters.basic.ByteConverter
+ 681:             5             80  sun.security.x509.CertificateSubjectName
+ 682:             2             80  java.io.ObjectStreamClass$FieldReflectorKey
+ 683:             1             80  java.net.URI
+ 684:             5             80  [Ljava.lang.annotation.Annotation;
+ 685:             5             80  sun.security.x509.CertificateX509Key
+ 686:             1             80  [[B
+ 687:             5             80  hudson.util.RobustReflectionConverter$SeenFields
+ 688:             5             80  sun.security.x509.CertificateSerialNumber
+ 689:             5             80  sun.security.x509.CertificateVersion
+ 690:             2             80  hudson.node_monitors.SwapSpaceMonitor$MemoryUsage2
+ 691:             5             80  sun.security.x509.CertificateAlgorithmId
+ 692:             1             80  [[Z
+ 693:             5             80  java.util.regex.Pattern$Dollar
+ 694:             5             80  hudson.scm.CVSChangeLogSet
+ 695:             2             80  java.util.concurrent.LinkedBlockingQueue
+ 696:             2             80  [Lhudson.plugins.cobertura.targets.CoverageMetric;
+ 697:             5             80  sun.security.x509.CertificateIssuerName
+ 698:             5             80  com.sun.jna.Library$Handler$FunctionNameMap
+ 699:             5             80  sun.security.util.Cache$EqualByteArray
+ 700:             2             80  org.tmatesoft.svn.core.SVNURL
+ 701:             5             80  sun.security.util.BitArray
+ 702:             5             80  hudson.tasks.MailMessageIdAction
+ 703:             5             80  sun.security.provider.certpath.X509CertPath
+ 704:             3             72  sun.security.x509.SubjectAlternativeNameExtension
+ 705:             1             72  sun.misc.Launcher$AppClassLoader
+ 706:             3             72  com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl$NSContentDriver
+ 707:             9             72  com.thoughtworks.xstream.converters.basic.BigIntegerConverter
+ 708:             9             72  com.thoughtworks.xstream.converters.extended.StackTraceElementConverter
+ 709:             9             72  com.thoughtworks.xstream.converters.basic.DoubleConverter
+ 710:             3             72  sun.security.provider.SecureRandom
+ 711:             9             72  com.thoughtworks.xstream.converters.collections.CharArrayConverter
+ 712:             3             72  com.sun.org.apache.xerces.internal.impl.xpath.regex.Token$ClosureToken
+ 713:             9             72  hudson.triggers.SCMTrigger$SCMTriggerCause
+ 714:             3             72  java.net.ServerSocket
+ 715:             9             72  com.thoughtworks.xstream.converters.extended.GregorianCalendarConverter
+ 716:             1             72  [[J
+ 717:             9             72  com.thoughtworks.xstream.converters.extended.SqlTimeConverter
+ 718:             9             72  com.thoughtworks.xstream.converters.enums.EnumConverter
+ 719:             9             72  com.thoughtworks.xstream.converters.basic.CharConverter
+ 720:             3             72  java.util.Timer
+ 721:             3             72  hudson.security.SparseACL$Entry
+ 722:             3             72  com.sun.jna.NativeMappedConverter
+ 723:             9             72  com.thoughtworks.xstream.converters.basic.UUIDConverter
+ 724:             9             72  com.thoughtworks.xstream.converters.basic.IntConverter
+ 725:             9             72  com.thoughtworks.xstream.converters.extended.SqlDateConverter
+ 726:             3             72  [Lcom.sun.org.apache.xerces.internal.impl.xs.XSGroupDecl;
+ 727:             9             72  com.thoughtworks.xstream.converters.extended.CharsetConverter
+ 728:             9             72  com.thoughtworks.xstream.converters.extended.CurrencyConverter
+ 729:             3             72  com.sun.org.apache.xerces.internal.util.SecurityManager
+ 730:             9             72  com.thoughtworks.xstream.converters.basic.ShortConverter
+ 731:             3             72  java.util.concurrent.Executors$DefaultThreadFactory
+ 732:             9             72  com.thoughtworks.xstream.converters.extended.LocaleConverter
+ 733:             9             72  com.thoughtworks.xstream.converters.basic.FloatConverter
+ 734:             1             72  winstone.classLoader.WebappClassLoader
+ 735:             9             72  com.thoughtworks.xstream.converters.extended.SqlTimestampConverter
+ 736:             9             72  com.thoughtworks.xstream.converters.basic.LongConverter
+ 737:             9             72  com.thoughtworks.xstream.converters.basic.BigDecimalConverter
+ 738:             9             72  com.thoughtworks.xstream.converters.basic.StringBuilderConverter
+ 739:             1             72  sun.misc.Launcher$ExtClassLoader
+ 740:             9             72  com.thoughtworks.xstream.converters.extended.FileConverter
+ 741:             9             72  com.thoughtworks.xstream.converters.collections.BitSetConverter
+ 742:             3             72  [Lcom.sun.org.apache.xerces.internal.impl.xs.identity.IdentityConstraint;
+ 743:             9             72  com.thoughtworks.xstream.converters.basic.StringBufferConverter
+ 744:             9             72  com.thoughtworks.xstream.converters.basic.URLConverter
+ 745:             1             72  winstone.auth.SecurityConstraint
+ 746:             9             72  com.thoughtworks.xstream.converters.extended.EncodedByteArrayConverter
+ 747:             3             72  hudson.model.MultiStageTimeSeries$TimeScale
+ 748:             1             72  sun.font.GlyphList
+ 749:             3             72  com.sun.jna.Library$Handler$FunctionInfo
+ 750:             9             72  com.thoughtworks.xstream.converters.extended.ColorConverter
+ 751:             9             72  com.thoughtworks.xstream.converters.extended.FontConverter
+ 752:             2             64  java.io.DataInputStream
+ 753:             2             64  sun.java2d.pipe.Region
+ 754:             4             64  sun.security.x509.GeneralNames
+ 755:             4             64  [Ljava.io.ObjectStreamClass$ClassDataSlot;
+ 756:             2             64  sun.security.x509.AuthorityKeyIdentifierExtension
+ 757:             1             64  java.awt.geom.AffineTransform
+ 758:             2             64  java.io.BufferedInputStream
+ 759:             2             64  sun.reflect.UnsafeQualifiedStaticLongFieldAccessorImpl
+ 760:             1             64  java.util.logging.LogManager$RootLogger
+ 761:             4             64  hudson.model.Run$State
+ 762:             4             64  java.io.ObjectStreamClass$ClassDataSlot
+ 763:             2             64  org.apache.commons.logging.impl.WeakHashtable$WeakKey
+ 764:             4             64  java.util.Collections$SynchronizedSet
+ 765:             1             64  [Lhudson.model.BallColor;
+ 766:             2             64  com.thoughtworks.xstream.io.path.PathTracker
+ 767:             4             64  sun.security.x509.GeneralName
+ 768:             4             64  sun.security.x509.KeyIdentifier
+ 769:             2             64  java.io.ExpiringCache
+ 770:             2             64  java.util.regex.Pattern$Loop
+ 771:             4             64  java.text.Normalizer$Form
+ 772:             1             64  org.tmatesoft.svn.core.internal.io.dav.DAVRepository
+ 773:             1             64  java.awt.color.ICC_ColorSpace
+ 774:             4             64  hudson.XmlFile
+ 775:             2             64  java.io.ObjectStreamClass$FieldReflector
+ 776:             4             64  java.awt.Dialog$ModalityType
+ 777:             2             64  com.sun.org.apache.xerces.internal.impl.xs.XSModelGroupImpl
+ 778:             4             64  org.tmatesoft.svn.core.SVNPropertyValue
+ 779:             2             64  [Lsun.security.jca.ProviderConfig;
+ 780:             4             64  java.util.concurrent.atomic.AtomicLong
+ 781:             1             64  com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression
+ 782:             2             64  net.java.sezpoz.Index$LazyIndexIterator
+ 783:             4             64  java.util.regex.Pattern$Begin
+ 784:             2             64  java.io.ObjectStreamClass$WeakClassKey
+ 785:             2             64  org.apache.commons.lang.time.FastDateFormat
+ 786:             2             64  com.sun.jna.NativeLibrary$1
+ 787:             2             64  sun.misc.URLClassPath$2
+ 788:             2             64  java.io.ObjectInputStream$HandleTable
+ 789:             2             64  java.util.Collections$UnmodifiableSortedMap
+ 790:             4             64  org.tmatesoft.svn.core.SVNNodeKind
+ 791:             1             56  java.nio.DirectByteBuffer
+ 792:             1             56  hudson.tasks.Mailer$DescriptorImpl
+ 793:             1             56  [Ljava.util.Locale;
+ 794:             1             56  com.sun.org.apache.xerces.internal.impl.xs.SchemaGrammar$XSAnyType
+ 795:             1             56  java.util.logging.ConsoleHandler
+ 796:             1             56  hudson.PluginManager$UberClassLoader
+ 797:             2             56  [Lorg.tmatesoft.svn.core.internal.io.dav.DAVElement;
+ 798:             1             56  java.util.ResourceBundle$RBClassLoader
+ 799:             1             56  [Lcom.sun.org.apache.xerces.internal.impl.xs.util.XInt;
+ 800:             1             48  sun.nio.ch.DatagramSocketAdaptor
+ 801:             3             48  java.awt.Dialog$ModalExclusionType
+ 802:             2             48  sun.security.jca.ProviderList
+ 803:             3             48  com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper
+ 804:             3             48  com.sun.org.apache.xerces.internal.impl.xs.util.XSObjectListImpl
+ 805:             2             48  hudson.model.User
+ 806:             2             48  hudson.model.RunMap
+ 807:             3             48  net.sf.json.regexp.JdkRegexpMatcher
+ 808:             3             48  java.lang.annotation.RetentionPolicy
+ 809:             3             48  hudson.util.DaemonThreadFactory
+ 810:             3             48  com.sun.org.apache.xerces.internal.util.SymbolTable
+ 811:             3             48  sun.text.normalizer.NormalizerBase$QuickCheckResult
+ 812:             3             48  java.util.TaskQueue
+ 813:             3             48  sun.java2d.pipe.SpanClipRenderer
+ 814:             2             48  [Lhudson.model.Node$Mode;
+ 815:             2             48  com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl$ContentDriver
+ 816:             2             48  hudson.Platform
+ 817:             3             48  hudson.ExtensionListView$2
+ 818:             2             48  hudson.model.Node$Mode
+ 819:             2             48  [Ljava.lang.annotation.RetentionPolicy;
+ 820:             2             48  java.util.logging.SimpleFormatter
+ 821:             2             48  net.java.sezpoz.Index
+ 822:             3             48  com.sun.org.apache.xerces.internal.impl.msg.XMLMessageFormatter
+ 823:             2             48  java.lang.ref.ReferenceQueue$Null
+ 824:             1             48  hudson.model.WorkspaceCleanupThread
+ 825:             2             48  com.sun.org.apache.xerces.internal.impl.xs.XSWildcardDecl
+ 826:             3             48  hudson.tasks.test.TestResultProjectAction
+ 827:             1             48  [Lsun.font.FontStrike;
+ 828:             2             48  org.apache.commons.digester.RulesBase
+ 829:             2             48  java.lang.Throwable
+ 830:             2             48  sun.net.spi.DefaultProxySelector$NonProxyInfo
+ 831:             2             48  hudson.model.DependencyGraph
+ 832:             3             48  $Proxy1
+ 833:             3             48  com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser$AttributesProxy
+ 834:             3             48  org.tmatesoft.svn.core.internal.util.jna.ISVNWin32Library$DWORD
+ 835:             1             48  sun.nio.cs.US_ASCII$Encoder
+ 836:             1             48  [Lcom.sun.org.apache.xerces.internal.impl.dv.XSSimpleType;
+ 837:             3             48  java.util.Timer$1
+ 838:             3             48  java.net.Proxy$Type
+ 839:             1             48  sun.java2d.pipe.PixelToParallelogramConverter
+ 840:             2             48  java.util.concurrent.SynchronousQueue
+ 841:             1             48  hudson.EnvVars
+ 842:             1             48  winstone.Launcher
+ 843:             2             48  org.apache.commons.beanutils.PropertyUtilsBean
+ 844:             1             48  hudson.scm.CVSSCM$DescriptorImpl
+ 845:             3             48  sun.java2d.pipe.PixelToShapeConverter
+ 846:             3             48  java.util.TreeMap$EntrySet
+ 847:             3             48  $Proxy2
+ 848:             3             48  org.apache.commons.io.IOCase
+ 849:             3             48  com.sun.org.apache.xerces.internal.impl.validation.ValidationManager
+ 850:             2             48  sun.security.util.MemoryCache
+ 851:             2             48  com.sun.org.apache.xerces.internal.impl.xpath.regex.Token$ParenToken
+ 852:             2             48  sun.security.x509.KeyUsageExtension
+ 853:             2             48  hudson.model.Queue$JobOffer
+ 854:             3             48  sun.reflect.generics.tree.TypeVariableSignature
+ 855:             1             48  java.util.concurrent.FutureTask$Sync
+ 856:             2             48  sun.security.x509.SubjectKeyIdentifierExtension
+ 857:             3             48  hudson.plugins.googlecode.GoogleCodeLinkAnnotator$LinkMarkup
+ 858:             1             48  [Ljava.math.RoundingMode;
+ 859:             3             48  java.text.AttributedCharacterIterator$Attribute
+ 860:             1             48  org.apache.commons.logging.impl.WeakHashtable
+ 861:             2             48  java.io.BufferedOutputStream
+ 862:             1             48  org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager
+ 863:             1             48  hudson.util.RingBufferLogHandler
+ 864:             3             48  java.nio.charset.CodingErrorAction
+ 865:             3             48  java.util.Hashtable$KeySet
+ 866:             1             48  hudson.model.FingerprintCleanupThread
+ 867:             2             48  sun.awt.util.IdentityArrayList
+ 868:             1             48  com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression$Context
+ 869:             2             48  sun.security.x509.NetscapeCertTypeExtension
+ 870:             1             48  sun.awt.Win32GraphicsEnvironment
+ 871:             2             48  org.apache.commons.beanutils.BeanUtilsBean
+ 872:             2             48  org.tmatesoft.svn.core.internal.wc.SVNConfigFile
+ 873:             2             48  sun.net.www.MessageHeader
+ 874:             2             48  sun.reflect.UnsafeIntegerFieldAccessorImpl
+ 875:             2             48  java.lang.management.ManagementPermission
+ 876:             2             48  hudson.model.Queue$ItemList
+ 877:             1             48  [[Lsun.awt.SunHints$Value;
+ 878:             2             48  java.util.Random
+ 879:             3             48  com.sun.org.apache.xerces.internal.impl.dv.dtd.ListDatatypeValidator
+ 880:             3             48  com.sun.org.apache.xerces.internal.util.EntityResolverWrapper
+ 881:             1             40  java.text.RBCollationTables
+ 882:             1             40  sun.awt.resources.awt_fr
+ 883:             1             40  sun.java2d.NullSurfaceData
+ 884:             1             40  com.sun.org.apache.xerces.internal.util.URI
+ 885:             1             40  java.net.SocketOutputStream
+ 886:             1             40  sun.util.logging.resources.logging
+ 887:             1             40  sun.text.resources.CollationData_fr
+ 888:             1             40  hudson.model.LoadStatistics$LoadStatisticsUpdater
+ 889:             1             40  sun.text.resources.FormatData_en_US
+ 890:             1             40  winstone.HostConfiguration
+ 891:             1             40  sun.nio.cs.StandardCharsets$Aliases
+ 892:             1             40  hudson.node_monitors.ResponseTimeMonitor$1
+ 893:             1             40  java.util.logging.LogManager
+ 894:             1             40  hudson.security.TokenBasedRememberMeServices2
+ 895:             1             40  sun.text.resources.CollationData
+ 896:             1             40  sun.text.resources.FormatData_en
+ 897:             1             40  sun.util.resources.TimeZoneNames
+ 898:             1             40  hudson.slaves.ComputerRetentionWork
+ 899:             1             40  java.lang.ProcessEnvironment
+ 900:             1             40  sun.text.resources.FormatData_fr
+ 901:             1             40  sun.text.resources.FormatData_fr_FR
+ 902:             1             40  sun.text.normalizer.IntTrie
+ 903:             1             40  hudson.node_monitors.ArchitectureMonitor$DescriptorImpl
+ 904:             1             40  sun.util.resources.TimeZoneNames_en
+ 905:             1             40  sun.awt.AWTAutoShutdown$PeerMap
+ 906:             5             40  hudson.scm.NullChangeLogParser
+ 907:             1             40  [Lhudson.util.TimeUnit2;
+ 908:             1             40  sun.nio.cs.StandardCharsets$Cache
+ 909:             1             40  hudson.WebAppMain$2$1
+ 910:             1             40  hudson.node_monitors.ClockMonitor$1
+ 911:             1             40  hudson.triggers.SCMTrigger$DescriptorImpl
+ 912:             1             40  sun.misc.Cleaner
+ 913:             1             40  sun.nio.cs.StandardCharsets$Classes
+ 914:             1             40  [Ljava.util.concurrent.TimeUnit;
+ 915:             1             40  hudson.model.UpdateCenter
+ 916:             1             40  hudson.node_monitors.SwapSpaceMonitor$1
+ 917:             1             40  hudson.PluginManager
+ 918:             1             40  sun.awt.resources.awt
+ 919:             1             40  sun.text.IntHashtable
+ 920:             1             40  hudson.scm.SubversionSCM$DescriptorImpl
+ 921:             2             40  [Lcom.sun.org.apache.xerces.internal.impl.xs.XSParticleDecl;
+ 922:             1             40  hudson.model.Queue
+ 923:             1             40  hudson.model.Queue$MaintainTask
+ 924:             1             40  java.util.IdentityHashMap
+ 925:             1             40  org.kohsuke.stapler.jelly.CustomJellyContext
+ 926:             1             40  hudson.triggers.Trigger$Cron
+ 927:             1             40  sun.misc.SoftCache$ValueCell
+ 928:             1             40  hudson.plugins.javanet.PluginImpl$1$1
+ 929:             1             40  [Lsun.security.x509.NetscapeCertTypeExtension$MapEntry;
+ 930:             1             40  sun.text.resources.FormatData
+ 931:             1             40  hudson.diagnosis.HudsonHomeDiskUsageChecker
+ 932:             1             40  hudson.model.UsageStatistics
+ 933:             1             40  hudson.node_monitors.DiskSpaceMonitor$1
+ 934:             1             40  hudson.slaves.NodeProvisioner$NodeProvisionerInvoker
+ 935:             1             40  sun.util.logging.resources.logging_fr
+ 936:             2             32  java.util.regex.Pattern$Prolog
+ 937:             1             32  [[[S
+ 938:             2             32  [Lhudson.scm.SubversionSCM$ModuleLocation;
+ 939:             2             32  java.net.InetAddress$Cache$Type
+ 940:             1             32  [Lcom.sun.org.apache.xerces.internal.impl.dv.xs.AbstractDateTimeDV$DateTimeData;
+ 941:             2             32  java.nio.ByteOrder
+ 942:             1             32  org.acegisecurity.providers.UsernamePasswordAuthenticationToken
+ 943:             1             32  [Ljava.text.Normalizer$Form;
+ 944:             1             32  winstone.ajp13.Ajp13Listener
+ 945:             2             32  java.util.Collections$SynchronizedCollection
+ 946:             1             32  hudson.plugins.sonar.SonarPublisher$DescriptorImpl
+ 947:             1             32  hudson.tasks.Maven$MavenInstallation$DescriptorImpl
+ 948:             1             32  sun.security.x509.CRLDistributionPointsExtension
+ 949:             2             32  hudson.maven.ModuleName
+ 950:             2             32  hudson.util.StreamTaskListener
+ 951:             1             32  hudson.util.DoubleLaunchChecker
+ 952:             2             32  hudson.tasks.Mailer$UserProperty
+ 953:             2             32  java.util.concurrent.SynchronousQueue$TransferStack
+ 954:             1             32  hudson.tasks.Ant$AntInstallation$DescriptorImpl
+ 955:             2             32  com.thoughtworks.xstream.io.path.PathTrackingReader
+ 956:             2             32  java.lang.InheritableThreadLocal
+ 957:             2             32  org.apache.commons.lang.time.FastDateFormat$PaddedNumberField
+ 958:             2             32  net.sf.ezmorph.object.BooleanObjectMorpher
+ 959:             1             32  [Ljava.lang.OutOfMemoryError;
+ 960:             1             32  hudson.tasks.Ant$DescriptorImpl
+ 961:             2             32  com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser$LocatorProxy
+ 962:             2             32  org.apache.commons.lang.time.FastDateFormat$TimeZoneNumberRule
+ 963:             2             32  java.net.InetAddress$Cache
+ 964:             1             32  hudson.triggers.SCMTrigger$Runner
+ 965:             1             32  [Ljava.lang.ThreadGroup;
+ 966:             1             32  hudson.ExtensionList$1
+ 967:             2             32  org.tmatesoft.svn.core.internal.util.SVNHashMap$KeySet
+ 968:             1             32  [[[I
+ 969:             1             32  hudson.triggers.Trigger$2
+ 970:             2             32  java.nio.charset.CoderResult
+ 971:             2             32  sun.java2d.pipe.SpanShapeRenderer$Composite
+ 972:             1             32  hudson.scm.NullSCM$DescriptorImpl
+ 973:             2             32  hudson.FilePath$15
+ 974:             2             32  com.sun.org.apache.xerces.internal.impl.xpath.regex.Token
+ 975:             2             32  org.apache.commons.logging.impl.WeakHashtable$Referenced
+ 976:             2             32  hudson.FilePath
+ 977:             1             32  org.kohsuke.stapler.WebApp
+ 978:             1             32  java.awt.color.ICC_ProfileRGB
+ 979:             1             32  hudson.triggers.SCMTrigger
+ 980:             1             32  sun.security.provider.DSAPublicKeyImpl
+ 981:             2             32  hudson.plugins.javanet.StatsProperty
+ 982:             1             32  hudson.tasks.Publisher$DescriptorExtensionListImpl
+ 983:             1             32  [Ljava.awt.Dialog$ModalityType;
+ 984:             1             32  java.util.LinkedList$ListItr
+ 985:             1             32  hudson.model.FingerprintMap
+ 986:             1             32  hudson.tasks.Maven$DescriptorImpl
+ 987:             1             32  hudson.slaves.RetentionStrategy$1$DescriptorImpl
+ 988:             1             32  java.util.ResourceBundle$1
+ 989:             2             32  org.apache.commons.lang.time.FastDateFormat$TextField
+ 990:             1             32  java.util.LinkedHashMap$KeyIterator
+ 991:             1             32  org.tmatesoft.svn.core.SVNErrorMessage
+ 992:             1             32  sun.text.UCompactIntArray
+ 993:             2             32  java.util.Collections$1
+ 994:             1             32  winstone.auth.FormAuthenticationHandler
+ 995:             2             32  hudson.plugins.violations.hudson.maven.ViolationsMavenAggregatedProjectAction
+ 996:             2             32  java.util.Hashtable$ValueCollection
+ 997:             2             32  sun.security.jca.ProviderList$3
+ 998:             1             32  [Lhudson.model.Result;
+ 999:             1             32  [[[Lsun.awt.FontDescriptor;
+1000:             2             32  net.sf.ezmorph.object.CharacterObjectMorpher
+1001:             2             32  sun.security.x509.RFC822Name
+1002:             2             32  java.util.AbstractMap$2
+1003:             2             32  hudson.maven.reporters.MavenSiteArchiver$SiteAction
+1004:             1             32  java.util.concurrent.ThreadPoolExecutor$Worker
+1005:             2             32  org.tmatesoft.svn.core.internal.util.SVNHashSet
+1006:             1             32  hudson.scm.SubversionSCM
+1007:             1             32  hudson.plugins.googlecode.scm.GoogleCodeSCM$DescriptorImpl
+1008:             2             32  org.acegisecurity.context.SecurityContextImpl
+1009:             2             32  java.util.concurrent.LinkedBlockingQueue$Node
+1010:             2             32  sun.net.www.protocol.jar.JarURLConnection$JarURLInputStream
+1011:             2             32  java.util.Currency
+1012:             1             32  java.text.DontCareFieldPosition
+1013:             2             32  java.util.logging.ErrorManager
+1014:             2             32  java.io.ObjectInputStream$ValidationList
+1015:             1             32  [Lsun.security.jca.ServiceId;
+1016:             1             32  hudson.plugins.checkstyle.CheckStyleReporterDescriptor
+1017:             1             32  hudson.plugins.pmd.PmdReporterDescriptor
+1018:             1             32  java.util.concurrent.locks.AbstractQueuedSynchronizer$Node
+1019:             1             32  org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager$DumbAuthenticationProvider
+1020:             1             32  sun.security.x509.DistributionPoint
+1021:             1             32  winstone.HttpListener
+1022:             1             32  [Lorg.tmatesoft.svn.core.auth.ISVNAuthenticationProvider;
+1023:             1             32  hudson.plugins.cobertura.CoberturaPublisher$DescriptorImpl
+1024:             2             32  java.io.ObjectInputStream$PeekInputStream
+1025:             1             32  hudson.plugins.findbugs.FindBugsReporterDescriptor
+1026:             2             32  hudson.triggers.SCMTrigger$SCMAction
+1027:             2             32  $Proxy0
+1028:             2             32  com.sun.org.apache.xerces.internal.impl.xpath.regex.Token$UnionToken
+1029:             2             32  java.util.TreeMap$Values
+1030:             2             32  java.lang.ClassLoader$2
+1031:             1             32  hudson.model.JDK$DescriptorImpl
+1032:             1             32  hudson.tasks.Shell$DescriptorImpl
+1033:             2             32  hudson.util.OneShotEvent
+1034:             1             32  com.sun.org.apache.xerces.internal.impl.xpath.regex.Op$ModifierOp
+1035:             1             32  [Lhudson.model.Run$State;
+1036:             1             32  sun.awt.AWTAutoShutdown
+1037:             2             32  hudson.node_monitors.ResponseTimeMonitor$Data
+1038:             4             32  sun.net.www.protocol.jar.Handler
+1039:             2             32  sun.text.normalizer.CharTrie$FriendAgent
+1040:             2             32  hudson.scm.SubversionSCM$ModuleLocation
+1041:             1             24  hudson.triggers.TimerTrigger$DescriptorImpl
+1042:             1             24  com.thoughtworks.xstream.converters.collections.TreeMapConverter$PresortedMap$ArraySet
+1043:             1             24  java.security.BasicPermissionCollection
+1044:             1             24  hudson.plugins.warnings.WarningsDescriptor
+1045:             1             24  hudson.plugins.cobertura.MavenCoberturaPublisher$DescriptorImpl
+1046:             1             24  hudson.security.ProjectMatrixAuthorizationStrategy$1
+1047:             1             24  sun.security.provider.DSAParameters
+1048:             1             24  [Lhudson.model.MultiStageTimeSeries$TimeScale;
+1049:             1             24  org.tmatesoft.svn.core.internal.util.FixedSizeInputStream
+1050:             1             24  hudson.security.AuthorizationStrategy$Unsecured$DescriptorImpl
+1051:             1             24  hudson.plugins.violations.hudson.ViolationsFreestyleDescriptor
+1052:             1             24  sun.nio.cs.US_ASCII
+1053:             1             24  hudson.slaves.CommandLauncher$DescriptorImpl
+1054:             1             24  hudson.plugins.javancss.JavaNCSSPublisher$DescriptorImpl
+1055:             1             24  sun.management.VMManagementImpl
+1056:             1             24  hudson.slaves.NodeProvisioner
+1057:             1             24  hudson.FileSystemProvisioner$Default$DescriptorImpl
+1058:             1             24  hudson.views.LastDurationColumn$DescriptorImpl
+1059:             1             24  hudson.tasks.BuildTrigger$DescriptorImpl
+1060:             1             24  hudson.model.FreeStyleProject$DescriptorImpl
+1061:             1             24  hudson.matrix.MatrixProject$DescriptorImpl
+1062:             1             24  hudson.scm.browsers.WebSVN$DescriptorImpl
+1063:             1             24  hudson.tasks.Fingerprinter$DescriptorImpl
+1064:             1             24  sun.nio.cs.StandardCharsets
+1065:             1             24  net.sf.ezmorph.array.DoubleArrayMorpher
+1066:             1             24  [Lhudson.plugins.googlecode.GoogleCodeLinkAnnotator$LinkMarkup;
+1067:             1             24  hudson.model.Hudson$MasterComputer
+1068:             1             24  org.tmatesoft.svn.core.auth.SVNPasswordAuthentication
+1069:             1             24  hudson.scm.browsers.FishEyeSVN$DescriptorImpl
+1070:             1             24  sun.nio.cs.UTF_8
+1071:             1             24  hudson.scm.browsers.ViewSVN$DescriptorImpl
+1072:             1             24  hudson.maven.RedeployPublisher$DescriptorImpl
+1073:             1             24  hudson.model.StringParameterDefinition$DescriptorImpl
+1074:             1             24  hudson.views.StatusColumn$DescriptorImpl
+1075:             1             24  hudson.plugins.googlecode.GoogleCodeProjectProperty
+1076:             1             24  hudson.tasks.test.AggregatedTestResultPublisher$DescriptorImpl
+1077:             1             24  hudson.scheduler.CronTab
+1078:             1             24  hudson.slaves.EnvironmentVariablesNodeProperty$DescriptorImpl
+1079:             1             24  hudson.tasks.ArtifactArchiver$DescriptorImpl
+1080:             1             24  hudson.scm.browsers.FishEyeCVS$DescriptorImpl
+1081:             1             24  hudson.security.LDAPSecurityRealm$DescriptorImpl
+1082:             1             24  hudson.maven.reporters.MavenJavadocArchiver$DescriptorImpl
+1083:             1             24  hudson.model.FileParameterDefinition$DescriptorImpl
+1084:             1             24  hudson.slaves.JNLPLauncher$1
+1085:             1             24  [Ljava.net.Proxy$Type;
+1086:             1             24  [Ljava.awt.Dialog$ModalExclusionType;
+1087:             1             24  hudson.tasks.junit.JUnitResultArchiver$DescriptorImpl
+1088:             1             24  hudson.security.AuthorizationMatrixProperty$DescriptorImpl
+1089:             1             24  hudson.plugins.dependencyanalyzer.DependencyAnalyzerPublisherDescriptor
+1090:             1             24  hudson.slaves.RetentionStrategy$Always$DescriptorImpl
+1091:             1             24  hudson.security.GlobalMatrixAuthorizationStrategy$DescriptorImpl
+1092:             1             24  [Ljava.lang.ThreadLocal;
+1093:             1             24  hudson.plugins.violations.hudson.maven.ViolationsMavenDescriptor
+1094:             1             24  hudson.ProxyConfiguration
+1095:             1             24  [Lhudson.Platform;
+1096:             1             24  hudson.os.solaris.ZFSProvisioner$DescriptorImpl
+1097:             1             24  hudson.security.HudsonPrivateSecurityRealm$DescriptorImpl
+1098:             1             24  hudson.plugins.findbugs.FindBugsDescriptor
+1099:             1             24  hudson.maven.reporters.MavenMailer$DescriptorImpl
+1100:             1             24  hudson.tasks.JavadocArchiver$DescriptorImpl
+1101:             1             24  com.sun.org.apache.xerces.internal.impl.xpath.regex.Op$CharOp
+1102:             3             24  sun.net.www.ParseUtil
+1103:             1             24  sun.management.RuntimeImpl
+1104:             1             24  java.nio.DirectByteBuffer$Deallocator
+1105:             1             24  java.beans.PropertyChangeSupport
+1106:             1             24  hudson.tasks.Maven$MavenInstallation
+1107:             1             24  hudson.views.WeatherColumn$DescriptorImpl
+1108:             1             24  java.util.BitSet
+1109:             1             24  hudson.security.LegacyAuthorizationStrategy$DescriptorImpl
+1110:             1             24  org.kohsuke.stapler.framework.adjunct.AdjunctManager
+1111:             1             24  hudson.model.MyView$DescriptorImpl
+1112:             1             24  org.tmatesoft.svn.core.internal.util.SVNDate
+1113:             1             24  hudson.plugins.checkstyle.CheckStyleDescriptor
+1114:             1             24  hudson.maven.reporters.MavenFingerprinter$DescriptorImpl
+1115:             1             24  hudson.views.LastSuccessColumn$DescriptorImpl
+1116:             1             24  hudson.plugins.googlecode.GoogleCodeProjectProperty$DescriptorImpl
+1117:             1             24  hudson.scm.browsers.ViewCVS$DescriptorImpl
+1118:             1             24  hudson.plugins.googlecode.GoogleCodeRepositoryBrowser$DescriptorImpl
+1119:             1             24  hudson.scm.browsers.Sventon$DescriptorImpl
+1120:             1             24  hudson.slaves.RetentionStrategy$Demand$DescriptorImpl
+1121:             1             24  hudson.model.AllView$DescriptorImpl
+1122:             1             24  java.lang.reflect.ReflectPermission
+1123:             1             24  java.lang.RuntimeException
+1124:             1             24  hudson.maven.reporters.MavenArtifactArchiver$DescriptorImpl
+1125:             1             24  hudson.security.HudsonPrivateSecurityRealm$Details
+1126:             1             24  hudson.slaves.DumbSlave$DescriptorImpl
+1127:             1             24  java.net.InetSocketAddress
+1128:             1             24  hudson.model.OverallLoadStatistics
+1129:             1             24  java.util.logging.LoggingPermission
+1130:             1             24  hudson.plugins.javancss.JavaNCSSMavenPublisher$DescriptorImpl
+1131:             1             24  hudson.security.HudsonPrivateSecurityRealm$Details$DescriptorImpl
+1132:             1             24  hudson.maven.reporters.BuildInfoRecorder$DescriptorImpl
+1133:             1             24  sun.security.x509.URIName
+1134:             1             24  hudson.tools.ToolLocationNodeProperty$DescriptorImpl
+1135:             1             24  hudson.views.JobColumn$DescriptorImpl
+1136:             1             24  java.io.WinNTFileSystem
+1137:             1             24  java.awt.font.FontRenderContext
+1138:             1             24  sun.nio.cs.MS1252
+1139:             1             24  hudson.model.ListView$DescriptorImpl
+1140:             1             24  hudson.security.LegacySecurityRealm$1
+1141:             1             24  net.sf.ezmorph.array.LongArrayMorpher
+1142:             1             24  hudson.security.SecurityRealm$SecurityComponents
+1143:             1             24  hudson.maven.MavenModuleSet$DescriptorImpl
+1144:             1             24  com.sun.jna.Memory
+1145:             1             24  java.security.AlgorithmParameters
+1146:             1             24  hudson.model.ParametersDefinitionProperty$DescriptorImpl
+1147:             1             24  hudson.plugins.javanet.StatsProperty$DescriptorImpl
+1148:             1             24  [Ljava.net.InetAddress$Cache$Type;
+1149:             1             24  hudson.model.ExternalJob$DescriptorImpl
+1150:             1             24  hudson.plugins.pmd.PmdDescriptor
+1151:             1             24  hudson.model.UpdateCenter$PageDecoratorImpl
+1152:             1             24  sun.awt.color.ProfileDeferralInfo
+1153:             1             24  hudson.model.JDK
+1154:             1             24  hudson.maven.reporters.MavenSiteArchiver$DescriptorImpl
+1155:             3             24  com.sun.org.apache.xerces.internal.impl.dv.dtd.DTDDVFactoryImpl
+1156:             1             24  hudson.security.FullControlOnceLoggedInAuthorizationStrategy$1
+1157:             1             24  hudson.tasks.Mailer$UserProperty$DescriptorImpl
+1158:             1             24  hudson.os.windows.ManagedWindowsServiceLauncher$DescriptorImpl
+1159:             1             24  net.sf.ezmorph.primitive.DoubleMorpher
+1160:             1             24  hudson.tasks.BatchFile$DescriptorImpl
+1161:             1             24  hudson.model.AllView
+1162:             1             24  hudson.views.BuildButtonColumn$DescriptorImpl
+1163:             1             24  org.apache.commons.beanutils.BeanUtilsBean$1
+1164:             1             24  hudson.scm.browsers.CollabNetSVN$DescriptorImpl
+1165:             1             24  hudson.maven.reporters.SurefireArchiver$DescriptorImpl
+1166:             1             24  hudson.views.LastFailureColumn$DescriptorImpl
+1167:             1             24  net.sf.ezmorph.primitive.LongMorpher
+1168:             1             16  hudson.scheduler.CronTabList
+1169:             1             16  java.util.regex.Pattern$CharPropertyNames$20
+1170:             1             16  org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory
+1171:             1             16  [Ljavax.servlet.http.HttpSessionListener;
+1172:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.MonthDV
+1173:             1             16  java.util.concurrent.TimeUnit$7
+1174:             1             16  java.util.regex.Pattern$CharPropertyNames$19
+1175:             1             16  hudson.util.TimeUnit2$3
+1176:             1             16  sun.awt.image.PixelConverter$Ushort4444Argb
+1177:             1             16  [Ljavax.servlet.http.HttpSessionAttributeListener;
+1178:             1             16  hudson.model.Hudson$CloudList
+1179:             1             16  com.sun.naming.internal.VersionHelper12
+1180:             1             16  [Lcom.sun.org.apache.xerces.internal.impl.xs.SubstitutionGroupHandler$OneSubGroup;
+1181:             1             16  java.util.concurrent.CopyOnWriteArraySet
+1182:             1             16  net.sf.ezmorph.primitive.ShortMorpher
+1183:             1             16  java.util.regex.Pattern$CharPropertyNames$21
+1184:             1             16  java.util.regex.Pattern$CharPropertyNames$18
+1185:             1             16  sun.java2d.loops.RenderCache
+1186:             1             16  net.sf.ezmorph.array.ShortArrayMorpher
+1187:             1             16  com.sun.jna.Native$1
+1188:             1             16  java.util.concurrent.ConcurrentHashMap$Values
+1189:             1             16  sun.awt.image.PixelConverter$Ushort555Rgb
+1190:             1             16  hudson.plugins.googlecode.PluginImpl
+1191:             1             16  sun.misc.Launcher
+1192:             1             16  hudson.plugins.googlecode.GoogleCodeLinkAnnotator
+1193:             1             16  java.lang.ProcessEnvironment$CheckedEntrySet
+1194:             1             16  sun.awt.image.PixelConverter$ByteGray
+1195:             1             16  com.sun.jna.NativeLong
+1196:             1             16  hudson.model.ResourceList
+1197:             1             16  sun.java2d.HeadlessGraphicsEnvironment
+1198:             1             16  [Ljavax.servlet.http.HttpSessionActivationListener;
+1199:             1             16  net.sf.ezmorph.primitive.IntMorpher
+1200:             1             16  [Lhudson.tasks.Maven$MavenInstallation;
+1201:             1             16  java.util.regex.Pattern$CharPropertyNames$17
+1202:             1             16  hudson.util.TimeUnit2$2
+1203:             1             16  [Lhudson.tasks.Ant$AntInstallation;
+1204:             1             16  hudson.model.UpdateCenter$1
+1205:             1             16  com.sun.org.apache.xerces.internal.impl.Constants$ArrayEnumeration
+1206:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.DayTimeDurationDV
+1207:             1             16  java.util.concurrent.TimeUnit$6
+1208:             1             16  sun.awt.image.PixelConverter$UshortGray
+1209:             1             16  sun.awt.image.PixelConverter$Ushort565Rgb
+1210:             1             16  org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager$CacheAuthenticationProvider
+1211:             1             16  sun.security.x509.DNSName
+1212:             1             16  java.util.regex.Pattern$CharPropertyNames$16
+1213:             2             16  java.lang.Shutdown$Lock
+1214:             1             16  hudson.tasks.JavadocArchiver$JavadocAction
+1215:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.DateTimeDV
+1216:             1             16  [Ljavax.servlet.ServletRequestAttributeListener;
+1217:             1             16  hudson.plugins.sonar.PluginImpl
+1218:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.DayDV
+1219:             1             16  org.kohsuke.stapler.jelly.JellyFacet
+1220:             1             16  java.text.DontCareFieldPosition$1
+1221:             1             16  sun.awt.image.PixelConverter$Rgbx
+1222:             1             16  hudson.ClassicPluginStrategy
+1223:             1             16  org.apache.commons.lang.time.FastDateFormat$StringLiteral
+1224:             1             16  hudson.plugins.javanet.PluginImpl$1
+1225:             1             16  sun.awt.image.PixelConverter$RgbaPre
+1226:             1             16  hudson.model.UpdateCenter$CoreUpdateMonitor
+1227:             1             16  hudson.FilePath$14
+1228:             1             16  hudson.util.ExceptionCatchingThreadFactory
+1229:             1             16  java.util.concurrent.atomic.AtomicBoolean
+1230:             1             16  sun.jkernel.DownloadManager$1
+1231:             1             16  hudson.model.ResourceController$1
+1232:             1             16  java.util.regex.Pattern$CharPropertyNames$15
+1233:             1             16  sun.awt.SunHints$LCDContrastKey
+1234:             1             16  sun.misc.FloatingDecimal$1
+1235:             1             16  hudson.logging.LogRecorderManager
+1236:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.YearMonthDurationDV
+1237:             1             16  java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet
+1238:             1             16  sun.awt.image.PixelConverter$Bgrx
+1239:             1             16  hudson.maven.MavenModuleSet$3
+1240:             1             16  hudson.DescriptorExtensionList$1
+1241:             1             16  net.sf.ezmorph.primitive.ByteMorpher
+1242:             1             16  java.util.regex.Pattern$CharPropertyNames$14
+1243:             2             16  hudson.ExtensionFinder$Sezpoz
+1244:             1             16  org.acegisecurity.GrantedAuthorityImpl
+1245:             1             16  hudson.util.TimeUnit2$4
+1246:             1             16  sun.awt.image.PixelConverter$Rgba
+1247:             1             16  [Lhudson.plugins.sonar.SonarInstallation;
+1248:             1             16  org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager$PersistentAuthenticationProvider
+1249:             1             16  sun.text.normalizer.NormalizerBase$NFCMode
+1250:             1             16  net.sf.ezmorph.array.IntArrayMorpher
+1251:             1             16  sun.text.normalizer.NormalizerBase$NFKCMode
+1252:             1             16  $Proxy6
+1253:             1             16  java.util.concurrent.TimeUnit$5
+1254:             1             16  java.util.concurrent.Executors$RunnableAdapter
+1255:             1             16  hudson.util.ClockDifference
+1256:             1             16  sun.util.calendar.Gregorian
+1257:             1             16  hudson.util.TimeUnit2$1
+1258:             1             16  [Ljavax.servlet.Filter;
+1259:             1             16  java.util.regex.Pattern$LastNode
+1260:             1             16  sun.awt.image.PixelConverter$Xbgr
+1261:             1             16  hudson.diagnosis.HudsonHomeDiskUsageMonitor
+1262:             1             16  java.util.regex.Pattern$CharPropertyNames$13
+1263:             1             16  sun.awt.image.PixelConverter$ArgbBm
+1264:             1             16  hudson.maven.reporters.MavenMailer
+1265:             1             16  sun.security.action.GetPropertyAction
+1266:             1             16  java.util.Collections$UnmodifiableSet
+1267:             1             16  hudson.plugins.javancss.PluginImpl
+1268:             1             16  hudson.util.RingBufferLogHandler$1
+1269:             1             16  org.tmatesoft.svn.core.internal.util.jna.$Proxy5
+1270:             1             16  [Ljavax.servlet.ServletRequestListener;
+1271:             1             16  hudson.model.Run$1
+1272:             1             16  hudson.model.AsyncPeriodicWork$1
+1273:             1             16  java.util.concurrent.Executors$FinalizableDelegatedExecutorService
+1274:             1             16  org.tmatesoft.svn.core.internal.wc.SVNCompositeConfigFile
+1275:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.MonthDayDV
+1276:             1             16  hudson.remoting.LocalChannel
+1277:             1             16  hudson.util.CopyOnWriteMap$Hash
+1278:             1             16  hudson.security.SecurityRealm$None$1
+1279:             1             16  [Ljava.awt.Component;
+1280:             1             16  java.util.regex.Pattern$CharPropertyNames$12
+1281:             1             16  [Ljavax.servlet.ServletContextListener;
+1282:             1             16  sun.util.CoreResourceBundleControl
+1283:             1             16  hudson.security.ChainedServletFilter
+1284:             2             16  com.sun.org.apache.xerces.internal.impl.dv.dtd.ENTITYDatatypeValidator
+1285:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.TimeDV
+1286:             1             16  org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager$1
+1287:             1             16  hudson.plugins.findbugs.FindBugsMessages
+1288:             1             16  [Ljavax.servlet.ServletContextAttributeListener;
+1289:             1             16  java.util.regex.Pattern$CharPropertyNames$11
+1290:             1             16  sun.awt.image.PixelConverter$ArgbPre
+1291:             1             16  hudson.plugins.violations.ViolationsProjectAction
+1292:             1             16  net.sf.ezmorph.array.BooleanArrayMorpher
+1293:             1             16  java.util.regex.Pattern$CharPropertyNames$10
+1294:             1             16  java.util.regex.Pattern$Node
+1295:             1             16  org.tmatesoft.svn.core.internal.util.DefaultSVNDebugLogger
+1296:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.DurationDV
+1297:             1             16  hudson.plugins.pmd.PmdPlugin
+1298:             1             16  hudson.slaves.RetentionStrategy$1
+1299:             1             16  hudson.plugins.javanet.PluginImpl
+1300:             1             16  java.awt.color.ICC_Profile$1
+1301:             1             16  sun.net.www.protocol.http.Handler
+1302:             1             16  hudson.plugins.findbugs.FindBugsPlugin
+1303:             1             16  java.util.regex.Pattern$5
+1304:             1             16  hudson.util.TimeUnit2$5
+1305:             1             16  java.text.MessageFormat$Field
+1306:             1             16  com.thoughtworks.xstream.converters.collections.TreeMapConverter$PresortedMap
+1307:             1             16  sun.net.ProgressMonitor
+1308:             1             16  org.tmatesoft.svn.core.internal.util.jna.$Proxy4
+1309:             1             16  hudson.scm.NullSCM
+1310:             1             16  java.util.concurrent.TimeUnit$4
+1311:             1             16  sun.awt.image.PixelConverter$Argb
+1312:             1             16  hudson.scm.SubversionSCM$DescriptorImpl$RemotableSVNAuthenticationProviderImpl
+1313:             1             16  hudson.WebAppMain$1
+1314:             1             16  hudson.WebAppMain
+1315:             1             16  hudson.security.SecurityRealm$None$2
+1316:             1             16  java.util.regex.Pattern$CharPropertyNames$9
+1317:             1             16  org.tmatesoft.svn.core.internal.io.dav.http.HTTPParser$1
+1318:             1             16  winstone.realm.ArgumentsRealm
+1319:             1             16  java.awt.ImageCapabilities
+1320:             1             16  hudson.maven.ProcessCache
+1321:             1             16  net.sf.ezmorph.array.ByteArrayMorpher
+1322:             1             16  hudson.model.FingerprintCleanupThread$2
+1323:             1             16  org.tmatesoft.svn.core.internal.util.jna.ISVNWin32Library$HRESULT
+1324:             1             16  sun.awt.image.PixelConverter$Xrgb
+1325:             1             16  org.acegisecurity.acls.sid.PrincipalSid
+1326:             2             16  com.sun.org.apache.xerces.internal.impl.dv.xs.QNameDV
+1327:             1             16  [Ljava.security.Provider;
+1328:             1             16  org.kohsuke.stapler.Stapler$1
+1329:             2             16  org.apache.commons.beanutils.expression.DefaultResolver
+1330:             1             16  sun.text.normalizer.NormalizerBase$Mode
+1331:             1             16  hudson.ExtensionListView$1
+1332:             1             16  hudson.ExtensionList$2
+1333:             1             16  hudson.tasks.BuildStep$PublisherList
+1334:             1             16  antlr.Token
+1335:             1             16  $Proxy3
+1336:             1             16  hudson.util.TextFile
+1337:             1             16  sun.net.spi.DefaultProxySelector
+1338:             1             16  hudson.scm.SubversionSCM$DescriptorImpl$SVNAuthenticationProviderImpl
+1339:             1             16  hudson.plugins.dependencyanalyzer.PluginImpl
+1340:             1             16  java.util.Collections$SingletonSet
+1341:             1             16  net.sf.ezmorph.primitive.FloatMorpher
+1342:             1             16  java.util.Collections$EmptyMap
+1343:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.YearDV
+1344:             1             16  java.util.regex.Pattern$CharPropertyNames$8
+1345:             1             16  java.nio.charset.CoderResult$2
+1346:             1             16  net.sf.ezmorph.primitive.CharMorpher
+1347:             1             16  sun.text.normalizer.NormalizerBase$NFKDMode
+1348:             1             16  [Lwinstone.auth.SecurityConstraint;
+1349:             1             16  java.util.concurrent.TimeUnit$1
+1350:             1             16  hudson.plugins.cobertura.PluginImpl
+1351:             1             16  hudson.security.SparseACL
+1352:             1             16  hudson.security.AuthenticationManagerProxy
+1353:             1             16  sun.awt.image.PixelConverter
+1354:             1             16  hudson.util.TimeUnit2$6
+1355:             1             16  java.util.concurrent.TimeUnit$3
+1356:             1             16  net.sf.ezmorph.array.FloatArrayMorpher
+1357:             1             16  hudson.security.SecurityRealm$None
+1358:             1             16  java.net.Inet4AddressImpl
+1359:             1             16  org.acegisecurity.ui.AuthenticationDetailsSourceImpl
+1360:             1             16  java.util.concurrent.FutureTask
+1361:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.DateDV
+1362:             1             16  net.sf.ezmorph.MorpherRegistry
+1363:             1             16  org.kohsuke.stapler.jelly.StaplerTagLibrary
+1364:             1             16  hudson.triggers.SCMTrigger$AdministrativeMonitorImpl
+1365:             1             16  java.io.Console$1$1
+1366:             1             16  java.util.regex.Pattern$CharPropertyNames$7
+1367:             1             16  hudson.model.Hudson$2
+1368:             1             16  java.util.Collections$SingletonSet$1
+1369:             1             16  hudson.security.HudsonFilter
+1370:             1             16  hudson.Launcher$LocalLauncher
+1371:             1             16  java.util.Collections$EmptyList
+1372:             1             16  [Ljava.text.FieldPosition;
+1373:             1             16  net.sf.ezmorph.array.CharArrayMorpher
+1374:             1             16  hudson.util.TimeUnit2$7
+1375:             1             16  sun.text.normalizer.NormalizerBase$NFDMode
+1376:             1             16  hudson.model.AbstractProject$1
+1377:             1             16  hudson.scm.SubversionSCM$DescriptorImpl$3
+1378:             1             16  winstone.ErrorServlet
+1379:             1             16  java.security.Policy$UnsupportedEmptyCollection
+1380:             1             16  java.util.regex.Pattern$CharPropertyNames$6
+1381:             1             16  [Ljava.beans.EventSetDescriptor;
+1382:             1             16  hudson.plugins.warnings.WarningsPlugin
+1383:             1             16  java.nio.charset.CoderResult$1
+1384:             1             16  $Proxy7
+1385:             1             16  com.sun.org.apache.xerces.internal.impl.dv.xs.YearMonthDV
+1386:             1             16  sun.nio.ch.DatagramSocketAdaptor$1
+1387:             1             16  hudson.security.RememberMeServicesProxy
+1388:             1             16  hudson.plugins.violations.PluginImpl
+1389:             1             16  hudson.scm.SubversionSCM$DescriptorImpl$PasswordCredential
+1390:             1             16  winstone.HostGroup
+1391:             1             16  net.sf.ezmorph.primitive.BooleanMorpher
+1392:             1             16  hudson.Plugin$1
+1393:             1             16  hudson.model.Hudson$1
+1394:             1             16  java.util.concurrent.TimeUnit$2
+1395:             1             16  sun.awt.SunDisplayChanger
+1396:             1             16  java.nio.channels.spi.AbstractInterruptibleChannel$1
+1397:             1             16  hudson.security.UserDetailsServiceProxy
+1398:             1             16  $Proxy8
+1399:             1             16  hudson.plugins.checkstyle.CheckStylePlugin
+1400:             1             16  java.net.Proxy
+1401:             1             16  hudson.slaves.NodeList
+1402:             1             16  sun.awt.image.PixelConverter$Ushort555Rgbx
+1403:             1              8  java.awt.Component$AWTTreeLock
+1404:             1              8  org.tmatesoft.svn.core.internal.wc.admin.SVNAdminArea14Factory
+1405:             1              8  hudson.node_monitors.ArchitectureMonitor
+1406:             1              8  org.tmatesoft.svn.core.internal.wc.admin.SVNAdminArea15Factory
+1407:             1              8  sun.reflect.GeneratedConstructorAccessor3
+1408:             1              8  sun.security.util.ByteArrayTagOrder
+1409:             1              8  sun.reflect.GeneratedSerializationConstructorAccessor205
+1410:             1              8  java.awt.Component$DummyRequestFocusController
+1411:             1              8  org.jvnet.tiger_types.Types$1
+1412:             1              8  java.io.File$1
+1413:             1              8  sun.java2d.pipe.AATextRenderer
+1414:             1              8  hudson.util.HudsonIsLoading
+1415:             1              8  org.jvnet.hudson.Windows
+1416:             1              8  org.apache.commons.discovery.jdk.JDK12Hooks
+1417:             1              8  sun.security.util.ByteArrayLexOrder
+1418:             1              8  sun.misc.Unsafe
+1419:             1              8  hudson.util.StringConverter2
+1420:             1              8  java.lang.ref.Reference$Lock
+1421:             1              8  sun.reflect.GeneratedSerializationConstructorAccessor204
+1422:             1              8  java.util.Hashtable$EmptyEnumerator
+1423:             1              8  sun.java2d.pipe.LCDTextRenderer
+1424:             1              8  sun.reflect.GeneratedConstructorAccessor10
+1425:             1              8  hudson.model.FingerprintCleanupThread$1
+1426:             1              8  sun.java2d.pipe.AlphaColorPipe
+1427:             1              8  org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl
+1428:             1              8  javax.xml.datatype.SecuritySupport
+1429:             1              8  sun.awt.DebugHelperStub
+1430:             1              8  sun.java2d.pipe.SolidTextRenderer
+1431:             1              8  sun.nio.ch.DatagramDispatcher
+1432:             1              8  java.awt.Image$1
+1433:             1              8  hudson.model.RunMap$1
+1434:             1              8  com.sun.org.apache.xerces.internal.impl.dv.dtd.StringDatatypeValidator
+1435:             1              8  java.io.Console$1
+1436:             1              8  java.util.Collections$EmptySet
+1437:             1              8  hudson.node_monitors.DiskSpaceMonitor
+1438:             1              8  hudson.model.User$1
+1439:             1              8  com.thoughtworks.xstream.core.util.Base64Encoder
+1440:             1              8  com.sun.org.apache.xalan.internal.xsltc.dom.SecuritySupport12
+1441:             1              8  hudson.model.Run$3
+1442:             1              8  sun.nio.ch.WindowsSelectorProvider
+1443:             1              8  hudson.ClassicPluginStrategy$1
+1444:             1              8  sun.java2d.pipe.OutlineTextRenderer
+1445:             1              8  org.apache.commons.lang.time.FastDateFormat$TwoDigitMonthField
+1446:             1              8  org.tmatesoft.svn.core.internal.wc.admin.SVNXMLAdminAreaFactory
+1447:             1              8  javax.xml.transform.SecuritySupport
+1448:             1              8  java.util.Hashtable$EmptyIterator
+1449:             1              8  sun.text.normalizer.NormalizerImpl
+1450:             1              8  java.util.Collections$ReverseComparator
+1451:             1              8  org.kohsuke.stapler.jsp.JSPFacet
+1452:             1              8  java.lang.reflect.ReflectAccess
+1453:             1              8  sun.reflect.ReflectionFactory
+1454:             1              8  hudson.security.ACL$1
+1455:             1              8  java.util.jar.JavaUtilJarAccessImpl
+1456:             1              8  org.tmatesoft.svn.core.io.ISVNSession$1
+1457:             1              8  hudson.model.Run$DefaultFeedAdapter
+1458:             1              8  com.sun.org.apache.xerces.internal.impl.dv.SecuritySupport
+1459:             1              8  hudson.ExpressionFactory2
+1460:             1              8  com.sun.org.apache.xerces.internal.impl.dv.dtd.IDDatatypeValidator
+1461:             1              8  sun.reflect.GeneratedConstructorAccessor1
+1462:             1              8  sun.reflect.GeneratedConstructorAccessor5
+1463:             1              8  java.awt.Window$1
+1464:             1              8  hudson.plugins.dependencyanalyzer.DependencyAnalyzerPublisher
+1465:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.XSSimpleTypeDecl$4
+1466:             1              8  sun.misc.Launcher$Factory
+1467:             1              8  org.tmatesoft.svn.core.internal.util.SVNPathUtil$1
+1468:             1              8  sun.reflect.GeneratedMethodAccessor1
+1469:             1              8  org.tmatesoft.svn.core.internal.io.dav.http.IHTTPConnectionFactory$1
+1470:             1              8  org.tmatesoft.svn.core.internal.wc.admin.SVNAdminAreaFactory$DefaultSelector
+1471:             1              8  org.tmatesoft.svn.core.internal.io.dav.http.HTTPConnection$1
+1472:             1              8  org.xml.sax.helpers.DefaultHandler
+1473:             1              8  java.lang.ProcessEnvironment$NameComparator
+1474:             1              8  sun.reflect.GeneratedConstructorAccessor4
+1475:             1              8  hudson.model.WorkspaceCleanupThread$DirectoryFilter
+1476:             1              8  com.thoughtworks.xstream.mapper.PackageAliasingMapper$1
+1477:             1              8  java.net.URLClassLoader$7
+1478:             1              8  org.jvnet.localizer.LocaleProvider$1
+1479:             1              8  sun.reflect.GeneratedMethodAccessor9
+1480:             1              8  com.sun.org.apache.xerces.internal.impl.dv.dtd.IDREFDatatypeValidator
+1481:             1              8  java.lang.String$CaseInsensitiveComparator
+1482:             1              8  sun.security.provider.NativeSeedGenerator
+1483:             1              8  java.lang.ProcessEnvironment$EntryComparator
+1484:             1              8  sun.reflect.GeneratedMethodAccessor8
+1485:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.XSSimpleTypeDecl$1
+1486:             1              8  hudson.model.Run$2
+1487:             1              8  org.apache.commons.jelly.TagLibrary$1
+1488:             1              8  sun.reflect.generics.tree.BottomSignature
+1489:             1              8  sun.reflect.GeneratedConstructorAccessor11
+1490:             1              8  com.sun.org.apache.xerces.internal.dom.CharacterDataImpl$1
+1491:             1              8  hudson.model.Result$1
+1492:             1              8  hudson.model.ItemGroupMixIn$2
+1493:             1              8  sun.java2d.pipe.LoopPipe
+1494:             1              8  hudson.util.PluginServletFilter
+1495:             1              8  sun.reflect.GeneratedConstructorAccessor8
+1496:             1              8  sun.reflect.GeneratedConstructorAccessor2
+1497:             1              8  hudson.node_monitors.SwapSpaceMonitor
+1498:             1              8  sun.net.DefaultProgressMeteringPolicy
+1499:             1              8  org.jvnet.tiger_types.Types$2
+1500:             1              8  sun.java2d.SunGraphicsEnvironment$T1Filter
+1501:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.AnyAtomicDV
+1502:             1              8  java.util.concurrent.ThreadPoolExecutor$AbortPolicy
+1503:             1              8  com.sun.org.apache.xerces.internal.parsers.SecuritySupport
+1504:             1              8  java.lang.Terminator$1
+1505:             1              8  sun.reflect.GeneratedConstructorAccessor12
+1506:             1              8  org.kohsuke.stapler.Stapler$2
+1507:             1              8  hudson.model.AbstractProject$4
+1508:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.HexBinaryDV
+1509:             1              8  sun.reflect.GeneratedMethodAccessor17
+1510:             1              8  sun.reflect.GeneratedMethodAccessor10
+1511:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.AnySimpleDV
+1512:             1              8  com.sun.org.apache.xerces.internal.impl.xs.util.XSObjectListImpl$1
+1513:             1              8  sun.misc.ASCIICaseInsensitiveComparator
+1514:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.Base64BinaryDV
+1515:             1              8  javax.xml.parsers.SecuritySupport
+1516:             1              8  hudson.model.Job$2
+1517:             1              8  sun.java2d.Disposer
+1518:             1              8  sun.java2d.pipe.NullPipe
+1519:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.StringDV
+1520:             1              8  hudson.security.AuthorizationStrategy$Unsecured
+1521:             1              8  sun.reflect.GeneratedMethodAccessor16
+1522:             1              8  java.lang.ApplicationShutdownHooks
+1523:             1              8  sun.reflect.GeneratedMethodAccessor11
+1524:             1              8  net.sf.ezmorph.object.ClassMorpher
+1525:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.BooleanDV
+1526:             1              8  org.tmatesoft.svn.core.internal.io.svn.ISVNConnectorFactory$1
+1527:             1              8  sun.java2d.SunGraphicsEnvironment$TTFilter
+1528:             1              8  hudson.model.Queue$2
+1529:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.UnionDV
+1530:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.AnyURIDV
+1531:             1              8  sun.security.rsa.RSAKeyFactory
+1532:             1              8  hudson.node_monitors.ClockMonitor
+1533:             1              8  sun.reflect.GeneratedConstructorAccessor7
+1534:             1              8  sun.util.resources.LocaleData$LocaleDataResourceBundleControl
+1535:             1              8  com.sun.org.apache.xerces.internal.impl.xs.models.XSEmptyCM
+1536:             1              8  java.util.ResourceBundle$Control
+1537:             1              8  org.tmatesoft.svn.core.internal.wc.SVNFileUtil$1
+1538:             1              8  sun.reflect.GeneratedMethodAccessor15
+1539:             1              8  com.thoughtworks.xstream.converters.extended.StackTraceElementFactory
+1540:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.ListDV
+1541:             1              8  java.net.InetAddress$1
+1542:             1              8  hudson.util.CaseInsensitiveComparator
+1543:             1              8  net.sf.ezmorph.object.StringMorpher
+1544:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.DecimalDV
+1545:             1              8  hudson.tasks.BuildTrigger$DescriptorImpl$ItemListenerImpl
+1546:             1              8  java.awt.Component$2
+1547:             1              8  sun.net.www.protocol.file.Handler
+1548:             1              8  sun.java2d.pipe.DrawImage
+1549:             1              8  sun.reflect.GeneratedMethodAccessor7
+1550:             1              8  hudson.security.AuthorizationStrategy$Unsecured$1
+1551:             1              8  com.sun.org.apache.xerces.internal.impl.dv.dtd.NOTATIONDatatypeValidator
+1552:             1              8  hudson.util.EnumConverter
+1553:             1              8  java.lang.System$2
+1554:             1              8  sun.java2d.pipe.AlphaPaintPipe
+1555:             1              8  org.tmatesoft.svn.core.internal.wc.SVNFileUtil$2
+1556:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.IntegerDV
+1557:             1              8  sun.reflect.GeneratedConstructorAccessor13
+1558:             1              8  java.net.UnknownContentHandler
+1559:             1              8  winstone.jndi.WinstoneNameParser
+1560:             1              8  hudson.node_monitors.ResponseTimeMonitor
+1561:             1              8  sun.text.normalizer.NormalizerImpl$FCDTrieImpl
+1562:             1              8  sun.reflect.GeneratedMethodAccessor14
+1563:             1              8  hudson.slaves.RetentionStrategy$Always
+1564:             1              8  org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory
+1565:             1              8  java.awt.Component$1
+1566:             1              8  hudson.model.Queue$1
+1567:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.FloatDV
+1568:             1              8  sun.text.normalizer.NormalizerImpl$NormTrieImpl
+1569:             1              8  org.jvnet.tiger_types.Types$3
+1570:             1              8  com.sun.org.apache.xerces.internal.impl.xs.util.XIntPool
+1571:             1              8  org.kohsuke.stapler.jelly.groovy.GroovyFacet
+1572:             1              8  com.sun.org.apache.xerces.internal.impl.dv.dtd.NMTOKENDatatypeValidator
+1573:             1              8  sun.reflect.GeneratedConstructorAccessor14
+1574:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.EntityDV
+1575:             1              8  org.kohsuke.stapler.Stapler$3
+1576:             1              8  sun.text.normalizer.NormalizerImpl$AuxTrieImpl
+1577:             1              8  java.util.regex.Pattern$CharPropertyNames$5
+1578:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.PrecisionDecimalDV
+1579:             1              8  sun.net.www.protocol.jar.JarFileFactory
+1580:             1              8  sun.java2d.pipe.GeneralCompositePipe
+1581:             1              8  sun.reflect.GeneratedMethodAccessor13
+1582:             1              8  hudson.model.UpdateCenter$UpdateCenterConfiguration
+1583:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.DoubleDV
+1584:             1              8  org.kohsuke.stapler.jelly.DefaultScriptInvoker
+1585:             1              8  hudson.scm.SubversionWorkspaceSelector
+1586:             1              8  org.acegisecurity.context.ThreadLocalSecurityContextHolderStrategy
+1587:             1              8  hudson.model.DependencyGraph$2
+1588:             1              8  org.tmatesoft.svn.core.wc.SVNWCClient$1
+1589:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.IDREFDV
+1590:             1              8  hudson.plugins.cobertura.CoberturaPublisher$CoberturaReportFilenameFilter
+1591:             1              8  hudson.tasks.junit.CaseResult$1
+1592:             1              8  sun.reflect.GeneratedConstructorAccessor9
+1593:             1              8  java.lang.Runtime
+1594:             1              8  hudson.model.View$2
+1595:             1              8  sun.reflect.GeneratedConstructorAccessor15
+1596:             1              8  com.sun.org.apache.xerces.internal.impl.dv.xs.IDDV
+1597:             1              8  hudson.maven.reporters.MavenAbstractArtifactRecord$2
+1598:             1              8  hudson.FilePath$30
+1599:             1              8  sun.reflect.GeneratedMethodAccessor12
+Total        290831       20036384

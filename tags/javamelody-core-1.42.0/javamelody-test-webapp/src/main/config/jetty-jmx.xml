@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure id="Server" class="org.mortbay.jetty.Server">
+    <!-- =========================================================== -->
+    <!-- Initialize an mbean server                                  -->
+    <!-- =========================================================== -->
+    <!-- Use the jdk 1.5 platformMBeanServer -->
+    <Call id="MBeanServer" class="java.lang.management.ManagementFactory" name="getPlatformMBeanServer"/>
+  
+    <!-- =========================================================== -->
+    <!-- Initialize the Jetty MBean container                        -->
+    <!-- =========================================================== -->
+    <Get id="Container" name="container">
+      <Call name="addEventListener">
+        <Arg>
+          <New class="org.mortbay.management.MBeanContainer">
+            <Arg><Ref id="MBeanServer"/></Arg>
+            <!-- If using < jdk1.5 uncomment to start http adaptor -->
+            <!-- Set name="managementPort">8082</Set -->
+            <Call name="start" />
+          </New>
+        </Arg>
+      </Call>
+    </Get>   
+</Configure>
