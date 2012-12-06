@@ -47,12 +47,11 @@ import org.apache.log4j.Logger;
 class TablePopupMenu extends JPopupMenu {
 	private static final long serialVersionUID = 1L;
 
-	MBasicTable lastTable;
-
 	/**
 	 * Constructeur.
+	 * @param table MBasicTable
 	 */
-	TablePopupMenu() {
+	TablePopupMenu(final MBasicTable table) {
 		super();
 
 		final List<MPrinter> printers = getPrinters();
@@ -63,11 +62,9 @@ class TablePopupMenu extends JPopupMenu {
 				@Override
 				public void actionPerformed(final ActionEvent event) {
 					try {
-						printer.print(lastTable);
+						printer.print(table);
 					} catch (final IOException e) {
 						MSwingUtilities.showException(e);
-					} finally {
-						lastTable = null;
 					}
 				}
 			});
@@ -110,20 +107,5 @@ class TablePopupMenu extends JPopupMenu {
 		}
 		printers.add(new MJavaPrinter());
 		return printers;
-	}
-
-	/**
-	 * Affiche la popup pour la table en paramètre à la position x / y.
-	 *
-	 * @param table
-	 *           MBasicTable
-	 * @param x
-	 *           int
-	 * @param y
-	 *           int
-	 */
-	public void showForTable(final MBasicTable table, final int x, final int y) {
-		this.lastTable = table;
-		super.show(table, x, y);
 	}
 }
