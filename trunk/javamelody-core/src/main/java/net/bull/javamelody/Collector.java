@@ -63,6 +63,7 @@ class Collector { // NOPMD
 	private long lastCollectDuration;
 	private long estimatedMemorySize;
 	private long diskUsage;
+	private Date lastDateOfDeletedObsoleteFiles = new Date();
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 
@@ -301,6 +302,20 @@ class Collector { // NOPMD
 					memorySize += collectCounterData(counter);
 				}
 			}
+
+			final Calendar calendar = Calendar.getInstance();
+			final int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+			calendar.setTime(lastDateOfDeletedObsoleteFiles);
+			if (calendar.get(Calendar.DAY_OF_YEAR) != currentDayOfYear) {
+				// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
+				// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
+				try {
+					deleteObsoleteFiles();
+				} finally {
+					lastDateOfDeletedObsoleteFiles = new Date();
+				}
+			}
+
 			return memorySize;
 		}
 	}
@@ -721,15 +736,9 @@ class Collector { // NOPMD
 		final int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 		calendar.setTime(dayCounter.getStartDate());
 		if (calendar.get(Calendar.DAY_OF_YEAR) != currentDayOfYear) {
-			try {
-				// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
-				// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
-				deleteObsoleteFiles();
-			} finally {
-				// le jour a changé, on crée un compteur vide qui sera enregistré dans un nouveau fichier
-				dayCounter = new PeriodCounterFactory(dayCounter).buildNewDayCounter();
-				dayCountersByCounter.put(counter, dayCounter);
-			}
+			// le jour a changé, on crée un compteur vide qui sera enregistré dans un nouveau fichier
+			dayCounter = new PeriodCounterFactory(dayCounter).buildNewDayCounter();
+			dayCountersByCounter.put(counter, dayCounter);
 		}
 		return dayCounter;
 	}
