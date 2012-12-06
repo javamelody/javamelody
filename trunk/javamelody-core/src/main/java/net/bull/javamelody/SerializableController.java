@@ -95,13 +95,20 @@ class SerializableController {
 			return resultForSystemActions;
 		}
 		final Range range = getRangeForSerializable(httpRequest);
-		final Serializable resultForJRobins = createSerializableForJRobins(httpRequest, range);
-		if (resultForJRobins != null) {
-			return resultForJRobins;
-		}
-
 		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (THREADS_PART.equalsIgnoreCase(part)) {
+		if (JROBINS_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing
+			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
+			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
+			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
+			return getJRobinsImages(range, width, height, graphName);
+		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
+			// pour UI Swing
+			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
+			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
+			final Collection<JRobin> jrobins = collector.getOtherJRobins();
+			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
+		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
 					.getThreadInformationsList());
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
@@ -124,16 +131,33 @@ class SerializableController {
 		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing,
 			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
-			assert sqlRequest != null;
-			try {
-				// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
-				return DatabaseInformations.explainPlanFor(sqlRequest);
-			} catch (final Exception ex) {
-				return ex.toString();
-			}
+			return explainPlanFor(sqlRequest);
 		}
 
 		return createDefaultSerializable(javaInformationsList, range, messageForReport);
+	}
+
+	private Serializable getJRobinsImages(Range range, int width, int height, String graphName)
+			throws IOException {
+		if (graphName != null) {
+			final JRobin jrobin = collector.getJRobin(graphName);
+			if (jrobin != null) {
+				return jrobin.graph(range, width, height);
+			}
+			return null;
+		}
+		final Collection<JRobin> jrobins = collector.getCounterJRobins();
+		return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
+	}
+
+	private Serializable explainPlanFor(String sqlRequest) {
+		assert sqlRequest != null;
+		try {
+			// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
+			return DatabaseInformations.explainPlanFor(sqlRequest);
+		} catch (final Exception ex) {
+			return ex.toString();
+		}
 	}
 
 	private List<CounterRequestContext> getCurrentRequests() {
@@ -163,33 +187,6 @@ class SerializableController {
 				replaceParentCounters(childContexts, countersByName);
 			}
 		}
-	}
-
-	private Serializable createSerializableForJRobins(HttpServletRequest httpRequest, Range range)
-			throws IOException {
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (JROBINS_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing
-			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
-			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			if (graphName != null) {
-				final JRobin jrobin = collector.getJRobin(graphName);
-				if (jrobin != null) {
-					return jrobin.graph(range, width, height);
-				}
-				return null;
-			}
-			final Collection<JRobin> jrobins = collector.getCounterJRobins();
-			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
-		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing
-			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
-			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final Collection<JRobin> jrobins = collector.getOtherJRobins();
-			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
-		}
-		return null;
 	}
 
 	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
