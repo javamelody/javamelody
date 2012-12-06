@@ -5,7 +5,7 @@
 
 === 1.42.0 ===
 
-  * fix issue 242: just after a restart, the statistics of services (spring, ejb, guice) may be incorrectly summed with past values, if they are initialized AFTER the MonitoringFilter
+  * fix issue 242: Just after a restart, the statistics of services (spring, ejb, guice) may be incorrectly summed with past values, if they are initialized AFTER the MonitoringFilter
   * fix issue 261: Use the thread context-classloader to load the jdbc driver if used directly
   * fix issue 262: NullPointerException in MonitoringFilter.doFilter(), when the webapp is undeployed and after a timeout
   * fix issue 267: Suppress "IllegalArgumentException: Database type unknown: jdbc:sqlserver"
@@ -21,7 +21,7 @@
     * Columns of tables may be sorted, resized and moved
     * Exports with right-click for all tabular data to CSV, PDF, RTF, HTML, XML, JSON formats
     * Shortcuts, such as F5
-    * Started in one-click with the "Desktop" link at the top of the web UI. The required libraries are downloaded automatically from googlecode on the first launch (this could work better).
+    * Started in one-click with the "Desktop" link at the top of the web UI. The required libraries are downloaded automatically from googlecode on the first launch (_this could work better_).
     * Uses JavaWebStart and requires [http://java.com JRE 1.7] on the client
     * This new UI may be an alternative to the web UI for advanced users or for exports
 
