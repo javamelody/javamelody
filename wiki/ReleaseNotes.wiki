@@ -14,14 +14,14 @@
   * added: PDF report for the JNDI tree. [http://demo.javamelody.cloudbees.net/monitoring?part=jndi&path=comp&format=pdf Example] in the demo.
   * added: plugin to monitor *Liferay v6.1* or later. Documentation is [UserGuide#Liferay_Plugin here]
 
-  * added: New alternative User Interface for the monitoring reports with a *Rich Desktop Application*. Highlights :
+  * added (beta): New alternative User Interface for the monitoring reports with a *Rich Desktop Application*. Highlights :
     * All reports and data like in the web UI
     * Exports to PDF, XML and JSON formats, even if the monitored application does not have the dependencies to do the same in the web UI
     * Tabs to view different reports
     * Columns of tables may be sorted, resized and moved
     * Exports with right-click for all tabular data to CSV, PDF, RTF, HTML, XML, JSON formats
     * Shortcuts, such as F5
-    * Started in one-click with the "Desktop" link at the top of the web UI. The required libraries are downloaded automatically from googlecode on the first launch.
+    * Started in one-click with the "Desktop" link at the top of the web UI. The required libraries are downloaded automatically from googlecode on the first launch (this could work better).
     * Uses JavaWebStart and requires [http://java.com JRE 1.7] on the client
     * This new UI may be an alternative to the web UI for advanced users or for exports
 
