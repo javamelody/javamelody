@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import net.bull.javamelody.swing.MButton;
 
@@ -56,10 +57,16 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		final String graphLabel = truncate(request.getName(), 50);
 		setName(graphLabel);
 
+		final JPanel panel = new JPanel(new BorderLayout());
+		final JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane.getVerticalScrollBar().setFocusable(false);
+		scrollPane.getHorizontalScrollBar().setFocusable(false);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
 		final RemoteCollector remoteCollector = getRemoteCollector();
 		final CounterRequestDetailTablePanel counterRequestDetailTablePanel = new CounterRequestDetailTablePanel(
 				remoteCollector, request);
-		add(counterRequestDetailTablePanel, BorderLayout.NORTH);
+		panel.add(counterRequestDetailTablePanel, BorderLayout.NORTH);
 
 		if (CounterRequestTable.isRequestGraphDisplayed(getCounterByRequestId(request))) {
 			final MButton refreshButton = createRefreshButton();
@@ -76,7 +83,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 			});
 			final ChartPanel chartPanel = new ChartPanel(remoteCollector, graphName, graphLabel,
 					refreshButton);
-			add(chartPanel, BorderLayout.CENTER);
+			panel.add(chartPanel, BorderLayout.CENTER);
 		}
 
 		if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)
@@ -86,10 +93,12 @@ class CounterRequestDetailPanel extends MelodyPanel {
 			final String sqlRequestExplainPlan = remoteCollector
 					.collectSqlRequestExplainPlan(request.getName());
 			if (sqlRequestExplainPlan != null) {
-				final JPanel panel = createSqlRequestExplainPlanPanel(sqlRequestExplainPlan);
-				add(panel, BorderLayout.SOUTH);
+				final JPanel planPanel = createSqlRequestExplainPlanPanel(sqlRequestExplainPlan);
+				panel.add(planPanel, BorderLayout.SOUTH);
 			}
 		}
+
+		add(scrollPane);
 	}
 
 	private JPanel createSqlRequestExplainPlanPanel(String sqlRequestExplainPlan) {
