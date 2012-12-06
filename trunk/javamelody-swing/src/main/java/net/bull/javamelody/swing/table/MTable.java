@@ -64,14 +64,14 @@ public class MTable<T> extends MListTable<T> {
 	private static final MouseAdapter POPUP_MENU_MOUSE_LISTENER = new MouseAdapter() {
 		@Override
 		public void mouseReleased(final MouseEvent event) {
-			if (event.isPopupTrigger() || SwingUtilities.isRightMouseButton(event)) {
-				POPUP_MENU.showForTable((MBasicTable) event.getComponent(), event.getX(),
-						event.getY());
+			if (event.isPopupTrigger() || SwingUtilities.isRightMouseButton(event)
+					&& event.getComponent() instanceof MTable) {
+				final MBasicTable table = (MBasicTable) event.getComponent();
+				final TablePopupMenu tablePopupMenu = new TablePopupMenu(table);
+				tablePopupMenu.show(table, event.getX(), event.getY());
 			}
 		}
 	};
-
-	private static final TablePopupMenu POPUP_MENU = new TablePopupMenu();
 
 	/**
 	* Constructeur.
@@ -100,7 +100,6 @@ public class MTable<T> extends MListTable<T> {
 		addKeyListener(CLIPBOARD_KEY_LISTENER);
 		// listener pour afficher le popup menu
 		addMouseListener(POPUP_MENU_MOUSE_LISTENER);
-		add(POPUP_MENU);
 	}
 
 	@Override
