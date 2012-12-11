@@ -24,7 +24,7 @@ I do not have figures, but overhead is probably under 5% of cpu and of memory, e
 
 [http://fr.slideshare.net/djkarlsen/significance-of-metrics Roots conference slides] on using JavaMelody in production (slide 3).
 
-=== Dicussion, Dec 4, 2012 ===
+=== Dicussion (Dec 4, 2012) ===
 
 *iamravi*
 
