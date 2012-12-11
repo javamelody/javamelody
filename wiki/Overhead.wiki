@@ -20,6 +20,10 @@ For full disclosure, some system actions can consume some cpu. These system acti
 I do not have figures, but overhead is probably under 5% of cpu and of memory, except if you are not reasonable at all when enabling monitoring of spring or ejb3. 
 
 
+=== dkarlsen (May 23, 2011) :===
+
+[http://fr.slideshare.net/djkarlsen/significance-of-metrics Roots conference slides] on using JavaMelody in production (slide 3).
+
 === Dicussion, Dec 4, 2012 ===
 
 *iamravi*
