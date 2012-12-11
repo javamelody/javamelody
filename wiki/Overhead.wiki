@@ -2,7 +2,7 @@
 
 Overhead of monitoring tools is often a question, for example in a production environment.
 
-There were discussions about JavaMelody overhead [https://groups.google.com/forum/#!msg/javamelody/39txASF__Lw/acjcucbmxlcJ here] and [https://groups.google.com/forum/#!topic/javamelody/Em5L-ScNaxo/overview here]. I paste them here for archive.
+There were discussions about JavaMelody overhead [https://groups.google.com/forum/#!msg/javamelody/39txASF__Lw/acjcucbmxlcJ here] and [https://groups.google.com/forum/#!topic/javamelody/Em5L-ScNaxo/overview here]. I paste them below for archive.
 
 === evernat (Nov 25, 2009) :===
 
