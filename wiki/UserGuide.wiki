@@ -84,7 +84,7 @@ or MSIE8 (MSIE7 not recommended).
 
 == Overhead ==
 
-Some discussions on the monitoring *[Overhead overhead in production]* were archived for information.
+Some discussions on the monitoring [Overhead overhead in production] were archived for information.
 
 == Jenkins / Hudson Plugin ==
 
