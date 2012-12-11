@@ -88,8 +88,7 @@ I would keep it on in production normally. So that you know what the normal figu
 Yes I would recommend running javamelody in production.
   # you get stats and you know what is unusual
   # production doesn't use test data, but sharp user data which could cause problems which need to be detected
-  # JavaMelody is able to generate pdf reports and you could get
-weekly emails with these reports
+  # JavaMelody is able to generate pdf reports and you could get weekly emails with these reports
 
 Imagine this situation:
 Your application is unstable, but you don't know why. There are 500 threads running, app takes 3gb of ram and there is opened 15000 filedescriptors.
