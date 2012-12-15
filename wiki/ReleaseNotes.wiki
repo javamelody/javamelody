@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix issue 269: Compatibility of the JIRA/Confluence/Bamboo plugin with some other plugins
 
 === 1.42.0 ===
 
