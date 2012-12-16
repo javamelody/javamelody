@@ -51,6 +51,7 @@ class JnlpPage {
 		println("      <vendor>JavaMelody</vendor>");
 		println("      <description>Monitoring</description>");
 		println("      <icon href='" + codebase + "?resource=systemmonitor.png'/>");
+		println("      <offline-allowed />");
 		println("   </information>");
 		println("   <security> <all-permissions/> </security>");
 		println("   <update check='always' policy='always'/>");
