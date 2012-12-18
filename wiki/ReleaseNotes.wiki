@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 269: Compatibility of the JIRA/Confluence/Bamboo plugin with some other plugins
+  * fix issue 270: French Canadians can't choose a customized period
 
 === 1.42.0 ===
 
