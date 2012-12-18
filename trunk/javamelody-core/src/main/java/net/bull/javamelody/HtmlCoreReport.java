@@ -65,7 +65,8 @@ class HtmlCoreReport {
 			writeln("   periodForm = document.customPeriodForm;");
 			writelnCheckMandatory("periodForm.startDate", "dates_mandatory");
 			writelnCheckMandatory("periodForm.endDate", "dates_mandatory");
-			writeln("   periodForm.period.value=periodForm.startDate.value + '-' + periodForm.endDate.value;");
+			writeln("   periodForm.period.value=periodForm.startDate.value + '"
+					+ Range.CUSTOM_PERIOD_SEPARATOR + "' + periodForm.endDate.value;");
 			writeln("   return true;");
 			writeln("}");
 			writeln(SCRIPT_END);
