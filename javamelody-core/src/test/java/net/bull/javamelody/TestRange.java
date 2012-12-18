@@ -96,18 +96,20 @@ public class TestRange {
 							.getEndDate()));
 
 			// on teste le résultat en cas d'erreur de format
-			assertNotNull("parse4", Range.parse("xxxxxx-01/01/2010"));
-			assertNotNull("parse5", Range.parse("01/01/2010-xxxxxx"));
-			assertNotNull("parse6", Range.parse("01/01/2010-"));
+			assertNotNull("parse4",
+					Range.parse("xxxxxx" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2010"));
+			assertNotNull("parse5",
+					Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR + "xxxxxx"));
+			assertNotNull("parse6", Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR));
 			// on teste les bornes min et max
 			final Calendar calendar = Calendar.getInstance();
 			final int currentYear = calendar.get(Calendar.YEAR);
-			Range range = Range.parse("01/01/2000-01/01/2030");
+			Range range = Range.parse("01/01/2000" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030");
 			calendar.setTime(range.getStartDate());
 			assertTrue("parse7", calendar.get(Calendar.YEAR) >= currentYear - 2);
 			calendar.setTime(range.getEndDate());
 			assertTrue("parse7", calendar.get(Calendar.YEAR) <= currentYear);
-			range = Range.parse("01/01/2030-01/01/2030");
+			range = Range.parse("01/01/2030" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030");
 			calendar.setTime(range.getStartDate());
 			assertTrue("parse8", calendar.get(Calendar.YEAR) <= currentYear);
 		} finally {
