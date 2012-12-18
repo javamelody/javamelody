@@ -31,6 +31,8 @@ import java.util.Date;
  * @author Emeric Vernat
  */
 final class Range implements Serializable {
+	static final char CUSTOM_PERIOD_SEPARATOR = '|';
+
 	private static final long serialVersionUID = 4658258882827669495L;
 
 	private static final long MILLISECONDS_PER_DAY = 24L * 60 * 60 * 1000;
@@ -89,7 +91,7 @@ final class Range implements Serializable {
 	}
 
 	static Range parse(String value) {
-		final int index = value.indexOf('-');
+		final int index = value.indexOf(CUSTOM_PERIOD_SEPARATOR);
 		if (index == -1) {
 			return Period.valueOfIgnoreCase(value).getRange();
 		}
@@ -132,7 +134,8 @@ final class Range implements Serializable {
 	String getValue() {
 		if (period == null) {
 			final DateFormat dateFormat = I18N.createDateFormat();
-			return dateFormat.format(startDate) + '-' + dateFormat.format(endDate);
+			return dateFormat.format(startDate) + CUSTOM_PERIOD_SEPARATOR
+					+ dateFormat.format(endDate);
 		}
 		return period.getCode();
 	}
