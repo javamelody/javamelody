@@ -101,6 +101,7 @@ public class TestRange {
 			assertNotNull("parse5",
 					Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR + "xxxxxx"));
 			assertNotNull("parse6", Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR));
+			assertNotNull("parse6b", Range.parse("01/01/2011"));
 			// on teste les bornes min et max
 			final Calendar calendar = Calendar.getInstance();
 			final int currentYear = calendar.get(Calendar.YEAR);

@@ -93,7 +93,11 @@ final class Range implements Serializable {
 	static Range parse(String value) {
 		final int index = value.indexOf(CUSTOM_PERIOD_SEPARATOR);
 		if (index == -1) {
-			return Period.valueOfIgnoreCase(value).getRange();
+			try {
+				return Period.valueOfIgnoreCase(value).getRange();
+			} catch (final IllegalArgumentException e) {
+				return Period.JOUR.getRange();
+			}
 		}
 		// rq: on pourrait essayer aussi des dateFormat alternatifs,
 		// par exemple même pattern mais sans les slashs ou juste avec jour et mois
