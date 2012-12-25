@@ -212,6 +212,12 @@ public enum Parameter {
 	TRANSPORT_FORMAT("transport-format"),
 
 	/**
+	 * To fix the locale of the reports (default to null, ie locale is given by the language of the browser).<br/>
+	 * Example values: "en_US", "en", "fr_FR", "de_DE", "es_ES" or "pt_BR"
+	 */
+	LOCALE("locale"),
+
+	/**
 	 * URL du rapport de monitoring (/monitoring par défaut).
 	 */
 	MONITORING_PATH("monitoring-path"),
