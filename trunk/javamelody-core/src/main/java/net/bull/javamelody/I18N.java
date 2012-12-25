@@ -46,6 +46,8 @@ final class I18N {
 	// Locale.ROOT needs 1.6
 	private static final Locale ROOT_LOCALE = new Locale("");
 
+	private static final Locale FIXED_LOCALE = getFixedLocale();
+
 	private I18N() {
 		super();
 	}
@@ -63,6 +65,9 @@ final class I18N {
 	 * @return Locale
 	 */
 	static Locale getCurrentLocale() {
+		if (FIXED_LOCALE != null) {
+			return FIXED_LOCALE;
+		}
 		final Locale currentLocale = LOCALE_CONTEXT.get();
 		if (currentLocale == null) {
 			return Locale.getDefault();
@@ -239,5 +244,17 @@ final class I18N {
 
 	static String getCurrentDateAndTime() {
 		return createDateAndTimeFormat().format(new Date());
+	}
+
+	private static Locale getFixedLocale() {
+		final String locale = Parameters.getParameter(Parameter.LOCALE);
+		if (locale != null) {
+			for (final Locale l : Locale.getAvailableLocales()) {
+				if (l.toString().equals(locale)) {
+					return l;
+				}
+			}
+		}
+		return null;
 	}
 }
