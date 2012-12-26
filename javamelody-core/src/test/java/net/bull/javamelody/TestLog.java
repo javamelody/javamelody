@@ -141,7 +141,8 @@ public class TestLog {
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME).info(
 					"test 3");
 			final int requestsCountAfter = logCounter.getRequestsCount();
-			if (requestsCountBefore + 3 != requestsCountAfter) {
+			// cela peut ne pas être égal si un autre thread a loggué des warnings en même temps
+			if (requestsCountAfter < requestsCountBefore + 3) {
 				fail("testAppend failed, requests : " + logCounter.getRequests());
 			}
 		} finally {
