@@ -57,6 +57,9 @@ class JnlpPage {
 		println("   <update check='always' policy='always'/>");
 		println("   <resources>");
 		println("      <j2se version='1.7+' max-heap-size='300m'/>");
+		// il serait possible de télécharger le jar depuis googlecode vers le serveur,
+		// et stocker le jar sur le serveur local pour le fournir par http à javawebstart,
+		// mais dans la plupart des grandes entreprises, il faudrait connaître l'adresse du proxy pour le téléchargement
 		final String jarFileUrl;
 		if (Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL) != null) {
 			jarFileUrl = Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL);
