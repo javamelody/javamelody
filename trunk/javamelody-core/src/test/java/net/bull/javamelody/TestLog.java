@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.Collections;
 
@@ -140,7 +141,9 @@ public class TestLog {
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME).info(
 					"test 3");
 			final int requestsCountAfter = logCounter.getRequestsCount();
-			assertSame("append", requestsCountBefore + 3, requestsCountAfter);
+			if (requestsCountBefore + 3 != requestsCountAfter) {
+				fail("testAppend failed, requests : " + logCounter.getRequests());
+			}
 		} finally {
 			logbackAppender.deregister();
 			log4jAppender.deregister();
