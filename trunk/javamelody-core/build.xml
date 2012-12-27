@@ -311,8 +311,8 @@
 				<path path="build/classes" />
 				<path path="${class.path}" />
 				<fileset dir="src/main/lib">
-					<include name="junit-4.5.jar" />
-					<include name="h2-1.1.118.jar" />
+					<include name="junit-4.11.jar" />
+					<include name="h2-1.3.170.jar" />
 					<include name="easymock-2.0.jar" />
 				</fileset>
 			</classpath>
@@ -331,8 +331,9 @@
 				<path path="src/main/resources" />
 				<path path="${class.path}" />
 				<fileset dir="src/main/lib">
-					<include name="junit-4.5.jar" />
-					<include name="h2-1.1.118.jar" />
+					<include name="junit-4.11.jar" />
+					<include name="hamcrest-core-1.3.jar" />
+					<include name="h2-1.3.170.jar" />
 					<include name="easymock-2.0.jar" />
 					<include name="dom4j-1.6.1.jar" />
 					<include name="commons-collections-2.1.1.jar" />
@@ -369,7 +370,7 @@
 				<path path="${class.path}" />
 				<fileset dir="src/main/lib">
 					<include name="junit-4.5.jar" />
-					<include name="h2-1.1.118.jar" />
+					<include name="h2-1.3.170.jar" />
 					<include name="easymock-2.0.jar" />
 				</fileset>
 			</classpath>
