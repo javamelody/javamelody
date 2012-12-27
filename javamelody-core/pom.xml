@@ -228,7 +228,7 @@
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>3.0</version>
+			<version>3.1</version>
 			<!-- Utilisée uniquement pour l'exécution des tests unitaires -->
 			<scope>test</scope>
 		</dependency>

@@ -313,7 +313,7 @@
 				<fileset dir="src/main/lib">
 					<include name="junit-4.11.jar" />
 					<include name="h2-1.3.170.jar" />
-					<include name="easymock-2.0.jar" />
+					<include name="easymock-3.1.jar" />
 				</fileset>
 			</classpath>
 			<!-- -XDignore.symbol.file pour éviter warning sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
@@ -334,7 +334,7 @@
 					<include name="junit-4.11.jar" />
 					<include name="hamcrest-core-1.3.jar" />
 					<include name="h2-1.3.170.jar" />
-					<include name="easymock-2.0.jar" />
+					<include name="easymock-3.1.jar" />
 					<include name="dom4j-1.6.1.jar" />
 					<include name="commons-collections-2.1.1.jar" />
 					<include name="tomcat-juli-7.0.27.jar" />
@@ -371,7 +371,7 @@
 				<fileset dir="src/main/lib">
 					<include name="junit-4.5.jar" />
 					<include name="h2-1.3.170.jar" />
-					<include name="easymock-2.0.jar" />
+					<include name="easymock-3.1.jar" />
 				</fileset>
 			</classpath>
 			<!-- -XDignore.symbol.file pour éviter warning sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
