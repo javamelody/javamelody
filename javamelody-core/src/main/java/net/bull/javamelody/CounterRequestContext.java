@@ -94,6 +94,19 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		this.parentCounter = parentCounter;
 	}
 
+	static void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
+			Map<String, Counter> newParentCountersByName) {
+		for (final CounterRequestContext context : rootCurrentContexts) {
+			final Counter newParentCounter = newParentCountersByName.get(context.getParentCounter()
+					.getName());
+			context.setParentCounter(newParentCounter);
+			final List<CounterRequestContext> childContexts = context.getChildContexts();
+			if (!childContexts.isEmpty()) {
+				replaceParentCounters(childContexts, newParentCountersByName);
+			}
+		}
+	}
+
 	CounterRequestContext getParentContext() {
 		return parentContext;
 	}
@@ -251,24 +264,14 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		//CHECKSTYLE:ON
 		// ce clone n'est valide que pour un contexte root sans parent
 		assert getParentContext() == null;
-		return clone(null, null);
+		return clone(null);
 	}
 
-	CounterRequestContext cloneUsingParentCounters(Map<String, Counter> parentCounters) {
-		// ce clone n'est valide que pour un contexte root sans parent
-		assert getParentContext() == null;
-		return clone(null, parentCounters);
-	}
-
-	private CounterRequestContext clone(CounterRequestContext parentContextClone,
-			Map<String, Counter> parentCounters) {
-		Counter counter = getParentCounter();
+	private CounterRequestContext clone(CounterRequestContext parentContextClone) {
+		final Counter counter = getParentCounter();
 		// s'il fallait un clone du parentCounter pour sérialiser, on pourrait faire seulement ça:
 		//		final Counter parentCounterClone = new Counter(counter.getName(), counter.getStorageName(),
 		//				counter.getIconName(), counter.getChildCounterName(), null);
-		if (parentCounters != null && parentCounters.containsKey(counter.getName())) {
-			counter = parentCounters.get(counter.getName());
-		}
 		final CounterRequestContext clone = new CounterRequestContext(counter, parentContextClone,
 				getRequestName(), getCompleteRequestName(), getRemoteUser(), getThreadId(),
 				startTime, startCpuTime);
@@ -276,7 +279,7 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		clone.childDurationsSum = getChildDurationsSum();
 		final CounterRequestContext childContext = getCurrentChildContext();
 		if (childContext != null) {
-			clone.currentChildContext = childContext.clone(clone, parentCounters);
+			clone.currentChildContext = childContext.clone(clone);
 		}
 		if (childRequestsExecutionsByRequestId != null) {
 			clone.childRequestsExecutionsByRequestId = new LinkedHashMap<String, Long>(
