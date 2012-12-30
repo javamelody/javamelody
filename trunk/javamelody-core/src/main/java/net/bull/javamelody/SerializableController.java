@@ -161,32 +161,19 @@ class SerializableController {
 	}
 
 	private List<CounterRequestContext> getCurrentRequests() {
+		// note: ces contextes ont été clonés dans getRootCurrentContexts() par getOrderedRootCurrentContexts()
 		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
 		if (!rootCurrentContexts.isEmpty()) {
 			final List<Counter> counters = collector.getCounters();
 			final Map<String, Counter> countersByName = new LinkedHashMap<String, Counter>();
-			// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
 			for (final Counter counter : counters) {
 				final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
 						counter.getIconName(), counter.getChildCounterName());
 				countersByName.put(cloneLight.getName(), cloneLight);
 			}
-			replaceParentCounters(rootCurrentContexts, countersByName);
+			CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
 		}
 		return rootCurrentContexts;
-	}
-
-	private void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
-			Map<String, Counter> countersByName) {
-		for (final CounterRequestContext context : rootCurrentContexts) {
-			final Counter parentCounterClone = countersByName.get(context.getParentCounter()
-					.getName());
-			context.setParentCounter(parentCounterClone);
-			final List<CounterRequestContext> childContexts = context.getChildContexts();
-			if (!childContexts.isEmpty()) {
-				replaceParentCounters(childContexts, countersByName);
-			}
-		}
 	}
 
 	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
