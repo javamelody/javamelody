@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -165,6 +166,15 @@ class PdfOtherReport {
 			Collector collector, List<Counter> counters) throws IOException {
 		try {
 			document.open();
+
+			// on remplace les parentCounters
+			final Map<String, Counter> countersByName = new HashMap<String, Counter>();
+			for (final Counter counter : counters) {
+				countersByName.put(counter.getName(), counter);
+			}
+			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
+				CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
+			}
 			final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
 			// ce range n'a pas d'importance pour ce pdf
 			final Range range = Period.TOUT.getRange();

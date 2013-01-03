@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,21 +112,16 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 			Map<JavaInformations, List<CounterRequestContext>> currentRequests, Collector collector)
 			throws IOException {
 		final List<Counter> counters = collector.getCounters();
-		final Map<String, Counter> countersByName = new HashMap<>();
-		for (final Counter counter : counters) {
-			countersByName.put(counter.getName(), counter);
-		}
 		final Map<JavaInformations, List<CounterRequestContext>> allCurrentRequests = new LinkedHashMap<>();
 		for (final Map.Entry<JavaInformations, List<CounterRequestContext>> entry : currentRequests
 				.entrySet()) {
 			final JavaInformations javaInformations = entry.getKey();
-			// on clone les contextes pour remplacer les parentCounters
+			// on clone les contextes car les parentCounters seront remplacés
 			final List<CounterRequestContext> rootContexts = entry.getValue();
 			final List<CounterRequestContext> contexts = new ArrayList<>(rootContexts.size());
 			for (final CounterRequestContext context : rootContexts) {
 				contexts.add(context.clone());
 			}
-			CounterRequestContext.replaceParentCounters(contexts, countersByName);
 			allCurrentRequests.put(javaInformations, contexts);
 		}
 
