@@ -32,6 +32,7 @@ import java.util.Map;
  * @author Emeric Vernat
  */
 class HtmlCounterRequestContextReport {
+	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
 	private final List<CounterRequestContext> rootCurrentContexts;
 	private final Map<String, HtmlCounterReport> counterReportsByCounterName;
 	private final Map<Long, ThreadInformations> threadInformationsByThreadId;
@@ -171,6 +172,11 @@ class HtmlCounterRequestContextReport {
 		writeln("<div align='right'>");
 		writeln(I18N.getFormattedString("nb_requete_en_cours",
 				integerFormat.format(rootCurrentContexts.size())));
+		if (PDF_ENABLED) {
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		if (rootCurrentContexts.size() <= maxContextsDisplayed) {
 			final String counterName = rootCurrentContexts.get(0).getParentCounter().getName();
@@ -190,11 +196,6 @@ class HtmlCounterRequestContextReport {
 	}
 
 	void writeTitleAndDetails() throws IOException {
-		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<a href='?part=currentRequests'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		writeln("</div><br/>");
 		writeln("<img src='?resource=hourglass.png' width='24' height='24' alt='#Requetes_en_cours#' />&nbsp;");
 		writeln("<b>#Requetes_en_cours#</b>");
 		writeln("<br/><br/>");

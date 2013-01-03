@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.Map;
 class HtmlCoreReport {
 	private static final int MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT = 500;
 	private static final int MAX_THREADS_DISPLAYED_IN_MAIN_REPORT = 500;
+	private static final String SEPARATOR = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	private static final String END_DIV = "</div>";
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
@@ -349,25 +351,52 @@ class HtmlCoreReport {
 		final List<ThreadInformations> threadInformationsList = javaInformations
 				.getThreadInformationsList();
 		final boolean stackTraceEnabled = javaInformations.isStackTraceEnabled();
-		writeCurrentRequests(threadInformationsList, stackTraceEnabled,
+		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
+		writeCurrentRequests(threadInformationsList, rootCurrentContexts, stackTraceEnabled,
 				MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT, false, counterReportsByCounterName);
 	}
 
-	void writeAllCurrentRequestsAsPart(boolean onlyTitleAndDetails) throws IOException {
-		// on est dans l'application monitorée, même si c'est pour le serveur de collecte
+	void writeAllCurrentRequestsAsPart() throws IOException {
+		// on est dans l'application monitorée
+		assert collectorServer == null;
 		assert javaInformationsList.size() == 1;
-		final List<ThreadInformations> threadInformationsList = javaInformationsList.get(0)
-				.getThreadInformationsList();
-		final boolean stackTraceEnabled = javaInformationsList.get(0).isStackTraceEnabled();
-		writeCurrentRequests(threadInformationsList, stackTraceEnabled, Integer.MAX_VALUE,
-				onlyTitleAndDetails, null);
+		final JavaInformations javaInformations = javaInformationsList.get(0);
+		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
+		final Map<JavaInformations, List<CounterRequestContext>> currentRequests = Collections
+				.singletonMap(javaInformations, rootCurrentContexts);
+		writeAllCurrentRequestsAsPart(currentRequests);
+	}
+
+	void writeAllCurrentRequestsAsPart(
+			Map<JavaInformations, List<CounterRequestContext>> currentRequests) throws IOException {
+		writeln("<div  class='noPrint'>");
+		writeln("<a  href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln(SEPARATOR);
+		writeln("<a href='?part=currentRequests'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (PDF_ENABLED) {
+			writeln(SEPARATOR);
+			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
+		writeln("</div><br/>");
+		for (final Map.Entry<JavaInformations, List<CounterRequestContext>> entry : currentRequests
+				.entrySet()) {
+			final JavaInformations javaInformations = entry.getKey();
+			final List<CounterRequestContext> rootCurrentContexts = entry.getValue();
+
+			final List<ThreadInformations> threadInformationsList = javaInformations
+					.getThreadInformationsList();
+			final boolean stackTraceEnabled = javaInformations.isStackTraceEnabled();
+			writeCurrentRequests(threadInformationsList, rootCurrentContexts, stackTraceEnabled,
+					Integer.MAX_VALUE, true, null);
+		}
 	}
 
 	private void writeCurrentRequests(List<ThreadInformations> threadInformationsList,
-			boolean stackTraceEnabled, int maxContextsDisplayed, boolean onlyTitleAndDetails,
+			List<CounterRequestContext> rootCurrentContexts, boolean stackTraceEnabled,
+			int maxContextsDisplayed, boolean onlyTitleAndDetails,
 			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
 		// counterReportsByCounterName peut être null
-		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
 		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
 				rootCurrentContexts, counterReportsByCounterName, threadInformationsList,
 				stackTraceEnabled, maxContextsDisplayed, writer);
@@ -427,7 +456,7 @@ class HtmlCoreReport {
 			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
 					javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()));
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writeln(SEPARATOR);
 			final List<ThreadInformations> threadInformationsList = javaInformations
 					.getThreadInformationsList();
 			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
@@ -452,8 +481,7 @@ class HtmlCoreReport {
 		final Counter counter = collector.getRangeCounter(range, counterName);
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
-		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
-		writeln(separator);
+		writeln(SEPARATOR);
 		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter="
 				+ counter.getName()
 				+ (requestId == null ? "" : "&amp;graph=" + I18N.urlEncode(requestId));
@@ -461,7 +489,7 @@ class HtmlCoreReport {
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 
 		if (PDF_ENABLED) {
-			writeln(separator);
+			writeln(SEPARATOR);
 			write(hrefStart);
 			writeln("&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -538,7 +566,7 @@ class HtmlCoreReport {
 			writeln(I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
 					javaInformations.getHost()));
 			writeln("</b>");
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writeln(SEPARATOR);
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
@@ -561,7 +589,7 @@ class HtmlCoreReport {
 			writeln(I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
 					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount()));
 			writeln("</b>");
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writeln(SEPARATOR);
 			final String id = "job_" + i;
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");

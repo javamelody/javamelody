@@ -254,9 +254,7 @@ public class TestHtmlReport {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 
-		htmlReport.writeAllCurrentRequestsAsPart(true);
-		assertNotEmptyAndClear(writer);
-		htmlReport.writeAllCurrentRequestsAsPart(false);
+		htmlReport.writeAllCurrentRequestsAsPart();
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeAllThreadsAsPart();
 		assertNotEmptyAndClear(writer);

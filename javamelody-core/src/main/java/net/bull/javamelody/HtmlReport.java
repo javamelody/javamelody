@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,15 +82,23 @@ class HtmlReport {
 		HtmlCoreReport.writeAddAndRemoveApplicationLinks(currentApplication, writer);
 	}
 
-	void writeAllCurrentRequestsAsPart(boolean withoutHeaders) throws IOException {
-		if (withoutHeaders) {
-			// affichage pour serveur de collecte
-			htmlCoreReport.writeAllCurrentRequestsAsPart(false);
+	void writeAllCurrentRequestsAsPart() throws IOException {
+		writeHtmlHeader();
+		if (collectorServer == null) {
+			htmlCoreReport.writeAllCurrentRequestsAsPart();
 		} else {
-			writeHtmlHeader();
-			htmlCoreReport.writeAllCurrentRequestsAsPart(true);
-			writeHtmlFooter();
+			final Map<JavaInformations, List<CounterRequestContext>> currentRequests = collectorServer
+					.collectCurrentRequests(collector.getApplication());
+			final Map<String, Counter> countersByName = new HashMap<String, Counter>();
+			for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
+				countersByName.put(counter.getName(), counter);
+			}
+			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
+				CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
+			}
+			htmlCoreReport.writeAllCurrentRequestsAsPart(currentRequests);
 		}
+		writeHtmlFooter();
 	}
 
 	void writeAllThreadsAsPart() throws IOException {
