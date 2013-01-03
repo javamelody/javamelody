@@ -21,6 +21,7 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
+import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
@@ -34,6 +35,8 @@ import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +77,7 @@ class PdfController {
 				pdfReport.toPdf();
 			} else {
 				try {
-					doPdfPart(httpRequest, httpResponse, part);
+					doPdfPart(httpRequest, httpResponse, part, javaInformationsList);
 				} catch (final IOException e) { // NOPMD
 					throw e;
 				} catch (final Exception e) {
@@ -88,21 +91,14 @@ class PdfController {
 	}
 
 	private void doPdfPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			String part) throws Exception { // NOPMD
-		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			doSessions(httpResponse);
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			doProcesses(httpResponse);
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			final int index = DatabaseInformations.parseRequestIndex(httpRequest
-					.getParameter(REQUEST_PARAMETER));
-			doDatabase(httpResponse, index);
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			doJndi(httpResponse, httpRequest.getParameter(PATH_PARAMETER));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			doMBeans(httpResponse);
-		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			doHeapHisto(httpResponse);
+			String part, List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
+		final boolean done = doPdfPartForSystemActions(httpRequest, httpResponse, part);
+		if (done) {
+			return;
+		}
+		if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			doCurrentRequests(httpResponse, javaInformationsList, range);
 		} else if (RUNTIME_DEPENDENCIES_PART.equalsIgnoreCase(part)) {
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
@@ -121,6 +117,57 @@ class PdfController {
 		} else {
 			throw new IllegalArgumentException(part);
 		}
+	}
+
+	private boolean doPdfPartForSystemActions(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String part) throws Exception { // NOPMD
+		if (SESSIONS_PART.equalsIgnoreCase(part)) {
+			doSessions(httpResponse);
+		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+			doProcesses(httpResponse);
+		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+			final int index = DatabaseInformations.parseRequestIndex(httpRequest
+					.getParameter(REQUEST_PARAMETER));
+			doDatabase(httpResponse, index);
+		} else if (JNDI_PART.equalsIgnoreCase(part)) {
+			doJndi(httpResponse, httpRequest.getParameter(PATH_PARAMETER));
+		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+			doMBeans(httpResponse);
+		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+			doHeapHisto(httpResponse);
+		} else {
+			// pas pour nous
+			return false;
+		}
+		// fait et ok
+		return true;
+	}
+
+	private void doCurrentRequests(HttpServletResponse httpResponse,
+			List<JavaInformations> javaInformationsList, final Range range) throws IOException {
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
+				httpResponse.getOutputStream());
+		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
+		final Map<JavaInformations, List<CounterRequestContext>> currentRequests;
+		if (!isFromCollectorServer()) {
+			// on est dans l'application monitorée
+			assert collectorServer == null;
+			assert javaInformationsList.size() == 1;
+			final JavaInformations javaInformations = javaInformationsList.get(0);
+			final List<CounterRequestContext> rootCurrentContexts = collector
+					.getRootCurrentContexts();
+			currentRequests = Collections.singletonMap(javaInformations, rootCurrentContexts);
+		} else {
+			currentRequests = collectorServer.collectCurrentRequests(collector.getApplication());
+			final Map<String, Counter> countersByName = new HashMap<String, Counter>();
+			for (final Counter counter : counters) {
+				countersByName.put(counter.getName(), counter);
+			}
+			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
+				CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
+			}
+		}
+		pdfOtherReport.writeAllCurrentRequestsAsPart(currentRequests, collector, counters);
 	}
 
 	private void doSessions(HttpServletResponse httpResponse) throws IOException {
