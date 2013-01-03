@@ -20,12 +20,15 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.Phrase;
 
 /**
  * Rapports pdf secondaires (avec iText).
@@ -150,6 +153,41 @@ class PdfOtherReport {
 			for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
 				addParagraph(entry.getKey(), "mbeans.png");
 				new PdfMBeansReport(entry.getValue(), document).toPdf();
+			}
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
+	void writeAllCurrentRequestsAsPart(
+			Map<JavaInformations, List<CounterRequestContext>> currentRequests,
+			Collector collector, List<Counter> counters) throws IOException {
+		try {
+			document.open();
+			final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
+			// ce range n'a pas d'importance pour ce pdf
+			final Range range = Period.TOUT.getRange();
+			for (final Counter counter : counters) {
+				final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter,
+						range, false, document);
+				pdfCounterReports.add(pdfCounterReport);
+			}
+			final Font normalFont = PdfFonts.NORMAL.getFont();
+			for (final Map.Entry<JavaInformations, List<CounterRequestContext>> entry : currentRequests
+					.entrySet()) {
+				final JavaInformations javaInformations = entry.getKey();
+				final List<CounterRequestContext> rootCurrentContexts = entry.getValue();
+				addParagraph(getI18nString("Requetes_en_cours"), "hourglass.png");
+				if (rootCurrentContexts.isEmpty()) {
+					add(new Phrase(getI18nString("Aucune_requete_en_cours"), normalFont));
+				} else {
+					final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
+							rootCurrentContexts, pdfCounterReports,
+							javaInformations.getThreadInformationsList(),
+							javaInformations.isStackTraceEnabled(), pdfDocumentFactory, document);
+					pdfCounterRequestContextReport.writeContextDetails();
+				}
 			}
 		} catch (final DocumentException e) {
 			throw createIOException(e);
