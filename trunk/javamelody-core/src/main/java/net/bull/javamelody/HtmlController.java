@@ -125,9 +125,7 @@ class HtmlController {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestUsages(graphName);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
-			doCurrentRequests(htmlReport, withoutHeaders);
+			doCurrentRequests(htmlReport);
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			htmlReport.writeAllThreadsAsPart();
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
@@ -187,14 +185,8 @@ class HtmlController {
 		}
 	}
 
-	private void doCurrentRequests(HtmlReport htmlReport, boolean withoutHeaders)
-			throws IOException {
-		if (isFromCollectorServer()) {
-			// le html des requêtes en cours dans une page à part n'est utile que depuis une
-			// application monitorée (le serveur de collecte n'a pas les données requises)
-			throw new IllegalStateException();
-		}
-		htmlReport.writeAllCurrentRequestsAsPart(withoutHeaders);
+	private void doCurrentRequests(HtmlReport htmlReport) throws IOException {
+		htmlReport.writeAllCurrentRequestsAsPart();
 	}
 
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {

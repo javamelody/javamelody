@@ -195,10 +195,6 @@ class CollectorController {
 		} else if (POM_XML_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, POM_XML_PART);
-		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(partParameter)) {
-			// TODO supprimer ce if et récupérer les données sérialisées dans HtmlController avec collectorServer.collectCurrentRequests(getApplication()) ?
-			doMultiHtmlProxy(req, resp, application, CURRENT_REQUESTS_PART, "Requetes_en_cours",
-					null, "hourglass.png");
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
 					"connexions_intro", "db.png");
