@@ -36,7 +36,6 @@ import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -155,17 +154,10 @@ class PdfController {
 			assert javaInformationsList.size() == 1;
 			final JavaInformations javaInformations = javaInformationsList.get(0);
 			final List<CounterRequestContext> rootCurrentContexts = collector
-					.getRootCurrentContexts();
+					.getRootCurrentContexts(counters);
 			currentRequests = Collections.singletonMap(javaInformations, rootCurrentContexts);
 		} else {
 			currentRequests = collectorServer.collectCurrentRequests(collector.getApplication());
-			final Map<String, Counter> countersByName = new HashMap<String, Counter>();
-			for (final Counter counter : counters) {
-				countersByName.put(counter.getName(), counter);
-			}
-			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
-				CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
-			}
 		}
 		pdfOtherReport.writeAllCurrentRequestsAsPart(currentRequests, collector, counters);
 	}
