@@ -45,6 +45,12 @@ class CounterRequestContextData {
 
 	private final Map<Counter, CounterRequestAggregation> aggregationsByCounter = new HashMap<>();
 
+	private final boolean stackTraceEnabled;
+
+	private final boolean childHitsDisplayed;
+
+	private final boolean remoteUserDisplayed;
+
 	CounterRequestContextData(List<Counter> counters, List<CounterRequestContext> currentRequests,
 			JavaInformations javaInformations) {
 		super();
@@ -75,6 +81,27 @@ class CounterRequestContextData {
 			final CounterRequest request = requestsById.get(requestId);
 			allRequests.add(request);
 		}
+
+		this.stackTraceEnabled = javaInformations.isStackTraceEnabled();
+
+		boolean myChildHitsDisplayed = false;
+		for (final CounterRequestContext rootCurrentContext : getRootContexts()) {
+			if (rootCurrentContext.getParentCounter().getChildCounterName() != null) {
+				// one root has child
+				myChildHitsDisplayed = true;
+				break;
+			}
+		}
+		this.childHitsDisplayed = myChildHitsDisplayed;
+
+		boolean myRemoteUserDisplayed = false;
+		for (final CounterRequestContext context : getRootContexts()) {
+			if (context.getRemoteUser() != null) {
+				myRemoteUserDisplayed = true;
+				break;
+			}
+		}
+		this.remoteUserDisplayed = myRemoteUserDisplayed;
 	}
 
 	private Map<String, CounterRequest> mapAllRequestsById() {
@@ -103,6 +130,18 @@ class CounterRequestContextData {
 			return threadInformationsById.get(counterRequestContext.getThreadId());
 		}
 		return null;
+	}
+
+	boolean isStackTraceEnabled() {
+		return stackTraceEnabled;
+	}
+
+	boolean isChildHitsDisplayed() {
+		return childHitsDisplayed;
+	}
+
+	boolean isRemoteUserDisplayed() {
+		return remoteUserDisplayed;
 	}
 
 	List<CounterRequestContext> getRootContexts() {

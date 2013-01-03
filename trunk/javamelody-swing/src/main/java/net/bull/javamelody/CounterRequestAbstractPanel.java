@@ -54,11 +54,15 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 	private final MTable<CounterRequest> table;
 
 	CounterRequestAbstractPanel(RemoteCollector remoteCollector) {
+		this(remoteCollector, new CounterRequestTable(remoteCollector));
+	}
+
+	CounterRequestAbstractPanel(RemoteCollector remoteCollector, CounterRequestTable table) {
 		super(remoteCollector);
 		// comme dans ScrollingPanel, on ne peut utiliser collector.getRangeCountersToBeDisplayed(range),
 		// en revanche collector.getCounters() contient ici les bonnes données
 		this.counters = getCollector().getCounters();
-		this.table = new CounterRequestTable(remoteCollector);
+		this.table = table;
 	}
 
 	protected JPanel createButtonsPanel(boolean includeUsagesButton) {
@@ -149,7 +153,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		MainPanel.addOngletFromChild(this, panel);
 	}
 
-	Icon getCounterIcon(Counter counter, final int margin) {
+	static Icon getCounterIcon(Counter counter, final int margin) {
 		if (counter == null || counter.getIconName() == null) {
 			return null;
 		}

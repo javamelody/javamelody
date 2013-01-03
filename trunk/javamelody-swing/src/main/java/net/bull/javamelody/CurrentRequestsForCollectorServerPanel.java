@@ -20,8 +20,10 @@ package net.bull.javamelody;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +114,31 @@ class CurrentRequestsForCollectorServerPanel extends MelodyPanel {
 				}
 			}
 		});
-		return Utilities.createButtonsPanel(refreshButton);
+
+		final MButton pdfButton = createPdfButton();
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+
+		return Utilities.createButtonsPanel(refreshButton, pdfButton);
+	}
+
+	final void actionPdf() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
+		try {
+			CounterRequestContextPanel.writeAllCurrentRequestsAsPart(pdfOtherReport,
+					currentRequests, getCollector());
+		} finally {
+			pdfOtherReport.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 }
