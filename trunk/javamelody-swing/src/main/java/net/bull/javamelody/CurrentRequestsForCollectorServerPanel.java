@@ -93,6 +93,7 @@ class CurrentRequestsForCollectorServerPanel extends MelodyPanel {
 			final List<CounterRequestContext> contexts = entry.getValue();
 			final CounterRequestContextPanel contextsPanel = new CounterRequestContextPanel(
 					getRemoteCollector(), contexts, javaInformations);
+			contextsPanel.addCurrentRequestsCount(contexts.size());
 			panel.add(contextsPanel);
 		}
 
