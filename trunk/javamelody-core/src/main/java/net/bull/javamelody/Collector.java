@@ -150,7 +150,7 @@ class Collector { // NOPMD
 		return null;
 	}
 
-	List<CounterRequestContext> getRootCurrentContexts() {
+	List<CounterRequestContext> getRootCurrentContexts(List<Counter> newParentCounters) {
 		final List<CounterRequestContext> rootCurrentContexts = new ArrayList<CounterRequestContext>();
 		for (final Counter counter : counters) {
 			if (counter.isDisplayed()) {
@@ -162,6 +162,14 @@ class Collector { // NOPMD
 		if (rootCurrentContexts.size() > 1) {
 			Collections.sort(rootCurrentContexts, Collections
 					.reverseOrder(new CounterRequestContextComparator(System.currentTimeMillis())));
+
+			final Map<String, Counter> newParentCountersByName = new HashMap<String, Counter>(
+					newParentCounters.size());
+			for (final Counter counter : newParentCounters) {
+				newParentCountersByName.put(counter.getName(), counter);
+			}
+			CounterRequestContext.replaceParentCounters(rootCurrentContexts,
+					newParentCountersByName);
 		}
 		return rootCurrentContexts;
 	}

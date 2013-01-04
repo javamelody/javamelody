@@ -354,8 +354,8 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
-				collector2.getRootCurrentContexts(), null, new ArrayList<ThreadInformations>(),
-				false, 500, writer);
+				collector2.getRootCurrentContexts(collector2.getCounters()), null,
+				new ArrayList<ThreadInformations>(), false, 500, writer);
 		htmlCounterRequestContextReport.toHtml();
 		assertNotEmptyAndClear(writer);
 	}

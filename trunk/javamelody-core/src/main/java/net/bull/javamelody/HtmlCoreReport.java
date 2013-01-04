@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +183,8 @@ class HtmlCoreReport {
 		writeGraphs();
 		writeln(END_DIV);
 
-		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters();
+		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
+		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters(counters);
 		if (range.getPeriod() == Period.TOUT && counterReportsByCounterName.size() > 1) {
 			writeln("<div align='right'>");
 			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
@@ -198,7 +198,7 @@ class HtmlCoreReport {
 			write("<h3><a name='currentRequests'></a>");
 			writeln("<img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>#Requetes_en_cours#</h3>");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
-			writeCurrentRequests(javaInformationsList.get(0), counterReportsByCounterName);
+			writeCurrentRequests(javaInformationsList.get(0), counters, counterReportsByCounterName);
 		}
 
 		writeln("<h3><a name='systeminfo'></a><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
@@ -262,9 +262,9 @@ class HtmlCoreReport {
 		writeln("");
 	}
 
-	private Map<String, HtmlCounterReport> writeCounters() throws IOException {
+	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters) throws IOException {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
-		for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
+		for (final Counter counter : counters) {
 			final HtmlCounterReport htmlCounterReport = writeCounter(counter);
 			counterReportsByCounterName.put(counter.getName(), htmlCounterReport);
 		}
@@ -346,25 +346,15 @@ class HtmlCoreReport {
 		}
 	}
 
-	private void writeCurrentRequests(JavaInformations javaInformations,
+	private void writeCurrentRequests(JavaInformations javaInformations, List<Counter> counters,
 			Map<String, HtmlCounterReport> counterReportsByCounterName) throws IOException {
 		final List<ThreadInformations> threadInformationsList = javaInformations
 				.getThreadInformationsList();
 		final boolean stackTraceEnabled = javaInformations.isStackTraceEnabled();
-		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
+		final List<CounterRequestContext> rootCurrentContexts = collector
+				.getRootCurrentContexts(counters);
 		writeCurrentRequests(threadInformationsList, rootCurrentContexts, stackTraceEnabled,
 				MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT, false, counterReportsByCounterName);
-	}
-
-	void writeAllCurrentRequestsAsPart() throws IOException {
-		// on est dans l'application monitorée
-		assert collectorServer == null;
-		assert javaInformationsList.size() == 1;
-		final JavaInformations javaInformations = javaInformationsList.get(0);
-		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
-		final Map<JavaInformations, List<CounterRequestContext>> currentRequests = Collections
-				.singletonMap(javaInformations, rootCurrentContexts);
-		writeAllCurrentRequestsAsPart(currentRequests);
 	}
 
 	void writeAllCurrentRequestsAsPart(

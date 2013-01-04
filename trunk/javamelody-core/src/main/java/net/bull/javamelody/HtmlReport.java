@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ class HtmlReport {
 
 	private final Collector collector;
 	private final CollectorServer collectorServer;
+	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
 	private final Writer writer;
 	private final HtmlCoreReport htmlCoreReport;
@@ -54,6 +56,7 @@ class HtmlReport {
 
 		this.collector = collector;
 		this.collectorServer = collectorServer;
+		this.javaInformationsList = javaInformationsList;
 		this.range = range;
 		this.writer = writer;
 		this.htmlCoreReport = new HtmlCoreReport(collector, collectorServer, javaInformationsList,
@@ -84,20 +87,25 @@ class HtmlReport {
 
 	void writeAllCurrentRequestsAsPart() throws IOException {
 		writeHtmlHeader();
+		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
+		final Map<JavaInformations, List<CounterRequestContext>> currentRequests;
 		if (collectorServer == null) {
-			htmlCoreReport.writeAllCurrentRequestsAsPart();
+			assert javaInformationsList.size() == 1;
+			final JavaInformations javaInformations = javaInformationsList.get(0);
+			final List<CounterRequestContext> rootCurrentContexts = collector
+					.getRootCurrentContexts(counters);
+			currentRequests = Collections.singletonMap(javaInformations, rootCurrentContexts);
 		} else {
-			final Map<JavaInformations, List<CounterRequestContext>> currentRequests = collectorServer
-					.collectCurrentRequests(collector.getApplication());
+			currentRequests = collectorServer.collectCurrentRequests(collector.getApplication());
 			final Map<String, Counter> countersByName = new HashMap<String, Counter>();
-			for (final Counter counter : collector.getRangeCountersToBeDisplayed(range)) {
+			for (final Counter counter : counters) {
 				countersByName.put(counter.getName(), counter);
 			}
 			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
 				CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
 			}
-			htmlCoreReport.writeAllCurrentRequestsAsPart(currentRequests);
 		}
+		htmlCoreReport.writeAllCurrentRequestsAsPart(currentRequests);
 		writeHtmlFooter();
 	}
 

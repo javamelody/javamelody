@@ -292,8 +292,9 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
-				collector2.getRootCurrentContexts(), new ArrayList<PdfCounterReport>(),
-				new ArrayList<ThreadInformations>(), false, pdfDocumentFactory, document);
+				collector2.getRootCurrentContexts(collector2.getCounters()),
+				new ArrayList<PdfCounterReport>(), new ArrayList<ThreadInformations>(), false,
+				pdfDocumentFactory, document);
 		pdfCounterRequestContextReport.toPdf();
 		document.close();
 		assertNotEmptyAndClear(output);
