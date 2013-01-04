@@ -68,13 +68,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 	CounterRequestContextPanel createDetailsPanel(
 			final List<CounterRequestContext> currentRequests, MButton detailsButton) {
-		final CounterRequestContextPanel detailsPanel = new CounterRequestContextPanel(
-				getRemoteCollector(), currentRequests, javaInformations);
-		final DecimalFormat integerFormat = I18N.createIntegerFormat();
-		final String text = I18N.getFormattedString("nb_requete_en_cours",
-				integerFormat.format(currentRequests.size()))
-				+ "     ";
-		buttonsPanel.add(new JLabel(text), 0);
+		addCurrentRequestsCount(currentRequests.size());
 
 		final MButton pdfButton = createPdfButton();
 		pdfButton.addActionListener(new ActionListener() {
@@ -91,7 +85,16 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 		buttonsPanel.add(detailsButton);
 
-		return detailsPanel;
+		return new CounterRequestContextPanel(getRemoteCollector(), currentRequests,
+				javaInformations);
+	}
+
+	void addCurrentRequestsCount(int currentRequestsSize) {
+		final DecimalFormat integerFormat = I18N.createIntegerFormat();
+		final String text = I18N.getFormattedString("nb_requete_en_cours",
+				integerFormat.format(currentRequestsSize))
+				+ "     ";
+		buttonsPanel.add(new JLabel(text), 0);
 	}
 
 	final void actionPdf(List<CounterRequestContext> rootContexts) throws IOException {
