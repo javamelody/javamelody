@@ -51,7 +51,7 @@ class PdfCounterRequestContextReport {
 	private final Document document;
 	private final boolean childHitsDisplayed;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final long timeOfSnapshot = System.currentTimeMillis();
+	private long timeOfSnapshot = System.currentTimeMillis();
 	private final boolean stackTraceEnabled;
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font normalFont = PdfFonts.NORMAL.getFont();
@@ -92,6 +92,10 @@ class PdfCounterRequestContextReport {
 		}
 		this.childHitsDisplayed = oneRootHasChild;
 		this.stackTraceEnabled = stackTraceEnabled;
+	}
+
+	void setTimeOfSnapshot(long timeOfSnapshot) {
+		this.timeOfSnapshot = timeOfSnapshot;
 	}
 
 	void toPdf() throws DocumentException, IOException {

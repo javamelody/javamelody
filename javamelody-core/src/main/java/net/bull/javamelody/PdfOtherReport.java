@@ -163,7 +163,7 @@ class PdfOtherReport {
 
 	void writeAllCurrentRequestsAsPart(
 			Map<JavaInformations, List<CounterRequestContext>> currentRequests,
-			Collector collector, List<Counter> counters) throws IOException {
+			Collector collector, List<Counter> counters, long timeOfSnapshot) throws IOException {
 		try {
 			document.open();
 
@@ -196,6 +196,7 @@ class PdfOtherReport {
 							rootCurrentContexts, pdfCounterReports,
 							javaInformations.getThreadInformationsList(),
 							javaInformations.isStackTraceEnabled(), pdfDocumentFactory, document);
+					pdfCounterRequestContextReport.setTimeOfSnapshot(timeOfSnapshot);
 					pdfCounterRequestContextReport.writeContextDetails();
 				}
 			}

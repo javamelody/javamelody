@@ -159,7 +159,9 @@ class PdfController {
 		} else {
 			currentRequests = collectorServer.collectCurrentRequests(collector.getApplication());
 		}
-		pdfOtherReport.writeAllCurrentRequestsAsPart(currentRequests, collector, counters);
+		final long timeOfSnapshot = System.currentTimeMillis();
+		pdfOtherReport.writeAllCurrentRequestsAsPart(currentRequests, collector, counters,
+				timeOfSnapshot);
 	}
 
 	private void doSessions(HttpServletResponse httpResponse) throws IOException {

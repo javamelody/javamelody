@@ -114,6 +114,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 	static void writeAllCurrentRequestsAsPart(PdfOtherReport pdfOtherReport,
 			Map<JavaInformations, List<CounterRequestContext>> currentRequests, Collector collector)
 			throws IOException {
+		long timeOfSnapshot = System.currentTimeMillis();
 		final List<Counter> counters = collector.getCounters();
 		final Map<JavaInformations, List<CounterRequestContext>> allCurrentRequests = new LinkedHashMap<>();
 		for (final Map.Entry<JavaInformations, List<CounterRequestContext>> entry : currentRequests
@@ -121,6 +122,11 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 			final JavaInformations javaInformations = entry.getKey();
 			// on clone les contextes car les parentCounters seront remplacés
 			final List<CounterRequestContext> rootContexts = entry.getValue();
+			if (!rootContexts.isEmpty()) {
+				// s'il existe une requête en cours, on récupère l'heure du snapshot plutôt que l'heure courante,
+				// sinon les durées écoulées sont surévaluées pour les requêtes terminées désormais
+				timeOfSnapshot = rootContexts.get(0).getParentCounter().getStartDate().getTime();
+			}
 			final List<CounterRequestContext> contexts = new ArrayList<>(rootContexts.size());
 			for (final CounterRequestContext context : rootContexts) {
 				contexts.add(context.clone());
@@ -128,6 +134,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 			allCurrentRequests.put(javaInformations, contexts);
 		}
 
-		pdfOtherReport.writeAllCurrentRequestsAsPart(allCurrentRequests, collector, counters);
+		pdfOtherReport.writeAllCurrentRequestsAsPart(allCurrentRequests, collector, counters,
+				timeOfSnapshot);
 	}
 }
