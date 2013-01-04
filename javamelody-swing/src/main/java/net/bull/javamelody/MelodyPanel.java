@@ -96,8 +96,15 @@ class MelodyPanel extends JPanel {
 
 	final File createTempFileForPdf() {
 		final String application = getRemoteCollector().getApplication();
-		final File tempFile = new File(System.getProperty("java.io.tmpdir"),
+		File tempFile = new File(System.getProperty("java.io.tmpdir"),
 				PdfReport.getFileName(application));
+		final String path = tempFile.getPath();
+		int i = 1;
+		while (tempFile.exists()) {
+			tempFile = new File(path.replace(".pdf", "-" + i + ".pdf"));
+			i++;
+		}
+		// on essayera de le supprimer à la fin, s'il n'est pas encore ouvert dans le reader
 		tempFile.deleteOnExit();
 		return tempFile;
 	}
