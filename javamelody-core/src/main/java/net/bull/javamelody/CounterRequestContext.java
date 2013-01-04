@@ -99,7 +99,10 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		for (final CounterRequestContext context : rootCurrentContexts) {
 			final Counter newParentCounter = newParentCountersByName.get(context.getParentCounter()
 					.getName());
-			context.setParentCounter(newParentCounter);
+			if (newParentCounter != null) {
+				// si le counter n'est pas/plus affiché, newParentCounter peut être null
+				context.setParentCounter(newParentCounter);
+			}
 			final List<CounterRequestContext> childContexts = context.getChildContexts();
 			if (!childContexts.isEmpty()) {
 				replaceParentCounters(childContexts, newParentCountersByName);

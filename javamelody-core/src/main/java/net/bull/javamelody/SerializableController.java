@@ -161,19 +161,16 @@ class SerializableController {
 	}
 
 	private List<CounterRequestContext> getCurrentRequests() {
-		// note: ces contextes ont été clonés dans getRootCurrentContexts() par getOrderedRootCurrentContexts()
-		final List<CounterRequestContext> rootCurrentContexts = collector.getRootCurrentContexts();
-		if (!rootCurrentContexts.isEmpty()) {
-			final List<Counter> counters = collector.getCounters();
-			final Map<String, Counter> countersByName = new LinkedHashMap<String, Counter>();
-			for (final Counter counter : counters) {
-				final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
-						counter.getIconName(), counter.getChildCounterName());
-				countersByName.put(cloneLight.getName(), cloneLight);
-			}
-			CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
+		final List<Counter> counters = collector.getCounters();
+		final List<Counter> newCounters = new ArrayList<Counter>();
+		for (final Counter counter : counters) {
+			final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
+					counter.getIconName(), counter.getChildCounterName());
+			newCounters.add(cloneLight);
 		}
-		return rootCurrentContexts;
+
+		// note: ces contextes ont été clonés dans getRootCurrentContexts(newCounters) par getOrderedRootCurrentContexts()
+		return collector.getRootCurrentContexts(newCounters);
 	}
 
 	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,

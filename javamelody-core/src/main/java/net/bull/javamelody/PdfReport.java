@@ -146,14 +146,15 @@ class PdfReport { // NOPMD
 		addParagraph(buildSummary(), "systemmonitor.png");
 		writeGraphs(collector.getCounterJRobins(), smallGraphs);
 
-		final List<PdfCounterReport> pdfCounterReports = writeCounters();
+		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(counterRange);
+		final List<PdfCounterReport> pdfCounterReports = writeCounters(counters);
 
 		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<PdfCounterRequestContextReport>();
 		if (!collectorServer) {
 			addParagraph(getI18nString("Requetes_en_cours"), "hourglass.png");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
 			pdfCounterRequestContextReports.addAll(writeCurrentRequests(
-					javaInformationsList.get(0), pdfCounterReports));
+					javaInformationsList.get(0), counters, pdfCounterReports));
 		}
 
 		add(new Phrase("\n", normalFont));
@@ -211,8 +212,6 @@ class PdfReport { // NOPMD
 			addParagraph(getI18nString("Caches_detailles"), "caches.png");
 			writeCaches(true);
 		}
-
-		//		writePoweredBy();
 
 		writeDurationAndOverhead();
 	}
@@ -299,9 +298,10 @@ class PdfReport { // NOPMD
 		document.newPage();
 	}
 
-	private List<PdfCounterReport> writeCounters() throws IOException, DocumentException {
+	private List<PdfCounterReport> writeCounters(List<Counter> counters) throws IOException,
+			DocumentException {
 		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
-		for (final Counter counter : collector.getRangeCountersToBeDisplayed(counterRange)) {
+		for (final Counter counter : counters) {
 			pdfCounterReports.add(writeCounter(counter));
 		}
 		return pdfCounterReports;
@@ -339,12 +339,12 @@ class PdfReport { // NOPMD
 	}
 
 	private List<PdfCounterRequestContextReport> writeCurrentRequests(
-			JavaInformations javaInformations, List<PdfCounterReport> pdfCounterReports)
-			throws IOException, DocumentException {
+			JavaInformations javaInformations, List<Counter> counters,
+			List<PdfCounterReport> pdfCounterReports) throws IOException, DocumentException {
 		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<PdfCounterRequestContextReport>();
 		final List<CounterRequestContext> rootCurrentContexts;
 		if (currentRequests == null) {
-			rootCurrentContexts = collector.getRootCurrentContexts();
+			rootCurrentContexts = collector.getRootCurrentContexts(counters);
 		} else {
 			rootCurrentContexts = currentRequests;
 		}
@@ -450,22 +450,6 @@ class PdfReport { // NOPMD
 		}
 		return false;
 	}
-
-	//	private void writePoweredBy() throws DocumentException, IOException {
-	//		final Paragraph paragraph = new Paragraph();
-	//		paragraph.setAlignment(ElementTags.ALIGN_CENTER);
-	//		paragraph.add(new Phrase("\nPowered by   ", normalFont));
-	//		final Image imageBull = PdfDocumentFactory.getImage("logobull.png");
-	//		imageBull.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.bull.com/fr/"));
-	//		imageBull.scalePercent(50);
-	//		paragraph.add(new Chunk(imageBull, 0, 0));
-	//		paragraph.add(new Phrase("     "));
-	//		final Image imageNovaforge = PdfDocumentFactory.getImage("Novaforge2.png");
-	//		imageNovaforge.setAnnotation(new Annotation(0, 0, 0, 0, "http://www.bull.com/fr/services/novaforge.php"));
-	//		imageNovaforge.scalePercent(50);
-	//		paragraph.add(new Chunk(imageNovaforge, 0, 0));
-	//		add(paragraph);
-	//	}
 
 	private void writeDurationAndOverhead() throws DocumentException {
 		final long displayDuration = System.currentTimeMillis() - start;
