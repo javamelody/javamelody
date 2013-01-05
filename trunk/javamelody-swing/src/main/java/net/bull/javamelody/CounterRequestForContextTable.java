@@ -229,8 +229,7 @@ class CounterRequestForContextTable extends CounterRequestTable {
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final Integer cpu;
 			final CounterRequest counterRequest = getCounterRequest(row);
-			// TODO NPE sur counterRequest si elle n'est pas encore dans les stats du MainPanel ?
-			if (counterRequest.getCpuTimeMean() >= 0) {
+			if (counterRequest != null && counterRequest.getCpuTimeMean() >= 0) {
 				final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
 				cpu = counterRequestContext.getCpuTime();
 			} else {
@@ -287,7 +286,11 @@ class CounterRequestForContextTable extends CounterRequestTable {
 				childHitsMean = -1;
 			} else {
 				final CounterRequest counterRequest = getCounterRequest(row);
-				childHitsMean = counterRequest.getChildHitsMean();
+				if (counterRequest == null) {
+					childHitsMean = null;
+				} else {
+					childHitsMean = counterRequest.getChildHitsMean();
+				}
 			}
 			return super.getTableCellRendererComponent(jtable, childHitsMean, isSelected, hasFocus,
 					row, column);
@@ -330,20 +333,24 @@ class CounterRequestForContextTable extends CounterRequestTable {
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
-			final Integer childHitsMean;
+			final Integer childDurationsMean;
 			final CounterRequestContext context = getCounterRequestContext(row);
 			if (context.getParentCounter().getChildCounterName() == null) {
 				// si le compteur parent du contexte n'a pas de compteur fils
 				// (comme le compteur sql et au contraire du compteur http),
 				// alors la valeur de childHits ou childDurations n'a pas de sens
 				// (comme les hits sql fils pour une requête sql)
-				childHitsMean = -1;
+				childDurationsMean = -1;
 			} else {
 				final CounterRequest counterRequest = getCounterRequest(row);
-				childHitsMean = counterRequest.getChildDurationsMean();
+				if (counterRequest == null) {
+					childDurationsMean = null;
+				} else {
+					childDurationsMean = counterRequest.getChildDurationsMean();
+				}
 			}
-			return super.getTableCellRendererComponent(jtable, childHitsMean, isSelected, hasFocus,
-					row, column);
+			return super.getTableCellRendererComponent(jtable, childDurationsMean, isSelected,
+					hasFocus, row, column);
 		}
 	}
 
