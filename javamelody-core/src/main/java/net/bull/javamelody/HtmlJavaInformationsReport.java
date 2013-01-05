@@ -30,7 +30,7 @@ import java.util.Locale;
  * Partie du rapport html pour les informations systèmes sur le serveur.
  * @author Emeric Vernat
  */
-class HtmlJavaInformationsReport {
+class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	private static final String[] OS = { "linux", "windows", "mac", "solaris", "hp", "ibm", };
 	private static final String[] APPLICATION_SERVERS = { "tomcat", "glassfish", "jonas", "jetty",
 			"oracle", "bea", "ibm", };
@@ -47,17 +47,15 @@ class HtmlJavaInformationsReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final List<JavaInformations> javaInformationsList;
-	private final Writer writer;
 
 	HtmlJavaInformationsReport(List<JavaInformations> javaInformationsList, Writer writer) {
-		super();
+		super(writer);
 		assert javaInformationsList != null && !javaInformationsList.isEmpty();
-		assert writer != null;
 
 		this.javaInformationsList = javaInformationsList;
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			writeSummary(javaInformations);
@@ -171,8 +169,8 @@ class HtmlJavaInformationsReport {
 				+ columnEnd);
 
 		write("<tr><td valign='top'>#Arguments_JVM#: </td><td>");
-		// writer.write pour ne pas gérer de traductions si la donnée contient '#'
-		writer.write(I18N.htmlEncode(javaInformations.getJvmArguments(), false) + columnEnd);
+		// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
+		writeDirectly(htmlEncodeButNotSpace(javaInformations.getJvmArguments()) + columnEnd);
 		writeln("");
 
 		if (javaInformations.getSessionCount() >= 0) {
@@ -225,15 +223,15 @@ class HtmlJavaInformationsReport {
 		final String columnEnd = "</td></tr>";
 		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
 			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>");
-			// writer.write pour ne pas gérer de traductions si la donnée contient '#'
-			writer.write(replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
+			// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
+			writeDirectly(replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
 					"&amp;"));
 			writeln(columnEnd);
 		}
 		if (javaInformations.getDataSourceDetails() != null) {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>");
-			// writer.write pour ne pas gérer de traductions si la donnée contient '#'
-			writer.write(replaceEolWithBr(javaInformations.getDataSourceDetails())
+			// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
+			writeDirectly(replaceEolWithBr(javaInformations.getDataSourceDetails())
 					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
 					+ " class='noPrint' target='_blank'>DataSource reference</a>");
 			writeln(columnEnd);
@@ -270,8 +268,8 @@ class HtmlJavaInformationsReport {
 		}
 		final boolean onlyOne = list.size() == 1;
 		for (final TomcatInformations tomcatInformations : list) {
-			writer.write("<tr><td valign='top'>Tomcat "
-					+ I18N.htmlEncode(tomcatInformations.getName(), false) + ": </td><td>");
+			writeDirectly("<tr><td valign='top'>Tomcat "
+					+ htmlEncodeButNotSpace(tomcatInformations.getName()) + ": </td><td>");
 			// rq: on n'affiche pas pour l'instant getCurrentThreadCount
 			final int currentThreadsBusy = tomcatInformations.getCurrentThreadsBusy();
 			writeln("#busyThreads# = ");
@@ -332,7 +330,7 @@ class HtmlJavaInformationsReport {
 
 	private void writeDependencies(JavaInformations javaInformations) throws IOException {
 		final int nbDependencies = javaInformations.getDependenciesList().size();
-		writeln(I18N.getFormattedString("nb_dependencies", nbDependencies));
+		writeln(getFormattedString("nb_dependencies", nbDependencies));
 		if (nbDependencies > 0) {
 			uniqueByPageSequence++;
 			writeln(" ; &nbsp;&nbsp;&nbsp;");
@@ -371,8 +369,8 @@ class HtmlJavaInformationsReport {
 		write("<em><img src='?resource=systeminfo.png' id='");
 		write(id);
 		write("' alt='graph'/></em>");
-		// writer.write pour ne pas gérer de traductions si le nom contient '#'
-		writer.write(value);
+		// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+		writeDirectly(value);
 		write("</a>");
 	}
 
@@ -417,13 +415,5 @@ class HtmlJavaInformationsReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
 				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

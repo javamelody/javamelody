@@ -31,20 +31,17 @@ import java.util.Map;
  * Partie du rapport html pour les connections jdbc ouvertes.
  * @author Emeric Vernat
  */
-class HtmlConnectionInformationsReport {
+class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 	private final List<ConnectionInformations> connectionsInformations;
-	private final Writer writer;
 	private final DateFormat dateTimeFormat = I18N.createDateAndTimeFormat();
 	private final Map<Long, Thread> threadsById;
 	private final Map<Thread, StackTraceElement[]> stackTracesByThread;
 
 	HtmlConnectionInformationsReport(List<ConnectionInformations> connectionsInformations,
 			Writer writer) {
-		super();
+		super(writer);
 		assert connectionsInformations != null;
-		assert writer != null;
 		this.connectionsInformations = connectionsInformations;
-		this.writer = writer;
 		// rq: cette partie du rapport n'est pas exécutée sur le serveur de collecte
 		// donc les threads sont ok
 		if (JavaInformations.STACK_TRACES_ENABLED) {
@@ -63,6 +60,7 @@ class HtmlConnectionInformationsReport {
 		}
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeBackAndRefreshLinks();
 		writeln("<br/>");
@@ -99,8 +97,8 @@ class HtmlConnectionInformationsReport {
 		}
 		writeln("</tbody></table>");
 		final int nbConnections = connectionsInformations.size();
-		writeln("<div align='right'>"
-				+ I18N.getFormattedString("nb_connexions_ouvertes", nbConnections) + "</div>");
+		writeln("<div align='right'>" + getFormattedString("nb_connexions_ouvertes", nbConnections)
+				+ "</div>");
 	}
 
 	private void writeBackAndRefreshLinks() throws IOException {
@@ -136,31 +134,19 @@ class HtmlConnectionInformationsReport {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
 			writeln("<a class='tooltip'>");
 			writeln("<em>");
-			// writer.write pour ne pas gérer de traductions si le texte contient '#'
-			writer.write(encodedText);
+			// writeDirectly pour ne pas gérer de traductions si le texte contient '#'
+			writeDirectly(encodedText);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
 				writeln(htmlEncode(stackTraceElement.toString()));
 				writeln("<br/>");
 			}
 			writeln("</em>");
-			writer.write(encodedText);
+			writeDirectly(encodedText);
 			writeln("</a>");
 		} else {
-			// writer.write pour ne pas gérer de traductions si le texte contient '#'
-			writer.write(encodedText);
+			// writeDirectly pour ne pas gérer de traductions si le texte contient '#'
+			writeDirectly(encodedText);
 		}
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, true);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

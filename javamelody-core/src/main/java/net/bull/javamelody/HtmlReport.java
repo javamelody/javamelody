@@ -35,7 +35,7 @@ import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
  * Rapport html.
  * @author Emeric Vernat
  */
-class HtmlReport {
+class HtmlReport extends HtmlAbstractReport {
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
 
@@ -43,22 +43,19 @@ class HtmlReport {
 	private final CollectorServer collectorServer;
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
-	private final Writer writer;
 	private final HtmlCoreReport htmlCoreReport;
 
 	HtmlReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, Writer writer) {
-		super();
+		super(writer);
 		assert collector != null;
 		assert javaInformationsList != null && !javaInformationsList.isEmpty();
 		assert range != null;
-		assert writer != null;
 
 		this.collector = collector;
 		this.collectorServer = collectorServer;
 		this.javaInformationsList = javaInformationsList;
 		this.range = range;
-		this.writer = writer;
 		this.htmlCoreReport = new HtmlCoreReport(collector, collectorServer, javaInformationsList,
 				range, writer);
 	}
@@ -66,6 +63,13 @@ class HtmlReport {
 	HtmlReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Period period, Writer writer) {
 		this(collector, collectorServer, javaInformationsList, period.getRange(), writer);
+	}
+
+	@Override
+	void toHtml() throws IOException {
+		writeHtmlHeader();
+		htmlCoreReport.toHtml();
+		writeHtmlFooter();
 	}
 
 	void toHtml(String message, String anchorNameForRedirect) throws IOException {
@@ -132,9 +136,8 @@ class HtmlReport {
 	private void writeHtmlHeader(boolean includeSlider, boolean includeCssInline)
 			throws IOException {
 		writeln("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-		writer.write("<html><head><title>"
-				+ I18N.getFormattedString("Monitoring_sur", collector.getApplication())
-				+ "</title>");
+		writeDirectly("<html><head><title>"
+				+ getFormattedString("Monitoring_sur", collector.getApplication()) + "</title>");
 		writeln("");
 		if (includeCssInline) {
 			writeln("<style type='text/css'>");
@@ -146,7 +149,7 @@ class HtmlReport {
 			} finally {
 				in.close();
 			}
-			writer.write(out.toString());
+			writeDirectly(out.toString());
 			writeln("</style>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
@@ -168,17 +171,17 @@ class HtmlReport {
 	void writeHtmlFooter() throws IOException {
 		final String analyticsId = Parameters.getParameter(Parameter.ANALYTICS_ID);
 		if (analyticsId != null) {
-			writer.write(SCRIPT_BEGIN);
-			writer.write("var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
-			writer.write("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
-			writer.write(SCRIPT_END);
-			writer.write(SCRIPT_BEGIN);
-			writer.write(" try{\n");
-			writer.write("var pageTracker = _gat._getTracker('" + analyticsId + "');\n");
-			writer.write("pageTracker._trackPageview();\n");
-			writer.write("} catch(err) {}\n");
-			writer.write(SCRIPT_END);
-			writer.write('\n');
+			writeDirectly(SCRIPT_BEGIN);
+			writeDirectly("var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
+			writeDirectly("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
+			writeDirectly(SCRIPT_END);
+			writeDirectly(SCRIPT_BEGIN);
+			writeDirectly(" try{\n");
+			writeDirectly("var pageTracker = _gat._getTracker('" + analyticsId + "');\n");
+			writeDirectly("pageTracker._trackPageview();\n");
+			writeDirectly("} catch(err) {}\n");
+			writeDirectly(SCRIPT_END);
+			writeDirectly("\n");
 		}
 		writeln("</body></html>");
 	}
@@ -214,7 +217,7 @@ class HtmlReport {
 		htmlCoreReport.writeRefreshAndPeriodLinks(graphName, "graph");
 		writeln("</div>");
 
-		new HtmlCounterRequestGraphReport(range, writer).writeRequestAndGraphDetail(collector,
+		new HtmlCounterRequestGraphReport(range, getWriter()).writeRequestAndGraphDetail(collector,
 				collectorServer, graphName);
 
 		writeHtmlFooter();
@@ -227,7 +230,8 @@ class HtmlReport {
 		htmlCoreReport.writeRefreshAndPeriodLinks(graphName, "usages");
 		writeln("</div>");
 
-		new HtmlCounterRequestGraphReport(range, writer).writeRequestUsages(collector, graphName);
+		new HtmlCounterRequestGraphReport(range, getWriter()).writeRequestUsages(collector,
+				graphName);
 
 		writeHtmlFooter();
 	}
@@ -237,7 +241,7 @@ class HtmlReport {
 		assert sessionsInformations != null;
 		writeHtmlHeader();
 		writeMessageIfNotNull(message, sessionsPart);
-		new HtmlSessionInformationsReport(writer).toHtml(sessionsInformations);
+		new HtmlSessionInformationsReport(sessionsInformations, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 
@@ -245,7 +249,7 @@ class HtmlReport {
 			throws IOException {
 		assert sessionId != null;
 		writeHtmlHeader();
-		new HtmlSessionInformationsReport(writer).writeSessionDetails(sessionId,
+		new HtmlSessionInformationsReport(null, getWriter()).writeSessionDetails(sessionId,
 				sessionInformations);
 		writeHtmlFooter();
 	}
@@ -255,29 +259,29 @@ class HtmlReport {
 		assert heapHistogram != null;
 		writeHtmlHeader();
 		writeMessageIfNotNull(message, heapHistoPart);
-		new HtmlHeapHistogramReport(heapHistogram, writer).toHtml();
+		new HtmlHeapHistogramReport(heapHistogram, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 
 	void writeProcesses(List<ProcessInformations> processInformationsList) throws IOException {
 		assert processInformationsList != null;
 		writeHtmlHeader();
-		new HtmlProcessInformationsReport(processInformationsList, writer).toHtml();
+		new HtmlProcessInformationsReport(processInformationsList, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 
 	void writeProcesses(Map<String, List<ProcessInformations>> processesByTitle) throws IOException {
 		assert processesByTitle != null;
 		writeHtmlHeader();
-		new HtmlProcessInformationsReport(new ArrayList<ProcessInformations>(), writer)
+		new HtmlProcessInformationsReport(new ArrayList<ProcessInformations>(), getWriter())
 				.writeLinks();
 		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle.entrySet()) {
 			final String title = entry.getKey();
 			final List<ProcessInformations> processes = entry.getValue();
-			writer.write("<h3><img width='24' height='24' src='?resource=processes.png' alt='"
+			writeDirectly("<h3><img width='24' height='24' src='?resource=processes.png' alt='"
 					+ title + "'/>&nbsp;" + title + "</h3>");
 
-			new HtmlProcessInformationsReport(processes, writer).writeTable();
+			new HtmlProcessInformationsReport(processes, getWriter()).writeTable();
 		}
 		writeHtmlFooter();
 	}
@@ -285,7 +289,7 @@ class HtmlReport {
 	void writeDatabase(DatabaseInformations databaseInformations) throws IOException {
 		assert databaseInformations != null;
 		writeHtmlHeader();
-		new HtmlDatabaseInformationsReport(databaseInformations, writer).toHtml();
+		new HtmlDatabaseInformationsReport(databaseInformations, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 
@@ -293,7 +297,7 @@ class HtmlReport {
 			boolean withoutHeaders) throws IOException {
 		assert connectionInformationsList != null;
 		final HtmlConnectionInformationsReport htmlConnectionInformationsReport = new HtmlConnectionInformationsReport(
-				connectionInformationsList, writer);
+				connectionInformationsList, getWriter());
 		if (withoutHeaders) {
 			// pour affichage dans serveur de collecte
 			htmlConnectionInformationsReport.writeConnections();
@@ -307,33 +311,29 @@ class HtmlReport {
 	void writeJndi(List<JndiBinding> jndiBindings, String path) throws IOException {
 		assert jndiBindings != null;
 		writeHtmlHeader();
-		new HtmlJndiTreeReport(jndiBindings, path, writer).toHtml();
+		new HtmlJndiTreeReport(jndiBindings, path, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 
 	void writeMBeans(List<MBeanNode> mbeans) throws IOException {
 		assert mbeans != null;
 		writeHtmlHeader();
-		new HtmlMBeansReport(mbeans, writer).toHtml();
+		new HtmlMBeansReport(mbeans, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 
 	void writeMBeans(Map<String, List<MBeanNode>> mbeansByTitle) throws IOException {
 		assert mbeansByTitle != null;
 		writeHtmlHeader();
-		new HtmlMBeansReport(new ArrayList<MBeanNode>(), writer).writeLinks();
+		new HtmlMBeansReport(new ArrayList<MBeanNode>(), getWriter()).writeLinks();
 		for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
 			final String title = entry.getKey();
 			final List<MBeanNode> nodes = entry.getValue();
-			writer.write("<h3><img width='24' height='24' src='?resource=mbeans.png' alt='" + title
-					+ "'/>&nbsp;" + title + "</h3>");
+			writeDirectly("<h3><img width='24' height='24' src='?resource=mbeans.png' alt='"
+					+ title + "'/>&nbsp;" + title + "</h3>");
 
-			new HtmlMBeansReport(nodes, writer).writeTree();
+			new HtmlMBeansReport(nodes, getWriter()).writeTree();
 		}
 		writeHtmlFooter();
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

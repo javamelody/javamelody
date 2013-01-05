@@ -39,9 +39,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les threads sur le serveur.
  * @author Emeric Vernat
  */
-class PdfThreadInformationsReport {
+class PdfThreadInformationsReport extends PdfAbstractReport {
 	private final List<ThreadInformations> threadInformationsList;
-	private final Document document;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean stackTraceEnabled;
 	private final boolean cpuTimeEnabled;
@@ -51,19 +50,18 @@ class PdfThreadInformationsReport {
 
 	PdfThreadInformationsReport(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled, PdfDocumentFactory pdfDocumentFactory, Document document) {
-		super();
+		super(document);
 		assert threadInformationsList != null;
 		assert pdfDocumentFactory != null;
-		assert document != null;
 
 		this.threadInformationsList = threadInformationsList;
 		this.pdfDocumentFactory = pdfDocumentFactory;
-		this.document = document;
 		this.stackTraceEnabled = stackTraceEnabled;
 		this.cpuTimeEnabled = !threadInformationsList.isEmpty()
 				&& threadInformationsList.get(0).getCpuTimeMillis() != -1;
 	}
 
+	@Override
 	void toPdf() throws DocumentException, IOException {
 		writeHeader();
 
@@ -78,12 +76,11 @@ class PdfThreadInformationsReport {
 			odd = !odd; // NOPMD
 			writeThreadInformations(threadInformations);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 
-		final Paragraph tempsThreads = new Paragraph(I18N.getString("Temps_threads") + '\n',
-				cellFont);
+		final Paragraph tempsThreads = new Paragraph(getString("Temps_threads") + '\n', cellFont);
 		tempsThreads.setAlignment(Element.ALIGN_RIGHT);
-		document.add(tempsThreads);
+		addToDocument(tempsThreads);
 
 		// rq stack-trace: on n'inclue pas dans le pdf les stack-traces des threads
 		// car c'est très verbeux et cela remplirait des pages pour pas grand chose
@@ -108,7 +105,7 @@ class PdfThreadInformationsReport {
 		if (!deadlockedThreads.isEmpty()) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append('\n');
-			sb.append(I18N.getString("Threads_deadlocks"));
+			sb.append(getString("Threads_deadlocks"));
 			String separator = " ";
 			for (final ThreadInformations thread : deadlockedThreads) {
 				sb.append(separator);
@@ -116,7 +113,7 @@ class PdfThreadInformationsReport {
 				separator = ", ";
 			}
 			sb.append('\n');
-			document.add(new Phrase(sb.toString(), PdfFonts.SEVERE_CELL.getFont()));
+			addToDocument(new Phrase(sb.toString(), PdfFonts.SEVERE_CELL.getFont()));
 		}
 	}
 
@@ -135,16 +132,16 @@ class PdfThreadInformationsReport {
 
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Thread"));
-		headers.add(getI18nString("Demon"));
-		headers.add(getI18nString("Priorite"));
-		headers.add(getI18nString("Etat"));
+		headers.add(getString("Thread"));
+		headers.add(getString("Demon"));
+		headers.add(getString("Priorite"));
+		headers.add(getString("Etat"));
 		if (stackTraceEnabled) {
-			headers.add(getI18nString("Methode_executee"));
+			headers.add(getString("Methode_executee"));
 		}
 		if (cpuTimeEnabled) {
-			headers.add(getI18nString("Temps_cpu"));
-			headers.add(getI18nString("Temps_user"));
+			headers.add(getString("Temps_cpu"));
+			headers.add(getString("Temps_user"));
 		}
 		return headers;
 	}
@@ -156,9 +153,9 @@ class PdfThreadInformationsReport {
 		addCell(threadInformations.getName());
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		if (threadInformations.isDaemon()) {
-			addCell(getI18nString("oui"));
+			addCell(getString("oui"));
 		} else {
-			addCell(getI18nString("non"));
+			addCell(getString("non"));
 		}
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		addCell(integerFormat.format(threadInformations.getPriority()));
@@ -183,10 +180,6 @@ class PdfThreadInformationsReport {
 
 	private Image getImage(String resourceFileName) throws DocumentException, IOException {
 		return pdfDocumentFactory.getSmallImage(resourceFileName);
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

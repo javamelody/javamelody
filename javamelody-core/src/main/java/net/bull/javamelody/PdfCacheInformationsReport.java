@@ -37,9 +37,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les caches de données.
  * @author Emeric Vernat
  */
-class PdfCacheInformationsReport {
+class PdfCacheInformationsReport extends PdfAbstractReport {
 	private final List<CacheInformations> cacheInformationsList;
-	private final Document document;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
@@ -47,18 +46,17 @@ class PdfCacheInformationsReport {
 	private final boolean configurationEnabled;
 
 	PdfCacheInformationsReport(List<CacheInformations> cacheInformationsList, Document document) {
-		super();
+		super(document);
 		assert cacheInformationsList != null;
-		assert document != null;
 
 		this.cacheInformationsList = cacheInformationsList;
-		this.document = document;
 		this.hitsRatioEnabled = HtmlCacheInformationsReport
 				.isHitsRatioEnabled(cacheInformationsList);
 		this.configurationEnabled = HtmlCacheInformationsReport
 				.isConfigurationEnabled(cacheInformationsList);
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
 		writeHeader();
 
@@ -73,12 +71,12 @@ class PdfCacheInformationsReport {
 			odd = !odd; // NOPMD
 			writeCacheInformations(cacheInformations);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 		if (!hitsRatioEnabled) {
 			final Paragraph statisticsEnabledParagraph = new Paragraph(
-					I18N.getString("caches_statistics_enable"), cellFont);
+					getString("caches_statistics_enable"), cellFont);
 			statisticsEnabledParagraph.setAlignment(Element.ALIGN_RIGHT);
-			document.add(statisticsEnabledParagraph);
+			addToDocument(statisticsEnabledParagraph);
 		}
 		addConfigurationReference();
 	}
@@ -92,7 +90,7 @@ class PdfCacheInformationsReport {
 		final Paragraph ehcacheParagraph = new Paragraph();
 		ehcacheParagraph.add(ehcacheAnchor);
 		ehcacheParagraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(ehcacheParagraph);
+		addToDocument(ehcacheParagraph);
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -108,18 +106,18 @@ class PdfCacheInformationsReport {
 
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Cache"));
+		headers.add(getString("Cache"));
 		if (configurationEnabled) {
-			headers.add(getI18nString("Pourcentage_memoire_utilise"));
+			headers.add(getString("Pourcentage_memoire_utilise"));
 		}
-		headers.add(getI18nString("Nb_objets_en_memoire"));
-		headers.add(getI18nString("Nb_objets_sur_disque"));
+		headers.add(getString("Nb_objets_en_memoire"));
+		headers.add(getString("Nb_objets_sur_disque"));
 		if (hitsRatioEnabled) {
-			headers.add(getI18nString("Efficacite_cache_memoire"));
-			headers.add(getI18nString("Efficacite_cache"));
+			headers.add(getString("Efficacite_cache_memoire"));
+			headers.add(getString("Efficacite_cache"));
 		}
 		if (configurationEnabled) {
-			headers.add(getI18nString("Configuration"));
+			headers.add(getString("Configuration"));
 		}
 		return headers;
 	}
@@ -142,10 +140,6 @@ class PdfCacheInformationsReport {
 			defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			addCell(cacheInformations.getConfiguration());
 		}
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

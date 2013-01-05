@@ -28,27 +28,25 @@ import java.util.List;
  * Partie du rapport html pour les jobs.
  * @author Emeric Vernat
  */
-class HtmlJobInformationsReport {
+class HtmlJobInformationsReport extends HtmlAbstractReport {
 	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
 	private final Counter jobCounter;
-	private final Writer writer;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
 			Writer writer) {
-		super();
+		super(writer);
 		assert jobInformationsList != null;
 		assert rangeJobCounter != null;
-		assert writer != null;
 
 		this.jobInformationsList = jobInformationsList;
 		this.jobCounter = rangeJobCounter;
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Jobs#'>");
 		write("<thead><tr><th>#JobGroup#</th>");
@@ -83,17 +81,17 @@ class HtmlJobInformationsReport {
 			final String onClickConfirm = "' onclick=\"javascript:return confirm('";
 			final String endOnClickConfirm = "');\">";
 			writeln("<a href='?action=pause_job&amp;jobId=all" + onClickConfirm
-					+ I18N.getStringForJavascript("confirm_pause_all_jobs") + endOnClickConfirm);
+					+ getStringForJavascript("confirm_pause_all_jobs") + endOnClickConfirm);
 			writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_all_jobs#\" /> #Pause_all_jobs#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<a href='?action=resume_job&amp;jobId=all" + onClickConfirm
-					+ I18N.getStringForJavascript("confirm_resume_all_jobs") + endOnClickConfirm);
+					+ getStringForJavascript("confirm_resume_all_jobs") + endOnClickConfirm);
 			writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_all_jobs#\" /> #Resume_all_jobs#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
 
-		// writer.write pour éviter traduction car # dans l'url
-		writer.write("<a href='http://www.quartz-scheduler.org/docs/index.html'");
+		// writeDirectly pour éviter traduction car # dans l'url
+		writeDirectly("<a href='http://www.quartz-scheduler.org/docs/index.html'");
 		writeln("target='_blank'>Configuration reference</a>");
 
 		writeln("</div>");
@@ -102,11 +100,11 @@ class HtmlJobInformationsReport {
 	private void writeJobInformations(JobInformations jobInformations) throws IOException {
 		write("<td>");
 		final String nextColumnAlignRight = "</td> <td align='right'>";
-		writer.write(htmlEncode(jobInformations.getGroup()));
+		writeDirectly(htmlEncodeButNotSpace(jobInformations.getGroup()));
 		write("</td> <td>");
 		writeNameWithDescription(jobInformations);
 		write("</td> <td>");
-		writer.write(htmlEncode(jobInformations.getJobClassName()));
+		writeDirectly(htmlEncodeButNotSpace(jobInformations.getJobClassName()));
 
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
 		// counterRequest ne peut pas être null ici
@@ -143,12 +141,12 @@ class HtmlJobInformationsReport {
 
 	private void writeNameWithDescription(JobInformations jobInformations) throws IOException {
 		if (jobInformations.getDescription() == null) {
-			writer.write(htmlEncode(jobInformations.getName()));
+			writeDirectly(htmlEncodeButNotSpace(jobInformations.getName()));
 		} else {
 			write("<a class='tooltip'><em>");
-			writer.write(htmlEncode(jobInformations.getDescription()));
+			writeDirectly(htmlEncodeButNotSpace(jobInformations.getDescription()));
 			writeln("</em>");
-			writer.write(htmlEncode(jobInformations.getName()));
+			writeDirectly(htmlEncodeButNotSpace(jobInformations.getName()));
 			writeln("</a>");
 		}
 	}
@@ -159,8 +157,8 @@ class HtmlJobInformationsReport {
 		} else {
 			write("<a class='tooltip'>");
 			write("<em>");
-			// writer.write pour ne pas gérer de traductions si la stack-trace contient '#'
-			writer.write(I18N.htmlEncode(stackTrace.replace("[See nested", "\n[See nested"), true));
+			// writeDirectly pour ne pas gérer de traductions si la stack-trace contient '#'
+			writeDirectly(htmlEncode(stackTrace.replace("[See nested", "\n[See nested")));
 			writeln("");
 			writeln("</em>");
 			write("<img src='?resource=bullets/red.png' alt=''/>");
@@ -198,8 +196,8 @@ class HtmlJobInformationsReport {
 				&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
 			write(durationFormat.format(new Date(jobInformations.getRepeatInterval())));
 		} else if (jobInformations.getCronExpression() != null) {
-			// writer.write pour ne pas gérer de traductions si l'expression contient '#'
-			writer.write(htmlEncode(jobInformations.getCronExpression()));
+			// writeDirectly pour ne pas gérer de traductions si l'expression contient '#'
+			writeDirectly(htmlEncodeButNotSpace(jobInformations.getCronExpression()));
 		} else {
 			write(nbsp);
 		}
@@ -210,13 +208,11 @@ class HtmlJobInformationsReport {
 		final String onClickConfirm = "' onclick=\"javascript:return confirm('";
 		final String endOnClickConfirm = "');\">";
 		writeln("<a href='?action=pause_job&amp;jobId=" + jobInformations.getGlobalJobId()
-				+ onClickConfirm + I18N.getStringForJavascript("confirm_pause_job")
-				+ endOnClickConfirm);
+				+ onClickConfirm + getStringForJavascript("confirm_pause_job") + endOnClickConfirm);
 		writeln("<img src='?resource=control_pause_blue.png' width='18' height='18' alt=\"#Pause_job#\" title=\"#Pause_job#\" /></a>");
 		write("</td> <td align='center' class='noPrint'>");
 		writeln("<a href='?action=resume_job&amp;jobId=" + jobInformations.getGlobalJobId()
-				+ onClickConfirm + I18N.getStringForJavascript("confirm_resume_job")
-				+ endOnClickConfirm);
+				+ onClickConfirm + getStringForJavascript("confirm_resume_job") + endOnClickConfirm);
 		writeln("<img src='?resource=control_play_blue.png' width='18' height='18' alt=\"#Resume_job#\" title=\"#Resume_job#\" /></a>");
 	}
 
@@ -232,17 +228,5 @@ class HtmlJobInformationsReport {
 
 	private static String toBar(int mean, long elapsedTime) {
 		return HtmlJavaInformationsReport.toBar(100d * elapsedTime / mean);
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, false);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

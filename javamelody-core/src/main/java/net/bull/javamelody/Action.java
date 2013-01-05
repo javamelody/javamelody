@@ -260,7 +260,7 @@ enum Action { // NOPMD
 
 	private String mailTest(Collector collector, CollectorServer collectorServer) {
 		// note: a priori, inutile de traduire cela
-		if (!HtmlCoreReport.isPdfEnabled()) {
+		if (!HtmlAbstractReport.isPdfEnabled()) {
 			throw new IllegalStateException("itext classes not found: add the itext dependency");
 		}
 		if (Parameters.getParameter(Parameter.MAIL_SESSION) == null) {

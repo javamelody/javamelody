@@ -61,7 +61,7 @@ class PdfOtherReport {
 			throws IOException {
 		try {
 			document.open();
-			addParagraph(getI18nString("Sessions"), "system-users.png");
+			addParagraph(getString("Sessions"), "system-users.png");
 			new PdfSessionInformationsReport(sessionsInformations, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
@@ -73,7 +73,7 @@ class PdfOtherReport {
 		try {
 			document.open();
 			addParagraph(
-					I18N.getFormattedString("heap_histo_du",
+					getFormattedString("heap_histo_du",
 							I18N.createDateAndTimeFormat().format(heapHistogram.getTime())),
 					"memory.png");
 			new PdfHeapHistogramReport(heapHistogram, document).toPdf();
@@ -86,7 +86,7 @@ class PdfOtherReport {
 	void writeProcessInformations(List<ProcessInformations> processInformations) throws IOException {
 		try {
 			document.open();
-			addParagraph(getI18nString("Processus"), "processes.png");
+			addParagraph(getString("Processus"), "processes.png");
 			new PdfProcessInformationsReport(processInformations, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
@@ -113,8 +113,7 @@ class PdfOtherReport {
 		try {
 			document.open();
 			final String selectedRequestName = databaseInformations.getSelectedRequestName();
-			addParagraph(getI18nString("database") + " : " + getI18nString(selectedRequestName),
-					"db.png");
+			addParagraph(getString("database") + " : " + getString(selectedRequestName), "db.png");
 			new PdfDatabaseInformationsReport(databaseInformations, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
@@ -126,9 +125,9 @@ class PdfOtherReport {
 		try {
 			document.open();
 			if (path.length() == 0) {
-				addParagraph(getI18nString("Arbre_JNDI"), "jndi.png");
+				addParagraph(getString("Arbre_JNDI"), "jndi.png");
 			} else {
-				addParagraph(I18N.getFormattedString("Arbre_JNDI_pour_contexte", path), "jndi.png");
+				addParagraph(getFormattedString("Arbre_JNDI_pour_contexte", path), "jndi.png");
 			}
 			new PdfJndiReport(jndiBindings, document).toPdf();
 		} catch (final DocumentException e) {
@@ -140,7 +139,7 @@ class PdfOtherReport {
 	void writeMBeans(List<MBeanNode> mbeans) throws IOException {
 		try {
 			document.open();
-			addParagraph(getI18nString("MBeans"), "mbeans.png");
+			addParagraph(getString("MBeans"), "mbeans.png");
 			new PdfMBeansReport(mbeans, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
@@ -188,9 +187,9 @@ class PdfOtherReport {
 					.entrySet()) {
 				final JavaInformations javaInformations = entry.getKey();
 				final List<CounterRequestContext> rootCurrentContexts = entry.getValue();
-				addParagraph(getI18nString("Requetes_en_cours"), "hourglass.png");
+				addParagraph(getString("Requetes_en_cours"), "hourglass.png");
 				if (rootCurrentContexts.isEmpty()) {
-					add(new Phrase(getI18nString("Aucune_requete_en_cours"), normalFont));
+					addToDocument(new Phrase(getString("Aucune_requete_en_cours"), normalFont));
 				} else {
 					final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
 							rootCurrentContexts, pdfCounterReports,
@@ -210,9 +209,9 @@ class PdfOtherReport {
 		try {
 			final Document myDocument = pdfDocumentFactory.createDocument(true);
 			myDocument.open();
-			final String counterLabel = I18N.getString(counter.getName() + "Label");
-			final String paragraphTitle = I18N.getFormattedString("Dependance_compteur",
-					counterLabel) + " - " + range.getLabel();
+			final String counterLabel = getString(counter.getName() + "Label");
+			final String paragraphTitle = getFormattedString("Dependance_compteur", counterLabel)
+					+ " - " + range.getLabel();
 			myDocument.add(pdfDocumentFactory.createParagraphElement(paragraphTitle,
 					counter.getIconName()));
 			new PdfRuntimeDependenciesReport(counter, myDocument).toPdf();
@@ -228,9 +227,9 @@ class PdfOtherReport {
 				.getRequestsAggregatedOrFilteredByClassName(requestId);
 		try {
 			document.open();
-			final String counterLabel = I18N.getString(counter.getName() + "Label");
-			final String title = I18N.getFormattedString("Statistiques_compteur", counterLabel)
-					+ " - " + range.getLabel();
+			final String counterLabel = getString(counter.getName() + "Label");
+			final String title = getFormattedString("Statistiques_compteur", counterLabel) + " - "
+					+ range.getLabel();
 			addParagraph(title, counter.getIconName());
 			new PdfCounterReport(collector, counter, range, false, document).writeRequests(
 					counter.getChildCounterName(), requestList);
@@ -249,14 +248,18 @@ class PdfOtherReport {
 
 	private void addParagraph(String paragraphTitle, String iconName) throws DocumentException,
 			IOException {
-		add(pdfDocumentFactory.createParagraphElement(paragraphTitle, iconName));
+		addToDocument(pdfDocumentFactory.createParagraphElement(paragraphTitle, iconName));
 	}
 
-	private static String getI18nString(String key) {
+	private static String getString(String key) {
 		return I18N.getString(key);
 	}
 
-	private void add(Element element) throws DocumentException {
+	private static String getFormattedString(String key, Object... arguments) {
+		return I18N.getFormattedString(key, arguments);
+	}
+
+	private void addToDocument(Element element) throws DocumentException {
 		document.add(element);
 	}
 }

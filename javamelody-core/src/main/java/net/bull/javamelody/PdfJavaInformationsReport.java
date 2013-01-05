@@ -41,14 +41,13 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les informations systèmes sur le serveur.
  * @author Emeric Vernat
  */
-class PdfJavaInformationsReport {
+class PdfJavaInformationsReport extends PdfAbstractReport {
 	private static final String DIVIDE = " / ";
 	private static final String BAR_SEPARATOR = "   ";
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat decimalFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final List<JavaInformations> javaInformationsList;
-	private final Document document;
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font boldCellFont = PdfFonts.BOLD_CELL.getFont();
 	private PdfPTable currentTable;
@@ -120,21 +119,20 @@ class PdfJavaInformationsReport {
 	}
 
 	PdfJavaInformationsReport(List<JavaInformations> javaInformationsList, Document document) {
-		super();
+		super(document);
 		assert javaInformationsList != null;
-		assert document != null;
 
 		this.javaInformationsList = javaInformationsList;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException, IOException {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			currentTable = createJavaInformationsTable();
 			writeSummary(javaInformations);
 			addCell("");
 			addCell("");
-			document.add(currentTable);
+			addToDocument(currentTable);
 		}
 	}
 
@@ -149,32 +147,30 @@ class PdfJavaInformationsReport {
 
 	private void writeSummary(JavaInformations javaInformations) throws BadElementException,
 			IOException {
-		addCell(getI18nString("Host") + ':');
+		addCell(getString("Host") + ':');
 		currentTable.addCell(new Phrase(javaInformations.getHost(), boldCellFont));
-		addCell(getI18nString("memoire_utilisee") + ':');
+		addCell(getString("memoire_utilisee") + ':');
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
 		final long maxMemory = memoryInformations.getMaxMemory();
 		final Phrase memoryPhrase = new Phrase(integerFormat.format(usedMemory / 1024 / 1024) + ' '
-				+ getI18nString("Mo") + DIVIDE + integerFormat.format(maxMemory / 1024 / 1024)
-				+ ' ' + getI18nString("Mo") + BAR_SEPARATOR, cellFont);
+				+ getString("Mo") + DIVIDE + integerFormat.format(maxMemory / 1024 / 1024) + ' '
+				+ getString("Mo") + BAR_SEPARATOR, cellFont);
 		final Image memoryImage = Image.getInstance(
 				Bar.toBar(memoryInformations.getUsedMemoryPercentage()), null);
 		memoryImage.scalePercent(50);
 		memoryPhrase.add(new Chunk(memoryImage, 0, 0));
 		currentTable.addCell(memoryPhrase);
 		if (javaInformations.getSessionCount() >= 0) {
-			addCell(getI18nString("nb_sessions_http") + ':');
+			addCell(getString("nb_sessions_http") + ':');
 			addCell(integerFormat.format(javaInformations.getSessionCount()));
 		}
-		addCell(getI18nString("nb_threads_actifs") + "\n("
-				+ getI18nString("Requetes_http_en_cours") + "):");
+		addCell(getString("nb_threads_actifs") + "\n(" + getString("Requetes_http_en_cours") + "):");
 		addCell(integerFormat.format(javaInformations.getActiveThreadCount()));
 		if (!noDatabase) {
-			addCell(getI18nString("nb_connexions_actives") + ':');
+			addCell(getString("nb_connexions_actives") + ':');
 			addCell(integerFormat.format(javaInformations.getActiveConnectionCount()));
-			addCell(getI18nString("nb_connexions_utilisees") + "\n(" + getI18nString("ouvertes")
-					+ "):");
+			addCell(getString("nb_connexions_utilisees") + "\n(" + getString("ouvertes") + "):");
 			final int usedConnectionCount = javaInformations.getUsedConnectionCount();
 			final int maxConnectionCount = javaInformations.getMaxConnectionCount();
 			if (maxConnectionCount <= 0) {
@@ -192,7 +188,7 @@ class PdfJavaInformationsReport {
 			}
 		}
 		if (javaInformations.getSystemLoadAverage() >= 0) {
-			addCell(getI18nString("Charge_systeme") + ':');
+			addCell(getString("Charge_systeme") + ':');
 			addCell(decimalFormat.format(javaInformations.getSystemLoadAverage()));
 		}
 	}
@@ -202,13 +198,13 @@ class PdfJavaInformationsReport {
 			currentTable = createJavaInformationsTable();
 			writeSummary(javaInformations);
 			writeDetails(javaInformations);
-			document.add(currentTable);
+			addToDocument(currentTable);
 		}
 	}
 
 	private void writeDetails(JavaInformations javaInformations) throws BadElementException,
 			IOException {
-		addCell(getI18nString("OS") + ':');
+		addCell(getString("OS") + ':');
 		final Phrase osPhrase = new Phrase("", cellFont);
 		final String osIconName = HtmlJavaInformationsReport
 				.getOSIconName(javaInformations.getOS());
@@ -220,11 +216,11 @@ class PdfJavaInformationsReport {
 			osPhrase.add(separator);
 		}
 		osPhrase.add(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
-				+ ' ' + getI18nString("coeurs") + ')');
+				+ ' ' + getString("coeurs") + ')');
 		currentTable.addCell(osPhrase);
-		addCell(getI18nString("Java") + ':');
+		addCell(getString("Java") + ':');
 		addCell(javaInformations.getJavaVersion());
-		addCell(getI18nString("JVM") + ':');
+		addCell(getString("JVM") + ':');
 		final Phrase jvmVersionPhrase = new Phrase(javaInformations.getJvmVersion(), cellFont);
 		if (javaInformations.getJvmVersion().contains("Client")) {
 			jvmVersionPhrase.add(separator);
@@ -233,7 +229,7 @@ class PdfJavaInformationsReport {
 			jvmVersionPhrase.add(new Chunk(alertImage, 0, -2));
 		}
 		currentTable.addCell(jvmVersionPhrase);
-		addCell(getI18nString("PID") + ':');
+		addCell(getString("PID") + ':');
 		addCell(javaInformations.getPID());
 		if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
 			writeFileDescriptorCounts(javaInformations);
@@ -241,31 +237,31 @@ class PdfJavaInformationsReport {
 		final String serverInfo = javaInformations.getServerInfo();
 		if (serverInfo != null) {
 			writeServerInfo(serverInfo);
-			addCell(getI18nString("Contexte_webapp") + ':');
+			addCell(getString("Contexte_webapp") + ':');
 			addCell(javaInformations.getContextPath());
 		}
-		addCell(getI18nString("Demarrage") + ':');
+		addCell(getString("Demarrage") + ':');
 		addCell(I18N.createDateAndTimeFormat().format(javaInformations.getStartDate()));
-		addCell(getI18nString("Arguments_JVM") + ':');
+		addCell(getString("Arguments_JVM") + ':');
 		addCell(javaInformations.getJvmArguments());
 		if (javaInformations.getSessionCount() >= 0) {
-			addCell(getI18nString("httpSessionsMeanAge") + ':');
+			addCell(getString("httpSessionsMeanAge") + ':');
 			addCell(integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
 		}
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
-		addCell(getI18nString("Gestion_memoire") + ':');
+		addCell(getString("Gestion_memoire") + ':');
 		writeMemoryInformations(javaInformations.getMemoryInformations());
 		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
 			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
-			addCell(getI18nString("Free_disk_space") + ':');
+			addCell(getString("Free_disk_space") + ':');
 			addCell(integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
-					+ ' ' + getI18nString("Mo"));
+					+ ' ' + getString("Mo"));
 		}
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 		if (javaInformations.isDependenciesEnabled()) {
-			addCell(getI18nString("Dependencies") + ':');
-			addCell(I18N.getFormattedString("nb_dependencies", javaInformations
-					.getDependenciesList().size())
+			addCell(getString("Dependencies") + ':');
+			addCell(getFormattedString("nb_dependencies", javaInformations.getDependenciesList()
+					.size())
 					+ " ;\n" + javaInformations.getDependencies());
 		}
 		addCell("");
@@ -273,7 +269,7 @@ class PdfJavaInformationsReport {
 	}
 
 	private void writeServerInfo(String serverInfo) throws BadElementException, IOException {
-		addCell(getI18nString("Serveur") + ':');
+		addCell(getString("Serveur") + ':');
 		final Phrase serverInfoPhrase = new Phrase("", cellFont);
 		final String applicationServerIconName = HtmlJavaInformationsReport
 				.getApplicationServerIconName(serverInfo);
@@ -292,7 +288,7 @@ class PdfJavaInformationsReport {
 			throws BadElementException, IOException {
 		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
 		final long unixMaxFileDescriptorCount = javaInformations.getUnixMaxFileDescriptorCount();
-		addCell(getI18nString("nb_fichiers") + ':');
+		addCell(getString("nb_fichiers") + ':');
 		final Phrase fileDescriptorCountPhrase = new Phrase(
 				integerFormat.format(unixOpenFileDescriptorCount) + DIVIDE
 						+ integerFormat.format(unixMaxFileDescriptorCount) + BAR_SEPARATOR,
@@ -306,11 +302,11 @@ class PdfJavaInformationsReport {
 
 	private void writeDatabaseVersionAndDataSourceDetails(JavaInformations javaInformations) {
 		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
-			addCell(getI18nString("Base_de_donnees") + ':');
+			addCell(getString("Base_de_donnees") + ':');
 			addCell(javaInformations.getDataBaseVersion());
 		}
 		if (javaInformations.getDataSourceDetails() != null) {
-			addCell(getI18nString("DataSource_jdbc") + ':');
+			addCell(getString("DataSource_jdbc") + ':');
 			addCell(javaInformations.getDataSourceDetails());
 			addCell("");
 			final Anchor anchor = new Anchor("DataSource reference", PdfFonts.BLUE.getFont());
@@ -330,7 +326,7 @@ class PdfJavaInformationsReport {
 			// rq: on n'affiche pas pour l'instant getCurrentThreadCount
 			final int currentThreadsBusy = tomcatInformations.getCurrentThreadsBusy();
 			final String equal = " = ";
-			final Phrase phrase = new Phrase(getI18nString("busyThreads") + equal
+			final Phrase phrase = new Phrase(getString("busyThreads") + equal
 					+ integerFormat.format(currentThreadsBusy) + DIVIDE
 					+ integerFormat.format(tomcatInformations.getMaxThreads()) + BAR_SEPARATOR,
 					cellFont);
@@ -341,17 +337,17 @@ class PdfJavaInformationsReport {
 			threadsImage.scalePercent(50);
 			phrase.add(new Chunk(threadsImage, 0, 0));
 
-			phrase.add(new Chunk('\n' + getI18nString("bytesReceived") + equal
+			phrase.add(new Chunk('\n' + getString("bytesReceived") + equal
 					+ integerFormat.format(tomcatInformations.getBytesReceived()) + '\n'
-					+ getI18nString("bytesSent") + equal
+					+ getString("bytesSent") + equal
 					+ integerFormat.format(tomcatInformations.getBytesSent()) + '\n'
-					+ getI18nString("requestCount") + equal
+					+ getString("requestCount") + equal
 					+ integerFormat.format(tomcatInformations.getRequestCount()) + '\n'
-					+ getI18nString("errorCount") + equal
+					+ getString("errorCount") + equal
 					+ integerFormat.format(tomcatInformations.getErrorCount()) + '\n'
-					+ getI18nString("processingTime") + equal
+					+ getString("processingTime") + equal
 					+ integerFormat.format(tomcatInformations.getProcessingTime()) + '\n'
-					+ getI18nString("maxProcessingTime") + equal
+					+ getString("maxProcessingTime") + equal
 					+ integerFormat.format(tomcatInformations.getMaxTime())));
 			currentTable.addCell(phrase);
 		}
@@ -359,30 +355,26 @@ class PdfJavaInformationsReport {
 
 	private void writeMemoryInformations(MemoryInformations memoryInformations)
 			throws BadElementException, IOException {
-		addCell(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + getI18nString("Mo")));
+		addCell(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + getString("Mo")));
 		final long usedPermGen = memoryInformations.getUsedPermGen();
 		if (usedPermGen > 0) {
 			// perm gen est à 0 sous jrockit
 			final long maxPermGen = memoryInformations.getMaxPermGen();
-			addCell(getI18nString("Memoire_Perm_Gen") + ':');
+			addCell(getString("Memoire_Perm_Gen") + ':');
 			if (maxPermGen > 0) {
 				final Phrase permGenPhrase = new Phrase(
-						integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo")
+						integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getString("Mo")
 								+ DIVIDE + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
-								+ getI18nString("Mo") + BAR_SEPARATOR, cellFont);
+								+ getString("Mo") + BAR_SEPARATOR, cellFont);
 				final Image permGenImage = Image.getInstance(
 						Bar.toBar(memoryInformations.getUsedPermGenPercentage()), null);
 				permGenImage.scalePercent(50);
 				permGenPhrase.add(new Chunk(permGenImage, 0, 0));
 				currentTable.addCell(permGenPhrase);
 			} else {
-				addCell(integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getI18nString("Mo"));
+				addCell(integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getString("Mo"));
 			}
 		}
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private void addCell(String string) {

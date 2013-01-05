@@ -44,11 +44,10 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les jobs.
  * @author Emeric Vernat
  */
-class PdfJobInformationsReport {
+class PdfJobInformationsReport extends PdfAbstractReport {
 	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
 	private final Counter jobCounter;
-	private final Document document;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
@@ -56,16 +55,15 @@ class PdfJobInformationsReport {
 
 	PdfJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
 			Document document) {
-		super();
+		super(document);
 		assert jobInformationsList != null;
 		assert rangeJobCounter != null;
-		assert document != null;
 
 		this.jobInformationsList = jobInformationsList;
 		this.jobCounter = rangeJobCounter;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException, IOException {
 		writeHeader();
 
@@ -80,7 +78,7 @@ class PdfJobInformationsReport {
 			odd = !odd; // NOPMD
 			writeJobInformations(jobInformations);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 		addConfigurationReference();
 	}
 
@@ -92,7 +90,7 @@ class PdfJobInformationsReport {
 		final Paragraph quartzParagraph = new Paragraph();
 		quartzParagraph.add(quartzAnchor);
 		quartzParagraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(quartzParagraph);
+		addToDocument(quartzParagraph);
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -108,15 +106,15 @@ class PdfJobInformationsReport {
 
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("JobGroup"));
-		headers.add(getI18nString("JobName"));
-		headers.add(getI18nString("JobClassName"));
-		headers.add(getI18nString("JobMeanTime"));
-		headers.add(getI18nString("JobElapsedTime"));
-		headers.add(getI18nString("JobPreviousFireTime"));
-		headers.add(getI18nString("JobNextFireTime"));
-		headers.add(getI18nString("JobPeriodOrCronExpression"));
-		headers.add(getI18nString("JobPaused"));
+		headers.add(getString("JobGroup"));
+		headers.add(getString("JobName"));
+		headers.add(getString("JobClassName"));
+		headers.add(getString("JobMeanTime"));
+		headers.add(getString("JobElapsedTime"));
+		headers.add(getString("JobPreviousFireTime"));
+		headers.add(getString("JobNextFireTime"));
+		headers.add(getString("JobPeriodOrCronExpression"));
+		headers.add(getString("JobPaused"));
 		return headers;
 	}
 
@@ -136,9 +134,9 @@ class PdfJobInformationsReport {
 		writeJobTimes(jobInformations, counterRequest);
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		if (jobInformations.isPaused()) {
-			addCell(getI18nString("oui"));
+			addCell(getString("oui"));
 		} else {
-			addCell(getI18nString("non"));
+			addCell(getString("non"));
 		}
 	}
 
@@ -192,10 +190,6 @@ class PdfJobInformationsReport {
 		// getCounterRequestByName ne peut pas retourner null actuellement
 		assert result != null;
 		return result;
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

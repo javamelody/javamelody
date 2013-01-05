@@ -28,22 +28,19 @@ import net.bull.javamelody.MBeanNode.MBeanAttribute;
  * Partie du rapport html pour les MBeans.
  * @author Emeric Vernat
  */
-class HtmlMBeansReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlMBeansReport extends HtmlAbstractReport {
 	private static final String BR = "<br/>";
 	private final List<MBeanNode> mbeans;
-	private final Writer writer;
 	private final String pid = PID.getPID();
 	private int sequence;
 
 	HtmlMBeansReport(List<MBeanNode> mbeans, Writer writer) {
-		super();
+		super(writer);
 		assert mbeans != null;
-		assert writer != null;
 		this.mbeans = mbeans;
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeLinks();
 		writeln(BR);
@@ -69,7 +66,7 @@ class HtmlMBeansReport {
 
 		for (final MBeanNode node : mbeans) {
 			if (node != platformNode) {
-				writer.write("<br/><b>" + htmlEncode(node.getName()) + "</b>");
+				writeDirectly("<br/><b>" + htmlEncodeButNotSpace(node.getName()) + "</b>");
 				writeln("<div style='margin-left: 20px'><br/>");
 				writeTree(node.getChildren());
 				writeln(endDiv);
@@ -89,7 +86,7 @@ class HtmlMBeansReport {
 			final List<MBeanNode> children = node.getChildren();
 			if (children != null) {
 				final String id = getNextId();
-				writeShowHideLink(id, htmlEncode(name));
+				writeShowHideLink(id, htmlEncodeButNotSpace(name));
 				writeln("<div id='" + id + "' style='display: none; margin-left: 20px;'><div>");
 				writeTree(children);
 				writeln("</div></div>");
@@ -105,7 +102,7 @@ class HtmlMBeansReport {
 		final int indexOfComma = mbeanName.indexOf(',');
 		if (indexOfComma != -1) {
 			mbeanName = mbeanName.substring(indexOfComma + 1);
-			writeShowHideLink(mbeanId, htmlEncode(mbeanName));
+			writeShowHideLink(mbeanId, htmlEncodeButNotSpace(mbeanName));
 			writeln("<div id='" + mbeanId + "' style='display: none; margin-left: 20px;'>");
 			// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
 			// dans une table
@@ -123,7 +120,7 @@ class HtmlMBeansReport {
 			writeln("<table border='0' cellspacing='0' cellpadding='3' summary=''>");
 			if (description != null) {
 				write("<tr><td colspan='3'>(");
-				writer.write(htmlEncode(description));
+				writeDirectly(htmlEncodeButNotSpace(description));
 				write(")</td></tr>");
 			}
 			for (final MBeanAttribute attribute : attributes) {
@@ -138,18 +135,18 @@ class HtmlMBeansReport {
 		final String formattedValue = attribute.getFormattedValue();
 		final String description = attribute.getDescription();
 		write("<tr valign='top'><td>");
-		writer.write("<a href='?jmxValue="
+		writeDirectly("<a href='?jmxValue="
 				+ mbean.getName().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
 				+ "' ");
 		writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
-		writer.write(htmlEncode(attributeName));
+		writeDirectly(htmlEncodeButNotSpace(attributeName));
 		write("</td><td>");
 		// \n sera encodé dans <br/> dans htmlEncode
-		writer.write(htmlEncode(formattedValue));
+		writeDirectly(htmlEncodeButNotSpace(formattedValue));
 		write("</td><td>");
 		if (description != null) {
 			write("(");
-			writer.write(htmlEncode(description));
+			writeDirectly(htmlEncodeButNotSpace(description));
 			write(")");
 		} else {
 			write("&nbsp;");
@@ -166,7 +163,7 @@ class HtmlMBeansReport {
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=mbeans'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			write("<a href='?part=mbeans&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -175,19 +172,7 @@ class HtmlMBeansReport {
 	}
 
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
-		writer.write("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
+		writeDirectly("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, false);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

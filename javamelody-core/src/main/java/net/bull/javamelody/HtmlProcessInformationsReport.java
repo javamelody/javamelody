@@ -27,24 +27,21 @@ import java.util.List;
  * Partie du rapport html pour les processus du système d'exploitation.
  * @author Emeric Vernat
  */
-class HtmlProcessInformationsReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlProcessInformationsReport extends HtmlAbstractReport {
 	private final List<ProcessInformations> processInformationsList;
-	private final Writer writer;
 	private final boolean windows;
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
 	HtmlProcessInformationsReport(List<ProcessInformations> processInformationsList, Writer writer) {
-		super();
+		super(writer);
 		assert processInformationsList != null;
-		assert writer != null;
 
 		this.processInformationsList = processInformationsList;
-		this.writer = writer;
 		this.windows = isWindowsProcessList(processInformationsList);
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeLinks();
 		writeln("<br/>");
@@ -115,7 +112,7 @@ class HtmlProcessInformationsReport {
 		write(newColumnRight);
 		write(htmlEncode(processInformations.getCpuTime()));
 		write(newColumn);
-		writer.write(htmlEncode(processInformations.getCommand()));
+		writeDirectly(htmlEncode(processInformations.getCommand()));
 		write("</td>");
 	}
 
@@ -124,7 +121,7 @@ class HtmlProcessInformationsReport {
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=processes'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			write("<a href='?part=processes&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -140,17 +137,5 @@ class HtmlProcessInformationsReport {
 			}
 		}
 		return true;
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, true);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

@@ -41,9 +41,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Rapport pdf pour les sessions http.
  * @author Emeric Vernat
  */
-class PdfSessionInformationsReport {
+class PdfSessionInformationsReport extends PdfAbstractReport {
 	private final List<SessionInformations> sessionsInformations;
-	private final Document document;
 	private final boolean displayUser;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
@@ -53,11 +52,9 @@ class PdfSessionInformationsReport {
 	private PdfPTable currentTable;
 
 	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations, Document document) {
-		super();
+		super(document);
 		assert sessionsInformations != null;
-		assert document != null;
 		this.sessionsInformations = sessionsInformations;
-		this.document = document;
 
 		this.displayUser = isDisplayUser();
 	}
@@ -71,10 +68,11 @@ class PdfSessionInformationsReport {
 		return false;
 	}
 
+	@Override
 	void toPdf() throws IOException, DocumentException {
 
 		if (sessionsInformations.isEmpty()) {
-			document.add(new Phrase(getI18nString("Aucune_session"), cellFont));
+			addToDocument(new Phrase(getString("Aucune_session"), cellFont));
 			return;
 		}
 
@@ -97,10 +95,10 @@ class PdfSessionInformationsReport {
 			meanSerializedSize = -1;
 		}
 		final Paragraph paragraph = new Paragraph("", cellFont);
-		paragraph.add(I18N.getFormattedString("nb_sessions", sessionsInformations.size()) + "\n\n"
-				+ I18N.getFormattedString("taille_moyenne_sessions", meanSerializedSize));
+		paragraph.add(getFormattedString("nb_sessions", sessionsInformations.size()) + "\n\n"
+				+ getFormattedString("taille_moyenne_sessions", meanSerializedSize));
 		paragraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(paragraph);
+		addToDocument(paragraph);
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -114,17 +112,17 @@ class PdfSessionInformationsReport {
 
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Session_id"));
-		headers.add(getI18nString("Dernier_acces"));
-		headers.add(getI18nString("Age"));
-		headers.add(getI18nString("Expiration"));
-		headers.add(getI18nString("Nb_attributs"));
-		headers.add(getI18nString("Serialisable"));
-		headers.add(getI18nString("Taille_serialisee"));
-		headers.add(getI18nString("Adresse_IP"));
-		headers.add(getI18nString("Pays"));
+		headers.add(getString("Session_id"));
+		headers.add(getString("Dernier_acces"));
+		headers.add(getString("Age"));
+		headers.add(getString("Expiration"));
+		headers.add(getString("Nb_attributs"));
+		headers.add(getString("Serialisable"));
+		headers.add(getString("Taille_serialisee"));
+		headers.add(getString("Adresse_IP"));
+		headers.add(getString("Pays"));
 		if (displayUser) {
-			headers.add(getI18nString("Utilisateur"));
+			headers.add(getString("Utilisateur"));
 		}
 		return headers;
 	}
@@ -141,7 +139,7 @@ class PdfSessionInformationsReport {
 			odd = !odd; // NOPMD
 			writeSession(session);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 	}
 
 	private void writeSession(SessionInformations session) throws IOException, BadElementException {
@@ -155,9 +153,9 @@ class PdfSessionInformationsReport {
 		addCell(integerFormat.format(session.getAttributeCount()));
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		if (session.isSerializable()) {
-			addCell(getI18nString("oui"));
+			addCell(getString("oui"));
 		} else {
-			final Phrase non = new Phrase(getI18nString("non"), severeCellFont);
+			final Phrase non = new Phrase(getString("non"), severeCellFont);
 			currentTable.addCell(non);
 		}
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -196,10 +194,6 @@ class PdfSessionInformationsReport {
 				currentTable.addCell(new Phrase(new Chunk(image, 0, 0)));
 			}
 		}
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

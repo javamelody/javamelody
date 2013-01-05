@@ -38,20 +38,18 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour l'arbre JNDI.
  * @author Emeric Vernat
  */
-class PdfJndiReport {
+class PdfJndiReport extends PdfAbstractReport {
 	private final List<JndiBinding> jndiBindings;
-	private final Document document;
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfJndiReport(List<JndiBinding> jndiBindings, Document document) {
-		super();
+		super(document);
 		assert jndiBindings != null;
-		assert document != null;
 		this.jndiBindings = jndiBindings;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException, IOException {
 		writeHeader();
 
@@ -66,7 +64,7 @@ class PdfJndiReport {
 			odd = !odd; // NOPMD
 			writeJndiBinding(jndiBinding);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -79,8 +77,8 @@ class PdfJndiReport {
 
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Nom"));
-		headers.add(getI18nString("Type"));
+		headers.add(getString("Nom"));
+		headers.add(getString("Type"));
 		return headers;
 	}
 
@@ -102,10 +100,6 @@ class PdfJndiReport {
 			addCell(name);
 		}
 		addCell(className != null ? className : "");
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {
