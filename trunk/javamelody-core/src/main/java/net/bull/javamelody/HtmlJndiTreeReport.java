@@ -26,22 +26,19 @@ import java.util.List;
  * Partie du rapport html pour l'arbre JNDI.
  * @author Emeric Vernat
  */
-class HtmlJndiTreeReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlJndiTreeReport extends HtmlAbstractReport {
 	private final List<JndiBinding> jndiBindings;
 	private final String path;
-	private final Writer writer;
 
 	HtmlJndiTreeReport(List<JndiBinding> jndiBindings, String path, Writer writer) {
-		super();
+		super(writer);
 		assert jndiBindings != null;
-		assert writer != null;
 
 		this.jndiBindings = jndiBindings;
 		this.path = JndiBinding.normalizePath(path);
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeLinks();
 		writeln("<br/>");
@@ -50,8 +47,7 @@ class HtmlJndiTreeReport {
 		if (path.length() == 0) {
 			writeln("<b>#Arbre_JNDI#</b>");
 		} else {
-			writer.write("<b>"
-					+ I18N.getFormattedString("Arbre_JNDI_pour_contexte", htmlEncode(path))
+			writeDirectly("<b>" + getFormattedString("Arbre_JNDI_pour_contexte", htmlEncode(path))
 					+ "</b>\n");
 		}
 		writeTable();
@@ -83,17 +79,17 @@ class HtmlJndiTreeReport {
 		final String className = binding.getClassName();
 		final String contextPath = binding.getContextPath();
 		if (contextPath != null) {
-			writer.write("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
-			writer.write("<img width='16' height='16' src='?resource=folder.png' alt='"
+			writeDirectly("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
+			writeDirectly("<img width='16' height='16' src='?resource=folder.png' alt='"
 					+ encodedName + "' />&nbsp;");
-			writer.write(encodedName);
-			writer.write("</a>");
+			writeDirectly(encodedName);
+			writeDirectly("</a>");
 		} else {
-			writer.write(encodedName);
+			writeDirectly(encodedName);
 		}
 		write("</td>");
 		write("<td>");
-		writer.write(className != null ? htmlEncode(className) : "&nbsp;");
+		writeDirectly(className != null ? htmlEncode(className) : "&nbsp;");
 		write("</td>");
 	}
 
@@ -101,29 +97,17 @@ class HtmlJndiTreeReport {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writer.write("<a href='?#systeminfo'>");
+		writeDirectly("<a href='?#systeminfo'>");
 		writeln("<img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=jndi&amp;path=" + htmlEncode(path)
 				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			write("<a href='?part=jndi&amp;path=" + htmlEncode(path)
 					+ "&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln("</div>");
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, true);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

@@ -58,38 +58,37 @@ public class TestHtmlSessionInformationsReport {
 				Collections.singleton(new Object()));
 		sessions.add(new SessionInformations(serializableButNotSession, false));
 		final StringWriter writer = new StringWriter();
-		final HtmlSessionInformationsReport htmlSessionInformationsReport = new HtmlSessionInformationsReport(
-				writer);
-		htmlSessionInformationsReport.toHtml(Collections.<SessionInformations> emptyList());
+		new HtmlSessionInformationsReport(Collections.<SessionInformations> emptyList(), writer)
+				.toHtml();
 		assertNotEmptyAndClear(writer);
 
-		htmlSessionInformationsReport.toHtml(sessions);
+		new HtmlSessionInformationsReport(sessions, writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
 		// aucune session sérialisable
-		htmlSessionInformationsReport.toHtml(Collections.singletonList(new SessionInformations(
-				new SessionTestImpl(false), false)));
+		new HtmlSessionInformationsReport(Collections.singletonList(new SessionInformations(
+				new SessionTestImpl(false), false)), writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
 		// pays non existant
 		final SessionTestImpl sessionPays = new SessionTestImpl(true);
 		sessionPays.setCountry("nimporte.quoi");
-		htmlSessionInformationsReport.toHtml(Collections.singletonList(new SessionInformations(
-				sessionPays, false)));
+		new HtmlSessionInformationsReport(Collections.singletonList(new SessionInformations(
+				sessionPays, false)), writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
 		// pays null
 		sessionPays.setCountry(null);
 		assertNull("countryDisplay null",
 				new SessionInformations(sessionPays, false).getCountryDisplay());
-		htmlSessionInformationsReport.toHtml(Collections.singletonList(new SessionInformations(
-				sessionPays, false)));
+		new HtmlSessionInformationsReport(Collections.singletonList(new SessionInformations(
+				sessionPays, false)), writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
-		htmlSessionInformationsReport.writeSessionDetails("id session", new SessionInformations(
-				new SessionTestImpl(true), true));
-		htmlSessionInformationsReport.writeSessionDetails("id session", new SessionInformations(
-				new SessionTestImpl(false), true));
+		new HtmlSessionInformationsReport(null, writer).writeSessionDetails("id session",
+				new SessionInformations(new SessionTestImpl(true), true));
+		new HtmlSessionInformationsReport(null, writer).writeSessionDetails("id session",
+				new SessionInformations(new SessionTestImpl(false), true));
 		assertNotEmptyAndClear(writer);
 	}
 }

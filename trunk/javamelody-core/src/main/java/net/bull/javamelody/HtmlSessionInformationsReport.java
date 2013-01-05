@@ -31,25 +31,24 @@ import net.bull.javamelody.SessionInformations.SessionAttribute;
  * Partie du rapport html pour les sessions http.
  * @author Emeric Vernat
  */
-class HtmlSessionInformationsReport {
+class HtmlSessionInformationsReport extends HtmlAbstractReport {
 	private static final String A_HREF_PART_SESSIONS = "<a href='?part=sessions";
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
-	private final Writer writer;
+	private final List<SessionInformations> sessionsInformations;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 
-	HtmlSessionInformationsReport(Writer writer) {
-		super();
-		assert writer != null;
-		this.writer = writer;
+	HtmlSessionInformationsReport(List<SessionInformations> sessionsInformations, Writer writer) {
+		super(writer);
+		this.sessionsInformations = sessionsInformations;
 	}
 
-	void toHtml(List<SessionInformations> sessionsInformations) throws IOException {
-		assert sessionsInformations != null;
+	@Override
+	void toHtml() throws IOException {
 		writeBackAndRefreshLinks();
 		writeln("<br/>");
 
+		assert sessionsInformations != null;
 		if (sessionsInformations.isEmpty()) {
 			writeln("#Aucune_session#");
 			return;
@@ -73,14 +72,13 @@ class HtmlSessionInformationsReport {
 			meanSerializedSize = -1;
 		}
 		writeln("<div align='right'>"
-				+ I18N.getFormattedString("nb_sessions", sessionsInformations.size())
-				+ "<br/><br/>"
-				+ I18N.getFormattedString("taille_moyenne_sessions", meanSerializedSize) + "</div>");
+				+ getFormattedString("nb_sessions", sessionsInformations.size()) + "<br/><br/>"
+				+ getFormattedString("taille_moyenne_sessions", meanSerializedSize) + "</div>");
 	}
 
-	private void writeSessions(List<SessionInformations> sessionsInformations) throws IOException {
+	private void writeSessions(List<SessionInformations> sessions) throws IOException {
 		boolean displayUser = false;
-		for (final SessionInformations sessionInformations : sessionsInformations) {
+		for (final SessionInformations sessionInformations : sessions) {
 			if (sessionInformations.getRemoteUser() != null) {
 				displayUser = true;
 				break;
@@ -97,7 +95,7 @@ class HtmlSessionInformationsReport {
 		write("<th class='noPrint'>#Invalider#</th>");
 		writeln("</tr></thead><tbody>");
 		boolean odd = false;
-		for (final SessionInformations session : sessionsInformations) {
+		for (final SessionInformations session : sessions) {
 			if (odd) {
 				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
 			} else {
@@ -117,7 +115,7 @@ class HtmlSessionInformationsReport {
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			write(A_HREF_PART_SESSIONS + "&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -125,7 +123,7 @@ class HtmlSessionInformationsReport {
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS
 				+ "&amp;action=invalidate_sessions' onclick=\"javascript:return confirm('"
-				+ I18N.getStringForJavascript("confirm_invalidate_sessions") + "');\">");
+				+ getStringForJavascript("confirm_invalidate_sessions") + "');\">");
 		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_sessions#' title='#invalidate_sessions#' /> #invalidate_sessions#</a>");
 		writeln("</div>");
 	}
@@ -133,7 +131,7 @@ class HtmlSessionInformationsReport {
 	private void writeBackAndRefreshLinksForSession(String sessionId) throws IOException {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln(A_HREF_PART_SESSIONS + "&amp;sessionId=" + I18N.urlEncode(sessionId) + "'>");
+		writeln(A_HREF_PART_SESSIONS + "&amp;sessionId=" + urlEncode(sessionId) + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln("</div>");
 	}
@@ -142,9 +140,9 @@ class HtmlSessionInformationsReport {
 		final String nextColumnAlignRight = "</td><td align='right'>";
 		final String nextColumnAlignCenter = "</td><td align='center'>";
 		write("<td><a href='?part=sessions&amp;sessionId=");
-		write(htmlEncode(session.getId()));
+		write(htmlEncodeButNotSpace(session.getId()));
 		write("'>");
-		write(htmlEncode(session.getId()));
+		write(htmlEncodeButNotSpace(session.getId()));
 		write("</a>");
 		write(nextColumnAlignRight);
 		write(durationFormat.format(session.getLastAccess()));
@@ -179,15 +177,15 @@ class HtmlSessionInformationsReport {
 			if (remoteUser == null) {
 				write("&nbsp;");
 			} else {
-				writer.write(htmlEncode(remoteUser));
+				writeDirectly(htmlEncodeButNotSpace(remoteUser));
 			}
 		}
 		write("</td><td align='center' class='noPrint'>");
 		write(A_HREF_PART_SESSIONS);
 		write("&amp;action=invalidate_session&amp;sessionId=");
-		write(I18N.urlEncode(session.getId()));
+		write(urlEncode(session.getId()));
 		write("' onclick=\"javascript:return confirm('"
-				+ I18N.getStringForJavascript("confirm_invalidate_session") + "');\">");
+				+ getStringForJavascript("confirm_invalidate_session") + "');\">");
 		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");
 		write("</a>");
 		write("</td>");
@@ -219,11 +217,12 @@ class HtmlSessionInformationsReport {
 		writeln("<br/>");
 
 		if (sessionInformations == null) {
-			writeln(I18N.getFormattedString("session_invalidee", htmlEncode(sessionId)));
+			writeln(getFormattedString("session_invalidee", htmlEncodeButNotSpace(sessionId)));
 			return;
 		}
 		writeln("<img width='24' height='24' src='?resource=system-users.png' alt='#Sessions#' />&nbsp;");
-		writeln("<b>" + I18N.getFormattedString("Details_session", htmlEncode(sessionId)) + "</b>");
+		writeln("<b>" + getFormattedString("Details_session", htmlEncodeButNotSpace(sessionId))
+				+ "</b>");
 		writeSessions(Collections.singletonList(sessionInformations));
 
 		writeln("<br/><b>#Attributs#</b>");
@@ -250,7 +249,7 @@ class HtmlSessionInformationsReport {
 
 	private void writeAttribute(SessionAttribute sessionAttribute) throws IOException {
 		write("<td>");
-		writer.write(htmlEncode(sessionAttribute.getName()));
+		writeDirectly(htmlEncodeButNotSpace(sessionAttribute.getName()));
 		write("</td><td>");
 		write(String.valueOf(sessionAttribute.getType()));
 		write("</td><td align='center'>");
@@ -262,19 +261,7 @@ class HtmlSessionInformationsReport {
 		write("</td><td align='right'>");
 		write(integerFormat.format(sessionAttribute.getSerializedSize()));
 		write("</td><td>");
-		writer.write(htmlEncode(String.valueOf(sessionAttribute.getContent())));
+		writeDirectly(htmlEncodeButNotSpace(String.valueOf(sessionAttribute.getContent())));
 		write("</td>");
-	}
-
-	private String htmlEncode(String text) {
-		return I18N.htmlEncode(text, false);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

@@ -27,22 +27,20 @@ import java.util.List;
  * Partie du rapport html pour les erreurs http et dans les logs.
  * @author Emeric Vernat
  */
-class HtmlCounterErrorReport {
+class HtmlCounterErrorReport extends HtmlAbstractReport {
 	private final Counter counter;
-	private final Writer writer;
 	private final DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,
 			DateFormat.MEDIUM, I18N.getCurrentLocale());
 
 	HtmlCounterErrorReport(Counter counter, Writer writer) {
-		super();
+		super(writer);
 		assert counter != null;
 		assert counter.isErrorCounter();
-		assert writer != null;
 
 		this.counter = counter;
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		final List<CounterError> errors = counter.getErrors();
 		if (errors.isEmpty()) {
@@ -58,8 +56,7 @@ class HtmlCounterErrorReport {
 		final boolean displayHttpRequest = shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
 			write("<div class='severe' align='left'>");
-			writeln(I18N
-					.getFormattedString("Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT));
+			writeln(getFormattedString("Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT));
 			write("</div>");
 		}
 		final String tableName = counter.getName();
@@ -97,7 +94,7 @@ class HtmlCounterErrorReport {
 			if (error.getHttpRequest() == null) {
 				write("&nbsp;");
 			} else {
-				writer.write(htmlEncode(error.getHttpRequest()));
+				writeDirectly(htmlEncode(error.getHttpRequest()));
 			}
 			write("</td><td>");
 		}
@@ -105,22 +102,22 @@ class HtmlCounterErrorReport {
 			if (error.getRemoteUser() == null) {
 				write("&nbsp;");
 			} else {
-				writer.write(htmlEncode(error.getRemoteUser()));
+				writeDirectly(htmlEncode(error.getRemoteUser()));
 			}
 			write("</td><td>");
 		}
 		if (error.getStackTrace() != null) {
 			writeln("<a class='tooltip'>");
 			writeln("<em>");
-			// writer.write pour ne pas gérer de traductions si la stack-trace contient '#'
-			writer.write(htmlEncode(error.getStackTrace()));
+			// writeDirectly pour ne pas gérer de traductions si la stack-trace contient '#'
+			writeDirectly(htmlEncode(error.getStackTrace()));
 			writeln("</em>");
-			// writer.write pour ne pas gérer de traductions si le message contient '#'
-			writer.write(htmlEncode(error.getMessage()));
+			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
+			writeDirectly(htmlEncode(error.getMessage()));
 			writeln("</a>");
 		} else {
-			// writer.write pour ne pas gérer de traductions si le message contient '#'
-			writer.write(htmlEncode(error.getMessage()));
+			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
+			writeDirectly(htmlEncode(error.getMessage()));
 		}
 		write("</td>");
 	}
@@ -141,17 +138,5 @@ class HtmlCounterErrorReport {
 			}
 		}
 		return false;
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, true);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

@@ -35,9 +35,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les erreurs http et dans les logs.
  * @author Emeric Vernat
  */
-class PdfCounterErrorReport {
+class PdfCounterErrorReport extends PdfAbstractReport {
 	private final Counter counter;
-	private final Document document;
 	private final DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,
 			DateFormat.MEDIUM, I18N.getCurrentLocale());
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
@@ -46,18 +45,17 @@ class PdfCounterErrorReport {
 	private PdfPTable currentTable;
 
 	PdfCounterErrorReport(Counter counter, Document document) {
-		super();
+		super(document);
 		assert counter != null;
 		assert counter.isErrorCounter();
-		assert document != null;
 		this.counter = counter;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
 		final List<CounterError> errors = counter.getErrors();
 		if (errors.isEmpty()) {
-			document.add(new Phrase(getI18nString("Aucune_erreur"), normalFont));
+			addToDocument(new Phrase(getString("Aucune_erreur"), normalFont));
 		} else {
 			writeErrors(errors);
 		}
@@ -68,7 +66,7 @@ class PdfCounterErrorReport {
 		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);
 		final boolean displayHttpRequest = HtmlCounterErrorReport.shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
-			document.add(new Phrase(I18N.getFormattedString("Dernieres_erreurs_seulement",
+			addToDocument(new Phrase(getFormattedString("Dernieres_erreurs_seulement",
 					Counter.MAX_ERRORS_COUNT) + '\n', severeFont));
 		}
 		writeHeader(displayUser, displayHttpRequest);
@@ -84,7 +82,7 @@ class PdfCounterErrorReport {
 			odd = !odd; // NOPMD
 			writeError(error, displayUser, displayHttpRequest);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 	}
 
 	private void writeHeader(boolean displayUser, boolean displayHttpRequest)
@@ -102,14 +100,14 @@ class PdfCounterErrorReport {
 
 	private List<String> createHeaders(boolean displayUser, boolean displayHttpRequest) {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Date"));
+		headers.add(getString("Date"));
 		if (displayHttpRequest) {
-			headers.add(getI18nString("Requete"));
+			headers.add(getString("Requete"));
 		}
 		if (displayUser) {
-			headers.add(getI18nString("Utilisateur"));
+			headers.add(getString("Utilisateur"));
 		}
-		headers.add(getI18nString("Erreur"));
+		headers.add(getString("Erreur"));
 		return headers;
 	}
 
@@ -132,10 +130,6 @@ class PdfCounterErrorReport {
 			}
 		}
 		addCell(error.getMessage());
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

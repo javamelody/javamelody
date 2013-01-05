@@ -31,34 +31,29 @@ import java.util.Map;
  * Rapport html principal.
  * @author Emeric Vernat
  */
-class HtmlCoreReport {
+class HtmlCoreReport extends HtmlAbstractReport {
 	private static final int MAX_CURRENT_REQUESTS_DISPLAYED_IN_MAIN_REPORT = 500;
 	private static final int MAX_THREADS_DISPLAYED_IN_MAIN_REPORT = 500;
 	private static final String SEPARATOR = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	private static final String END_DIV = "</div>";
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
-	private static final boolean PDF_ENABLED = isPdfEnabled();
 
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
-	private final Writer writer;
 	private final CollectorServer collectorServer;
 	private final long start = System.currentTimeMillis();
 
-	private static class HtmlForms {
-		private final Writer writer;
-
+	private static class HtmlForms extends HtmlAbstractReport {
 		HtmlForms(Writer writer) {
-			super();
-			this.writer = writer;
+			super(writer);
 		}
 
 		void writeCustomPeriodLink(Range range, String graphName, String part) throws IOException {
 			writeln("<a href=\"javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();\" ");
-			final String linkLabel = I18N.getString("personnalisee");
-			writeln("title='" + I18N.getFormattedString("Choisir_periode", linkLabel) + "'>");
+			final String linkLabel = getString("personnalisee");
+			writeln("title='" + getFormattedString("Choisir_periode", linkLabel) + "'>");
 			writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> #personnalisee#</a>");
 			writeln("<div id='customPeriod' style='display: none;'>");
 			writeln(SCRIPT_BEGIN);
@@ -74,11 +69,11 @@ class HtmlCoreReport {
 			writeln("<br/><br/>");
 			final DateFormat dateFormat = I18N.createDateFormat();
 			final String dateFormatPattern;
-			if (I18N.getString("dateFormatPattern").length() == 0) {
+			if (getString("dateFormatPattern").length() == 0) {
 				final String pattern = ((SimpleDateFormat) dateFormat).toPattern();
 				dateFormatPattern = pattern.toLowerCase(I18N.getCurrentLocale());
 			} else {
-				dateFormatPattern = I18N.getString("dateFormatPattern");
+				dateFormatPattern = getString("dateFormatPattern");
 			}
 			writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
 			writeln("<br/><b>#startDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='startDate' ");
@@ -90,13 +85,12 @@ class HtmlCoreReport {
 				writeln("value='" + dateFormat.format(range.getEndDate()) + '\'');
 			}
 			writeln("/>&nbsp;&nbsp;");
-			writer.write('(' + dateFormatPattern + ')');
+			writeDirectly('(' + dateFormatPattern + ')');
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' value='#ok#'/><br/><br/>");
 			writeln("<input type='hidden' name='period' value=''/>");
 			if (graphName != null) {
 				writeln("<input type='hidden' name='part' value='" + part + "'/>");
-				writeln("<input type='hidden' name='graph' value='" + I18N.urlEncode(graphName)
-						+ "'/>");
+				writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
 			}
 			writeln("</form><br/>");
 			writeln(END_DIV);
@@ -114,11 +108,11 @@ class HtmlCoreReport {
 				writeln(separator);
 				writeln("<a href='?action=remove_application&amp;application=" + currentApplication
 						+ "' class='noPrint' ");
-				final String messageConfirmation = I18N.getFormattedString(
-						"confirm_remove_application", currentApplication);
+				final String messageConfirmation = getFormattedString("confirm_remove_application",
+						currentApplication);
 				writeln("onclick=\"javascript:return confirm('"
-						+ I18N.javascriptEncode(messageConfirmation) + "');\">");
-				final String removeApplicationLabel = I18N.getFormattedString("remove_application",
+						+ javascriptEncode(messageConfirmation) + "');\">");
+				final String removeApplicationLabel = getFormattedString("remove_application",
 						currentApplication);
 				writeln("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
 						+ "\"/> " + removeApplicationLabel + "</a>");
@@ -144,30 +138,34 @@ class HtmlCoreReport {
 
 		private void writelnCheckMandatory(String fieldFullName, String msgKey) throws IOException {
 			writeln("   if (" + fieldFullName + ".value.length == 0) {");
-			writeln("      alert('" + I18N.getStringForJavascript(msgKey) + "');");
+			writeln("      alert('" + getStringForJavascript(msgKey) + "');");
 			writeln("      " + fieldFullName + ".focus();");
 			writeln("      return false;");
 			writeln("   }");
 		}
 
-		private void writeln(String html) throws IOException {
-			I18N.writelnTo(html, writer);
+		@Override
+		void toHtml() {
+			throw new UnsupportedOperationException();
 		}
 	}
 
 	HtmlCoreReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, Writer writer) {
-		super();
+		super(writer);
 		assert collector != null;
 		assert javaInformationsList != null && !javaInformationsList.isEmpty();
 		assert range != null;
-		assert writer != null;
 
 		this.collector = collector;
 		this.collectorServer = collectorServer;
 		this.javaInformationsList = javaInformationsList;
 		this.range = range;
-		this.writer = writer;
+	}
+
+	@Override
+	void toHtml() throws IOException {
+		toHtml(null, null);
 	}
 
 	void toHtml(String message, String anchorNameForRedirect) throws IOException {
@@ -189,7 +187,7 @@ class HtmlCoreReport {
 			writeln("<div align='right'>");
 			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
-					+ I18N.javascriptEncode(I18N.getString("confirm_vider_toutes_stats"))
+					+ getStringForJavascript("confirm_vider_toutes_stats")
 					+ "');\">#Reinitialiser_toutes_stats#</a>");
 			writeln(END_DIV);
 		}
@@ -213,7 +211,7 @@ class HtmlCoreReport {
 			writeSystemActionsLinks();
 		}
 
-		new HtmlJavaInformationsReport(javaInformationsList, writer).toHtml();
+		new HtmlJavaInformationsReport(javaInformationsList, getWriter()).toHtml();
 
 		write("<h3 style='clear:both;'><a name='threads'></a>");
 		writeln("<img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
@@ -249,15 +247,15 @@ class HtmlCoreReport {
 		if (range.getPeriod() == Period.TOUT) {
 			final String startDate = I18N.createDateAndTimeFormat().format(
 					collector.getCounters().get(0).getStartDate());
-			writer.write(I18N.getFormattedString("Statistiques", javaMelodyUrl,
+			writeDirectly(getFormattedString("Statistiques", javaMelodyUrl,
 					I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
 		} else {
-			writer.write(I18N.getFormattedString("Statistiques_sans_depuis", javaMelodyUrl,
+			writeDirectly(getFormattedString("Statistiques_sans_depuis", javaMelodyUrl,
 					I18N.getCurrentDateAndTime(), collector.getApplication()));
 		}
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
-			writer.write(I18N.htmlEncode(" (" + javaInformationsList.get(0).getContextDisplayName()
-					+ ')', false));
+			writeDirectly(htmlEncodeButNotSpace(" ("
+					+ javaInformationsList.get(0).getContextDisplayName() + ')'));
 		}
 		writeln("");
 	}
@@ -273,7 +271,8 @@ class HtmlCoreReport {
 
 	private HtmlCounterReport writeCounter(Counter counter) throws IOException {
 		writeCounterTitle(counter);
-		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
+		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range,
+				getWriter());
 		htmlCounterReport.toHtml();
 		return htmlCounterReport;
 	}
@@ -282,8 +281,8 @@ class HtmlCoreReport {
 		write("<h3><a name='" + counter.getName() + "'></a>");
 		write("<img width='24' height='24' src='?resource=" + counter.getIconName() + "' alt='"
 				+ counter.getName() + "'/>");
-		final String counterLabel = I18N.getString(counter.getName() + "Label");
-		write(I18N.getFormattedString("Statistiques_compteur", counterLabel));
+		final String counterLabel = getString(counter.getName() + "Label");
+		write(getFormattedString("Statistiques_compteur", counterLabel));
 		writeln(" - " + range.getLabel() + "</h3>");
 	}
 
@@ -296,8 +295,8 @@ class HtmlCoreReport {
 			throws IOException {
 		if (message != null) {
 			writeln(SCRIPT_BEGIN);
-			// writer.write pour ne pas gérer de traductions si le message contient '#'
-			writer.write("alert(\"" + I18N.javascriptEncode(message) + "\");");
+			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
+			writeDirectly("alert(\"" + javascriptEncode(message) + "\");");
 			writeln("");
 			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
 			if (partToRedirectTo == null) {
@@ -305,10 +304,10 @@ class HtmlCoreReport {
 					writeln("location.href = '?'");
 				} else {
 					writeln("if (location.href.indexOf('?') != -1) {");
-					writer.write("location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
+					writeDirectly("location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
 							+ anchorNameForRedirect + "';");
 					writeln("} else {");
-					writer.write("location.href = '#" + anchorNameForRedirect + "';");
+					writeDirectly("location.href = '#" + anchorNameForRedirect + "';");
 					writeln("}");
 				}
 			} else {
@@ -363,7 +362,7 @@ class HtmlCoreReport {
 		writeln("<a  href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln(SEPARATOR);
 		writeln("<a href='?part=currentRequests'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln(SEPARATOR);
 			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -389,7 +388,7 @@ class HtmlCoreReport {
 		// counterReportsByCounterName peut être null
 		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
 				rootCurrentContexts, counterReportsByCounterName, threadInformationsList,
-				stackTraceEnabled, maxContextsDisplayed, writer);
+				stackTraceEnabled, maxContextsDisplayed, getWriter());
 		if (onlyTitleAndDetails) {
 			htmlCounterRequestContextReport.writeTitleAndDetails();
 		} else {
@@ -409,14 +408,14 @@ class HtmlCoreReport {
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			write(" <b>");
-			writer.write(I18N.getFormattedString("Threads_sur", javaInformations.getHost()));
+			writeDirectly(getFormattedString("Threads_sur", javaInformations.getHost()));
 			write(": </b>");
-			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
+			writeln(getFormattedString("thread_count", javaInformations.getThreadCount(),
 					javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()));
 			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
 					javaInformations.getThreadInformationsList(),
-					javaInformations.isStackTraceEnabled(), writer);
+					javaInformations.isStackTraceEnabled(), getWriter());
 			htmlThreadInformationsReport.writeDeadlocks();
 			writeln("<br/><br/>");
 			htmlThreadInformationsReport.toHtml();
@@ -424,15 +423,15 @@ class HtmlCoreReport {
 	}
 
 	void writeThreadsDump() throws IOException {
-		writer.write(I18N.getCurrentDateAndTime());
-		writer.write("\n\n");
+		writeDirectly(I18N.getCurrentDateAndTime());
+		writeDirectly("\n\n");
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			writer.write("===== "
-					+ I18N.getFormattedString("Threads_sur", javaInformations.getHost()) + " =====");
-			writer.write("\n\n");
+			writeDirectly("===== " + getFormattedString("Threads_sur", javaInformations.getHost())
+					+ " =====");
+			writeDirectly("\n\n");
 			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
 					javaInformations.getThreadInformationsList(),
-					javaInformations.isStackTraceEnabled(), writer);
+					javaInformations.isStackTraceEnabled(), getWriter());
 			htmlThreadInformationsReport.writeThreadsDump();
 		}
 	}
@@ -441,16 +440,16 @@ class HtmlCoreReport {
 		int i = 0;
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			write("<b>");
-			writer.write(I18N.getFormattedString("Threads_sur", javaInformations.getHost()));
+			writeDirectly(getFormattedString("Threads_sur", javaInformations.getHost()));
 			write(": </b>");
-			writeln(I18N.getFormattedString("thread_count", javaInformations.getThreadCount(),
+			writeln(getFormattedString("thread_count", javaInformations.getThreadCount(),
 					javaInformations.getPeakThreadCount(),
 					javaInformations.getTotalStartedThreadCount()));
 			writeln(SEPARATOR);
 			final List<ThreadInformations> threadInformationsList = javaInformations
 					.getThreadInformationsList();
 			final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
-					threadInformationsList, javaInformations.isStackTraceEnabled(), writer);
+					threadInformationsList, javaInformations.isStackTraceEnabled(), getWriter());
 			if (threadInformationsList.size() <= MAX_THREADS_DISPLAYED_IN_MAIN_REPORT) {
 				final String id = "threads_" + i;
 				writeShowHideLink(id, "#Details#");
@@ -474,11 +473,11 @@ class HtmlCoreReport {
 		writeln(SEPARATOR);
 		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter="
 				+ counter.getName()
-				+ (requestId == null ? "" : "&amp;graph=" + I18N.urlEncode(requestId));
+				+ (requestId == null ? "" : "&amp;graph=" + urlEncode(requestId));
 		writeln(hrefStart + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln(SEPARATOR);
 			write(hrefStart);
 			writeln("&amp;format=pdf' title='#afficher_PDF#'>");
@@ -487,17 +486,9 @@ class HtmlCoreReport {
 		writeln("</div>");
 
 		writeCounterTitle(counter);
-		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range, writer);
+		final HtmlCounterReport htmlCounterReport = new HtmlCounterReport(counter, range,
+				getWriter());
 		htmlCounterReport.writeRequestsAggregatedOrFilteredByClassName(requestId);
-	}
-
-	static boolean isPdfEnabled() {
-		try {
-			Class.forName("com.lowagie.text.Document");
-			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		}
 	}
 
 	private boolean isGcEnabled() {
@@ -553,15 +544,15 @@ class HtmlCoreReport {
 			final List<CacheInformations> cacheInformationsList = javaInformations
 					.getCacheInformationsList();
 			writeln("<b>");
-			writeln(I18N.getFormattedString("caches_sur", cacheInformationsList.size(),
+			writeln(getFormattedString("caches_sur", cacheInformationsList.size(),
 					javaInformations.getHost()));
 			writeln("</b>");
 			writeln(SEPARATOR);
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
-			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(), writer)
-					.toHtml();
+			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(),
+					getWriter()).toHtml();
 			writeln("</div></div><br/>");
 			i++;
 		}
@@ -576,7 +567,7 @@ class HtmlCoreReport {
 			final List<JobInformations> jobInformationsList = javaInformations
 					.getJobInformationsList();
 			writeln("<b>");
-			writeln(I18N.getFormattedString("jobs_sur", jobInformationsList.size(),
+			writeln(getFormattedString("jobs_sur", jobInformationsList.size(),
 					javaInformations.getHost(), javaInformations.getCurrentlyExecutingJobCount()));
 			writeln("</b>");
 			writeln(SEPARATOR);
@@ -584,7 +575,7 @@ class HtmlCoreReport {
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
 			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(),
-					rangeJobCounter, writer).toHtml();
+					rangeJobCounter, getWriter()).toHtml();
 			writeln("</div></div><br/>");
 			i++;
 		}
@@ -596,13 +587,12 @@ class HtmlCoreReport {
 		final String endOfOnClickConfirm = "');\">";
 		if (isGcEnabled()) {
 			write("<a href='?action=gc' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
+					+ getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
 			write("<a href='' onclick=\"javascript:alert('"
-					+ I18N.getStringForJavascript("ramasse_miette_desactive")
-					+ "');return false;\">");
+					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
@@ -611,7 +601,7 @@ class HtmlCoreReport {
 			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
 			// des webapps monitorées
 			write("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
+					+ getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
 			write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 			writeln(separator);
 		}
@@ -622,8 +612,7 @@ class HtmlCoreReport {
 		}
 		if (isSessionsEnabled()) {
 			write("<a href='?action=invalidate_sessions' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_invalidate_sessions")
-					+ endOfOnClickConfirm);
+					+ getStringForJavascript("confirm_invalidate_sessions") + endOfOnClickConfirm);
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
 			write("<a href='?part=sessions'>");
@@ -678,7 +667,7 @@ class HtmlCoreReport {
 				writeln("<table summary='applications'><tr><td>");
 				writeShowHideLink("chooseApplication", "#Choix_application#");
 				if (Parameters.getCollectorApplicationsFile().canWrite()) {
-					writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
+					writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
 				}
 				writeln("<div id='chooseApplication' style='display: none;'><div>&nbsp;&nbsp;&nbsp;");
 				writeApplicationsLinks(applications, "<br />&nbsp;&nbsp;&nbsp;");
@@ -687,11 +676,11 @@ class HtmlCoreReport {
 				writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
 				writeApplicationsLinks(applications, "&nbsp;&nbsp;&nbsp;");
 				if (Parameters.getCollectorApplicationsFile().canWrite()) {
-					writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
+					writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
 				}
 			}
 		} else if (Parameters.getCollectorApplicationsFile().canWrite()) {
-			writeAddAndRemoveApplicationLinks(collector.getApplication(), writer);
+			writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
 		}
 		writeln(END_DIV);
 	}
@@ -715,7 +704,7 @@ class HtmlCoreReport {
 				writeln("#Application_indisponible#:<br/>");
 				for (final StackTraceElement stackTraceElement : lastCollectException
 						.getStackTrace()) {
-					writeln(I18N.htmlEncode(stackTraceElement.toString(), true));
+					writeln(htmlEncode(stackTraceElement.toString()));
 					writeln("<br/>");
 				}
 				writeln("</em>");
@@ -736,11 +725,11 @@ class HtmlCoreReport {
 			writeln(separator);
 			writeln("<a href='?'><img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
 			writeln(separator);
-			write("<a href='?part=" + part + graphParameter + I18N.urlEncode(graphName)
+			write("<a href='?part=" + part + graphParameter + urlEncode(graphName)
 					+ "' title='#Rafraichir#'>");
 		}
 		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (graphName == null && PDF_ENABLED) {
+		if (graphName == null && isPdfEnabled()) {
 			writeln(separator);
 			write("<a href='?format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -760,16 +749,15 @@ class HtmlCoreReport {
 			if (graphName == null) {
 				write("<a href='?period=" + myPeriod.getCode() + "' ");
 			} else {
-				write("<a href='?part=" + part + graphParameter + I18N.urlEncode(graphName)
+				write("<a href='?part=" + part + graphParameter + urlEncode(graphName)
 						+ "&amp;period=" + myPeriod.getCode() + "' ");
 			}
-			write("title='" + I18N.getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
-					+ "'>");
+			write("title='" + getFormattedString("Choisir_periode", myPeriod.getLinkLabel()) + "'>");
 			write("<img src='?resource=" + myPeriod.getIconName() + "' alt='"
 					+ myPeriod.getLinkLabel() + "' /> ");
 			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;");
 		}
-		new HtmlForms(writer).writeCustomPeriodLink(range, graphName, part);
+		new HtmlForms(getWriter()).writeCustomPeriodLink(range, graphName, part);
 
 		writeln(END_DIV);
 	}
@@ -802,13 +790,5 @@ class HtmlCoreReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
 				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

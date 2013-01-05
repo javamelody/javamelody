@@ -37,47 +37,43 @@ import com.lowagie.text.pdf.PdfPTable;
  * Rapport pdf pour l'histogramme mémoire.
  * @author Emeric Vernat
  */
-class PdfHeapHistogramReport {
+class PdfHeapHistogramReport extends PdfAbstractReport {
 	private final HeapHistogram heapHistogram;
-	private final Document document;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font boldFont = PdfFonts.BOLD_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfHeapHistogramReport(HeapHistogram heapHistogram, Document document) {
-		super();
+		super(document);
 		assert heapHistogram != null;
-		assert document != null;
 		this.heapHistogram = heapHistogram;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
-		document.add(new Phrase(getI18nString("Heap"), boldFont));
+		addToDocument(new Phrase(getString("Heap"), boldFont));
 		final List<ClassInfo> heap = heapHistogram.getHeapHistogram();
 		final long totalHeapInstances = heapHistogram.getTotalHeapInstances();
 		final long totalHeapBytes = heapHistogram.getTotalHeapBytes();
 		final String separator = ",   ";
-		document.add(new Phrase(
-				"     " + getI18nString("Classes") + ": " + integerFormat.format(heap.size())
-						+ separator + getI18nString("Instances") + ": "
-						+ integerFormat.format(totalHeapInstances) + separator
-						+ getI18nString("Kilo-Octets") + ": "
-						+ integerFormat.format(totalHeapBytes / 1024), cellFont));
+		addToDocument(new Phrase("     " + getString("Classes") + ": "
+				+ integerFormat.format(heap.size()) + separator + getString("Instances") + ": "
+				+ integerFormat.format(totalHeapInstances) + separator + getString("Kilo-Octets")
+				+ ": " + integerFormat.format(totalHeapBytes / 1024), cellFont));
 		writeHeader(heapHistogram.isSourceDisplayed(), heapHistogram.isDeltaDisplayed());
 		writeClassInfo(heap, totalHeapInstances, totalHeapBytes, heapHistogram.isSourceDisplayed(),
 				heapHistogram.isDeltaDisplayed());
 		final List<ClassInfo> permGen = heapHistogram.getPermGenHistogram();
 		if (!permGen.isEmpty()) {
 			// avec jrockit, permGen est vide
-			document.add(new Phrase("\n\n" + getI18nString("PermGen"), boldFont));
+			addToDocument(new Phrase("\n\n" + getString("PermGen"), boldFont));
 			final long totalPermGenInstances = heapHistogram.getTotalPermGenInstances();
 			final long totalPermGenBytes = heapHistogram.getTotalPermGenBytes();
-			document.add(new Phrase("     " + getI18nString("Classes") + ": "
-					+ integerFormat.format(permGen.size()) + separator + getI18nString("Instances")
+			addToDocument(new Phrase("     " + getString("Classes") + ": "
+					+ integerFormat.format(permGen.size()) + separator + getString("Instances")
 					+ ": " + integerFormat.format(totalPermGenInstances) + separator
-					+ getI18nString("Kilo-Octets") + ": "
+					+ getString("Kilo-Octets") + ": "
 					+ integerFormat.format(totalPermGenBytes / 1024), cellFont));
 			writeHeader(false, false);
 			writeClassInfo(permGen, totalPermGenInstances, totalPermGenBytes, false, false);
@@ -99,16 +95,16 @@ class PdfHeapHistogramReport {
 
 	private List<String> createHeaders(boolean sourceDisplayed, boolean deltaDisplayed) {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Classe"));
-		headers.add(getI18nString("Taille"));
-		headers.add(getI18nString("pct_taille"));
+		headers.add(getString("Classe"));
+		headers.add(getString("Taille"));
+		headers.add(getString("pct_taille"));
 		if (deltaDisplayed) {
-			headers.add(getI18nString("Delta"));
+			headers.add(getString("Delta"));
 		}
-		headers.add(getI18nString("Instances"));
-		headers.add(getI18nString("pct_instances"));
+		headers.add(getString("Instances"));
+		headers.add(getString("pct_instances"));
 		if (sourceDisplayed) {
-			headers.add(getI18nString("Source"));
+			headers.add(getString("Source"));
 		}
 		return headers;
 	}
@@ -128,7 +124,7 @@ class PdfHeapHistogramReport {
 			writeClassInfoRow(classInfo, totalInstances, totalBytes, sourceDisplayed,
 					deltaDisplayed);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 	}
 
 	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
@@ -159,10 +155,6 @@ class PdfHeapHistogramReport {
 				addCell(source);
 			}
 		}
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

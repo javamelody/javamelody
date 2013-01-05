@@ -30,27 +30,24 @@ import net.bull.javamelody.HeapHistogram.ClassInfo;
  * Partie du rapport html pour l'histogramme mémoire.
  * @author Emeric Vernat
  */
-class HtmlHeapHistogramReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlHeapHistogramReport extends HtmlAbstractReport {
 	private final HeapHistogram heapHistogram;
-	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
 	HtmlHeapHistogramReport(HeapHistogram heapHistogram, Writer writer) {
-		super();
+		super(writer);
 		assert heapHistogram != null;
-		assert writer != null;
 		this.heapHistogram = heapHistogram;
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeLinks();
 		writeln("<br/>");
 
 		writeln("<img src='?resource=memory.png' width='24' height='24' alt='#memoire#' />&nbsp;");
 		writeln("<b>"
-				+ I18N.getFormattedString("heap_histo_du",
+				+ getFormattedString("heap_histo_du",
 						I18N.createDateAndTimeFormat().format(heapHistogram.getTime())) + "</b>");
 		writeln("<br/><br/><b>#Heap#</b>");
 		final String separator = "&nbsp;&nbsp;&nbsp;";
@@ -185,7 +182,7 @@ class HtmlHeapHistogramReport {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		writeln("<a href='?part=heaphisto'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln(separator);
 			write("<a href='?part=heaphisto&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -193,13 +190,12 @@ class HtmlHeapHistogramReport {
 		writeln(separator);
 		if (Action.GC_ENABLED) {
 			writeln("<a href='?part=heaphisto&amp;action=gc' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_ramasse_miette") + "');\">");
+					+ getStringForJavascript("confirm_ramasse_miette") + "');\">");
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
 			writeln("<a href='' onclick=\"javascript:alert('"
-					+ I18N.getStringForJavascript("ramasse_miette_desactive")
-					+ "');return false;\">");
+					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
@@ -208,7 +204,7 @@ class HtmlHeapHistogramReport {
 			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
 			// des webapps monitorées
 			writeln("<a href='?part=heaphisto&amp;action=heap_dump' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_heap_dump") + "');\">");
+					+ getStringForJavascript("confirm_heap_dump") + "');\">");
 			writeln("<img src='?resource=heapdump.png' width='16' height='16' alt='#heap_dump#' /> #heap_dump#</a>");
 			writeln(separator);
 		}
@@ -218,13 +214,5 @@ class HtmlHeapHistogramReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
 				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

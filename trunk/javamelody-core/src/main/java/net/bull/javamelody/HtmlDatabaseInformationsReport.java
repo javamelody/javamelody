@@ -25,21 +25,21 @@ import java.io.Writer;
  * Partie du rapport html pour les informations sur la base de données.
  * @author Emeric Vernat
  */
-class HtmlDatabaseInformationsReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 	private final DatabaseInformations databaseInformations;
-	private final Writer writer;
 
-	static class TableReport {
-		private final Writer writer;
+	static class TableReport extends HtmlAbstractReport {
+		private final String[][] values;
+		private final int nbColumns;
 
-		TableReport(Writer writer) {
-			super();
-			assert writer != null;
-			this.writer = writer;
+		TableReport(String[][] values, int nbColumns, Writer writer) {
+			super(writer);
+			this.values = values.clone();
+			this.nbColumns = nbColumns;
 		}
 
-		void toHtml(String[][] values, int nbColumns) throws IOException {
+		@Override
+		void toHtml() throws IOException {
 			final int rowsByColumn;
 			if (nbColumns > 1) {
 				rowsByColumn = values.length / nbColumns + 1;
@@ -81,7 +81,7 @@ class HtmlDatabaseInformationsReport {
 			write("<thead><tr>");
 			for (final String value : headerValues) {
 				write("<th>");
-				writer.write(value.replace("\n", "<br/>"));
+				writeDirectly(value.replace("\n", "<br/>"));
 				write("</th>");
 			}
 			writeln("</tr></thead><tbody>");
@@ -94,10 +94,10 @@ class HtmlDatabaseInformationsReport {
 				} else {
 					if (isNumber(value)) {
 						write("<td align='right' valign='top'>");
-						writer.write(value);
+						writeDirectly(value);
 					} else {
 						write("<td valign='top'>");
-						writer.write(value.replace("\n", "<br/>"));
+						writeDirectly(value.replace("\n", "<br/>"));
 					}
 					write("</td>");
 				}
@@ -114,24 +114,15 @@ class HtmlDatabaseInformationsReport {
 			}
 			return true;
 		}
-
-		private void write(String html) throws IOException {
-			I18N.writeTo(html, writer);
-		}
-
-		private void writeln(String html) throws IOException {
-			I18N.writelnTo(html, writer);
-		}
 	}
 
 	HtmlDatabaseInformationsReport(DatabaseInformations databaseInformations, Writer writer) {
-		super();
+		super(writer);
 		assert databaseInformations != null;
-		assert writer != null;
 		this.databaseInformations = databaseInformations;
-		this.writer = writer;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeLinks();
 		writeln("<br/>");
@@ -142,7 +133,7 @@ class HtmlDatabaseInformationsReport {
 
 		final String[][] values = databaseInformations.getResult();
 		final int nbColumns = databaseInformations.getNbColumns();
-		new TableReport(writer).toHtml(values, nbColumns);
+		new TableReport(values, nbColumns, getWriter()).toHtml();
 	}
 
 	private void writeLinks() throws IOException {
@@ -153,7 +144,7 @@ class HtmlDatabaseInformationsReport {
 		writeln("<a href='?part=database&amp;request="
 				+ databaseInformations.getSelectedRequestIndex()
 				+ "'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln(separator);
 			write("<a href='?part=database&amp;request="
 					+ databaseInformations.getSelectedRequestIndex()
@@ -171,19 +162,11 @@ class HtmlDatabaseInformationsReport {
 				write(" selected='selected'");
 			}
 			write(">");
-			write(I18N.getString(request));
+			write(getString(request));
 			write("</option>");
 			index++;
 		}
 		writeln("</select>");
 		writeln("</div>");
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

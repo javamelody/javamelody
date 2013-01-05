@@ -32,22 +32,19 @@ import java.util.Map;
  * Partie du rapport html pour un compteur.
  * @author Emeric Vernat
  */
-class HtmlCounterReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlCounterReport extends HtmlAbstractReport {
 	private final Counter counter;
 	private final Range range;
-	private final Writer writer;
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final HtmlCounterRequestGraphReport htmlCounterRequestGraphReport;
 	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
-	static class HtmlCounterRequestGraphReport {
+	static class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 		private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 		private static final String SCRIPT_END = "</script>";
 		private static int uniqueByPageAndGraphSequence;
 		private final Range range;
-		private final Writer writer;
 		private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
 		private final DecimalFormat nbExecutionsFormat = I18N.createPercentFormat();
 		private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -55,11 +52,14 @@ class HtmlCounterReport {
 		private Map<String, CounterRequest> requestsById;
 
 		HtmlCounterRequestGraphReport(Range range, Writer writer) {
-			super();
+			super(writer);
 			assert range != null;
-			assert writer != null;
 			this.range = range;
-			this.writer = writer;
+		}
+
+		@Override
+		void toHtml() {
+			throw new UnsupportedOperationException();
 		}
 
 		void writeRequestGraph(String requestId, String requestName) throws IOException {
@@ -81,8 +81,8 @@ class HtmlCounterReport {
 			write("<em><img src='?resource=db.png' id='");
 			write(id);
 			write("' alt='graph'/></em>");
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(htmlEncode(requestName));
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly(htmlEncodeButNotSpace(requestName));
 			write("</a>");
 		}
 
@@ -108,18 +108,17 @@ class HtmlCounterReport {
 				writeln("</div></div>");
 
 				writeln("<div align='center'><img class='synthèse' id='img' src='"
-						+ "?width=960&amp;height=400&amp;graph=" + I18N.urlEncode(graphName)
+						+ "?width=960&amp;height=400&amp;graph=" + urlEncode(graphName)
 						+ "' alt='zoom'/></div>");
 				writeln("<div align='right'><a href='?part=lastValue&amp;graph="
-						+ I18N.urlEncode(graphName)
-						+ "' title=\"#Lien_derniere_valeur#\">_</a></div>");
+						+ urlEncode(graphName) + "' title=\"#Lien_derniere_valeur#\">_</a></div>");
 
 				writeGraphDetailScript(graphName);
 			}
 			if (request != null && request.getStackTrace() != null) {
 				writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
-				// writer.write pour ne pas gérer de traductions si la stack-trace contient '#'
-				writer.write(htmlEncode(request.getStackTrace()).replaceAll("\t",
+				// writeDirectly pour ne pas gérer de traductions si la stack-trace contient '#'
+				writeDirectly(htmlEncodeButNotSpace(request.getStackTrace()).replaceAll("\t",
 						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 				writeln("</font></blockquote></blockquote>");
 			}
@@ -148,7 +147,7 @@ class HtmlCounterReport {
 				if (explainPlan != null) {
 					writeln("<b>#Plan_d_execution#</b>");
 					writeln("<div class='explainPlan'>");
-					writer.write(explainPlan.replace(" ", "&nbsp;").replace("\n", "<br/>"));
+					writeDirectly(explainPlan.replace(" ", "&nbsp;").replace("\n", "<br/>"));
 					writeln("</div><hr/>");
 				}
 			} catch (final Exception e) {
@@ -180,7 +179,7 @@ class HtmlCounterReport {
 				throws IOException {
 			writeln("<br/><b>#Utilisations_de#</b>");
 			if (myRequest != null) {
-				writer.write(htmlEncode(myRequest.getName()));
+				writeDirectly(htmlEncodeButNotSpace(myRequest.getName()));
 			}
 			writeln("<br/><br/>");
 			if (requests.isEmpty()) {
@@ -251,14 +250,14 @@ class HtmlCounterReport {
 			if (allChildHitsDisplayed) {
 				final String childCounterName = parentCounter.getChildCounterName();
 				writeln("<th class='sorttable_numeric'>"
-						+ I18N.getFormattedString("hits_fils_moyens", childCounterName));
+						+ getFormattedString("hits_fils_moyens", childCounterName));
 				writeln("</th><th class='sorttable_numeric'>"
-						+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
+						+ getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
 			}
 			writeln("</tr></thead><tbody>");
 			writeln("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\"><td>");
 			writeCounterIcon(request);
-			writer.write(htmlEncode(request.getName()));
+			writeDirectly(htmlEncodeButNotSpace(request.getName()));
 			if (hasChildren) {
 				writeln("</td><td>&nbsp;");
 			}
@@ -388,7 +387,7 @@ class HtmlCounterReport {
 			writeln("  height = Math.round(width * initialHeight / initialWidth) - 48;");
 			// reload the images
 			// rq : on utilise des caractères unicode pour éviter des warnings
-			writeln("  document.getElementById('img').src = '?graph=" + I18N.urlEncode(graphName)
+			writeln("  document.getElementById('img').src = '?graph=" + urlEncode(graphName)
 					+ "\\u0026width=' + width + '\\u0026height=' + height;");
 			writeln("  document.getElementById('img').style.width = '';");
 			writeln("}");
@@ -423,32 +422,19 @@ class HtmlCounterReport {
 			}
 			return null;
 		}
-
-		private static String htmlEncode(String text) {
-			return I18N.htmlEncode(text, false);
-		}
-
-		private void write(String html) throws IOException {
-			I18N.writeTo(html, writer);
-		}
-
-		private void writeln(String html) throws IOException {
-			I18N.writelnTo(html, writer);
-		}
 	}
 
 	HtmlCounterReport(Counter counter, Range range, Writer writer) {
-		super();
+		super(writer);
 		assert counter != null;
 		assert range != null;
-		assert writer != null;
 		this.counter = counter;
 		this.range = range;
-		this.writer = writer;
 		this.counterRequestAggregation = new CounterRequestAggregation(counter);
 		this.htmlCounterRequestGraphReport = new HtmlCounterRequestGraphReport(range, writer);
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 		if (requests.isEmpty()) {
@@ -484,7 +470,7 @@ class HtmlCounterReport {
 		// 4. logs (non visible par défaut)
 		if (isErrorCounter()) {
 			writeln("<div id='logs" + counterName + "' style='display: none;'><div>");
-			new HtmlCounterErrorReport(counter, writer).toHtml();
+			new HtmlCounterErrorReport(counter, getWriter()).toHtml();
 			writeln("</div></div>");
 		}
 	}
@@ -513,14 +499,14 @@ class HtmlCounterReport {
 		} else {
 			nbKey = "nb_requetes";
 		}
-		writeln(I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute),
+		writeln(getFormattedString(nbKey, integerFormat.format(hitsParMinute),
 				integerFormat.format(requests.size())));
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (counter.isBusinessFacadeCounter()) {
 			writeln(separator);
 			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
 					+ "' class='noPrint'>#Resume_par_classe#</a>");
-			if (PDF_ENABLED) {
+			if (isPdfEnabled()) {
 				writeln(separator);
 				writeln("<a href='?part=runtimeDependencies&amp;format=pdf&amp;counter="
 						+ counterName + "' class='noPrint'>#Dependances#</a>");
@@ -535,10 +521,10 @@ class HtmlCounterReport {
 		writeln(separator);
 		if (range.getPeriod() == Period.TOUT) {
 			writeln("<a href='?action=clear_counter&amp;counter=" + counterName + "' title='"
-					+ I18N.getFormattedString("Vider_stats", counterName) + '\'');
+					+ getFormattedString("Vider_stats", counterName) + '\'');
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
-					+ I18N.javascriptEncode(I18N.getFormattedString("confirm_vider_stats",
-							counterName)) + "');\">#Reinitialiser#</a>");
+					+ javascriptEncode(getFormattedString("confirm_vider_stats", counterName))
+					+ "');\">#Reinitialiser#</a>");
 		}
 		writeln("</div>");
 	}
@@ -630,9 +616,9 @@ class HtmlCounterReport {
 		}
 		if (counterRequestAggregation.isChildHitsDisplayed()) {
 			write("<th class='sorttable_numeric'>"
-					+ I18N.getFormattedString("hits_fils_moyens", childCounterName));
+					+ getFormattedString("hits_fils_moyens", childCounterName));
 			write("</th><th class='sorttable_numeric'>"
-					+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
+					+ getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
 		}
 		writeln("</tr></thead>");
 	}
@@ -703,8 +689,8 @@ class HtmlCounterReport {
 			write("<a href='?part=graph&amp;graph=");
 			write(requestId);
 			write("'>");
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(htmlEncode(requestName));
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly(htmlEncodeButNotSpace(requestName));
 			write("</a>");
 		} else if (includeSummaryPerClassLink) {
 			write("<a href='?part=counterSummaryPerClass&amp;counter=");
@@ -712,12 +698,12 @@ class HtmlCounterReport {
 			write("&amp;graph=");
 			write(requestId);
 			write("'>");
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(htmlEncode(requestName));
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly(htmlEncodeButNotSpace(requestName));
 			write("</a> ");
 		} else {
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(htmlEncode(requestName));
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly(htmlEncodeButNotSpace(requestName));
 		}
 	}
 
@@ -740,10 +726,6 @@ class HtmlCounterReport {
 		return color;
 	}
 
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, false);
-	}
-
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
 				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
@@ -755,13 +737,5 @@ class HtmlCounterReport {
 		} else {
 			write(integerFormat.format(100 * dividende / diviseur));
 		}
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

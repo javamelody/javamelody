@@ -27,24 +27,22 @@ import java.util.List;
  * Partie du rapport html pour les caches de données.
  * @author Emeric Vernat
  */
-class HtmlCacheInformationsReport {
+class HtmlCacheInformationsReport extends HtmlAbstractReport {
 	private final List<CacheInformations> cacheInformationsList;
-	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
 
 	HtmlCacheInformationsReport(List<CacheInformations> cacheInformationsList, Writer writer) {
-		super();
+		super(writer);
 		assert cacheInformationsList != null;
-		assert writer != null;
 
 		this.cacheInformationsList = cacheInformationsList;
-		this.writer = writer;
 		this.hitsRatioEnabled = isHitsRatioEnabled(cacheInformationsList);
 		this.configurationEnabled = isConfigurationEnabled(cacheInformationsList);
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Caches#'>");
 		write("<thead><tr><th>#Cache#</th>");
@@ -55,9 +53,9 @@ class HtmlCacheInformationsReport {
 		write("<th class='sorttable_numeric'>#Nb_objets_sur_disque#</th>");
 		if (hitsRatioEnabled) {
 			write("<th class='sorttable_numeric'>");
-			write(I18N.getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
+			write(getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
 			write("</th><th class='sorttable_numeric'>");
-			write(I18N.getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+			write(getString("Efficacite_cache").replaceAll("\n", "<br/>"));
 			write("</th>");
 		}
 		if (configurationEnabled) {
@@ -82,18 +80,18 @@ class HtmlCacheInformationsReport {
 		}
 		if (Parameters.isSystemActionsEnabled()) {
 			writeln("<a href='?action=clear_caches' onclick=\"javascript:return confirm('"
-					+ I18N.getStringForJavascript("confirm_purge_caches") + "');\">");
+					+ getStringForJavascript("confirm_purge_caches") + "');\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
-		// writer.write pour éviter traduction car # dans l'url
-		writer.write("<a href='http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
+		// writeDirectly pour éviter traduction car # dans l'url
+		writeDirectly("<a href='http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
 		writeln("target='_blank'>Configuration reference</a></div>");
 	}
 
 	private void writeCacheInformations(CacheInformations cacheInformations) throws IOException {
 		write("<td>");
-		writer.write(htmlEncode(cacheInformations.getName()));
+		writeDirectly(htmlEncodeButNotSpace(cacheInformations.getName()));
 		final String nextColumnAlignRight = "</td> <td align='right'>";
 		if (configurationEnabled) {
 			write(nextColumnAlignRight);
@@ -133,17 +131,5 @@ class HtmlCacheInformationsReport {
 			}
 		}
 		return false;
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, false);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

@@ -28,9 +28,8 @@ import java.util.List;
  * Partie du rapport html pour les threads sur le serveur.
  * @author Emeric Vernat
  */
-class HtmlThreadInformationsReport {
+class HtmlThreadInformationsReport extends HtmlAbstractReport {
 	private final List<ThreadInformations> threadInformationsList;
-	private final Writer writer;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean stackTraceEnabled;
 	private final boolean cpuTimeEnabled;
@@ -38,17 +37,16 @@ class HtmlThreadInformationsReport {
 
 	HtmlThreadInformationsReport(List<ThreadInformations> threadInformationsList,
 			boolean stackTraceEnabled, Writer writer) {
-		super();
+		super(writer);
 		assert threadInformationsList != null;
-		assert writer != null;
 
 		this.threadInformationsList = threadInformationsList;
-		this.writer = writer;
 		this.stackTraceEnabled = stackTraceEnabled;
 		this.cpuTimeEnabled = !threadInformationsList.isEmpty()
 				&& threadInformationsList.get(0).getCpuTimeMillis() != -1;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Threads#'>");
 		write("<thead><tr><th>#Thread#</th>");
@@ -89,8 +87,8 @@ class HtmlThreadInformationsReport {
 			write("<div class='severe'>#Threads_deadlocks#");
 			String separator = " ";
 			for (final ThreadInformations thread : deadlockedThreads) {
-				writer.write(separator);
-				writer.write(htmlEncode(thread.getName()));
+				writeDirectly(separator);
+				writeDirectly(htmlEncode(thread.getName()));
 				separator = ", ";
 			}
 			write("</div>");
@@ -103,34 +101,34 @@ class HtmlThreadInformationsReport {
 			write("#Threads_deadlocks#");
 			String separator = " ";
 			for (final ThreadInformations thread : deadlockedThreads) {
-				writer.write(separator);
-				writer.write(thread.getName());
+				writeDirectly(separator);
+				writeDirectly(thread.getName());
 				separator = ", ";
 			}
-			writer.write("\n\n");
+			writeDirectly("\n\n");
 		}
 		if (stackTraceEnabled) {
 			for (final ThreadInformations threadInformations : threadInformationsList) {
-				writer.write('\"');
-				writer.write(threadInformations.getName());
-				writer.write('\"');
+				writeDirectly("\"");
+				writeDirectly(threadInformations.getName());
+				writeDirectly("\"");
 				if (threadInformations.isDaemon()) {
-					writer.write(" daemon");
+					writeDirectly(" daemon");
 				}
-				writer.write(" prio=");
-				writer.write(String.valueOf(threadInformations.getPriority()));
-				writer.write(' ');
-				writer.write(String.valueOf(threadInformations.getState()));
+				writeDirectly(" prio=");
+				writeDirectly(String.valueOf(threadInformations.getPriority()));
+				writeDirectly(" ");
+				writeDirectly(String.valueOf(threadInformations.getState()));
 				final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
 				if (stackTrace != null && !stackTrace.isEmpty()) {
 					for (final StackTraceElement element : stackTrace) {
-						writer.write("\n\t");
-						writer.write(element.toString());
+						writeDirectly("\n\t");
+						writeDirectly(element.toString());
 					}
 				}
-				writer.write("\n\n");
+				writeDirectly("\n\n");
 			}
-			writer.write("\n");
+			writeDirectly("\n");
 		}
 	}
 
@@ -176,13 +174,13 @@ class HtmlThreadInformationsReport {
 			write("</td> <td align='center' class='noPrint'>");
 			write("<a href='?action=kill_thread&amp;threadId=");
 			write(threadInformations.getGlobalThreadId());
-			final String confirmKillThread = I18N.javascriptEncode(I18N.getFormattedString(
+			final String confirmKillThread = javascriptEncode(getFormattedString(
 					"confirm_kill_thread", threadInformations.getName()));
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
-			final String title = htmlEncode(I18N.getFormattedString("kill_thread",
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
+			final String title = htmlEncode(getFormattedString("kill_thread",
 					threadInformations.getName()));
-			writer.write("<img width='16' height='16' src='?resource=stop.png' alt='" + title
+			writeDirectly("<img width='16' height='16' src='?resource=stop.png' alt='" + title
 					+ "' title='" + title + "' />");
 			write("</a>");
 		}
@@ -224,19 +222,19 @@ class HtmlThreadInformationsReport {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
 			writeln("<a class='tooltip'>");
 			writeln("<em>");
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(encodedName);
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly(encodedName);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
 				write(htmlEncode(stackTraceElement.toString()));
 				writeln("<br/>");
 			}
 			writeln("</em>");
-			writer.write(encodedName);
+			writeDirectly(encodedName);
 			writeln("</a>");
 		} else {
-			// writer.write pour ne pas gérer de traductions si le nom contient '#'
-			writer.write(encodedName);
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly(encodedName);
 		}
 	}
 
@@ -247,17 +245,5 @@ class HtmlThreadInformationsReport {
 		} else {
 			write("&nbsp;");
 		}
-	}
-
-	private static String htmlEncode(String text) {
-		return I18N.htmlEncode(text, true);
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

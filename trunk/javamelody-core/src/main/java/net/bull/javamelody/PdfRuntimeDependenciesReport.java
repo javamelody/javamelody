@@ -39,9 +39,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les dépendances en exécution.
  * @author Emeric Vernat
  */
-class PdfRuntimeDependenciesReport {
+class PdfRuntimeDependenciesReport extends PdfAbstractReport {
 	private final Counter counter;
-	private final Document document;
 	private final Font warningCellFont = PdfFonts.WARNING_CELL.getFont();
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
 	private final Font normalFont = PdfFonts.NORMAL.getFont();
@@ -52,11 +51,9 @@ class PdfRuntimeDependenciesReport {
 	private double standardDeviation;
 
 	PdfRuntimeDependenciesReport(Counter counter, Document document) {
-		super();
+		super(document);
 		assert counter != null;
-		assert document != null;
 		this.counter = counter;
-		this.document = document;
 	}
 
 	/**
@@ -203,13 +200,14 @@ class PdfRuntimeDependenciesReport {
 		return result;
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
 		final Map<String, Map<String, Integer>> runtimeDependencies = getRuntimeDependencies();
 		if (runtimeDependencies.isEmpty()) {
-			document.add(new Phrase(getI18nString("Aucune_dependance"), normalFont));
+			addToDocument(new Phrase(getString("Aucune_dependance"), normalFont));
 			return;
 		}
-		document.add(new Phrase(getI18nString("runtime_dependencies_desc"), normalFont));
+		addToDocument(new Phrase(getString("runtime_dependencies_desc"), normalFont));
 		this.standardDeviation = getStandardDeviation(runtimeDependencies);
 		this.calledBeans = getCalledBeans(runtimeDependencies);
 
@@ -229,8 +227,7 @@ class PdfRuntimeDependenciesReport {
 			final Map<String, Integer> beanDependencies = runtimeDependencies.get(callerBean);
 			writeBeanDependencies(callerBean, beanDependencies);
 		}
-		document.add(currentTable);
-
+		addToDocument(currentTable);
 	}
 
 	private void writeBeanDependencies(String callerBean, Map<String, Integer> beanDependencies) {
@@ -281,10 +278,6 @@ class PdfRuntimeDependenciesReport {
 		defaultCell.setPaddingLeft(2);
 		defaultCell.setPaddingRight(2);
 		currentTable = table;
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

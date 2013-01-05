@@ -33,20 +33,18 @@ import com.lowagie.text.pdf.PdfPTable;
  * Rapport pdf pour les informations sur la base de données.
  * @author Emeric Vernat
  */
-class PdfDatabaseInformationsReport {
+class PdfDatabaseInformationsReport extends PdfAbstractReport {
 	private final DatabaseInformations databaseInformations;
-	private final Document document;
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private PdfPTable currentTable;
 
 	PdfDatabaseInformationsReport(DatabaseInformations databaseInformations, Document document) {
-		super();
+		super(document);
 		assert databaseInformations != null;
-		assert document != null;
 		this.databaseInformations = databaseInformations;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
 		final String[][] values = databaseInformations.getResult();
 		// final int nbColumns = databaseInformations.getNbColumns();
@@ -72,7 +70,7 @@ class PdfDatabaseInformationsReport {
 			writeRow(row);
 			index++;
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 	}
 
 	private void writeTableHeaders(String[] headerValues) throws DocumentException {

@@ -31,12 +31,10 @@ import java.util.Map;
  * Partie du rapport html pour les contextes de requêtes en cours.
  * @author Emeric Vernat
  */
-class HtmlCounterRequestContextReport {
-	private static final boolean PDF_ENABLED = HtmlCoreReport.isPdfEnabled();
+class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	private final List<CounterRequestContext> rootCurrentContexts;
 	private final Map<String, HtmlCounterReport> counterReportsByCounterName;
 	private final Map<Long, ThreadInformations> threadInformationsByThreadId;
-	private final Writer writer;
 	private final boolean childHitsDisplayed;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final long timeOfSnapshot = System.currentTimeMillis();
@@ -132,10 +130,9 @@ class HtmlCounterRequestContextReport {
 			Map<String, HtmlCounterReport> counterReportsByCounterName,
 			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled,
 			int maxContextsDisplayed, Writer writer) {
-		super();
+		super(writer);
 		assert rootCurrentContexts != null;
 		assert threadInformationsList != null;
-		assert writer != null;
 
 		this.rootCurrentContexts = rootCurrentContexts;
 		if (counterReportsByCounterName == null) {
@@ -148,7 +145,6 @@ class HtmlCounterRequestContextReport {
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			this.threadInformationsByThreadId.put(threadInformations.getId(), threadInformations);
 		}
-		this.writer = writer;
 		boolean oneRootHasChild = false;
 		for (final CounterRequestContext rootCurrentContext : rootCurrentContexts) {
 			if (rootCurrentContext.getParentCounter().getChildCounterName() != null) {
@@ -163,6 +159,7 @@ class HtmlCounterRequestContextReport {
 		this.maxContextsDisplayed = maxContextsDisplayed;
 	}
 
+	@Override
 	void toHtml() throws IOException {
 		if (rootCurrentContexts.isEmpty()) {
 			writeln("#Aucune_requete_en_cours#");
@@ -170,9 +167,9 @@ class HtmlCounterRequestContextReport {
 		}
 		writeContexts(Collections.singletonList(rootCurrentContexts.get(0)));
 		writeln("<div align='right'>");
-		writeln(I18N.getFormattedString("nb_requete_en_cours",
+		writeln(getFormattedString("nb_requete_en_cours",
 				integerFormat.format(rootCurrentContexts.size())));
-		if (PDF_ENABLED) {
+		if (isPdfEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
@@ -207,7 +204,7 @@ class HtmlCounterRequestContextReport {
 		writeContexts(rootCurrentContexts);
 
 		writeln("<div align='right'>");
-		writeln(I18N.getFormattedString("nb_requete_en_cours",
+		writeln(getFormattedString("nb_requete_en_cours",
 				integerFormat.format(rootCurrentContexts.size())));
 		writeln("</div>");
 	}
@@ -233,13 +230,13 @@ class HtmlCounterRequestContextReport {
 			final String childCounterName = contexts.get(0).getParentCounter()
 					.getChildCounterName();
 			write("<th class='sorttable_numeric'>"
-					+ I18N.getFormattedString("hits_fils", childCounterName));
+					+ getFormattedString("hits_fils", childCounterName));
 			write("</th><th class='sorttable_numeric'>"
-					+ I18N.getFormattedString("hits_fils_moyens", childCounterName));
+					+ getFormattedString("hits_fils_moyens", childCounterName));
 			write("</th><th class='sorttable_numeric'>"
-					+ I18N.getFormattedString("temps_fils", childCounterName));
+					+ getFormattedString("temps_fils", childCounterName));
 			write("</th><th class='sorttable_numeric'>"
-					+ I18N.getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
+					+ getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
 		}
 		if (stackTraceEnabled) {
 			write("<th>#Methode_executee#</th>");
@@ -340,7 +337,7 @@ class HtmlCounterRequestContextReport {
 	private HtmlCounterReport getCounterReport(Counter parentCounter, Period period) {
 		HtmlCounterReport counterReport = counterReportsByCounterName.get(parentCounter.getName());
 		if (counterReport == null) {
-			counterReport = new HtmlCounterReport(parentCounter, period.getRange(), writer);
+			counterReport = new HtmlCounterReport(parentCounter, period.getRange(), getWriter());
 			counterReportsByCounterName.put(parentCounter.getName(), counterReport);
 		}
 		return counterReport;
@@ -396,13 +393,5 @@ class HtmlCounterRequestContextReport {
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
 		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
 				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
-
-	private void write(String html) throws IOException {
-		I18N.writeTo(html, writer);
-	}
-
-	private void writeln(String html) throws IOException {
-		I18N.writelnTo(html, writer);
 	}
 }

@@ -37,9 +37,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Rapport pdf pour les processus du système d'exploitation.
  * @author Emeric Vernat
  */
-class PdfProcessInformationsReport {
+class PdfProcessInformationsReport extends PdfAbstractReport {
 	private final List<ProcessInformations> processInformationsList;
-	private final Document document;
 	private final boolean windows;
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -48,15 +47,14 @@ class PdfProcessInformationsReport {
 
 	PdfProcessInformationsReport(List<ProcessInformations> processInformationsList,
 			Document document) {
-		super();
+		super(document);
 		assert processInformationsList != null;
-		assert document != null;
 
 		this.processInformationsList = processInformationsList;
-		this.document = document;
 		this.windows = HtmlProcessInformationsReport.isWindowsProcessList(processInformationsList);
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
 		writeHeader();
 
@@ -75,7 +73,7 @@ class PdfProcessInformationsReport {
 		final Paragraph psParagraph = new Paragraph();
 		psParagraph.add(psAnchor);
 		psParagraph.setAlignment(Element.ALIGN_RIGHT);
-		document.add(psParagraph);
+		addToDocument(psParagraph);
 	}
 
 	private void writeProcessInformations() throws DocumentException {
@@ -90,7 +88,7 @@ class PdfProcessInformationsReport {
 			odd = !odd; // NOPMD
 			writeProcessInformations(processInformations);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -107,21 +105,21 @@ class PdfProcessInformationsReport {
 
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
-		headers.add(getI18nString("Utilisateur"));
-		headers.add(getI18nString("PID"));
+		headers.add(getString("Utilisateur"));
+		headers.add(getString("PID"));
 		if (!windows) {
-			headers.add(getI18nString("cpu"));
-			headers.add(getI18nString("mem"));
+			headers.add(getString("cpu"));
+			headers.add(getString("mem"));
 		}
-		headers.add(getI18nString("vsz"));
+		headers.add(getString("vsz"));
 		if (!windows) {
-			headers.add(getI18nString("rss"));
-			headers.add(getI18nString("tty"));
-			headers.add(getI18nString("stat"));
-			headers.add(getI18nString("start"));
+			headers.add(getString("rss"));
+			headers.add(getString("tty"));
+			headers.add(getString("stat"));
+			headers.add(getString("start"));
 		}
-		headers.add(getI18nString("cpuTime"));
-		headers.add(getI18nString("command"));
+		headers.add(getString("cpuTime"));
+		headers.add(getString("command"));
 		return headers;
 	}
 
@@ -147,10 +145,6 @@ class PdfProcessInformationsReport {
 		addCell(processInformations.getCpuTime());
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(processInformations.getCommand());
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {

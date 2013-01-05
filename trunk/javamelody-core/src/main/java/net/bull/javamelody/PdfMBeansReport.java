@@ -36,9 +36,8 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour les MBeans.
  * @author Emeric Vernat
  */
-class PdfMBeansReport {
+class PdfMBeansReport extends PdfAbstractReport {
 	private final List<MBeanNode> mbeans;
-	private final Document document;
 	private final Font boldFont = PdfFonts.BOLD.getFont();
 	private final Font normalFont = PdfFonts.NORMAL.getFont();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
@@ -46,13 +45,12 @@ class PdfMBeansReport {
 	private PdfPTable currentTable;
 
 	PdfMBeansReport(List<MBeanNode> mbeans, Document document) {
-		super();
+		super(document);
 		assert mbeans != null;
-		assert document != null;
 		this.mbeans = mbeans;
-		this.document = document;
 	}
 
+	@Override
 	void toPdf() throws DocumentException {
 		writeTree();
 	}
@@ -69,8 +67,8 @@ class PdfMBeansReport {
 
 		for (final MBeanNode node : mbeans) {
 			if (node != platformNode) {
-				document.newPage();
-				document.add(new Chunk(node.getName(), boldFont));
+				newPage();
+				addToDocument(new Chunk(node.getName(), boldFont));
 				margin = 0;
 				writeTree(node.getChildren());
 			}
@@ -122,7 +120,7 @@ class PdfMBeansReport {
 			final Paragraph paragraph = new Paragraph();
 			paragraph.setIndentationLeft(margin);
 			paragraph.add(currentTable);
-			document.add(paragraph);
+			addToDocument(paragraph);
 			addText("\n");
 		}
 	}
@@ -152,7 +150,7 @@ class PdfMBeansReport {
 	private void addText(String text) throws DocumentException {
 		final Paragraph paragraph = new Paragraph(text, normalFont);
 		paragraph.setIndentationLeft(margin);
-		document.add(paragraph);
+		addToDocument(paragraph);
 	}
 
 	private void addCell(String string) {

@@ -207,11 +207,11 @@ class MainButtonsPanel extends MelodyPanel {
 		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
 		final RemoteCollector remoteCollector = getRemoteCollector();
 		final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
-				PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
+				PdfCoreReport.SMALL_GRAPH_WIDTH, PdfCoreReport.SMALL_GRAPH_HEIGHT);
 		final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
-				PdfReport.SMALL_GRAPH_WIDTH, PdfReport.SMALL_GRAPH_HEIGHT);
+				PdfCoreReport.SMALL_GRAPH_WIDTH, PdfCoreReport.SMALL_GRAPH_HEIGHT);
 		final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
-				PdfReport.LARGE_GRAPH_WIDTH, PdfReport.LARGE_GRAPH_HEIGHT);
+				PdfCoreReport.LARGE_GRAPH_WIDTH, PdfCoreReport.LARGE_GRAPH_HEIGHT);
 		try (final OutputStream output = createFileOutputStream(tempFile)) {
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
 					javaInformationsList, range, output);

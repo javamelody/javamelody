@@ -40,12 +40,11 @@ import com.lowagie.text.pdf.PdfPTable;
  * Partie du rapport pdf pour un compteur.
  * @author Emeric Vernat
  */
-class PdfCounterReport {
+class PdfCounterReport extends PdfAbstractReport {
 	private final Collector collector;
 	private final Counter counter;
 	private final Range range;
 	private final boolean includeGraph;
-	private final Document document;
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -58,19 +57,18 @@ class PdfCounterReport {
 
 	PdfCounterReport(Collector collector, Counter counter, Range range, boolean includeGraph,
 			Document document) {
-		super();
+		super(document);
 		assert collector != null;
 		assert counter != null;
 		assert range != null;
-		assert document != null;
 		this.collector = collector;
 		this.counter = counter;
 		this.range = range;
 		this.includeGraph = includeGraph;
-		this.document = document;
 		this.counterRequestAggregation = new CounterRequestAggregation(counter);
 	}
 
+	@Override
 	void toPdf() throws DocumentException, IOException {
 		final List<CounterRequest> requests = counterRequestAggregation.getRequests();
 		if (requests.isEmpty()) {
@@ -131,12 +129,12 @@ class PdfCounterReport {
 		} else {
 			msg = "Aucune_requete";
 		}
-		document.add(new Phrase(getI18nString(msg), normalFont));
+		addToDocument(new Phrase(getString(msg), normalFont));
 	}
 
 	void writeErrorDetails() throws DocumentException {
 		// détails des erreurs
-		new PdfCounterErrorReport(counter, document).toPdf();
+		new PdfCounterErrorReport(counter, getDocument()).toPdf();
 	}
 
 	void writeRequests(String childCounterName, List<CounterRequest> requestList)
@@ -155,7 +153,7 @@ class PdfCounterReport {
 			odd = !odd; // NOPMD
 			writeRequest(request);
 		}
-		document.add(currentTable);
+		addToDocument(currentTable);
 
 		// débit et liens
 		writeFooter();
@@ -177,37 +175,37 @@ class PdfCounterReport {
 	private List<String> createHeaders(String childCounterName) {
 		final List<String> headers = new ArrayList<String>();
 		if (isJobCounter()) {
-			headers.add(getI18nString("Job"));
+			headers.add(getString("Job"));
 		} else if (isErrorCounter()) {
-			headers.add(getI18nString("Erreur"));
+			headers.add(getString("Erreur"));
 		} else {
-			headers.add(getI18nString("Requete"));
+			headers.add(getString("Requete"));
 		}
 		if (includeGraph) {
-			headers.add(getI18nString("Evolution"));
+			headers.add(getString("Evolution"));
 		}
 		if (counterRequestAggregation.isTimesDisplayed()) {
-			headers.add(getI18nString("temps_cumule"));
-			headers.add(getI18nString("Hits"));
-			headers.add(getI18nString("Temps_moyen"));
-			headers.add(getI18nString("Temps_max"));
-			headers.add(getI18nString("Ecart_type"));
+			headers.add(getString("temps_cumule"));
+			headers.add(getString("Hits"));
+			headers.add(getString("Temps_moyen"));
+			headers.add(getString("Temps_max"));
+			headers.add(getString("Ecart_type"));
 		} else {
-			headers.add(getI18nString("Hits"));
+			headers.add(getString("Hits"));
 		}
 		if (counterRequestAggregation.isCpuTimesDisplayed()) {
-			headers.add(getI18nString("temps_cpu_cumule"));
-			headers.add(getI18nString("Temps_cpu_moyen"));
+			headers.add(getString("temps_cpu_cumule"));
+			headers.add(getString("Temps_cpu_moyen"));
 		}
 		if (!isErrorAndNotJobCounter()) {
-			headers.add(getI18nString("erreur_systeme"));
+			headers.add(getString("erreur_systeme"));
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {
-			headers.add(getI18nString("Taille_moyenne"));
+			headers.add(getString("Taille_moyenne"));
 		}
 		if (counterRequestAggregation.isChildHitsDisplayed()) {
-			headers.add(I18N.getFormattedString("hits_fils_moyens", childCounterName));
-			headers.add(I18N.getFormattedString("temps_fils_moyen", childCounterName));
+			headers.add(getFormattedString("hits_fils_moyens", childCounterName));
+			headers.add(getFormattedString("temps_fils_moyen", childCounterName));
 		}
 		return headers;
 	}
@@ -227,11 +225,11 @@ class PdfCounterReport {
 		} else {
 			key = "nb_requetes";
 		}
-		final Paragraph footer = new Paragraph(I18N.getFormattedString(key,
+		final Paragraph footer = new Paragraph(getFormattedString(key,
 				integerFormat.format(hitsParMinute), integerFormat.format(requests.size())),
 				normalFont);
 		footer.setAlignment(Element.ALIGN_RIGHT);
-		document.add(footer);
+		addToDocument(footer);
 	}
 
 	private void writeRequest(CounterRequest request) throws BadElementException, IOException {
@@ -304,10 +302,6 @@ class PdfCounterReport {
 			font = severeCellFont;
 		}
 		return font;
-	}
-
-	private static String getI18nString(String key) {
-		return I18N.getString(key);
 	}
 
 	private PdfPCell getDefaultCell() {
