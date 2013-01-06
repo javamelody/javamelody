@@ -28,6 +28,7 @@ import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_P
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
@@ -87,13 +88,19 @@ class SerializableController {
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 	}
 
-	@SuppressWarnings("unchecked")
 	Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList, String messageForReport) throws Exception { // NOPMD
 		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest);
 		if (resultForSystemActions != null) {
 			return resultForSystemActions;
 		}
+		return createOtherSerializable(httpRequest, javaInformationsList, messageForReport);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Serializable createOtherSerializable(HttpServletRequest httpRequest,
+			List<JavaInformations> javaInformationsList, String messageForReport)
+			throws IOException {
 		final Range range = getRangeForSerializable(httpRequest);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (JROBINS_PART.equalsIgnoreCase(part)) {
@@ -118,6 +125,9 @@ class SerializableController {
 			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
+		} else if (GRAPH_PART.equalsIgnoreCase(part)) {
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			return getCounterRequestById(requestId, range);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			final Map<JavaInformations, List<CounterRequestContext>> result = new HashMap<JavaInformations, List<CounterRequestContext>>();
 			result.put(javaInformationsList.get(0), getCurrentRequests());
@@ -135,6 +145,22 @@ class SerializableController {
 		}
 
 		return createDefaultSerializable(javaInformationsList, range, messageForReport);
+	}
+
+	private Serializable getCounterRequestById(String requestId, Range range) throws IOException {
+		for (final Counter counter : collector.getCounters()) {
+			if (counter.isRequestIdFromThisCounter(requestId)) {
+				final Counter rangeCounter = collector.getRangeCounter(range, counter.getName())
+						.clone();
+				for (final CounterRequest request : rangeCounter.getRequests()) {
+					if (requestId.equals(request.getId())) {
+						return request;
+					}
+				}
+			}
+		}
+		// non trouvé
+		return null;
 	}
 
 	private Serializable getJRobinsImages(Range range, int width, int height, String graphName)
