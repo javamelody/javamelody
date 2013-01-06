@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
@@ -150,7 +151,9 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		Utilities.adjustTableHeight(getTable());
 		add(scrollPane, BorderLayout.CENTER);
 
-		add(createButtonsPanel(true), BorderLayout.SOUTH);
+		final JPanel buttonsPanel = createButtonsPanel(true);
+		buttonsPanel.add(createXmlJsonButton(request));
+		add(buttonsPanel, BorderLayout.SOUTH);
 	}
 
 	private MTableScrollPane<CounterRequest> createScrollPane() {
