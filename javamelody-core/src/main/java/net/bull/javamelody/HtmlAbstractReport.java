@@ -132,7 +132,7 @@ abstract class HtmlAbstractReport {
 		return PDF_ENABLED;
 	}
 
-	static boolean computePdfEnabled() {
+	private static boolean computePdfEnabled() {
 		try {
 			Class.forName("com.lowagie.text.Document");
 			return true;
