@@ -122,7 +122,7 @@ public class TestJdbcWrapper {
 		}
 	}
 
-	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test";
+	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test;AUTO_SERVER=TRUE";
 	private static final String EQUALS = "equals";
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;
