@@ -46,7 +46,7 @@ class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
 	static enum Database {
-		POSTGRESQL, MYSQL, MYSQL4, ORACLE, DB2, H2, HSQLDB, SQLSERVER;
+		POSTGRESQL, MYSQL, MYSQL4, ORACLE, DB2, H2, HSQLDB, SQLSERVER, SYBASE;
 
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
@@ -93,12 +93,21 @@ class DatabaseInformations implements Serializable {
 			case SQLSERVER:
 				tmp = Arrays.asList("version", "connections");
 				break;
+			case SYBASE:
+				tmp = Arrays.asList("sp_who", "connections", "sp_lock", "lock",
+						"running_stored_procedure", "used_temporary_tables", "used_tables",
+						"sp_version");
+				break;
 			default:
 				throw new IllegalStateException();
 			}
-			final List<String> result = new ArrayList<String>(tmp.size());
+			return addPrefix(tmp);
+		}
+
+		private List<String> addPrefix(List<String> requestNames) {
+			final List<String> result = new ArrayList<String>(requestNames.size());
 			final String prefix = this.toString().toLowerCase(Locale.getDefault()) + '.';
-			for (final String requestName : tmp) {
+			for (final String requestName : requestNames) {
 				result.add(prefix + requestName);
 			}
 			return result;
