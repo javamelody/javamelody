@@ -5,6 +5,7 @@
   * fix issue 270: French Canadians can't choose a customized period
   * fix: in the current requests, use the chosen period to display the statistics of mean times, besides the elapsed times
   * added: PDF report of the current requests
+  * added: Support for Sybase in the database reports (issue 276, thanks to _lastmike_)
   * added: javamelody parameter "locale" to fix the locale of the reports, whatever the language in the browser (issue 271, thanks to _xiukongtiao_)
 
 === 1.42.0 ===
