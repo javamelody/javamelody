@@ -229,8 +229,7 @@ public final class JdbcWrapper {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			final Object result = method.invoke(javaxConnectionManager, args);
 			if (result instanceof Connection) {
-				final JdbcWrapper jdbcWrapper = JdbcWrapper.SINGLETON;
-				jdbcWrapper.createConnectionProxyOrRewrapIfJBossOrGlassfish((Connection) result);
+				SINGLETON.createConnectionProxyOrRewrapIfJBossOrGlassfish((Connection) result);
 			}
 			return result;
 		}
