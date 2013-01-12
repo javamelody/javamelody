@@ -27,6 +27,8 @@ import javax.servlet.ServletContext;
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdException;
 import org.jrobin.core.RrdFileBackendFactory;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * Classe utilitaire pour les tests unitaires.
@@ -67,6 +69,12 @@ final class Utils {
 				System.getProperties().remove(systemProperty.toString());
 			}
 		}
+		try {
+			StdSchedulerFactory.getDefaultScheduler().shutdown();
+		} catch (final SchedulerException e) {
+			throw new IllegalStateException(e);
+		}
+
 		Parameters.initialize((FilterConfig) null);
 		Parameters.initialize((ServletContext) null);
 		Parameters.initJdbcDriverParameters(null, null);
