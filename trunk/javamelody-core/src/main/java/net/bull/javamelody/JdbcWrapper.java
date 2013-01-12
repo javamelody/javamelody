@@ -236,7 +236,7 @@ public final class JdbcWrapper {
 		}
 	}
 
-	// ce handler désencapsule les InvocationTargetException des 3 proxy
+	// ce handler désencapsule les InvocationTargetException des proxy
 	private static class DelegatingInvocationHandler implements InvocationHandler, Serializable {
 		// classe sérialisable pour MonitoringProxy
 		private static final long serialVersionUID = 7515240588169084785L;
@@ -439,7 +439,7 @@ public final class JdbcWrapper {
 			throws IllegalAccessException, SQLException {
 		final String dataSourceClassName = dataSource.getClass().getName();
 		LOG.debug("Datasource needs rewrap: " + jndiName + " of class " + dataSourceClassName);
-		final String dataSourceRewrappedMessage = "Datasource rewrapped: ";
+		final String dataSourceRewrappedMessage = "Datasource rewrapped: " + jndiName;
 		if (isJBossOrGlassfishDataSource(dataSourceClassName)) {
 			// JBOSS: le rebind de la datasource dans le JNDI JBoss est possible mais ne
 			// fonctionne pas (car tous les lookup renverraient alors une instance de
@@ -458,13 +458,13 @@ public final class JdbcWrapper {
 			Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(dataSource, "cm");
 			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
 			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
-			LOG.debug(dataSourceRewrappedMessage + jndiName);
+			LOG.debug(dataSourceRewrappedMessage);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			// WEBLOGIC: le contexte JNDI est en lecture seule donc on modifie directement
 			// l'instance de RmiDataSource déjà présente dans le JNDI.
 			rewrapWebLogicDataSource(dataSource);
-			LOG.debug(dataSourceRewrappedMessage + jndiName);
+			LOG.debug(dataSourceRewrappedMessage);
 		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
 				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)) {
 			// JIRA dans Tomcat: la dataSource a déjà été mise en cache par org.ofbiz.core.entity.transaction.JNDIFactory
@@ -478,7 +478,7 @@ public final class JdbcWrapper {
 			// et le rewrap ne peut pas fonctionner
 			dataSource.getConnection().close();
 			rewrapBasicDataSource(dataSource);
-			LOG.debug(dataSourceRewrappedMessage + jndiName);
+			LOG.debug(dataSourceRewrappedMessage);
 		} else if ("org.apache.openejb.resource.jdbc.BasicManagedDataSource"
 				.equals(dataSourceClassName)
 				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
@@ -488,7 +488,7 @@ public final class JdbcWrapper {
 			// et le rewrap ne peut pas fonctionner
 			dataSource.getConnection().close();
 			rewrapBasicDataSource(dataSource);
-			LOG.debug(dataSourceRewrappedMessage + jndiName);
+			LOG.debug(dataSourceRewrappedMessage);
 		} else if (jonas) {
 			// JONAS (si rewrap-datasources==true)
 			rewrapJonasDataSource(jndiName, dataSource);
@@ -607,7 +607,7 @@ public final class JdbcWrapper {
 	}
 
 	// pour jboss, glassfish ou jonas
-	private Object createJavaxConnectionManagerProxy(final Object javaxConnectionManager) {
+	private Object createJavaxConnectionManagerProxy(Object javaxConnectionManager) {
 		assert javaxConnectionManager != null;
 		final InvocationHandler invocationHandler = new ConnectionManagerInvocationHandler(
 				javaxConnectionManager);
