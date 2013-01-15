@@ -369,7 +369,7 @@
 				<path path="build/classes" />
 				<path path="${class.path}" />
 				<fileset dir="src/main/lib">
-					<include name="junit-4.5.jar" />
+					<include name="junit-4.11.jar" />
 					<include name="h2-1.3.170.jar" />
 					<include name="easymock-3.1.jar" />
 				</fileset>
