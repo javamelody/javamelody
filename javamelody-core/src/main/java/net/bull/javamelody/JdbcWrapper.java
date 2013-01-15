@@ -212,26 +212,39 @@ public final class JdbcWrapper {
 		}
 	}
 
-	private static class ConnectionManagerInvocationHandler implements InvocationHandler,
-			Serializable {
+	private static class ConnectionManagerInvocationHandler extends
+			AbstractInvocationHandler<Object> {
 		// classe sérialisable pour glassfish v2.1.1, issue 229: Exception in NamingManagerImpl copyMutableObject()
 		private static final long serialVersionUID = 1L;
 
-		@SuppressWarnings("all")
-		private final Object javaxConnectionManager;
-
 		ConnectionManagerInvocationHandler(Object javaxConnectionManager) {
-			super();
-			this.javaxConnectionManager = javaxConnectionManager;
+			super(javaxConnectionManager);
 		}
 
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			final Object result = method.invoke(javaxConnectionManager, args);
+			final Object result = method.invoke(getProxiedObject(), args);
 			if (result instanceof Connection) {
 				SINGLETON.createConnectionProxyOrRewrapIfJBossOrGlassfish((Connection) result);
 			}
 			return result;
+		}
+	}
+
+	private abstract static class AbstractInvocationHandler<T> implements InvocationHandler,
+			Serializable {
+		private static final long serialVersionUID = 1L;
+
+		@SuppressWarnings("all")
+		private final T proxiedObject;
+
+		AbstractInvocationHandler(T proxiedObject) {
+			super();
+			this.proxiedObject = proxiedObject;
+		}
+
+		T getProxiedObject() {
+			return proxiedObject;
 		}
 	}
 
@@ -562,7 +575,18 @@ public final class JdbcWrapper {
 		boolean ok;
 		try {
 			JdbcWrapperHelper.rebindInitialDataSources(servletContext);
-			// TODO si jboss, glassfish ou weblogic avec datasource, il faudrait aussi désencapsuler
+
+			// si jboss, glassfish ou weblogic avec datasource, on désencapsule aussi les objets wrappés
+			final Map<String, DataSource> jndiDataSources = JdbcWrapperHelper.getJndiDataSources();
+			final boolean rewrapDataSources = Boolean.parseBoolean(Parameters
+					.getParameter(Parameter.REWRAP_DATASOURCES));
+			for (final Map.Entry<String, DataSource> entry : jndiDataSources.entrySet()) {
+				final String jndiName = entry.getKey();
+				final DataSource dataSource = entry.getValue();
+				if (rewrapDataSources || isServerNeedsRewrap(jndiName)) {
+					unwrapDataSource(jndiName, dataSource);
+				}
+			}
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
@@ -572,9 +596,50 @@ public final class JdbcWrapper {
 		return ok;
 	}
 
+	private void unwrapDataSource(String jndiName, DataSource dataSource)
+			throws IllegalAccessException {
+		final String dataSourceClassName = dataSource.getClass().getName();
+		LOG.debug("Datasource needs unwrap: " + jndiName + " of class " + dataSourceClassName);
+		final String dataSourceUnwrappedMessage = "Datasource unwrapped: " + jndiName;
+		if (isJBossOrGlassfishDataSource(dataSourceClassName)) {
+			unwrap(dataSource, "cm", dataSourceUnwrappedMessage);
+		} else if (weblogic
+				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
+			unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
+			unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
+		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.openejb.resource.jdbc.BasicManagedDataSource"
+						.equals(dataSourceClassName)
+				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
+			unwrap(dataSource, "dataSource", dataSourceUnwrappedMessage);
+		}
+		// else if (jonas) { }
+		// pour jonas, le unwrap serait compliqué
+	}
+
+	private void unwrap(Object parentObject, String fieldName, String unwrappedMessage)
+			throws IllegalAccessException {
+		final Object proxy = JdbcWrapperHelper.getFieldValue(parentObject, fieldName);
+		if (Proxy.isProxyClass(proxy.getClass())) {
+			InvocationHandler invocationHandler = Proxy.getInvocationHandler(proxy);
+			if (invocationHandler instanceof DelegatingInvocationHandler) {
+				invocationHandler = ((DelegatingInvocationHandler) invocationHandler).getDelegate();
+				if (invocationHandler instanceof AbstractInvocationHandler) {
+					final Object proxiedObject = ((AbstractInvocationHandler<?>) invocationHandler)
+							.getProxiedObject();
+					JdbcWrapperHelper.setFieldValue(parentObject, fieldName, proxiedObject);
+					LOG.debug(unwrappedMessage);
+				}
+			}
+		}
+	}
+
 	Context createContextProxy(final Context context) {
 		assert context != null;
-		final InvocationHandler invocationHandler = new InvocationHandler() {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Context>(context) {
+			private static final long serialVersionUID = 1L;
+
 			/** {@inheritDoc} */
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -591,7 +656,9 @@ public final class JdbcWrapper {
 	// pour weblogic
 	private Driver createDriverProxy(final Driver driver) {
 		assert driver != null;
-		final InvocationHandler invocationHandler = new InvocationHandler() {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Driver>(driver) {
+			private static final long serialVersionUID = 1L;
+
 			/** {@inheritDoc} */
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -665,7 +732,10 @@ public final class JdbcWrapper {
 	public DataSource createDataSourceProxy(String name, final DataSource dataSource) {
 		assert dataSource != null;
 		JdbcWrapperHelper.pullDataSourceProperties(name, dataSource);
-		final InvocationHandler invocationHandler = new InvocationHandler() {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<DataSource>(
+				dataSource) {
+			private static final long serialVersionUID = 1L;
+
 			/** {@inheritDoc} */
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
