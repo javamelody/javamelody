@@ -75,21 +75,35 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, Pri
 		return bean;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public Object postProcessAfterInitialization(final Object bean, final String beanName) {
+	private boolean isExcludedDataSource(String beanName) {
 		if (excludedDatasources != null && excludedDatasources.contains(beanName)) {
 			LOG.debug("Spring datasource excluded: " + beanName);
-			return bean;
+			return true;
 		}
-		if (bean instanceof DataSource && !Parameters.isNoDatabase()) {
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) {
+		if (bean instanceof DataSource) {
+			// on ne teste isExcludedDataSource que si on est sur une datasource
+			if (isExcludedDataSource(beanName) || Parameters.isNoDatabase()) {
+				return bean;
+			}
+
 			final DataSource dataSource = (DataSource) bean;
 			JdbcWrapper.registerSpringDataSource(beanName, dataSource);
 			final DataSource result = JdbcWrapper.SINGLETON.createDataSourceProxy(beanName,
 					dataSource);
 			LOG.debug("Spring datasource wrapped: " + beanName);
 			return result;
-		} else if (bean instanceof JndiObjectFactoryBean && !Parameters.isNoDatabase()) {
+		} else if (bean instanceof JndiObjectFactoryBean) {
+			// ou sur un JndiObjectFactoryBean
+			if (isExcludedDataSource(beanName) || Parameters.isNoDatabase()) {
+				return bean;
+			}
+
 			// fix issue 20
 			final Object result = createProxy(bean, beanName);
 			LOG.debug("Spring JNDI factory wrapped: " + beanName);
