@@ -1,10 +1,11 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix issue 274: Monitoring of SQL requests after hot redeploy in JBoss, Glassfish or WebLogic
+  * fix issue 274: Monitoring of SQL requests after hot redeploy in JBoss, Glassfish or WebLogic (thanks to _lastmike_)
   * fix issue 269: Compatibility of the JIRA/Confluence/Bamboo plugin with some other plugins
   * fix issue 270: French Canadians can't choose a customized period
   * fix: in the current requests, use the chosen period to display the statistics of mean times, besides the elapsed times
+  * optimization of SpringDataSourceBeanPostProcessor (issue 282, thanks to _lastmike_)
   * added: PDF report of the current requests
   * added: Support for Sybase in the database reports (issue 276, thanks to _lastmike_)
   * added: javamelody parameter "locale" to fix the locale of the reports, whatever the language in the browser (issue 271, thanks to _xiukongtiao_)
