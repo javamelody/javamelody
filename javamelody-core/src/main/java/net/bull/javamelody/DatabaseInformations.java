@@ -46,13 +46,29 @@ class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
 	static enum Database {
-		POSTGRESQL, MYSQL, MYSQL4, ORACLE, DB2, H2, HSQLDB, SQLSERVER, SYBASE;
+		// base de données connues avec les noms retournés par connection.getMetaData().getDatabaseProductName()
+		// (inspirés par Hibernate)
+		POSTGRESQL("PostgreSQL"),
+		MYSQL("MySQL"),
+		MYSQL4("MySQL"),
+		ORACLE("Oracle"),
+		DB2("DB2 UDB for AS/400", "DB2/"),
+		H2("H2"),
+		HSQLDB("HSQL Database Engine"),
+		SQLSERVER("Microsoft SQL Server"),
+		SYBASE("Sybase SQL Server", "Adaptive Server Enterprise");
 
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
 		// (Parameters.getResourcePath("databaseInformations") seul ne fonctionne pas si on est dans un jar/war)
 		private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters
 				.getResourcePath("databaseInformations").replace('/', '.').substring(1);
+
+		private List<String> databaseNames;
+
+		private Database(String... databaseNames) {
+			this.databaseNames = Arrays.asList(databaseNames);
+		}
 
 		List<String> getRequestNames() {
 			final List<String> tmp;
@@ -124,11 +140,28 @@ class DatabaseInformations implements Serializable {
 			return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME).getString(requestName);
 		}
 
+		List<String> getDatabaseNames() {
+			return databaseNames;
+		}
+
+		private boolean isRecognized(String databaseName, String url) {
+			for (final String name : getDatabaseNames()) {
+				if (databaseName.startsWith(name)) {
+					return true;
+				}
+			}
+			if (url != null && url.contains(getUrlIdentifier())) {
+				return true;
+			}
+			return false;
+		}
+
 		static Database getDatabaseForConnection(Connection connection) throws SQLException {
 			final DatabaseMetaData metaData = connection.getMetaData();
+			final String databaseName = metaData.getDatabaseProductName();
 			final String url = metaData.getURL();
 			for (final Database database : Database.values()) {
-				if (url.contains(database.getUrlIdentifier())) {
+				if (database.isRecognized(databaseName, url)) {
 					if (database == MYSQL && metaData.getDatabaseMajorVersion() <= 4) {
 						// si mysql et version 4 alors c'est MYSQL4 et non MYSQL
 						return MYSQL4;
@@ -137,7 +170,7 @@ class DatabaseInformations implements Serializable {
 				}
 			}
 			throw new IllegalArgumentException(I18N.getFormattedString(
-					"type_base_de_donnees_inconnu", url));
+					"type_base_de_donnees_inconnu", databaseName));
 		}
 	}
 
