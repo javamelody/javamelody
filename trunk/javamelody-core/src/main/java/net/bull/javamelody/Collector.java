@@ -424,7 +424,7 @@ class Collector { // NOPMD
 			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
 
-		collectorOtherJRobinsValues(usedNonHeapMemory, loadedClassesCount, usedPhysicalMemorySize,
+		collectOtherJRobinsValues(usedNonHeapMemory, loadedClassesCount, usedPhysicalMemorySize,
 				usedSwapSpaceSize, threadCount, systemLoadAverage, unixOpenFileDescriptorCount);
 
 		collectSessionsMeanAge(sessionAgeSum, sessionCount);
@@ -501,7 +501,7 @@ class Collector { // NOPMD
 		this.tomcatBytesSent = bytesSent;
 	}
 
-	private void collectorOtherJRobinsValues(long usedNonHeapMemory, int loadedClassesCount,
+	private void collectOtherJRobinsValues(long usedNonHeapMemory, int loadedClassesCount,
 			long usedPhysicalMemorySize, long usedSwapSpaceSize, int threadCount,
 			double systemLoadAverage, long unixOpenFileDescriptorCount) throws IOException {
 		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
