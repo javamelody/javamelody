@@ -211,10 +211,11 @@ class ThreadInformationsPanel extends MelodyPanel {
 		return buttonsPanel;
 	}
 
-	final void actionKillThread(final ThreadInformations threadInformations) {
+	final void actionKillThread(ThreadInformations threadInformations) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.KILL_THREAD, null, null, threadInformations.getGlobalThreadId(), null);
+					Action.KILL_THREAD, null, null, threadInformations.getGlobalThreadId(), null,
+					null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {

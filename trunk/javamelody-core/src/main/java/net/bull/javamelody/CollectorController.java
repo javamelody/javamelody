@@ -19,6 +19,7 @@
 package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
@@ -432,6 +433,7 @@ class CollectorController {
 		final String sessionIdParameter = req.getParameter(SESSION_ID_PARAMETER);
 		final String threadIdParameter = req.getParameter(THREAD_ID_PARAMETER);
 		final String jobIdParameter = req.getParameter(JOB_ID_PARAMETER);
+		final String cacheIdParameter = req.getParameter(CACHE_ID_PARAMETER);
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
@@ -445,6 +447,9 @@ class CollectorController {
 			}
 			if (jobIdParameter != null) {
 				actionUrl.append("&jobId=").append(jobIdParameter);
+			}
+			if (cacheIdParameter != null) {
+				actionUrl.append("&cacheId=").append(cacheIdParameter);
 			}
 			actionUrls.add(new URL(actionUrl.toString()));
 		}

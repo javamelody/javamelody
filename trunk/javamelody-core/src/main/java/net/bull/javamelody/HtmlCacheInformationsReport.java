@@ -32,6 +32,7 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
+	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlCacheInformationsReport(List<CacheInformations> cacheInformationsList, Writer writer) {
 		super(writer);
@@ -45,7 +46,8 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 	@Override
 	void toHtml() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Caches#'>");
-		write("<thead><tr><th>#Cache#</th>");
+		write("<thead><tr>");
+		write("<th>#Cache#</th>");
 		if (configurationEnabled) {
 			write("<th class='sorttable_numeric'>#Pourcentage_memoire_utilise#</th>");
 		}
@@ -60,6 +62,9 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		}
 		if (configurationEnabled) {
 			write("<th>#Configuration#</th>");
+		}
+		if (systemActionsEnabled) {
+			write("<th class='noPrint'>#Purger#</th>");
 		}
 		writeln("</tr></thead><tbody>");
 		boolean odd = false;
@@ -78,7 +83,7 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		if (!hitsRatioEnabled) {
 			writeln("#caches_statistics_enable#<br/>");
 		}
-		if (Parameters.isSystemActionsEnabled()) {
+		if (systemActionsEnabled) {
 			writeln("<a href='?action=clear_caches' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_purge_caches") + "');\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
@@ -112,6 +117,20 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			write(cacheInformations.getConfiguration());
 		}
 		write("</td>");
+		if (systemActionsEnabled) {
+			write("<td align='center' class='noPrint'>");
+			final String confirmClearCache = javascriptEncode(getFormattedString(
+					"confirm_purge_cache", cacheInformations.getName()));
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly("<a href='?action=clear_cache&amp;cacheId="
+					+ urlEncode(cacheInformations.getName())
+					+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
+			final String title = htmlEncode(getFormattedString("Purge_cache",
+					cacheInformations.getName()));
+			writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='"
+					+ title + "' title='" + title + "' /></a>");
+			write("</td>");
+		}
 	}
 
 	static boolean isHitsRatioEnabled(List<CacheInformations> cacheInformationsList) {

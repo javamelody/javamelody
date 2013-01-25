@@ -29,6 +29,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MHyperLink;
@@ -50,6 +52,7 @@ class CacheInformationsPanel extends MelodyPanel {
 	private final List<CacheInformations> cacheInformationsList;
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
+	private final MTable<CacheInformations> table;
 
 	CacheInformationsPanel(RemoteCollector remoteCollector,
 			List<CacheInformations> cacheInformationsList) {
@@ -62,7 +65,7 @@ class CacheInformationsPanel extends MelodyPanel {
 				.isConfigurationEnabled(cacheInformationsList);
 
 		final MTableScrollPane<CacheInformations> scrollPane = createScrollPane();
-		final MTable<CacheInformations> table = scrollPane.getTable();
+		this.table = scrollPane.getTable();
 		table.setList(cacheInformationsList);
 		Utilities.adjustTableHeight(table);
 
@@ -120,27 +123,77 @@ class CacheInformationsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton purgeCachesButton = new MButton(I18N.getString("Purge_caches"),
-				CLEAR_CACHES_ICON);
-		purgeCachesButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_purge_caches"))) {
-					actionClearCaches();
+		final JPanel buttonsPanel = Utilities.createButtonsPanel();
+
+		if (Parameters.isSystemActionsEnabled()) {
+			final MButton clearCacheButton = new MButton(I18N.getString("Purger"),
+					CLEAR_CACHES_ICON);
+			getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					final CacheInformations cacheInformations = getTable().getSelectedObject();
+					clearCacheButton.setEnabled(cacheInformations != null);
+					if (cacheInformations != null) {
+						clearCacheButton.setToolTipText(I18N.getFormattedString("Purge_cache",
+								cacheInformations.getName()));
+					} else {
+						clearCacheButton.setToolTipText(null);
+					}
 				}
-			}
-		});
-		return Utilities.createButtonsPanel(purgeCachesButton);
+			});
+			clearCacheButton.setEnabled(getTable().getSelectedObject() != null);
+			clearCacheButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					final CacheInformations cacheInformations = getTable().getSelectedObject();
+					if (cacheInformations != null
+							&& confirm(I18N.getFormattedString("confirm_purge_cache",
+									cacheInformations.getName()))) {
+						actionClearCache(cacheInformations);
+					}
+				}
+			});
+			buttonsPanel.add(clearCacheButton);
+
+			final MButton clearCachesButton = new MButton(I18N.getString("Purge_caches"),
+					CLEAR_CACHES_ICON);
+			clearCachesButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (confirm(I18N.getString("confirm_purge_caches"))) {
+						actionClearCaches();
+					}
+				}
+			});
+			buttonsPanel.add(clearCachesButton);
+		}
+
+		return buttonsPanel;
 	}
 
-	final void actionClearCaches() {
+	final void actionClearCache(CacheInformations cacheInformations) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.CLEAR_CACHES, null, null, null, null);
+					Action.CLEAR_CACHE, null, null, null, null, cacheInformations.getName());
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {
 			showException(ex);
 		}
+	}
+
+	final void actionClearCaches() {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.CLEAR_CACHES, null, null, null, null, null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
+	}
+
+	MTable<CacheInformations> getTable() {
+		return table;
 	}
 }

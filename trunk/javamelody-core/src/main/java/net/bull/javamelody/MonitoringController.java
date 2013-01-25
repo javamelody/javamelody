@@ -19,6 +19,7 @@
 package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
@@ -112,8 +113,9 @@ class MonitoringController {
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
 				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
+				final String cacheId = httpRequest.getParameter(CACHE_ID_PARAMETER);
 				messageForReport = action.execute(collector, collectorServer, counterName,
-						sessionId, threadId, jobId);
+						sessionId, threadId, jobId, cacheId);
 				anchorNameForRedirect = action.getContextName(counterName);
 				return messageForReport;
 			} finally {

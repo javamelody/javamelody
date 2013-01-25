@@ -145,7 +145,7 @@ class ScrollingPanel extends MelodyPanel {
 	final void actionClearAllCounters() {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.CLEAR_COUNTER, "all", null, null, null);
+					Action.CLEAR_COUNTER, "all", null, null, null, null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {
@@ -390,7 +390,7 @@ class ScrollingPanel extends MelodyPanel {
 	final void purgeObsoleteFiles() {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.PURGE_OBSOLETE_FILES, null, null, null, null);
+					Action.PURGE_OBSOLETE_FILES, null, null, null, null, null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {

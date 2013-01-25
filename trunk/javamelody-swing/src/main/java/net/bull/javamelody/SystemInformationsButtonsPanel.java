@@ -317,7 +317,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	final void executeAction(Action action) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
-					null, null, null);
+					null, null, null, null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {

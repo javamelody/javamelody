@@ -411,7 +411,7 @@ class JobInformationsPanel extends MelodyPanel {
 	final void actionOnJob(Action action, String jobId) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(action, null,
-					null, null, jobId);
+					null, null, jobId, null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {
