@@ -10,6 +10,7 @@
   * added: PDF report of the current requests
   * added: Support for Sybase in the database reports (issue 276, thanks to _lastmike_)
   * added: javamelody parameter "locale" to fix the locale of the reports, whatever the language in the browser (issue 271, thanks to _xiukongtiao_)
+  * added: possibility to clear a cache individually (issue 283, thanks to _idrahou_)
 
 === 1.42.0 ===
 
