@@ -772,7 +772,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + " #Mo#");
 		writeln("<br/>#Usage_disque#: " + (collector.getDiskUsage() / 1024 / 1024 + 1) + " #Mo#");
 		if (Parameters.isSystemActionsEnabled()) {
-			writeln("&nbsp;&nbsp;&nbsp;<a href='?action=purge_obsolete_files'>");
+			writeln("&nbsp;&nbsp;&nbsp;<a href='?action=purge_obsolete_files' class='noPrint'>");
 			writeln("<img width='14' height='14' src='?resource=user-trash.png' alt='#Purger_les_fichiers_obsoletes#' title='#Purger_les_fichiers_obsoletes#'/></a>");
 		}
 		if (Parameters.JAVAMELODY_VERSION != null) {
