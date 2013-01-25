@@ -33,6 +33,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
 import org.quartz.JobDetail;
@@ -72,6 +73,10 @@ enum Action { // NOPMD
 	 * Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()})
 	 */
 	CLEAR_CACHES("caches"),
+	/**
+	 * Purge le contenu  d'un cache
+	 */
+	CLEAR_CACHE("caches"),
 	/**
 	 * Tue un thread java.
 	 */
@@ -148,12 +153,13 @@ enum Action { // NOPMD
 	 * @param sessionId Identifiant de session pour invalidation (null sinon)
 	 * @param threadId Identifiant du thread sous la forme pid_ip_id
 	 * @param jobId Identifiant du job sous la forme pid_ip_id
+	 * @param cacheId Identifiant du cache à vider
 	 * @return Message de résultat
 	 * @throws IOException e
 	 */
 	// CHECKSTYLE:OFF
 	String execute(Collector collector, CollectorServer collectorServer, String counterName, // NOPMD
-			String sessionId, String threadId, String jobId) throws IOException {
+			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
 		// CHECKSTYLE:ON
 		String messageForReport;
 		switch (this) {
@@ -211,6 +217,10 @@ enum Action { // NOPMD
 		case CLEAR_CACHES:
 			clearCaches();
 			messageForReport = I18N.getString("caches_purges");
+			break;
+		case CLEAR_CACHE:
+			clearCache(cacheId);
+			messageForReport = I18N.getFormattedString("cache_purge", cacheId);
 			break;
 		case KILL_THREAD:
 			assert threadId != null;
@@ -336,6 +346,17 @@ enum Action { // NOPMD
 		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
 		for (final CacheManager cacheManager : allCacheManagers) {
 			cacheManager.clearAll();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void clearCache(String cacheId) {
+		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
+		for (final CacheManager cacheManager : allCacheManagers) {
+			final Cache cache = cacheManager.getCache(cacheId);
+			if (cache != null) {
+				cache.removeAll();
+			}
 		}
 	}
 

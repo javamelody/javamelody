@@ -144,7 +144,7 @@ class RemoteCollector {
 	}
 
 	String executeActionAndCollectData(Action action, String counterName, String sessionId,
-			String threadId, String jobId) throws IOException {
+			String threadId, String jobId, String cacheId) throws IOException {
 		assert action != null;
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
@@ -161,6 +161,9 @@ class RemoteCollector {
 			}
 			if (jobId != null) {
 				actionUrl.append("&jobId=").append(jobId);
+			}
+			if (cacheId != null) {
+				actionUrl.append("&cacheId=").append(cacheId);
 			}
 			actionUrls.add(new URL(actionUrl.toString()));
 		}

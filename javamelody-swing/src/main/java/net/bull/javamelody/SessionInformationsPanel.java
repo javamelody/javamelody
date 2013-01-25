@@ -288,7 +288,7 @@ class SessionInformationsPanel extends MelodyPanel {
 	final void actionInvalidateAllSessions() {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.INVALIDATE_SESSIONS, null, null, null, null);
+					Action.INVALIDATE_SESSIONS, null, null, null, null, null);
 			showMessage(message);
 			refresh();
 		} catch (final IOException ex) {
@@ -299,7 +299,7 @@ class SessionInformationsPanel extends MelodyPanel {
 	final void actionInvalidateSession(final SessionInformations sessionInformations) {
 		try {
 			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.INVALIDATE_SESSION, null, sessionInformations.getId(), null, null);
+					Action.INVALIDATE_SESSION, null, sessionInformations.getId(), null, null, null);
 			showMessage(message);
 			refresh();
 		} catch (final IOException ex) {
