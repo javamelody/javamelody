@@ -153,6 +153,12 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 	And so the jndi datasource will be automatically monitored after restart.
 
 
+	The data files will be stored by default in <installation directory>/temp/javamelody/. If you want to use another *storage directory*, add a "javamelody.storage-directory" system property (in <installation directory>/bin/setenv.sh or in <installation directory>/conf/catalina.properties). For example:
+
+{{{
+	... -Djavamelody.storage-directory=/my/path
+}}}
+
 	In JIRA, Confluence and Bamboo, you can also send *weekly, daily or monthly reports* in pdf format by mail to one or several people.
 	This is explained in the chapter [UserGuide#14._Weekly,_daily_or_monthly_reports_by_mail Weekly, daily or monthly reports by mail].
 
