@@ -171,7 +171,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				integerFormat.format(rootCurrentContexts.size())));
 		if (isPdfEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#' class='noPrint'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
