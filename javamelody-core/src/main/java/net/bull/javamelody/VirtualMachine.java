@@ -109,6 +109,12 @@ final class VirtualMachine {
 			for (final String name : defaultToolsLocation) {
 				file = new File(file, name);
 			}
+			// if tools not found, no point in trying a URLClassLoader
+			// so rethrow the original exception.
+			if (!file.exists()) {
+				throw e;
+			}
+
 			final URL[] urls = { file.toURI().toURL() };
 			final ClassLoader cl = URLClassLoader.newInstance(urls);
 			return Class.forName(virtualMachineClassName, true, cl);
