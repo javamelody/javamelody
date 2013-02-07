@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * added: display of values in the JNDI tree
 
 === 1.43.0 ===
 
