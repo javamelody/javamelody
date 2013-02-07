@@ -55,7 +55,7 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 
 	private void writeTable() throws IOException {
 		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Arbre_JNDI#'>");
-		write("<thead><tr><th>#Nom#</th><th>#Type#</th>");
+		write("<thead><tr><th>#Nom#</th><th>#Type#</th><th>#Value#</th>");
 		writeln("</tr></thead><tbody>");
 
 		boolean odd = false;
@@ -78,6 +78,7 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 		final String encodedName = htmlEncode(name);
 		final String className = binding.getClassName();
 		final String contextPath = binding.getContextPath();
+		final String value = binding.getValue();
 		if (contextPath != null) {
 			writeDirectly("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
 			writeDirectly("<img width='16' height='16' src='?resource=folder.png' alt='"
@@ -90,6 +91,9 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 		write("</td>");
 		write("<td>");
 		writeDirectly(className != null ? htmlEncode(className) : "&nbsp;");
+		write("</td>");
+		write("<td>");
+		writeDirectly(value != null ? htmlEncodeButNotSpace(value) : "&nbsp;");
 		write("</td>");
 	}
 
