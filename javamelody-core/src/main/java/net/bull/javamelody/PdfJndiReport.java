@@ -79,6 +79,7 @@ class PdfJndiReport extends PdfAbstractReport {
 		final List<String> headers = new ArrayList<String>();
 		headers.add(getString("Nom"));
 		headers.add(getString("Type"));
+		headers.add(getString("Value"));
 		return headers;
 	}
 
@@ -88,6 +89,7 @@ class PdfJndiReport extends PdfAbstractReport {
 		final String name = jndiBinding.getName();
 		final String className = jndiBinding.getClassName();
 		final String contextPath = jndiBinding.getContextPath();
+		final String value = jndiBinding.getValue();
 		if (contextPath != null) {
 			final Image image = PdfDocumentFactory.getImage("folder.png");
 			image.scalePercent(40);
@@ -100,6 +102,7 @@ class PdfJndiReport extends PdfAbstractReport {
 			addCell(name);
 		}
 		addCell(className != null ? className : "");
+		addCell(value != null ? value : "");
 	}
 
 	private PdfPCell getDefaultCell() {
