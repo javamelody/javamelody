@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.JMException;
 import javax.naming.Binding;
@@ -218,10 +219,15 @@ public class TestPdfOtherReport {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		pdfOtherReport.writeJndi(bindings, contextPath);
-
+		assertNotEmptyAndClear(output);
 		verify(context);
 		verify(enumeration);
 		verify(servletContext);
+
+		final PdfOtherReport pdfOtherReport2 = new PdfOtherReport(TEST_APP, output);
+		final List<JndiBinding> bindings2 = Collections.emptyList();
+		pdfOtherReport2.writeJndi(bindings2, "");
+		assertNotEmptyAndClear(output);
 	}
 
 	/** Test.
@@ -262,6 +268,24 @@ public class TestPdfOtherReport {
 		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter));
 		pdfOtherReport
 				.writeCounterSummaryPerClass(collector, counter, null, Period.TOUT.getRange());
+		assertNotEmptyAndClear(output);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteAllCurrentRequestsAsPart() throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		final Counter counter = new Counter("services", null);
+		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter));
+		final long timeOfSnapshot = System.currentTimeMillis();
+		final List<CounterRequestContext> requests = Collections.emptyList();
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final Map<JavaInformations, List<CounterRequestContext>> currentRequests = Collections
+				.singletonMap(javaInformations, requests);
+		pdfOtherReport.writeAllCurrentRequestsAsPart(currentRequests, collector,
+				collector.getCounters(), timeOfSnapshot);
 		assertNotEmptyAndClear(output);
 	}
 

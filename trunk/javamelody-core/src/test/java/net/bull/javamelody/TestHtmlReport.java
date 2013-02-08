@@ -93,6 +93,16 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
+	public void testSimpleToHtml() throws IOException {
+		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+				Period.TOUT, writer);
+		htmlReport.toHtml();
+		assertNotEmptyAndClear(writer);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
 	public void testEmptyCounter() throws IOException {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);

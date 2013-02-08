@@ -351,6 +351,8 @@ class LabradorRetriever {
 					|| request.contains(HttpParameters.CONNECTIONS_PART)
 					|| request.contains(HttpParameters.MBEANS_PART)) {
 				result = Collections.emptyList();
+			} else if (request.contains(HttpParameters.CURRENT_REQUESTS_PART)) {
+				result = Collections.emptyMap();
 			} else if (request.contains(HttpParameters.DATABASE_PART)) {
 				try {
 					result = new DatabaseInformations(0);

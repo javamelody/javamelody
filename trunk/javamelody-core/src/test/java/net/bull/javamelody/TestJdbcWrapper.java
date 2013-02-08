@@ -304,6 +304,19 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
+	public void testCreateConnectionProxyOrRewrapIfJBossOrGlassfish() throws SQLException,
+			IllegalAccessException {
+		DriverManager.registerDriver(driver);
+		// nécessite la dépendance vers la base de données H2
+		final Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
+		jdbcWrapper.createConnectionProxyOrRewrapIfJBossOrGlassfish(connection);
+		connection.close();
+	}
+
+	/** Test.
+	 * @throws SQLException e
+	 * @throws IllegalAccessException e */
+	@Test
 	public void testRewrapConnection() throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
