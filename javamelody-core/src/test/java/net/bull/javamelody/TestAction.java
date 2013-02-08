@@ -92,7 +92,7 @@ public class TestAction {
 		final String sessionId = "sessionId";
 		final String threadId = "threadId";
 		final String jobId = "jobId";
-		final String cacheId = "cacheId";
+		final String cacheId = "test clear";
 
 		assertNotNull("message GC", Action.GC.execute(collector, null, counterName, sessionId,
 				threadId, jobId, cacheId));
@@ -100,13 +100,15 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, ALL,
 				sessionId, threadId, jobId, cacheId));
-		if (CacheManager.getInstance().getCache("test clear") == null) {
-			CacheManager.getInstance().addCache("test clear");
+		if (CacheManager.getInstance().getCache(cacheId) == null) {
+			CacheManager.getInstance().addCache(cacheId);
 		}
 		assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector, null,
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null,
 				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null,
+				counterName, sessionId, threadId, jobId, "inconnu"));
 		assertNotNull("message PURGE_OBSOLETE_FILES", Action.PURGE_OBSOLETE_FILES.execute(
 				collector, null, counterName, sessionId, threadId, jobId, cacheId));
 		final String heapDump1 = Action.HEAP_DUMP.execute(collector, null, counterName, sessionId,
