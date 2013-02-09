@@ -43,13 +43,13 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 		writeLinks();
 		writeln("<br/>");
 
-		writeln("<img src='?resource=jndi.png' width='24' height='24' alt='#Arbre_JNDI#' />&nbsp;");
+		final String title;
 		if (path.length() == 0) {
-			writeln("<b>#Arbre_JNDI#</b>");
+			title = getString("Arbre_JNDI");
 		} else {
-			writeDirectly("<b>" + getFormattedString("Arbre_JNDI_pour_contexte", htmlEncode(path))
-					+ "</b>\n");
+			title = getFormattedString("Arbre_JNDI_pour_contexte", htmlEncode(path));
 		}
+		writeTitle("jndi.png", title);
 		writeTable();
 	}
 

@@ -53,8 +53,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			writeln("#Aucune_session#");
 			return;
 		}
-		writeln("<img width='24' height='24' src='?resource=system-users.png' alt='#Sessions#' />&nbsp;");
-		writeln("<b>#Sessions#</b>");
+		writeTitle("system-users.png", getString("Sessions"));
 		writeSessions(sessionsInformations);
 		long totalSerializedSize = 0;
 		int nbSerializableSessions = 0;
@@ -220,9 +219,8 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			writeln(getFormattedString("session_invalidee", htmlEncodeButNotSpace(sessionId)));
 			return;
 		}
-		writeln("<img width='24' height='24' src='?resource=system-users.png' alt='#Sessions#' />&nbsp;");
-		writeln("<b>" + getFormattedString("Details_session", htmlEncodeButNotSpace(sessionId))
-				+ "</b>");
+		writeTitle("system-users.png",
+				getFormattedString("Details_session", htmlEncodeButNotSpace(sessionId)));
 		writeSessions(Collections.singletonList(sessionInformations));
 
 		writeln("<br/><b>#Attributs#</b>");

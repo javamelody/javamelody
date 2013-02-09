@@ -46,8 +46,7 @@ class HtmlProcessInformationsReport extends HtmlAbstractReport {
 		writeLinks();
 		writeln("<br/>");
 
-		writeln("<img src='?resource=processes.png' width='24' height='24' alt='#Processus#' />&nbsp;");
-		writeln("<b>#Processus#</b>");
+		writeTitle("processes.png", getString("Processus"));
 		writeTable();
 	}
 
