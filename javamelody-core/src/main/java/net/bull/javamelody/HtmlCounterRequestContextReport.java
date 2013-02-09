@@ -193,9 +193,8 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	}
 
 	void writeTitleAndDetails() throws IOException {
-		writeln("<img src='?resource=hourglass.png' width='24' height='24' alt='#Requetes_en_cours#' />&nbsp;");
-		writeln("<b>#Requetes_en_cours#</b>");
-		writeln("<br/><br/>");
+		writeTitle("hourglass.png", getString("Requetes_en_cours"));
+		write("<br/>");
 
 		if (rootCurrentContexts.isEmpty()) {
 			writeln("#Aucune_requete_en_cours#");

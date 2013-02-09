@@ -69,6 +69,17 @@ abstract class HtmlAbstractReport {
 		I18N.writelnTo(html, writer);
 	}
 
+	void writeTitle(String imageFileName, String title) throws IOException {
+		writeDirectly("<img src='?resource=");
+		writeDirectly(imageFileName);
+		writeDirectly("' width='24' height='24' alt=\"");
+		writeDirectly(title);
+		writeDirectly("\" />&nbsp;");
+		writeDirectly("<b>");
+		writeDirectly(title);
+		writeDirectly("</b><br/>\n");
+	}
+
 	/**
 	 * Retourne une traduction dans la locale courante.
 	 * @param key clé d'un libellé dans les fichiers de traduction

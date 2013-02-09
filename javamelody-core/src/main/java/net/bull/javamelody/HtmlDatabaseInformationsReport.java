@@ -127,9 +127,9 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 		writeLinks();
 		writeln("<br/>");
 
-		writeln("<img src='?resource=db.png' width='24' height='24' alt='#database#' />&nbsp;");
-		final String selectedRequestName = databaseInformations.getSelectedRequestName();
-		writeln("<b>#database# : #" + selectedRequestName + "#</b>");
+		final String title = getString("database") + " : "
+				+ getString(databaseInformations.getSelectedRequestName());
+		writeTitle("db.png", title);
 
 		final String[][] values = databaseInformations.getResult();
 		final int nbColumns = databaseInformations.getNbColumns();

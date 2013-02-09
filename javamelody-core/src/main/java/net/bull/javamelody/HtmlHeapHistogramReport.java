@@ -45,11 +45,10 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		writeLinks();
 		writeln("<br/>");
 
-		writeln("<img src='?resource=memory.png' width='24' height='24' alt='#memoire#' />&nbsp;");
-		writeln("<b>"
-				+ getFormattedString("heap_histo_du",
-						I18N.createDateAndTimeFormat().format(heapHistogram.getTime())) + "</b>");
-		writeln("<br/><br/><b>#Heap#</b>");
+		final String title = getFormattedString("heap_histo_du", I18N.createDateAndTimeFormat()
+				.format(heapHistogram.getTime()));
+		writeTitle("memory.png", title);
+		writeln("<br/><b>#Heap#</b>");
 		final String separator = "&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		final List<ClassInfo> heap = heapHistogram.getHeapHistogram();

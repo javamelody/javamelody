@@ -65,9 +65,8 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 		writeBackAndRefreshLinks();
 		writeln("<br/>");
 
-		writeln("<img width='24' height='24' src='?resource=db.png' alt='#Connexions_jdbc_ouvertes#' />&nbsp;");
-		writeln("<b>#Connexions_jdbc_ouvertes#</b>");
-		writeln("<br/><br/>#connexions_intro#<br/><br/>");
+		writeTitle("db.png", getString("Connexions_jdbc_ouvertes"));
+		writeln("<br/>#connexions_intro#<br/><br/>");
 		writeConnections();
 	}
 
