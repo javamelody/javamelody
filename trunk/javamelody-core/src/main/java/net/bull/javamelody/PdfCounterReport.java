@@ -33,14 +33,12 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Partie du rapport pdf pour un compteur.
  * @author Emeric Vernat
  */
-class PdfCounterReport extends PdfAbstractReport {
+class PdfCounterReport extends PdfAbstractTableReport {
 	private final Collector collector;
 	private final Counter counter;
 	private final Range range;
@@ -48,12 +46,10 @@ class PdfCounterReport extends PdfAbstractReport {
 	private final CounterRequestAggregation counterRequestAggregation;
 	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font infoCellFont = PdfFonts.INFO_CELL.getFont();
 	private final Font warningCellFont = PdfFonts.WARNING_CELL.getFont();
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
 	private final Font normalFont = PdfFonts.NORMAL.getFont();
-	private PdfPTable currentTable;
 
 	PdfCounterReport(Collector collector, Counter counter, Range range, boolean includeGraph,
 			Document document) {
@@ -142,18 +138,11 @@ class PdfCounterReport extends PdfAbstractReport {
 		assert requestList != null;
 		writeHeader(childCounterName);
 
-		final PdfPCell defaultCell = getDefaultCell();
-		boolean odd = false;
 		for (final CounterRequest request : requestList) {
-			if (odd) {
-				defaultCell.setGrayFill(0.97f);
-			} else {
-				defaultCell.setGrayFill(1);
-			}
-			odd = !odd; // NOPMD
+			nextRow();
 			writeRequest(request);
 		}
-		addToDocument(currentTable);
+		addTableToDocument();
 
 		// débit et liens
 		writeFooter();
@@ -169,7 +158,7 @@ class PdfCounterReport extends PdfAbstractReport {
 			relativeWidths[1] = 2; // graph d'évolution
 		}
 
-		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
+		initTable(headers, relativeWidths);
 	}
 
 	private List<String> createHeaders(String childCounterName) {
@@ -250,7 +239,7 @@ class PdfCounterReport extends PdfAbstractReport {
 			addPercentageCell(request.getDurationsSum(), globalRequest.getDurationsSum());
 			addCell(integerFormat.format(request.getHits()));
 			final int mean = request.getMean();
-			currentTable.addCell(new Phrase(integerFormat.format(mean), getSlaFont(mean)));
+			addCell(new Phrase(integerFormat.format(mean), getSlaFont(mean)));
 			addCell(integerFormat.format(request.getMaximum()));
 			addCell(integerFormat.format(request.getStandardDeviation()));
 		} else {
@@ -259,8 +248,7 @@ class PdfCounterReport extends PdfAbstractReport {
 		if (counterRequestAggregation.isCpuTimesDisplayed()) {
 			addPercentageCell(request.getCpuTimeSum(), globalRequest.getCpuTimeSum());
 			final int cpuTimeMean = request.getCpuTimeMean();
-			currentTable.addCell(new Phrase(integerFormat.format(cpuTimeMean),
-					getSlaFont(cpuTimeMean)));
+			addCell(new Phrase(integerFormat.format(cpuTimeMean), getSlaFont(cpuTimeMean)));
 		}
 		if (!isErrorAndNotJobCounter()) {
 			addCell(systemErrorFormat.format(request.getSystemErrorPercentage()));
@@ -282,7 +270,7 @@ class PdfCounterReport extends PdfAbstractReport {
 			final byte[] img = jrobin.graph(range, 100, 50);
 			final Image image = Image.getInstance(img);
 			image.scalePercent(50);
-			currentTable.addCell(image);
+			addCell(image);
 		}
 	}
 
@@ -304,19 +292,11 @@ class PdfCounterReport extends PdfAbstractReport {
 		return font;
 	}
 
-	private PdfPCell getDefaultCell() {
-		return currentTable.getDefaultCell();
-	}
-
 	private void addPercentageCell(long dividende, long diviseur) {
 		if (diviseur == 0) {
 			addCell("0");
 		} else {
 			addCell(integerFormat.format(100 * dividende / diviseur));
 		}
-	}
-
-	private void addCell(String string) {
-		currentTable.addCell(new Phrase(string, cellFont));
 	}
 }

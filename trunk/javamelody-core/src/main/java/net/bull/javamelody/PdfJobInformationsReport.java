@@ -38,20 +38,18 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Partie du rapport pdf pour les jobs.
  * @author Emeric Vernat
  */
-class PdfJobInformationsReport extends PdfAbstractReport {
+class PdfJobInformationsReport extends PdfAbstractTableReport {
 	private static final long ONE_DAY_MILLIS = 24L * 60 * 60 * 1000;
 	private final List<JobInformations> jobInformationsList;
 	private final Counter jobCounter;
 	private final DateFormat fireTimeFormat = I18N.createDateAndTimeFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
-	private PdfPTable currentTable;
 
 	PdfJobInformationsReport(List<JobInformations> jobInformationsList, Counter rangeJobCounter,
 			Document document) {
@@ -67,18 +65,11 @@ class PdfJobInformationsReport extends PdfAbstractReport {
 	void toPdf() throws DocumentException, IOException {
 		writeHeader();
 
-		final PdfPCell defaultCell = getDefaultCell();
-		boolean odd = false;
 		for (final JobInformations jobInformations : jobInformationsList) {
-			if (odd) {
-				defaultCell.setGrayFill(0.97f);
-			} else {
-				defaultCell.setGrayFill(1);
-			}
-			odd = !odd; // NOPMD
+			nextRow();
 			writeJobInformations(jobInformations);
 		}
-		addToDocument(currentTable);
+		addTableToDocument();
 		addConfigurationReference();
 	}
 
@@ -101,7 +92,7 @@ class PdfJobInformationsReport extends PdfAbstractReport {
 		relativeWidths[2] = 5; // nom de la classe
 		relativeWidths[headers.size() - 1] = 1; // paused
 
-		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
+		initTable(headers, relativeWidths);
 	}
 
 	private List<String> createHeaders() {
@@ -157,7 +148,7 @@ class PdfJobInformationsReport extends PdfAbstractReport {
 			memoryImage.scalePercent(47);
 			elapsedTimePhrase.add("\n");
 			elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));
-			currentTable.addCell(elapsedTimePhrase);
+			addCell(elapsedTimePhrase);
 		} else {
 			addCell("");
 		}
@@ -190,13 +181,5 @@ class PdfJobInformationsReport extends PdfAbstractReport {
 		// getCounterRequestByName ne peut pas retourner null actuellement
 		assert result != null;
 		return result;
-	}
-
-	private PdfPCell getDefaultCell() {
-		return currentTable.getDefaultCell();
-	}
-
-	private void addCell(String string) {
-		currentTable.addCell(new Phrase(string, cellFont));
 	}
 }

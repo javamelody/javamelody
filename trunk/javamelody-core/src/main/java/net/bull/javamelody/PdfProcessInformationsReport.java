@@ -27,23 +27,18 @@ import com.lowagie.text.Anchor;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Rapport pdf pour les processus du système d'exploitation.
  * @author Emeric Vernat
  */
-class PdfProcessInformationsReport extends PdfAbstractReport {
+class PdfProcessInformationsReport extends PdfAbstractTableReport {
 	private final List<ProcessInformations> processInformationsList;
 	private final boolean windows;
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
-	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
-	private PdfPTable currentTable;
 
 	PdfProcessInformationsReport(List<ProcessInformations> processInformationsList,
 			Document document) {
@@ -77,18 +72,11 @@ class PdfProcessInformationsReport extends PdfAbstractReport {
 	}
 
 	private void writeProcessInformations() throws DocumentException {
-		final PdfPCell defaultCell = getDefaultCell();
-		boolean odd = false;
 		for (final ProcessInformations processInformations : processInformationsList) {
-			if (odd) {
-				defaultCell.setGrayFill(0.97f);
-			} else {
-				defaultCell.setGrayFill(1);
-			}
-			odd = !odd; // NOPMD
+			nextRow();
 			writeProcessInformations(processInformations);
 		}
-		addToDocument(currentTable);
+		addTableToDocument();
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -100,7 +88,7 @@ class PdfProcessInformationsReport extends PdfAbstractReport {
 		}
 		relativeWidths[headers.size() - 1] = 6; // command
 
-		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
+		initTable(headers, relativeWidths);
 	}
 
 	private List<String> createHeaders() {
@@ -145,13 +133,5 @@ class PdfProcessInformationsReport extends PdfAbstractReport {
 		addCell(processInformations.getCpuTime());
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(processInformations.getCommand());
-	}
-
-	private PdfPCell getDefaultCell() {
-		return currentTable.getDefaultCell();
-	}
-
-	private void addCell(String string) {
-		currentTable.addCell(new Phrase(string, cellFont));
 	}
 }

@@ -32,17 +32,15 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Partie du rapport pdf pour l'arbre JNDI.
  * @author Emeric Vernat
  */
-class PdfJndiReport extends PdfAbstractReport {
+class PdfJndiReport extends PdfAbstractTableReport {
 	private final List<JndiBinding> jndiBindings;
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private Image folderImage;
-	private PdfPTable currentTable;
 
 	PdfJndiReport(List<JndiBinding> jndiBindings, Document document) {
 		super(document);
@@ -54,18 +52,11 @@ class PdfJndiReport extends PdfAbstractReport {
 	void toPdf() throws DocumentException, IOException {
 		writeHeader();
 
-		final PdfPCell defaultCell = getDefaultCell();
-		boolean odd = false;
 		for (final JndiBinding jndiBinding : jndiBindings) {
-			if (odd) {
-				defaultCell.setGrayFill(0.97f);
-			} else {
-				defaultCell.setGrayFill(1);
-			}
-			odd = !odd; // NOPMD
+			nextRow();
 			writeJndiBinding(jndiBinding);
 		}
-		addToDocument(currentTable);
+		addTableToDocument();
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -73,7 +64,7 @@ class PdfJndiReport extends PdfAbstractReport {
 		final int[] relativeWidths = new int[headers.size()];
 		Arrays.fill(relativeWidths, 0, headers.size(), 1);
 
-		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
+		initTable(headers, relativeWidths);
 	}
 
 	private List<String> createHeaders() {
@@ -97,7 +88,7 @@ class PdfJndiReport extends PdfAbstractReport {
 			phrase.add(new Chunk(image, 0, 0));
 			phrase.add(" ");
 			phrase.add(name);
-			currentTable.addCell(phrase);
+			addCell(phrase);
 		} else {
 			addCell(name);
 		}
@@ -111,13 +102,5 @@ class PdfJndiReport extends PdfAbstractReport {
 			folderImage.scalePercent(40);
 		}
 		return folderImage;
-	}
-
-	private PdfPCell getDefaultCell() {
-		return currentTable.getDefaultCell();
-	}
-
-	private void addCell(String string) {
-		currentTable.addCell(new Phrase(string, cellFont));
 	}
 }

@@ -37,13 +37,12 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Rapport pdf pour les sessions http.
  * @author Emeric Vernat
  */
-class PdfSessionInformationsReport extends PdfAbstractReport {
+class PdfSessionInformationsReport extends PdfAbstractTableReport {
 	private final List<SessionInformations> sessionsInformations;
 	private final boolean displayUser;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -52,7 +51,6 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
 	private final Map<String, Image> imagesByCountry = new HashMap<String, Image>();
-	private PdfPTable currentTable;
 
 	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations, Document document) {
 		super(document);
@@ -110,7 +108,7 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 		Arrays.fill(relativeWidths, 0, headers.size(), 1);
 		relativeWidths[0] = 3; // sessionId
 
-		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
+		initTable(headers, relativeWidths);
 	}
 
 	private List<String> createHeaders() {
@@ -131,18 +129,11 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 	}
 
 	private void writeSessions() throws IOException, DocumentException {
-		final PdfPCell defaultCell = getDefaultCell();
-		boolean odd = false;
 		for (final SessionInformations session : sessionsInformations) {
-			if (odd) {
-				defaultCell.setGrayFill(0.97f);
-			} else {
-				defaultCell.setGrayFill(1);
-			}
-			odd = !odd; // NOPMD
+			nextRow();
 			writeSession(session);
 		}
-		addToDocument(currentTable);
+		addTableToDocument();
 	}
 
 	private void writeSession(SessionInformations session) throws IOException, BadElementException {
@@ -159,7 +150,7 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 			addCell(getString("oui"));
 		} else {
 			final Phrase non = new Phrase(getString("non"), severeCellFont);
-			currentTable.addCell(non);
+			addCell(non);
 		}
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		addCell(integerFormat.format(session.getSerializedSize()));
@@ -192,7 +183,7 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 			if (image == null) {
 				addCell(country);
 			} else {
-				currentTable.addCell(new Phrase(new Chunk(image, 0, 0)));
+				addCell(new Phrase(new Chunk(image, 0, 0)));
 			}
 		}
 	}
@@ -210,13 +201,5 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 			imagesByCountry.put(country, image);
 		}
 		return image;
-	}
-
-	private PdfPCell getDefaultCell() {
-		return currentTable.getDefaultCell();
-	}
-
-	private void addCell(String string) {
-		currentTable.addCell(new Phrase(string, cellFont));
 	}
 }
