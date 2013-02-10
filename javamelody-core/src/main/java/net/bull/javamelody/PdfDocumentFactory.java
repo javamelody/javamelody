@@ -21,7 +21,6 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.lowagie.text.BadElementException;
@@ -39,8 +38,6 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
@@ -230,26 +227,5 @@ class PdfDocumentFactory {
 	static Image getImage(String resourceFileName) throws BadElementException, IOException {
 		return Image.getInstance(PdfDocumentFactory.class.getResource(Parameters
 				.getResourcePath(resourceFileName)));
-	}
-
-	static PdfPTable createPdfPTable(List<String> headers, int[] relativeWidths)
-			throws DocumentException {
-		assert headers.size() == relativeWidths.length;
-		final PdfPTable table = new PdfPTable(headers.size());
-		table.setWidthPercentage(100);
-		table.setWidths(relativeWidths);
-		table.setHeaderRows(1);
-		final PdfPCell defaultCell = table.getDefaultCell();
-		defaultCell.setGrayFill(0.9f);
-		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		defaultCell.setPaddingLeft(0);
-		defaultCell.setPaddingRight(0);
-		final Font tableHeaderFont = PdfFonts.TABLE_HEADER.getFont();
-		for (final String header : headers) {
-			table.addCell(new Phrase(header, tableHeaderFont));
-		}
-		defaultCell.setPaddingLeft(2);
-		defaultCell.setPaddingRight(2);
-		return table;
 	}
 }

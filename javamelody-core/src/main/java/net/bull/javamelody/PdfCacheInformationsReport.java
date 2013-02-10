@@ -29,19 +29,16 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Partie du rapport pdf pour les caches de données.
  * @author Emeric Vernat
  */
-class PdfCacheInformationsReport extends PdfAbstractReport {
+class PdfCacheInformationsReport extends PdfAbstractTableReport {
 	private final List<CacheInformations> cacheInformationsList;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
-	private PdfPTable currentTable;
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
 
@@ -60,18 +57,11 @@ class PdfCacheInformationsReport extends PdfAbstractReport {
 	void toPdf() throws DocumentException {
 		writeHeader();
 
-		final PdfPCell defaultCell = getDefaultCell();
-		boolean odd = false;
 		for (final CacheInformations cacheInformations : cacheInformationsList) {
-			if (odd) {
-				defaultCell.setGrayFill(0.97f);
-			} else {
-				defaultCell.setGrayFill(1);
-			}
-			odd = !odd; // NOPMD
+			nextRow();
 			writeCacheInformations(cacheInformations);
 		}
-		addToDocument(currentTable);
+		addTableToDocument();
 		if (!hitsRatioEnabled) {
 			final Paragraph statisticsEnabledParagraph = new Paragraph(
 					getString("caches_statistics_enable"), cellFont);
@@ -101,7 +91,7 @@ class PdfCacheInformationsReport extends PdfAbstractReport {
 			relativeWidths[headers.size() - 1] = 4;
 		}
 
-		currentTable = PdfDocumentFactory.createPdfPTable(headers, relativeWidths);
+		initTable(headers, relativeWidths);
 	}
 
 	private List<String> createHeaders() {
@@ -140,13 +130,5 @@ class PdfCacheInformationsReport extends PdfAbstractReport {
 			defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			addCell(cacheInformations.getConfiguration());
 		}
-	}
-
-	private PdfPCell getDefaultCell() {
-		return currentTable.getDefaultCell();
-	}
-
-	private void addCell(String string) {
-		currentTable.addCell(new Phrase(string, cellFont));
 	}
 }
