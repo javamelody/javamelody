@@ -42,13 +42,10 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 		void toHtml() throws IOException {
 			final int rowsByColumn;
 			if (nbColumns > 1) {
-				rowsByColumn = values.length / nbColumns + 1;
+				rowsByColumn = (values.length - 1) / nbColumns + 1;
 				writeln("<table width='100%' cellspacing='0' cellpadding='2' summary=''><tr><td valign='top'>");
 			} else {
 				rowsByColumn = -1;
-			}
-			if (values.length <= 1) {
-				return;
 			}
 			final String[] headerValues = values[0];
 			writeTableHeaders(headerValues);
@@ -68,7 +65,7 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 				writeRow(row);
 				writeln("</tr>");
 				index++;
-				if (rowsByColumn > 0 && (index - 1) % rowsByColumn == 0) {
+				if (rowsByColumn > 0 && (index - 1) % rowsByColumn == 0 && index != values.length) {
 					writeln("</tbody></table></td><td valign='top'>");
 					writeTableHeaders(headerValues);
 				}
@@ -135,6 +132,9 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 		writeTitle("db.png", title);
 
 		final String[][] values = databaseInformations.getResult();
+		if (values.length <= 1) {
+			return;
+		}
 		final int nbColumns = databaseInformations.getNbColumns();
 		new TableReport(values, nbColumns, getWriter()).toHtml();
 	}
