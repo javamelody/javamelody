@@ -47,6 +47,9 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 			} else {
 				rowsByColumn = -1;
 			}
+			if (values.length <= 1) {
+				return;
+			}
 			final String[] headerValues = values[0];
 			writeTableHeaders(headerValues);
 			int index = 0;
