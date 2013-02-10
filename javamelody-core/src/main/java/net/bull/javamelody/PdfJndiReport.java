@@ -41,6 +41,7 @@ import com.lowagie.text.pdf.PdfPTable;
 class PdfJndiReport extends PdfAbstractReport {
 	private final List<JndiBinding> jndiBindings;
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private Image folderImage;
 	private PdfPTable currentTable;
 
 	PdfJndiReport(List<JndiBinding> jndiBindings, Document document) {
@@ -91,8 +92,7 @@ class PdfJndiReport extends PdfAbstractReport {
 		final String contextPath = jndiBinding.getContextPath();
 		final String value = jndiBinding.getValue();
 		if (contextPath != null) {
-			final Image image = PdfDocumentFactory.getImage("folder.png");
-			image.scalePercent(40);
+			final Image image = getFolderImage();
 			final Phrase phrase = new Phrase("", cellFont);
 			phrase.add(new Chunk(image, 0, 0));
 			phrase.add(" ");
@@ -103,6 +103,14 @@ class PdfJndiReport extends PdfAbstractReport {
 		}
 		addCell(className != null ? className : "");
 		addCell(value != null ? value : "");
+	}
+
+	private Image getFolderImage() throws BadElementException, IOException {
+		if (folderImage == null) {
+			folderImage = PdfDocumentFactory.getImage("folder.png");
+			folderImage.scalePercent(40);
+		}
+		return folderImage;
 	}
 
 	private PdfPCell getDefaultCell() {
