@@ -48,8 +48,9 @@ class HtmlJobInformationsReport extends HtmlAbstractReport {
 
 	@Override
 	void toHtml() throws IOException {
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Jobs#'>");
-		write("<thead><tr><th>#JobGroup#</th>");
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Jobs"));
+		write("<th>#JobGroup#</th>");
 		write("<th>#JobName#</th>");
 		write("<th>#JobClassName#</th>");
 		write("<th>#JobLastException#</th>");
@@ -63,19 +64,11 @@ class HtmlJobInformationsReport extends HtmlAbstractReport {
 			write("<th class='noPrint'>#Pause_job#</th>");
 			write("<th class='noPrint'>#Resume_job#</th>");
 		}
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
 		for (final JobInformations jobInformations : jobInformationsList) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeJobInformations(jobInformations);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 		write("<div align='right' class='noPrint'>");
 		if (systemActionsEnabled) {
 			final String onClickConfirm = "' onclick=\"javascript:return confirm('";

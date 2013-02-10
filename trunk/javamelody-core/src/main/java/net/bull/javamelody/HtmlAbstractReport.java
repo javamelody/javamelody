@@ -80,6 +80,41 @@ abstract class HtmlAbstractReport {
 		writeDirectly("</b><br/>\n");
 	}
 
+	class HtmlTable {
+		private boolean firstRow = true;
+		private boolean oddRow;
+
+		void beginTable(String summary) throws IOException {
+			writeDirectly("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='");
+			writeDirectly(summary);
+			writeDirectly("'>\n");
+			writeDirectly("<thead><tr>");
+		}
+
+		void nextRow() throws IOException {
+			writeDirectly("</tr>");
+			if (firstRow) {
+				firstRow = false;
+				writeDirectly("</thead><tbody>\n");
+			}
+			if (oddRow) {
+				writeDirectly("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">\n");
+			} else {
+				writeDirectly("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">\n");
+			}
+			oddRow = !oddRow; // NOPMD
+		}
+
+		void endTable() throws IOException {
+			writeDirectly("</tr>");
+			if (firstRow) {
+				firstRow = false;
+				writeDirectly("</thead><tbody>\n");
+			}
+			writeln("</tbody></table>\n");
+		}
+	}
+
 	/**
 	 * Retourne une traduction dans la locale courante.
 	 * @param key clé d'un libellé dans les fichiers de traduction

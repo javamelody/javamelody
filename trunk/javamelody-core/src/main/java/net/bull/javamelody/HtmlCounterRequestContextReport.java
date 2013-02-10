@@ -216,8 +216,9 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				break;
 			}
 		}
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Requetes_en_cours#'>");
-		write("<thead><tr><th>#Thread#</th>");
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Requetes_en_cours"));
+		write("<th>#Thread#</th>");
 		if (displayRemoteUser) {
 			write("<th>#Utilisateur#</th>");
 		}
@@ -240,19 +241,11 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		if (stackTraceEnabled) {
 			write("<th>#Methode_executee#</th>");
 		}
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
 		for (final CounterRequestContext context : contexts) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeContext(context, displayRemoteUser);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 	}
 
 	private void writeContext(CounterRequestContext rootContext, boolean displayRemoteUser)

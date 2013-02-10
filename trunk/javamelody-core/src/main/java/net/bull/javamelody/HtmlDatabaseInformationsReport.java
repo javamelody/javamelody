@@ -47,44 +47,42 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 			} else {
 				rowsByColumn = -1;
 			}
+			if (values.length <= 1) {
+				return;
+			}
 			final String[] headerValues = values[0];
+			HtmlTable table = new HtmlTable();
+			table.beginTable(getString("database"));
 			writeTableHeaders(headerValues);
 			int index = 0;
-			boolean odd = false;
 			for (final String[] row : values) {
 				if (index == 0) {
 					index++;
 					continue;
 				}
-				if (odd) {
-					write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-				} else {
-					write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-				}
-				odd = !odd; // NOPMD
+				table.nextRow();
 				writeRow(row);
-				writeln("</tr>");
 				index++;
 				if (rowsByColumn > 0 && (index - 1) % rowsByColumn == 0 && index != values.length) {
-					writeln("</tbody></table></td><td valign='top'>");
+					table.endTable();
+					writeln("</td><td valign='top'>");
+					table = new HtmlTable();
+					table.beginTable(getString("database"));
 					writeTableHeaders(headerValues);
 				}
 			}
-			writeln("</tbody></table>");
+			table.endTable();
 			if (nbColumns > 1) {
 				writeln("</td></tr></table>");
 			}
 		}
 
 		private void writeTableHeaders(String[] headerValues) throws IOException {
-			writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#database#'>");
-			write("<thead><tr>");
 			for (final String value : headerValues) {
 				write("<th>");
 				writeDirectly(value.replace("\n", "<br/>"));
 				write("</th>");
 			}
-			writeln("</tr></thead><tbody>");
 		}
 
 		private void writeRow(String[] row) throws IOException {
@@ -132,9 +130,6 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 		writeTitle("db.png", title);
 
 		final String[][] values = databaseInformations.getResult();
-		if (values.length <= 1) {
-			return;
-		}
 		final int nbColumns = databaseInformations.getNbColumns();
 		new TableReport(values, nbColumns, getWriter()).toHtml();
 	}

@@ -83,8 +83,9 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 				break;
 			}
 		}
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Sessions#'>");
-		write("<thead><tr><th>#Session_id#</th><th class='sorttable_numeric'>#Dernier_acces#</th>");
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Sessions"));
+		write("<th>#Session_id#</th><th class='sorttable_numeric'>#Dernier_acces#</th>");
 		write("<th class='sorttable_numeric'>#Age#</th><th class='sorttable_date'>#Expiration#</th>");
 		write("<th class='sorttable_numeric'>#Nb_attributs#</th><th>#Serialisable#</th><th>#Taille_serialisee#</th>");
 		write("<th class='sorttable_numeric'>#Adresse_IP#</th><th>#Pays#</th>");
@@ -92,19 +93,11 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			write("<th>#Utilisateur#</th>");
 		}
 		write("<th class='noPrint'>#Invalider#</th>");
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
 		for (final SessionInformations session : sessions) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeSession(session, displayUser);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 	}
 
 	private void writeBackAndRefreshLinks() throws IOException {
@@ -228,21 +221,14 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 	}
 
 	private void writeSessionAttributes(SessionInformations sessionInformations) throws IOException {
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Attributs#'>");
-		write("<thead><tr><th>#Nom#</th><th>Type</th><th>#Serialisable#</th><th>#Taille_serialisee#</th><th>#Contenu#</th>");
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Attributs"));
+		write("<th>#Nom#</th><th>Type</th><th>#Serialisable#</th><th>#Taille_serialisee#</th><th>#Contenu#</th>");
 		for (final SessionAttribute sessionAttribute : sessionInformations.getAttributes()) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeAttribute(sessionAttribute);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 	}
 
 	private void writeAttribute(SessionAttribute sessionAttribute) throws IOException {
