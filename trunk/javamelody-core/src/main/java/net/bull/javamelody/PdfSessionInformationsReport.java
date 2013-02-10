@@ -23,7 +23,9 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
@@ -49,6 +51,7 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
+	private final Map<String, Image> imagesByCountry = new HashMap<String, Image>();
 	private PdfPTable currentTable;
 
 	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations, Document document) {
@@ -185,15 +188,28 @@ class PdfSessionInformationsReport extends PdfAbstractReport {
 		if (country == null) {
 			addCell("");
 		} else {
-			final String fileName = "flags/" + country + ".gif";
-			if (getClass().getResource(Parameters.getResourcePath(fileName)) == null) {
+			final Image image = getCountryImage(country);
+			if (image == null) {
 				addCell(country);
 			} else {
-				final Image image = PdfDocumentFactory.getImage(fileName);
-				image.scalePercent(40);
 				currentTable.addCell(new Phrase(new Chunk(image, 0, 0)));
 			}
 		}
+	}
+
+	private Image getCountryImage(String country) throws BadElementException, IOException {
+		assert country != null;
+		Image image = imagesByCountry.get(country);
+		if (image == null) {
+			final String fileName = "flags/" + country + ".gif";
+			if (getClass().getResource(Parameters.getResourcePath(fileName)) == null) {
+				return null;
+			}
+			image = PdfDocumentFactory.getImage(fileName);
+			image.scalePercent(40);
+			imagesByCountry.put(country, image);
+		}
+		return image;
 	}
 
 	private PdfPCell getDefaultCell() {
