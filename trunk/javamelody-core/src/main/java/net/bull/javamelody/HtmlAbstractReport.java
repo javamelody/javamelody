@@ -111,7 +111,7 @@ abstract class HtmlAbstractReport {
 				firstRow = false;
 				writeDirectly("</thead><tbody>\n");
 			}
-			writeln("</tbody></table>\n");
+			writeDirectly("</tbody></table>\n");
 		}
 	}
 
