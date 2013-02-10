@@ -51,8 +51,9 @@ class HtmlProcessInformationsReport extends HtmlAbstractReport {
 	}
 
 	void writeTable() throws IOException {
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Processus#'>");
-		write("<thead><tr><th>#Utilisateur#</th>");
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Processus"));
+		write("<th>#Utilisateur#</th>");
 		write("<th class='sorttable_numeric'>#PID#</th>");
 		if (!windows) {
 			write("<th class='sorttable_numeric'>#cpu#</th><th class='sorttable_numeric'>#mem#</th>");
@@ -63,19 +64,11 @@ class HtmlProcessInformationsReport extends HtmlAbstractReport {
 			write("<th>#stat#</th><th>#start#</th>");
 		}
 		write("<th>#cpuTime#</th><th>#command#</th>");
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
 		for (final ProcessInformations processInformations : processInformationsList) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeProcessInformations(processInformations);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 		if (!windows) {
 			write("<div align='right'>");
 			write("<a href='http://en.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps command reference</a></div>");

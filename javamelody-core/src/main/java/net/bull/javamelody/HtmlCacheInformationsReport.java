@@ -45,8 +45,8 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 
 	@Override
 	void toHtml() throws IOException {
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Caches#'>");
-		write("<thead><tr>");
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Caches"));
 		write("<th>#Cache#</th>");
 		if (configurationEnabled) {
 			write("<th class='sorttable_numeric'>#Pourcentage_memoire_utilise#</th>");
@@ -66,19 +66,11 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Purger#</th>");
 		}
-		writeln("</tr></thead><tbody>");
-		boolean odd = false;
 		for (final CacheInformations cacheInformations : cacheInformationsList) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeCacheInformations(cacheInformations);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 		write("<div align='right' class='noPrint'>");
 		if (!hitsRatioEnabled) {
 			writeln("#caches_statistics_enable#<br/>");

@@ -54,22 +54,14 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 	}
 
 	private void writeTable() throws IOException {
-		writeln("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='#Arbre_JNDI#'>");
-		write("<thead><tr><th>#Nom#</th><th>#Type#</th><th>#Value#</th>");
-		writeln("</tr></thead><tbody>");
-
-		boolean odd = false;
+		final HtmlTable table = new HtmlTable();
+		table.beginTable("Arbre_JNDI");
+		write("<th>#Nom#</th><th>#Type#</th><th>#Value#</th>");
 		for (final JndiBinding binding : jndiBindings) {
-			if (odd) {
-				write("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">");
-			} else {
-				write("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">");
-			}
-			odd = !odd; // NOPMD
+			table.nextRow();
 			writeBinding(binding);
-			writeln("</tr>");
 		}
-		writeln("</tbody></table>");
+		table.endTable();
 	}
 
 	private void writeBinding(JndiBinding binding) throws IOException {
