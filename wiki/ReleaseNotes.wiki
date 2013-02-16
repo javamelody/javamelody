@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix: in Jenkins, it is useless to display the sql hits for the current requests
   * added: display of values in the JNDI tree (issue 287, thanks to _derjust_)
 
 === 1.43.0 ===
