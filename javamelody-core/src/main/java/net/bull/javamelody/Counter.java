@@ -290,6 +290,15 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		return childCounterName;
 	}
 
+	boolean hasChildHits() {
+		for (final CounterRequest request : requests.values()) {
+			if (request.hasChildHits()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Retourne la date et l'heure de début (non null).
 	 * @return Date

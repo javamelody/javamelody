@@ -80,7 +80,7 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		this.pdfDocumentFactory = pdfDocumentFactory;
 		boolean oneRootHasChild = false;
 		for (final CounterRequestContext rootCurrentContext : rootCurrentContexts) {
-			if (rootCurrentContext.getParentCounter().getChildCounterName() != null) {
+			if (rootCurrentContext.hasChildHits()) {
 				oneRootHasChild = true;
 				break;
 			}
