@@ -86,7 +86,7 @@ class CounterRequestContextData {
 
 		boolean myChildHitsDisplayed = false;
 		for (final CounterRequestContext rootCurrentContext : getRootContexts()) {
-			if (rootCurrentContext.getParentCounter().getChildCounterName() != null) {
+			if (rootCurrentContext.hasChildHits()) {
 				// one root has child
 				myChildHitsDisplayed = true;
 				break;

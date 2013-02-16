@@ -147,7 +147,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		}
 		boolean oneRootHasChild = false;
 		for (final CounterRequestContext rootCurrentContext : rootCurrentContexts) {
-			if (rootCurrentContext.getParentCounter().getChildCounterName() != null) {
+			if (rootCurrentContext.hasChildHits()) {
 				oneRootHasChild = true;
 				break;
 			}

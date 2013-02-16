@@ -193,6 +193,11 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		return result;
 	}
 
+	boolean hasChildHits() {
+		return parentCounter.getChildCounterName() != null
+				&& (getTotalChildHits() > 0 || parentCounter.hasChildHits());
+	}
+
 	List<CounterRequestContext> getChildContexts() {
 		// il vaut mieux appeler cette méthode sur un clone du contexte pour avoir un résultat stable
 		// puisque les contextes fils des requêtes en cours peuvent changer à tout moment
