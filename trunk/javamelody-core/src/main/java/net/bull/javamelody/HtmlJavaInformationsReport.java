@@ -224,15 +224,14 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
 			writeln("<tr><td valign='top'>#Base_de_donnees#: </td><td>");
 			// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
-			writeDirectly(replaceEolWithBr(javaInformations.getDataBaseVersion()).replaceAll("[&]",
-					"&amp;"));
+			writeDirectly(htmlEncodeButNotSpace(javaInformations.getDataBaseVersion()));
 			writeln(columnEnd);
 		}
 		if (javaInformations.getDataSourceDetails() != null) {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>");
 			// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
-			writeDirectly(replaceEolWithBr(javaInformations.getDataSourceDetails())
-					+ "<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
+			writeDirectly(htmlEncodeButNotSpace(javaInformations.getDataSourceDetails()));
+			writeDirectly("<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
 					+ " class='noPrint' target='_blank'>DataSource reference</a>");
 			writeln(columnEnd);
 		}
@@ -309,9 +308,9 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 	private void writeMemoryInformations(MemoryInformations memoryInformations) throws IOException {
 		final String columnEnd = "</td></tr>";
+		final String memoryDetails = memoryInformations.getMemoryDetails();
 		writeln("<tr><td valign='top'>#Gestion_memoire#: </td><td>"
-				+ replaceEolWithBr(memoryInformations.getMemoryDetails()).replace(" Mo", " #Mo#")
-				+ columnEnd);
+				+ htmlEncodeButNotSpace(memoryDetails).replace(" Mo", " #Mo#") + columnEnd);
 
 		final long usedPermGen = memoryInformations.getUsedPermGen();
 		if (usedPermGen > 0) {
@@ -342,7 +341,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			writeln("<br/>");
 			writeln("<div id='detailsDependencies" + uniqueByPageSequence
 					+ "' style='display: none;'><div>");
-			writeln(replaceEolWithBr(javaInformations.getDependencies()));
+			writeln(htmlEncodeButNotSpace(javaInformations.getDependencies()));
 			writeln("</div></div>");
 		}
 	}
@@ -406,10 +405,6 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 		sb.append(MessageFormat.format(body, fullBlockCount == FULL_BLOCKS ? "b" : "b0"));
 		return sb.toString();
-	}
-
-	private static String replaceEolWithBr(String string) {
-		return string.replaceAll("[\n]", "<br/>");
 	}
 
 	private void writeShowHideLink(String idToShow, String label) throws IOException {
