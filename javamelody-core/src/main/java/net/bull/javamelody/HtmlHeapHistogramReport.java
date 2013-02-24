@@ -203,9 +203,4 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		}
 		writeln("</div>");
 	}
-
-	private void writeShowHideLink(String idToShow, String label) throws IOException {
-		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint'><img id='"
-				+ idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
-	}
 }
