@@ -55,19 +55,25 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.0.5</version>
 		</dependency>
+		<!-- Dépendance H2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.170</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<!-- Use "mvn jetty:run" -->
 				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
+				<artifactId>jetty-maven-plugin</artifactId>
 				<configuration>
 					<contextPath>/</contextPath>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<jettyConfig>src/main/config/jetty-jmx.xml</jettyConfig>
 					<connectors>
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
 							<port>8080</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
@@ -86,14 +92,6 @@
 					<contextFile>${basedir}/src/main/config/tomcat-context.xml</contextFile>
  					<useTestClasspath>true</useTestClasspath>
 				</configuration>
-				<dependencies>
-					<!-- Dépendance H2 -->
-					<dependency>
-						<groupId>com.h2database</groupId>
-						<artifactId>h2</artifactId>
-						<version>1.3.170</version>
-					</dependency>
-				</dependencies>
 			</plugin>
   		</plugins>
 	</build>
