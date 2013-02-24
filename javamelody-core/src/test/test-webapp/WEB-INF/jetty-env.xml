@@ -4,10 +4,10 @@
 	<New id="jdbc/TestDB" class="org.mortbay.jetty.plus.naming.Resource">
 		<Arg>jdbc/TestDB</Arg>
 		<Arg>
-			<New class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
-				<Set name="Url">jdbc:mysql://127.0.0.1:3306/test?socketTimeout=5000&amp;connectTimeout=5000</Set>
-				<Set name="User">root</Set>
-				<Set name="Password">root</Set>
+			<New class="org.h2.jdbcx.JdbcDataSource">
+				<Set name="URL">jdbc:h2:/Applis/h2/test-webapp-jetty</Set>
+				<Set name="User">sa</Set>
+				<Set name="Password">sa</Set>
 			</New>
 		</Arg>
 	</New>
