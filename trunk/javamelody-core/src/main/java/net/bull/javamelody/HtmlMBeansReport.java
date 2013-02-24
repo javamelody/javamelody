@@ -84,7 +84,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 			final List<MBeanNode> children = node.getChildren();
 			if (children != null) {
 				final String id = getNextId();
-				writeShowHideLink(id, htmlEncodeButNotSpace(name));
+				writePrintedShowHideLink(id, htmlEncodeButNotSpace(name));
 				writeln("<div id='" + id + "' style='display: none; margin-left: 20px;'><div>");
 				writeTree(children);
 				writeln("</div></div>");
@@ -100,7 +100,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 		final int indexOfComma = mbeanName.indexOf(',');
 		if (indexOfComma != -1) {
 			mbeanName = mbeanName.substring(indexOfComma + 1);
-			writeShowHideLink(mbeanId, htmlEncodeButNotSpace(mbeanName));
+			writePrintedShowHideLink(mbeanId, htmlEncodeButNotSpace(mbeanName));
 			writeln("<div id='" + mbeanId + "' style='display: none; margin-left: 20px;'>");
 			// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
 			// dans une table
@@ -169,7 +169,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 		writeln("</div>");
 	}
 
-	private void writeShowHideLink(String idToShow, String label) throws IOException {
+	private void writePrintedShowHideLink(String idToShow, String label) throws IOException {
 		writeDirectly("<a href=\"javascript:showHide('" + idToShow + "');\"><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
 	}
