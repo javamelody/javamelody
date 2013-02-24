@@ -28,6 +28,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.Reference;
 
 /**
  * Informations sur un binding JNDI.
@@ -127,8 +128,12 @@ class JndiBinding implements Serializable {
 		final Object object = binding.getObject();
 		final String contextPath;
 		String value;
-		if (object instanceof Context || "javax.naming.Context".equals(className)) {
-			// "javax.naming.Context".equals(className) nécessaire pour le path "comp" dans JBoss 6.0
+		if (object instanceof Context
+				// "javax.naming.Context".equals(className) nécessaire pour le path "comp" dans JBoss 6.0
+				|| "javax.naming.Context".equals(className)
+				// pour jetty :
+				|| object instanceof Reference
+				&& "javax.naming.Context".equals(((Reference) object).getClassName())) {
 			if (path.length() > 0) {
 				contextPath = path + '/' + name;
 			} else {
@@ -138,29 +143,35 @@ class JndiBinding implements Serializable {
 			value = null;
 		} else {
 			contextPath = null;
-			try {
-				if (object instanceof Collection) {
-					final StringBuilder sb = new StringBuilder();
-					sb.append('[');
-					boolean first = true;
-					for (final Object aItem : (Collection<?>) object) {
-						if (first) {
-							first = false;
-						} else {
-							sb.append(",\n");
-						}
-						sb.append(String.valueOf(aItem));
-					}
-					sb.append(']');
-					value = sb.toString();
-				} else {
-					value = String.valueOf(object);
-				}
-			} catch (final Exception e) {
-				value = e.toString();
-			}
+			value = formatValue(object);
 		}
 		return new JndiBinding(name, className, contextPath, value);
+	}
+
+	private static String formatValue(Object object) {
+		String value;
+		try {
+			if (object instanceof Collection) {
+				final StringBuilder sb = new StringBuilder();
+				sb.append('[');
+				boolean first = true;
+				for (final Object aItem : (Collection<?>) object) {
+					if (first) {
+						first = false;
+					} else {
+						sb.append(",\n");
+					}
+					sb.append(String.valueOf(aItem));
+				}
+				sb.append(']');
+				value = sb.toString();
+			} else {
+				value = String.valueOf(object);
+			}
+		} catch (final Exception e) {
+			value = e.toString();
+		}
+		return value;
 	}
 
 	private static String getBindingName(String path, Binding binding) {
