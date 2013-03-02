@@ -214,9 +214,9 @@ class JavaInformations implements Serializable { // NOPMD
 	private static long buildProcessCpuTimeMillis() {
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 		if (isSunOsMBean(operatingSystem)) {
-			final com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) operatingSystem;
 			// nano-secondes converties en milli-secondes
-			return osBean.getProcessCpuTime() / 1000000;
+			return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
+					"getProcessCpuTime") / 1000000;
 		}
 		return -1;
 	}
@@ -226,9 +226,9 @@ class JavaInformations implements Serializable { // NOPMD
 		if (isSunOsMBean(operatingSystem)
 				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
 						.getName())) {
-			final com.sun.management.UnixOperatingSystemMXBean unixOsBean = (com.sun.management.UnixOperatingSystemMXBean) operatingSystem;
 			try {
-				return unixOsBean.getOpenFileDescriptorCount();
+				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
+						"getOpenFileDescriptorCount");
 			} catch (final Error e) {
 				// pour issue 16 (using jsvc on ubuntu or debian)
 				return -1;
@@ -242,9 +242,9 @@ class JavaInformations implements Serializable { // NOPMD
 		if (isSunOsMBean(operatingSystem)
 				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
 						.getName())) {
-			final com.sun.management.UnixOperatingSystemMXBean unixOsBean = (com.sun.management.UnixOperatingSystemMXBean) operatingSystem;
 			try {
-				return unixOsBean.getMaxFileDescriptorCount();
+				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
+						"getMaxFileDescriptorCount");
 			} catch (final Error e) {
 				// pour issue 16 (using jsvc on ubuntu or debian)
 				return -1;

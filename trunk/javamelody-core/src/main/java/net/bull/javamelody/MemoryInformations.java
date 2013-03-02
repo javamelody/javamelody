@@ -24,6 +24,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 
 /**
@@ -72,10 +74,11 @@ class MemoryInformations implements Serializable {
 
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 		if (isSunOsMBean(operatingSystem)) {
-			final com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) operatingSystem;
-			usedPhysicalMemorySize = osBean.getTotalPhysicalMemorySize()
-					- osBean.getFreePhysicalMemorySize();
-			usedSwapSpaceSize = osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize();
+			usedPhysicalMemorySize = getLongFromOperatingSystem(operatingSystem,
+					"getTotalPhysicalMemorySize")
+					- getLongFromOperatingSystem(operatingSystem, "getFreePhysicalMemorySize");
+			usedSwapSpaceSize = getLongFromOperatingSystem(operatingSystem, "getTotalSwapSpaceSize")
+					- getLongFromOperatingSystem(operatingSystem, "getFreeSwapSpaceSize");
 		} else {
 			usedPhysicalMemorySize = -1;
 			usedSwapSpaceSize = -1;
@@ -115,19 +118,28 @@ class MemoryInformations implements Serializable {
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 		String osInfo = "";
 		if (isSunOsMBean(operatingSystem)) {
-			final com.sun.management.OperatingSystemMXBean osBean = (com.sun.management.OperatingSystemMXBean) operatingSystem;
 			osInfo = "Process cpu time = "
-					+ integerFormat.format(osBean.getProcessCpuTime() / 1000000)
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getProcessCpuTime") / 1000000)
 					+ " ms,\nCommitted virtual memory = "
-					+ integerFormat.format(osBean.getCommittedVirtualMemorySize() / 1024 / 1024)
-					+ MO + ",\nFree physical memory = "
-					+ integerFormat.format(osBean.getFreePhysicalMemorySize() / 1024 / 1024) + MO
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getCommittedVirtualMemorySize") / 1024 / 1024)
+					+ MO
+					+ ",\nFree physical memory = "
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getFreePhysicalMemorySize") / 1024 / 1024)
+					+ MO
 					+ ",\nTotal physical memory = "
-					+ integerFormat.format(osBean.getTotalPhysicalMemorySize() / 1024 / 1024) + MO
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getTotalPhysicalMemorySize") / 1024 / 1024)
+					+ MO
 					+ ",\nFree swap space = "
-					+ integerFormat.format(osBean.getFreeSwapSpaceSize() / 1024 / 1024) + MO
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getFreeSwapSpaceSize") / 1024 / 1024)
+					+ MO
 					+ ",\nTotal swap space = "
-					+ integerFormat.format(osBean.getTotalSwapSpaceSize() / 1024 / 1024) + MO;
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getTotalSwapSpaceSize") / 1024 / 1024) + MO;
 		}
 
 		return nonHeapMemory + NEXT + classLoading + NEXT + gc + NEXT + osInfo;
@@ -139,6 +151,26 @@ class MemoryInformations implements Serializable {
 		final String className = operatingSystem.getClass().getName();
 		return "com.sun.management.OperatingSystem".equals(className)
 				|| "com.sun.management.UnixOperatingSystem".equals(className);
+	}
+
+	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
+		try {
+			final Method method = operatingSystem.getClass().getMethod(methodName,
+					(Class<?>[]) null);
+			method.setAccessible(true);
+			return (Long) method.invoke(operatingSystem, (Object[]) null);
+		} catch (final InvocationTargetException e) {
+			if (e.getCause() instanceof Error) {
+				throw (Error) e.getCause();
+			} else if (e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException) e.getCause();
+			}
+			throw new IllegalStateException(e.getCause());
+		} catch (final NoSuchMethodException e) {
+			throw new IllegalArgumentException(e);
+		} catch (final IllegalAccessException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	long getUsedMemory() {
