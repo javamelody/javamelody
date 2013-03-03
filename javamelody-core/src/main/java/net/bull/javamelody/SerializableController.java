@@ -90,9 +90,45 @@ class SerializableController {
 
 	Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList, String messageForReport) throws Exception { // NOPMD
-		final Serializable resultForSystemActions = createSerializableForSystemActions(httpRequest);
-		if (resultForSystemActions != null) {
-			return resultForSystemActions;
+		final String part = httpRequest.getParameter(PART_PARAMETER);
+		if (SESSIONS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
+			if (sessionId == null) {
+				return new ArrayList<SessionInformations>(
+						SessionListener.getAllSessionsInformations());
+			}
+			return SessionListener.getSessionInformationsBySessionId(sessionId);
+		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return VirtualMachine.createHeapHistogram();
+		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<ProcessInformations>(
+					ProcessInformations.buildProcessInformations());
+		} else if (JNDI_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String path = httpRequest.getParameter(PATH_PARAMETER);
+			return new ArrayList<JndiBinding>(JndiBinding.listBindings(path));
+		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
+		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
+					.getParameter(REQUEST_PARAMETER));
+			return new DatabaseInformations(requestIndex);
+		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<ConnectionInformations>(
+					JdbcWrapper.getConnectionInformationsList());
 		}
 		return createOtherSerializable(httpRequest, javaInformationsList, messageForReport);
 	}
@@ -209,51 +245,6 @@ class SerializableController {
 			}
 		}
 		return images;
-	}
-
-	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest)
-			throws Exception { // NOPMD
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return VirtualMachine.createHeapHistogram();
-		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-			if (sessionId == null) {
-				return new ArrayList<SessionInformations>(
-						SessionListener.getAllSessionsInformations());
-			}
-			return SessionListener.getSessionInformationsBySessionId(sessionId);
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<ProcessInformations>(
-					ProcessInformations.buildProcessInformations());
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final String path = httpRequest.getParameter(PATH_PARAMETER);
-			return new ArrayList<JndiBinding>(JndiBinding.listBindings(path));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
-					.getParameter(REQUEST_PARAMETER));
-			return new DatabaseInformations(requestIndex);
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<ConnectionInformations>(
-					JdbcWrapper.getConnectionInformationsList());
-		}
-		return null;
 	}
 
 	Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList,
