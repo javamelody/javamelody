@@ -1,7 +1,8 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix: in Jenkins, it is useless to display the sql hits for the current requests
+  * fix: In Jenkins, it is useless to display the sql hits for the current requests
+  * fix: When opening the detail of a Quartz job, display the statistics of the job, including sql or services called. And when looking for the usages of a sql or service, include the results for jobs.
   * fix issue 289: JBoss AS 7 configuration should not be needed [_TODO update doc_] 
   * added: display of values in the JNDI tree (issue 287, thanks to _derjust_)
 
