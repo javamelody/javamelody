@@ -470,6 +470,12 @@ final class JRobin {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[application=" + getApplication() + ", name="
+				+ getName() + ']';
+	}
+
 	//  public void test() throws RrdException, IOException {
 	//    for (int i = 1000; i > 0; i--) {
 	//      // request RRD database reference from the pool
