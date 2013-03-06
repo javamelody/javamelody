@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.security.CodeSource;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -272,6 +273,10 @@ class FilterContext {
 		LOG.debug("Server: " + Parameters.getServletContext().getServerInfo());
 		LOG.debug("Webapp context: " + Parameters.getContextPath(Parameters.getServletContext()));
 		LOG.debug("JavaMelody version: " + Parameters.JAVAMELODY_VERSION);
+		final String location = getJavaMelodyLocation();
+		if (location != null) {
+			LOG.debug("JavaMelody classes loaded from: " + location);
+		}
 		LOG.debug("Host: " + Parameters.getHostName() + '@' + Parameters.getHostAddress());
 		for (final Parameter parameter : Parameter.values()) {
 			final String value = Parameters.getParameter(parameter);
@@ -279,6 +284,22 @@ class FilterContext {
 				LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
 			}
 		}
+	}
+
+	private static String getJavaMelodyLocation() {
+		final Class<FilterContext> clazz = FilterContext.class;
+		final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+		if (codeSource != null && codeSource.getLocation() != null) {
+			String location = codeSource.getLocation().toString();
+			// location contient le nom du fichier jar
+			// (ou le nom du fichier de cette classe s'il y a un répertoire sans jar)
+			final String clazzFileName = clazz.getSimpleName() + ".class";
+			if (location.endsWith(clazzFileName)) {
+				location = location.substring(0, location.length() - clazzFileName.length());
+			}
+			return location;
+		}
+		return null;
 	}
 
 	void destroy() {
