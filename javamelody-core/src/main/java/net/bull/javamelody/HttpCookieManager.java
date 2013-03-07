@@ -31,14 +31,17 @@ import javax.servlet.http.HttpServletResponse;
 class HttpCookieManager {
 	private static final String PERIOD_COOKIE_NAME = "javamelody.period";
 
+	// période par défaut : jour
+	private static Range defaultRange = Period.JOUR.getRange();
+
 	Range getRange(HttpServletRequest req, HttpServletResponse resp) {
 		final Range range;
 		if (req.getParameter(PERIOD_PARAMETER) == null) {
 			// pas de paramètre period dans la requête, on cherche le cookie
 			final Cookie cookie = getCookieByName(req, PERIOD_COOKIE_NAME);
 			if (cookie == null) {
-				// pas de cookie, période jour par défaut
-				range = Period.JOUR.getRange();
+				// pas de cookie, période par défaut
+				range = defaultRange;
 			} else {
 				range = Range.parse(cookie.getValue());
 			}
@@ -90,5 +93,9 @@ class HttpCookieManager {
 			return sb.toString();
 		}
 		return null;
+	}
+
+	static void setDefaultRange(Range range) {
+		defaultRange = range;
 	}
 }
