@@ -319,12 +319,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 	private void writeGraphs() throws IOException {
 		writeGraphs(collector.getCounterJRobins());
-		writeln("<div align='right'>");
-		writeShowHideLink("detailsGraphs", "#Autres_courbes#");
-		writeln(END_DIV);
-		writeln("<div id='detailsGraphs' style='display: none;'><div>");
-		writeGraphs(collector.getOtherJRobins());
-		writeln("</div></div>");
+		final Collection<JRobin> otherJRobins = collector.getOtherJRobins();
+		if (!otherJRobins.isEmpty()) {
+			writeln("<div align='right'>");
+			writeShowHideLink("detailsGraphs", "#Autres_courbes#");
+			writeln(END_DIV);
+			writeln("<div id='detailsGraphs' style='display: none;'><div>");
+			writeGraphs(otherJRobins);
+			writeln("</div></div>");
+		}
 	}
 
 	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {

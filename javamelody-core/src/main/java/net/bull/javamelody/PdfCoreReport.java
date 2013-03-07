@@ -136,7 +136,6 @@ class PdfCoreReport extends PdfAbstractReport {
 		newPage();
 		addParagraph(getString("Statistiques_detaillees"), "systemmonitor.png");
 		writeGraphs(collector.getOtherJRobins(), smallOtherGraphs);
-		newPage();
 		writeGraphDetails();
 
 		writeCountersDetails(pdfCounterReports);
@@ -208,6 +207,9 @@ class PdfCoreReport extends PdfAbstractReport {
 				i++;
 			}
 		} else {
+			if (jrobins.isEmpty()) {
+				return;
+			}
 			for (final JRobin jrobin : jrobins) {
 				if (collector.isJRobinDisplayed(jrobin)) {
 					if (i % 3 == 0 && i != 0) {
@@ -239,7 +241,11 @@ class PdfCoreReport extends PdfAbstractReport {
 				jrobinTable.addCell(image);
 			}
 		} else {
-			for (final JRobin jrobin : collector.getCounterJRobins()) {
+			final Collection<JRobin> counterJRobins = collector.getCounterJRobins();
+			if (counterJRobins.isEmpty()) {
+				return;
+			}
+			for (final JRobin jrobin : counterJRobins) {
 				if (collector.isJRobinDisplayed(jrobin)) {
 					// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
 					final Image image = Image.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH,
@@ -248,6 +254,7 @@ class PdfCoreReport extends PdfAbstractReport {
 				}
 			}
 		}
+		newPage();
 		addToDocument(jrobinTable);
 		newPage();
 	}
