@@ -208,7 +208,8 @@ class FilterContext {
 			Class.forName("org.jrobin.core.RrdException");
 		} catch (final ClassNotFoundException e) {
 			LOG.debug("jrobin classes unavailable: collect of data is disabled");
-			// si pas de jar jrobin, alors pas de collecte
+			HttpCookieManager.setDefaultRange(Period.TOUT.getRange());
+			// si pas de jar jrobin, alors pas de collecte et période "Tout" par défaut
 			return;
 		}
 
