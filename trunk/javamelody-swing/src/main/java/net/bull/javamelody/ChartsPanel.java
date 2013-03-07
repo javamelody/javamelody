@@ -99,7 +99,7 @@ class ChartsPanel extends MelodyPanel {
 			final ImageIcon icon = new ImageIcon(imageData);
 			final JLabel label = new MTransferableLabel(icon);
 			// ce name sera utilisé comme nom de fichier pour le drag and drop de l'image
-			label.setName(I18N.getString(jrobinName));
+			label.setName(getString(jrobinName));
 			label.setHorizontalAlignment(SwingConstants.CENTER);
 			label.setCursor(HAND_CURSOR);
 			label.addMouseListener(new MouseAdapter() {
@@ -125,7 +125,7 @@ class ChartsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton detailsButton = new MButton(I18N.getString("Autres_courbes"), PLUS_ICON);
+		final MButton detailsButton = new MButton(getString("Autres_courbes"), PLUS_ICON);
 		detailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -159,7 +159,7 @@ class ChartsPanel extends MelodyPanel {
 
 	final void showZoomedChart(String jrobinName) throws IOException {
 		final String graphName = jrobinName;
-		final String graphLabel = I18N.getString(jrobinName);
+		final String graphLabel = getString(jrobinName);
 		final ChartPanel panel = new ChartPanel(getRemoteCollector(), graphName, graphLabel);
 		MainPanel.addOngletFromChild(this, panel);
 	}

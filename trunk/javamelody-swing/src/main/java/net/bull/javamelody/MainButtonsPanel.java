@@ -76,8 +76,8 @@ class MainButtonsPanel extends MelodyPanel {
 		final MButton xmlJsonButton = createXmlJsonButton(null);
 		final MButton onlineHelpButton = createOnlineHelpButton();
 
-		final MButton monitoringButton = new MButton(I18N.getString("Monitoring"), MONITORING_ICON);
-		monitoringButton.setToolTipText(I18N.getFormattedString("Monitoring_sur",
+		final MButton monitoringButton = new MButton(getString("Monitoring"), MONITORING_ICON);
+		monitoringButton.setToolTipText(getFormattedString("Monitoring_sur",
 				remoteCollector.getApplication()));
 		centerPanel.add(refreshButton);
 		centerPanel.add(pdfButton);
@@ -122,7 +122,7 @@ class MainButtonsPanel extends MelodyPanel {
 				try {
 					Desktop.getDesktop().browse(
 							new URI(monitoringUrl.toExternalForm() + "?resource="
-									+ I18N.getString("help_url")));
+									+ getString("help_url")));
 				} catch (final Exception ex) {
 					showException(ex);
 				}
@@ -131,12 +131,12 @@ class MainButtonsPanel extends MelodyPanel {
 	}
 
 	private void addPeriodButtons(JPanel centerPanel, final CustomPeriodPanel customPeriodPanel) {
-		centerPanel.add(new JLabel("        " + I18N.getString("Choix_periode") + " : "));
+		centerPanel.add(new JLabel("        " + getString("Choix_periode") + " : "));
 		for (final Period myPeriod : Period.values()) {
 			final String linkLabel = myPeriod.getLinkLabel();
 			final MButton myPeriodButton = new MButton(linkLabel,
 					ImageIconCache.getImageIcon(myPeriod.getIconName()));
-			myPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode", linkLabel)
+			myPeriodButton.setToolTipText(getFormattedString("Choisir_periode", linkLabel)
 					+ " (Alt-" + linkLabel.charAt(0) + ')');
 			myPeriodButton.setMnemonic(linkLabel.charAt(0));
 			centerPanel.add(myPeriodButton);
@@ -148,10 +148,10 @@ class MainButtonsPanel extends MelodyPanel {
 			});
 		}
 
-		final String customPeriodLinkLabel = I18N.getString("personnalisee");
+		final String customPeriodLinkLabel = getString("personnalisee");
 		final MButton customPeriodButton = new MButton(customPeriodLinkLabel,
 				ImageIconCache.getImageIcon("calendar.png"));
-		customPeriodButton.setToolTipText(I18N.getFormattedString("Choisir_periode",
+		customPeriodButton.setToolTipText(getFormattedString("Choisir_periode",
 				customPeriodLinkLabel) + " (Alt-" + customPeriodLinkLabel.charAt(0) + ')');
 		customPeriodButton.setMnemonic(customPeriodLinkLabel.charAt(0));
 		centerPanel.add(customPeriodButton);
@@ -170,9 +170,9 @@ class MainButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createOnlineHelpButton() {
-		final MButton onlineHelpButton = new MButton(I18N.getString("Aide_en_ligne"),
+		final MButton onlineHelpButton = new MButton(getString("Aide_en_ligne"),
 				ImageIconCache.getImageIcon("action_help.png"));
-		onlineHelpButton.setToolTipText(I18N.getString("Afficher_aide_en_ligne") + " (F1)");
+		onlineHelpButton.setToolTipText(getString("Afficher_aide_en_ligne") + " (F1)");
 		onlineHelpButton.setActionCommand("help");
 		onlineHelpButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
 				KeyStroke.getKeyStroke("F1"), "doHelp");

@@ -73,7 +73,7 @@ class MBeansPanel extends MelodyPanel {
 
 		this.mbeansByTitle = getRemoteCollector().collectMBeans();
 
-		setName(I18N.getString("MBeans"));
+		setName(getString("MBeans"));
 
 		add(createScrollPane(), BorderLayout.CENTER);
 
@@ -100,7 +100,7 @@ class MBeansPanel extends MelodyPanel {
 		for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
 			final String title;
 			if (mbeansByTitle.size() == 1) {
-				title = I18N.getString("MBeans");
+				title = getString("MBeans");
 			} else {
 				title = entry.getKey();
 			}
@@ -139,7 +139,7 @@ class MBeansPanel extends MelodyPanel {
 
 	private JPanel createButtonsPanel() {
 		final MButton expandAllButton = new MButton("", EXPAND_ALL_ICON);
-		expandAllButton.setToolTipText(I18N.getString("Tout_montrer"));
+		expandAllButton.setToolTipText(getString("Tout_montrer"));
 		expandAllButton.setPreferredSize(new Dimension(
 				expandAllButton.getPreferredSize().width - 4,
 				expandAllButton.getPreferredSize().height + 3));
@@ -151,7 +151,7 @@ class MBeansPanel extends MelodyPanel {
 		});
 
 		final MButton collapseAllButton = new MButton("", COLLAPSE_ALL_ICON);
-		collapseAllButton.setToolTipText(I18N.getString("Tout_reduire"));
+		collapseAllButton.setToolTipText(getString("Tout_reduire"));
 		collapseAllButton.setPreferredSize(new Dimension(
 				collapseAllButton.getPreferredSize().width - 4, collapseAllButton
 						.getPreferredSize().height + 3));

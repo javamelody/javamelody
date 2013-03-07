@@ -63,11 +63,11 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 	CounterRequestUsagesPanel(RemoteCollector remoteCollector, CounterRequest request) {
 		super(remoteCollector);
 
-		final String graphLabel = truncate(
-				I18N.getString("Utilisations_de") + ' ' + request.getName(), 50);
+		final String graphLabel = truncate(getString("Utilisations_de") + ' ' + request.getName(),
+				50);
 		setName(graphLabel);
 
-		final JLabel label = new JLabel(' ' + I18N.getString("Utilisations_de") + ' '
+		final JLabel label = new JLabel(' ' + getString("Utilisations_de") + ' '
 				+ request.getName());
 		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
@@ -93,7 +93,7 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 		final MTable<CounterRequest> table = getTable();
 		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<>(table);
 
-		table.addColumn("name", I18N.getString("Requete"));
+		table.addColumn("name", getString("Requete"));
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
 
 		return tableScrollPane;

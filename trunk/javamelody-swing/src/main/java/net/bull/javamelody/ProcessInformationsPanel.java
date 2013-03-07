@@ -61,7 +61,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 
 		this.processInformationsByTitle = getRemoteCollector().collectProcessInformations();
 
-		setName(I18N.getString("Processus"));
+		setName(getString("Processus"));
 
 		add(createScrollPanes(), BorderLayout.CENTER);
 
@@ -76,7 +76,7 @@ class ProcessInformationsPanel extends MelodyPanel {
 				.entrySet()) {
 			final String title;
 			if (processInformationsByTitle.size() == 1) {
-				title = I18N.getString("Processus");
+				title = getString("Processus");
 			} else {
 				title = entry.getKey();
 			}
@@ -85,21 +85,21 @@ class ProcessInformationsPanel extends MelodyPanel {
 					.isWindowsProcessList(processInformationsList);
 			final MTableScrollPane<ProcessInformations> tableScrollPane = new MTableScrollPane<>();
 			final MTable<ProcessInformations> table = tableScrollPane.getTable();
-			table.addColumn("user", I18N.getString("Utilisateur"));
-			table.addColumn("pid", I18N.getString("PID"));
+			table.addColumn("user", getString("Utilisateur"));
+			table.addColumn("pid", getString("PID"));
 			if (!windows) {
-				table.addColumn("cpuPercentage", I18N.getString("cpu"));
-				table.addColumn("memPercentage", I18N.getString("mem"));
+				table.addColumn("cpuPercentage", getString("cpu"));
+				table.addColumn("memPercentage", getString("mem"));
 			}
-			table.addColumn("vsz", I18N.getString("vsz"));
+			table.addColumn("vsz", getString("vsz"));
 			if (!windows) {
-				table.addColumn("rss", I18N.getString("rss"));
-				table.addColumn("tty", I18N.getString("tty"));
-				table.addColumn("stat", I18N.getString("stat"));
-				table.addColumn("start", I18N.getString("start"));
+				table.addColumn("rss", getString("rss"));
+				table.addColumn("tty", getString("tty"));
+				table.addColumn("stat", getString("stat"));
+				table.addColumn("start", getString("start"));
 			}
-			table.addColumn("cpuTime", I18N.getString("cpuTime"));
-			table.addColumn("command", I18N.getString("command"));
+			table.addColumn("cpuTime", getString("cpuTime"));
+			table.addColumn("command", getString("command"));
 
 			table.setList(processInformationsList);
 

@@ -160,21 +160,21 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		final MTable<CounterRequest> table = getTable();
 		final MTableScrollPane<CounterRequest> tableScrollPane = new MTableScrollPane<>(table);
 
-		table.addColumn("name", I18N.getString("Requete"));
+		table.addColumn("name", getString("Requete"));
 		table.setColumnCellRenderer("name", new NameTableCellRenderer());
 		if (!childRequestsExecutions.isEmpty()) {
 			final TableColumn nbExecutionsColumn = new TableColumn(table.getColumnCount());
 			nbExecutionsColumn.setIdentifier(table.getColumnCount());
-			nbExecutionsColumn.setHeaderValue(I18N.getString("Hits_par_requete"));
+			nbExecutionsColumn.setHeaderValue(getString("Hits_par_requete"));
 			table.addColumn(nbExecutionsColumn);
 
 			nbExecutionsColumn.setCellRenderer(new NbExecutionsTableCellRenderer());
 		}
-		table.addColumn("mean", I18N.getString("Temps_moyen"));
-		table.addColumn("maximum", I18N.getString("Temps_max"));
-		table.addColumn("standardDeviation", I18N.getString("Ecart_type"));
-		table.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
-		table.addColumn("systemErrorPercentage", I18N.getString("erreur_systeme"));
+		table.addColumn("mean", getString("Temps_moyen"));
+		table.addColumn("maximum", getString("Temps_max"));
+		table.addColumn("standardDeviation", getString("Ecart_type"));
+		table.addColumn("cpuTimeMean", getString("Temps_cpu_moyen"));
+		table.addColumn("systemErrorPercentage", getString("erreur_systeme"));
 		table.setColumnCellRenderer("cpuTimeMean", new MIntegerTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
@@ -195,9 +195,9 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		if (allChildHitsDisplayed) {
 			final String childCounterName = parentCounter.getChildCounterName();
 			table.addColumn("childHitsMean",
-					I18N.getFormattedString("hits_fils_moyens", childCounterName));
+					getFormattedString("hits_fils_moyens", childCounterName));
 			table.addColumn("childDurationsMean",
-					I18N.getFormattedString("temps_fils_moyen", childCounterName));
+					getFormattedString("temps_fils_moyen", childCounterName));
 			final ChildValueTableCellRenderer childValueTableCellRenderer = new ChildValueTableCellRenderer();
 			table.setColumnCellRenderer("childHitsMean", childValueTableCellRenderer);
 			table.setColumnCellRenderer("childDurationsMean", childValueTableCellRenderer);

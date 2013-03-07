@@ -54,11 +54,11 @@ class CustomPeriodPanel extends MelodyPanel {
 	private void addCustomPeriodPanel(Range selectedRange) {
 		final DateFormat dateFormat = I18N.createDateFormat();
 		final String dateFormatPattern;
-		if (I18N.getString("dateFormatPattern").length() == 0) {
+		if (getString("dateFormatPattern").length() == 0) {
 			final String pattern = ((SimpleDateFormat) dateFormat).toPattern();
 			dateFormatPattern = pattern.toLowerCase(I18N.getCurrentLocale());
 		} else {
-			dateFormatPattern = I18N.getString("dateFormatPattern");
+			dateFormatPattern = getString("dateFormatPattern");
 		}
 
 		if (selectedRange.getStartDate() != null) {
@@ -70,7 +70,7 @@ class CustomPeriodPanel extends MelodyPanel {
 		startDateField
 				.setPreferredSize(new Dimension(80, startDateField.getPreferredSize().height));
 		endDateField.setPreferredSize(new Dimension(80, endDateField.getPreferredSize().height));
-		final MButton okButton = new MButton(I18N.getString("ok"));
+		final MButton okButton = new MButton(getString("ok"));
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -78,9 +78,9 @@ class CustomPeriodPanel extends MelodyPanel {
 			}
 		});
 
-		add(new JLabel(I18N.getString("startDate")));
+		add(new JLabel(getString("startDate")));
 		add(startDateField);
-		add(new JLabel(I18N.getString("endDate")));
+		add(new JLabel(getString("endDate")));
 		add(endDateField);
 		add(new JLabel('(' + dateFormatPattern + ')'));
 		add(okButton);
@@ -99,7 +99,7 @@ class CustomPeriodPanel extends MelodyPanel {
 			endDateField.requestFocus();
 		}
 		if (startDate == null || endDate == null) {
-			final String message = I18N.getString("dates_mandatory");
+			final String message = getString("dates_mandatory");
 			showMessage(message);
 		} else {
 			final Range newRange = Range.createCustomRange(startDate, endDate);

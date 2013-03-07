@@ -91,7 +91,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 	void addCurrentRequestsCount(int currentRequestsSize) {
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
-		final String text = I18N.getFormattedString("nb_requete_en_cours",
+		final String text = getFormattedString("nb_requete_en_cours",
 				integerFormat.format(currentRequestsSize))
 				+ "     ";
 		buttonsPanel.add(new JLabel(text), 0);

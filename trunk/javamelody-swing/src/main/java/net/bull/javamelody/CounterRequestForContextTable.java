@@ -372,41 +372,40 @@ class CounterRequestForContextTable extends CounterRequestTable {
 		final boolean remoteUserDisplayed = getData().isRemoteUserDisplayed();
 		final boolean childHitsDisplayed = getData().isChildHitsDisplayed();
 		final boolean stackTraceEnabled = getData().isStackTraceEnabled();
-		addCustomColumn(I18N.getString("Thread"), new ThreadTableCellRenderer());
+		addCustomColumn(getString("Thread"), new ThreadTableCellRenderer());
 		if (remoteUserDisplayed) {
-			addCustomColumn(I18N.getString("Utilisateur"), new RemoteUserTableCellRenderer());
+			addCustomColumn(getString("Utilisateur"), new RemoteUserTableCellRenderer());
 		}
-		addColumn("name", I18N.getString("Requete"));
+		addColumn("name", getString("Requete"));
 		setColumnCellRenderer("name", new NameTableCellRenderer());
 
-		addCustomColumn(I18N.getString("Duree_ecoulee"), new DurationTableCellRenderer());
+		addCustomColumn(getString("Duree_ecoulee"), new DurationTableCellRenderer());
 
-		addColumn("mean", I18N.getString("Temps_moyen"));
+		addColumn("mean", getString("Temps_moyen"));
 		setColumnCellRenderer("mean", new IntegerTableCellRenderer());
 
-		addCustomColumn(I18N.getString("Temps_cpu"), new CpuTableCellRenderer());
+		addCustomColumn(getString("Temps_cpu"), new CpuTableCellRenderer());
 
-		addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
+		addColumn("cpuTimeMean", getString("Temps_cpu_moyen"));
 		setColumnCellRenderer("cpuTimeMean", new IntegerTableCellRenderer());
 		// rq : tous ces contextes viennent du même compteur donc peu importe lequel des parentCounter
 		if (childHitsDisplayed) {
 			final String childCounterName = getData().getRootContexts().get(0).getParentCounter()
 					.getChildCounterName();
-			addCustomColumn(I18N.getFormattedString("hits_fils", childCounterName),
+			addCustomColumn(getFormattedString("hits_fils", childCounterName),
 					new TotalChildHitsTableCellRenderer());
 
-			addCustomColumn(I18N.getFormattedString("hits_fils_moyens", childCounterName),
+			addCustomColumn(getFormattedString("hits_fils_moyens", childCounterName),
 					new ChildHitsMeanTableCellRenderer());
 
-			addCustomColumn(I18N.getFormattedString("temps_fils", childCounterName),
+			addCustomColumn(getFormattedString("temps_fils", childCounterName),
 					new TotalChildDurationsSumTableCellRenderer());
 
-			addCustomColumn(I18N.getFormattedString("temps_fils_moyen", childCounterName),
+			addCustomColumn(getFormattedString("temps_fils_moyen", childCounterName),
 					new ChildsDurationsMeanTableCellRenderer());
 		}
 		if (stackTraceEnabled) {
-			addCustomColumn(I18N.getString("Methode_executee"),
-					new ExecutedMethodTableCellRenderer());
+			addCustomColumn(getString("Methode_executee"), new ExecutedMethodTableCellRenderer());
 		}
 	}
 
@@ -416,5 +415,24 @@ class CounterRequestForContextTable extends CounterRequestTable {
 		tableColumn.setHeaderValue(headerValue);
 		tableColumn.setCellRenderer(tableCellRenderer);
 		addColumn(tableColumn);
+	}
+
+	/**
+	 * Retourne une traduction dans la locale courante.
+	 * @param key clé d'un libellé dans les fichiers de traduction
+	 * @return String
+	 */
+	static String getString(String key) {
+		return I18N.getString(key);
+	}
+
+	/**
+	 * Retourne une traduction dans la locale courante et insère les arguments aux positions {i}.
+	 * @param key clé d'un libellé dans les fichiers de traduction
+	 * @param arguments Valeur à inclure dans le résultat
+	 * @return String
+	 */
+	static String getFormattedString(String key, Object... arguments) {
+		return I18N.getFormattedString(key, arguments);
 	}
 }

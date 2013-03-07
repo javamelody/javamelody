@@ -124,7 +124,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 
 		add(scrollPane, BorderLayout.NORTH);
 
-		final JLabel label = new JLabel(' ' + I18N.getString("Temps_threads"));
+		final JLabel label = new JLabel(' ' + getString("Temps_threads"));
 		add(label, BorderLayout.WEST);
 
 		final JPanel buttonsPanel = createButtonsPanel();
@@ -134,16 +134,16 @@ class ThreadInformationsPanel extends MelodyPanel {
 	private MTableScrollPane<ThreadInformations> createScrollPane() {
 		final MTableScrollPane<ThreadInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ThreadInformations> myTable = tableScrollPane.getTable();
-		myTable.addColumn("name", I18N.getString("Thread"));
-		myTable.addColumn("daemon", I18N.getString("Demon"));
-		myTable.addColumn("priority", I18N.getString("Priorite"));
-		myTable.addColumn("state", I18N.getString("Etat"));
+		myTable.addColumn("name", getString("Thread"));
+		myTable.addColumn("daemon", getString("Demon"));
+		myTable.addColumn("priority", getString("Priorite"));
+		myTable.addColumn("state", getString("Etat"));
 		if (stackTraceEnabled) {
-			myTable.addColumn("executedMethod", I18N.getString("Methode_executee"));
+			myTable.addColumn("executedMethod", getString("Methode_executee"));
 		}
 		if (cpuTimeEnabled) {
-			myTable.addColumn("cpuTimeMillis", I18N.getString("Temps_cpu"));
-			myTable.addColumn("userTimeMillis", I18N.getString("Temps_user"));
+			myTable.addColumn("cpuTimeMillis", getString("Temps_cpu"));
+			myTable.addColumn("userTimeMillis", getString("Temps_user"));
 		}
 		myTable.setColumnCellRenderer("state", new StateTableCellRenderer());
 
@@ -166,7 +166,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 		final JPanel buttonsPanel = Utilities.createButtonsPanel();
 
 		if (Parameters.isSystemActionsEnabled()) {
-			final MButton killThreadButton = new MButton(I18N.getString("Tuer"),
+			final MButton killThreadButton = new MButton(getString("Tuer"),
 					ImageIconCache.getImageIcon("stop.png"));
 			getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 				@Override
@@ -174,7 +174,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 					final ThreadInformations threadInformations = getTable().getSelectedObject();
 					killThreadButton.setEnabled(threadInformations != null);
 					if (threadInformations != null) {
-						killThreadButton.setToolTipText(I18N.getFormattedString("kill_thread",
+						killThreadButton.setToolTipText(getFormattedString("kill_thread",
 								threadInformations.getName()));
 					} else {
 						killThreadButton.setToolTipText(null);
@@ -187,7 +187,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 				public void actionPerformed(ActionEvent e) {
 					final ThreadInformations threadInformations = getTable().getSelectedObject();
 					if (threadInformations != null
-							&& confirm(I18N.getFormattedString("confirm_kill_thread",
+							&& confirm(getFormattedString("confirm_kill_thread",
 									threadInformations.getName()))) {
 						actionKillThread(threadInformations);
 					}
@@ -198,7 +198,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 		}
 
 		if (stackTraceEnabled) {
-			final MButton dumpThreadsButton = new MButton(I18N.getString("Dump_threads_en_texte"),
+			final MButton dumpThreadsButton = new MButton(getString("Dump_threads_en_texte"),
 					ImageIconCache.getImageIcon("text.png"));
 			dumpThreadsButton.addActionListener(new ActionListener() {
 				@Override
@@ -270,7 +270,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 	JLabel createThreadDeadlocksLabel() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("  ");
-		sb.append(I18N.getString("Threads_deadlocks"));
+		sb.append(getString("Threads_deadlocks"));
 		String separator = " ";
 		for (final ThreadInformations thread : threadInformationsList) {
 			if (thread.isDeadlocked()) {

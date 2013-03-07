@@ -122,7 +122,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createCurrentRequestsButton() {
-		final MButton currentRequestsButton = new MButton(I18N.getString("Requetes_en_cours"),
+		final MButton currentRequestsButton = new MButton(getString("Requetes_en_cours"),
 				CURRENT_REQUESTS_ICON);
 		currentRequestsButton.addActionListener(new ActionListener() {
 			@Override
@@ -140,11 +140,11 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createGcButton() {
-		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"), GC_ICON);
+		final MButton gcButton = new MButton(getString("ramasse_miette"), GC_ICON);
 		gcButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_ramasse_miette"))) {
+				if (confirm(getString("confirm_ramasse_miette"))) {
 					executeAction(Action.GC);
 				}
 			}
@@ -153,11 +153,11 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createHeapDumpButton() {
-		final MButton heapDumpButton = new MButton(I18N.getString("heap_dump"), HEAP_DUMP_ICON);
+		final MButton heapDumpButton = new MButton(getString("heap_dump"), HEAP_DUMP_ICON);
 		heapDumpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_heap_dump"))) {
+				if (confirm(getString("confirm_heap_dump"))) {
 					executeAction(Action.HEAP_DUMP);
 				}
 			}
@@ -166,7 +166,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createHeapHistoButton() {
-		final MButton heapHistoButton = new MButton(I18N.getString("heaphisto"), HEAP_HISTO_ICON);
+		final MButton heapHistoButton = new MButton(getString("heaphisto"), HEAP_HISTO_ICON);
 		heapHistoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -181,12 +181,12 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createInvalidateSessionsButton() {
-		final MButton invalidateSessionsButton = new MButton(I18N.getString("invalidate_sessions"),
+		final MButton invalidateSessionsButton = new MButton(getString("invalidate_sessions"),
 				INVALIDATE_SESSION_ICON);
 		invalidateSessionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_invalidate_sessions"))) {
+				if (confirm(getString("confirm_invalidate_sessions"))) {
 					executeAction(Action.INVALIDATE_SESSIONS);
 				}
 			}
@@ -195,7 +195,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createSessionsButton() {
-		final MButton sessionsButton = new MButton(I18N.getString("sessions"), SESSIONS_ICON);
+		final MButton sessionsButton = new MButton(getString("sessions"), SESSIONS_ICON);
 		sessionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -210,7 +210,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createWebXmlButton() {
-		final MButton webXmlButton = new MButton(I18N.getString("web.xml"), XML_ICON);
+		final MButton webXmlButton = new MButton(getString("web.xml"), XML_ICON);
 		webXmlButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -226,7 +226,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createMBeansButton() {
-		final MButton mbeansButton = new MButton(I18N.getString("MBeans"), MBEANS_ICON);
+		final MButton mbeansButton = new MButton(getString("MBeans"), MBEANS_ICON);
 		mbeansButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -241,7 +241,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createProcessesButton() {
-		final MButton processesButton = new MButton(I18N.getString("processes"), PROCESSES_ICON);
+		final MButton processesButton = new MButton(getString("processes"), PROCESSES_ICON);
 		processesButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -256,7 +256,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createJndiButton() {
-		final MButton jndiButton = new MButton(I18N.getString("Arbre_JNDI"), JNDI_ICON);
+		final MButton jndiButton = new MButton(getString("Arbre_JNDI"), JNDI_ICON);
 		jndiButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -271,7 +271,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createConnectionsButton() {
-		final MButton connectionsButton = new MButton(I18N.getString("Connexions_jdbc_ouvertes"),
+		final MButton connectionsButton = new MButton(getString("Connexions_jdbc_ouvertes"),
 				DATABASE_ICON);
 		connectionsButton.addActionListener(new ActionListener() {
 			@Override
@@ -287,7 +287,7 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	}
 
 	private MButton createDatabaseButton() {
-		final MButton databaseButton = new MButton(I18N.getString("database"), DATABASE_ICON);
+		final MButton databaseButton = new MButton(getString("database"), DATABASE_ICON);
 		databaseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
