@@ -49,6 +49,7 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
 class ThreadInformationsPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
+	private final JavaInformations javaInformations;
 	@SuppressWarnings("all")
 	private final List<ThreadInformations> threadInformationsList;
 	private final boolean stackTraceEnabled;
@@ -107,12 +108,12 @@ class ThreadInformationsPanel extends MelodyPanel {
 		}
 	}
 
-	ThreadInformationsPanel(RemoteCollector remoteCollector,
-			List<ThreadInformations> threadInformationsList, boolean stackTraceEnabled) {
+	ThreadInformationsPanel(RemoteCollector remoteCollector, JavaInformations javaInformations) {
 		super(remoteCollector);
-		assert threadInformationsList != null;
-		this.threadInformationsList = threadInformationsList;
-		this.stackTraceEnabled = stackTraceEnabled;
+		assert javaInformations != null;
+		this.javaInformations = javaInformations;
+		this.threadInformationsList = javaInformations.getThreadInformationsList();
+		this.stackTraceEnabled = javaInformations.isStackTraceEnabled();
 		this.cpuTimeEnabled = !threadInformationsList.isEmpty()
 				&& threadInformationsList.get(0).getCpuTimeMillis() != -1;
 
@@ -226,7 +227,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 	final void actionDumpThreads() {
 		try {
 			final ThreadsDumpPanel panel = new ThreadsDumpPanel(getRemoteCollector(),
-					threadInformationsList);
+					javaInformations);
 			MainPanel.addOngletFromChild(this, panel);
 		} catch (final IOException ex) {
 			showException(ex);

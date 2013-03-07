@@ -235,11 +235,8 @@ class ScrollingPanel extends MelodyPanel {
 	private void addThreadInformations() {
 		addParagraphTitle(I18N.getString("Threads"), "threads.png");
 		for (final JavaInformations javaInformations : getJavaInformationsList()) {
-			final List<ThreadInformations> threadInformationsList = javaInformations
-					.getThreadInformationsList();
 			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
-					getRemoteCollector(), threadInformationsList,
-					javaInformations.isStackTraceEnabled());
+					getRemoteCollector(), javaInformations);
 			threadInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
 					+ I18N.getFormattedString("Threads_sur", javaInformations.getHost())
@@ -264,7 +261,7 @@ class ScrollingPanel extends MelodyPanel {
 
 			add(flowPanel);
 
-			for (final ThreadInformations thread : threadInformationsList) {
+			for (final ThreadInformations thread : javaInformations.getThreadInformationsList()) {
 				if (thread.isDeadlocked()) {
 					// au moins un thread est en deadlock
 					final JLabel label = threadInformationsPanel.createThreadDeadlocksLabel();

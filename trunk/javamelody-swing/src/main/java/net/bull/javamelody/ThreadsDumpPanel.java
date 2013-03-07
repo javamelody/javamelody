@@ -40,14 +40,16 @@ import net.bull.javamelody.swing.MButton;
 class ThreadsDumpPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
+	private final JavaInformations javaInformations;
 	@SuppressWarnings("all")
 	private final List<ThreadInformations> threadInformationsList;
 
-	ThreadsDumpPanel(RemoteCollector remoteCollector,
-			List<ThreadInformations> threadInformationsList) throws IOException {
+	ThreadsDumpPanel(RemoteCollector remoteCollector, JavaInformations javaInformations)
+			throws IOException {
 		super(remoteCollector);
-		assert threadInformationsList != null;
-		this.threadInformationsList = threadInformationsList;
+		assert javaInformations != null;
+		this.javaInformations = javaInformations;
+		this.threadInformationsList = javaInformations.getThreadInformationsList();
 
 		final String threadsDump = getThreadsDump();
 
@@ -76,6 +78,9 @@ class ThreadsDumpPanel extends MelodyPanel {
 
 	private String getThreadsDump() throws IOException {
 		final StringWriter writer = new StringWriter();
+		writer.write("===== " + I18N.getFormattedString("Threads_sur", javaInformations.getHost())
+				+ " =====");
+		writer.write("\n\n");
 		final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(
 				threadInformationsList, true, writer);
 		htmlThreadInformationsReport.writeThreadsDump();
