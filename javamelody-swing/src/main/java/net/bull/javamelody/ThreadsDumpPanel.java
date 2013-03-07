@@ -53,7 +53,7 @@ class ThreadsDumpPanel extends MelodyPanel {
 
 		final String threadsDump = getThreadsDump();
 
-		setName(I18N.getString("Threads"));
+		setName(getString("Threads"));
 		final JTextArea textArea = new JTextArea();
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, textArea.getFont().getSize() - 1));
 		textArea.setEditable(false);
@@ -63,7 +63,7 @@ class ThreadsDumpPanel extends MelodyPanel {
 
 		final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
 		buttonPanel.setOpaque(false);
-		final MButton clipBoardButton = new MButton(I18N.getString("Copier_dans_presse-papiers"));
+		final MButton clipBoardButton = new MButton(getString("Copier_dans_presse-papiers"));
 		clipBoardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -78,7 +78,7 @@ class ThreadsDumpPanel extends MelodyPanel {
 
 	private String getThreadsDump() throws IOException {
 		final StringWriter writer = new StringWriter();
-		writer.write("===== " + I18N.getFormattedString("Threads_sur", javaInformations.getHost())
+		writer.write("===== " + getFormattedString("Threads_sur", javaInformations.getHost())
 				+ " =====");
 		writer.write("\n\n");
 		final HtmlThreadInformationsReport htmlThreadInformationsReport = new HtmlThreadInformationsReport(

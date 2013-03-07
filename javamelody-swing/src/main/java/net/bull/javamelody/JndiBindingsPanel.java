@@ -102,9 +102,9 @@ class JndiBindingsPanel extends MelodyPanel {
 		this.jndiBindings = getRemoteCollector().collectJndiBindings(path);
 
 		if (path == null || path.length() == 0) {
-			setName(I18N.getString("Arbre_JNDI"));
+			setName(getString("Arbre_JNDI"));
 		} else {
-			setName(I18N.getFormattedString("Arbre_JNDI_pour_contexte", path));
+			setName(getFormattedString("Arbre_JNDI_pour_contexte", path));
 		}
 
 		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "jndi.png");
@@ -122,9 +122,9 @@ class JndiBindingsPanel extends MelodyPanel {
 	private MTableScrollPane<JndiBinding> createScrollPane() {
 		final MTableScrollPane<JndiBinding> tableScrollPane = new MTableScrollPane<>();
 		final MTable<JndiBinding> myTable = tableScrollPane.getTable();
-		myTable.addColumn("name", I18N.getString("Nom"));
-		myTable.addColumn("className", I18N.getString("Type"));
-		myTable.addColumn("value", I18N.getString("Value"));
+		myTable.addColumn("name", getString("Nom"));
+		myTable.addColumn("className", getString("Type"));
+		myTable.addColumn("value", getString("Value"));
 
 		myTable.setColumnCellRenderer("name", new NameTableCellRenderer());
 
@@ -132,9 +132,9 @@ class JndiBindingsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
-		final MButton openButton = new MButton(I18N.getString("Ouvrir"),
+		final MButton openButton = new MButton(getString("Ouvrir"),
 				ImageIconCache.getImageIcon("action_open.png"));
-		final MButton backButton = new MButton(I18N.getString("Retour"),
+		final MButton backButton = new MButton(getString("Retour"),
 				ImageIconCache.getImageIcon("action_back.png"));
 
 		openButton.addActionListener(new ActionListener() {

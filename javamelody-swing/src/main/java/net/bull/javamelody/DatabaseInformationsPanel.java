@@ -65,10 +65,10 @@ class DatabaseInformationsPanel extends MelodyPanel {
 
 		this.databaseInformations = getRemoteCollector().collectDatabaseInformations(requestIndex);
 
-		setName(I18N.getString("database"));
+		setName(getString("database"));
 		final String selectedRequestName = databaseInformations.getSelectedRequestName();
-		final JLabel titleLabel = Utilities.createParagraphTitle(I18N.getString("database") + " : "
-				+ I18N.getString(selectedRequestName), "db.png");
+		final JLabel titleLabel = Utilities.createParagraphTitle(getString("database") + " : "
+				+ getString(selectedRequestName), "db.png");
 		add(titleLabel, BorderLayout.NORTH);
 
 		final MTableScrollPane<DatabaseInformations> scrollPane = createScrollPane();
@@ -152,7 +152,7 @@ class DatabaseInformationsPanel extends MelodyPanel {
 			public Component getListCellRendererComponent(JList list, Object value, int index,
 					boolean isSelected, boolean cellHasFocus) {
 				final String requestKey = (String) value;
-				final String label = I18N.getString(requestKey);
+				final String label = getString(requestKey);
 				return super.getListCellRendererComponent(list, label, index, isSelected,
 						cellHasFocus);
 			}

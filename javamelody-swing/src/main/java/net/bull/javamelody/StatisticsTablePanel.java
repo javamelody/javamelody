@@ -139,11 +139,11 @@ class StatisticsTablePanel extends MelodyPanel {
 	private void addColumns() {
 		final String nameColumnHeader;
 		if (isJobCounter()) {
-			nameColumnHeader = I18N.getString("Job");
+			nameColumnHeader = getString("Job");
 		} else if (isErrorCounter()) {
-			nameColumnHeader = I18N.getString("Erreur");
+			nameColumnHeader = getString("Erreur");
 		} else {
-			nameColumnHeader = I18N.getString("Requete");
+			nameColumnHeader = getString("Requete");
 		}
 		table.addColumn("name", nameColumnHeader);
 		// MMultiLineTableCellRenderer n'est pas défini ici pour la colonne "name"
@@ -151,34 +151,34 @@ class StatisticsTablePanel extends MelodyPanel {
 
 		final MIntegerTableCellRenderer meanCellRenderer = new MeanTableCellRenderer();
 		if (counterRequestAggregation.isTimesDisplayed()) {
-			table.addColumn("durationsSum", I18N.getString("temps_cumule"));
-			table.addColumn("hits", I18N.getString("Hits"));
-			table.addColumn("mean", I18N.getString("Temps_moyen"));
-			table.addColumn("maximum", I18N.getString("Temps_max"));
-			table.addColumn("standardDeviation", I18N.getString("Ecart_type"));
+			table.addColumn("durationsSum", getString("temps_cumule"));
+			table.addColumn("hits", getString("Hits"));
+			table.addColumn("mean", getString("Temps_moyen"));
+			table.addColumn("maximum", getString("Temps_max"));
+			table.addColumn("standardDeviation", getString("Ecart_type"));
 			table.setColumnCellRenderer("durationsSum", new DurationPercentageTableCellRenderer());
 			table.setColumnCellRenderer("mean", meanCellRenderer);
 		} else {
-			table.addColumn("hits", I18N.getString("Hits"));
+			table.addColumn("hits", getString("Hits"));
 		}
 		if (counterRequestAggregation.isCpuTimesDisplayed()) {
-			table.addColumn("cpuTimeSum", I18N.getString("temps_cpu_cumule"));
-			table.addColumn("cpuTimeMean", I18N.getString("Temps_cpu_moyen"));
+			table.addColumn("cpuTimeSum", getString("temps_cpu_cumule"));
+			table.addColumn("cpuTimeMean", getString("Temps_cpu_moyen"));
 			table.setColumnCellRenderer("cpuTimeSum", new CpuPercentageTableCellRenderer());
 			table.setColumnCellRenderer("cpuTimeMean", meanCellRenderer);
 		}
 		if (!isErrorAndNotJobCounter()) {
-			table.addColumn("systemErrorPercentage", I18N.getString("erreur_systeme"));
+			table.addColumn("systemErrorPercentage", getString("erreur_systeme"));
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {
-			table.addColumn("responseSizeMean", I18N.getString("Taille_moyenne"));
+			table.addColumn("responseSizeMean", getString("Taille_moyenne"));
 			table.setColumnCellRenderer("responseSizeMean", new ResponseSizeMeanTableCellRenderer());
 		}
 		if (counterRequestAggregation.isChildHitsDisplayed()) {
 			table.addColumn("childHitsMean",
-					I18N.getFormattedString("hits_fils_moyens", counter.getChildCounterName()));
+					getFormattedString("hits_fils_moyens", counter.getChildCounterName()));
 			table.addColumn("childDurationsMean",
-					I18N.getFormattedString("temps_fils_moyen", counter.getChildCounterName()));
+					getFormattedString("temps_fils_moyen", counter.getChildCounterName()));
 		}
 	}
 

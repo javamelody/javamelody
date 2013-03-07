@@ -112,7 +112,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		textArea.setText(sqlRequestExplainPlan);
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.setOpaque(false);
-		final JLabel label = new JLabel(I18N.getString("Plan_d_execution"));
+		final JLabel label = new JLabel(getString("Plan_d_execution"));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
 		panel.add(label, BorderLayout.NORTH);
 		final JScrollPane scrollPane = new JScrollPane(textArea);

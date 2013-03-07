@@ -111,7 +111,7 @@ class SessionInformationsPanel extends MelodyPanel {
 		this.sessionsInformations = getRemoteCollector().collectSessionInformations(null);
 		this.attributesTable = new MTable<>();
 
-		setName(I18N.getString("Sessions"));
+		setName(getString("Sessions"));
 		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "system-users.png");
 		add(titleLabel, BorderLayout.NORTH);
 
@@ -140,18 +140,18 @@ class SessionInformationsPanel extends MelodyPanel {
 		}
 		final MTableScrollPane<SessionInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<SessionInformations> myTable = tableScrollPane.getTable();
-		myTable.addColumn("id", I18N.getString("Session_id"));
-		myTable.addColumn("lastAccess", I18N.getString("Dernier_acces"));
-		myTable.addColumn("age", I18N.getString("Age"));
-		myTable.addColumn("expirationDate", I18N.getString("Expiration"));
-		myTable.addColumn("attributeCount", I18N.getString("Nb_attributs"));
-		myTable.addColumn("serializable", I18N.getString("Serialisable"));
-		myTable.addColumn("serializedSize", I18N.getString("Taille_serialisee"));
-		myTable.addColumn("remoteAddr", I18N.getString("Adresse_IP"));
-		myTable.addColumn("countryDisplay", I18N.getString("Pays"));
+		myTable.addColumn("id", getString("Session_id"));
+		myTable.addColumn("lastAccess", getString("Dernier_acces"));
+		myTable.addColumn("age", getString("Age"));
+		myTable.addColumn("expirationDate", getString("Expiration"));
+		myTable.addColumn("attributeCount", getString("Nb_attributs"));
+		myTable.addColumn("serializable", getString("Serialisable"));
+		myTable.addColumn("serializedSize", getString("Taille_serialisee"));
+		myTable.addColumn("remoteAddr", getString("Adresse_IP"));
+		myTable.addColumn("countryDisplay", getString("Pays"));
 
 		if (displayUser) {
-			myTable.addColumn("remoteUser", I18N.getString("Utilisateur"));
+			myTable.addColumn("remoteUser", getString("Utilisateur"));
 		}
 
 		final MDateTableCellRenderer durationTableCellRenderer = new MDateTableCellRenderer();
@@ -169,16 +169,16 @@ class SessionInformationsPanel extends MelodyPanel {
 	private JPanel createAttributesPanel() {
 		final JPanel attributesPanel = new JPanel(new BorderLayout());
 		attributesPanel.setOpaque(false);
-		final JLabel attributesLabel = new JLabel(I18N.getString("Attributs"));
+		final JLabel attributesLabel = new JLabel(getString("Attributs"));
 		attributesLabel.setFont(attributesLabel.getFont().deriveFont(Font.BOLD));
 		attributesPanel.add(attributesLabel, BorderLayout.NORTH);
 		final MTableScrollPane<SessionAttribute> attributesTableScrollPane = new MTableScrollPane<>(
 				attributesTable);
-		attributesTable.addColumn("name", I18N.getString("Nom"));
-		attributesTable.addColumn("type", I18N.getString("Type"));
-		attributesTable.addColumn("serializable", I18N.getString("Serialisable"));
-		attributesTable.addColumn("serializedSize", I18N.getString("Taille_serialisee"));
-		attributesTable.addColumn("content", I18N.getString("Contenu"));
+		attributesTable.addColumn("name", getString("Nom"));
+		attributesTable.addColumn("type", getString("Type"));
+		attributesTable.addColumn("serializable", getString("Serialisable"));
+		attributesTable.addColumn("serializedSize", getString("Taille_serialisee"));
+		attributesTable.addColumn("content", getString("Contenu"));
 		attributesTable.setPreferredScrollableViewportSize(new Dimension(-1, 100));
 		attributesPanel.add(attributesTableScrollPane, BorderLayout.CENTER);
 
@@ -211,8 +211,8 @@ class SessionInformationsPanel extends MelodyPanel {
 			meanSerializedSize = -1;
 		}
 		final JLabel summaryLabel = new JLabel("<html><div align='right'>"
-				+ I18N.getFormattedString("nb_sessions", sessionsInformations.size()) + "<br/>"
-				+ I18N.getFormattedString("taille_moyenne_sessions", meanSerializedSize));
+				+ getFormattedString("nb_sessions", sessionsInformations.size()) + "<br/>"
+				+ getFormattedString("taille_moyenne_sessions", meanSerializedSize));
 		summaryLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		return summaryLabel;
 	}
@@ -256,12 +256,12 @@ class SessionInformationsPanel extends MelodyPanel {
 	}
 
 	private MButton createInvalidateAllSessionsButton() {
-		final MButton invalidateAllSessionsButton = new MButton(
-				I18N.getString("invalidate_sessions"), INVALIDATE_SESSION_ICON);
+		final MButton invalidateAllSessionsButton = new MButton(getString("invalidate_sessions"),
+				INVALIDATE_SESSION_ICON);
 		invalidateAllSessionsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getFormattedString("confirm_invalidate_sessions"))) {
+				if (confirm(getFormattedString("confirm_invalidate_sessions"))) {
 					actionInvalidateAllSessions();
 				}
 			}
@@ -270,14 +270,14 @@ class SessionInformationsPanel extends MelodyPanel {
 	}
 
 	private MButton createInvalidateSessionButton() {
-		final MButton invalidateSessionButton = new MButton(I18N.getString("invalidate_session"),
+		final MButton invalidateSessionButton = new MButton(getString("invalidate_session"),
 				INVALIDATE_SESSION_ICON);
 		invalidateSessionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final SessionInformations sessionInformations = getTable().getSelectedObject();
 				if (sessionInformations != null
-						&& confirm(I18N.getFormattedString("confirm_invalidate_session"))) {
+						&& confirm(getFormattedString("confirm_invalidate_session"))) {
 					actionInvalidateSession(sessionInformations);
 				}
 			}
@@ -327,7 +327,7 @@ class SessionInformationsPanel extends MelodyPanel {
 				final List<SessionInformations> list = getRemoteCollector()
 						.collectSessionInformations(sessionInformations.getId());
 				if (list.isEmpty()) {
-					final String message = I18N.getFormattedString("session_invalidee",
+					final String message = getFormattedString("session_invalidee",
 							sessionInformations.getId());
 					showMessage(message);
 				} else {

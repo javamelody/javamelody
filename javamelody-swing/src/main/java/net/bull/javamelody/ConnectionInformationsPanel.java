@@ -166,11 +166,11 @@ class ConnectionInformationsPanel extends MelodyPanel {
 			i++;
 		}
 
-		setName(I18N.getString("Connexions_jdbc_ouvertes"));
+		setName(getString("Connexions_jdbc_ouvertes"));
 		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "db.png");
 		add(titleLabel, BorderLayout.NORTH);
 
-		final JLabel introLabel = new JLabel(' ' + I18N.getString("connexions_intro"));
+		final JLabel introLabel = new JLabel(' ' + getString("connexions_intro"));
 		final MTableScrollPane<ConnectionInformations> scrollPane = createScrollPane();
 		this.table = scrollPane.getTable();
 		table.setList(connectionInformationsList);
@@ -181,8 +181,8 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		centerPanel.add(scrollPane, BorderLayout.CENTER);
 		add(centerPanel, BorderLayout.CENTER);
 
-		final JLabel nbConnectionsLabel = new JLabel(I18N.getFormattedString(
-				"nb_connexions_ouvertes", connectionInformationsList.size()));
+		final JLabel nbConnectionsLabel = new JLabel(getFormattedString("nb_connexions_ouvertes",
+				connectionInformationsList.size()));
 		nbConnectionsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		final JPanel southPanel = new JPanel(new BorderLayout());
 		southPanel.setOpaque(false);
@@ -194,11 +194,11 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	private MTableScrollPane<ConnectionInformations> createScrollPane() {
 		final MTableScrollPane<ConnectionInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ConnectionInformations> myTable = tableScrollPane.getTable();
-		myTable.addColumn("openingDate", I18N.getString("Date_et_stack_trace_ouverture"));
+		myTable.addColumn("openingDate", getString("Date_et_stack_trace_ouverture"));
 		if (stackTraceEnabled) {
-			myTable.addColumn("threadId", I18N.getString("Thread_et_stack_trace_actuelle"));
+			myTable.addColumn("threadId", getString("Thread_et_stack_trace_actuelle"));
 		} else {
-			myTable.addColumn("threadId", I18N.getString("Thread"));
+			myTable.addColumn("threadId", getString("Thread"));
 		}
 		myTable.setColumnCellRenderer("openingDate", new OpeningDateTableCellRenderer());
 		myTable.setColumnCellRenderer("threadId", new ThreadTableCellRenderer());
@@ -221,7 +221,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	final void showStackTraceInPopup(ConnectionInformations connectionInformations,
 			ThreadInformations threadInformations) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(I18N.getString("Date_et_stack_trace_ouverture"));
+		sb.append(getString("Date_et_stack_trace_ouverture"));
 		sb.append(": ");
 		sb.append(I18N.createDateAndTimeFormat().format(connectionInformations.getOpeningDate()));
 		sb.append('\n');
@@ -232,7 +232,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		}
 		sb.append('\n');
 		if (threadInformations != null && stackTraceEnabled) {
-			sb.append(I18N.getString("Thread_et_stack_trace_actuelle"));
+			sb.append(getString("Thread_et_stack_trace_actuelle"));
 			sb.append(": ");
 			final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
 			if (stackTrace != null && !stackTrace.isEmpty()) {

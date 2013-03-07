@@ -27,7 +27,6 @@ import java.text.DateFormat;
 import java.util.List;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
@@ -43,7 +42,7 @@ import com.lowagie.text.Font;
  * Panel des erreurs http et dans les logs ou dans les jobs.
  * @author Emeric Vernat
  */
-class CounterErrorPanel extends JPanel {
+class CounterErrorPanel extends MelodyPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final Counter counter;
@@ -83,10 +82,8 @@ class CounterErrorPanel extends JPanel {
 		}
 	}
 
-	CounterErrorPanel(Counter counter) {
-		super(new BorderLayout());
-
-		setOpaque(false);
+	CounterErrorPanel(RemoteCollector remoteCollector, Counter counter) {
+		super(remoteCollector);
 
 		assert counter != null;
 		assert counter.isErrorCounter();
@@ -115,21 +112,21 @@ class CounterErrorPanel extends JPanel {
 		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);
 		final boolean displayHttpRequest = HtmlCounterErrorReport.shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
-			final JLabel warnLabel = new JLabel(' ' + I18N.getFormattedString(
+			final JLabel warnLabel = new JLabel(' ' + getFormattedString(
 					"Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT));
 			warnLabel.setFont(warnLabel.getFont().deriveFont(Font.BOLD));
 			warnLabel.setForeground(Color.RED);
 			add(warnLabel, BorderLayout.NORTH);
 		}
 
-		myTable.addColumn("date", I18N.getString("Date"));
+		myTable.addColumn("date", getString("Date"));
 		if (displayHttpRequest) {
-			myTable.addColumn("httpRequest", I18N.getString("Requete"));
+			myTable.addColumn("httpRequest", getString("Requete"));
 		}
 		if (displayUser) {
-			myTable.addColumn("remoteUser", I18N.getString("Utilisateur"));
+			myTable.addColumn("remoteUser", getString("Utilisateur"));
 		}
-		myTable.addColumn("message", I18N.getString("Erreur"));
+		myTable.addColumn("message", getString("Erreur"));
 
 		final MDateTableCellRenderer dateTableCellRenderer = new MDateTableCellRenderer();
 		dateTableCellRenderer.setDateFormat(DateFormat.getDateTimeInstance(DateFormat.SHORT,
@@ -163,7 +160,7 @@ class CounterErrorPanel extends JPanel {
 	}
 
 	private JLabel createNoErrorsLabel() {
-		return new JLabel(' ' + I18N.getString("Aucune_erreur"));
+		return new JLabel(' ' + getString("Aucune_erreur"));
 	}
 
 	MTable<CounterError> getTable() {

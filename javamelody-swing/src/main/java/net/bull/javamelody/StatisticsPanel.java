@@ -208,7 +208,7 @@ class StatisticsPanel extends MelodyPanel {
 
 	void showLastErrors() {
 		if (lastErrorsPanel == null) {
-			lastErrorsPanel = new CounterErrorPanel(counter);
+			lastErrorsPanel = new CounterErrorPanel(getRemoteCollector(), counter);
 			lastErrorsPanel.setVisible(false);
 
 			add(lastErrorsPanel, BorderLayout.SOUTH);
@@ -226,7 +226,7 @@ class StatisticsPanel extends MelodyPanel {
 		} else {
 			key = "Aucune_requete";
 		}
-		return new JLabel(' ' + I18N.getString(key));
+		return new JLabel(' ' + getString(key));
 	}
 
 	private void showRequests(List<CounterRequest> requests) {
@@ -259,7 +259,7 @@ class StatisticsPanel extends MelodyPanel {
 			nbKey = "nb_requetes";
 		}
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
-		final String text = I18N.getFormattedString(nbKey, integerFormat.format(hitsParMinute),
+		final String text = getFormattedString(nbKey, integerFormat.format(hitsParMinute),
 				integerFormat.format(counterRequestAggregation.getRequests().size()));
 
 		final JPanel panel = Utilities.createButtonsPanel(new JLabel(text));
@@ -282,8 +282,7 @@ class StatisticsPanel extends MelodyPanel {
 	}
 
 	private MButton createCounterSummaryPerClassButton() {
-		final MButton counterSummaryPerClassButton = new MButton(
-				I18N.getString("Resume_par_classe"));
+		final MButton counterSummaryPerClassButton = new MButton(getString("Resume_par_classe"));
 		counterSummaryPerClassButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -294,7 +293,7 @@ class StatisticsPanel extends MelodyPanel {
 	}
 
 	private MButton createRuntimeDependenciesButton() {
-		final MButton runtimeDependenciesButton = new MButton(I18N.getString("Dependances"),
+		final MButton runtimeDependenciesButton = new MButton(getString("Dependances"),
 				ImageIconCache.getImageIcon("pdf.png"));
 		runtimeDependenciesButton.addActionListener(new ActionListener() {
 			@Override
@@ -310,7 +309,7 @@ class StatisticsPanel extends MelodyPanel {
 	}
 
 	private MButton createDetailsButton() {
-		final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+		final MButton detailsButton = new MButton(getString("Details"), PLUS_ICON);
 		detailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -322,7 +321,7 @@ class StatisticsPanel extends MelodyPanel {
 	}
 
 	private MButton createLastErrorsButton() {
-		final MButton lastErrorsButton = new MButton(I18N.getString("Dernieres_erreurs"), PLUS_ICON);
+		final MButton lastErrorsButton = new MButton(getString("Dernieres_erreurs"), PLUS_ICON);
 		lastErrorsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -334,14 +333,13 @@ class StatisticsPanel extends MelodyPanel {
 	}
 
 	private MButton createClearCounterButton() {
-		final MButton clearCounterButton = new MButton(I18N.getString("Reinitialiser"));
-		clearCounterButton
-				.setToolTipText(I18N.getFormattedString("Vider_stats", counter.getName()));
+		final MButton clearCounterButton = new MButton(getString("Reinitialiser"));
+		clearCounterButton.setToolTipText(getFormattedString("Vider_stats", counter.getName()));
 		final Counter myCounter = counter;
 		clearCounterButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getFormattedString("confirm_vider_stats", myCounter.getName()))) {
+				if (confirm(getFormattedString("confirm_vider_stats", myCounter.getName()))) {
 					actionClearCounter(myCounter);
 				}
 			}

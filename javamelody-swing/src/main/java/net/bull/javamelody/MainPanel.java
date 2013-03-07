@@ -81,7 +81,7 @@ class MainPanel extends MelodyPanel {
 		mainTabPanel.add(mainButtonsPanel, BorderLayout.NORTH);
 		mainTabPanel.add(scrollPane, BorderLayout.CENTER);
 
-		tabbedPane.addTab(I18N.getString("Tableau_de_bord"), mainTabPanel);
+		tabbedPane.addTab(getString("Tableau_de_bord"), mainTabPanel);
 		tabbedPane.setTabComponentAt(0, null);
 		add(tabbedPane, BorderLayout.CENTER);
 

@@ -66,7 +66,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 	}
 
 	protected JPanel createButtonsPanel(boolean includeUsagesButton) {
-		final MButton openButton = new MButton(I18N.getString("Ouvrir"),
+		final MButton openButton = new MButton(getString("Ouvrir"),
 				ImageIconCache.getImageIcon("action_open.png"));
 		openButton.addActionListener(new ActionListener() {
 			@Override
@@ -97,7 +97,7 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 		openButton.setEnabled(false);
 
 		if (includeUsagesButton) {
-			final MButton usagesButton = new MButton(I18N.getString("Chercher_utilisations"),
+			final MButton usagesButton = new MButton(getString("Chercher_utilisations"),
 					ImageIconCache.getImageIcon("find.png"));
 			usagesButton.addActionListener(new ActionListener() {
 				@Override

@@ -189,7 +189,7 @@ class JobInformationsPanel extends MelodyPanel {
 				final CounterRequest counterRequest = getCounterRequest(jobInformations);
 				final String stackTrace = counterRequest.getStackTrace();
 				if (stackTrace == null) {
-					setToolTipText(I18N.getString("JobWithoutLastException"));
+					setToolTipText(getString("JobWithoutLastException"));
 					setIcon(ImageIconCache.getImageIcon("bullets/green.png"));
 				} else {
 					setIcon(ImageIconCache.getImageIcon("bullets/red.png"));
@@ -268,22 +268,22 @@ class JobInformationsPanel extends MelodyPanel {
 	private MTableScrollPane<JobInformations> createScrollPane() {
 		final MTableScrollPane<JobInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<JobInformations> myTable = tableScrollPane.getTable();
-		myTable.addColumn("group", I18N.getString("JobGroup"));
-		myTable.addColumn("name", I18N.getString("JobName"));
-		myTable.addColumn("jobClassName", I18N.getString("JobClassName"));
+		myTable.addColumn("group", getString("JobGroup"));
+		myTable.addColumn("name", getString("JobName"));
+		myTable.addColumn("jobClassName", getString("JobClassName"));
 		final TableColumn stackTraceTableColumn = new TableColumn(myTable.getColumnCount());
 		stackTraceTableColumn.setIdentifier(myTable.getColumnCount());
-		stackTraceTableColumn.setHeaderValue(I18N.getString("JobLastException"));
+		stackTraceTableColumn.setHeaderValue(getString("JobLastException"));
 		myTable.addColumn(stackTraceTableColumn);
 		final TableColumn meanTimeTableColumn = new TableColumn(myTable.getColumnCount());
 		meanTimeTableColumn.setIdentifier(myTable.getColumnCount());
-		meanTimeTableColumn.setHeaderValue(I18N.getString("JobMeanTime"));
+		meanTimeTableColumn.setHeaderValue(getString("JobMeanTime"));
 		myTable.addColumn(meanTimeTableColumn);
-		myTable.addColumn("elapsedTime", I18N.getString("JobElapsedTime"));
-		myTable.addColumn("previousFireTime", I18N.getString("JobPreviousFireTime"));
-		myTable.addColumn("nextFireTime", I18N.getString("JobNextFireTime"));
-		myTable.addColumn("repeatInterval", I18N.getString("JobPeriodOrCronExpression"));
-		myTable.addColumn("paused", I18N.getString("JobPaused"));
+		myTable.addColumn("elapsedTime", getString("JobElapsedTime"));
+		myTable.addColumn("previousFireTime", getString("JobPreviousFireTime"));
+		myTable.addColumn("nextFireTime", getString("JobNextFireTime"));
+		myTable.addColumn("repeatInterval", getString("JobPeriodOrCronExpression"));
+		myTable.addColumn("paused", getString("JobPaused"));
 
 		myTable.setColumnCellRenderer("name", new NameTableCellRenderer());
 		stackTraceTableColumn.setCellRenderer(new StackTraceTableCellRenderer());
@@ -346,11 +346,11 @@ class JobInformationsPanel extends MelodyPanel {
 	}
 
 	private MButton createPauseJobButton(final Icon pauseIcon) {
-		final MButton pauseJobButton = new MButton(I18N.getString("Pause_job"), pauseIcon);
+		final MButton pauseJobButton = new MButton(getString("Pause_job"), pauseIcon);
 		pauseJobButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_pause_job"))) {
+				if (confirm(getString("confirm_pause_job"))) {
 					final JobInformations jobInformations = getTable().getSelectedObject();
 					actionOnJob(Action.PAUSE_JOB, jobInformations.getGlobalJobId());
 				}
@@ -360,11 +360,11 @@ class JobInformationsPanel extends MelodyPanel {
 	}
 
 	private MButton createResumeJobButton(final Icon resumeIcon) {
-		final MButton resumeJobButton = new MButton(I18N.getString("Resume_job"), resumeIcon);
+		final MButton resumeJobButton = new MButton(getString("Resume_job"), resumeIcon);
 		resumeJobButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_resume_job"))) {
+				if (confirm(getString("confirm_resume_job"))) {
 					final JobInformations jobInformations = getTable().getSelectedObject();
 					actionOnJob(Action.RESUME_JOB, jobInformations.getGlobalJobId());
 				}
@@ -374,11 +374,11 @@ class JobInformationsPanel extends MelodyPanel {
 	}
 
 	private MButton createPauseAllJobsButton(final Icon pauseIcon) {
-		final MButton pauseAllJobsButton = new MButton(I18N.getString("Pause_all_jobs"), pauseIcon);
+		final MButton pauseAllJobsButton = new MButton(getString("Pause_all_jobs"), pauseIcon);
 		pauseAllJobsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_pause_all_jobs"))) {
+				if (confirm(getString("confirm_pause_all_jobs"))) {
 					actionOnJob(Action.PAUSE_JOB, "all");
 				}
 			}
@@ -387,12 +387,11 @@ class JobInformationsPanel extends MelodyPanel {
 	}
 
 	private MButton createResumeAllJobsButton(final Icon resumeIcon) {
-		final MButton resumeAllJobsButton = new MButton(I18N.getString("Resume_all_jobs"),
-				resumeIcon);
+		final MButton resumeAllJobsButton = new MButton(getString("Resume_all_jobs"), resumeIcon);
 		resumeAllJobsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_resume_all_jobs"))) {
+				if (confirm(getString("confirm_resume_all_jobs"))) {
 					actionOnJob(Action.RESUME_JOB, "all");
 				}
 			}

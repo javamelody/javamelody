@@ -170,7 +170,7 @@ class HeapInformationsPanel extends MelodyPanel {
 
 		this.heapHistogram = getRemoteCollector().collectHeapHistogram();
 
-		setName(I18N.getFormattedString("heap_histo_du",
+		setName(getFormattedString("heap_histo_du",
 				I18N.createDateAndTimeFormat().format(heapHistogram.getTime())));
 		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "memory.png");
 		add(titleLabel, BorderLayout.NORTH);
@@ -185,8 +185,8 @@ class HeapInformationsPanel extends MelodyPanel {
 					false);
 
 			final MTabbedPane tabbedPane = new MTabbedPane();
-			tabbedPane.add(I18N.getString("Heap"), heapTabPanel);
-			tabbedPane.add(I18N.getString("PermGen"), permGenTabPanel);
+			tabbedPane.add(getString("Heap"), heapTabPanel);
+			tabbedPane.add(getString("PermGen"), permGenTabPanel);
 			add(tabbedPane, BorderLayout.CENTER);
 		} else {
 			add(heapTabPanel, BorderLayout.CENTER);
@@ -215,10 +215,9 @@ class HeapInformationsPanel extends MelodyPanel {
 
 	private JLabel createSummaryLabel(int size, long totalInstances, long totalBytes) {
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
-		final String text = ' ' + I18N.getString("Classes") + ": " + integerFormat.format(size)
-				+ ",   " + I18N.getString("Instances") + ": "
-				+ integerFormat.format(totalInstances) + ",   " + I18N.getString("Kilo-Octets")
-				+ ": " + integerFormat.format(totalBytes / 1024);
+		final String text = ' ' + getString("Classes") + ": " + integerFormat.format(size) + ",   "
+				+ getString("Instances") + ": " + integerFormat.format(totalInstances) + ",   "
+				+ getString("Kilo-Octets") + ": " + integerFormat.format(totalBytes / 1024);
 		return new JLabel(text);
 	}
 
@@ -227,23 +226,23 @@ class HeapInformationsPanel extends MelodyPanel {
 		final MTableScrollPane<HeapHistogram.ClassInfo> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ClassInfo> myTable = tableScrollPane.getTable();
 
-		myTable.addColumn("name", I18N.getString("Classe"));
-		myTable.addColumn("bytes", I18N.getString("Taille"));
+		myTable.addColumn("name", getString("Classe"));
+		myTable.addColumn("bytes", getString("Taille"));
 		final TableColumn pctTailleColumn = new TableColumn(myTable.getColumnCount());
 		pctTailleColumn.setIdentifier(myTable.getColumnCount());
-		pctTailleColumn.setHeaderValue(I18N.getString("pct_taille"));
+		pctTailleColumn.setHeaderValue(getString("pct_taille"));
 		myTable.addColumn(pctTailleColumn);
 		if (deltaDisplayed) {
-			myTable.addColumn("bytesDelta", I18N.getString("Delta"));
+			myTable.addColumn("bytesDelta", getString("Delta"));
 			myTable.setColumnCellRenderer("bytesDelta", new BytesDeltaTableCellRenderer());
 		}
-		myTable.addColumn("instancesCount", I18N.getString("Instances"));
+		myTable.addColumn("instancesCount", getString("Instances"));
 		final TableColumn pctInstancesColumn = new TableColumn(myTable.getColumnCount());
 		pctInstancesColumn.setIdentifier(myTable.getColumnCount());
-		pctInstancesColumn.setHeaderValue(I18N.getString("pct_instances"));
+		pctInstancesColumn.setHeaderValue(getString("pct_instances"));
 		myTable.addColumn(pctInstancesColumn);
 		if (sourceDisplayed) {
-			myTable.addColumn("source", I18N.getString("Source"));
+			myTable.addColumn("source", getString("Source"));
 		}
 
 		myTable.setColumnCellRenderer("bytes", new BytesTableCellRenderer());
@@ -266,21 +265,21 @@ class HeapInformationsPanel extends MelodyPanel {
 			}
 		});
 
-		final MButton gcButton = new MButton(I18N.getString("ramasse_miette"), GC_ICON);
+		final MButton gcButton = new MButton(getString("ramasse_miette"), GC_ICON);
 		gcButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_ramasse_miette"))) {
+				if (confirm(getString("confirm_ramasse_miette"))) {
 					executeAction(Action.GC);
 				}
 			}
 		});
 
-		final MButton heapDumpButton = new MButton(I18N.getString("heap_dump"), HEAP_DUMP_ICON);
+		final MButton heapDumpButton = new MButton(getString("heap_dump"), HEAP_DUMP_ICON);
 		heapDumpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (confirm(I18N.getString("confirm_heap_dump"))) {
+				if (confirm(getString("confirm_heap_dump"))) {
 					executeAction(Action.HEAP_DUMP);
 				}
 			}

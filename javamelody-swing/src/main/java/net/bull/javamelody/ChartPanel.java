@@ -144,7 +144,7 @@ class ChartPanel extends MelodyPanel {
 
 	private JPanel createButtonsPanel() {
 		if (getImageLabel() != null) {
-			final MButton exportButton = new MButton(I18N.getString("Exporter") + "...");
+			final MButton exportButton = new MButton(getString("Exporter") + "...");
 			exportButton.setToolTipText(exportButton.getText() + " (F12)");
 			exportButton.setActionCommand("export");
 			exportButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(

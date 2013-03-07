@@ -94,6 +94,25 @@ class MelodyPanel extends JPanel {
 		return getRemoteCollector().getJavaInformationsList();
 	}
 
+	/**
+	 * Retourne une traduction dans la locale courante.
+	 * @param key clé d'un libellé dans les fichiers de traduction
+	 * @return String
+	 */
+	static String getString(String key) {
+		return I18N.getString(key);
+	}
+
+	/**
+	 * Retourne une traduction dans la locale courante et insère les arguments aux positions {i}.
+	 * @param key clé d'un libellé dans les fichiers de traduction
+	 * @param arguments Valeur à inclure dans le résultat
+	 * @return String
+	 */
+	static String getFormattedString(String key, Object... arguments) {
+		return I18N.getFormattedString(key, arguments);
+	}
+
 	final File createTempFileForPdf() {
 		final String application = getRemoteCollector().getApplication();
 		File tempFile = new File(System.getProperty("java.io.tmpdir"),
@@ -121,9 +140,9 @@ class MelodyPanel extends JPanel {
 	}
 
 	final MButton createRefreshButton() {
-		final MButton refreshButton = new MButton(I18N.getString("Actualiser"),
+		final MButton refreshButton = new MButton(getString("Actualiser"),
 				ImageIconCache.getImageIcon("action_refresh.png"));
-		refreshButton.setToolTipText(I18N.getString("Rafraichir") + " (F5)");
+		refreshButton.setToolTipText(getString("Rafraichir") + " (F5)");
 		refreshButton.setActionCommand("refresh");
 		refreshButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
 				KeyStroke.getKeyStroke("F5"), "doRefresh");
@@ -139,9 +158,9 @@ class MelodyPanel extends JPanel {
 	}
 
 	final MButton createPdfButton() {
-		final MButton pdfButton = new MButton(I18N.getString("PDF"),
+		final MButton pdfButton = new MButton(getString("PDF"),
 				ImageIconCache.getImageIcon("pdf.png"));
-		pdfButton.setToolTipText(I18N.getString("afficher_PDF") + " (F12)");
+		pdfButton.setToolTipText(getString("afficher_PDF") + " (F12)");
 		pdfButton.setActionCommand("pdf");
 		pdfButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F12"),
 				"doPdf");
@@ -195,8 +214,8 @@ class MelodyPanel extends JPanel {
 						.getImageIcon("xml.png"));
 				final MMenuItem jsonMenuItem = new MMenuItem("JSON", ImageIconCache
 						.getImageIcon("xml.png"));
-				xmlMenuItem.setToolTipText(I18N.getString("export_xml"));
-				jsonMenuItem.setToolTipText(I18N.getString("export_json"));
+				xmlMenuItem.setToolTipText(getString("export_xml"));
+				jsonMenuItem.setToolTipText(getString("export_json"));
 				xmlMenuItem.setActionCommand(TransportFormat.XML.toString());
 				jsonMenuItem.setActionCommand(TransportFormat.JSON.toString());
 				xmlMenuItem.addActionListener(menuActionListener);

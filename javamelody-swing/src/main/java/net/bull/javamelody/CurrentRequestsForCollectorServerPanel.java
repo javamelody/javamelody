@@ -57,7 +57,7 @@ class CurrentRequestsForCollectorServerPanel extends MelodyPanel {
 	final void refresh() throws IOException {
 		removeAll();
 
-		setName(I18N.getString("Requetes_en_cours"));
+		setName(getString("Requetes_en_cours"));
 		final JLabel titleLabel = Utilities.createParagraphTitle(getName(), "hourglass.png");
 		add(titleLabel, BorderLayout.NORTH);
 
@@ -66,7 +66,7 @@ class CurrentRequestsForCollectorServerPanel extends MelodyPanel {
 			if (currentRequests.isEmpty()) {
 				final JPanel labelPanel = new JPanel(new BorderLayout());
 				labelPanel.setOpaque(false);
-				labelPanel.add(new JLabel("   " + I18N.getString("Aucune_requete_en_cours")),
+				labelPanel.add(new JLabel("   " + getString("Aucune_requete_en_cours")),
 						BorderLayout.NORTH);
 				add(labelPanel, BorderLayout.CENTER);
 			} else {

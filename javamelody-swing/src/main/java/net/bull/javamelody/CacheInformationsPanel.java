@@ -81,7 +81,7 @@ class CacheInformationsPanel extends MelodyPanel {
 		eastPanel.setOpaque(false);
 		if (!hitsRatioEnabled) {
 			final JLabel statisticsEnabledLabel = new JLabel(
-					I18N.getString("caches_statistics_enable") + ' ');
+					getString("caches_statistics_enable") + ' ');
 			statisticsEnabledLabel.setAlignmentX(SwingConstants.WEST);
 			eastPanel.add(statisticsEnabledLabel);
 		}
@@ -97,17 +97,17 @@ class CacheInformationsPanel extends MelodyPanel {
 	private MTableScrollPane<CacheInformations> createScrollPane() {
 		final MTableScrollPane<CacheInformations> tableScrollPane = new MTableScrollPane<>();
 		final MTable<CacheInformations> myTable = tableScrollPane.getTable();
-		myTable.addColumn("name", I18N.getString("Cache"));
+		myTable.addColumn("name", getString("Cache"));
 		if (configurationEnabled) {
-			myTable.addColumn("inMemoryPercentUsed", I18N.getString("Pourcentage_memoire_utilise"));
+			myTable.addColumn("inMemoryPercentUsed", getString("Pourcentage_memoire_utilise"));
 		}
-		myTable.addColumn("inMemoryObjectCount", I18N.getString("Nb_objets_en_memoire"));
-		myTable.addColumn("onDiskObjectCount", I18N.getString("Nb_objets_sur_disque"));
+		myTable.addColumn("inMemoryObjectCount", getString("Nb_objets_en_memoire"));
+		myTable.addColumn("onDiskObjectCount", getString("Nb_objets_sur_disque"));
 		if (hitsRatioEnabled) {
-			myTable.addColumn("inMemoryHitsRatio",
-					"<html>" + I18N.getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
-			myTable.addColumn("hitsRatio", "<html>"
-					+ I18N.getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+			myTable.addColumn("inMemoryHitsRatio", "<html>"
+					+ getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
+			myTable.addColumn("hitsRatio",
+					"<html>" + getString("Efficacite_cache").replaceAll("\n", "<br/>"));
 			// la hauteur des entêtes de colonnes est calculée selon la hauteur pour la première colonne
 			// (see BasicTableHeaderUI.getHeaderHeight()),
 			// donc on agrandit la hauteur de la première entête de colonne, pour qu'elle soit adaptée
@@ -117,7 +117,7 @@ class CacheInformationsPanel extends MelodyPanel {
 							+ "<font size=1><br/>&nbsp;</font>");
 		}
 		if (configurationEnabled) {
-			myTable.addColumn("configuration", I18N.getString("Configuration"));
+			myTable.addColumn("configuration", getString("Configuration"));
 		}
 		return tableScrollPane;
 	}
@@ -126,15 +126,14 @@ class CacheInformationsPanel extends MelodyPanel {
 		final JPanel buttonsPanel = Utilities.createButtonsPanel();
 
 		if (Parameters.isSystemActionsEnabled()) {
-			final MButton clearCacheButton = new MButton(I18N.getString("Purger"),
-					CLEAR_CACHES_ICON);
+			final MButton clearCacheButton = new MButton(getString("Purger"), CLEAR_CACHES_ICON);
 			getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 				@Override
 				public void valueChanged(ListSelectionEvent e) {
 					final CacheInformations cacheInformations = getTable().getSelectedObject();
 					clearCacheButton.setEnabled(cacheInformations != null);
 					if (cacheInformations != null) {
-						clearCacheButton.setToolTipText(I18N.getFormattedString("Purge_cache",
+						clearCacheButton.setToolTipText(getFormattedString("Purge_cache",
 								cacheInformations.getName()));
 					} else {
 						clearCacheButton.setToolTipText(null);
@@ -147,7 +146,7 @@ class CacheInformationsPanel extends MelodyPanel {
 				public void actionPerformed(ActionEvent e) {
 					final CacheInformations cacheInformations = getTable().getSelectedObject();
 					if (cacheInformations != null
-							&& confirm(I18N.getFormattedString("confirm_purge_cache",
+							&& confirm(getFormattedString("confirm_purge_cache",
 									cacheInformations.getName()))) {
 						actionClearCache(cacheInformations);
 					}
@@ -155,12 +154,12 @@ class CacheInformationsPanel extends MelodyPanel {
 			});
 			buttonsPanel.add(clearCacheButton);
 
-			final MButton clearCachesButton = new MButton(I18N.getString("Purge_caches"),
+			final MButton clearCachesButton = new MButton(getString("Purge_caches"),
 					CLEAR_CACHES_ICON);
 			clearCachesButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (confirm(I18N.getString("confirm_purge_caches"))) {
+					if (confirm(getString("confirm_purge_caches"))) {
 						actionClearCaches();
 					}
 				}

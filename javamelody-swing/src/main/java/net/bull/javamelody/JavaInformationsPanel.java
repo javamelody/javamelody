@@ -73,37 +73,34 @@ class JavaInformationsPanel extends MelodyPanel {
 	}
 
 	void showSummary() {
-		addLabel(I18N.getString("Host"));
+		addLabel(getString("Host"));
 		final JLabel hostLabel = new JLabel(javaInformations.getHost());
 		hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
 		addJLabel(hostLabel);
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
 		final long maxMemory = memoryInformations.getMaxMemory();
-		addLabel(I18N.getString("memoire_utilisee"));
+		addLabel(getString("memoire_utilisee"));
 		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
 		final String divide = " / ";
-		addJLabel(toBar(
-				integerFormat.format(usedMemory / 1024 / 1024) + ' ' + I18N.getString("Mo")
-						+ divide + integerFormat.format(maxMemory / 1024 / 1024) + ' '
-						+ I18N.getString("Mo"), memoryInformations.getUsedMemoryPercentage()));
+		addJLabel(toBar(integerFormat.format(usedMemory / 1024 / 1024) + ' ' + getString("Mo")
+				+ divide + integerFormat.format(maxMemory / 1024 / 1024) + ' ' + getString("Mo"),
+				memoryInformations.getUsedMemoryPercentage()));
 		if (javaInformations.getSessionCount() >= 0) {
-			addLabel(I18N.getString("nb_sessions_http"));
+			addLabel(getString("nb_sessions_http"));
 			// 			writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
 			addValue(integerFormat.format(javaInformations.getSessionCount()));
 		}
-		addLabel(I18N.getString("nb_threads_actifs") + "\n("
-				+ I18N.getString("Requetes_http_en_cours") + ')');
+		addLabel(getString("nb_threads_actifs") + "\n(" + getString("Requetes_http_en_cours") + ')');
 		//		writeGraph("activeThreads", integerFormat.format(javaInformations.getActiveThreadCount()));
 		addValue(integerFormat.format(javaInformations.getActiveThreadCount()));
 		if (!noDatabase) {
-			addLabel(I18N.getString("nb_connexions_actives"));
+			addLabel(getString("nb_connexions_actives"));
 			// writeGraph("activeConnections", integerFormat.format(javaInformations.getActiveConnectionCount()));
 			addValue(integerFormat.format(javaInformations.getActiveConnectionCount()));
 			final int usedConnectionCount = javaInformations.getUsedConnectionCount();
 			final int maxConnectionCount = javaInformations.getMaxConnectionCount();
-			addLabel(I18N.getString("nb_connexions_utilisees") + "\n(" + I18N.getString("ouvertes")
-					+ ')');
+			addLabel(getString("nb_connexions_utilisees") + "\n(" + getString("ouvertes") + ')');
 			//			writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
 			if (maxConnectionCount > 0) {
 				addJLabel(toBar(integerFormat.format(usedConnectionCount),
@@ -114,7 +111,7 @@ class JavaInformationsPanel extends MelodyPanel {
 			}
 		}
 		if (javaInformations.getSystemLoadAverage() >= 0) {
-			addLabel(I18N.getString("Charge_systeme"));
+			addLabel(getString("Charge_systeme"));
 			//			writeGraph("systemLoad", decimalFormat.format(javaInformations.getSystemLoadAverage()));
 			addValue(decimalFormat.format(javaInformations.getSystemLoadAverage()));
 		}
@@ -137,50 +134,50 @@ class JavaInformationsPanel extends MelodyPanel {
 
 	private void addDetails(boolean repeatHost) {
 		if (repeatHost) {
-			addLabel(I18N.getString("Host"));
+			addLabel(getString("Host"));
 			final JLabel hostLabel = new JLabel(javaInformations.getHost());
 			hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
 			addJLabel(hostLabel);
 		}
-		addLabel(I18N.getString("OS"));
+		addLabel(getString("OS"));
 		final String osIconName = HtmlJavaInformationsReport
 				.getOSIconName(javaInformations.getOS());
 		final JLabel osLabel = new JLabel(javaInformations.getOS() + " ("
-				+ javaInformations.getAvailableProcessors() + ' ' + I18N.getString("coeurs") + ')');
+				+ javaInformations.getAvailableProcessors() + ' ' + getString("coeurs") + ')');
 		if (osIconName != null) {
 			osLabel.setIcon(ImageIconCache.getImageIcon("servers/" + osIconName));
 		}
 		addJLabel(osLabel);
-		addLabel(I18N.getString("Java"));
+		addLabel(getString("Java"));
 		addValue(javaInformations.getJavaVersion());
-		addLabel(I18N.getString("JVM"));
+		addLabel(getString("JVM"));
 		final JLabel jvmVersionLabel = new JLabel(javaInformations.getJvmVersion());
 		if (javaInformations.getJvmVersion().contains("Client")) {
 			jvmVersionLabel.setIcon(ImageIconCache.getImageIcon("alert.png"));
 			jvmVersionLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-			jvmVersionLabel.setToolTipText(I18N.getString("Client_JVM"));
+			jvmVersionLabel.setToolTipText(getString("Client_JVM"));
 		}
 		addJLabel(jvmVersionLabel);
-		addLabel(I18N.getString("PID"));
+		addLabel(getString("PID"));
 		addValue(javaInformations.getPID());
 		final long unixOpenFileDescriptorCount = javaInformations.getUnixOpenFileDescriptorCount();
 		if (unixOpenFileDescriptorCount >= 0) {
 			final long unixMaxFileDescriptorCount = javaInformations
 					.getUnixMaxFileDescriptorCount();
-			addLabel(I18N.getString("nb_fichiers"));
+			addLabel(getString("nb_fichiers"));
 			addJLabel(toBar(integerFormat.format(unixOpenFileDescriptorCount) + " / "
 					+ integerFormat.format(unixMaxFileDescriptorCount),
 					javaInformations.getUnixOpenFileDescriptorPercentage()));
 			// writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
 		}
 		writeServerInfoAndContextPath();
-		addLabel(I18N.getString("Demarrage"));
+		addLabel(getString("Demarrage"));
 		addValue(I18N.createDateAndTimeFormat().format(javaInformations.getStartDate()));
-		addLabel(I18N.getString("Arguments_JVM"));
+		addLabel(getString("Arguments_JVM"));
 		addValue(javaInformations.getJvmArguments());
 
 		if (javaInformations.getSessionCount() >= 0) {
-			addLabel(I18N.getString("httpSessionsMeanAge"));
+			addLabel(getString("httpSessionsMeanAge"));
 			// writeGraph("httpSessionsMeanAge", integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
 			addValue(integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
 		}
@@ -191,15 +188,15 @@ class JavaInformationsPanel extends MelodyPanel {
 
 		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
 			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
-			addLabel(I18N.getString("Free_disk_space"));
+			addLabel(getString("Free_disk_space"));
 			addValue(integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
-					+ ' ' + I18N.getString("Mo"));
+					+ ' ' + getString("Mo"));
 		}
 
 		writeDatabaseVersionAndDataSourceDetails();
 
 		if (javaInformations.isDependenciesEnabled()) {
-			addLabel(I18N.getString("Dependencies"));
+			addLabel(getString("Dependencies"));
 			writeDependencies();
 		}
 		makeGrid();
@@ -208,7 +205,7 @@ class JavaInformationsPanel extends MelodyPanel {
 	private void writeServerInfoAndContextPath() {
 		final String serverInfo = javaInformations.getServerInfo();
 		if (serverInfo != null) {
-			addLabel(I18N.getString("Serveur"));
+			addLabel(getString("Serveur"));
 			final String applicationServerIconName = HtmlJavaInformationsReport
 					.getApplicationServerIconName(serverInfo);
 			final JLabel serverInfoLabel = new JLabel(serverInfo);
@@ -217,18 +214,18 @@ class JavaInformationsPanel extends MelodyPanel {
 						+ applicationServerIconName));
 			}
 			addJLabel(serverInfoLabel);
-			addLabel(I18N.getString("Contexte_webapp"));
+			addLabel(getString("Contexte_webapp"));
 			addValue(javaInformations.getContextPath());
 		}
 	}
 
 	private void writeDatabaseVersionAndDataSourceDetails() {
 		if (!noDatabase && javaInformations.getDataBaseVersion() != null) {
-			addLabel(I18N.getString("Base_de_donnees"));
+			addLabel(getString("Base_de_donnees"));
 			addValue(javaInformations.getDataBaseVersion());
 		}
 		if (javaInformations.getDataSourceDetails() != null) {
-			addLabel(I18N.getString("DataSource_jdbc"));
+			addLabel(getString("DataSource_jdbc"));
 			addValue(javaInformations.getDataSourceDetails());
 			addLabel("");
 			final MHyperLink dataSourceReferenceHyperLink = new MHyperLink("DataSource reference",
@@ -250,20 +247,20 @@ class JavaInformationsPanel extends MelodyPanel {
 			addLabel("Tomcat " + I18N.htmlEncode(tomcatInformations.getName(), false));
 			// rq: on n'affiche pas pour l'instant getCurrentThreadCount
 			final int currentThreadsBusy = tomcatInformations.getCurrentThreadsBusy();
-			final String value = I18N.getString("busyThreads") + equals
+			final String value = getString("busyThreads") + equals
 					+ integerFormat.format(currentThreadsBusy) + " /  "
 					+ integerFormat.format(tomcatInformations.getMaxThreads()) + '\n'
-					+ I18N.getString("bytesReceived") + equals
+					+ getString("bytesReceived") + equals
 					+ integerFormat.format(tomcatInformations.getBytesReceived()) + '\n'
-					+ I18N.getString("bytesSent") + equals
+					+ getString("bytesSent") + equals
 					+ integerFormat.format(tomcatInformations.getBytesSent()) + '\n'
-					+ I18N.getString("requestCount") + equals
+					+ getString("requestCount") + equals
 					+ integerFormat.format(tomcatInformations.getRequestCount()) + '\n'
-					+ I18N.getString("errorCount") + equals
+					+ getString("errorCount") + equals
 					+ integerFormat.format(tomcatInformations.getErrorCount()) + '\n'
-					+ I18N.getString("processingTime") + equals
+					+ getString("processingTime") + equals
 					+ integerFormat.format(tomcatInformations.getProcessingTime()) + '\n'
-					+ I18N.getString("maxProcessingTime") + equals
+					+ getString("maxProcessingTime") + equals
 					+ integerFormat.format(tomcatInformations.getMaxTime());
 			final JLabel label = toBar(value,
 					100d * currentThreadsBusy / tomcatInformations.getMaxThreads());
@@ -284,19 +281,19 @@ class JavaInformationsPanel extends MelodyPanel {
 	}
 
 	private void writeMemoryInformations(MemoryInformations memoryInformations) {
-		addLabel(I18N.getString("Gestion_memoire"));
-		addValue(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + I18N.getString("Mo")));
+		addLabel(getString("Gestion_memoire"));
+		addValue(memoryInformations.getMemoryDetails().replace(" Mo", ' ' + getString("Mo")));
 
 		final long usedPermGen = memoryInformations.getUsedPermGen();
 		if (usedPermGen > 0) {
 			// perm gen est à 0 sous jrockit
 			final long maxPermGen = memoryInformations.getMaxPermGen();
-			addLabel(I18N.getString("Memoire_Perm_Gen"));
+			addLabel(getString("Memoire_Perm_Gen"));
 			final String permGen = integerFormat.format(usedPermGen / 1024 / 1024) + ' '
-					+ I18N.getString("Mo");
+					+ getString("Mo");
 			if (maxPermGen > 0) {
 				addJLabel(toBar(permGen + " / " + integerFormat.format(maxPermGen / 1024 / 1024)
-						+ ' ' + I18N.getString("Mo"), memoryInformations.getUsedPermGenPercentage()));
+						+ ' ' + getString("Mo"), memoryInformations.getUsedPermGenPercentage()));
 			} else {
 				addValue(permGen);
 			}
@@ -307,17 +304,17 @@ class JavaInformationsPanel extends MelodyPanel {
 		final int nbDependencies = javaInformations.getDependenciesList().size();
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.setOpaque(false);
-		final JLabel nbDependenciesLabel = new JLabel(I18N.getFormattedString("nb_dependencies",
+		final JLabel nbDependenciesLabel = new JLabel(getFormattedString("nb_dependencies",
 				nbDependencies));
 		panel.add(nbDependenciesLabel, BorderLayout.CENTER);
 		if (nbDependencies > 0) {
 			nbDependenciesLabel.setText(nbDependenciesLabel.getText() + " ; ");
 			final JPanel buttonsPanel = new JPanel(new BorderLayout());
 			buttonsPanel.setOpaque(false);
-			final MButton detailsButton = new MButton(I18N.getString("Details"), PLUS_ICON);
+			final MButton detailsButton = new MButton(getString("Details"), PLUS_ICON);
 			buttonsPanel.add(detailsButton, BorderLayout.WEST);
 			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
-				final MButton pomXmlButton = new MButton(I18N.getString("pom.xml"), XML_ICON);
+				final MButton pomXmlButton = new MButton(getString("pom.xml"), XML_ICON);
 				buttonsPanel.add(pomXmlButton, BorderLayout.EAST);
 				pomXmlButton.addActionListener(new ActionListener() {
 					@Override
