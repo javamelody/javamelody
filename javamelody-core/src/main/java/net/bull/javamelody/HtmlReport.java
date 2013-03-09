@@ -193,14 +193,22 @@ class HtmlReport extends HtmlAbstractReport {
 		writeln("    if (document.getElementById(id + 'Img') != null) {");
 		writeln("      document.getElementById(id + 'Img').src='?resource=bullets/minus.png';");
 		writeln("    }");
-		//		writeln("    document.getElementById(id).style.display='inline';");
-		writeln("    Effect.SlideDown(id, { duration: 0.5 });");
+		writeln("    try {");
+		writeln("      Effect.SlideDown(id, { duration: 0.5 });");
+		writeln("    } catch (e) {");
+		// si effects.js n'est pas chargé, par exemple dans last_shutdown.html
+		writeln("      document.getElementById(id).style.display='inline';");
+		writeln("    }");
 		writeln("  } else {");
 		writeln("    if (document.getElementById(id + 'Img') != null) {");
 		writeln("      document.getElementById(id + 'Img').src='?resource=bullets/plus.png';");
 		writeln("    }");
-		//		writeln("    document.getElementById(id).style.display='none';");
-		writeln("    Effect.SlideUp(id, { duration: 0.5 });");
+		writeln("    try {");
+		writeln("      Effect.SlideUp(id, { duration: 0.5 });");
+		writeln("    } catch (e) {");
+		// si effects.js n'est pas chargé, par exemple dans last_shutdown.html
+		writeln("      document.getElementById(id).style.display='none';");
+		writeln("    }");
 		writeln("  }");
 		writeln("}");
 		writeln(SCRIPT_END);
