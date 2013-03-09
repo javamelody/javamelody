@@ -160,7 +160,12 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		/** {@inheritDoc} */
 		@Override
 		public int compare(CounterError error1, CounterError error2) {
-			return (int) (error1.getTime() - error2.getTime());
+			if (error1.getTime() < error2.getTime()) {
+				return -1;
+			} else if (error1.getTime() > error2.getTime()) {
+				return 1;
+			}
+			return 0;
 		}
 	}
 
