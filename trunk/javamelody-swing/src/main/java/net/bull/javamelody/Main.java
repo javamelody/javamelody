@@ -90,6 +90,10 @@ public final class Main {
 			throw new IllegalStateException(
 					"There must be 3 system properties: javamelody.application, javamelody.url, javamelody.range");
 		}
+		final String locale = System.getProperty("javamelody.locale");
+		if (locale != null) {
+			System.setProperty("user.language", locale);
+		}
 		final boolean collectorServer = Boolean.parseBoolean(System
 				.getProperty("javamelody.collectorServer"));
 		final List<URL> urls = Arrays.asList(new URL(url));

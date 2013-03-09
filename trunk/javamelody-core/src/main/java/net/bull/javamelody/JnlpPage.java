@@ -82,6 +82,8 @@ class JnlpPage {
 		}
 		println("      <property name='javamelody.url' value='" + url + "' />");
 		println("      <property name='javamelody.range' value='" + range.getValue() + "'/>");
+		println("      <property name='javamelody.locale' value='" + I18N.getCurrentLocale()
+				+ "'/>");
 		// les valeurs des paramètres sont importantes notamment pour :
 		// WARNING_THRESHOLD_MILLIS, SEVERE_THRESHOLD_MILLIS, SYSTEM_ACTIONS_ENABLED et NO_DATABASE
 		for (final Parameter parameter : Parameter.values()) {
