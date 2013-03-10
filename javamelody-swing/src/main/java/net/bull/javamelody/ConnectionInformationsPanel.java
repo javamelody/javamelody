@@ -34,6 +34,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
@@ -203,18 +205,6 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		myTable.setColumnCellRenderer("openingDate", new OpeningDateTableCellRenderer());
 		myTable.setColumnCellRenderer("threadId", new ThreadTableCellRenderer());
 
-		myTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					final ConnectionInformations connectionInformations = getTable()
-							.getSelectedObject();
-					final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(connectionInformations);
-					showStackTraceInPopup(connectionInformations, threadInformations);
-				}
-			}
-		});
-
 		return tableScrollPane;
 	}
 
@@ -251,7 +241,37 @@ class ConnectionInformationsPanel extends MelodyPanel {
 	}
 
 	private JPanel createButtonsPanel() {
+		final MButton openButton = new MButton(getString("Ouvrir"),
+				ImageIconCache.getImageIcon("action_open.png"));
 		final MButton refreshButton = createRefreshButton();
+
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ConnectionInformations connectionInformations = getTable()
+						.getSelectedObject();
+				final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(connectionInformations);
+				showStackTraceInPopup(connectionInformations, threadInformations);
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					openButton.doClick();
+				}
+			}
+		});
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final ConnectionInformations connectionInformations = getTable()
+						.getSelectedObject();
+				openButton.setEnabled(connectionInformations != null);
+			}
+		});
+		openButton.setEnabled(false);
+
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -262,7 +282,7 @@ class ConnectionInformationsPanel extends MelodyPanel {
 				}
 			}
 		});
-		return Utilities.createButtonsPanel(refreshButton);
+		return Utilities.createButtonsPanel(openButton, refreshButton);
 	}
 
 	final MTable<ConnectionInformations> getTable() {
