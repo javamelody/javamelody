@@ -18,6 +18,10 @@
  */
 package net.bull.javamelody;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +35,14 @@ import org.slf4j.LoggerFactory;
 final class LOG {
 	static final boolean LOG4J_ENABLED = isLog4jEnabled();
 	static final boolean LOGBACK_ENABLED = isLogbackEnabled();
+	static final int MAX_DEBUGGING_LOGS_COUNT = 50;
+
 	private static final String INTERNAL_LOGGER_NAME = "net.bull.javamelody";
+
+	//CHECKSTYLE:OFF
+	private static final LinkedList<String> DEBUGGING_LOGS = new LinkedList<String>(); // NOPMD
+
+	//CHECKSTYLE:ON
 
 	private LOG() {
 		super();
@@ -108,6 +119,7 @@ final class LOG {
 					.getLogger(INTERNAL_LOGGER_NAME);
 			logger.log(Level.FINE, msg);
 		}
+		addDebuggingLog("DEBUG", msg);
 	}
 
 	static void debug(String msg, Throwable throwable) {
@@ -122,6 +134,7 @@ final class LOG {
 					.getLogger(INTERNAL_LOGGER_NAME);
 			logger.log(Level.FINE, msg, throwable);
 		}
+		addDebuggingLog("DEBUG", msg);
 	}
 
 	static void info(String msg, Throwable throwable) {
@@ -136,6 +149,7 @@ final class LOG {
 					.getLogger(INTERNAL_LOGGER_NAME);
 			logger.log(Level.INFO, msg, throwable);
 		}
+		addDebuggingLog("INFO", msg);
 	}
 
 	static void warn(String msg, Throwable throwable) {
@@ -151,9 +165,25 @@ final class LOG {
 						.getLogger(INTERNAL_LOGGER_NAME);
 				logger.log(Level.WARNING, msg, throwable);
 			}
+			addDebuggingLog("WARN", msg);
 		} catch (final Throwable t) { // NOPMD
 			// au pire (cette méthode ne doit pas lancer d'erreur vu où elle est appelée)
 			t.printStackTrace(System.err);
+		}
+	}
+
+	static List<String> getDebuggingLogs() {
+		synchronized (DEBUGGING_LOGS) {
+			return new ArrayList<String>(DEBUGGING_LOGS);
+		}
+	}
+
+	private static void addDebuggingLog(String level, String msg) {
+		synchronized (DEBUGGING_LOGS) {
+			DEBUGGING_LOGS.addLast(new Date().toString() + '\t' + level + '\t' + msg);
+			while (DEBUGGING_LOGS.size() > MAX_DEBUGGING_LOGS_COUNT) {
+				DEBUGGING_LOGS.removeFirst();
+			}
 		}
 	}
 

@@ -780,6 +780,23 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (Parameters.JAVAMELODY_VERSION != null) {
 			writeln("<br/><br/>JavaMelody " + Parameters.JAVAMELODY_VERSION);
 		}
+		if (collectorServer == null) {
+			writeln("<br/>");
+			writeShowHideLink("debuggingLogs", "Debugging logs");
+			writeln("<br/><br/>");
+			writeln("<div id='debuggingLogs' style='display: none;'>");
+			final List<String> debuggingLogs = LOG.getDebuggingLogs();
+			if (debuggingLogs.size() >= LOG.MAX_DEBUGGING_LOGS_COUNT) {
+				writeln("<div class='severe'>Only the last " + LOG.MAX_DEBUGGING_LOGS_COUNT
+						+ " messages are displayed</div>");
+			}
+			for (final String msg : debuggingLogs) {
+				write(htmlEncodeButNotSpace(msg).replaceAll("[\t]",
+						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+				writeln("<br/>");
+			}
+			writeln(END_DIV);
+		}
 		writeln(END_DIV);
 	}
 
