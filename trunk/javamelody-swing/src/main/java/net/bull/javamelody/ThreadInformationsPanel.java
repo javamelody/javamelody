@@ -149,21 +149,38 @@ class ThreadInformationsPanel extends MelodyPanel {
 
 		myTable.setColumnCellRenderer("name", new NameTableCellRenderer());
 
-		myTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					final ThreadInformations threadInformations = getTable().getSelectedObject();
-					showStackTraceInPopup(threadInformations);
-				}
-			}
-		});
-
 		return tableScrollPane;
 	}
 
 	private JPanel createButtonsPanel() {
 		final JPanel buttonsPanel = Utilities.createButtonsPanel();
+
+		final MButton openButton = new MButton(getString("Ouvrir"),
+				ImageIconCache.getImageIcon("action_open.png"));
+		buttonsPanel.add(openButton);
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				showStackTraceInPopup(threadInformations);
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					openButton.doClick();
+				}
+			}
+		});
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				openButton.setEnabled(threadInformations != null);
+			}
+		});
+		openButton.setEnabled(false);
 
 		if (Parameters.isSystemActionsEnabled()) {
 			final MButton killThreadButton = new MButton(getString("Tuer"),
@@ -235,20 +252,20 @@ class ThreadInformationsPanel extends MelodyPanel {
 	}
 
 	final void showStackTraceInPopup(ThreadInformations threadInformations) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(threadInformations.getName());
 		final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
-			final StringBuilder sb = new StringBuilder();
-			sb.append(threadInformations.getName());
 			sb.append('\n');
 			for (final StackTraceElement stackTraceElement : stackTrace) {
 				sb.append(stackTraceElement);
 				sb.append('\n');
 			}
-			final String title = threadInformations.getName();
-			final String text = sb.toString();
-			Utilities.showTextInPopup(this, title, text);
 		}
+		final String title = threadInformations.getName();
+		final String text = sb.toString();
+		Utilities.showTextInPopup(this, title, text);
 	}
 
 	static String convertStackTraceToHtml(String description, List<StackTraceElement> stackTrace) {
