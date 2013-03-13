@@ -45,6 +45,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 	CounterRequestDetailPanel(RemoteCollector remoteCollector, CounterRequest request)
 			throws IOException {
 		super(remoteCollector);
+		assert request != null;
 		this.request = request;
 
 		refresh();
@@ -96,6 +97,10 @@ class CounterRequestDetailPanel extends MelodyPanel {
 				final JPanel planPanel = createSqlRequestExplainPlanPanel(sqlRequestExplainPlan);
 				panel.add(planPanel, BorderLayout.SOUTH);
 			}
+		} else if (request.getStackTrace() != null) {
+			// il n'est pas actuellement possible qu'il y ait à la fois un plan d'exécution et une stack-trace
+			final JPanel stackTracePanel = createStackTracePanel(request.getStackTrace());
+			panel.add(stackTracePanel, BorderLayout.SOUTH);
 		}
 
 		add(scrollPane);
@@ -113,6 +118,25 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.setOpaque(false);
 		final JLabel label = new JLabel(getString("Plan_d_execution"));
+		label.setFont(label.getFont().deriveFont(Font.BOLD));
+		panel.add(label, BorderLayout.NORTH);
+		final JScrollPane scrollPane = new JScrollPane(textArea);
+		panel.add(scrollPane, BorderLayout.CENTER);
+		return panel;
+	}
+
+	private JPanel createStackTracePanel(String stackTrace) {
+		final JTextArea textArea = new JTextArea();
+		textArea.setFont(textArea.getFont().deriveFont((float) textArea.getFont().getSize() - 1));
+		textArea.setEditable(false);
+		textArea.setCaretPosition(0);
+		// background nécessaire avec la plupart des look and feels dont Nimbus,
+		// sinon il reste blanc malgré editable false
+		textArea.setBackground(Color.decode("#E6E6E6"));
+		textArea.setText(stackTrace);
+		final JPanel panel = new JPanel(new BorderLayout());
+		panel.setOpaque(false);
+		final JLabel label = new JLabel("Stack-trace");
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
 		panel.add(label, BorderLayout.NORTH);
 		final JScrollPane scrollPane = new JScrollPane(textArea);
