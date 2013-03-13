@@ -791,7 +791,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 						+ " messages are displayed</div>");
 			}
 			for (final String msg : debuggingLogs) {
-				write(htmlEncodeButNotSpace(msg).replaceAll("[\t]",
+				writeDirectly(htmlEncodeButNotSpace(msg).replaceAll("[\t]",
 						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 				writeln("<br/>");
 			}
