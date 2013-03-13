@@ -29,4 +29,7 @@
 <b>Rich Desktop UI</b><br/>
 <a href="monitoring?part=jnlp">javamelody swing</a><br/>
 <a href="player.jnlp">gestionnaire d'applications</a><br/>
+<br/>
+<b>Mail</b><br/>
+<a href="monitoring?action=mail_test">mail test</a><br/>
 </body></html>
