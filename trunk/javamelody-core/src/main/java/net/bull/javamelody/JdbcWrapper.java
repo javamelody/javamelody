@@ -837,7 +837,7 @@ public final class JdbcWrapper {
 		}
 		final Class<? extends Object> objectClass = object.getClass();
 		final ClassLoader classLoader = objectClass.getClassLoader(); // NOPMD
-		// Rq: object.get.Class().getInterfaces() ne suffit pas pour Connection dans Tomcat
+		// Rq: object.getClass().getInterfaces() ne suffit pas pour Connection dans Tomcat
 		// car la connection est une instance de PoolGuardConnectionWrapper
 		// et connection.getClass().getInterfaces() est vide dans ce cas
 		final List<Class<?>> myInterfaces;
@@ -845,10 +845,13 @@ public final class JdbcWrapper {
 			myInterfaces = new ArrayList<Class<?>>(Arrays.asList(objectClass.getInterfaces()));
 			Class<?> classe = objectClass.getSuperclass();
 			while (classe != null) {
-				final List<Class<?>> superInterfaces = Arrays.asList(classe.getInterfaces());
-				// removeAll d'abord car il ne faut pas de doublon dans la liste
-				myInterfaces.removeAll(superInterfaces);
-				myInterfaces.addAll(superInterfaces);
+				final Class<?>[] classInterfaces = classe.getInterfaces();
+				if (classInterfaces.length > 0) {
+					final List<Class<?>> superInterfaces = Arrays.asList(classInterfaces);
+					// removeAll d'abord car il ne faut pas de doublon dans la liste
+					myInterfaces.removeAll(superInterfaces);
+					myInterfaces.addAll(superInterfaces);
+				}
 				classe = classe.getSuperclass();
 			}
 			// on ignore l'interface javax.naming.Referenceable car sinon le rebind sous jetty appelle
