@@ -207,8 +207,8 @@ public class ImageFileChooser extends JFileChooser {
 		}
 
 		/**
-		 * Retourne une imageIcon avec un contenu et une palette compatible avec la configuration vidéo en paramètre
-		 * (ou avec celle de l'écran par défaut si celle en paramètre est nulle).
+		 * Retourne une imageIcon avec un contenu et une palette compatible avec la configuration vidéo
+		 * de l'écran par défaut.
 		 * L'imageIcon est la plus proche de la configuration vidéo et pourra être idéalement affichée sur celle-ci.
 		 * @param file File
 		 * @return ImageIcon
