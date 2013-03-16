@@ -140,8 +140,9 @@ final class JspWrapper implements InvocationHandler {
 		boolean systemError = false;
 		try {
 			final String pathWithoutParameters;
-			if (path.indexOf('?') != -1) {
-				pathWithoutParameters = path.substring(0, path.indexOf('?'));
+			final int indexOf = path.indexOf('?');
+			if (indexOf != -1) {
+				pathWithoutParameters = path.substring(0, indexOf);
 			} else {
 				pathWithoutParameters = path;
 			}
