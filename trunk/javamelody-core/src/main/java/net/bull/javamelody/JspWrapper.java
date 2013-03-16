@@ -134,7 +134,8 @@ final class JspWrapper implements InvocationHandler {
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		final String methodName = method.getName();
-		if (!"include".equals(methodName) && !"forward".equals(methodName)) {
+		// != for perf (strings interned: != is ok)
+		if ("include" != methodName && "forward" != methodName) { // NOPMD
 			return method.invoke(requestDispatcher, args);
 		}
 		boolean systemError = false;
