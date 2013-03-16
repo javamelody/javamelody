@@ -835,14 +835,15 @@ public final class JdbcWrapper {
 			// alors il ne faut pas faire un proxy du proxy
 			return object;
 		}
-		final ClassLoader classLoader = object.getClass().getClassLoader(); // NOPMD
+		final Class<? extends Object> objectClass = object.getClass();
+		final ClassLoader classLoader = objectClass.getClassLoader(); // NOPMD
 		// Rq: object.get.Class().getInterfaces() ne suffit pas pour Connection dans Tomcat
 		// car la connection est une instance de PoolGuardConnectionWrapper
 		// et connection.getClass().getInterfaces() est vide dans ce cas
 		final List<Class<?>> myInterfaces;
 		if (interfaces == null) {
-			myInterfaces = new ArrayList<Class<?>>(Arrays.asList(object.getClass().getInterfaces()));
-			Class<?> classe = object.getClass().getSuperclass();
+			myInterfaces = new ArrayList<Class<?>>(Arrays.asList(objectClass.getInterfaces()));
+			Class<?> classe = objectClass.getSuperclass();
 			while (classe != null) {
 				final List<Class<?>> superInterfaces = Arrays.asList(classe.getInterfaces());
 				// removeAll d'abord car il ne faut pas de doublon dans la liste
