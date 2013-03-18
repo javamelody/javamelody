@@ -1039,7 +1039,7 @@ or
 	</dependency>
 }}}
 
-The dependencies {{{jrobin}}} (included in javamelody-core) and if you wish {{{xstream}}} as an option for the remoting with the collector server are:
+The dependencies {{{jrobin}}} (included in javamelody-core) and if you wish {{{xstream}}} as an option for the xml and json export or for the remoting with the collector server are:
 
 {{{
 	<dependency>
