@@ -227,7 +227,7 @@ class MemoryInformations implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[usedMemory=" + getUsedMemory() + ", maxMemroy="
+		return getClass().getSimpleName() + "[usedMemory=" + getUsedMemory() + ", maxMemory="
 				+ getMaxMemory() + ']';
 	}
 }
