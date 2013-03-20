@@ -140,6 +140,7 @@ class ThreadInformations implements Serializable {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[id=" + getId() + ", name=" + getName() + ", daemon="
-				+ isDaemon() + ", priority=" + getPriority() + ", state=" + getState() + ']';
+				+ isDaemon() + ", priority=" + getPriority() + ", deadlocked=" + isDeadlocked()
+				+ ", state=" + getState() + ']';
 	}
 }
