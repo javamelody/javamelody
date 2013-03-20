@@ -28,7 +28,7 @@ package net.bull.javamelody;
  * Multi-licensed: EPL / LGPL / GPL / AL / BSD / MIT.
  * Changed on format and java syntax by Emeric Vernat
  */
-public final class Base64Coder { // NOPMD
+final class Base64Coder { // NOPMD
 
 	// The line separator string of the operating system.
 	private static final String SYSTEM_LINE_SEPARATOR = System.getProperty("line.separator");
