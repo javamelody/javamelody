@@ -177,6 +177,27 @@ enum TransportFormat {
 		return mimeType;
 	}
 
+	void checkDependencies() {
+		if (this == XML || this == JSON) {
+			try {
+				Class.forName("com.thoughtworks.xstream.XStream");
+			} catch (final ClassNotFoundException e) {
+				throw new RuntimeException(
+						"Classes of the XStream library not found. Add the XStream dependency in your webapp for the XML or JSON formats.",
+						e);
+			}
+		}
+		if (this == XML) {
+			try {
+				Class.forName("org.xmlpull.v1.XmlPullParser");
+			} catch (final ClassNotFoundException e) {
+				throw new RuntimeException(
+						"Classes of the XPP3 library not found. Add the XPP3 dependency in your webapp for the XML format.",
+						e);
+			}
+		}
+	}
+
 	void writeSerializableTo(Serializable serializable, OutputStream output) throws IOException {
 		final Serializable nonNullSerializable;
 		if (serializable == null) {

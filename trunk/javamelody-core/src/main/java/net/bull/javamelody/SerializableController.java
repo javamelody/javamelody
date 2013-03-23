@@ -77,6 +77,8 @@ class SerializableController {
 		// pour avoir les données au format sérialisé java ou xml
 		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
 		final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
+		// checkDependencies avant setContentType pour afficher correctement les erreurs
+		transportFormat.checkDependencies();
 		httpResponse.setContentType(transportFormat.getMimeType());
 		final String fileName = "JavaMelody_" + getApplication().replace(' ', '_').replace("/", "")
 				+ '_' + I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
