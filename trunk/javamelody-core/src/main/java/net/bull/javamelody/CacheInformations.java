@@ -85,61 +85,47 @@ class CacheInformations implements Serializable {
 
 		final Statistics statistics = cache.getStatistics();
 		assert statistics != null;
-		long tmpInMemoryObjectCount;
-		long tmpOnDiskObjectCount;
 		if (EHCACHE_1_6) {
 			// n'existent que depuis ehcache 1.6
-			tmpInMemoryObjectCount = statistics.getMemoryStoreObjectCount();
-			tmpOnDiskObjectCount = statistics.getDiskStoreObjectCount();
+			this.inMemoryObjectCount = statistics.getMemoryStoreObjectCount();
+			this.onDiskObjectCount = statistics.getDiskStoreObjectCount();
 			// NB: en ehcache 1.2, la valeur de STATISTICS_ACCURACY_BEST_EFFORT n'était pas la même
 			assert statistics.getStatisticsAccuracy() == Statistics.STATISTICS_ACCURACY_BEST_EFFORT;
 		} else {
-			tmpInMemoryObjectCount = cache.getMemoryStoreSize();
-			tmpOnDiskObjectCount = cache.getDiskStoreSize();
+			this.inMemoryObjectCount = cache.getMemoryStoreSize();
+			this.onDiskObjectCount = cache.getDiskStoreSize();
 		}
-		this.inMemoryObjectCount = tmpInMemoryObjectCount;
-		this.onDiskObjectCount = tmpOnDiskObjectCount;
 		// la taille du cache en mémoire par cache.calculateInMemorySize() est trop lente
 		// pour être déterminée à chaque fois (1s pour 1Mo selon javadoc d'ehcache)
-		long tmpInMemoryHits;
-		long tmpCacheHits;
-		long tmpCacheMisses;
-		int tmpInMemoryPercentUsed;
-		String tmpConfiguration;
 		if (EHCACHE_1_2_X) {
 			// getInMemoryHits, getCacheHits et getCacheMisses n'existent pas en echache v1.2
 			// mais existent en v1.2.1 et v1.2.3 (présent dans hibernate v?) mais avec int comme résultat
 			// et existent depuis v1.2.4 mais avec long comme résultat
-			tmpInMemoryHits = invokeStatisticsMethod(statistics, "getInMemoryHits");
-			tmpCacheHits = invokeStatisticsMethod(statistics, "getCacheHits");
-			tmpCacheMisses = invokeStatisticsMethod(statistics, "getCacheMisses");
+			this.inMemoryHits = invokeStatisticsMethod(statistics, "getInMemoryHits");
+			this.cacheHits = invokeStatisticsMethod(statistics, "getCacheHits");
+			this.cacheMisses = invokeStatisticsMethod(statistics, "getCacheMisses");
 			// getCacheConfiguration et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
-			tmpInMemoryPercentUsed = -1;
-			tmpConfiguration = null;
+			this.inMemoryPercentUsed = -1;
+			this.configuration = null;
 		} else if (EHCACHE_1_2) {
-			tmpInMemoryHits = -1;
-			tmpCacheHits = -1;
-			tmpCacheMisses = -1;
-			tmpInMemoryPercentUsed = -1;
-			tmpConfiguration = null;
+			this.inMemoryHits = -1;
+			this.cacheHits = -1;
+			this.cacheMisses = -1;
+			this.inMemoryPercentUsed = -1;
+			this.configuration = null;
 		} else {
-			tmpInMemoryHits = statistics.getInMemoryHits();
-			tmpCacheHits = statistics.getCacheHits();
-			tmpCacheMisses = statistics.getCacheMisses();
+			this.inMemoryHits = statistics.getInMemoryHits();
+			this.cacheHits = statistics.getCacheHits();
+			this.cacheMisses = statistics.getCacheMisses();
 			final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
 			if (maxElementsInMemory == 0) {
 				// maxElementsInMemory peut être 0 (sans limite), cf issue 73
-				tmpInMemoryPercentUsed = -1;
+				this.inMemoryPercentUsed = -1;
 			} else {
-				tmpInMemoryPercentUsed = (int) (100 * inMemoryObjectCount / maxElementsInMemory);
+				this.inMemoryPercentUsed = (int) (100 * inMemoryObjectCount / maxElementsInMemory);
 			}
-			tmpConfiguration = buildConfiguration(cache);
+			this.configuration = buildConfiguration(cache);
 		}
-		this.inMemoryHits = tmpInMemoryHits;
-		this.cacheHits = tmpCacheHits;
-		this.cacheMisses = tmpCacheMisses;
-		this.inMemoryPercentUsed = tmpInMemoryPercentUsed;
-		this.configuration = tmpConfiguration;
 	}
 
 	private static long invokeStatisticsMethod(Statistics statistics, String methodName) {
