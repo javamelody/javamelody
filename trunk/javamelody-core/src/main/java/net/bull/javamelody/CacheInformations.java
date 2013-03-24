@@ -28,6 +28,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Statistics;
 import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.management.CacheStatistics;
 
 /**
  * Informations sur un cache de données.
@@ -41,6 +42,7 @@ import net.sf.ehcache.config.CacheConfiguration;
 class CacheInformations implements Serializable {
 	private static final long serialVersionUID = -3025833425994923286L;
 	private static final boolean EHCACHE_AVAILABLE = isEhcacheAvailable();
+	private static final boolean EHCACHE_2_7 = isEhcache27();
 	private static final boolean EHCACHE_1_6 = isEhcache16();
 	private static final boolean EHCACHE_1_2 = isEhcache12();
 	private static final boolean EHCACHE_1_2_X = isEhcache12x();
@@ -56,9 +58,33 @@ class CacheInformations implements Serializable {
 	CacheInformations(Ehcache cache) {
 		super();
 		assert cache != null;
+		this.name = cache.getName();
+
+		if (EHCACHE_2_7) {
+			// Depuis ehcache 2.7.0, cache.getStatistics() retourne "StatisticsGateway" qui est nouvelle et plus "Statistics".
+			// CacheStatistics existe depuis ehcache 1.3.
+			final CacheStatistics statistics = new CacheStatistics(cache);
+			assert statistics != null;
+			this.inMemoryObjectCount = statistics.getMemoryStoreObjectCount(); // ou cache.getStatistics().getLocalHeapSize() en v2.7.0
+			this.onDiskObjectCount = statistics.getDiskStoreObjectCount(); // ou cache.getStatistics().getLocalDiskSize() en v2.7.0
+			this.inMemoryHits = statistics.getInMemoryHits(); // ou cache.getStatistics().localHeapHitCount() en v2.7.0
+			this.cacheHits = statistics.getCacheHits(); // ou cache.getStatistics().cacheHitCount() en v2.7.0
+			this.cacheMisses = statistics.getCacheMisses(); // ou devrait être cache.getStatistics().cacheMissCount() en v2.7.0
+			// en raison du bug https://jira.terracotta.org/jira/browse/EHC-1010
+			// la valeur de l'efficacité du cache (hits/accesses) est fausse si ehcache 2.7.0
+			final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
+			if (maxElementsInMemory == 0) {
+				// maxElementsInMemory peut être 0 (sans limite), cf issue 73
+				this.inMemoryPercentUsed = -1;
+			} else {
+				this.inMemoryPercentUsed = (int) (100 * inMemoryObjectCount / maxElementsInMemory);
+			}
+			this.configuration = buildConfiguration(cache);
+			return;
+		}
+
 		final Statistics statistics = cache.getStatistics();
 		assert statistics != null;
-		this.name = cache.getName();
 		long tmpInMemoryObjectCount;
 		long tmpOnDiskObjectCount;
 		if (EHCACHE_1_6) {
@@ -170,6 +196,16 @@ class CacheInformations implements Serializable {
 			}
 		}
 		return result;
+	}
+
+	private static boolean isEhcache27() {
+		try {
+			// ce Class.forName est nécessaire sur le serveur de collecte
+			Class.forName("net.sf.ehcache.statistics.StatisticsGateway");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	private static boolean isEhcache16() {
