@@ -4,6 +4,7 @@
   * fix: In Jenkins, it is useless to display the sql hits for the current requests
   * fix: When opening the detail of a Quartz job, display the statistics of the job, including sql or services called. And when looking for the usages of a sql or service, include the results for jobs.
   * fix issue 289: JBoss AS 7 configuration should not be needed [_TODO update doc_]
+  * fix issue 293: Ehcache 2.7.0 doesn't work with javamelody. Note that because of an [https://jira.terracotta.org/jira/browse/EHC-1010 ehcache bug], the value of the cache efficiency (hits/access) displayed by javamelody is incorrect when using ehcache 2.7.0.
   * added: because getting the debugging logs in log files may be difficult, display the debugging logs such as javamelody initialization, at the bottom of the html report [_TODO update doc_]
   * added: display of values in the JNDI tree (issue 287, thanks to _derjust_)
 
