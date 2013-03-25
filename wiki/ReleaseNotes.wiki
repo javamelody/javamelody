@@ -7,6 +7,7 @@
   * fix issue 293: Ehcache 2.7.0 doesn't work with javamelody. Note that because of an [https://jira.terracotta.org/jira/browse/EHC-1010 ehcache bug], the value of the cache efficiency (hits/access) displayed by javamelody is incorrect when using ehcache 2.7.0.
   * added: because getting the debugging logs in log files may be difficult, display the debugging logs such as javamelody initialization, at the bottom of the html report [_TODO update doc_]
   * added: display of values in the JNDI tree (issue 287, thanks to _derjust_)
+  * doc added: For Jenkins, [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring+Scripts Monitoring scripts] can be executed using the Jenkins Script Console.
 
 === 1.43.0 ===
 
