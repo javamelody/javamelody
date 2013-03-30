@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.44.0 ===
+
   * fix: In Jenkins, it is useless to display the sql hits for the current requests
   * fix: In Jenkins, better aggregation of http requests in the statistics, for URLs /adjuncts/... and /$stapler/bound/... (also reduces the disk space used to store data)
   * fix: When opening the detail of a Quartz job, display the statistics of the job, including sql or services called. And when looking for the usages of a sql or service, include the results for jobs.
