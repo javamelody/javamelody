@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix: In the Liferay plugin, fix SAXReader "Connection timed out" exception, when http.proxyHost is not specified (revision 3347)
 
 === 1.44.0 ===
 
