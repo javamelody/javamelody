@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix: In the Liferay plugin, fix SAXReader "Connection timed out" exception, when http.proxyHost is not specified (revision 3347)
+  * fix issue 298: spclocation removed in postgresql 9.2 and datconfig removed in postgresl 9.0
 
 === 1.44.0 ===
 
