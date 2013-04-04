@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+<!-- comment the DTD to avoid SAXReader "Connection timed out" exception when http.proxyHost is not specified
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd"> -->
 
 <hook>
 	<servlet-filter>
