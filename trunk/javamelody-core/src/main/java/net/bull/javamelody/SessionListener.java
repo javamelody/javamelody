@@ -190,6 +190,11 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		final long start = System.currentTimeMillis();
+		// lecture de la propriété système java.io.tmpdir uniquement
+		// pour lancer une java.security.AccessControlException si le SecurityManager est activé,
+		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters
+		System.getProperty("java.io.tmpdir");
+
 		final String contextPath = Parameters.getContextPath(event.getServletContext());
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
@@ -200,10 +205,6 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 			}
 		}
 		CONTEXT_PATHS.add(contextPath);
-		// lecture de la propriété système java.io.tmpdir uniquement
-		// pour lancer une java.security.AccessControlException si le SecurityManager est activé,
-		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters
-		System.getProperty("java.io.tmpdir");
 
 		Parameters.initialize(event.getServletContext());
 
