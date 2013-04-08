@@ -381,6 +381,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			final boolean stackTraceEnabled = javaInformations.isStackTraceEnabled();
 			writeCurrentRequests(threadInformationsList, rootCurrentContexts, stackTraceEnabled,
 					Integer.MAX_VALUE, true, null);
+			write("<br/><br/>");
 		}
 	}
 
