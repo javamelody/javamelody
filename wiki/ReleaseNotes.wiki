@@ -3,6 +3,7 @@
 
   * fix: In the Liferay plugin, fix SAXReader "Connection timed out" exception, when http.proxyHost is not specified (revision 3347)
   * fix issue 298: for the database reports, spclocation was removed in postgresql 9.2 and datconfig was removed in postgresl 9.0
+  * fix: adding an application in the collect server works, then does not work anymore after restart of the collect server, if the access to the application data is secured by basic authentication with the [UserGuideAdvanced#5._Security_with_a_collect_server documented] login "monitoring" (revision 3355)
 
 === 1.44.0 ===
 
