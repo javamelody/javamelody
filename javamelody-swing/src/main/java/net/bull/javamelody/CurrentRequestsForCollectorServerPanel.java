@@ -105,6 +105,8 @@ class CurrentRequestsForCollectorServerPanel extends MelodyPanel {
 
 	private JPanel createButtonsPanel() {
 		final MButton refreshButton = createRefreshButton();
+		final MButton pdfButton = createPdfButton();
+
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -116,7 +118,6 @@ class CurrentRequestsForCollectorServerPanel extends MelodyPanel {
 			}
 		});
 
-		final MButton pdfButton = createPdfButton();
 		pdfButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
