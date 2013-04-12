@@ -72,13 +72,7 @@ class CacheInformations implements Serializable {
 			this.cacheMisses = statistics.getCacheMisses(); // ou devrait être cache.getStatistics().cacheMissCount() en v2.7.0
 			// en raison du bug https://jira.terracotta.org/jira/browse/EHC-1010
 			// la valeur de l'efficacité du cache (hits/accesses) est fausse si ehcache 2.7.0
-			final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
-			if (maxElementsInMemory == 0) {
-				// maxElementsInMemory peut être 0 (sans limite), cf issue 73
-				this.inMemoryPercentUsed = -1;
-			} else {
-				this.inMemoryPercentUsed = (int) (100 * inMemoryObjectCount / maxElementsInMemory);
-			}
+			this.inMemoryPercentUsed = getMemoryPercentUsed(cache);
 			this.configuration = buildConfiguration(cache);
 			return;
 		}
@@ -117,13 +111,7 @@ class CacheInformations implements Serializable {
 			this.inMemoryHits = statistics.getInMemoryHits();
 			this.cacheHits = statistics.getCacheHits();
 			this.cacheMisses = statistics.getCacheMisses();
-			final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
-			if (maxElementsInMemory == 0) {
-				// maxElementsInMemory peut être 0 (sans limite), cf issue 73
-				this.inMemoryPercentUsed = -1;
-			} else {
-				this.inMemoryPercentUsed = (int) (100 * inMemoryObjectCount / maxElementsInMemory);
-			}
+			this.inMemoryPercentUsed = getMemoryPercentUsed(cache);
 			this.configuration = buildConfiguration(cache);
 		}
 	}
@@ -233,6 +221,15 @@ class CacheInformations implements Serializable {
 		} catch (final ClassNotFoundException e) {
 			return false;
 		}
+	}
+
+	private int getMemoryPercentUsed(Ehcache cache) {
+		final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
+		if (maxElementsInMemory == 0) {
+			// maxElementsInMemory peut être 0 (sans limite), cf issue 73
+			return -1;
+		}
+		return (int) (100 * inMemoryObjectCount / maxElementsInMemory);
 	}
 
 	private static String buildConfiguration(Ehcache cache) {
