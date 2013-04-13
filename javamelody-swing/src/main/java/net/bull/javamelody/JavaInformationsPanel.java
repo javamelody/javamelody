@@ -83,9 +83,9 @@ class JavaInformationsPanel extends MelodyPanel {
 		addLabel(getString("memoire_utilisee"));
 		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
 		final String divide = " / ";
-		addJLabel(toBar(integerFormat.format(usedMemory / 1024 / 1024) + ' ' + getString("Mo")
-				+ divide + integerFormat.format(maxMemory / 1024 / 1024) + ' ' + getString("Mo"),
-				memoryInformations.getUsedMemoryPercentage()));
+		addJLabel(toBarWithAlert(integerFormat.format(usedMemory / 1024 / 1024) + ' '
+				+ getString("Mo") + divide + integerFormat.format(maxMemory / 1024 / 1024) + ' '
+				+ getString("Mo"), memoryInformations.getUsedMemoryPercentage(), "-Xmx"));
 		if (javaInformations.getSessionCount() >= 0) {
 			addLabel(getString("nb_sessions_http"));
 			// 			writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
@@ -103,8 +103,8 @@ class JavaInformationsPanel extends MelodyPanel {
 			addLabel(getString("nb_connexions_utilisees") + "\n(" + getString("ouvertes") + ')');
 			//			writeGraph("usedConnections", integerFormat.format(usedConnectionCount));
 			if (maxConnectionCount > 0) {
-				addJLabel(toBar(integerFormat.format(usedConnectionCount),
-						javaInformations.getUsedConnectionPercentage()));
+				addJLabel(toBarWithAlert(integerFormat.format(usedConnectionCount),
+						javaInformations.getUsedConnectionPercentage(), null));
 			} else {
 				addValue(integerFormat.format(usedConnectionCount) + divide
 						+ integerFormat.format(maxConnectionCount));
@@ -165,9 +165,9 @@ class JavaInformationsPanel extends MelodyPanel {
 			final long unixMaxFileDescriptorCount = javaInformations
 					.getUnixMaxFileDescriptorCount();
 			addLabel(getString("nb_fichiers"));
-			addJLabel(toBar(integerFormat.format(unixOpenFileDescriptorCount) + " / "
+			addJLabel(toBarWithAlert(integerFormat.format(unixOpenFileDescriptorCount) + " / "
 					+ integerFormat.format(unixMaxFileDescriptorCount),
-					javaInformations.getUnixOpenFileDescriptorPercentage()));
+					javaInformations.getUnixOpenFileDescriptorPercentage(), null));
 			// writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
 		}
 		writeServerInfoAndContextPath();
@@ -262,8 +262,8 @@ class JavaInformationsPanel extends MelodyPanel {
 					+ integerFormat.format(tomcatInformations.getProcessingTime()) + '\n'
 					+ getString("maxProcessingTime") + equals
 					+ integerFormat.format(tomcatInformations.getMaxTime());
-			final JLabel label = toBar(value,
-					100d * currentThreadsBusy / tomcatInformations.getMaxThreads());
+			final JLabel label = toBarWithAlert(value, 100d * currentThreadsBusy
+					/ tomcatInformations.getMaxThreads(), null);
 			label.setVerticalTextPosition(SwingConstants.TOP);
 			addJLabel(label);
 			//			if (onlyOne) {
@@ -292,8 +292,10 @@ class JavaInformationsPanel extends MelodyPanel {
 			final String permGen = integerFormat.format(usedPermGen / 1024 / 1024) + ' '
 					+ getString("Mo");
 			if (maxPermGen > 0) {
-				addJLabel(toBar(permGen + " / " + integerFormat.format(maxPermGen / 1024 / 1024)
-						+ ' ' + getString("Mo"), memoryInformations.getUsedPermGenPercentage()));
+				addJLabel(toBarWithAlert(
+						permGen + " / " + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
+								+ getString("Mo"), memoryInformations.getUsedPermGenPercentage(),
+						"-XX:MaxPermSize"));
 			} else {
 				addValue(permGen);
 			}
@@ -384,6 +386,25 @@ class JavaInformationsPanel extends MelodyPanel {
 		label.setHorizontalTextPosition(SwingConstants.LEFT);
 		final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
 		label.setToolTipText(I18N.createPercentFormat().format(myPercent) + '%');
+		return label;
+	}
+
+	private static JLabel toBarWithAlert(String text, double percentValue,
+			String configurationDetail) {
+		final JLabel label = toBar(text, percentValue);
+		if (percentValue >= JavaInformations.HIGH_USAGE_THRESHOLD_IN_PERCENTS) {
+			try {
+				label.setIcon(new ImageIcon(Bar.toBarWithAlert(percentValue)));
+			} catch (final IOException e) {
+				throw new IllegalStateException(e);
+			}
+			String toolTipText = label.getToolTipText();
+			toolTipText = "<html>" + toolTipText + "<br/>" + getString("High_usage");
+			if (configurationDetail != null) {
+				toolTipText += " (" + configurationDetail + ')';
+			}
+			label.setToolTipText(toolTipText);
+		}
 		return label;
 	}
 

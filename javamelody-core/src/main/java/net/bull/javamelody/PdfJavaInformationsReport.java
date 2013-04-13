@@ -61,23 +61,41 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		private static final double UNIT_SIZE = (MAX_VALUE - MIN_VALUE)
 				/ (FULL_BLOCKS * PARTIAL_BLOCKS);
 
-		private final BufferedImage image = new BufferedImage(106, 10, BufferedImage.TYPE_INT_ARGB);
-		private final Graphics graphics = image.getGraphics();
+		private final double percentValue;
+		private final BufferedImage image;
+		private final Graphics graphics;
 		private int x; // initialisé à 0
+		private final boolean alertOnHighUsage;
 
-		private Bar() {
+		private Bar(double percentValue, boolean alertOnHighUsage) {
 			super();
+			this.percentValue = percentValue;
+			this.alertOnHighUsage = alertOnHighUsage;
+			if (alertOnHighUsage) {
+				this.image = new BufferedImage(130, 14, BufferedImage.TYPE_INT_ARGB);
+			} else {
+				this.image = new BufferedImage(106, 10, BufferedImage.TYPE_INT_ARGB);
+			}
+			this.graphics = image.getGraphics();
 		}
 
 		static BufferedImage toBar(double percentValue) throws IOException {
-			final Bar bar = new Bar();
-			bar.draw(percentValue);
+			final Bar bar = new Bar(percentValue, false);
+			bar.draw();
+			bar.graphics.dispose();
+			return bar.image;
+		}
+
+		static BufferedImage toBarWithAlert(double percentValue) throws IOException {
+			final Bar bar = new Bar(percentValue,
+					percentValue >= JavaInformations.HIGH_USAGE_THRESHOLD_IN_PERCENTS);
+			bar.draw();
 			bar.graphics.dispose();
 			return bar.image;
 		}
 
 		// méthode inspirée de VisualScoreTag dans LambdaProbe/JStripe (Licence GPL)
-		private void draw(double percentValue) throws IOException { // NOPMD
+		private void draw() throws IOException { // NOPMD
 			assert x == 0;
 			final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
 			final int fullBlockCount = (int) Math.floor(myPercent / (UNIT_SIZE * PARTIAL_BLOCKS));
@@ -104,17 +122,25 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			}
 
 			addImage(getBarImage(fullBlockCount == FULL_BLOCKS ? "b" : "b0"));
+
+			if (alertOnHighUsage) {
+				x += 8;
+				graphics.drawImage(getImage("alert.png"), x, 0, null);
+			}
 		}
 
 		private void addImage(BufferedImage img) {
-			graphics.drawImage(img, x, 0, null);
+			graphics.drawImage(img, x, alertOnHighUsage ? 4 : 0, null);
 			x += img.getWidth();
 		}
 
 		private static BufferedImage getBarImage(String key) throws IOException {
+			return getImage("bar/rb_" + key + ".gif");
+		}
+
+		private static BufferedImage getImage(String fileName) throws IOException {
 			// ici, ne pas utiliser Toolkit.createImage et surtout pas ImageIcon (sur un serveur)
-			return ImageIO.read(Bar.class.getResource(Parameters.getResourcePath("bar/rb_" + key
-					+ ".gif")));
+			return ImageIO.read(Bar.class.getResource(Parameters.getResourcePath(fileName)));
 		}
 	}
 
@@ -157,7 +183,7 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 				+ getString("Mo") + DIVIDE + integerFormat.format(maxMemory / 1024 / 1024) + ' '
 				+ getString("Mo") + BAR_SEPARATOR, cellFont);
 		final Image memoryImage = Image.getInstance(
-				Bar.toBar(memoryInformations.getUsedMemoryPercentage()), null);
+				Bar.toBarWithAlert(memoryInformations.getUsedMemoryPercentage()), null);
 		memoryImage.scalePercent(50);
 		memoryPhrase.add(new Chunk(memoryImage, 0, 0));
 		currentTable.addCell(memoryPhrase);
@@ -181,7 +207,7 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 								+ integerFormat.format(maxConnectionCount) + BAR_SEPARATOR,
 						cellFont);
 				final Image usedConnectionCountImage = Image.getInstance(
-						Bar.toBar(javaInformations.getUsedConnectionPercentage()), null);
+						Bar.toBarWithAlert(javaInformations.getUsedConnectionPercentage()), null);
 				usedConnectionCountImage.scalePercent(50);
 				usedConnectionCountPhrase.add(new Chunk(usedConnectionCountImage, 0, 0));
 				currentTable.addCell(usedConnectionCountPhrase);
@@ -294,7 +320,7 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 						+ integerFormat.format(unixMaxFileDescriptorCount) + BAR_SEPARATOR,
 				cellFont);
 		final Image fileDescriptorCountImage = Image.getInstance(
-				Bar.toBar(javaInformations.getUnixOpenFileDescriptorPercentage()), null);
+				Bar.toBarWithAlert(javaInformations.getUnixOpenFileDescriptorPercentage()), null);
 		fileDescriptorCountImage.scalePercent(50);
 		fileDescriptorCountPhrase.add(new Chunk(fileDescriptorCountImage, 0, 0));
 		currentTable.addCell(fileDescriptorCountPhrase);
@@ -330,10 +356,9 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 					+ integerFormat.format(currentThreadsBusy) + DIVIDE
 					+ integerFormat.format(tomcatInformations.getMaxThreads()) + BAR_SEPARATOR,
 					cellFont);
-			final Image threadsImage = Image
-					.getInstance(
-							Bar.toBar(100d * currentThreadsBusy
-									/ tomcatInformations.getMaxThreads()), null);
+			final Image threadsImage = Image.getInstance(
+					Bar.toBarWithAlert(100d * currentThreadsBusy
+							/ tomcatInformations.getMaxThreads()), null);
 			threadsImage.scalePercent(50);
 			phrase.add(new Chunk(threadsImage, 0, 0));
 
@@ -367,7 +392,7 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 								+ DIVIDE + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
 								+ getString("Mo") + BAR_SEPARATOR, cellFont);
 				final Image permGenImage = Image.getInstance(
-						Bar.toBar(memoryInformations.getUsedPermGenPercentage()), null);
+						Bar.toBarWithAlert(memoryInformations.getUsedPermGenPercentage()), null);
 				permGenImage.scalePercent(50);
 				permGenPhrase.add(new Chunk(permGenImage, 0, 0));
 				currentTable.addCell(permGenPhrase);
