@@ -97,7 +97,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
 		writeln(" #Mo# / " + integerFormat.format(maxMemory / 1024 / 1024)
 				+ " #Mo#&nbsp;&nbsp;&nbsp;</td><td>");
-		writeln(toBar(memoryInformations.getUsedMemoryPercentage()));
+		writeln(toBarWithAlert(memoryInformations.getUsedMemoryPercentage(), "-Xmx"));
 		writeln(lineEnd);
 		if (javaInformations.getSessionCount() >= 0) {
 			write("<tr><td>#nb_sessions_http#: </td><td>");
@@ -119,7 +119,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			if (maxConnectionCount > 0) {
 				writeln(" / " + integerFormat.format(maxConnectionCount)
 						+ "&nbsp;&nbsp;&nbsp;</td><td>");
-				writeln(toBar(javaInformations.getUsedConnectionPercentage()));
+				writeln(toBarWithAlert(javaInformations.getUsedConnectionPercentage(), null));
 			}
 			writeln(lineEnd);
 		}
@@ -160,7 +160,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			write("<tr><td>#nb_fichiers#</td><td>");
 			writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
 			writeln(" / " + integerFormat.format(unixMaxFileDescriptorCount) + "&nbsp;&nbsp;&nbsp;");
-			writeln(toBar(javaInformations.getUnixOpenFileDescriptorPercentage()));
+			writeln(toBarWithAlert(javaInformations.getUnixOpenFileDescriptorPercentage(), null));
 			writeln(columnEnd);
 		}
 		writeServerInfoAndContextPath(javaInformations);
@@ -279,7 +279,8 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			}
 			writeln(" /  " + integerFormat.format(tomcatInformations.getMaxThreads()));
 			writeln("&nbsp;&nbsp;&nbsp;");
-			writeln(toBar(100d * currentThreadsBusy / tomcatInformations.getMaxThreads()));
+			writeln(toBarWithAlert(100d * currentThreadsBusy / tomcatInformations.getMaxThreads(),
+					null));
 			writeln("<br/>#bytesReceived# = ");
 			if (onlyOne) {
 				writeGraph("tomcatBytesReceived",
@@ -321,7 +322,8 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			if (maxPermGen > 0) {
 				writeln(" / " + integerFormat.format(maxPermGen / 1024 / 1024)
 						+ " #Mo#&nbsp;&nbsp;&nbsp;");
-				writeln(toBar(memoryInformations.getUsedPermGenPercentage()));
+				writeln(toBarWithAlert(memoryInformations.getUsedPermGenPercentage(),
+						"-XX:MaxPermSize"));
 			}
 			writeln(columnEnd);
 		}
@@ -405,5 +407,18 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 		sb.append(MessageFormat.format(body, fullBlockCount == FULL_BLOCKS ? "b" : "b0"));
 		return sb.toString();
+	}
+
+	static String toBarWithAlert(double percentValue, String configurationDetail) {
+		String result = toBar(percentValue);
+		if (percentValue >= JavaInformations.HIGH_USAGE_THRESHOLD_IN_PERCENTS) {
+			String message = getString("High_usage");
+			if (configurationDetail != null) {
+				message += " (" + configurationDetail + ')';
+			}
+			result += "&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"" + message
+					+ "\" title=\"" + message + "\"/>";
+		}
+		return result;
 	}
 }
