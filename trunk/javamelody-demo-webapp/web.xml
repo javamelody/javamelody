@@ -109,11 +109,6 @@
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>Appli1.html</welcome-file>
-	</welcome-file-list>
-
-	<!-- Default page to serve -->
-	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
