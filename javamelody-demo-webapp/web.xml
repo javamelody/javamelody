@@ -91,6 +91,17 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<!-- Servlet d'informations sur le build -->
+	<servlet>
+		<servlet-name>BuildInfoServlet</servlet-name>
+		<servlet-class>fr.appwhite1.Appli1BuildInfoServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BuildInfoServlet</servlet-name>
+		<url-pattern>/version</url-pattern>
+	</servlet-mapping>
+
 	<!-- Initialisation de la webapp -->
 	<listener>
 		<listener-class>fr.appwhite1.InitializationListener</listener-class>
@@ -99,6 +110,11 @@
 	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>Appli1.html</welcome-file>
+	</welcome-file-list>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
 	<!-- time out des sessions en minutes (il est recommandé 30 ou 60 minutes 
