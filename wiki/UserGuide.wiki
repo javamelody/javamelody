@@ -113,18 +113,6 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 	<property name="hibernate.connection.driver_class">net.bull.javamelody.JdbcDriver</property>
 	}}}
 
-	~~In *JIRA 4.4*, the database configuration has been changed by Atlassian as said [http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration here].
-	If you are using JIRA 4.4 (but this does not work in JIRA 5.0), you need to change the "Application Data/JIRA/dbconfig.xml" file: simply replace the following line
-	{{{
-	<driver-class>xyz</driver-class>
-	}}}
-	with the following 2 lines
-	{{{
-	<driver-class>net.bull.javamelody.JdbcDriver</driver-class>
-	<connection-properties>driver=xyz</connection-properties>
-	}}}
-	where "xyz" is the jdbc driver used depending on your database (for example, "org.hsqldb.jdbcDriver" for the default database).~~
-	
 	Since *JIRA 4.4*, the database configuration has been changed by Atlassian as said [http://confluence.atlassian.com/display/JIRA/JIRA+4.4+Upgrade+Notes#JIRA44UpgradeNotes-MigratingYourDatabaseConfiguration here].
 	If you are using JIRA 4.4 or later, you need to use a jdbc datasource from jndi in order to monitor jdbc connections and SQL requests.
 
