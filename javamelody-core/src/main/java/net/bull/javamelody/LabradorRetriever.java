@@ -287,8 +287,15 @@ class LabradorRetriever {
 			}
 			final String contentType = connection.getContentType();
 			final TransportFormat transportFormat;
-			if (contentType != null && contentType.startsWith("text/xml")) {
-				transportFormat = TransportFormat.XML;
+			if (contentType != null) {
+				if (contentType.startsWith("text/xml")) {
+					transportFormat = TransportFormat.XML;
+				} else if (contentType.startsWith("text/html")) {
+					throw new IllegalStateException(
+							"Unexpected html content type, maybe not authentified");
+				} else {
+					transportFormat = TransportFormat.SERIALIZED;
+				}
 			} else {
 				transportFormat = TransportFormat.SERIALIZED;
 			}
