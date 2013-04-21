@@ -104,7 +104,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	Notes: The jdbc connections and the SQL requests are monitored automatically in JIRA 4.3.x or before, and they are monitored in JIRA 4.4+, Confluence and Bamboo if a jdbc datasource from jndi is used, instead of the default direct jdbc connection.
 
-	To configure Confluence with a datasource, see [http://confluence.atlassian.com/display/DOC/Database+Configuration this].
+	To configure Confluence with a datasource, see [http://confluence.atlassian.com/display/DOC/Database+Configuration this] or [http://confluence.atlassian.com/display/DOC/Configuring+a+PostgreSQL+Datasource+in+Apache+Tomcat this].
 	
 	To configure Bamboo with a datasource, see [http://confluence.atlassian.com/display/BAMBOO/Connecting+Bamboo+to+an+external+database this].
 	Alternatively for Bamboo, it is possible to replace the default hsqldb driver by the following in {{{bamboo-home/bamboo.cfg.xml}}}:
