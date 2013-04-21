@@ -150,7 +150,13 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	static void invalidateSession(String sessionId) {
 		final HttpSession session = SESSION_MAP_BY_ID.get(sessionId);
 		if (session != null) {
-			session.invalidate();
+			// dans Jenkins notamment, une session invalidée peut rester un peu dans cette map
+			try {
+				session.invalidate();
+			} catch (final Exception e) {
+				// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"
+				return;
+			}
 		}
 	}
 
@@ -183,7 +189,13 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		if (session == null) {
 			return null;
 		}
-		return new SessionInformations(session, true);
+		// dans Jenkins notamment, une session invalidée peut rester un peu dans cette map
+		try {
+			return new SessionInformations(session, true);
+		} catch (final Exception e) {
+			// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"
+			return null;
+		}
 	}
 
 	/** {@inheritDoc} */
