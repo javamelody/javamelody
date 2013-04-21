@@ -119,7 +119,11 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		final CounterRequest counterRequest = getCounterRequest(jobInformations);
 		// counterRequest ne peut pas être null ici
-		addCell(formatDuration(counterRequest.getMean()));
+		if (counterRequest.getMean() >= 0) {
+			addCell(formatDuration(counterRequest.getMean()));
+		} else {
+			addCell("");
+		}
 		// rq: on n'affiche pas ici le nb d'exécutions, le maximum, l'écart-type
 		// ou le pourcentage d'erreurs, uniquement car cela ferait trop de colonnes dans la page
 		writeJobTimes(jobInformations, counterRequest);
