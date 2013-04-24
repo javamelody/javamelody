@@ -20,14 +20,19 @@ package net.bull.javamelody;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 
 /**
@@ -415,6 +420,44 @@ class CounterRequestForContextTable extends CounterRequestTable {
 		tableColumn.setHeaderValue(headerValue);
 		tableColumn.setCellRenderer(tableCellRenderer);
 		addColumn(tableColumn);
+	}
+
+	MButton createKillThreadButton(final CounterRequestContextPanel contextPanel) {
+		final MButton killThreadButton = new MButton(getString("Tuer"),
+				ImageIconCache.getImageIcon("stop.png"));
+		getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final ThreadInformations threadInformations = getSelectedThreadInformations();
+				killThreadButton.setEnabled(threadInformations != null);
+				if (threadInformations != null) {
+					killThreadButton.setToolTipText(getFormattedString("kill_thread",
+							threadInformations.getName()));
+				} else {
+					killThreadButton.setToolTipText(null);
+				}
+			}
+		});
+		killThreadButton.setEnabled(getSelectedThreadInformations() != null);
+		killThreadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ThreadInformations threadInformations = getSelectedThreadInformations();
+				contextPanel.actionKillThread(threadInformations);
+			}
+		});
+		return killThreadButton;
+	}
+
+	ThreadInformations getSelectedThreadInformations() {
+		final int selectedRow = getSelectedRow();
+		if (selectedRow >= 0) {
+			final int modelRow = convertRowIndexToModel(selectedRow);
+			final CounterRequestContext counterRequestContext = getData().getAllContexts().get(
+					modelRow);
+			return getData().getThreadInformationsByCounterRequestContext(counterRequestContext);
+		}
+		return null;
 	}
 
 	/**

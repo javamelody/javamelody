@@ -40,6 +40,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	private final long timeOfSnapshot = System.currentTimeMillis();
 	private final boolean stackTraceEnabled;
 	private final int maxContextsDisplayed;
+	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 	private final HtmlThreadInformationsReport htmlThreadInformationsReport;
 
 	// classe utilitaire utilisée pour html et pdf
@@ -241,6 +242,9 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		if (stackTraceEnabled) {
 			write("<th>#Methode_executee#</th>");
 		}
+		if (systemActionsEnabled) {
+			writeln("<th class='noPrint'>#Tuer#</th>");
+		}
 		for (final CounterRequestContext context : contexts) {
 			table.nextRow();
 			writeContext(context, displayRemoteUser);
@@ -291,6 +295,11 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			} else {
 				htmlThreadInformationsReport.writeExecutedMethod(threadInformations);
 			}
+		}
+		if (threadInformations == null) {
+			write(espace); // un décalage n'a pas permis de récupérer le thread de ce context
+		} else {
+			htmlThreadInformationsReport.writeKillThread(threadInformations);
 		}
 		write("</td>");
 	}
