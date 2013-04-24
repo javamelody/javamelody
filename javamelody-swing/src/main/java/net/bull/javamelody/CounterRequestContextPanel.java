@@ -63,6 +63,11 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		add(scrollPane, BorderLayout.CENTER);
 
 		this.buttonsPanel = createButtonsPanel(false);
+		if (Parameters.isSystemActionsEnabled()) {
+			final MButton killThreadButton = myTable.createKillThreadButton(this);
+			buttonsPanel.add(killThreadButton);
+		}
+
 		add(buttonsPanel, BorderLayout.SOUTH);
 	}
 
@@ -109,6 +114,21 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 			pdfOtherReport.close();
 		}
 		Desktop.getDesktop().open(tempFile);
+	}
+
+	final void actionKillThread(ThreadInformations threadInformations) {
+		if (threadInformations != null
+				&& confirm(getFormattedString("confirm_kill_thread", threadInformations.getName()))) {
+			try {
+				final String message = getRemoteCollector().executeActionAndCollectData(
+						Action.KILL_THREAD, null, null, threadInformations.getGlobalThreadId(),
+						null, null);
+				showMessage(message);
+				MainPanel.refreshMainTabFromChild(this);
+			} catch (final IOException ex) {
+				showException(ex);
+			}
+		}
 	}
 
 	static void writeAllCurrentRequestsAsPart(PdfOtherReport pdfOtherReport,
