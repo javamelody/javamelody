@@ -21,5 +21,7 @@
   * [DevGuide Developer's guide]
   * [ContinuousIntegration Continuous integration]
   * [TODO To do]
+<div align='center'>
 <a href='https://code.google.com/p/javamelody/wiki/Donate' target='_blank'><img src='http://javamelody.googlecode.com/svn/wiki/images/btn_donate_LG.gif' width='80%' alt='New Custom Resource' />
 </a>
+</div>
