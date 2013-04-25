@@ -1,6 +1,6 @@
 <wiki:gadget url="http://www.ohloh.net/p/javamelody/widgets/project_partner_badge.xml" height="55" border="0" />
 
-You can support the JavaMelody project by making a donation. It will be used to buy hardware or hosting services.
+You can support the JavaMelody project by making a donation like $10. It will be used to buy hardware or hosting services.
 
 <table><tr><td align="center">
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2E5AT6SXBA4JS" rel="nofollow"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
