@@ -176,6 +176,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("<h3><a name='top'></a><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
 		writeSummary();
 		writeln("</h3>");
+		write("<a href='http://code.google.com/p/javamelody/wiki/Donate'>");
+		writeln("<img class='noPrint' style='position: absolute; top: 15px; right: 10px; border: 0;' src='?resource=donate.gif' alt='Donate' /></a>");
 		writeln("<div align='center'>");
 		writeRefreshAndPeriodLinks(null, null);
 		writeGraphs();
