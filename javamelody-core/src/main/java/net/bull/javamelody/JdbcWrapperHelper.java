@@ -349,8 +349,8 @@ final class JdbcWrapperHelper {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
 		assert servletContext != null;
 		final String serverInfo = servletContext.getServerInfo();
-		if ((serverInfo.contains("Tomcat") || serverInfo.contains("vFabric"))
-				&& System.getProperty("jonas.name") == null) {
+		if ((serverInfo.contains("Tomcat") || serverInfo.contains("vFabric") || serverInfo
+				.contains("SpringSource tc Runtime")) && System.getProperty("jonas.name") == null) {
 			// on n'exécute cela que si c'est tomcat
 			// et si ce n'est pas tomcat dans jonas
 			final Field field = Class.forName("org.apache.naming.ContextAccessController")
