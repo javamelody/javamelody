@@ -1,5 +1,3 @@
-#summary Atlassian JIRA, Confluence and Bamboo Plugin
-
 = Atlassian JIRA, Confluence and Bamboo Plugin =
 
 
