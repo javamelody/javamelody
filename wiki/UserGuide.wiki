@@ -112,7 +112,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 == Grails Plugin ==
 
 	If you want to monitor an application developed with [http://www.grails.org Grails], you can install JavaMelody in just one command with a Grails plugin: [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin].
-	You just need to execute the command given in the Install tab of the plugin.
+	You just need to download the latest Grails plugin file from [http://code.google.com/p/javamelody/downloads/list Downloads] and execute the following command: {{{grails install-plugin grails-grails-melody-<version>.zip}}}
 
 == JavaMelody Setup ==
 
