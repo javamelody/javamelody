@@ -93,7 +93,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 == Atlassian JIRA, Confluence and Bamboo Plugin ==
 
 	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA],
-	[http://www.atlassian.com/software/confluence/ Confluence] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily with a JIRA/Confluence/Bamboo plugin. See the following [AtlassianPlugin page]
+	[http://www.atlassian.com/software/confluence/ Confluence] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily with a JIRA/Confluence/Bamboo plugin. For this, see the following [AtlassianPlugin page]
 
 == Liferay Plugin ==
 
