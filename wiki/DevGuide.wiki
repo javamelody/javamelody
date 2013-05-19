@@ -133,7 +133,7 @@ This is an internal reminder of the steps of the release process.
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
     * add version with jira-javamelody-version.jar url, source tag
   * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
-  * *grails plugin* ([https://github.com/evernat/grails-melody-plugin])
+  * *grails plugin* ([https://github.com/evernat/grails-melody-plugin], [http://grails-plugins.github.io/grails-release/docs/manual/guide/plugins.html doc])
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
     * increment plugin version in GrailsMelodyGrailsPlugin.groovy
     * edit user / password in .grails\settings.groovy
