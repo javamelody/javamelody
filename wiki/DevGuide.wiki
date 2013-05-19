@@ -100,7 +100,7 @@ After some weeks for example, in order to update your sources with the new devel
 
 	[http://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins / Hudson plugin] : The manager of sources for the Jenkins / Hudson Monitoring plugin is Subversion at [http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/] (Git mirror at [https://github.com/jenkinsci/monitoring-plugin]). Use maven commands "mvn hpi:run" or "mvn package" like for all [http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial Jenkins / Hudson plugins].
 
-	[http://www.grails.org/plugin/grails-melody Grails plugin] : The manager of sources for the JavaMelody Grails plugin is Subversion at [http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/]
+	[http://www.grails.org/plugin/grails-melody Grails plugin] : The manager of sources for the JavaMelody Grails plugin is git at [https://github.com/evernat/grails-melody-plugin] (previously Subversion at [http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/])
 
 	[https://github.com/sbower/nagios_javamelody_plugin Nagios plugin] : There is also a Nagios plugin by Shawn Bower based on a command reading the last values in the RRD files (it starts a JVM for each value, which may not scale a lot). The manager of sources is Git at [https://github.com/sbower/nagios_javamelody_plugin]
 
@@ -133,11 +133,11 @@ This is an internal reminder of the steps of the release process.
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
     * add version with jira-javamelody-version.jar url, source tag
   * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
-  * *grails plugin* ([https://svn.codehaus.org:443/grails-plugins/grails-grails-melody/trunk])
+  * *grails plugin* ([https://github.com/evernat/grails-melody-plugin])
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
     * increment plugin version in GrailsMelodyGrailsPlugin.groovy
     * edit user / password in .grails\settings.groovy
-    * grails release-plugin "-repository=grailsplugins" ou sinon grails package-plugin + commit
-    * Edit plugin in http://www.grails.org/plugin/grails-melody
+    * grails publish-plugin
+    * (Edit plugin if needed in http://www.grails.org/plugin/grails-melody)
   * *twitter announce* [https://twitter.com/#!/java_melody]
   * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody] ([https://groups.google.com/forum/?fromgroups#!topic/javamelody/w-8Xhi7G5x8 example])
