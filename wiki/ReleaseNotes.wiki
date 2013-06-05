@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.45.0 ===
+
   * [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin] is published again at grails.org. You can install the plugin in your grails app with just one command:
 
 	{{{grails install-plugin grails-melody}}}
