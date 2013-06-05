@@ -1,0 +1,134 @@
+	-----
+	Compilation and development of Java Melody : monitoring d'applications Java EE
+	-----
+	Auteur : Emeric Vernat (evernat@free.fr)
+	-----
+	2009-01-01
+	-----
+
+~~ http://maven.apache.org/doxia/references/apt-format.html
+
+Compilation and development of Java Melody : monitoring d'applications Java EE
+
+	({{{./dev_guide.html} Français }}, {{{./user_guide_en.html} User guide }})
+
+* Browsing the sources
+
+	You can browse online the development sources or you can download the zip file of a release which includes the sources of that release.
+
+* Building from sources
+
+	The zip file available in "Download" contains the java sources with an {{{http://ant.apache.org}ant}} script build.xml 
+	and a pom.xml file for {{{http://maven.apache.org}maven}}
+	and contains also the javadoc, the eclipse project, the jar files.
+	If you want to rebuild the development version and not a particular release, you have to do an anonymous checkout from 
+	http://javamelody.googlecode.com/svn/trunk/javamelody-core/ (with your IDE such as Eclipse or with {{{http://tortoisesvn.tigris.org/}TortoiseSVN}} if Windows)
+
+	After decompressing the zip file or after the checkout, you can use the "all" target of the ant script (without maven)
+	to recompile from sources and to build the javamelody.jar, jira-javamelody.jar and javamelody.war files which are
+	those available in "Download". You must define the environment variable JAVA_HOME with the path
+	of a JDK 1.7 to compile the sources. For example:
+	
++-------------------------------+
+	<path_to_ant>/bin/ant -f <path_to_javamelody>/build.xml all
++-------------------------------+
+
+	You can also use the maven goals "clean site" to build a maven site with documentations and reports on analysis of sources
+	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura).
+	You will need Maven 3.0.4 or later for that.
+
+
+* Import in Eclipse the sources of current development version
+
+	To import from the SVN server the sources of the version currently in development, with Eclipse 4.2 using a JDK 1.7 and the subversion plugin (maven plugin m2eclipse is also recommended to simplify these steps):
+	
+	* Click the task Import in File menu
+	
+	* Choose SVN, Project from SVN
+	
+	* To create a SVN repository, write the URL http://javamelody.googlecode.com/svn/trunk/javamelody-core (no authentication) then click Next
+	
+	* Choose the resource of URL http://javamelody.googlecode.com/svn/trunk/javamelody-core (Select again the URL in the combo-box if needed)
+	
+	* Click Finish
+	
+	* Eclipse imports the project javamelody-core with the sources, then it compiles all
+	(maven must works and be connected to download the dependencies,
+	otherwise add them manually in the Build-Path from src/main/lib and src/test/test-webapp/WEB-INF/lib)
+	
+	* It is also possible to import the projects javamelody-test-webapp and javamelody-collector-server which are next to javamelody-core in SVN
+
+	[]
+
+	
+	To rebuild the jar and the war of JavaMelody:
+	
+	* Do a right-click on the build.xml file in the project javamelody-core, then select Run As, Ant Build
+	which will launch the task by default "all" of the ant script. (Note: in the same script, the task "test" launches the unit tests.)
+	
+	* Wait about 20 seconds for the end of the execution of the script
+	
+	* Do a Refresh (F5) on the project javamelody-core
+	
+	* In the files of the project, the javamelody.zip file appears and contains the rebuilt jars and war of javamelody
+
+	[]
+
+	
+	After some weeks for example, in order to update your sources with the new developments:
+	
+	* Do a right-click on the project javamelody-core, then select Team, Update
+
+	[]
+
+
+* Development
+
+	The development is done with {{{http://www.eclipse.org}Eclipse}} in its latest version and with the jdk 1.7 at least for compilation.
+	
+	The manager of sources is Subversion at
+	
+	{{{http://javamelody.googlecode.com/svn/trunk/}http://javamelody.googlecode.com/svn/trunk/}}
+
+	The charset of files is UTF-8. The Eclipse configuration is supplied in sources with the configuration of
+	code formater, clean-up, warnings and of checkstyle, pmd, findbugs and lint4j plugins.
+	The infinitest eclipse plugin is also recommended.
+
+    The official languages of the project is french for javadoc but english for technical terms
+    (This provides a clean separation between functional and technical vocabulary, given that you speak French obviously).
+    
+    The technical diagrams in the OpenOffice {{{./Map.odp}map}} may help to understand.
+
+
+* Tests
+
+    The JUnit tests can be launched with the "test" target of the ant script, or with maven or in some
+    {{{http://code.google.com/p/javamelody/wiki/ContinuousIntegration}Continuous Integration}}. 
+
+    The manual tests are written in the OpenOffice {{{./Test plan.ods}Test plan}}. 
+    
+    
+* Plugins
+
+    * {{{https://plugins.atlassian.com/plugin/details/20909}JIRA/Confluence/Bamboo plugin}} :
+    The sources for the JIRA/Confluence/Bamboo plugin are with the sources of JavaMelody at
+    {{{http://javamelody.googlecode.com/svn/trunk/javamelody-core/}http://javamelody.googlecode.com/svn/trunk/javamelody-core/}}.
+    As said above, you can use the "all" target of the ant script to build the jira-javamelody.jar file.
+	
+	* {{{http://wiki.jenkins-ci.org/display/JENKINS/Monitoring}Jenkins / Hudson plugin}} :
+	The manager of sources for the Jenkins / Hudson Monitoring plugin is Subversion at
+	{{{http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}http://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring/}}
+	(Git mirror at {{{https://github.com/jenkinsci/monitoring-plugin}https://github.com/jenkinsci/monitoring-plugin}}).
+	Use maven commands "mvn hpi:run" or "mvn package" like for all 
+	{{{http://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial}Jenkins / Hudson plugins}}.
+	
+	* {{{http://www.grails.org/plugin/grails-melody}Grails plugin}} :
+	The manager of sources for the JavaMelody Grails plugin is Subversion at
+	{{{http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/}http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/}}
+	
+	* {{{https://github.com/sbower/nagios_javamelody_plugin}Nagios plugin}} :
+	There is also a Nagios plugin by Shawn Bower based on a command reading the last values
+	in the RRD files (it starts a JVM for each value, which may not scale a lot).
+	The manager of sources is Git at {{{https://github.com/sbower/nagios_javamelody_plugin}https://github.com/sbower/nagios_javamelody_plugin}}
+
+	[]
