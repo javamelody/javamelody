@@ -10,6 +10,7 @@
 	{{{grails install-plugin grails-melody}}}
 
   * [https://github.com/evernat/grails-melody-plugin Source] and [https://github.com/evernat/grails-melody-plugin/issues?page=1&state=open issues] of the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin] are moved to GitHub. You can submit [https://github.com/evernat/grails-melody-plugin/pulls pull requests] to fix issues.
+  * known incompatibility of the JIRA plugin with JIRA 6.0, issue 314
   * fix: In the Liferay plugin, fix SAXReader "Connection timed out" exception, when http.proxyHost is not specified (revision 3347)
   * fix issue 298: for the database reports, spclocation was removed in postgresql 9.2 and datconfig was removed in postgresql 9.0
   * added: For Postgresql, enhance the locks report by displaying the relation name and the database name of each lock (revision 3403)
