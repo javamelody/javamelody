@@ -18,15 +18,13 @@
  */
 package net.bull.javamelody;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * Logs des requêtes http exécutées et logs internes.
@@ -35,9 +33,10 @@ import org.slf4j.LoggerFactory;
 final class LOG {
 	static final boolean LOG4J_ENABLED = isLog4jEnabled();
 	static final boolean LOGBACK_ENABLED = isLogbackEnabled();
+
 	static final int MAX_DEBUGGING_LOGS_COUNT = 50;
 
-	private static final String INTERNAL_LOGGER_NAME = "net.bull.javamelody";
+	private static final JavaMelodyLogger JAVA_MELODY_LOGGER = getJavaMelodyLogger();
 
 	//CHECKSTYLE:OFF
 	private static final LinkedList<String> DEBUGGING_LOGS = new LinkedList<String>(); // NOPMD
@@ -48,44 +47,15 @@ final class LOG {
 		super();
 	}
 
-	@SuppressWarnings("unused")
 	static void logHttpRequest(HttpServletRequest httpRequest, String requestName, long duration,
 			boolean systemError, int responseSize, String filterName) {
-		// dans les 3 cas, on ne construit le message de log
+		// dans les 3 implémentations, on ne construit le message de log
 		// que si le logger est configuré pour écrire le niveau INFO
-		if (LOGBACK_ENABLED) {
-			logback(httpRequest, duration, systemError, responseSize, filterName);
-		} else if (LOG4J_ENABLED) {
-			log4j(httpRequest, duration, systemError, responseSize, filterName);
-		} else {
-			final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(filterName);
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
-			}
-		}
+		JAVA_MELODY_LOGGER.logHttpRequest(httpRequest, requestName, duration, systemError,
+				responseSize, filterName);
 	}
 
-	private static void log4j(HttpServletRequest httpRequest, long duration, boolean systemError,
-			int responseSize, String filterName) {
-		// la variable logger doit être dans une méthode à part pour ne pas faire ClassNotFoundException
-		// si log4j non présent (mais variable préférable pour performance)
-		final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(filterName);
-		if (logger.isInfoEnabled()) {
-			logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
-		}
-	}
-
-	private static void logback(HttpServletRequest httpRequest, long duration, boolean systemError,
-			int responseSize, String filterName) {
-		// la variable logger doit être dans une méthode à part pour ne pas faire ClassNotFoundException
-		// si logback non présent (mais variable préférable pour performance)
-		final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(filterName);
-		if (logger.isInfoEnabled()) {
-			logger.info(buildLogMessage(httpRequest, duration, systemError, responseSize));
-		}
-	}
-
-	private static String buildLogMessage(HttpServletRequest httpRequest, long duration,
+	public static String buildLogMessage(HttpServletRequest httpRequest, long duration,
 			boolean systemError, int responseSize) {
 		final StringBuilder msg = new StringBuilder();
 		msg.append("remoteAddr = ").append(httpRequest.getRemoteAddr());
@@ -108,63 +78,23 @@ final class LOG {
 	}
 
 	static void debug(String msg) {
-		if (LOGBACK_ENABLED) {
-			org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).debug(msg);
-		} else if (LOG4J_ENABLED) {
-			final org.apache.log4j.Logger logger = org.apache.log4j.Logger
-					.getLogger(INTERNAL_LOGGER_NAME);
-			logger.debug(msg);
-		} else {
-			final java.util.logging.Logger logger = java.util.logging.Logger
-					.getLogger(INTERNAL_LOGGER_NAME);
-			logger.log(Level.FINE, msg);
-		}
+		JAVA_MELODY_LOGGER.debug(msg);
 		addDebuggingLog("DEBUG", msg);
 	}
 
 	static void debug(String msg, Throwable throwable) {
-		if (LOGBACK_ENABLED) {
-			org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).debug(msg, throwable);
-		} else if (LOG4J_ENABLED) {
-			final org.apache.log4j.Logger logger = org.apache.log4j.Logger
-					.getLogger(INTERNAL_LOGGER_NAME);
-			logger.debug(msg, throwable);
-		} else {
-			final java.util.logging.Logger logger = java.util.logging.Logger
-					.getLogger(INTERNAL_LOGGER_NAME);
-			logger.log(Level.FINE, msg, throwable);
-		}
+		JAVA_MELODY_LOGGER.debug(msg, throwable);
 		addDebuggingLog("DEBUG", msg);
 	}
 
 	static void info(String msg, Throwable throwable) {
-		if (LOGBACK_ENABLED) {
-			org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).info(msg, throwable);
-		} else if (LOG4J_ENABLED) {
-			final org.apache.log4j.Logger logger = org.apache.log4j.Logger
-					.getLogger(INTERNAL_LOGGER_NAME);
-			logger.info(msg, throwable);
-		} else {
-			final java.util.logging.Logger logger = java.util.logging.Logger
-					.getLogger(INTERNAL_LOGGER_NAME);
-			logger.log(Level.INFO, msg, throwable);
-		}
+		JAVA_MELODY_LOGGER.info(msg, throwable);
 		addDebuggingLog("INFO", msg);
 	}
 
 	static void warn(String msg, Throwable throwable) {
 		try {
-			if (LOGBACK_ENABLED) {
-				org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME).warn(msg, throwable);
-			} else if (LOG4J_ENABLED) {
-				final org.apache.log4j.Logger logger = org.apache.log4j.Logger
-						.getLogger(INTERNAL_LOGGER_NAME);
-				logger.warn(msg, throwable);
-			} else {
-				final java.util.logging.Logger logger = java.util.logging.Logger
-						.getLogger(INTERNAL_LOGGER_NAME);
-				logger.log(Level.WARNING, msg, throwable);
-			}
+			JAVA_MELODY_LOGGER.warn(msg, throwable);
 			addDebuggingLog("WARN", msg);
 		} catch (final Throwable t) { // NOPMD
 			// au pire (cette méthode ne doit pas lancer d'erreur vu où elle est appelée)
@@ -204,11 +134,25 @@ final class LOG {
 	private static boolean isLogbackEnabled() {
 		try {
 			Class.forName("ch.qos.logback.classic.Logger");
+			final Class<?> loggerFactoryClass = Class.forName("org.slf4j.LoggerFactory");
+			final Method method = loggerFactoryClass.getMethod("getILoggerFactory");
+			final Object obj = method.invoke(null);
+
 			// on vérifie aussi LoggerContext car il peut arriver que getILoggerFactory ne soit pas ok (jonas)
 			return Class.forName("ch.qos.logback.classic.LoggerContext").isAssignableFrom(
-					LoggerFactory.getILoggerFactory().getClass());
-		} catch (final ClassNotFoundException e) {
+					obj.getClass());
+		} catch (final Exception e) {
 			return false;
+		}
+	}
+
+	private static JavaMelodyLogger getJavaMelodyLogger() {
+		if (LOGBACK_ENABLED) {
+			return new LogbackLogger();
+		} else if (LOG4J_ENABLED) {
+			return new Log4JLogger();
+		} else {
+			return new JavaLogger();
 		}
 	}
 }
