@@ -176,8 +176,13 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private static synchronized Class<?> getJiraUserClass() throws ClassNotFoundException { // NOPMD
 		if (jiraUserClass == null) {
 			try {
-				// before JIRA 5:
-				jiraUserClass = Class.forName("com.opensymphony.user.User");
+				try {
+					// since JIRA 6:
+					jiraUserClass = Class.forName("com.atlassian.jira.user.ApplicationUser");
+				} catch (final ClassNotFoundException e) {
+					// before JIRA 5:
+					jiraUserClass = Class.forName("com.opensymphony.user.User");
+				}
 			} catch (final ClassNotFoundException e) {
 				// since JIRA 5:
 				jiraUserClass = Class.forName("com.atlassian.crowd.embedded.api.User");
