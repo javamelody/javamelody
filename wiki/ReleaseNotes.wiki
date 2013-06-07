@@ -1,7 +1,11 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix issue 313: NoClassDefFoundError when IBM's JVM is used
+
+=== 1.45.1 (JIRA / Confluence / Bamboo plugin) ===
+
+  * fix issue 314: compatibility of the plugin with JIRA 6
 
 === 1.45.0 ===
 
