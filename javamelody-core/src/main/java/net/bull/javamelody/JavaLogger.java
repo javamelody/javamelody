@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * JavaMelodyLogger pour java.util.logging.
  * @author Emeric Vernat
  */
-public class JavaLogger implements JavaMelodyLogger {
+class JavaLogger implements JavaMelodyLogger {
 	private static final java.util.logging.Logger LOGGER = java.util.logging.Logger
 			.getLogger(INTERNAL_LOGGER_NAME);
 

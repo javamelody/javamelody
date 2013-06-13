@@ -26,7 +26,7 @@ import org.slf4j.Logger;
  * JavaMelodyLogger pour Logback.
  * @author Emeric Vernat
  */
-public class LogbackLogger implements JavaMelodyLogger {
+class LogbackLogger implements JavaMelodyLogger {
 	private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(INTERNAL_LOGGER_NAME);
 
 	/** {@inheritDoc} */
