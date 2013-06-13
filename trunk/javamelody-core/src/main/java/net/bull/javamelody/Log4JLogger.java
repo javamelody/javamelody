@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * JavaMelodyLogger pour Log4J.
  * @author Emeric Vernat
  */
-public class Log4JLogger implements JavaMelodyLogger {
+class Log4JLogger implements JavaMelodyLogger {
 	private static final org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger
 			.getLogger(INTERNAL_LOGGER_NAME);
 
