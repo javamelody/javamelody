@@ -30,18 +30,6 @@ public class Log4JLogger implements JavaMelodyLogger {
 
 	/** {@inheritDoc} */
 	@Override
-	public void debug(String msg) {
-		LOGGER.debug(msg);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void debug(String msg, Throwable throwable) {
-		LOGGER.debug(msg, throwable);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void info(String msg, Throwable throwable) {
 		LOGGER.info(msg, throwable);
 	}
@@ -50,6 +38,18 @@ public class Log4JLogger implements JavaMelodyLogger {
 	@Override
 	public void warn(String msg, Throwable throwable) {
 		LOGGER.warn(msg, throwable);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void debug(String msg) {
+		LOGGER.debug(msg);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void debug(String msg, Throwable throwable) {
+		LOGGER.debug(msg, throwable);
 	}
 
 	/** {@inheritDoc} */
