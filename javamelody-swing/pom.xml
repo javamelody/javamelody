@@ -188,7 +188,7 @@
 			<!-- Site -->
 			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.3</version>
 				<configuration>
 					<reportPlugins>
 						<!-- Javadoc -->
