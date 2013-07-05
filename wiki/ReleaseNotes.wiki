@@ -2,6 +2,8 @@
 === Next release (trunk) ===
 
   * fix issue 313: NoClassDefFoundError when IBM's JVM is used
+  * In Jenkins, use a timeout for the monitoring of slaves, when a slave is online but does not respond
+  * In Jenkins, fix NPE when manually purging the obsolete monitoring files of slaves
 
 === 1.45.1 (JIRA / Confluence / Bamboo plugin) ===
 
