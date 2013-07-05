@@ -19,6 +19,8 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -40,7 +42,14 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private static final int SYSTEM_ADMIN = 44;
 	// valeur de DefaultAuthenticator.LOGGED_IN_KEY
 	private static final String LOGGED_IN_KEY = "seraph_defaultauthenticator_user";
-	private static Class<?> jiraUserClass;
+	private static final List<String> JIRA_USER_CLASSES = Arrays.asList(
+	// since JIRA 6, but exists in JIRA 5.2:
+			"com.atlassian.jira.user.ApplicationUser",
+			// since JIRA 5:
+			"com.atlassian.crowd.embedded.api.User",
+			// before JIRA 5:
+			"com.opensymphony.user.User");
+
 	// initialisation ici et non dans la méthode init, car on ne sait pas très bien
 	// quand la méthode init serait appelée dans les systèmes de plugins
 	private final boolean jira = isJira();
@@ -156,39 +165,34 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private static boolean hasJiraSystemAdminPermission(Object user) {
 		try {
 			final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
-			final Class<?> userClass = getJiraUserClass();
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
 			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
 					.invoke(null);
-			final Boolean result = (Boolean) permissionManager.getClass()
-					.getMethod("hasPermission", Integer.TYPE, userClass)
-					.invoke(permissionManager, SYSTEM_ADMIN, user);
-			return result;
+			Exception firstException = null;
+			// selon la version de JIRA, on essaye les différentes classes possibles du user
+			for (final String className : JIRA_USER_CLASSES) {
+				try {
+					final Class<?> userClass = Class.forName(className);
+					final Boolean result = (Boolean) permissionManager.getClass()
+							.getMethod("hasPermission", Integer.TYPE, userClass)
+							.invoke(permissionManager, SYSTEM_ADMIN, user);
+					return result;
+				} catch (final Exception e) {
+					if (firstException == null) {
+						firstException = e;
+					}
+					continue;
+				}
+			}
+			// aucune classe n'a fonctionné
+			throw firstException;
 		} catch (final Exception e) {
 			throw new IllegalStateException(e);
 		}
 		//		return user != null
 		//				&& com.atlassian.jira.ManagerFactory.getPermissionManager().hasPermission(
 		//						SYSTEM_ADMIN, (com.opensymphony.user.User) user);
-	}
-
-	private static synchronized Class<?> getJiraUserClass() throws ClassNotFoundException { // NOPMD
-		if (jiraUserClass == null) {
-			try {
-				try {
-					// since JIRA 6:
-					jiraUserClass = Class.forName("com.atlassian.jira.user.ApplicationUser");
-				} catch (final ClassNotFoundException e) {
-					// before JIRA 5:
-					jiraUserClass = Class.forName("com.opensymphony.user.User");
-				}
-			} catch (final ClassNotFoundException e) {
-				// since JIRA 5:
-				jiraUserClass = Class.forName("com.atlassian.crowd.embedded.api.User");
-			}
-		}
-		return jiraUserClass;
 	}
 
 	private static boolean hasConfluenceAdminPermission(Object user) {
