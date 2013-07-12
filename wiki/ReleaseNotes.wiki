@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 321: javamelody disables Tomcat 7 distributed sessions when using SimpleTcpCluster
   * fix issue 313: NoClassDefFoundError when IBM's JVM is used
   * In Jenkins, use a timeout for the monitoring of slaves, when a slave is online but does not respond
   * In Jenkins, fix NPE when manually purging the obsolete monitoring files of slaves
