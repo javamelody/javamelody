@@ -178,7 +178,7 @@
     </module>
   </module>
   <module name="NewlineAtEndOfFile"/>
-  <module name="Translation"/>
+  <!-- <module name="Translation"/> -->
   <module name="SeverityMatchFilter"/>
   <module name="SuppressionFilter"/>
   <module name="SuppressionCommentFilter"/>
