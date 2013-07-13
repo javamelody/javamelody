@@ -24,9 +24,6 @@ import java.util.HashSet;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
-import org.jrobin.core.RrdBackendFactory;
-import org.jrobin.core.RrdException;
-import org.jrobin.core.RrdFileBackendFactory;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -37,15 +34,6 @@ import org.quartz.impl.StdSchedulerFactory;
 final class Utils {
 	private static final String SYSTEM_ACTIONS_PROPERTY_NAME = Parameters.PARAMETER_SYSTEM_PREFIX
 			+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode();
-
-	static {
-		// pour les tests unitaires, on utilise des backends "FILE" et non "NIO" pour que les tests s'exécutent plus vite
-		try {
-			RrdBackendFactory.setDefaultFactory(RrdFileBackendFactory.NAME);
-		} catch (final RrdException e) {
-			throw new IllegalStateException(e);
-		}
-	}
 
 	private Utils() {
 		super();
@@ -69,6 +57,7 @@ final class Utils {
 				System.getProperties().remove(systemProperty.toString());
 			}
 		}
+		JRobin.stop();
 		try {
 			StdSchedulerFactory.getDefaultScheduler().shutdown();
 		} catch (final SchedulerException e) {

@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -43,6 +44,7 @@ import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
 import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 import net.sf.ehcache.CacheManager;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
@@ -59,10 +61,12 @@ public class TestCollector {
 	// CHECKSTYLE:ON
 	private static final String TEST = "test";
 
-	/** Test. */
+	/** Before.
+	 * @throws IOException e */
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		Utils.initialize();
+		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 		Parameters.getStorageDirectory(TEST).mkdirs();
 		final File[] files = Parameters.getStorageDirectory(TEST).listFiles();
 		if (files != null) {
@@ -73,6 +77,12 @@ public class TestCollector {
 				}
 			}
 		}
+	}
+
+	/** After. */
+	@After
+	public void tearDown() {
+		JRobin.stop();
 	}
 
 	private Collector createCollectorWithOneCounter() {

@@ -72,10 +72,7 @@ public class TestCollectorServlet {
 	 */
 	@After
 	public void tearDown() throws IOException {
-		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
-		// plus si ils utilisent JRobin
 		if (collectorServlet != null) {
-			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 			collectorServlet.destroy();
 		}
 		Parameters.removeCollectorApplication(TEST);
