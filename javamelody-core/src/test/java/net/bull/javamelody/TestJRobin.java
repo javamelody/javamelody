@@ -26,7 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,10 +39,18 @@ import org.junit.Test;
 public class TestJRobin {
 	private static final String TEST_APPLICATION = "test";
 
-	/** Test. */
+	/** Before.
+	 * @throws IOException e */
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		Utils.initialize();
+		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
+	}
+
+	/** After. */
+	@After
+	public void tearDown() {
+		JRobin.stop();
 	}
 
 	/** Test.
@@ -124,14 +134,5 @@ public class TestJRobin {
 	@Test
 	public void testDeleteObsoleteJRobinFiles() throws IOException {
 		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);
-	}
-
-	/** Test.
-	 * @throws IOException e */
-	@Test
-	public void testStop() throws IOException {
-		// à défaut de pouvoir appeler JRobin.stop() car les autres tests ne pourront plus
-		// utiliser JRobin, on appelle au moins JRobin.getJRobinFileSyncTimer()
-		JRobin.getJRobinFileSyncTimer();
 	}
 }

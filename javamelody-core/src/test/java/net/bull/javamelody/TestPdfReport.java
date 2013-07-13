@@ -33,10 +33,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Timer;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.CronTrigger;
@@ -58,10 +60,18 @@ import com.lowagie.text.DocumentException;
 public class TestPdfReport {
 	private static final String TEST_APP = "test app";
 
-	/** Check. */
+	/** Before.
+	 * @throws IOException e */
 	@Before
-	public void setUp() {
+	public void setUp() throws IOException {
 		Utils.initialize();
+		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
+	}
+
+	/** After. */
+	@After
+	public void tearDown() {
+		JRobin.stop();
 	}
 
 	/** Test.

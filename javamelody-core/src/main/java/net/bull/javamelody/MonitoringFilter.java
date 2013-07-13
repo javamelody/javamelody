@@ -141,6 +141,8 @@ public class MonitoringFilter implements Filter {
 				filterContext.destroy();
 			}
 		} finally {
+			final String contextPath = Parameters.getContextPath(filterConfig.getServletContext());
+			CONTEXT_PATHS.remove(contextPath);
 			// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 			httpCounter = null;
 			errorCounter = null;

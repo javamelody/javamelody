@@ -214,8 +214,7 @@ class FilterContext {
 		}
 
 		try {
-			JRobin.setJRobinThreadName("jrobin "
-					+ Parameters.getContextPath(Parameters.getServletContext()).replace('/', ' '));
+			JRobin.initBackendFactory(timer);
 		} catch (final IOException e) {
 			LOG.warn(e.toString(), e);
 		}

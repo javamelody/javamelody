@@ -42,7 +42,6 @@ import org.junit.Test;
  */
 public class TestMonitoringFilterInit {
 	private static final String FILTER_NAME = "monitoring";
-	private static final String TRUE = "true";
 	private FilterConfig config;
 	private ServletContext context;
 	private MonitoringFilter monitoringFilter;
@@ -88,9 +87,6 @@ public class TestMonitoringFilterInit {
 	}
 
 	private void destroy() {
-		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
-		// plus si ils utilisent JRobin
-		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
 		}
@@ -123,9 +119,6 @@ public class TestMonitoringFilterInit {
 			monitoringFilter2.init(config);
 			monitoringFilter2.doFilter(createNiceMock(HttpServletRequest.class),
 					createNiceMock(HttpServletResponse.class), createNiceMock(FilterChain.class));
-			// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
-			// plus si ils utilisent JRobin
-			Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 			monitoringFilter2.destroy();
 		} finally {
 			destroy();

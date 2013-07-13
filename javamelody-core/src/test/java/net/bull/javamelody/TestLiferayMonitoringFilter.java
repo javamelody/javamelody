@@ -52,7 +52,6 @@ import org.junit.Test;
 public class TestLiferayMonitoringFilter {
 	private static final String FILTER_NAME = "monitoring";
 	private static final String CONTEXT_PATH = "/test";
-	private static final String TRUE = "true";
 	private FilterConfig config;
 	private ServletContext context;
 	private LiferayMonitoringFilter liferayMonitoringFilter;
@@ -107,9 +106,6 @@ public class TestLiferayMonitoringFilter {
 	}
 
 	private void destroy() {
-		// on désactive le stop sur le timer JRobin car sinon les tests suivants ne fonctionneront
-		// plus si ils utilisent JRobin
-		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "jrobinStopDisabled", TRUE);
 		if (liferayMonitoringFilter != null) {
 			liferayMonitoringFilter.destroy();
 		}

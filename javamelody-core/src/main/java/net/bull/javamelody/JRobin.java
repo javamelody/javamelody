@@ -26,22 +26,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 
+import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdDbPool;
 import org.jrobin.core.RrdDef;
 import org.jrobin.core.RrdException;
-import org.jrobin.core.RrdNioBackend;
 import org.jrobin.core.Sample;
 import org.jrobin.core.Util;
 import org.jrobin.graph.RrdGraph;
@@ -88,43 +84,29 @@ final class JRobin {
 		init();
 	}
 
-	static void stop() throws IOException {
-		getJRobinFileSyncTimer().cancel();
-	}
-
-	static void setJRobinThreadName(final String jrobinThreadName) throws IOException {
-		final TimerTask threadNameTask = new TimerTask() {
-			/** {@inheritDoc} */
-			@Override
-			public void run() {
-				Thread.currentThread().setName(jrobinThreadName);
-			}
-		};
-		getJRobinFileSyncTimer().schedule(threadNameTask, 0);
-	}
-
-	static Timer getJRobinFileSyncTimer() throws IOException {
-		try {
-			// on accède à ce timer par réflexion pour l'arrêter faute d'autre moyen
-			final Field field = RrdNioBackend.class.getDeclaredField("fileSyncTimer");
-			setFieldAccessible(field);
-			return (Timer) field.get(null);
-		} catch (final NoSuchFieldException e) {
-			throw createIOException(e);
-		} catch (final IllegalAccessException e) {
-			throw createIOException(e);
+	static void stop() {
+		if (RrdNioBackend.getFileSyncTimer() != null) {
+			RrdNioBackend.getFileSyncTimer().cancel();
 		}
 	}
 
-	private static void setFieldAccessible(final Field field) {
-		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
-					/** {@inheritDoc} */
-					@Override
-					public Object run() {
-						field.setAccessible(true);
-						return null;
-					}
-				});
+	/**
+	 * JavaMelody uses a custom RrdNioBackendFactory,
+	 * in order to use its own and cancelable file sync timer.
+	 * @param timer Timer
+	 * @throws IOException e
+	 */
+	static void initBackendFactory(Timer timer) throws IOException {
+		RrdNioBackend.setFileSyncTimer(timer);
+
+		try {
+			if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
+					.equals(RrdNioBackendFactory.FACTORY_NAME)) {
+				RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
+			}
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
 	}
 
 	static JRobin createInstance(String application, String name, String requestName)

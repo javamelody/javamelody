@@ -291,10 +291,12 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
-					<compilerArgument>-Xlint</compilerArgument>
+					<fork>true</fork>
+					<!-- pour éviter warning dans Maven sur sun.nio.ch.DirectBuffer dans RrdNioBackend -->
+					<compilerArgument>-XDignore.symbol.file=true -Xlint</compilerArgument>
 					<showWarnings>true</showWarnings>
 					<!-- pour éviter warning dans Maven sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
-					<testCompilerArgument>-XDignore.symbol.file</testCompilerArgument>
+					<testCompilerArgument>-XDignore.symbol.file=true -Xlint</testCompilerArgument>
 				</configuration>
 			</plugin>
 			<!-- pour produire un jar lors du goal package comme celui produit par 
