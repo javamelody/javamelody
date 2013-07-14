@@ -16,3 +16,8 @@
 </table>
 <br/>
 If you have never used PayPal before, then the site will ask you about your credit card details, your country, address and your home phone number. This information is required by PayPal to do the money transaction and is not required by or visible to the JavaMelody project.
+
+=== Donators ===
+|| Hitendra Verma || $5 USD ||
+|| Anonymous || $10 USD ||
+|| Anonymous || $2 USD ||
