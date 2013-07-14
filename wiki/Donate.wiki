@@ -21,3 +21,5 @@ If you have never used PayPal before, then the site will ask you about your cred
 || Hitendra Verma || $5 USD ||
 || Anonymous || $10 USD ||
 || Anonymous || $2 USD ||
+
+<font size="1">(If you have made a donation and have forgotten to confirm being listed by name, you can send an email to evernat at free.fr and be proud of your donation)</font>
