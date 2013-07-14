@@ -120,10 +120,15 @@ public class TestJiraMonitoringFilter { // NOPMD
 		final FilterChain servletChain = createNiceMock(FilterChain.class);
 		final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
 		final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
+		replay(config);
+		replay(context);
 		replay(servletRequest);
 		replay(servletResponse);
 		replay(servletChain);
+		jiraMonitoringFilter.init(config);
 		jiraMonitoringFilter.doFilter(servletRequest, servletResponse, servletChain);
+		verify(config);
+		verify(context);
 		verify(servletRequest);
 		verify(servletResponse);
 		verify(servletChain);

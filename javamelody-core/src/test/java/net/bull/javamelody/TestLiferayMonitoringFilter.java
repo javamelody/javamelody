@@ -120,10 +120,15 @@ public class TestLiferayMonitoringFilter {
 		final FilterChain servletChain = createNiceMock(FilterChain.class);
 		final ServletRequest servletRequest = createNiceMock(ServletRequest.class);
 		final ServletResponse servletResponse = createNiceMock(ServletResponse.class);
+		replay(config);
+		replay(context);
 		replay(servletRequest);
 		replay(servletResponse);
 		replay(servletChain);
+		liferayMonitoringFilter.init(config);
 		liferayMonitoringFilter.doFilter(servletRequest, servletResponse, servletChain);
+		verify(config);
+		verify(context);
 		verify(servletRequest);
 		verify(servletResponse);
 		verify(servletChain);
