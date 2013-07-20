@@ -156,6 +156,7 @@ public final class JdbcWrapper {
 	 */
 	private class ConnectionInvocationHandler implements InvocationHandler {
 		private final Connection connection;
+		private boolean alreadyClosed;
 
 		ConnectionInvocationHandler(Connection connection) {
 			super();
@@ -175,23 +176,28 @@ public final class JdbcWrapper {
 			} else if (isHashCodeMethod(methodName, args)) {
 				return connection.hashCode();
 			}
-			Object result = method.invoke(connection, args);
-			if (result instanceof Statement) {
-				final String requestName;
-				if ("prepareStatement".equals(methodName) || "prepareCall".equals(methodName)) {
-					// la méthode est du type prepareStatement(String) ou prepareCall(String),
-					// alors la requête sql est le premier argument
-					requestName = (String) args[0];
-				} else {
-					requestName = null;
+			try {
+				Object result = method.invoke(connection, args);
+				if (result instanceof Statement) {
+					final String requestName;
+					if ("prepareStatement".equals(methodName) || "prepareCall".equals(methodName)) {
+						// la méthode est du type prepareStatement(String) ou prepareCall(String),
+						// alors la requête sql est le premier argument
+						requestName = (String) args[0];
+					} else {
+						requestName = null;
+					}
+					result = createStatementProxy(requestName, (Statement) result);
 				}
-				result = createStatementProxy(requestName, (Statement) result);
-			} else if ("close".equals(method.getName())) {
-				USED_CONNECTION_COUNT.decrementAndGet();
-				USED_CONNECTION_INFORMATIONS.remove(ConnectionInformations
-						.getUniqueIdOfConnection(connection));
+				return result;
+			} finally {
+				if ("close".equals(methodName) && !alreadyClosed) {
+					USED_CONNECTION_COUNT.decrementAndGet();
+					USED_CONNECTION_INFORMATIONS.remove(ConnectionInformations
+							.getUniqueIdOfConnection(connection));
+					alreadyClosed = true;
+				}
 			}
-			return result;
 		}
 
 		private boolean areConnectionsEquals(Object object) {
