@@ -7,6 +7,8 @@
   * fix: used jdbc connections count is sometimes incorrect (revision 3437)
   * In Jenkins, use a timeout for the monitoring of slaves, when a slave is online but does not respond
   * In Jenkins, fix NPE when manually purging the obsolete monitoring files of slaves
+  * New javamelody plugin to monitor a Sonar server: https://github.com/evernat/sonar-javamelody
+    * Note that there are known [https://github.com/evernat/sonar-javamelody/issues issues]: SQL requests are not currently monitored and there is no authentication to secure the access to the monitoring page.
 
 === 1.45.2 (JIRA / Confluence / Bamboo plugin) ===
 
