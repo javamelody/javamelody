@@ -667,7 +667,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("<div align='center'>");
 		final Collection<String> applications = Parameters.getCollectorUrlsByApplications()
 				.keySet();
-		if (applications.size() > 1) {
+		if (applications.size() > 1
+				|| !collectorServer.getLastCollectExceptionsByApplication().isEmpty()) {
 			if (applications.size() > 10) {
 				writeln("<table summary='applications'><tr><td>");
 				writeShowHideLink("chooseApplication", "#Choix_application#");
@@ -707,10 +708,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
 				writeln("<em style='text-align: left; font-size: 10pt;'>");
 				writeln("#Application_indisponible#:<br/>");
+				writeDirectly(htmlEncode(lastCollectException.toString()));
+				writeDirectly("<br/>");
 				for (final StackTraceElement stackTraceElement : lastCollectException
 						.getStackTrace()) {
-					writeln(htmlEncode(stackTraceElement.toString()));
-					writeln("<br/>");
+					writeDirectly(htmlEncode(stackTraceElement.toString()));
+					writeDirectly("<br/>");
 				}
 				writeln("</em>");
 			}
