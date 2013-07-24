@@ -269,8 +269,8 @@ class MonitoringController {
 					collector);
 			serializable = serializableController.createSerializable(httpRequest,
 					javaInformationsList, messageForReport);
-		} catch (final Exception e) {
-			serializable = e;
+		} catch (final Throwable t) {
+			serializable = t;
 		}
 		doCompressedSerializable(httpRequest, httpResponse, serializable);
 	}
