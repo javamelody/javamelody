@@ -115,6 +115,8 @@ class CollectorServer {
 					} catch (final Throwable e) { // NOPMD
 						// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
 						// et il ne doit y avoir aucune erreur dans cette task
+						LOGGER.warn("exception while collecting data for application "
+								+ application);
 						LOGGER.warn(e.getMessage(), e);
 						lastCollectExceptionsByApplication.put(application, e);
 					}
