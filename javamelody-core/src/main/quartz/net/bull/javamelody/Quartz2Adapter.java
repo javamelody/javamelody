@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.bull.javamelody.LOG;
+
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -115,6 +117,7 @@ class Quartz2Adapter extends QuartzAdapter {
 		if (Boolean.parseBoolean(Parameters
 				.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
 			defaultScheduler = null;
+			LOG.debug("Initialization of Quartz default listener has been disabled");
 		} else {
 			defaultScheduler = StdSchedulerFactory.getDefaultScheduler();
 			defaultScheduler.getListenerManager().addJobListener(jobGlobalListener, allJobs);
