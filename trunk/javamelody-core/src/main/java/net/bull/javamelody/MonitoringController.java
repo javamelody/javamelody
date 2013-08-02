@@ -304,15 +304,23 @@ class MonitoringController {
 	private void doResource(HttpServletResponse httpResponse, String resource) throws IOException {
 		// on enlève tout ".." dans le paramètre par sécurité
 		final String localResource = Parameters.getResourcePath(resource.replace("..", ""));
-		addHeadersForResource(httpResponse, localResource);
-
-		final OutputStream out = httpResponse.getOutputStream();
-		final InputStream in = new BufferedInputStream(getClass()
-				.getResourceAsStream(localResource));
+		final InputStream resourceAsStream = getClass().getResourceAsStream(localResource);
+		if (resourceAsStream == null) {
+			httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+			return;
+		}
 		try {
-			TransportFormat.pump(in, out);
+			addHeadersForResource(httpResponse, localResource);
+
+			final OutputStream out = httpResponse.getOutputStream();
+			final InputStream in = new BufferedInputStream(resourceAsStream);
+			try {
+				TransportFormat.pump(in, out);
+			} finally {
+				in.close();
+			}
 		} finally {
-			in.close();
+			resourceAsStream.close();
 		}
 	}
 
