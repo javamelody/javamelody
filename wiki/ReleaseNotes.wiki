@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.46.0 ===
+
   * fix issue 321: javamelody disables Tomcat 7 distributed sessions when using SimpleTcpCluster
   * fix issue 96: fix redeployment in tomcat when javamelody and jrobin jar files are in tomcat/lib and fix redeployment in WebLogic Server
   * fix issue 313: NoClassDefFoundError when IBM's JVM is used
