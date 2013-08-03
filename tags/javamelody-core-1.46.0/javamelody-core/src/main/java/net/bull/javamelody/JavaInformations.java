@@ -1,0 +1,687 @@
+/*
+ * Copyright 2008-2012 by Emeric Vernat
+ *
+ *     This file is part of Java Melody.
+ *
+ * Java Melody is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Java Melody is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package net.bull.javamelody;
+
+import java.io.Serializable;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.ThreadMXBean;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+import javax.sql.DataSource;
+
+/**
+ * Informations systèmes sur le serveur, sans code html de présentation.
+ * L'état d'une instance est initialisé à son instanciation et non mutable;
+ * il est donc de fait thread-safe.
+ * Cet état est celui d'une instance de JVM java, de ses threads et du système à un instant t.
+ * Les instances sont sérialisables pour pouvoir être transmises au serveur de collecte.
+ * @author Emeric Vernat
+ */
+class JavaInformations implements Serializable { // NOPMD
+	// les stack traces des threads ne sont récupérées qu'à partir de java 1.6.0 update 1
+	// pour éviter la fuite mémoire du bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6434648
+	static final boolean STACK_TRACES_ENABLED = "1.6.0_01".compareTo(Parameters.JAVA_VERSION) <= 0;
+	static final double HIGH_USAGE_THRESHOLD_IN_PERCENTS = 95d;
+	private static final boolean SYNCHRONIZER_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
+	private static final boolean SYSTEM_LOAD_AVERAGE_ENABLED = "1.6"
+			.compareTo(Parameters.JAVA_VERSION) < 0;
+	private static final boolean FREE_DISK_SPACE_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
+	private static final long serialVersionUID = 3281861236369720876L;
+	private static final Date START_DATE = new Date();
+	private static boolean localWebXmlExists = true; // true par défaut
+	private static boolean localPomXmlExists = true; // true par défaut
+	private final MemoryInformations memoryInformations;
+	@SuppressWarnings("all")
+	private final List<TomcatInformations> tomcatInformationsList;
+	private final int sessionCount;
+	private final long sessionAgeSum;
+	private final int activeThreadCount;
+	private final int usedConnectionCount;
+	private final int maxConnectionCount;
+	private final int activeConnectionCount;
+	private final long transactionCount;
+	private final long processCpuTimeMillis;
+	private final double systemLoadAverage;
+	private final long unixOpenFileDescriptorCount;
+	private final long unixMaxFileDescriptorCount;
+	private final String host;
+	private final String os;
+	private final int availableProcessors;
+	private final String javaVersion;
+	private final String jvmVersion;
+	private final String pid;
+	private final String serverInfo;
+	private final String contextPath;
+	private final String contextDisplayName;
+	private final Date startDate;
+	private final String jvmArguments;
+	private final long freeDiskSpaceInTemp;
+	private final int threadCount;
+	private final int peakThreadCount;
+	private final long totalStartedThreadCount;
+	private final String dataBaseVersion;
+	private final String dataSourceDetails;
+	@SuppressWarnings("all")
+	private final List<ThreadInformations> threadInformationsList;
+	@SuppressWarnings("all")
+	private final List<CacheInformations> cacheInformationsList;
+	@SuppressWarnings("all")
+	private final List<JobInformations> jobInformationsList;
+	@SuppressWarnings("all")
+	private final List<String> dependenciesList;
+	private final boolean webXmlExists = localWebXmlExists;
+	private final boolean pomXmlExists = localPomXmlExists;
+
+	static final class ThreadInformationsComparator implements Comparator<ThreadInformations>,
+			Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(ThreadInformations thread1, ThreadInformations thread2) {
+			return thread1.getName().compareToIgnoreCase(thread2.getName());
+		}
+	}
+
+	static final class CacheInformationsComparator implements Comparator<CacheInformations>,
+			Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(CacheInformations cache1, CacheInformations cache2) {
+			return cache1.getName().compareToIgnoreCase(cache2.getName());
+		}
+	}
+
+	static final class JobInformationsComparator implements Comparator<JobInformations>,
+			Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(JobInformations job1, JobInformations job2) {
+			return job1.getName().compareToIgnoreCase(job2.getName());
+		}
+	}
+
+	// CHECKSTYLE:OFF
+	JavaInformations(ServletContext servletContext, boolean includeDetails) {
+		// CHECKSTYLE:ON
+		super();
+		memoryInformations = new MemoryInformations();
+		tomcatInformationsList = TomcatInformations.buildTomcatInformationsList();
+		sessionCount = SessionListener.getSessionCount();
+		sessionAgeSum = SessionListener.getSessionAgeSum();
+		activeThreadCount = JdbcWrapper.getActiveThreadCount();
+		usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
+		activeConnectionCount = JdbcWrapper.getActiveConnectionCount();
+		maxConnectionCount = JdbcWrapper.getMaxConnectionCount();
+		transactionCount = JdbcWrapper.getTransactionCount();
+		systemLoadAverage = buildSystemLoadAverage();
+		processCpuTimeMillis = buildProcessCpuTimeMillis();
+		unixOpenFileDescriptorCount = buildOpenFileDescriptorCount();
+		unixMaxFileDescriptorCount = buildMaxFileDescriptorCount();
+		host = Parameters.getHostName() + '@' + Parameters.getHostAddress();
+		os = System.getProperty("os.name") + ' ' + System.getProperty("sun.os.patch.level") + ", "
+				+ System.getProperty("os.arch") + '/' + System.getProperty("sun.arch.data.model");
+		availableProcessors = Runtime.getRuntime().availableProcessors();
+		javaVersion = System.getProperty("java.runtime.name") + ", "
+				+ System.getProperty("java.runtime.version");
+		jvmVersion = System.getProperty("java.vm.name") + ", "
+				+ System.getProperty("java.vm.version") + ", " + System.getProperty("java.vm.info");
+		if (servletContext == null) {
+			serverInfo = null;
+			contextPath = null;
+			contextDisplayName = null;
+			dependenciesList = null;
+		} else {
+			serverInfo = servletContext.getServerInfo();
+			contextPath = Parameters.getContextPath(servletContext);
+			contextDisplayName = servletContext.getServletContextName();
+			dependenciesList = buildDependenciesList();
+		}
+		startDate = START_DATE;
+		jvmArguments = buildJvmArguments();
+		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+		threadCount = threadBean.getThreadCount();
+		peakThreadCount = threadBean.getPeakThreadCount();
+		totalStartedThreadCount = threadBean.getTotalStartedThreadCount();
+		if (FREE_DISK_SPACE_ENABLED) {
+			freeDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getFreeSpace();
+		} else {
+			freeDiskSpaceInTemp = -1;
+		}
+
+		if (includeDetails) {
+			dataBaseVersion = buildDataBaseVersion();
+			dataSourceDetails = buildDataSourceDetails();
+			threadInformationsList = buildThreadInformationsList();
+			cacheInformationsList = CacheInformations.buildCacheInformationsList();
+			jobInformationsList = JobInformations.buildJobInformationsList();
+			pid = PID.getPID();
+		} else {
+			dataBaseVersion = null;
+			dataSourceDetails = null;
+			threadInformationsList = null;
+			cacheInformationsList = null;
+			jobInformationsList = null;
+			pid = null;
+		}
+	}
+
+	static void setWebXmlExistsAndPomXmlExists(boolean webXmlExists, boolean pomXmlExists) {
+		localWebXmlExists = webXmlExists;
+		localPomXmlExists = pomXmlExists;
+	}
+
+	boolean doesWebXmlExists() {
+		return webXmlExists;
+	}
+
+	boolean doesPomXmlExists() {
+		return pomXmlExists;
+	}
+
+	private static long buildProcessCpuTimeMillis() {
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (isSunOsMBean(operatingSystem)) {
+			// nano-secondes converties en milli-secondes
+			return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
+					"getProcessCpuTime") / 1000000;
+		}
+		return -1;
+	}
+
+	private static long buildOpenFileDescriptorCount() {
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (isSunOsMBean(operatingSystem)
+				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
+						.getName())) {
+			try {
+				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
+						"getOpenFileDescriptorCount");
+			} catch (final Error e) {
+				// pour issue 16 (using jsvc on ubuntu or debian)
+				return -1;
+			}
+		}
+		return -1;
+	}
+
+	private static long buildMaxFileDescriptorCount() {
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (isSunOsMBean(operatingSystem)
+				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
+						.getName())) {
+			try {
+				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
+						"getMaxFileDescriptorCount");
+			} catch (final Error e) {
+				// pour issue 16 (using jsvc on ubuntu or debian)
+				return -1;
+			}
+		}
+		return -1;
+	}
+
+	private static double buildSystemLoadAverage() {
+		// System load average for the last minute.
+		// The system load average is the sum of
+		// the number of runnable entities queued to the available processors
+		// and the number of runnable entities running on the available processors
+		// averaged over a period of time.
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (SYSTEM_LOAD_AVERAGE_ENABLED && operatingSystem.getSystemLoadAverage() >= 0) {
+			// systemLoadAverage n'existe qu'à partir du jdk 1.6
+			return operatingSystem.getSystemLoadAverage();
+		}
+		return -1;
+	}
+
+	private static String buildJvmArguments() {
+		final StringBuilder jvmArgs = new StringBuilder();
+		for (final String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+			jvmArgs.append(jvmArg).append('\n');
+		}
+		if (jvmArgs.length() > 0) {
+			jvmArgs.deleteCharAt(jvmArgs.length() - 1);
+		}
+		return jvmArgs.toString();
+	}
+
+	static List<ThreadInformations> buildThreadInformationsList() {
+		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+		final List<Thread> threads;
+		final Map<Thread, StackTraceElement[]> stackTraces;
+		if (STACK_TRACES_ENABLED) {
+			stackTraces = Thread.getAllStackTraces();
+			threads = new ArrayList<Thread>(stackTraces.keySet());
+		} else {
+			// on récupère les threads sans stack trace en contournant bug 6434648 avant 1.6.0_01
+			// hormis pour le thread courant qui obtient sa stack trace différemment sans le bug
+			threads = getThreadsFromThreadGroups();
+			final Thread currentThread = Thread.currentThread();
+			stackTraces = Collections.singletonMap(currentThread, currentThread.getStackTrace());
+		}
+
+		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
+				&& threadBean.isThreadCpuTimeEnabled();
+		final long[] deadlockedThreads = getDeadlockedThreads(threadBean);
+		final List<ThreadInformations> threadInfosList = new ArrayList<ThreadInformations>(
+				threads.size());
+		// hostAddress récupéré ici car il peut y avoir plus de 20000 threads
+		final String hostAddress = Parameters.getHostAddress();
+		for (final Thread thread : threads) {
+			final StackTraceElement[] stackTraceElements = stackTraces.get(thread);
+			final List<StackTraceElement> stackTraceElementList = stackTraceElements == null ? null
+					: new ArrayList<StackTraceElement>(Arrays.asList(stackTraceElements));
+			final long cpuTimeMillis;
+			final long userTimeMillis;
+			if (cpuTimeEnabled) {
+				cpuTimeMillis = threadBean.getThreadCpuTime(thread.getId()) / 1000000;
+				userTimeMillis = threadBean.getThreadUserTime(thread.getId()) / 1000000;
+			} else {
+				cpuTimeMillis = -1;
+				userTimeMillis = -1;
+			}
+			final boolean deadlocked = deadlockedThreads != null
+					&& Arrays.binarySearch(deadlockedThreads, thread.getId()) >= 0;
+			// stackTraceElementList est une ArrayList et non unmodifiableList pour lisibilité xml
+			threadInfosList.add(new ThreadInformations(thread, stackTraceElementList,
+					cpuTimeMillis, userTimeMillis, deadlocked, hostAddress));
+		}
+		// on retourne ArrayList et non unmodifiableList pour lisibilité du xml par xstream
+		return threadInfosList;
+	}
+
+	static List<Thread> getThreadsFromThreadGroups() {
+		ThreadGroup group = Thread.currentThread().getThreadGroup(); // NOPMD
+		while (group.getParent() != null) {
+			group = group.getParent();
+		}
+		final Thread[] threadsArray = new Thread[group.activeCount()];
+		group.enumerate(threadsArray, true);
+		return Arrays.asList(threadsArray);
+	}
+
+	private static long[] getDeadlockedThreads(ThreadMXBean threadBean) {
+		final long[] deadlockedThreads;
+		if (SYNCHRONIZER_ENABLED && threadBean.isSynchronizerUsageSupported()) {
+			deadlockedThreads = threadBean.findDeadlockedThreads();
+		} else {
+			deadlockedThreads = threadBean.findMonitorDeadlockedThreads();
+		}
+		if (deadlockedThreads != null) {
+			Arrays.sort(deadlockedThreads);
+		}
+		return deadlockedThreads;
+	}
+
+	private static String buildDataBaseVersion() {
+		if (Parameters.isNoDatabase()) {
+			return null;
+		}
+		final StringBuilder result = new StringBuilder();
+		try {
+			// on commence par voir si le driver jdbc a été utilisé
+			// car s'il n'y a pas de datasource une exception est déclenchée
+			if (Parameters.getLastConnectUrl() != null) {
+				final Connection connection = DriverManager.getConnection(
+						Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo());
+				connection.setAutoCommit(false);
+				try {
+					appendDataBaseVersion(result, connection);
+				} finally {
+					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
+					connection.close();
+				}
+				return result.toString();
+			}
+
+			// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
+			// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
+			final Map<String, DataSource> dataSources = JdbcWrapper.getJndiAndSpringDataSources();
+			for (final Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
+				final String name = entry.getKey();
+				final DataSource dataSource = entry.getValue();
+				final Connection connection = dataSource.getConnection();
+				// on ne doit pas changer autoCommit pour la connection d'une DataSource
+				// (ou alors il faudrait remettre l'autoCommit après, issue 233)
+				// connection.setAutoCommit(false);
+				try {
+					if (result.length() > 0) {
+						result.append("\n\n");
+					}
+					result.append(name).append(":\n");
+					appendDataBaseVersion(result, connection);
+				} finally {
+					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
+					connection.close();
+				}
+			}
+		} catch (final Exception e) {
+			result.append(e.toString());
+		}
+		if (result.length() > 0) {
+			return result.toString();
+		}
+		return null;
+	}
+
+	private static void appendDataBaseVersion(StringBuilder result, Connection connection)
+			throws SQLException {
+		final DatabaseMetaData metaData = connection.getMetaData();
+		// Sécurité: pour l'instant on n'indique pas metaData.getUserName()
+		result.append(metaData.getURL()).append('\n');
+		result.append(metaData.getDatabaseProductName()).append(", ")
+				.append(metaData.getDatabaseProductVersion()).append('\n');
+		result.append("Driver JDBC:\n").append(metaData.getDriverName()).append(", ")
+				.append(metaData.getDriverVersion());
+	}
+
+	private static String buildDataSourceDetails() {
+		final Map<String, Map<String, Object>> dataSourcesProperties = JdbcWrapper
+				.getBasicDataSourceProperties();
+		final StringBuilder sb = new StringBuilder();
+		for (final Map.Entry<String, Map<String, Object>> entry : dataSourcesProperties.entrySet()) {
+			final Map<String, Object> dataSourceProperties = entry.getValue();
+			if (dataSourceProperties.isEmpty()) {
+				continue;
+			}
+			if (sb.length() > 0) {
+				sb.append('\n');
+			}
+			final String name = entry.getKey();
+			if (name != null) {
+				sb.append(name).append(":\n");
+			}
+			for (final Map.Entry<String, Object> propertyEntry : dataSourceProperties.entrySet()) {
+				sb.append(propertyEntry.getKey()).append(" = ").append(propertyEntry.getValue())
+						.append('\n');
+			}
+		}
+		if (sb.length() == 0) {
+			return null;
+		}
+		return sb.toString();
+	}
+
+	private static List<String> buildDependenciesList() {
+		final String directory = "/WEB-INF/lib/";
+		final Set<String> dependencies = Parameters.getServletContext().getResourcePaths(directory);
+		if (dependencies == null || dependencies.isEmpty()) {
+			return Collections.emptyList();
+		}
+		final List<String> result = new ArrayList<String>(dependencies.size());
+		for (final String dependency : dependencies) {
+			result.add(dependency.substring(directory.length()));
+		}
+		Collections.sort(result);
+		return result;
+	}
+
+	private static boolean isSunOsMBean(OperatingSystemMXBean operatingSystem) {
+		// on ne teste pas operatingSystem instanceof com.sun.management.OperatingSystemMXBean
+		// car le package com.sun n'existe à priori pas sur une jvm tierce
+		final String className = operatingSystem.getClass().getName();
+		return "com.sun.management.OperatingSystem".equals(className)
+				|| "com.sun.management.UnixOperatingSystem".equals(className);
+	}
+
+	MemoryInformations getMemoryInformations() {
+		return memoryInformations;
+	}
+
+	List<TomcatInformations> getTomcatInformationsList() {
+		return tomcatInformationsList;
+	}
+
+	int getSessionCount() {
+		return sessionCount;
+	}
+
+	long getSessionAgeSum() {
+		return sessionAgeSum;
+	}
+
+	long getSessionMeanAgeInMinutes() {
+		if (sessionCount > 0) {
+			return sessionAgeSum / sessionCount / 60000;
+		}
+		return -1;
+	}
+
+	int getActiveThreadCount() {
+		return activeThreadCount;
+	}
+
+	int getUsedConnectionCount() {
+		return usedConnectionCount;
+	}
+
+	int getActiveConnectionCount() {
+		return activeConnectionCount;
+	}
+
+	int getMaxConnectionCount() {
+		return maxConnectionCount;
+	}
+
+	long getTransactionCount() {
+		return transactionCount;
+	}
+
+	double getUsedConnectionPercentage() {
+		if (maxConnectionCount > 0) {
+			return 100d * usedConnectionCount / maxConnectionCount;
+		}
+		return -1d;
+	}
+
+	long getProcessCpuTimeMillis() {
+		return processCpuTimeMillis;
+	}
+
+	double getSystemLoadAverage() {
+		return systemLoadAverage;
+	}
+
+	long getUnixOpenFileDescriptorCount() {
+		return unixOpenFileDescriptorCount;
+	}
+
+	long getUnixMaxFileDescriptorCount() {
+		return unixMaxFileDescriptorCount;
+	}
+
+	double getUnixOpenFileDescriptorPercentage() {
+		if (unixOpenFileDescriptorCount >= 0) {
+			return 100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount;
+		}
+		return -1d;
+	}
+
+	String getHost() {
+		return host;
+	}
+
+	String getOS() {
+		return os;
+	}
+
+	int getAvailableProcessors() {
+		return availableProcessors;
+	}
+
+	String getJavaVersion() {
+		return javaVersion;
+	}
+
+	String getJvmVersion() {
+		return jvmVersion;
+	}
+
+	String getPID() {
+		return pid;
+	}
+
+	String getServerInfo() {
+		return serverInfo;
+	}
+
+	String getContextPath() {
+		return contextPath;
+	}
+
+	String getContextDisplayName() {
+		return contextDisplayName;
+	}
+
+	Date getStartDate() {
+		return startDate;
+	}
+
+	String getJvmArguments() {
+		return jvmArguments;
+	}
+
+	long getFreeDiskSpaceInTemp() {
+		return freeDiskSpaceInTemp;
+	}
+
+	int getThreadCount() {
+		return threadCount;
+	}
+
+	int getPeakThreadCount() {
+		return peakThreadCount;
+	}
+
+	long getTotalStartedThreadCount() {
+		return totalStartedThreadCount;
+	}
+
+	String getDataBaseVersion() {
+		return dataBaseVersion;
+	}
+
+	String getDataSourceDetails() {
+		return dataSourceDetails;
+	}
+
+	List<ThreadInformations> getThreadInformationsList() {
+		// on trie sur demande (si affichage)
+		final List<ThreadInformations> result = new ArrayList<ThreadInformations>(
+				threadInformationsList);
+		Collections.sort(result, new ThreadInformationsComparator());
+		return Collections.unmodifiableList(result);
+	}
+
+	List<CacheInformations> getCacheInformationsList() {
+		// on trie sur demande (si affichage)
+		final List<CacheInformations> result = new ArrayList<CacheInformations>(
+				cacheInformationsList);
+		Collections.sort(result, new CacheInformationsComparator());
+		return Collections.unmodifiableList(result);
+	}
+
+	List<JobInformations> getJobInformationsList() {
+		// on trie sur demande (si affichage)
+		final List<JobInformations> result = new ArrayList<JobInformations>(jobInformationsList);
+		Collections.sort(result, new JobInformationsComparator());
+		return Collections.unmodifiableList(result);
+	}
+
+	int getCurrentlyExecutingJobCount() {
+		int result = 0;
+		for (final JobInformations jobInformations : jobInformationsList) {
+			if (jobInformations.isCurrentlyExecuting()) {
+				result++;
+			}
+		}
+		return result;
+	}
+
+	boolean isDependenciesEnabled() {
+		return dependenciesList != null && !dependenciesList.isEmpty();
+	}
+
+	List<String> getDependenciesList() {
+		if (dependenciesList != null) {
+			return Collections.unmodifiableList(dependenciesList);
+		}
+		return Collections.emptyList();
+	}
+
+	String getDependencies() {
+		if (!isDependenciesEnabled()) {
+			return null;
+		}
+		final StringBuilder sb = new StringBuilder();
+		for (final String dependency : getDependenciesList()) {
+			if (dependency.endsWith(".jar") || dependency.endsWith(".JAR")) {
+				sb.append(dependency);
+				sb.append(",\n");
+			}
+		}
+		if (sb.length() >= 2) {
+			sb.delete(sb.length() - 2, sb.length());
+		}
+		return sb.toString();
+	}
+
+	boolean isStackTraceEnabled() {
+		for (final ThreadInformations threadInformations : threadInformationsList) {
+			final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
+			if (stackTrace != null && !stackTrace.isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	boolean isCacheEnabled() {
+		return cacheInformationsList != null && !cacheInformationsList.isEmpty();
+	}
+
+	boolean isJobEnabled() {
+		return jobInformationsList != null && !jobInformationsList.isEmpty();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[pid=" + getPID() + ", host=" + getHost()
+				+ ", javaVersion=" + getJavaVersion() + ", serverInfo=" + getServerInfo() + ']';
+	}
+}

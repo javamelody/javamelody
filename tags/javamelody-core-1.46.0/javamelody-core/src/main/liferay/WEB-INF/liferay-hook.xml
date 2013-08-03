@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!-- comment the DTD to avoid SAXReader "Connection timed out" exception when http.proxyHost is not specified
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd"> -->
+
+<hook>
+	<servlet-filter>
+		<servlet-filter-name>JavaMelody Monitoring Filter</servlet-filter-name>
+		<servlet-filter-impl>net.bull.javamelody.LiferayMonitoringFilter</servlet-filter-impl>
+		<!-- <init-param>
+			<param-name>hello</param-name>
+			<param-value>world</param-value>
+		</init-param> -->
+	</servlet-filter>
+	<servlet-filter-mapping>
+		<servlet-filter-name>JavaMelody Monitoring Filter</servlet-filter-name>
+		<before-filter>Thread Local Filter</before-filter>
+
+		<!-- <before-filter>SSO Open SSO Filter</before-filter>
+		<url-pattern>/group/*</url-pattern>
+		<url-pattern>/user/*</url-pattern>
+		<url-pattern>/web/*</url-pattern>
+		<url-pattern>*.jsp</url-pattern> -->
+
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</servlet-filter-mapping>
+</hook>

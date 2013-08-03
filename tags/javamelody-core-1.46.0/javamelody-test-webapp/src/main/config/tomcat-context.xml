@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Context> 
+  <Parameter name='javamelody.resolution-seconds' value='60' override='false'/>
+  <Parameter name='javamelody.admin-emails' value='emeric.vernat@bull.net' override='false'/>
+  <Parameter name='javamelody.mail-session' value='mail/Session' override='false'/>
+  <Parameter name='javamelody.mail-periods' value='day,week,month' override='false'/>
+
+  <!-- seuils comme indiques dans la spec technique -->
+  <Parameter name='javamelody.warning-threshold-millis' value='2000' override='false'/>
+  <Parameter name='javamelody.severe-threshold-millis' value='5000' override='false'/>
+  <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
+			   defaultAutoCommit="false"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="sa" password="" driverClassName="org.h2.Driver"
+               url="jdbc:h2:/Applis/h2/test-webapp" />
+  <Resource name="jdbc/TestDB2" auth="Container" type="javax.sql.DataSource"
+			   defaultAutoCommit="false"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="sa" password="" driverClassName="org.h2.Driver"
+               url="jdbc:h2:/Applis/h2/test-webapp2" />
+<!--
+   <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
+			   defaultAutoCommit="false"
+               maxActive="200" maxIdle="30" maxWait="10000"
+               username="root" password="root" driverClassName="com.mysql.jdbc.Driver"
+               url="jdbc:mysql://127.0.0.1:3306/test?socketTimeout=5000&amp;connectTimeout=5000" />
+   <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
+			   defaultAutoCommit="false"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="postgres" password="postgres" driverClassName="org.postgresql.Driver"
+               url="jdbc:postgresql://localhost/postgres" />
+   <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
+			   defaultAutoCommit="false"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="test" password="test" driverClassName="oracle.jdbc.OracleDriver"
+               url="jdbc:oracle:thin:@127.0.0.1:1521:" />
+-->
+</Context>

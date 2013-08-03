@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright 2008-2012 by Emeric Vernat
+ *
+ *     This file is part of Java Melody.
+ *
+ * Java Melody is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Java Melody is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Java Melody.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Auteur: Emeric Vernat -->
+<project basedir="." default="all" name="JavaMelody">
+	<!-- Initialisation des tâches -->
+	<target name="init">
+		<echo message="-- Script Ant JavaMelody --" level="info" />
+		<echo message="Basedir: ${basedir}" level="info" />
+		<echo message="Ant file: ${ant.file}" level="info" />
+		<echo message="Ant home: ${ant.home}" level="info" />
+		<echo message="${ant.version}" level="info" />
+		<echo message="${java.runtime.name}, ${java.runtime.version}" level="info" />
+		<echo message="${os.name} ${sun.os.patch.level}, ${os.arch}/${sun.arch.data.model}" level="info" />
+		<property file="VERSION.properties" />
+		<echo message="JavaMelody version: ${version}" level="info" />
+		<tstamp>
+			<format property="TODAY_FR" pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
+		</tstamp>
+		<echo message="${TODAY_FR}" level="info" />
+
+		<pathconvert property="class.path">
+			<path>
+				<fileset dir="src/main/lib">
+					<include name="javax.servlet-api-3.0.1.jar" />
+					<include name="mail-1.4.1.jar" />
+					<include name="activation.jar" />
+					<include name="ejb-api-3.0.jar" />
+					<include name="dbcp-6.0.18.jar" />
+					<include name="hibernate-3.2.6.ga.jar" />
+					<include name="jsf-impl-2.1.5.jar" />
+					<include name="javax.faces-api-2.1.jar" />
+					<include name="javax.el-api-2.2.1.jar" />
+					<include name="tomcat-jdbc-7.0.27.jar" />
+				</fileset>
+				<fileset dir="src/test/test-webapp/WEB-INF/lib">
+					<include name="jrobin-1.5.9.1.jar" />
+					<include name="itext-2.1.7.jar" />
+					<include name="spring-aop-2.5.6.jar" />
+					<include name="spring-core-2.5.6.jar" />
+					<include name="spring-context-2.5.6.jar" />
+					<include name="spring-beans-2.5.6.jar" />
+					<include name="aopalliance-1.0.jar" />
+					<include name="guice-2.0.jar" />
+					<include name="xwork-2.1.0.jar" />
+					<include name="xstream-1.4.2.jar" />
+					<include name="log4j-1.2.16.jar" />
+					<include name="slf4j-api-1.5.11.jar" />
+					<include name="logback-classic-0.9.19.jar" />
+					<include name="logback-core-0.9.19.jar" />
+					<include name="ehcache-1.6.0.jar" />
+					<include name="quartz-1.5.2.jar" />
+					<include name="commons-dbcp-1.2.2.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+	</target>
+
+	<!-- Compilation -->
+	<target name="build" depends="init">
+		<echo message="Compilation" level="info" />
+		<mkdir dir="build/classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/main/java" destdir="build/classes" classpath="${class.path}" includeantruntime="false">
+			<!-- -XDignore.symbol.file pour éviter warning sur sun.nio.ch.DirectBuffer dans RrdNioBackend -->
+			<compilerarg value="-XDignore.symbol.file=true -Xlint" />
+		</javac>
+
+		<!-- Compilation du Quartz2Adapter vers src/main/resources (nécessite une version différente de quartz) -->
+		<pathconvert property="class.path.quartz">
+			<path>
+				<fileset dir="src/main/lib">
+					<include name="quartz-2.1.2.jar" />
+				</fileset>
+				<dirset dir="build/classes" />
+			</path>
+		</pathconvert>
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/main/quartz" destdir="src/main/resources" classpath="${class.path.quartz}" includeantruntime="false">
+			<compilerarg value="-Xlint" />
+		</javac>
+	</target>
+
+	<!-- Nettoyage du répertoire de compilation, de documentation, du jar et du war -->
+	<target name="clean" depends="init">
+		<echo message="Nettoyage du répertoire de compilation, de documentation, du jar et du war" level="info" />
+		<delete dir="build" />
+		<delete dir="doc" />
+		<delete file="javamelody.jar" />
+		<delete file="javamelody.war" />
+		<delete file="jira-javamelody.jar" />
+		<delete file="liferay-javamelody-hook.war" />
+		<delete file="test.war" />
+	</target>
+
+	<!-- Construction du jar -->
+	<target name="jar" depends="build">
+		<echo message="Construction du jar" level="info" />
+		<delete file="javamelody.jar" />
+		<jar destfile="javamelody.jar">
+			<zipfileset dir="build/classes" />
+			<zipfileset dir="src/main/resources" excludes="**/Thumbs.db" />
+			<zipfileset file="VERSION.properties" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<zipfileset file="src/site/apt/user_guide*.apt" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du war -->
+	<target name="war" depends="build">
+		<echo message="Construction du war" level="info" />
+		<delete file="javamelody.war" />
+		<jar destfile="javamelody.war">
+			<!-- classes de la webapp -->
+			<zipfileset dir="build/classes" prefix="WEB-INF/classes" />
+			<!-- Main-Class et dépendances pour "java -jar javamelody.war" -->
+			<zipfileset file="build/classes/net/bull/javamelody/Main.class" prefix="net/bull/javamelody" />
+			<zipfileset file="src/main/lib/winstone-hudson.jar" />
+			<!-- ressources de la webapp -->
+			<zipfileset dir="src/main/resources" prefix="WEB-INF/classes" excludes="**/Thumbs.db,META-INF/web-fragment.xml" />
+			<zipfileset file="VERSION.properties" prefix="WEB-INF/classes" />
+			<!-- dépendances de la webapp -->
+			<zipfileset dir="src/test/test-webapp/WEB-INF/lib" prefix="WEB-INF/lib">
+				<include name="jrobin-1.5.9.1.jar" />
+				<include name="itext-2.1.7.jar" />
+				<include name="log4j-1.2.16.jar" />
+				<!-- slf4j pour issue 102 avec IBM's JVM -->
+				<include name="slf4j-api-1.5.11.jar" />
+				<include name="xstream-1.4.2.jar" />
+				<include name="xpp3_min-1.1.4c.jar" />
+				<include name="xmlpull-1.1.3.1.jar" />
+				<include name="ehcache-1.6.0.jar" />
+				<include name="quartz-1.5.2.jar" />
+			</zipfileset>
+			<!-- web.xml -->
+			<zipfileset file="src/main/collector-webapp/**" />
+			<zipfileset file="VERSION.properties" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<zipfileset file="src/site/apt/user_guide*.apt" />
+			<manifest>
+				<attribute name="Main-Class" value="net.bull.javamelody.Main" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du jar du plugin Jira -->
+	<target name="jira-jar" depends="jar" if="version">
+		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier VERSION.properties existe -->
+		<echo message="Construction du jar pour le plugin Jira" level="info" />
+		<!-- Description Jira/Confluence/Bamboo pour le plugin.
+		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
+		<copy file="src/main/jira/atlassian-plugin.xml" todir="build/" overwrite="true" />
+		<replace file="build/atlassian-plugin.xml" propertyFile="VERSION.properties" failOnNoReplacements="true">
+			<replacefilter token="@version@" property="version" />
+		</replace>
+		<delete file="jira-javamelody.jar" />
+		<jar destfile="jira-javamelody.jar">
+			<zipfileset src="javamelody.jar" excludes="META-INF/web-fragment.xml" />
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" excludes="**/cmap_info.txt"/>
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
+			<!--
+			inutile d'inclure xstream car jira et confluence incluent déjà une version d'xstream (issue 269, 231) 
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/xstream-1.4.2.jar" />
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" />
+			<zipfileset src="src/test/test-webapp/WEB-INF/lib/xmlpull-1.1.3.1.jar" />
+			-->
+			<zipfileset file="src/main/jira/javamelody_i18n.properties" />
+			<zipfileset file="build/atlassian-plugin.xml" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du war du plugin Liferay -->
+	<target name="liferay-war" depends="jar" if="version">
+		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier VERSION.properties existe -->
+		<echo message="Construction du war pour le plugin Liferay" level="info" />
+		<!-- Description Liferay pour le plugin.
+		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
+		<copy file="src/main/liferay/WEB-INF/liferay-plugin-package.properties" todir="build/" overwrite="true" />
+		<replace file="build/liferay-plugin-package.properties" propertyFile="VERSION.properties" failOnNoReplacements="true">
+			<replacefilter token="@version@" property="version" />
+		</replace>
+		<delete file="liferay-javamelody-hook.war" />
+		<jar destfile="liferay-javamelody-hook.war">
+			<zipfileset file="build/liferay-plugin-package.properties" prefix="WEB-INF"/>
+			<zipfileset dir="src/main/liferay" excludes="WEB-INF/liferay-plugin-package.properties"/>
+
+			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xstream-1.4.2.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xmlpull-1.1.3.1.jar" prefix="WEB-INF/lib" />
+
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction du jar javamelody-objectfactory pour GlassFish v3 -->
+	<target name="objectfactory-jar" depends="init">
+		<mkdir dir="build/objectfactory-classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/main/objectfactory" destdir="build/objectfactory-classes" includeantruntime="false">
+			<compilerarg value="-Xlint" />
+		</javac>
+		<delete file="javamelody-objectfactory.jar" />
+		<jar destfile="javamelody-objectfactory.jar">
+			<zipfileset dir="build/objectfactory-classes" />
+			<zipfileset dir="src/main/objectfactory" />
+			<zipfileset file="LICENSE" />
+			<zipfileset file="LICENSE.GPL" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${TODAY_FR}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<section name="javamelody">
+					<attribute name="Implementation-Title" value="Java Melody" />
+					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Construction de la javadoc (api public) -->
+	<target name="javadoc" depends="init,build">
+		<echo message="Construction de la javadoc" level="info" />
+		<macrodef name="myjavadoc">
+			<attribute name="destdir" />
+			<attribute name="windowtitle" />
+			<attribute name="classpath" />
+			<element name="javadoc-elements" implicit="true" />
+			<sequential>
+				<echo message="@{windowtitle}" level="info" />
+				<delete dir="@{destdir}" />
+				<javadoc destdir="@{destdir}" windowtitle="@{windowtitle}" classpath="@{classpath}" 
+					encoding="UTF-8" charset="UTF-8" access="public" 
+					author="on" version="on" use="on" maxmemory="128m">
+					<link offline="true" href="http://docs.oracle.com/javase/7/docs/api/" packagelistloc="./j2se/" />
+					<link offline="true" href="http://docs.oracle.com/javaee/6/api/" packagelistloc="./j2ee/" />
+					<doctitle>
+						<![CDATA[@{windowtitle}]]>
+					</doctitle>
+					<javadoc-elements />
+				</javadoc>
+			</sequential>
+		</macrodef>
+
+		<myjavadoc destdir="doc" windowtitle="Java Melody" classpath="${class.path}">
+			<packageset dir="src/main/java" />
+		</myjavadoc>
+	</target>
+
+	<!-- Compilation et exécution des tests unitaires -->
+	<target name="test" depends="build">
+		<!-- Doit être exécuté avec un jdk et non un jre pour TestHtmlHeapHistogramReport -->
+		<echo message="Compilation et exécution des tests unitaires" level="info" />
+		<mkdir dir="build/test-classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/test/java" destdir="build/test-classes" includeantruntime="false">
+			<classpath>
+				<path path="build/classes" />
+				<path path="${class.path}" />
+				<fileset dir="src/main/lib">
+					<include name="junit-4.11.jar" />
+					<include name="h2-1.3.170.jar" />
+					<include name="easymock-3.1.jar" />
+				</fileset>
+			</classpath>
+			<!-- -XDignore.symbol.file pour éviter warning sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
+			<compilerarg value="-XDignore.symbol.file=true -Xlint" />
+		</javac>
+		<delete dir="build/test-results" />
+		<mkdir dir="build/test-results" />
+		<junit printsummary="true" showoutput="false">
+			<formatter type="plain" usefile="false" />
+			<formatter type="xml" />
+			<classpath>
+				<path path="build/test-classes" />
+				<path path="build/classes" />
+				<path path="src/test/resources" />
+				<path path="src/main/resources" />
+				<path path="${class.path}" />
+				<fileset dir="src/main/lib">
+					<include name="junit-4.11.jar" />
+					<include name="hamcrest-core-1.3.jar" />
+					<include name="h2-1.3.170.jar" />
+					<include name="easymock-3.1.jar" />
+					<include name="dom4j-1.6.1.jar" />
+					<include name="commons-collections-2.1.1.jar" />
+					<include name="tomcat-juli-7.0.27.jar" />
+					<include name="jta-1.0.1B.jar" />
+				</fileset>
+				<fileset dir="src/test/test-webapp/WEB-INF/lib">
+					<include name="commons-logging-1.1.1.jar" />
+					<include name="xpp3_min-1.1.4c.jar" />
+					<include name="xmlpull-1.1.3.1.jar" />
+					<include name="commons-pool-1.3.jar" />
+				</fileset>
+			</classpath>
+			<sysproperty key="catalina.home" value="unknown" />
+			<sysproperty key="java.io.tmpdir" value="${basedir}/build/tmp" />
+			<batchtest todir="build/test-results" haltonerror="false" haltonfailure="false"
+				errorProperty="test.failed" failureProperty="test.failed">
+				<fileset dir="build/test-classes" excludes="**/*$*,**/SessionTestImpl.class,**/JobTestImpl.class,**/SpringTestFacade*.class,**/Utils.class" />
+			</batchtest>
+		</junit>
+		<fail message="Tests failed: check test reports." if="test.failed" />
+	</target>
+
+	<!-- Construction du war de test -->
+	<target name="test-war" depends="jar">
+		<echo message="Construction du war de test" level="info" />
+		<!-- Doit être exécuté avec un jdk et non un jre pour TestHtmlHeapHistogramReport -->
+		<echo message="Compilation des classes de tests" level="info" />
+		<mkdir dir="build/test-classes" />
+		<javac encoding="UTF-8" debug="on" deprecation="off" nowarn="off" source="1.5" target="1.5" 
+			srcdir="src/test/java" destdir="build/test-classes" includeantruntime="false">
+			<classpath>
+				<path path="build/classes" />
+				<path path="${class.path}" />
+				<fileset dir="src/main/lib">
+					<include name="junit-4.11.jar" />
+					<include name="h2-1.3.170.jar" />
+					<include name="easymock-3.1.jar" />
+				</fileset>
+			</classpath>
+			<!-- -XDignore.symbol.file pour éviter warning sur sun.misc.BASE64Encoder dans le test unitaire TestBase64Coder -->
+			<compilerarg value="-XDignore.symbol.file=true -Xlint" />
+		</javac>
+		<delete file="test.war" />
+		<jar destfile="test.war">
+			<!-- classes de la webapp -->
+			<zipfileset dir="build/test-classes" prefix="WEB-INF/classes" />
+			<!-- ressources de la webapp -->
+			<zipfileset dir="src/test/resources" prefix="WEB-INF/classes" />
+			<!-- dépendance javamelody -->
+			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
+			<!-- fichiers jsp, xml et dépendances de la webapp -->
+			<zipfileset dir="src/test/test-webapp/" excludes="WEB-INF/classes/**" />
+		</jar>
+	</target>
+
+	<!-- Construction du zip -->
+	<target name="zip" depends="clean,jar,war,jira-jar,liferay-war,javadoc">
+		<echo message="Construction du zip" level="info" />
+		<delete file="javamelody.zip" />
+		<zip destfile="javamelody.zip">
+			<!-- On ne prend surtout pas le gros répertoire .repository dans l'intégration continue Jenkins -->
+			<zipfileset dir="." excludes=".repository/**,**/classes/**,build/**,target/**,**/Thumbs.db,javamelody.zip,test.war" />
+			<!-- jar jrobin copié selon indication du user_guide -->
+			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" />
+		</zip>
+	</target>
+
+	<!-- (Reserved) Upload des fichiers d'une livraison vers "Download" sur javamelody.googlecode.com -->
+	<target name="deploy" depends="zip">
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="src/main/lib/ant-googlecode-0.0.3.jar" name="gcupload" />
+		<input message="googlecode username:" addproperty="gc.user" defaultvalue="evernat@free.fr" />
+		<!-- generated password : https://code.google.com/hosting/settings -->
+		<input message="googlecode password:" addproperty="gc.pass" />
+		<!-- <property name="gc.label" value="Deprecated" /> -->
+		<property name="gc.label" value="Featured" />
+		<echo message="Début de l'upload" />
+		<gcupload filename="javamelody.zip" targetfilename="javamelody-${version}.zip" summary="Zip of project" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="javamelody.war" targetfilename="javamelody-${version}.war" summary="War of the optional collect server" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="jira-javamelody.jar" targetfilename="jira-javamelody-${version}.jar" summary="Jira, Confluence and Bamboo monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<gcupload filename="liferay-javamelody-hook.war" targetfilename="liferay-javamelody-hook-${version}.war" summary="Liferay monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="" />
+		<gcupload filename="javamelody.jar" targetfilename="javamelody-${version}.jar" summary="Jar for integration in a webapp" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
+		<echo message="Upload des fichiers ${version} sur googlecode terminé" />
+	</target>
+
+	<!-- Tout (zip, clean) -->
+	<target name="all" depends="zip">
+		<antcall target="clean" />
+	</target>
+</project>
