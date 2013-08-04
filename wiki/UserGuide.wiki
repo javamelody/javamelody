@@ -115,8 +115,6 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	{{{grails install-plugin grails-melody}}}
 
-	~~Download the latest Grails plugin file from [http://code.google.com/p/javamelody/downloads/list Downloads] and execute the following command: {{{grails install-plugin grails-grails-melody-<version>.zip}}}~~
-
 == JavaMelody Setup ==
 
 	An important value of the monitoring is a very simple and fast installation process.
