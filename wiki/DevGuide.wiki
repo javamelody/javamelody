@@ -135,7 +135,7 @@ This is an internal reminder of the steps of the release process.
   * *sonar plugin*
     * increment javamelody-core version and project's version in [https://github.com/evernat/sonar-javamelody/blob/master/pom.xml]
     * mvn clean package to package the jar file in the target directory
-    * create [https://github.com/evernat/sonar-javamelody/releases release]
+    * create [https://github.com/evernat/sonar-javamelody/releases release] and attach the jar file
   * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
   * *grails plugin* ([https://github.com/evernat/grails-melody-plugin], [http://grails-plugins.github.io/grails-release/docs/manual/guide/plugins.html grails documentation])
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
