@@ -7,6 +7,7 @@
   * [#Hudson_/_Jenkins_Plugin Hudson / Jenkins Plugin]
   * [#Atlassian_JIRA,_Confluence_and_Bamboo_Plugin Atlassian JIRA, Confluence and Bamboo Plugin]
   * [#Liferay_Plugin Liferay Plugin]
+  * [#Sonar_Plugin Sonar Plugin]
   * [#Grails_Plugin Grails Plugin]
   * [#Setup JavaMelody Setup]
     * [#1._Jar_files 1. Jar files]
