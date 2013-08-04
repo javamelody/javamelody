@@ -121,7 +121,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	For example, if the server is local: {{{http://localhost:9000/monitoring}}}
 
-	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And pull request are welcome.
+	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And pull requests are welcome.
 
 == Grails Plugin ==
 
