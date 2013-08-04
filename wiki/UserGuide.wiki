@@ -109,6 +109,19 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And patches are welcome.
 
+== Sonar Plugin ==
+
+	To monitor a [http://www.sonarqube.org/ Sonar] server v3.1 or later, you can install a [https://github.com/evernat/sonar-javamelody Sonar javamelody plugin]:
+  * Download the latest Sonar plugin jar file from [https://github.com/evernat/sonar-javamelody/releases releases]
+  * Copy the file into the "extensions/plugins" directory of your Sonar server
+  * Restart Sonar
+
+	You can browse the monitoring page at {{{http://<host>:<port>/monitoring}}}
+
+	For example, if the server is local: {{{http://localhost:9000/monitoring}}}
+
+	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And pull request are welcome.
+
 == Grails Plugin ==
 
 	If you want to monitor an application developed with [http://www.grails.org Grails], you can install JavaMelody in just one command with a Grails plugin: [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin].
