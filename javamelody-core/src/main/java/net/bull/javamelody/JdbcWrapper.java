@@ -454,7 +454,7 @@ public final class JdbcWrapper {
 	}
 
 	private void rewrapDataSource(String jndiName, DataSource dataSource)
-			throws IllegalAccessException, SQLException {
+			throws IllegalAccessException {
 		final String dataSourceClassName = dataSource.getClass().getName();
 		LOG.debug("Datasource needs rewrap: " + jndiName + " of class " + dataSourceClassName);
 		final String dataSourceRewrappedMessage = "Datasource rewrapped: " + jndiName;
@@ -491,20 +491,12 @@ public final class JdbcWrapper {
 			// Et dans certains JIRA la datasource est bien une instance de org.apache.commons.dbcp.BasicDataSource
 			// cf http://groups.google.com/group/javamelody/browse_thread/thread/da8336b908f1e3bd/6cf3048f1f11866e?show_docid=6cf3048f1f11866e
 
-			// on récupère une connection avant de la refermer,
-			// car sinon la datasource interne n'est pas encore créée
-			// et le rewrap ne peut pas fonctionner
-			dataSource.getConnection().close();
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage);
 		} else if ("org.apache.openejb.resource.jdbc.BasicManagedDataSource"
 				.equals(dataSourceClassName)
 				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
 			// rewrap pour tomee/openejb (cf issue 104),
-			// on récupère une connection avant de la refermer,
-			// car sinon la datasource interne n'est pas encore créée
-			// et le rewrap ne peut pas fonctionner
-			dataSource.getConnection().close();
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage);
 		} else if (jonas) {
@@ -539,6 +531,16 @@ public final class JdbcWrapper {
 	}
 
 	private void rewrapBasicDataSource(DataSource dataSource) throws IllegalAccessException {
+		// on récupère une connection avant de la refermer,
+		// car sinon la datasource interne n'est pas encore créée
+		// et le rewrap ne peut pas fonctionner
+		try {
+			dataSource.getConnection().close();
+		} catch (final Exception e) {
+			LOG.debug(e.toString());
+			// ce n'est pas grave s'il y a une exception, par exemple parce que la base n'est pas disponible,
+			// car l'essentiel est de créer la datasource
+		}
 		Object innerDataSource = JdbcWrapperHelper.getFieldValue(dataSource, "dataSource");
 		if (innerDataSource != null) {
 			innerDataSource = createDataSourceProxy((DataSource) innerDataSource);
