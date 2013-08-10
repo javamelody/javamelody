@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
 
 === 1.46.0 ===
 
