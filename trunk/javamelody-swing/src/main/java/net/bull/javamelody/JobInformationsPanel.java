@@ -58,8 +58,6 @@ class JobInformationsPanel extends MelodyPanel {
 			"control_pause_blue.png", 18, 18);
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final List<JobInformations> jobInformationsList;
 	private final Counter jobCounter;
 	private final MTable<JobInformations> table;
 
@@ -245,7 +243,6 @@ class JobInformationsPanel extends MelodyPanel {
 		super(remoteCollector);
 		assert jobInformationsList != null;
 		assert rangeJobCounter != null;
-		this.jobInformationsList = jobInformationsList;
 		this.jobCounter = rangeJobCounter;
 
 		final MTableScrollPane<JobInformations> scrollPane = createScrollPane();
