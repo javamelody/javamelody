@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,13 +100,11 @@ class HtmlReport extends HtmlAbstractReport {
 			currentRequests = Collections.singletonMap(javaInformations, rootCurrentContexts);
 		} else {
 			currentRequests = collectorServer.collectCurrentRequests(collector.getApplication());
-			final Map<String, Counter> countersByName = new HashMap<String, Counter>();
-			for (final Counter counter : counters) {
-				countersByName.put(counter.getName(), counter);
-			}
+			final List<CounterRequestContext> allCurrentRequests = new ArrayList<CounterRequestContext>();
 			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
-				CounterRequestContext.replaceParentCounters(rootCurrentContexts, countersByName);
+				allCurrentRequests.addAll(rootCurrentContexts);
 			}
+			CounterRequestContext.replaceParentCounters(allCurrentRequests, counters);
 		}
 		htmlCoreReport.writeAllCurrentRequestsAsPart(currentRequests);
 		writeHtmlFooter();

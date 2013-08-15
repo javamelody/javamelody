@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,16 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 	}
 
 	static void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
+			List<Counter> newParentCounters) {
+		final Map<String, Counter> newParentCountersByName = new HashMap<String, Counter>(
+				newParentCounters.size());
+		for (final Counter counter : newParentCounters) {
+			newParentCountersByName.put(counter.getName(), counter);
+		}
+		replaceParentCounters(rootCurrentContexts, newParentCountersByName);
+	}
+
+	private static void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
 			Map<String, Counter> newParentCountersByName) {
 		for (final CounterRequestContext context : rootCurrentContexts) {
 			final Counter newParentCounter = newParentCountersByName.get(context.getParentCounter()
