@@ -48,8 +48,6 @@ class CacheInformationsPanel extends MelodyPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("all")
-	private final List<CacheInformations> cacheInformationsList;
 	private final boolean hitsRatioEnabled;
 	private final boolean configurationEnabled;
 	private final MTable<CacheInformations> table;
@@ -58,7 +56,6 @@ class CacheInformationsPanel extends MelodyPanel {
 			List<CacheInformations> cacheInformationsList) {
 		super(remoteCollector);
 		assert cacheInformationsList != null;
-		this.cacheInformationsList = cacheInformationsList;
 		this.hitsRatioEnabled = HtmlCacheInformationsReport
 				.isHitsRatioEnabled(cacheInformationsList);
 		this.configurationEnabled = HtmlCacheInformationsReport
