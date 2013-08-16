@@ -190,7 +190,7 @@ class PdfController {
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
 				httpResponse.getOutputStream());
 		if (!isFromCollectorServer()) {
-			final List<SampledMethod> hotspots = collector.getSamplingProfiler().getHotspots(1000);
+			final List<SampledMethod> hotspots = collector.getHotspots();
 			pdfOtherReport.writeHotspots(hotspots);
 		} else {
 			final List<SampledMethod> hotspots = collectorServer.collectHotspots(getApplication());

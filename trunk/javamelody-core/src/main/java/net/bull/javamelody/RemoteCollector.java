@@ -211,9 +211,6 @@ class RemoteCollector {
 			final URL hotspotsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
 					+ HOTSPOTS_PART);
 			final List<SampledMethod> hotspots = collectForUrl(hotspotsUrl);
-			if (hotspots == null) {
-				throw new IllegalStateException("Hotspots sampling is not enabled in this server");
-			}
 			if (urls.size() == 1) {
 				// s'il n'y a qu'un serveur, inutile d'aller plus loin pour fusionner les données
 				return hotspots;
