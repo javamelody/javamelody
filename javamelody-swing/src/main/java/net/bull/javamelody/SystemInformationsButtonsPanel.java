@@ -44,6 +44,8 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 	private static final ImageIcon XML_ICON = ImageIconCache.getScaledImageIcon("xml.png", 20, 20);
 	private static final ImageIcon SESSIONS_ICON = ImageIconCache.getScaledImageIcon(
 			"system-users.png", 20, 20);
+	private static final ImageIcon HOTSPOTS_ICON = ImageIconCache.getScaledImageIcon("clock.png",
+			20, 20);
 	private static final ImageIcon PROCESSES_ICON = ImageIconCache.getScaledImageIcon(
 			"processes.png", 20, 20);
 	private static final ImageIcon MBEANS_ICON = ImageIconCache.getScaledImageIcon("mbeans.png",
@@ -93,6 +95,9 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 				centerPanel.add(createInvalidateSessionsButton());
 				centerPanel.add(createSessionsButton());
 			}
+
+			centerPanel.add(createHotspotsButton());
+
 			if (doesWebXmlExists()) {
 				// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)
 				southPanel.add(createWebXmlButton());
@@ -207,6 +212,21 @@ class SystemInformationsButtonsPanel extends MelodyPanel {
 			}
 		});
 		return sessionsButton;
+	}
+
+	private MButton createHotspotsButton() {
+		final MButton hotspotsButton = new MButton(getString("hotspots"), HOTSPOTS_ICON);
+		hotspotsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					addOnglet(new HotspotsPanel(getRemoteCollector()));
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		return hotspotsButton;
 	}
 
 	private MButton createWebXmlButton() {
