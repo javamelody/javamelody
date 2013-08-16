@@ -163,13 +163,7 @@ class Collector { // NOPMD
 			Collections.sort(rootCurrentContexts, Collections
 					.reverseOrder(new CounterRequestContextComparator(System.currentTimeMillis())));
 
-			final Map<String, Counter> newParentCountersByName = new HashMap<String, Counter>(
-					newParentCounters.size());
-			for (final Counter counter : newParentCounters) {
-				newParentCountersByName.put(counter.getName(), counter);
-			}
-			CounterRequestContext.replaceParentCounters(rootCurrentContexts,
-					newParentCountersByName);
+			CounterRequestContext.replaceParentCounters(rootCurrentContexts, newParentCounters);
 		}
 		return rootCurrentContexts;
 	}
