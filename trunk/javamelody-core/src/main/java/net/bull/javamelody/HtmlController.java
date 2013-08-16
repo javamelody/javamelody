@@ -27,6 +27,7 @@ import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
@@ -54,6 +55,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Contrôleur au sens MVC de l'ihm de monitoring pour la partie html.
@@ -141,6 +144,8 @@ class HtmlController {
 			HtmlReport htmlReport) throws IOException {
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));
+		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
+			doHotspots(htmlReport);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			doHeapHisto(htmlReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
@@ -182,6 +187,18 @@ class HtmlController {
 		} else {
 			final SessionInformations sessionInformation = sessionsInformations.get(0);
 			htmlReport.writeSessionDetail(sessionId, sessionInformation);
+		}
+	}
+
+	private void doHotspots(HtmlReport htmlReport) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		if (!isFromCollectorServer()) {
+			final List<SampledMethod> hotspots = collector.getSamplingProfiler().getHotspots(1000);
+			htmlReport.writeHotspots(hotspots);
+		} else {
+			final List<SampledMethod> hotspots = collectorServer.collectHotspots(getApplication());
+			htmlReport.writeHotspots(hotspots);
 		}
 	}
 

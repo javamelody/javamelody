@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
@@ -47,6 +48,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Collecteur de données pour une application sur un ou plusieurs serveur(s) distant() : utilisé par serveur de collecte et par IHM Swing.
@@ -199,6 +202,35 @@ class RemoteCollector {
 			return Collections.emptyList();
 		}
 		return Collections.singletonList(found);
+	}
+
+	List<SampledMethod> collectHotspots() throws IOException {
+		// récupération à la demande des hotspots
+		final Map<SampledMethod, SampledMethod> map = new HashMap<SampledMethod, SampledMethod>();
+		for (final URL url : urls) {
+			final URL hotspotsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+					+ HOTSPOTS_PART);
+			final List<SampledMethod> hotspots = collectForUrl(hotspotsUrl);
+			if (hotspots == null) {
+				throw new IllegalStateException("Hotspots sampling is not enabled in this server");
+			}
+			if (urls.size() == 1) {
+				// s'il n'y a qu'un serveur, inutile d'aller plus loin pour fusionner les données
+				return hotspots;
+			}
+			for (final SampledMethod method : hotspots) {
+				// SampledMethod implémente hashCode et equals
+				final SampledMethod previous = map.get(method);
+				if (previous == null) {
+					map.put(method, method);
+				} else {
+					previous.setCount(previous.getCount() + method.getCount());
+				}
+			}
+		}
+		final List<SampledMethod> hotspots = new ArrayList<SampledMethod>(map.values());
+		Collections.sort(hotspots);
+		return hotspots;
 	}
 
 	HeapHistogram collectHeapHistogram() throws IOException {

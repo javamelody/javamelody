@@ -21,6 +21,8 @@ package net.bull.javamelody; // NOPMD
 import java.util.HashMap;
 import java.util.Map;
 
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
+
 /**
  * Liste des alias XStream pour les conversions XML et JSON.
  * @author Emeric Vernat
@@ -47,6 +49,7 @@ final class XStreamAlias {
 		result.put("cacheInformations", CacheInformations.class);
 		result.put("jobInformations", JobInformations.class);
 		result.put("counterError", CounterError.class);
+		result.put("method", SampledMethod.class);
 		result.put("processInformations", ProcessInformations.class);
 		result.put("databaseInformations", DatabaseInformations.class);
 		result.put("jndiBinding", JndiBinding.class);

@@ -32,6 +32,15 @@ public enum Parameter {
 	RESOLUTION_SECONDS("resolution-seconds"),
 
 	/**
+	 * Période en secondes du sampling pour trouver les hotspots (null par défaut : pas de sampling).
+	 * Une valeur de 10 est recommandée (c'est-à-dire 10 secondes) pour ne pas entraîner d'overhead,
+	 * ce qui nécessitera plusieurs heures pour avoir des résultats significatifs.
+	 * Cette période peut-être une valeur décimale comme 0.1 pour avoir des résultats plus rapidement,
+	 * mais avec un plus grand overhead.
+	 */
+	SAMPLING_SECONDS("sampling-seconds"),
+
+	/**
 	 * Nom du répertoire de stockage (monitoring par défaut).
 	 * Si le nom du répertoire commence par '/', on considère que c'est un chemin absolu,
 	 * sinon on considère que c'est un chemin relatif par rapport au répertoire temporaire
@@ -130,6 +139,12 @@ public enum Parameter {
 	 * ou "http,sql,error,log,spring" pour afficher les beans spring ("http,sql,error,log" par défaut).
 	 */
 	DISPLAYED_COUNTERS("displayed-counters"),
+
+	/**
+	 * List de packages exclus du sampling
+	 * ("java,sun,com.sun,javax,org.apache,org.hibernate,oracle,org.postgresql,org.eclipse" par défaut).
+	 */
+	SAMPLING_EXCLUDED_PACKAGES("sampling-excluded-packages"),
 
 	/**
 	 * Paramètre pour désactiver les graphiques jdbc, le compteur sql et le monitoring de base de
