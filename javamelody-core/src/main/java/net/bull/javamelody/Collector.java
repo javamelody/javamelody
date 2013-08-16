@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.bull.javamelody.Counter.CounterRequestContextComparator;
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Collecteur de données sur les compteurs, avec son propre thread, pour remplir les courbes.
@@ -138,6 +139,13 @@ class Collector { // NOPMD
 	 */
 	SamplingProfiler getSamplingProfiler() {
 		return samplingProfiler;
+	}
+
+	List<SampledMethod> getHotspots() {
+		if (samplingProfiler == null) {
+			throw new IllegalStateException("Hotspots sampling is not enabled in this server");
+		}
+		return samplingProfiler.getHotspots(1000);
 	}
 
 	/**

@@ -110,9 +110,7 @@ class SerializableController {
 		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			final SamplingProfiler samplingProfiler = collector.getSamplingProfiler();
-			return samplingProfiler != null ? new ArrayList<SampledMethod>(
-					samplingProfiler.getHotspots(1000)) : null;
+			return new ArrayList<SampledMethod>(collector.getHotspots());
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();

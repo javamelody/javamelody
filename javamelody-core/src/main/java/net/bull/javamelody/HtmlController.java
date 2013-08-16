@@ -194,7 +194,7 @@ class HtmlController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		if (!isFromCollectorServer()) {
-			final List<SampledMethod> hotspots = collector.getSamplingProfiler().getHotspots(1000);
+			final List<SampledMethod> hotspots = collector.getHotspots();
 			htmlReport.writeHotspots(hotspots);
 		} else {
 			final List<SampledMethod> hotspots = collectorServer.collectHotspots(getApplication());
