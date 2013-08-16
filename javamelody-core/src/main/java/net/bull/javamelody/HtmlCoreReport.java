@@ -508,6 +508,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		return collectorServer != null || VirtualMachine.isEnabled();
 	}
 
+	private boolean isSamplingEnabled() {
+		return collectorServer != null || collector.getSamplingProfiler() != null;
+	}
+
 	private boolean isDatabaseEnabled() {
 		return !Parameters.isNoDatabase()
 				&& javaInformationsList.get(0).getDataBaseVersion() != null
@@ -586,7 +590,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		}
 	}
 
+	// CHECKSTYLE:OFF
 	private void writeSystemActionsLinks() throws IOException {
+		// CHECKSTYLE:ON
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		final String endOfOnClickConfirm = "');\">";
@@ -623,6 +629,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			write("<a href='?part=sessions'>");
 			writeln("<img src='?resource=system-users.png' width='20' height='20' alt=\"#sessions#\" /> #sessions#</a>");
 		}
+		if (isSamplingEnabled()) {
+			writeln(separator);
+			write("<a href='?part=hotspots'>");
+			writeln("<img src='?resource=clock.png' width='20' height='20' alt=\"#hotspots#\" /> #hotspots#</a>");
+		}
+
 		writeln("<br />");
 		if (doesWebXmlExists()) {
 			// on n'affiche le lien web.xml que si le fichier existe (pour api servlet 3.0 par ex)

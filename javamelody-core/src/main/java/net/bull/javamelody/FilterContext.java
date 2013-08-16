@@ -39,6 +39,7 @@ class FilterContext {
 
 	private final Collector collector;
 	private final Timer timer;
+	private final SamplingProfiler samplingProfiler;
 
 	private static final class CollectTimerTask extends TimerTask {
 		private final Collector collector;
@@ -94,9 +95,11 @@ class FilterContext {
 				JsfActionHelper.initJsfActionListener();
 			}
 
+			this.samplingProfiler = initSamplingProfiler();
+
 			final List<Counter> counters = initCounters();
 			final String application = Parameters.getCurrentApplication();
-			this.collector = new Collector(application, counters);
+			this.collector = new Collector(application, counters, this.samplingProfiler);
 
 			initCollect();
 
@@ -238,6 +241,30 @@ class FilterContext {
 		}
 	}
 
+	private SamplingProfiler initSamplingProfiler() {
+		if (JavaInformations.STACK_TRACES_ENABLED
+				&& Parameters.getParameter(Parameter.SAMPLING_SECONDS) != null) {
+			final String excludedPackagesParameter = Parameters
+					.getParameter(Parameter.SAMPLING_EXCLUDED_PACKAGES);
+			final List<String> excludedPackages = excludedPackagesParameter == null ? null : Arrays
+					.asList(excludedPackagesParameter.split(","));
+			final SamplingProfiler sampler = new SamplingProfiler(excludedPackages);
+			final TimerTask samplingTimerTask = new TimerTask() {
+				@Override
+				public void run() {
+					sampler.update();
+				}
+			};
+			final long periodInMillis = Math.round(Double.parseDouble(Parameters
+					.getParameter(Parameter.SAMPLING_SECONDS)) * 1000);
+			this.timer.schedule(samplingTimerTask, 0, periodInMillis);
+			LOG.debug("hotspots sampling initialized");
+
+			return sampler;
+		}
+		return null;
+	}
+
 	private static void initLogs() {
 		// on branche le handler java.util.logging pour le counter de logs
 		LoggingHandler.getSingleton().register();
@@ -330,6 +357,9 @@ class FilterContext {
 			// et on vide les compteurs
 			if (timer != null) {
 				timer.cancel();
+			}
+			if (samplingProfiler != null) {
+				samplingProfiler.clear();
 			}
 			if (collector != null) {
 				collector.stop();

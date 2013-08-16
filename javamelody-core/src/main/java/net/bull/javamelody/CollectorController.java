@@ -30,6 +30,7 @@ import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
 import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
@@ -63,6 +64,8 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 import org.apache.log4j.Logger;
 
@@ -346,6 +349,10 @@ class CollectorController {
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 			return new ArrayList<SessionInformations>(collectorServer.collectSessionInformations(
 					application, sessionId));
+		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			return new ArrayList<SampledMethod>(collectorServer.collectHotspots(application));
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();

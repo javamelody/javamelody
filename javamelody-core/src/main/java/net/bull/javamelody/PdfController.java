@@ -25,6 +25,7 @@ import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -41,6 +42,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Contrôleur au sens MVC de l'ihm de monitoring pour la partie pdf.
@@ -122,6 +125,8 @@ class PdfController {
 			HttpServletResponse httpResponse, String part) throws Exception { // NOPMD
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			doSessions(httpResponse);
+		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
+			doHotspots(httpResponse);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			doProcesses(httpResponse);
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
@@ -177,6 +182,20 @@ class PdfController {
 					null);
 		}
 		pdfOtherReport.writeSessionInformations(sessionsInformations);
+	}
+
+	private void doHotspots(HttpServletResponse httpResponse) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
+				httpResponse.getOutputStream());
+		if (!isFromCollectorServer()) {
+			final List<SampledMethod> hotspots = collector.getSamplingProfiler().getHotspots(1000);
+			pdfOtherReport.writeHotspots(hotspots);
+		} else {
+			final List<SampledMethod> hotspots = collectorServer.collectHotspots(getApplication());
+			pdfOtherReport.writeHotspots(hotspots);
+		}
 	}
 
 	private void doProcesses(HttpServletResponse httpResponse) throws IOException {

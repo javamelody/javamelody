@@ -31,6 +31,7 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
@@ -56,6 +57,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Contrôleur au sens MVC pour la partie des données sérialisées.
@@ -90,8 +93,10 @@ class SerializableController {
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 	}
 
+	// CHECKSTYLE:OFF
 	Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList, String messageForReport) throws Exception { // NOPMD
+		// CHECKSTYLE:ON
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -102,6 +107,12 @@ class SerializableController {
 						SessionListener.getAllSessionsInformations());
 			}
 			return SessionListener.getSessionInformationsBySessionId(sessionId);
+		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final SamplingProfiler samplingProfiler = collector.getSamplingProfiler();
+			return samplingProfiler != null ? new ArrayList<SampledMethod>(
+					samplingProfiler.getHotspots(1000)) : null;
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();

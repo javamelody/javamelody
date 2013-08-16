@@ -43,6 +43,7 @@ class Collector { // NOPMD
 	private final int periodMillis;
 	private final String application;
 	private final List<Counter> counters;
+	private final SamplingProfiler samplingProfiler;
 	private final Map<String, JRobin> requestJRobinsById = new ConcurrentHashMap<String, JRobin>();
 	// les instances jrobins des compteurs sont créées à l'initialisation
 	private final Map<String, JRobin> counterJRobins = new LinkedHashMap<String, JRobin>();
@@ -73,11 +74,22 @@ class Collector { // NOPMD
 	 * @param counters Liste des counters
 	 */
 	Collector(String application, List<Counter> counters) {
+		this(application, counters, null);
+	}
+
+	/**
+	 * Constructeur.
+	 * @param application Code de l'application
+	 * @param counters Liste des counters
+	 * @param samplingProfiler SamplingProfiler
+	 */
+	Collector(String application, List<Counter> counters, SamplingProfiler samplingProfiler) {
 		super();
 		assert application != null;
 		assert counters != null;
 		this.application = application;
 		this.counters = Collections.unmodifiableList(new ArrayList<Counter>(counters));
+		this.samplingProfiler = samplingProfiler;
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
 		for (final Counter counter : counters) {
 			for (final Counter otherCounter : counters) {
@@ -118,6 +130,14 @@ class Collector { // NOPMD
 	 */
 	String getApplication() {
 		return application;
+	}
+
+	/**
+	 * Retourne le SamplingProfiler.
+	 * @return SamplingProfiler
+	 */
+	SamplingProfiler getSamplingProfiler() {
+		return samplingProfiler;
 	}
 
 	/**

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Rapport html.
@@ -256,6 +257,12 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlHeader();
 		new HtmlSessionInformationsReport(null, getWriter()).writeSessionDetails(sessionId,
 				sessionInformations);
+		writeHtmlFooter();
+	}
+
+	void writeHotspots(List<SampledMethod> hotspots) throws IOException {
+		writeHtmlHeader();
+		new HtmlHotspotsReport(hotspots, getWriter()).toHtml();
 		writeHtmlFooter();
 	}
 

@@ -30,6 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -185,6 +187,10 @@ class CollectorServer {
 	List<SessionInformations> collectSessionInformations(String application, String sessionId)
 			throws IOException {
 		return getRemoteCollectorByApplication(application).collectSessionInformations(sessionId);
+	}
+
+	List<SampledMethod> collectHotspots(String application) throws IOException {
+		return getRemoteCollectorByApplication(application).collectHotspots();
 	}
 
 	HeapHistogram collectHeapHistogram(String application) throws IOException {

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -76,6 +78,17 @@ class PdfOtherReport {
 							I18N.createDateAndTimeFormat().format(heapHistogram.getTime())),
 					"memory.png");
 			new PdfHeapHistogramReport(heapHistogram, document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
+	void writeHotspots(List<SampledMethod> hotspots) throws IOException {
+		try {
+			document.open();
+			addParagraph(getString("hotspots"), "clock.png");
+			new PdfHotspotsReport(hotspots, document).toPdf();
 		} catch (final DocumentException e) {
 			throw createIOException(e);
 		}
