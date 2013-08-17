@@ -24,6 +24,8 @@ import java.util.HashSet;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
+import org.jrobin.core.RrdBackendFactory;
+import org.jrobin.core.RrdException;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -73,5 +75,15 @@ final class Utils {
 		JdbcWrapper.USED_CONNECTION_INFORMATIONS.clear();
 		System.getProperties().remove(SYSTEM_ACTIONS_PROPERTY_NAME);
 		new File(System.getProperty("java.io.tmpdir")).mkdirs();
+
+		try {
+			// we must initialize default factory before creating any rrd
+			if (!RrdBackendFactory.getDefaultFactory().getFactoryName()
+					.equals(RrdNioBackendFactory.FACTORY_NAME)) {
+				RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
+			}
+		} catch (final RrdException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
