@@ -244,11 +244,14 @@ class FilterContext {
 	private SamplingProfiler initSamplingProfiler() {
 		if (JavaInformations.STACK_TRACES_ENABLED
 				&& Parameters.getParameter(Parameter.SAMPLING_SECONDS) != null) {
+			final SamplingProfiler sampler;
 			final String excludedPackagesParameter = Parameters
 					.getParameter(Parameter.SAMPLING_EXCLUDED_PACKAGES);
-			final List<String> excludedPackages = excludedPackagesParameter == null ? null : Arrays
-					.asList(excludedPackagesParameter.split(","));
-			final SamplingProfiler sampler = new SamplingProfiler(excludedPackages);
+			if (excludedPackagesParameter == null) {
+				sampler = new SamplingProfiler();
+			} else {
+				sampler = new SamplingProfiler(Arrays.asList(excludedPackagesParameter.split(",")));
+			}
 			final TimerTask samplingTimerTask = new TimerTask() {
 				@Override
 				public void run() {
