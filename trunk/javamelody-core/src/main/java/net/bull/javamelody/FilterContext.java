@@ -260,7 +260,7 @@ class FilterContext {
 			};
 			final long periodInMillis = Math.round(Double.parseDouble(Parameters
 					.getParameter(Parameter.SAMPLING_SECONDS)) * 1000);
-			this.timer.schedule(samplingTimerTask, 0, periodInMillis);
+			this.timer.schedule(samplingTimerTask, 10000, periodInMillis);
 			LOG.debug("hotspots sampling initialized");
 
 			return sampler;
