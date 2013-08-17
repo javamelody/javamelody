@@ -49,7 +49,6 @@ public class TestSamplingProfiler {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>());
 		assertTrue(samplingProfiler.getHotspots(NB_ROWS).isEmpty());
 		samplingProfiler.update();
-		assertTrue(!samplingProfiler.getHotspots(NB_ROWS).isEmpty());
 		samplingProfiler.clear();
 		assertTrue(samplingProfiler.getHotspots(NB_ROWS).isEmpty());
 	}
