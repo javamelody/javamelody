@@ -6,7 +6,7 @@
 
 In the monitoring reports, the new *Hotspots* screen displays CPU hotspots in executed methods for all the JVM. Like javamelody, the overhead of hotspots is low: it is based on sampling of stack-traces of threads, without instrumentation. And like javamelody, it is made to be always active if enabled. (It is currently not enabled by default. It may be enabled by default in the future.) Two parameters can be defined in web.xml, in context or in system properties like the other [UserGuide#6._Optional_parameters javamelody parameters]:
 
-    * "sampling-seconds" to enable the sampling and to define its period. A period of 10 seconds can be recommended to have the lowest overhead, but then a few hours may be needed to have significant results for a webapp under real use. If you don't mind having more overhead or want a result faster in test, you can use a value of 1 or 0.1 in second for this parameter.
+    * "sampling-seconds" to enable the sampling and to define its period. A period of 10 seconds can be recommended to have the lowest overhead, but then a few hours may be needed to have significant results for a webapp under real use. If you don't mind having a bit more overhead or want a result faster in test, you can use a value of 1 or 0.1 in second for this parameter.
     * "sampling-excluded-packages" to change the list of the excluded packages ("java,sun,com.sun,javax,org.apache,org.hibernate,oracle,org.postgresql,org.eclipse" by default) 
 
 === 1.46.0 ===
