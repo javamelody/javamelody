@@ -9,7 +9,7 @@ There is no promise of dates or that a particular feature will ever be done.
 Follow JRobin issues: 
   * ~~[http://issues.opennms.org/browse/JRB-20],~~ (done)
   * [http://sourceforge.net/tracker/?func=detail&aid=3403733&group_id=82668&atid=566807],
-  * and [http://sourceforge.net/mailarchive/message.php?msg_id=28038427] (one issue submitted in JIRA: http://issues.opennms.org/browse/JRB-26)
+  * ~~and [http://sourceforge.net/mailarchive/message.php?msg_id=28038427] (one issue submitted in JIRA: http://issues.opennms.org/browse/JRB-26)~~ (done in 1.46, issue 96)
 
 And
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
@@ -21,7 +21,7 @@ And
   # If the transaction isolation level is not read committed (unusual), display a warning about slowness or bugs
   # ~~Add pdf/xml/json reports for the counter summary per class~~ (done)
   # Display the 100 latest slow requests for each counter (duration at severe level when they were executed), including user and http parameters
-  # Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?). See issue 149.
+  # ~~Sampling of thread stack traces to detect cpu hotspots (similarly to VisuaVM sampler but with a lower rate and with no configuration). The packages java, javax, sun, com.sun should be excluded. (And for memory hotspots?).~~ (done in 1.47, issue 149)
   # ~~In the collector server, do not display all the applications at the top if there are more than 10 of them, and display them with a show and collapse link~~. (done)
   # Cannot remove in the GUI an application from the collector server when the application is no longer using javamelody. When trying to select it, the collector server is showing an error 500 with the message "Data unavailable for the application". (Meanwhile, it is possible to remove the application directly from the applications.properties file in the temp directory.)
   # Inline drill-down in child requests, for example in the detail of a request
