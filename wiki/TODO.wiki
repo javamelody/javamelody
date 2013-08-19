@@ -9,7 +9,7 @@ There is no promise of dates or that a particular feature will ever be done.
 Follow JRobin issues: 
   * ~~[http://issues.opennms.org/browse/JRB-20],~~ (done)
   * [http://sourceforge.net/tracker/?func=detail&aid=3403733&group_id=82668&atid=566807],
-  * ~~and [http://sourceforge.net/mailarchive/message.php?msg_id=28038427] (one issue submitted in JIRA: http://issues.opennms.org/browse/JRB-26)~~ (done in 1.46, issue 96)
+  * ~~and [http://sourceforge.net/mailarchive/message.php?msg_id=28038427] (one issue submitted in JIRA: http://issues.opennms.org/browse/JRB-26) ~~ (done in 1.46, issue 96)
 
 And
   # Fix [http://code.google.com/p/javamelody/issues/list issues]
