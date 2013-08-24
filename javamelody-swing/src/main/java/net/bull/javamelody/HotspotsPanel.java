@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -45,6 +46,9 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class HotspotsPanel extends MelodyPanel {
+	private static final ImageIcon CLEAR_HOTSPOTS_ICON = ImageIconCache.getScaledImageIcon(
+			"user-trash.png", 16, 16);
+
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("all")
@@ -149,6 +153,7 @@ class HotspotsPanel extends MelodyPanel {
 			}
 		});
 		final MButton xmlJsonButton = createXmlJsonButton((Serializable) hotspots);
+		final MButton clearHotspotsButton = createClearHotspotsButton();
 
 		final MButton refreshButton = createRefreshButton();
 		refreshButton.addActionListener(new ActionListener() {
@@ -162,7 +167,33 @@ class HotspotsPanel extends MelodyPanel {
 			}
 		});
 
-		return Utilities.createButtonsPanel(refreshButton, pdfButton, xmlJsonButton);
+		return Utilities.createButtonsPanel(refreshButton, pdfButton, xmlJsonButton,
+				clearHotspotsButton);
+	}
+
+	private MButton createClearHotspotsButton() {
+		final MButton clearHotspotsButton = new MButton(getString("clear_hotspots"),
+				CLEAR_HOTSPOTS_ICON);
+		clearHotspotsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (confirm(getFormattedString("confirm_clear_hotspots"))) {
+					actionClearHotspots();
+				}
+			}
+		});
+		return clearHotspotsButton;
+	}
+
+	final void actionClearHotspots() {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.CLEAR_HOTSPOTS, null, null, null, null, null);
+			showMessage(message);
+			refresh();
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 
 	final void actionPdf() throws IOException {

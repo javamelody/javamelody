@@ -90,6 +90,10 @@ enum Action { // NOPMD
 	 */
 	RESUME_JOB("jobs"),
 	/**
+	 * Réinitialisation des hotspots.
+	 */
+	CLEAR_HOTSPOTS(""),
+	/**
 	 * Purge les fichiers .rrd et .ser.gz obsolètes.
 	 */
 	PURGE_OBSOLETE_FILES("bottom");
@@ -233,6 +237,11 @@ enum Action { // NOPMD
 		case RESUME_JOB:
 			assert jobId != null;
 			messageForReport = resumeJob(jobId);
+			break;
+		case CLEAR_HOTSPOTS:
+			assert collector.getSamplingProfiler() != null;
+			collector.getSamplingProfiler().clear();
+			messageForReport = I18N.getString("hotspots_cleared");
 			break;
 		case PURGE_OBSOLETE_FILES:
 			assert collector != null;

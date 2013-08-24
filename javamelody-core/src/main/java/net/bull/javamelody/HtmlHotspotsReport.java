@@ -90,6 +90,10 @@ class HtmlHotspotsReport extends HtmlAbstractReport {
 			write("<a href='?part=hotspots&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<a href='?part=hotspots&amp;action=clear_hotspots' onclick=\"javascript:return confirm('"
+				+ getStringForJavascript("confirm_clear_hotspots") + "');\">");
+		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#clear_hotspots#' title='#clear_hotspots#' /> #clear_hotspots#</a>");
 		writeln("</div>");
 	}
 }
