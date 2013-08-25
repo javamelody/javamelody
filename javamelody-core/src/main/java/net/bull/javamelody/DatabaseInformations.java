@@ -306,12 +306,22 @@ class DatabaseInformations implements Serializable {
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
 		final Collection<DataSource> dataSources = JdbcWrapper.getJndiAndSpringDataSources()
 				.values();
+		for (final DataSource dataSource : dataSources) {
+			try {
+				final Connection connection = dataSource.getConnection();
+				// on ne doit pas changer autoCommit pour la connection d'une DataSource
+				// (ou alors il faudrait remettre l'autoCommit après, issue 189)
+				// connection.setAutoCommit(false);
+				return connection;
+			} catch (final Exception e) {
+				// si cette dataSource ne fonctionne pas, on suppose que la bonne dataSource est une des suivantes
+				// (par exemple, sur GlassFish il y a des dataSources par défaut qui ne fonctionne pas forcément)
+				continue;
+			}
+		}
 		if (!dataSources.isEmpty()) {
-			final Connection connection = dataSources.iterator().next().getConnection();
-			// on ne doit pas changer autoCommit pour la connection d'une DataSource
-			// (ou alors il faudrait remettre l'autoCommit après, issue 189)
-			// connection.setAutoCommit(false);
-			return connection;
+			// this will probably throw an exception like above
+			return dataSources.iterator().next().getConnection();
 		}
 		return null;
 	}
