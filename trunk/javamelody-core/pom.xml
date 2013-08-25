@@ -382,7 +382,7 @@
 			<!-- Configuration exécution des tests unitaires -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.15</version>
+				<version>2.16</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 					<!-- Ce paramètre permet aussi de tester l'appel à RuntimeMXBean.getInputArguments() -->
@@ -394,7 +394,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.5.2</version>
+				<version>2.6</version>
 				<configuration>
 					<check>
 						<haltOnFailure>false</haltOnFailure>
@@ -497,7 +497,7 @@
 						<!-- Rapport d'exécution des tests unitaires -->
 						<plugin>
 							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.15</version>
+							<version>2.16</version>
 							<!-- http://jira.codehaus.org/browse/SUREFIRE-257 -->
 							<reportSets>
 								<reportSet>
@@ -511,7 +511,7 @@
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.5.2</version>
+							<version>2.6</version>
 							<configuration>
 								<formats>
 									<format>xml</format>
