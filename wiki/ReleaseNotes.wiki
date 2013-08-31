@@ -2,9 +2,9 @@
 === Next release (trunk) ===
 
   * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
-  * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/3 grails issue 3]~~: In the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin], JDBC DataSource is not wrapped, SQL requests are not monitored
+  * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/3 grails issue 3]~~: In the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin], JDBC DataSource is not wrapped, SQL requests are not monitored (thanks to _sergiomichels_)
   * added: [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoringTargetInterceptor.java MonitoringTargetInterceptor] as an alternative to [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoringInterceptor.java MonitoringInterceptor] for EJB monitoring
-  * added: detect cpu hotspots (issue 149, with some ideas from Cédric Lime). 
+  * added: detect cpu hotspots (issue 149, with some ideas from _Cédric Lime_).
 
 In the monitoring reports, the new *Hotspots* screen displays CPU hotspots in executed methods for all the JVM. Like javamelody, the overhead of hotspots is low: it is based on sampling of stack-traces of threads, without instrumentation. And like javamelody, it is made to be always active if enabled. (It is currently not enabled by default. It may be enabled by default in the future.) Two parameters can be defined in web.xml, in context or in system properties like the other [UserGuide#6._Optional_parameters javamelody parameters]:
 
