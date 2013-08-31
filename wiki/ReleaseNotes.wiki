@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
+  * fix issue 335: centralized server not compatible with ehcache 2.7.2
   * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/3 grails issue 3]~~: In the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin], JDBC DataSource is not wrapped, SQL requests are not monitored (thanks to _sergiomichels_)
   * added: [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoringTargetInterceptor.java MonitoringTargetInterceptor] as an alternative to [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoringInterceptor.java MonitoringInterceptor] for EJB monitoring
   * added: detect cpu hotspots (issue 149, with some ideas from _Cédric Lime_).
