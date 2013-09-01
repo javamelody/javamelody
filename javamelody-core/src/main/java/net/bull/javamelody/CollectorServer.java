@@ -43,7 +43,7 @@ class CollectorServer {
 
 	private static final int NB_COLLECT_THREADS = 10;
 
-	final Map<String, Throwable> lastCollectExceptionsByApplication = new ConcurrentHashMap<String, Throwable>();
+	private final Map<String, Throwable> lastCollectExceptionsByApplication = new ConcurrentHashMap<String, Throwable>();
 	private final Map<String, RemoteCollector> remoteCollectorsByApplication = new ConcurrentHashMap<String, RemoteCollector>();
 
 	private final ExecutorService executorService = Executors
@@ -111,17 +111,7 @@ class CollectorServer {
 			executorService.submit(new Runnable() {
 				@Override
 				public void run() {
-					try {
-						collectForApplication(application, urls);
-						lastCollectExceptionsByApplication.remove(application);
-					} catch (final Throwable e) { // NOPMD
-						// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
-						// et il ne doit y avoir aucune erreur dans cette task
-						LOGGER.warn("exception while collecting data for application "
-								+ application);
-						LOGGER.warn(e.getMessage(), e);
-						lastCollectExceptionsByApplication.put(application, e);
-					}
+					collectForApplicationWithoutErrors(application, urls);
 				}
 			});
 		}
@@ -129,6 +119,36 @@ class CollectorServer {
 
 	String collectForApplicationForAction(String application, List<URL> urls) throws IOException {
 		return collectForApplication(new RemoteCollector(application, urls));
+	}
+
+	void collectForApplicationWithoutErrors(String application, List<URL> urls) {
+		try {
+			collectForApplication(application, urls);
+			final boolean becameAvailable = lastCollectExceptionsByApplication
+					.containsKey(application);
+			lastCollectExceptionsByApplication.remove(application);
+
+			if (becameAvailable) {
+				final String subject = "The application " + application
+						+ " is available again for the monitoring server";
+				notifyAdmins(subject, subject);
+			}
+		} catch (final Throwable e) { // NOPMD
+			// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
+			// et il ne doit y avoir aucune erreur dans cette task
+			LOGGER.warn("exception while collecting data for application " + application);
+			LOGGER.warn(e.toString(), e);
+			final boolean becameUnavailable = !lastCollectExceptionsByApplication
+					.containsKey(application);
+			lastCollectExceptionsByApplication.put(application, e);
+
+			if (becameUnavailable) {
+				final String subject = "The application " + application
+						+ " is unavailable for the monitoring server";
+				final String message = subject + "\n\nCause:\n" + e.toString();
+				notifyAdmins(subject, message);
+			}
+		}
 	}
 
 	String collectForApplication(String application, List<URL> urls) throws IOException {
@@ -331,6 +351,19 @@ class CollectorServer {
 	 */
 	Map<String, Throwable> getLastCollectExceptionsByApplication() {
 		return Collections.unmodifiableMap(lastCollectExceptionsByApplication);
+	}
+
+	private void notifyAdmins(String subject, String message) {
+		final String mailSession = Parameters.getParameter(Parameter.MAIL_SESSION);
+		final String adminEmails = Parameters.getParameter(Parameter.ADMIN_EMAILS);
+		if (mailSession != null && adminEmails != null) {
+			final Mailer mailer = new Mailer(mailSession);
+			try {
+				mailer.send(adminEmails, subject, message, null, false);
+			} catch (final Exception e) {
+				LOGGER.warn(e.toString(), e);
+			}
+		}
 	}
 
 	void scheduleReportMailForCollectorServer(String application) {
