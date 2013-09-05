@@ -116,6 +116,7 @@ class CacheInformations implements Serializable {
 		}
 	}
 
+	// on ne doit pas référencer la classe Statistics dans les déclarations de méthodes (issue 335)
 	private static long invokeStatisticsMethod(Object statistics, String methodName) {
 		try {
 			// getInMemoryHits, getCacheHits et getCacheMisses existent en v1.2.1 et v1.2.3
