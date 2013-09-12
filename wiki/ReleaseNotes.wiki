@@ -4,6 +4,8 @@
   * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
   * fix issue 335: centralized server not compatible with ehcache 2.7.2
   * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/3 grails issue 3]~~: In the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin], JDBC DataSource is not wrapped, SQL requests are not monitored (thanks to _sergiomichels_)
+  * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/11 grails issue 11]~~: In the JavaMelody Grails plugin, private def closure causes MissingMethodException (thanks to _Yunpeng Bai_)
+  * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/9 grails issue 9]~~: In the JavaMelody Grails plugin, Overloaded service method does not work (thanks to _macrosak_)
   * added: In the optional collect server, send an email when an application becomes unavailable. For this, it will be needed to configure a mail session and 2 javamelody parameters like for [UserGuide#14._Weekly,_daily_or_monthly_reports_by_mail the reports by mail] (for example, in the Tomcat context of the collector webapp. Issue 333)
   * added: [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoringTargetInterceptor.java MonitoringTargetInterceptor] as an alternative to [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/java/net/bull/javamelody/MonitoringInterceptor.java MonitoringInterceptor] for EJB monitoring
   * added: *detect cpu hotspots* (issue 149, with some ideas from _Cédric Lime_).
