@@ -19,6 +19,7 @@
 			<accessrule kind="accessible" pattern="com/sun/management/OperatingSystemMXBean"/>
 			<accessrule kind="accessible" pattern="com/sun/management/UnixOperatingSystemMXBean"/>
 			<accessrule kind="accessible" pattern="com/sun/management/HotSpotDiagnosticMXBean"/>
+			<accessrule kind="accessible" pattern="com/sun/management/VMOption"/>
 			<accessrule kind="accessible" pattern="sun/nio/ch/DirectBuffer"/>
 			<accessrule kind="accessible" pattern="sun/misc/Cleaner"/>
 		</accessrules>

@@ -307,29 +307,57 @@ enum Action { // NOPMD
 
 	private File heapDump() throws IOException {
 		final boolean gcBeforeHeapDump = true;
-		final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-		final File heapDumpFile = new File(Parameters.TEMPORARY_DIRECTORY.getPath(), "heapdump-"
-				+ Parameters.getHostName() + '-' + dateFormat.format(new Date()) + ".hprof");
-		if (heapDumpFile.exists()) {
-			try {
-				// si le fichier existe déjà, un heap dump a déjà été généré dans la même seconde
-				// donc on attends 1 seconde pour créer le fichier avec un nom différent
-				Thread.sleep(1000);
-			} catch (final InterruptedException e) {
-				throw new IllegalStateException(e);
-			}
-			return heapDump();
-		}
 		try {
 			final MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
 			final ObjectInstance instance = platformMBeanServer.getObjectInstance(new ObjectName(
 					"com.sun.management:type=HotSpotDiagnostic"));
-			((com.sun.management.HotSpotDiagnosticMXBean) platformMBeanServer.instantiate(instance
-					.getClassName())).dumpHeap(heapDumpFile.getPath(), gcBeforeHeapDump);
+			final Object mxBean = platformMBeanServer.instantiate(instance.getClassName());
+			final Object vmOption = ((com.sun.management.HotSpotDiagnosticMXBean) mxBean)
+					.getVMOption("HeapDumpPath");
+			final String heapDumpPath;
+			if (vmOption == null) {
+				heapDumpPath = null;
+			} else {
+				heapDumpPath = ((com.sun.management.VMOption) vmOption).getValue();
+			}
+			final String path;
+			if (heapDumpPath == null || heapDumpPath.length() == 0) {
+				path = Parameters.TEMPORARY_DIRECTORY.getPath();
+			} else {
+				// -XX:HeapDumpPath=/tmp par exemple a été spécifié comme paramètre de VM.
+				// Dans ce cas, on prend en compte ce paramètre "standard" de la JVM Hotspot
+				final File file = new File(heapDumpPath);
+				if (file.exists()) {
+					if (file.isDirectory()) {
+						path = heapDumpPath;
+					} else {
+						path = file.getParent();
+					}
+				} else {
+					file.mkdirs();
+					path = heapDumpPath;
+				}
+			}
+			final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss",
+					Locale.getDefault());
+			final File heapDumpFile = new File(path, "heapdump-" + Parameters.getHostName() + '-'
+					+ dateFormat.format(new Date()) + ".hprof");
+			if (heapDumpFile.exists()) {
+				try {
+					// si le fichier existe déjà, un heap dump a déjà été généré dans la même seconde
+					// donc on attends 1 seconde pour créer le fichier avec un nom différent
+					Thread.sleep(1000);
+				} catch (final InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
+				return heapDump();
+			}
+			((com.sun.management.HotSpotDiagnosticMXBean) mxBean).dumpHeap(heapDumpFile.getPath(),
+					gcBeforeHeapDump);
+			return heapDumpFile;
 		} catch (final JMException e) {
 			throw new IllegalStateException(e);
 		}
-		return heapDumpFile;
 	}
 
 	private void ibmHeapDump() {
