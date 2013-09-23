@@ -334,7 +334,9 @@ enum Action { // NOPMD
 						path = file.getParent();
 					}
 				} else {
-					file.mkdirs();
+					if (!file.mkdirs()) {
+						throw new IllegalStateException("Can't create directory " + file.getPath());
+					}
 					path = heapDumpPath;
 				}
 			}
