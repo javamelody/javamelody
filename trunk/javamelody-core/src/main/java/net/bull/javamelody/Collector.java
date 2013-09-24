@@ -657,31 +657,16 @@ class Collector { // NOPMD
 
 	private long collectCounterRequestsAndErrorsData(Counter counter, List<CounterRequest> requests)
 			throws IOException {
-		int size = requests.size();
 		final Counter dayCounter = getCurrentDayCounter(counter);
-		final int maxRequestsCount = counter.getMaxRequestsCount();
 		final boolean firstCollectDoneForCounter = Boolean.TRUE.equals(firstCollectDoneByCounter
 				.get(counter));
-		for (final CounterRequest newRequest : requests) {
-			if (size > maxRequestsCount && newRequest.getHits() < 10) {
-				// Si le nombre de requêtes est supérieur à 10000
-				// on suppose que l'application a des requêtes sql non bindées
-				// (bien que cela ne soit en général pas conseillé).
-				// En tout cas, on essaye ici d'éviter de saturer
-				// la mémoire (et le disque dur) avec toutes ces requêtes
-				// différentes en éliminant celles ayant moins de 10 hits.
-				removeRequest(counter, newRequest);
-				size--;
-				continue;
-			}
-
+		final List<CounterRequest> filteredRequests = filterRequestsIfOverflow(counter, requests);
+		for (final CounterRequest newRequest : filteredRequests) {
 			collectCounterRequestData(dayCounter, newRequest, firstCollectDoneForCounter);
 		}
-		while (size > maxRequestsCount && !requests.isEmpty()) {
-			// cas extrême: si le nombre de requêtes est encore trop grand,
-			// on enlève n'importe quelle requête
-			removeRequest(counter, requests.get(0));
-			size--;
+		if (dayCounter.getRequestsCount() > dayCounter.getMaxRequestsCount()) {
+			// issue 339: ne pas laisser dans dayCounter trop de requêtes si elles sont à chaque fois différentes
+			filterRequestsIfOverflow(dayCounter, dayCounter.getRequests());
 		}
 		if (dayCounter.isErrorCounter()) {
 			dayCounter.addErrors(getDeltaOfErrors(counter, dayCounter));
@@ -691,6 +676,36 @@ class Collector { // NOPMD
 			firstCollectDoneByCounter.put(counter, Boolean.TRUE);
 		}
 		return dayCounter.getEstimatedMemorySize();
+	}
+
+	private List<CounterRequest> filterRequestsIfOverflow(Counter counter,
+			List<CounterRequest> requests) {
+		final int maxRequestsCount = counter.getMaxRequestsCount();
+		if (requests.size() <= maxRequestsCount) {
+			return requests;
+		}
+		final List<CounterRequest> result = new ArrayList<CounterRequest>(requests);
+		for (final CounterRequest request : requests) {
+			if (result.size() > maxRequestsCount && request.getHits() < 10) {
+				// Si le nombre de requêtes est supérieur à 10000
+				// on suppose que l'application a des requêtes sql non bindées
+				// (bien que cela ne soit en général pas conseillé).
+				// En tout cas, on essaye ici d'éviter de saturer
+				// la mémoire (et le disque dur) avec toutes ces requêtes
+				// différentes en éliminant celles ayant moins de 10 hits.
+				removeRequest(counter, request);
+				result.remove(request);
+				continue;
+			}
+		}
+		while (result.size() > maxRequestsCount && !result.isEmpty()) {
+			// cas extrême: si le nombre de requêtes est encore trop grand,
+			// on enlève n'importe quelle requête
+			final CounterRequest request = result.get(0);
+			removeRequest(counter, request);
+			result.remove(request);
+		}
+		return result;
 	}
 
 	private void collectCounterRequestData(Counter dayCounter, CounterRequest newRequest,
