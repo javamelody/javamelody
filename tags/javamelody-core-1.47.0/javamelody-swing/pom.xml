@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.bull.javamelody</groupId>
+		<artifactId>javamelody-parent</artifactId>
+		<version>1.47.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>javamelody-swing</artifactId>
+	<packaging>jar</packaging>
+	<name>JavaMelody - Swing</name>
+	<description>Swing UI for Java Melody</description>
+	<url>http://javamelody.googlecode.com/</url>
+	<licenses>
+		<license>
+			<name>LGPL</name>
+			<url>LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Emeric Vernat</name>
+			<email>evernat@free.fr</email>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://javamelody.googlecode.com/svn/trunk/</url>
+	</scm>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<!-- Dépendance iText pour exports PDF -->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bctsp-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Dépendance iText-RTF pour exports RTF -->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext-rtf</artifactId>
+			<version>2.1.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bctsp-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Dépendances ehcache et quartz -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.5.2</version>
+			<optional>true</optional>
+		</dependency>
+		<!-- Dépendance XStream pour exports XML et JSON -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<!-- "mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn, 
+			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit, https://maven2-repository.dev.java.net/ 
+			http://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins -->
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>maven.jenkins-ci.org</id>
+			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
+			<id>snapshot</id>
+			<url>file:.</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<!-- For some reason RELEASE doesn't work in Netbeans -->
+				<version>1.9</version>
+			</extension>
+		</extensions>
+		<!-- /!\ Maven >= 3.0 : http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding 
+			<sourceEncoding>UTF-8</sourceEncoding> -->
+		<plugins>
+			<!-- Configuration compilation -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<compilerArgument>-Xlint</compilerArgument>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<configuration>
+							<target>
+								<!-- appel de Ant et copie du résultat dans le site -->
+								<ant antfile="build.xml" target="zip" />
+								<copy file="javamelody-swing.zip" tofile="target/site/javamelody-swing.zip" />
+								<copy file="javamelody-swing.jar" tofile="target/site/javamelody-swing.jar" />
+								<ant antfile="build.xml" target="clean" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<!-- nécessaire car maven définit java_home avec le jre pour ant ! -->
+						<groupId>sun.jdk</groupId>
+						<artifactId>tools</artifactId>
+						<version>1.7.0</version>
+						<scope>system</scope>
+						<systemPath>${java.home}/../lib/tools.jar</systemPath>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- Site -->
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<reportPlugins>
+						<!-- Javadoc -->
+						<plugin>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.9.1</version>
+							<configuration>
+								<links>
+									<link>http://java.sun.com/javase/6/docs/api/</link>
+									<link>http://java.sun.com/javaee/5/docs/api/</link>
+								</links>
+							</configuration>
+						</plugin>
+						<!-- Références croisées -->
+						<plugin>
+							<artifactId>maven-jxr-plugin</artifactId>
+							<version>2.3</version>
+							<configuration>
+								<linkJavadoc>false</linkJavadoc>
+							</configuration>
+						</plugin>
+						<!-- Vérification des règles de codage -->
+						<plugin>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.10</version>
+							<configuration>
+								<enableRSS>false</enableRSS>
+								<configLocation>${basedir}/.checkstyle.xml</configLocation>
+								<linkXRef>true</linkXRef>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>findbugs-maven-plugin</artifactId>
+							<version>2.5.2</version>
+							<configuration>
+								<xmlOutput>true</xmlOutput>
+							</configuration>
+						</plugin>
+						<plugin>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<version>2.7.1</version>
+							<configuration>
+								<enableRulesSummary>false</enableRulesSummary>
+								<source>1.7</source>
+								<targetJdk>1.7</targetJdk>
+								<linkXref>true</linkXref>
+								<minimumPriority>4</minimumPriority>
+								<minimumTokens>100</minimumTokens>
+								<rulesets>
+									<ruleset>${basedir}/.pmd</ruleset>
+								</rulesets>
+							</configuration>
+						</plugin>
+						<!-- Métriques -->
+						<!-- error with diamond op
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>javancss-maven-plugin</artifactId>
+							<version>2.0</version>
+						</plugin> -->
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>jdepend-maven-plugin</artifactId>
+							<version>2.0-beta-2</version>
+						</plugin>
+						<!-- Information sur le projet -->
+						<plugin>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.6</version>
+							<reportSets>
+								<reportSet>
+									<reports>
+										<report>summary</report>
+										<report>license</report>
+										<report>mailing-list</report>
+										<report>issue-tracking</report>
+										<report>scm</report>
+										<report>cim</report>
+										<report>plugin-management</report>
+										<report>plugins</report>
+									</reports>
+								</reportSet>
+							</reportSets>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<!-- Références croisées -->
+			<!-- section reporting Temporaire : https://jira.codehaus.org/browse/MCHECKSTYLE-150 et autres -->
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<linkJavadoc>false</linkJavadoc>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
