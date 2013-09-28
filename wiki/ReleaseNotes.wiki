@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 339: "One day" memory leak
+  * fix issue 346: XSS through X-Forwarded-For header spoofing
   * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
   * fix issue 335: centralized server not compatible with ehcache 2.7.2
   * fix issue 232: Use the path of -XX:HeapDumpPath=/tmp if defined, for the directory of heap dump files (otherwise use the temp directory of the server as before)
