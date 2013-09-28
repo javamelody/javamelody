@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.47.0 ===
+
   * fix issue 339: "One day" memory leak
   * fix issue 346: XSS through X-Forwarded-For header spoofing
   * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
