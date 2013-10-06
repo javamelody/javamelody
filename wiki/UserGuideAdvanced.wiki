@@ -15,6 +15,7 @@ For standard documentation, see [UserGuide]
     * [#3._Simpler_alternative_of_deployment_of_the_webapp_of_monitoring 3. Simpler alternative of deployment of the webapp of monitoring]
     * [#4._Results_with_a_collect_server 4. Results with a collect server]
     * [#5._Security_with_a_collect_server 5. Security with a collect server]
+    * [#6._If_reverse_proxy 6. If reverse proxy]
   * [#Business_facades_(without_EJB3_and_without_Spring_and_without_Gu Business facades (without EJB3 and without Spring and without Guice)]
   * [#Alternative_for_monitoring_of_sql_requests Alternative for monitoring of sql requests]
   * [#Monitoring_of_sql_requests_and_of_jdbc_connections_in_v3+ Monitoring of sql requests and of jdbc connections in GlassFish v3+]
@@ -250,6 +251,12 @@ For standard documentation, see [UserGuide]
 
 	See also the comment by Chris at the bottom of this page.
 
+
+=== 6. If reverse proxy ===
+
+	The reports use a Cookie, for example to know the currently displayed application. So if you use Apache as reverse proxy in front of the collector server and if URL are rewritten, the cookie path will not match the path used by the browser. And for example, the charts will not be displayed for the right application.
+
+	To fix the cookie path, you may use [http://httpd.apache.org/docs/2.4/mod/mod_proxy.html#proxypassreversecookiepath mod_proxy's top ProxyPassReverseCookiePath directive]
 
 == Business facades (without EJB3 and without Spring and without Guice) ==
 
