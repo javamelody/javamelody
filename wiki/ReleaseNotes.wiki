@@ -10,7 +10,7 @@
   * fix issue 328: NoSuchFieldError: readOnly when using v1.46 with jrobin 1.5.14 (instead of jrobin 1.5.9 as documented)
   * fix issue 335: centralized server not compatible with ehcache 2.7.2
   * fix issue 232: Use the path of -XX:HeapDumpPath=/tmp if defined, for the directory of heap dump files (otherwise use the temp directory of the server as before)
-  * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/3 grails issue 3]~~: In the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin], JDBC DataSource is not wrapped, SQL requests are not monitored (thanks to _sergiomichels_)
+  * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/3 grails issue 3]~~: In the [http://www.grails.org/plugin/grails-melody JavaMelody Grails plugin], JDBC DataSource is not wrapped, SQL requests are not monitored (in version 1.47.1 of the plugin, thanks to _sergiomichels_)
   * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/11 grails issue 11]~~: In the JavaMelody Grails plugin, private def closure causes MissingMethodException (thanks to _Yunpeng Bai_)
   * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/13 grails issue 13]~~: In the JavaMelody Grails plugin, even if the plugin is disabled via config option, Service Proxys are still attached (thanks to _Yunpeng Bai_)
   * fix ~~[https://github.com/evernat/grails-melody-plugin/issues/9 grails issue 9]~~: In the JavaMelody Grails plugin, Overloaded service method does not work (thanks to _macrosak_)
