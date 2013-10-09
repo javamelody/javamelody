@@ -752,7 +752,7 @@ or
 	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
 		mail.smtp.host="<smtp server>"
 		mail.smtp.user="<login>"
-		mail.from="MyApplication"
+		mail.from="no-reply@example.com"
 	/>
 }}}
 
@@ -809,7 +809,7 @@ or
 	<Resource name="mail/MySession" auth="Container" type="javax.mail.Session"
 		mail.smtp.host="<serveur smtp>"
 		mail.smtp.user="<login>"
-		mail.from="MyApplication"
+		mail.from="no-reply@example.com"
 	/>
 	<Parameter name='javamelody.admin-emails' value='admin1@societe.fr,admin2@societe.fr' override='false'/>
 	<Parameter name='javamelody.mail-session' value='mail/MySession' override='false'/>
