@@ -396,6 +396,7 @@ class Collector { // NOPMD
 		long databaseTransactionCount = 0;
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
+		long freeDiskSpaceInTemp = Long.MAX_VALUE;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
@@ -419,6 +420,11 @@ class Collector { // NOPMD
 			// que sur linx ou unix
 			unixOpenFileDescriptorCount = add(javaInformations.getUnixOpenFileDescriptorCount(),
 					unixOpenFileDescriptorCount);
+			if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
+				// la valeur retenue est le minimum entre les serveurs
+				freeDiskSpaceInTemp = Math.min(javaInformations.getFreeDiskSpaceInTemp(),
+						freeDiskSpaceInTemp);
+			}
 		}
 
 		// collecte du pourcentage de temps en ramasse-miette
@@ -442,6 +448,10 @@ class Collector { // NOPMD
 			getOtherJRobin("transactionsRate").addValue(
 					(databaseTransactionCount - this.transactionCount) / periodMinutes);
 			this.transactionCount = databaseTransactionCount;
+		}
+
+		if (freeDiskSpaceInTemp != Long.MAX_VALUE) {
+			getOtherJRobin("Free_disk_space").addValue(freeDiskSpaceInTemp);
 		}
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
