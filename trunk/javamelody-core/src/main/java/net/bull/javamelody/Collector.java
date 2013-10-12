@@ -318,6 +318,7 @@ class Collector { // NOPMD
 			if (!javaInformationsList.isEmpty()) {
 				collectJavaInformations(javaInformationsList);
 				collectOtherJavaInformations(javaInformationsList);
+				collectTomcatInformations(javaInformationsList);
 			}
 			long memorySize = 0;
 			for (final Counter counter : counters) {
@@ -395,10 +396,6 @@ class Collector { // NOPMD
 		long databaseTransactionCount = 0;
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
-		int tomcatBusyThreads = 0;
-		long bytesReceived = 0;
-		long bytesSent = 0;
-		boolean tomcatUsed = false;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
@@ -422,20 +419,8 @@ class Collector { // NOPMD
 			// que sur linx ou unix
 			unixOpenFileDescriptorCount = add(javaInformations.getUnixOpenFileDescriptorCount(),
 					unixOpenFileDescriptorCount);
-			for (final TomcatInformations tomcatInformations : javaInformations
-					.getTomcatInformationsList()) {
-				tomcatBusyThreads = add(tomcatInformations.getCurrentThreadsBusy(),
-						tomcatBusyThreads);
-				bytesReceived = add(tomcatInformations.getBytesReceived(), bytesReceived);
-				bytesSent = add(tomcatInformations.getBytesSent(), bytesSent);
-				tomcatUsed = true;
-			}
 		}
 
-		if (tomcatUsed) {
-			// collecte des informations de Tomcat
-			collectTomcatValues(tomcatBusyThreads, bytesReceived, bytesSent);
-		}
 		// collecte du pourcentage de temps en ramasse-miette
 		if (garbageCollectionTimeMillis >= 0) {
 			// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
@@ -462,6 +447,30 @@ class Collector { // NOPMD
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
 		// différenciation des indisponibilités prévues de celles non prévues
+	}
+
+	private void collectTomcatInformations(List<JavaInformations> javaInformationsList)
+			throws IOException {
+		int tomcatBusyThreads = 0;
+		long bytesReceived = 0;
+		long bytesSent = 0;
+		boolean tomcatUsed = false;
+
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			for (final TomcatInformations tomcatInformations : javaInformations
+					.getTomcatInformationsList()) {
+				tomcatBusyThreads = add(tomcatInformations.getCurrentThreadsBusy(),
+						tomcatBusyThreads);
+				bytesReceived = add(tomcatInformations.getBytesReceived(), bytesReceived);
+				bytesSent = add(tomcatInformations.getBytesSent(), bytesSent);
+				tomcatUsed = true;
+			}
+		}
+
+		if (tomcatUsed) {
+			// collecte des informations de Tomcat
+			collectTomcatValues(tomcatBusyThreads, bytesReceived, bytesSent);
+		}
 	}
 
 	private void collectJRobinValues(long usedMemory, long processesCpuTimeMillis,
