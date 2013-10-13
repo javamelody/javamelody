@@ -42,6 +42,8 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -151,6 +153,24 @@ public class TestPdfOtherReport {
 				"localhost",
 				ProcessInformations.buildProcessInformations(
 						getClass().getResourceAsStream("/ps.txt"), false)));
+		assertNotEmptyAndClear(output);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteHotspots() throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>());
+		final List<SampledMethod> emptyHotspots = samplingProfiler.getHotspots(100);
+		samplingProfiler.update();
+		final List<SampledMethod> hotspots = samplingProfiler.getHotspots(100);
+
+		PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeHotspots(emptyHotspots);
+		assertNotEmptyAndClear(output);
+		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeHotspots(hotspots);
 		assertNotEmptyAndClear(output);
 	}
 
