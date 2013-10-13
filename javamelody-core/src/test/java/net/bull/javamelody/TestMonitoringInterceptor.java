@@ -63,7 +63,7 @@ public class TestMonitoringInterceptor {
 
 		@Override
 		public Object getTarget() {
-			return null;
+			return new TestMonitoringInterceptor();
 		}
 
 		@Override
@@ -116,6 +116,19 @@ public class TestMonitoringInterceptor {
 		} catch (final Error e) {
 			assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
 		}
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testMonitoringTarget() throws Exception { // NOPMD
+		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
+		ejbCounter.clear();
+		final MonitoringTargetInterceptor interceptor = new MonitoringTargetInterceptor();
+
+		ejbCounter.setDisplayed(true);
+		interceptor.intercept(new InvokeContext(false));
+		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
 	}
 
 	/** Test. */
