@@ -21,6 +21,7 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -51,5 +52,24 @@ public class TestSamplingProfiler {
 		samplingProfiler.update();
 		samplingProfiler.clear();
 		assertTrue(samplingProfiler.getHotspots(NB_ROWS).isEmpty());
+	}
+
+	/**
+	 * Test.
+	 */
+	@Test
+	public void testConstructor() {
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(Arrays.asList("java",
+				"javax."));
+		assertTrue(samplingProfiler.getHotspots(NB_ROWS).isEmpty());
+	}
+
+	/**
+	 * Test.
+	 */
+	@SuppressWarnings("unused")
+	@Test(expected = Exception.class)
+	public void testConstructor2() {
+		new SamplingProfiler(Arrays.asList(" "));
 	}
 }
