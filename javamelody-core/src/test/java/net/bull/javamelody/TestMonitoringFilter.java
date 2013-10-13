@@ -695,6 +695,9 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 
+		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		monitoring(parameters);
+
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		monitoring(parameters);
