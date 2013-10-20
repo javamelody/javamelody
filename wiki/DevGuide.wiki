@@ -102,9 +102,9 @@ After some weeks for example, in order to update your sources with the new devel
 
 	[http://www.grails.org/plugin/grails-melody Grails plugin] : The manager of sources for the JavaMelody Grails plugin is git at [https://github.com/evernat/grails-melody-plugin] (previously Subversion at [http://svn.codehaus.org/grails-plugins/grails-grails-melody/trunk/])
 
-	Liferay plugin : The manager of sources for the JavaMelody plugin for Liferay is git at [https://github.com/evernat/liferay-javamelody]
+	[UserGuide#Liferay_Plugin Liferay plugin] : The manager of sources for the JavaMelody plugin for Liferay is git at [https://github.com/evernat/liferay-javamelody]
 
-	Sonar plugin : The manager of sources for the JavaMelody plugin for Sonar is git at [https://github.com/evernat/sonar-javamelody]
+	[UserGuide#Sonar_Plugin Sonar plugin] : The manager of sources for the JavaMelody plugin for Sonar is git at [https://github.com/evernat/sonar-javamelody]
 
 	[http://www.grails.org/plugin/grails-melody Grails plugin] : The manager of sources for the JavaMelody Grails plugin is git at [https://github.com/evernat/grails-melody-plugin]
 
