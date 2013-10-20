@@ -106,7 +106,6 @@
 		<delete file="javamelody.jar" />
 		<delete file="javamelody.war" />
 		<delete file="jira-javamelody.jar" />
-		<delete file="liferay-javamelody-hook.war" />
 		<delete file="test.war" />
 	</target>
 
@@ -201,40 +200,6 @@
 			-->
 			<zipfileset file="src/main/jira/javamelody_i18n.properties" />
 			<zipfileset file="build/atlassian-plugin.xml" />
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Built-Date" value="${TODAY_FR}" />
-				<attribute name="Build-Jdk" value="${java.version}" />
-				<section name="javamelody">
-					<attribute name="Implementation-Title" value="Java Melody" />
-					<attribute name="Implementation-Vendor" value="Emeric Vernat" />
-				</section>
-			</manifest>
-		</jar>
-	</target>
-
-	<!-- Construction du war du plugin Liferay -->
-	<target name="liferay-war" depends="jar" if="version">
-		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier VERSION.properties existe -->
-		<echo message="Construction du war pour le plugin Liferay" level="info" />
-		<!-- Description Liferay pour le plugin.
-		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
-		<copy file="src/main/liferay/WEB-INF/liferay-plugin-package.properties" todir="build/" overwrite="true" />
-		<replace file="build/liferay-plugin-package.properties" propertyFile="VERSION.properties" failOnNoReplacements="true">
-			<replacefilter token="@version@" property="version" />
-		</replace>
-		<delete file="liferay-javamelody-hook.war" />
-		<jar destfile="liferay-javamelody-hook.war">
-			<zipfileset file="build/liferay-plugin-package.properties" prefix="WEB-INF"/>
-			<zipfileset dir="src/main/liferay" excludes="WEB-INF/liferay-plugin-package.properties"/>
-
-			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
-			<zipfileset file="src/test/test-webapp/WEB-INF/lib/itext-2.1.7.jar" prefix="WEB-INF/lib" />
-			<zipfileset file="src/test/test-webapp/WEB-INF/lib/jrobin-1.5.9.1.jar" prefix="WEB-INF/lib" />
-			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xstream-1.4.2.jar" prefix="WEB-INF/lib" />
-			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />
-			<zipfileset file="src/test/test-webapp/WEB-INF/lib/xmlpull-1.1.3.1.jar" prefix="WEB-INF/lib" />
-
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${TODAY_FR}" />
@@ -392,7 +357,7 @@
 	</target>
 
 	<!-- Construction du zip -->
-	<target name="zip" depends="clean,jar,war,jira-jar,liferay-war,javadoc">
+	<target name="zip" depends="clean,jar,war,jira-jar,javadoc">
 		<echo message="Construction du zip" level="info" />
 		<delete file="javamelody.zip" />
 		<zip destfile="javamelody.zip">
@@ -415,7 +380,6 @@
 		<gcupload filename="javamelody.zip" targetfilename="javamelody-${version}.zip" summary="Zip of project" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<gcupload filename="javamelody.war" targetfilename="javamelody-${version}.war" summary="War of the optional collect server" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<gcupload filename="jira-javamelody.jar" targetfilename="jira-javamelody-${version}.jar" summary="Jira, Confluence and Bamboo monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
-		<gcupload filename="liferay-javamelody-hook.war" targetfilename="liferay-javamelody-hook-${version}.war" summary="Liferay monitoring plugin" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="" />
 		<gcupload filename="javamelody.jar" targetfilename="javamelody-${version}.jar" summary="Jar for integration in a webapp" username="${gc.user}" password="${gc.pass}" projectname="javamelody" labels="${gc.label}" />
 		<echo message="Upload des fichiers ${version} sur googlecode terminé" />
 	</target>
