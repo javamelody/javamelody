@@ -1,7 +1,8 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix: In the [UserGuide#Liferay_Plugin Liferay plugin], to secure the access to the monitoring page, authentication and portal "Administrator" role is now required.
+  * [https://github.com/evernat/liferay-javamelody Source], [https://github.com/evernat/liferay-javamelody/releases downloads] and [https://github.com/evernat/liferay-javamelody/issues?page=1&state=open issues] of the [UserGuide#Liferay_Plugin Liferay plugin] are moved to GitHub. You can submit [https://github.com/evernat/liferay-javamelody/pulls pull requests] to fix issues.
 
 === 1.47.0 ===
 
