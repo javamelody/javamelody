@@ -98,8 +98,8 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 == Liferay Plugin ==
 
-	To monitor a [http://www.liferay.com Liferay] server v6.1 or later, you can install a Liferay plugin:
-  * Download the latest Liferay plugin file from [http://code.google.com/p/javamelody/downloads/list Downloads]
+	To monitor a [http://www.liferay.com Liferay] server v6.1 or later, you can install a [https://github.com/evernat/liferay-javamelody Liferay javamelody plugin]:
+  * Download the latest Liferay plugin file from [https://github.com/evernat/liferay-javamelody/releases releases]
   * Copy the file into the "deploy" directory of your Liferay server and wait a few seconds
   * Liferay automatically deploys the file and removes it from "deploy"
 	That's it!
@@ -108,7 +108,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	For example, if the server is local: {{{http://localhost:8080/monitoring}}}
 
-	Notes: There is currently no authentication to secure the access to the monitoring page. The SQL requests are not monitored. And patches are welcome.
+	Notes: The SQL requests are not monitored. And patches are welcome.
 
 == Sonar Plugin ==
 
