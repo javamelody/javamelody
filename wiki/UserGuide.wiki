@@ -108,7 +108,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	For example, if the server is local: {{{http://localhost:8080/monitoring}}}
 
-	Notes: The SQL requests are not monitored. And patches are welcome.
+	Known [https://github.com/evernat/liferay-javamelody/issues issues]: The SQL requests are not monitored. And patches are welcome.
 
 == Sonar Plugin ==
 
