@@ -28,6 +28,7 @@ import java.util.Map;
  * @author Emeric Vernat
  */
 class JnlpPage {
+	static final String JNLP_PREFIX = "jnlp.";
 	private final Collector collector;
 	private final CollectorServer collectorServer;
 	private final String codebase;
@@ -95,9 +96,12 @@ class JnlpPage {
 		if (cookies != null) {
 			properties.put("cookies", cookies);
 		}
+		// JNLP_PREFIX to fix:
+		// http://stackoverflow.com/questions/19400725/with-java-update-7-45-the-system-properties-no-more-set-from-jnlp-tag-property
+		// https://bugs.openjdk.java.net/browse/JDK-8023821
 		for (final Map.Entry<String, Object> entry : properties.entrySet()) {
-			println("      <property name='" + entry.getKey() + "' value='" + entry.getValue()
-					+ "'/>");
+			println("      <property name='" + JNLP_PREFIX + entry.getKey() + "' value='"
+					+ entry.getValue() + "'/>");
 		}
 		println("   </resources>");
 		println("   <application-desc main-class='net.bull.javamelody.Main' />");
