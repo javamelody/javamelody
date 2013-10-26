@@ -20,6 +20,8 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * JNLP pour lancer l'ihm Swing avec JavaWebStart.
@@ -70,30 +72,32 @@ class JnlpPage {
 			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing.jar";
 		}
 		println("      <jar href='" + jarFileUrl + "' />");
-		println("      <property name='javamelody.application' value='"
-				+ collector.getApplication() + "'/>");
-		println("      <property name='javamelody.collectorServer' value='"
-				+ (collectorServer != null) + "'  />");
+		final Map<String, Object> properties = new LinkedHashMap<String, Object>();
+		properties.put("javamelody.application", collector.getApplication());
+		properties.put("javamelody.collectorServer", collectorServer != null);
 		String url;
 		if (collectorServer == null) {
 			url = codebase + "?format=serialized";
 		} else {
 			url = codebase + "?format=serialized&application=" + collector.getApplication();
 		}
-		println("      <property name='javamelody.url' value='" + url + "' />");
-		println("      <property name='javamelody.range' value='" + range.getValue() + "'/>");
-		println("      <property name='javamelody.locale' value='" + I18N.getCurrentLocale()
-				+ "'/>");
+		properties.put("javamelody.url", url);
+		properties.put("javamelody.range", range.getValue());
+		properties.put("javamelody.locale", I18N.getCurrentLocale());
 		// les valeurs des paramètres sont importantes notamment pour :
 		// WARNING_THRESHOLD_MILLIS, SEVERE_THRESHOLD_MILLIS, SYSTEM_ACTIONS_ENABLED et NO_DATABASE
 		for (final Parameter parameter : Parameter.values()) {
 			if (Parameters.getParameter(parameter) != null && parameter != Parameter.ADMIN_EMAILS) {
-				println("      <property name='javamelody." + parameter.getCode() + "' value='"
-						+ Parameters.getParameter(parameter) + "'/>");
+				properties.put("javamelody." + parameter.getCode(),
+						Parameters.getParameter(parameter));
 			}
 		}
 		if (cookies != null) {
-			println("      <property name='cookies' value='" + cookies + "' />");
+			properties.put("cookies", cookies);
+		}
+		for (final Map.Entry<String, Object> entry : properties.entrySet()) {
+			println("      <property name='" + entry.getKey() + "' value='" + entry.getValue()
+					+ "'/>");
 		}
 		println("   </resources>");
 		println("   <application-desc main-class='net.bull.javamelody.Main' />");
