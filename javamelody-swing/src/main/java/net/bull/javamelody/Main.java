@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -51,6 +52,17 @@ public final class Main {
 	 */
 	public static void main(String[] args) {
 		log("starting");
+
+		// jnlp prefix to fix:
+		// http://stackoverflow.com/questions/19400725/with-java-update-7-45-the-system-properties-no-more-set-from-jnlp-tag-property
+		// https://bugs.openjdk.java.net/browse/JDK-8023821
+		for (final Object property : Collections.list(System.getProperties().keys())) {
+			final String name = String.valueOf(property);
+			if (name.startsWith(JnlpPage.JNLP_PREFIX)) {
+				final String value = System.getProperty(name);
+				System.setProperty(name.substring(JnlpPage.JNLP_PREFIX.length()), value);
+			}
+		}
 
 		initLookAndFeel();
 		// une touche bleu-clair pour avoir une teinte moins grisatre
