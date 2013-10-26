@@ -387,10 +387,15 @@ final class JdbcWrapperHelper {
 					.get(jdbcContext);
 			if (lock == null) {
 				// on rend le contexte writable
-				return env.remove("org.mortbay.jndi.lock");
+				Object result = env.remove("org.mortbay.jndi.lock");
+				if (result == null) {
+					result = env.remove("org.eclipse.jndi.lock");
+				}
+				return result;
 			}
 			// on remet le contexte not writable comme avant
 			env.put("org.mortbay.jndi.lock", lock);
+			env.put("org.eclipse.jndi.lock", lock);
 
 			return null;
 		}
