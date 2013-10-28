@@ -19,7 +19,6 @@
 package net.bull.javamelody;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -283,7 +282,8 @@ class SessionInformations implements Serializable {
 					out.close();
 				}
 				return TEMP_OUTPUT.size();
-			} catch (final IOException e) {
+			} catch (final Exception e) {
+				// ce catch Exception inclue IOException et aussi ClassNotFoundException (issue 355)
 				return -1;
 			}
 		}
