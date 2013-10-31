@@ -297,6 +297,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			}
 		}
 		if (threadInformations == null) {
+			write("</td> <td class='noPrint'>");
 			write(espace); // un décalage n'a pas permis de récupérer le thread de ce context
 		} else {
 			htmlThreadInformationsReport.writeKillThread(threadInformations);
