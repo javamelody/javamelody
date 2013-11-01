@@ -253,6 +253,11 @@ public enum Parameter {
 	DNS_LOOKUPS_DISABLED("dns-lookups-disabled"),
 
 	/**
+	 * true | false, true will disable opening stack-traces of jdbc connections (default: false).
+	 */
+	CONNECTIONS_STACK_TRACES_DISABLED("connections-stack-traces-disabled"),
+
+	/**
 	 * URL http du fichier jar javamelody-swing (null par défaut : le fichier sera téléchargé depuis http://javamelody.googlecode.com selon la version). <br/>
 	 * Ce paramètre est surtout utile quand les utilisateurs n'ont pas accès à Internet pour télécharger sur googlecode.
 	 */
