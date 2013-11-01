@@ -600,6 +600,9 @@ public final class JdbcWrapper {
 					unwrapDataSource(jndiName, dataSource);
 				}
 			}
+
+			PROXY_CACHE.clear();
+
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
 			// ça n'a pas marché, tant pis
