@@ -248,7 +248,7 @@ public enum Parameter {
 	CONTEXT_FACTORY_ENABLED("context-factory-enabled"),
 
 	/**
-	 * true | false, false will return localhost/127.0.0.1 for hostname/hostaddress, true will attempt dns lookup, default true.
+	 * true | false, true will return localhost/127.0.0.1 for hostname/hostaddress, false will attempt dns lookup for hostname (default: false).
 	 */
 	DNS_LOOKUPS_DISABLED("dns-lookups-disabled"),
 
