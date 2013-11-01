@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +34,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -65,6 +67,9 @@ public final class JdbcWrapper {
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
 
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
+
+	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections
+			.synchronizedMap(new WeakHashMap<Class<?>, Constructor<?>>());
 
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	private final Counter sqlCounter;
@@ -844,7 +849,40 @@ public final class JdbcWrapper {
 			return object;
 		}
 		final Class<? extends Object> objectClass = object.getClass();
+		// ce handler désencapsule les InvocationTargetException des 3 proxy
+		final InvocationHandler ih = new DelegatingInvocationHandler(invocationHandler);
+
+		// avant : return (T) Proxy.newProxyInstance(objectClass.getClassLoader(), getObjectInterfaces(objectClass, interfaces), ih);
+		// maintenant (optimisé) :
+		Constructor<?> constructor = PROXY_CACHE.get(objectClass);
+		if (constructor == null) {
+			final Class<?>[] interfacesArray = getObjectInterfaces(objectClass, interfaces);
+			constructor = getProxyConstructor(objectClass, interfacesArray);
+			// si interfaces est non null, la classe n'est en théorie pas suffisante comme clé,
+			// mais ce n'est pas un cas courant
+			if (interfaces == null) {
+				PROXY_CACHE.put(objectClass, constructor);
+			}
+		}
+		try {
+			return (T) constructor.newInstance(new Object[] { ih });
+		} catch (final Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private static Constructor<?> getProxyConstructor(Class<? extends Object> objectClass,
+			Class<?>[] interfacesArray) {
 		final ClassLoader classLoader = objectClass.getClassLoader(); // NOPMD
+		try {
+			return Proxy.getProxyClass(classLoader, interfacesArray).getConstructor(
+					new Class[] { InvocationHandler.class });
+		} catch (final NoSuchMethodException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private static Class<?>[] getObjectInterfaces(Class<?> objectClass, List<Class<?>> interfaces) {
 		// Rq: object.getClass().getInterfaces() ne suffit pas pour Connection dans Tomcat
 		// car la connection est une instance de PoolGuardConnectionWrapper
 		// et connection.getClass().getInterfaces() est vide dans ce cas
@@ -868,11 +906,7 @@ public final class JdbcWrapper {
 		} else {
 			myInterfaces = interfaces;
 		}
-		final Class<?>[] interfacesArray = myInterfaces.toArray(new Class<?>[myInterfaces.size()]);
-
-		// ce handler désencapsule les InvocationTargetException des 3 proxy
-		final InvocationHandler ih = new DelegatingInvocationHandler(invocationHandler);
-		return (T) Proxy.newProxyInstance(classLoader, interfacesArray, ih);
+		return myInterfaces.toArray(new Class<?>[myInterfaces.size()]);
 	}
 
 	private static boolean isProxyAlready(Object object) {
