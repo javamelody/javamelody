@@ -5,6 +5,8 @@
   * fix issue 355: ClassNotFoundException when serializing session breaks the sessions view
   * fix: In the [UserGuide#Liferay_Plugin Liferay plugin], to secure the access to the monitoring page, authentication and portal "Administrator" role is now required.
   * [https://github.com/evernat/liferay-javamelody Source], [https://github.com/evernat/liferay-javamelody/releases downloads] and [https://github.com/evernat/liferay-javamelody/issues?page=1&state=open issues] of the [UserGuide#Liferay_Plugin Liferay plugin] are moved to GitHub. You can submit [https://github.com/evernat/liferay-javamelody/pulls pull requests] to fix issues.
+  * Optimize jdbc overhead, when there are more than 100000 sql hits per minute (issue 353, with help from _kalnas2_)
+  * New parameter to optimize opened jdbc connections, when there are more than 100000 sql hits per minute (issue 352)
 
 === 1.47.0 ===
 
