@@ -19,6 +19,7 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -271,6 +272,21 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 				final Object userAccessor = containerManagerClass.getMethod("getComponent",
 						String.class).invoke(null, "userAccessor");
 				result = userAccessor.getClass().getMethod("getUser", String.class)
+						.invoke(userAccessor, userName);
+			} catch (final Exception e) {
+				throw new IllegalStateException(e);
+			}
+		} else if (result instanceof Principal) {
+			// since confluence 5.2 or 5.3
+			final String userName = ((Principal) result).getName();
+			try {
+				final Class<?> containerManagerClass = Class
+						.forName("com.atlassian.spring.container.ContainerManager");
+				final Object userAccessor = containerManagerClass.getMethod("getComponent",
+						String.class).invoke(null, "userAccessor");
+				// getUser deprecated, use getUserByName as said in:
+				// https://docs.atlassian.com/atlassian-confluence/5.3.1/com/atlassian/confluence/user/UserAccessor.html
+				result = userAccessor.getClass().getMethod("getUserByName", String.class)
 						.invoke(userAccessor, userName);
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
