@@ -40,6 +40,7 @@ class FilterContext {
 	private final Collector collector;
 	private final Timer timer;
 	private final SamplingProfiler samplingProfiler;
+	private final TimerTask collectTimerTask;
 
 	private static final class CollectTimerTask extends TimerTask {
 		private final Collector collector;
@@ -100,6 +101,7 @@ class FilterContext {
 			final List<Counter> counters = initCounters();
 			final String application = Parameters.getCurrentApplication();
 			this.collector = new Collector(application, counters, this.samplingProfiler);
+			this.collectTimerTask = new CollectTimerTask(collector);
 
 			initCollect();
 
@@ -224,8 +226,7 @@ class FilterContext {
 		final int resolutionSeconds = Parameters.getResolutionSeconds();
 		final int periodMillis = resolutionSeconds * 1000;
 		// on schedule la tâche de fond
-		final TimerTask task = new CollectTimerTask(collector);
-		timer.schedule(task, periodMillis, periodMillis);
+		timer.schedule(collectTimerTask, periodMillis, periodMillis);
 		LOG.debug("collect task scheduled every " + resolutionSeconds + 's');
 
 		// on appelle la collecte pour que les instances jrobin soient définies
@@ -330,6 +331,19 @@ class FilterContext {
 			return location;
 		}
 		return null;
+	}
+
+	void stopCollector() {
+		// cette méthode est appelée par MonitoringFilter lorsqu'il y a un serveur de collecte
+		if (samplingProfiler != null && collectTimerTask != null) {
+			// s'il y a un samplingProfiler, on arrête juste la tâche de collecte, mais pas le timer et la tâche de sampling
+			collectTimerTask.cancel();
+		} else if (timer != null) {
+			// s'il n'y a pas de samplingProfiler, on arrête le timer et le thread devenus inutiles
+			timer.cancel();
+		}
+		// arrêt du collector
+		collector.stop();
 	}
 
 	void destroy() {
