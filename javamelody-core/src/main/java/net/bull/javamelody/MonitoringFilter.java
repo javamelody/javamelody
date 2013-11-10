@@ -351,12 +351,9 @@ public class MonitoringFilter implements Filter {
 			}
 
 			if (!collector.isStopped()) {
-				LOG.debug("Stopping the javamelody thread in this webapp, because a collector server from "
+				LOG.debug("Stopping the javamelody collector in this webapp, because a collector server from "
 						+ httpRequest.getRemoteAddr() + " wants to collect the data itself");
-				if (filterContext.getTimer() != null) {
-					filterContext.getTimer().cancel();
-				}
-				collector.stop();
+				filterContext.stopCollector();
 			}
 		}
 	}
