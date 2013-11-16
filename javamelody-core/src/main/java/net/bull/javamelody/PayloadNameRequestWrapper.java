@@ -46,7 +46,7 @@ import javax.xml.stream.XMLStreamReader;
  * Simple Wrapper class to inspect payload for name.
  * @author dhartford, roy.paterson, evernat
  */
-class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
+public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	private static final Pattern GWT_RPC_SEPARATOR_CHAR_PATTERN = Pattern.compile(Pattern
 			.quote("|"));
 
@@ -69,9 +69,13 @@ class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	 * @param request the original HttpServletRequest
 	 * @throws IOException In case of issues.
 	 */
-	PayloadNameRequestWrapper(HttpServletRequest request) throws IOException {
+	public PayloadNameRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
 
+		initialize(request);
+	}
+
+	protected void initialize(HttpServletRequest request) throws IOException {
 		//name on a best-effort basis
 		name = null;
 		requestType = null;
@@ -142,7 +146,7 @@ class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	 * @return GWT-RPC method name, or null if unable to parse @null
 	 */
 	@SuppressWarnings("resource")
-	static String parseGwtRpcMethodName(InputStream stream, String charEncoding) {
+	private static String parseGwtRpcMethodName(InputStream stream, String charEncoding) {
 		//commented out code uses GWT-user library for a more 'proper' approach.
 		//GWT-user library approach is more future-proof, but requires more dependency management.
 		//				RPCRequest decodeRequest = RPC.decodeRequest(readLine);
@@ -190,7 +194,7 @@ class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	 * @return if found tag
 	 * @throws XMLStreamException on error
 	 */
-	static boolean scanForChildTag(XMLStreamReader reader, String tagName)
+	private static boolean scanForChildTag(XMLStreamReader reader, String tagName)
 			throws XMLStreamException {
 		assert reader.isStartElement();
 
@@ -223,7 +227,7 @@ class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	 * @param charEncoding character encoding of stream, or null for platform default @null
 	 * @return SOAP method name, or null if unable to parse @null
 	 */
-	static String parseSoapMethodName(InputStream stream, String charEncoding) {
+	private static String parseSoapMethodName(InputStream stream, String charEncoding) {
 		try {
 			final XMLInputFactory factory = XMLInputFactory.newFactory();
 			final XMLStreamReader xmlReader;
