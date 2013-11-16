@@ -187,6 +187,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		body = "7|0|4|http://site/path/com.example.GwtModuleName/|148050F6A52E484A068EAD552E9A6F2A|com.example.GwtRpcApi|gwtRpcMethodName|1|2|3|4|0|";
 
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
 
 		assertEquals("Could not parse GWT-RPC request", ".gwtRpcMethodName",
 				wrapper.getPayloadRequestName());
@@ -217,6 +218,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 				+ "</SOAP-ENV:Envelope>                                                    ";
 
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
 
 		assertEquals("Could not parse SOAP 1.1 request", ".GetLastTradePrice",
 				wrapper.getPayloadRequestName());
@@ -254,6 +256,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 				+ "</SOAP-ENV:Envelope>                                                     ";
 
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
 
 		assertEquals("Could not parse SOAP 1.1 request with 'mandatory header'",
 				".GetLastTradePrice", wrapper.getPayloadRequestName());
@@ -286,6 +289,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 				+ "</SOAP-ENV:Envelope>                                                    ";
 
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
 
 		assertEquals("Could not parse SOAP 1.1 request with mutliple request parameters",
 				".GetLastTradePriceDetailed", wrapper.getPayloadRequestName());
@@ -331,6 +335,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 				+ "</env:Envelope>                                                             ";
 
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
 
 		assertEquals("Could not parse SOAP 1.2 request", ".chargeReservation",
 				wrapper.getPayloadRequestName());
