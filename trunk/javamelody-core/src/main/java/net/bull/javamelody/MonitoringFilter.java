@@ -185,13 +185,7 @@ public class MonitoringFilter implements Filter {
 			HttpServletResponse httpResponse) throws IOException, ServletException {
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				httpResponse);
-		HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest,
-				wrappedResponse);
-		final PayloadNameRequestWrapper payloadNameRequestWrapper = new PayloadNameRequestWrapper(
-				wrappedRequest);
-		if (payloadNameRequestWrapper.getPayloadRequestType() != null) {
-			wrappedRequest = payloadNameRequestWrapper;
-		}
+		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest, wrappedResponse);
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		boolean systemError = false;
@@ -273,6 +267,17 @@ public class MonitoringFilter implements Filter {
 				CounterError.unbindRequest();
 			}
 		}
+	}
+
+	protected HttpServletRequest createRequestWrapper(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request, response);
+		final PayloadNameRequestWrapper payloadNameRequestWrapper = new PayloadNameRequestWrapper(
+				wrappedRequest);
+		if (payloadNameRequestWrapper.getPayloadRequestType() != null) {
+			wrappedRequest = payloadNameRequestWrapper;
+		}
+		return wrappedRequest;
 	}
 
 	protected String getRequestName(HttpServletRequest request) {
