@@ -95,15 +95,13 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 		try {
 			if (contentType.startsWith("text/x-gwt-rpc")) {
 				//parse GWT-RPC method name
-				bufferedInputStream = createBufferedInputStream();
-				name = parseGwtRpcMethodName(bufferedInputStream, getCharacterEncoding());
+				name = parseGwtRpcMethodName(getBufferedInputStream(), getCharacterEncoding());
 				requestType = "GWT-RPC";
 			} else if (contentType.startsWith("application/soap+xml") //SOAP 1.2
 					|| contentType.startsWith("text/xml") //SOAP 1.1
 					&& request.getHeader("SOAPAction") != null) {
 				//parse SOAP method name
-				bufferedInputStream = createBufferedInputStream();
-				name = parseSoapMethodName(bufferedInputStream, getCharacterEncoding());
+				name = parseSoapMethodName(getBufferedInputStream(), getCharacterEncoding());
 				requestType = "SOAP";
 			} else {
 				//don't know how to name this request based on payload
@@ -119,23 +117,29 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 			requestType = null;
 		} finally {
 			//reset stream so application is unaffected
-			if (bufferedInputStream != null) {
-				bufferedInputStream.reset();
-			}
+			resetBufferedInputStream();
 		}
 	}
 
-	private BufferedInputStream createBufferedInputStream() throws IOException {
-		//workaround Tomcat issue with form POSTs
-		//see http://stackoverflow.com/questions/18489399/read-httpservletrequests-post-body-and-then-call-getparameter-in-tomcat
-		final ServletRequest request = getRequest();
-		request.getParameterMap();
+	protected BufferedInputStream getBufferedInputStream() throws IOException {
+		if (bufferedInputStream == null) {
+			//workaround Tomcat issue with form POSTs
+			//see http://stackoverflow.com/questions/18489399/read-httpservletrequests-post-body-and-then-call-getparameter-in-tomcat
+			final ServletRequest request = getRequest();
+			request.getParameterMap();
 
-		//buffer the payload so we can inspect it
-		final BufferedInputStream result = new BufferedInputStream(request.getInputStream());
-		// and mark to allow the stream to be reset
-		result.mark(Integer.MAX_VALUE);
-		return result;
+			//buffer the payload so we can inspect it
+			bufferedInputStream = new BufferedInputStream(request.getInputStream());
+			// and mark to allow the stream to be reset
+			bufferedInputStream.mark(Integer.MAX_VALUE);
+		}
+		return bufferedInputStream;
+	}
+
+	protected void resetBufferedInputStream() throws IOException {
+		if (bufferedInputStream != null) {
+			bufferedInputStream.reset();
+		}
 	}
 
 	/**
