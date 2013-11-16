@@ -59,10 +59,12 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -361,8 +363,10 @@ public class TestMonitoringFilter { // NOPMD
 		expect(request2b.getContentType()).andReturn(textGwtRpc).anyTimes();
 		expect(request2b.getInputStream()).andReturn(createInputStreamForString("1|2|3|4|5|6"))
 				.anyTimes();
+		expect(request2b.getReader())
+				.andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6"))).anyTimes();
 		replay(request2b);
-		final GWTRequestWrapper wrapper2b = new GWTRequestWrapper(request2b);
+		final PayloadNameRequestWrapper wrapper2b = new PayloadNameRequestWrapper(request2b);
 		wrapper2b.getInputStream().read();
 		wrapper2b.getReader().read();
 		verify(request2b);
@@ -371,8 +375,10 @@ public class TestMonitoringFilter { // NOPMD
 		expect(request2.getContentType()).andReturn(textGwtRpc).anyTimes();
 		expect(request2.getInputStream()).andReturn(
 				createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
+		expect(request2.getReader()).andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6")))
+				.anyTimes();
 		replay(request2);
-		final GWTRequestWrapper wrapper2 = new GWTRequestWrapper(request2);
+		final PayloadNameRequestWrapper wrapper2 = new PayloadNameRequestWrapper(request2);
 		wrapper2.getInputStream().read();
 		wrapper2.getReader().read();
 		verify(request2);
@@ -382,8 +388,10 @@ public class TestMonitoringFilter { // NOPMD
 		expect(request3.getCharacterEncoding()).andReturn("utf-8").anyTimes();
 		expect(request3.getInputStream()).andReturn(
 				createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
+		expect(request3.getReader()).andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6")))
+				.anyTimes();
 		replay(request3);
-		final GWTRequestWrapper wrapper3 = new GWTRequestWrapper(request3);
+		final PayloadNameRequestWrapper wrapper3 = new PayloadNameRequestWrapper(request3);
 		wrapper3.getInputStream().read();
 		wrapper3.getInputStream().read();
 		wrapper3.getReader().read();

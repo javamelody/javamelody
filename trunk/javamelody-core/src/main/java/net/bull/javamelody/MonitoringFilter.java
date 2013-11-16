@@ -187,9 +187,10 @@ public class MonitoringFilter implements Filter {
 				httpResponse);
 		HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(httpRequest,
 				wrappedResponse);
-		if (httpRequest.getContentType() != null
-				&& httpRequest.getContentType().startsWith("text/x-gwt-rpc")) {
-			wrappedRequest = new GWTRequestWrapper(wrappedRequest);
+		final PayloadNameRequestWrapper payloadNameRequestWrapper = new PayloadNameRequestWrapper(
+				wrappedRequest);
+		if (payloadNameRequestWrapper.getPayloadRequestType() != null) {
+			wrappedRequest = payloadNameRequestWrapper;
 		}
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
@@ -379,12 +380,11 @@ public class MonitoringFilter implements Filter {
 			method = httpRequest.getMethod();
 		}
 		if (!includeQueryString) {
-			//20091201 dhartford:Check for GWT for modified http request statistic gathering.
-			if (httpRequest instanceof GWTRequestWrapper) {
-				//Cast the GWT HttpServletRequestWrapper object, get the actual payload for
-				//type x-gwt-rpc, and obtain methodname (manually, the 7th pipe-delimited item).
-				final GWTRequestWrapper wrapper = (GWTRequestWrapper) httpRequest;
-				return tmp + '.' + wrapper.getGwtRpcMethodName() + " GWT-RPC";
+			//Check payload request to support GWT, SOAP, and XML-RPC statistic gathering
+			if (httpRequest instanceof PayloadNameRequestWrapper) {
+				final PayloadNameRequestWrapper wrapper = (PayloadNameRequestWrapper) httpRequest;
+				return tmp + wrapper.getPayloadRequestName() + ' '
+						+ wrapper.getPayloadRequestType();
 			}
 
 			return tmp + ' ' + method;
