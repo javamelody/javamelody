@@ -9,7 +9,7 @@
   * [https://github.com/evernat/liferay-javamelody Source], [https://github.com/evernat/liferay-javamelody/releases downloads] and [https://github.com/evernat/liferay-javamelody/issues?page=1&state=open issues] of the [UserGuide#Liferay_Plugin Liferay plugin] are moved to GitHub. You can submit [https://github.com/evernat/liferay-javamelody/pulls pull requests] to fix issues.
   * Optimize jdbc overhead, when there are more than 100000 sql hits per minute (issue 353, with help from _kalnas2_)
   * New parameter to optimize opened jdbc connections, when there are more than 100000 sql hits per minute (issue 352)
-  * display incoming *web-services SOAP* methods in the http statistics (issue 228)
+  * display incoming *web-services SOAP* methods in the http statistics (issue 228, thanks to _roy.paterson_)
 
 === 1.47.0 ===
 
