@@ -274,6 +274,7 @@ public class MonitoringFilter implements Filter {
 		HttpServletRequest wrappedRequest = JspWrapper.createHttpRequestWrapper(request, response);
 		final PayloadNameRequestWrapper payloadNameRequestWrapper = new PayloadNameRequestWrapper(
 				wrappedRequest);
+		payloadNameRequestWrapper.initialize();
 		if (payloadNameRequestWrapper.getPayloadRequestType() != null) {
 			wrappedRequest = payloadNameRequestWrapper;
 		}

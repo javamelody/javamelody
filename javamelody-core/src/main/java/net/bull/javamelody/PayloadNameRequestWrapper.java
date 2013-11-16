@@ -67,19 +67,17 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	/**
 	 * Constructor.
 	 * @param request the original HttpServletRequest
-	 * @throws IOException In case of issues.
 	 */
-	public PayloadNameRequestWrapper(HttpServletRequest request) throws IOException {
+	public PayloadNameRequestWrapper(HttpServletRequest request) {
 		super(request);
-
-		initialize(request);
 	}
 
-	protected void initialize(HttpServletRequest request) throws IOException {
+	protected void initialize() throws IOException {
 		//name on a best-effort basis
 		name = null;
 		requestType = null;
 
+		final HttpServletRequest request = (HttpServletRequest) getRequest();
 		final String contentType = request.getContentType();
 		if (contentType == null) {
 			//don't know how to handle this content type
@@ -198,7 +196,7 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	 * @return if found tag
 	 * @throws XMLStreamException on error
 	 */
-	private static boolean scanForChildTag(XMLStreamReader reader, String tagName)
+	static boolean scanForChildTag(XMLStreamReader reader, String tagName)
 			throws XMLStreamException {
 		assert reader.isStartElement();
 
