@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix issue ~~[https://issues.jenkins-ci.org/browse/JENKINS-20532 JENKINS-20352]~~: In the Jenkins monitoring plugin, HTTP session count is high
+  * fix issue ~~[https://issues.jenkins-ci.org/browse/JENKINS-20532 JENKINS-20352]~~: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], HTTP session count is high
   * fix issue 359: Support Confluence 5.3
   * fix issue 354: With the java update 1.7_u45, the *Desktop app* of the monitoring does not start
   * fix issue 355: ClassNotFoundException when serializing session breaks the sessions view
