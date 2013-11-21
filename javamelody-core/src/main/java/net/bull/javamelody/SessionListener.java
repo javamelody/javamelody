@@ -343,6 +343,10 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		if (session != null) {
 			try {
 				session.getCreationTime();
+
+				// https://issues.jenkins-ci.org/browse/JENKINS-20532
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=413019
+				session.getLastAccessedTime();
 			} catch (final IllegalStateException e) {
 				// session.getCreationTime() lance IllegalStateException si la session est invalidée
 				synchronized (session) {
