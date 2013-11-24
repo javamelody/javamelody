@@ -137,7 +137,7 @@ This is an internal reminder of the steps of the release process.
     * edit release notes for version: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring
   * *jira / confluence / bamboo plugin*
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
-    * add version with jira-javamelody-version.jar url, source tag
+    * add version with jira-javamelody-version.jar
   * *sonar plugin*
     * increment javamelody-core version and project's version in [https://github.com/evernat/sonar-javamelody/blob/master/pom.xml]
     * mvn clean package to package the jar file in the target directory
