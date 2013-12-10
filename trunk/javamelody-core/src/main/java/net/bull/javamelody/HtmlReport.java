@@ -168,7 +168,7 @@ class HtmlReport extends HtmlAbstractReport {
 
 	void writeHtmlFooter() throws IOException {
 		final String analyticsId = Parameters.getParameter(Parameter.ANALYTICS_ID);
-		if (analyticsId != null) {
+		if (analyticsId != null && !"disabled".equals(analyticsId)) {
 			writeDirectly(SCRIPT_BEGIN);
 			writeDirectly("var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
 			writeDirectly("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");

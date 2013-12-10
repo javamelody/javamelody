@@ -74,6 +74,12 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		if (PLUGIN_AUTHENTICATION_DISABLED) {
 			LOG.debug("Authentication for monitoring reports has been disabled");
 		}
+
+		final String analyticsDisabled = "javamelody.analytics-disabled";
+		if (System.getProperty(analyticsDisabled) != null
+				|| config.getServletContext().getInitParameter(analyticsDisabled) != null) {
+			System.setProperty("javamelody.analytics-id", "disabled");
+		}
 	}
 
 	/** {@inheritDoc} */
