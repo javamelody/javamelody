@@ -2,8 +2,8 @@
 === Next release (trunk) ===
 
   * fix issue 361: InvocationTargetException when Accessing Monitoring URL on JIRA, with v1.48.0
-  * improved: In the [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], display the usernames in the list of http sessions
-  * improved: When I call the "Invalidate http sessions" action, invalidate all sessions except mine (I can still invalidate my session individually after that)
+  * improved: In the [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], display the usernames in the list of http sessions (revision 3590)
+  * improved: When I call the "Invalidate http sessions" action, invalidate all sessions except mine (I can still invalidate my session individually after that, revision 3591)
 
 === 1.48.0 ===
 
