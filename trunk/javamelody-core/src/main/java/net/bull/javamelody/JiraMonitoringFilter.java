@@ -98,6 +98,22 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			return;
 		}
 
+		final HttpSession session = httpRequest.getSession(false);
+		if (session != null
+				&& session.getAttribute(SessionInformations.SESSION_REMOTE_USER) == null) {
+			// si session null, la session n'est pas encore créée (et ne le sera peut-être jamais),
+			try {
+				final Object user = getUser(session);
+				// objet utilisateur, peut être null
+				if (user instanceof Principal) {
+					final String remoteUser = ((Principal) user).getName();
+					session.setAttribute(SessionInformations.SESSION_REMOTE_USER, remoteUser);
+				}
+			} catch (final Exception e) {
+				// tant pis
+			}
+		}
+
 		super.doFilter(request, response, chain);
 	}
 
@@ -260,8 +276,12 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	}
 
 	private Object getUser(HttpServletRequest httpRequest) {
-		// ceci fonctionne dans JIRA et dans Confluence (et Bamboo ?)
 		final HttpSession session = httpRequest.getSession(false);
+		return getUser(session);
+	}
+
+	private Object getUser(HttpSession session) {
+		// ceci fonctionne dans JIRA et dans Confluence (et Bamboo ?)
 		if (session == null) {
 			return null;
 		}
