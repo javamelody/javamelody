@@ -55,6 +55,7 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Contrôleur au sens MVC de l'ihm de monitoring.
@@ -109,13 +110,14 @@ class MonitoringController {
 				if (action != Action.CLEAR_COUNTER && action != Action.MAIL_TEST) {
 					Action.checkSystemActionsEnabled();
 				}
+				final HttpSession currentSession = httpRequest.getSession(false);
 				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
 				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
 				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
 				final String cacheId = httpRequest.getParameter(CACHE_ID_PARAMETER);
-				messageForReport = action.execute(collector, collectorServer, counterName,
-						sessionId, threadId, jobId, cacheId);
+				messageForReport = action.execute(collector, collectorServer, currentSession,
+						counterName, sessionId, threadId, jobId, cacheId);
 				anchorNameForRedirect = action.getContextName(counterName);
 				return messageForReport;
 			} finally {
