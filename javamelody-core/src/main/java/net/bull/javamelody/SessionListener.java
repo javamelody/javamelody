@@ -136,9 +136,21 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		return result;
 	}
 
+	// méthode conservée pour compatibilité ascendante
+	// (notamment https://wiki.jenkins-ci.org/display/JENKINS/Invalidate+Jenkins+HTTP+sessions)
 	static void invalidateAllSessions() {
+		invalidateAllSessionsExceptCurrentSession(null);
+	}
+
+	// since 1.49
+	static void invalidateAllSessionsExceptCurrentSession(HttpSession currentSession) {
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
 			try {
+				if (currentSession != null && currentSession.getId().equals(session.getId())) {
+					// si l'utilisateur exécutant l'action a une session http,
+					// on ne l'invalide pas
+					continue;
+				}
 				session.invalidate();
 			} catch (final Exception e) {
 				// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"

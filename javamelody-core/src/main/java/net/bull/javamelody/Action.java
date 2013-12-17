@@ -32,6 +32,7 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.servlet.http.HttpSession;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -149,20 +150,32 @@ enum Action { // NOPMD
 		}
 	}
 
-	/**
-	 * Exécute l'action.
-	 * @param collector Collector pour une réinitialisation et test de mail
-	 * @param collectorServer Serveur de collecte pour test de mail (null s'il n'y en a pas)
-	 * @param counterName Nom du compteur pour une réinitialisation
-	 * @param sessionId Identifiant de session pour invalidation (null sinon)
-	 * @param threadId Identifiant du thread sous la forme pid_ip_id
-	 * @param jobId Identifiant du job sous la forme pid_ip_id
-	 * @param cacheId Identifiant du cache à vider
-	 * @return Message de résultat
-	 * @throws IOException e
-	 */
+	// méthode conservée pour compatibilité ascendante
 	// CHECKSTYLE:OFF
 	String execute(Collector collector, CollectorServer collectorServer, String counterName, // NOPMD
+			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
+		// CHECKSTYLE:ON
+		return execute(collector, collectorServer, null, counterName, sessionId, threadId, jobId,
+				cacheId);
+	}
+
+	/**
+	* Exécute l'action.
+	* @param collector Collector pour une réinitialisation et test de mail
+	* @param collectorServer Serveur de collecte pour test de mail (null s'il n'y en a pas)
+	* @param currentSession session http de l'utilisateur exécutant l'action (null sinon)
+	* @param counterName Nom du compteur pour une réinitialisation
+	* @param sessionId Identifiant de session pour invalidation (null sinon)
+	* @param threadId Identifiant du thread sous la forme pid_ip_id
+	* @param jobId Identifiant du job sous la forme pid_ip_id
+	* @param cacheId Identifiant du cache à vider
+	* @return Message de résultat
+	* @throws IOException e
+	* @since 1.49
+	*/
+	// CHECKSTYLE:OFF
+	String execute(Collector collector, CollectorServer collectorServer,
+			HttpSession currentSession, String counterName, // NOPMD
 			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
 		// CHECKSTYLE:ON
 		String messageForReport;
@@ -209,7 +222,7 @@ enum Action { // NOPMD
 			break;
 		case INVALIDATE_SESSIONS:
 			// invalidation des sessions http
-			SessionListener.invalidateAllSessions();
+			SessionListener.invalidateAllSessionsExceptCurrentSession(currentSession);
 			messageForReport = I18N.getString("sessions_http_invalidees");
 			break;
 		case INVALIDATE_SESSION:
