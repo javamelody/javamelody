@@ -231,7 +231,8 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	private static String parseSoapMethodName(InputStream stream, String charEncoding) {
 		try {
-			final XMLInputFactory factory = XMLInputFactory.newFactory();
+			// newInstance() et pas newFactory() pour java 1.5 (issue 367)
+			final XMLInputFactory factory = XMLInputFactory.newInstance();
 			final XMLStreamReader xmlReader;
 			if (charEncoding != null) {
 				xmlReader = factory.createXMLStreamReader(stream, charEncoding);
