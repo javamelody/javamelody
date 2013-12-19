@@ -25,6 +25,8 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import net.bull.javamelody.SessionInformations.SessionAttribute;
 
 /**
@@ -34,13 +36,16 @@ import net.bull.javamelody.SessionInformations.SessionAttribute;
 class HtmlSessionInformationsReport extends HtmlAbstractReport {
 	private static final String A_HREF_PART_SESSIONS = "<a href='?part=sessions";
 	private final List<SessionInformations> sessionsInformations;
+	private final HttpSession currentSession;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 
-	HtmlSessionInformationsReport(List<SessionInformations> sessionsInformations, Writer writer) {
+	HtmlSessionInformationsReport(List<SessionInformations> sessionsInformations,
+			HttpSession currentSession, Writer writer) {
 		super(writer);
 		this.sessionsInformations = sessionsInformations;
+		this.currentSession = currentSession;
 	}
 
 	@Override
@@ -136,6 +141,9 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		write("'>");
 		write(htmlEncodeButNotSpace(session.getId()));
 		write("</a>");
+		if (currentSession != null && session.getId().equals(currentSession.getId())) {
+			write("<img src='?resource=bullets/blue.png' alt='#Votre_session#' title='#Votre_session#'/>");
+		}
 		write(nextColumnAlignRight);
 		write(durationFormat.format(session.getLastAccess()));
 		write(nextColumnAlignRight);

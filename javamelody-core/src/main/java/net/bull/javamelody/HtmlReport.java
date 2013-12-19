@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import net.bull.javamelody.HtmlCounterReport.HtmlCounterRequestGraphReport;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
@@ -242,21 +244,22 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
-	void writeSessions(List<SessionInformations> sessionsInformations, String message,
-			String sessionsPart) throws IOException {
+	void writeSessions(List<SessionInformations> sessionsInformations, HttpSession currentSession,
+			String message, String sessionsPart) throws IOException {
 		assert sessionsInformations != null;
 		writeHtmlHeader();
 		writeMessageIfNotNull(message, sessionsPart);
-		new HtmlSessionInformationsReport(sessionsInformations, getWriter()).toHtml();
+		new HtmlSessionInformationsReport(sessionsInformations, currentSession, getWriter())
+				.toHtml();
 		writeHtmlFooter();
 	}
 
-	void writeSessionDetail(String sessionId, SessionInformations sessionInformations)
-			throws IOException {
+	void writeSessionDetail(String sessionId, SessionInformations sessionInformations,
+			HttpSession currentSession) throws IOException {
 		assert sessionId != null;
 		writeHtmlHeader();
-		new HtmlSessionInformationsReport(null, getWriter()).writeSessionDetails(sessionId,
-				sessionInformations);
+		new HtmlSessionInformationsReport(null, currentSession, getWriter()).writeSessionDetails(
+				sessionId, sessionInformations);
 		writeHtmlFooter();
 	}
 
