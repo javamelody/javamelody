@@ -98,6 +98,12 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			return;
 		}
 
+		putRemoteUserInSession(httpRequest);
+
+		super.doFilter(request, response, chain);
+	}
+
+	private void putRemoteUserInSession(HttpServletRequest httpRequest) {
 		final HttpSession session = httpRequest.getSession(false);
 		if (session != null
 				&& session.getAttribute(SessionInformations.SESSION_REMOTE_USER) == null) {
@@ -111,10 +117,9 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 				}
 			} catch (final Exception e) {
 				// tant pis
+				return;
 			}
 		}
-
-		super.doFilter(request, response, chain);
 	}
 
 	private boolean hasNotPermission(HttpServletRequest httpRequest,
