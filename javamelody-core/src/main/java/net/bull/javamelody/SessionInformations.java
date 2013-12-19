@@ -282,8 +282,8 @@ class SessionInformations implements Serializable {
 					out.close();
 				}
 				return TEMP_OUTPUT.size();
-			} catch (final Exception e) {
-				// ce catch Exception inclue IOException et aussi ClassNotFoundException (issue 355)
+			} catch (final Throwable e) {
+				// ce catch Throwable inclut IOException et aussi NoClassDefFoundError/ClassNotFoundException (issue 355)
 				return -1;
 			}
 		}
