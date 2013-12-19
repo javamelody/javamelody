@@ -36,8 +36,8 @@ class ConnectionInformations implements Serializable {
 	private static final long serialVersionUID = -6063966419161604125L;
 	private static final String OWN_PACKAGE = ConnectionInformations.class.getName().substring(0,
 			ConnectionInformations.class.getName().lastIndexOf('.'));
-	private static final boolean connectionsStackTracesDisabled = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.CONNECTIONS_STACK_TRACES_DISABLED));
+	private static final boolean CONNECTIONS_STACK_TRACES_DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.CONNECTIONS_STACK_TRACES_DISABLED));
 	private final long openingTime;
 	private final StackTraceElement[] openingStackTrace;
 	private final long threadId;
@@ -46,7 +46,7 @@ class ConnectionInformations implements Serializable {
 		super();
 		this.openingTime = System.currentTimeMillis();
 		final Thread currentThread = Thread.currentThread();
-		if (connectionsStackTracesDisabled) {
+		if (CONNECTIONS_STACK_TRACES_DISABLED) {
 			this.openingStackTrace = null;
 		} else {
 			this.openingStackTrace = currentThread.getStackTrace();
