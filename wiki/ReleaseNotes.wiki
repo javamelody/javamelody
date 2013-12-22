@@ -7,6 +7,12 @@
   * improved: In the [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], display the usernames in the list of http sessions (revision 3590)
   * improved: When I call the "Invalidate http sessions" action, invalidate all sessions except mine (I can still invalidate my session individually after that, revision 3591)
   * improved: In the list of http sessions, a bullet shows which one is my own session, if I have a session (revision 3603)
+  * added: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], for each individual node (each slave in [http://yourhost/computer]), reports and actions are available in the contextual menu of the node:
+    * Threads, process list, MBeans of that node only
+    * Heap histogram of that node
+    * Actions for GC, heap dump
+    * (~~[https://issues.jenkins-ci.org/browse/JENKINS-20935 JENKINS-20935]~~, with help from _Oleg Nenashev_)
+
 
 === 1.48.0 ===
 
