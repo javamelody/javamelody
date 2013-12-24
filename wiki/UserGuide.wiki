@@ -769,7 +769,7 @@ or
 	{{{mail.transport.protocol=smtps}}}
 	
 	Other configuration parameters can be added if necessary for the 
-	[http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html mail] session
+	[https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html mail] session
 
 	Then it is necessary to add the list of mail addresses separated by commas to the parameter
 	{{{admin-emails}}}, in {{{web.xml}}} file or in tomcat context or in system properties like the optional parameters
