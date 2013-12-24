@@ -70,9 +70,9 @@
 	<Context ... > 
 		...
 		<Resource name="mail/JavaMelodySession" auth="Container" type="javax.mail.Session"
-			mail.smtp.host="<smtp server>"
-			mail.smtp.user="<login>"
-			mail.from="JIRA JavaMelody plugin"
+			mail.smtp.host="mailhost.foo.bar"
+			mail.smtp.user="someLoginIfNeeded"
+			mail.from="javamelody@foo.bar"
 		/>
 		<Parameter name='javamelody.admin-emails' value='admin1@company.com,admin2@company.com' override='false'/>
 		<Parameter name='javamelody.mail-session' value='java:comp/env/mail/JavaMelodySession' override='false'/>
@@ -80,3 +80,5 @@
 	</Context>
 	...
 }}}
+
+    Read [UserGuide#14._Weekly,_daily_or_monthly_reports_by_mail Weekly, daily or monthly reports by mail] for more parameters if needed.
