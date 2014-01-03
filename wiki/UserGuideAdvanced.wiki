@@ -584,7 +584,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 }}}
 
 	Then add files "customMonitoring.css" and "static/bullets/red.png" at the root of the web content in your webapp.
-	You can replace every web resource in this directory and its sub-directories: "src/main/resources/net/bull/javamelody/resource".
+	You can replace every web resource in this directory and its sub-directories: "[https://code.google.com/p/javamelody/source/browse/#svn%2Ftrunk%2Fjavamelody-core%2Fsrc%2Fmain%2Fresources%2Fnet%2Fbull%2Fjavamelody%2Fresource src/main/resources/net/bull/javamelody/resource]".
 	
 == Report written before last shutdown ==
 	
