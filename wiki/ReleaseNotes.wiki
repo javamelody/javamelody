@@ -12,7 +12,7 @@
     * Heap histogram of that node
     * Actions for GC, heap dump
     * (~~[https://issues.jenkins-ci.org/browse/JENKINS-20935 JENKINS-20935]~~, with help from _Oleg Nenashev_)
-  * improved css styles with the return of shadows in Firefox and with hovers for images, see [Demo] (revision 3614). Note: You can [UserGuideAdvanced#Customizing_styles,_icons_and_other_resources_in_the_html_report customize styles and other resources].
+  * improved css styles with the come back of shadows in Firefox and with hovers for images, see [Demo] (revision 3614). Note: You can [UserGuideAdvanced#Customizing_styles,_icons_and_other_resources_in_the_html_report customize styles and other resources].
 
 === 1.48.0 ===
 
