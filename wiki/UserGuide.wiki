@@ -941,7 +941,7 @@ or
 	<dependency>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-core</artifactId>
-		<version>1.48.0</version>
+		<version>1.49.0</version>
 	</dependency>
 	<!-- itext, option to add PDF export -->
 	<dependency>
