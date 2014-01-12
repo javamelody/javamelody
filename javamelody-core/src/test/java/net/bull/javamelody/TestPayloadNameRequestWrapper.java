@@ -361,7 +361,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	private boolean scanForChildTag(String tagName, String xml) throws XMLStreamException {
-		final XMLInputFactory factory = XMLInputFactory.newFactory();
+		final XMLInputFactory factory = XMLInputFactory.newInstance();
 		final XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(xml
 				.getBytes()));
 
