@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app 
+	[
+		<!ENTITY services_appli1 SYSTEM "services_appli1.xml"> 
+		<!ENTITY services_referentiel1 SYSTEM "services_referentiel1.xml">
+	]>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+
+	<!-- Services -->
+	&services_appli1;
+	&services_referentiel1;
+	
+	<!-- configuration datasource -->
+	<context-param>
+		<param-name>appwhite1.datasource</param-name>
+		<param-value>java:comp/env/jdbc/demo_javamelody</param-value>
+	</context-param>
+
+	<!-- configuration pour monitoring javamelody -->
+	<context-param>
+		<param-name>javamelody.system-actions-enabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.sampling-seconds</param-name>
+		<param-value>1</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.sampling-excluded-packages</param-name>
+		<param-value>java,sun,com.sun,javax,org.apache,com.mysql</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.log</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.sql-transform-pattern</param-name>
+		<!-- regexp pour agréger les paramètres bindés dans les critères de requêtes 
+			SQL tels que "in (?, ?, ?, ?)" et ainsi pour éviter que ces requêtes ayant 
+			un nombre variable de paramètres soient considérées comme différentes ;
+			de fait cela agrège aussi les values des inserts -->
+		<param-value>\([\?, ]+\)</param-value>
+	</context-param>
+	<!-- <context-param> <param-name>javamelody.disabled</param-name> <param-value>true</param-value> 
+		</context-param> -->
+	<!-- paramétrage du monitoring pour GWT -->
+	<context-param>
+		<param-name>javamelody.http-transform-pattern</param-name>
+		<param-value>[A-F,0-9]+\.cache</param-value>
+	</context-param>
+	<!-- paramétrage de l'ihm swing avec la dernière version construite depuis le trunk -->
+	<context-param>
+		<param-name>javamelody.javamelody-swing-url</param-name>
+		<param-value>https://javamelody.ci.cloudbees.com/job/javamelody-swing%20ant/lastSuccessfulBuild/artifact/javamelody-swing/javamelody-swing.jar</param-value>
+	</context-param>
+	
+	<!-- these are for MDC of Log4j and for display of the user in the monitoring -->
+	<filter>
+		<filter-name>remoteUser</filter-name>
+		<filter-class>fr.spi4j.lib.security.RemoteUserFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>remoteUser</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>forbiddenActions</filter-name>
+		<filter-class>ForbiddenActionsFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>forbiddenActions</filter-name>
+		<url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+
+	<!-- these are for monitoring -->
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>monitoring</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+
+	<!-- these are for getting the session for the current thread -->
+	<filter>
+		<filter-name>httpSessionInThread</filter-name>
+		<filter-class>fr.spi4j.filter.HttpSessionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>httpSessionInThread</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Servlet d'informations sur le build -->
+	<servlet>
+		<servlet-name>BuildInfoServlet</servlet-name>
+		<servlet-class>fr.appwhite1.Appli1BuildInfoServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BuildInfoServlet</servlet-name>
+		<url-pattern>/version</url-pattern>
+	</servlet-mapping>
+
+	<!-- Initialisation de la webapp -->
+	<listener>
+		<listener-class>fr.appwhite1.InitializationListener</listener-class>
+	</listener>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+	<!-- time out des sessions en minutes (il est recommandé 30 ou 60 minutes 
+		pour le timeout) -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<resource-ref>
+		<res-ref-name>jdbc/demo_javamelody</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+</web-app>

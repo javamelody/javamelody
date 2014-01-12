@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+    <Call id="MBeanServer" class="java.lang.management.ManagementFactory" name="getPlatformMBeanServer"/>
+
+    <New id="MBeanContainer" class="org.eclipse.jetty.jmx.MBeanContainer">
+        <Arg>
+            <Ref id="MBeanServer"/>
+        </Arg>
+    </New>
+
+    <Get id="Container" name="container">
+        <Call name="addEventListener">
+            <Arg>
+                <Ref id="MBeanContainer"/>
+            </Arg>
+        </Call>
+    </Get>
+
+    <Call name="addBean">
+        <Arg>
+            <Ref id="MBeanContainer"/>
+        </Arg>
+    </Call>
+</Configure>

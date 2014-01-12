@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+<!-- <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"> 
+-->
+
+	<display-name>test monitoring</display-name>
+	<distributable />
+<!--
+	<filter>
+		<filter-name>customResourceFilter</filter-name>
+		<filter-class>net.bull.javamelody.CustomResourceFilter</filter-class>
+		<init-param>
+			<param-name>monitoring.css</param-name>
+			<param-value>/customMonitoring.css</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>customResourceFilter</filter-name>
+		<url-pattern>/monitoring</url-pattern>
+	</filter-mapping>
+-->
+	<filter>
+		<filter-name>javamelody</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<!-- servlet api 3.0: <async-supported>true</async-supported> -->
+		<!-- pour mettre des paramètres pour le filtre, voir le user guide -->
+		<init-param>
+			<param-name>log</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<!--
+		<init-param>
+			<param-name>system-actions-enabled</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>displayed-counters</param-name>
+			<param-value>http,sql,error,log,spring,services</param-value>
+		</init-param>
+		<init-param>
+			<param-name>analytics-id</param-name>
+			<param-value>UA-1335263-5</param-value>
+		</init-param>
+		-->
+	</filter>
+	<filter-mapping>
+		<filter-name>javamelody</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<listener>
+		<listener-class>net.bull.javamelody.SessionListener</listener-class>
+	</listener>
+	
+	<!-- normalement cette servlet est utilisée dans un serveur de collecte séparé de l'application monitorée
+	<servlet>
+		<servlet-name>monitoringServer</servlet-name>
+		<servlet-class>net.bull.javamelody.CollectorServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>monitoringServer</servlet-name>
+		<url-pattern>/monitoringServer</url-pattern>
+	</servlet-mapping>
+	-->
+	<!-- exemple d'authentification par identifiant et mot de passe:
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Monitoring</realm-name>
+	</login-config>
+	<security-role>
+		<role-name>monitoring</role-name>
+	</security-role>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Monitoring</web-resource-name>
+			<url-pattern>/monitoring</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>monitoring</role-name>
+		</auth-constraint>
+	</security-constraint>
+	-->
+	<resource-ref>
+		<description>
+			Resource reference to a factory for java.sql.Connection
+			instances that may be used for talking to a particular
+			database that is configured in the server.xml file.
+		</description>
+		<res-ref-name>jdbc/TestDB</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+</web-app>
