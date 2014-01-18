@@ -57,6 +57,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private final boolean confluence = isConfluence();
 	private final boolean bamboo = isBamboo();
 
+	private boolean confluenceGetUserByNameExists = true; // on suppose true au départ
+
 	/** {@inheritDoc} */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
@@ -308,7 +310,7 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 				} catch (final Exception e) {
 					throw new IllegalStateException(e);
 				}
-			} else if (result instanceof Principal) {
+			} else if (result instanceof Principal && confluenceGetUserByNameExists) {
 				// since confluence 5.2 or 5.3
 				final String userName = ((Principal) result).getName();
 				try {
@@ -318,8 +320,13 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 							String.class).invoke(null, "userAccessor");
 					// getUser deprecated, use getUserByName as said in:
 					// https://docs.atlassian.com/atlassian-confluence/5.3.1/com/atlassian/confluence/user/UserAccessor.html
-					result = userAccessor.getClass().getMethod("getUserByName", String.class)
-							.invoke(userAccessor, userName);
+					try {
+						result = userAccessor.getClass().getMethod("getUserByName", String.class)
+								.invoke(userAccessor, userName);
+					} catch (final NoSuchMethodException e) {
+						// getUserByName does not exist in old Confluence versions (3.5.13 for example)
+						confluenceGetUserByNameExists = false;
+					}
 				} catch (final Exception e) {
 					throw new IllegalStateException(e);
 				}
