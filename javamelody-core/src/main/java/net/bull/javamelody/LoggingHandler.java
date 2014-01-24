@@ -21,6 +21,8 @@ package net.bull.javamelody;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -76,14 +78,26 @@ public class LoggingHandler extends Handler {
 	}
 
 	void register() {
-		for (final String name : Collections.list(LogManager.getLogManager().getLoggerNames())) {
+		for (final String name : getLoggerNames()) {
 			Logger.getLogger(name).addHandler(this);
 		}
 	}
 
 	void deregister() {
-		for (final String name : Collections.list(LogManager.getLogManager().getLoggerNames())) {
+		for (final String name : getLoggerNames()) {
 			Logger.getLogger(name).removeHandler(this);
+		}
+	}
+
+	private List<String> getLoggerNames() {
+		while (true) {
+			try {
+				return Collections.list(LogManager.getLogManager().getLoggerNames());
+			} catch (final ConcurrentModificationException e) {
+				// retry
+				// (issue 370 and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6935026 )
+				continue;
+			}
 		}
 	}
 
