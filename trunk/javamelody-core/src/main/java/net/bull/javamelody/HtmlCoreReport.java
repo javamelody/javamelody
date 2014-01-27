@@ -560,8 +560,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
-			new HtmlCacheInformationsReport(javaInformations.getCacheInformationsList(),
-					getWriter()).toHtml();
+			new HtmlCacheInformationsReport(cacheInformationsList, getWriter()).toHtml();
 			writeln("</div></div><br/>");
 			i++;
 		}
@@ -583,8 +582,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			final String id = "job_" + i;
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
-			new HtmlJobInformationsReport(javaInformations.getJobInformationsList(),
-					rangeJobCounter, getWriter()).toHtml();
+			new HtmlJobInformationsReport(jobInformationsList, rangeJobCounter, getWriter())
+					.toHtml();
 			writeln("</div></div><br/>");
 			i++;
 		}
