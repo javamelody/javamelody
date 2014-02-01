@@ -107,9 +107,15 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
 				writeln("</div></div>");
 
-				writeln("<div align='center'><img class='synthèse' id='img' src='"
+				writeln("<div align='center'>");
+				writeln("<table><tr><td>");
+				writeln("<img class='synthèse' id='img' src='"
 						+ "?width=960&amp;height=400&amp;graph=" + urlEncode(graphName)
-						+ "' alt='zoom'/></div>");
+						+ "' alt='zoom'/>");
+				writeDirectly("<br/><div align='right' style='color: #808080;'>");
+				writeln("#graph_units#");
+				writeln("</div></td></tr></table>");
+				writeln("</div>");
 				writeln("<div align='right'><a href='?part=lastValue&amp;graph="
 						+ urlEncode(graphName) + "' title=\"#Lien_derniere_valeur#\">_</a></div>");
 
