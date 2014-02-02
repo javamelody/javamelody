@@ -52,7 +52,7 @@ It allows to improve applications in QA and production and helps to:
 	
 	* verify the real improvement after optimizations
 
-License: LGPL
+License: ASL since v1.50, LGPL before v1.50
 
 URL: http://javamelody.googlecode.com/   
 
