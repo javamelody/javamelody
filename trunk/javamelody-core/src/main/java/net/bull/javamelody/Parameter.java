@@ -88,6 +88,11 @@ public enum Parameter {
 	EJB_TRANSFORM_PATTERN("ejb-transform-pattern"),
 
 	/**
+	 * Expression régulière (null par défaut) pour transformer la description d'une requête jpa.
+	 */
+	JPA_TRANSFORM_PATTERN("jpa-transform-pattern"),
+
+	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une méthode spring.
 	 */
 	SPRING_TRANSFORM_PATTERN("spring-transform-pattern"),

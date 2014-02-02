@@ -30,7 +30,8 @@ import javax.persistence.spi.ProviderUtil;
  * From Sirona, http://sirona.incubator.apache.org/
  */
 public class JpaPersistence implements PersistenceProvider {
-	// TODO tenir compte de DISABLED et de isDisplayed comme dans MonitoringSpringInterceptor
+	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
+	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(JPA_COUNTER.getName());
 
 	private static final String OWN_PACKAGE = JpaPersistence.class.getName().substring(0,
 			JpaPersistence.class.getName().lastIndexOf('.'));
@@ -50,6 +51,20 @@ public class JpaPersistence implements PersistenceProvider {
 			"com.spaceprogram.simplejpa.PersistenceProviderImpl" };
 
 	private volatile PersistenceProvider delegate; // NOPMD
+
+	/**
+	 * Constructeur.
+	 */
+	public JpaPersistence() {
+		super();
+		// quand cette classe est utilisée, le compteur est affiché
+		// sauf si le paramètre displayed-counters dit le contraire
+		JPA_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		// setUsed(true) nécessaire ici si le contexte jpa est initialisé avant FilterContext
+		// sinon les statistiques jpa ne sont pas affichées
+		JPA_COUNTER.setUsed(true);
+		LOG.debug("jpa persistence initialized");
+	}
 
 	/** {@inheritDoc} */
 	@SuppressWarnings("rawtypes")

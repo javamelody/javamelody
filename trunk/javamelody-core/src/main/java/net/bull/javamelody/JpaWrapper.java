@@ -29,6 +29,8 @@ import javax.persistence.Query;
  * @author Emeric Vernat
  */
 final class JpaWrapper {
+	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
+			.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
 
 	private JpaWrapper() {
@@ -41,12 +43,18 @@ final class JpaWrapper {
 
 	static EntityManagerFactory createEntityManagerFactoryProxy(
 			final EntityManagerFactory entityManagerFactory) {
+		if (DISABLED || !JPA_COUNTER.isDisplayed()) {
+			return entityManagerFactory;
+		}
 		// on veut monitorer seulement les EntityManager retournés par les deux méthodes createEntityManager
 		return JdbcWrapper.createProxy(entityManagerFactory, new EntityManagerFactoryHandler(
 				entityManagerFactory));
 	}
 
 	static EntityManager createEntityManagerProxy(final EntityManager entityManager) {
+		if (DISABLED || !JPA_COUNTER.isDisplayed()) {
+			return entityManager;
+		}
 		return JdbcWrapper.createProxy(entityManager, new EntityManagerHandler(entityManager));
 	}
 
