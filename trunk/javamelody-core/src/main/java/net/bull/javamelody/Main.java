@@ -45,7 +45,7 @@ import java.util.zip.ZipFile;
  * <tt>java -jar javamelody.war</tt>.
  *
  * @author Kohsuke Kawaguchi, extracted (and simplified) from hudson.dev.java.net by Emeric Vernat
- * 	licence MIT (alias X11, donc compatible GPL et LGPL : http://www.fsf.org/licensing/licenses/#GPLCompatibleLicenses)
+ * 	licence MIT (alias X11, donc compatible ASL)
  */
 @SuppressWarnings("all")
 public final class Main {

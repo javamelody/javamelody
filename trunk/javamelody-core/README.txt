@@ -16,7 +16,7 @@ Il permet ainsi d'améliorer les applications en recette et en production et d'a
 	- vérifier l'amélioration réelle après des optimisations
 
 Auteur : Emeric Vernat (evernat@free.fr)
-Licence : LGPL
+Licence : ASL
 URL : http://javamelody.googlecode.com/
 Version Java requise en exécution : 1.5 minimum,
 	1.6 ou 1.7 recommandé pour fonctions complémentaires (heap dump, histogramme mémoire, stack traces et system load average),

@@ -14,7 +14,7 @@
 	<url>http://javamelody.googlecode.com/</url>
 	<licenses>
 		<license>
-			<name>LGPL</name>
+			<name>ASL</name>
 			<url>LICENSE</url>
 			<distribution>repo</distribution>
 		</license>
