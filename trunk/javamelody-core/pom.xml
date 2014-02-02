@@ -232,6 +232,14 @@
 			<!-- Utilisée uniquement pour l'exécution des tests unitaires -->
 			<scope>test</scope>
 		</dependency>
+		<!-- Dépendance OpenJpa -->
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+			<version>2.2.2</version>
+			<!-- Utilisée uniquement pour l'exécution des tests unitaires -->
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>

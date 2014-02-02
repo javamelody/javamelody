@@ -42,6 +42,10 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	// ClassNotFoundException si les classes javax.interceptor ne sont pas présentes
 	private static final Counter EJB_COUNTER = new Counter("ejb", BEANS_ICON_NAME,
 			JdbcWrapper.SINGLETON.getSqlCounter());
+	// JPA_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
+	// ClassNotFoundException si les classes javax.persistence ne sont pas présentes
+	private static final Counter JPA_COUNTER = new Counter("jpa", "db.png",
+			JdbcWrapper.SINGLETON.getSqlCounter());
 	// SPRING_COUNTER déclaré ici pour que l'appel dans MonitoringFilter ne déclenche pas
 	// ClassNotFoundException si les classes Spring et AOP alliance ne sont pas présentes
 	private static final Counter SPRING_COUNTER = new Counter("spring", BEANS_ICON_NAME,
@@ -117,6 +121,10 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 
 	static Counter getEjbCounter() {
 		return EJB_COUNTER;
+	}
+
+	static Counter getJpaCounter() {
+		return JPA_COUNTER;
 	}
 
 	static Counter getSpringCounter() {

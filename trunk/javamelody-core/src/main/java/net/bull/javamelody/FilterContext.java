@@ -122,6 +122,7 @@ class FilterContext {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, "error.png");
 		errorCounter.setMaxRequestsCount(250);
 
+		final Counter jpaCounter = MonitoringProxy.getJpaCounter();
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		final Counter guiceCounter = MonitoringProxy.getGuiceCounter();
@@ -133,13 +134,13 @@ class FilterContext {
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
-			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
-					errorCounter, logCounter, jobCounter);
+			counters = Arrays.asList(httpCounter, sqlCounter, jpaCounter, ejbCounter,
+					springCounter, guiceCounter, servicesCounter, strutsCounter, jsfCounter,
+					jspCounter, errorCounter, logCounter, jobCounter);
 		} else {
-			counters = Arrays.asList(httpCounter, sqlCounter, ejbCounter, springCounter,
-					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
-					errorCounter, logCounter);
+			counters = Arrays.asList(httpCounter, sqlCounter, jpaCounter, ejbCounter,
+					springCounter, guiceCounter, servicesCounter, strutsCounter, jsfCounter,
+					jspCounter, errorCounter, logCounter);
 		}
 
 		setRequestTransformPatterns(counters);
@@ -150,6 +151,7 @@ class FilterContext {
 			sqlCounter.setDisplayed(!Parameters.isNoDatabase());
 			errorCounter.setDisplayed(true);
 			logCounter.setDisplayed(true);
+			jpaCounter.setDisplayed(jpaCounter.isUsed());
 			ejbCounter.setDisplayed(ejbCounter.isUsed());
 			springCounter.setDisplayed(springCounter.isUsed());
 			guiceCounter.setDisplayed(guiceCounter.isUsed());
