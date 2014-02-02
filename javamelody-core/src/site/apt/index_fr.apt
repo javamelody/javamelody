@@ -23,7 +23,7 @@ Java Melody : monitoring d'applications Java
 	c'est un outil de mesure et de statistiques sur le fonctionnement réel d'une application
 	selon l'usage qui en est fait par les utilisateurs.
 	
-	JavaMelody est opensource (LGPL) et prêt pour une mise en production : déjà en production dans une application de 25 années hommes.
+	JavaMelody est opensource (ASL) et prêt pour une mise en production : déjà en production dans une application de 25 années hommes.
 	JavaMelody est facile à intégrer dans la plupart des applications et est léger (pas de profileur et pas de base de données).
 
 	JavaMelody est en grande partie basé sur des statistiques de requêtes et sur des courbes d'évolution.

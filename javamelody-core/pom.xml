@@ -11,7 +11,7 @@
 	<inceptionYear>2008</inceptionYear>
 	<licenses>
 		<license>
-			<name>LGPL</name>
+			<name>ASL</name>
 			<url>LICENSE</url>
 			<distribution>repo</distribution>
 		</license>
@@ -272,7 +272,7 @@
 			<resource>
 				<directory>${project.basedir}</directory>
 				<includes>
-					<include>LICENSE*</include>
+					<include>LICENSE</include>
 					<include>VERSION.properties</include>
 				</includes>
 			</resource>
