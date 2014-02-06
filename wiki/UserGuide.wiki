@@ -106,7 +106,9 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	You can browse the monitoring page at {{{http://<host>:<port>/monitoring}}}
 
-	For example, if the server is local: {{{http://localhost:8080/monitoring}}}. Authentication and portal "Administrator" role is required to access this page.
+	For example, if the server is local: {{{http://localhost:8080/monitoring}}}
+
+	Authentication and portal "Administrator" role is required to access this page.
 
 	Known [https://github.com/evernat/liferay-javamelody/issues issues]: The SQL requests are not monitored. And pull requests are welcome.
 
