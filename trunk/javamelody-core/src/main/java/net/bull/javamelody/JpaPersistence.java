@@ -39,8 +39,8 @@ public class JpaPersistence implements PersistenceProvider {
 
 	private static final String[] PROVIDERS = {
 			"org.apache.openjpa.persistence.PersistenceProviderImpl",
-			"org.hibernate.jpa.HibernatePeristenceProvider",
-			"org.hibernate.ejb.HibernatePeristence",
+			"org.hibernate.jpa.HibernatePersistenceProvider",
+			"org.hibernate.ejb.HibernatePersistence",
 			"org.eclipse.persistence.jpa.PersistenceProvider",
 			"oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider",
 			"oracle.toplink.essentials.PersistenceProvider",
