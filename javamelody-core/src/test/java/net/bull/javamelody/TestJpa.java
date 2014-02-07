@@ -34,6 +34,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,6 +95,14 @@ public class TestJpa {
 	 */
 	@Test
 	public void simpleFind() {
+		try {
+			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
+		} catch (final ClassNotFoundException e) {
+			Logger.getRootLogger().info(e.toString());
+			// si openjpa n'est pas disponible dans le classpath (test depuis Ant),
+			// on ne peut pas exécuter ce test
+			return;
+		}
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 		assertNotNull("createEntityManagerFactory", emf);
 
@@ -116,6 +125,14 @@ public class TestJpa {
 	 */
 	@Test
 	public void createAllQuery() {
+		try {
+			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
+		} catch (final ClassNotFoundException e) {
+			Logger.getRootLogger().info(e.toString());
+			// si openjpa n'est pas disponible dans le classpath (test depuis Ant),
+			// on ne peut pas exécuter ce test
+			return;
+		}
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 
 		try {
