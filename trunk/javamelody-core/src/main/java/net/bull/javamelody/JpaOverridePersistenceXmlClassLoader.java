@@ -41,7 +41,7 @@ public class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 	private final String replacement;
 
 	/**
-	 * Constructeur
+	 * Constructeur.
 	 * @param parent ClassLoader parent
 	 * @param replacement Nom de la classe du persistence provider qui doit remplacer notre persistence provider.
 	 */
