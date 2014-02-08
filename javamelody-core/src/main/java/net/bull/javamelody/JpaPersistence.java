@@ -48,7 +48,7 @@ public class JpaPersistence implements PersistenceProvider {
 			"org.datanucleus.jpa.PersistenceProviderImpl",
 			"com.orientechnologies.orient.core.db.object.jpa.OJPAPersistenceProvider",
 			"com.orientechnologies.orient.object.jpa.OJPAPersistenceProvider",
-			"com.spaceprogram.simplejpa.PersistenceProviderImpl" };
+			"com.spaceprogram.simplejpa.PersistenceProviderImpl", };
 
 	private volatile PersistenceProvider delegate; // NOPMD
 
