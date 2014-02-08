@@ -112,24 +112,16 @@ final class JpaWrapper {
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
 				throws Throwable {
 			final String methodName = method.getName();
-			final Class<?> returnType = method.getReturnType();
-			if (returnType != null && Query.class.isAssignableFrom(returnType)) {
+			if (isCreateSomeQuery(method)) {
 				Query query = (Query) method.invoke(entityManager, args);
 				// (pas besoin de proxy pour getCriteriaBuilder() car cela repasse par entityManager.createQuery(criteriaQuery)
-				if ("createQuery".equals(methodName) || "createNamedQuery".equals(methodName)
-						|| "createNativeQuery".equals(methodName)) {
-					final String requestName = getQueryRequestName(methodName, args);
-					query = createQueryProxy(query, requestName);
-				}
+				final String requestName = getQueryRequestName(methodName, args);
+				query = createQueryProxy(query, requestName);
 				return query;
-			} else if ("find".equals(methodName) && args != null && args.length > 0
-					&& args[0] instanceof Class) {
+			} else if (isOneOfFindMethods(args, methodName)) {
 				final String requestName = "find(" + ((Class<?>) args[0]).getSimpleName() + ')';
 				return doInvoke(entityManager, method, args, requestName);
-			} else if (("merge".equals(methodName) || "persist".equals(methodName)
-					|| "refresh".equals(methodName) || "remove".equals(methodName)
-					|| "flush".equals(methodName) || "lock".equals(methodName))
-					&& args != null && args.length > 0) {
+			} else if (isMergePersistRefreshRemoveDetachOrLockMethod(methodName, args)) {
 				final String requestName = method.getName() + '('
 						+ args[0].getClass().getSimpleName() + ')';
 				return doInvoke(entityManager, method, args, requestName);
@@ -138,6 +130,29 @@ final class JpaWrapper {
 				return doInvoke(entityManager, method, args, requestName);
 			}
 			return method.invoke(entityManager, args);
+		}
+
+		private boolean isMergePersistRefreshRemoveDetachOrLockMethod(String methodName,
+				Object[] args) {
+			return args != null
+					&& args.length > 0
+					&& ("merge".equals(methodName) || "persist".equals(methodName)
+							|| "refresh".equals(methodName) || "remove".equals(methodName)
+							|| "detach".equals(methodName) || "lock".equals(methodName));
+		}
+
+		private boolean isOneOfFindMethods(Object[] args, String methodName) {
+			return "find".equals(methodName) && args != null && args.length > 0
+					&& args[0] instanceof Class;
+		}
+
+		private boolean isCreateSomeQuery(Method method) {
+			final String methodName = method.getName();
+			final Class<?> returnType = method.getReturnType();
+			final boolean methodNameOk = "createQuery".equals(methodName)
+					|| "createNamedQuery".equals(methodName)
+					|| "createNativeQuery".equals(methodName);
+			return methodNameOk && returnType != null && Query.class.isAssignableFrom(returnType);
 		}
 
 		private String getQueryRequestName(String methodName, Object[] args) {
