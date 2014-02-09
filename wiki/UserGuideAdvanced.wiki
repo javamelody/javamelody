@@ -306,7 +306,7 @@ For standard documentation, see [UserGuide]
 
 == Enable Hotspots detection ==
 
-When enabled, the Hotspots screen displays CPU hotspots in executed methods for all the JVM.
+When enabled, the Hotspots screen displays CPU hotspots in executed methods for all the JVM (since v1.47).
 
 The overhead of hotspots detection is low: it is based on sampling of stack-traces of threads, without instrumentation. And it is made to be always active if enabled. (It is currently not enabled by default. It may be enabled by default in the future.)
 
