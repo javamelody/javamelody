@@ -151,7 +151,10 @@ final class JpaWrapper {
 			final Class<?> returnType = method.getReturnType();
 			final boolean methodNameOk = "createQuery".equals(methodName)
 					|| "createNamedQuery".equals(methodName)
-					|| "createNativeQuery".equals(methodName);
+					|| "createNativeQuery".equals(methodName)
+					// JavaEE 7:
+					|| "createStoredProcedureQuery".equals(methodName)
+					|| "createNamedStoredProcedureQuery".equals(methodName);
 			return methodNameOk && returnType != null && Query.class.isAssignableFrom(returnType);
 		}
 
