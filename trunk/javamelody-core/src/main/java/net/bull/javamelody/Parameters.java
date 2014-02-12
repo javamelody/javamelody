@@ -283,7 +283,8 @@ final class Parameters {
 		} else {
 			dir = param;
 		}
-		// Si le nom du répertoire commence par '/', on considère que c'est un chemin absolu,
+		// Si le nom du répertoire commence par '/' (ou "drive specifier" sur Windows),
+		// on considère que c'est un chemin absolu,
 		// sinon on considère que c'est un chemin relatif par rapport au répertoire temporaire
 		// ('temp' dans TOMCAT_HOME pour tomcat).
 		final String directory;
