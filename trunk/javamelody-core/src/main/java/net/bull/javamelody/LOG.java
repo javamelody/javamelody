@@ -122,6 +122,8 @@ final class LOG {
 			// test avec AppenderSkeleton nécessaire car log4j-over-slf4j contient la classe
 			// org.apache.log4j.Logger mais pas org.apache.log4j.AppenderSkeleton
 			Class.forName("org.apache.log4j.AppenderSkeleton");
+			// test avec LocationInfo nécessaire car log4j-over-slf4j v1.7.6 inclut désormais l'AppenderSkeleton
+			Class.forName("org.apache.log4j.spi.LocationInfo");
 			return true;
 		} catch (final Throwable e) { // NOPMD
 			// catch Throwable et non catch ClassNotFoundException
