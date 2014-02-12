@@ -315,7 +315,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 	using Logback or Log4J if present in your application, or using java.util.logging otherwise.
 
 	The parameter {{{storage-directory}}} is the name of the directory of storage (javamelody by default).
-	If the name of the directory starts with '/', it is considered as an absolute path,
+	If the name of the directory starts with '/' (or on Windows, with drive specifier followed by '\', or if its prefix is "\\"), it is considered as an absolute path,
 	otherwise it is considered as relative to the temporary directory
 	({{{<temp>}}}  in {{{TOMCAT_HOME}}} for tomcat).
 	If this parameter is changed it is recommended to rename the physical directory at the same time.
