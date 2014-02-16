@@ -20,6 +20,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.lowagie.text.BadElementException;
@@ -134,12 +135,7 @@ class PdfDocumentFactory {
 
 	Document createDocument(boolean landscape) throws DocumentException, IOException {
 		// creation of a document-object
-		final Rectangle pageSize;
-		if (landscape) {
-			pageSize = PageSize.A4.rotate();
-		} else {
-			pageSize = PageSize.A4;
-		}
+		final Rectangle pageSize = getPageSize(landscape);
 		// marges de 20 à gauche, à droite et en haut pour bien utiliser la largeur
 		// et avoir une meilleur lisibilité sur les tableaux larges,
 		// mais marge de 40 en bas pour ne pas empiéter sur les numéros de pages
@@ -159,6 +155,20 @@ class PdfDocumentFactory {
 		document.addCreator("JavaMelody par E. Vernat, http://javamelody.googlecode.com");
 		document.addTitle(title);
 		return document;
+	}
+
+	private Rectangle getPageSize(boolean landscape) {
+		Rectangle pageSize;
+		if (Locale.US.getCountry().equals(I18N.getCurrentLocale().getCountry())) {
+			// Letter size paper is used in the US instead of the ISO standard A4
+			pageSize = PageSize.LETTER;
+		} else {
+			pageSize = PageSize.A4;
+		}
+		if (landscape) {
+			pageSize = pageSize.rotate();
+		}
+		return pageSize;
 	}
 
 	// We create a writer that listens to the document and directs a PDF-stream to output
