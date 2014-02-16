@@ -7,7 +7,7 @@
   * fix: In the [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin], fix compatibility with some old Confluence versions, such as 3.5.13 (revision 3640)
   * fix from [https://github.com/evernat/grails-melody-plugin/pull/17 grails PR 17]: In the JavaMelody Grails plugin, verifying that property exists using hasProperty (thanks to _stiancor_)
   * fix from [https://github.com/evernat/grails-melody-plugin/pull/16 grails PR 16]: In the JavaMelody Grails plugin, getting the disabled property from the grails javamelody config when running test-app (thanks to _stiancor_)
-  * improved: In the US, depending on the browser's language or on the javamelody parameter "locale", the paper size is now Letter in the US, instead of A4 in the other countries. (revision 3679)
+  * improved: In the US, depending on the browser's language or on the javamelody parameter "locale", the paper size is now Letter in the US, instead of A4 like in the other countries. (revision 3679)
   * added: *JPA monitoring*, inspired by [http://sirona.incubator.apache.org/ Apache Sirona]
 
 If you use JPA with a persistence.xml file, you can now monitor main calls on the JPA [http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html EntityManager] (_since v1.50_).
