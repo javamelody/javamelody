@@ -152,6 +152,7 @@ class HtmlReport extends HtmlAbstractReport {
 			writeln("</style>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+			writeln("<link rel='stylesheet' href='?resource=customizableMonitoring.css' type='text/css'/>");
 		}
 		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
 		writeln("<script type='text/javascript' src='?resource=resizable_tables.js'></script>");
