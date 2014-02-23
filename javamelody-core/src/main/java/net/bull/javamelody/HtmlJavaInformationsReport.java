@@ -32,7 +32,7 @@ import java.util.Locale;
 class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	private static final String[] OS = { "linux", "windows", "mac", "solaris", "hp", "ibm", };
 	private static final String[] APPLICATION_SERVERS = { "tomcat", "glassfish", "jonas", "jetty",
-			"oracle", "bea", "ibm", };
+			"oracle", "bea", "ibm", "jboss", "wildfly", };
 	// constantes pour l'affichage d'une barre avec pourcentage
 	private static final double MIN_VALUE = 0;
 	private static final double MAX_VALUE = 100;
