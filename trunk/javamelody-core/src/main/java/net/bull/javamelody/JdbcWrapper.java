@@ -302,7 +302,7 @@ public final class JdbcWrapper {
 		assert context != null;
 		this.servletContext = context;
 		final String serverInfo = servletContext.getServerInfo();
-		jboss = serverInfo.contains("JBoss");
+		jboss = serverInfo.contains("JBoss") || serverInfo.contains("WildFly");
 		glassfish = serverInfo.contains("GlassFish")
 				|| serverInfo.contains("Sun Java System Application Server");
 		weblogic = serverInfo.contains("WebLogic");
