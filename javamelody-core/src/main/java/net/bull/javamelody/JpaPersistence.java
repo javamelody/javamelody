@@ -52,11 +52,10 @@ public class JpaPersistence implements PersistenceProvider {
 
 	private volatile PersistenceProvider delegate; // NOPMD
 
-	/**
-	 * Constructeur.
-	 */
-	public JpaPersistence() {
-		super();
+	// cette classe est instanciée dès le démarrage (WildFly notamment),
+	// il ne faut donc pas appeler initJpaCounter() dans le constructeur
+
+	private void initJpaCounter() {
 		// quand cette classe est utilisée, le compteur est affiché
 		// sauf si le paramètre displayed-counters dit le contraire
 		JPA_COUNTER.setDisplayed(!COUNTER_HIDDEN);
@@ -70,6 +69,7 @@ public class JpaPersistence implements PersistenceProvider {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public EntityManagerFactory createEntityManagerFactory(final String unit, final Map map) {
+		initJpaCounter();
 		final PersistenceProvider persistenceProvider = findDelegate(map);
 		final ClassLoader tccl = tccl();
 
@@ -93,6 +93,7 @@ public class JpaPersistence implements PersistenceProvider {
 	@Override
 	public EntityManagerFactory createContainerEntityManagerFactory(final PersistenceUnitInfo info,
 			final Map map) {
+		initJpaCounter();
 		final PersistenceProvider persistenceProvider = findDelegate(map);
 		// on surcharge PersistenceUnitInfo.getPersistenceProviderClassName()
 		// pour retourner le PersistenceProvider délégué et pas nous même
