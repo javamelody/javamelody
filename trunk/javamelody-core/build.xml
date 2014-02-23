@@ -345,7 +345,7 @@
 			<!-- classes de la webapp -->
 			<zipfileset dir="build/test-classes" prefix="WEB-INF/classes" />
 			<!-- ressources de la webapp -->
-			<zipfileset dir="src/test/resources" prefix="WEB-INF/classes" />
+			<zipfileset dir="src/test/resources" prefix="WEB-INF/classes" excludes="META-INF/persistence.xml" />
 			<!-- dépendance javamelody -->
 			<zipfileset file="javamelody.jar" prefix="WEB-INF/lib" />
 			<!-- fichiers jsp, xml et dépendances de la webapp -->
