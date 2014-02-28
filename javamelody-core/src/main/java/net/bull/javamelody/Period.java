@@ -48,16 +48,16 @@ enum Period {
 		this.durationSeconds = durationDays * 24 * 60 * 60;
 		this.iconName = iconName;
 		this.mailCode = mailCode;
-		this.code = this.toString().toLowerCase(Locale.getDefault());
+		this.code = this.toString().toLowerCase(Locale.ENGLISH);
 		this.range = Range.createPeriodRange(this);
 	}
 
 	static Period valueOfIgnoreCase(String period) {
-		return valueOf(period.toUpperCase(Locale.getDefault()).trim());
+		return valueOf(period.toUpperCase(Locale.ENGLISH).trim());
 	}
 
 	static Period valueOfByMailCode(String mailPeriod) {
-		final String mailCode = mailPeriod.toLowerCase(Locale.getDefault()).trim();
+		final String mailCode = mailPeriod.toLowerCase(Locale.ENGLISH).trim();
 		for (final Period period : values()) {
 			if (period.mailCode.equals(mailCode)) {
 				return period;

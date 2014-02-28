@@ -237,7 +237,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	}
 
 	static String getOSIconName(String os) {
-		final String tmp = os.toLowerCase(Locale.getDefault());
+		final String tmp = os.toLowerCase(Locale.ENGLISH);
 		for (final String anOS : OS) {
 			if (tmp.contains(anOS)) {
 				return anOS + ".png";
@@ -247,7 +247,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	}
 
 	static String getApplicationServerIconName(String appServer) {
-		final String tmp = appServer.toLowerCase(Locale.getDefault());
+		final String tmp = appServer.toLowerCase(Locale.ENGLISH);
 		for (final String applicationServer : APPLICATION_SERVERS) {
 			if (tmp.contains(applicationServer)) {
 				return applicationServer + ".png";

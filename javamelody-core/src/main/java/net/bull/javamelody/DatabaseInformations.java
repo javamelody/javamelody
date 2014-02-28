@@ -121,7 +121,7 @@ class DatabaseInformations implements Serializable {
 
 		private List<String> addPrefix(List<String> requestNames) {
 			final List<String> result = new ArrayList<String>(requestNames.size());
-			final String prefix = this.toString().toLowerCase(Locale.getDefault()) + '.';
+			final String prefix = this.toString().toLowerCase(Locale.ENGLISH) + '.';
 			for (final String requestName : requestNames) {
 				result.add(prefix + requestName);
 			}
@@ -130,9 +130,9 @@ class DatabaseInformations implements Serializable {
 
 		String getUrlIdentifier() {
 			if (this == MYSQL4) {
-				return MYSQL.toString().toLowerCase(Locale.getDefault());
+				return MYSQL.toString().toLowerCase(Locale.ENGLISH);
 			}
-			return this.toString().toLowerCase(Locale.getDefault());
+			return this.toString().toLowerCase(Locale.ENGLISH);
 		}
 
 		String getRequestByName(String requestName) {
