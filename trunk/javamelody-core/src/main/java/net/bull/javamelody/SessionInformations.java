@@ -128,7 +128,7 @@ class SessionInformations implements Serializable {
 		if (countryCode == null) {
 			country = null;
 		} else {
-			country = countryCode.toString().toLowerCase(Locale.getDefault());
+			country = countryCode.toString().toLowerCase(Locale.ENGLISH);
 		}
 
 		final Object addr = session.getAttribute(SESSION_REMOTE_ADDR);

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -94,7 +95,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				writeRequest(request);
 
 				if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)
-						&& !request.getName().toLowerCase().startsWith("alter ")) {
+						&& !request.getName().toLowerCase(Locale.ENGLISH).startsWith("alter ")) {
 					// inutile d'essayer d'avoir le plan d'exécution des requêtes sql
 					// telles que "alter session set ..." (cf issue 152)
 					writeSqlRequestExplainPlan(collector, collectorServer, request);

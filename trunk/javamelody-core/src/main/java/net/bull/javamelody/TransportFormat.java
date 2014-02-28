@@ -139,18 +139,18 @@ enum TransportFormat {
 
 	private TransportFormat(String mimeType) {
 		this.mimeType = mimeType;
-		this.code = this.toString().toLowerCase(Locale.getDefault());
+		this.code = this.toString().toLowerCase(Locale.ENGLISH);
 	}
 
 	static TransportFormat valueOfIgnoreCase(String transportFormat) {
-		return valueOf(transportFormat.toUpperCase(Locale.getDefault()).trim());
+		return valueOf(transportFormat.toUpperCase(Locale.ENGLISH).trim());
 	}
 
 	static boolean isATransportFormat(String format) {
 		if (format == null) {
 			return false;
 		}
-		final String upperCase = format.toUpperCase(Locale.getDefault()).trim();
+		final String upperCase = format.toUpperCase(Locale.ENGLISH).trim();
 		for (final TransportFormat transportFormat : TransportFormat.values()) {
 			if (transportFormat.toString().equals(upperCase)) {
 				return true;

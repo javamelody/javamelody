@@ -137,7 +137,7 @@ enum Action { // NOPMD
 	 * @return Action
 	 */
 	static Action valueOfIgnoreCase(String action) {
-		return valueOf(action.toUpperCase(Locale.getDefault()).trim());
+		return valueOf(action.toUpperCase(Locale.ENGLISH).trim());
 	}
 
 	/**

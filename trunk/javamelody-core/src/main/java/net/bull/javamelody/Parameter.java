@@ -281,6 +281,6 @@ public enum Parameter {
 	}
 
 	static Parameter valueOfIgnoreCase(String parameter) {
-		return valueOf(parameter.toUpperCase(Locale.getDefault()).trim());
+		return valueOf(parameter.toUpperCase(Locale.ENGLISH).trim());
 	}
 }
