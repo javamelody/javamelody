@@ -16,14 +16,14 @@ Java Melody : monitoring of Java applications
 
 	URL : http://javamelody.googlecode.com/
 
-	( {{{./screenshots.html}Screenshots}}, {{{./user_guide_en.html}User guide}}, {{{./index_fr.html}Français}} )
+	( {{{./screenshots.html}Screenshots}}, {{{./index_fr.html}Français}} )
 	
 	The goal of JavaMelody is to monitor Java or Java EE application servers in QA and production environments.
 	It is not a tool to simulate requests from users,
 	it is a tool to measure and calculate statistics on real operation of an application
 	depending on the usage of the application by users.
 	
-	JavaMelody is opensource (LGPL) and production ready: in production in an application of 25 person years.
+	JavaMelody is opensource (ASL) and production ready: in production in an application of 25 person years.
 	JavaMelody is easy to integrate in most applications and is lightweight (no profiling and no database).
 
 	JavaMelody is mainly based on statistics of requests and on evolution charts.
