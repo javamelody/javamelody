@@ -29,7 +29,3 @@ Dépendances optionnelles : iText (LGPL ou MPL) pour les rapports au format pdf 
 	Ehcache pour le monitoring des caches, Quartz pour le monitoring des jobs en batchs
 Langage : français, anglais, allemand, portugais et chinois
 Navigateur : Le rapport html de JavaMelody est optimisé pour Firefox, Chrome ou MSIE8 (MSIE7 non recommandé).
-
-Pour le guide d'installation et le guide développeur voir le fichier texte src/site/apt/user_guide.apt
-Pour d'autres guides voir le répertoire src/site/resources/
-
