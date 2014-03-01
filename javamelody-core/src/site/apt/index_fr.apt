@@ -16,7 +16,7 @@ Java Melody : monitoring d'applications Java
 	
 	URL : http://javamelody.googlecode.com/
 	
-	( {{{./screenshots.html}Copies d'écrans}}, {{{./user_guide.html}Guide d'utilisation}}, {{{./index.html}English}} )
+	( {{{./screenshots.html}Copies d'écrans}}, {{{./index.html}English}} )
 	
 	JavaMelody a pour but de monitorer les serveurs d'applications Java / Java EE en recette et en production. 
 	Ce n'est pas un outil de simulation de requêtes utilisateur,

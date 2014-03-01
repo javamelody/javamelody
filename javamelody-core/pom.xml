@@ -284,12 +284,6 @@
 					<include>VERSION.properties</include>
 				</includes>
 			</resource>
-			<resource>
-				<directory>${project.basedir}/src/site/apt</directory>
-				<includes>
-					<include>user_guide*</include>
-				</includes>
-			</resource>
 		</resources>
 		<plugins>
 			<!-- Configuration compilation -->

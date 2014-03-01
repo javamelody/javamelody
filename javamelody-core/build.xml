@@ -118,7 +118,6 @@
 			<zipfileset dir="src/main/resources" excludes="**/Thumbs.db" />
 			<zipfileset file="VERSION.properties" />
 			<zipfileset file="LICENSE" />
-			<zipfileset file="src/site/apt/user_guide*.apt" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${TODAY_FR}" />
@@ -161,7 +160,6 @@
 			<zipfileset file="src/main/collector-webapp/**" />
 			<zipfileset file="VERSION.properties" />
 			<zipfileset file="LICENSE" />
-			<zipfileset file="src/site/apt/user_guide*.apt" />
 			<manifest>
 				<attribute name="Main-Class" value="net.bull.javamelody.Main" />
 				<attribute name="Built-By" value="${user.name}" />
