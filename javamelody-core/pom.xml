@@ -362,12 +362,14 @@
 								<copy file="VERSION.properties" tofile="target/classes/VERSION.properties" />
 
 								<!-- appel de Ant et copie du résultat dans le site -->
+								<!-- On n'appelle plus Ant pour mettre les artefacts dans le site
 								<ant antfile="build.xml" target="zip" />
 								<copy file="javamelody.zip" tofile="target/site/javamelody.zip" />
 								<copy file="javamelody.jar" tofile="target/site/javamelody.jar" />
 								<copy file="javamelody.war" tofile="target/site/javamelody.war" />
 								<copy file="jira-javamelody.jar" tofile="target/site/jira-javamelody.jar" />
 								<ant antfile="build.xml" target="clean" />
+								-->
 							</target>
 						</configuration>
 						<goals>
