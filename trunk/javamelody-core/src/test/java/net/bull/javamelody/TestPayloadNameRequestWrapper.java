@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for {@link PayloadNameRequestWrapper}
+ * Unit test for {@link PayloadNameRequestWrapper}.
  * @author rpaterson
  */
 @SuppressWarnings("deprecation")
@@ -46,7 +46,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	String body;
 
 	/**
-	 * Setup
+	 * Setup.
 	 * @throws IOException never
 	 */
 	@Before
@@ -109,38 +109,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 				if (parameterMap == null) {
 
-					parameterMap = new HashMap<String, String[]>();
-
-					if (request.getQueryString() != null) {
-						final Map<String, String[]> queryParams = HttpUtils
-								.parseQueryString(request.getQueryString());
-						parameterMap.putAll(queryParams);
-					}
-
-					if (request.getContentType() != null
-							&& request.getContentType().startsWith(
-									"application/x-www-form-urlencoded")) {
-						//get form params from body data
-						//note this consumes the inputstream!  But that's what happens on Tomcat
-						final Map<String, String[]> bodyParams = HttpUtils.parsePostData(
-								body.length(), request.getInputStream());
-
-						//merge body params and query params
-						for (final String key : bodyParams.keySet()) {
-
-							final String[] queryValues = parameterMap.get(key);
-							final String[] bodyValues = bodyParams.get(key);
-
-							final List<String> values = new ArrayList<String>();
-							if (queryValues != null) {
-								values.addAll(Arrays.asList(queryValues));
-							}
-
-							values.addAll(Arrays.asList(bodyValues));
-
-							parameterMap.put(key, values.toArray(new String[values.size()]));
-						}
-					} //end if form-encoded params in request body
+					parameterMap = getParameterMap();
 				}
 
 				return parameterMap;
@@ -150,7 +119,43 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		replayAll();
 	}
 
-	static private String slurp(InputStream stream) throws IOException {
+	Map<String, String[]> getParameterMap() throws IOException {
+		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+
+		if (request.getQueryString() != null) {
+			final Map<String, String[]> queryParams = HttpUtils.parseQueryString(request
+					.getQueryString());
+			parameterMap.putAll(queryParams);
+		}
+
+		if (request.getContentType() != null
+				&& request.getContentType().startsWith("application/x-www-form-urlencoded")) {
+			//get form params from body data
+			//note this consumes the inputstream!  But that's what happens on Tomcat
+			final Map<String, String[]> bodyParams = HttpUtils.parsePostData(body.length(),
+					request.getInputStream());
+
+			//merge body params and query params
+			for (final String key : bodyParams.keySet()) {
+
+				final String[] queryValues = parameterMap.get(key);
+				final String[] bodyValues = bodyParams.get(key);
+
+				final List<String> values = new ArrayList<String>();
+				if (queryValues != null) {
+					values.addAll(Arrays.asList(queryValues));
+				}
+
+				values.addAll(Arrays.asList(bodyValues));
+
+				parameterMap.put(key, values.toArray(new String[values.size()]));
+			}
+		} //end if form-encoded params in request body
+
+		return parameterMap;
+	}
+
+	private static String slurp(InputStream stream) throws IOException {
 		final StringBuilder buffer = new StringBuilder();
 		final Reader reader = new InputStreamReader(stream);
 		for (int n; (n = reader.read()) != -1;) {
@@ -160,7 +165,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test that normal GET request is passed through unchanged
+	 * Test that normal GET request is passed through unchanged.
 	 * @throws IOException on error
 	 */
 	@Test
@@ -178,7 +183,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test parsing of GWT-RPC request
+	 * Test parsing of GWT-RPC request.
 	 * @throws IOException on error
 	 */
 	@Test
@@ -198,7 +203,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test parsing of SOAP 1.1 request
+	 * Test parsing of SOAP 1.1 request.
 	 * @throws IOException on error
 	 */
 	@Test
@@ -228,7 +233,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test parsing of SOAP 1.1 request with "mandatory header"
+	 * Test parsing of SOAP 1.1 request with "mandatory header".
 	 * @throws IOException on error
 	 */
 	@Test
@@ -266,7 +271,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test parsing of SOAP 1.1 request with multiple request parameters
+	 * Test parsing of SOAP 1.1 request with multiple request parameters.
 	 * @throws IOException on error
 	 */
 	@Test
@@ -299,7 +304,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test parsing of SOAP 1.2 request
+	 * Test parsing of SOAP 1.2 request.
 	 * @throws IOException on error
 	 */
 	@Test
@@ -345,7 +350,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	/**
-	 * Test scan for child tag
+	 * Test scan for child tag.
 	 * @throws XMLStreamException on error
 	 */
 	@Test

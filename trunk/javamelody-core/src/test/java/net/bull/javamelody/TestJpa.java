@@ -136,72 +136,70 @@ public class TestJpa {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 
 		try {
-			{ // init
-				final EntityManager em = emf.createEntityManager();
+			// init
+			final EntityManager emInit = emf.createEntityManager();
+			try {
+				final EntityTransaction transaction = emInit.getTransaction();
+				transaction.begin();
 				try {
-					final EntityTransaction transaction = em.getTransaction();
-					transaction.begin();
-					try {
-						final Person p = new Person();
-						p.setName(PERSON_NAME);
+					final Person p = new Person();
+					p.setName(PERSON_NAME);
 
-						em.persist(p);
-						transaction.commit();
-					} catch (final Exception e) {
-						transaction.rollback();
-					}
-				} finally {
-					em.close();
+					emInit.persist(p);
+					transaction.commit();
+				} catch (final Exception e) {
+					transaction.rollback();
 				}
-
-				reset();
+			} finally {
+				emInit.close();
 			}
 
-			{ // checks
-				final EntityManager em = emf.createEntityManager();
-				try {
-					final Query namedQuery = em.createNamedQuery("Person.findByName");
-					final String nameParameter = "name";
-					namedQuery.setParameter(nameParameter, PERSON_NAME).getSingleResult();
-					assertCounter("NamedQuery(Person.findByName)");
+			reset();
 
-					final TypedQuery<Person> namedQuery2 = em.createNamedQuery("Person.findByName",
-							Person.class);
-					namedQuery2.setParameter(nameParameter, PERSON_NAME).getSingleResult();
-					assertCounter("NamedQuery(Person.findByName, Person)");
+			// checks
+			final EntityManager em = emf.createEntityManager();
+			try {
+				final Query namedQuery = em.createNamedQuery("Person.findByName");
+				final String nameParameter = "name";
+				namedQuery.setParameter(nameParameter, PERSON_NAME).getSingleResult();
+				assertCounter("NamedQuery(Person.findByName)");
 
-					final Query nativeQuery = em
-							.createNativeQuery("select * from \"TestJpa$Person\" where name = ?");
-					nativeQuery.setParameter(1, PERSON_NAME).getSingleResult();
-					assertCounter("NativeQuery(select * from \"TestJpa$Person\" where name = ?)");
+				final TypedQuery<Person> namedQuery2 = em.createNamedQuery("Person.findByName",
+						Person.class);
+				namedQuery2.setParameter(nameParameter, PERSON_NAME).getSingleResult();
+				assertCounter("NamedQuery(Person.findByName, Person)");
 
-					final Query nativeQuery2 = em.createNativeQuery(
-							"select * from \"TestJpa$Person\" where name = ?", Person.class);
-					nativeQuery2.setParameter(1, PERSON_NAME).getSingleResult();
-					assertCounter("NativeQuery(select * from \"TestJpa$Person\" where name = ?, Person)");
+				final Query nativeQuery = em
+						.createNativeQuery("select * from \"TestJpa$Person\" where name = ?");
+				nativeQuery.setParameter(1, PERSON_NAME).getSingleResult();
+				assertCounter("NativeQuery(select * from \"TestJpa$Person\" where name = ?)");
 
-					final Query query = em
-							.createQuery("select p from TestJpa$Person p where p.name = :name");
-					query.setParameter(nameParameter, PERSON_NAME).getSingleResult();
-					assertCounter("Query(select p from TestJpa$Person p where p.name = :name)");
+				final Query nativeQuery2 = em.createNativeQuery(
+						"select * from \"TestJpa$Person\" where name = ?", Person.class);
+				nativeQuery2.setParameter(1, PERSON_NAME).getSingleResult();
+				assertCounter("NativeQuery(select * from \"TestJpa$Person\" where name = ?, Person)");
 
-					final TypedQuery<Person> query2 = em.createQuery(
-							"select p from TestJpa$Person p where p.name = :name", Person.class);
-					query2.setParameter(nameParameter, PERSON_NAME).getSingleResult();
-					assertCounter("Query(select p from TestJpa$Person p where p.name = :name, Person)");
+				final Query query = em
+						.createQuery("select p from TestJpa$Person p where p.name = :name");
+				query.setParameter(nameParameter, PERSON_NAME).getSingleResult();
+				assertCounter("Query(select p from TestJpa$Person p where p.name = :name)");
 
-					final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-					final CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
-					final Root<Person> from = criteriaQuery.from(Person.class);
-					criteriaQuery.select(from);
-					final CriteriaQuery<Object> criteriaQuery2 = criteriaQuery
-							.where(criteriaBuilder.equal(from.get(nameParameter), PERSON_NAME));
-					em.createQuery(criteriaQuery2).getSingleResult();
-					assertCounter("Query(SELECT t FROM TestJpa$Person t WHERE t.name = '"
-							+ PERSON_NAME + "')");
-				} finally {
-					em.close();
-				}
+				final TypedQuery<Person> query2 = em.createQuery(
+						"select p from TestJpa$Person p where p.name = :name", Person.class);
+				query2.setParameter(nameParameter, PERSON_NAME).getSingleResult();
+				assertCounter("Query(select p from TestJpa$Person p where p.name = :name, Person)");
+
+				final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+				final CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
+				final Root<Person> from = criteriaQuery.from(Person.class);
+				criteriaQuery.select(from);
+				final CriteriaQuery<Object> criteriaQuery2 = criteriaQuery.where(criteriaBuilder
+						.equal(from.get(nameParameter), PERSON_NAME));
+				em.createQuery(criteriaQuery2).getSingleResult();
+				assertCounter("Query(SELECT t FROM TestJpa$Person t WHERE t.name = '" + PERSON_NAME
+						+ "')");
+			} finally {
+				em.close();
 			}
 		} finally {
 			emf.close();
