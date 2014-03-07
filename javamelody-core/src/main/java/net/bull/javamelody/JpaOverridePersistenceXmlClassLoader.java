@@ -33,7 +33,7 @@ import java.util.LinkedList;
  * ClassLoader pour redéfinir le contenu de persistence.xml.
  * From Sirona, http://sirona.incubator.apache.org/
  */
-public class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
+class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 	private static final String PERSISTENCE_XML = "META-INF/persistence.xml";
 	private static final String PERSISTENCE_PROVIDER = JpaPersistence.class.getName();
 	private static final String NO_PROVIDER = "<provider></provider>";

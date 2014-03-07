@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * Interface commune aux 3 implémentations de Loggers JavaMelody.
  * @author lastmike, Emeric Vernat
  */
-public interface JavaMelodyLogger {
+interface JavaMelodyLogger {
 	/**
 	 * Nom du logger interne.
 	 */
