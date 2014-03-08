@@ -112,7 +112,7 @@ class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 			} finally {
 				is.close();
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new IllegalStateException(e);
 		}
 	}
