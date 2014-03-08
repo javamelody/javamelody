@@ -135,17 +135,22 @@ class CollectorServer {
 		} catch (final Throwable e) { // NOPMD
 			// si erreur sur une webapp (indisponibilité par exemple), on continue avec les autres
 			// et il ne doit y avoir aucune erreur dans cette task
-			LOGGER.warn("exception while collecting data for application " + application);
-			LOGGER.warn(e.toString(), e);
-			final boolean becameUnavailable = !lastCollectExceptionsByApplication
-					.containsKey(application);
-			lastCollectExceptionsByApplication.put(application, e);
+			try {
+				LOGGER.warn("exception while collecting data for application " + application);
+				LOGGER.warn(e.toString(), e);
+				final boolean becameUnavailable = !lastCollectExceptionsByApplication
+						.containsKey(application);
+				lastCollectExceptionsByApplication.put(application, e);
 
-			if (becameUnavailable) {
-				final String subject = "The application " + application
-						+ " is unavailable for the monitoring server";
-				final String message = subject + "\n\nCause:\n" + e.toString();
-				notifyAdmins(subject, message);
+				if (becameUnavailable) {
+					final String subject = "The application " + application
+							+ " is unavailable for the monitoring server";
+					final String message = subject + "\n\nCause:\n" + e.toString();
+					notifyAdmins(subject, message);
+				}
+			} catch (final Throwable e2) { // NOPMD
+				// tant pis, on continue quand même
+				return;
 			}
 		}
 	}
