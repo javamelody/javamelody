@@ -11,7 +11,7 @@
   * fix from [https://github.com/evernat/grails-melody-plugin/pull/16 grails PR 16]: In the JavaMelody Grails plugin, getting the disabled property from the grails javamelody config when running test-app (thanks to _stiancor_)
   * fix: the optional collector server may stop collecting in case of errors in notifications (revision 3703)
   * improved: In the US, depending on the browser's language or on the javamelody parameter "locale", the paper size is now Letter in the US, instead of A4 like in the other countries. (revision 3679, thanks to _Dennis_)
-  * added: a floating button on the right of the main report to drag a menu in or out. The menu displays the list of chapters in the report and allows to jump easily between them. Links to custom reports may be added later in that menu.
+  * added: a floating button on the right of the main report to drag a menu in or out. The menu displays the list of chapters in the report and allows to jump easily between them, see [Demo] (revision 3705). Links to custom reports may be added later in that menu.
   * added: *JPA monitoring*, inspired by [http://sirona.incubator.apache.org/ Apache Sirona]
 
 If you use JPA with a persistence.xml file, you can now monitor main calls on the JPA [http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html EntityManager] (_since v1.50_).
