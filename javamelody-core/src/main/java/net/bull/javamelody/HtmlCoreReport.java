@@ -23,7 +23,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -43,6 +45,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private final Range range;
 	private final CollectorServer collectorServer;
 	private final long start = System.currentTimeMillis();
+	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
 
 	private static class HtmlForms extends HtmlAbstractReport {
 		HtmlForms(Writer writer) {
@@ -172,7 +175,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeApplicationsLinks();
 		}
 
-		writeln("<h3><a name='top'></a><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
+		writeln("<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
+		writeAnchor("top", I18N.getString("Stats"));
 		writeSummary();
 		writeln("</h3>");
 		write("<a href='http://code.google.com/p/javamelody/wiki/Donate'>");
@@ -184,23 +188,17 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters(counters);
-		if (range.getPeriod() == Period.TOUT && counterReportsByCounterName.size() > 1) {
-			writeln("<div align='right'>");
-			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
-			writeln("class='noPrint' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_vider_toutes_stats")
-					+ "');\">#Reinitialiser_toutes_stats#</a>");
-			writeln(END_DIV);
-		}
 
 		if (collectorServer == null) {
-			write("<h3><a name='currentRequests'></a>");
-			writeln("<img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>#Requetes_en_cours#</h3>");
+			writeln("<h3><img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>");
+			writeAnchor("currentRequests", I18N.getString("Requetes_en_cours"));
+			writeln("#Requetes_en_cours#</h3>");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
 			writeCurrentRequests(javaInformationsList.get(0), counters, counterReportsByCounterName);
 		}
 
-		writeln("<h3><a name='systeminfo'></a><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
+		writeln("<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
+		writeAnchor("systeminfo", I18N.getString("Informations_systemes"));
 		writeln("#Informations_systemes#</h3>");
 		if (collectorServer != null) {
 			writeln("<div align='center' class='noPrint'><a href='?part=currentRequests'>");
@@ -214,13 +212,14 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 		new HtmlJavaInformationsReport(javaInformationsList, getWriter()).toHtml();
 
-		write("<h3 style='clear:both;'><a name='threads'></a>");
-		writeln("<img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
+		writeln("<h3 style='clear:both;'><img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
+		writeAnchor("threads", I18N.getString("Threads"));
 		writeln("#Threads#</h3>");
 		writeThreads();
 
 		if (isJobEnabled()) {
-			writeln("<h3><a name='jobs'></a><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
+			writeln("<h3><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
+			writeAnchor("jobs", I18N.getString("Jobs"));
 			writeln("#Jobs#</h3>");
 			final Counter rangeJobCounter = collector.getRangeCounter(range,
 					Counter.JOB_COUNTER_NAME);
@@ -229,7 +228,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		}
 
 		if (isCacheEnabled()) {
-			writeln("<h3><a name='caches'></a><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
+			writeln("<h3><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
+			writeAnchor("caches", I18N.getString("Caches"));
 			writeln("#Caches#</h3>");
 			writeCaches();
 		}
@@ -238,8 +238,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		//			writeln("<br/><br/><br/><br/>");
 		//		}
 
+		writeMenu();
+
 		writeMessageIfNotNull(message, null, anchorNameForRedirect);
-		writePoweredBy();
 		writeDurationAndOverhead();
 	}
 
@@ -261,12 +262,51 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("");
 	}
 
+	private void writeAnchor(String anchorName, String menuText) throws IOException {
+		write("<a name='" + anchorName + "'></a>");
+		menuTextsByAnchorName.put(anchorName, menuText);
+	}
+
+	private void writeMenu() throws IOException {
+		writeln(SCRIPT_BEGIN);
+		writeln("function toggle(id) {");
+		writeln("var el = document.getElementById(id);");
+		writeln("if (el.getAttribute('class') == 'menuHide') {");
+		writeln("  el.setAttribute('class', 'menuShow');");
+		writeln("} else {");
+		writeln("  el.setAttribute('class', 'menuHide');");
+		writeln("} }");
+		writeln(SCRIPT_END);
+
+		writeln("<div id='menuBox' class='menuHide'>");
+		writeln("  <ul id='menuTab'><li><a href='javascript:toggle(\"menuBox\");'><img id='menuToggle' src='?resource=menu.png' width='30' height='26' alt='menu' /></a></li></ul>");
+		writeln("  <div id='menuLinks'><div id='menuDeco'>");
+		for (final Map.Entry<String, String> entry : menuTextsByAnchorName.entrySet()) {
+			final String anchorName = entry.getKey();
+			final String menuText = entry.getValue();
+			writeDirectly("    <div class='menuButton'><a href='#" + anchorName + "'>" + menuText
+					+ "</a></div>");
+		}
+		writeln("  </div></div>");
+		writeln("</div>");
+	}
+
 	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters) throws IOException {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
 		for (final Counter counter : counters) {
 			final HtmlCounterReport htmlCounterReport = writeCounter(counter);
 			counterReportsByCounterName.put(counter.getName(), htmlCounterReport);
 		}
+
+		if (range.getPeriod() == Period.TOUT && counterReportsByCounterName.size() > 1) {
+			writeln("<div align='right'>");
+			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
+			writeln("class='noPrint' onclick=\"javascript:return confirm('"
+					+ getStringForJavascript("confirm_vider_toutes_stats")
+					+ "');\">#Reinitialiser_toutes_stats#</a>");
+			writeln(END_DIV);
+		}
+
 		return counterReportsByCounterName;
 	}
 
@@ -279,9 +319,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeCounterTitle(Counter counter) throws IOException {
-		write("<h3><a name='" + counter.getName() + "'></a>");
-		write("<img width='24' height='24' src='?resource=" + counter.getIconName() + "' alt='"
-				+ counter.getName() + "'/>");
+		writeln("<h3><img width='24' height='24' src='?resource=" + counter.getIconName()
+				+ "' alt='" + counter.getName() + "'/>");
+		writeAnchor(counter.getName(), I18N.getString("Stats") + ' '
+				+ counter.getName().toLowerCase(Locale.ENGLISH));
 		final String counterLabel = getString(counter.getName() + "Label");
 		write(getFormattedString("Statistiques_compteur", counterLabel));
 		writeln(" - " + range.getLabel() + "</h3>");
@@ -814,11 +855,5 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(END_DIV);
 		}
 		writeln(END_DIV);
-	}
-
-	private void writePoweredBy() throws IOException {
-		writeln("");
-		//		writeln("<div align='center'><font size='-1' face='Helvetica'>Powered by</font>&nbsp;&nbsp;&nbsp;");
-		//		writeln("</div>");
 	}
 }

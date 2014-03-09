@@ -82,47 +82,47 @@ table thead th:last-child {
 }
 
 .tooltip em {
-    display:none;
+	display:none;
 }
 .tooltip:hover {
-    border: 0;
-    position: relative;
+	border: 0;
+	position: relative;
 /* marche pas avec texte long qui se wrappe: z-index: 500; */
-    text-decoration:none;
-    text-align:left;
+	text-decoration:none;
+	text-align:left;
 }
 .tooltip:hover em {
-    font-style: normal;
-    display: block;
-    position: absolute;
-    top: 20px;
-    left: 20px;
+	font-style: normal;
+	display: block;
+	position: absolute;
+	top: 20px;
+	left: 20px;
 	/* une width fixe est nécessaire pour MSIE 7,
 	mais cela gâcherait tout sur firefox, chrome ou MSIE8 qui n'en ont pas besoin
-    width: 800px; */
-    padding: 5px;
-    color: #000;
-    border: 1px solid #bbb;
-    background: #ffc;
-    -moz-box-shadow: 2px 2px 3px #888;
-    -webkit-box-shadow: 2px 2px 3px #888;
-    box-shadow: 2px 2px 3px #888;
+	width: 800px; */
+	padding: 5px;
+	color: #000;
+	border: 1px solid #bbb;
+	background: #ffc;
+	-moz-box-shadow: 2px 2px 3px #888;
+	-webkit-box-shadow: 2px 2px 3px #888;
+	box-shadow: 2px 2px 3px #888;
 	filter:progid:DXImageTransform.Microsoft.Shadow(color=#888888, direction=135, strength=3);
 }
 
 div#track, div#handle {
-    height: 18px;
+	height: 18px;
 }
 
 div#track {
 	width: 200px;
 	margin-left: 300px;
-    background: url( '?resource=scaler_slider_track.gif' ) center left repeat-x;
+	background: url( '?resource=scaler_slider_track.gif' ) center left repeat-x;
 }
 
 div#handle {
-    width: 18px;
-    cursor: col-resize;
+	width: 18px;
+	cursor: col-resize;
 }
 
 .explainPlan {
@@ -164,6 +164,95 @@ input[type=text]:focus {
 	-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
 	-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+#menuBox {
+	width: 268px;
+	font-size: 12px;
+	line-height: 20px;
+	right: -240px;
+	top: 57px; /* change this value to place the menu higher or lower */
+	position: fixed;
+	z-index: 100;
+}
+
+#menuTab {
+	float: left;
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	z-index: 99;
+}
+
+#menuTab li span {
+	display: block;
+	padding: 0 5px;
+	position: relative;
+}
+
+#menuLinks {
+	width: 180px;
+	padding: 2px;
+	/*border-left: 1px solid #B4B8BB;*/
+	float: left;
+}
+
+.menuShow, .menuHide {
+	/* we specify the transition length for hiding and showing */
+	transition: margin-right .4s ease-in;
+	-webkit-transition: margin-right .4s ease-in;
+}
+
+.menuHide {
+	margin-right:0px;
+}
+
+.menuShow {
+	margin-right:195px;
+}
+
+#menuToggle, .menuButton {
+	cursor: pointer;
+}
+
+.menuButton {
+	width: 190px;
+	height: 25px;
+	margin: -1px;
+	text-align:center;
+	border:1px solid #8A8D92;
+	font: bold 13px Helvetica,Arial,sans-serif;
+	text-shadow:0px 0px 5px rgba(0, 0, 0, 0.75);
+	background:#1D4151;
+	background-image: -o-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -ms-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -moz-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -webkit-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -webkit-gradient(linear, left top, right top, from(#A1A1A1), to(#6C6C6C));
+}
+
+.menuButton a {
+	line-height: 25px;
+	color: #E5E5E5;
+	display: block;
+	text-decoration: none;
+}
+
+.menuButton:hover {
+	background: #6C6D76;
+	transition: background .3s linear;
+	-o-transition: background .3s linear;
+	-moz-transition: background .3s linear;
+	-webkit-transition: background .3s linear;
+}
+
+#menuDeco {
+	width: 188px;
+	float: left;
+	box-shadow:0px 0px 5px #000;
+	-moz-box-shadow:0px 0px 5px #000;
+	-webkit-box-shadow:0px 0px 5px #000;
 }
 
 @media print { .noPrint { display: none; } }
