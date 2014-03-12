@@ -417,7 +417,12 @@ final class Parameters {
 	static String getParameter(Parameter parameter) {
 		assert parameter != null;
 		final String name = parameter.getCode();
-		final String globalName = PARAMETER_SYSTEM_PREFIX + name;
+		return getParameterByName(name);
+	}
+
+	static String getParameterByName(String parameterName) {
+		assert parameterName != null;
+		final String globalName = PARAMETER_SYSTEM_PREFIX + parameterName;
 		String result = System.getProperty(globalName);
 		if (result != null) {
 			return result;
@@ -429,7 +434,7 @@ final class Parameters {
 			}
 		}
 		if (filterConfig != null) {
-			result = filterConfig.getInitParameter(name);
+			result = filterConfig.getInitParameter(parameterName);
 			if (result != null) {
 				return result;
 			}

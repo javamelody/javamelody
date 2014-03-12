@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -286,6 +287,23 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			final String menuText = entry.getValue();
 			writeDirectly("    <div class='menuButton'><a href='#" + anchorName + "'>" + menuText
 					+ "</a></div>");
+			writeln("");
+		}
+		final String customReports = Parameters.getParameter(Parameter.CUSTOM_REPORTS);
+		if (customReports != null) {
+			for (final String customReport : customReports.split(",")) {
+				final String customReportName = customReport.trim();
+				final String customReportPath = Parameters.getParameterByName(customReportName);
+				if (customReportPath == null) {
+					LOG.debug("Parameter not defined in web.xml for custom report: "
+							+ customReportName);
+					continue;
+				}
+				writeDirectly("    <div class='menuButton'><a href='?report="
+						+ URLEncoder.encode(customReportName, "UTF-8") + "'>"
+						+ htmlEncode(customReportName) + "</a></div>");
+				writeln("");
+			}
 		}
 		writeln("  </div></div>");
 		writeln("</div>");

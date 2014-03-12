@@ -145,7 +145,12 @@ public enum Parameter {
 	DISPLAYED_COUNTERS("displayed-counters"),
 
 	/**
-	 * List de packages exclus du sampling
+	 * Liste des noms de rapports personnalisés (null par défaut).<br/>
+	 */
+	CUSTOM_REPORTS("custom-reports"),
+
+	/**
+	 * Liste de packages exclus du sampling
 	 * ("java,sun,com.sun,javax,org.apache,org.hibernate,oracle,org.postgresql,org.eclipse" par défaut).
 	 */
 	SAMPLING_EXCLUDED_PACKAGES("sampling-excluded-packages"),
