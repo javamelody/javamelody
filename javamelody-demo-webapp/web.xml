@@ -56,6 +56,18 @@
 		<param-name>javamelody.javamelody-swing-url</param-name>
 		<param-value>https://javamelody.ci.cloudbees.com/job/javamelody-swing%20ant/lastSuccessfulBuild/artifact/javamelody-swing/javamelody-swing.jar</param-value>
 	</context-param>
+	<context-param>
+		<param-name>javamelody.custom-reports</param-name>
+		<param-value>Send feedback,My custom report</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.Send feedback</param-name>
+		<param-value>https://groups.google.com/forum/#!forum/javamelody</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javamelody.My custom report</param-name>
+		<param-value>/WEB-INF/pages/myCustomReport.jsp</param-value>
+	</context-param>
 	
 	<!-- these are for MDC of Log4j and for display of the user in the monitoring -->
 	<filter>
