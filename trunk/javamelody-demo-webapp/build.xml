@@ -61,6 +61,7 @@
 		</replace>
 		<jar destfile="javamelody-demo-webapp.war">
 			<zipfileset file="web.xml" prefix="WEB-INF" />
+			<zipfileset dir="pages" prefix="WEB-INF/pages" />
 			<zipfileset file="build/cloudbees-web.xml" prefix="WEB-INF" />
 			<zipfileset file="build/VERSION.properties" prefix="WEB-INF/classes" />
 			<zipfileset file="build/*.class" prefix="WEB-INF/classes" />
