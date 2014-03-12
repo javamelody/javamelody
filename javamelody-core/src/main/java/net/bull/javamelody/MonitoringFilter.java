@@ -337,7 +337,7 @@ public class MonitoringFilter implements Filter {
 	}
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-			throws IOException {
+			throws IOException, ServletException {
 		if (!isRequestAllowed(httpRequest)) {
 			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");

@@ -60,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -152,7 +153,7 @@ class CollectorController {
 	}
 
 	private void doReport(HttpServletRequest req, HttpServletResponse resp, String application)
-			throws IOException {
+			throws IOException, ServletException {
 		final Collector collector = getCollectorByApplication(application);
 		final MonitoringController monitoringController = new MonitoringController(collector,
 				collectorServer);
@@ -174,7 +175,7 @@ class CollectorController {
 
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			String application, MonitoringController monitoringController, String partParameter)
-			throws IOException {
+			throws IOException, ServletException {
 		if (MonitoringController.isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
@@ -194,7 +195,8 @@ class CollectorController {
 	}
 
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController, String partParameter) throws IOException {
+			MonitoringController monitoringController, String partParameter) throws IOException,
+			ServletException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, WEB_XML_PART);

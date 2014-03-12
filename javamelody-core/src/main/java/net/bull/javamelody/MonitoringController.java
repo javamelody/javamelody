@@ -33,6 +33,7 @@ import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
+import static net.bull.javamelody.HttpParameters.REPORT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
@@ -47,11 +48,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -127,7 +130,8 @@ class MonitoringController {
 	}
 
 	void doActionIfNeededAndReport(HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse, ServletContext servletContext) throws IOException {
+			HttpServletResponse httpResponse, ServletContext servletContext) throws IOException,
+			ServletException {
 		executeActionIfNeeded(httpRequest);
 
 		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
@@ -143,7 +147,7 @@ class MonitoringController {
 	}
 
 	void doReport(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList) throws IOException {
+			List<JavaInformations> javaInformationsList) throws IOException, ServletException {
 		assert httpRequest != null;
 		assert httpResponse != null;
 		assert javaInformationsList != null;
@@ -180,6 +184,10 @@ class MonitoringController {
 				// par sécurité
 				Action.checkSystemActionsEnabled();
 				doJmxValue(httpResponse, httpRequest.getParameter(JMX_VALUE));
+			} else if (httpRequest.getParameter(REPORT_PARAMETER) != null) {
+				final String reportName = URLDecoder.decode(
+						httpRequest.getParameter(REPORT_PARAMETER), "UTF-8");
+				doCustomReport(httpRequest, httpResponse, reportName);
 			} else {
 				doReportCore(httpRequest, httpResponse, javaInformationsList);
 			}
@@ -456,6 +464,19 @@ class MonitoringController {
 
 		new JnlpPage(collector, collectorServer, codebase, cookies, range, httpResponse.getWriter())
 				.toJnlp();
+	}
+
+	private static void doCustomReport(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String reportName) throws ServletException,
+			IOException {
+		final String customReportPath = Parameters.getParameterByName(reportName);
+		if (customReportPath.length() > 0 && customReportPath.charAt(0) == '/'
+				&& Parameters.getServletContext().getRequestDispatcher(customReportPath) != null) {
+			Parameters.getServletContext().getRequestDispatcher(customReportPath)
+					.forward(httpRequest, httpResponse);
+		} else {
+			httpResponse.sendRedirect(customReportPath);
+		}
 	}
 
 	static boolean isCompressionSupported(HttpServletRequest httpRequest) {

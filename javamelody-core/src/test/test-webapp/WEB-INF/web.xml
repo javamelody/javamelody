@@ -30,6 +30,18 @@
 		<!-- servlet api 3.0: <async-supported>true</async-supported> -->
 		<!-- pour mettre des paramètres pour le filtre, voir le user guide -->
 		<init-param>
+			<param-name>custom-reports</param-name>
+			<param-value>Send feedback,My custom report</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Send feedback</param-name>
+			<param-value>https://groups.google.com/forum/#!forum/javamelody</param-value>
+		</init-param>
+		<init-param>
+			<param-name>My custom report</param-name>
+			<param-value>/WEB-INF/pages/myCustomReport.jsp</param-value>
+		</init-param>
+		<init-param>
 			<param-name>log</param-name>
 			<param-value>true</param-value>
 		</init-param>

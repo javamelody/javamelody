@@ -43,6 +43,7 @@ final class HttpParameters {
 	static final String HTML_BODY_FORMAT = "htmlbody";
 	static final String WIDTH_PARAMETER = "width";
 	static final String HEIGHT_PARAMETER = "height";
+	static final String REPORT_PARAMETER = "report";
 	static final String HEAP_HISTO_PART = "heaphisto";
 	static final String PROCESSES_PART = "processes";
 	static final String CURRENT_REQUESTS_PART = "currentRequests";
