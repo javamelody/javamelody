@@ -135,7 +135,7 @@ class HtmlReport extends HtmlAbstractReport {
 	private void writeHtmlHeader(boolean includeSlider, boolean includeCssInline)
 			throws IOException {
 		writeln("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-		writeDirectly("<html><head><title>"
+		writeDirectly("<html lang='" + I18N.getCurrentLocale().getLanguage() + "'><head><title>"
 				+ getFormattedString("Monitoring_sur", collector.getApplication()) + "</title>");
 		writeln("");
 		if (includeCssInline) {

@@ -425,7 +425,8 @@ class CollectorController {
 		noCache(resp);
 		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<html><head><title>Monitoring</title></head><body>");
+		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
+				+ "'><head><title>Monitoring</title></head><body>");
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 		writer.write("</body></html>");
 		writer.close();
