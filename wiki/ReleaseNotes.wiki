@@ -14,7 +14,7 @@
   * improved: In the US, depending on the browser's language or on the javamelody parameter "locale", the paper size is now Letter in the US, instead of A4 like in the other countries. (revision 3679, thanks to _Dennis_)
 
   * added: *Menu*. A floating button is available on the right of the main report to drag a menu in or out. The menu displays the list of chapters in the report and allows to jump easily between them, see [Demo] (revision 3705). Links to custom reports may be added later in that menu.
-  * added: *Custom resources*. You can now include links to your custom reports in the floating menu described above.
+  * added: *Custom reports*. You can now include links to your custom reports in the floating menu described above.
 For that, add a parameter named "custom-reports" like the other [UserGuide#6._Optional_parameters javamelody parameters]. In the value of this parameter, put the list of names of your custom reports separated with commas. Then for each custom report, add a parameter with the same name and its path as value. 
 For example:
 {{{
