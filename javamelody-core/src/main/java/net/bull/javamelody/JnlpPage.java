@@ -66,8 +66,14 @@ class JnlpPage {
 		if (Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL) != null) {
 			jarFileUrl = Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL);
 		} else if (Parameters.JAVAMELODY_VERSION != null) {
-			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-"
-					+ Parameters.JAVAMELODY_VERSION + ".jar";
+			if (Parameters.JAVAMELODY_VERSION.compareTo("1.49.0") <= 0) {
+				jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-"
+						+ Parameters.JAVAMELODY_VERSION + ".jar";
+			} else {
+				// TODO files can't be added in googlecode downloads anymore,		
+				// at the moment, javamelody-swing v1.49 is used for v1.50 and later
+				jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-1.49.0.jar";
+			}
 		} else {
 			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing.jar";
 		}
