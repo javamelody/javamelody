@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * JavaMelody license changed from [https://www.gnu.org/licenses/lgpl.html LGPL] to [http://www.apache.org/licenses/LICENSE-2.0 ASL], as discussed here: https://groups.google.com/forum/#!topic/javamelody/JI3yNH0Xmb0/discussion (revision 3649)
+
   * fix issue 370: work around ConcurrentModificationException during Tomcat startup (which is a [https://issues.apache.org/bugzilla/show_bug.cgi?id=56082 Tomcat bug])
   * fix issue 378: Slf4j system, with log4j-over-slf4j, is not detected with version 1.7.6 of slf4j (thanks to _jgraglia_)
   * fix compatibility of jdbc datasource monitoring with WildFly (revision 3686)
@@ -11,7 +12,29 @@
   * fix from [https://github.com/evernat/grails-melody-plugin/pull/16 grails PR 16]: In the JavaMelody Grails plugin, getting the disabled property from the grails javamelody config when running test-app (thanks to _stiancor_)
   * fix: the optional collector server may stop collecting in case of errors in notifications (revision 3703)
   * improved: In the US, depending on the browser's language or on the javamelody parameter "locale", the paper size is now Letter in the US, instead of A4 like in the other countries. (revision 3679, thanks to _Dennis_)
-  * added: a floating button on the right of the main report to drag a menu in or out. The menu displays the list of chapters in the report and allows to jump easily between them, see [Demo] (revision 3705). Links to custom reports may be added later in that menu.
+
+  * added: *Menu*. A floating button is available on the right of the main report to drag a menu in or out. The menu displays the list of chapters in the report and allows to jump easily between them, see [Demo] (revision 3705). Links to custom reports may be added later in that menu.
+  * added: *Custom resources*. You can now include links to your custom reports in the floating menu described above.
+For that, add a parameter named "custom-reports" like the other [UserGuide#6._Optional_parameters javamelody parameters]. In the value of this parameter, put the list of names of your custom reports separated with commas. Then for each custom report, add a parameter with the same name and its path as value. 
+For example:
+{{{
+		<init-param>
+			<param-name>custom-reports</param-name>
+			<param-value>Send feedback,My custom report</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Send feedback</param-name>
+			<param-value>https://groups.google.com/forum/#!forum/javamelody</param-value>
+		</init-param>
+		<init-param>
+			<param-name>My custom report</param-name>
+			<param-value>/WEB-INF/pages/myCustomReport.jsp</param-value>
+		</init-param>
+}}}
+
+If the path starts with '/', it will be considered as a JSP (or a servlet) inside the webapp. Otherwise it will be considered as an URL (http://example.com).
+As example of JSP, you can add the file "/WEB-INF/pages/myCustomReport.jsp" in your webapp, with a content like [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/test/test-webapp/WEB-INF/pages/myCustomReport.jsp this one].
+This [http://demo.javamelody.cloudbees.net/monitoring?report=My+custom+report example can be seen in the demo].
   * added: *JPA monitoring*, inspired by [http://sirona.incubator.apache.org/ Apache Sirona]
 
 If you use JPA with a persistence.xml file, you can now monitor main calls on the JPA [http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html EntityManager] (_since v1.50_).
