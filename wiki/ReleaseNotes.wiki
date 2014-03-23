@@ -12,6 +12,7 @@
   * fix from [https://github.com/evernat/grails-melody-plugin/pull/16 grails PR 16]: In the JavaMelody Grails plugin, getting the disabled property from the grails javamelody config when running test-app (thanks to _stiancor_)
   * fix: the optional collector server may stop collecting in case of errors in notifications (revision 3703)
   * improved: In the US, depending on the browser's language or on the javamelody parameter "locale", the paper size is now Letter in the US, instead of A4 like in the other countries. (revision 3679, thanks to _Dennis_)
+  * improved css styles: font finally fixed to Arial/Helvetica (revision 3718). Note: You can [UserGuideAdvanced#Customizing_styles,_icons_and_other_resources_in_the_html_report customize styles and other resources].
 
   * added: *Menu*. A floating button is available on the right of the main report to drag a menu in or out. The menu displays the list of chapters in the report and allows to jump easily between them, see [Demo] (revision 3705).
   * added: *Custom reports*. You can now include links to your custom reports in the floating menu described above.
