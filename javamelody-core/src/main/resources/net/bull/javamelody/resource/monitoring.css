@@ -56,16 +56,25 @@ a:hover img {
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
-th {background-color:#F0F0F0; font-size: 11px; cursor:pointer;}
+th {
+	font-size: 11px;
+	padding:2px;
+	background-color:#F0F0F0;
+	cursor:pointer;
+}
 table {
 	border-color:gray;
+	border-spacing: 0;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
-	border-radius:5px
+	border-radius:5px;
 }
 table tr.odd td {background-color: #F5F5F5;}
 table tr.highlight td {background-color: #E0E0E0;}
-td {font-size: 11px;}
+td {
+	font-size: 11px;
+	padding:2px;
+}
 
 table tr:last-child td:first-child {
 	-moz-border-radius-bottomleft:5px;
