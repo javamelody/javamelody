@@ -120,7 +120,7 @@ This is an internal reminder of the steps of the release process.
     * mvn release:prepare release:perform
     * tag is created in [http://javamelody.googlecode.com/svn/tags/]
   * *upload* files to [https://github.com/javamelody/javamelody/releases]
-  * update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes] with version
+  * *update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes]* with version
   * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing
   * *publish artefacts in Maven central*
     * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version.jar
