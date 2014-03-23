@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<New id="jdbc/TestDB" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>jdbc/TestDB</Arg>
+		<Arg>
+			<New class="org.h2.jdbcx.JdbcDataSource">
+				<Set name="URL">jdbc:h2:/Applis/h2/test-webapp-jetty</Set>
+				<Set name="User">sa</Set>
+				<Set name="Password">sa</Set>
+			</New>
+		</Arg>
+	</New>
+</Configure> 
