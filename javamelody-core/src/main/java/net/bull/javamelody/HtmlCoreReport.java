@@ -279,6 +279,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("} }");
 		writeln(SCRIPT_END);
 
+		writeln("<div class='noPrint'> ");
 		writeln("<div id='menuBox' class='menuHide'>");
 		writeln("  <ul id='menuTab'><li><a href='javascript:toggle(\"menuBox\");'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
 		writeln("  <div id='menuLinks'><div id='menuDeco'>");
@@ -306,7 +307,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			}
 		}
 		writeln("  </div></div>");
-		writeln("</div>");
+		writeln("</div></div>");
 	}
 
 	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters) throws IOException {
