@@ -152,7 +152,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 	Copy the files [http://code.google.com/p/javamelody/downloads/list javamelody.jar] and [http://javamelody.googlecode.com/files/jrobin-1.5.9.jar jrobin-x.jar], located at the root of the supplied [http://code.google.com/p/javamelody/downloads/list javamelody.zip] file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor.
 
-	Or if you use Maven, add the javamelody-core [UserGuide#Dependencies dependency] in your pom.xml file.
+	Or if you use Maven, add the javamelody-core [UserGuide#Dependencies dependency] in the pom.xml file of your webapp.
 
 === 2. {{{web.xml}}} file ===
 
