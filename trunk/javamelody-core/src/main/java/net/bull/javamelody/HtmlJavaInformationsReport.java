@@ -87,7 +87,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	private void writeSummary(JavaInformations javaInformations) throws IOException {
 		final String lineEnd = "</td> </tr>";
 		final String columnAndLineEnd = "</td><td>" + lineEnd;
-		writeln("<table align='left' border='0' cellspacing='0' cellpadding='2' summary='#Informations_systemes#'>");
+		writeln("<table align='left' border='0' summary='#Informations_systemes#'>");
 		writeln("<tr><td>#Host#: </td><td><b>" + javaInformations.getHost() + "</b>" + lineEnd);
 		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
 		final long usedMemory = memoryInformations.getUsedMemory();
@@ -133,7 +133,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	private void writeDetails(JavaInformations javaInformations, boolean repeatHost)
 			throws IOException {
 		final String columnEnd = "</td></tr>";
-		writeln("<table align='left' border='0' cellspacing='0' cellpadding='2' summary='#Details_systeme#'>");
+		writeln("<table align='left' border='0' summary='#Details_systeme#'>");
 		if (repeatHost) {
 			writeln("<tr><td>#Host#: </td><td><b>" + javaInformations.getHost() + "</b>"
 					+ columnEnd);

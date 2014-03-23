@@ -33,7 +33,7 @@ abstract class HtmlAbstractReport {
 		private boolean oddRow;
 
 		void beginTable(String summary) throws IOException {
-			writeDirectly("<table class='sortable' width='100%' border='1' cellspacing='0' cellpadding='2' summary='");
+			writeDirectly("<table class='sortable' width='100%' border='1' summary='");
 			writeDirectly(summary);
 			writeDirectly("'>\n");
 			writeDirectly("<thead><tr>");

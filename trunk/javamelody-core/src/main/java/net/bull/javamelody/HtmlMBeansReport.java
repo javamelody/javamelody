@@ -114,7 +114,10 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 		final String description = mbean.getDescription();
 		final List<MBeanAttribute> attributes = mbean.getAttributes();
 		if (description != null || !attributes.isEmpty()) {
-			writeln("<table border='0' cellspacing='0' cellpadding='3' summary=''>");
+			writeln("<style type='text/css'>");
+			writeln("    td { padding:3px; }");
+			writeln("</style>");
+			writeln("<table border='0' summary=''>");
 			if (description != null) {
 				write("<tr><td colspan='3'>(");
 				writeDirectly(htmlEncodeButNotSpace(description));

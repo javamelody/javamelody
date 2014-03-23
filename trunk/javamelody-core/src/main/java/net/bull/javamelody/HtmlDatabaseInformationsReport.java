@@ -42,7 +42,7 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 			final int rowsByColumn;
 			if (nbColumns > 1) {
 				rowsByColumn = (values.length - 1) / nbColumns + 1;
-				writeln("<table width='100%' cellspacing='0' cellpadding='2' summary=''><tr><td valign='top'>");
+				writeln("<table width='100%' summary=''><tr><td valign='top'>");
 			} else {
 				rowsByColumn = -1;
 			}
