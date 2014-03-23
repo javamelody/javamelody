@@ -69,7 +69,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("   return true;");
 			writeln("}");
 			writeln(SCRIPT_END);
-			writeln("<br/><br/>");
+			writeln("<br/>");
 			final DateFormat dateFormat = I18N.createDateFormat();
 			final String dateFormatPattern;
 			if (getString("dateFormatPattern").length() == 0) {
