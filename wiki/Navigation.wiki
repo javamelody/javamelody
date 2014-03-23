@@ -11,8 +11,8 @@
   * [http://code.google.com/p/javamelody/feeds Project feeds]
   * ----
   * [https://javamelody.ci.cloudbees.com/job/javamelody/ Nightly build]
-  * [http://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins / Hudson plugin]
-  * [https://plugins.atlassian.com/plugins/net.bull.javamelody JIRA/Confluence/Bamboo plugin]
+  * [http://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins plugin]
+  * [AtlassianPlugin JIRA/Confluence/Bamboo plugin]
   * [http://www.grails.org/plugin/grails-melody Grails plugin]
   * [https://www.ohloh.net/p/javamelody ohloh statistics]
   * [JavaMelodyOnTheInternet JavaMelody on the Internet]
