@@ -4,7 +4,7 @@
 == Table of contents ==
   * [#Introduction Introduction]
   * [#Overhead Overhead]
-  * [#_Jenkins_Plugin Jenkins Plugin]
+  * [#Jenkins_Plugin Jenkins Plugin]
   * [#Atlassian_JIRA,_Confluence_and_Bamboo_Plugin Atlassian JIRA, Confluence and Bamboo Plugin]
   * [#Liferay_Plugin Liferay Plugin]
   * [#Sonar_Plugin Sonar Plugin]
