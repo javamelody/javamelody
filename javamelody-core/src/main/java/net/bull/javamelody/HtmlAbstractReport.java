@@ -104,14 +104,14 @@ abstract class HtmlAbstractReport {
 	}
 
 	void writeTitle(String imageFileName, String title) throws IOException {
-		writeDirectly("<img src='?resource=");
+		writeDirectly("<span class='chapterTitle'><img src='?resource=");
 		writeDirectly(imageFileName);
-		writeDirectly("' class='chapterTitleIcon' alt=\"");
+		writeDirectly("' alt=\"");
 		writeDirectly(title);
 		writeDirectly("\" />&nbsp;");
 		writeDirectly("<b>");
 		writeDirectly(title);
-		writeDirectly("</b><br/>\n");
+		writeDirectly("</b></span><br/>\n");
 	}
 
 	void writeShowHideLink(String idToShow, String label) throws IOException {

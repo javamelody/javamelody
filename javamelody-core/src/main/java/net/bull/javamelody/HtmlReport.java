@@ -293,7 +293,7 @@ class HtmlReport extends HtmlAbstractReport {
 		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle.entrySet()) {
 			final String title = entry.getKey();
 			final List<ProcessInformations> processes = entry.getValue();
-			writeDirectly("<h3><img class='chapterTitleIcon' src='?resource=processes.png' alt='"
+			writeDirectly("<h3 class='chapterTitle'><img src='?resource=processes.png' alt='"
 					+ title + "'/>&nbsp;" + title + "</h3>");
 
 			new HtmlProcessInformationsReport(processes, getWriter()).writeTable();
@@ -344,8 +344,8 @@ class HtmlReport extends HtmlAbstractReport {
 		for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
 			final String title = entry.getKey();
 			final List<MBeanNode> nodes = entry.getValue();
-			writeDirectly("<h3><img class='chapterTitleIcon' src='?resource=mbeans.png' alt='"
-					+ title + "'/>&nbsp;" + title + "</h3>");
+			writeDirectly("<h3 class='chapterTitle'><img src='?resource=mbeans.png' alt='" + title
+					+ "'/>&nbsp;" + title + "</h3>");
 
 			new HtmlMBeansReport(nodes, getWriter()).writeTree();
 		}
