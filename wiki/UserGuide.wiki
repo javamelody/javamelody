@@ -76,7 +76,7 @@ Language: English, French, German, Portuguese and Chinese
 Browser: The html report of JavaMelody is best viewed with
 [http://www.mozilla.com Firefox],
 [http://www.google.com/chrome Chrome]
-or MSIE8 (MSIE7 not recommended).
+or MSIE9 (MSIE7 not recommended).
 
 [http://javamelody.googlecode.com/svn/trunk/javamelody-core/src/site/resources/Online_help_of_the_monitoring.pdf Online help]
 
@@ -152,7 +152,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 	Copy the files [http://code.google.com/p/javamelody/downloads/list javamelody.jar] and [http://javamelody.googlecode.com/files/jrobin-1.5.9.jar jrobin-x.jar], located at the root of the supplied [http://code.google.com/p/javamelody/downloads/list javamelody.zip] file,
 	to the WEB-INF/lib directory of the war of the webapp to monitor.
 
-	Or if you use Maven, add the javamelody-core [UserGuide#Dependencies dependency].
+	Or if you use Maven, add the javamelody-core [UserGuide#Dependencies dependency] in your pom.xml file.
 
 === 2. {{{web.xml}}} file ===
 
