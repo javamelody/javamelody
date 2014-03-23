@@ -29,6 +29,11 @@ a:hover img {
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
+.chapterTitleIcon {
+	width: 24px;
+	height: 24px;
+}
+
 .synthese {
 	-moz-box-shadow: 2px 2px 3px #888;
 	-webkit-box-shadow: 2px 2px 3px #888;
@@ -222,6 +227,11 @@ input[type=text]:focus {
 
 #menuToggle, .menuButton {
 	cursor: pointer;
+}
+
+#menuToggle {
+	width: 30px;
+	height: 26px;
 }
 
 .menuButton {
