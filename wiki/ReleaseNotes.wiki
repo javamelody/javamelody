@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.50.0 ===
+
   * JavaMelody license changed from [https://www.gnu.org/licenses/lgpl.html LGPL] to [http://www.apache.org/licenses/LICENSE-2.0 ASL], as discussed here: https://groups.google.com/forum/#!topic/javamelody/JI3yNH0Xmb0/discussion (revision 3649)
 
   * fix issue 370: work around ConcurrentModificationException during Tomcat startup (which is a [https://issues.apache.org/bugzilla/show_bug.cgi?id=56082 Tomcat bug])
