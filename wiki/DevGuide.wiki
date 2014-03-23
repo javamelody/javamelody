@@ -6,7 +6,7 @@
 
 === Browsing the sources and javadoc ===
 
-	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources from svn or you can [http://code.google.com/p/javamelody/downloads/list download] the zip file of a release which includes the sources of that release.
+	You can [http://code.google.com/p/javamelody/source/browse/ browse] the development sources from svn or you can [https://code.google.com/p/javamelody/wiki/Downloads download] the zip file of a release which includes the sources of that release.
 
 	You can also browse the latest [https://javamelody.ci.cloudbees.com/job/javamelody/site/apidocs/index.html javadoc], [https://javamelody.ci.cloudbees.com/job/javamelody/site/xref/index.html sources] and other [https://javamelody.ci.cloudbees.com/job/javamelody/ reports] from the [http://www.cloudbees.com/ CloudBees] Jenkins CI (snapshot from trunk).
 
@@ -14,7 +14,7 @@
 
 === Building from sources ===
 
-	The zip file available in "[http://code.google.com/p/javamelody/downloads/list Download]" contains the java sources with an [http://ant.apache.org ant] script build.xml and a pom.xml file for [http://maven.apache.org maven]
+	The zip file available in "[https://code.google.com/p/javamelody/wiki/Downloads Download]" contains the java sources with an [http://ant.apache.org ant] script build.xml and a pom.xml file for [http://maven.apache.org maven]
 	and contains also the javadoc, the eclipse project, the jar files.
 	If you want to rebuild the development version and not a particular release, you have to do an anonymous checkout from 
 	[http://javamelody.googlecode.com/svn/trunk/javamelody-core/] (with your favorite IDE such as Eclipse or with [http://tortoisesvn.tigris.org/ TortoiseSVN] if Windows)
