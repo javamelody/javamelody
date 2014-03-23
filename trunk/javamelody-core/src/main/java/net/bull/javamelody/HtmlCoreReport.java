@@ -770,12 +770,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<a href='?application=" + application + "' class='tooltip'>");
 			if (lastCollectException == null) {
 				writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
-				writeln("<em style='text-align: left; font-size: 10pt;'>");
+				writeln("<em style='text-align: left; font-size: 11px;'>");
 				writeln("#Application_disponible#");
 				writeln("</em>");
 			} else {
 				writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
-				writeln("<em style='text-align: left; font-size: 10pt;'>");
+				writeln("<em style='text-align: left; font-size: 11px;'>");
 				writeln("#Application_indisponible#:<br/>");
 				writeDirectly(htmlEncode(lastCollectException.toString()));
 				writeDirectly("<br/>");
@@ -842,7 +842,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeDurationAndOverhead() throws IOException {
 		final long displayDuration = System.currentTimeMillis() - start;
 		writeln("<a name='bottom'></a>");
-		writeln("<br/><div style='font-size:10pt;'>");
+		writeln("<br/><div style='font-size: 11px;'>");
 		writeln("#temps_derniere_collecte#: " + collector.getLastCollectDuration() + " #ms#<br/>");
 		writeln("#temps_affichage#: " + displayDuration + " #ms#<br/>");
 		writeln("#Estimation_overhead_memoire#: < "
