@@ -176,7 +176,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeApplicationsLinks();
 		}
 
-		writeln("<h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='#Stats#'/>");
+		writeln("<h3><img class='chapterTitleIcon' src='?resource=systemmonitor.png' alt='#Stats#'/>");
 		writeAnchor("top", I18N.getString("Stats"));
 		writeSummary();
 		writeln("</h3>");
@@ -191,14 +191,14 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = writeCounters(counters);
 
 		if (collectorServer == null) {
-			writeln("<h3><img width='24' height='24' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>");
+			writeln("<h3><img class='chapterTitleIcon' src='?resource=hourglass.png' alt='#Requetes_en_cours#'/>");
 			writeAnchor("currentRequests", I18N.getString("Requetes_en_cours"));
 			writeln("#Requetes_en_cours#</h3>");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
 			writeCurrentRequests(javaInformationsList.get(0), counters, counterReportsByCounterName);
 		}
 
-		writeln("<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
+		writeln("<h3><img class='chapterTitleIcon' src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
 		writeAnchor("systeminfo", I18N.getString("Informations_systemes"));
 		writeln("#Informations_systemes#</h3>");
 		if (collectorServer != null) {
@@ -213,13 +213,13 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 		new HtmlJavaInformationsReport(javaInformationsList, getWriter()).toHtml();
 
-		writeln("<h3 style='clear:both;'><img width='24' height='24' src='?resource=threads.png' alt='#Threads#'/>");
+		writeln("<h3 style='clear:both;'><img class='chapterTitleIcon' src='?resource=threads.png' alt='#Threads#'/>");
 		writeAnchor("threads", I18N.getString("Threads"));
 		writeln("#Threads#</h3>");
 		writeThreads();
 
 		if (isJobEnabled()) {
-			writeln("<h3><img width='24' height='24' src='?resource=jobs.png' alt='#Jobs#'/>");
+			writeln("<h3><img class='chapterTitleIcon' src='?resource=jobs.png' alt='#Jobs#'/>");
 			writeAnchor("jobs", I18N.getString("Jobs"));
 			writeln("#Jobs#</h3>");
 			final Counter rangeJobCounter = collector.getRangeCounter(range,
@@ -229,7 +229,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		}
 
 		if (isCacheEnabled()) {
-			writeln("<h3><img width='24' height='24' src='?resource=caches.png' alt='#Caches#'/>");
+			writeln("<h3><img class='chapterTitleIcon' src='?resource=caches.png' alt='#Caches#'/>");
 			writeAnchor("caches", I18N.getString("Caches"));
 			writeln("#Caches#</h3>");
 			writeCaches();
@@ -280,7 +280,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln(SCRIPT_END);
 
 		writeln("<div id='menuBox' class='menuHide'>");
-		writeln("  <ul id='menuTab'><li><a href='javascript:toggle(\"menuBox\");'><img id='menuToggle' src='?resource=menu.png' width='30' height='26' alt='menu' /></a></li></ul>");
+		writeln("  <ul id='menuTab'><li><a href='javascript:toggle(\"menuBox\");'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
 		writeln("  <div id='menuLinks'><div id='menuDeco'>");
 		for (final Map.Entry<String, String> entry : menuTextsByAnchorName.entrySet()) {
 			final String anchorName = entry.getKey();
@@ -337,7 +337,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeCounterTitle(Counter counter) throws IOException {
-		writeln("<h3><img width='24' height='24' src='?resource=" + counter.getIconName()
+		writeln("<h3><img class='chapterTitleIcon' src='?resource=" + counter.getIconName()
 				+ "' alt='" + counter.getName() + "'/>");
 		writeAnchor(counter.getName(), I18N.getString("Stats") + ' '
 				+ counter.getName().toLowerCase(Locale.ENGLISH));

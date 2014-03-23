@@ -264,7 +264,7 @@ class CollectorController {
 		}
 		final String title = I18N.getString(titleKey);
 		for (final URL url : getUrlsByApplication(application)) {
-			final String htmlTitle = "<h3><img width='24' height='24' src='?resource=" + iconName
+			final String htmlTitle = "<h3><img class='chapterTitleIcon' src='?resource=" + iconName
 					+ "' alt='" + title + "'/>&nbsp;" + title + " (" + getHostAndPort(url)
 					+ ")</h3>";
 			writer.write(htmlTitle);

@@ -106,7 +106,7 @@ abstract class HtmlAbstractReport {
 	void writeTitle(String imageFileName, String title) throws IOException {
 		writeDirectly("<img src='?resource=");
 		writeDirectly(imageFileName);
-		writeDirectly("' width='24' height='24' alt=\"");
+		writeDirectly("' class='chapterTitleIcon' alt=\"");
 		writeDirectly(title);
 		writeDirectly("\" />&nbsp;");
 		writeDirectly("<b>");
