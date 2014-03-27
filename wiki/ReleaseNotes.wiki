@@ -6,6 +6,7 @@
 === 1.50.0 ===
 
   * JavaMelody license changed from [https://www.gnu.org/licenses/lgpl.html LGPL] to [http://www.apache.org/licenses/LICENSE-2.0 ASL], as discussed here: https://groups.google.com/forum/#!topic/javamelody/JI3yNH0Xmb0/discussion (revision 3649)
+  * [https://code.google.com/p/javamelody/wiki/Downloads Downloads] moved to [https://github.com/javamelody/javamelody/releases GitHub]
 
   * fix issue 370: work around ConcurrentModificationException during Tomcat startup (which is a [https://issues.apache.org/bugzilla/show_bug.cgi?id=56082 Tomcat bug])
   * fix issue 378: Slf4j system, with log4j-over-slf4j, is not detected with version 1.7.6 of slf4j (thanks to _jgraglia_)
