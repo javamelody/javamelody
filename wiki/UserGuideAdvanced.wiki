@@ -18,6 +18,7 @@ For standard documentation, see [UserGuide]
     * [#6._If_reverse_proxy 6. If reverse proxy]
   * [#Business_facades_(without_EJB3_and_without_Spring_and_without_Gu Business facades (without EJB3 and without Spring and without Guice)]
   * [#Enable_Hotspots_detection Enable Hotspots detection]
+  * [#JPA_monitoring JPA monitoring]
   * [#Alternative_for_monitoring_of_sql_requests Alternative for monitoring of sql requests]
   * [#Monitoring_of_sql_requests_and_of_jdbc_connections_in_v3+ Monitoring of sql requests and of jdbc connections in GlassFish v3+]
   * [#Usage_of_in_JBoss_AS_7_(which_uses_OSGI) Usage of JavaMelody in JBoss AS 7 (which uses OSGI)]
@@ -316,6 +317,45 @@ Two parameters can be defined in web.xml, in context or in system properties lik
   * "sampling-seconds" to enable the hotspots sampling and to define its period. A period of 10 seconds can be recommended to have the lowest overhead, but then a few hours may be needed to have significant results for a webapp under real use. If you don't mind having a bit more overhead or want a result faster in test, you can use a value of 1 or 0.1 in second for this parameter.
   * "sampling-excluded-packages" to change the list of the excluded packages ("java,sun,com.sun,javax,org.apache,org.hibernate,oracle,org.postgresql,org.eclipse" by default) 	
 
+== JPA monitoring ==
+Inspired by [http://sirona.incubator.apache.org/ Apache Sirona]
+
+If you use JPA with a persistence.xml file, you can monitor main calls on the JPA [http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html EntityManager] (_since v1.50_).
+
+To enable the JPA monitoring with JPA statistics in the reports, set {{{net.bull.javamelody.JpaPersistence}}} as JPA Provider in your persistence.xml file. For example:
+{{{
+	<?xml version="1.0" encoding="UTF-8"?>
+	<persistence version="2.0"
+				xmlns="http://java.sun.com/xml/ns/persistence"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+				http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+		<persistence-unit name="my-unit">
+			<provider>net.bull.javamelody.JpaPersistence</provider>
+			...
+		</persistence-unit>
+	</persistence>
+}}}
+
+If you have in your environment a single "real" JPA provider it should be found automatically.
+But if that's not the case of if you want to force the implementation set the property {{{net.bull.javamelody.jpa.provider}}} to the real implementation you want. For example:
+{{{
+	<?xml version="1.0" encoding="UTF-8"?>
+	<persistence version="2.0"
+				xmlns="http://java.sun.com/xml/ns/persistence"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+				http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+		<persistence-unit name="my-unit">
+			<provider>net.bull.javamelody.JpaPersistence</provider>
+			<properties>
+				<property name="net.bull.javamelody.jpa.provider" value="org.hibernate.jpa.HibernatePersistenceProvider" />
+				...
+			</properties>
+			...
+		</persistence-unit>
+	</persistence>
+}}}
 
 == Alternative for monitoring of sql requests ==
 
