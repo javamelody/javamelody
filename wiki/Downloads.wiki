@@ -2,3 +2,5 @@
 *Latest downloads* are now available at *[https://github.com/javamelody/javamelody/releases GitHub]*, since v1.50.
 
 Archived downloads are still available at [http://code.google.com/p/javamelody/downloads/list GoogleCode], for v1.49 and before.
+
+[http://search.maven.org/#search|gav|1|a%3A%22javamelody-core%22 javamelody-core artifacts] are also published to the Maven central repository.
