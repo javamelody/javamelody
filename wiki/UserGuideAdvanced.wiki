@@ -571,6 +571,30 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	But if you want to clear only the statistics, delete the {{{*.gz}}} files in the subdirectories of the storage directory.
 	And if you want to clear only the graphs, delete the {{{*.rrd}}} files in the subdirectories of the storage directory.
 
+== Custom reports ==
+
+You can include links to your custom reports in the floating menu on the right of the report.
+For that, add a parameter named "custom-reports" like the other [UserGuide#6._Optional_parameters javamelody parameters]. In the value of this parameter, put the list of names of your custom reports separated with commas. Then for each custom report, add a parameter with the same name and its path as value. 
+For example:
+{{{
+		<init-param>
+			<param-name>custom-reports</param-name>
+			<param-value>Send feedback,My custom report</param-value>
+		</init-param>
+		<init-param>
+			<param-name>Send feedback</param-name>
+			<param-value>https://groups.google.com/forum/#!forum/javamelody</param-value>
+		</init-param>
+		<init-param>
+			<param-name>My custom report</param-name>
+			<param-value>/WEB-INF/pages/myCustomReport.jsp</param-value>
+		</init-param>
+}}}
+
+If the path starts with '/', it will be considered as a JSP (or a servlet) inside the webapp. Otherwise it will be considered as an URL (http://example.com).
+As example of JSP, you can add the file "/WEB-INF/pages/myCustomReport.jsp" in your webapp, with a content like [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/test/test-webapp/WEB-INF/pages/myCustomReport.jsp this one].
+This [http://demo.javamelody.cloudbees.net/monitoring?report=My+custom+report example can be seen in the demo].
+
 == Customizing styles, icons and other resources in the html reports ==
 	
 	It can be helpful to customize styles, icons, effects and javascript or help files in the html reports (pdf reports excluded).
