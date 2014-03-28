@@ -45,7 +45,7 @@ This [http://demo.javamelody.cloudbees.net/monitoring?report=My+custom+report ex
 
 If you use JPA with a persistence.xml file, you can now monitor main calls on the JPA [http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html EntityManager] (_since v1.50_).
 
-To enable the JPA monitoring, set {{{net.bull.javamelody.JpaPersistence}}} as JPA Provider in your persistence.xml file. For example:
+To enable the JPA monitoring with JPA statistics in the report, set {{{net.bull.javamelody.JpaPersistence}}} as JPA Provider in your persistence.xml file. For example:
 {{{
 	<?xml version="1.0" encoding="UTF-8"?>
 	<persistence version="2.0"
