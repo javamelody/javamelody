@@ -614,8 +614,10 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 
 == Custom reports ==
 
-You can include links to your custom reports in the floating menu on the right of the report.
-For that, add a parameter named "custom-reports" like the other [UserGuide#6._Optional_parameters javamelody parameters]. In the value of this parameter, put the list of names of your custom reports separated with commas. Then for each custom report, add a parameter with the same name and its path as value. 
+You can include links to your custom reports in the floating menu on the right of the report (_since v1.50_).
+
+For that, add a parameter named "custom-reports" like the other [UserGuide#6._Optional_parameters javamelody parameters]. In the value of this parameter, put the list of names of your custom reports separated with commas. Then for each custom report, add a parameter with the same name and its path as value.
+
 For example:
 {{{
 		<init-param>
