@@ -369,8 +369,15 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	// pour hudson/Jenkins/jira/confluence/bamboo
 	void unregisterInvalidatedSessions() {
-		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
-			unregisterSessionIfNeeded(session);
+		for (final Map.Entry<String, HttpSession> entry : SESSION_MAP_BY_ID.entrySet()) {
+			final HttpSession session = entry.getValue();
+			if (session.getId() != null) {
+				unregisterSessionIfNeeded(session);
+			} else {
+				// damned JIRA has sessions with null id, when shuting down
+				final String sessionId = entry.getKey();
+				SESSION_MAP_BY_ID.remove(sessionId);
+			}
 		}
 		// issue 198: in JIRA 4.4.*, sessionCreated is called two times with different sessionId
 		// but with the same attributes in the second than the attributes added in the first,
