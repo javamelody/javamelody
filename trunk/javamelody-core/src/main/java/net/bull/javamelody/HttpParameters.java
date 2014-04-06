@@ -69,6 +69,7 @@ final class HttpParameters {
 	static final String OTHER_JROBINS_PART = "otherJRobins";
 	static final String EXPLAIN_PLAN_PART = "explainPlan";
 	static final String APPLICATIONS_PART = "applications";
+	static final String DESKTOP_JAR_PART = "desktopJar";
 
 	/**
 	 * Constructeur privé: pas d'instance.
