@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * Optimized desktop UI startup time, by downloading desktop app and caching locally (revision 3762)
 
 === 1.50.0 ===
 
