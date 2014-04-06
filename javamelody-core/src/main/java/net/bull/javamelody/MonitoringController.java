@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DESKTOP_JAR_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
@@ -44,6 +45,8 @@ import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -133,6 +136,11 @@ class MonitoringController {
 			HttpServletResponse httpResponse, ServletContext servletContext) throws IOException,
 			ServletException {
 		executeActionIfNeeded(httpRequest);
+
+		if (DESKTOP_JAR_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))) {
+			doDesktopJar(httpRequest, httpResponse);
+			return;
+		}
 
 		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
 		// pour avoir des informations à jour
@@ -476,6 +484,25 @@ class MonitoringController {
 					.forward(httpRequest, httpResponse);
 		} else {
 			httpResponse.sendRedirect(customReportPath);
+		}
+	}
+
+	void doDesktopJar(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		final File jarFile = JnlpPage.getJarFile();
+		if (!jarFile.exists()) {
+			throw new IllegalStateException(jarFile + " is absent and not in cache");
+		}
+		final long ifModifiedSince = req.getDateHeader("If-Modified-Since");
+		if (ifModifiedSince > 0 && ifModifiedSince < jarFile.lastModified()) {
+			resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+		} else {
+			resp.setDateHeader("Last-Modified", jarFile.lastModified());
+			final InputStream input = new FileInputStream(jarFile);
+			try {
+				TransportFormat.pump(input, resp.getOutputStream());
+			} finally {
+				input.close();
+			}
 		}
 	}
 
