@@ -203,9 +203,13 @@ class JnlpPage {
 			try {
 				new ZipFile(jarFile).close();
 			} catch (final Exception e) {
-				jarFile.delete();
-				throw new IOException(
+				if (!jarFile.delete()) {
+					jarFile.deleteOnExit();
+				}
+				final IOException exception = new IOException(
 						"desktop jar downloaded is not in zip format - proxy error page?");
+				exception.initCause(e);
+				throw exception;
 			}
 			final long duration = System.currentTimeMillis() - start;
 			LOG.debug("desktop jar downloaded and put in cache, from " + jarFileUrl + " to "
