@@ -497,6 +497,7 @@ class MonitoringController {
 			resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 		} else {
 			resp.setDateHeader("Last-Modified", jarFile.lastModified());
+			resp.setHeader("Content-Length", String.valueOf(jarFile.length()));
 			final InputStream input = new FileInputStream(jarFile);
 			try {
 				TransportFormat.pump(input, resp.getOutputStream());
