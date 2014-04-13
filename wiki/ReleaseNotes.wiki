@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 399: Large Nb of used jdbc connections with Spring Routing Datasource
   * Optimized desktop UI startup time, by downloading desktop app and caching locally (revision 3762)
 
 === 1.50.0 ===
