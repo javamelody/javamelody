@@ -166,6 +166,9 @@ public final class JdbcWrapper {
 			super();
 			assert connection != null;
 			this.connection = connection;
+		}
+
+		void incrementCounts() {
 			USED_CONNECTION_COUNT.incrementAndGet();
 			TRANSACTION_COUNT.incrementAndGet();
 		}
@@ -792,15 +795,22 @@ public final class JdbcWrapper {
 					ConnectionInformations.getUniqueIdOfConnection(connection),
 					new ConnectionInformations());
 		}
-		final InvocationHandler invocationHandler = new ConnectionInvocationHandler(connection);
+		final ConnectionInvocationHandler invocationHandler = new ConnectionInvocationHandler(
+				connection);
+		final Connection result;
 		if (jonas) {
 			// si jonas, on ne garde que l'interface java.sql.Connection
 			// car sinon on a NoClassDefFoundError: org.ow2.jonas.resource.internal.cm.ManagedConnectionInfo
 			// à la création du proxy (dans le cas d'un EAR avec des ejbs dans des jars et un war)
-			return createProxy(connection, invocationHandler,
+			result = createProxy(connection, invocationHandler,
 					Arrays.asList(new Class<?>[] { Connection.class }));
+		} else {
+			result = createProxy(connection, invocationHandler);
 		}
-		return createProxy(connection, invocationHandler);
+		if (result != connection) { // NOPMD
+			invocationHandler.incrementCounts();
+		}
+		return result;
 	}
 
 	boolean isSqlMonitoringDisabled() {
