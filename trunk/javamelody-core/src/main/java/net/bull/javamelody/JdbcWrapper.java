@@ -168,7 +168,14 @@ public final class JdbcWrapper {
 			this.connection = connection;
 		}
 
-		void incrementCounts() {
+		void init() {
+			// on limite la taille pour éviter une éventuelle saturation mémoire
+			if (isConnectionInformationsEnabled()
+					&& USED_CONNECTION_INFORMATIONS.size() < MAX_USED_CONNECTION_INFORMATIONS) {
+				USED_CONNECTION_INFORMATIONS.put(
+						ConnectionInformations.getUniqueIdOfConnection(connection),
+						new ConnectionInformations());
+			}
 			USED_CONNECTION_COUNT.incrementAndGet();
 			TRANSACTION_COUNT.incrementAndGet();
 		}
@@ -347,6 +354,10 @@ public final class JdbcWrapper {
 
 	Counter getSqlCounter() {
 		return sqlCounter;
+	}
+
+	boolean isConnectionInformationsEnabled() {
+		return connectionInformationsEnabled;
 	}
 
 	static int getMaxConnectionCount() {
@@ -788,13 +799,6 @@ public final class JdbcWrapper {
 		if (isMonitoringDisabled()) {
 			return connection;
 		}
-		// on limite la taille pour éviter une éventuelle saturation mémoire
-		if (connectionInformationsEnabled
-				&& USED_CONNECTION_INFORMATIONS.size() < MAX_USED_CONNECTION_INFORMATIONS) {
-			USED_CONNECTION_INFORMATIONS.put(
-					ConnectionInformations.getUniqueIdOfConnection(connection),
-					new ConnectionInformations());
-		}
 		final ConnectionInvocationHandler invocationHandler = new ConnectionInvocationHandler(
 				connection);
 		final Connection result;
@@ -808,7 +812,7 @@ public final class JdbcWrapper {
 			result = createProxy(connection, invocationHandler);
 		}
 		if (result != connection) { // NOPMD
-			invocationHandler.incrementCounts();
+			invocationHandler.init();
 		}
 		return result;
 	}
