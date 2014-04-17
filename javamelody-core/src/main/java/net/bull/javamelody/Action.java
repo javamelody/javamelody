@@ -355,7 +355,7 @@ enum Action { // NOPMD
 			final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss",
 					Locale.getDefault());
 			final File heapDumpFile = new File(path, "heapdump-" + Parameters.getHostName() + '-'
-					+ dateFormat.format(new Date()) + ".hprof");
+					+ PID.getPID() + '-' + dateFormat.format(new Date()) + ".hprof");
 			if (heapDumpFile.exists()) {
 				try {
 					// si le fichier existe déjà, un heap dump a déjà été généré dans la même seconde
