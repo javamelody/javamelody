@@ -3,6 +3,7 @@
 
   * fix issue 399: Report of large Nb of used jdbc connections with Spring Routing Datasource
   * Optimized desktop UI startup time, by downloading desktop app and caching locally (revision 3762)
+  * improved: abstract very long sql requests (issue 403)
   * added: PID in the heap dump file name (revision 3773)
 
 === 1.50.0 ===
