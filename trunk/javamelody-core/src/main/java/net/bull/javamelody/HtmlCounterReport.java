@@ -33,6 +33,7 @@ import java.util.Map;
  * @author Emeric Vernat
  */
 class HtmlCounterReport extends HtmlAbstractReport {
+	private static final int MAX_REQUEST_NAME_LENGTH = 5000;
 	private final Counter counter;
 	private final Range range;
 	private final CounterRequestAggregation counterRequestAggregation;
@@ -81,9 +82,25 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			write("<em><img src='?resource=db.png' id='");
 			write(id);
 			write("' alt='graph'/></em>");
-			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly(htmlEncodeButNotSpace(requestName));
-			write("</a>");
+			if (requestName.length() <= MAX_REQUEST_NAME_LENGTH) {
+				// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+				writeDirectly(htmlEncodeButNotSpace(requestName));
+				write("</a>");
+			} else {
+				// si une requête a trop de caractères, alors cela sature le tableau des requêtes
+				// et le rend peu lisible, donc on tronque cette requête en ajoutant une action "Details".
+				writeDirectly(htmlEncodeButNotSpace(requestName.substring(0,
+						MAX_REQUEST_NAME_LENGTH)));
+				write("</a>");
+				write("<br/> ");
+
+				final String idToShow = "request-" + requestId;
+				writeShowHideLink(idToShow, "#Details#");
+				writeln("<div id='request-" + requestId + "' style='display: none;'>");
+				write("<br/> ");
+				writeDirectly(htmlEncodeButNotSpace(requestName));
+				writeln("</div> ");
+			}
 		}
 
 		void writeRequestAndGraphDetail(Collector collector, CollectorServer collectorServer,
