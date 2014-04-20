@@ -42,6 +42,12 @@ class LogbackLogger implements JavaMelodyLogger {
 
 	/** {@inheritDoc} */
 	@Override
+	public void info(String msg) {
+		LOGGER.info(msg);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void info(String msg, Throwable throwable) {
 		LOGGER.info(msg, throwable);
 	}

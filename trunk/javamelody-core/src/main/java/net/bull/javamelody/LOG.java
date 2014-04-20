@@ -91,6 +91,11 @@ final class LOG {
 		addDebuggingLog("INFO", msg);
 	}
 
+	static void info(String msg) {
+		JAVA_MELODY_LOGGER.info(msg);
+		addDebuggingLog("INFO", msg);
+	}
+
 	static void warn(String msg, Throwable throwable) {
 		try {
 			JAVA_MELODY_LOGGER.warn(msg, throwable);
