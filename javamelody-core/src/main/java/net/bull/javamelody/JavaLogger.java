@@ -43,6 +43,12 @@ class JavaLogger implements JavaMelodyLogger {
 
 	/** {@inheritDoc} */
 	@Override
+	public void info(String msg) {
+		LOGGER.log(Level.INFO, msg);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void info(String msg, Throwable throwable) {
 		LOGGER.log(Level.INFO, msg, throwable);
 	}

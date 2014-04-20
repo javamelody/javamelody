@@ -45,6 +45,12 @@ interface JavaMelodyLogger {
 	/**
 	 * Log interne en niveau info.
 	 * @param msg Message
+	 */
+	void info(String msg);
+
+	/**
+	 * Log interne en niveau info.
+	 * @param msg Message
 	 * @param throwable Throwable
 	 */
 	void info(String msg, Throwable throwable);
