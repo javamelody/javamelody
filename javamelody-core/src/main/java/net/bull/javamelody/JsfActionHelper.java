@@ -50,8 +50,9 @@ final class JsfActionHelper {
 				facesContext.getApplication().setActionListener(jsfActionListener);
 			}
 		} catch (final Exception e) {
-			// issue 204: initialisation du JsfActionListener échouée, tant pis, il n'y aura pas les statistiques pour JSF
-			LOG.info("initialization of jsf action listener failed, skipping", e);
+			// issue 204: initialisation du JsfActionListener échouée, tant pis, il n'y aura pas les statistiques pour JSF.
+			// no stack-trace, because in JBoss 7 because in some cases the class com.sun.faces.application.ActionListenerImpl is available but the ApplicationFactory isn't (issue 393)
+			LOG.info("initialization of jsf action listener failed, skipping");
 		}
 	}
 }
