@@ -31,6 +31,7 @@ import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNLP_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
+import static net.bull.javamelody.HttpParameters.MAX_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
@@ -362,9 +363,11 @@ class MonitoringController {
 				1600);
 		final int height = Math.min(Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER)),
 				1600);
+		final String max = httpRequest.getParameter(MAX_PARAMETER);
+		final boolean maxHidden = max != null && !Boolean.parseBoolean(max);
 		final JRobin jrobin = collector.getJRobin(graphName);
 		if (jrobin != null) {
-			final byte[] img = jrobin.graph(range, width, height);
+			final byte[] img = jrobin.graph(range, width, height, maxHidden);
 			// png comme indiqué dans la classe jrobin
 			httpResponse.setContentType("image/png");
 			httpResponse.setContentLength(img.length);

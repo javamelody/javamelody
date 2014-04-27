@@ -259,6 +259,11 @@ input[type=submit] {
 	transition: box-shadow 0.1s linear 0s;
 }
 
+input[type=checkbox] {
+	vertical-align: bottom;
+	margin: 0px;
+}
+
 #menuBox {
 	width: 268px;
 	font-size: 12px;
