@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 396: Call to TraversableResolver.isReachable() throws exception "Can't find a delegate"
   * fix issue 399: Report of large Nb of used jdbc connections with Spring Routing Datasource
   * Optimized desktop UI startup time, by downloading desktop app and caching locally (revision 3762)
   * improved: abstract very long sql requests (issue 403)
