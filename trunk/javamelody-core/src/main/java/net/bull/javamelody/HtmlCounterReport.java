@@ -125,7 +125,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				writeln("</div></div>");
 
 				writeln("<div align='center'>");
-				writeln("<table><tr><td>");
+				writeln("<table summary=''><tr><td>");
 				writeln("<img class='synthèse' id='img' src='"
 						+ "?width=960&amp;height=400&amp;graph=" + urlEncode(graphName)
 						+ "' alt='zoom'/>");
