@@ -23,6 +23,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.LoadState;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.ProviderUtil;
@@ -51,6 +52,23 @@ public class JpaPersistence implements PersistenceProvider {
 			"com.orientechnologies.orient.core.db.object.jpa.OJPAPersistenceProvider",
 			"com.orientechnologies.orient.object.jpa.OJPAPersistenceProvider",
 			"com.spaceprogram.simplejpa.PersistenceProviderImpl", };
+
+	private static final ProviderUtil DUMMY_PROVIDER_UTIL = new ProviderUtil() {
+		@Override
+		public LoadState isLoadedWithoutReference(Object entity, String attributeName) {
+			return LoadState.UNKNOWN;
+		}
+
+		@Override
+		public LoadState isLoadedWithReference(Object entity, String attributeName) {
+			return LoadState.UNKNOWN;
+		}
+
+		@Override
+		public LoadState isLoaded(Object entity) {
+			return LoadState.UNKNOWN;
+		}
+	};
 
 	private volatile PersistenceProvider delegate; // NOPMD
 
@@ -126,7 +144,15 @@ public class JpaPersistence implements PersistenceProvider {
 	/** {@inheritDoc} */
 	@Override
 	public ProviderUtil getProviderUtil() { // we suppose it is loaded later than createXXXEMF so we'll get the delegate
-		return loadOrGuessDelegate(null).getProviderUtil();
+		if (delegate == null) {
+			// delegate not yet loaded and perhaps will never be:
+			// this method may be called, even without jpa impl to delegate,
+			// for example, by hibernate validator via jpa api but without jpa impl
+			// (issue 396, if loadOrGuessDelegate(null) was called here),
+			// so return a dumb ProviderUtil in this case or if delegate not yet loaded
+			return DUMMY_PROVIDER_UTIL;
+		}
+		return delegate.getProviderUtil();
 	}
 
 	private PersistenceProvider findDelegate(final Map<?, ?> map) {
