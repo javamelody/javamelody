@@ -172,6 +172,10 @@ final class JRobin {
 	}
 
 	byte[] graph(Range range, int width, int height) throws IOException {
+		return graph(range, width, height, false);
+	}
+
+	byte[] graph(Range range, int width, int height, boolean maxHidden) throws IOException {
 		try {
 			// Rq : il pourrait être envisagé de récupérer les données dans les fichiers rrd ou autre stockage
 			// puis de faire des courbes en sparklines html (sauvegardées dans la page html)
@@ -185,7 +189,7 @@ final class JRobin {
 				graphDef.setLargeFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
 			}
 
-			initGraphSource(graphDef, height);
+			initGraphSource(graphDef, height, maxHidden);
 
 			initGraphPeriodAndSize(range, width, height, graphDef);
 
@@ -263,20 +267,22 @@ final class JRobin {
 		//				RrdGraphConstants.DEFAULT_BACK_COLOR));
 	}
 
-	private void initGraphSource(RrdGraphDef graphDef, int height) {
-		final String average = "average";
-		final String max = "max";
+	private void initGraphSource(RrdGraphDef graphDef, int height, boolean maxHidden) {
 		final String dataSourceName = getDataSourceName();
+		final String average = "average";
 		graphDef.datasource(average, rrdFileName, dataSourceName, "AVERAGE");
-		graphDef.datasource(max, rrdFileName, dataSourceName, "MAX");
 		graphDef.setMinValue(0);
 		final String moyenneLabel = I18N.getString("Moyenne");
-		final String maximumLabel = I18N.getString("Maximum");
 		graphDef.area(average, getPaint(height), moyenneLabel);
-		graphDef.line(max, Color.BLUE, maximumLabel);
 		graphDef.gprint(average, "AVERAGE", moyenneLabel + ": %9.0f %S\\r");
 		//graphDef.gprint(average, "MIN", "Minimum: %9.0f %S\\r");
-		graphDef.gprint(max, "MAX", maximumLabel + ": %9.0f %S\\r");
+		if (!maxHidden) {
+			final String max = "max";
+			graphDef.datasource(max, rrdFileName, dataSourceName, "MAX");
+			final String maximumLabel = I18N.getString("Maximum");
+			graphDef.line(max, Color.BLUE, maximumLabel);
+			graphDef.gprint(max, "MAX", maximumLabel + ": %9.0f %S\\r");
+		}
 		// graphDef.comment("JRobin :: RRDTool Choice for the Java World");
 	}
 

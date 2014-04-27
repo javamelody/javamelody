@@ -119,10 +119,17 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				}
 			}
 			if (isGraphDisplayed(collector, request)) {
+				writeln("<table summary=''><tr><td>");
 				writeln("<div id='track' class='noPrint'>");
 				writeln("<div class='selected' id='handle'>");
 				writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
 				writeln("</div></div>");
+				writeln("</td><td>");
+				writeDirectly("<div class='noPrint' style='color: #808080;'>");
+				writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+				writeln("<label for='cb'><input id='cb' type='checkbox' onclick=\"handleHideMaximumClick(this);\"/>&nbsp;#hide_maximum#</label>");
+				writeln("</div> ");
+				writeln("</td></tr></table>");
 
 				writeln("<div align='center'>");
 				writeln("<table summary=''><tr><td>");
@@ -372,6 +379,14 @@ class HtmlCounterReport extends HtmlAbstractReport {
 
 		private void writeGraphDetailScript(String graphName) throws IOException {
 			writeln(SCRIPT_BEGIN);
+			writeln("function handleHideMaximumClick(checkbox) {");
+			writeln("    var img = document.getElementById('img');");
+			writeln("    if (checkbox.checked) {");
+			writeln("        img.src = img.src + '\\u0026max=false\\u0026r=' + Math.random();");
+			writeln("    } else {");
+			writeln("        img.src = img.src.replace('\\u0026max=false','');");
+			writeln("    }");
+			writeln("}");
 			writeln("function scaleImage(v, min, max) {");
 			writeln("    var images = document.getElementsByClassName('synthèse');");
 			writeln("    w = (max - min) * v + min;");
