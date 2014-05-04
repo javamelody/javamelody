@@ -149,7 +149,9 @@ class MemoryInformations implements Serializable {
 		// car le package com.sun n'existe à priori pas sur une jvm tierce
 		final String className = operatingSystem.getClass().getName();
 		return "com.sun.management.OperatingSystem".equals(className)
-				|| "com.sun.management.UnixOperatingSystem".equals(className);
+				|| "com.sun.management.UnixOperatingSystem".equals(className)
+				// sun.management.OperatingSystemImpl pour java 8
+				|| "sun.management.OperatingSystemImpl".equals(className);
 	}
 
 	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
