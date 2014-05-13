@@ -80,7 +80,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	static final int MAX_ERRORS_COUNT = 100;
 	/**
-	 * Nombre max de requêtes conservées par counter.
+	 * Nombre max par défaut de requêtes conservées par counter, <br/>
+	 * mais peut être redéfini par exemple pour le counter des erreurs http ou celui des logs.
 	 */
 	private static final int MAX_REQUESTS_COUNT = 10000;
 	private static final long serialVersionUID = 6759729262180992976L;
@@ -590,7 +591,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		if (requestTransformPattern == null) {
 			aggregateRequestName = requestName;
 		} else {
-			// ce pattern optionnel permet de transformer la description de la requête http
+			// ce pattern optionnel permet de transformer la description de la requête
 			// pour supprimer des parties variables (identifiant d'objet par exemple)
 			// et pour permettre l'agrégation sur cette requête
 			aggregateRequestName = requestTransformPattern.matcher(requestName).replaceAll("\\$");
