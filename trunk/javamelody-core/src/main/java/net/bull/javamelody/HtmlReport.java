@@ -164,6 +164,7 @@ class HtmlReport extends HtmlAbstractReport {
 		if (includeSlider) {
 			writeln("<script type='text/javascript' src='?resource=slider.js'></script>");
 		}
+		writeln("<script type='text/javascript' src='?resource=customizableMonitoring.js'></script>");
 		writeJavaScript();
 		writeln("</head><body>");
 	}
