@@ -1,6 +1,6 @@
-/* This CSS file is used an add-on to monitoring.css, in order to ease custom styles, without overriding all monitoring.css */
+/* This CSS file is used as an add-on to monitoring.css, in order to ease custom styles, without overriding all monitoring.css */
 
-/* To use it, write a file "/customizedMonitoring.css" with your own styles, at the root of the web content in your webapp.
+/* To customize css, write a file "/customizedMonitoring.css" with your own styles, at the root of the web content in your webapp.
 
 And add the following in the web.xml file of your webapp :
  <filter>
