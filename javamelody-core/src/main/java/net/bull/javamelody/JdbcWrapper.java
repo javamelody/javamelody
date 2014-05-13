@@ -18,7 +18,6 @@
 package net.bull.javamelody;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,14 +32,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.naming.Referenceable;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
@@ -66,9 +63,6 @@ public final class JdbcWrapper {
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
 
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
-
-	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections
-			.synchronizedMap(new WeakHashMap<Class<?>, Constructor<?>>());
 
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
 	private final Counter sqlCounter;
@@ -614,7 +608,7 @@ public final class JdbcWrapper {
 				}
 			}
 
-			PROXY_CACHE.clear();
+			JdbcWrapperHelper.clearProxyCache();
 
 			ok = true;
 		} catch (final Throwable t) { // NOPMD
@@ -855,7 +849,6 @@ public final class JdbcWrapper {
 		return createProxy(object, invocationHandler, null);
 	}
 
-	@SuppressWarnings("unchecked")
 	static <T> T createProxy(T object, InvocationHandler invocationHandler,
 			List<Class<?>> interfaces) {
 		if (isProxyAlready(object)) {
@@ -864,65 +857,8 @@ public final class JdbcWrapper {
 			// alors il ne faut pas faire un proxy du proxy
 			return object;
 		}
-		final Class<? extends Object> objectClass = object.getClass();
-		// ce handler désencapsule les InvocationTargetException des 3 proxy
 		final InvocationHandler ih = new DelegatingInvocationHandler(invocationHandler);
-
-		// avant : return (T) Proxy.newProxyInstance(objectClass.getClassLoader(), getObjectInterfaces(objectClass, interfaces), ih);
-		// maintenant (optimisé) :
-		Constructor<?> constructor = PROXY_CACHE.get(objectClass);
-		if (constructor == null) {
-			final Class<?>[] interfacesArray = getObjectInterfaces(objectClass, interfaces);
-			constructor = getProxyConstructor(objectClass, interfacesArray);
-			// si interfaces est non null, la classe n'est en théorie pas suffisante comme clé,
-			// mais ce n'est pas un cas courant
-			if (interfaces == null) {
-				PROXY_CACHE.put(objectClass, constructor);
-			}
-		}
-		try {
-			return (T) constructor.newInstance(new Object[] { ih });
-		} catch (final Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-	private static Constructor<?> getProxyConstructor(Class<? extends Object> objectClass,
-			Class<?>[] interfacesArray) {
-		final ClassLoader classLoader = objectClass.getClassLoader(); // NOPMD
-		try {
-			return Proxy.getProxyClass(classLoader, interfacesArray).getConstructor(
-					new Class[] { InvocationHandler.class });
-		} catch (final NoSuchMethodException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-	private static Class<?>[] getObjectInterfaces(Class<?> objectClass, List<Class<?>> interfaces) {
-		// Rq: object.getClass().getInterfaces() ne suffit pas pour Connection dans Tomcat
-		// car la connection est une instance de PoolGuardConnectionWrapper
-		// et connection.getClass().getInterfaces() est vide dans ce cas
-		final List<Class<?>> myInterfaces;
-		if (interfaces == null) {
-			myInterfaces = new ArrayList<Class<?>>(Arrays.asList(objectClass.getInterfaces()));
-			Class<?> classe = objectClass.getSuperclass();
-			while (classe != null) {
-				final Class<?>[] classInterfaces = classe.getInterfaces();
-				if (classInterfaces.length > 0) {
-					final List<Class<?>> superInterfaces = Arrays.asList(classInterfaces);
-					// removeAll d'abord car il ne faut pas de doublon dans la liste
-					myInterfaces.removeAll(superInterfaces);
-					myInterfaces.addAll(superInterfaces);
-				}
-				classe = classe.getSuperclass();
-			}
-			// on ignore l'interface javax.naming.Referenceable car sinon le rebind sous jetty appelle
-			// referenceable.getReference() et devient inutile
-			myInterfaces.remove(Referenceable.class);
-		} else {
-			myInterfaces = interfaces;
-		}
-		return myInterfaces.toArray(new Class<?>[myInterfaces.size()]);
+		return JdbcWrapperHelper.createProxy(object, ih, interfaces);
 	}
 
 	private static boolean isProxyAlready(Object object) {
@@ -933,4 +869,5 @@ public final class JdbcWrapper {
 		// et non de Proxy.getInvocationHandler(object) instanceof DelegatingInvocationHandler
 		// pour issue 97 (classLoaders différents pour les classes DelegatingInvocationHandler)
 	}
+
 }
