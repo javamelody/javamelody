@@ -126,7 +126,7 @@ class JnlpPage {
 				jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-"
 						+ Parameters.JAVAMELODY_VERSION + ".jar";
 			} else {
-				// TODO files can't be added in googlecode downloads anymore,		
+				// TODO files can't be added in googlecode downloads anymore,
 				// at the moment, javamelody-swing v1.49 is used for v1.50 and later
 				jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-1.49.0.jar";
 			}

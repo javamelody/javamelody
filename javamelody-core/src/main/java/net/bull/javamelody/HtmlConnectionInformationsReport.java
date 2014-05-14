@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,20 +42,20 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 		this.connectionsInformations = connectionsInformations;
 		// rq: cette partie du rapport n'est pas exécutée sur le serveur de collecte
 		// donc les threads sont ok
-		if (JavaInformations.STACK_TRACES_ENABLED) {
-			this.stackTracesByThread = Thread.getAllStackTraces();
-			this.threadsById = new HashMap<Long, Thread>(stackTracesByThread.size());
-			for (final Thread thread : stackTracesByThread.keySet()) {
-				this.threadsById.put(thread.getId(), thread);
-			}
-		} else {
-			this.stackTracesByThread = Collections.emptyMap();
-			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
-			this.threadsById = new HashMap<Long, Thread>(threads.size());
-			for (final Thread thread : threads) {
-				this.threadsById.put(thread.getId(), thread);
-			}
+		this.stackTracesByThread = Thread.getAllStackTraces();
+		this.threadsById = new HashMap<Long, Thread>(stackTracesByThread.size());
+		for (final Thread thread : stackTracesByThread.keySet()) {
+			this.threadsById.put(thread.getId(), thread);
 		}
+		// avant, si java < 1.6.0_01 :
+		//		{
+		//			this.stackTracesByThread = Collections.emptyMap();
+		//			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
+		//			this.threadsById = new HashMap<Long, Thread>(threads.size());
+		//			for (final Thread thread : threads) {
+		//				this.threadsById.put(thread.getId(), thread);
+		//			}
+		//		}
 	}
 
 	@Override
@@ -77,11 +76,7 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("Connexions_jdbc_ouvertes"));
 		write("<th class='sorttable_date'>#Date_et_stack_trace_ouverture#</th>");
-		if (JavaInformations.STACK_TRACES_ENABLED) {
-			write("<th>#Thread_et_stack_trace_actuelle#</th>");
-		} else {
-			write("<th>#Thread#</th>");
-		}
+		write("<th>#Thread_et_stack_trace_actuelle#</th>");
 		for (final ConnectionInformations connection : connectionsInformations) {
 			table.nextRow();
 			writeConnection(connection);

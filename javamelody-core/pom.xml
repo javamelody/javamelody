@@ -291,8 +291,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<fork>true</fork>
 					<!-- pour éviter warning dans Maven sur sun.nio.ch.DirectBuffer dans RrdNioBackend -->
 					<compilerArgument>-XDignore.symbol.file=true -Xlint</compilerArgument>
@@ -478,8 +478,8 @@
 							<version>2.7.1</version>
 							<configuration>
 								<enableRulesSummary>false</enableRulesSummary>
-								<source>1.5</source>
-								<targetJdk>1.5</targetJdk>
+								<source>1.6</source>
+								<targetJdk>1.6</targetJdk>
 								<linkXref>true</linkXref>
 								<minimumPriority>4</minimumPriority>
 								<minimumTokens>75</minimumTokens>

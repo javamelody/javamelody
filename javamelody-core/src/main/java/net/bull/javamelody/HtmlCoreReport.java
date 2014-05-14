@@ -560,7 +560,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private boolean isHeapDumpEnabled() {
-		return Action.HEAP_DUMP_ENABLED || collectorServer != null;
+		return collectorServer != null;
 	}
 
 	private boolean isHeapHistoEnabled() {

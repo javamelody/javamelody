@@ -246,8 +246,7 @@ class FilterContext {
 	}
 
 	private SamplingProfiler initSamplingProfiler() {
-		if (JavaInformations.STACK_TRACES_ENABLED
-				&& Parameters.getParameter(Parameter.SAMPLING_SECONDS) != null) {
+		if (Parameters.getParameter(Parameter.SAMPLING_SECONDS) != null) {
 			final SamplingProfiler sampler;
 			final String excludedPackagesParameter = Parameters
 					.getParameter(Parameter.SAMPLING_EXCLUDED_PACKAGES);

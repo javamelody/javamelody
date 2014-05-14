@@ -42,15 +42,13 @@ final class VirtualMachine {
 	}
 
 	/**
-	 * @return true si heapHisto supporté (jdk 1.6 de Sun ou de JRockit de BEA)
+	 * @return true si heapHisto supporté.
 	 */
 	static boolean isSupported() {
 		// pour nodes Hudson/Jenkins, on réévalue sans utiliser de constante
-		final String javaVersion = System.getProperty("java.version");
 		final String javaVendor = System.getProperty("java.vendor");
-		return "1.6".compareTo(javaVersion) < 0
-				&& (javaVendor.contains("Sun") || javaVendor.contains("Oracle")
-						|| javaVendor.contains("Apple") || isJRockit());
+		return javaVendor.contains("Sun") || javaVendor.contains("Oracle")
+				|| javaVendor.contains("Apple") || isJRockit();
 	}
 
 	/**
@@ -152,7 +150,7 @@ final class VirtualMachine {
 			return (InputStream) invoke(heapHistoMethod, getJvmVirtualMachine(),
 					new Object[] { new Object[] { "-all" } });
 		} catch (final ClassNotFoundException e) {
-			// si on obtient ClassNotFoundException alors que heap histo est "supporté" (jdk 1.6 de Sun)
+			// si on obtient ClassNotFoundException alors que heap histo est "supporté"
 			// alors c'est que la jvm est un JRE et non un JDK (certainement avec tomcat) :
 			// on le signale à l'administrateur car il peut simplement installer un JDK et changer JAVA_HOME,
 			throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
