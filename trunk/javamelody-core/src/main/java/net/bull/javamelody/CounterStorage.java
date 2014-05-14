@@ -112,7 +112,7 @@ class CounterStorage {
 					input.close();
 				}
 			} catch (final ClassNotFoundException e) {
-				throw createIOException(e);
+				throw new IOException(e.getMessage(), e);
 			} finally {
 				in.close();
 			}
@@ -124,13 +124,6 @@ class CounterStorage {
 	private File getFile() {
 		final File storageDirectory = Parameters.getStorageDirectory(counter.getApplication());
 		return new File(storageDirectory, counter.getStorageName() + ".ser.gz");
-	}
-
-	private static IOException createIOException(Exception e) {
-		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
-		final IOException ex = new IOException(e.getMessage());
-		ex.initCause(e);
-		return ex;
 	}
 
 	static long deleteObsoleteCounterFiles(String application) {

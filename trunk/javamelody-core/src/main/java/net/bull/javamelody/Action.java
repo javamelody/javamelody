@@ -105,12 +105,6 @@ enum Action { // NOPMD
 	 */
 	static final boolean GC_ENABLED = !ManagementFactory.getRuntimeMXBean().getInputArguments()
 			.contains("-XX:+DisableExplicitGC");
-	/**
-	 * Booléen selon que l'action 'Heap dump' est possible.
-	 */
-	static final boolean HEAP_DUMP_ENABLED = "1.6".compareTo(System.getProperty("java.version")) < 0
-			&& (JAVA_VENDOR.contains("Sun") || JAVA_VENDOR.contains("Oracle") || JAVA_VENDOR
-					.contains("IBM"));
 
 	private static final String ALL = "all";
 
@@ -203,20 +197,16 @@ enum Action { // NOPMD
 			}
 			break;
 		case HEAP_DUMP:
-			if (HEAP_DUMP_ENABLED) {
-				if (JAVA_VENDOR.contains("IBM")) {
-					ibmHeapDump();
-					messageForReport = I18N.getString("heap_dump_genere_ibm");
-				} else {
-					// heap dump à générer dans le répertoire temporaire sur le serveur
-					// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
-					// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
-					final String heapDumpPath = heapDump().getPath();
-					messageForReport = I18N.getFormattedString("heap_dump_genere",
-							heapDumpPath.replace('\\', '/'));
-				}
+			if (JAVA_VENDOR.contains("IBM")) {
+				ibmHeapDump();
+				messageForReport = I18N.getString("heap_dump_genere_ibm");
 			} else {
-				messageForReport = I18N.getString("heap_dump_not_good");
+				// heap dump à générer dans le répertoire temporaire sur le serveur
+				// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
+				// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
+				final String heapDumpPath = heapDump().getPath();
+				messageForReport = I18N.getFormattedString("heap_dump_genere",
+						heapDumpPath.replace('\\', '/'));
 			}
 			break;
 		case INVALIDATE_SESSIONS:

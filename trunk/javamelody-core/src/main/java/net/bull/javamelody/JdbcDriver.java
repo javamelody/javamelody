@@ -75,9 +75,7 @@ public class JdbcDriver implements Driver {
 			// et non Class.forName(proxiedDriver);
 		} catch (final ClassNotFoundException e) {
 			// Rq: le constructeur de SQLException avec message et cause n'existe qu'en jdk 1.6
-			final SQLException ex = new SQLException(e.getMessage());
-			ex.initCause(e);
-			throw ex; // NOPMD
+			throw new SQLException(e.getMessage(), e);
 		}
 		final Properties tmp = (Properties) info.clone();
 		tmp.remove("driver");

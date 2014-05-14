@@ -250,7 +250,9 @@ class DatabaseInformations implements Serializable {
 			if (e.getErrorCode() == 942 && e.getMessage() != null
 					&& e.getMessage().startsWith("ORA-")) {
 				final String userName = connection.getMetaData().getUserName();
-				throw createGrantException(userName, e);
+				final String message = I18N.getFormattedString("oracle.grantSelectAnyDictionnary",
+						userName);
+				throw new SQLException(message, e);
 			}
 			throw e;
 		} finally {
@@ -282,13 +284,6 @@ class DatabaseInformations implements Serializable {
 		} finally {
 			resultSet.close();
 		}
-	}
-
-	private static SQLException createGrantException(String userName, SQLException e) {
-		final SQLException ex = new SQLException(I18N.getFormattedString(
-				"oracle.grantSelectAnyDictionnary", userName));
-		ex.initCause(e);
-		return ex;
 	}
 
 	private static Connection getConnection() throws SQLException, NamingException {

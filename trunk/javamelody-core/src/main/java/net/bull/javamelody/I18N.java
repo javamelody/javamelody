@@ -41,9 +41,8 @@ final class I18N {
 	private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters
 			.getResourcePath("translations").replace('/', '.').substring(1);
 	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<Locale>();
-	private static final boolean JAVA_16 = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 	// Locale.ROOT needs 1.6
-	private static final Locale ROOT_LOCALE = new Locale("");
+	private static final Locale ROOT_LOCALE = Locale.ROOT;
 
 	private static final Locale FIXED_LOCALE = getFixedLocale();
 
@@ -208,11 +207,8 @@ final class I18N {
 	}
 
 	private static DecimalFormatSymbols getDecimalFormatSymbols() {
-		if (JAVA_16) {
-			// optimisation mémoire si Java 1.6
-			return DecimalFormatSymbols.getInstance(getCurrentLocale());
-		}
-		return new DecimalFormatSymbols(getCurrentLocale());
+		// optimisation mémoire (si Java 1.6)
+		return DecimalFormatSymbols.getInstance(getCurrentLocale());
 	}
 
 	static DateFormat createDateFormat() {

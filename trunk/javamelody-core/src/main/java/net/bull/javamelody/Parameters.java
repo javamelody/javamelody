@@ -72,8 +72,8 @@ final class Parameters {
 	}
 
 	static void initialize(ServletContext context) {
-		if ("1.5".compareTo(JAVA_VERSION) > 0) {
-			throw new IllegalStateException("La version java doit être 1.5 au minimum et non "
+		if ("1.6".compareTo(JAVA_VERSION) > 0) {
+			throw new IllegalStateException("La version java doit être 1.6 au minimum et non "
 					+ JAVA_VERSION);
 		}
 		servletContext = context;

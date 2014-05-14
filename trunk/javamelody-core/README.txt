@@ -18,13 +18,12 @@ Il permet ainsi d'améliorer les applications en recette et en production et d'a
 Auteur : Emeric Vernat (evernat@free.fr)
 Licence : ASL
 URL : http://javamelody.googlecode.com/
-Version Java requise en exécution : 1.5 minimum,
-	1.6 ou 1.7 recommandé pour fonctions complémentaires (heap dump, histogramme mémoire, stack traces et system load average),
-	JDK ou JRE de Sun ou JRockit d'Oracle/BEA ou J9 d'IBM
+Version Java requise en exécution : 1.6 minimum,
+	JDK ou JRE d'Oracle/Sun ou JRockit d'Oracle/BEA ou J9 d'IBM
 Version de serveur requise en exécution : api servlet 2.4 minimum (ou JavaEE 1.4), 
 	comme Tomcat 5.5, 6 ou 7, GlassFish v2 ou v3, JBoss 4, 5, 6 ou 7, Jonas 4 ou 5, Jetty 6 ou 7, WebLogic 9, 10 ou 11
 Dépendance requise : JRobin (LGPL) pour les courbes d'évolution
-Dépendances optionnelles : iText (LGPL ou MPL) pour les rapports au format pdf en plus de html,
+Dépendances optionnelles : iText 2.1.7 (LGPL ou MPL) pour les rapports au format pdf en plus de html,
 	Spring AOP, AOP alliance, Spring core, Spring beans et Commons logging pour le monitoring des beans Spring,
 	Ehcache pour le monitoring des caches, Quartz pour le monitoring des jobs en batchs
 Langage : français, anglais, allemand, portugais et chinois

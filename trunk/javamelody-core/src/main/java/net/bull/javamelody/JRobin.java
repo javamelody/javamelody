@@ -390,9 +390,7 @@ final class JRobin {
 
 	private static IOException createIOException(Exception e) {
 		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
-		final IOException ex = new IOException(e.getMessage());
-		ex.initCause(e);
-		return ex;
+		return new IOException(e.getMessage(), e);
 	}
 
 	static long deleteObsoleteJRobinFiles(String application) throws IOException {

@@ -191,15 +191,10 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
-		if (Action.HEAP_DUMP_ENABLED) {
-			// si serveur de collecte, on suppose que si la version de java est la bonne
-			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
-			// des webapps monitorées
-			writeln("<a href='?part=heaphisto&amp;action=heap_dump' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_heap_dump") + "');\">");
-			writeln("<img src='?resource=heapdump.png' width='16' height='16' alt='#heap_dump#' /> #heap_dump#</a>");
-			writeln(separator);
-		}
+		writeln("<a href='?part=heaphisto&amp;action=heap_dump' onclick=\"javascript:return confirm('"
+				+ getStringForJavascript("confirm_heap_dump") + "');\">");
+		writeln("<img src='?resource=heapdump.png' width='16' height='16' alt='#heap_dump#' /> #heap_dump#</a>");
+		writeln(separator);
 		writeln("</div>");
 	}
 }

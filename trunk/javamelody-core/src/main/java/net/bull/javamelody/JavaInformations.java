@@ -46,14 +46,7 @@ import javax.sql.DataSource;
  * @author Emeric Vernat
  */
 class JavaInformations implements Serializable { // NOPMD
-	// les stack traces des threads ne sont récupérées qu'à partir de java 1.6.0 update 1
-	// pour éviter la fuite mémoire du bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6434648
-	static final boolean STACK_TRACES_ENABLED = "1.6.0_01".compareTo(Parameters.JAVA_VERSION) <= 0;
 	static final double HIGH_USAGE_THRESHOLD_IN_PERCENTS = 95d;
-	private static final boolean SYNCHRONIZER_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
-	private static final boolean SYSTEM_LOAD_AVERAGE_ENABLED = "1.6"
-			.compareTo(Parameters.JAVA_VERSION) < 0;
-	private static final boolean FREE_DISK_SPACE_ENABLED = "1.6".compareTo(Parameters.JAVA_VERSION) < 0;
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final Date START_DATE = new Date();
 	private static boolean localWebXmlExists = true; // true par défaut
@@ -175,11 +168,7 @@ class JavaInformations implements Serializable { // NOPMD
 		threadCount = threadBean.getThreadCount();
 		peakThreadCount = threadBean.getPeakThreadCount();
 		totalStartedThreadCount = threadBean.getTotalStartedThreadCount();
-		if (FREE_DISK_SPACE_ENABLED) {
-			freeDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getFreeSpace();
-		} else {
-			freeDiskSpaceInTemp = -1;
-		}
+		freeDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getFreeSpace();
 
 		if (includeDetails) {
 			dataBaseVersion = buildDataBaseVersion();
@@ -260,7 +249,7 @@ class JavaInformations implements Serializable { // NOPMD
 		// and the number of runnable entities running on the available processors
 		// averaged over a period of time.
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (SYSTEM_LOAD_AVERAGE_ENABLED && operatingSystem.getSystemLoadAverage() >= 0) {
+		if (operatingSystem.getSystemLoadAverage() >= 0) {
 			// systemLoadAverage n'existe qu'à partir du jdk 1.6
 			return operatingSystem.getSystemLoadAverage();
 		}
@@ -280,18 +269,16 @@ class JavaInformations implements Serializable { // NOPMD
 
 	static List<ThreadInformations> buildThreadInformationsList() {
 		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
-		final List<Thread> threads;
-		final Map<Thread, StackTraceElement[]> stackTraces;
-		if (STACK_TRACES_ENABLED) {
-			stackTraces = Thread.getAllStackTraces();
-			threads = new ArrayList<Thread>(stackTraces.keySet());
-		} else {
-			// on récupère les threads sans stack trace en contournant bug 6434648 avant 1.6.0_01
-			// hormis pour le thread courant qui obtient sa stack trace différemment sans le bug
-			threads = getThreadsFromThreadGroups();
-			final Thread currentThread = Thread.currentThread();
-			stackTraces = Collections.singletonMap(currentThread, currentThread.getStackTrace());
-		}
+		final Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+		final List<Thread> threads = new ArrayList<Thread>(stackTraces.keySet());
+
+		// si "1.6.0_01".compareTo(Parameters.JAVA_VERSION) > 0;
+		// on récupèrait les threads sans stack trace en contournant bug 6434648 avant 1.6.0_01
+		// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6434648
+		// hormis pour le thread courant qui obtient sa stack trace différemment sans le bug
+		//		threads = getThreadsFromThreadGroups();
+		//		final Thread currentThread = Thread.currentThread();
+		//		stackTraces = Collections.singletonMap(currentThread, currentThread.getStackTrace());
 
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
 				&& threadBean.isThreadCpuTimeEnabled();
@@ -335,7 +322,7 @@ class JavaInformations implements Serializable { // NOPMD
 
 	private static long[] getDeadlockedThreads(ThreadMXBean threadBean) {
 		final long[] deadlockedThreads;
-		if (SYNCHRONIZER_ENABLED && threadBean.isSynchronizerUsageSupported()) {
+		if (threadBean.isSynchronizerUsageSupported()) {
 			deadlockedThreads = threadBean.findDeadlockedThreads();
 		} else {
 			deadlockedThreads = threadBean.findMonitorDeadlockedThreads();
