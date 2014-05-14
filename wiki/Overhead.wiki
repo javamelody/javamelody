@@ -15,7 +15,7 @@ Why is the overhead low ?
   * Fourth, if overhead does really some pain for your app with thousands active users, you will have the choice to use javamelody centralized collect server. It unloads the memory, the backup storage and the generation of reports to another server while adding I/O on the wire for sending deltas of the statistics.
   * Fifth, the financial overhead is zero as JavaMelody is opensource and free.
 
-For full disclosure, some system actions can consume some cpu. These system actions are : Launch the garbage collector, Take a heap dump, Display memory histogram.
+For full disclosure, some system actions can consume some cpu. These system actions are : Launch the garbage collector, Take a heap dump.
 
 I do not have figures, but overhead is probably under 5% of cpu and of memory, except if you are not reasonable at all when enabling monitoring of spring or ejb3. 
 
