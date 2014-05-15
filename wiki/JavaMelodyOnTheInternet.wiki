@@ -14,6 +14,7 @@
 
 *A selection of blogs*:
   * [http://www.slideshare.net/djkarlsen/significance-of-metrics Slides] and [http://vimeo.com/channels/rootsconf#24706626 video] of David Karlsen at the Roots Conference
+  * Prezi [http://prezi.com/bly_kbfggbky/javamelody/ presentation] of Mariusz Panek
   * [http://dhartford.blogspot.com/2011/02/javamelody-performance-usage-statistics.html dhartford]
   * [http://ruleoftech.com/2013/monitoring-java-ee-application-with-javamelody Marko, including Spring]
   * [http://bits.hugeinc.com/?p=503 Atish, including Spring]
