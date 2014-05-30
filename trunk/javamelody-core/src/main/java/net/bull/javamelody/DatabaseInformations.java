@@ -367,12 +367,20 @@ class DatabaseInformations implements Serializable {
 		// rq : il semble qu'une requête explain plan ne puisse avoir la requête en paramètre bindé
 		// (donc les requêtes "explain ..." seront ignorées dans JdbcWrapper)
 		int i = 1;
-		// table PLAN_TABLE par défaut
+		String request = sqlRequest;
+		if (Parameters.getParameter(Parameter.SQL_TRANSFORM_PATTERN) != null) {
+			// si les requêtes SQL peuvent avoir été transformées par SQL_TRANSFORM_PATTERN,
+			// alors on remplace le '$' par '?' en espérant avec un plan d'exécution même simplifié
+			// (sinon, il serait impossible d'avoir un plan d'exécution pour certaines requêtes SQL
+			// transformées par SQL_TRANSFORM_PATTERN)
+			request = request.replace(Counter.TRANSFORM_REPLACEMENT_CHAR, '?');
+		}
+		// utilisation de la table PLAN_TABLE par défaut
 		// (il faut que cette table soit créée auparavant dans oracle
 		// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
 		// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
 		String explainRequest = "explain plan set statement_id = '" + statementId + "' for "
-				+ sqlRequest;
+				+ request;
 
 		// dans le cas où la requête contient ';' (requêtes multiples), je ne sais pas si explain
 		// plan considère que cela fait partie de la requête à analyser où si certaines versions
