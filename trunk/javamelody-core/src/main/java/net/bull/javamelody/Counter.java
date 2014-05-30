@@ -76,6 +76,10 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	static final String BUILDS_COUNTER_NAME = "builds";
 	/**
+	 * Caractère de remplacement s'il y a des paramètres *-transform-pattern.
+	 */
+	static final char TRANSFORM_REPLACEMENT_CHAR = '$';
+	/**
 	 * Nombre max d'erreurs conservées par le counter (si counter d'erreurs http ou de log d'erreurs).
 	 */
 	static final int MAX_ERRORS_COUNT = 100;
@@ -84,6 +88,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 * mais peut être redéfini par exemple pour le counter des erreurs http ou celui des logs.
 	 */
 	private static final int MAX_REQUESTS_COUNT = 10000;
+	private static final String TRANSFORM_REPLACEMENT = "\\" + TRANSFORM_REPLACEMENT_CHAR;
 	private static final long serialVersionUID = 6759729262180992976L;
 	private String application;
 	private boolean displayed = true;
@@ -594,7 +599,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 			// ce pattern optionnel permet de transformer la description de la requête
 			// pour supprimer des parties variables (identifiant d'objet par exemple)
 			// et pour permettre l'agrégation sur cette requête
-			aggregateRequestName = requestTransformPattern.matcher(requestName).replaceAll("\\$");
+			aggregateRequestName = requestTransformPattern.matcher(requestName).replaceAll(
+					TRANSFORM_REPLACEMENT);
 		}
 		return aggregateRequestName;
 	}
