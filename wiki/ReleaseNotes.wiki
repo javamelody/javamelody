@@ -4,7 +4,7 @@
   * fix: when using java 8, cpu graph was not displayed
   * fix issue 396: Call to TraversableResolver.isReachable() throws exception "Can't find a delegate"
   * fix issue 399: Report of large Nb of used jdbc connections with Spring Routing Datasource
-  * fix "ORA-00911: invalid character", when using the sql-transform-pattern, for the display of the explain plan of some sql requests (Oracle database only, revision 3799)
+  * fix "ORA-00911: invalid character", when using the sql-transform-pattern parameter, for the display of the explain plan of some sql requests (Oracle database only, revision 3799)
   * Drop Java 5 support. Said otherwise, a JDK or a JRE v1.6 or later is needed for javamelody v1.51 or later. For Java 5, previous versions of javamelody can still be used. (revision 3795)
   * Optimized desktop UI startup time, by downloading desktop app and caching locally (revision 3762)
   * improved: abstract very long sql requests (issue 403)
