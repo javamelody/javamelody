@@ -120,7 +120,7 @@ This is an internal reminder of the steps of the release process.
     * mvn release:prepare release:perform
     * tag is created in [http://javamelody.googlecode.com/svn/tags/]
   * call *ant* target "zip" of build.xml to package files
-  * *upload* jar, war and zip files to [https://github.com/javamelody/javamelody/releases]
+  * *draft a new release* and *upload* jar, war and zip files to [https://github.com/javamelody/javamelody/releases]
   * *update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes]* with version
   * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing
   * *publish artefacts in Maven central*
@@ -151,5 +151,6 @@ This is an internal reminder of the steps of the release process.
     * edit user / password in .grails\settings.groovy
     * grails publish-plugin
     * (Edit plugin if needed in http://www.grails.org/plugin/grails-melody)
+  * *publish* drafted release at [https://github.com/javamelody/javamelody/releases]
   * *twitter announce* [https://twitter.com/#!/java_melody]
   * *users' group announce* [https://groups.google.com/forum/?fromgroups#!forum/javamelody] ([https://groups.google.com/forum/?fromgroups#!topic/javamelody/w-8Xhi7G5x8 example])
