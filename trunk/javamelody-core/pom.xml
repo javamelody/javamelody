@@ -428,7 +428,7 @@
 							<location>${project.basedir}/j2se/</location>
 						</offlineLink>
 						<offlineLink>
-							<url>http://docs.oracle.com/javaee/6/api/</url>
+							<url>http://docs.oracle.com/javaee/7/api/</url>
 							<location>${project.basedir}/j2ee/</location>
 						</offlineLink>
 					</offlineLinks>
