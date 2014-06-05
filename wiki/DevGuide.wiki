@@ -144,6 +144,7 @@ This is an internal reminder of the steps of the release process.
     * mvn clean package to package the jar file in the target directory
     * create [https://github.com/evernat/liferay-javamelody/releases release] and attach the jar file
   * *wait artefacts* to be available in Maven central [http://search.maven.org/#search|ga|1|javamelody]
+  * increment maven version in [UserGuide#Dependencies]
   * *grails plugin* ([https://github.com/evernat/grails-melody-plugin], [http://grails-plugins.github.io/grails-release/docs/manual/guide/plugins.html grails documentation])
     * increment javamelody-core version in grails-app/conf/BuildConfig.groovy
     * increment plugin version in GrailsMelodyGrailsPlugin.groovy
