@@ -127,6 +127,7 @@ This is an internal reminder of the steps of the release process.
     * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version.jar
     * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version-sources.jar -Dclassifier=sources
     * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version-javadoc.jar -Dclassifier=javadoc
+    * https://oss.sonatype.org/ : log in
     * https://oss.sonatype.org/index.html#stagingRepositories : close and release
   * *jenkins / hudson plugin* ([https://github.com/jenkinsci/monitoring-plugin] ~~[https://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring]~~)
     * increment javamelody-core version in pom.xml
