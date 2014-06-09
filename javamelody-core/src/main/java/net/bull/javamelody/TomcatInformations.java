@@ -51,6 +51,8 @@ final class TomcatInformations implements Serializable {
 	@SuppressWarnings("all")
 	private static final List<ObjectName> GLOBAL_REQUEST_PROCESSORS = new ArrayList<ObjectName>();
 
+	private static boolean mbeansInitialized;
+
 	private final String name;
 	private final int maxThreads;
 	private final int currentThreadCount;
@@ -98,8 +100,9 @@ final class TomcatInformations implements Serializable {
 		}
 		try {
 			synchronized (THREAD_POOLS) {
-				if (THREAD_POOLS.isEmpty() || GLOBAL_REQUEST_PROCESSORS.isEmpty()) {
+				if (!mbeansInitialized) {
 					initMBeans();
+					mbeansInitialized = true;
 				}
 			}
 			final MBeans mBeans = new MBeans();
