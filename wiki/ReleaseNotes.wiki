@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix issue 406: Slow GUI with JBoss EAP 6.2 (only since 6.2)
 
 === 1.51.0 ===
 
