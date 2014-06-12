@@ -18,7 +18,7 @@
 If you have never used PayPal before, then the site will ask you about your credit card details, your country, address and your home phone number. This information is required by PayPal to do the money transaction and is not required by or visible to the JavaMelody project.
 
 === Donators ===
-|| praveen palwaireddy || $5 USD ||
+|| Anonymous || $5 USD ||
 || Anonymous || $25 USD ||
 || David Wubshet || $10 USD ||
 || Anders Båtstrand || €50 EUR ||
