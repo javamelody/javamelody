@@ -108,7 +108,12 @@ After some weeks for example, in order to update your sources with the new devel
 
 	[http://www.grails.org/plugin/grails-melody Grails plugin] : The manager of sources for the JavaMelody Grails plugin is git at [https://github.com/evernat/grails-melody-plugin]
 
+=== Other plugins ===
+
+	[https://gerrit.googlesource.com/plugins/javamelody/ Gerrit server plugin] : There is also a Gerrit server plugin by David Ostrovsky. The manager of sources is Git at [https://gerrit.googlesource.com/plugins/javamelody/+/master]
+
 	[https://github.com/sbower/nagios_javamelody_plugin Nagios plugin] : There is also a Nagios plugin by Shawn Bower based on a command reading the last values in the RRD files (it starts a JVM for each value, which may not scale a lot). The manager of sources is Git at [https://github.com/sbower/nagios_javamelody_plugin]
+
 
 === Release process ===
 
