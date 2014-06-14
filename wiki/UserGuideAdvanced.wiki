@@ -666,7 +666,7 @@ This [http://demo.javamelody.cloudbees.net/monitoring?report=My+custom+report ex
 	Then add files "customMonitoring.css" and "static/bullets/red.png" at the root of the web content in your webapp.
 	You can replace every web resource in this directory and its sub-directories: "[https://code.google.com/p/javamelody/source/browse/#svn%2Ftrunk%2Fjavamelody-core%2Fsrc%2Fmain%2Fresources%2Fnet%2Fbull%2Fjavamelody%2Fresource src/main/resources/net/bull/javamelody/resource]".
 
-	This configuration is for a monitored webapp. For the optional collector server, see issue 411 instead.
+	This configuration is for a monitored webapp. For the optional collector server, see issue 414 instead.
 
 == Report written before last shutdown ==
 	
