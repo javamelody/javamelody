@@ -3,7 +3,7 @@
 
   * fix issue 406: Slow GUI with JBoss EAP 6.2 (only since 6.2)
   * In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], upgraded mininum Jenkins version to 1.509.3
-  * added: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], display of build steps and their durations, in the detail of each build statistics in the "/monitoring/nodes" page. [https://wiki.jenkins-ci.org/download/attachments/41877877/example_buildsteps.png Example]
+  * added: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], display of *build steps* and their durations, in the detail of each build statistics in the "/monitoring/nodes" page. See [https://wiki.jenkins-ci.org/download/attachments/41877877/example_buildsteps.png Example]
 
 === 1.51.0 ===
 
