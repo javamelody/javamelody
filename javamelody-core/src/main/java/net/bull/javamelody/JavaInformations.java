@@ -160,7 +160,7 @@ class JavaInformations implements Serializable { // NOPMD
 			serverInfo = servletContext.getServerInfo();
 			contextPath = Parameters.getContextPath(servletContext);
 			contextDisplayName = servletContext.getServletContextName();
-			dependenciesList = buildDependenciesList();
+			dependenciesList = buildDependenciesList(servletContext);
 		}
 		startDate = START_DATE;
 		jvmArguments = buildJvmArguments();
@@ -422,9 +422,17 @@ class JavaInformations implements Serializable { // NOPMD
 		return sb.toString();
 	}
 
-	private static List<String> buildDependenciesList() {
+	private static List<String> buildDependenciesList(ServletContext servletContext) {
 		final String directory = "/WEB-INF/lib/";
-		final Set<String> dependencies = Parameters.getServletContext().getResourcePaths(directory);
+
+		final Set<String> dependencies;
+		try {
+			dependencies = servletContext.getResourcePaths(directory);
+		} catch (final Exception e) {
+			// Tomcat 8 can throw "IllegalStateException: The resources may not be accessed if they are not currently started"
+			// for some ServletContext states (issue 415)
+			return Collections.emptyList();
+		}
 		if (dependencies == null || dependencies.isEmpty()) {
 			return Collections.emptyList();
 		}
