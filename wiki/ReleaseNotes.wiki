@@ -3,7 +3,7 @@
 
   * fix issue 406: Slow GUI with JBoss EAP 6.2 (only since 6.2)
   * fix issue 415: Periodic stack trace in Tomcat 8 logs 'java.lang.IllegalStateException: The resources may not be accessed if they are not currently started'
-  * fix some case of "UnsatisfiedLinkError: Native Library [...] attach.dll already loaded in another classloader [...] AttachNotSupportedException: no providers installed", for example when having two monitored webapps in Tomcat running with a JRE (issue 398)
+  * fix some case of "UnsatisfiedLinkError: Native Library ... attach.dll already loaded in another classloader ... AttachNotSupportedException: no providers installed", for example when having two monitored webapps in Tomcat running with a JRE (issue 398)
   * In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], upgraded mininum Jenkins version to 1.509.3
   * added: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins monitoring plugin], display of *build steps* and their durations, in the detail of each build statistics in the "/monitoring/nodes" page. See [https://wiki.jenkins-ci.org/download/attachments/41877877/example_buildsteps.png Example]
 
