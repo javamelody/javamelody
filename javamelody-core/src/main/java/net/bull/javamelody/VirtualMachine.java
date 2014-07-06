@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -90,14 +89,15 @@ final class VirtualMachine {
 		return jvmVirtualMachine;
 	}
 
-	private static Class<?> findVirtualMachineClass() throws ClassNotFoundException,
-			MalformedURLException {
+	private static Class<?> findVirtualMachineClass() throws Exception { // NOPMD
 		// méthode inspirée de javax.tools.ToolProvider.Lazy.findClass
+		// http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b27/javax/tools/ToolProvider.java#ToolProvider.Lazy.findClass%28%29
 		final String virtualMachineClassName = "com.sun.tools.attach.VirtualMachine";
 		try {
+			// try loading class directly, in case tools.jar is in the classpath
 			return Class.forName(virtualMachineClassName);
 		} catch (final ClassNotFoundException e) {
-			// exception ignored, try looking else where
+			// exception ignored, try looking in the default tools location (lib/tools.jar)
 			File file = new File(System.getProperty("java.home"));
 			if ("jre".equalsIgnoreCase(file.getName())) {
 				file = file.getParentFile();
@@ -106,14 +106,29 @@ final class VirtualMachine {
 			for (final String name : defaultToolsLocation) {
 				file = new File(file, name);
 			}
-			// if tools not found, no point in trying a URLClassLoader
+			// if tools.jar not found, no point in trying a URLClassLoader
 			// so rethrow the original exception.
 			if (!file.exists()) {
 				throw e;
 			}
 
-			final URL[] urls = { file.toURI().toURL() };
-			final ClassLoader cl = URLClassLoader.newInstance(urls);
+			final URL url = file.toURI().toURL();
+			final ClassLoader cl;
+			if (ClassLoader.getSystemClassLoader() instanceof URLClassLoader) {
+				// The attachment API relies on JNI, so if we have other code in the JVM that tries to use the attach API
+				// (like the monitoring of another webapp), it'll cause a failure (issue 398):
+				// "UnsatisfiedLinkError: Native Library C:\Program Files\Java\jdk1.6.0_35\jre\bin\attach.dll already loaded in another classloader
+				// [...] com.sun.tools.attach.AttachNotSupportedException: no providers installed"
+				// So we try to load tools.jar into the system classloader, so that later attempts to load tools.jar will see it.
+				cl = ClassLoader.getSystemClassLoader();
+				// The URLClassLoader.addURL method is protected
+				final Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+				addURL.setAccessible(true);
+				addURL.invoke(cl, url);
+			} else {
+				final URL[] urls = { url };
+				cl = URLClassLoader.newInstance(urls);
+			}
 			return Class.forName(virtualMachineClassName, true, cl);
 		}
 	}
