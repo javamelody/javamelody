@@ -108,7 +108,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 	For example, if the server is local: {{{http://localhost:8080/monitoring}}}
 
-	Authentication and portal "Administrator" role is required to access this page.
+	Authentication and portal "Administrator" role are required to access this monitoring page.
 
 	Known [https://github.com/evernat/liferay-javamelody/issues issues]: The SQL requests are not monitored. And pull requests are welcome.
 
