@@ -524,7 +524,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			} else {
 				// le nombre de threads dépasse le maximum pour être affiché dans le rapport
 				// principal, donc on affiche un lien vers une page à part
-				writeln("<a href='?part=threads'>#Details#</a><br/>");
+				writeln("<a href='?part=threads' class='noPrint'>#Details#</a><br/>");
 			}
 			i++;
 		}

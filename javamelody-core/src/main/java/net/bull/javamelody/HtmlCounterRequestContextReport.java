@@ -187,7 +187,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		} else {
 			// le nombre de requêtes en cours dépasse le maximum pour être affiché dans le rapport
 			// principal, donc on affiche un lien vers une page à part
-			writeln("<a href='?part=currentRequests'>#Details#</a>");
+			writeln("<a href='?part=currentRequests' class='noPrint'>#Details#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>");
 		}
 	}
