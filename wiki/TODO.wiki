@@ -80,4 +80,5 @@ And
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
     # ~~Publish JavaMelody in maven central repository (seems not doable without jrobin in central repo and without renaming package to googlecode)~~ (done, it is in maven central now.)
+  # Think about [http://docs.codehaus.org/display/SONAR/Hosting+on+the+Forge hosting] the [https://github.com/evernat/sonar-javamelody sonar javamelody plugin] as suggested by [http://sonar.markmail.org/message/myzjbtuxvum74ppm?q=list:org.codehaus.sonar.dev Ann's message] and so publish in the update center.
   # More to come...
