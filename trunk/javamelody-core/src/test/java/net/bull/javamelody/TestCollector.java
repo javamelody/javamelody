@@ -173,6 +173,7 @@ public class TestCollector {
 		counter.addRequest("test2", 0, 0, false, 1000);
 		counter.addRequest("test3", 1000, 500, false, 1000);
 		counter.addRequest("test4", 10000, 200, true, 10000);
+		counter.addRequest("test4", 10000, 200, true, 10000);
 		collector
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
 		final Counter buildsCounter = new Counter(Counter.BUILDS_COUNTER_NAME, null);
@@ -208,8 +209,12 @@ public class TestCollector {
 		}
 		for (final CounterRequest request : counter.getRequests()) {
 			final JRobin robin = collector.getJRobin(request.getId());
-			assertNotNull("getJRobin non null", robin);
-			robin.deleteFile();
+			if ("test5".equals(request.getName())) {
+				assertNotNull("getJRobin non null", robin);
+				robin.deleteFile();
+			} else {
+				assertNull("getJRobin null", robin);
+			}
 		}
 		assertNull("getJRobin null", collector.getJRobin("n'importe quoi"));
 	}
