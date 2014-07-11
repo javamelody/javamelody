@@ -729,16 +729,6 @@ class Collector { // NOPMD
 	private void collectCounterRequestData(Counter dayCounter, CounterRequest newRequest,
 			boolean firstCollectDoneForCounter) throws IOException {
 		final String requestStorageId = newRequest.getId();
-		// on récupère les instances de jrobin même s'il n'y a pas pas de précédents totaux
-		final JRobin requestJRobin;
-		if (!dayCounter.isJspOrStrutsCounter()
-				&& (!dayCounter.isErrorCounter() || dayCounter.isJobCounter())) {
-			// on ne crée pas de graphiques pour les "jsp", "error" et "job" car peu utiles
-			// et potentiellement lourd en usage disque et en mémoire utilisée
-			requestJRobin = getRequestJRobin(requestStorageId, newRequest.getName());
-		} else {
-			requestJRobin = null;
-		}
 
 		final CounterRequest request = requestsById.get(requestStorageId);
 		if (request != null) {
@@ -746,16 +736,24 @@ class Collector { // NOPMD
 			// sauf si c'est l'initialisation
 			final CounterRequest lastPeriodRequest = newRequest.clone();
 			lastPeriodRequest.removeHits(request);
-			if (lastPeriodRequest.getHits() > 0) {
-				if (requestJRobin != null) {
-					// plus nécessaire: if (dayCounter.isErrorCounter()) requestJRobin.addValue(lastPeriodRequest.getHits());
+			// avec la condition getHits() > 1 au lieu de getHits() > 0, on évite de créer des fichiers RRD
+			// pour les toutes les requêtes appelées une seule fois sur la dernière période
+			// et notamment pour les requêtes http "écrites au hasard" (par exemple, pour tester les failles d'un site web) ;
+			// cela réduit la place occupée par de nombreux fichiers très peu utiles
+			// (et s'il y a eu 0 hit, alors la moyenne vaut -1 : elle n'a pas de sens)
+			if (lastPeriodRequest.getHits() > 1 && !dayCounter.isJspOrStrutsCounter()
+					&& (!dayCounter.isErrorCounter() || dayCounter.isJobCounter())) {
+				// on ne crée jamais de graphiques pour les "jsp", "error" et "job" car peu utiles
+				// et potentiellement lourd en usage disque et en mémoire utilisée
+				final JRobin requestJRobin = getRequestJRobin(requestStorageId,
+						newRequest.getName());
+				// plus nécessaire: if (dayCounter.isErrorCounter()) requestJRobin.addValue(lastPeriodRequest.getHits());
 
-					// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
-					requestJRobin.addValue(lastPeriodRequest.getMean());
-				}
-				// agrégation de la requête sur le compteur pour le jour courant
-				dayCounter.addHits(lastPeriodRequest);
+				requestJRobin.addValue(lastPeriodRequest.getMean());
 			}
+
+			// agrégation de la requête sur le compteur pour le jour courant
+			dayCounter.addHits(lastPeriodRequest);
 		} else if (firstCollectDoneForCounter) {
 			// si c'est la première collecte pour ce compteur (!firstCollectDoneForCounter), alors on n'ajoute pas
 			// newRequest dans dayCounter car cela ajouterait la première fois tout le contenu
