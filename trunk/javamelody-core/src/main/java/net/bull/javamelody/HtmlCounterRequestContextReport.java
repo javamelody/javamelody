@@ -166,29 +166,37 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			return;
 		}
 		writeContexts(Collections.singletonList(rootCurrentContexts.get(0)));
-		writeln("<div align='right'>");
+		writeln("<div align='right' class='noPrint'>");
 		writeln(getFormattedString("nb_requete_en_cours",
 				integerFormat.format(rootCurrentContexts.size())));
+		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (isPdfEnabled()) {
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#' class='noPrint'>");
+			writeln(separator);
+			write("<a href='?part=currentRequests&amp;format=pdf' title='#afficher_PDF#'>");
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln(separator);
 		if (rootCurrentContexts.size() <= maxContextsDisplayed) {
+			writeln("<a href='?part=currentRequests' title='#Requetes_en_cours#'>");
+			writeln("<img src='?resource=hourglass.png' alt='#Requetes_en_cours#' width='16' height='16'/>");
+			writeln("#Voir_dans_une_nouvelle_page#</a>");
+			writeln(separator);
+
 			final String counterName = rootCurrentContexts.get(0).getParentCounter().getName();
 			// PID dans l'id du div pour concaténation de pages et affichage dans serveur de collecte
 			writeShowHideLink("contextDetails" + counterName + PID.getPID(), "#Details#");
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>");
+			writeln(separator);
+			writeln("</div> ");
 			writeln("<div id='contextDetails" + counterName + PID.getPID()
 					+ "' style='display: none;'>");
 			writeContexts(rootCurrentContexts);
 			writeln("</div>");
 		} else {
 			// le nombre de requêtes en cours dépasse le maximum pour être affiché dans le rapport
-			// principal, donc on affiche un lien vers une page à part
-			writeln("<a href='?part=currentRequests' class='noPrint'>#Details#</a>");
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>");
+			// principal, donc on affiche seulement un lien vers la page à part
+			writeln("<a href='?part=currentRequests' title='#Requetes_en_cours#'>#Details#</a>");
+			writeln(separator);
+			writeln("</div> ");
 		}
 	}
 

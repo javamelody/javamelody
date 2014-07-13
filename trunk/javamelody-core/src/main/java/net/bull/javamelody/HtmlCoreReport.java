@@ -462,10 +462,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	void writeAllThreadsAsPart() throws IOException {
+		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ");
+		writeln(separator);
 		writeln("<a href='?part=threads'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isStackTraceEnabled()) {
+				writeln(separator);
+				writeln("<a href='?part=threadsDump'><img src='?resource=text.png' alt='#Dump_threads_en_texte#'/>&nbsp;#Dump_threads_en_texte#</a>");
+				break;
+			}
+		}
+
 		writeln("</div> <br/>");
 		writeTitle("threads.png", getString("Threads"));
 		write(" <br/>");
@@ -520,10 +529,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				htmlThreadInformationsReport.writeDeadlocks();
 				writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
 				htmlThreadInformationsReport.toHtml();
+
+				writeln("<div align='right' class='noPrint'><br/>");
+				if (javaInformations.isStackTraceEnabled()) {
+					writeln("<a href='?part=threadsDump'><img src='?resource=text.png' alt='#Dump_threads_en_texte#'/>&nbsp;#Dump_threads_en_texte#</a>");
+				}
+				writeln(SEPARATOR);
+				writeln("<a href='?part=threads'><img src='?resource=threads.png' alt='#Threads#' width='16' height='16'/>&nbsp;#Voir_dans_une_nouvelle_page#</a>");
+				writeln("</div>");
+
 				writeln("</div><br/>");
 			} else {
 				// le nombre de threads dépasse le maximum pour être affiché dans le rapport
-				// principal, donc on affiche un lien vers une page à part
+				// principal, donc on affiche seulement un lien vers la page à part
 				writeln("<a href='?part=threads' class='noPrint'>#Details#</a><br/>");
 			}
 			i++;
