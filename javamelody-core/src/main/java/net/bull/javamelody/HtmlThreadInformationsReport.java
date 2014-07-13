@@ -67,11 +67,6 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 		table.endTable();
 		writeln("<div align='right'>");
 		writeln("#Temps_threads#");
-		if (stackTraceEnabled) {
-			writeln("<div class='noPrint'>");
-			writeln("<br/><a href='?part=threadsDump'><img src='?resource=text.png' alt='#Dump_threads_en_texte#'/>&nbsp;#Dump_threads_en_texte#</a>");
-			writeln("</div>");
-		}
 		writeln("</div>");
 	}
 
