@@ -166,6 +166,7 @@ public class TestCollector {
 			fail("getCounters");
 		}
 		counter.addRequest("test1", 0, 0, false, 1000);
+		counter.addRequest("test5", 10000, 200, true, 10000);
 		jspCounter.addRequest("test2", 0, 0, false, 0);
 		strutsCounter.addRequest("test3", 0, 0, false, 0);
 		jobCounter.addRequest("test4", 0, 0, false, 0);
@@ -173,7 +174,8 @@ public class TestCollector {
 		counter.addRequest("test2", 0, 0, false, 1000);
 		counter.addRequest("test3", 1000, 500, false, 1000);
 		counter.addRequest("test4", 10000, 200, true, 10000);
-		counter.addRequest("test4", 10000, 200, true, 10000);
+		counter.addRequest("test5", 10000, 200, true, 10000);
+		counter.addRequest("test5", 10000, 200, true, 10000);
 		collector
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
 		final Counter buildsCounter = new Counter(Counter.BUILDS_COUNTER_NAME, null);
