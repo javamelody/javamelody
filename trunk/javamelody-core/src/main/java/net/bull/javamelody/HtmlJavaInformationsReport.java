@@ -74,7 +74,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		// pour l'alignement le nb de br doit correspondre au nb de lignes dans le résumé ci-dessus
 		writeln("<br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeShowHideLink("detailsJava", "#Details#");
-		writeln("<br/><br/>");
+		writeln("<br/><br/><br/>");
 		// div interne pour showHideLink
 		writeln("<div id='detailsJava' style='display: none;'><div>");
 		final boolean repeatHost = javaInformationsList.size() > 1;
