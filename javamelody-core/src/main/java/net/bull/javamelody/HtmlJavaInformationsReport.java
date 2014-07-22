@@ -230,8 +230,11 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>");
 			// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
 			writeDirectly(htmlEncodeButNotSpace(javaInformations.getDataSourceDetails()));
-			writeDirectly("<a href='http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html'"
+			writeDirectly("<a href='http://commons.apache.org/proper/commons-dbcp/api-1.4/index.html'"
 					+ " class='noPrint' target='_blank'>DataSource reference</a>");
+
+			// for the newer commons dbcp v2, the following documentation would be better:
+			// http://commons.apache.org/proper/commons-dbcp/configuration.html
 			writeln(columnEnd);
 		}
 	}
