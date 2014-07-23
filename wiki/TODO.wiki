@@ -75,7 +75,7 @@ And
   # In the monitored servers, report anonymous data to a central server. This would need to show openly that only anonymous data is collected (java version, os, #cores, heap size...) and that it can be disabled. This would enable several interesting things:
     * Know after all how many active installs there are
     * Report anonymous open-data about users (% of melody versions, % of java versions...)
-    * Social gaming between willing users, with experience gained over time, fan badges and sets, bonus points when more than 1000 sql hits per http request, etc
+    * Social gaming between willing users, with experience gained over time, fan badges and heroes sets to share their experiences, bonus points when more than 1000 sql hits per http request, etc
   # Maven:
     # ~~Why *maven* waits forever to build in Eclipse when I have forgotten to change the proxy in my settings.xml between my work day and my work night ? and why can't I cancel the waiting build ?~~ (I don't have to use a proxy at the moment)
     # ~~And why some maven plugins are sometimes years late?~~ (obsolete, olamy took care of this)
