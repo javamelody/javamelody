@@ -268,13 +268,13 @@ public class TestHtmlReport {
 		htmlReport.writeAllThreadsAsPart();
 		assertNotEmptyAndClear(writer);
 
-		htmlReport.writeSessionDetail("", null, null);
+		htmlReport.writeSessionDetail("", null);
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), null, "message",
+		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
 				SESSIONS_PART);
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), null, null,
-				SESSIONS_PART);
+		htmlReport
+				.writeSessions(Collections.<SessionInformations> emptyList(), null, SESSIONS_PART);
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);
