@@ -174,6 +174,8 @@ class MonitoringController {
 		try {
 			// langue préférée du navigateur, getLocale ne peut être null
 			I18N.bindLocale(httpRequest.getLocale());
+			// session http s'il y en a une
+			SessionListener.bindSession(httpRequest.getSession(false));
 
 			final String part = httpRequest.getParameter(PART_PARAMETER);
 			final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
@@ -202,6 +204,7 @@ class MonitoringController {
 			}
 		} finally {
 			I18N.unbindLocale();
+			SessionListener.unbindSession();
 		}
 	}
 

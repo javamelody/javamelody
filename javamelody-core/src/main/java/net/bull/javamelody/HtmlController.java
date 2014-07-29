@@ -54,7 +54,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
@@ -143,8 +142,7 @@ class HtmlController {
 	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
 			HtmlReport htmlReport) throws IOException {
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			final HttpSession currentSession = httpRequest.getSession(false);
-			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER), currentSession);
+			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));
 		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
 			doHotspots(htmlReport);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
@@ -168,12 +166,10 @@ class HtmlController {
 		}
 	}
 
-	private void doSessions(HtmlReport htmlReport, String sessionId, HttpSession currentSession)
-			throws IOException {
+	private void doSessions(HtmlReport htmlReport, String sessionId) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final List<SessionInformations> sessionsInformations;
-		final HttpSession myCurrentSession;
 		if (!isFromCollectorServer()) {
 			if (sessionId == null) {
 				sessionsInformations = SessionListener.getAllSessionsInformations();
@@ -181,18 +177,15 @@ class HtmlController {
 				sessionsInformations = Collections.singletonList(SessionListener
 						.getSessionInformationsBySessionId(sessionId));
 			}
-			myCurrentSession = currentSession;
 		} else {
 			sessionsInformations = collectorServer.collectSessionInformations(getApplication(),
 					sessionId);
-			myCurrentSession = null;
 		}
 		if (sessionId == null || sessionsInformations.isEmpty()) {
-			htmlReport.writeSessions(sessionsInformations, myCurrentSession, messageForReport,
-					SESSIONS_PART);
+			htmlReport.writeSessions(sessionsInformations, messageForReport, SESSIONS_PART);
 		} else {
 			final SessionInformations sessionInformation = sessionsInformations.get(0);
-			htmlReport.writeSessionDetail(sessionId, sessionInformation, myCurrentSession);
+			htmlReport.writeSessionDetail(sessionId, sessionInformation);
 		}
 	}
 
