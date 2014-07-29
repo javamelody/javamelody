@@ -56,6 +56,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	@SuppressWarnings("all")
 	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<String, HttpSession>();
 
+	private static final ThreadLocal<HttpSession> SESSION_CONTEXT = new ThreadLocal<HttpSession>();
+
 	private static boolean instanceCreated;
 
 	private boolean instanceEnabled;
@@ -207,6 +209,31 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 			// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"
 			return null;
 		}
+	}
+
+	/**
+	 * Définit la session http pour le thread courant.
+	 * @param session HttpSession
+	 */
+	static void bindSession(HttpSession session) {
+		if (session != null) {
+			SESSION_CONTEXT.set(session);
+		}
+	}
+
+	/**
+	 * Retourne la session pour le thread courant ou null.
+	 * @return HttpSession
+	 */
+	static HttpSession getCurrentSession() {
+		return SESSION_CONTEXT.get();
+	}
+
+	/**
+	 * Enlève le lien entre la session et le thread courant.
+	 */
+	static void unbindSession() {
+		SESSION_CONTEXT.remove();
 	}
 
 	/** {@inheritDoc} */

@@ -40,11 +40,10 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 	private final DateFormat durationFormat = I18N.createDurationFormat();
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 
-	HtmlSessionInformationsReport(List<SessionInformations> sessionsInformations,
-			HttpSession currentSession, Writer writer) {
+	HtmlSessionInformationsReport(List<SessionInformations> sessionsInformations, Writer writer) {
 		super(writer);
 		this.sessionsInformations = sessionsInformations;
-		this.currentSession = currentSession;
+		this.currentSession = SessionListener.getCurrentSession();
 	}
 
 	@Override
