@@ -306,6 +306,11 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("");
 			}
 		}
+		if (SessionListener.getCurrentSession() != null) {
+			writeDirectly("    <div class='menuButton'><a href='?action=logout'>"
+					+ I18N.getString("logout") + "</a></div>");
+			writeln("");
+		}
 		writeln("  </div></div>");
 		writeln("</div></div>");
 	}

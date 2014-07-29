@@ -66,6 +66,10 @@ enum Action { // NOPMD
 	 */
 	INVALIDATE_SESSION(""),
 	/**
+	 * Invalidation de la session http courante.
+	 */
+	LOGOUT(""),
+	/**
 	 * Heap dump.
 	 */
 	HEAP_DUMP("systeminfo"),
@@ -219,6 +223,13 @@ enum Action { // NOPMD
 			assert sessionId != null;
 			SessionListener.invalidateSession(sessionId);
 			messageForReport = I18N.getString("session_http_invalidee");
+			break;
+		case LOGOUT:
+			// invalidation de la session http courante
+			if (currentSession != null) {
+				SessionListener.invalidateSession(currentSession.getId());
+			}
+			messageForReport = I18N.getString("logged_out");
 			break;
 		case CLEAR_CACHES:
 			clearCaches();
