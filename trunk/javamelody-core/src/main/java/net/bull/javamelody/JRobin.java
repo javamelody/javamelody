@@ -56,6 +56,7 @@ final class JRobin {
 			Color.GREEN, false);
 	private static final int HOUR = 60 * 60;
 	private static final int DAY = 24 * HOUR;
+	private static final int DEFAULT_OBSOLETE_GRAPHS_DAYS = 90;
 
 	// pool of open RRD files
 	private final RrdDbPool rrdPool = getRrdDbPool();
@@ -395,7 +396,7 @@ final class JRobin {
 
 	static long deleteObsoleteJRobinFiles(String application) throws IOException {
 		final Calendar nowMinusThreeMonthsAndADay = Calendar.getInstance();
-		nowMinusThreeMonthsAndADay.add(Calendar.MONTH, -3);
+		nowMinusThreeMonthsAndADay.add(Calendar.DAY_OF_YEAR, -getObsoleteGraphsDays());
 		nowMinusThreeMonthsAndADay.add(Calendar.DAY_OF_YEAR, -1);
 		final long timestamp = Util.getTimestamp(nowMinusThreeMonthsAndADay);
 		final RrdDbPool rrdPool = getRrdDbPool();
@@ -428,6 +429,24 @@ final class JRobin {
 
 		// on retourne true si tous les fichiers .rrd obsolètes ont été supprimés, false sinon
 		return diskUsage;
+	}
+
+	/**
+	 * @return Nombre de jours avant qu'un fichier de graphique JRobin (extension .rrd) qui n'est plus utilisé,
+	 * soit considéré comme obsolète et soit supprimé automatiquement, à minuit (90 par défaut, soit 3 mois).
+	 */
+	private static int getObsoleteGraphsDays() {
+		final String param = Parameters.getParameter(Parameter.OBSOLETE_GRAPHS_DAYS);
+		if (param != null) {
+			// lance une NumberFormatException si ce n'est pas un nombre
+			final int result = Integer.parseInt(param);
+			if (result <= 0) {
+				throw new IllegalStateException(
+						"The parameter obsolete-graphs-days should be > 0 (90 recommended)");
+			}
+			return result;
+		}
+		return DEFAULT_OBSOLETE_GRAPHS_DAYS;
 	}
 
 	private static List<File> listRrdFiles(String application) {
