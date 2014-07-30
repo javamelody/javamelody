@@ -31,6 +31,18 @@ public enum Parameter {
 	RESOLUTION_SECONDS("resolution-seconds"),
 
 	/**
+	 * Nombre de jours avant qu'un fichier de graphique JRobin (extension .rrd) qui n'est plus utilisé,
+	 * soit considéré comme obsolète et soit supprimé automatiquement, à minuit (90 par défaut, soit 3 mois).
+	 */
+	OBSOLETE_GRAPHS_DAYS("obsolete-graphs-days"),
+
+	/**
+	 * Nombre de jours avant qu'un fichier de statistiques (extension .ser.gz),
+	 * soit considéré comme obsolète et soit supprimé automatiquement, à minuit (365 par défaut, soit 1 an).
+	 */
+	OBSOLETE_STATS_DAYS("obsolete-stats-days"),
+
+	/**
 	 * Période en secondes du sampling pour trouver les hotspots (null par défaut : pas de sampling).
 	 * Une valeur de 10 est recommandée (c'est-à-dire 10 secondes) pour ne pas entraîner d'overhead,
 	 * ce qui nécessitera plusieurs heures pour avoir des résultats significatifs.

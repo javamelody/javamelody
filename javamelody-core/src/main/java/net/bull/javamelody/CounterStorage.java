@@ -38,6 +38,7 @@ import java.util.zip.GZIPOutputStream;
  * @author Emeric Vernat
  */
 class CounterStorage {
+	private static final int DEFAULT_OBSOLETE_STATS_DAYS = 365;
 	private static boolean storageDisabled;
 	private final Counter counter;
 
@@ -128,7 +129,7 @@ class CounterStorage {
 
 	static long deleteObsoleteCounterFiles(String application) {
 		final Calendar nowMinusOneYearAndADay = Calendar.getInstance();
-		nowMinusOneYearAndADay.add(Calendar.YEAR, -1);
+		nowMinusOneYearAndADay.add(Calendar.DAY_OF_YEAR, -getObsoleteStatsDays());
 		nowMinusOneYearAndADay.add(Calendar.DAY_OF_YEAR, -1);
 		// filtre pour ne garder que les fichiers d'extension .ser.gz et pour éviter d'instancier des File inutiles
 		long diskUsage = 0;
@@ -144,6 +145,24 @@ class CounterStorage {
 
 		// on retourne true si tous les fichiers .ser.gz obsolètes ont été supprimés, false sinon
 		return diskUsage;
+	}
+
+	/**
+	 * @return Nombre de jours avant qu'un fichier de statistiques (extension .ser.gz),
+	 * soit considéré comme obsolète et soit supprimé automatiquement, à minuit (365 par défaut, soit 1 an)
+	 */
+	private static int getObsoleteStatsDays() {
+		final String param = Parameters.getParameter(Parameter.OBSOLETE_STATS_DAYS);
+		if (param != null) {
+			// lance une NumberFormatException si ce n'est pas un nombre
+			final int result = Integer.parseInt(param);
+			if (result <= 0) {
+				throw new IllegalStateException(
+						"The parameter obsolete-stats-days should be > 0 (365 recommended)");
+			}
+			return result;
+		}
+		return DEFAULT_OBSOLETE_STATS_DAYS;
 	}
 
 	private static List<File> listSerGzFiles(String application) {
