@@ -264,7 +264,7 @@ final class Parameters {
 			final int result = Integer.parseInt(param);
 			if (result <= 0) {
 				throw new IllegalStateException(
-						"Le paramètre resolution-seconds doit être > 0 (entre 60 et 600 recommandé)");
+						"The parameter resolution-seconds should be > 0 (between 60 and 600 recommended)");
 			}
 			return result;
 		}
