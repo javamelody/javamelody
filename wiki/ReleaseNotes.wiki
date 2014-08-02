@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.52.0 ===
+
   * fix issue 406: Slow GUI with JBoss EAP 6.2 (only since 6.2)
   * fix issue 415: Periodic stack trace in Tomcat 8 logs 'java.lang.IllegalStateException: The resources may not be accessed if they are not currently started'
   * fix issue 423: Link to DataSource Reference Returns HTTP 404
