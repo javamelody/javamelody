@@ -59,10 +59,10 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		writeln(separator);
 		writeln("#Kilo-Octets#: " + integerFormat.format(totalHeapBytes / 1024));
 		writeClassInfoSummaryAndDetails(heap, totalHeapInstances, totalHeapBytes, true,
-				heapHistogram.isSourceDisplayed(), heapHistogram.isDeltaDisplayed());
+				heapHistogram.isSourceDisplayed());
 		final List<ClassInfo> permGen = heapHistogram.getPermGenHistogram();
 		if (!permGen.isEmpty()) {
-			// avec jrockit, permGen est vide
+			// avec jrockit ou java 8, permGen est vide
 			writeln("<br/><br/><b>#PermGen#</b>");
 			writeln(separator);
 			final long totalPermGenInstances = heapHistogram.getTotalPermGenInstances();
@@ -73,13 +73,13 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 			writeln(separator);
 			writeln("#Kilo-Octets#: " + integerFormat.format(totalPermGenBytes / 1024));
 			writeClassInfoSummaryAndDetails(permGen, totalPermGenInstances, totalPermGenBytes,
-					false, false, false);
+					false, false);
 		}
 	}
 
 	private void writeClassInfoSummaryAndDetails(List<ClassInfo> classHistogram,
-			long totalInstances, long totalBytes, boolean heap, boolean sourceDisplayed,
-			boolean deltaDisplayed) throws IOException {
+			long totalInstances, long totalBytes, boolean heap, boolean sourceDisplayed)
+			throws IOException {
 		final List<ClassInfo> summaryClassHistogram = new ArrayList<ClassInfo>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {
@@ -87,8 +87,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 			}
 			summaryClassHistogram.add(classInfo);
 		}
-		writeClassInfo(summaryClassHistogram, totalInstances, totalBytes, heap, sourceDisplayed,
-				deltaDisplayed);
+		writeClassInfo(summaryClassHistogram, totalInstances, totalBytes, heap, sourceDisplayed);
 
 		writeln("<div align='right'>");
 		final String id;
@@ -106,30 +105,26 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 				detailsClassHistogram.add(classInfo);
 			}
 		}
-		writeClassInfo(detailsClassHistogram, totalInstances, totalBytes, heap, sourceDisplayed,
-				deltaDisplayed);
+		writeClassInfo(detailsClassHistogram, totalInstances, totalBytes, heap, sourceDisplayed);
 		writeln("</div>");
 	}
 
 	private void writeClassInfo(List<ClassInfo> classHistogram, long totalInstances,
-			long totalBytes, boolean heap, boolean sourceDisplayed, boolean deltaDisplayed)
-			throws IOException {
+			long totalBytes, boolean heap, boolean sourceDisplayed) throws IOException {
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("histogramme"));
 		write("<th>#Classe#</th><th>#Taille#</th><th>#pct_taille#</th>"
-				+ (deltaDisplayed ? "<th>#Delta#</th>" : "")
 				+ "<th>#Instances#</th><th>#pct_instances#</th>"
 				+ (sourceDisplayed ? "<th>#Source#</th>" : ""));
 		for (final ClassInfo classInfo : classHistogram) {
 			table.nextRow();
-			writeClassInfoRow(classInfo, totalInstances, totalBytes, heap, sourceDisplayed,
-					deltaDisplayed);
+			writeClassInfoRow(classInfo, totalInstances, totalBytes, heap, sourceDisplayed);
 		}
 		table.endTable();
 	}
 
 	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
-			boolean heap, boolean sourceDisplayed, boolean deltaDisplayed) throws IOException {
+			boolean heap, boolean sourceDisplayed) throws IOException {
 		write("<td>");
 		if (heap) {
 			write(classInfo.getName());
@@ -144,13 +139,6 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		write(integerFormat.format(bytes / 1024));
 		write(nextColumnAlignRight);
 		write(integerFormat.format(bytes * 100 / totalBytes));
-		if (deltaDisplayed) {
-			write(nextColumnAlignRight);
-			if (classInfo.getBytesDelta() > 0) {
-				write("+");
-			}
-			write(integerFormat.format(classInfo.getBytesDelta() / 1024));
-		}
 		write(nextColumnAlignRight);
 		write(integerFormat.format(instancesCount));
 		write(nextColumnAlignRight);
