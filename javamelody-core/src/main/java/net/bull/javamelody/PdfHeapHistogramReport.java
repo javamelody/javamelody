@@ -58,9 +58,8 @@ class PdfHeapHistogramReport extends PdfAbstractTableReport {
 				+ integerFormat.format(heap.size()) + separator + getString("Instances") + ": "
 				+ integerFormat.format(totalHeapInstances) + separator + getString("Kilo-Octets")
 				+ ": " + integerFormat.format(totalHeapBytes / 1024), cellFont));
-		writeHeader(heapHistogram.isSourceDisplayed(), heapHistogram.isDeltaDisplayed());
-		writeClassInfo(heap, totalHeapInstances, totalHeapBytes, heapHistogram.isSourceDisplayed(),
-				heapHistogram.isDeltaDisplayed());
+		writeHeader(heapHistogram.isSourceDisplayed());
+		writeClassInfo(heap, totalHeapInstances, totalHeapBytes, heapHistogram.isSourceDisplayed());
 		final List<ClassInfo> permGen = heapHistogram.getPermGenHistogram();
 		if (!permGen.isEmpty()) {
 			// avec jrockit, permGen est vide
@@ -72,14 +71,13 @@ class PdfHeapHistogramReport extends PdfAbstractTableReport {
 					+ ": " + integerFormat.format(totalPermGenInstances) + separator
 					+ getString("Kilo-Octets") + ": "
 					+ integerFormat.format(totalPermGenBytes / 1024), cellFont));
-			writeHeader(false, false);
-			writeClassInfo(permGen, totalPermGenInstances, totalPermGenBytes, false, false);
+			writeHeader(false);
+			writeClassInfo(permGen, totalPermGenInstances, totalPermGenBytes, false);
 		}
 	}
 
-	private void writeHeader(boolean sourceDisplayed, boolean deltaDisplayed)
-			throws DocumentException {
-		final List<String> headers = createHeaders(sourceDisplayed, deltaDisplayed);
+	private void writeHeader(boolean sourceDisplayed) throws DocumentException {
+		final List<String> headers = createHeaders(sourceDisplayed);
 		final int[] relativeWidths = new int[headers.size()];
 		Arrays.fill(relativeWidths, 0, headers.size(), 1);
 		relativeWidths[0] = 6; // Class
@@ -90,14 +88,11 @@ class PdfHeapHistogramReport extends PdfAbstractTableReport {
 		initTable(headers, relativeWidths);
 	}
 
-	private List<String> createHeaders(boolean sourceDisplayed, boolean deltaDisplayed) {
+	private List<String> createHeaders(boolean sourceDisplayed) {
 		final List<String> headers = new ArrayList<String>();
 		headers.add(getString("Classe"));
 		headers.add(getString("Taille"));
 		headers.add(getString("pct_taille"));
-		if (deltaDisplayed) {
-			headers.add(getString("Delta"));
-		}
 		headers.add(getString("Instances"));
 		headers.add(getString("pct_instances"));
 		if (sourceDisplayed) {
@@ -107,18 +102,16 @@ class PdfHeapHistogramReport extends PdfAbstractTableReport {
 	}
 
 	private void writeClassInfo(List<ClassInfo> classHistogram, long totalInstances,
-			long totalBytes, boolean sourceDisplayed, boolean deltaDisplayed)
-			throws DocumentException {
+			long totalBytes, boolean sourceDisplayed) throws DocumentException {
 		for (final ClassInfo classInfo : classHistogram) {
 			nextRow();
-			writeClassInfoRow(classInfo, totalInstances, totalBytes, sourceDisplayed,
-					deltaDisplayed);
+			writeClassInfoRow(classInfo, totalInstances, totalBytes, sourceDisplayed);
 		}
 		addTableToDocument();
 	}
 
 	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
-			boolean sourceDisplayed, boolean deltaDisplayed) {
+			boolean sourceDisplayed) {
 		final PdfPCell defaultCell = getDefaultCell();
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(classInfo.getName());
@@ -127,13 +120,6 @@ class PdfHeapHistogramReport extends PdfAbstractTableReport {
 		final long instancesCount = classInfo.getInstancesCount();
 		addCell(integerFormat.format(bytes / 1024));
 		addCell(integerFormat.format(bytes * 100 / totalBytes));
-		if (deltaDisplayed) {
-			if (classInfo.getBytesDelta() > 0) {
-				addCell('+' + integerFormat.format(classInfo.getBytesDelta() / 1024));
-			} else {
-				addCell(integerFormat.format(classInfo.getBytesDelta() / 1024));
-			}
-		}
 		addCell(integerFormat.format(instancesCount));
 		addCell(integerFormat.format(instancesCount * 100 / totalInstances));
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);

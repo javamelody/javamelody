@@ -25,8 +25,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -63,33 +61,6 @@ class HeapInformationsPanel extends MelodyPanel {
 
 		BytesTableCellRenderer() {
 			super();
-		}
-
-		@Override
-		public void setValue(final Object value) {
-			super.setValue((Long) value / 1024);
-		}
-	}
-
-	private static final class BytesDeltaTableCellRenderer extends MIntegerTableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		BytesDeltaTableCellRenderer() {
-			super();
-
-			final NumberFormat defaultNumberFormat = getNumberFormat();
-			setNumberFormat(new DecimalFormat() {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
-					final StringBuffer sb = defaultNumberFormat.format(number, toAppendTo, pos);
-					if (number > 0) {
-						sb.insert(0, "+");
-					}
-					return sb;
-				}
-			});
 		}
 
 		@Override
@@ -196,10 +167,9 @@ class HeapInformationsPanel extends MelodyPanel {
 
 	private JPanel createTabPanel(List<ClassInfo> classInfos, long totalInstances, long totalBytes,
 			boolean heap) {
-		final boolean deltaDisplayed = heap && heapHistogram.isDeltaDisplayed();
 		final boolean sourceDisplayed = heap && heapHistogram.isSourceDisplayed();
 		final MTableScrollPane<ClassInfo> scrollPane = createScrollPane(totalInstances, totalBytes,
-				deltaDisplayed, sourceDisplayed);
+				sourceDisplayed);
 		final MTable<ClassInfo> table = scrollPane.getTable();
 		table.setList(classInfos);
 
@@ -221,7 +191,7 @@ class HeapInformationsPanel extends MelodyPanel {
 	}
 
 	private MTableScrollPane<HeapHistogram.ClassInfo> createScrollPane(long totalInstances,
-			long totalBytes, boolean deltaDisplayed, boolean sourceDisplayed) {
+			long totalBytes, boolean sourceDisplayed) {
 		final MTableScrollPane<HeapHistogram.ClassInfo> tableScrollPane = new MTableScrollPane<>();
 		final MTable<ClassInfo> myTable = tableScrollPane.getTable();
 
@@ -231,10 +201,6 @@ class HeapInformationsPanel extends MelodyPanel {
 		pctTailleColumn.setIdentifier(myTable.getColumnCount());
 		pctTailleColumn.setHeaderValue(getString("pct_taille"));
 		myTable.addColumn(pctTailleColumn);
-		if (deltaDisplayed) {
-			myTable.addColumn("bytesDelta", getString("Delta"));
-			myTable.setColumnCellRenderer("bytesDelta", new BytesDeltaTableCellRenderer());
-		}
 		myTable.addColumn("instancesCount", getString("Instances"));
 		final TableColumn pctInstancesColumn = new TableColumn(myTable.getColumnCount());
 		pctInstancesColumn.setIdentifier(myTable.getColumnCount());
