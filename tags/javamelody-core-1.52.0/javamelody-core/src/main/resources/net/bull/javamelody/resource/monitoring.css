@@ -1,0 +1,366 @@
+/* style sheet */
+body {
+	background-color: white;
+	background: url(?resource=backgroundGradient.png) bottom left fixed
+		repeat-x;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+}
+
+img {
+	border: 0px;
+	vertical-align: middle;
+}
+
+a {
+	text-decoration: none;
+	color: #0000BB;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #0000BB;
+}
+
+a:visited {
+	color: #6600BB;
+}
+
+a img {
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+a:hover img {
+	transform: scale(1.25);
+	-ms-transform: scale(1.25); /* IE 9 */
+	-moz-transform: scale(1.25); /* Firefox */
+	-webkit-transform: scale(1.25); /* Safari and Chrome */
+	-o-transform: scale(1.25); /* Opera */
+	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
+}
+
+.chapterTitle img {
+	width: 24px;
+	height: 24px;
+}
+
+.synthese {
+	-moz-box-shadow: 2px 2px 3px #888;
+	-webkit-box-shadow: 2px 2px 3px #888;
+	box-shadow: 2px 2px 3px #888;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=#888888,
+		direction=135, strength=3);
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+.synthese:hover {
+	transform: scale(1.05);
+	-ms-transform: scale(1.05); /* IE 9 */
+	-moz-transform: scale(1.05); /* Firefox */
+	-webkit-transform: scale(1.05); /* Safari and Chrome */
+	-o-transform: scale(1.05); /* Opera */
+	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
+}
+
+table {
+	border-color: gray;
+	border-spacing: 0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+th {
+	font-size: 11px;
+	padding: 2px;
+	background-color: #F0F0F0;
+	cursor: pointer;
+}
+
+table tr.odd td {
+	background-color: #F5F5F5;
+}
+
+table tr.highlight td {
+	background-color: #E0E0E0;
+}
+
+td {
+	font-size: 11px;
+	padding: 2px;
+}
+
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	border-bottom-left-radius: 5px
+}
+
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 5px
+}
+
+table thead th:first-child {
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-left-radius: 5px;
+	border-top-left-radius: 5px
+}
+
+table thead th:last-child {
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-right-radius: 5px;
+	border-top-right-radius: 5px
+}
+
+.tooltip em {
+	display: none;
+}
+
+.tooltip:hover {
+	border: 0;
+	position: relative;
+	/* marche pas avec texte long qui se wrappe: z-index: 500; */
+	text-decoration: none;
+	text-align: left;
+}
+
+.tooltip:hover em {
+	font-style: normal;
+	display: block;
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	/* une width fixe est nécessaire pour MSIE 7,
+	mais cela gâcherait tout sur firefox, chrome ou MSIE8 qui n'en ont pas besoin
+	width: 800px; */
+	padding: 5px;
+	color: #000;
+	border: 1px solid #bbb;
+	background: #ffc;
+	-moz-box-shadow: 3px 3px 4px #888;
+	-webkit-box-shadow: 3px 3px 4px #888;
+	box-shadow: 3px 3px 4px #888;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color=#888888,
+		direction=135, strength=3);
+}
+
+div#track,div#handle {
+	height: 18px;
+}
+
+div#track {
+	width: 200px;
+	margin-left: 300px;
+	background: url( '?resource=scaler_slider_track.gif' ) center left
+		repeat-x;
+}
+
+div#handle {
+	width: 18px;
+	cursor: col-resize;
+}
+
+.explainPlan {
+	font-size: 8pt;
+	font-family: monospace;
+}
+
+.info {
+	color: green;
+}
+
+.warning {
+	color: orange;
+	font-weight: bold;
+}
+
+.severe {
+	color: red;
+	font-weight: bold;
+}
+
+form {
+	background-color: #F5F5F5;
+	font-size: 11px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
+}
+
+input[type=text] {
+	border: 1px solid #b9b9b9;
+	border-top: 1px solid #a0a0a0;
+	-moz-border-radius: 1px;
+	-webkit-border-radius: 1px;
+	border-radius: 1px;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+}
+
+input[type=text]:hover {
+	border: 1px solid #999999;
+	border-top: 1px solid #808080;
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+input[type=text]:focus {
+	outline: none;
+	border: 1px solid #4d90fe;
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+input[type=submit]:active {
+	border: medium none transparent;
+	background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.15));
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.25) inset, 0px 2px 4px rgba(0, 0, 0, 0.3) inset;
+}
+
+input[type=submit]:hover {
+	background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.15));
+}
+
+input[type=submit] {
+	display: inline-block;
+	font-size: 100%;
+	padding: 0.4em 1em 0.45em;
+	line-height: normal;
+	white-space: nowrap;
+	vertical-align: baseline;
+	text-align: center;
+	cursor: pointer;
+	-moz-user-select: none;
+	color: rgba(0, 0, 0, 0.8);
+	border: medium none transparent;
+	background-color: #E6E6E6;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15) 40%, transparent);
+	text-decoration: none;
+	border-radius: 4px;
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.25) inset, 0px 2px 0px rgba(255, 255, 255, 0.3) inset, 0px 1px 2px rgba(0, 0, 0, 0.15);
+	transition: box-shadow 0.1s linear 0s;
+}
+
+input[type=checkbox] {
+	vertical-align: bottom;
+	margin: 0px;
+}
+
+#menuBox {
+	width: 268px;
+	font-size: 12px;
+	line-height: 20px;
+	right: -240px;
+	top: 57px; /* change this value to place the menu higher or lower */
+	position: fixed;
+	z-index: 100;
+}
+
+#menuTab {
+	float: left;
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	z-index: 99;
+}
+
+#menuTab li span {
+	display: block;
+	padding: 0 5px;
+	position: relative;
+}
+
+#menuLinks {
+	width: 180px;
+	padding: 2px;
+	/*border-left: 1px solid #B4B8BB;*/
+	float: left;
+}
+
+.menuShow,.menuHide {
+	/* we specify the transition length for hiding and showing */
+	transition: margin-right .4s ease-in;
+	-webkit-transition: margin-right .4s ease-in;
+}
+
+.menuHide {
+	margin-right: 0px;
+}
+
+.menuShow {
+	margin-right: 195px;
+}
+
+#menuToggle,.menuButton {
+	cursor: pointer;
+}
+
+#menuToggle {
+	width: 30px;
+	height: 26px;
+}
+
+.menuButton {
+	width: 190px;
+	height: 25px;
+	margin: -1px;
+	text-align: center;
+	border: 1px solid #8A8D92;
+	font: bold 13px Helvetica, Arial, sans-serif;
+	text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.75);
+	background: #1D4151;
+	background-image: -o-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -ms-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -moz-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -webkit-linear-gradient(left, #A1A1A1, #6C6C6C);
+	background-image: -webkit-gradient(linear, left top, right top, from(#A1A1A1),
+		to(#6C6C6C));
+}
+
+.menuButton a {
+	line-height: 25px;
+	color: #E5E5E5;
+	display: block;
+	text-decoration: none;
+}
+
+.menuButton:hover {
+	background: #6C6D76;
+	transition: background .3s linear;
+	-o-transition: background .3s linear;
+	-moz-transition: background .3s linear;
+	-webkit-transition: background .3s linear;
+}
+
+#menuDeco {
+	width: 188px;
+	float: left;
+	box-shadow: 0px 0px 5px #000;
+	-moz-box-shadow: 0px 0px 5px #000;
+	-webkit-box-shadow: 0px 0px 5px #000;
+}
+
+@media print {
+	.noPrint {
+		display: none;
+	}
+}
