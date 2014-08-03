@@ -135,7 +135,9 @@ This is an internal reminder of the steps of the release process.
     * https://oss.sonatype.org/#stagingRepositories : log in, close and release
   * *jenkins / hudson plugin* ([https://github.com/jenkinsci/monitoring-plugin] ~~[https://svn.jenkins-ci.org/trunk/hudson/plugins/monitoring]~~)
     * increment javamelody-core version in pom.xml
-    * mvn release:prepare release:perform
+    * ~~mvn release:prepare release:perform~~
+    * mvn versions:set -DnewVersion=1.xx.0 -DgenerateBackupPoms=false
+    * mvn clean deploy
     * edit release notes for version: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring
   * *jira / confluence / bamboo plugin*
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
