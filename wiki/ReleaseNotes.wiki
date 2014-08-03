@@ -9,6 +9,7 @@
   * fix issue 415: Periodic stack trace in Tomcat 8 logs 'java.lang.IllegalStateException: The resources may not be accessed if they are not currently started'
   * fix issue 423: Link to DataSource Reference Returns HTTP 404
   * fix in the [https://github.com/evernat/liferay-javamelody Liferay plugin], the monitoring page works after deploy, but is not found (404) after restart of Liferay ([https://github.com/evernat/liferay-javamelody/commit/78618d3269bbaa319672f686a0d57ba7b251029b commit 78618d3]). This was caused by interaction between web-fragment.xml and Tomcat 7 inside Liferay.
+  * fix issue 377: in JIRA, Confluence: Incorrect Installation Instructions on Atlassian Marketplace
   * improved: reduce the number of RRD files created in some conditions, by not creating a RRD file of mean times if a request is called only once (revision 3836). Otherwise, obsolete RRD files are automatically deleted after 3 months like before.
   * added: links "View in a new page" below the tables of threads and of current requests (revision 3839). For example when the app is under load, the new pages make it easy to refresh at will the details of threads or of the current requests to see if states change or not, without refreshing all the main page.
   * added: logout action in the menu on the right of the main report, if there is a http session (revision 3859)
