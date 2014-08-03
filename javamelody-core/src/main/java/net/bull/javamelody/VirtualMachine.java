@@ -114,21 +114,21 @@ final class VirtualMachine {
 
 			final URL url = file.toURI().toURL();
 			final ClassLoader cl;
-			if (ClassLoader.getSystemClassLoader() instanceof URLClassLoader) {
-				// The attachment API relies on JNI, so if we have other code in the JVM that tries to use the attach API
-				// (like the monitoring of another webapp), it'll cause a failure (issue 398):
-				// "UnsatisfiedLinkError: Native Library C:\Program Files\Java\jdk1.6.0_35\jre\bin\attach.dll already loaded in another classloader
-				// [...] com.sun.tools.attach.AttachNotSupportedException: no providers installed"
-				// So we try to load tools.jar into the system classloader, so that later attempts to load tools.jar will see it.
-				cl = ClassLoader.getSystemClassLoader();
-				// The URLClassLoader.addURL method is protected
-				final Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-				addURL.setAccessible(true);
-				addURL.invoke(cl, url);
-			} else {
-				final URL[] urls = { url };
-				cl = URLClassLoader.newInstance(urls);
-			}
+			//			if (ClassLoader.getSystemClassLoader() instanceof URLClassLoader) {
+			//				// The attachment API relies on JNI, so if we have other code in the JVM that tries to use the attach API
+			//				// (like the monitoring of another webapp), it'll cause a failure (issue 398):
+			//				// "UnsatisfiedLinkError: Native Library C:\Program Files\Java\jdk1.6.0_35\jre\bin\attach.dll already loaded in another classloader
+			//				// [...] com.sun.tools.attach.AttachNotSupportedException: no providers installed"
+			//				// So we try to load tools.jar into the system classloader, so that later attempts to load tools.jar will see it.
+			//				cl = ClassLoader.getSystemClassLoader();
+			//				// The URLClassLoader.addURL method is protected
+			//				final Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+			//				addURL.setAccessible(true);
+			//				addURL.invoke(cl, url);
+			//			} else {
+			final URL[] urls = { url };
+			cl = URLClassLoader.newInstance(urls);
+			//			}
 			return Class.forName(virtualMachineClassName, true, cl);
 		}
 	}
