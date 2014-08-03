@@ -683,7 +683,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
-			write("<a href='' onclick=\"javascript:alert('"
+			write("<a href='?' onclick=\"javascript:alert('"
 					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
