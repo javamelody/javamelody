@@ -138,6 +138,7 @@ This is an internal reminder of the steps of the release process.
     * ~~mvn release:prepare release:perform~~
     * mvn versions:set -DnewVersion=1.xx.0 -DgenerateBackupPoms=false
     * mvn clean deploy
+    * mvn versions:set -DnewVersion=1.xy.0-SNAPSHOT -DgenerateBackupPoms=false
     * edit release notes for version: https://wiki.jenkins-ci.org/display/JENKINS/Monitoring
   * *jira / confluence / bamboo plugin*
     * login [https://plugins.atlassian.com/plugins/net.bull.javamelody]
