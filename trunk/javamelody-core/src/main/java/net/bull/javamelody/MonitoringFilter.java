@@ -58,7 +58,6 @@ public class MonitoringFilter implements Filter {
 	private boolean monitoringDisabled;
 	private boolean logEnabled;
 	private Pattern urlExcludePattern;
-	private Pattern allowedAddrPattern;
 	private FilterContext filterContext;
 	private FilterConfig filterConfig;
 	private String monitoringUrl;
@@ -119,10 +118,6 @@ public class MonitoringFilter implements Filter {
 			urlExcludePattern = Pattern.compile(Parameters
 					.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
-		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
-			allowedAddrPattern = Pattern.compile(Parameters
-					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
-		}
 
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter init done in " + duration + " ms");
@@ -146,7 +141,6 @@ public class MonitoringFilter implements Filter {
 			httpCounter = null;
 			errorCounter = null;
 			urlExcludePattern = null;
-			allowedAddrPattern = null;
 			filterConfig = null;
 			filterContext = null;
 		}
@@ -410,8 +404,7 @@ public class MonitoringFilter implements Filter {
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
 	protected boolean isRequestAllowed(HttpServletRequest httpRequest) {
-		return allowedAddrPattern == null
-				|| allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
+		return filterContext.isRequestAllowed(httpRequest);
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
