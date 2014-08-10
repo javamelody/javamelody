@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * improved: Portuguese translation (revision 3885, thanks to _Fernando Boaglio_)
 
 === 1.52.0 ===
 
