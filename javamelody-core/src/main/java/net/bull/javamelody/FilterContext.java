@@ -22,9 +22,11 @@ import java.security.CodeSource;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -43,6 +45,10 @@ class FilterContext {
 	private final SamplingProfiler samplingProfiler;
 	private final TimerTask collectTimerTask;
 	private final Pattern allowedAddrPattern;
+	/**
+	 * List of authorized people, when using the "authorized-users" parameter.
+	 */
+	private final List<String> authorizedUsers;
 
 	private static final class CollectTimerTask extends TimerTask {
 		private final Collector collector;
@@ -70,6 +76,7 @@ class FilterContext {
 			logSystemInformationsAndParameters();
 
 			this.allowedAddrPattern = getAllowedAddrPattern();
+			this.authorizedUsers = getAuthorizedUsers();
 
 			initLogs();
 
@@ -123,6 +130,24 @@ class FilterContext {
 	private static Pattern getAllowedAddrPattern() {
 		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
 			return Pattern.compile(Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
+		}
+		return null;
+	}
+
+	private static List<String> getAuthorizedUsers() {
+		// security based on user / password (BASIC auth)
+		final String authUsersInParam = Parameters.getParameter(Parameter.AUTHORIZED_USERS);
+		if (authUsersInParam != null && !authUsersInParam.trim().isEmpty()) {
+			final List<String> authorizedUsers = new ArrayList<String>();
+			// we split on new line or on comma
+			for (final String authUser : authUsersInParam.split("[\n,]")) {
+				final String authUserTrim = authUser.trim();
+				if (!authUserTrim.isEmpty()) {
+					authorizedUsers.add(authUserTrim);
+					LOG.debug("Authorized user : " + authUserTrim.split(":", 2)[0]);
+				}
+			}
+			return authorizedUsers;
 		}
 		return null;
 	}
@@ -431,6 +456,31 @@ class FilterContext {
 	boolean isRequestAllowed(HttpServletRequest httpRequest) {
 		return allowedAddrPattern == null
 				|| allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
+	}
+
+	/**
+	 * Check if the user is authorized, when using the "authorized-users" parameter
+	 * @param httpRequest HttpServletRequest
+	 * @return true if the user is authorized
+	 */
+	boolean isUserAuthorized(HttpServletRequest httpRequest) {
+		if (authorizedUsers == null) {
+			return true;
+		}
+		// Get Authorization header
+		final String auth = httpRequest.getHeader("Authorization");
+		if (auth == null) {
+			return false; // no auth
+		}
+		if (!auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC ")) {
+			return false; // we only do BASIC
+		}
+		// Get encoded "user:password", comes after "BASIC "
+		final String userpassEncoded = auth.substring("BASIC ".length());
+		// Decode it
+		final String userpassDecoded = Base64Coder.decodeString(userpassEncoded);
+
+		return authorizedUsers.contains(userpassDecoded);
 	}
 
 	Collector getCollector() {

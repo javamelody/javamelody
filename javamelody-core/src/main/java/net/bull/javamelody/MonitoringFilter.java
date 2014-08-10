@@ -337,6 +337,13 @@ public class MonitoringFilter implements Filter {
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
 		}
+		if (!isUserAuthorized(httpRequest)) {
+			// Not allowed, so report he's unauthorized and ask username:password
+			httpResponse.setHeader("WWW-Authenticate", "BASIC realm=\"JavaMelody\"");
+			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
 		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
@@ -405,6 +412,10 @@ public class MonitoringFilter implements Filter {
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
 	protected boolean isRequestAllowed(HttpServletRequest httpRequest) {
 		return filterContext.isRequestAllowed(httpRequest);
+	}
+
+	protected boolean isUserAuthorized(HttpServletRequest httpRequest) {
+		return filterContext.isUserAuthorized(httpRequest);
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
