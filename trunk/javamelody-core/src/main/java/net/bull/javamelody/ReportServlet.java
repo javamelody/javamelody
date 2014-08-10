@@ -65,6 +65,12 @@ public class ReportServlet extends HttpServlet {
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
 		}
+		if (!filterContext.isUserAuthorized(httpRequest)) {
+			// Not allowed, so report he's unauthorized
+			httpResponse.setHeader("WWW-Authenticate", "BASIC realm=\"JavaMelody\"");
+			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);

@@ -194,6 +194,16 @@ public enum Parameter {
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),
 
 	/**
+	 * List of authorized users for BASIC auth, when you do no want to use a realm and "security-constraint" in web.xml.<br/>
+	 * Format : user:password, one by line or separated by comma <br/>
+	 * <pre>
+	 * user1:pwd1, user2:pwd2
+	 * user3:pwd3
+	 * </pre>
+	 */
+	AUTHORIZED_USERS("authorized-users"),
+
+	/**
 	 * Désactive la vérification de l'authentification sur la page du monitoring dans le plugin Hudson/Jenkins
 	 * ou dans le plugin JIRA/Confluence/Bamboo, de manière à pouvoir utiliser le serveur de collecte
 	 * centralisé (false par défaut). Le paramètre allowed-addr-pattern pourra être utilisé pour
