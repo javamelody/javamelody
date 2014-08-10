@@ -2,7 +2,7 @@
 === Next release (trunk) ===
 
   * improved: Portuguese translation (revision 3885, thanks to _Fernando Boaglio_)
-  * added: new parameter for *BASIC authentication* with username and password (revision 3890, thanks to _Benjamin Durand_). [*TODO update user guide]
+  * added: new parameter for *BASIC authentication* with username and password (revision 3890, thanks to _Benjamin Durand_). [_TODO update user guide after release_]
 
 If you want BASIC auth but do no want to [UserGuide#16._Security use a realm and "security-constraint" in web.xml], you can add the parameter "*authorized-users*" in web.xml, in context or in system properties like the other [UserGuide#6._Optional_parameters javamelody parameters]. For example in web.xml:
 {{{
