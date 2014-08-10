@@ -29,6 +29,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Contexte du filtre http pour initialisation et destruction.
  * @author Emeric Vernat
@@ -40,6 +42,7 @@ class FilterContext {
 	private final Timer timer;
 	private final SamplingProfiler samplingProfiler;
 	private final TimerTask collectTimerTask;
+	private final Pattern allowedAddrPattern;
 
 	private static final class CollectTimerTask extends TimerTask {
 		private final Collector collector;
@@ -65,6 +68,8 @@ class FilterContext {
 				+ Parameters.getContextPath(Parameters.getServletContext()).replace('/', ' '), true);
 		try {
 			logSystemInformationsAndParameters();
+
+			this.allowedAddrPattern = getAllowedAddrPattern();
 
 			initLogs();
 
@@ -113,6 +118,13 @@ class FilterContext {
 				LOG.debug("JavaMelody init failed");
 			}
 		}
+	}
+
+	private static Pattern getAllowedAddrPattern() {
+		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
+			return Pattern.compile(Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
+		}
+		return null;
 	}
 
 	private static List<Counter> initCounters() {
@@ -414,6 +426,11 @@ class FilterContext {
 			Log4JAppender.getSingleton().deregister();
 		}
 		LoggingHandler.getSingleton().deregister();
+	}
+
+	boolean isRequestAllowed(HttpServletRequest httpRequest) {
+		return allowedAddrPattern == null
+				|| allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
 	}
 
 	Collector getCollector() {

@@ -18,7 +18,6 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,16 +40,10 @@ public class ReportServlet extends HttpServlet {
 	@SuppressWarnings("all")
 	private ServletConfig servletConfig;
 
-	private Pattern allowedAddrPattern;
-
 	/** {@inheritDoc} */
 	@Override
 	public void init(ServletConfig config) {
 		this.servletConfig = config;
-		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
-			allowedAddrPattern = Pattern.compile(Parameters
-					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
-		}
 		LOG.debug("JavaMelody report servlet initialized");
 	}
 
@@ -63,23 +56,20 @@ public class ReportServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws ServletException, IOException {
-		if (isRequestNotAllowed(httpRequest)) {
+		final FilterContext filterContext = (FilterContext) servletConfig.getServletContext()
+				.getAttribute(FILTER_CONTEXT_KEY);
+		assert filterContext != null;
+
+		if (!filterContext.isRequestAllowed(httpRequest)) {
 			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return;
 		}
 
-		final FilterContext filterContext = (FilterContext) servletConfig.getServletContext()
-				.getAttribute(FILTER_CONTEXT_KEY);
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
 
 		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
 				servletConfig.getServletContext());
-	}
-
-	private boolean isRequestNotAllowed(HttpServletRequest httpRequest) {
-		return allowedAddrPattern != null
-				&& !allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
 	}
 }
