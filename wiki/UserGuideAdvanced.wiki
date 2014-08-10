@@ -78,7 +78,8 @@ For standard documentation, see [UserGuide]
 
 	You need to have the war of a single monitored webapp in your ear.
 	If you do not have a war, you need to create and deploy a war just for having the monitoring: create it with a simple {{{web.xml}}} file in the WEB-INF directory of the war.
-	And modify the {{{web.xml}}} file of this war like written in chapter "{{{web.xml}}} file" of the [UserGuide].
+
+	Modify the {{{web.xml}}} file of this war like written in chapter "{{{web.xml}}} file" of the [UserGuide].
 	
 	Make sure that the javamelody.jar file is only in the EAR/lib directory, and not also in the WAR/WEB-INF/lib directory, otherwise you might get issues with class loading (recorded data might be in a different class loader than the one of the monitoring web app.)
 	Note that if you have class loading issues with an ear, the use of a single war instead of an ear could help (and with JavaEE 6, you can even use EJBs in a single war).
