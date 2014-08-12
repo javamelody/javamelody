@@ -160,7 +160,8 @@ public class TestPdfOtherReport {
 	@Test
 	public void testWriteHotspots() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>());
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>(),
+				null);
 		final List<SampledMethod> emptyHotspots = samplingProfiler.getHotspots(100);
 		samplingProfiler.update();
 		final List<SampledMethod> hotspots = samplingProfiler.getHotspots(100);

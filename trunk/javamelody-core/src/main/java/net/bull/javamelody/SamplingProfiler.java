@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +44,8 @@ class SamplingProfiler {
 	private final int maxDataSize = 10000;
 
 	private final String[] excludedPackages;
+
+	private final String[] includedPackages;
 
 	private final Map<SampledMethod, SampledMethod> data = new HashMap<SampledMethod, SampledMethod>();
 
@@ -133,27 +136,57 @@ class SamplingProfiler {
 	SamplingProfiler() {
 		super();
 		this.excludedPackages = DEFAULT_EXCLUDED_PACKAGES;
+		this.includedPackages = null;
 	}
 
 	/**
 	 * Constructor.
-	 * @param excludedPackages List of excluded packages
+	 * @param excludedPackages List of excluded packages (can be null)
+	 * @param includedPackages List of included packages (can be null)
 	 */
-	SamplingProfiler(List<String> excludedPackages) {
+	SamplingProfiler(List<String> excludedPackages, List<String> includedPackages) {
 		super();
-		assert excludedPackages != null;
-		final String[] packages = excludedPackages.toArray(new String[excludedPackages.size()]);
+		assert excludedPackages != null || includedPackages != null;
+		// In general, there are either excluded packages or included packages.
+		// (If both, excluded result has priority over included result: it excludes some included.)
+		this.excludedPackages = verifyPackageNames(excludedPackages);
+		this.includedPackages = verifyPackageNames(includedPackages);
+	}
+
+	/**
+	 * Constructor.
+	 * @param excludedPackages List of excluded packages separated by comma (can be null)
+	 * @param includedPackages List of included packages separated by comma (can be null)
+	 */
+	SamplingProfiler(String excludedPackages, String includedPackages) {
+		this(splitPackageNames(excludedPackages), splitPackageNames(includedPackages));
+		// In general, there are either excluded packages or included packages.
+		// (If both, excluded result has priority over included result: it excludes some included.)
+	}
+
+	private static List<String> splitPackageNames(String packageNames) {
+		if (packageNames == null) {
+			return null;
+		}
+		return Arrays.asList(packageNames.split(","));
+	}
+
+	private String[] verifyPackageNames(List<String> packageNames) {
+		if (packageNames == null) {
+			return null;
+		}
+		final String[] packages = packageNames.toArray(new String[packageNames.size()]);
 		for (int i = 0; i < packages.length; i++) {
 			packages[i] = packages[i].trim();
 			if (packages[i].length() == 0) {
-				throw new IllegalArgumentException("An excluded package can not be empty: "
-						+ excludedPackages);
+				throw new IllegalArgumentException("A package can not be empty, item " + i + " in "
+						+ packageNames);
 			}
 			if (!packages[i].endsWith(".")) {
 				packages[i] = packages[i] + '.';
 			}
 		}
-		this.excludedPackages = packages;
+		return packages;
 	}
 
 	synchronized void update() {
@@ -210,9 +243,14 @@ class SamplingProfiler {
 	}
 
 	private boolean isPackageExcluded(StackTraceElement element) {
+		return excludedPackages != null && isPackageMatching(element, excludedPackages)
+				|| includedPackages != null && !isPackageMatching(element, includedPackages);
+	}
+
+	private boolean isPackageMatching(StackTraceElement element, String[] packageNames) {
 		final String className = element.getClassName();
-		for (final String excludedPackage : excludedPackages) {
-			if (className.startsWith(excludedPackage)) {
+		for (final String packageName : packageNames) {
+			if (className.startsWith(packageName)) {
 				return true;
 			}
 		}

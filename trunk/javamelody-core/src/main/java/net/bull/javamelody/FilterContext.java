@@ -287,10 +287,12 @@ class FilterContext {
 			final SamplingProfiler sampler;
 			final String excludedPackagesParameter = Parameters
 					.getParameter(Parameter.SAMPLING_EXCLUDED_PACKAGES);
-			if (excludedPackagesParameter == null) {
+			final String includedPackagesParameter = Parameters
+					.getParameter(Parameter.SAMPLING_INCLUDED_PACKAGES);
+			if (excludedPackagesParameter == null && includedPackagesParameter == null) {
 				sampler = new SamplingProfiler();
 			} else {
-				sampler = new SamplingProfiler(Arrays.asList(excludedPackagesParameter.split(",")));
+				sampler = new SamplingProfiler(excludedPackagesParameter, includedPackagesParameter);
 			}
 			final TimerTask samplingTimerTask = new TimerTask() {
 				@Override
