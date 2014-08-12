@@ -168,6 +168,12 @@ public enum Parameter {
 	SAMPLING_EXCLUDED_PACKAGES("sampling-excluded-packages"),
 
 	/**
+	 * List of packages to include for sampling, can be used if sampling-excluded-packages is null
+	 * (null by default).
+	 */
+	SAMPLING_INCLUDED_PACKAGES("sampling-included-packages"),
+
+	/**
 	 * Paramètre pour désactiver les graphiques jdbc, le compteur sql et le monitoring de base de
 	 * données ("false" par défaut).
 	 */

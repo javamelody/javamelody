@@ -56,7 +56,8 @@ public class TestHtmlHotspotsReport {
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>());
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>(),
+				null);
 		final List<SampledMethod> emptyHotspots = samplingProfiler.getHotspots(NB_ROWS);
 		samplingProfiler.update();
 		final List<SampledMethod> hotspots = samplingProfiler.getHotspots(NB_ROWS);
