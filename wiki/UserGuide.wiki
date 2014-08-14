@@ -58,10 +58,8 @@ URL: http://javamelody.googlecode.com/
 
 Java version required for execution:
 
-	* 1.5 at least
+	* 1.6 or later
 
-	* 1.6 or 1.7 recommended for following functions: heap dump, memory histogram, stack traces and system load average
-	
 	* JDK or JRE from Sun or JRockit from Oracle/BEA or J9 from IBM
 
 Server version required for execution: servlet api 2.4 at least (or JavaEE 1.4), 
