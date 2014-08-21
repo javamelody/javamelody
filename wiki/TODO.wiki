@@ -82,4 +82,5 @@ And
     # ~~Publish JavaMelody in maven central repository (seems not doable without jrobin in central repo and without renaming package to googlecode)~~ (done, it is in maven central now.)
   # Think about [http://docs.codehaus.org/display/SONAR/Hosting+on+the+Forge hosting] the [https://github.com/evernat/sonar-javamelody sonar javamelody plugin] as suggested by [http://sonar.markmail.org/message/myzjbtuxvum74ppm?q=list:org.codehaus.sonar.dev Ann's message] and so publish in all Sonar's update centers.
   # In the list of http sessions, the city or country could be displayed for each session based on IP address of the client. A link to an online map can be given using latitude and longitude. A free [http://dev.maxmind.com/geoip/geoip2/geolite2/ database] could be downloaded or an [https://code.google.com/p/geoip-appengine/ online service] could be used for that.
+  # In the database informations report, be able to switch between DB when there are several, instead of displaying only the report for the first DB.
   # More to come...
