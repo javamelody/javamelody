@@ -51,7 +51,7 @@ final class TomcatInformations implements Serializable {
 	@SuppressWarnings("all")
 	private static final List<ObjectName> GLOBAL_REQUEST_PROCESSORS = new ArrayList<ObjectName>();
 
-	private static boolean mbeansInitialized;
+	private static int mbeansInitAttemps;
 
 	private final String name;
 	private final int maxThreads;
@@ -100,9 +100,16 @@ final class TomcatInformations implements Serializable {
 		}
 		try {
 			synchronized (THREAD_POOLS) {
-				if (!mbeansInitialized) {
+				if ((THREAD_POOLS.isEmpty() || GLOBAL_REQUEST_PROCESSORS.isEmpty())
+						&& mbeansInitAttemps < 10) {
+					// lors du premier appel dans Tomcat lors du déploiement de la webapp,
+					// ce initMBeans ne fonctionne pas car les MBeans n'existent pas encore,
+					// donc il faut réessayer plus tard
 					initMBeans();
-					mbeansInitialized = true;
+
+					// issue 406, Tomcat mbeans never found in jboss eap 6.2,
+					// we must stop initMBeans at some point
+					mbeansInitAttemps++;
 				}
 			}
 			final MBeans mBeans = new MBeans();
