@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix: in v1.52.0 with Tomcat, graphs of bytes received/sent and of Tomcat active threads are not displayed anymore in "Other charts (revision 3908). This was unfortunately caused by the fix of issue 406.
   * improved: Portuguese translation (revision 3885, thanks to _Fernando Boaglio_)
   * added: new parameter "sampling-included-packages" for a white list in [UserGuideAdvanced#Enable_Hotspots_detection cpu hotspots], instead of using the "sampling-excluded-packages" parameter (issue 424, thanks to _alf.hogemark_) [_TODO update advanced user guide after release_]
   * added: new parameter "authorized-users" for *BASIC authentication* with username and password to access the reports (revision 3890, thanks to _Benjamin Durand_). [_TODO update user guide after release_]
