@@ -59,6 +59,7 @@ public class MonitoringFilter implements Filter {
 	private boolean logEnabled;
 	private Pattern urlExcludePattern;
 	private FilterContext filterContext;
+	private HttpAuth httpAuth;
 	private FilterConfig filterConfig;
 	private String monitoringUrl;
 
@@ -107,6 +108,7 @@ public class MonitoringFilter implements Filter {
 		LOG.debug("JavaMelody filter init started");
 
 		this.filterContext = new FilterContext();
+		this.httpAuth = new HttpAuth();
 		config.getServletContext().setAttribute(ReportServlet.FILTER_CONTEXT_KEY, filterContext);
 		final Collector collector = filterContext.getCollector();
 		this.httpCounter = collector.getCounterByName(Counter.HTTP_COUNTER_NAME);
@@ -332,15 +334,7 @@ public class MonitoringFilter implements Filter {
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException, ServletException {
-		if (!isRequestAllowed(httpRequest)) {
-			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
-			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
-			return;
-		}
-		if (!isUserAuthorized(httpRequest)) {
-			// Not allowed, so report he's unauthorized and ask username:password
-			httpResponse.setHeader("WWW-Authenticate", "BASIC realm=\"JavaMelody\"");
-			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		if (!httpAuth.isAllowed(httpRequest, httpResponse)) {
 			return;
 		}
 
