@@ -40,10 +40,14 @@ public class ReportServlet extends HttpServlet {
 	@SuppressWarnings("all")
 	private ServletConfig servletConfig;
 
+	@SuppressWarnings("all")
+	private HttpAuth httpAuth;
+
 	/** {@inheritDoc} */
 	@Override
 	public void init(ServletConfig config) {
 		this.servletConfig = config;
+		httpAuth = new HttpAuth();
 		LOG.debug("JavaMelody report servlet initialized");
 	}
 
@@ -60,18 +64,9 @@ public class ReportServlet extends HttpServlet {
 				.getAttribute(FILTER_CONTEXT_KEY);
 		assert filterContext != null;
 
-		if (!filterContext.isRequestAllowed(httpRequest)) {
-			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
-			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+		if (!httpAuth.isAllowed(httpRequest, httpResponse)) {
 			return;
 		}
-		if (!filterContext.isUserAuthorized(httpRequest)) {
-			// Not allowed, so report he's unauthorized
-			httpResponse.setHeader("WWW-Authenticate", "BASIC realm=\"JavaMelody\"");
-			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
-
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
 
