@@ -20,7 +20,6 @@ package net.bull.javamelody; // NOPMD
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,7 +40,8 @@ public class CollectorServlet extends HttpServlet {
 	@SuppressWarnings("all")
 	private static final Logger LOGGER = Logger.getLogger("javamelody");
 
-	private Pattern allowedAddrPattern;
+	@SuppressWarnings("all")
+	private transient HttpAuth httpAuth;
 
 	@SuppressWarnings("all")
 	private transient CollectorServer collectorServer;
@@ -58,10 +58,8 @@ public class CollectorServlet extends HttpServlet {
 		}
 		// dans le serveur de collecte, on est sûr que log4j est disponible
 		LOGGER.info("initialization of the collector servlet of the monitoring");
-		if (Parameters.getParameter(Parameter.ALLOWED_ADDR_PATTERN) != null) {
-			allowedAddrPattern = Pattern.compile(Parameters
-					.getParameter(Parameter.ALLOWED_ADDR_PATTERN));
-		}
+
+		httpAuth = new HttpAuth();
 
 		try {
 			collectorServer = new CollectorServer();
@@ -74,12 +72,11 @@ public class CollectorServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
 			IOException {
-		final long start = System.currentTimeMillis();
-		if (isAddressNotAllowed(req)) {
-			LOGGER.info("Forbidden access to monitoring from " + req.getRemoteAddr());
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+		if (!httpAuth.isAllowed(req, resp)) {
 			return;
 		}
+
+		final long start = System.currentTimeMillis();
 		final CollectorController collectorController = new CollectorController(collectorServer);
 		final String application = collectorController.getApplication(req, resp);
 		I18N.bindLocale(req.getLocale());
@@ -112,11 +109,10 @@ public class CollectorServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		if (isAddressNotAllowed(req)) {
-			LOGGER.info("Forbidden access to monitoring from " + req.getRemoteAddr());
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+		if (!httpAuth.isAllowed(req, resp)) {
 			return;
 		}
+
 		// post du formulaire d'ajout d'application à monitorer
 		final String appName = req.getParameter("appName");
 		final String appUrls = req.getParameter("appUrls");
@@ -157,11 +153,6 @@ public class CollectorServlet extends HttpServlet {
 			CollectorController collectorController, String message) throws IOException {
 		collectorController.writeMessage(req, resp, collectorController.getApplication(req, resp),
 				message);
-	}
-
-	private boolean isAddressNotAllowed(HttpServletRequest req) {
-		return allowedAddrPattern != null
-				&& !allowedAddrPattern.matcher(req.getRemoteAddr()).matches();
 	}
 
 	/** {@inheritDoc} */
