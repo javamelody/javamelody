@@ -41,7 +41,7 @@ public class ReportServlet extends HttpServlet {
 	private ServletConfig servletConfig;
 
 	@SuppressWarnings("all")
-	private HttpAuth httpAuth;
+	private transient HttpAuth httpAuth;
 
 	/** {@inheritDoc} */
 	@Override
