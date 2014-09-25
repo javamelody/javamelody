@@ -148,8 +148,11 @@ class HeapHistogram implements Serializable {
 		return sourceDisplayed;
 	}
 
+	/**
+	 * @deprecated deltaDisplayed kept only for backward compatibility with all collect servers
+	 * @return false
+	 */
 	@Deprecated
-	// deltaDisplayed kept for backward compatibility with all collect servers
 	boolean isDeltaDisplayed() {
 		return deltaDisplayed;
 	}
