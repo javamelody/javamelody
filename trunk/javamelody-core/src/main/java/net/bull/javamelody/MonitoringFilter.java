@@ -334,7 +334,7 @@ public class MonitoringFilter implements Filter {
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException, ServletException {
-		if (!httpAuth.isAllowed(httpRequest, httpResponse)) {
+		if (!isAllowed(httpRequest, httpResponse)) {
 			return;
 		}
 
@@ -404,12 +404,9 @@ public class MonitoringFilter implements Filter {
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
-	protected boolean isRequestAllowed(HttpServletRequest httpRequest) {
-		return filterContext.isRequestAllowed(httpRequest);
-	}
-
-	protected boolean isUserAuthorized(HttpServletRequest httpRequest) {
-		return filterContext.isUserAuthorized(httpRequest);
+	protected boolean isAllowed(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+			throws IOException {
+		return httpAuth.isAllowed(httpRequest, httpResponse);
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
