@@ -53,6 +53,7 @@
 	<resource type="i18n" name="i18n" location="javamelody_i18n" />
 
 	<!-- doc: http://confluence.atlassian.com/display/JIRA/Web+Fragments -->
+	<!-- section for issue 342: RuntimeException in logs since JIRA v6.0.8 -->
 	<web-item key="net.bull.javamelody.jira-web-item" name="Monitoring"
 		section="admin_plugins_menu/monitoring_section" i18n-name-key="net.bull.javamelody.web-item"
 		weight="10">
