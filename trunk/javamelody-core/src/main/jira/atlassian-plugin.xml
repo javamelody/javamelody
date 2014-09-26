@@ -5,6 +5,8 @@
 		<version>@version@</version>
 		<application-version min="4.0" />
 		<vendor name="JavaMelody" url="http://javamelody.googlecode.com/" />
+		<!-- Can someone confirm that this param and the plugin actually works in JIRA Data Center ? -->
+		<param name="atlassian-data-center-compatible">true</param>
 	</plugin-info>
 
 	<!-- location="after-encoding" and weight="1" (and not location="before-decoration"
