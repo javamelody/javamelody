@@ -54,7 +54,7 @@
 
 	<!-- doc: http://confluence.atlassian.com/display/JIRA/Web+Fragments -->
 	<web-item key="net.bull.javamelody.jira-web-item" name="Monitoring"
-		section="system.admin/system" i18n-name-key="net.bull.javamelody.web-item"
+		section="admin_plugins_menu/monitoring_section" i18n-name-key="net.bull.javamelody.web-item"
 		weight="10">
 		<!-- issue 210 (jira-web-item error in logs): remove this icon element because icon is not displayed
 		in JIRA 5 and because it causes an ERROR log for some screens such as project config.
