@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -144,8 +145,7 @@ class JavaInformations implements Serializable { // NOPMD
 		unixOpenFileDescriptorCount = buildOpenFileDescriptorCount();
 		unixMaxFileDescriptorCount = buildMaxFileDescriptorCount();
 		host = Parameters.getHostName() + '@' + Parameters.getHostAddress();
-		os = System.getProperty("os.name") + ' ' + System.getProperty("sun.os.patch.level") + ", "
-				+ System.getProperty("os.arch") + '/' + System.getProperty("sun.arch.data.model");
+		os = buildOS();
 		availableProcessors = Runtime.getRuntime().availableProcessors();
 		javaVersion = System.getProperty("java.runtime.name") + ", "
 				+ System.getProperty("java.runtime.version");
@@ -198,6 +198,29 @@ class JavaInformations implements Serializable { // NOPMD
 
 	boolean doesPomXmlExists() {
 		return pomXmlExists;
+	}
+
+	private static String buildOS() {
+		final String name = System.getProperty("os.name");
+		final String version = System.getProperty("os.version");
+		final String patchLevel = System.getProperty("sun.os.patch.level");
+		final String arch = System.getProperty("os.arch");
+		final String bits = System.getProperty("sun.arch.data.model");
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append(name).append(", ");
+		if (!name.toLowerCase(Locale.ENGLISH).contains("windows")) {
+			// version is "6.1" and useless for os.name "Windows 7",
+			// and can be "2.6.32-358.23.2.el6.x86_64" for os.name "Linux"
+			sb.append(version).append(' ');
+		}
+		if (!"unknown".equals(patchLevel)) {
+			// patchLevel is "unknown" and useless on Linux,
+			// and can be "Service Pack 1" on Windows
+			sb.append(patchLevel);
+		}
+		sb.append(", ").append(arch).append('/').append(bits);
+		return sb.toString();
 	}
 
 	private static long buildProcessCpuTimeMillis() {
