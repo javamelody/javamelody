@@ -135,7 +135,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		final String nextColumnAlignRight = "</td><td align='right'>";
 		final String nextColumnAlignCenter = "</td><td align='center'>";
 		write("<td><a href='?part=sessions&amp;sessionId=");
-		write(htmlEncodeButNotSpace(session.getId()));
+		write(urlEncode(session.getId()));
 		write("'>");
 		write(htmlEncodeButNotSpace(session.getId()));
 		write("</a>");
@@ -196,14 +196,14 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		} else {
 			final String fileName = "flags/" + country + ".gif";
 			if (getClass().getResource(Parameters.getResourcePath(fileName)) == null) {
-				write(country);
+				write(htmlEncodeButNotSpace(country));
 			} else {
 				write("<img src='?resource=");
-				write(fileName);
+				write(urlEncode(fileName));
 				write("' alt='");
-				write(country);
+				write(urlEncode(country));
 				write("' title='");
-				write(session.getCountryDisplay());
+				write(urlEncode(session.getCountryDisplay()));
 				write("' />");
 			}
 		}
