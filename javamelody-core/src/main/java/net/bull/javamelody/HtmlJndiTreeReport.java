@@ -54,7 +54,7 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 
 	private void writeTable() throws IOException {
 		final HtmlTable table = new HtmlTable();
-		table.beginTable("Arbre_JNDI");
+		table.beginTable(getString("Arbre_JNDI"));
 		write("<th>#Nom#</th><th>#Type#</th><th>#Value#</th>");
 		for (final JndiBinding binding : jndiBindings) {
 			table.nextRow();
@@ -64,20 +64,19 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 	}
 
 	private void writeBinding(JndiBinding binding) throws IOException {
-		final String name = binding.getName();
 		write("<td>");
-		final String encodedName = htmlEncode(name);
+		final String name = binding.getName();
 		final String className = binding.getClassName();
 		final String contextPath = binding.getContextPath();
 		final String value = binding.getValue();
 		if (contextPath != null) {
-			writeDirectly("<a href=\"?part=jndi&amp;path=" + htmlEncode(contextPath) + "\">");
+			writeDirectly("<a href=\"?part=jndi&amp;path=" + urlEncode(contextPath) + "\">");
 			writeDirectly("<img width='16' height='16' src='?resource=folder.png' alt='"
-					+ encodedName + "' />&nbsp;");
-			writeDirectly(encodedName);
+					+ urlEncode(name) + "' />&nbsp;");
+			writeDirectly(htmlEncode(name));
 			writeDirectly("</a>");
 		} else {
-			writeDirectly(encodedName);
+			writeDirectly(htmlEncode(name));
 		}
 		write("</td>");
 		write("<td>");
