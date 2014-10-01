@@ -133,8 +133,8 @@ final class I18N {
 	 * @return String
 	 */
 	static String javascriptEncode(String text) {
-		return text.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\"")
-				.replace("'", "\\'");
+		return text.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "%22")
+				.replace("'", "%27");
 	}
 
 	static String urlEncode(String text) {
