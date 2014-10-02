@@ -892,6 +892,19 @@ or
 	</tomcat-users>
 }}}
 
+Or, if you want BASIC authentication with username and password, but do no want to use a realm and "security-constraint" in web.xml, you can add the parameter "*authorized-users*" in web.xml, in context or in system properties like the other [#6._Optional_parameters javamelody parameters]. For example in your WEB-INF/web.xml file:
+{{{
+	<filter>
+		<filter-name>monitoring</filter-name>
+		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
+		<init-param>
+			<param-name>authorized-users</param-name>
+			<param-value>user1:pwd1, user2:pwd2</param-value>
+		</init-param>
+	</filter>
+	...
+}}}
+
 === 17. SecurityManager ===
 
 	If your are one of the rare people with a security manager enabled in your server, there will be
@@ -941,7 +954,7 @@ or
 	<dependency>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-core</artifactId>
-		<version>1.51.0</version>
+		<version>1.53.0</version>
 	</dependency>
 	<!-- itext, option to add PDF export -->
 	<dependency>
