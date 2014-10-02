@@ -838,7 +838,9 @@ or
 
 === 16. Security ===
 
-	The monitoring page does not contain data such as passwords, but before using it in production, you may probably want that this page is in restricted access. If you use a Jenkins, JIRA, Confluence, Bamboo or Liferay plugin, it is secured by the app roles. Or, you may secure it by using your own means. Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
+	The monitoring page does not contain data such as passwords, but before using it in production, you may probably want that this page is in restricted access. If you use a Jenkins, JIRA, Confluence, Bamboo or Liferay plugin, it is secured by the app roles. Or, you may secure it by using your own means.
+
+	Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
 	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
 	For example, "{{{192\.168\..*|123\.123\.123\.123}}}" to allow the ip addresses in the "{{{192.168.*.*}}}" range plus any pc hiding behind the gateway {{{123.123.123.123}}}.
 
@@ -892,7 +894,7 @@ or
 	</tomcat-users>
 }}}
 
-Or, if you want BASIC authentication with username and password, but do no want to use a realm and "security-constraint" in web.xml, you can add the parameter "authorized-users" in web.xml, in context or in system properties like the other [#6._Optional_parameters javamelody parameters] (since v1.53). For example in your WEB-INF/web.xml file:
+	Or, if you want BASIC authentication with username and password, but do no want to use a realm and "security-constraint" in web.xml, you can add the parameter "authorized-users" in web.xml, in context or in system properties like the other [#6._Optional_parameters javamelody parameters] (since v1.53). For example in your WEB-INF/web.xml file:
 {{{
 	<filter>
 		<filter-name>monitoring</filter-name>
