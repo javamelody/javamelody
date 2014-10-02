@@ -838,7 +838,7 @@ or
 
 === 16. Security ===
 
-	The monitoring page does not contain data such as passwords, but before using it in production, you may probably want that this page is in restricted access. You may secure it by using your own means. Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
+	The monitoring page does not contain data such as passwords, but before using it in production, you may probably want that this page is in restricted access. If you use a Jenkins, JIRA, Confluence, Bamboo or Liferay plugin, it is secured by the app roles. Or, you may secure it by using your own means. Otherwise, it is possible to restrict its access by a regular expression on ip address of client with the parameter {{{allowed-addr-pattern}}}
 	(regular expression with a range of internal ip addresses or fixed ip addresses of administrators).
 	For example, "{{{192\.168\..*|123\.123\.123\.123}}}" to allow the ip addresses in the "{{{192.168.*.*}}}" range plus any pc hiding behind the gateway {{{123.123.123.123}}}.
 
