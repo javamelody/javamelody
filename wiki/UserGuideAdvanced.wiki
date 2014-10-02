@@ -248,12 +248,12 @@ For standard documentation, see [UserGuide]
         </tomcat-users>
 }}}
 
-	Or, if you want BASIC authentication with username and password, but do no want to use a realm and "security-constraint" in web.xml, you can add the parameter "authorized-users" in web.xml, in context or in system properties like the other [UserGuide#6._Optional_parameters javamelody parameters]. For example with a system property -Djavamelody.authorized-users=user1:pwd1,user2:pwd2
+	Or, if you want BASIC authentication with username and password, but do no want to use a realm and "security-constraint" in web.xml, you can add the parameter "authorized-users" in web.xml, in context or in system properties like the other [UserGuide#6._Optional_parameters javamelody parameters]. For example with a system property -Djavamelody.authorized-users=user1:pwd1,user2:pwd2 (since v1.53)
 
 	Then, when you add the monitored application in the collector server, define the username and the password in the URL. For example, the URL of the monitored application, as given to the collect server, could be:
 	http://myusername:mypassword@myhost:8080/mywebapp (the collect server needs to be v1.38 or more)
 
-	To restrict access to the reports in the collector server, you can also set the -Djavamelody.authorized-users=user1:pwd1,user2:pwd2 system property on the collector server.
+	To restrict access to the reports in the collector server, you can also set the -Djavamelody.authorized-users=user1:pwd1,user2:pwd2 system property on the collector server (since v1.53).
 
 	Furthermore, if you do not want the people having access to the collect server to be able to add or remove applications to monitor, you can forbid the writing to the file "applications.properties" which contains the list of the applications to monitor. This file is located in the storage directory, "temp/javamelody/applications.properties" for example. The user of the OS running the java process of the collect server must be allowed to read the file but without being allowed to write it. Only you, by using "root" for example, will be able by editing the file to add or to remove applications as the collect server would do. And in this case, the links "add an application" and "remove an application" will not be displayed in the collect server.
 
