@@ -400,32 +400,6 @@ or you can use the {{{ asadmin add-resources /path/to/sample-resource.xml }}} co
   * Then in the details of the resource in the GlassFish admin console, define the target of the custom resource if the monitored webapp is deployed on another target instance than the Admin Server
   * Test: Webapp uses "jdbc/MyDataSource" as before to lookup from JNDI (and now it is the custom resource referencing "jdbc/MyDataSource_uncached"). After some usage of the webapp, the statistics of the SQL requests should be displayed in the monitoring report.
 
-This should work with every versions of JavaMelody since v1.23.
-
-== Usage of JavaMelody in JBoss AS 7 (which uses OSGI) ==
-
-Since javamelody v1.44.0, the following configuration of JBoss AS 7 is not needed anymore.
-
-~~JBoss AS 7 uses OSGI and so you need to add a configuration in JBoss to use JavaMelody.~~
-
-~~Add com/sun/management to jboss-as-7/modules/sun/jdk/main/modules.xml:
-{{{
-    ...
-    <module xmlns="urn:jboss:module:1.1" name="sun.jdk">
-        <resources>
-            <!-- currently jboss modules has not way of importing services from
-            classes.jar so we duplicate them here -->
-            <resource-root path="service-loader-resources"/>
-        </resources>
-        <dependencies>
-            <system export="true">
-                <paths>
-                    <path name="com/sun/management"/>
-                    <path name="com/sun/script/javascript"/>
-    ...
-}}}
-~~Otherwise you will have a java.lang.NoClassDefFoundError: com/sun/management/OperatingSystemMXBean~~
-
 
 == Usage of JavaMelody in JonAS 5 (which uses OSGI) ==
 
@@ -491,7 +465,7 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 
 == Debugging logs ==
 	
-	Since javamelody v1.44.0, the debugging logs, such as javamelody initialization, are displayed at the bottom of the html report.
+	The debugging logs, such as javamelody initialization, are displayed at the bottom of the html report.
 	
 	Logs for debugging are also available using either logback if found, or log4j if found or
 	java.util.logging otherwise. The log messages for debugging are written using the category
