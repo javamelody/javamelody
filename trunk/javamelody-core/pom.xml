@@ -263,13 +263,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
-		<extensions>
-			<extension>
-				<groupId>org.jvnet.wagon-svn</groupId>
-				<artifactId>wagon-svn</artifactId>
-				<version>1.9</version>
-			</extension>
-		</extensions>
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
@@ -305,7 +298,7 @@
 				ant mais avec pom.properties et pom.xml pour publication dans un repository -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
 				<configuration>
 					<excludes>
 						<exclude>**/Thumbs.db</exclude>
@@ -386,7 +379,7 @@
 			<!-- Configuration exécution des tests unitaires -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
+				<version>2.17</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 					<!-- Ce paramètre permet aussi de tester l'appel à RuntimeMXBean.getInputArguments() -->
@@ -420,7 +413,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>2.10.1</version>
 				<configuration>
 					<offlineLinks>
 						<offlineLink>
@@ -438,18 +431,18 @@
 			<!-- Site -->
 			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.4</version>
 				<configuration>
 					<reportPlugins>
 						<!-- Javadoc -->
 						<plugin>
 							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.9.1</version>
+							<version>2.10.1</version>
 						</plugin>
 						<!-- Références croisées -->
 						<plugin>
 							<artifactId>maven-jxr-plugin</artifactId>
-							<version>2.3</version>
+							<version>2.4</version>
 							<configuration>
 								<linkJavadoc>false</linkJavadoc>
 							</configuration>
@@ -502,7 +495,7 @@
 						<!-- Rapport d'exécution des tests unitaires -->
 						<plugin>
 							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.16</version>
+							<version>2.17</version>
 							<!-- http://jira.codehaus.org/browse/SUREFIRE-257 -->
 							<reportSets>
 								<reportSet>
@@ -564,7 +557,7 @@
 			<!-- section reporting Temporaire : https://jira.codehaus.org/browse/MCHECKSTYLE-150 et autres -->
 			<plugin>
 				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.4</version>
 				<configuration>
 					<linkJavadoc>false</linkJavadoc>
 				</configuration>
