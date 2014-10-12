@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix issue 440: Not able to start Desktop version
 
 === 1.53.0 ===
 
