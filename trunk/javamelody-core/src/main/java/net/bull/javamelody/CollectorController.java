@@ -25,7 +25,6 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DESKTOP_JAR_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
@@ -160,9 +159,7 @@ class CollectorController {
 				collectorServer);
 		final String partParameter = req.getParameter(PART_PARAMETER);
 		final String formatParameter = req.getParameter(FORMAT_PARAMETER);
-		if (DESKTOP_JAR_PART.equalsIgnoreCase(partParameter)) {
-			monitoringController.doDesktopJar(req, resp);
-		} else if (req.getParameter(JMX_VALUE) != null) {
+		if (req.getParameter(JMX_VALUE) != null) {
 			doJmxValue(req, resp, application, req.getParameter(JMX_VALUE));
 		} else if (TransportFormat.isATransportFormat(formatParameter)) {
 			doCompressedSerializable(req, resp, application, monitoringController);
