@@ -17,17 +17,10 @@
  */
 package net.bull.javamelody;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.zip.ZipFile;
 
 /**
  * JNLP pour lancer l'ihm Swing avec JavaWebStart.
@@ -54,29 +47,20 @@ class JnlpPage {
 	}
 
 	void toJnlp() throws IOException {
-		final File jarFile = getJarFile();
 		println("<jnlp spec='1.0+' codebase='" + codebase + "'>");
 		println("   <information>");
 		println("      <title>JavaMelody</title>");
 		println("      <vendor>JavaMelody</vendor>");
 		println("      <description>Monitoring</description>");
-		if (!jarFile.exists()) {
-			// pas d'icône si jar existe, sinon conflit avec l'url du jar ci-dessous, dans le cache JWS
-			println("      <icon href='" + codebase + "?resource=systemmonitor.png'/>");
-		}
+		println("      <icon href='" + codebase + "?resource=systemmonitor.png'/>");
 		println("      <offline-allowed />");
 		println("   </information>");
 		println("   <security> <all-permissions/> </security>");
 		println("   <update check='always' policy='always'/>");
 		println("   <resources>");
 		println("      <j2se version='1.7+' max-heap-size='300m'/>");
-		if (jarFile.exists()) {
-			println("      <jar href='" + codebase + "?part=" + HttpParameters.DESKTOP_JAR_PART
-					+ "' size='" + jarFile.length() + "'/>");
-		} else {
-			final String jarFileUrl = getJarFileUrl();
-			println("      <jar href='" + jarFileUrl + "' />");
-		}
+		final String jarFileUrl = getJarFileUrl();
+		println("      <jar href='" + jarFileUrl + "' />");
 		final Map<String, Object> properties = new LinkedHashMap<String, Object>();
 		properties.put("javamelody.application", collector.getApplication());
 		properties.put("javamelody.collectorServer", collectorServer != null);
@@ -134,92 +118,5 @@ class JnlpPage {
 			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing.jar";
 		}
 		return jarFileUrl;
-	}
-
-	static File getJarFile() {
-		final String jarFileUrl = getJarFileUrl();
-		if (jarFileUrl.lastIndexOf('/') != -1) {
-			final String jarFileName = jarFileUrl.substring(jarFileUrl.lastIndexOf('/') + 1);
-			return new File(Parameters.getStorageDirectory(""), jarFileName);
-		}
-		return new File(jarFileUrl);
-	}
-
-	static void cacheDesktopJarIfNeededAsync() {
-		if (!getJarFile().exists()) {
-			final Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					try {
-						// wait 62s to let the webapp start first
-						Thread.sleep(62000);
-
-						cacheDesktopJar();
-					} catch (final InterruptedException e) {
-						LOG.debug(e.toString());
-					}
-				}
-			};
-			final Thread thread = new Thread(runnable, "JavaMelody Desktop Jar caching");
-			thread.setDaemon(true);
-			thread.start();
-		}
-	}
-
-	static File cacheDesktopJar() {
-		// téléchargement du jar depuis googlecode vers le serveur,
-		// et stockage du jar sur le serveur local pour le fournir par http à javawebstart,
-		// mais dans des grandes entreprises, il faut que l'adresse du proxy pour le téléchargement soit configuré
-		// (sinon, c'est JWS qui téléchargera avec son proxy)
-		final String jarFileUrl = getJarFileUrl();
-		final File jarFile = getJarFile();
-		LOG.debug("trying to download desktop jar to put in cache, from " + jarFileUrl);
-		try {
-			final File directory = jarFile.getParentFile();
-			if (!directory.mkdirs() && !directory.exists()) {
-				throw new IOException("JavaMelody directory can't be created: "
-						+ directory.getPath());
-			}
-			final long start = System.currentTimeMillis();
-			final URLConnection connection = new URL(jarFileUrl).openConnection();
-			connection.setUseCaches(false);
-			connection.setConnectTimeout(300000);
-			connection.setReadTimeout(300000);
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			final InputStream input = connection.getInputStream();
-			try {
-				TransportFormat.pump(input, output);
-			} finally {
-				input.close();
-			}
-
-			final FileOutputStream fileOutputStream = new FileOutputStream(jarFile);
-			try {
-				fileOutputStream.write(output.toByteArray());
-			} finally {
-				fileOutputStream.close();
-			}
-
-			try {
-				new ZipFile(jarFile).close();
-			} catch (final Exception e) {
-				if (!jarFile.delete()) {
-					jarFile.deleteOnExit();
-				}
-				final IOException exception = new IOException(
-						"desktop jar downloaded is not in zip format - proxy error page?");
-				exception.initCause(e);
-				throw exception;
-			}
-			final long duration = System.currentTimeMillis() - start;
-			LOG.debug("desktop jar downloaded and put in cache, from " + jarFileUrl + " to "
-					+ jarFile + ", in " + duration + " ms, for " + jarFile.length() / 1024 + " KB");
-			return jarFile;
-		} catch (final IOException e) {
-			LOG.debug("Can't download desktop jar to put in cache, from " + jarFileUrl
-					+ " - perhaps http proxy is not configured?"
-					+ " So, desktop jar will be downloaded from Internet in JWS. " + e.toString());
-			return null;
-		}
 	}
 }

@@ -84,7 +84,6 @@ class CollectorServer {
 			// avec une exécution de suite en asynchrone pour initialiser les données
 			timer.schedule(collectTask, 100, periodMillis);
 			JRobin.initBackendFactory(timer);
-			JnlpPage.cacheDesktopJarIfNeededAsync();
 			initOk = true;
 		} finally {
 			if (!initOk) {

@@ -241,8 +241,6 @@ class FilterContext {
 			LOG.debug("mail reports scheduled for "
 					+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
 		}
-
-		JnlpPage.cacheDesktopJarIfNeededAsync();
 	}
 
 	private SamplingProfiler initSamplingProfiler() {
