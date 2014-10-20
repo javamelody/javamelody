@@ -582,10 +582,6 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		return Action.GC_ENABLED || collectorServer != null;
 	}
 
-	private boolean isHeapDumpEnabled() {
-		return collectorServer != null;
-	}
-
 	private boolean isHeapHistoEnabled() {
 		return collectorServer != null || VirtualMachine.isEnabled();
 	}
@@ -688,15 +684,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
-		if (isHeapDumpEnabled()) {
-			// si serveur de collecte, on suppose que si la version de java est la bonne
-			// sur le serveur de collecte, ce sera la bonne aussi sur les serveurs
-			// des webapps monitorées
-			write("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
-			write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
-			writeln(separator);
-		}
+		write("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
+				+ getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
+		write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
+		writeln(separator);
 		if (isHeapHistoEnabled()) {
 			write("<a href='?part=heaphisto'>");
 			write("<img src='?resource=memory.png' width='20' height='20' alt=\"#heaphisto#\" /> #heaphisto#</a>");
