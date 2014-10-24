@@ -131,10 +131,10 @@ For standard documentation, see [UserGuide]
 	</Context>
 }}}
 
-	The optional parameters {{{resolution-seconds}}}, {{{storage-directory}}}, {{{system-actions-enabled}}}, {{{warning-threshold-millis}}},
+	The optional parameters {{{resolution-seconds}}}, {{{storage-directory}}}, {{{log}}}, {{{warning-threshold-millis}}},
 	{{{severe-threshold-millis}}} and {{{allowed-addr-pattern}}} can be added in the xml context file of the collect server with the prefix {{{javamelody}}}. They can also be added as system properties with the prefix {{{javamelody}}}.
 
-    They have the same effects on the collect server than those of a monitored application as written in the [UserGuide]. In particular the parameter {{{resolution-seconds}}} defines the period of calls to urls of applications from collect server and the resolution of charts in the monitoring. The parameter {{{system-actions-enabled}}} needs to be added with the value "true" both in the collect server and in the monitored applications.
+	They have the same effects on the collect server than those of a monitored application as written in the [UserGuide]. In particular the parameter {{{resolution-seconds}}} defines the period of calls to urls of applications from collect server and the resolution of charts in the monitoring. Logs such as connect exceptions are printed in the standard output of the server, and to have more logs you can add the system property -Djavamelody.log=true
     
 	The collect server can send weekly, daily or monthly reports by mail for each monitored application. For this, use in the collect server (in Tomcat context for example) exactly the same mail session, the same parameters and the same jar files as those in [UserGuide#14._Weekly,_daily_or_monthly_reports_by_mail Weekly, daily or monthly reports by mail].
     
