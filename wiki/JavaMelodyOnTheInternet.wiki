@@ -28,7 +28,7 @@
   * [http://community.jaspersoft.com/wiki/javamelody-monitoring-tool Monitoring a JasperReports Server]
   * [https://blogs.atlassian.com/2013/07/bamboo-top-5-plugins/ Atlassian Blog about Bamboo]
   * [http://kualigan.blogspot.com/2012/02/adding-java-melody-to-kuali-project.html Adding JavaMelody to a Kuali project, Kualigan]
-  * [http://tpeelen.wordpress.com/2012/12/12/alfresco-monitoring-with-javamelody/ Tjarda Peelen on Alfresco]
+  * [http://tpeelen.wordpress.com/2012/12/12/alfresco-monitoring-with-javamelody/ Tjarda Peelen] or [http://desaille.fr/alfresco-4-2f-monitoring-avec-javamelody/ Vincent (Frecnh)] on Alfresco
   * [http://www.dzone.com/links/rss/javamelody_1150_released.html dzone]
   * [http://panbhatt.blogspot.com/2011/01/monitoring-your-server-java.html Panbhatt]
   * [http://looking4q.blogspot.com/2011/01/monitorize-your-own-applications-with.html Alberto]
