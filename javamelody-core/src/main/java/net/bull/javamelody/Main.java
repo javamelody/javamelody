@@ -111,7 +111,7 @@ public final class Main {
 		System.setProperty("executable-war", me.getAbsolutePath()); // remember the location so that we can access it from within webapp
 
 		// put winstone jar in a file system so that we can load jars from there
-		final File tmpJar = extractFromJar("/winstone-hudson.jar", "winstone", "jar");
+		final File tmpJar = extractFromJar("/winstone-jenkins.jar", "winstone", "jar");
 
 		// clean up any previously extracted copy, since
 		// winstone doesn't do so and that causes problems when newer version is deployed.
@@ -141,7 +141,6 @@ public final class Main {
 						+ "   --prefix                 = add this prefix to all URLs (eg http://localhost:8080/prefix/resource). Default is none\n"
 						+ "   --commonLibFolder        = folder for additional jar files. Default is ./lib\n"
 						+ "   \n"
-						+ "   --logfile                = redirect log messages to this file\n"
 						+ "   --logThrowingLineNo      = show the line no that logged the message (slow). Default is false\n"
 						+ "   --logThrowingThread      = show the thread that logged the message. Default is false\n"
 						+ "   --debug                  = set the level of debug msgs (1-9). Default is 5 (INFO level)\n"
@@ -149,22 +148,35 @@ public final class Main {
 						+ "   --httpPort               = set the http listening port. -1 to disable, Default is 8080\n"
 						+ "   --httpListenAddress      = set the http listening address. Default is all interfaces\n"
 						+ "   --httpDoHostnameLookups  = enable host name lookups on incoming http connections (true/false). Default is false\n"
+						+ "   --httpKeepAliveTimeout   = how long idle HTTP keep-alive connections are kept around (in ms; default 5000)?\n"
 						+ "   --httpsPort              = set the https listening port. -1 to disable, Default is disabled\n"
+						+ "                              if neither --httpsCertificate nor --httpsKeyStore are specified,\n"
+						+ "                              https is run with one-time self-signed certificate.\n"
 						+ "   --httpsListenAddress     = set the https listening address. Default is all interfaces\n"
 						+ "   --httpsDoHostnameLookups = enable host name lookups on incoming https connections (true/false). Default is false\n"
-						+ "   --httpsKeyStore          = the location of the SSL KeyStore file. Default is ./winstone.ks\n"
+						+ "   --httpsKeepAliveTimeout   = how long idle HTTPS keep-alive connections are kept around (in ms; default 5000)?\n"
+						+ "   --httpsKeyStore          = the location of the SSL KeyStore file.\n"
 						+ "   --httpsKeyStorePassword  = the password for the SSL KeyStore file. Default is null\n"
+						+ "   --httpsCertificate       = the location of the PEM-encoded SSL certificate file.\n"
+						+ "                              (the one that starts with '-----BEGIN CERTIFICATE-----')\n"
+						+ "                              must be used with --httpsPrivateKey.\n"
+						+ "   --httpsPrivateKey        = the location of the PEM-encoded SSL private key.\n"
+						+ "                              (the one that starts with '-----BEGIN RSA PRIVATE KEY-----')\n"
 						+ "   --httpsKeyManagerType    = the SSL KeyManagerFactory type (eg SunX509, IbmX509). Default is SunX509\n"
-						+ "   --ajp13Port              = set the ajp13 listening port. -1 to disable, Default is 8009\n"
+						+ "   --spdy                   = Enable SPDY. See http://wiki.eclipse.org/Jetty/Feature/NPN\n"
+						+ "   --ajp13Port              = set the ajp13 listening port. -1 to disable, Default is disabled\n"
 						+ "   --ajp13ListenAddress     = set the ajp13 listening address. Default is all interfaces\n"
 						+ "   --controlPort            = set the shutdown/control port. -1 to disable, Default disabled\n"
 						+ "   \n"
 						+ "   --handlerCountStartup    = set the no of worker threads to spawn at startup. Default is 5\n"
-						+ "   --handlerCountMax        = set the max no of worker threads to allow. Default is 300\n"
-						+ "   --handlerCountMaxIdle    = set the max no of idle worker threads to allow. Default is 50\n"
+						+ "   --handlerCountMax        = set the max no of worker threads to allow. Default is 40\n"
+						+ "   --handlerCountMaxIdle    = set the max no of idle worker threads to allow. Default is 5\n"
 						+ "   \n"
-						+ "   --simulateModUniqueId    = simulate the apache mod_unique_id function. Default is false\n"
-						+ "   --useSavedSessions       = enables session persistence (true/false). Default is false\n"
+						+ "   --sessionTimeout         = set the http session timeout value in minutes. Default to what webapp specifies, and then to 60 minutes\n"
+						+ "   --mimeTypes=ARG          = define additional MIME type mappings. ARG would be EXT=MIMETYPE:EXT=MIMETYPE:...\n"
+						+ "                              (e.g., xls=application/vnd.ms-excel:wmf=application/x-msmetafile)\n"
+						+ "   --maxParamCount=N        = set the max number of parameters allowed in a form submission to protect\n"
+						+ "                              against hash DoS attack (oCERT #2011-003). Default is 10000.\n"
 						+ "   --usage / --help         = show this message\n"
 						+ "   \n"
 						+ "Security options:\n"
@@ -179,7 +191,6 @@ public final class Main {
 						+ "   --accessLoggerClassName        = Set the access logger class to use for user authentication. Defaults to disabled\n"
 						+ "   --simpleAccessLogger.format    = The log format to use. Supports combined/common/resin/custom (SimpleAccessLogger only)\n"
 						+ "   --simpleAccessLogger.file      = The location pattern for the log file(SimpleAccessLogger only)");
-
 		// run
 		mainMethod.invoke(null, new Object[] { arguments.toArray(new String[arguments.size()]) });
 	}

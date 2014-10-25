@@ -139,7 +139,7 @@
 			<zipfileset dir="build/classes" prefix="WEB-INF/classes" />
 			<!-- Main-Class et dépendances pour "java -jar javamelody.war" -->
 			<zipfileset file="build/classes/net/bull/javamelody/Main.class" prefix="net/bull/javamelody" />
-			<zipfileset file="src/main/lib/winstone-hudson.jar" />
+			<zipfileset file="src/main/lib/winstone-jenkins.jar" />
 			<!-- ressources de la webapp -->
 			<zipfileset dir="src/main/resources" prefix="WEB-INF/classes" excludes="**/Thumbs.db,META-INF/web-fragment.xml" />
 			<zipfileset file="VERSION.properties" prefix="WEB-INF/classes" />
