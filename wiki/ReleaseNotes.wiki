@@ -1,7 +1,8 @@
 #labels Featured
 === Next release (trunk) ===
 
-  * fix issue 440: Not able to start Desktop version
+  * fix issue 440: Not able to start Desktop version.
+  * In the optional collect server, upgrade the embedded Winstone server.
 
 === 1.53.0 ===
 
