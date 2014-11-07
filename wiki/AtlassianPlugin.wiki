@@ -1,6 +1,6 @@
 = Atlassian JIRA, Confluence and Bamboo Plugin =
 
-	*Attention*: The plugin managers may say that the latest javamelody versions are incompatible, but in fact they are certainly compatible as displayed on the [https://marketplace.atlassian.com/plugins/net.bull.javamelody/versions plugin history page].
+*Attention*: The plugin managers may say that the latest javamelody versions are incompatible, but in fact they are certainly compatible as displayed on the [https://marketplace.atlassian.com/plugins/net.bull.javamelody/versions plugin history page].
 
 	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA],
 	[http://www.atlassian.com/software/confluence/ Confluence] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily
