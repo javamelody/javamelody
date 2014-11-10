@@ -5,7 +5,10 @@
 	If you want to monitor a [http://www.atlassian.com/software/jira/ JIRA],
 	[http://www.atlassian.com/software/confluence/ Confluence] or a [http://www.atlassian.com/software/bamboo/ Bamboo] server, you can install JavaMelody easily
 	with a JIRA/Confluence/Bamboo plugin. For this, [https://github.com/javamelody/javamelody/releases download] the jira-javamelody.jar file of the plugin
-	and copy the file in the "{{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}}" directory for JIRA, in "{{{Bamboo/webapp/WEB-INF/lib}}}" for Bamboo or upload the file with the "Plugin manager" in the "Administration" menu for Confluence.
+	and copy the file:
+  * in the "{{{JIRA x.x.x/atlassian-jira/WEB-INF/lib}}}" directory for JIRA,
+  * in "{{{Bamboo/atlassian-bamboo/WEB-INF/lib}}}" for Bamboo (or in "{{{Bamboo/webapp/WEB-INF/lib}}}" for older Bamboo)
+  * or upload the file with the "Plugin manager" in the "Administration" menu for Confluence.
 
 	Restart the server.
 
