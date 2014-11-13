@@ -2,7 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 440: Not able to start Desktop version.
-  * improved: In the optional collector server, when the monitoring-path parameter such as /admin/monitoring is used in the monitored webapp(s), support the same parameter for calling the webapps in the collector server, for example -Djavamelody.monitoring-path=/admin/monitoring (issue 442, thanks to _dmouch_)
+  * improved: In the optional collector server, when the monitoring-path parameter such as /admin/monitoring is used in the monitored webapp(s), support the same parameter for calling the webapps from the collector server, for example -Djavamelody.monitoring-path=/admin/monitoring (issue 442, thanks to _dmouch_)
   * improved: In the optional collect server, upgrade the embedded Winstone server.
 
 === 1.53.0 ===
