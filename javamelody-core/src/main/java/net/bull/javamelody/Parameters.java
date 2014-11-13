@@ -136,6 +136,7 @@ final class Parameters {
 
 	private static void writeCollectorApplications() throws IOException {
 		final Properties properties = new Properties();
+		final String monitoringPath = getMonitoringPath();
 		for (final Map.Entry<String, List<URL>> entry : urlsByApplications.entrySet()) {
 			final List<URL> urls = entry.getValue();
 			assert urls != null && !urls.isEmpty();
@@ -143,7 +144,9 @@ final class Parameters {
 			for (final URL url : urls) {
 				final String urlString = url.toString();
 				// on enlève le suffixe ajouté précédemment dans parseUrl
-				sb.append(urlString.substring(0, urlString.lastIndexOf("/monitoring"))).append(',');
+				final String webappUrl = urlString.substring(0,
+						urlString.lastIndexOf(monitoringPath));
+				sb.append(webappUrl).append(',');
 			}
 			sb.delete(sb.length() - 1, sb.length());
 			properties.put(entry.getKey(), sb.toString());
@@ -200,7 +203,8 @@ final class Parameters {
 			transportFormat = TransportFormat.valueOfIgnoreCase(Parameters
 					.getParameter(Parameter.TRANSPORT_FORMAT));
 		}
-		final String suffix = "/monitoring?collector=stop&format=" + transportFormat.getCode();
+		final String suffix = getMonitoringPath() + "?collector=stop&format="
+				+ transportFormat.getCode();
 
 		final String[] urlsArray = value.split(",");
 		final List<URL> urls = new ArrayList<URL>(urlsArray.length);
