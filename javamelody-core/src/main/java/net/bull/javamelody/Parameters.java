@@ -45,6 +45,8 @@ final class Parameters {
 	static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
 	static final String JAVA_VERSION = System.getProperty("java.version");
 	static final String JAVAMELODY_VERSION = getJavaMelodyVersion();
+	// default monitoring-path is "/monitoring" in the http URL
+	private static final String DEFAULT_MONITORING_PATH = "/monitoring";
 	// résolution (ou pas) par défaut en s de stockage des valeurs dans les fichiers RRD
 	private static final int DEFAULT_RESOLUTION_SECONDS = 60;
 	// stockage des fichiers RRD de JRobin dans le répertoire temp/javamelody/<context> par défaut
@@ -211,6 +213,14 @@ final class Parameters {
 			urls.add(url);
 		}
 		return urls;
+	}
+
+	static String getMonitoringPath() {
+		final String parameterValue = getParameter(Parameter.MONITORING_PATH);
+		if (parameterValue == null) {
+			return DEFAULT_MONITORING_PATH;
+		}
+		return parameterValue;
 	}
 
 	/**
