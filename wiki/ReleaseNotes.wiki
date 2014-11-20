@@ -2,6 +2,7 @@
 === Next release (trunk) ===
 
   * fix issue 440: Not able to start Desktop version.
+  * fix broken link to the ehcache documentation (revision 3972)
   * improved: In the optional collector server, when the monitoring-path parameter such as /admin/monitoring is used in the monitored webapp(s), support the same parameter for calling the webapp(s) from the collector server, for example -Djavamelody.monitoring-path=/admin/monitoring (issue 442, thanks to _Dimitris Mouchritsas & Manolis Pitarokilis_)
   * improved: In the optional collect server, upgrade the embedded Winstone server.
 
