@@ -81,7 +81,7 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
 		// writeDirectly pour éviter traduction car # dans l'url
-		writeDirectly("<a href='http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
+		writeDirectly("<a href='http://ehcache.org/apidocs/2.9/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
 		writeln("target='_blank'>Configuration reference</a></div>");
 	}
 
