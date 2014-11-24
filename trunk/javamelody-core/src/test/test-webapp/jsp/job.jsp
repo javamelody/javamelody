@@ -30,6 +30,15 @@ trigger2.setJobGroup(job2.getGroup());
 trigger2.setJobName(job2.getName());
 scheduler.scheduleJob(trigger2);
 
+/* Test for Quartz v2:
+Random random = new Random();
+Scheduler sched  = StdSchedulerFactory.getDefaultScheduler();
+JobDetail job = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random.nextInt(), "group1").build();
+Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger"+ random.nextInt(), "group1").withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
+sched.scheduleJob(job, trigger);
+sched.start();
+*/
+
 %>
 
 Jobs initialized
