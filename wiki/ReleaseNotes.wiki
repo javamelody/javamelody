@@ -7,6 +7,7 @@
 
   * fix issue 440: Not able to start Desktop version.
   * fix broken link to the ehcache documentation (revision 3972)
+  * fix: In the [https://wiki.jenkins-ci.org/display/JENKINS/Monitoring Jenkins plugin], the monitoring reports of a slave didn't work if its name contains a space.
   * improved: In the optional collector server, when the monitoring-path parameter such as /admin/monitoring is used in the monitored webapp(s), support the same parameter for calling the webapp(s) from the collector server, for example -Djavamelody.monitoring-path=/admin/monitoring (issue 442, thanks to _Dimitris Mouchritsas & Manolis Pitarokilis_)
   * improved: In the optional collect server, upgrade the embedded Winstone server.
 
