@@ -125,7 +125,7 @@ This is an internal reminder of the steps of the release process.
     * mvn release:prepare release:perform
     * tag is created in [http://javamelody.googlecode.com/svn/tags/]
   * call *ant* target "zip" of build.xml to package files
-  * Edit README.md at [https://github.com/javamelody/javamelody/blob/master/README.md]
+  * Edit version in README.md at [https://github.com/javamelody/javamelody/blob/master/README.md]
   * *draft a new release* and *upload* jar, war, zip and jira-javamelody.jar files to [https://github.com/javamelody/javamelody/releases]
   * *update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes]* with version
   * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing
