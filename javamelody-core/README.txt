@@ -1,4 +1,4 @@
-README Java Melody : monitoring d'applications Java EE
+﻿README Java Melody : monitoring d'applications Java EE
 ******************************************************
 
 Cet outil de monitoring a pour but de monitorer les serveurs d'applications Java / Java EE en recette et en production.
@@ -28,3 +28,4 @@ Dépendances optionnelles : iText 2.1.7 (LGPL ou MPL) pour les rapports au forma
 	Ehcache pour le monitoring des caches, Quartz pour le monitoring des jobs en batchs
 Langage : français, anglais, allemand, portugais et chinois
 Navigateur : Le rapport html de JavaMelody est optimisé pour Firefox, Chrome ou MSIE8 (MSIE7 non recommandé).
+
