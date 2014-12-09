@@ -511,6 +511,11 @@ public final class JdbcWrapper {
 			// rewrap pour tomee/openejb (cf issue 104),
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage);
+		} else if ("org.apache.openejb.resource.jdbc.managed.local.ManagedDataSource"
+				.equals(dataSourceClassName)) {
+			// rewrap pour tomee/openejb plus récents (cf issue 104),
+			rewrapTomEEDataSource(dataSource);
+			LOG.debug(dataSourceRewrappedMessage);
 		} else if (jonas) {
 			// JONAS (si rewrap-datasources==true)
 			rewrapJonasDataSource(jndiName, dataSource);
@@ -557,6 +562,24 @@ public final class JdbcWrapper {
 		if (innerDataSource != null) {
 			innerDataSource = createDataSourceProxy((DataSource) innerDataSource);
 			JdbcWrapperHelper.setFieldValue(dataSource, "dataSource", innerDataSource);
+		}
+	}
+
+	private void rewrapTomEEDataSource(DataSource dataSource) throws IllegalAccessException {
+		// on récupère une connection avant de la refermer,
+		// car sinon la datasource interne n'est pas encore créée
+		// et le rewrap ne peut pas fonctionner
+		try {
+			dataSource.getConnection().close();
+		} catch (final Exception e) {
+			LOG.debug(e.toString());
+			// ce n'est pas grave s'il y a une exception, par exemple parce que la base n'est pas disponible,
+			// car l'essentiel est de créer la datasource
+		}
+		Object innerDataSource = JdbcWrapperHelper.getFieldValue(dataSource, "delegate");
+		if (innerDataSource != null) {
+			innerDataSource = createDataSourceProxy((DataSource) innerDataSource);
+			JdbcWrapperHelper.setFieldValue(dataSource, "delegate", innerDataSource);
 		}
 	}
 
