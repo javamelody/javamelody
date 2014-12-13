@@ -241,6 +241,11 @@ public class TestCompressionServletResponseWrapper {
 		public Collection<String> getHeaderNames() {
 			return null;
 		}
+
+		@Override
+		public void setContentLengthLong(long len) {
+			// rien
+		}
 	}
 
 	/** Test.

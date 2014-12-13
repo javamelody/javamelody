@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpUtils;
@@ -111,6 +112,21 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 					@Override
 					public int read() throws IOException {
 						return stream.read();
+					}
+
+					@Override
+					public boolean isFinished() {
+						return false;
+					}
+
+					@Override
+					public boolean isReady() {
+						return false;
+					}
+
+					@Override
+					public void setReadListener(ReadListener readListener) {
+						// nothing						
 					}
 				};
 			}
