@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -290,8 +291,9 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 	/** {@inheritDoc} */
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
+		final ServletInputStream requestInputStream = super.getInputStream();
 		if (bufferedInputStream == null) {
-			return super.getInputStream();
+			return requestInputStream;
 		}
 		if (inputStream == null) {
 			final BufferedInputStream myBufferedInputStream = bufferedInputStream;
@@ -300,6 +302,21 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 				@Override
 				public int read() throws IOException {
 					return myBufferedInputStream.read();
+				}
+
+				@Override
+				public boolean isFinished() {
+					return requestInputStream.isFinished();
+				}
+
+				@Override
+				public boolean isReady() {
+					return requestInputStream.isReady();
+				}
+
+				@Override
+				public void setReadListener(ReadListener readListener) {
+					requestInputStream.setReadListener(readListener);
 				}
 			};
 		}
