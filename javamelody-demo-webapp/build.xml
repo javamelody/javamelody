@@ -42,9 +42,9 @@
 
 	<target name="build" depends="init">
 		<echo message="Compilation" level="info" />
-		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.5" target="1.5" 
+		<javac encoding="UTF-8" debug="on" deprecation="on" nowarn="off" source="1.6" target="1.6" 
 			srcdir="src" destdir="build" includeantruntime="false"
-			classpath="../javamelody-core/src/main/lib/javax.servlet-api-3.0.1.jar">
+			classpath="../javamelody-core/src/main/lib/javax.servlet-api-3.1.0.jar">
 			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
