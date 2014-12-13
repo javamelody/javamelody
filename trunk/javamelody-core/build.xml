@@ -38,7 +38,7 @@
 		<pathconvert property="class.path">
 			<path>
 				<fileset dir="src/main/lib">
-					<include name="javax.servlet-api-3.0.1.jar" />
+					<include name="javax.servlet-api-3.1.0.jar" />
 					<include name="mail-1.4.1.jar" />
 					<include name="activation.jar" />
 					<include name="ejb-api-3.0.jar" />
