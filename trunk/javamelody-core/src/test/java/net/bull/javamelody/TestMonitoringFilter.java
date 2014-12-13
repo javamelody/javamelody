@@ -79,6 +79,7 @@ import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ReadListener;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -406,6 +407,21 @@ public class TestMonitoringFilter { // NOPMD
 			@Override
 			public int read() throws IOException {
 				return byteArrayInputStream.read();
+			}
+
+			@Override
+			public boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			public boolean isReady() {
+				return false;
+			}
+
+			@Override
+			public void setReadListener(ReadListener readListener) {
+				// nothing
 			}
 		};
 		return inputStream;
