@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -124,5 +125,15 @@ class CompressionResponseStream extends ServletOutputStream {
 		checkBufferSize(len);
 		// write the content to the buffer
 		stream.write(bytes, off, len);
+	}
+
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	@Override
+	public void setWriteListener(WriteListener writeListener) {
+		// nothing to do	
 	}
 }

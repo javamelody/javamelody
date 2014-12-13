@@ -21,13 +21,26 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 /**
- * Output stream pour un filtre implémentant ServletOutputStream à partir d'un OutputStream.
+ * Output stream pour un filtre implémentant ServletOutputStream à partir d'un autre ServletOutputStream ou d'un OutputStream.
  * @author Emeric Vernat
  */
 class FilterServletOutputStream extends ServletOutputStream {
 	private final OutputStream stream;
+	private final ServletOutputStream servletOutputStream;
+
+	/**
+	 * Constructeur.
+	 * @param output ServletOutputStream
+	 */
+	FilterServletOutputStream(ServletOutputStream output) {
+		super();
+		assert output != null;
+		stream = output;
+		servletOutputStream = output;
+	}
 
 	/**
 	 * Constructeur.
@@ -37,6 +50,7 @@ class FilterServletOutputStream extends ServletOutputStream {
 		super();
 		assert output != null;
 		stream = output;
+		servletOutputStream = null;
 	}
 
 	/** {@inheritDoc} */
@@ -67,5 +81,20 @@ class FilterServletOutputStream extends ServletOutputStream {
 	@Override
 	public void write(byte[] bytes, int off, int len) throws IOException {
 		stream.write(bytes, off, len);
+	}
+
+	@Override
+	public boolean isReady() {
+		if (servletOutputStream != null) {
+			return servletOutputStream.isReady();
+		}
+		return true;
+	}
+
+	@Override
+	public void setWriteListener(WriteListener writeListener) {
+		if (servletOutputStream != null) {
+			servletOutputStream.setWriteListener(writeListener);
+		}
 	}
 }
