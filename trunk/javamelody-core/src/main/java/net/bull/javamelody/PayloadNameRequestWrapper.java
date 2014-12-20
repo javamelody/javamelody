@@ -298,7 +298,6 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 		if (inputStream == null) {
 			final BufferedInputStream myBufferedInputStream = bufferedInputStream;
 			inputStream = new ServletInputStream() {
-				/** {@inheritDoc} */
 				@Override
 				public int read() throws IOException {
 					return myBufferedInputStream.read();
