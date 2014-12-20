@@ -46,7 +46,7 @@ final class Utils {
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(6000);
+						Thread.sleep(60000);
 						System.out.println("********************** Thread dump ******************");
 						final Map<Thread, StackTraceElement[]> allStackTraces = Thread
 								.getAllStackTraces();
