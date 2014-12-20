@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
 
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdException;
+import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -35,6 +36,8 @@ import org.quartz.impl.StdSchedulerFactory;
 final class Utils {
 	private static final String SYSTEM_ACTIONS_PROPERTY_NAME = Parameters.PARAMETER_SYSTEM_PREFIX
 			+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode();
+
+	private static Scheduler defaultQuartzScheduler;
 
 	private Utils() {
 		super();
@@ -59,8 +62,11 @@ final class Utils {
 			}
 		}
 		JRobin.stop();
+
 		try {
-			StdSchedulerFactory.getDefaultScheduler().shutdown();
+			if (!getDefaultQuartzScheduler().isShutdown()) {
+				getDefaultQuartzScheduler().shutdown();
+			}
 		} catch (final SchedulerException e) {
 			throw new IllegalStateException(e);
 		}
@@ -84,5 +90,12 @@ final class Utils {
 		} catch (final RrdException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static synchronized Scheduler getDefaultQuartzScheduler() throws SchedulerException { // NOPMD
+		if (defaultQuartzScheduler == null) {
+			defaultQuartzScheduler = StdSchedulerFactory.getDefaultScheduler();
+		}
+		return defaultQuartzScheduler;
 	}
 }
