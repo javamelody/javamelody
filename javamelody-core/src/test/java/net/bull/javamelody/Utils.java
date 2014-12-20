@@ -19,14 +19,12 @@ package net.bull.javamelody;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.Map;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdException;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -37,39 +35,6 @@ import org.quartz.impl.StdSchedulerFactory;
 final class Utils {
 	private static final String SYSTEM_ACTIONS_PROPERTY_NAME = Parameters.PARAMETER_SYSTEM_PREFIX
 			+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode();
-
-	private static Scheduler defaultQuartzScheduler;
-
-	static {
-		Thread debugThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						Thread.sleep(60000);
-						System.out.println("********************** Thread dump ******************");
-						final Map<Thread, StackTraceElement[]> allStackTraces = Thread
-								.getAllStackTraces();
-						for (Thread t : allStackTraces.keySet()) {
-							System.out.println(t);
-							final StackTraceElement[] stackTraceElements = allStackTraces.get(t);
-							if (stackTraceElements != null) {
-								for (StackTraceElement e : stackTraceElements) {
-									System.out.println("\t" + e);
-								}
-							}
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		});
-		debugThread.setName("debug thread");
-		debugThread.setDaemon(true);
-		debugThread.start();
-	}
 
 	private Utils() {
 		super();
@@ -94,11 +59,10 @@ final class Utils {
 			}
 		}
 		JRobin.stop();
-
 		try {
-			if (!getDefaultQuartzScheduler().isShutdown()) {
-				getDefaultQuartzScheduler().shutdown();
-			}
+			// shutdown seems needed at the moment in order that this job does not run forever:
+			// https://javamelody.ci.cloudbees.com/job/javamelody/
+			StdSchedulerFactory.getDefaultScheduler().shutdown();
 		} catch (final SchedulerException e) {
 			throw new IllegalStateException(e);
 		}
@@ -122,12 +86,5 @@ final class Utils {
 		} catch (final RrdException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static synchronized Scheduler getDefaultQuartzScheduler() throws SchedulerException { // NOPMD
-		if (defaultQuartzScheduler == null) {
-			defaultQuartzScheduler = StdSchedulerFactory.getDefaultScheduler();
-		}
-		return defaultQuartzScheduler;
 	}
 }
