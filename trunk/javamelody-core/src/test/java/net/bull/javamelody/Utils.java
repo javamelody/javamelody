@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -38,6 +39,37 @@ final class Utils {
 			+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode();
 
 	private static Scheduler defaultQuartzScheduler;
+
+	static {
+		Thread debugThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(6000);
+						System.out.println("********************** Thread dump ******************");
+						final Map<Thread, StackTraceElement[]> allStackTraces = Thread
+								.getAllStackTraces();
+						for (Thread t : allStackTraces.keySet()) {
+							System.out.println(t);
+							final StackTraceElement[] stackTraceElements = allStackTraces.get(t);
+							if (stackTraceElements != null) {
+								for (StackTraceElement e : stackTraceElements) {
+									System.out.println("\t" + e);
+								}
+							}
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+		debugThread.setName("debug thread");
+		debugThread.setDaemon(true);
+		debugThread.start();
+	}
 
 	private Utils() {
 		super();
