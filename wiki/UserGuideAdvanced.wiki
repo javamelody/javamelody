@@ -647,6 +647,25 @@ This [http://demo.javamelody.cloudbees.net/monitoring?report=My+custom+report ex
 
 	This configuration is for a monitored webapp. For the optional collector server, see issue 414 instead.
 
+== Using a servlet to display the monitoring reports ==
+
+	The MonitoringFilter documented in the [UserGuide#2._web.xml_file user guide] is enough to display reports for the "/monitoring" url. You can also change that url with the [UserGuide#6._Optional_parameters monitoring-path parameter].
+
+	If for some reason, you want to use a servlet to display the reports, then such a servlet already exists and you can use it by adding the following in the WEB-INF/web.xml file of your webapp:
+
+{{{
+	<servlet>
+		<servlet-name>monitoringServlet</servlet-name>
+		<servlet-class>net.bull.javamelody.ReportServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>monitoringServlet</servlet-name>
+		<url-pattern>/admin/monitoring</url-pattern>
+	</servlet-mapping>
+}}}
+
+	You can change the url-pattern above to anything you want, provided that you use the same path in your browser to access the reports.
+
 == Report written before last shutdown ==
 	
 	Sometimes a server is stopped in emergency or when there is a problem for example with the used memory.
