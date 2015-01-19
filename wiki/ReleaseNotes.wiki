@@ -3,6 +3,7 @@
 
   * fix ~~[https://code.google.com/p/javamelody/issues/detail?id=104#c14 issue 104]~~ again, for recent TomEE versions (thanks to _Frederic Cornuau_)
   * fix issue 436: implement Servlet 3.1 new methods (JavaEE 7), in FilterServletOutputStream and others
+  * fix issue 453: Chinese translation for heap dump (thanks to _chuxuebao_)
 
 === 1.54.0 ===
 
