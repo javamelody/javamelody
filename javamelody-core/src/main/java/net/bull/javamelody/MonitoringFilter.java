@@ -231,7 +231,9 @@ public class MonitoringFilter implements Filter {
 					systemException.printStackTrace(new PrintWriter(stackTrace));
 					errorCounter.addRequestForSystemError(systemException.toString(), duration,
 							cpuUsedMillis, stackTrace.toString());
-				} else if (wrappedResponse.getCurrentStatus() >= 400) {
+				} else if (wrappedResponse.getCurrentStatus() >= HttpServletResponse.SC_BAD_REQUEST
+						&& wrappedResponse.getCurrentStatus() != HttpServletResponse.SC_UNAUTHORIZED) {
+					// SC_UNAUTHORIZED (401) is not an error, it is the first handshake of a Basic (or Digest) Auth (issue 455)
 					systemError = true;
 					errorCounter.addRequestForSystemError(
 							"Error" + wrappedResponse.getCurrentStatus(), duration, cpuUsedMillis,
