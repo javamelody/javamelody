@@ -297,7 +297,9 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 		}
 		if (inputStream == null) {
 			final BufferedInputStream myBufferedInputStream = bufferedInputStream;
+			//CHECKSTYLE:OFF
 			inputStream = new ServletInputStream() {
+				//CHECKSTYLE:ON
 				@Override
 				public int read() throws IOException {
 					return myBufferedInputStream.read();
