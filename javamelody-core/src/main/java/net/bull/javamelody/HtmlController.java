@@ -81,9 +81,11 @@ class HtmlController {
 	void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (!isFromCollectorServer() && isLocalCollectNeeded(part)) {
+		if (!isFromCollectorServer() && isLocalCollectNeeded(part) && !collector.isStopped()) {
 			// avant de faire l'affichage on fait une collecte, pour que les courbes
-			// et les compteurs par jour soit à jour avec les dernières requêtes
+			// et les compteurs par jour soit à jour avec les dernières requêtes,
+			// sauf si c'est un serveur de collecte
+			// ou si la page de monitoring d'une webapp monitorée par un serveur de collecte est appelée par erreur
 			collector.collectLocalContextWithoutErrors();
 		}
 
