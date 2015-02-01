@@ -92,9 +92,6 @@ The "part" parameter in the URL can be replaced with "threads", "counterSummaryP
 
 The response data is automatically compressed in gzip by JavaMelody, if the response size is more than 50 KB and if the client supports it (if the "Accept-Encoding" header contains "gzip" such as for browsers).
 
-JavaMelody version needs to be 1.29 or later for the XML or JSON API to work correctly.
-JavaMelody version needs to be 1.40 or later for the XML or JSON API of "mbeans" and "jndi".
-
 
 === JSON ===
 
@@ -111,7 +108,7 @@ This format is recommended only for the communication between a collect server a
 
 === API when using a collect server ===
 
-Most of the API above works when using a [UserGuideAdvanced#Optional_centralization_server_setup centralized collect server], including lastValue, jmxValue, XML and JSON (prefer a collect server using a war file of JavaMelody v1.29 or later to work correctly).
+Most of the API above works when using a [UserGuideAdvanced#Optional_centralization_server_setup centralized collect server], including lastValue, jmxValue, XML and JSON.
 
 You just need to add an "application" parameter with the name of the app, like "&application=myapp" in all the URLs above.
 
