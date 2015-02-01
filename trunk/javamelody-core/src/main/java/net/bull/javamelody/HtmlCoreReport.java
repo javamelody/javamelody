@@ -384,6 +384,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeGraphs() throws IOException {
+		if (collector.isStopped()) {
+			// pas de graphs, ils seraient en erreur sans timer
+			// mais un message d'avertissement à la place
+			writeln("<div align='center' class='severe'><br/><br/>");
+			writeln("#collect_server_misusage#");
+			writeln("</div>");
+			return;
+		}
+
 		writeGraphs(collector.getCounterJRobins());
 		final Collection<JRobin> otherJRobins = collector.getOtherJRobins();
 		if (!otherJRobins.isEmpty()) {

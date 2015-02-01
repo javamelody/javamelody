@@ -187,6 +187,15 @@ class PdfCoreReport extends PdfAbstractReport {
 
 	private void writeGraphs(Collection<JRobin> jrobins, Map<String, byte[]> mySmallGraphs)
 			throws IOException, DocumentException {
+		if (collector.isStopped()) {
+			// pas de graphs, ils seraient en erreur sans timer
+			// mais un message d'avertissement à la place
+			final String message = getString("collect_server_misusage");
+			final Paragraph jrobinParagraph = new Paragraph(message, PdfFonts.BOLD.getFont());
+			jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
+			addToDocument(jrobinParagraph);
+			return;
+		}
 		final Paragraph jrobinParagraph = new Paragraph("", FontFactory.getFont(
 				FontFactory.HELVETICA, 9f, Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
@@ -229,6 +238,9 @@ class PdfCoreReport extends PdfAbstractReport {
 	}
 
 	private void writeGraphDetails() throws IOException, DocumentException {
+		if (collector.isStopped()) {
+			return;
+		}
 		final PdfPTable jrobinTable = new PdfPTable(1);
 		jrobinTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 		jrobinTable.setWidthPercentage(100);
