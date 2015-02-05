@@ -143,7 +143,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 	
 	But if you deploy your application with an ear file, probably because you use EJBs, follow the [UserGuideAdvanced].
 
-	Please note that the javamelody.war file is not used in installation here.
+	Please note that the javamelody.war file is not used in installation here. And the javamelody.war file is not needed in most use cases.
 
 === 1. Jar files ===
 
