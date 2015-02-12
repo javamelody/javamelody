@@ -21,31 +21,29 @@ It allows to improve applications in QA and production and helps to:<ul>
 The html report of JavaMelody is best viewed with
 <a href="http://www.mozilla.com" target="_blank">Firefox</a>,
 <a href="http://www.google.com/chrome" target="_blank">Chrome</a>
-or MSIE8 (MSIE7 not recommended).
+or MSIE9 (MSIE7 not recommended).
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Project'/>
 JavaMelody Project</h3>
 <a href='http://javamelody.googlecode.com' target='_blank'>
 Home page</a><br/>
-<a href='http://code.google.com/p/javamelody/downloads/list' target='_blank'>
+<a href='https://github.com/javamelody/javamelody/releases' target='_blank'>
 Downloads</a><br/>
 <a href='http://code.google.com/p/javamelody/wiki/ReleaseNotes' target='_blank'>
 Release notes</a><br/>
 
 <h3><img width='16' height='30' src='?resource=help/coffee.png' alt='Docs'/>
 Documentations</h3>
-<a href='http://java.sun.com/javase/reference/index.jsp' target='_blank'>
-Java SE Reference at a Glance</a><br/>
-<a href='http://java.sun.com/javase/6/webnotes/trouble/TSG-VM/html/index.html' target='_blank'>
-Troubleshooting Guide for Java SE 6</a><br/>
-<a href='http://java.sun.com/javase/6/webnotes/trouble/other/troubleshooting-j2se5.html' target='_blank'>
-Troubleshooting Guide for Java SE 5</a><br/>
-<a href='http://java.sun.com/developer/technicalArticles/J2SE/monitoring/' target='_blank'>
-Monitoring and Managing Java SE 6</a><br/>
-<a href='http://java.sun.com/performance/reference/whitepapers/6_performance.html' target='_blank'>
+<a href='http://docs.oracle.com/javase/' target='_blank'>
+Java SE documentations</a><br/>
+<a href='http://www.oracle.com/technetwork/java/javase/tech/index.html' target='_blank'>
+Java SE Platform at a Glance</a><br/>
+<a href='http://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/index.html' target='_blank'>
+Troubleshooting Guide for Java SE 8</a><br/>
+<a href='http://docs.oracle.com/javase/8/docs/technotes/guides/management/' target='_blank'>
+Monitoring and Management for Java SE 8</a><br/>
+<a href='http://www.oracle.com/technetwork/java/6-performance-137236.html' target='_blank'>
 Java SE 6 Performance</a><br/>
-<a href='http://java.sun.com/j2se/reference/whitepapers/memorymanagement_whitepaper.pdf' target='_blank'>
-Memory Management</a><br/>
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Stats'/>
 Summary</h3>
@@ -252,8 +250,8 @@ Like all tables of the report, the tables of statistics can be ordered in ascend
 The statistics are persisted for each counter: a restart of the application server has no influence on them.<br/>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
 the statistics of counters are global for all servers.<br/><br/>
-Note: In MS Windows (except Vista), the clock resolution used is about 16 ms (either 0, either 16, or 32 ms).
-So the time of an execution is not accurate below 16 ms with Windows.
+Note: In MS Windows XP (before Vista), the clock resolution used is about 16 ms (either 0, either 16, or 32 ms).
+So the time of an execution is not accurate below 16 ms with Windows XP.
 This is in part corrected by use of a mean when there are sufficient executions.
 But this is not grave because in general, the problematic requests will have an execution time much longer than 16 ms.<br/>
 
@@ -273,7 +271,7 @@ By clicking on the name of an error, it is possible to see its java stack-trace 
 <h3><img width='24' height='24' src='?resource=log.png' alt="System errors logs"/>
 Statistics of system error logs</h3>
 The statistics of system error logs show the 'warning' and 'error' logs written by the application
-(the libraries log4j of apache and java.util.logging of the jdk are both supported).
+(the libraries log4j of apache, logback and java.util.logging of the jdk are supported).
 These statistics display the list of the 500 most frequent error logs with the number of
 cases of each error on the chosen period.
 Only the most frequent error log is displayed initially, the other logs being displayed by clicking the link '+ Details'.
@@ -292,7 +290,7 @@ The tree of http requests, possibly ejb, spring and/or sql is displayed with for
 The global statistics of the requests are displayed again for the current requests:
  mean time, mean cpu time, mean sql hits and mean sql time.
 It allows to compare the current requests with the global statistics.<br/>
-The current java stack-trace is displayed by a tooltip on the thread (if jdk 1.6).<br/>
+The current java stack-trace is displayed by a tooltip on the thread.<br/>
 Only the longest request is displayed initially, the others are displayed by clicking on the link '+ Details'.<br/>
 
 <h3><img width='24' height='24' src='?resource=systeminfo.png' alt='System informations'/>
@@ -310,12 +308,12 @@ In this part of the system information, some links allow to run the system actio
 <li><img src='?resource=broom.png' width='20' height='20' alt='Garbage collector' />
 'Execute the garbage collector', to force a release of memory</li>
 <li><img src='?resource=heapdump.png' width='20' height='20' alt='Heap dump' />
-If jdk 1.6, 'generate a heap dump',
+'Generate a heap dump',
  to dump all the content of the memory in a file of the temporary directory on the server,
- which you can open with <a href="http://visualvm.dev.java.net" target="_blank">VisualVM</a> of the JDK
+ which you can open with <a href="http://visualvm.java.net" target="_blank">VisualVM</a> of the JDK
  or with <a href="http://www.eclipse.org/mat/" target="_blank">Eclipse MAT</a></li>
 <li><img src='?resource=memory.png' width='20' height='20' alt='Memory histogram' />
-If jdk 1.6, 'view memory histogram', to display the number of instances in memory for each java class</li>
+'View memory histogram', to display the number of instances in memory for each java class</li>
 <li><img src='?resource=user-trash.png' width='18' height='18' alt='Invalidate http sessions' />
 'Invalidate http sessions', to force all users to disconnect</li>
 <li><img src='?resource=system-users.png' width='20' height='20' alt='Sessions' />
@@ -340,7 +338,7 @@ To help find a possible jdbc connection leak, the 'opened jdbc connections'
 shows the list of the stack traces of where were opened jdbc connections.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Database' />
-'Database': Information and statistics on the database (if postgresql, mysql or oracle),
+'Database': Information and statistics on the database (if PostgreSQL, MySQL, Oracle, DB2, Sybase or H2),
 like for example the current sql requests or if oracle, the longest requests in cumulative time with
 display of the cpu time and of the elementary cost (of buffer gets).
 This function will display an error if the user configured in the application to connect to the
@@ -354,12 +352,12 @@ the memory histogram) and the actions are executed on each server one at a time.
 <h3><img width='24' height='24' src='?resource=threads.png' alt='Threads'/>
 Threads</h3>
 This table displays the list of all the threads in the server, with for each the priority, the state
-and the stack-trace in a tooltip (if jdk 1.6) among other.
+and the stack-trace in a tooltip, among other.
 
 <h3><img width='24' height='24' src='?resource=caches.png' alt='Caches of data'/>
 Caches of data</h3>
 The caches of data display the list of caches in the java application provided that the library
-<a href="http://ehcache.sourceforge.net" target="_blank">ehcache</a> is used for them.<br/>
+<a href="http://ehcache.org/" target="_blank">ehcache</a> is used for them.<br/>
 For each of the caches, some statistics are displayed:
 the number of objects in memory and on disk at the moment, the efficiency of the memory cache
 (percentage since the start of the server of the memory cache hits compared to the disk cache hits),
