@@ -19,31 +19,29 @@ Esta ferramenta permite melhorar as aplicações em processo de QA (controle de qu
 O relatório em html do JavaMelody é melhor visualizado com
 <a href="HTTP://www.mozilla.com" target="_blank">Firefox</a>,
 <a href="HTTP://www.google.com/chrome" target="_blank">Chrome</a>
-ou MS-IE8 (MS-IE7 não recomendado).
+ou MS-IE9 (MS-IE7 não recomendado).
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Project'/>
 JavaMelody Project</h3>
 <a href='http://javamelody.googlecode.com' target='_blank'>
 Home page</a><br/>
-<a href='http://code.google.com/p/javamelody/downloads/list' target='_blank'>
+<a href='https://github.com/javamelody/javamelody/releases' target='_blank'>
 Downloads</a><br/>
 <a href='http://code.google.com/p/javamelody/wiki/ReleaseNotes' target='_blank'>
 Release notes</a><br/>
 
 <h3><img width='16' height='30' src='?resource=help/coffee.png' alt='Docs'/>
 Documentações</h3>
-<a href='HTTP://java.sun.com/javase/reference/index.jsp' target='_blank'>
-Referência rápida Java SE (em inglês)</a><br/>
-<a href='HTTP://java.sun.com/javase/6/webnotes/trouble/TSG-VM/html/index.html' target='_blank'>
-Guia de Solução de Problemas para Java SE 6 (em inglês)</a><br/>
-<a href='HTTP://java.sun.com/javase/6/webnotes/trouble/other/troubleshooting-j2se5.html' target='_blank'>
-Guia de Solução de Problemas para Java SE 5 (em inglês)</a><br/>
-<a href='HTTP://java.sun.com/developer/technicalArticles/J2SE/monitoring/' target='_blank'>
-Monitorando e Gerenciando o Java SE 6 (em inglês)</a><br/>
-<a href='HTTP://java.sun.com/performance/reference/whitepapers/6_performance.html' target='_blank'>
-Desempenho Java SE 6 (em inglês)</a><br/>
-<a href='HTTP://java.sun.com/j2se/reference/whitepapers/memorymanagement_whitepaper.pdf' target='_blank'>
-Gerenciamento de Memória (em inglês)</a><br/>
+<a href='http://docs.oracle.com/javase/' target='_blank'>
+Java SE documentations</a><br/>
+<a href='http://www.oracle.com/technetwork/java/javase/tech/index.html' target='_blank'>
+Java SE Platform at a Glance</a><br/>
+<a href='http://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/index.html' target='_blank'>
+Troubleshooting Guide for Java SE 8</a><br/>
+<a href='http://docs.oracle.com/javase/8/docs/technotes/guides/management/' target='_blank'>
+Monitoring and Management for Java SE 8</a><br/>
+<a href='http://www.oracle.com/technetwork/java/6-performance-137236.html' target='_blank'>
+Java SE 6 Performance</a><br/>
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Estado'/>
 Sumário</h3>
@@ -216,9 +214,9 @@ As estatísticas são mantidas para cada contador: um reinício do servidor da apli
 Se um servidor coletor é usado para exibir o monitoramento de vários servidores em uma Farm ou em um Cluster,
 as estatísticas dos contadores são globais para todos os servidores.<br/><br/>
 
-Nota: No MS Windows (exceto o Vista), a resolução do clock utilizado está
+Nota: No MS Windows XP (antes Vista), a resolução do clock utilizado está
 em torno de 16 ms (ou 0, ou 16 ou 32 ms).
-Assim, o tempo de uma execução não é preciso abaixo de 16 ms com o Windows.
+Assim, o tempo de uma execução não é preciso abaixo de 16 ms com o Windows XP.
 Isto é em parte corrigido pelo uso de uma média quando há execuções suficientes.
 Mas isso não é grave porque, em geral, as requisições problemáticas terão um prazo de execução muito maior do que 16 ms.<br/>
 
@@ -235,7 +233,7 @@ Ao clicar sobre o nome de um erro, é possível ver para este erro, o rastreamento
 <h3><img width='24' height='24' src='?resource=log.png' alt="Logs de erros de sistema"/>
 Estatísticas de erros do sistema</h3>
 As estatísticas dos logs de erros do sistema exibem 'alertas' e 'erros' produzidos pelo aplicativo
-(tanto as bibliotecas log4j do Apache quanto a java.util.logging do JDK são suportadas).
+(as bibliotecas log4j do Apache, logback quanto a java.util.logging do JDK são suportadas).
 Estas estatísticas exibem a lista dos 500 erros mais frequentes registrados com o número de casos de cada erro ocorrido no período escolhido.
 
 Apenas o log do erro mais frequente é exibido inicialmente, os outros registros no log serão exibidos, clicando no link '+ Detalhes'.
@@ -251,7 +249,7 @@ As requisições correntes exibem, no momento da geração do relatório, as execuççõ
 A árvore de solicitações HTTP, EJB possivelmente, Spring e/ou SQL é exibida, para cada uma das requisições, juntamente com o tempo já decorrido, o tempo gasto de CPU, o número de requisições SQL já executadas e o tempo SQL destas requisições.<br/>
 As estatísticas globais das requisições são exibidas novamente para as requisições correntes: tempo médio, a média de tempo de CPU, média de acessos SQL e tempo médio de SQL. Isso permite comparar as requisições correntes com as estatísticas globais.<br/>
 
-O rastreamento da pilha do erro atual do java é exibido como uma dica na thread (se for JDK 1.6).<br/>
+O rastreamento da pilha do erro atual do java é exibido como uma dica na thread.<br/>
 Somente a maior requisição é apresentada inicialmente, as outras são exibidas clicando no link '+ Detalhes'.<br/>
 
 <h3><img width='24' height='24' src='?resource=systeminfo.png' alt='Informações sobre o sistema'/>
@@ -270,12 +268,12 @@ Nesta parte das informações do sistema, alguns links permitem executar ações do 
 <li> <img src='?resource=broom.png' width='20' height='20' alt='Coletor de lixo' />
 'Executar o coletor de lixo', para forçar a liberação de memória </li>
 <li> <img src='?resource=heapdump.png' width='20' height='20' alt='Heap dump'/>
-Se for JDK 1.6, 'Gerar um heap dump',
+'Gerar um heap dump',
   para despejar todo o conteúdo da memória em um arquivo do diretório temporário no servidor,
-  que pode ser aberto com <a href="HTTP://visualvm.dev.java.net" target="_blank"> o VisualVM</a> do JDK
+  que pode ser aberto com <a href="HTTP://visualvm.java.net" target="_blank"> o VisualVM</a> do JDK
   ou com <a href="HTTP://www.eclipse.org/mat/" target="_blank"> o Eclipse MAT </a> </li>
 <li> <img src='?resource=memory.png' width='20' height='20' alt='Histograma da Memória'/>
-Se for JDK 1.6, 'Ver histograma da memória', para mostrar o número de instâncias na memória para cada classe java </li>
+'Ver histograma da memória', para mostrar o número de instâncias na memória para cada classe java </li>
 <li> <img src='?resource=user-trash.png' width='18' height='18' alt='Invalidar Sessões HTTP'/>
 'Invalidar sessões HTTP', para forçar todos os usuários a desligar</li>
 <li> <img src='?resource=system-users.png' width='20' height='20' alt='Sessões'/>
@@ -299,7 +297,7 @@ e para cada processo: usuário, memória e CPU</li>
 Para ajudar a localizar possíveis vazamentos de conexões JDBC, o 'Conexões JDBC abertas' exibe a lista de rastreamentos da pilha de onde foram abertas as conexões JDBC.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Banco de dados' />
-'Banco de dados': Informações e estatísticas sobre o banco de dados (se for PostgreSQL, MySQL ou Oracle),
+'Banco de dados': Informações e estatísticas sobre o banco de dados (se for PostgreSQL, MySQL, Oracle, DB2, Sybase ou H2),
 
 como, por exemplo, as requisições SQL correntes ou se for Oracle, as requisições mais longas em tempo acumulado com
 exibição do tempo de CPU e do custo básico (de buffer gets).
@@ -311,11 +309,11 @@ Se um servidor coletor é usado para exibir a monitoração de vários servidores em
 
 <h3><img width='24' height='24' src='?resource=threads.png' alt='Threads'/>
 Threads</h3>
-Esta tabela exibe a lista de todas as threads no servidor, com a prioridade de cada uma, o estado e a pilha de rastreamento em uma tooltip (se for JDK 1.6), entre outras informações.
+Esta tabela exibe a lista de todas as threads no servidor, com a prioridade de cada uma, o estado e a pilha de rastreamento em uma tooltip, entre outras informações.
 
 <h3><img width='24' height='24' src='?resource=caches.png' alt='Caches de dados'/>
 Caches de dados</h3>
-Os caches de dados exibem a lista de caches no aplicativo java, desde que a biblioteca <a href="HTTP://ehcache.sourceforge.net" target="_blank">ehcache</a> seja utilizada por eles.<br/>
+Os caches de dados exibem a lista de caches no aplicativo java, desde que a biblioteca <a href="http://ehcache.org/" target="_blank">ehcache</a> seja utilizada por eles.<br/>
 Para cada um dos caches, algumas estatísticas são exibidas:
 o número de objetos em memória e em disco no momento, a eficiência da memória cache (percentual desde o início do servidor de acessos ao cache de memória em comparação com os acessos ao cache em disco),
 a eficiência global do cache (percentagem do cache de memória ou cache de disco comparado com todos os acessos ao cache, incluindo dados não presentes no cache). A configuração de cada cache também é exibida para obter informações.
