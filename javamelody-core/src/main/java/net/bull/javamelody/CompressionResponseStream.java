@@ -134,6 +134,6 @@ class CompressionResponseStream extends ServletOutputStream {
 
 	@Override
 	public void setWriteListener(WriteListener writeListener) {
-		// nothing to do	
+		// nothing to do
 	}
 }
