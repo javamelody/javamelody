@@ -393,8 +393,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			return;
 		}
 
-		writeGraphs(collector.getCounterJRobins());
-		final Collection<JRobin> otherJRobins = collector.getOtherJRobins();
+		writeGraphs(collector.getDisplayedCounterJRobins());
+		final Collection<JRobin> otherJRobins = collector.getDisplayedOtherJRobins();
 		if (!otherJRobins.isEmpty()) {
 			writeln("<div align='right'>");
 			writeShowHideLink("detailsGraphs", "#Autres_courbes#");
@@ -408,13 +408,11 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
 		int i = 0;
 		for (final JRobin jrobin : jrobins) {
-			if (collector.isJRobinDisplayed(jrobin)) {
-				final String jrobinName = jrobin.getName();
-				writeln("<a href='?part=graph&amp;graph=" + jrobinName
-						+ "'><img class='synthese' src='?width=200&amp;height="
-						+ JRobin.SMALL_HEIGHT + "&amp;graph=" + jrobinName + "' alt=\""
-						+ jrobin.getLabel() + "\" title=\"" + jrobin.getLabel() + "\"/></a>");
-			}
+			final String jrobinName = jrobin.getName();
+			writeln("<a href='?part=graph&amp;graph=" + jrobinName
+					+ "'><img class='synthese' src='?width=200&amp;height=" + JRobin.SMALL_HEIGHT
+					+ "&amp;graph=" + jrobinName + "' alt=\"" + jrobin.getLabel() + "\" title=\""
+					+ jrobin.getLabel() + "\"/></a>");
 			i++;
 			if (i % 3 == 0) {
 				// un <br/> après httpSessions et avant activeThreads pour l'alignement
