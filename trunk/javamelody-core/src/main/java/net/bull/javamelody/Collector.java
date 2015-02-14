@@ -871,18 +871,34 @@ class Collector { // NOPMD
 		return Collections.unmodifiableCollection(otherJRobins.values());
 	}
 
-	boolean isJRobinDisplayed(JRobin jrobin) {
-		final String jrobinName = jrobin.getName();
-		// inutile car on ne génère pas les jrobin pour le counter de ce nom là
-		//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
-		//			return false;
-		//		}
-		for (final Counter counter : getCounters()) {
-			if (jrobinName.startsWith(counter.getName())) {
-				return counter.isDisplayed();
+	Collection<JRobin> getDisplayedCounterJRobins() {
+		return getDisplayedJRobins(counterJRobins.values());
+	}
+
+	Collection<JRobin> getDisplayedOtherJRobins() {
+		return getDisplayedJRobins(otherJRobins.values());
+	}
+
+	private Collection<JRobin> getDisplayedJRobins(Collection<JRobin> jrobins) {
+		final List<JRobin> displayedJRobins = new ArrayList<JRobin>(jrobins.size());
+		for (final JRobin jrobin : jrobins) {
+			final String jrobinName = jrobin.getName();
+			boolean displayed = true;
+			// inutile car on ne génère pas les jrobin pour le counter de ce nom là
+			//		if (jrobinName.startsWith(Counter.ERROR_COUNTER_NAME)) {
+			//			displayed = false;
+			//		} else {
+			for (final Counter counter : getCounters()) {
+				if (jrobinName.startsWith(counter.getName())) {
+					displayed = counter.isDisplayed();
+					break;
+				}
+			}
+			if (displayed) {
+				displayedJRobins.add(jrobin);
 			}
 		}
-		return true;
+		return Collections.unmodifiableCollection(displayedJRobins);
 	}
 
 	/**

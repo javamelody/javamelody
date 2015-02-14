@@ -159,7 +159,7 @@ class SerializableController {
 			// pour UI Swing
 			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
 			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final Collection<JRobin> jrobins = collector.getOtherJRobins();
+			final Collection<JRobin> jrobins = collector.getDisplayedOtherJRobins();
 			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			return new ArrayList<ThreadInformations>(javaInformationsList.get(0)
@@ -218,7 +218,7 @@ class SerializableController {
 			}
 			return null;
 		}
-		final Collection<JRobin> jrobins = collector.getCounterJRobins();
+		final Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
 		return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
 	}
 
@@ -249,10 +249,8 @@ class SerializableController {
 			int width, int height) throws IOException {
 		final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
 		for (final JRobin jrobin : jrobins) {
-			if (collector.isJRobinDisplayed(jrobin)) {
-				final byte[] image = jrobin.graph(range, width, height);
-				images.put(jrobin.getName(), image);
-			}
+			final byte[] image = jrobin.graph(range, width, height);
+			images.put(jrobin.getName(), image);
 		}
 		return images;
 	}

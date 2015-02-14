@@ -96,7 +96,7 @@ class PdfCoreReport extends PdfAbstractReport {
 	@Override
 	void toPdf() throws IOException, DocumentException {
 		addParagraph(buildSummary(), "systemmonitor.png");
-		writeGraphs(collector.getCounterJRobins(), smallGraphs);
+		writeGraphs(collector.getDisplayedCounterJRobins(), smallGraphs);
 
 		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(counterRange);
 		final List<PdfCounterReport> pdfCounterReports = writeCounters(counters);
@@ -134,7 +134,7 @@ class PdfCoreReport extends PdfAbstractReport {
 
 		newPage();
 		addParagraph(getString("Statistiques_detaillees"), "systemmonitor.png");
-		writeGraphs(collector.getOtherJRobins(), smallOtherGraphs);
+		writeGraphs(collector.getDisplayedOtherJRobins(), smallOtherGraphs);
 		writeGraphDetails();
 
 		writeCountersDetails(pdfCounterReports);
@@ -219,18 +219,16 @@ class PdfCoreReport extends PdfAbstractReport {
 				return;
 			}
 			for (final JRobin jrobin : jrobins) {
-				if (collector.isJRobinDisplayed(jrobin)) {
-					if (i % 3 == 0 && i != 0) {
-						// un retour après httpSessions et avant activeThreads pour l'alignement
-						jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
-					}
-					final Image image = Image.getInstance(jrobin.graph(range, SMALL_GRAPH_WIDTH,
-							SMALL_GRAPH_HEIGHT));
-					image.scalePercent(50);
-					jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
-					jrobinParagraph.add(new Phrase(" "));
-					i++;
+				if (i % 3 == 0 && i != 0) {
+					// un retour après httpSessions et avant activeThreads pour l'alignement
+					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
 				}
+				final Image image = Image.getInstance(jrobin.graph(range, SMALL_GRAPH_WIDTH,
+						SMALL_GRAPH_HEIGHT));
+				image.scalePercent(50);
+				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
+				jrobinParagraph.add(new Phrase(" "));
+				i++;
 			}
 		}
 		jrobinParagraph.add(new Phrase("\n"));
@@ -252,17 +250,15 @@ class PdfCoreReport extends PdfAbstractReport {
 				jrobinTable.addCell(image);
 			}
 		} else {
-			final Collection<JRobin> counterJRobins = collector.getCounterJRobins();
+			final Collection<JRobin> counterJRobins = collector.getDisplayedCounterJRobins();
 			if (counterJRobins.isEmpty()) {
 				return;
 			}
 			for (final JRobin jrobin : counterJRobins) {
-				if (collector.isJRobinDisplayed(jrobin)) {
-					// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
-					final Image image = Image.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH,
-							LARGE_GRAPH_HEIGHT));
-					jrobinTable.addCell(image);
-				}
+				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
+				final Image image = Image.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH,
+						LARGE_GRAPH_HEIGHT));
+				jrobinTable.addCell(image);
 			}
 		}
 		newPage();
