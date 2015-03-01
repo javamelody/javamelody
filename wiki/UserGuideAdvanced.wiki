@@ -466,10 +466,13 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 
 == Embedding JavaMelody in a standalone app ==
 
-	In general, JavaMelody is installed in a webapp with a server such as Tomcat. But if you want to monitor a standalone application (non webapp and no server), you can embed JavaMelody with a Jetty Server in your application.
+	In general, JavaMelody is installed in a webapp with a server such as Tomcat. But if you want to monitor a standalone application (non webapp and no server), you can embed JavaMelody with a Jetty Server in your application. For that:
 
-	For that, add Jetty, and JavaMelody with JRobin dependencies in you application. If you use Maven, you can copy dependencies from this [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/pom.xml pom.xml].
-	Then, copy this example of [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/src/main/java/net/bull/javamelody/EmbeddedServer.java EmbeddedServer] class in your application. And you can start the server [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/src/main/java/example/Main.java like this]. For example, add the following in the main class of your application:
+	* add Jetty, and JavaMelody with JRobin dependencies in you application. If you use Maven, you can copy dependencies from this [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/pom.xml pom.xml].
+
+	* Then, copy this example of [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/src/main/java/net/bull/javamelody/EmbeddedServer.java EmbeddedServer] class in your application.
+
+	* And you can start the server [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/src/main/java/example/Main.java like this]. For example, add the following in the main class of your application:
 
 {{{
                 final Map<Parameter, String> parameters = new HashMap<>();
