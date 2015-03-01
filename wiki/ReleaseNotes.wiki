@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * doc added: Example of [embedding JavaMelody in a standalone application] (non webapp), thanks to _Philip Zeyliger_ and _let4time_
 
 === 1.55.0 ===
 
