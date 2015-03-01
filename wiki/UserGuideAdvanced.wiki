@@ -463,6 +463,30 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	* It does not seem advisable to use the monitoring by Spring AOP in this case
 
 
+== Embedding JavaMelody in standalone app ==
+
+	In general, JavaMelody is installed in a webapp with a server such as Tomcat. But if you want to monitor a standalone application (non webapp), you can embed JavaMelody with a Jetty Server in your application.
+
+	For that, add Jetty, JavaMelody with JRobin dependencies in you application. If you use Maven, you can copy dependencies from this [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/pom.xml pom.xml].
+	Then, copy this example of [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/src/main/java/net/bull/javamelody/EmbeddedServer.java EmbeddedServer] class in your application. And you can start the server [https://code.google.com/p/javamelody/source/browse/trunk/javamelody-for-standalone/src/main/java/example/Main.java like this]. For example, add the following in the main class of your application:
+
+{{{
+                final Map<Parameter, String> parameters = new HashMap<>();
+                // add basic auth:
+                parameters.put(Parameter.AUTHORIZED_USERS, "admin:pwd");
+                // change the default storage directory:
+                parameters.put(Parameter.STORAGE_DIRECTORY, "/tmp/javamelody");
+                // enable hotspots sampling with a period of 1 second:
+                parameters.put(Parameter.SAMPLING_SECONDS, "1.0");
+
+                // set the path of the reports:
+                parameters.put(Parameter.MONITORING_PATH, "/");
+                // start the embedded http server with javamelody
+                EmbeddedServer.start(8080, parameters);
+}}}
+
+	When running you application with embedded JavaMelody, open http://localhost:8080 to browse the monitoring reports.
+
 == Debugging logs ==
 	
 	The debugging logs, such as javamelody initialization, are displayed at the bottom of the html report.
