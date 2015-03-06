@@ -34,6 +34,13 @@
 	or on unit tests (checkstyle, findbugs, pmd, cpd, junit, cobertura). You will need Maven 3.0.4 or later for that.
 
 
+
+=== Github mirror ===
+
+Sources from SVN [http://javamelody.googlecode.com/svn/trunk/javamelody-core/] are mirrored in Github: https://github.com/evernat/javamelody
+The mirror in synchronized once a day by this Jenkins [https://javamelody.ci.cloudbees.com/job/svn_to_git_mirroring/ job].
+
+
 === Import in Eclipse the sources of current development version ===
 
 To import from the SVN server the sources of the version currently in development, with Eclipse 4.2 using a JDK 1.7 and the subversion plugin (maven plugin m2e is also recommended to simplify these steps):
