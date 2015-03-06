@@ -37,8 +37,9 @@
 
 === Github mirror ===
 
-Sources from SVN [http://javamelody.googlecode.com/svn/trunk/javamelody-core/] are mirrored in Github: https://github.com/evernat/javamelody
-The mirror in synchronized once a day by this Jenkins [https://javamelody.ci.cloudbees.com/job/svn_to_git_mirroring/ job].
+Sources from SVN http://javamelody.googlecode.com/svn/trunk/javamelody-core/ are mirrored in Github: https://github.com/evernat/javamelody
+
+The Github mirror is synchronized once a day by this Jenkins [https://javamelody.ci.cloudbees.com/job/svn_to_git_mirroring/ job].
 
 
 === Import in Eclipse the sources of current development version ===
