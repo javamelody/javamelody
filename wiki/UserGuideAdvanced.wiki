@@ -476,11 +476,11 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 
 {{{
                 final Map<Parameter, String> parameters = new HashMap<>();
-                // add basic auth:
+                // you can add basic auth:
                 parameters.put(Parameter.AUTHORIZED_USERS, "admin:pwd");
-                // change the default storage directory:
+                // you can change the default storage directory:
                 parameters.put(Parameter.STORAGE_DIRECTORY, "/tmp/javamelody");
-                // enable hotspots sampling with a period of 1 second:
+                // you can enable hotspots sampling with a period of 1 second:
                 parameters.put(Parameter.SAMPLING_SECONDS, "1.0");
 
                 // set the path of the reports:
