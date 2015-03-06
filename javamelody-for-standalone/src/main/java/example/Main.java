@@ -24,7 +24,7 @@ public class Main {
 		// to change the default storage directory:
 		// parameters.put(Parameter.STORAGE_DIRECTORY, "/tmp/javamelody");
 
-		// to change the default resolution:
+		// to change the default resolution in seconds:
 		// parameters.put(Parameter.RESOLUTION_SECONDS, "60");
 
 		// to hide all statistics such as http and sql, except logs:
