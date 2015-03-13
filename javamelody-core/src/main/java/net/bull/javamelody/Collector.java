@@ -294,7 +294,8 @@ class Collector { // NOPMD
 
 			collectWithoutErrors(Collections.singletonList(javaInformations));
 		} catch (final Throwable t) { // NOPMD
-			LOG.warn("exception while collecting data", t);
+			// include cause in message for debugging logs in the report
+			LOG.warn("exception while collecting data: " + t.toString(), t);
 		}
 	}
 
@@ -304,7 +305,8 @@ class Collector { // NOPMD
 		try {
 			estimatedMemorySize = collect(javaInformationsList);
 		} catch (final Throwable t) { // NOPMD
-			LOG.warn("exception while collecting data", t);
+			// include cause in message for debugging logs in the report
+			LOG.warn("exception while collecting data: " + t.toString(), t);
 		}
 		// note : on n'inclue pas "new JavaInformations" de collectLocalContextWithoutErrors
 		// dans la durée de la collecte mais il est inférieur à 1 ms (sans bdd)
