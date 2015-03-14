@@ -162,11 +162,11 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<listener>
@@ -205,19 +205,19 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<url-pattern>/servlet1/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<url-pattern>/servlet2/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<url-pattern>/monitoring</url-pattern>
 	</filter-mapping>
 	<listener>
@@ -231,7 +231,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 		
 		<init-param>
@@ -240,7 +240,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<listener>
@@ -257,7 +257,7 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 		<init-param>
 			<param-name>log</param-name>
@@ -268,7 +268,18 @@ Some discussions on the monitoring [Overhead overhead in production] were archiv
 }}}
 
 	* in context parameters of the webapp with prefix {{{javamelody.}}}
-	  (context xml file in Tomcat or in Glassfish), for example:
+
+	 In the {{{web.xml}}} file in the webapp, for example:
+
+{{{
+	 <context-param>
+	 	<param-name>javamelody.log</param-name>
+	 	<param-value>true</param-value>
+	 </context-param>
+	...
+}}}
+
+	  Or in the context xml file of Tomcat conf or in Glassfish, for example:
 
 {{{
 	<?xml version="1.0" encoding="UTF-8" ?>
@@ -574,7 +585,7 @@ or
 	Note : The [http://static.springsource.org/spring/docs/2.5.6/reference/aop.html#aop-proxying documentation] and [http://blog.springsource.com/2007/07/19/debunking-myths-proxies-impact-performance/ blog]
 	of Spring AOP advises to use JDK dynamic proxies and not CGLIB, which should pose no problem for facades with separate interfaces and implementations. 
 
-	* Alternative in order to use AspectJ, in case that proxies don't work (thanks to [http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/ Witek Wołejszo])
+	* Alternative in order to use AspectJ, in case that proxies don't work (thanks to [http://touk.pl/blog/2011/03/07/javamelody-spring-and-aspectj/ Witek Wolejszo])
 	Sometimes proxies can't work is some circumstances, for example if you don't use interfaces.
 	In this case, it is possible to use AspectJ with the following context file:
 	{{{net/bull/javamelody/monitoring-spring-aspectj.xml}}}, [http://code.google.com/p/javamelody/source/browse/trunk/javamelody-core/src/main/resources/net/bull/javamelody/monitoring-spring-aspectj.xml included] in the provided jar, instead of
@@ -898,7 +909,7 @@ or
 
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 		<init-param>
 			<param-name>authorized-users</param-name>
