@@ -2,7 +2,7 @@
 === Next release (trunk) ===
 
   * doc added: Example of [UserGuideAdvanced#Embedding_in_a_standalone_app embedding JavaMelody in a standalone application] (non webapp), thanks to _Philip Zeyliger_ and _let4time_
-  * doc updated: Examples of web.xml and of context-param updated to be sure that parameters are not ignored in some case of webapp v3.1 with JDK8 (issue 459).
+  * doc updated: Examples of web.xml and of context-param updated in the [UserGuide#2._web.xml_file user's guide] to be sure that parameters are not ignored in some case of webapp v3.1 with JDK8 (issue 459).
   * Sources from [http://javamelody.googlecode.com/svn/trunk/javamelody-core/ SVN] are now mirrored in Github: https://github.com/evernat/javamelody. The Github mirror is synchronized once a day by this Jenkins [https://javamelody.ci.cloudbees.com/job/svn_to_git_mirroring/ job]. (This mirror does not include [https://github.com/jenkinsci/monitoring-plugin Jenkins], [https://github.com/evernat/liferay-javamelody Liferay], [https://github.com/evernat/grails-melody-plugin Grails] and [https://github.com/evernat/sonar-javamelody Sonar] plugins.)
 
   * Contributors to code can fork the github mirror [https://github.com/evernat/javamelody repository] and submit [https://github.com/evernat/javamelody/pulls pull requests]: the diff of the PR will be merged into SVN. Or contributors can still checkout from [http://javamelody.googlecode.com/svn/trunk/ SVN] and submit patches in [https://code.google.com/p/javamelody/issues/list issues] as before.
@@ -36,7 +36,7 @@
 If you want BASIC auth but do no want to [UserGuide#16._Security use a realm and "security-constraint" in web.xml], you can add the parameter "*authorized-users*" in web.xml, in context or in system properties like the other [UserGuide#6._Optional_parameters javamelody parameters]. For example in your WEB-INF/web.xml file:
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 		<init-param>
 			<param-name>authorized-users</param-name>
