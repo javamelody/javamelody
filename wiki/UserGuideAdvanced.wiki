@@ -435,11 +435,11 @@ Then add a system property in your launch file: -Djonas.felix.configuration.file
 	
 {{{
 	<filter>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>monitoring</filter-name>
+		<filter-name>javamelody</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<listener>
