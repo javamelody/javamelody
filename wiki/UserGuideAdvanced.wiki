@@ -345,7 +345,7 @@ To enable the JPA monitoring with JPA statistics in the reports, set {{{net.bull
 }}}
 
 If you have in your environment a single "real" JPA provider it should be found automatically.
-But if that's not the case of if you want to force the implementation set the property {{{net.bull.javamelody.jpa.provider}}} to the real implementation you want. For example:
+But if that's not the case or if you want to force the implementation set the property {{{net.bull.javamelody.jpa.provider}}} to the real implementation you want. For example:
 {{{
 	<?xml version="1.0" encoding="UTF-8"?>
 	<persistence version="2.0"
