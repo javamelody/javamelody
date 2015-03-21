@@ -153,6 +153,18 @@ final class LOG {
 	}
 
 	private static JavaMelodyLogger getJavaMelodyLogger() {
+		// si le paramètre logger-class est défini, on en prend une instance comme JavaMelodyLogger
+		final String loggerClass = Parameters.getParameter(Parameter.LOGGER_CLASS);
+		if (loggerClass != null) {
+			final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+			try {
+				return JavaMelodyLogger.class.cast(tccl.loadClass(loggerClass).newInstance());
+			} catch (final Exception e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+		// sinon, on prend selon ce qui est présent Logback ou Log4J ou java.util.logging
 		if (LOGBACK_ENABLED) {
 			return new LogbackLogger();
 		} else if (LOG4J_ENABLED) {
