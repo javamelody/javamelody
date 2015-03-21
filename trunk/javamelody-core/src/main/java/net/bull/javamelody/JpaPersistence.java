@@ -194,6 +194,7 @@ public class JpaPersistence implements PersistenceProvider {
 		for (final String provider : PROVIDERS) {
 			try {
 				delegate = newPersistence(provider);
+				break;
 			} catch (final Throwable th2) { // NOPMD
 				continue;
 			}
