@@ -20,11 +20,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.LoadState;
 import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceProviderResolverHolder;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.ProviderUtil;
 
@@ -191,16 +193,28 @@ public class JpaPersistence implements PersistenceProvider {
 	}
 
 	private void guessDelegate() {
-		for (final String provider : PROVIDERS) {
-			try {
-				delegate = newPersistence(provider);
+		// https://issues.apache.org/jira/browse/SIRONA-44
+		// https://code.google.com/p/javamelody/issues/detail?id=460
+		final List<PersistenceProvider> persistenceProviders = PersistenceProviderResolverHolder
+				.getPersistenceProviderResolver().getPersistenceProviders();
+		for (final PersistenceProvider persistenceProvider : persistenceProviders) {
+			if (!getClass().isInstance(persistenceProvider)) {
+				delegate = persistenceProvider;
 				break;
-			} catch (final Throwable th2) { // NOPMD
-				continue;
 			}
 		}
 		if (delegate == null) { // NOPMD
-			throw new IllegalStateException(new ClassNotFoundException("Can't find a delegate"));
+			for (final String provider : PROVIDERS) {
+				try {
+					delegate = newPersistence(provider);
+					break;
+				} catch (final Throwable th2) { // NOPMD
+					continue;
+				}
+			}
+			if (delegate == null) { // NOPMD
+				throw new IllegalStateException(new ClassNotFoundException("Can't find a delegate"));
+			}
 		}
 	}
 
