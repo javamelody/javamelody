@@ -10,6 +10,9 @@
 	<description>Example of embedding javamelody in standalone app</description>
 	<url>http://javamelody.googlecode.com/</url>
 
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
 	<properties>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
 		<jettyVersion>9.2.9.v20150224</jettyVersion>
@@ -59,7 +62,7 @@
 				<!-- Use "mvn exec:java" -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.1</version>
+				<version>1.4.0</version>
 				<executions>
 					<execution>
 						<goals>
