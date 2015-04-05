@@ -391,7 +391,8 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
+				<!-- la version 2.6 ne donne pas la bonne couverture de code  -->
+				<version>2.5.2</version>
 				<configuration>
 					<check>
 						<haltOnFailure>false</haltOnFailure>
@@ -403,16 +404,8 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>clean</id>
-						<phase>clean</phase>
 						<goals>
 							<goal>clean</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>package</id>
-						<phase>package</phase>
-						<goals>
 							<goal>check</goal>
 						</goals>
 					</execution>
@@ -516,7 +509,7 @@
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.7</version>
+							<version>2.5.2</version>
 							<configuration>
 								<formats>
 									<format>xml</format>
