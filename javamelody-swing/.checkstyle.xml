@@ -89,7 +89,6 @@
     <module name="InnerAssignment">
       <property name="severity" value="error"/>
     </module>
-    <module name="JUnitTestCase"/>
     <module name="MissingSwitchDefault"/>
     <module name="ModifiedControlVariable">
       <property name="severity" value="error"/>
