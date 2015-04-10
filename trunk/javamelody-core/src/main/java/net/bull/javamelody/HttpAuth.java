@@ -60,7 +60,7 @@ class HttpAuth {
 				final String authUserTrim = authUser.trim();
 				if (!authUserTrim.isEmpty()) {
 					authorizedUsers.add(authUserTrim);
-					LOG.debug("Authorized user : " + authUserTrim.split(":", 2)[0]);
+					LOG.debug("Authorized user: " + authUserTrim.split(":", 2)[0]);
 				}
 			}
 			return authorizedUsers;
