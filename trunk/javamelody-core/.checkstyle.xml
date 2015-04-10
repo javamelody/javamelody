@@ -108,9 +108,6 @@
     <module name="ParameterAssignment">
       <property name="severity" value="error"/>
     </module>
-    <module name="RedundantThrows">
-      <property name="severity" value="error"/>
-    </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
     <module name="StringLiteralEquality">
