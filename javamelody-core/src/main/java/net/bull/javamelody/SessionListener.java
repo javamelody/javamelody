@@ -161,7 +161,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	static void invalidateSession(String sessionId) {
-		final HttpSession session = SESSION_MAP_BY_ID.get(sessionId);
+		final HttpSession session = getSessionById(sessionId);
 		if (session != null) {
 			// dans Jenkins notamment, une session invalidée peut rester un peu dans cette map
 			try {
@@ -170,6 +170,43 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 				// Tomcat can throw "java.lang.IllegalStateException: getLastAccessedTime: Session already invalidated"
 				return;
 			}
+		}
+	}
+
+	private static HttpSession getSessionById(String sessionId) {
+		final HttpSession session = SESSION_MAP_BY_ID.get(sessionId);
+		if (session == null) {
+			// In some cases (issue 473), Tomcat changes id in session withtout calling sessionCreated.
+			// In servlet 3.1, HttpSessionIdListener.sessionIdChanged could be used.
+			for (final HttpSession other : SESSION_MAP_BY_ID.values()) {
+				if (other.getId().equals(sessionId)) {
+					return other;
+				}
+			}
+		}
+		return session;
+	}
+
+	private static void removeSessionsWithChangedId() {
+		for (final Map.Entry<String, HttpSession> entry : SESSION_MAP_BY_ID.entrySet()) {
+			final String id = entry.getKey();
+			final HttpSession other = entry.getValue();
+			if (!id.equals(other.getId())) {
+				SESSION_MAP_BY_ID.remove(id);
+			}
+		}
+	}
+
+	private static void addSession(final HttpSession session) {
+		SESSION_MAP_BY_ID.put(session.getId(), session);
+	}
+
+	private static void removeSession(final HttpSession session) {
+		final HttpSession removedSession = SESSION_MAP_BY_ID.remove(session.getId());
+		if (removedSession == null) {
+			// In some cases (issue 473), Tomcat changes id in session withtout calling sessionCreated.
+			// In servlet 3.1, HttpSessionIdListener.sessionIdChanged could be used.
+			removeSessionsWithChangedId();
 		}
 	}
 
@@ -198,7 +235,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	}
 
 	static SessionInformations getSessionInformationsBySessionId(String sessionId) {
-		final HttpSession session = SESSION_MAP_BY_ID.get(sessionId);
+		final HttpSession session = getSessionById(sessionId);
 		if (session == null) {
 			return null;
 		}
@@ -299,16 +336,10 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		// and each time with different ids, then sessionDestroyed is called once.
 		// So we do not count the 2nd sessionCreated event and we remove the id of the first event
 		if (session.getAttribute(SESSION_ACTIVATION_KEY) == this) {
-			for (final Map.Entry<String, HttpSession> entry : SESSION_MAP_BY_ID.entrySet()) {
-				final String id = entry.getKey();
-				final HttpSession other = entry.getValue();
-				// si la map des sessions selon leurs id contient une session dont la clé
-				// n'est plus égale à son id courant, alors on l'enlève de la map
-				// (et elle sera remise dans la map avec son nouvel id ci-dessous)
-				if (!id.equals(other.getId())) {
-					SESSION_MAP_BY_ID.remove(id);
-				}
-			}
+			// si la map des sessions selon leurs id contient une session dont la clé
+			// n'est plus égale à son id courant, alors on l'enlève de la map
+			// (et elle sera remise dans la map avec son nouvel id ci-dessous)
+			removeSessionsWithChangedId();
 		} else {
 			session.setAttribute(SESSION_ACTIVATION_KEY, this);
 
@@ -317,7 +348,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 
 		// pour invalidateAllSession
-		SESSION_MAP_BY_ID.put(session.getId(), session);
+		addSession(session);
 	}
 
 	/** {@inheritDoc} */
@@ -336,7 +367,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_COUNT.decrementAndGet();
 
 		// pour invalidateAllSession
-		SESSION_MAP_BY_ID.remove(session.getId());
+		removeSession(session);
 	}
 
 	/** {@inheritDoc} */
@@ -349,7 +380,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_COUNT.incrementAndGet();
 
 		// pour invalidateAllSession
-		SESSION_MAP_BY_ID.put(event.getSession().getId(), event.getSession());
+		addSession(event.getSession());
 	}
 
 	/** {@inheritDoc} */
@@ -362,7 +393,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_COUNT.decrementAndGet();
 
 		// pour invalidateAllSession
-		SESSION_MAP_BY_ID.remove(event.getSession().getId());
+		removeSession(event.getSession());
 	}
 
 	// pour hudson/Jenkins/jira/confluence/bamboo
