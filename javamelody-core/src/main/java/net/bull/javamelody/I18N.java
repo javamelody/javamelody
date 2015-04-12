@@ -112,7 +112,11 @@ final class I18N {
 	 * @return String
 	 */
 	static String getStringForJavascript(String key) {
-		return javascriptEncode(getString(key));
+		final String string = getString(key);
+		// ici, le résultat ne contient pas de valeur variable ni d'attaque puisque ce sont des messages internes et fixes,
+		// donc pas besoin d'encoder avec javascriptEncode, et on conserve les apostrophes lisibles dans les messages
+		return string.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\"")
+				.replace("'", "\\'");
 	}
 
 	/**
