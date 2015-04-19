@@ -120,9 +120,12 @@ public class TestAction {
 					threadId, jobId, cacheId);
 			assertNotNull("message HEAP_DUMP", heapDump2);
 		} while (heapDump1.equals(heapDump2));
-		for (final File file : Parameters.TEMPORARY_DIRECTORY.listFiles()) {
-			if (!file.isDirectory() && file.getName().startsWith("heapdump") && !file.delete()) {
-				file.deleteOnExit();
+		final File[] files = Parameters.TEMPORARY_DIRECTORY.listFiles();
+		if (files != null) {
+			for (final File file : files) {
+				if (!file.isDirectory() && file.getName().startsWith("heapdump") && !file.delete()) {
+					file.deleteOnExit();
+				}
 			}
 		}
 		assertNotNull("message INVALIDATE_SESSIONS", Action.INVALIDATE_SESSIONS.execute(collector,
