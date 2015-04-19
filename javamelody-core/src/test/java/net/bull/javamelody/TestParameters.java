@@ -59,7 +59,6 @@ public class TestParameters {
 	public void testInitializeFilterConfig() {
 		// test pas d'erreur
 		Parameters.initialize((FilterConfig) null);
-		assertNotNull("initialize", Parameters.class);
 	}
 
 	/** Test. */
@@ -67,7 +66,6 @@ public class TestParameters {
 	public void testInitializeServletContext() {
 		// test pas d'erreur
 		Parameters.initialize((ServletContext) null);
-		assertNotNull("initialize", Parameters.class);
 	}
 
 	/** Test. */
