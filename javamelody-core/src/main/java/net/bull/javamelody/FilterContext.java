@@ -172,7 +172,8 @@ class FilterContext {
 			final Parameter parameter = Parameter.valueOfIgnoreCase(counter.getName()
 					+ "_TRANSFORM_PATTERN");
 			if (Parameters.getParameter(parameter) != null) {
-				final Pattern pattern = Pattern.compile(Parameters.getParameter(parameter));
+				final Pattern pattern = Pattern.compile(Parameters.getParameter(parameter),
+						Pattern.MULTILINE | Pattern.DOTALL);
 				counter.setRequestTransformPattern(pattern);
 			}
 		}
