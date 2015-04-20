@@ -3,6 +3,7 @@
 
   * fix issue 473: Basic Authentication and Sessions
   * fix issue 460: In WildFly 8.2, "ClassNotFoundException: Can't find a delegate" when monitoring JPA
+  * added: MULTILINE & DOTALL flags for transform-patterns regexps (issue 474, thanks to _Michal Bergmann_).
   * doc added: Example of [UserGuideAdvanced#Embedding_in_a_standalone_app embedding JavaMelody in a standalone application] (non webapp), thanks to _Philip Zeyliger_ and _let4time_
   * doc updated: Examples of web.xml and of context-param updated in the [UserGuide#2._web.xml_file user's guide] to be sure that parameters are not ignored in some case of webapp v3.1 with JDK8 (issue 459).
   * Sources from [http://javamelody.googlecode.com/svn/trunk/javamelody-core/ SVN] are now mirrored in Github: https://github.com/evernat/javamelody. The Github mirror is synchronized once a day by this Jenkins [https://javamelody.ci.cloudbees.com/job/svn_to_git_mirroring/ job]. (This mirror does not include [https://github.com/jenkinsci/monitoring-plugin Jenkins], [https://github.com/evernat/liferay-javamelody Liferay], [https://github.com/evernat/grails-melody-plugin Grails] and [https://github.com/evernat/sonar-javamelody Sonar] plugins.)
