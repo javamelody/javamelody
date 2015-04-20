@@ -483,8 +483,13 @@ final class JdbcWrapperHelper {
 			Class<?>[] interfacesArray) {
 		final ClassLoader classLoader = objectClass.getClassLoader(); // NOPMD
 		try {
-			return Proxy.getProxyClass(classLoader, interfacesArray).getConstructor(
-					new Class[] { InvocationHandler.class });
+			final Constructor<?> constructor = Proxy.getProxyClass(classLoader, interfacesArray)
+					.getConstructor(new Class[] { InvocationHandler.class });
+			// issue 475: workaround for a j.l.r.Proxy change in Java 8 - proxy class for non-public interface is non-public now.
+			// Ref: https://netbeans.org/bugzilla/show_bug.cgi?id=229191
+			// and http://hg.netbeans.org/jet-main/rev/3238e03c676f
+			constructor.setAccessible(true);
+			return constructor;
 		} catch (final NoSuchMethodException e) {
 			throw new IllegalStateException(e);
 		}
