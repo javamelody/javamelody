@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix issue 475: IllegalAccessException when creating Jdbc Proxy (Java 8)
   * fix issue 473: Basic Authentication and Sessions
   * fix issue 460: In WildFly 8.2, "ClassNotFoundException: Can't find a delegate" when monitoring JPA
   * added: MULTILINE & DOTALL flags for transform-patterns regexps (issue 474, thanks to _Michal Bergmann_).
