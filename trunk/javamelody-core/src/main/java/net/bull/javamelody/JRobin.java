@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+import javax.imageio.ImageIO;
+
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdDbPool;
@@ -50,6 +52,30 @@ import org.jrobin.graph.RrdGraphDef;
  * @author Emeric Vernat
  */
 final class JRobin {
+	private static class AppContextClassLoaderLeakPrevention {
+		static {
+			// issue 476: appContextProtection is disabled by default in JreMemoryLeakPreventionListener since Tomcat 7.0.42,
+			// so protect from sun.awt.AppContext ourselves
+			final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			try {
+				// Use the system classloader as the victim for this ClassLoader pinning we're about to do.
+				Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+
+				// Trigger a call to sun.awt.AppContext.getAppContext().
+				// This will pin the system class loader in memory but that shouldn't be an issue.
+				ImageIO.getCacheDirectory();
+			} catch (final Throwable t) { // NOPMD
+				LOG.info("prevention of AppContext ClassLoader leak failed, skipping");
+			} finally {
+				Thread.currentThread().setContextClassLoader(loader);
+			}
+		}
+
+		static void dummy() {
+			// just to initialize the class
+		}
+	}
+
 	static final int SMALL_HEIGHT = 50;
 	private static final Color LIGHT_RED = Color.RED.brighter().brighter();
 	private static final Paint SMALL_GRADIENT = new GradientPaint(0, 0, LIGHT_RED, 0, SMALL_HEIGHT,
@@ -177,6 +203,9 @@ final class JRobin {
 	}
 
 	byte[] graph(Range range, int width, int height, boolean maxHidden) throws IOException {
+		// static init of the AppContext ClassLoader
+		AppContextClassLoaderLeakPrevention.dummy();
+
 		try {
 			// Rq : il pourrait être envisagé de récupérer les données dans les fichiers rrd ou autre stockage
 			// puis de faire des courbes en sparklines html (sauvegardées dans la page html)
