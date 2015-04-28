@@ -5,6 +5,12 @@
         <dependent-module archiveName="javamelody-core-1.56.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/overlay/prj/javamelody-core?includes=net/bull/javamelody/Main.class;LICENSE;VERSION.properties&amp;excludes=META-INF/MANIFEST.MF">
+            <dependency-type>consumes</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/overlay/slf/?includes=**/**&amp;excludes=META-INF/MANIFEST.MF">
+            <dependency-type>consumes</dependency-type>
+        </dependent-module>
         <property name="java-output-path"/>
         <property name="context-root" value="javamelody-collector-server"/>
     </wb-module>
