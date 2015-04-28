@@ -308,6 +308,8 @@
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>Emeric Vernat</Implementation-Vendor>
+							<!-- Override user.name in Built-By -->
+							<Built-By>Emeric Vernat</Built-By>
 						</manifestEntries>
 					</archive>
 				</configuration>
