@@ -44,15 +44,17 @@ public class TestProcessInformations {
 	@Test
 	public void testReadPs() {
 		final List<ProcessInformations> processInformations = ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/tasklist.txt"), true);
+				.buildProcessInformations(getClass().getResourceAsStream("/tasklist.txt"), true,
+						false);
 		assertSame("processes", processInformations.size(), 49);
 		checkProcesses(processInformations, true);
 		final List<ProcessInformations> processInformations2 = ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false);
+				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false);
 		assertSame("processes", processInformations2.size(), 118);
 		checkProcesses(processInformations2, false);
 		final List<ProcessInformations> processInformations3 = ProcessInformations
-				.buildProcessInformations(getClass().getResourceAsStream("/ps_aix.txt"), false);
+				.buildProcessInformations(getClass().getResourceAsStream("/ps_aix.txt"), false,
+						true);
 		assertSame("processes", processInformations3.size(), 15);
 		checkProcesses(processInformations3, false);
 	}

@@ -279,10 +279,10 @@ public class TestHtmlReport {
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
-				.getResourceAsStream("/tasklist.txt"), true));
+				.getResourceAsStream("/tasklist.txt"), true, false));
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
-				.getResourceAsStream("/ps.txt"), false));
+				.getResourceAsStream("/ps.txt"), false, false));
 		assertNotEmptyAndClear(writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 		assertNotEmptyAndClear(writer);
