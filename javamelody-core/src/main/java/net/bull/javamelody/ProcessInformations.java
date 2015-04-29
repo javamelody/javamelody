@@ -61,7 +61,7 @@ final class ProcessInformations implements Serializable {
 	private final String cpuTime;
 	private final String command;
 
-	private ProcessInformations(Scanner sc, boolean windows) {
+	private ProcessInformations(Scanner sc, boolean windows, boolean macOrAix) {
 		super();
 		if (windows) {
 			final StringBuilder imageNameBuilder = new StringBuilder(sc.next());
@@ -102,7 +102,7 @@ final class ProcessInformations implements Serializable {
 			rss = sc.nextInt();
 			tty = sc.next();
 			stat = sc.next();
-			if (sc.hasNextInt()) {
+			if (macOrAix && sc.hasNextInt()) {
 				start = sc.next() + ' ' + sc.next();
 			} else {
 				start = sc.next();
@@ -112,7 +112,8 @@ final class ProcessInformations implements Serializable {
 		}
 	}
 
-	static List<ProcessInformations> buildProcessInformations(InputStream in, boolean windows) {
+	static List<ProcessInformations> buildProcessInformations(InputStream in, boolean windows,
+			boolean macOrAix) {
 		final String charset;
 		if (windows) {
 			charset = "Cp1252";
@@ -130,7 +131,7 @@ final class ProcessInformations implements Serializable {
 
 		final List<ProcessInformations> processInfos = new ArrayList<ProcessInformations>();
 		while (sc.hasNext()) {
-			final ProcessInformations processInfo = new ProcessInformations(sc, windows);
+			final ProcessInformations processInfo = new ProcessInformations(sc, windows, macOrAix);
 			processInfos.add(processInfo);
 		}
 		return Collections.unmodifiableList(processInfos);
@@ -154,7 +155,7 @@ final class ProcessInformations implements Serializable {
 				// (http://mindprod.com/jgloss/properties.html) qui acceptent la commande ps
 				process = Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", "ps wauxf" });
 			}
-			return buildProcessInformations(process.getInputStream(), windows);
+			return buildProcessInformations(process.getInputStream(), windows, mac || aix);
 		} finally {
 			if (process != null) {
 				// évitons http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6462165
