@@ -5,6 +5,7 @@
   * fix issue 475: IllegalAccessException when creating Jdbc Proxy (Java 8)
   * fix issue 473: Basic Authentication and Sessions
   * fix issue 460: In WildFly 8.2, "ClassNotFoundException: Can't find a delegate" when monitoring JPA
+  * fix issue 477: In the processes list, CPU and Command are sometimes in the wrong column
   * added: MULTILINE & DOTALL flags for transform-patterns regexps (issue 474, thanks to _Michal Bergmann_).
   * doc added: Example of [UserGuideAdvanced#Embedding_in_a_standalone_app embedding JavaMelody in a standalone application] (non webapp), thanks to _Philip Zeyliger_ and _let4time_
   * doc updated: Examples of web.xml and of context-param updated in the [UserGuide#2._web.xml_file user's guide] to be sure that parameters are not ignored in some case of webapp v3.1 with JDK8 (issue 459).
