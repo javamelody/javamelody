@@ -136,7 +136,7 @@ This is an internal reminder of the steps of the release process.
   * Edit version in README.md at [https://github.com/javamelody/javamelody/blob/master/README.md]
   * *draft a new release* and *upload* jar, war, zip and jira-javamelody.jar files to [https://github.com/javamelody/javamelody/releases]
   * *update [http://code.google.com/p/javamelody/wiki/ReleaseNotes Release notes]* with version
-  * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing
+  * *increment versions in other pom.xml files*: parent, javamelody-collector-server, javamelody-test-webapp, javamelody-swing, javamelody-for-standalone
   * *publish artefacts in Maven central*
     * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version.jar
     * mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=javamelody-core-version.pom -Dfile=javamelody-core-version-sources.jar -Dclassifier=sources
