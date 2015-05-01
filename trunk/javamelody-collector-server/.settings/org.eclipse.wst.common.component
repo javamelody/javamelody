@@ -2,10 +2,10 @@
     <wb-module deploy-name="javamelody-collector-server">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-        <dependent-module archiveName="javamelody-core-1.56.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
+        <dependent-module archiveName="javamelody-core-1.57.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module deploy-path="/" handle="module:/overlay/prj/javamelody-core?includes=net/bull/javamelody/Main.class;LICENSE;VERSION.properties&amp;excludes=META-INF/MANIFEST.MF">
+        <dependent-module deploy-path="/" handle="module:/overlay/prj/javamelody-core?includes=LICENSE;VERSION.properties;net/bull/javamelody/Main.class&amp;excludes=META-INF/MANIFEST.MF">
             <dependency-type>consumes</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/" handle="module:/overlay/slf/?includes=**/**&amp;excludes=META-INF/MANIFEST.MF">

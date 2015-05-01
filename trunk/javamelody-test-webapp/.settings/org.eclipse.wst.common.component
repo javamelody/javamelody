@@ -2,7 +2,7 @@
     <wb-module deploy-name="javamelody-test-webapp">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-        <dependent-module archiveName="javamelody-core-1.56.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
+        <dependent-module archiveName="javamelody-core-1.57.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path"/>
