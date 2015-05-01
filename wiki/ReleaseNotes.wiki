@@ -1,6 +1,10 @@
 #labels Featured
 === Next release (trunk) ===
 
+  *
+
+=== 1.56.0 ===
+
   * fix issue 476: ClassLoader leak when using the reports and then hot-redeploy with Tomcat 7.0.42 or later
   * fix issue 475: IllegalAccessException when creating Jdbc Proxy (Java 8)
   * fix issue 473: Basic Authentication and Sessions
