@@ -188,6 +188,7 @@
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<version>2.10.1</version>
 							<configuration>
+								<additionalparam>${javadoc.doclint.none}</additionalparam>
 								<links>
 									<link>http://java.sun.com/javase/6/docs/api/</link>
 									<link>http://java.sun.com/javaee/5/docs/api/</link>
@@ -283,4 +284,15 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<profiles>
+		<profile>
+			<id>java8-disable-strict-javadoc</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
+			</properties>
+		</profile>
+	</profiles>
 </project>
