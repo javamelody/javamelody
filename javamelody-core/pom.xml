@@ -417,6 +417,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.2</version>
 				<configuration>
+					<additionalparam>${javadoc.doclint.none}</additionalparam>
 					<offlineLinks>
 						<offlineLink>
 							<url>http://docs.oracle.com/javase/7/docs/api/</url>
@@ -566,4 +567,15 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<profiles>
+		<profile>
+			<id>java8-disable-strict-javadoc</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
+			</properties>
+		</profile>
+	</profiles>
 </project>
