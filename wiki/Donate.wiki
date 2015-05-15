@@ -18,6 +18,7 @@
 If you have never used PayPal before, then the site will ask you about your credit card details, your country, address and your home phone number. This information is required by PayPal to do the money transaction and is not required by or visible to the JavaMelody project.
 
 === Donators ===
+|| Tex Albuja || $10 USD ||
 || Niklas Konstenius || $20 USD ||
 || Jochen Schneider Kartographie & Software || €20 EUR ||
 || Anonymous || $5 USD ||
