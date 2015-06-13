@@ -1,7 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
-  *
+  * fix: in latest JIRA versions, monitoring report outputs garbage (gzip compression is now enabled by default in JIRA)
 
 === 1.56.0 ===
 
