@@ -29,6 +29,11 @@
 			<param-value>-\d+|/\d+|chment/.+|onent/.+|abel/.+|/x/.+|est/.+|ifact/.+</param-value>
 		</init-param>
 		<init-param>
+			<!-- gzip is now enabled by default in JIRA, since 6.4.x ? -->
+			<param-name>gzip-compression-disabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
 			<param-name>system-actions-enabled</param-name>
 			<param-value>true</param-value>
 		</init-param>
