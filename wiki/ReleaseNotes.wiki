@@ -1,6 +1,7 @@
 #labels Featured
 === Next release (trunk) ===
 
+  * fix: check if async before flushing the response (revision 4090, thanks to _Mark Thomas_)
   * fix: in latest JIRA versions, monitoring report outputs garbage (gzip compression is now enabled by default in JIRA)
 
 === 1.56.0 ===
