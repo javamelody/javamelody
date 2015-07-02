@@ -2,3 +2,11 @@
 .settings
 .project
 target
+javamelody.jar
+javamelody.war
+javamelody.zip
+build
+doc
+VERSION.properties
+jira-javamelody.jar
+test.war
