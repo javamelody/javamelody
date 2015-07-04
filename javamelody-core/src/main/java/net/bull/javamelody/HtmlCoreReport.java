@@ -246,7 +246,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeSummary() throws IOException {
-		final String javaMelodyUrl = "<a href='http://javamelody.googlecode.com' target='_blank'>JavaMelody</a>";
+		final String javaMelodyUrl = "<a href='https://github.com/javamelody/javamelody/wiki' target='_blank'>JavaMelody</a>";
 		if (range.getPeriod() == Period.TOUT) {
 			final String startDate = I18N.createDateAndTimeFormat().format(
 					collector.getCounters().get(0).getStartDate());

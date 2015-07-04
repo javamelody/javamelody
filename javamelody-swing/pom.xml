@@ -11,7 +11,7 @@
 	<packaging>jar</packaging>
 	<name>JavaMelody - Swing</name>
 	<description>Swing UI for Java Melody</description>
-	<url>http://javamelody.googlecode.com/</url>
+	<url>https://github.com/javamelody/javamelody/wiki</url>
 	<licenses>
 		<license>
 			<name>ASL</name>

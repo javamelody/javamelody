@@ -152,7 +152,7 @@ class PdfDocumentFactory {
 
 		// we add some meta information to the document (after writer)
 		document.addAuthor(application);
-		document.addCreator("JavaMelody par E. Vernat, http://javamelody.googlecode.com");
+		document.addCreator("JavaMelody par E. Vernat, https://github.com/javamelody/javamelody/wiki");
 		document.addTitle(title);
 		return document;
 	}
