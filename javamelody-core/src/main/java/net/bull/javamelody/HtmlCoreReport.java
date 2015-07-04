@@ -180,7 +180,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeAnchor("top", I18N.getString("Stats"));
 		writeSummary();
 		writeln("</h3>");
-		write("<a href='http://code.google.com/p/javamelody/wiki/Donate'>");
+		write("<a href='https://github.com/javamelody/javamelody/wiki/Donate'>");
 		writeln("<img class='noPrint' style='position: absolute; top: 15px; right: 10px; border: 0;' src='?resource=donate.gif' alt='Donate' /></a>");
 		writeln("<div align='center'>");
 		writeRefreshAndPeriodLinks(null, null);
