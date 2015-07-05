@@ -7,3 +7,5 @@ See the [Project Home](../../wiki), [Screenshots](../../wiki/Screenshots#charts)
 or see downloads in [Releases](../../releases), [Issues](../../issues) and [Pull requests](../../pulls).
 
 License [ASL](http://www.apache.org/licenses/LICENSE-2.0)
+
+[![Build Status](https://javamelody.ci.cloudbees.com/buildStatus/icon?job=javamelody)](https://javamelody.ci.cloudbees.com/job/javamelody/)
