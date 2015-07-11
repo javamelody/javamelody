@@ -18,6 +18,9 @@
 		<java.version>1.8</java.version>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
+		<javamelodyVersion>${project.version}</javamelodyVersion>
 	</properties>
 
 	<parent>
@@ -27,6 +30,33 @@
 	</parent>
 
 	<dependencies>
+		<!-- JavaMelody -->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>${javamelodyVersion}</version>
+		</dependency>
+		<!-- iText dependency for PDF exports in JavaMelody (optional) -->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bctsp-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
