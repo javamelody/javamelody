@@ -8,4 +8,4 @@ or see downloads in [Releases](../../releases), [Issues](../../issues) and [Pull
 
 License [ASL](http://www.apache.org/licenses/LICENSE-2.0)
 
-[![Build Status](https://javamelody.ci.cloudbees.com/buildStatus/icon?job=javamelody)](https://javamelody.ci.cloudbees.com/job/javamelody/) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.bull.javamelody/javamelod-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/net.bull.javamelody/javamelod-core)
+[![Build Status](https://javamelody.ci.cloudbees.com/buildStatus/icon?job=javamelody)](https://javamelody.ci.cloudbees.com/job/javamelody/) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.bull.javamelody/javamelody-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.bull.javamelody/javamelody-core)
