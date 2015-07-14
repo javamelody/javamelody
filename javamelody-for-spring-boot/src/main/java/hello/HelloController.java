@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @MonitoredWithSpring
+@SuppressWarnings("javadoc")
 public class HelloController {
 
 	@RequestMapping("/")

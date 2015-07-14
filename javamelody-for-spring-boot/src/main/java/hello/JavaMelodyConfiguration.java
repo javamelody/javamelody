@@ -18,6 +18,7 @@ import org.springframework.context.annotation.ImportResource;
  */
 @Configuration
 @ImportResource("classpath:net/bull/javamelody/monitoring-spring.xml")
+@SuppressWarnings("javadoc")
 public class JavaMelodyConfiguration implements ServletContextInitializer {
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {

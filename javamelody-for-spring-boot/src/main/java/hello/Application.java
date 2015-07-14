@@ -6,9 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+@SuppressWarnings("javadoc")
 @SpringBootApplication
 public class Application {
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(Application.class, args);
 
@@ -20,5 +22,4 @@ public class Application {
 			System.out.println(beanName);
 		}
 	}
-
 }
