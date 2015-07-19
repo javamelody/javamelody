@@ -51,7 +51,8 @@ public final class JdbcWrapper {
 	/**
 	 * Instance singleton de JdbcWrapper (ici on ne connaît pas le ServletContext).
 	 */
-	public static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter("sql", "db.png"));
+	public static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter(
+			Counter.SQL_COUNTER_NAME, "db.png"));
 
 	// au lieu d'utiliser int avec des synchronized partout, on utilise AtomicInteger
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();

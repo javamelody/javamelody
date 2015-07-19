@@ -68,6 +68,10 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	static final String JSF_COUNTER_NAME = "jsf";
 	/**
+	 * Nom du counter des requêtes SQL.
+	 */
+	static final String SQL_COUNTER_NAME = "sql";
+	/**
 	 * Nom du counter des jobs.
 	 */
 	static final String JOB_COUNTER_NAME = "job";
