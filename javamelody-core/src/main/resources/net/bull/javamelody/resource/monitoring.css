@@ -170,6 +170,12 @@ div#handle {
 	cursor: col-resize;
 }
 
+.sqlKeyword {
+	color: #880000;
+	font-weight: bold;
+	font-size: 12px;
+}
+
 .explainPlan {
 	font-size: 8pt;
 	font-family: monospace;

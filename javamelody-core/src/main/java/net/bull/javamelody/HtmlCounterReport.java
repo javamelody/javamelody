@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Partie du rapport html pour un compteur.
@@ -34,6 +35,9 @@ import java.util.Map;
  */
 class HtmlCounterReport extends HtmlAbstractReport {
 	private static final int MAX_REQUEST_NAME_LENGTH = 5000;
+	private static final Pattern SQL_KEYWORDS_PATTERN = Pattern.compile(
+			"\\b(select|from|where|order by|group by|update|delete|insert into|values)\\b",
+			Pattern.CASE_INSENSITIVE);
 	private final Counter counter;
 	private final Range range;
 	private final CounterRequestAggregation counterRequestAggregation;
@@ -84,13 +88,13 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			write("' alt='graph'/></em>");
 			if (requestName.length() <= MAX_REQUEST_NAME_LENGTH) {
 				// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-				writeDirectly(htmlEncodeButNotSpace(requestName));
+				writeDirectly(htmlEncodeRequestName(requestId, requestName));
 				write("</a>");
 			} else {
 				// si une requête a trop de caractères, alors cela sature le tableau des requêtes
 				// et le rend peu lisible, donc on tronque cette requête en ajoutant une action "Details".
-				writeDirectly(htmlEncodeButNotSpace(requestName.substring(0,
-						MAX_REQUEST_NAME_LENGTH)));
+				writeDirectly(htmlEncodeRequestName(requestId,
+						requestName.substring(0, MAX_REQUEST_NAME_LENGTH)));
 				write("</a>");
 				write("<br/> ");
 
@@ -98,7 +102,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				writeShowHideLink(idToShow, "#Details#");
 				writeln("<div id='request-" + requestId + "' style='display: none;'>");
 				write("<br/> ");
-				writeDirectly(htmlEncodeButNotSpace(requestName));
+				writeDirectly(htmlEncodeRequestName(requestId, requestName));
 				writeln("</div> ");
 			}
 		}
@@ -209,7 +213,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				throws IOException {
 			writeln("<br/><b>#Utilisations_de#</b>");
 			if (myRequest != null) {
-				writeDirectly(htmlEncodeButNotSpace(myRequest.getName()));
+				writeDirectly(htmlEncodeRequestName(myRequest.getId(), myRequest.getName()));
 			}
 			writeln("<br/><br/>");
 			if (requests.isEmpty()) {
@@ -282,7 +286,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			table.nextRow();
 			write("<td>");
 			writeCounterIcon(request);
-			writeDirectly(htmlEncodeButNotSpace(request.getName()));
+			writeDirectly(htmlEncodeRequestName(request.getId(), request.getName()));
 			if (hasChildren) {
 				writeln("</td><td>&nbsp;");
 			}
@@ -707,7 +711,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			write(requestId);
 			write("'>");
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly(htmlEncodeButNotSpace(requestName));
+			writeDirectly(htmlEncodeRequestName(requestId, requestName));
 			write("</a>");
 		} else if (includeSummaryPerClassLink) {
 			write("<a href='?part=counterSummaryPerClass&amp;counter=");
@@ -716,11 +720,11 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			write(requestId);
 			write("'>");
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly(htmlEncodeButNotSpace(requestName));
+			writeDirectly(htmlEncodeRequestName(requestId, requestName));
 			write("</a> ");
 		} else {
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly(htmlEncodeButNotSpace(requestName));
+			writeDirectly(htmlEncodeRequestName(requestId, requestName));
 		}
 	}
 
@@ -749,5 +753,23 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		} else {
 			write(integerFormat.format(100 * dividende / diviseur));
 		}
+	}
+
+	/**
+	 * Encode le nom d'une requête pour affichage en html, sans encoder les espaces en nbsp (insécables),
+	 * et highlight les mots clés SQL.
+	 * @param requestId Id de la requête
+	 * @param requestName Nom de la requête à encoder
+	 * @return String
+	 */
+	static String htmlEncodeRequestName(String requestId, String requestName) {
+		if (requestId.startsWith(Counter.SQL_COUNTER_NAME)) {
+			final String htmlEncoded = htmlEncodeButNotSpace(requestName);
+			// highlight SQL keywords
+			return SQL_KEYWORDS_PATTERN.matcher(htmlEncoded).replaceAll(
+					"<span class='sqlKeyword'>$1</span>");
+		}
+
+		return htmlEncodeButNotSpace(requestName);
 	}
 }
