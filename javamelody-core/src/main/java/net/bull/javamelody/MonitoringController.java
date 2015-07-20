@@ -29,6 +29,7 @@ import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNLP_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.JVM_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.MAX_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -507,6 +508,7 @@ class MonitoringController {
 								.getParameter(PART_PARAMETER))
 						|| DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(httpRequest
 								.getParameter(PART_PARAMETER))
+						|| JVM_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
 						|| THREADS_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)) || THREADS_DUMP_PART
 							.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
 	}

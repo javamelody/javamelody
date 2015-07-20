@@ -36,6 +36,7 @@ import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
+import static net.bull.javamelody.HttpParameters.JVM_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -340,7 +341,10 @@ class CollectorController {
 	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest,
 			String application) throws IOException {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+		if (JVM_PART.equalsIgnoreCase(part)) {
+			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+			return new ArrayList<JavaInformations>(javaInformationsList);
+		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return collectorServer.collectHeapHistogram(application);
