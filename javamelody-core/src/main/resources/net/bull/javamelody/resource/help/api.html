@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><title>ExternalAPI of the JavaMelody monitoring</title>
+<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>
+<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />
+</head><body>
+
+<h3 align='center'><a href='https://github.com/javamelody/javamelody/wiki/ExternalAPI' target='_blank'>ExternalAPI</a>
+of the JavaMelody monitoring</h3>
+
+This page lists links to the external API of JavaMelody, including how to get the monitoring data in a XML or JSON format.
+The monitoring data is available as XML and JSON over http if the XStream and XPP3 dependencies are available in the webapp.
+<br/>
+<br/>
+See <a href='https://github.com/javamelody/javamelody/wiki/ExternalAPI' target='_blank'>Documentation</a>.
+<br/>
+<br/>
+<b>Warning</b>: The XML and JSON formats are dependent on the internal structure of data in JavaMelody.
+By using this XML/JSON format, you are coupled on this specific internal structure, which may change anytime without notice.
+
+<h2>JSON format</h2>
+<blockquote>
+<h3>Statistics</h3>
+	<ul>
+		<li><img src='?resource=calendar_view_day.png' alt='Current day' width='20' height='20'/>&nbsp;
+			<a href='?format=json&period=jour'>Current day</a></li>
+		<li><img src='?resource=calendar_view_week.png' alt='Week' width='20' height='20'/>&nbsp;
+			<a href='?format=json&period=semaine'>Week</a></li>
+		<li><img src='?resource=calendar_view_month.png' alt='Month' width='20' height='20'/>&nbsp;
+			<a href='?format=json&period=mois'>Month</a></li>
+		<li><img src='?resource=calendar.png' alt='Year' width='20' height='20'/>&nbsp;
+			<a href='?format=json&period=annee'>Year</a></li>
+		<li><img src='?resource=calendar.png' alt='All' width='20' height='20'/>&nbsp;
+			<a href='?format=json&period=tout'>All</a></li>
+	</ul>
+
+<h3>Current requests</h3>
+	<ul>
+		<li><img src='?resource=hourglass.png' alt='Current requests' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=currentRequests'>Current requests</a></li>
+	</ul>
+
+<h3>System information</h3>
+	<ul>
+		<li><img src='?resource=systeminfo.png' alt='JVM' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=jvm'>JVM</a></li>
+		<li><img src='?resource=threads.png' alt='Threads' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=threads'>Threads</a> or <a href='?part=threadsDump'>Threads dump</a></li>
+		<li><img src='?resource=memory.png' alt='Heap histogram' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=heaphisto'>Heap histogram</a></li>
+		<li><img src='?resource=system-users.png' alt='Http sessions' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=sessions'>Http sessions</a></li>
+		<li><img src='?resource=mbeans.png' alt='MBeans' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=mbeans'>MBeans</a></li>
+		<li><img src='?resource=jndi.png' alt='JNDI tree' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=jndi&path=comp/env'>JNDI tree</a></li>
+		<li><img src='?resource=processes.png' alt='OS processes' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=processes'>OS processes</a></li>
+		<li><img src='?resource=db.png' alt='Opened jdbc connections' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=connections'>Opened jdbc connections</a></li>
+		<li><img src='?resource=db.png' alt='Database' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=database&request=1'>Database</a> (first report)</li>
+		<li><img src='?resource=clock.png' alt='Hotspots' width='20' height='20'/>&nbsp;
+			<a href='?format=json&part=hotspots'>Hotspots</a>, if enabled</li>
+	</ul>
+
+</blockquote>
+<h2>XML format</h2>
+<blockquote>
+<h3>Statistics</h3>
+	<ul>
+		<li><img src='?resource=calendar_view_day.png' alt='Current day' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&period=jour'>Current day</a></li>
+		<li><img src='?resource=calendar_view_week.png' alt='Week' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&period=semaine'>Week</a></li>
+		<li><img src='?resource=calendar_view_month.png' alt='Month' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&period=mois'>Month</a></li>
+		<li><img src='?resource=calendar.png' alt='Year' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&period=annee'>Year</a></li>
+		<li><img src='?resource=calendar.png' alt='All' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&period=tout'>All</a></li>
+	</ul>
+
+<h3>Current requests</h3>
+	<ul>
+		<li><img src='?resource=hourglass.png' alt='Current requests' width='20' height='20'/>&nbsp;
+		<a href='?format=xml&part=currentRequests'>Current requests</a></li>
+	</ul>
+
+<h3>System information</h3>
+	<ul>
+		<li><img src='?resource=systeminfo.png' alt='JVM' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=jvm'>JVM</a></li>
+		<li><img src='?resource=threads.png' alt='Threads' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=threads'>Threads</a> or <a href='?part=threadsDump'>Threads dump</a></li>
+		<li><img src='?resource=memory.png' alt='Heap histogram' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=heaphisto'>Heap histogram</a></li>
+		<li><img src='?resource=system-users.png' alt='Http sessions' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=sessions'>Http sessions</a></li>
+		<li><img src='?resource=mbeans.png' alt='MBeans' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=mbeans'>MBeans</a></li>
+		<li><img src='?resource=jndi.png' alt='JNDI tree' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=jndi&path=comp/env'>JNDI tree</a></li>
+		<li><img src='?resource=processes.png' alt='OS processes' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=processes'>OS processes</a></li>
+		<li><img src='?resource=db.png' alt='Opened jdbc connections' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=connections'>Opened jdbc connections</a></li>
+		<li><img src='?resource=db.png' alt='Database' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=database&request=1'>Database</a> (first report)</li>
+		<li><img src='?resource=clock.png' alt='Hotspots' width='20' height='20'/>&nbsp;
+			<a href='?format=xml&part=hotspots'>Hotspots</a>, if enabled</li>
+	</ul>
+</blockquote>
+
+<h3>PNG and last value</h3>
+	<ul>
+		<li><a href='?graph=usedMemory&width=960&height=400&period=jour'>PNG example: used memory</a></li>
+		<li><a href='?part=lastValue&graph=cpu,usedMemory'>Last value example: cpu and used memory</a></li>
+	</ul>
+
+<h3>JMX value</h3>
+	<ul>
+		<li><img src='?resource=mbeans.png' alt='MBeans' width='20' height='20'/>&nbsp;
+			<a href='?jmxValue=java.lang:type=OperatingSystem.ProcessCpuTime|java.lang:type=Memory.HeapMemoryUsage'>JMX (MBean) example: cpu time and used memory</a></li>
+	</ul>
+
+</body></html>
