@@ -44,7 +44,7 @@ import java.util.zip.ZipFile;
  * Launcher class for stand-alone execution of JavaMelody Monitoring as
  * <tt>java -jar javamelody.war</tt>.
  *
- * @author Kohsuke Kawaguchi, extracted (and simplified) from hudson.dev.java.net by Emeric Vernat
+ * @author Kohsuke Kawaguchi, extracted (and simplified) from Jenkins by Emeric Vernat
  * 	licence MIT (alias X11, donc compatible ASL)
  */
 @SuppressWarnings("all")
@@ -86,7 +86,7 @@ public final class Main {
 		//			}
 		//		}
 
-		// en commentaire car bug hudson 3272 (sous windows)
+		// en commentaire car bug JENKINS-3272 (sous windows)
 		// if the output should be redirect to a file, do it now
 		//		for (int i = 0; i < args.length; i++) {
 		//			if (args[i].startsWith("--logfile=")) {
@@ -197,11 +197,11 @@ public final class Main {
 
 	// Figures out the location of <tt>javamelody.war</tt>.
 	private static File whoAmI() throws IOException {
-		// JNLP returns the URL where the jar was originally placed (like http://hudson.dev.java.net/...)
+		// JNLP returns the URL where the jar was originally placed (like http://...)
 		// not the local cached file. So we need a rather round about approach to get to
 		// the local file name.
 		// There is no portable way to find where the locally cached copy
-		// of hudson.war/jar is; JDK 6 is too smart. (See HUDSON-2326.)
+		// of war/jar is; JDK 6 is too smart. (See JENKINS-2326.)
 		try {
 			return whoAmIFromJnlp();
 		} catch (final Exception x) {
@@ -313,7 +313,7 @@ public final class Main {
 	//	 * Because the reopen operation needs to happen atomically,
 	//	 * write operations are synchronized.
 	//	 *
-	//	 * @author Kohsuke Kawaguchi, extracted from hudson.dev.java.net
+	//	 * @author Kohsuke Kawaguchi
 	//	 */
 	//	@SuppressWarnings("all")
 	//	private static final class LogFileOutputStream extends FilterOutputStream { // NOPMD

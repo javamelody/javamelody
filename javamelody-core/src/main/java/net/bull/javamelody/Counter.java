@@ -76,7 +76,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	static final String JOB_COUNTER_NAME = "job";
 	/**
-	 * Nom du counter des builds Hudson/Jenkins.
+	 * Nom du counter des builds Jenkins.
 	 */
 	static final String BUILDS_COUNTER_NAME = "builds";
 	/**

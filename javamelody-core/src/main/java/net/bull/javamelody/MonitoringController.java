@@ -223,7 +223,7 @@ class MonitoringController {
 
 	void addPdfContentTypeAndDisposition(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
-		// méthode utilisée dans le monitoring Hudson/Jenkins
+		// méthode utilisée dans le monitoring Jenkins
 		new PdfController(collector, collectorServer).addPdfContentTypeAndDisposition(httpRequest,
 				httpResponse);
 	}
@@ -236,7 +236,7 @@ class MonitoringController {
 		// par CollectorServlet.doCompressedPart
 		if (isCompressionSupported(httpRequest)
 				&& !(httpResponse instanceof CompressionServletResponseWrapper)
-				// this checks if if it is the Hudson / Jenkins plugin
+				// this checks if it is the Jenkins plugin
 				// (another filter may already compress the stream, in which case we must not compress a second time,
 				// in particular for org.kohsuke.stapler.compression.CompressionFilter
 				// from https://github.com/stapler/stapler in Jenkins v1.470+ (issue JENKINS-14050)

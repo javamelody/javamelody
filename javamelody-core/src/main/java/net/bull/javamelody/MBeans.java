@@ -401,7 +401,7 @@ final class MBeans {
 	 */
 	static MBeanServer getPlatformMBeanServer() {
 		return ManagementFactory.getPlatformMBeanServer();
-		// alternative (sauf pour Hudson/Jenkins slaves):
+		// alternative (sauf pour Jenkins slaves):
 		//		final List<MBeanServer> mBeanServers = MBeanServerFactory.findMBeanServer(null);
 		//		if (!mBeanServers.isEmpty()) {
 		//			// il existe déjà un MBeanServer créé précédemment par Tomcat ou bien ci-dessous

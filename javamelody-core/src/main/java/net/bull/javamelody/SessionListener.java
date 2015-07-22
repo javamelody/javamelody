@@ -396,7 +396,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		removeSession(event.getSession());
 	}
 
-	// pour hudson/Jenkins/jira/confluence/bamboo
+	// pour Jenkins/jira/confluence/bamboo
 	void registerSessionIfNeeded(HttpSession session) {
 		if (session != null) {
 			synchronized (session) {
@@ -407,7 +407,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 	}
 
-	// pour hudson/Jenkins/jira/confluence/bamboo
+	// pour Jenkins/jira/confluence/bamboo
 	void unregisterSessionIfNeeded(HttpSession session) {
 		if (session != null) {
 			try {
@@ -425,7 +425,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 	}
 
-	// pour hudson/Jenkins/jira/confluence/bamboo
+	// pour Jenkins/jira/confluence/bamboo
 	void unregisterInvalidatedSessions() {
 		for (final Map.Entry<String, HttpSession> entry : SESSION_MAP_BY_ID.entrySet()) {
 			final HttpSession session = entry.getValue();
