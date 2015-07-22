@@ -326,13 +326,12 @@ final class MBeans {
 		return value;
 	}
 
-	static String getConvertedAttributes(String jmxValueParameter) {
+	private static List<Object> getConvertedAttributes(List<String> mbeanAttributes) {
 		initJRockitMBeansIfNeeded();
 
-		final StringBuilder sb = new StringBuilder();
-		boolean first = true;
+		final List<Object> result = new ArrayList<Object>();
 		final List<MBeanServer> mBeanServers = getMBeanServers();
-		for (final String mbeansAttribute : jmxValueParameter.split("[|]")) {
+		for (final String mbeansAttribute : mbeanAttributes) {
 			final int lastIndexOfPoint = mbeansAttribute.lastIndexOf('.');
 			if (lastIndexOfPoint <= 0) {
 				throw new IllegalArgumentException(mbeansAttribute);
@@ -344,18 +343,13 @@ final class MBeans {
 			if ("password".equalsIgnoreCase(attribute)) {
 				throw new IllegalArgumentException(name + '.' + attribute);
 			}
-			if (first) {
-				first = false;
-			} else {
-				sb.append('|');
-			}
 			InstanceNotFoundException instanceNotFoundException = null;
 			for (final MBeanServer mbeanServer : mBeanServers) {
 				try {
 					final MBeans mbeans = new MBeans(mbeanServer);
 					final Object jmxValue = mbeans.convertValueIfNeeded(mbeans.getAttribute(
 							new ObjectName(name), attribute));
-					sb.append(jmxValue);
+					result.add(jmxValue);
 					instanceNotFoundException = null;
 					// ObjectName trouvé dans ce MBeanServer, inutile de chercher dans les suivants
 					// où il n'est d'ailleurs pas
@@ -373,6 +367,22 @@ final class MBeans {
 				throw new IllegalArgumentException(name + '.' + attribute,
 						instanceNotFoundException);
 			}
+		}
+		return result;
+	}
+
+	static String getConvertedAttributes(String jmxValueParameter) {
+		final List<String> mbeanAttributes = Arrays.asList(jmxValueParameter.split("[|]"));
+		final List<Object> jmxValues = getConvertedAttributes(mbeanAttributes);
+		final StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (final Object jmxValue : jmxValues) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append('|');
+			}
+			sb.append(jmxValue);
 		}
 		return sb.toString();
 	}
