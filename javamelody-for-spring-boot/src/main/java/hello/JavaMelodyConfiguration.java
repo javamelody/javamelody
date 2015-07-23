@@ -1,5 +1,6 @@
 package hello;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -29,7 +30,9 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 	public FilterRegistrationBean javaMelody() {
 		FilterRegistrationBean javaMelody = new FilterRegistrationBean();
 		javaMelody.setFilter(new MonitoringFilter());
+		javaMelody.setAsyncSupported(true);
 		javaMelody.setName("monitoring");
+		javaMelody.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
 
 		// see the list of parameters:
 		// https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
