@@ -160,13 +160,15 @@ class CacheInformations implements Serializable {
 		final List<CacheInformations> result = new ArrayList<CacheInformations>();
 		for (final CacheManager cacheManager : allCacheManagers) {
 			final String[] cacheNames = cacheManager.getCacheNames();
-			for (final String cacheName : cacheNames) {
-				try {
+			try {
+				for (final String cacheName : cacheNames) {
 					result.add(new CacheInformations(cacheManager.getEhcache(cacheName)));
-				} catch (final Exception e) {
-					// Avoid Exception throwing in cache information parsing (for example with JGroups).
-					LOG.debug(e.toString(), e);
 				}
+			} catch (final Exception e) {
+				// Avoid Exception throwing in cache information parsing
+				// (for example with JGroups or TransactionException: transaction not started, issue 402)
+				// and do not log an exception for each cache
+				LOG.debug(e.toString(), e);
 			}
 		}
 		return result;
