@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -603,8 +604,15 @@ class Counter implements Cloneable, Serializable { // NOPMD
 			// ce pattern optionnel permet de transformer la description de la requête
 			// pour supprimer des parties variables (identifiant d'objet par exemple)
 			// et pour permettre l'agrégation sur cette requête
-			aggregateRequestName = requestTransformPattern.matcher(requestName).replaceAll(
-					TRANSFORM_REPLACEMENT);
+			final Matcher matcher = requestTransformPattern.matcher(requestName);
+			try {
+				aggregateRequestName = matcher.replaceAll(TRANSFORM_REPLACEMENT);
+			} catch (final StackOverflowError e) {
+				// regexp can throw StackOverflowError for (A|B)*
+				// see https://github.com/javamelody/javamelody/issues/480
+				LOG.warn(e.toString(), e);
+				return requestName;
+			}
 		}
 		return aggregateRequestName;
 	}
