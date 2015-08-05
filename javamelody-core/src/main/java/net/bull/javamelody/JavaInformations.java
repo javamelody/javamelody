@@ -235,9 +235,7 @@ class JavaInformations implements Serializable { // NOPMD
 
 	private static long buildOpenFileDescriptorCount() {
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem)
-				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
-						.getName())) {
+		if (isSunOsMBean(operatingSystem) && isSunUnixMBean(operatingSystem)) {
 			try {
 				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
 						"getOpenFileDescriptorCount");
@@ -251,9 +249,7 @@ class JavaInformations implements Serializable { // NOPMD
 
 	private static long buildMaxFileDescriptorCount() {
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem)
-				&& "com.sun.management.UnixOperatingSystem".equals(operatingSystem.getClass()
-						.getName())) {
+		if (isSunOsMBean(operatingSystem) && isSunUnixMBean(operatingSystem)) {
 			try {
 				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
 						"getMaxFileDescriptorCount");
@@ -475,6 +471,15 @@ class JavaInformations implements Serializable { // NOPMD
 				|| "com.sun.management.UnixOperatingSystem".equals(className)
 				// sun.management.OperatingSystemImpl pour java 8
 				|| "sun.management.OperatingSystemImpl".equals(className);
+	}
+
+	private static boolean isSunUnixMBean(OperatingSystemMXBean operatingSystem) {
+		for (Class<?> inter : operatingSystem.getClass().getInterfaces()) {
+			if ("com.sun.management.UnixOperatingSystemMXBean".equals(inter.getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	MemoryInformations getMemoryInformations() {
