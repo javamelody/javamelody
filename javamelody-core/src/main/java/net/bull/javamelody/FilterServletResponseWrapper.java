@@ -121,6 +121,14 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 						"getOutputStream() has already been called for this response");
 			}
 
+			try {
+				getOutputStream();
+			} catch (final IllegalStateException e) {
+				// issue 488: if a filter has called getWriter() before the MonitoringFilter, we can't call getOutputStream()
+				writer = super.getWriter();
+				return writer;
+			}
+
 			final ServletOutputStream outputStream = getOutputStream();
 			final String charEnc = getResponse().getCharacterEncoding();
 			// HttpServletResponse.getCharacterEncoding() shouldn't return null
