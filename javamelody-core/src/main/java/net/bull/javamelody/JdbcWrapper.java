@@ -496,8 +496,7 @@ public final class JdbcWrapper {
 			// l'instance de RmiDataSource déjà présente dans le JNDI.
 			rewrapWebLogicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage);
-		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
-				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)) {
+		} else if (isDbcpDataSource(dataSourceClassName)) {
 			// JIRA dans Tomcat: la dataSource a déjà été mise en cache par org.ofbiz.core.entity.transaction.JNDIFactory
 			// à l'initialisation de com.atlassian.jira.startup.JiraStartupChecklistContextListener
 			// donc on modifie directement l'instance de BasicDataSource déjà présente dans le JNDI.
@@ -525,6 +524,13 @@ public final class JdbcWrapper {
 
 	private boolean isServerNeedsRewrap(String jndiName) {
 		return glassfish || jboss || weblogic || jndiName.contains("openejb");
+	}
+
+	private boolean isDbcpDataSource(String dataSourceClassName) {
+		return "org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName);
 	}
 
 	private boolean isJBossOrGlassfishDataSource(String dataSourceClassName) {
