@@ -64,7 +64,7 @@ public class TestSamplingProfiler {
 	}
 
 	/**
-	 * Test that classes from packages are included
+	 * Test that classes from packages are included.
 	 */
 	@Test
 	public void testClassesInInclude() {
@@ -81,7 +81,7 @@ public class TestSamplingProfiler {
 	}
 
 	/**
-	 * Test that classes from packages are included, where include pattern does not match any packages
+	 * Test that classes from packages are included, where include pattern does not match any packages.
 	 */
 	@Test
 	public void testClassesInIncludeNoneMatching() {
@@ -107,7 +107,7 @@ public class TestSamplingProfiler {
 	}
 
 	/**
-	 * Test include packages
+	 * Test include packages.
 	 */
 	@Test
 	public void testConstructorInclude() {
