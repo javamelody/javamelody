@@ -253,36 +253,38 @@ final class JdbcWrapperHelper {
 
 	private static void pullTomcatDbcpDataSourceProperties(String name, DataSource dataSource) {
 		// si tomcat et si dataSource standard, alors on récupère des infos
-		final BasicDataSource tcDataSource = (BasicDataSource) dataSource;
+		final BasicDataSource tomcatDbcpDataSource = (BasicDataSource) dataSource;
 		final BasicDataSourcesProperties properties = TOMCAT_BASIC_DATASOURCES_PROPERTIES;
 		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
 		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
 
 		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tcDataSource.getMaxActive());
-		properties.put(name, "poolPreparedStatements", tcDataSource.isPoolPreparedStatements());
+		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tomcatDbcpDataSource.getMaxActive());
+		properties.put(name, "poolPreparedStatements",
+				tomcatDbcpDataSource.isPoolPreparedStatements());
 
-		properties.put(name, "defaultCatalog", tcDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", tcDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", tcDataSource.getDefaultReadOnly());
+		properties.put(name, "defaultCatalog", tomcatDbcpDataSource.getDefaultCatalog());
+		properties.put(name, "defaultAutoCommit", tomcatDbcpDataSource.getDefaultAutoCommit());
+		properties.put(name, "defaultReadOnly", tomcatDbcpDataSource.getDefaultReadOnly());
 		properties.put(name, "defaultTransactionIsolation",
-				tcDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", tcDataSource.getDriverClassName());
-		properties.put(name, "initialSize", tcDataSource.getInitialSize());
-		properties.put(name, "maxIdle", tcDataSource.getMaxIdle());
+				tomcatDbcpDataSource.getDefaultTransactionIsolation());
+		properties.put(name, "driverClassName", tomcatDbcpDataSource.getDriverClassName());
+		properties.put(name, "initialSize", tomcatDbcpDataSource.getInitialSize());
+		properties.put(name, "maxIdle", tomcatDbcpDataSource.getMaxIdle());
 		properties.put(name, "maxOpenPreparedStatements",
-				tcDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", tcDataSource.getMaxWait());
+				tomcatDbcpDataSource.getMaxOpenPreparedStatements());
+		properties.put(name, "maxWait", tomcatDbcpDataSource.getMaxWait());
 		properties.put(name, "minEvictableIdleTimeMillis",
-				tcDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", tcDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun", tcDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", tcDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", tcDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", tcDataSource.getTestWhileIdle());
+				tomcatDbcpDataSource.getMinEvictableIdleTimeMillis());
+		properties.put(name, "minIdle", tomcatDbcpDataSource.getMinIdle());
+		properties.put(name, "numTestsPerEvictionRun",
+				tomcatDbcpDataSource.getNumTestsPerEvictionRun());
+		properties.put(name, "testOnBorrow", tomcatDbcpDataSource.getTestOnBorrow());
+		properties.put(name, "testOnReturn", tomcatDbcpDataSource.getTestOnReturn());
+		properties.put(name, "testWhileIdle", tomcatDbcpDataSource.getTestWhileIdle());
 		properties.put(name, "timeBetweenEvictionRunsMillis",
-				tcDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", tcDataSource.getValidationQuery());
+				tomcatDbcpDataSource.getTimeBetweenEvictionRunsMillis());
+		properties.put(name, "validationQuery", tomcatDbcpDataSource.getValidationQuery());
 	}
 
 	private static void pullCommonsDbcpDataSourceProperties(String name, DataSource dataSource) {
@@ -321,70 +323,72 @@ final class JdbcWrapperHelper {
 
 	private static void pullTomcatDbcp2DataSourceProperties(String name, DataSource dataSource) {
 		// si tomcat et si dataSource standard, alors on récupère des infos
-		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tcDataSource = (org.apache.tomcat.dbcp.dbcp2.BasicDataSource) dataSource;
+		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcatDbcp2DataSource = (org.apache.tomcat.dbcp.dbcp2.BasicDataSource) dataSource;
 		final BasicDataSourcesProperties properties = TOMCAT_BASIC_DATASOURCES_PROPERTIES;
 		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
 		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
 
 		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tcDataSource.getMaxTotal());
-		properties.put(name, "poolPreparedStatements", tcDataSource.isPoolPreparedStatements());
+		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tomcatDbcp2DataSource.getMaxTotal());
+		properties.put(name, "poolPreparedStatements",
+				tomcatDbcp2DataSource.isPoolPreparedStatements());
 
-		properties.put(name, "defaultCatalog", tcDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", tcDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", tcDataSource.getDefaultReadOnly());
+		properties.put(name, "defaultCatalog", tomcatDbcp2DataSource.getDefaultCatalog());
+		properties.put(name, "defaultAutoCommit", tomcatDbcp2DataSource.getDefaultAutoCommit());
+		properties.put(name, "defaultReadOnly", tomcatDbcp2DataSource.getDefaultReadOnly());
 		properties.put(name, "defaultTransactionIsolation",
-				tcDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", tcDataSource.getDriverClassName());
-		properties.put(name, "initialSize", tcDataSource.getInitialSize());
-		properties.put(name, "maxIdle", tcDataSource.getMaxIdle());
+				tomcatDbcp2DataSource.getDefaultTransactionIsolation());
+		properties.put(name, "driverClassName", tomcatDbcp2DataSource.getDriverClassName());
+		properties.put(name, "initialSize", tomcatDbcp2DataSource.getInitialSize());
+		properties.put(name, "maxIdle", tomcatDbcp2DataSource.getMaxIdle());
 		properties.put(name, "maxOpenPreparedStatements",
-				tcDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", tcDataSource.getMaxWaitMillis());
+				tomcatDbcp2DataSource.getMaxOpenPreparedStatements());
+		properties.put(name, "maxWait", tomcatDbcp2DataSource.getMaxWaitMillis());
 		properties.put(name, "minEvictableIdleTimeMillis",
-				tcDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", tcDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun", tcDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", tcDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", tcDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", tcDataSource.getTestWhileIdle());
+				tomcatDbcp2DataSource.getMinEvictableIdleTimeMillis());
+		properties.put(name, "minIdle", tomcatDbcp2DataSource.getMinIdle());
+		properties.put(name, "numTestsPerEvictionRun",
+				tomcatDbcp2DataSource.getNumTestsPerEvictionRun());
+		properties.put(name, "testOnBorrow", tomcatDbcp2DataSource.getTestOnBorrow());
+		properties.put(name, "testOnReturn", tomcatDbcp2DataSource.getTestOnReturn());
+		properties.put(name, "testWhileIdle", tomcatDbcp2DataSource.getTestWhileIdle());
 		properties.put(name, "timeBetweenEvictionRunsMillis",
-				tcDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", tcDataSource.getValidationQuery());
+				tomcatDbcp2DataSource.getTimeBetweenEvictionRunsMillis());
+		properties.put(name, "validationQuery", tomcatDbcp2DataSource.getValidationQuery());
 	}
 
 	private static void pullCommonsDbcp2DataSourceProperties(String name, DataSource dataSource) {
 		// si dbcp et si dataSource standard, alors on récupère des infos
-		final org.apache.commons.dbcp2.BasicDataSource dbcpDataSource = (org.apache.commons.dbcp2.BasicDataSource) dataSource;
+		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = (org.apache.commons.dbcp2.BasicDataSource) dataSource;
 		final BasicDataSourcesProperties properties = DBCP_BASIC_DATASOURCES_PROPERTIES;
 		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
 		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
 
 		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, dbcpDataSource.getMaxTotal());
-		properties.put(name, "poolPreparedStatements", dbcpDataSource.isPoolPreparedStatements());
+		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, dbcp2DataSource.getMaxTotal());
+		properties.put(name, "poolPreparedStatements", dbcp2DataSource.isPoolPreparedStatements());
 
-		properties.put(name, "defaultCatalog", dbcpDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", dbcpDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", dbcpDataSource.getDefaultReadOnly());
+		properties.put(name, "defaultCatalog", dbcp2DataSource.getDefaultCatalog());
+		properties.put(name, "defaultAutoCommit", dbcp2DataSource.getDefaultAutoCommit());
+		properties.put(name, "defaultReadOnly", dbcp2DataSource.getDefaultReadOnly());
 		properties.put(name, "defaultTransactionIsolation",
-				dbcpDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", dbcpDataSource.getDriverClassName());
-		properties.put(name, "initialSize", dbcpDataSource.getInitialSize());
-		properties.put(name, "maxIdle", dbcpDataSource.getMaxIdle());
+				dbcp2DataSource.getDefaultTransactionIsolation());
+		properties.put(name, "driverClassName", dbcp2DataSource.getDriverClassName());
+		properties.put(name, "initialSize", dbcp2DataSource.getInitialSize());
+		properties.put(name, "maxIdle", dbcp2DataSource.getMaxIdle());
 		properties.put(name, "maxOpenPreparedStatements",
-				dbcpDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", dbcpDataSource.getMaxWaitMillis());
+				dbcp2DataSource.getMaxOpenPreparedStatements());
+		properties.put(name, "maxWait", dbcp2DataSource.getMaxWaitMillis());
 		properties.put(name, "minEvictableIdleTimeMillis",
-				dbcpDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", dbcpDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun", dbcpDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", dbcpDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", dbcpDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", dbcpDataSource.getTestWhileIdle());
+				dbcp2DataSource.getMinEvictableIdleTimeMillis());
+		properties.put(name, "minIdle", dbcp2DataSource.getMinIdle());
+		properties.put(name, "numTestsPerEvictionRun", dbcp2DataSource.getNumTestsPerEvictionRun());
+		properties.put(name, "testOnBorrow", dbcp2DataSource.getTestOnBorrow());
+		properties.put(name, "testOnReturn", dbcp2DataSource.getTestOnReturn());
+		properties.put(name, "testWhileIdle", dbcp2DataSource.getTestWhileIdle());
 		properties.put(name, "timeBetweenEvictionRunsMillis",
-				dbcpDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
+				dbcp2DataSource.getTimeBetweenEvictionRunsMillis());
+		properties.put(name, "validationQuery", dbcp2DataSource.getValidationQuery());
 	}
 
 	private static void pullTomcatJdbcDataSourceProperties(String name, DataSource dataSource) {
