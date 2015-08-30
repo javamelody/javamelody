@@ -17,26 +17,8 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -51,7 +33,7 @@ import java.util.Map;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
- * Collecteur de données pour une application sur un ou plusieurs serveur(s) distant() : utilisé par serveur de collecte et par IHM Swing.
+ * Collecteur de données pour une application sur un ou plusieurs serveur(s) distant(s) : utilisé par serveur de collecte et par IHM Swing.
  * @author Emeric Vernat
  */
 class RemoteCollector {
@@ -95,7 +77,7 @@ class RemoteCollector {
 		final StringBuilder sb = new StringBuilder();
 		for (final URL url : urlsForCollect) {
 			final List<Counter> counters = new ArrayList<Counter>();
-			final List<Serializable> serialized = collectForUrl(url);
+			final List<Serializable> serialized = createRemoteCall(url).collectData();
 			dispatchSerializables(serialized, counters, javaInfosList,
 					counterRequestContextsByJavaInformations, sb);
 			if (this.collector == null || aggregationDisabled) {
@@ -178,38 +160,29 @@ class RemoteCollector {
 			// récupération à la demande des sessions
 			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
 			for (final URL url : urls) {
-				final URL sessionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-						+ SESSIONS_PART);
-				final List<SessionInformations> sessions = collectForUrl(sessionsUrl);
+				final List<SessionInformations> sessions = createRemoteCall(url)
+						.collectSessionInformations(sessionId);
 				sessionsInformations.addAll(sessions);
 			}
 			SessionListener.sortSessions(sessionsInformations);
 			return sessionsInformations;
 		}
-		SessionInformations found = null;
 		for (final URL url : urls) {
-			final URL sessionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ SESSIONS_PART + '&' + SESSION_ID_PARAMETER + '=' + sessionId);
-			final SessionInformations session = collectForUrl(sessionsUrl);
-			if (session != null) {
-				found = session;
-				break;
+			final List<SessionInformations> sessions = createRemoteCall(url)
+					.collectSessionInformations(sessionId);
+			if (!sessions.isEmpty()) {
+				return sessions;
 			}
 		}
-		if (found == null) {
-			// si found est toujours null, alors la session a été invalidée
-			return Collections.emptyList();
-		}
-		return Collections.singletonList(found);
+		// session non trouvée, alors la session a été invalidée
+		return Collections.emptyList();
 	}
 
 	List<SampledMethod> collectHotspots() throws IOException {
 		// récupération à la demande des hotspots
 		final Map<SampledMethod, SampledMethod> map = new HashMap<SampledMethod, SampledMethod>();
 		for (final URL url : urls) {
-			final URL hotspotsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ HOTSPOTS_PART);
-			final List<SampledMethod> hotspots = collectForUrl(hotspotsUrl);
+			final List<SampledMethod> hotspots = createRemoteCall(url).collectHotspots();
 			if (urls.size() == 1) {
 				// s'il n'y a qu'un serveur, inutile d'aller plus loin pour fusionner les données
 				return hotspots;
@@ -233,9 +206,7 @@ class RemoteCollector {
 		// récupération à la demande des HeapHistogram
 		HeapHistogram heapHistoTotal = null;
 		for (final URL url : urls) {
-			final URL heapHistoUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ HEAP_HISTO_PART);
-			final HeapHistogram heapHisto = collectForUrl(heapHistoUrl);
+			final HeapHistogram heapHisto = createRemoteCall(url).collectHeapHistogram();
 			if (heapHistoTotal == null) {
 				heapHistoTotal = heapHisto;
 			} else {
@@ -247,60 +218,29 @@ class RemoteCollector {
 
 	DatabaseInformations collectDatabaseInformations(int requestIndex) throws IOException {
 		final URL url = urls.get(0);
-		final URL databaseUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + DATABASE_PART
-				+ '&' + REQUEST_PARAMETER + '=' + requestIndex);
-		return collectForUrl(databaseUrl);
+		return createRemoteCall(url).collectDatabaseInformations(requestIndex);
 	}
 
-	@SuppressWarnings("unchecked")
 	List<List<ConnectionInformations>> collectConnectionInformations() throws IOException {
 		// récupération à la demande des connections
 		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
 		for (final URL url : urls) {
-			final URL connectionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ CONNECTIONS_PART);
-			final Object result = collectForUrl(connectionsUrl);
-			if (result instanceof List && !((List<?>) result).isEmpty()
-					&& ((List<?>) result).get(0) instanceof List) {
-				// pour le serveur de collecte
-				final List<List<ConnectionInformations>> connections = (List<List<ConnectionInformations>>) result;
-				connectionInformations.addAll(connections);
-			} else {
-				final List<ConnectionInformations> connections = (List<ConnectionInformations>) result;
-				connectionInformations.add(connections);
-			}
+			final List<List<ConnectionInformations>> connections = createRemoteCall(url)
+					.collectConnectionInformations();
+			connectionInformations.addAll(connections);
 		}
 		return connectionInformations;
 	}
 
-	@SuppressWarnings("unchecked")
 	Map<String, List<ProcessInformations>> collectProcessInformations() throws IOException {
 		// récupération à la demande des processus
-		final String title = I18N.getString("Processus");
-		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
+		final Map<String, List<ProcessInformations>> result = new LinkedHashMap<String, List<ProcessInformations>>();
 		for (final URL url : urls) {
-			final URL processUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ PROCESSES_PART);
-			final Object result = collectForUrl(processUrl);
-			if (result instanceof Map) {
-				// pour le serveur de collecte et pour les nodes dans Jenkins
-				final Map<String, List<ProcessInformations>> processByTitle = (Map<String, List<ProcessInformations>>) result;
-				for (final Map.Entry<String, List<ProcessInformations>> entry : processByTitle
-						.entrySet()) {
-					String node = entry.getKey();
-					if (!node.startsWith(title)) {
-						// si serveur de collecte alors il y a déjà un titre, mais pas pour les nodes Jenkins
-						node = title + " (" + entry.getKey() + ')';
-					}
-					final List<ProcessInformations> processList = entry.getValue();
-					processesByTitle.put(node, processList);
-				}
-			} else {
-				final List<ProcessInformations> processList = (List<ProcessInformations>) result;
-				processesByTitle.put(title + " (" + getHostAndPort(url) + ')', processList);
-			}
+			final Map<String, List<ProcessInformations>> processesByTitle = createRemoteCall(url)
+					.collectProcessInformations();
+			result.putAll(processesByTitle);
 		}
-		return processesByTitle;
+		return result;
 	}
 
 	List<JndiBinding> collectJndiBindings(String path) throws IOException {
@@ -308,49 +248,29 @@ class RemoteCollector {
 		// contrairement aux requêtes en cours ou aux processus, un serveur de l'application suffira
 		// car l'arbre JNDI est en général identique dans tout l'éventuel cluster
 		final URL url = urls.get(0);
-		final URL jndiUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + JNDI_PART
-				+ (path != null ? '&' + PATH_PARAMETER + '=' + path : ""));
-		return collectForUrl(jndiUrl);
+		return createRemoteCall(url).collectJndiBindings(path);
 	}
 
-	@SuppressWarnings("unchecked")
 	Map<String, List<MBeanNode>> collectMBeans() throws IOException {
 		// récupération à la demande des MBeans
-		final String title = I18N.getString("MBeans");
-		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<String, List<MBeanNode>>();
+		final Map<String, List<MBeanNode>> result = new LinkedHashMap<String, List<MBeanNode>>();
 		for (final URL url : urls) {
-			final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + MBEANS_PART);
-			final Object result = collectForUrl(mbeansUrl);
-			if (result instanceof Map) {
-				// pour le serveur de collecte et les nodes dans Jenkins
-				final Map<String, List<MBeanNode>> mbeansByNodeName = (Map<String, List<MBeanNode>>) result;
-				for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByNodeName.entrySet()) {
-					String node = entry.getKey();
-					if (!node.startsWith(title)) {
-						// si serveur de collecte alors il y a déjà un titre, mais pas pour les nodes Jenkins
-						node = title + " (" + entry.getKey() + ')';
-					}
-					final List<MBeanNode> mbeans = entry.getValue();
-					mbeansByTitle.put(node, mbeans);
-				}
-			} else {
-				final List<MBeanNode> mbeans = (List<MBeanNode>) result;
-				mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
-			}
+			final Map<String, List<MBeanNode>> mbeansByTitle = createRemoteCall(url)
+					.collectMBeans();
+			result.putAll(mbeansByTitle);
 		}
-		return mbeansByTitle;
+		return result;
 	}
 
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {
 		// récupération à la demande des requêtes en cours
-		final Map<JavaInformations, List<CounterRequestContext>> requests = new LinkedHashMap<JavaInformations, List<CounterRequestContext>>();
+		final Map<JavaInformations, List<CounterRequestContext>> result = new LinkedHashMap<JavaInformations, List<CounterRequestContext>>();
 		for (final URL url : urls) {
-			final URL currentRequestsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ CURRENT_REQUESTS_PART);
-			final Map<JavaInformations, List<CounterRequestContext>> result = collectForUrl(currentRequestsUrl);
-			requests.putAll(result);
+			final Map<JavaInformations, List<CounterRequestContext>> requests = createRemoteCall(
+					url).collectCurrentRequests();
+			result.putAll(requests);
 		}
-		return requests;
+		return result;
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists() {
@@ -364,39 +284,22 @@ class RemoteCollector {
 
 	Map<String, byte[]> collectJRobins(int width, int height) throws IOException {
 		final URL url = urls.get(0);
-		final URL jrobinNamesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width + '&' + HEIGHT_PARAMETER + '='
-				+ height);
-		return collectForUrl(jrobinNamesUrl);
+		return createRemoteCall(url).collectJRobins(width, height);
 	}
 
 	Map<String, byte[]> collectOtherJRobins(int width, int height) throws IOException {
 		final URL url = urls.get(0);
-		final URL otherJRobinNamesUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ OTHER_JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width + '&' + HEIGHT_PARAMETER
-				+ '=' + height);
-		return collectForUrl(otherJRobinNamesUrl);
+		return createRemoteCall(url).collectOtherJRobins(width, height);
 	}
 
 	byte[] collectJRobin(String graphName, int width, int height) throws IOException {
 		final URL url = urls.get(0);
-		final URL jrobinUrl = new URL(url.toString() + '&' + GRAPH_PARAMETER + '=' + graphName
-				+ '&' + PART_PARAMETER + '=' + JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width
-				+ '&' + HEIGHT_PARAMETER + '=' + height);
-		return collectForUrl(jrobinUrl);
+		return createRemoteCall(url).collectJRobin(graphName, width, height);
 	}
 
 	String collectSqlRequestExplainPlan(String sqlRequest) throws IOException {
 		final URL url = urls.get(0);
-		final URL explainPlanUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ EXPLAIN_PLAN_PART);
-		final Map<String, String> headers = new HashMap<String, String>();
-		headers.put(REQUEST_PARAMETER, sqlRequest);
-		if (cookies != null) {
-			headers.put("Cookie", cookies);
-		}
-		final LabradorRetriever labradorRetriever = new LabradorRetriever(explainPlanUrl, headers);
-		return labradorRetriever.call();
+		return createRemoteCall(url).collectSqlRequestExplainPlan(sqlRequest);
 	}
 
 	private void addRequestsAndErrors(List<Counter> counters) {
@@ -408,15 +311,10 @@ class RemoteCollector {
 		}
 	}
 
-	private <T> T collectForUrl(URL url) throws IOException {
-		final LabradorRetriever labradorRetriever;
-		if (cookies != null) {
-			final Map<String, String> headers = Collections.singletonMap("Cookie", cookies);
-			labradorRetriever = new LabradorRetriever(url, headers);
-		} else {
-			labradorRetriever = new LabradorRetriever(url);
-		}
-		return labradorRetriever.call();
+	private RemoteCall createRemoteCall(URL url) {
+		final RemoteCall remoteCall = new RemoteCall(url);
+		remoteCall.setCookies(cookies);
+		return remoteCall;
 	}
 
 	static String getHostAndPort(URL url) {
