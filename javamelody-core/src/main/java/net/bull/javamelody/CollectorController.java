@@ -338,8 +338,10 @@ class CollectorController {
 		return serializableController.createDefaultSerializable(javaInformationsList, range, null);
 	}
 
-	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest,
+	// CHECKSTYLE:OFF
+	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest, // NOPMD
 			String application) throws IOException {
+		// CHECKSTYLE:ON
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (JVM_PART.equalsIgnoreCase(part)) {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
@@ -352,8 +354,12 @@ class CollectorController {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-			return new ArrayList<SessionInformations>(collectorServer.collectSessionInformations(
-					application, sessionId));
+			final List<SessionInformations> sessionInformations = collectorServer
+					.collectSessionInformations(application, sessionId);
+			if (sessionId != null && !sessionInformations.isEmpty()) {
+				return sessionInformations.get(0);
+			}
+			return new ArrayList<SessionInformations>(sessionInformations);
 		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
