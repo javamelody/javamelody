@@ -175,8 +175,6 @@ class MonitoringController {
 			if (part == null && graph != null) {
 				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 				doGraph(httpRequest, httpResponse, range, graph);
-			} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
-				doLastValue(httpResponse, graph);
 			} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
 				doWebXml(httpResponse);
 			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
@@ -184,14 +182,6 @@ class MonitoringController {
 			} else if (JNLP_PART.equalsIgnoreCase(part)) {
 				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 				doJnlp(httpRequest, httpResponse, range);
-			} else if (httpRequest.getParameter(JMX_VALUE) != null) {
-				// par sécurité
-				Action.checkSystemActionsEnabled();
-				doJmxValue(httpResponse, httpRequest.getParameter(JMX_VALUE));
-			} else if (httpRequest.getParameter(REPORT_PARAMETER) != null) {
-				final String reportName = URLDecoder.decode(
-						httpRequest.getParameter(REPORT_PARAMETER), "UTF-8");
-				doCustomReport(httpRequest, httpResponse, reportName);
 			} else {
 				doReportCore(httpRequest, httpResponse, javaInformationsList);
 			}
@@ -202,9 +192,21 @@ class MonitoringController {
 	}
 
 	private void doReportCore(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			List<JavaInformations> javaInformationsList) throws IOException {
+			List<JavaInformations> javaInformationsList) throws IOException, ServletException {
 		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
-		if (format == null || "html".equalsIgnoreCase(format)
+		if (LAST_VALUE_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
+				&& !TransportFormat.isATransportFormat(format)) {
+			doLastValue(httpResponse, httpRequest.getParameter(GRAPH_PARAMETER));
+		} else if (httpRequest.getParameter(JMX_VALUE) != null
+				&& !TransportFormat.isATransportFormat(format)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			doJmxValue(httpResponse, httpRequest.getParameter(JMX_VALUE));
+		} else if (httpRequest.getParameter(REPORT_PARAMETER) != null) {
+			final String reportName = URLDecoder.decode(httpRequest.getParameter(REPORT_PARAMETER),
+					"UTF-8");
+			doCustomReport(httpRequest, httpResponse, reportName);
+		} else if (format == null || "html".equalsIgnoreCase(format)
 				|| "htmlbody".equalsIgnoreCase(format)) {
 			doCompressedHtml(httpRequest, httpResponse, javaInformationsList);
 		} else if ("pdf".equalsIgnoreCase(format)) {

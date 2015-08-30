@@ -225,7 +225,10 @@ class CollectorController {
 				resp.getOutputStream().write('|');
 				resp.getOutputStream().write('|');
 			}
-			final URL proxyUrl = new URL(url.toString() + '&' + JMX_VALUE + '=' + jmxValueParameter);
+			final URL proxyUrl = new URL(url.toString()
+					.replace(TransportFormat.SERIALIZED.getCode(), "")
+					.replace(TransportFormat.XML.getCode(), "")
+					+ '&' + JMX_VALUE + '=' + jmxValueParameter);
 			new LabradorRetriever(proxyUrl).copyTo(req, resp);
 		}
 		resp.getOutputStream().close();

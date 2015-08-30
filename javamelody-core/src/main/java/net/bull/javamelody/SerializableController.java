@@ -31,9 +31,11 @@ import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
+import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.JVM_PART;
+import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -131,6 +133,21 @@ class SerializableController {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
+		} else if (httpRequest.getParameter(JMX_VALUE) != null) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String jmxValue = httpRequest.getParameter(JMX_VALUE);
+			return MBeans.getConvertedAttributes(jmxValue);
+		} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
+			final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
+			final JRobin jrobin = collector.getJRobin(graph);
+			final double lastValue;
+			if (jrobin == null) {
+				lastValue = -1;
+			} else {
+				lastValue = jrobin.getLastValue();
+			}
+			return lastValue;
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
