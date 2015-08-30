@@ -28,6 +28,7 @@ import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
+import static net.bull.javamelody.HttpParameters.JVM_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
@@ -79,6 +80,27 @@ class RemoteCall {
 		super();
 		assert url != null;
 		this.url = new URL(url + "?format=serialized");
+	}
+
+	// utilisée dans scripts Jenkins par exemple
+	JavaInformations collectJavaInformations() throws IOException {
+		final URL jvmUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + JVM_PART);
+		final List<JavaInformations> list = collectForUrl(jvmUrl);
+		return list.get(0);
+	}
+
+	// utilisée dans scripts Jenkins par exemple
+	String collectMBeanAttribute(String jmxValueParameter) throws IOException {
+		final URL mbeanAttributeUrl = new URL(url.toString() + '&' + JMX_VALUE + '='
+				+ jmxValueParameter);
+		return collectForUrl(mbeanAttributeUrl);
+	}
+
+	// utilisée dans scripts Jenkins par exemple
+	double collectGraphLastValue(String graph) throws IOException {
+		final URL lastValueUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
+				+ LAST_VALUE_PART + '&' + GRAPH_PARAMETER + '=' + graph);
+		return collectForUrl(lastValueUrl);
 	}
 
 	List<Serializable> collectData() throws IOException {
@@ -230,20 +252,6 @@ class RemoteCall {
 			mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
 		}
 		return mbeansByTitle;
-	}
-
-	// utilisée dans scripts Jenkins par exemple
-	String collectMBeanAttribute(String jmxValueParameter) throws IOException {
-		final URL mbeanAttributeUrl = new URL(url.toString() + '&' + JMX_VALUE + '='
-				+ jmxValueParameter);
-		return collectForUrl(mbeanAttributeUrl);
-	}
-
-	// utilisée dans scripts Jenkins par exemple
-	double collectGraphLastValue(String graph) throws IOException {
-		final URL lastValueUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ LAST_VALUE_PART + '&' + GRAPH_PARAMETER + '=' + graph);
-		return collectForUrl(lastValueUrl);
 	}
 
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {
