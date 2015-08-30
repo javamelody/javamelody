@@ -132,24 +132,9 @@ class RemoteCollector {
 		assert action != null;
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
-			final StringBuilder actionUrl = new StringBuilder(url.toString());
-			actionUrl.append("&action=").append(action);
-			if (counterName != null) {
-				actionUrl.append("&counter=").append(counterName);
-			}
-			if (sessionId != null) {
-				actionUrl.append("&sessionId=").append(sessionId);
-			}
-			if (threadId != null) {
-				actionUrl.append("&threadId=").append(threadId);
-			}
-			if (jobId != null) {
-				actionUrl.append("&jobId=").append(jobId);
-			}
-			if (cacheId != null) {
-				actionUrl.append("&cacheId=").append(cacheId);
-			}
-			actionUrls.add(new URL(actionUrl.toString()));
+			final URL actionUrl = createRemoteCall(url).getActionUrl(action, counterName,
+					sessionId, threadId, jobId, cacheId);
+			actionUrls.add(actionUrl);
 		}
 		return collectDataWithUrls(actionUrls);
 	}
@@ -161,7 +146,7 @@ class RemoteCollector {
 			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
 			for (final URL url : urls) {
 				final List<SessionInformations> sessions = createRemoteCall(url)
-						.collectSessionInformations(sessionId);
+						.collectSessionInformations(null);
 				sessionsInformations.addAll(sessions);
 			}
 			SessionListener.sortSessions(sessionsInformations);

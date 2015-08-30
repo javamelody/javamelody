@@ -88,6 +88,12 @@ class RemoteCall {
 	List<Serializable> executeActionAndCollectData(Action action, String counterName,
 			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
 		assert action != null;
+		final URL actionUrl = getActionUrl(action, counterName, sessionId, threadId, jobId, cacheId);
+		return collectForUrl(actionUrl);
+	}
+
+	URL getActionUrl(Action action, String counterName, String sessionId, String threadId,
+			String jobId, String cacheId) throws MalformedURLException {
 		final StringBuilder actionUrl = new StringBuilder(url.toString());
 		actionUrl.append("&action=").append(action);
 		if (counterName != null) {
@@ -105,7 +111,7 @@ class RemoteCall {
 		if (cacheId != null) {
 			actionUrl.append("&cacheId=").append(cacheId);
 		}
-		return collectForUrl(new URL(actionUrl.toString()));
+		return new URL(actionUrl.toString());
 	}
 
 	List<SessionInformations> collectSessionInformations(String sessionId) throws IOException {
