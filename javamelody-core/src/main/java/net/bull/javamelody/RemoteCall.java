@@ -103,6 +103,7 @@ class RemoteCall {
 		return collectForUrl(lastValueUrl);
 	}
 
+	// result contains statistics in instances of Counter and also an instance of JavaInformations
 	List<Serializable> collectData() throws IOException {
 		return collectForUrl(url);
 	}
