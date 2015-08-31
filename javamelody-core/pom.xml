@@ -565,6 +565,19 @@
 					</reportPlugins>
 				</configuration>
 			</plugin>
+			<plugin>
+				<!-- fix mvn release deploys snapshot
+					https://issues.apache.org/jira/browse/SCM-740 -->
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.scm</groupId>
+						<artifactId>maven-scm-provider-gitexe</artifactId>
+						<version>1.9.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
