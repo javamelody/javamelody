@@ -23,13 +23,14 @@
 		</developer>
 	</developers>
 	<issueManagement>
-		<system>google</system>
-		<url>http://code.google.com/p/javamelody/issues/list</url>
+		<system>GITHUB</system>
+		<url>https://github.com/javamelody/javamelody/issues</url>
 	</issueManagement>
 	<scm>
-		<connection>scm:svn:http://javamelody.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://javamelody.googlecode.com/svn/trunk/</url>
+		<connection>scm:git:git@github.com:javamelody/javamelody.git</connection>
+		<developerConnection>scm:git:git@github.com:javamelody/javamelody.git</developerConnection>
+		<url>https://github.com/javamelody/javamelody</url>
+		<tag>HEAD</tag>
 	</scm>
 	<ciManagement>
 		<system>Jenkins</system>
