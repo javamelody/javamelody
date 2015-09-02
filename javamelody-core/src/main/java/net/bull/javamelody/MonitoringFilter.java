@@ -62,6 +62,7 @@ public class MonitoringFilter implements Filter {
 	private HttpAuth httpAuth;
 	private FilterConfig filterConfig;
 	private String monitoringUrl;
+	private boolean servletApi2;
 
 	/**
 	 * Constructeur.
@@ -99,6 +100,7 @@ public class MonitoringFilter implements Filter {
 		}
 		CONTEXT_PATHS.add(contextPath);
 		this.filterConfig = config;
+		this.servletApi2 = config.getServletContext().getMajorVersion() < 3;
 		Parameters.initialize(config);
 		monitoringDisabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 		if (monitoringDisabled) {
@@ -196,7 +198,7 @@ public class MonitoringFilter implements Filter {
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);
 			chain.doFilter(wrappedRequest, wrappedResponse);
-			if (!httpRequest.isAsyncStarted()) {
+			if (servletApi2 || !httpRequest.isAsyncStarted()) {
 				wrappedResponse.flushBuffer();
 			}
 		} catch (final Throwable t) { // NOPMD
