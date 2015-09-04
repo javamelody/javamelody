@@ -407,7 +407,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<!-- la version 2.6 ne donne pas la bonne couverture de code  -->
-				<version>2.7</version>
+				<version>2.5.2</version>
 				<configuration>
 					<check>
 						<haltOnFailure>false</haltOnFailure>
@@ -525,7 +525,7 @@
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.7</version>
+							<version>2.5.2</version>
 							<configuration>
 								<formats>
 									<format>xml</format>
