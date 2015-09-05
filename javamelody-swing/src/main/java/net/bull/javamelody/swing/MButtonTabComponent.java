@@ -61,6 +61,8 @@ public class MButtonTabComponent extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	private final JTabbedPane pane;
+
 	static class ButtonMouseListener extends MouseAdapter {
 		@Override
 		public void mouseEntered(MouseEvent e) {
@@ -80,8 +82,6 @@ public class MButtonTabComponent extends JPanel {
 			}
 		}
 	}
-
-	private final JTabbedPane pane;
 
 	/**
 	 * Constructor.
