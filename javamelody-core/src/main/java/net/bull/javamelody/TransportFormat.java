@@ -134,8 +134,8 @@ enum TransportFormat {
 		}
 	}
 
-	private final String code;
-	private final String mimeType;
+	private final String code; // NOPMD
+	private final String mimeType; // NOPMD
 
 	private TransportFormat(String mimeType) {
 		this.mimeType = mimeType;
@@ -176,12 +176,12 @@ enum TransportFormat {
 		return mimeType;
 	}
 
-	void checkDependencies() {
+	void checkDependencies() throws IOException {
 		if (this == XML || this == JSON) {
 			try {
 				Class.forName("com.thoughtworks.xstream.XStream");
 			} catch (final ClassNotFoundException e) {
-				throw new RuntimeException(
+				throw new IOException(
 						"Classes of the XStream library not found. Add the XStream dependency in your webapp for the XML or JSON formats.",
 						e);
 			}
@@ -190,7 +190,7 @@ enum TransportFormat {
 			try {
 				Class.forName("org.xmlpull.v1.XmlPullParser");
 			} catch (final ClassNotFoundException e) {
-				throw new RuntimeException(
+				throw new IOException(
 						"Classes of the XPP3 library not found. Add the XPP3 dependency in your webapp for the XML format.",
 						e);
 			}

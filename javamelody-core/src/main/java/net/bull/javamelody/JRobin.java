@@ -52,7 +52,27 @@ import org.jrobin.graph.RrdGraphDef;
  * @author Emeric Vernat
  */
 final class JRobin {
-	private static class AppContextClassLoaderLeakPrevention {
+	static final int SMALL_HEIGHT = 50;
+	private static final Color LIGHT_RED = Color.RED.brighter().brighter();
+	private static final Paint SMALL_GRADIENT = new GradientPaint(0, 0, LIGHT_RED, 0, SMALL_HEIGHT,
+			Color.GREEN, false);
+	private static final int HOUR = 60 * 60;
+	private static final int DAY = 24 * HOUR;
+	private static final int DEFAULT_OBSOLETE_GRAPHS_DAYS = 90;
+
+	// pool of open RRD files
+	private final RrdDbPool rrdPool = getRrdDbPool();
+	private final String application;
+	private final String name;
+	private final String rrdFileName;
+	private final int step;
+	private final String requestName;
+
+	private static final class AppContextClassLoaderLeakPrevention {
+		private AppContextClassLoaderLeakPrevention() {
+			super();
+		}
+
 		static {
 			// issue 476: appContextProtection is disabled by default in JreMemoryLeakPreventionListener since Tomcat 7.0.42,
 			// so protect from sun.awt.AppContext ourselves
@@ -75,22 +95,6 @@ final class JRobin {
 			// just to initialize the class
 		}
 	}
-
-	static final int SMALL_HEIGHT = 50;
-	private static final Color LIGHT_RED = Color.RED.brighter().brighter();
-	private static final Paint SMALL_GRADIENT = new GradientPaint(0, 0, LIGHT_RED, 0, SMALL_HEIGHT,
-			Color.GREEN, false);
-	private static final int HOUR = 60 * 60;
-	private static final int DAY = 24 * HOUR;
-	private static final int DEFAULT_OBSOLETE_GRAPHS_DAYS = 90;
-
-	// pool of open RRD files
-	private final RrdDbPool rrdPool = getRrdDbPool();
-	private final String application;
-	private final String name;
-	private final String rrdFileName;
-	private final int step;
-	private final String requestName;
 
 	private JRobin(String application, String name, File rrdFile, int step, String requestName)
 			throws RrdException, IOException {

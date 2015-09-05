@@ -474,7 +474,7 @@ class JavaInformations implements Serializable { // NOPMD
 	}
 
 	private static boolean isSunUnixMBean(OperatingSystemMXBean operatingSystem) {
-		for (Class<?> inter : operatingSystem.getClass().getInterfaces()) {
+		for (final Class<?> inter : operatingSystem.getClass().getInterfaces()) {
 			if ("com.sun.management.UnixOperatingSystemMXBean".equals(inter.getName())) {
 				return true;
 			}

@@ -189,13 +189,8 @@ enum Action { // NOPMD
 		case GC:
 			if (GC_ENABLED) {
 				// garbage collector
-				final long before = Runtime.getRuntime().totalMemory()
-						- Runtime.getRuntime().freeMemory();
-				gc();
-				final long after = Runtime.getRuntime().totalMemory()
-						- Runtime.getRuntime().freeMemory();
-				messageForReport = I18N.getFormattedString("ramasse_miette_execute",
-						(before - after) / 1024);
+				final long kbFreed = gc();
+				messageForReport = I18N.getFormattedString("ramasse_miette_execute", kbFreed);
 			} else {
 				messageForReport = I18N.getString("ramasse_miette_desactive");
 			}
@@ -389,8 +384,11 @@ enum Action { // NOPMD
 
 	// cette méthode doit s'appeler "gc" pour que findbugs ne fasse pas de warning
 	@SuppressWarnings("all")
-	private void gc() {
+	private long gc() {
+		final long before = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		Runtime.getRuntime().gc();
+		final long after = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		return (before - after) / 1024;
 	}
 
 	@SuppressWarnings("unchecked")

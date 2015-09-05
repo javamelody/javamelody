@@ -401,12 +401,12 @@ final class Parameters {
 	}
 
 	private static String getJavaMelodyVersion() {
-		final Properties properties = new Properties();
 		final InputStream inputStream = Parameters.class.getResourceAsStream("/VERSION.properties");
 		if (inputStream == null) {
 			return null;
 		}
 
+		final Properties properties = new Properties();
 		try {
 			try {
 				properties.load(inputStream);

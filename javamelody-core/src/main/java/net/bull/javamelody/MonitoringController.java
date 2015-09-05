@@ -285,7 +285,7 @@ class MonitoringController {
 					collector);
 			serializable = serializableController.createSerializable(httpRequest,
 					javaInformationsList, messageForReport);
-		} catch (final Throwable t) {
+		} catch (final Throwable t) { // NOPMD
 			serializable = t;
 		}
 		doCompressedSerializable(httpRequest, httpResponse, serializable);
