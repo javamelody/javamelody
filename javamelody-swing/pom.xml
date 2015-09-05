@@ -232,7 +232,7 @@
 								<minimumPriority>4</minimumPriority>
 								<minimumTokens>100</minimumTokens>
 								<rulesets>
-									<ruleset>${basedir}/.pmd</ruleset>
+									<ruleset>${basedir}/.ruleset</ruleset>
 								</rulesets>
 							</configuration>
 						</plugin>
