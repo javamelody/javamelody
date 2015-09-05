@@ -58,7 +58,7 @@ class SamplingProfiler {
 
 		private final String methodName;
 
-		private transient int hashCode;
+		private transient int hash;
 
 		SampledMethod(String className, String methodName) {
 			super();
@@ -66,12 +66,12 @@ class SamplingProfiler {
 			assert methodName != null;
 			this.className = className;
 			this.methodName = methodName;
-			this.hashCode = className.hashCode() * 31 + methodName.hashCode();
+			this.hash = className.hashCode() * 31 + methodName.hashCode();
 		}
 
 		// hashCode is transient
 		private Object readResolve() {
-			this.hashCode = className.hashCode() * 31 + methodName.hashCode();
+			this.hash = className.hashCode() * 31 + methodName.hashCode();
 			return this;
 		}
 
@@ -102,7 +102,7 @@ class SamplingProfiler {
 
 		@Override
 		public int hashCode() {
-			return hashCode;
+			return hash;
 		}
 
 		@Override
