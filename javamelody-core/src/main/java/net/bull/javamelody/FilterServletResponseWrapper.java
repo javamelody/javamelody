@@ -23,7 +23,6 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Implémentation de HttpServletResponseWrapper permettant d'encapsuler l'outputStream,
