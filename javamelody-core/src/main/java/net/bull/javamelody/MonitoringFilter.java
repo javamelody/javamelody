@@ -88,7 +88,7 @@ public class MonitoringFilter implements Filter {
 	/** {@inheritDoc} */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		final long start = System.currentTimeMillis();
+		final long start = System.currentTimeMillis(); // NOPMD
 		final String contextPath = Parameters.getContextPath(config.getServletContext());
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
@@ -130,10 +130,10 @@ public class MonitoringFilter implements Filter {
 	/** {@inheritDoc} */
 	@Override
 	public void destroy() {
-		final long start = System.currentTimeMillis();
 		if (monitoringDisabled || !instanceEnabled) {
 			return;
 		}
+		final long start = System.currentTimeMillis();
 		try {
 			if (filterContext != null) {
 				filterContext.destroy();

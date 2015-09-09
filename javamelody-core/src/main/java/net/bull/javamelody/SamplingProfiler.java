@@ -41,7 +41,7 @@ class SamplingProfiler {
 	/**
 	 * Maximum number of methods to hold into memory
 	 */
-	private final int maxDataSize = 10000;
+	private static final int MAX_DATA_SIZE = 10000;
 
 	private final String[] excludedPackages;
 
@@ -58,7 +58,7 @@ class SamplingProfiler {
 
 		private final String methodName;
 
-		private transient int hashCode;
+		private transient int hash;
 
 		SampledMethod(String className, String methodName) {
 			super();
@@ -66,12 +66,12 @@ class SamplingProfiler {
 			assert methodName != null;
 			this.className = className;
 			this.methodName = methodName;
-			this.hashCode = className.hashCode() * 31 + methodName.hashCode();
+			this.hash = className.hashCode() * 31 + methodName.hashCode();
 		}
 
 		// hashCode is transient
 		private Object readResolve() {
-			this.hashCode = className.hashCode() * 31 + methodName.hashCode();
+			this.hash = className.hashCode() * 31 + methodName.hashCode();
 			return this;
 		}
 
@@ -102,7 +102,7 @@ class SamplingProfiler {
 
 		@Override
 		public int hashCode() {
-			return hashCode;
+			return hash;
 		}
 
 		@Override
@@ -117,10 +117,7 @@ class SamplingProfiler {
 				return false;
 			}
 			final SampledMethod other = (SampledMethod) obj;
-			if (!methodName.equals(other.methodName) || !className.equals(other.className)) {
-				return false;
-			}
-			return true;
+			return methodName.equals(other.methodName) && className.equals(other.className);
 		}
 
 		@Override
@@ -177,13 +174,13 @@ class SamplingProfiler {
 		}
 		final String[] packages = packageNames.toArray(new String[packageNames.size()]);
 		for (int i = 0; i < packages.length; i++) {
-			packages[i] = packages[i].trim();
+			packages[i] = packages[i].trim(); // NOPMD
 			if (packages[i].length() == 0) {
 				throw new IllegalArgumentException("A package can not be empty, item " + i + " in "
 						+ packageNames);
 			}
 			if (!packages[i].endsWith(".")) {
-				packages[i] = packages[i] + '.';
+				packages[i] = packages[i] + '.'; // NOPMD
 			}
 		}
 		return packages;
@@ -229,9 +226,9 @@ class SamplingProfiler {
 	private void limitDataSize() {
 		long minCount = 1;
 		int size = data.size();
-		while (size > maxDataSize) {
+		while (size > MAX_DATA_SIZE) {
 			final Iterator<SampledMethod> iterator = data.keySet().iterator();
-			while (iterator.hasNext() && size > maxDataSize) {
+			while (iterator.hasNext() && size > MAX_DATA_SIZE) {
 				final SampledMethod method = iterator.next();
 				if (method.getCount() <= minCount) {
 					iterator.remove();

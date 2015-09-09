@@ -149,10 +149,7 @@ class DatabaseInformations implements Serializable {
 					return true;
 				}
 			}
-			if (url != null && url.contains(getUrlIdentifier())) {
-				return true;
-			}
-			return false;
+			return url != null && url.contains(getUrlIdentifier());
 		}
 
 		static Database getDatabaseForConnection(Connection connection) throws SQLException {
@@ -417,5 +414,11 @@ class DatabaseInformations implements Serializable {
 			sb.delete(0, sb.indexOf("-"));
 		}
 		return sb.toString();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[database=" + database + ']';
 	}
 }

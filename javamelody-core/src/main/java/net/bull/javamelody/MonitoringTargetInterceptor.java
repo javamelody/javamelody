@@ -36,7 +36,6 @@ public class MonitoringTargetInterceptor extends MonitoringInterceptor {
 	protected String getRequestName(InvocationContext context) {
 		final Method method = context.getMethod();
 		final Object target = context.getTarget();
-		final String requestName = target.getClass().getSimpleName() + '.' + method.getName();
-		return requestName;
+		return target.getClass().getSimpleName() + '.' + method.getName();
 	}
 }

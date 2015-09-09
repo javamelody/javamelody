@@ -74,7 +74,7 @@ import org.apache.log4j.Logger;
  * Contrôleur au sens MVC de l'ihm de monitoring dans le serveur collecte.
  * @author Emeric Vernat
  */
-class CollectorController {
+class CollectorController { // NOPMD
 	private static final Logger LOGGER = Logger.getLogger("javamelody");
 
 	private static final String COOKIE_NAME = "javamelody.application";

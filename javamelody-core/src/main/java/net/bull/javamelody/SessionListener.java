@@ -276,7 +276,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	/** {@inheritDoc} */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		final long start = System.currentTimeMillis();
+		final long start = System.currentTimeMillis(); // NOPMD
 		// lecture de la propriété système java.io.tmpdir uniquement
 		// pour lancer une java.security.AccessControlException si le SecurityManager est activé,
 		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters

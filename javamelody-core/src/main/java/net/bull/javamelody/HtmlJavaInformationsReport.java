@@ -416,9 +416,9 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		if (percentValue >= JavaInformations.HIGH_USAGE_THRESHOLD_IN_PERCENTS) {
 			String message = getString("High_usage");
 			if (configurationDetail != null) {
-				message += " (" + configurationDetail + ')';
+				message += " (" + configurationDetail + ')'; // NOPMD
 			}
-			result += "&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"" + message
+			result += "&nbsp;&nbsp;&nbsp;<img src='?resource=alert.png' alt=\"" + message // NOPMD
 					+ "\" title=\"" + message + "\"/>";
 		}
 		return result;

@@ -179,7 +179,4 @@
   <module name="SuppressionFilter"/>
   <module name="SuppressionCommentFilter"/>
   <module name="FileLength"/>
-  <module name="StrictDuplicateCode">
-    <property name="severity" value="ignore"/>
-  </module>
 </module>

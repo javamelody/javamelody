@@ -33,7 +33,7 @@ import java.util.TimerTask;
 
 import org.jrobin.core.RrdFileBackend;
 
-import sun.nio.ch.DirectBuffer;
+import sun.nio.ch.DirectBuffer; // NOPMD
 
 /**
  * JRobin backend which is used to store RRD data to ordinary disk files
@@ -66,7 +66,7 @@ public class RrdNioBackend extends RrdFileBackend {
 				fileSyncTimer.schedule(syncTask, syncPeriod * 1000L, syncPeriod * 1000L);
 			}
 		} catch (final IOException ioe) {
-			super.close();
+			super.close(); // NOPMD
 			throw ioe;
 		}
 	}

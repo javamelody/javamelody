@@ -66,7 +66,7 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * Contrôleur au sens MVC pour la partie des données sérialisées.
  * @author Emeric Vernat
  */
-class SerializableController {
+class SerializableController { // NOPMD
 	private final Collector collector;
 
 	SerializableController(Collector collector) {
