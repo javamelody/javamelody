@@ -287,6 +287,13 @@ class CounterRequest implements Cloneable, Serializable {
 					final String requestId = entry.getKey();
 					Long nbExecutions = childRequestsExecutionsByRequestId.get(requestId);
 					if (nbExecutions == null) {
+						if (childRequestsExecutionsByRequestId.size() >= Counter.MAX_REQUESTS_COUNT) {
+							// Si le nombre de requêtes est supérieur à 10000 (sql non bindé par ex.),
+							// on essaye ici d'éviter de saturer la mémoire (et le disque dur)
+							// avec toutes ces requêtes différentes, donc on ignore cette nouvelle requête.
+							// (utile pour une agrégation par année dans PeriodCounterFactory par ex., issue #496)
+							continue;
+						}
 						nbExecutions = entry.getValue();
 					} else {
 						nbExecutions += entry.getValue();

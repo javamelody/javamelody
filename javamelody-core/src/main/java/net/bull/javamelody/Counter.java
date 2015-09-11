@@ -92,7 +92,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	 * Nombre max par défaut de requêtes conservées par counter, <br/>
 	 * mais peut être redéfini par exemple pour le counter des erreurs http ou celui des logs.
 	 */
-	private static final int MAX_REQUESTS_COUNT = 10000;
+	static final int MAX_REQUESTS_COUNT = 10000;
 	private static final String TRANSFORM_REPLACEMENT = "\\" + TRANSFORM_REPLACEMENT_CHAR;
 	private static final long serialVersionUID = 6759729262180992976L;
 	private String application;
