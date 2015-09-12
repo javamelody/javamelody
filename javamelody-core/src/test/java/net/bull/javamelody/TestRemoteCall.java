@@ -17,7 +17,10 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
+import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +39,13 @@ public class TestRemoteCall {
 	/** Test. 
 	 * @throws IOException e */
 	@Test
-	public void testCall() throws IOException {
+	public void testCollect() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
-		final RemoteCall remoteCall = new RemoteCall("http://dummy");
+		final String url = "http://dummy";
+		final RemoteCall remoteCall = new RemoteCall(url);
 		remoteCall.collectJavaInformations();
 		remoteCall.collectGraphLastValue("cpu");
 		remoteCall.collectMBeanAttribute("java.lang:type=OperatingSystem.ProcessCpuTime");
+		assertEquals("getURL", new RemoteCall(new URL(url)).getURL().toString(), url);
 	}
 }
