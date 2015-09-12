@@ -662,6 +662,8 @@ public final class JdbcWrapper {
 			unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
 		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
 				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName)
 				|| "org.apache.openejb.resource.jdbc.BasicManagedDataSource"
 						.equals(dataSourceClassName)
 				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
