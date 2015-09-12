@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -55,6 +56,11 @@ import org.junit.Test;
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
+	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test;AUTO_SERVER=TRUE";
+	private static final String EQUALS = "equals";
+	private JdbcDriver driver;
+	private JdbcWrapper jdbcWrapper;
+
 	private static final class MyDataSource implements DataSource {
 		private final BasicDataSource tomcatDataSource;
 
@@ -120,11 +126,6 @@ public class TestJdbcWrapper {
 			return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		}
 	}
-
-	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test;AUTO_SERVER=TRUE";
-	private static final String EQUALS = "equals";
-	private JdbcDriver driver;
-	private JdbcWrapper jdbcWrapper;
 
 	/** Test.
 	 * @throws SQLException e */
@@ -207,6 +208,19 @@ public class TestJdbcWrapper {
 		assertFalse("getBasicDataSourceProperties3", JdbcWrapper.getBasicDataSourceProperties()
 				.isEmpty());
 		assertEquals("getMaxConnectionCount3", 789, JdbcWrapper.getMaxConnectionCount());
+
+		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = new org.apache.commons.dbcp2.BasicDataSource();
+		dbcp2DataSource.setUrl(H2_DATABASE_URL);
+		dbcp2DataSource.setMaxTotal(456);
+		final DataSource dbcp2Proxy = jdbcWrapper.createDataSourceProxy(dbcp2DataSource);
+		assertNotNull("createDataSourceProxy2b", dbcp2Proxy);
+
+		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcat2DataSource = new org.apache.tomcat.dbcp.dbcp2.BasicDataSource();
+		tomcat2DataSource.setUrl(H2_DATABASE_URL);
+		tomcat2DataSource.setMaxTotal(789);
+		final DataSource tomcat2Proxy = jdbcWrapper
+				.createDataSourceProxy("test", tomcat2DataSource);
+		assertNotNull("createDataSourceProxy3b", tomcat2Proxy);
 
 		final DataSource dataSource2 = new MyDataSource(tomcatDataSource);
 		jdbcWrapper.createDataSourceProxy(dataSource2);
@@ -328,12 +342,18 @@ public class TestJdbcWrapper {
 	 * @throws Exception e */
 	@Test
 	public void testRewrapDataSource() throws Exception { // NOPMD
-		final BasicDataSource basicDataSource = new BasicDataSource();
-		basicDataSource.setUrl(H2_DATABASE_URL);
-		rewrapDataSource(basicDataSource);
+		final BasicDataSource tomcatDataSource = new BasicDataSource();
+		tomcatDataSource.setUrl(H2_DATABASE_URL);
+		rewrapDataSource(tomcatDataSource);
 		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
 		dbcpDataSource.setUrl(H2_DATABASE_URL);
 		rewrapDataSource(dbcpDataSource);
+		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcat2DataSource = new org.apache.tomcat.dbcp.dbcp2.BasicDataSource();
+		tomcat2DataSource.setUrl(H2_DATABASE_URL);
+		rewrapDataSource(tomcat2DataSource);
+		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = new org.apache.commons.dbcp2.BasicDataSource();
+		dbcp2DataSource.setUrl(H2_DATABASE_URL);
+		rewrapDataSource(dbcp2DataSource);
 		final DataSource dataSource = createNiceMock(DataSource.class);
 		rewrapDataSource(dataSource);
 	}
@@ -408,9 +428,20 @@ public class TestJdbcWrapper {
 
 	/** Test. */
 	@Test
+	public void testConnectionInformationsComparator() {
+		final ConnectionInformations connectionInformations = new ConnectionInformations();
+		final ConnectionInformations connectionInformations2 = new ConnectionInformations();
+		final List<ConnectionInformations> list = Arrays.asList(connectionInformations,
+				connectionInformations2);
+		final JdbcWrapper.ConnectionInformationsComparator comparator = new JdbcWrapper.ConnectionInformationsComparator();
+		Collections.sort(list, comparator);
+	}
+
+	/** Test. */
+	@Test
 	public void testInitServletContext() {
-		final String[] servers = { "JBoss", "GlassFish", "Sun Java System Application Server",
-				"WebLogic", };
+		final String[] servers = { "JBoss", "WildFly", "GlassFish",
+				"Sun Java System Application Server", "WebLogic", };
 		for (final String serverName : servers) {
 			final ServletContext servletContext = createNiceMock(ServletContext.class);
 			expect(servletContext.getServerInfo()).andReturn(serverName).anyTimes();
