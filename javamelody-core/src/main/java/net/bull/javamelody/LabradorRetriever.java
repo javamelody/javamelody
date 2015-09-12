@@ -329,7 +329,8 @@ class LabradorRetriever {
 	private <T> T createMockResultOfCall() throws IOException {
 		final Object result;
 		final String request = url.toString();
-		if (!request.contains(HttpParameters.PART_PARAMETER + '=')) {
+		if (!request.contains(HttpParameters.PART_PARAMETER + '=')
+				&& !request.contains(HttpParameters.JMX_VALUE)) {
 			final String message = request.contains("/test2") ? null
 					: "ceci est message pour le rapport";
 			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null), new Counter(
@@ -353,7 +354,8 @@ class LabradorRetriever {
 					|| request.contains(HttpParameters.PROCESSES_PART)
 					|| request.contains(HttpParameters.JNDI_PART)
 					|| request.contains(HttpParameters.CONNECTIONS_PART)
-					|| request.contains(HttpParameters.MBEANS_PART)) {
+					|| request.contains(HttpParameters.MBEANS_PART)
+					|| request.contains(HttpParameters.HOTSPOTS_PART)) {
 				result = Collections.emptyList();
 			} else if (request.contains(HttpParameters.CURRENT_REQUESTS_PART)) {
 				result = Collections.emptyMap();
@@ -370,6 +372,13 @@ class LabradorRetriever {
 				} finally {
 					input.close();
 				}
+			} else if (request.contains(HttpParameters.LAST_VALUE_PART)) {
+				result = -1d;
+			} else if (request.contains(HttpParameters.JMX_VALUE)) {
+				result = "-1";
+			} else if (request.contains(HttpParameters.JVM_PART)) {
+				result = Collections.singletonList(new JavaInformations(Parameters
+						.getServletContext(), false));
 			} else {
 				result = null;
 			}

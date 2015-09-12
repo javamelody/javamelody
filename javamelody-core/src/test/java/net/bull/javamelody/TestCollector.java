@@ -443,6 +443,7 @@ public class TestCollector {
 				connection.close();
 			}
 			collectorServer.collectHeapHistogram(application);
+			collectorServer.collectHotspots(application);
 			collectorServer.getCollectorByApplication(application);
 			collectorServer.getJavaInformationsByApplication(application);
 			collectorServer.isApplicationDataAvailable(application);
