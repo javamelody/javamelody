@@ -135,6 +135,13 @@ public class TestHtmlReport {
 		counter.addRequest("test1", 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 100000, 50000, true, 10000);
+		final StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < 5010; i++) {
+			// HtmlCounterReport.MAX_REQUEST_LENGTH = 5000
+			sb.append(i % 10);
+		}
+		final String longRequestName = sb.toString();
+		counter.addRequest(longRequestName, 0, 0, false, 5000);
 		collector.collectWithoutErrors(javaInformationsList);
 
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
@@ -302,6 +309,10 @@ public class TestHtmlReport {
 			assertNotEmptyAndClear(writer);
 			setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 			htmlReport.toHtml(null, null); // writeSystemActionsLinks
+			assertNotEmptyAndClear(writer);
+			setProperty(Parameter.CUSTOM_REPORTS, "custom,dummy");
+			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "custom", "custom.jsp");
+			htmlReport.toHtml(null, null); // writeMenu
 			assertNotEmptyAndClear(writer);
 		} finally {
 			connection.close();
