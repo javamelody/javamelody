@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import net.sf.ehcache.CacheManager;
 
@@ -92,7 +93,12 @@ public class TestAction {
 		final String threadId = "threadId";
 		final String jobId = "jobId";
 		final String cacheId = "test clear";
+		final HttpSession session = createNiceMock(HttpSession.class);
+		expect(session.getId()).andReturn("Mock").anyTimes();
+		replay(session);
 
+		assertNotNull("message GC", Action.GC.execute(collector, null, counterName, sessionId,
+				threadId, jobId, cacheId));
 		assertNotNull("message GC", Action.GC.execute(collector, null, null, counterName,
 				sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, null,
@@ -129,15 +135,22 @@ public class TestAction {
 			}
 		}
 		assertNotNull("message INVALIDATE_SESSIONS", Action.INVALIDATE_SESSIONS.execute(collector,
-				null, null, counterName, sessionId, threadId, jobId, cacheId));
+				null, session, counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message INVALIDATE_SESSION", Action.INVALIDATE_SESSION.execute(collector,
 				null, null, counterName, sessionId, threadId, jobId, cacheId));
+
+		assertNotNull("message INVALIDATE_SESSION", Action.LOGOUT.execute(collector, null, session,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message INVALIDATE_SESSION", Action.LOGOUT.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
 
 		killThread(collector, counterName, sessionId, threadId, jobId, cacheId);
 
 		jobs(collector, counterName, sessionId, threadId, jobId, cacheId);
 
 		mailTest(collector);
+
+		verify(session);
 	}
 
 	private void mailTest(Collector collector) throws IOException {

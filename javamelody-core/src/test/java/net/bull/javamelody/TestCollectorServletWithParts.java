@@ -18,6 +18,7 @@
 package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
 import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
@@ -29,10 +30,12 @@ import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
+import static net.bull.javamelody.HttpParameters.JVM_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
 import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
@@ -198,27 +201,13 @@ public class TestCollectorServletWithParts {
 		// partParameter null: monitoring principal
 		parameters.put(PART_PARAMETER, null);
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
-		doPart(parameters);
-		parameters.put(PART_PARAMETER, JNDI_PART);
-		doPart(parameters);
-		parameters.put(PART_PARAMETER, MBEANS_PART);
+		parameters.put(PART_PARAMETER, APPLICATIONS_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
 		parameters.put(COUNTER_PARAMETER, "services");
 		doPart(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
-		doPart(parameters);
-		parameters.put(REQUEST_PARAMETER, "0");
-		doPart(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
-		doPart(parameters);
-		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
-		doPart(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
-		doPart(parameters);
 		parameters.put(PART_PARAMETER, THREADS_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
@@ -237,6 +226,36 @@ public class TestCollectorServletWithParts {
 		parameters.remove(HEIGHT_PARAMETER);
 		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
 		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
+		doPart(parameters);
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoCompressedSerializableForSystemActions() throws IOException, ServletException {
+		final Map<String, String> parameters = new LinkedHashMap<String, String>();
+		parameters.put(FORMAT_PARAMETER, "xml");
+		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, JNDI_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, MBEANS_PART);
+		doPart(parameters);
+		TestDatabaseInformations.initJdbcDriverParameters();
+		parameters.put(PART_PARAMETER, DATABASE_PART);
+		doPart(parameters);
+		parameters.put(REQUEST_PARAMETER, "0");
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, JVM_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
 		doPart(parameters);
 	}
 
