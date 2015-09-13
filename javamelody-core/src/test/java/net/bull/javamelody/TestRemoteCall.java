@@ -17,10 +17,16 @@
  */
 package net.bull.javamelody;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
+
+import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,11 +47,20 @@ public class TestRemoteCall {
 	@Test
 	public void testCollect() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
+		final ServletContext context = createNiceMock(ServletContext.class);
+		expect(context.getMajorVersion()).andReturn(2).anyTimes();
+		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
+		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
+		expect(context.getContextPath()).andReturn("/test").anyTimes();
+		replay(context);
+		Parameters.initialize(context);
 		final String url = "http://dummy";
 		final RemoteCall remoteCall = new RemoteCall(url);
 		remoteCall.collectJavaInformations();
 		remoteCall.collectGraphLastValue("cpu");
 		remoteCall.collectMBeanAttribute("java.lang:type=OperatingSystem.ProcessCpuTime");
 		assertEquals("getURL", new RemoteCall(new URL(url)).getURL().toString(), url);
+		verify(context);
 	}
 }
