@@ -68,6 +68,7 @@ public class TestJRobin {
 
 		jrobin.getLastValue();
 		jrobin.deleteFile();
+		jrobin.toString();
 	}
 
 	/** Test.

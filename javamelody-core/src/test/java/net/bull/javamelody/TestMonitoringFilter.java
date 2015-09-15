@@ -523,6 +523,16 @@ public class TestMonitoringFilter { // NOPMD
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
+		setProperty(Parameter.AUTHORIZED_USERS, "admin:password, ");
+		try {
+			setUp();
+			monitoring(Collections.<String, String> emptyMap(), false);
+			setProperty(Parameter.AUTHORIZED_USERS, "");
+			setUp();
+			monitoring(Collections.<String, String> emptyMap(), false);
+		} finally {
+			setProperty(Parameter.AUTHORIZED_USERS, null);
+		}
 		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
 		try {
 			setUp();

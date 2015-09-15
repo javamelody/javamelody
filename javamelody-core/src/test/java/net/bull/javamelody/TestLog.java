@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 /**
- * Test unitaire des classes Log4JAppender et LoggingHandler.
+ * Test unitaire des classes Log4JAppender, LogbackAppender et LoggingHandler.
  * @author Emeric Vernat
  */
 public class TestLog {
