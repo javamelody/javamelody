@@ -45,6 +45,7 @@
 					<include name="dbcp-6.0.18.jar" />
 					<include name="tomcat-dbcp-8.0.24.jar" />
 					<include name="commons-dbcp2-2.1.1.jar" />
+					<include name="commons-pool2-2.4.2.jar" />
 					<include name="hibernate-3.2.6.ga.jar" />
 					<include name="hibernate-jpa-2.0-api-1.0.1.Final.jar" />
 					<include name="jsf-impl-2.1.5.jar" />
