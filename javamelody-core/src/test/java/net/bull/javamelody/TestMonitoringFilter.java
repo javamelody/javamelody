@@ -34,6 +34,7 @@ import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JNLP_PART;
 import static net.bull.javamelody.HttpParameters.JROBINS_PART;
+import static net.bull.javamelody.HttpParameters.JVM_PART;
 import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
 import static net.bull.javamelody.HttpParameters.MBEANS_PART;
 import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
@@ -773,6 +774,18 @@ public class TestMonitoringFilter { // NOPMD
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
+		monitoring(parameters);
+
+		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
+		monitoring(parameters);
+		parameters.remove(JMX_VALUE);
+
+		parameters.put(PART_PARAMETER, LAST_VALUE_PART);
+		parameters.put(GRAPH, "usedMemory,cpu,unknown");
+		monitoring(parameters);
+		parameters.remove(GRAPH);
+
+		parameters.put(PART_PARAMETER, JVM_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, THREADS_PART);
 		monitoring(parameters);

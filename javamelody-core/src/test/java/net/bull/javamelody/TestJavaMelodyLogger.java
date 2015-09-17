@@ -67,11 +67,11 @@ public class TestJavaMelodyLogger {
 		logger.warn("test warn", new IllegalStateException("test warn"));
 
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		expect(request.getRemoteAddr()).andReturn("remote addr");
-		expect(request.getRequestURI()).andReturn("/test/request");
-		expect(request.getContextPath()).andReturn("/test");
-		expect(request.getQueryString()).andReturn("param1=1");
-		expect(request.getMethod()).andReturn("GET");
+		expect(request.getRemoteAddr()).andReturn("remote addr").anyTimes();
+		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+		expect(request.getContextPath()).andReturn("/test").anyTimes();
+		expect(request.getQueryString()).andReturn("param1=1").anyTimes();
+		expect(request.getMethod()).andReturn("GET").anyTimes();
 
 		replay(request);
 		logger.logHttpRequest(request, "test", 1000, false, 10000, "javamelody");

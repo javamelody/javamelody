@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.naming.Binding;
@@ -102,8 +103,11 @@ public class TestHtmlJndiTreeReport {
 			expect(context.listBindings(JNDI_PREFIX + contextPath + '/')).andReturn(enumeration)
 					.anyTimes();
 		}
-		expect(enumeration.hasMore()).andReturn(true).times(6);
+		expect(enumeration.hasMore()).andReturn(true).times(7);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
+		expect(enumeration.next()).andReturn(
+				new Binding("test value collection", Arrays.asList("test collection",
+						"test collection"))).once();
 		expect(enumeration.next()).andReturn(
 				new Binding("test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("", "test")).once();
@@ -115,6 +119,9 @@ public class TestHtmlJndiTreeReport {
 		replay(context);
 		replay(enumeration);
 		final List<JndiBinding> bindings = JndiBinding.listBindings(context, contextPath);
+		for (final JndiBinding binding : bindings) {
+			binding.toString();
+		}
 		final HtmlJndiTreeReport htmlJndiTreeReport = new HtmlJndiTreeReport(bindings, contextPath,
 				writer);
 		htmlJndiTreeReport.toHtml();
