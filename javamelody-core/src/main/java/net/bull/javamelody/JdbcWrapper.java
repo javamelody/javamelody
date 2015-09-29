@@ -503,12 +503,7 @@ public final class JdbcWrapper {
 			// Et dans certains JIRA la datasource est bien une instance de org.apache.commons.dbcp.BasicDataSource
 			// cf http://groups.google.com/group/javamelody/browse_thread/thread/da8336b908f1e3bd/6cf3048f1f11866e?show_docid=6cf3048f1f11866e
 
-			rewrapBasicDataSource(dataSource);
-			LOG.debug(dataSourceRewrappedMessage);
-		} else if ("org.apache.openejb.resource.jdbc.BasicManagedDataSource"
-				.equals(dataSourceClassName)
-				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
-			// rewrap pour tomee/openejb (cf issue 104),
+			// et aussi rewrap pour tomee/openejb (cf issue 104),
 			rewrapBasicDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage);
 		} else if ("org.apache.openejb.resource.jdbc.managed.local.ManagedDataSource"
@@ -530,7 +525,10 @@ public final class JdbcWrapper {
 		return "org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
 				|| "org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
 				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
-				|| "org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName);
+				|| "org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName)
+				|| "org.apache.openejb.resource.jdbc.BasicManagedDataSource"
+						.equals(dataSourceClassName)
+				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName);
 	}
 
 	private boolean isJBossOrGlassfishDataSource(String dataSourceClassName) {
@@ -660,13 +658,7 @@ public final class JdbcWrapper {
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
 			unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
-		} else if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
-				|| "org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
-				|| "org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
-				|| "org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName)
-				|| "org.apache.openejb.resource.jdbc.BasicManagedDataSource"
-						.equals(dataSourceClassName)
-				|| "org.apache.openejb.resource.jdbc.BasicDataSource".equals(dataSourceClassName)) {
+		} else if (isDbcpDataSource(dataSourceClassName)) {
 			unwrap(dataSource, "dataSource", dataSourceUnwrappedMessage);
 		}
 		// else if (jonas) { }
