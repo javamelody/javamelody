@@ -490,6 +490,11 @@ public final class JdbcWrapper {
 			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
 			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
 			LOG.debug(dataSourceRewrappedMessage);
+		} else if (isWildfly9DataSource(dataSourceClassName)) {
+			Object delegateDataSource = JdbcWrapperHelper.getFieldValue(dataSource, "delegate");
+			delegateDataSource = createDataSourceProxy((DataSource) delegateDataSource);
+			JdbcWrapperHelper.setFieldValue(dataSource, "delegate", delegateDataSource);
+			LOG.debug(dataSourceRewrappedMessage);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			// WEBLOGIC: le contexte JNDI est en lecture seule donc on modifie directement
@@ -537,6 +542,12 @@ public final class JdbcWrapper {
 				|| jboss
 				&& "org.jboss.jca.adapters.jdbc.WrapperDataSource".equals(dataSourceClassName)
 				|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSourceClassName);
+	}
+
+	private boolean isWildfly9DataSource(String dataSourceClassName) {
+		return jboss
+				&& "org.jboss.as.connector.subsystems.datasources.WildFlyDataSource"
+						.equals(dataSourceClassName);
 	}
 
 	private void rewrapWebLogicDataSource(DataSource dataSource) throws IllegalAccessException {
@@ -654,6 +665,8 @@ public final class JdbcWrapper {
 		final String dataSourceUnwrappedMessage = "Datasource unwrapped: " + jndiName;
 		if (isJBossOrGlassfishDataSource(dataSourceClassName)) {
 			unwrap(dataSource, "cm", dataSourceUnwrappedMessage);
+		} else if (isWildfly9DataSource(dataSourceClassName)) {
+			unwrap(dataSource, "delegate", dataSourceUnwrappedMessage);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
 			unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
