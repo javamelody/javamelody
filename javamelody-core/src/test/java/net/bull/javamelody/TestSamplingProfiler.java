@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -134,28 +133,20 @@ public class TestSamplingProfiler {
 	}
 
 	private static void doSomeWorkAndTakeSample(SamplingProfiler samplingProfiler) {
-		final List<Thread> threads = new ArrayList<Thread>();
-		for (int i = 0; i < 10; i++) {
-			final Thread thread = new Thread(new DummyTask());
-			threads.add(thread);
-			thread.start();
-		}
+		final Thread thread = new Thread(new DummyTask());
+		thread.start();
 		samplingProfiler.update();
-		for (final Thread thread : threads) {
-			try {
-				thread.join(1000);
-			} catch (final InterruptedException e) {
-				fail("Interrupted while waiting for threads to finish");
-			}
+		try {
+			thread.join(1000);
+		} catch (final InterruptedException e) {
+			fail("Interrupted while waiting for threads to finish");
 		}
 	}
 
 	static class DummyTask implements Runnable {
 		@Override
 		public void run() {
-			for (int i = 0; i < 100000000; i++) {
-				Math.sqrt(i);
-			}
+			new Pi().calcPiDigits();
 		}
 	}
 }
