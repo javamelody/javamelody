@@ -19,7 +19,6 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,17 +135,12 @@ public class TestSamplingProfiler {
 		final Thread thread = new Thread(new DummyTask());
 		thread.start();
 		samplingProfiler.update();
-		try {
-			thread.join(1000);
-		} catch (final InterruptedException e) {
-			fail("Interrupted while waiting for threads to finish");
-		}
 	}
 
 	static class DummyTask implements Runnable {
 		@Override
 		public void run() {
-			new Pi().calcPiDigits();
+			new Pi().calcPiDigits(1000);
 		}
 	}
 }

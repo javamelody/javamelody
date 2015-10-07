@@ -22,12 +22,17 @@ public class Pi {
 	/**
 	 * Start.
 	 */
-	public void calcPiDigits() {
+	public void calcPiDigits(int limit) {
 		BigInteger nn, nr;
 		boolean first = true;
+		int count = 0;
 		while (true) {
 			if (FOUR.multiply(q).add(r).subtract(t).compareTo(n.multiply(t)) == -1) {
 				System.out.print(n); // NOPMD
+				count++;
+				if (count >= limit) {
+					return;
+				}
 				if (first) {
 					System.out.print("."); // NOPMD
 					first = false;
