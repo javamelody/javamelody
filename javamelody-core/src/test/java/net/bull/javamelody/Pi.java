@@ -21,6 +21,7 @@ public class Pi {
 
 	/**
 	 * Start.
+	 * @param limit Number of digits
 	 */
 	public void calcPiDigits(int limit) {
 		BigInteger nn, nr;
