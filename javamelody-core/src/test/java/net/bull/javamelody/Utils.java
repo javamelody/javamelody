@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -59,12 +60,14 @@ final class Utils {
 			}
 		}
 		JRobin.stop();
-		try {
-			// shutdown seems needed at the moment in order that this job does not run forever:
-			// https://javamelody.ci.cloudbees.com/job/javamelody/
-			StdSchedulerFactory.getDefaultScheduler().shutdown();
-		} catch (final SchedulerException e) {
-			throw new IllegalStateException(e);
+		if (isQuartzSchedulerStarted()) {
+			try {
+				// shutdown seems needed at the moment in order that this job does not run forever:
+				// https://javamelody.ci.cloudbees.com/job/javamelody/
+				StdSchedulerFactory.getDefaultScheduler().shutdown();
+			} catch (final SchedulerException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 
 		Parameters.initialize((FilterConfig) null);
@@ -86,5 +89,15 @@ final class Utils {
 		} catch (final RrdException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static boolean isQuartzSchedulerStarted() {
+		final Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+		for (final Thread thread : stackTraces.keySet()) {
+			if (thread.getName().contains("Quartz")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
