@@ -126,7 +126,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 					@Override
 					public void setReadListener(ReadListener readListener) {
-						// nothing						
+						// nothing
 					}
 				};
 			}

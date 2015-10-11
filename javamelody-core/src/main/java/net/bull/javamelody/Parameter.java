@@ -302,7 +302,7 @@ public enum Parameter {
 
 	/**
 	 * Name of a class to use for JavaMelody logs (default: null for detection of Logback, Log4J or java.util.logging). <br/>
-	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger, 
+	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger,
 	 * such as net.bull.javamelody.Log4JLogger, net.bull.javamelody.JavaLogger or net.bull.javamelody.LogbackLogger.
 	 */
 	LOGGER_CLASS("logger-class");

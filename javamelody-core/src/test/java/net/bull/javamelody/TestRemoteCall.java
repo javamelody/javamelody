@@ -42,7 +42,7 @@ public class TestRemoteCall {
 		Utils.initialize();
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testCollect() throws IOException {
