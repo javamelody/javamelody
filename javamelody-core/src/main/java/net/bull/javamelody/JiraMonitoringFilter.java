@@ -193,11 +193,14 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 
 	private static boolean hasJiraSystemAdminPermission(Object user) {
 		try {
-			final Class<?> managerFactoryClass = Class.forName("com.atlassian.jira.ManagerFactory");
+			final Class<?> componentAccessorClass = Class
+					.forName("com.atlassian.jira.component.ComponentAccessor");
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
-			final Object permissionManager = managerFactoryClass.getMethod("getPermissionManager")
-					.invoke(null);
+			// Note : si getPermissionManager().hasPermission est supprimée,
+			// il faudra utiliser getGlobalPermissionManager().hasPermission (Since v6.2.5)
+			final Object permissionManager = componentAccessorClass.getMethod(
+					"getPermissionManager").invoke(null);
 			Exception firstException = null;
 			// selon la version de JIRA, on essaye les différentes classes possibles du user
 			for (final String className : JIRA_USER_CLASSES) {
@@ -220,7 +223,7 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			throw new IllegalStateException(e);
 		}
 		//		return user != null
-		//				&& com.atlassian.jira.ManagerFactory.getPermissionManager().hasPermission(
+		//				&& com.atlassian.jira.component.ComponentAccessor.getPermissionManager().hasPermission(
 		//						SYSTEM_ADMIN, (com.opensymphony.user.User) user);
 	}
 
