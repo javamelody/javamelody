@@ -159,10 +159,25 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 		// nom identifiant la requête
 		final String requestName = getRequestName(method);
 
+		return invokeTarget(facade, method, args, requestName);
+	}
+
+	/**
+	 * Invoke target.
+	 * @param target Instance to call
+	 * @param method Method to call
+	 * @param args Method arguments
+	 * @param requestName Request name to display
+	 * @return Result
+	 * @throws IllegalAccessException e
+	 * @throws InvocationTargetException e
+	 */
+	public static Object invokeTarget(Object target, Method method, Object[] args,
+			final String requestName) throws IllegalAccessException, InvocationTargetException {
 		boolean systemError = false;
 		try {
 			SERVICES_COUNTER.bindContextIncludingCpu(requestName);
-			return method.invoke(facade, args);
+			return method.invoke(target, args);
 		} catch (final InvocationTargetException e) {
 			if (e.getCause() instanceof Error) {
 				// on catche Error pour avoir les erreurs systèmes
