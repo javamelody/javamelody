@@ -26,6 +26,12 @@ import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.management.JMException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 /**
  * Informations systèmes sur la mémoire du serveur, sans code html de présentation.
@@ -39,6 +45,15 @@ class MemoryInformations implements Serializable {
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final String NEXT = ",\n";
 	private static final String MO = " Mo";
+	private static final Set<ObjectName> NIO_BUFFER_POOLS = new HashSet<ObjectName>();
+	static {
+		try {
+			NIO_BUFFER_POOLS.addAll(new MBeans().getNioBufferPools());
+		} catch (final MalformedObjectNameException e) {
+			LOG.debug(e.toString());
+		}
+	}
+
 	// usedMemory est la mémoire utilisée du heap (voir aussi non heap dans gestion mémoire)
 	private final long usedMemory;
 	// maxMemory est la mémoire maximum pour le heap (paramètre -Xmx1024m par exemple)
@@ -48,6 +63,7 @@ class MemoryInformations implements Serializable {
 	// maxPermGen est la mémoire maximum pour "Perm Gen" (paramètre -XX:MaxPermSize=128m par exemple)
 	private final long maxPermGen;
 	private final long usedNonHeapMemory;
+	private final long usedBufferedMemory;
 	private final int loadedClassesCount;
 	private final long garbageCollectionTimeMillis;
 	private final long usedPhysicalMemorySize;
@@ -68,6 +84,7 @@ class MemoryInformations implements Serializable {
 			maxPermGen = -1;
 		}
 		usedNonHeapMemory = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
+		usedBufferedMemory = getUsedBufferMemory();
 		loadedClassesCount = ManagementFactory.getClassLoadingMXBean().getLoadedClassCount();
 		garbageCollectionTimeMillis = buildGarbageCollectionTimeMillis();
 
@@ -94,6 +111,24 @@ class MemoryInformations implements Serializable {
 			}
 		}
 		return null;
+	}
+
+	private static long getUsedBufferMemory() {
+		if (NIO_BUFFER_POOLS.isEmpty()) {
+			return -1;
+		}
+		long result = 0;
+		final MBeans mBeans = new MBeans();
+		try {
+			for (final ObjectName objectName : NIO_BUFFER_POOLS) {
+				// adds direct and mapped buffers
+				result += (Long) mBeans.getAttribute(objectName, "MemoryUsed");
+			}
+		} catch (final JMException e) {
+			// n'est pas censé arriver
+			throw new IllegalStateException(e);
+		}
+		return result;
 	}
 
 	private static long buildGarbageCollectionTimeMillis() {
@@ -140,8 +175,13 @@ class MemoryInformations implements Serializable {
 					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
 							"getTotalSwapSpaceSize") / 1024 / 1024) + MO;
 		}
-
-		return nonHeapMemory + NEXT + classLoading + NEXT + gc + NEXT + osInfo;
+		if (usedBufferedMemory < 0) {
+			return nonHeapMemory + NEXT + classLoading + NEXT + gc + NEXT + osInfo;
+		}
+		final String bufferedMemory = "Buffered memory = "
+				+ integerFormat.format(usedBufferedMemory / 1024 / 1024) + MO;
+		return nonHeapMemory + NEXT + bufferedMemory + NEXT + classLoading + NEXT + gc + NEXT
+				+ osInfo;
 	}
 
 	private static boolean isSunOsMBean(OperatingSystemMXBean operatingSystem) {
@@ -155,11 +195,20 @@ class MemoryInformations implements Serializable {
 	}
 
 	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
+		return (Long) getFromOperatingSystem(operatingSystem, methodName);
+	}
+
+	static double getDoubleFromOperatingSystem(OperatingSystemMXBean operatingSystem,
+			String methodName) {
+		return (Double) getFromOperatingSystem(operatingSystem, methodName);
+	}
+
+	static Object getFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
 		try {
 			final Method method = operatingSystem.getClass().getMethod(methodName,
 					(Class<?>[]) null);
 			method.setAccessible(true);
-			return (Long) method.invoke(operatingSystem, (Object[]) null);
+			return method.invoke(operatingSystem, (Object[]) null);
 		} catch (final InvocationTargetException e) {
 			if (e.getCause() instanceof Error) {
 				throw (Error) e.getCause();
@@ -203,6 +252,10 @@ class MemoryInformations implements Serializable {
 
 	long getUsedNonHeapMemory() {
 		return usedNonHeapMemory;
+	}
+
+	long getUsedBufferedMemory() {
+		return usedBufferedMemory;
 	}
 
 	int getLoadedClassesCount() {

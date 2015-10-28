@@ -383,9 +383,12 @@ class Collector { // NOPMD
 				activeThreadCount, activeConnectionCount, usedConnectionCount);
 	}
 
+	// CHECKSTYLE:OFF
 	private void collectOtherJavaInformations(List<JavaInformations> javaInformationsList)
 			throws IOException {
+		// CHECKSTYLE:ON
 		long usedNonHeapMemory = 0;
+		long usedBufferedMemory = 0;
 		int loadedClassesCount = 0;
 		long garbageCollectionTimeMillis = 0;
 		long usedPhysicalMemorySize = 0;
@@ -398,6 +401,7 @@ class Collector { // NOPMD
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
 		long freeDiskSpaceInTemp = Long.MAX_VALUE;
+		double systemCpuLoad = 0;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
@@ -410,6 +414,7 @@ class Collector { // NOPMD
 			availableProcessors = add(Math.max(javaInformations.getAvailableProcessors(), 1),
 					availableProcessors);
 			usedNonHeapMemory = add(memoryInformations.getUsedNonHeapMemory(), usedNonHeapMemory);
+			usedBufferedMemory = add(memoryInformations.getUsedBufferedMemory(), usedBufferedMemory);
 			loadedClassesCount = add(memoryInformations.getLoadedClassesCount(), loadedClassesCount);
 			usedPhysicalMemorySize = add(memoryInformations.getUsedPhysicalMemorySize(),
 					usedPhysicalMemorySize);
@@ -426,6 +431,7 @@ class Collector { // NOPMD
 				freeDiskSpaceInTemp = Math.min(javaInformations.getFreeDiskSpaceInTemp(),
 						freeDiskSpaceInTemp);
 			}
+			systemCpuLoad = add(javaInformations.getSystemCpuLoad(), systemCpuLoad);
 		}
 
 		// collecte du pourcentage de temps en ramasse-miette
@@ -438,8 +444,21 @@ class Collector { // NOPMD
 			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
 
-		collectOtherJRobinsValues(usedNonHeapMemory, loadedClassesCount, usedPhysicalMemorySize,
-				usedSwapSpaceSize, threadCount, systemLoadAverage, unixOpenFileDescriptorCount);
+		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
+		otherJRobinsValues.put("threadCount", (double) threadCount);
+		otherJRobinsValues.put("loadedClassesCount", (double) loadedClassesCount);
+		otherJRobinsValues.put("usedBufferedMemory", (double) usedBufferedMemory);
+		otherJRobinsValues.put("usedNonHeapMemory", (double) usedNonHeapMemory);
+		otherJRobinsValues.put("usedPhysicalMemorySize", (double) usedPhysicalMemorySize);
+		otherJRobinsValues.put("usedSwapSpaceSize", (double) usedSwapSpaceSize);
+		otherJRobinsValues.put("systemLoad", systemLoadAverage);
+		otherJRobinsValues.put("systemCpuLoad", systemCpuLoad / javaInformationsList.size());
+		otherJRobinsValues.put("fileDescriptors", (double) unixOpenFileDescriptorCount);
+		for (final Map.Entry<String, Double> entry : otherJRobinsValues.entrySet()) {
+			if (entry.getValue() >= 0) {
+				getOtherJRobin(entry.getKey()).addValue(entry.getValue());
+			}
+		}
 
 		collectSessionsMeanAge(sessionAgeSum, sessionCount);
 
@@ -541,25 +560,6 @@ class Collector { // NOPMD
 				(bytesSent - this.tomcatBytesSent) / periodMinutes);
 		this.tomcatBytesReceived = bytesReceived;
 		this.tomcatBytesSent = bytesSent;
-	}
-
-	private void collectOtherJRobinsValues(long usedNonHeapMemory, int loadedClassesCount,
-			long usedPhysicalMemorySize, long usedSwapSpaceSize, int threadCount,
-			double systemLoadAverage, long unixOpenFileDescriptorCount) throws IOException {
-		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
-		otherJRobinsValues.put("threadCount", (double) threadCount);
-		otherJRobinsValues.put("loadedClassesCount", (double) loadedClassesCount);
-		otherJRobinsValues.put("usedNonHeapMemory", (double) usedNonHeapMemory);
-		otherJRobinsValues.put("usedPhysicalMemorySize", (double) usedPhysicalMemorySize);
-		otherJRobinsValues.put("usedSwapSpaceSize", (double) usedSwapSpaceSize);
-		otherJRobinsValues.put("systemLoad", systemLoadAverage);
-		otherJRobinsValues.put("fileDescriptors", (double) unixOpenFileDescriptorCount);
-
-		for (final Map.Entry<String, Double> entry : otherJRobinsValues.entrySet()) {
-			if (entry.getValue() >= 0) {
-				getOtherJRobin(entry.getKey()).addValue(entry.getValue());
-			}
-		}
 	}
 
 	private void collectSessionsMeanAge(long sessionAgeSum, int sessionCount) throws IOException {

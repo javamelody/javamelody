@@ -50,6 +50,7 @@ class JavaInformations implements Serializable { // NOPMD
 	static final double HIGH_USAGE_THRESHOLD_IN_PERCENTS = 95d;
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final Date START_DATE = new Date();
+	private static final boolean SYSTEM_CPU_LOAD_ENABLED = "1.7".compareTo(Parameters.JAVA_VERSION) < 0;
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
 	private final MemoryInformations memoryInformations;
@@ -64,6 +65,7 @@ class JavaInformations implements Serializable { // NOPMD
 	private final long transactionCount;
 	private final long processCpuTimeMillis;
 	private final double systemLoadAverage;
+	private final double systemCpuLoad;
 	private final long unixOpenFileDescriptorCount;
 	private final long unixMaxFileDescriptorCount;
 	private final String host;
@@ -141,6 +143,7 @@ class JavaInformations implements Serializable { // NOPMD
 		maxConnectionCount = JdbcWrapper.getMaxConnectionCount();
 		transactionCount = JdbcWrapper.getTransactionCount();
 		systemLoadAverage = buildSystemLoadAverage();
+		systemCpuLoad = buildSystemCpuLoad();
 		processCpuTimeMillis = buildProcessCpuTimeMillis();
 		unixOpenFileDescriptorCount = buildOpenFileDescriptorCount();
 		unixMaxFileDescriptorCount = buildMaxFileDescriptorCount();
@@ -257,6 +260,21 @@ class JavaInformations implements Serializable { // NOPMD
 				// pour issue 16 (using jsvc on ubuntu or debian)
 				return -1;
 			}
+		}
+		return -1;
+	}
+
+	private static double buildSystemCpuLoad() {
+		// System cpu load.
+		// The "recent cpu usage" for the whole system.
+		// This value is a double in the [0.0,1.0] interval.
+		// A value of 0.0 means that all CPUs were idle during the recent period of time observed,
+		// while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed.
+		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
+		if (SYSTEM_CPU_LOAD_ENABLED && isSunOsMBean(operatingSystem)) {
+			// systemCpuLoad n'existe qu'à partir du jdk 1.7
+			return MemoryInformations.getDoubleFromOperatingSystem(operatingSystem,
+					"getSystemCpuLoad") * 100;
 		}
 		return -1;
 	}
@@ -538,6 +556,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 	double getSystemLoadAverage() {
 		return systemLoadAverage;
+	}
+
+	double getSystemCpuLoad() {
+		return systemCpuLoad;
 	}
 
 	long getUnixOpenFileDescriptorCount() {

@@ -72,7 +72,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			write(br);
 		}
 		// pour l'alignement le nb de br doit correspondre au nb de lignes dans le résumé ci-dessus
-		writeln("<br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<br/><br/><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeShowHideLink("detailsJava", "#Details#");
 		writeln("<br/><br/><br/>");
 		// div interne pour showHideLink
@@ -126,6 +126,13 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			write("<tr><td>#Charge_systeme#</td><td>");
 			writeGraph("systemLoad", decimalFormat.format(javaInformations.getSystemLoadAverage()));
 			writeln(columnAndLineEnd);
+		}
+		if (javaInformations.getSystemCpuLoad() >= 0) {
+			write("<tr><td>#systemCpuLoad#</td><td>");
+			writeGraph("systemCpuLoad", decimalFormat.format(javaInformations.getSystemCpuLoad()));
+			writeln("&nbsp;&nbsp;&nbsp;</td><td>");
+			writeln(toBarWithAlert(javaInformations.getSystemCpuLoad(), null));
+			writeln(lineEnd);
 		}
 		writeln("</table>");
 	}

@@ -80,6 +80,10 @@ final class MBeans {
 		return mbeanServer.queryNames(new ObjectName("*:type=GlobalRequestProcessor,*"), null);
 	}
 
+	Set<ObjectName> getNioBufferPools() throws MalformedObjectNameException {
+		return mbeanServer.queryNames(new ObjectName("java.nio:type=BufferPool,*"), null);
+	}
+
 	Object getAttribute(ObjectName name, String attribute) throws JMException {
 		return mbeanServer.getAttribute(name, attribute);
 	}
