@@ -114,6 +114,12 @@ class JavaInformationsPanel extends MelodyPanel {
 			//			writeGraph("systemLoad", decimalFormat.format(javaInformations.getSystemLoadAverage()));
 			addValue(decimalFormat.format(javaInformations.getSystemLoadAverage()));
 		}
+		if (javaInformations.getSystemCpuLoad() >= 0) {
+			addLabel(getString("systemCpuLoad"));
+			// writeGraph("systemCpuLoad", decimalFormat.format(javaInformations.getSystemCpuLoad()));
+			addJLabel(toBarWithAlert(decimalFormat.format(javaInformations.getSystemCpuLoad()),
+					javaInformations.getSystemCpuLoad(), null));
+		}
 		makeGrid();
 	}
 
