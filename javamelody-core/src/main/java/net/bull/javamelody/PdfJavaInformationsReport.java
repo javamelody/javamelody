@@ -216,6 +216,16 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			addCell(getString("Charge_systeme") + ':');
 			addCell(decimalFormat.format(javaInformations.getSystemLoadAverage()));
 		}
+		if (javaInformations.getSystemCpuLoad() >= 0) {
+			addCell(getString("systemCpuLoad") + ':');
+			final Phrase systemCpuLoadPhrase = new Phrase(decimalFormat.format(javaInformations
+					.getSystemCpuLoad()) + BAR_SEPARATOR, cellFont);
+			final Image systemCpuLoadImage = Image.getInstance(
+					Bar.toBarWithAlert(javaInformations.getSystemCpuLoad()), null);
+			systemCpuLoadImage.scalePercent(50);
+			systemCpuLoadPhrase.add(new Chunk(systemCpuLoadImage, 0, 0));
+			currentTable.addCell(systemCpuLoadPhrase);
+		}
 	}
 
 	void writeInformationsDetails() throws DocumentException, IOException {
