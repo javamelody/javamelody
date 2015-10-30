@@ -48,6 +48,11 @@ import net.bull.javamelody.MBeanNode.MBeanAttribute;
  * @author Emeric Vernat
  */
 final class MBeans {
+	/**
+	 * Separator between mbeans attributes in the External API.
+	 */
+	static final char ATTRIBUTES_SEPARATOR = '|';
+
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
 	private static final Comparator<MBeanNode> NODE_COMPARATOR = new Comparator<MBeanNode>() {
 		@Override
@@ -376,7 +381,8 @@ final class MBeans {
 	}
 
 	static String getConvertedAttributes(String jmxValueParameter) {
-		final List<String> mbeanAttributes = Arrays.asList(jmxValueParameter.split("[|]"));
+		final List<String> mbeanAttributes = Arrays.asList(jmxValueParameter.split("["
+				+ ATTRIBUTES_SEPARATOR + ']'));
 		final List<Object> jmxValues = getConvertedAttributes(mbeanAttributes);
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;
@@ -384,7 +390,7 @@ final class MBeans {
 			if (first) {
 				first = false;
 			} else {
-				sb.append('|');
+				sb.append(ATTRIBUTES_SEPARATOR);
 			}
 			sb.append(jmxValue);
 		}

@@ -135,10 +135,18 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 		final String formattedValue = attribute.getFormattedValue();
 		final String description = attribute.getDescription();
 		write("<tr valign='top'><td>");
-		writeDirectly("<a href='?jmxValue="
-				+ mbean.getName().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
-				+ "' ");
-		writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
+		if (mbean.getName().indexOf(MBeans.ATTRIBUTES_SEPARATOR) == -1
+				&& attributeName.indexOf(MBeans.ATTRIBUTES_SEPARATOR) == -1) {
+			writeDirectly("<a href='?jmxValue="
+					+ mbean.getName().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
+					+ "' ");
+			writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
+		} else {
+			// si le nom du mbean ou si le nom de l'attribut contient le caractère séparateur ('|'),
+			// alors l'appel de l'external api avec le lien ne fonctionnerait pas, donc on n'écrit pas le lien
+			// (cela peut arriver avec c3p0 si il n'y a pas com.mchange.v2.c3p0.management.ExcludeIdentityToken=true)
+			writeln("-&nbsp;");
+		}
 		writeDirectly(htmlEncodeButNotSpace(attributeName));
 		write("</td><td>");
 		// \n sera encodé dans <br/> dans htmlEncode
