@@ -77,7 +77,9 @@ The charts displayed are:<ul>
 	<li>the cpu percentage of the garbage collector for the JVM</li>
 	<li>the number of threads for the JVM</li>
 	<li>the number of loaded classes for the JVM</li>
-	<li>the used buffered memory (direct and mapped buffers)</li>
+	<li>the used buffered memory
+	(<a href='http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html#allocateDirect%28int%29'>direct</a>
+	 and <a href='http://docs.oracle.com/javase/7/docs/api/java/nio/channels/FileChannel.html#map%28java.nio.channels.FileChannel.MapMode,%20long,%20long%29'>mapped</a> buffers)</li>
 	<li>the used non heap memory for the JVM</li>
 	<li>the used physical memory for the OS</li>
 	<li>the used swap space for the OS</li>
