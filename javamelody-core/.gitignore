@@ -4,7 +4,7 @@ javamelody.war
 javamelody.zip
 build
 doc
-VERSION.properties
+JAVAMELODY-VERSION.properties
 jira-javamelody.jar
 test.war
 

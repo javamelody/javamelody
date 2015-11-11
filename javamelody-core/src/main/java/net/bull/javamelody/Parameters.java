@@ -401,7 +401,8 @@ final class Parameters {
 	}
 
 	private static String getJavaMelodyVersion() {
-		final InputStream inputStream = Parameters.class.getResourceAsStream("/VERSION.properties");
+		final InputStream inputStream = Parameters.class
+				.getResourceAsStream("/JAVAMELODY-VERSION.properties");
 		if (inputStream == null) {
 			return null;
 		}

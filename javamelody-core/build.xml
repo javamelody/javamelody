@@ -28,7 +28,7 @@
 		<echo message="${ant.version}" level="info" />
 		<echo message="${java.runtime.name}, ${java.runtime.version}" level="info" />
 		<echo message="${os.name} ${sun.os.patch.level}, ${os.arch}/${sun.arch.data.model}" level="info" />
-		<property file="VERSION.properties" />
+		<property file="JAVAMELODY-VERSION.properties" />
 		<echo message="JavaMelody version: ${version}" level="info" />
 		<tstamp>
 			<format property="TODAY_FR" pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
@@ -119,7 +119,7 @@
 		<jar destfile="javamelody.jar">
 			<zipfileset dir="build/classes" />
 			<zipfileset dir="src/main/resources" excludes="**/Thumbs.db" />
-			<zipfileset file="VERSION.properties" />
+			<zipfileset file="JAVAMELODY-VERSION.properties" />
 			<zipfileset file="LICENSE" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -145,7 +145,7 @@
 			<zipfileset file="src/main/lib/winstone-jenkins.jar" />
 			<!-- ressources de la webapp -->
 			<zipfileset dir="src/main/resources" prefix="WEB-INF/classes" excludes="**/Thumbs.db,META-INF/web-fragment.xml" />
-			<zipfileset file="VERSION.properties" prefix="WEB-INF/classes" />
+			<zipfileset file="JAVAMELODY-VERSION.properties" prefix="WEB-INF/classes" />
 			<!-- dépendances de la webapp -->
 			<zipfileset dir="src/test/test-webapp/WEB-INF/lib" prefix="WEB-INF/lib">
 				<include name="jrobin-1.5.9.1.jar" />
@@ -161,7 +161,7 @@
 			</zipfileset>
 			<!-- web.xml -->
 			<zipfileset file="src/main/collector-webapp/**" />
-			<zipfileset file="VERSION.properties" />
+			<zipfileset file="JAVAMELODY-VERSION.properties" />
 			<zipfileset file="LICENSE" />
 			<manifest>
 				<attribute name="Main-Class" value="net.bull.javamelody.Main" />
@@ -178,12 +178,12 @@
 
 	<!-- Construction du jar du plugin Jira -->
 	<target name="jira-jar" depends="jar" if="version">
-		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier VERSION.properties existe -->
+		<!-- Ce target s'exécute si et seulement si la propriété version existe, ie si le fichier JAVAMELODY-VERSION.properties existe -->
 		<echo message="Construction du jar pour le plugin Jira" level="info" />
 		<!-- Description Jira/Confluence/Bamboo pour le plugin.
-		Le fichier VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
+		Le fichier JAVAMELODY-VERSION.properties généré par maven doit exister et contenir version=x.y.z -->
 		<copy file="src/main/jira/atlassian-plugin.xml" todir="build/" overwrite="true" />
-		<replace file="build/atlassian-plugin.xml" propertyFile="VERSION.properties" failOnNoReplacements="true">
+		<replace file="build/atlassian-plugin.xml" propertyFile="JAVAMELODY-VERSION.properties" failOnNoReplacements="true">
 			<replacefilter token="@version@" property="version" />
 		</replace>
 		<delete file="jira-javamelody.jar" />
