@@ -297,8 +297,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 					<fork>true</fork>
 					<!-- pour éviter warning dans Maven sur sun.nio.ch.DirectBuffer dans RrdNioBackend -->
 					<compilerArgument>-XDignore.symbol.file=true -Xlint</compilerArgument>
@@ -339,7 +339,7 @@
 						<configuration>
 							<rules>
 								<requireJavaVersion>
-									<version>1.6</version>
+									<version>1.7</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -384,7 +384,7 @@
 						<!-- nécessaire car maven définit java_home avec le jre pour ant ! -->
 						<groupId>sun.jdk</groupId>
 						<artifactId>tools</artifactId>
-						<version>1.6.0</version>
+						<version>1.7.0</version>
 						<scope>system</scope>
 						<systemPath>${java.home}/../lib/tools.jar</systemPath>
 					</dependency>
@@ -487,8 +487,8 @@
 							<version>3.5</version>
 							<configuration>
 								<enableRulesSummary>false</enableRulesSummary>
-								<source>1.6</source>
-								<targetJdk>1.6</targetJdk>
+								<source>1.7</source>
+								<targetJdk>1.7</targetJdk>
 								<linkXref>true</linkXref>
 								<minimumPriority>4</minimumPriority>
 								<minimumTokens>75</minimumTokens>
