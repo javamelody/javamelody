@@ -41,6 +41,11 @@ public final class JpaWrapper {
 		return JPA_COUNTER;
 	}
 
+	/**
+	 * Create proxy of EntityManagerFactory.
+	 * @param entityManagerFactory EntityManagerFactory
+	 * @return EntityManagerFactory
+	 */
 	public static EntityManagerFactory createEntityManagerFactoryProxy(
 			final EntityManagerFactory entityManagerFactory) {
 		if (DISABLED || !JPA_COUNTER.isDisplayed()) {
