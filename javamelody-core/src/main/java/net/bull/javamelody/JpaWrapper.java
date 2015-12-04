@@ -28,7 +28,7 @@ import javax.persistence.Query;
  * Cette classe est utile pour construire des proxy pour JPA.
  * @author Emeric Vernat
  */
-final class JpaWrapper {
+public final class JpaWrapper {
 	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
 			.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
@@ -41,7 +41,7 @@ final class JpaWrapper {
 		return JPA_COUNTER;
 	}
 
-	static EntityManagerFactory createEntityManagerFactoryProxy(
+	public static EntityManagerFactory createEntityManagerFactoryProxy(
 			final EntityManagerFactory entityManagerFactory) {
 		if (DISABLED || !JPA_COUNTER.isDisplayed()) {
 			return entityManagerFactory;
