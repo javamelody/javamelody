@@ -190,7 +190,10 @@ enum Action { // NOPMD
 			if (GC_ENABLED) {
 				// garbage collector
 				final long kbFreed = gc();
-				messageForReport = I18N.getFormattedString("ramasse_miette_execute", kbFreed);
+				final long stillUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime()
+						.freeMemory()) / 1024;
+				messageForReport = I18N.getFormattedString("ramasse_miette_execute", kbFreed,
+						stillUsed);
 			} else {
 				messageForReport = I18N.getString("ramasse_miette_desactive");
 			}
