@@ -519,6 +519,9 @@ public final class JdbcWrapper {
 		} else if (jonas) {
 			// JONAS (si rewrap-datasources==true)
 			rewrapJonasDataSource(jndiName, dataSource);
+		} else {
+			LOG.info("Datasource can't be rewrapped: " + jndiName + " of class "
+					+ dataSourceClassName);
 		}
 	}
 
