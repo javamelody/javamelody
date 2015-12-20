@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
@@ -232,7 +233,7 @@ enum TransportFormat {
 		Object result;
 		switch (this) {
 		case SERIALIZED:
-			final ObjectInputStream in = new ObjectInputStream(bufferedInput);
+			final ObjectInputStream in = createObjectInputStream(bufferedInput);
 			try {
 				result = in.readObject();
 			} finally {
@@ -254,5 +255,25 @@ enum TransportFormat {
 		}
 		// c'est un Serializable que l'on a écrit
 		return (Serializable) result;
+	}
+
+	static ObjectInputStream createObjectInputStream(InputStream input) throws IOException {
+		final Class<TransportFormat> classe = TransportFormat.class;
+		final String packageName = classe.getName().substring(0,
+				classe.getName().length() - classe.getSimpleName().length() - 1);
+		return new ObjectInputStream(input) {
+			// during deserialization, protect ourselves from malicious payload
+			// http://www.ibm.com/developerworks/library/se-lookahead/index.html
+			@Override
+			protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+					ClassNotFoundException {
+				final String name = desc.getName();
+				if (name.startsWith("java.lang.") || name.startsWith("java.util.")
+						|| name.startsWith(packageName)) {
+					return super.resolveClass(desc);
+				}
+				throw new ClassNotFoundException(name);
+			}
+		};
 	}
 }
