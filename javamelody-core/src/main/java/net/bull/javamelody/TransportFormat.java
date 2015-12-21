@@ -135,6 +135,40 @@ enum TransportFormat {
 		}
 	}
 
+	private static class MyObjectInputStream extends ObjectInputStream {
+		private static final String PACKAGE_NAME = TransportFormat.class.getName().substring(
+				0,
+				TransportFormat.class.getName().length()
+						- TransportFormat.class.getSimpleName().length() - 1);
+
+		MyObjectInputStream(InputStream input) throws IOException {
+			super(input);
+		}
+
+		// during deserialization, protect ourselves from malicious payload
+		// http://www.ibm.com/developerworks/library/se-lookahead/index.html
+		@Override
+		protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+				ClassNotFoundException {
+			final String name = desc.getName();
+			int i = 0;
+			if (name.indexOf("[[") == 0) {
+				// 2 dimensions array
+				i++;
+			}
+			if (name.indexOf("[L", i) == i) {
+				// 1 dimension array
+				i += 2;
+			}
+			if (name.indexOf("java.lang.", i) == i || name.indexOf("java.util.", i) == i
+					|| name.indexOf(PACKAGE_NAME, i) == i || name.length() <= 2) {
+				// if name.length() == 2, primitive type or array (such as [B in javamelody-swing)
+				return super.resolveClass(desc);
+			}
+			throw new ClassNotFoundException(name);
+		}
+	}
+
 	private final String code; // NOPMD
 	private final String mimeType; // NOPMD
 
@@ -258,22 +292,6 @@ enum TransportFormat {
 	}
 
 	static ObjectInputStream createObjectInputStream(InputStream input) throws IOException {
-		final Class<TransportFormat> classe = TransportFormat.class;
-		final String packageName = classe.getName().substring(0,
-				classe.getName().length() - classe.getSimpleName().length() - 1);
-		return new ObjectInputStream(input) {
-			// during deserialization, protect ourselves from malicious payload
-			// http://www.ibm.com/developerworks/library/se-lookahead/index.html
-			@Override
-			protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-					ClassNotFoundException {
-				final String name = desc.getName();
-				if (name.startsWith("java.lang.") || name.startsWith("java.util.")
-						|| name.startsWith(packageName)) {
-					return super.resolveClass(desc);
-				}
-				throw new ClassNotFoundException(name);
-			}
-		};
+		return new MyObjectInputStream(input);
 	}
 }
