@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+org.eclipse.jpt.core.platform=generic2_0
+org.eclipse.jpt.jpa.core.discoverAnnotatedClasses=true
