@@ -66,9 +66,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.bull.javamelody.SamplingProfiler.SampledMethod;
-
 import org.apache.log4j.Logger;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Contrôleur au sens MVC de l'ihm de monitoring dans le serveur collecte.

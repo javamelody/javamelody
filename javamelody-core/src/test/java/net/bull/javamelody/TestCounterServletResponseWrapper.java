@@ -21,10 +21,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import net.bull.javamelody.TestCompressionServletResponseWrapper.HttpResponse;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.TestCompressionServletResponseWrapper.HttpResponse;
 
 /**
  * Test unitaire des classes CounterServletResponseWrapper et CounterResponseStream.

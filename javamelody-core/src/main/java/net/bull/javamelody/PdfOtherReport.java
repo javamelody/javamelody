@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.bull.javamelody.SamplingProfiler.SampledMethod;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Rapports pdf secondaires (avec iText).

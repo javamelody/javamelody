@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.bull.javamelody.SamplingProfiler.SampledMethod;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Test unitaire de la classe HtmlHotspotsReport.

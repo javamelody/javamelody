@@ -19,8 +19,6 @@ package net.bull.javamelody;
 
 import java.util.List;
 
-import net.bull.javamelody.MBeanNode.MBeanAttribute;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -30,6 +28,8 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+
+import net.bull.javamelody.MBeanNode.MBeanAttribute;
 
 /**
  * Partie du rapport pdf pour les MBeans.

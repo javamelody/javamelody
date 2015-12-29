@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.bull.javamelody.HtmlCounterRequestContextReport.CounterRequestContextReportHelper;
-
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -37,6 +35,8 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
+
+import net.bull.javamelody.HtmlCounterRequestContextReport.CounterRequestContextReportHelper;
 
 /**
  * Partie du rapport pdf pour les contextes de requêtes en cours.

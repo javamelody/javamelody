@@ -29,9 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import net.bull.javamelody.SamplingProfiler.SampledMethod;
-
 import org.apache.log4j.Logger;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Collecteur de données du serveur de collecte centralisé.

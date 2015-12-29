@@ -91,13 +91,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.sf.ehcache.CacheManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import net.sf.ehcache.CacheManager;
 
 /**
  * Test unitaire de la classe MonitoringFilter.

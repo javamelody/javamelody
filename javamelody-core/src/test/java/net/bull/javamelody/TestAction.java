@@ -36,8 +36,6 @@ import java.util.Random;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import net.sf.ehcache.CacheManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDetail;
@@ -46,6 +44,8 @@ import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+
+import net.sf.ehcache.CacheManager;
 
 /**
  * Test unitaire de la classe Action.

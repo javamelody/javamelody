@@ -33,11 +33,11 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.servlet.http.HttpSession;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
 
 /**
  * Énumération des actions possibles dans l'IHM.

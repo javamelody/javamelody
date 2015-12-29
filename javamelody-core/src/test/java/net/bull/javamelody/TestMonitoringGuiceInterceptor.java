@@ -19,10 +19,6 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTest;
-import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestClass;
-import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestMethod;
-import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestOtherClass;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +29,11 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
+
+import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTest;
+import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestClass;
+import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestMethod;
+import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestOtherClass;
 
 /**
  * Test unitaire de la classe MonitoringGuiceInterceptor.

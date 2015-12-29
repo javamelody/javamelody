@@ -41,10 +41,10 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import net.bull.javamelody.SamplingProfiler.SampledMethod;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Test unitaire de la classe PdfOtherReport.

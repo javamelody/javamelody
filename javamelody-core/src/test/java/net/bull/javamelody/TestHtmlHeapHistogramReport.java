@@ -29,11 +29,11 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 
-import net.bull.javamelody.HeapHistogram.ClassInfo;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.HeapHistogram.ClassInfo;
 
 /**
  * Test unitaire de la classe HtmlHeapHistogramReport.

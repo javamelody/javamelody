@@ -24,8 +24,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import net.bull.javamelody.PdfJavaInformationsReport.Bar;
-
 import com.lowagie.text.Anchor;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
@@ -37,6 +35,8 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
+
+import net.bull.javamelody.PdfJavaInformationsReport.Bar;
 
 /**
  * Partie du rapport pdf pour les jobs.

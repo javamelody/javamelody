@@ -28,11 +28,11 @@ import java.util.Properties;
 
 import javax.naming.NamingException;
 
-import net.bull.javamelody.DatabaseInformations.Database;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.DatabaseInformations.Database;
 
 /**
  * Test unitaire de la classe DatabaseInformations.

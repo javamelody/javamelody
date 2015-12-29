@@ -34,9 +34,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +47,9 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * Test unitaire de la classe PdfReport.

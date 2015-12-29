@@ -31,11 +31,11 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
-import net.bull.javamelody.TestTomcatInformations.ThreadPool;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.TestTomcatInformations.GlobalRequestProcessor;
+import net.bull.javamelody.TestTomcatInformations.ThreadPool;
 
 /**
  * Test unitaire de la classe HtmlJavaInformationsReport.
