@@ -44,7 +44,7 @@ import javax.sql.DataSource;
 class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
 
-	static enum Database {
+	enum Database {
 		// base de données connues avec les noms retournés par connection.getMetaData().getDatabaseProductName()
 		// (inspirés par Hibernate)
 		POSTGRESQL("PostgreSQL"),
@@ -65,7 +65,7 @@ class DatabaseInformations implements Serializable {
 
 		private List<String> databaseNames;
 
-		private Database(String... databaseNames) {
+		Database(String... databaseNames) {
 			this.databaseNames = Arrays.asList(databaseNames);
 		}
 

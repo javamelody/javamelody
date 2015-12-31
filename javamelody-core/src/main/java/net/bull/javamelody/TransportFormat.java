@@ -171,7 +171,7 @@ enum TransportFormat {
 	private final String code; // NOPMD
 	private final String mimeType; // NOPMD
 
-	private TransportFormat(String mimeType) {
+	TransportFormat(String mimeType) {
 		this.mimeType = mimeType;
 		this.code = this.toString().toLowerCase(Locale.ENGLISH);
 	}

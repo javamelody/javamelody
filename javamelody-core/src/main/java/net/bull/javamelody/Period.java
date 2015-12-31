@@ -43,7 +43,7 @@ enum Period {
 	private final String iconName;
 	private final Range range;
 
-	private Period(int durationDays, String iconName, String mailCode) {
+	Period(int durationDays, String iconName, String mailCode) {
 		this.durationDays = durationDays;
 		this.durationSeconds = durationDays * 24 * 60 * 60;
 		this.iconName = iconName;

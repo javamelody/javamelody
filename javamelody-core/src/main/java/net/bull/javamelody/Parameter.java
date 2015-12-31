@@ -309,7 +309,7 @@ public enum Parameter {
 
 	private final String code;
 
-	private Parameter(String code) {
+	Parameter(String code) {
 		this.code = code;
 	}
 

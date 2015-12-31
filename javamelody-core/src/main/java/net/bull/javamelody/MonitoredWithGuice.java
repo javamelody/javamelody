@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 public @interface MonitoredWithGuice {
 	/**
 	 * @see MonitoredWithGuice
+	 * @return String
 	 */
 	String name() default "";
 }

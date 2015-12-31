@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 public @interface MonitoredWithSpring {
 	/**
 	 * @see MonitoredWithSpring
+	 * @return String
 	 */
 	String name() default "";
 }
