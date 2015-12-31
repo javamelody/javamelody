@@ -45,7 +45,8 @@ class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 	 * @param parent ClassLoader parent
 	 * @param replacement Nom de la classe du persistence provider qui doit remplacer notre persistence provider.
 	 */
-	public JpaOverridePersistenceXmlClassLoader(final ClassLoader parent, final String replacement) {
+	public JpaOverridePersistenceXmlClassLoader(final ClassLoader parent,
+			final String replacement) {
 		super(parent);
 		this.replacement = replacement;
 	}
@@ -85,8 +86,8 @@ class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 
 	private URL newUrl(final URL url, final String slurp) {
 		if (slurp.contains(PERSISTENCE_PROVIDER)) {
-			final String afterReplace = slurp.replace(PERSISTENCE_PROVIDER, replacement).replace(
-					NO_PROVIDER, "");
+			final String afterReplace = slurp.replace(PERSISTENCE_PROVIDER, replacement)
+					.replace(NO_PROVIDER, "");
 			try {
 				return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(),
 						new ConstantURLStreamHandler(afterReplace));

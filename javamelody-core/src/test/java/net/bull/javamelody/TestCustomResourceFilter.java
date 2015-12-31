@@ -45,8 +45,8 @@ import org.junit.Test;
  */
 public class TestCustomResourceFilter { // NOPMD
 	private static final String MONITORING_CSS = "monitoring.css";
-	private static final Map<String, String> CUSTOM_RESOURCES = Collections.singletonMap(
-			MONITORING_CSS, "customMonitoring.css");
+	private static final Map<String, String> CUSTOM_RESOURCES = Collections
+			.singletonMap(MONITORING_CSS, "customMonitoring.css");
 	private FilterConfig config;
 	private CustomResourceFilter customResourceFilter;
 
@@ -57,8 +57,8 @@ public class TestCustomResourceFilter { // NOPMD
 	public void setUp() {
 		Utils.initialize();
 		config = createNiceMock(FilterConfig.class);
-		expect(config.getInitParameterNames()).andReturn(
-				Collections.enumeration(Arrays.asList(MONITORING_CSS)));
+		expect(config.getInitParameterNames())
+				.andReturn(Collections.enumeration(Arrays.asList(MONITORING_CSS)));
 		for (final Map.Entry<String, String> entry : CUSTOM_RESOURCES.entrySet()) {
 			expect(config.getInitParameter(entry.getKey())).andReturn(entry.getValue());
 		}
@@ -119,8 +119,8 @@ public class TestCustomResourceFilter { // NOPMD
 		final FilterChain chain = createNiceMock(FilterChain.class);
 		expect(request.getParameter("resource")).andReturn(resource);
 		if (CUSTOM_RESOURCES.get(resource) != null) {
-			expect(request.getRequestDispatcher(CUSTOM_RESOURCES.get(resource))).andReturn(
-					requestDispatcher);
+			expect(request.getRequestDispatcher(CUSTOM_RESOURCES.get(resource)))
+					.andReturn(requestDispatcher);
 		}
 
 		replay(config);

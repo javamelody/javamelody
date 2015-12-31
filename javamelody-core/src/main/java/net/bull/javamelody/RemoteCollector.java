@@ -97,9 +97,7 @@ class RemoteCollector {
 		return messageForReport;
 	}
 
-	private void dispatchSerializables(
-			List<Serializable> serialized,
-			List<Counter> counters,
+	private void dispatchSerializables(List<Serializable> serialized, List<Counter> counters,
 			List<JavaInformations> javaInfosList,
 			Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations,
 			StringBuilder sb) {
@@ -132,8 +130,8 @@ class RemoteCollector {
 		assert action != null;
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
-			final URL actionUrl = createRemoteCall(url).getActionUrl(action, counterName,
-					sessionId, threadId, jobId, cacheId);
+			final URL actionUrl = createRemoteCall(url).getActionUrl(action, counterName, sessionId,
+					threadId, jobId, cacheId);
 			actionUrls.add(actionUrl);
 		}
 		return collectDataWithUrls(actionUrls);
@@ -261,8 +259,8 @@ class RemoteCollector {
 	List<List<ThreadInformations>> getThreadInformationsLists() {
 		final List<List<ThreadInformations>> result = new ArrayList<List<ThreadInformations>>();
 		for (final JavaInformations javaInformations : this.javaInformationsList) {
-			result.add(new ArrayList<ThreadInformations>(javaInformations
-					.getThreadInformationsList()));
+			result.add(new ArrayList<ThreadInformations>(
+					javaInformations.getThreadInformationsList()));
 		}
 		return result;
 	}

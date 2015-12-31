@@ -60,7 +60,8 @@ enum PdfFonts {
 	}
 
 	Font getFont() {
-		if (Locale.CHINESE.getLanguage().equals(I18N.getResourceBundle().getLocale().getLanguage())) {
+		if (Locale.CHINESE.getLanguage()
+				.equals(I18N.getResourceBundle().getLocale().getLanguage())) {
 			return getChineseFont();
 		}
 		return font;
@@ -110,8 +111,8 @@ enum PdfFonts {
 			final Properties cjkEncodings = (Properties) cjkEncodingsField.get(null);
 
 			if (cjkFonts.isEmpty()) {
-				final InputStream is = BaseFont.getResourceStream(BaseFont.RESOURCE_PATH
-						+ "cjkfonts.properties.renamedForIssue258");
+				final InputStream is = BaseFont.getResourceStream(
+						BaseFont.RESOURCE_PATH + "cjkfonts.properties.renamedForIssue258");
 				try {
 					cjkFonts.load(is);
 				} finally {
@@ -119,8 +120,8 @@ enum PdfFonts {
 				}
 			}
 			if (cjkEncodings.isEmpty()) {
-				final InputStream is = BaseFont.getResourceStream(BaseFont.RESOURCE_PATH
-						+ "cjkencodings.properties.renamedForIssue258");
+				final InputStream is = BaseFont.getResourceStream(
+						BaseFont.RESOURCE_PATH + "cjkencodings.properties.renamedForIssue258");
 				try {
 					cjkEncodings.load(is);
 				} finally {

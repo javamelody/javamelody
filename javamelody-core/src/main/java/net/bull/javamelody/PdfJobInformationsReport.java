@@ -108,8 +108,8 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 		return headers;
 	}
 
-	private void writeJobInformations(JobInformations jobInformations) throws BadElementException,
-			IOException {
+	private void writeJobInformations(JobInformations jobInformations)
+			throws BadElementException, IOException {
 		final PdfPCell defaultCell = getDefaultCell();
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(jobInformations.getGroup());
@@ -146,8 +146,8 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 		if (elapsedTime >= 0) {
 			final Phrase elapsedTimePhrase = new Phrase(durationFormat.format(elapsedTime),
 					cellFont);
-			final Image memoryImage = Image.getInstance(
-					Bar.toBar(100d * elapsedTime / counterRequest.getMean()), null);
+			final Image memoryImage = Image
+					.getInstance(Bar.toBar(100d * elapsedTime / counterRequest.getMean()), null);
 			memoryImage.scalePercent(47);
 			elapsedTimePhrase.add("\n");
 			elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));

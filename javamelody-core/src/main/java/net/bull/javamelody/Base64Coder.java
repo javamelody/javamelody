@@ -35,6 +35,7 @@ final class Base64Coder { // NOPMD
 
 	// Mapping table from 6-bit nibbles to Base64 characters.
 	private static final char[] MAP1 = new char[64];
+
 	static {
 		int i = 0;
 		for (char c = 'A'; c <= 'Z'; c++) {
@@ -52,6 +53,7 @@ final class Base64Coder { // NOPMD
 
 	// Mapping table from Base64 characters to 6-bit nibbles.
 	private static final byte[] MAP2 = new byte[128];
+
 	static {
 		for (int i = 0; i < MAP2.length; i++) {
 			MAP2[i] = -1;

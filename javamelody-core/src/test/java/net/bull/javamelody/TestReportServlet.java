@@ -79,15 +79,15 @@ public class TestReportServlet {
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		// anyTimes sur getInitParameter car TestJdbcDriver a pu fixer la propriété système à false
-		expect(
-				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
+		expect(context.getInitParameter(
+				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode())).andReturn(null)
+						.anyTimes();
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY)).andReturn(
-				new FilterContext()).anyTimes();
+		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY))
+				.andReturn(new FilterContext()).anyTimes();
 		reportServlet = new ReportServlet();
 		replay(config);
 		replay(context);
@@ -135,8 +135,8 @@ public class TestReportServlet {
 				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			}
 		}
-		expect(request.getHeaders("Accept-Encoding")).andReturn(
-				Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+		expect(request.getHeaders("Accept-Encoding"))
+				.andReturn(Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))

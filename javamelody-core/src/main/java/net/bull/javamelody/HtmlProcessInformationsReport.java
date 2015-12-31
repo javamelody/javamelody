@@ -32,7 +32,8 @@ class HtmlProcessInformationsReport extends HtmlAbstractReport {
 	private final DecimalFormat percentFormat = I18N.createPercentFormat();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 
-	HtmlProcessInformationsReport(List<ProcessInformations> processInformationsList, Writer writer) {
+	HtmlProcessInformationsReport(List<ProcessInformations> processInformationsList,
+			Writer writer) {
 		super(writer);
 		assert processInformationsList != null;
 

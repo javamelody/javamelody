@@ -36,8 +36,8 @@ final class JspWrapper implements InvocationHandler {
 	private static final Counter JSP_COUNTER = new Counter(Counter.JSP_COUNTER_NAME, "jsp.png",
 			JdbcWrapper.SINGLETON.getSqlCounter());
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(JSP_COUNTER.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 
 	private final String path;
 	private final RequestDispatcher requestDispatcher;

@@ -55,8 +55,8 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 
 	CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext,
 			String requestName, String completeRequestName, String remoteUser, long startCpuTime) {
-		this(parentCounter, parentContext, requestName, completeRequestName, remoteUser, Thread
-				.currentThread().getId(), System.currentTimeMillis(), startCpuTime);
+		this(parentCounter, parentContext, requestName, completeRequestName, remoteUser,
+				Thread.currentThread().getId(), System.currentTimeMillis(), startCpuTime);
 		if (parentContext != null) {
 			parentContext.setCurrentChildContext(this);
 		}
@@ -107,8 +107,8 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 	private static void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
 			Map<String, Counter> newParentCountersByName) {
 		for (final CounterRequestContext context : rootCurrentContexts) {
-			final Counter newParentCounter = newParentCountersByName.get(context.getParentCounter()
-					.getName());
+			final Counter newParentCounter = newParentCountersByName
+					.get(context.getParentCounter().getName());
 			if (newParentCounter != null) {
 				// si le counter n'est pas/plus affiché, newParentCounter peut être null
 				context.setParentCounter(newParentCounter);
@@ -149,7 +149,8 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		if (startCpuTime < 0) {
 			return -1;
 		}
-		final int cpuTime = (int) (ThreadInformations.getThreadCpuTime(getThreadId()) - startCpuTime) / 1000000;
+		final int cpuTime = (int) (ThreadInformations.getThreadCpuTime(getThreadId())
+				- startCpuTime) / 1000000;
 		// pas de négatif ici sinon on peut avoir une assertion si elles sont activées
 		return Math.max(cpuTime, 0);
 	}
@@ -238,9 +239,8 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 			boolean systemError, int responseSize) {
 		// si je suis le counter fils du counter du contexte parent
 		// comme sql pour http alors on ajoute la requête fille
-		if (parentContext != null
-				&& parentCounter.getName().equals(
-						parentContext.getParentCounter().getChildCounterName())) {
+		if (parentContext != null && parentCounter.getName()
+				.equals(parentContext.getParentCounter().getChildCounterName())) {
 			childHits++;
 			childDurationsSum += duration;
 		}

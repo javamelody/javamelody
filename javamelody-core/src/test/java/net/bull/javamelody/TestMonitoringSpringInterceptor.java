@@ -217,8 +217,8 @@ public class TestMonitoringSpringInterceptor {
 	public void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
-		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+		final ApplicationContext context = new ClassPathXmlApplicationContext(
+				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		final SpringTestFacade springTestFacade = (SpringTestFacade) context
 				.getBean("springTestFacade");
 
@@ -261,22 +261,22 @@ public class TestMonitoringSpringInterceptor {
 	/** Test. */
 	@Test
 	public void testSpringDataSourceBeanPostProcessor() {
-		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+		final ApplicationContext context = new ClassPathXmlApplicationContext(
+				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
 		context.getBean("dataSource2");
 
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
-		assertNotNull("no database context", new ClassPathXmlApplicationContext(new String[] {
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, }));
+		assertNotNull("no database context", new ClassPathXmlApplicationContext(
+				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, }));
 	}
 
 	/** Test. */
 	@Test
 	public void testSpringDataSourceFactoryBean() {
-		final ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+		final ApplicationContext context = new ClassPathXmlApplicationContext(
+				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		// utilisation de l'InvocationHandler dans SpringDataSourceFactoryBean
 		context.getType("wrappedDataSource");
 		context.getBean("wrappedDataSource");

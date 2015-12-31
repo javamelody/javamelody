@@ -102,7 +102,8 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
 		if (writer != null) {
-			throw new IllegalStateException("getWriter() has already been called for this response");
+			throw new IllegalStateException(
+					"getWriter() has already been called for this response");
 		}
 
 		if (stream == null) {

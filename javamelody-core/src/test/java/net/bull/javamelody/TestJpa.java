@@ -177,7 +177,8 @@ public class TestJpa {
 				final Query nativeQuery2 = em.createNativeQuery(
 						"select * from \"TestJpa$Person\" where name = ?", Person.class);
 				nativeQuery2.setParameter(1, PERSON_NAME).getSingleResult();
-				assertCounter("NativeQuery(select * from \"TestJpa$Person\" where name = ?, Person)");
+				assertCounter(
+						"NativeQuery(select * from \"TestJpa$Person\" where name = ?, Person)");
 
 				final Query query = em
 						.createQuery("select p from TestJpa$Person p where p.name = :name");
@@ -193,8 +194,8 @@ public class TestJpa {
 				final CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
 				final Root<Person> from = criteriaQuery.from(Person.class);
 				criteriaQuery.select(from);
-				final CriteriaQuery<Object> criteriaQuery2 = criteriaQuery.where(criteriaBuilder
-						.equal(from.get(nameParameter), PERSON_NAME));
+				final CriteriaQuery<Object> criteriaQuery2 = criteriaQuery
+						.where(criteriaBuilder.equal(from.get(nameParameter), PERSON_NAME));
 				em.createQuery(criteriaQuery2).getSingleResult();
 				assertCounter("Query(SELECT t FROM TestJpa$Person t WHERE t.name = '" + PERSON_NAME
 						+ "')");

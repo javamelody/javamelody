@@ -189,11 +189,11 @@ final class TomcatInformations implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[name=" + getName() + ", maxThreads="
-				+ getMaxThreads() + ", currentThreadCount=" + getCurrentThreadCount()
-				+ ", currentThreadsBusy=" + getCurrentThreadsBusy() + ", bytesReceived="
-				+ getBytesReceived() + ", bytesSent=" + getBytesSent() + ", requestCount="
-				+ getRequestCount() + ", errorCount=" + getErrorCount() + ", processingTime="
-				+ getProcessingTime() + ", maxTime=" + getMaxTime() + ']';
+		return getClass().getSimpleName() + "[name=" + getName() + ", maxThreads=" + getMaxThreads()
+				+ ", currentThreadCount=" + getCurrentThreadCount() + ", currentThreadsBusy="
+				+ getCurrentThreadsBusy() + ", bytesReceived=" + getBytesReceived() + ", bytesSent="
+				+ getBytesSent() + ", requestCount=" + getRequestCount() + ", errorCount="
+				+ getErrorCount() + ", processingTime=" + getProcessingTime() + ", maxTime="
+				+ getMaxTime() + ']';
 	}
 }

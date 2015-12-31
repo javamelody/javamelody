@@ -111,16 +111,16 @@ public class TestPdfOtherReport {
 
 		// aucune session sérialisable
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeSessionInformations(Collections.singletonList(new SessionInformations(
-				new SessionTestImpl(false), false)));
+		pdfOtherReport.writeSessionInformations(Collections
+				.singletonList(new SessionInformations(new SessionTestImpl(false), false)));
 		assertNotEmptyAndClear(output);
 
 		// pays non existant
 		final SessionTestImpl sessionPays = new SessionTestImpl(true);
 		sessionPays.setCountry("nimporte.quoi");
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeSessionInformations(Collections.singletonList(new SessionInformations(
-				sessionPays, false)));
+		pdfOtherReport.writeSessionInformations(
+				Collections.singletonList(new SessionInformations(sessionPays, false)));
 		assertNotEmptyAndClear(output);
 
 		// pays null
@@ -128,8 +128,8 @@ public class TestPdfOtherReport {
 		assertNull("countryDisplay null",
 				new SessionInformations(sessionPays, false).getCountryDisplay());
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeSessionInformations(Collections.singletonList(new SessionInformations(
-				sessionPays, false)));
+		pdfOtherReport.writeSessionInformations(
+				Collections.singletonList(new SessionInformations(sessionPays, false)));
 		assertNotEmptyAndClear(output);
 	}
 
@@ -144,13 +144,12 @@ public class TestPdfOtherReport {
 				getClass().getResourceAsStream("/tasklist.txt"), true, false));
 		assertNotEmptyAndClear(output);
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeProcessInformations(ProcessInformations.buildProcessInformations(
-				getClass().getResourceAsStream("/ps.txt"), false, false));
+		pdfOtherReport.writeProcessInformations(ProcessInformations
+				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false));
 		assertNotEmptyAndClear(output);
 		pdfOtherReport = new PdfOtherReport(TEST_APP, output);
-		pdfOtherReport.writeProcessInformations(Collections.singletonMap(
-				"localhost",
-				ProcessInformations.buildProcessInformations(
+		pdfOtherReport.writeProcessInformations(
+				Collections.singletonMap("localhost", ProcessInformations.buildProcessInformations(
 						getClass().getResourceAsStream("/ps.txt"), false, false)));
 		assertNotEmptyAndClear(output);
 	}
@@ -219,11 +218,11 @@ public class TestPdfOtherReport {
 		expect(context.listBindings("java:" + contextPath)).andReturn(enumeration).anyTimes();
 		expect(enumeration.hasMore()).andReturn(true).times(6);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test value")).once();
-		expect(enumeration.next()).andReturn(
-				new Binding("test context", createNiceMock(Context.class))).once();
+		expect(enumeration.next())
+				.andReturn(new Binding("test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("", "test")).once();
-		expect(enumeration.next()).andReturn(
-				new Binding("java:/test context", createNiceMock(Context.class))).once();
+		expect(enumeration.next())
+				.andReturn(new Binding("java:/test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("test null classname", null, null)).once();
 		expect(enumeration.next()).andThrow(new NamingException("test")).once();
 
@@ -286,8 +285,8 @@ public class TestPdfOtherReport {
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		final Counter counter = new Counter("services", null);
 		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter));
-		pdfOtherReport
-				.writeCounterSummaryPerClass(collector, counter, null, Period.TOUT.getRange());
+		pdfOtherReport.writeCounterSummaryPerClass(collector, counter, null,
+				Period.TOUT.getRange());
 		assertNotEmptyAndClear(output);
 	}
 

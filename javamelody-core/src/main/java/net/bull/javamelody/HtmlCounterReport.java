@@ -766,8 +766,8 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		if (requestId.startsWith(Counter.SQL_COUNTER_NAME)) {
 			final String htmlEncoded = htmlEncodeButNotSpace(requestName);
 			// highlight SQL keywords
-			return SQL_KEYWORDS_PATTERN.matcher(htmlEncoded).replaceAll(
-					"<span class='sqlKeyword'>$1</span>");
+			return SQL_KEYWORDS_PATTERN.matcher(htmlEncoded)
+					.replaceAll("<span class='sqlKeyword'>$1</span>");
 		}
 
 		return htmlEncodeButNotSpace(requestName);

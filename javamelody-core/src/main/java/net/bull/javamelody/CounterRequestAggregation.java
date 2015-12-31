@@ -72,10 +72,10 @@ class CounterRequestAggregation {
 		// warning-threshold-millis et severe-threshold-millis ne sont pas définis
 		final int globalMean = globalRequest.getMean();
 		final int globalStandardDeviation = globalRequest.getStandardDeviation();
-		this.warningThreshold = getThreshold(Parameter.WARNING_THRESHOLD_MILLIS, globalMean
-				+ globalStandardDeviation);
-		this.severeThreshold = getThreshold(Parameter.SEVERE_THRESHOLD_MILLIS, globalMean + 2
-				* globalStandardDeviation);
+		this.warningThreshold = getThreshold(Parameter.WARNING_THRESHOLD_MILLIS,
+				globalMean + globalStandardDeviation);
+		this.severeThreshold = getThreshold(Parameter.SEVERE_THRESHOLD_MILLIS,
+				globalMean + 2 * globalStandardDeviation);
 
 		// synthèse globale avec requêtes global, warning et severe
 		// on calcule les pourcentages de requêtes dont les temps (moyens!) dépassent les 2 seuils
@@ -100,8 +100,8 @@ class CounterRequestAggregation {
 		}
 		final int threshold = Integer.parseInt(param);
 		if (threshold <= 0) {
-			throw new IllegalStateException("Le paramètre " + parameter.getCode()
-					+ " doit être > 0");
+			throw new IllegalStateException(
+					"Le paramètre " + parameter.getCode() + " doit être > 0");
 		}
 		return threshold;
 	}

@@ -176,8 +176,8 @@ class SamplingProfiler {
 		for (int i = 0; i < packages.length; i++) {
 			packages[i] = packages[i].trim(); // NOPMD
 			if (packages[i].length() == 0) {
-				throw new IllegalArgumentException("A package can not be empty, item " + i + " in "
-						+ packageNames);
+				throw new IllegalArgumentException(
+						"A package can not be empty, item " + i + " in " + packageNames);
 			}
 			if (!packages[i].endsWith(".")) {
 				packages[i] = packages[i] + '.'; // NOPMD
@@ -209,7 +209,8 @@ class SamplingProfiler {
 	}
 
 	private void addSample(StackTraceElement element) {
-		final SampledMethod key = new SampledMethod(element.getClassName(), element.getMethodName());
+		final SampledMethod key = new SampledMethod(element.getClassName(),
+				element.getMethodName());
 		// or final String key = element.getClassName() + '.' + element.getMethodName();
 		SampledMethod method = this.data.get(key);
 		if (method == null) {

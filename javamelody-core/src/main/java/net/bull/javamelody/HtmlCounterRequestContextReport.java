@@ -153,8 +153,8 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			}
 		}
 		this.childHitsDisplayed = oneRootHasChild;
-		this.htmlThreadInformationsReport = new HtmlThreadInformationsReport(
-				threadInformationsList, stackTraceEnabled, writer);
+		this.htmlThreadInformationsReport = new HtmlThreadInformationsReport(threadInformationsList,
+				stackTraceEnabled, writer);
 		this.stackTraceEnabled = stackTraceEnabled;
 		this.maxContextsDisplayed = maxContextsDisplayed;
 	}
@@ -263,8 +263,8 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			throws IOException {
 		// attention, cela ne marcherait pas sur le serveur de collecte, à partir du seul threadId
 		// s'il y a plusieurs instances en cluster
-		final ThreadInformations threadInformations = threadInformationsByThreadId.get(rootContext
-				.getThreadId());
+		final ThreadInformations threadInformations = threadInformationsByThreadId
+				.get(rootContext.getThreadId());
 		write("<td valign='top'>");
 		final String espace = "&nbsp;";
 		if (threadInformations == null) {
@@ -313,7 +313,8 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	}
 
 	private void writeRequests(List<CounterRequestContext> contexts,
-			CounterRequestContextReportHelper counterRequestContextReportHelper) throws IOException {
+			CounterRequestContextReportHelper counterRequestContextReportHelper)
+					throws IOException {
 		int margin = 0;
 		for (final CounterRequestContext context : contexts) {
 			write("<div style='margin-left: ");
@@ -326,7 +327,8 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	}
 
 	private void writeRequest(CounterRequestContext context,
-			CounterRequestContextReportHelper counterRequestContextReportHelper) throws IOException {
+			CounterRequestContextReportHelper counterRequestContextReportHelper)
+					throws IOException {
 		final Counter parentCounter = context.getParentCounter();
 		if (parentCounter.getIconName() != null) {
 			write("<img src='?resource=");
@@ -372,8 +374,8 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				write("' width='16' height='16' />&nbsp;");
 			}
 
-			final HtmlCounterReport counterReport = counterReportsByCounterName.get(parentCounter
-					.getName());
+			final HtmlCounterReport counterReport = counterReportsByCounterName
+					.get(parentCounter.getName());
 			write("<span class='");
 			write(counterReport.getSlaHtmlClass(duration));
 			write("'>");

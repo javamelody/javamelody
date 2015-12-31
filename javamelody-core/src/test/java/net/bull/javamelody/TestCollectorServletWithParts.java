@@ -105,12 +105,12 @@ public class TestCollectorServletWithParts {
 				expect(webXmlStream2).andReturn(webXmlStream).anyTimes();
 				final String javamelodyDir = "/META-INF/maven/net.bull.javamelody/";
 				final String webapp = javamelodyDir + "javamelody-test-webapp/";
-				expect(context.getResourcePaths("/META-INF/maven/")).andReturn(
-						Collections.singleton(javamelodyDir)).anyTimes();
-				expect(context.getResourcePaths(javamelodyDir)).andReturn(
-						Collections.singleton(webapp)).anyTimes();
-				expect(context.getResourceAsStream(webapp + "pom.xml")).andReturn(
-						getClass().getResourceAsStream("/pom.xml")).anyTimes();
+				expect(context.getResourcePaths("/META-INF/maven/"))
+						.andReturn(Collections.singleton(javamelodyDir)).anyTimes();
+				expect(context.getResourcePaths(javamelodyDir))
+						.andReturn(Collections.singleton(webapp)).anyTimes();
+				expect(context.getResourceAsStream(webapp + "pom.xml"))
+						.andReturn(getClass().getResourceAsStream("/pom.xml")).anyTimes();
 				replay(config);
 				replay(context);
 				collectorServlet.init(config);
@@ -233,7 +233,8 @@ public class TestCollectorServletWithParts {
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void testDoCompressedSerializableForSystemActions() throws IOException, ServletException {
+	public void testDoCompressedSerializableForSystemActions()
+			throws IOException, ServletException {
 		final Map<String, String> parameters = new LinkedHashMap<String, String>();
 		parameters.put(FORMAT_PARAMETER, "xml");
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
@@ -300,16 +301,18 @@ public class TestCollectorServletWithParts {
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
 		if (MBEANS_PART.equals(parameters.get(PART_PARAMETER))) {
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Collections.singleton("application/gzip"))).anyTimes();
+			expect(request.getHeaders("Accept-Encoding"))
+					.andReturn(Collections.enumeration(Collections.singleton("application/gzip")))
+					.anyTimes();
 		} else {
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Collections.singleton("text/html"))).anyTimes();
+			expect(request.getHeaders("Accept-Encoding"))
+					.andReturn(Collections.enumeration(Collections.singleton("text/html")))
+					.anyTimes();
 		}
 		Parameters.removeCollectorApplication(TEST);
 		expect(request.getParameter("appName")).andReturn(TEST).anyTimes();
-		expect(request.getParameter("appUrls")).andReturn(
-				"http://localhost/test,http://localhost:8080/test2").anyTimes();
+		expect(request.getParameter("appUrls"))
+				.andReturn("http://localhost/test,http://localhost:8080/test2").anyTimes();
 		// un cookie d'une application (qui existe)
 		final Cookie[] cookies = { new Cookie("javamelody.application", TEST) };
 		expect(request.getCookies()).andReturn(cookies).anyTimes();

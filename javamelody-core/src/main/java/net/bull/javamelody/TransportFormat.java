@@ -78,8 +78,8 @@ enum TransportFormat {
 			final XStream xstream = createXStream(false);
 			// on wrappe avec un CompactWriter pour gagner 25% en taille de flux (retours chariots)
 			// et donc un peu en performances
-			final CompactWriter writer = new CompactWriter(new OutputStreamWriter(bufferedOutput,
-					XML_CHARSET_NAME));
+			final CompactWriter writer = new CompactWriter(
+					new OutputStreamWriter(bufferedOutput, XML_CHARSET_NAME));
 			try {
 				xstream.marshal(serializable, writer);
 			} finally {
@@ -136,8 +136,7 @@ enum TransportFormat {
 	}
 
 	private static class MyObjectInputStream extends ObjectInputStream {
-		private static final String PACKAGE_NAME = TransportFormat.class.getName().substring(
-				0,
+		private static final String PACKAGE_NAME = TransportFormat.class.getName().substring(0,
 				TransportFormat.class.getName().length()
 						- TransportFormat.class.getSimpleName().length() - 1);
 
@@ -148,8 +147,8 @@ enum TransportFormat {
 		// during deserialization, protect ourselves from malicious payload
 		// http://www.ibm.com/developerworks/library/se-lookahead/index.html
 		@Override
-		protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-				ClassNotFoundException {
+		protected Class<?> resolveClass(ObjectStreamClass desc)
+				throws IOException, ClassNotFoundException {
 			final String name = desc.getName();
 			int i = 0;
 			if (name.indexOf("[[") == 0) {
@@ -262,7 +261,8 @@ enum TransportFormat {
 		}
 	}
 
-	Serializable readSerializableFrom(InputStream input) throws IOException, ClassNotFoundException {
+	Serializable readSerializableFrom(InputStream input)
+			throws IOException, ClassNotFoundException {
 		final InputStream bufferedInput = new BufferedInputStream(input);
 		Object result;
 		switch (this) {

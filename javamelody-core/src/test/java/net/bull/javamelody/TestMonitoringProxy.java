@@ -69,8 +69,8 @@ public class TestMonitoringProxy {
 			assertSame(requestsCount, 3, servicesCounter.getRequestsCount());
 		}
 
-		final SpringTestFacade springTestFacade2 = MonitoringProxy.createProxy(
-				new SpringTestFacadeImpl(), "my facade name");
+		final SpringTestFacade springTestFacade2 = MonitoringProxy
+				.createProxy(new SpringTestFacadeImpl(), "my facade name");
 		assertNotNull("now()", springTestFacade2.now());
 		assertSame(requestsCount, 4, servicesCounter.getRequestsCount());
 	}

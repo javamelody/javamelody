@@ -96,13 +96,13 @@ public class JpaPersistence implements PersistenceProvider {
 		final ClassLoader tccl = tccl();
 
 		final ClassLoader hack = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() { // pour findbugs
-					/** {@inheritDoc} */
-					@Override
-					public ClassLoader run() {
-						return new JpaOverridePersistenceXmlClassLoader(tccl, persistenceProvider
-								.getClass().getName());
-					}
-				});
+			/** {@inheritDoc} */
+			@Override
+			public ClassLoader run() {
+				return new JpaOverridePersistenceXmlClassLoader(tccl,
+						persistenceProvider.getClass().getName());
+			}
+		});
 
 		Thread.currentThread().setContextClassLoader(hack);
 		try {
@@ -138,8 +138,8 @@ public class JpaPersistence implements PersistenceProvider {
 
 	private PersistenceUnitInfo createPersistentUnitInfoProxy(final PersistenceUnitInfo info,
 			final PersistenceProvider persistenceProvider) {
-		final InvocationHandler invocationHandler = new ProviderAwareHandler(persistenceProvider
-				.getClass().getName(), info);
+		final InvocationHandler invocationHandler = new ProviderAwareHandler(
+				persistenceProvider.getClass().getName(), info);
 		return JdbcWrapper.createProxy(info, invocationHandler);
 	}
 
@@ -185,8 +185,8 @@ public class JpaPersistence implements PersistenceProvider {
 			try {
 				return newPersistence(name);
 			} catch (final Exception e) {
-				throw new IllegalStateException(new ClassNotFoundException("Can't instantiate '"
-						+ name + "'", e));
+				throw new IllegalStateException(
+						new ClassNotFoundException("Can't instantiate '" + name + "'", e));
 			}
 		}
 		return delegate;
@@ -213,7 +213,8 @@ public class JpaPersistence implements PersistenceProvider {
 				}
 			}
 			if (delegate == null) { // NOPMD
-				throw new IllegalStateException(new ClassNotFoundException("Can't find a delegate"));
+				throw new IllegalStateException(
+						new ClassNotFoundException("Can't find a delegate"));
 			}
 		}
 	}

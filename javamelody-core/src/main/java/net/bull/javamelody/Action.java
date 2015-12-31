@@ -49,54 +49,67 @@ enum Action { // NOPMD
 	 * Test d'envoi du rapport pdf par mail.
 	 */
 	MAIL_TEST(""),
+
 	/**
 	 * Réinitialisation d'un compteur non périodique.
 	 */
 	CLEAR_COUNTER("http"),
+
 	/**
 	 * Garbage Collect.
 	 */
 	GC("systeminfo"),
+
 	/**
 	 * Invalidations des sessions http.
 	 */
 	INVALIDATE_SESSIONS("systeminfo"),
+
 	/**
 	 * Invalidation d'une session http.
 	 */
 	INVALIDATE_SESSION(""),
+
 	/**
 	 * Invalidation de la session http courante.
 	 */
 	LOGOUT(""),
+
 	/**
 	 * Heap dump.
 	 */
 	HEAP_DUMP("systeminfo"),
+
 	/**
 	 * Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()})
 	 */
 	CLEAR_CACHES("caches"),
+
 	/**
 	 * Purge le contenu  d'un cache
 	 */
 	CLEAR_CACHE("caches"),
+
 	/**
 	 * Tue un thread java.
 	 */
 	KILL_THREAD("threads"),
+
 	/**
 	 * Met un job quartz en pause.
 	 */
 	PAUSE_JOB("jobs"),
+
 	/**
 	 * Enlève la pause d'un job quartz.
 	 */
 	RESUME_JOB("jobs"),
+
 	/**
 	 * Réinitialisation des hotspots.
 	 */
 	CLEAR_HOTSPOTS(""),
+
 	/**
 	 * Purge les fichiers .rrd et .ser.gz obsolètes.
 	 */
@@ -171,9 +184,9 @@ enum Action { // NOPMD
 	* @since 1.49
 	*/
 	// CHECKSTYLE:OFF
-	String execute(Collector collector, CollectorServer collectorServer,
-			HttpSession currentSession, String counterName, // NOPMD
-			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
+	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
+			String counterName, String sessionId, String threadId, String jobId, String cacheId)
+					throws IOException {
 		// CHECKSTYLE:ON
 		String messageForReport;
 		switch (this) {
@@ -190,8 +203,8 @@ enum Action { // NOPMD
 			if (GC_ENABLED) {
 				// garbage collector
 				final long kbFreed = gc();
-				final long stillUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime()
-						.freeMemory()) / 1024;
+				final long stillUsed = (Runtime.getRuntime().totalMemory()
+						- Runtime.getRuntime().freeMemory()) / 1024;
 				messageForReport = I18N.getFormattedString("ramasse_miette_execute", kbFreed,
 						stillUsed);
 			} else {
@@ -320,8 +333,8 @@ enum Action { // NOPMD
 		final boolean gcBeforeHeapDump = true;
 		try {
 			final MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-			final ObjectInstance instance = platformMBeanServer.getObjectInstance(new ObjectName(
-					"com.sun.management:type=HotSpotDiagnostic"));
+			final ObjectInstance instance = platformMBeanServer
+					.getObjectInstance(new ObjectName("com.sun.management:type=HotSpotDiagnostic"));
 			final Object mxBean = platformMBeanServer.instantiate(instance.getClassName());
 			final Object vmOption = ((com.sun.management.HotSpotDiagnosticMXBean) mxBean)
 					.getVMOption("HeapDumpPath");
@@ -467,7 +480,8 @@ enum Action { // NOPMD
 		try {
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail).hashCode() == myJobId) {
+					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail)
+							.hashCode() == myJobId) {
 						QuartzAdapter.getSingleton().pauseJob(jobDetail, scheduler);
 						return true;
 					}
@@ -514,7 +528,8 @@ enum Action { // NOPMD
 		try {
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
 				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail).hashCode() == myJobId) {
+					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail)
+							.hashCode() == myJobId) {
 						QuartzAdapter.getSingleton().resumeJob(jobDetail, scheduler);
 						return true;
 					}

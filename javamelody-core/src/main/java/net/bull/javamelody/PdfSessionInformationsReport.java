@@ -51,7 +51,8 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
 	private final Map<String, Image> imagesByCountry = new HashMap<String, Image>();
 
-	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations, Document document) {
+	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations,
+			Document document) {
 		super(document);
 		assert sessionsInformations != null;
 		this.sessionsInformations = sessionsInformations;

@@ -156,8 +156,8 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 
 		if (request.getQueryString() != null) {
-			final Map<String, String[]> queryParams = HttpUtils.parseQueryString(request
-					.getQueryString());
+			final Map<String, String[]> queryParams = HttpUtils
+					.parseQueryString(request.getQueryString());
 			parameterMap.putAll(queryParams);
 		}
 
@@ -400,8 +400,8 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 	private boolean scanForChildTag(String tagName, String xml) throws XMLStreamException {
 		final XMLInputFactory factory = XMLInputFactory.newInstance();
-		final XMLStreamReader reader = factory.createXMLStreamReader(new ByteArrayInputStream(xml
-				.getBytes()));
+		final XMLStreamReader reader = factory
+				.createXMLStreamReader(new ByteArrayInputStream(xml.getBytes()));
 
 		//advance to first tag (reader starts at "begin document")
 		reader.next();

@@ -133,7 +133,8 @@ class CollectorController { // NOPMD
 							collector);
 					final Range range = serializableController.getRangeForSerializable(req);
 					final List<Object> serializable = new ArrayList<Object>();
-					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+							application);
 					serializable.addAll((List<?>) serializableController.createDefaultSerializable(
 							javaInformationsList, range, messageForReport));
 					monitoringController.doCompressedSerializable(req, resp,
@@ -167,7 +168,8 @@ class CollectorController { // NOPMD
 		} else if (partParameter == null || "pdf".equalsIgnoreCase(formatParameter)) {
 			// la récupération de javaInformationsList doit être après forwardActionAndUpdateData
 			// pour être à jour
-			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+					application);
 			monitoringController.doReport(req, resp, javaInformationsList);
 		} else {
 			doCompressedPart(req, resp, application, monitoringController, partParameter);
@@ -176,7 +178,7 @@ class CollectorController { // NOPMD
 
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			String application, MonitoringController monitoringController, String partParameter)
-			throws IOException, ServletException {
+					throws IOException, ServletException {
 		if (MonitoringController.isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
@@ -196,8 +198,8 @@ class CollectorController { // NOPMD
 	}
 
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController, String partParameter) throws IOException,
-			ServletException {
+			MonitoringController monitoringController, String partParameter)
+					throws IOException, ServletException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, WEB_XML_PART);
@@ -208,7 +210,8 @@ class CollectorController { // NOPMD
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
 					"connexions_intro", "db.png");
 		} else {
-			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+					application);
 			monitoringController.doReport(req, resp, javaInformationsList);
 		}
 	}
@@ -225,10 +228,10 @@ class CollectorController { // NOPMD
 				resp.getOutputStream().write('|');
 				resp.getOutputStream().write('|');
 			}
-			final URL proxyUrl = new URL(url.toString()
-					.replace(TransportFormat.SERIALIZED.getCode(), "")
-					.replace(TransportFormat.XML.getCode(), "")
-					+ '&' + JMX_VALUE + '=' + jmxValueParameter);
+			final URL proxyUrl = new URL(
+					url.toString().replace(TransportFormat.SERIALIZED.getCode(), "")
+							.replace(TransportFormat.XML.getCode(), "") + '&' + JMX_VALUE + '='
+							+ jmxValueParameter);
 			new LabradorRetriever(proxyUrl).copyTo(req, resp);
 		}
 		resp.getOutputStream().close();
@@ -273,10 +276,10 @@ class CollectorController { // NOPMD
 					+ ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL proxyUrl = new URL(url.toString()
-					.replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
-					.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT)
-					+ '&' + PART_PARAMETER + '=' + partParameter);
+			final URL proxyUrl = new URL(
+					url.toString().replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
+							.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT) + '&'
+							+ PART_PARAMETER + '=' + partParameter);
 			new LabradorRetriever(proxyUrl).copyTo(req, resp);
 		}
 		htmlReport.writeHtmlFooter();
@@ -332,12 +335,14 @@ class CollectorController { // NOPMD
 			}
 			applications.putAll(collectorServer.getLastCollectExceptionsByApplication());
 			return new HashMap<String, Throwable>(applications);
-		} else if (JROBINS_PART.equalsIgnoreCase(part) || OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
+		} else if (JROBINS_PART.equalsIgnoreCase(part)
+				|| OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
 			// pour UI Swing
 			return serializableController.createSerializable(httpRequest, null, null);
 		}
 
-		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+				application);
 		return serializableController.createDefaultSerializable(javaInformationsList, range, null);
 	}
 
@@ -347,7 +352,8 @@ class CollectorController { // NOPMD
 		// CHECKSTYLE:ON
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (JVM_PART.equalsIgnoreCase(part)) {
-			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+					application);
 			return new ArrayList<JavaInformations>(javaInformationsList);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -386,8 +392,8 @@ class CollectorController { // NOPMD
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
-					.getParameter(REQUEST_PARAMETER));
+			final int requestIndex = DatabaseInformations
+					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
 			return collectorServer.collectDatabaseInformations(application, requestIndex);
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
 			// par sécurité
@@ -402,7 +408,8 @@ class CollectorController { // NOPMD
 			PrintWriter writer, String application) {
 		final Range range = httpCookieManager.getRange(req, resp);
 		final Collector collector = getCollectorByApplication(application);
-		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+				application);
 		return new HtmlReport(collector, collectorServer, javaInformationsList, range, writer);
 	}
 
@@ -414,7 +421,8 @@ class CollectorController { // NOPMD
 			String message) throws IOException {
 		noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
-		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(application);
+		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+				application);
 		if (application == null || collector == null || javaInformationsList == null) {
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {

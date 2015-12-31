@@ -62,8 +62,10 @@ public class TestJspWrapper {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
-		final RequestDispatcher requestDispatcherWithError = createNiceMock(RequestDispatcher.class);
-		final RequestDispatcher requestDispatcherWithException = createNiceMock(RequestDispatcher.class);
+		final RequestDispatcher requestDispatcherWithError = createNiceMock(
+				RequestDispatcher.class);
+		final RequestDispatcher requestDispatcherWithException = createNiceMock(
+				RequestDispatcher.class);
 		final String url1 = "test.jsp";
 		final String url2 = "test.jsp?param=test2";
 		final String url3 = "test.jsp?param=test3";

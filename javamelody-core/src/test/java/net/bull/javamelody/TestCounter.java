@@ -110,8 +110,8 @@ public class TestCounter {
 		errorCounter.setMaxRequestsCount(200);
 		errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0, null);
 		final List<CounterRequest> before = errorCounter.getOrderedRequests();
-		errorCounter
-				.addRequestForSystemError(request.getName(), request.getMean(), 0, "stacktrace");
+		errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0,
+				"stacktrace");
 		final List<CounterRequest> after = errorCounter.getOrderedRequests();
 		after.get(0).removeHits(request);
 		// on teste le contenu des CounterRequest par le contenu de toString
@@ -196,8 +196,8 @@ public class TestCounter {
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
 		counter.bindContext("context", "context", null, -1);
-		final CounterRequest counterRequestWithoutHits = counter.getCounterRequest(counter
-				.getOrderedRootCurrentContexts().get(0));
+		final CounterRequest counterRequestWithoutHits = counter
+				.getCounterRequest(counter.getOrderedRootCurrentContexts().get(0));
 		counter.addHits(counterRequestWithoutHits);
 		final List<CounterRequest> before = counter.getOrderedRequests();
 		// ajout d'une instance de compteur avec requêtes qui ont des hits ou pas
@@ -281,8 +281,8 @@ public class TestCounter {
 		counter.unbindContext();
 		final String requestName = "get counter request";
 		counter.bindContext(requestName, "my context", null, -1);
-		final CounterRequest counterRequest = counter.getCounterRequest(counter
-				.getOrderedRootCurrentContexts().get(0));
+		final CounterRequest counterRequest = counter
+				.getCounterRequest(counter.getOrderedRootCurrentContexts().get(0));
 		assertEquals("request name", requestName, counterRequest.getName());
 	}
 
@@ -349,12 +349,12 @@ public class TestCounter {
 
 	private static Thread bindRootContext(final Counter myCounter) { // NOPMD
 		final Thread thread = new Thread(new Runnable() { // NOPMD
-					@Override
-					public void run() {
-						// bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
-						myCounter.bindContext("second root context", "my context", "me", -1);
-					}
-				});
+			@Override
+			public void run() {
+				// bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
+				myCounter.bindContext("second root context", "my context", "me", -1);
+			}
+		});
 		thread.setDaemon(true);
 		thread.start();
 		return thread;
@@ -464,8 +464,8 @@ public class TestCounter {
 		counter.writeToFile();
 		// readFromFile ajoute les requêtes lues aux requêtes actuelles
 		counter.readFromFile();
-		assertEquals("request hits", counterRequest.getHits() * 2, counter.getRequests().get(0)
-				.getHits());
+		assertEquals("request hits", counterRequest.getHits() * 2,
+				counter.getRequests().get(0).getHits());
 		counter.clear();
 		counter.readFromFile();
 		assertEquals("request", counterRequest.toString(), counter.getRequests().get(0).toString());

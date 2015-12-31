@@ -132,7 +132,7 @@ class JndiBinding implements Serializable {
 				|| "javax.naming.Context".equals(className)
 				// pour jetty :
 				|| object instanceof Reference
-				&& "javax.naming.Context".equals(((Reference) object).getClassName())) {
+						&& "javax.naming.Context".equals(((Reference) object).getClassName())) {
 			if (path.length() > 0) {
 				contextPath = path + '/' + name;
 			} else {

@@ -65,23 +65,26 @@ public class TestHtmlSessionInformationsReport {
 		assertNotEmptyAndClear(writer);
 
 		// aucune session sérialisable
-		new HtmlSessionInformationsReport(Collections.singletonList(new SessionInformations(
-				new SessionTestImpl(false), false)), writer).toHtml();
+		new HtmlSessionInformationsReport(Collections
+				.singletonList(new SessionInformations(new SessionTestImpl(false), false)), writer)
+						.toHtml();
 		assertNotEmptyAndClear(writer);
 
 		// pays non existant
 		final SessionTestImpl sessionPays = new SessionTestImpl(true);
 		sessionPays.setCountry("nimporte.quoi");
-		new HtmlSessionInformationsReport(Collections.singletonList(new SessionInformations(
-				sessionPays, false)), writer).toHtml();
+		new HtmlSessionInformationsReport(
+				Collections.singletonList(new SessionInformations(sessionPays, false)), writer)
+						.toHtml();
 		assertNotEmptyAndClear(writer);
 
 		// pays null
 		sessionPays.setCountry(null);
 		assertNull("countryDisplay null",
 				new SessionInformations(sessionPays, false).getCountryDisplay());
-		new HtmlSessionInformationsReport(Collections.singletonList(new SessionInformations(
-				sessionPays, false)), writer).toHtml();
+		new HtmlSessionInformationsReport(
+				Collections.singletonList(new SessionInformations(sessionPays, false)), writer)
+						.toHtml();
 		assertNotEmptyAndClear(writer);
 
 		new HtmlSessionInformationsReport(null, writer).writeSessionDetails("id session",

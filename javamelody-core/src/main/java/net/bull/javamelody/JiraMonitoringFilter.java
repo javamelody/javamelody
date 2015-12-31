@@ -36,14 +36,14 @@ import javax.servlet.http.HttpSession;
  * @author Emeric Vernat
  */
 public class JiraMonitoringFilter extends PluginMonitoringFilter {
-	private static final boolean PLUGIN_AUTHENTICATION_DISABLED = Boolean.parseBoolean(System
-			.getProperty("javamelody.plugin-authentication-disabled"));
+	private static final boolean PLUGIN_AUTHENTICATION_DISABLED = Boolean
+			.parseBoolean(System.getProperty("javamelody.plugin-authentication-disabled"));
 	// valeur de com.atlassian.jira.security.Permissions.SYSTEM_ADMIN
 	private static final int SYSTEM_ADMIN = 44;
 	// valeur de DefaultAuthenticator.LOGGED_IN_KEY
 	private static final String LOGGED_IN_KEY = "seraph_defaultauthenticator_user";
 	private static final List<String> JIRA_USER_CLASSES = Arrays.asList(
-	// since JIRA 6, but exists in JIRA 5.2:
+			// since JIRA 6, but exists in JIRA 5.2:
 			"com.atlassian.jira.user.ApplicationUser",
 			// since JIRA 5:
 			"com.atlassian.crowd.embedded.api.User",
@@ -70,7 +70,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		} else if (bamboo) {
 			LOG.debug("JavaMelody is monitoring Bamboo");
 		} else {
-			LOG.debug("JavaMelody is monitoring unknown, access to monitoring reports is not secured by JavaMelody");
+			LOG.debug(
+					"JavaMelody is monitoring unknown, access to monitoring reports is not secured by JavaMelody");
 		}
 		if (PLUGIN_AUTHENTICATION_DISABLED) {
 			LOG.debug("Authentication for monitoring reports has been disabled");
@@ -126,9 +127,9 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 	private boolean hasNotPermission(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws IOException {
 		return !PLUGIN_AUTHENTICATION_DISABLED
-				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse) || confluence
-						&& !checkConfluenceAdminPermission(httpRequest, httpResponse) || bamboo
-						&& !checkBambooAdminPermission(httpRequest, httpResponse));
+				&& (jira && !checkJiraAdminPermission(httpRequest, httpResponse)
+						|| confluence && !checkConfluenceAdminPermission(httpRequest, httpResponse)
+						|| bamboo && !checkBambooAdminPermission(httpRequest, httpResponse));
 	}
 
 	private boolean checkJiraAdminPermission(HttpServletRequest httpRequest,
@@ -138,8 +139,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		if (user == null) {
 			// si non authentifié, on redirige vers la page de login en indiquant la page
 			// d'origine (sans le contexte) à afficher après le login
-			final String destination = getMonitoringUrl(httpRequest).substring(
-					httpRequest.getContextPath().length());
+			final String destination = getMonitoringUrl(httpRequest)
+					.substring(httpRequest.getContextPath().length());
 			httpResponse.sendRedirect("login.jsp?os_destination=" + destination);
 			return false;
 		}
@@ -158,8 +159,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		if (user == null) {
 			// si non authentifié, on redirige vers la page de login en indiquant la page
 			// d'origine (sans le contexte) à afficher après le login
-			final String destination = getMonitoringUrl(httpRequest).substring(
-					httpRequest.getContextPath().length());
+			final String destination = getMonitoringUrl(httpRequest)
+					.substring(httpRequest.getContextPath().length());
 			httpResponse.sendRedirect("login.action?os_destination=" + destination);
 			return false;
 		}
@@ -178,8 +179,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		if (user == null) {
 			// si non authentifié, on redirige vers la page de login en indiquant la page
 			// d'origine (sans le contexte) à afficher après le login
-			final String destination = getMonitoringUrl(httpRequest).substring(
-					httpRequest.getContextPath().length());
+			final String destination = getMonitoringUrl(httpRequest)
+					.substring(httpRequest.getContextPath().length());
 			httpResponse.sendRedirect("userlogin!default.action?os_destination=" + destination);
 			return false;
 		}
@@ -199,8 +200,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			// trop compliquée et trop lourde à télécharger pour maven
 			// Note : si getPermissionManager().hasPermission est supprimée,
 			// il faudra utiliser getGlobalPermissionManager().hasPermission (Since v6.2.5)
-			final Object permissionManager = componentAccessorClass.getMethod(
-					"getPermissionManager").invoke(null);
+			final Object permissionManager = componentAccessorClass
+					.getMethod("getPermissionManager").invoke(null);
 			Exception firstException = null;
 			// selon la version de JIRA, on essaye les différentes classes possibles du user
 			for (final String className : JIRA_USER_CLASSES) {
@@ -234,8 +235,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 			final Class<?> userClass = Class.forName("com.atlassian.user.User");
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
-			final Object permissionManager = containerManagerClass.getMethod("getComponent",
-					String.class).invoke(null, "permissionManager");
+			final Object permissionManager = containerManagerClass
+					.getMethod("getComponent", String.class).invoke(null, "permissionManager");
 			final Boolean result = (Boolean) permissionManager.getClass()
 					.getMethod("isConfluenceAdministrator", userClass)
 					.invoke(permissionManager, user);
@@ -254,8 +255,9 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 					.forName("com.atlassian.spring.container.ContainerManager");
 			// on travaille par réflexion car la compilation normale introduirait une dépendance
 			// trop compliquée et trop lourde à télécharger pour maven
-			final Object bambooPermissionManager = containerManagerClass.getMethod("getComponent",
-					String.class).invoke(null, "bambooPermissionManager");
+			final Object bambooPermissionManager = containerManagerClass
+					.getMethod("getComponent", String.class)
+					.invoke(null, "bambooPermissionManager");
 
 			Boolean result;
 			try {
@@ -269,8 +271,7 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 						.forName("com.atlassian.bamboo.security.GlobalApplicationSecureObject");
 				final Object globalApplicationSecureObject = globalApplicationSecureObjectClass
 						.getField("INSTANCE").get(null);
-				result = (Boolean) bambooPermissionManager
-						.getClass()
+				result = (Boolean) bambooPermissionManager.getClass()
 						.getMethod("hasPermission", String.class, String.class, Object.class)
 						.invoke(bambooPermissionManager, user.toString(), "ADMIN",
 								globalApplicationSecureObject);
@@ -296,17 +297,16 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 		}
 		Object result = session.getAttribute(LOGGED_IN_KEY);
 		if (confluence) {
-			if (result != null
-					&& "com.atlassian.confluence.user.SessionSafePrincipal".equals(result
-							.getClass().getName())) {
+			if (result != null && "com.atlassian.confluence.user.SessionSafePrincipal"
+					.equals(result.getClass().getName())) {
 				// since confluence 4.1.4 (or 4.1.?)
 				final String userName = result.toString();
 				// note: httpRequest.getRemoteUser() null in general
 				try {
 					final Class<?> containerManagerClass = Class
 							.forName("com.atlassian.spring.container.ContainerManager");
-					final Object userAccessor = containerManagerClass.getMethod("getComponent",
-							String.class).invoke(null, "userAccessor");
+					final Object userAccessor = containerManagerClass
+							.getMethod("getComponent", String.class).invoke(null, "userAccessor");
 					result = userAccessor.getClass().getMethod("getUser", String.class)
 							.invoke(userAccessor, userName);
 				} catch (final Exception e) {
@@ -318,8 +318,8 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 				try {
 					final Class<?> containerManagerClass = Class
 							.forName("com.atlassian.spring.container.ContainerManager");
-					final Object userAccessor = containerManagerClass.getMethod("getComponent",
-							String.class).invoke(null, "userAccessor");
+					final Object userAccessor = containerManagerClass
+							.getMethod("getComponent", String.class).invoke(null, "userAccessor");
 					// getUser deprecated, use getUserByName as said in:
 					// https://docs.atlassian.com/atlassian-confluence/5.3.1/com/atlassian/confluence/user/UserAccessor.html
 					try {

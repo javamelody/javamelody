@@ -63,10 +63,10 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	private static final Counter JSF_COUNTER = new Counter(Counter.JSF_COUNTER_NAME, "jsp.png",
 			JdbcWrapper.SINGLETON.getSqlCounter());
 
-	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SERVICES_COUNTER
-			.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean COUNTER_HIDDEN = Parameters
+			.isCounterHidden(SERVICES_COUNTER.getName());
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	@SuppressWarnings("all")
 	private final Object facade;
 	private final String name;

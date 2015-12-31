@@ -116,8 +116,8 @@ public class TestHtmlReport {
 	 * @throws IOException e */
 	@Test
 	public void testDoubleJavaInformations() throws IOException {
-		final List<JavaInformations> myJavaInformationsList = Arrays.asList(new JavaInformations(
-				null, true), new JavaInformations(null, true));
+		final List<JavaInformations> myJavaInformationsList = Arrays
+				.asList(new JavaInformations(null, true), new JavaInformations(null, true));
 		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml(null, null);
@@ -280,16 +280,16 @@ public class TestHtmlReport {
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
 				SESSIONS_PART);
 		assertNotEmptyAndClear(writer);
-		htmlReport
-				.writeSessions(Collections.<SessionInformations> emptyList(), null, SESSIONS_PART);
+		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), null,
+				SESSIONS_PART);
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
-				.getResourceAsStream("/tasklist.txt"), true, false));
+		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(
+				getClass().getResourceAsStream("/tasklist.txt"), true, false));
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeProcesses(ProcessInformations.buildProcessInformations(getClass()
-				.getResourceAsStream("/ps.txt"), false, false));
+		htmlReport.writeProcesses(ProcessInformations
+				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false));
 		assertNotEmptyAndClear(writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
 		assertNotEmptyAndClear(writer);
@@ -450,8 +450,8 @@ public class TestHtmlReport {
 				scheduler.scheduleJob(job3, trigger3);
 
 				// other trigger that will never fire
-				final NthIncludedDayTrigger trigger4 = new NthIncludedDayTrigger("nth trigger"
-						+ random.nextInt(), null);
+				final NthIncludedDayTrigger trigger4 = new NthIncludedDayTrigger(
+						"nth trigger" + random.nextInt(), null);
 				trigger4.setN(1);
 				trigger4.setIntervalType(NthIncludedDayTrigger.INTERVAL_TYPE_YEARLY);
 				trigger4.setJobName(job3.getName());
@@ -547,11 +547,9 @@ public class TestHtmlReport {
 	@Test
 	public void testHtmlCounterRequestContext() throws IOException {
 		// cas où counterReportsByCounterName est null
-		assertNotNull(
-				"HtmlCounterRequestContextReport",
-				new HtmlCounterRequestContextReport(
-						Collections.<CounterRequestContext> emptyList(), null, Collections
-								.<ThreadInformations> emptyList(), true, 500, writer));
+		assertNotNull("HtmlCounterRequestContextReport",
+				new HtmlCounterRequestContextReport(Collections.<CounterRequestContext> emptyList(),
+						null, Collections.<ThreadInformations> emptyList(), true, 500, writer));
 
 		// aucune requête en cours
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
@@ -562,11 +560,11 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		// cas où nb requêtes en cours > maxContextDisplayed
-		final List<CounterRequestContext> counterRequestContexts = Collections
-				.singletonList(new CounterRequestContext(sqlCounter, null, "Test", "Test", null, -1));
+		final List<CounterRequestContext> counterRequestContexts = Collections.singletonList(
+				new CounterRequestContext(sqlCounter, null, "Test", "Test", null, -1));
 		final HtmlCounterRequestContextReport report2 = new HtmlCounterRequestContextReport(
-				counterRequestContexts, null, Collections.<ThreadInformations> emptyList(), true,
-				0, writer);
+				counterRequestContexts, null, Collections.<ThreadInformations> emptyList(), true, 0,
+				writer);
 		report2.toHtml();
 		assertNotEmptyAndClear(writer);
 

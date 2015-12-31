@@ -46,6 +46,7 @@ class MemoryInformations implements Serializable {
 	private static final String NEXT = ",\n";
 	private static final String MO = " Mo";
 	private static final Set<ObjectName> NIO_BUFFER_POOLS = new HashSet<ObjectName>();
+
 	static {
 		try {
 			NIO_BUFFER_POOLS.addAll(new MBeans().getNioBufferPools());
@@ -152,28 +153,27 @@ class MemoryInformations implements Serializable {
 		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 		String osInfo = "";
 		if (isSunOsMBean(operatingSystem)) {
-			osInfo = "Process cpu time = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getProcessCpuTime") / 1000000)
+			osInfo = "Process cpu time = " + integerFormat.format(
+					getLongFromOperatingSystem(operatingSystem, "getProcessCpuTime") / 1000000)
 					+ " ms,\nCommitted virtual memory = "
 					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
 							"getCommittedVirtualMemorySize") / 1024 / 1024)
-					+ MO
-					+ ",\nFree physical memory = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getFreePhysicalMemorySize") / 1024 / 1024)
-					+ MO
-					+ ",\nTotal physical memory = "
+					+ MO + ",\nFree physical memory = "
+					+ integerFormat.format(
+							getLongFromOperatingSystem(operatingSystem, "getFreePhysicalMemorySize")
+									/ 1024 / 1024)
+					+ MO + ",\nTotal physical memory = "
 					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
 							"getTotalPhysicalMemorySize") / 1024 / 1024)
-					+ MO
-					+ ",\nFree swap space = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getFreeSwapSpaceSize") / 1024 / 1024)
-					+ MO
-					+ ",\nTotal swap space = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getTotalSwapSpaceSize") / 1024 / 1024) + MO;
+					+ MO + ",\nFree swap space = "
+					+ integerFormat.format(
+							getLongFromOperatingSystem(operatingSystem, "getFreeSwapSpaceSize")
+									/ 1024 / 1024)
+					+ MO + ",\nTotal swap space = "
+					+ integerFormat.format(
+							getLongFromOperatingSystem(operatingSystem, "getTotalSwapSpaceSize")
+									/ 1024 / 1024)
+					+ MO;
 		}
 		if (usedBufferedMemory < 0) {
 			return nonHeapMemory + NEXT + classLoading + NEXT + gc + NEXT + osInfo;
@@ -194,7 +194,8 @@ class MemoryInformations implements Serializable {
 				|| "sun.management.OperatingSystemImpl".equals(className);
 	}
 
-	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
+	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem,
+			String methodName) {
 		return (Long) getFromOperatingSystem(operatingSystem, methodName);
 	}
 

@@ -47,8 +47,8 @@ public class MonitoringInitialContextFactory implements InitialContextFactory {
 	}
 
 	static void stop() {
-		if (MonitoringInitialContextFactory.class.getName().equals(
-				System.getProperty(Context.INITIAL_CONTEXT_FACTORY))) {
+		if (MonitoringInitialContextFactory.class.getName()
+				.equals(System.getProperty(Context.INITIAL_CONTEXT_FACTORY))) {
 			// on remet l'ancienne valeur
 			System.setProperty(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
 		}

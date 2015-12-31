@@ -46,9 +46,11 @@ abstract class HtmlAbstractReport {
 				writeDirectly("</thead><tbody>\n");
 			}
 			if (oddRow) {
-				writeDirectly("<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">\n");
+				writeDirectly(
+						"<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">\n");
 			} else {
-				writeDirectly("<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">\n");
+				writeDirectly(
+						"<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">\n");
 			}
 			oddRow = !oddRow; // NOPMD
 		}

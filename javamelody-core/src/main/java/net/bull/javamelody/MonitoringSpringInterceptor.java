@@ -32,10 +32,10 @@ import org.springframework.aop.support.AopUtils;
 public class MonitoringSpringInterceptor implements MethodInterceptor, Serializable {
 	private static final long serialVersionUID = -6594338383847482623L;
 	private static final Counter SPRING_COUNTER = MonitoringProxy.getSpringCounter();
-	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(SPRING_COUNTER
-			.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean COUNTER_HIDDEN = Parameters
+			.isCounterHidden(SPRING_COUNTER.getName());
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 
 	/**
 	 * Constructeur.
@@ -116,8 +116,8 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 	}
 
 	private static String getMethodPart(MethodInvocation invocation) {
-		final MonitoredWithSpring methodAnnotation = invocation.getMethod().getAnnotation(
-				MonitoredWithSpring.class);
+		final MonitoredWithSpring methodAnnotation = invocation.getMethod()
+				.getAnnotation(MonitoredWithSpring.class);
 		if (methodAnnotation == null || methodAnnotation.name() == null
 				|| methodAnnotation.name().length() == 0) {
 			return invocation.getMethod().getName();

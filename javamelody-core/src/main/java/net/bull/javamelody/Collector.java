@@ -118,9 +118,8 @@ class Collector { // NOPMD
 		} catch (final IOException e) {
 			// lecture échouée, tant pis
 			// (on n'interrompt pas toute l'initialisation juste pour un fichier illisible)
-			LOG.warn(
-					"exception while reading counters data from files in "
-							+ Parameters.getStorageDirectory(application), e);
+			LOG.warn("exception while reading counters data from files in "
+					+ Parameters.getStorageDirectory(application), e);
 		}
 	}
 
@@ -414,8 +413,10 @@ class Collector { // NOPMD
 			availableProcessors = add(Math.max(javaInformations.getAvailableProcessors(), 1),
 					availableProcessors);
 			usedNonHeapMemory = add(memoryInformations.getUsedNonHeapMemory(), usedNonHeapMemory);
-			usedBufferedMemory = add(memoryInformations.getUsedBufferedMemory(), usedBufferedMemory);
-			loadedClassesCount = add(memoryInformations.getLoadedClassesCount(), loadedClassesCount);
+			usedBufferedMemory = add(memoryInformations.getUsedBufferedMemory(),
+					usedBufferedMemory);
+			loadedClassesCount = add(memoryInformations.getLoadedClassesCount(),
+					loadedClassesCount);
 			usedPhysicalMemorySize = add(memoryInformations.getUsedPhysicalMemorySize(),
 					usedPhysicalMemorySize);
 			usedSwapSpaceSize = add(memoryInformations.getUsedSwapSpaceSize(), usedSwapSpaceSize);
@@ -465,8 +466,8 @@ class Collector { // NOPMD
 		if (!noDatabase) {
 			// collecte du nombre de transactions base de données par minute
 			final double periodMinutes = periodMillis / 60000d;
-			getOtherJRobin("transactionsRate").addValue(
-					(databaseTransactionCount - this.transactionCount) / periodMinutes);
+			getOtherJRobin("transactionsRate")
+					.addValue((databaseTransactionCount - this.transactionCount) / periodMinutes);
 			this.transactionCount = databaseTransactionCount;
 		}
 
@@ -554,10 +555,10 @@ class Collector { // NOPMD
 			throws IOException {
 		getOtherJRobin("tomcatBusyThreads").addValue(tomcatBusyThreads);
 		final double periodMinutes = periodMillis / 60000d;
-		getOtherJRobin("tomcatBytesReceived").addValue(
-				(bytesReceived - this.tomcatBytesReceived) / periodMinutes);
-		getOtherJRobin("tomcatBytesSent").addValue(
-				(bytesSent - this.tomcatBytesSent) / periodMinutes);
+		getOtherJRobin("tomcatBytesReceived")
+				.addValue((bytesReceived - this.tomcatBytesReceived) / periodMinutes);
+		getOtherJRobin("tomcatBytesSent")
+				.addValue((bytesSent - this.tomcatBytesSent) / periodMinutes);
 		this.tomcatBytesReceived = bytesReceived;
 		this.tomcatBytesSent = bytesSent;
 	}
@@ -678,8 +679,8 @@ class Collector { // NOPMD
 	private long collectCounterRequestsAndErrorsData(Counter counter, List<CounterRequest> requests)
 			throws IOException {
 		final Counter dayCounter = getCurrentDayCounter(counter);
-		final boolean firstCollectDoneForCounter = Boolean.TRUE.equals(firstCollectDoneByCounter
-				.get(counter));
+		final boolean firstCollectDoneForCounter = Boolean.TRUE
+				.equals(firstCollectDoneByCounter.get(counter));
 		final List<CounterRequest> filteredRequests = filterRequestsIfOverflow(counter, requests);
 		for (final CounterRequest newRequest : filteredRequests) {
 			collectCounterRequestData(dayCounter, newRequest, firstCollectDoneForCounter);

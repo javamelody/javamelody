@@ -252,16 +252,22 @@ public class TestTomcatInformations {
 				TomcatInformations.buildTomcatInformationsList());
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
-		mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-				new ObjectName("Catalina:type=ThreadPool,name=http-8080")).getObjectName());
+		mBeans.add(
+				mBeanServer
+						.registerMBean(new ThreadPool(),
+								new ObjectName("Catalina:type=ThreadPool,name=http-8080"))
+						.getObjectName());
 		TomcatInformations.initMBeans();
 		try {
 			// les appels suivants réutilise le MBeanServer créé
 			assertNotNull("buildTomcatInformationsList",
 					TomcatInformations.buildTomcatInformationsList());
-			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"))
-					.getObjectName());
+			mBeans.add(
+					mBeanServer
+							.registerMBean(new GlobalRequestProcessor(),
+									new ObjectName(
+											"Catalina:type=GlobalRequestProcessor,name=http-8080"))
+							.getObjectName());
 			TomcatInformations.initMBeans();
 			assertNotNull("buildTomcatInformationsList",
 					TomcatInformations.buildTomcatInformationsList());

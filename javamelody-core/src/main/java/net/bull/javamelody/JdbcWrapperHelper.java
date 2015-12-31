@@ -180,8 +180,8 @@ final class JdbcWrapperHelper {
 		final InitialContext initialContext = new InitialContext();
 		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(2);
 		try {
-			for (final NameClassPair nameClassPair : Collections.list(initialContext
-					.list(jndiPrefix))) {
+			for (final NameClassPair nameClassPair : Collections
+					.list(initialContext.list(jndiPrefix))) {
 				// note: il ne suffit pas de tester
 				// (DataSource.class.isAssignableFrom(Class.forName(nameClassPair.getClassName())))
 				// car nameClassPair.getClassName() vaut "javax.naming.LinkRef" sous jboss 5.1.0.GA
@@ -438,8 +438,9 @@ final class JdbcWrapperHelper {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
 		assert servletContext != null;
 		final String serverInfo = servletContext.getServerInfo();
-		if ((serverInfo.contains("Tomcat") || serverInfo.contains("vFabric") || serverInfo
-				.contains("SpringSource tc Runtime")) && System.getProperty("jonas.name") == null) {
+		if ((serverInfo.contains("Tomcat") || serverInfo.contains("vFabric")
+				|| serverInfo.contains("SpringSource tc Runtime"))
+				&& System.getProperty("jonas.name") == null) {
 			// on n'exécute cela que si c'est tomcat
 			// et si ce n'est pas tomcat dans jonas
 			final Field field = Class.forName("org.apache.naming.ContextAccessController")
@@ -521,13 +522,13 @@ final class JdbcWrapperHelper {
 
 	private static void setFieldAccessible(final Field field) {
 		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
-					/** {@inheritDoc} */
-					@Override
-					public Object run() {
-						field.setAccessible(true);
-						return null;
-					}
-				});
+			/** {@inheritDoc} */
+			@Override
+			public Object run() {
+				field.setAccessible(true);
+				return null;
+			}
+		});
 	}
 
 	static void clearProxyCache() {

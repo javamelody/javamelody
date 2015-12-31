@@ -171,7 +171,8 @@ class PdfRuntimeDependenciesReport extends PdfAbstractReport {
 		return request.getName();
 	}
 
-	private static double getStandardDeviation(Map<String, Map<String, Integer>> runtimeDependencies) {
+	private static double getStandardDeviation(
+			Map<String, Map<String, Integer>> runtimeDependencies) {
 		final List<Integer> values = new ArrayList<Integer>();
 		int sum = 0;
 		for (final Map<String, Integer> beanDependencies : runtimeDependencies.values()) {

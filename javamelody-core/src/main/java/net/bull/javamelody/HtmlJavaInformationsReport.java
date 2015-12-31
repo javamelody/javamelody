@@ -165,7 +165,8 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 					.getUnixMaxFileDescriptorCount();
 			write("<tr><td>#nb_fichiers#</td><td>");
 			writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
-			writeln(" / " + integerFormat.format(unixMaxFileDescriptorCount) + "&nbsp;&nbsp;&nbsp;");
+			writeln(" / " + integerFormat.format(unixMaxFileDescriptorCount)
+					+ "&nbsp;&nbsp;&nbsp;");
 			writeln(toBarWithAlert(javaInformations.getUnixOpenFileDescriptorPercentage(), null));
 			writeln(columnEnd);
 		}
@@ -237,8 +238,9 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			writeln("<tr><td valign='top'>#DataSource_jdbc#: </td><td>");
 			// writeDirectly pour ne pas gérer de traductions si la donnée contient '#'
 			writeDirectly(htmlEncodeButNotSpace(javaInformations.getDataSourceDetails()));
-			writeDirectly("<a href='http://commons.apache.org/proper/commons-dbcp/api-1.4/index.html'"
-					+ " class='noPrint' target='_blank'>DataSource reference</a>");
+			writeDirectly(
+					"<a href='http://commons.apache.org/proper/commons-dbcp/api-1.4/index.html'"
+							+ " class='noPrint' target='_blank'>DataSource reference</a>");
 
 			// for the newer commons dbcp v2, the following documentation would be better:
 			// http://commons.apache.org/proper/commons-dbcp/configuration.html
@@ -391,12 +393,11 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		final String body = "<img src=''?resource=bar/rb_{0}.gif'' alt=''+'' title=''"
 				+ I18N.createPercentFormat().format(myPercent) + "%'' />";
 		final int fullBlockCount = (int) Math.floor(myPercent / (UNIT_SIZE * PARTIAL_BLOCKS));
-		final int partialBlockIndex = (int) Math.floor((myPercent - fullBlockCount * UNIT_SIZE
-				* PARTIAL_BLOCKS)
-				/ UNIT_SIZE);
+		final int partialBlockIndex = (int) Math
+				.floor((myPercent - fullBlockCount * UNIT_SIZE * PARTIAL_BLOCKS) / UNIT_SIZE);
 
-		sb.append(MessageFormat.format(body, fullBlockCount > 0 || partialBlockIndex > 0 ? "a"
-				: "a0"));
+		sb.append(MessageFormat.format(body,
+				fullBlockCount > 0 || partialBlockIndex > 0 ? "a" : "a0"));
 
 		final String fullBody = MessageFormat.format(body, PARTIAL_BLOCKS);
 		for (int i = 0; i < fullBlockCount; i++) {

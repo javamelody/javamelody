@@ -145,8 +145,8 @@ final class LOG {
 			final Object obj = method.invoke(null);
 
 			// on vérifie aussi LoggerContext car il peut arriver que getILoggerFactory ne soit pas ok (jonas)
-			return Class.forName("ch.qos.logback.classic.LoggerContext").isAssignableFrom(
-					obj.getClass());
+			return Class.forName("ch.qos.logback.classic.LoggerContext")
+					.isAssignableFrom(obj.getClass());
 		} catch (final Throwable e) { // NOPMD
 			return false;
 		}

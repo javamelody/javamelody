@@ -138,8 +138,8 @@ class HtmlReport extends HtmlAbstractReport {
 		writeln("");
 		if (includeCssInline) {
 			writeln("<style type='text/css'>");
-			final InputStream in = new BufferedInputStream(getClass().getResourceAsStream(
-					Parameters.getResourcePath("monitoring.css")));
+			final InputStream in = new BufferedInputStream(
+					getClass().getResourceAsStream(Parameters.getResourcePath("monitoring.css")));
 			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
 				TransportFormat.pump(in, out);
@@ -171,8 +171,10 @@ class HtmlReport extends HtmlAbstractReport {
 		final String analyticsId = Parameters.getParameter(Parameter.ANALYTICS_ID);
 		if (analyticsId != null && !"disabled".equals(analyticsId)) {
 			writeDirectly(SCRIPT_BEGIN);
-			writeDirectly("var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
-			writeDirectly("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
+			writeDirectly(
+					"var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
+			writeDirectly(
+					"document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
 			writeDirectly(SCRIPT_END);
 			writeDirectly(SCRIPT_BEGIN);
 			writeDirectly(" try{\n");
@@ -283,12 +285,14 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
-	void writeProcesses(Map<String, List<ProcessInformations>> processesByTitle) throws IOException {
+	void writeProcesses(Map<String, List<ProcessInformations>> processesByTitle)
+			throws IOException {
 		assert processesByTitle != null;
 		writeHtmlHeader();
 		new HtmlProcessInformationsReport(new ArrayList<ProcessInformations>(), getWriter())
 				.writeLinks();
-		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle.entrySet()) {
+		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle
+				.entrySet()) {
 			final String title = entry.getKey();
 			final List<ProcessInformations> processes = entry.getValue();
 			writeDirectly("<h3 class='chapterTitle'><img src='?resource=processes.png' alt='"

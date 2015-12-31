@@ -130,13 +130,10 @@ public final class Main {
 
 		// override the usage screen
 		final Field usage = launcher.getField("USAGE");
-		usage.set(
-				null,
-				"JavaMelody Monitoring Collect Server "
-						+ "\n"
+		usage.set(null,
+				"JavaMelody Monitoring Collect Server " + "\n"
 						+ "Usage: java -jar javamelody.war [--option=value] [--option=value]\n"
-						+ "\n"
-						+ "Options:\n"
+						+ "\n" + "Options:\n"
 						+ "   --config                 = load configuration properties from here. Default is ./winstone.properties\n"
 						+ "   --prefix                 = add this prefix to all URLs (eg http://localhost:8080/prefix/resource). Default is none\n"
 						+ "   --commonLibFolder        = folder for additional jar files. Default is ./lib\n"
@@ -177,8 +174,7 @@ public final class Main {
 						+ "                              (e.g., xls=application/vnd.ms-excel:wmf=application/x-msmetafile)\n"
 						+ "   --maxParamCount=N        = set the max number of parameters allowed in a form submission to protect\n"
 						+ "                              against hash DoS attack (oCERT #2011-003). Default is 10000.\n"
-						+ "   --usage / --help         = show this message\n"
-						+ "   \n"
+						+ "   --usage / --help         = show this message\n" + "   \n"
 						// For security of the collect server, see https://github.com/javamelody/javamelody/wiki/UserGuideAdvanced#5-security-with-a-collect-server
 						// (-Djavamelody.authorized-users=user1:pwd1,user2:pwd2)
 						//						+ "Security options:\n"
@@ -268,8 +264,8 @@ public final class Main {
 			tmp = File.createTempFile(fileName, suffix);
 		} catch (final IOException e) {
 			final String tmpdir = System.getProperty("java.io.tmpdir");
-			throw new IllegalStateException("JavaMelody has failed to create a temporary file in "
-					+ tmpdir, e);
+			throw new IllegalStateException(
+					"JavaMelody has failed to create a temporary file in " + tmpdir, e);
 		}
 		final InputStream is = res.openStream();
 		try {

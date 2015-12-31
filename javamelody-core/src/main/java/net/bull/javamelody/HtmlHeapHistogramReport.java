@@ -44,8 +44,8 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		writeLinks();
 		writeln("<br/>");
 
-		final String title = getFormattedString("heap_histo_du", I18N.createDateAndTimeFormat()
-				.format(heapHistogram.getTime()));
+		final String title = getFormattedString("heap_histo_du",
+				I18N.createDateAndTimeFormat().format(heapHistogram.getTime()));
 		writeTitle("memory.png", title);
 		writeln("<br/><b>#Heap#</b>");
 		final String separator = "&nbsp;&nbsp;&nbsp;";
@@ -79,7 +79,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 
 	private void writeClassInfoSummaryAndDetails(List<ClassInfo> classHistogram,
 			long totalInstances, long totalBytes, boolean heap, boolean sourceDisplayed)
-			throws IOException {
+					throws IOException {
 		final List<ClassInfo> summaryClassHistogram = new ArrayList<ClassInfo>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {

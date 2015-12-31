@@ -125,7 +125,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	/**
 	 * Comparateur pour ordonner les requêtes par sommes des durées.
 	 */
-	static final class CounterRequestComparator implements Comparator<CounterRequest>, Serializable {
+	static final class CounterRequestComparator
+			implements Comparator<CounterRequest>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
@@ -144,8 +145,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	/**
 	 * Comparateur pour ordonner les requêtes par nombre d'exécutions.
 	 */
-	static final class CounterRequestByHitsComparator implements Comparator<CounterRequest>,
-			Serializable {
+	static final class CounterRequestByHitsComparator
+			implements Comparator<CounterRequest>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
@@ -182,8 +183,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	/**
 	 * Comparateur pour ordonner les requêtes en cours par durées écoulées.
 	 */
-	static final class CounterRequestContextComparator implements
-			Comparator<CounterRequestContext>, Serializable {
+	static final class CounterRequestContextComparator
+			implements Comparator<CounterRequestContext>, Serializable {
 		private static final long serialVersionUID = 1L;
 		private final long timeOfSnapshot;
 
@@ -197,7 +198,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		public int compare(CounterRequestContext context1, CounterRequestContext context2) {
 			if (context1.getDuration(timeOfSnapshot) > context2.getDuration(timeOfSnapshot)) {
 				return 1;
-			} else if (context1.getDuration(timeOfSnapshot) < context2.getDuration(timeOfSnapshot)) {
+			} else if (context1.getDuration(timeOfSnapshot) < context2
+					.getDuration(timeOfSnapshot)) {
 				return -1;
 			} else {
 				return 0;
@@ -527,7 +529,8 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		}
 	}
 
-	void addRequestForSystemError(String requestName, long duration, long cpuTime, String stackTrace) {
+	void addRequestForSystemError(String requestName, long duration, long cpuTime,
+			String stackTrace) {
 		// comme la méthode addRequest, cette méthode n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet
 		// ce qui pourrait faire une contention et des ralentissements,

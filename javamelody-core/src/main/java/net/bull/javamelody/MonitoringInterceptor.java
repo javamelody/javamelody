@@ -36,8 +36,8 @@ public class MonitoringInterceptor implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Counter EJB_COUNTER = MonitoringProxy.getEjbCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(EJB_COUNTER.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 
 	/**
 	 * Constructeur.

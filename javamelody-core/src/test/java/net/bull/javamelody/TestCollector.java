@@ -102,16 +102,16 @@ public class TestCollector {
 		final Collector collector = createCollectorWithOneCounter();
 		assertToStringNotEmpty("collector", collector);
 		assertToStringNotEmpty("java", new JavaInformations(null, false));
-		assertToStringNotEmpty(
-				"thread",
-				new ThreadInformations(Thread.currentThread(), Arrays.asList(Thread.currentThread()
-						.getStackTrace()), 100, 1000, false, Parameters.getHostAddress()));
+		assertToStringNotEmpty("thread",
+				new ThreadInformations(Thread.currentThread(),
+						Arrays.asList(Thread.currentThread().getStackTrace()), 100, 1000, false,
+						Parameters.getHostAddress()));
 		assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true), true));
 		assertToStringNotEmpty("memory", new MemoryInformations());
 		CacheManager.getInstance().addCache("testToString");
 		try {
-			assertToStringNotEmpty("cache", new CacheInformations(CacheManager.getInstance()
-					.getEhcache("testToString")));
+			assertToStringNotEmpty("cache",
+					new CacheInformations(CacheManager.getInstance().getEhcache("testToString")));
 		} finally {
 			CacheManager.getInstance().shutdown();
 		}
@@ -148,8 +148,8 @@ public class TestCollector {
 	/** Test. */
 	@Test
 	public void testGetApplication() {
-		assertEquals("getApplication", "test collector", createCollectorWithOneCounter()
-				.getApplication());
+		assertEquals("getApplication", "test collector",
+				createCollectorWithOneCounter().getApplication());
 	}
 
 	/** Test.
@@ -160,8 +160,8 @@ public class TestCollector {
 		final Counter jspCounter = new Counter(Counter.JSP_COUNTER_NAME, null);
 		final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
 		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
-		final Collector collector = new Collector(TEST, Arrays.asList(counter, jspCounter,
-				strutsCounter, jobCounter));
+		final Collector collector = new Collector(TEST,
+				Arrays.asList(counter, jspCounter, strutsCounter, jobCounter));
 		if (collector.getCounters().size() == 0) {
 			fail("getCounters");
 		}
@@ -183,9 +183,8 @@ public class TestCollector {
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
 		setProperty(Parameter.NO_DATABASE, "true");
 		try {
-			new Collector(TEST, Collections.singletonList(counter))
-					.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
-							false)));
+			new Collector(TEST, Collections.singletonList(counter)).collectWithoutErrors(
+					Collections.singletonList(new JavaInformations(null, false)));
 		} finally {
 			setProperty(Parameter.NO_DATABASE, null);
 		}
@@ -228,16 +227,21 @@ public class TestCollector {
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
 		try {
-			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-					new ObjectName("Catalina:type=ThreadPool,name=jk-8009")).getObjectName());
-			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8009"))
+			mBeans.add(mBeanServer
+					.registerMBean(new ThreadPool(),
+							new ObjectName("Catalina:type=ThreadPool,name=jk-8009"))
 					.getObjectName());
+			mBeans.add(
+					mBeanServer
+							.registerMBean(new GlobalRequestProcessor(),
+									new ObjectName(
+											"Catalina:type=GlobalRequestProcessor,name=jk-8009"))
+							.getObjectName());
 			TomcatInformations.initMBeans();
 			final Collector collector = new Collector(TEST,
 					Arrays.asList(new Counter("http", null)));
-			collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null,
-					true)));
+			collector.collectWithoutErrors(
+					Collections.singletonList(new JavaInformations(null, true)));
 		} finally {
 			for (final ObjectName registeredMBean : mBeans) {
 				mBeanServer.unregisterMBean(registeredMBean);
@@ -330,11 +334,9 @@ public class TestCollector {
 		assertEquals("mois", 1, getSizeOfCountersToBeDisplayed(collector, Period.MOIS));
 		assertEquals("année", 1, getSizeOfCountersToBeDisplayed(collector, Period.ANNEE));
 		assertEquals("tout", 1, getSizeOfCountersToBeDisplayed(collector, Period.TOUT));
-		assertEquals(
-				"custom",
-				1,
-				collector.getRangeCountersToBeDisplayed(
-						Range.createCustomRange(new Date(), new Date())).size());
+		assertEquals("custom", 1, collector
+				.getRangeCountersToBeDisplayed(Range.createCustomRange(new Date(), new Date()))
+				.size());
 	}
 
 	/** Test.

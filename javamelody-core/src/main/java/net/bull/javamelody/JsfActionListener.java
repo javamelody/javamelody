@@ -28,8 +28,8 @@ import javax.faces.event.ActionListener;
 public class JsfActionListener implements ActionListener {
 	private static final Counter JSF_COUNTER = MonitoringProxy.getJsfCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(JSF_COUNTER.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	private final ActionListener delegateActionListener;
 
 	/**

@@ -167,11 +167,13 @@ public class HibernateBatcherFactory implements BatcherFactory {
 		}
 	}
 
-	static PreparedStatement createPreparedStatementProxy(String query, PreparedStatement statement) {
+	static PreparedStatement createPreparedStatementProxy(String query,
+			PreparedStatement statement) {
 		return (PreparedStatement) JdbcWrapper.SINGLETON.createStatementProxy(query, statement);
 	}
 
-	static CallableStatement createCallableStatementProxy(String query, CallableStatement statement) {
+	static CallableStatement createCallableStatementProxy(String query,
+			CallableStatement statement) {
 		return (CallableStatement) JdbcWrapper.SINGLETON.createStatementProxy(query, statement);
 	}
 

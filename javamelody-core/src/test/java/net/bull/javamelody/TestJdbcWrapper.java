@@ -173,8 +173,8 @@ public class TestJdbcWrapper {
 		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
 		cleanUp();
 
-		assertTrue("getBasicDataSourceProperties0", JdbcWrapper.getBasicDataSourceProperties()
-				.isEmpty());
+		assertTrue("getBasicDataSourceProperties0",
+				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
 		assertEquals("getMaxConnectionCount0", -1, JdbcWrapper.getMaxConnectionCount());
 
 		final org.apache.tomcat.jdbc.pool.DataSource tomcatJdbcDataSource = new org.apache.tomcat.jdbc.pool.DataSource();
@@ -185,8 +185,8 @@ public class TestJdbcWrapper {
 				tomcatJdbcDataSource);
 		assertNotNull("createDataSourceProxy1", tomcatJdbcProxy);
 		tomcatJdbcProxy.getConnection().close();
-		assertFalse("getBasicDataSourceProperties1", JdbcWrapper.getBasicDataSourceProperties()
-				.isEmpty());
+		assertFalse("getBasicDataSourceProperties1",
+				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
 		assertEquals("getMaxConnectionCount1", 123, JdbcWrapper.getMaxConnectionCount());
 
 		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
@@ -194,8 +194,8 @@ public class TestJdbcWrapper {
 		dbcpDataSource.setMaxActive(456);
 		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
 		assertNotNull("createDataSourceProxy2", dbcpProxy);
-		assertFalse("getBasicDataSourceProperties2", JdbcWrapper.getBasicDataSourceProperties()
-				.isEmpty());
+		assertFalse("getBasicDataSourceProperties2",
+				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
 		assertEquals("getMaxConnectionCount2", 456, JdbcWrapper.getMaxConnectionCount());
 
 		final BasicDataSource tomcatDataSource = new BasicDataSource();
@@ -205,8 +205,8 @@ public class TestJdbcWrapper {
 		assertNotNull("createDataSourceProxy3", tomcatProxy);
 		assertNotNull("getLogWriter2", tomcatProxy.getLogWriter());
 		tomcatProxy.getConnection().close();
-		assertFalse("getBasicDataSourceProperties3", JdbcWrapper.getBasicDataSourceProperties()
-				.isEmpty());
+		assertFalse("getBasicDataSourceProperties3",
+				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
 		assertEquals("getMaxConnectionCount3", 789, JdbcWrapper.getMaxConnectionCount());
 
 		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = new org.apache.commons.dbcp2.BasicDataSource();
@@ -218,8 +218,8 @@ public class TestJdbcWrapper {
 		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcat2DataSource = new org.apache.tomcat.dbcp.dbcp2.BasicDataSource();
 		tomcat2DataSource.setUrl(H2_DATABASE_URL);
 		tomcat2DataSource.setMaxTotal(789);
-		final DataSource tomcat2Proxy = jdbcWrapper
-				.createDataSourceProxy("test", tomcat2DataSource);
+		final DataSource tomcat2Proxy = jdbcWrapper.createDataSourceProxy("test",
+				tomcat2DataSource);
 		assertNotNull("createDataSourceProxy3b", tomcat2Proxy);
 
 		final DataSource dataSource2 = new MyDataSource(tomcatDataSource);
@@ -317,8 +317,8 @@ public class TestJdbcWrapper {
 	 * @throws SQLException e
 	 * @throws IllegalAccessException e */
 	@Test
-	public void testCreateConnectionProxyOrRewrapIfJBossOrGlassfish() throws SQLException,
-			IllegalAccessException {
+	public void testCreateConnectionProxyOrRewrapIfJBossOrGlassfish()
+			throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
 		// nécessite la dépendance vers la base de données H2
 		final Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
@@ -360,8 +360,8 @@ public class TestJdbcWrapper {
 
 	private void rewrapDataSource(DataSource dataSource) throws Exception { // NOPMD
 		// on utilise java.lang.reflect car la méthode est privée mais on veut vraiment la tester un minimum
-		final Method rewrapDataSourceMethod = JdbcWrapper.class.getDeclaredMethod(
-				"rewrapDataSource", String.class, DataSource.class);
+		final Method rewrapDataSourceMethod = JdbcWrapper.class
+				.getDeclaredMethod("rewrapDataSource", String.class, DataSource.class);
 		rewrapDataSourceMethod.setAccessible(true);
 		rewrapDataSourceMethod.invoke(jdbcWrapper, "test", dataSource);
 	}
@@ -410,7 +410,8 @@ public class TestJdbcWrapper {
 	@Test
 	public void testIsEqualsMethod() {
 		assertTrue("isEqualsMethod1", JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "" }));
-		assertFalse("isEqualsMethod2", JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }));
+		assertFalse("isEqualsMethod2",
+				JdbcWrapper.isEqualsMethod("notequals", new Object[] { "" }));
 		assertFalse("isEqualsMethod3", JdbcWrapper.isEqualsMethod(EQUALS, null));
 		assertFalse("isEqualsMethod4", JdbcWrapper.isEqualsMethod(EQUALS, new Object[] { "", "" }));
 	}

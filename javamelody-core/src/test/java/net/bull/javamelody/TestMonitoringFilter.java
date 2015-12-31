@@ -142,9 +142,9 @@ public class TestMonitoringFilter { // NOPMD
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		expect(config.getFilterName()).andReturn(FILTER_NAME).anyTimes();
 		// anyTimes sur getInitParameter car TestJdbcDriver a pu fixer la propriété système à false
-		expect(
-				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
+		expect(context.getInitParameter(
+				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode())).andReturn(null)
+						.anyTimes();
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
@@ -152,8 +152,8 @@ public class TestMonitoringFilter { // NOPMD
 		// mockJetty pour avoir un applicationServerIconName dans JavaInformations
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		// dependencies pour avoir des dépendances dans JavaInformations
-		final Set<String> dependencies = new LinkedHashSet<String>(Arrays.asList(
-				"/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+		final Set<String> dependencies = new LinkedHashSet<String>(
+				Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
 		// et flags pour considérer que les ressources pom.xml et web.xml existent
 		JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
@@ -330,10 +330,10 @@ public class TestMonitoringFilter { // NOPMD
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpSession session = createNiceMock(HttpSession.class);
 		expect(request.getSession(false)).andReturn(session);
-		expect(session.getAttribute(SessionInformations.SESSION_COUNTRY_KEY)).andReturn(
-				Locale.FRANCE.getCountry()).anyTimes();
-		expect(session.getAttribute(SessionInformations.SESSION_REMOTE_ADDR))
-				.andReturn("somewhere").anyTimes();
+		expect(session.getAttribute(SessionInformations.SESSION_COUNTRY_KEY))
+				.andReturn(Locale.FRANCE.getCountry()).anyTimes();
+		expect(session.getAttribute(SessionInformations.SESSION_REMOTE_ADDR)).andReturn("somewhere")
+				.anyTimes();
 		expect(session.getAttribute(SessionInformations.SESSION_REMOTE_USER)).andReturn("me")
 				.anyTimes();
 		replay(session);
@@ -349,22 +349,22 @@ public class TestMonitoringFilter { // NOPMD
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final String textGwtRpc = "text/x-gwt-rpc";
 		expect(request.getContentType()).andReturn(textGwtRpc).anyTimes();
-		expect(request.getInputStream()).andReturn(
-				createInputStreamForString("1|2|3|4|5|6|7|8|9|10")).anyTimes();
+		expect(request.getInputStream())
+				.andReturn(createInputStreamForString("1|2|3|4|5|6|7|8|9|10")).anyTimes();
 		doFilter(request);
 
 		final HttpServletRequest request2a = createNiceMock(HttpServletRequest.class);
 		expect(request2a.getContentType()).andReturn("not/x-gwt-rpc").anyTimes();
-		expect(request2a.getInputStream()).andReturn(
-				createInputStreamForString("1|2|3|4|5|6|7|8|9|10")).anyTimes();
+		expect(request2a.getInputStream())
+				.andReturn(createInputStreamForString("1|2|3|4|5|6|7|8|9|10")).anyTimes();
 		doFilter(request2a);
 
 		final HttpServletRequest request2b = createNiceMock(HttpServletRequest.class);
 		expect(request2b.getContentType()).andReturn(textGwtRpc).anyTimes();
 		expect(request2b.getInputStream()).andReturn(createInputStreamForString("1|2|3|4|5|6"))
 				.anyTimes();
-		expect(request2b.getReader())
-				.andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6"))).anyTimes();
+		expect(request2b.getReader()).andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6")))
+				.anyTimes();
 		replay(request2b);
 		final PayloadNameRequestWrapper wrapper2b = new PayloadNameRequestWrapper(request2b);
 		wrapper2b.getInputStream().read();
@@ -373,8 +373,8 @@ public class TestMonitoringFilter { // NOPMD
 
 		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
 		expect(request2.getContentType()).andReturn(textGwtRpc).anyTimes();
-		expect(request2.getInputStream()).andReturn(
-				createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
+		expect(request2.getInputStream())
+				.andReturn(createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
 		expect(request2.getReader()).andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6")))
 				.anyTimes();
 		replay(request2);
@@ -386,8 +386,8 @@ public class TestMonitoringFilter { // NOPMD
 		final HttpServletRequest request3 = createNiceMock(HttpServletRequest.class);
 		expect(request3.getContentType()).andReturn(textGwtRpc).anyTimes();
 		expect(request3.getCharacterEncoding()).andReturn("utf-8").anyTimes();
-		expect(request3.getInputStream()).andReturn(
-				createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
+		expect(request3.getInputStream())
+				.andReturn(createInputStreamForString("1|2|3|4|5|6||8|9|10")).anyTimes();
 		expect(request3.getReader()).andReturn(new BufferedReader(new StringReader("1|2|3|4|5|6")))
 				.anyTimes();
 		replay(request3);
@@ -465,8 +465,8 @@ public class TestMonitoringFilter { // NOPMD
 	@Test
 	public void testFilterServletResponseWrapper() throws IOException {
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-		expect(response.getOutputStream()).andReturn(
-				new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
+		expect(response.getOutputStream())
+				.andReturn(new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
 		expect(response.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				response);
@@ -478,8 +478,8 @@ public class TestMonitoringFilter { // NOPMD
 		verify(response);
 
 		final HttpServletResponse response2 = createNiceMock(HttpServletResponse.class);
-		expect(response2.getOutputStream()).andReturn(
-				new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
+		expect(response2.getOutputStream())
+				.andReturn(new FilterServletOutputStream(new ByteArrayOutputStream())).anyTimes();
 		expect(response2.getCharacterEncoding()).andReturn(null).anyTimes();
 		final CounterServletResponseWrapper wrappedResponse2 = new CounterServletResponseWrapper(
 				response);
@@ -554,8 +554,8 @@ public class TestMonitoringFilter { // NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap(PERIOD_PARAMETER,
-				Period.JOUR.getCode()));
+		monitoring(
+				Collections.<String, String> singletonMap(PERIOD_PARAMETER, Period.JOUR.getCode()));
 	}
 
 	/** Test.
@@ -660,8 +660,8 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 	}
 
-	private void monitorJdbcParts(Map<String, String> parameters) throws IOException,
-			ServletException {
+	private void monitorJdbcParts(Map<String, String> parameters)
+			throws IOException, ServletException {
 		final Connection connection = TestDatabaseInformations.initH2();
 		try {
 			parameters.put(PART_PARAMETER, DATABASE_PART);
@@ -909,11 +909,12 @@ public class TestMonitoringFilter { // NOPMD
 		expect(request.getRemoteAddr()).andReturn("here").anyTimes();
 		final Random random = new Random();
 		if (random.nextBoolean()) {
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+			expect(request.getHeaders("Accept-Encoding"))
+					.andReturn(Collections.enumeration(Arrays.asList("application/gzip")))
+					.anyTimes();
 		} else {
-			expect(request.getHeaders("Accept-Encoding")).andReturn(
-					Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+			expect(request.getHeaders("Accept-Encoding"))
+					.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 		}
 		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
 			if (REQUEST_PARAMETER.equals(entry.getKey())) {

@@ -226,7 +226,8 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		writeSessionAttributes(sessionInformations);
 	}
 
-	private void writeSessionAttributes(SessionInformations sessionInformations) throws IOException {
+	private void writeSessionAttributes(SessionInformations sessionInformations)
+			throws IOException {
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("Attributs"));
 		write("<th>#Nom#</th><th>Type</th><th>#Serialisable#</th><th>#Taille_serialisee#</th><th>#Contenu#</th>");

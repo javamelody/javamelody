@@ -51,8 +51,8 @@ public final class JdbcWrapper {
 	/**
 	 * Instance singleton de JdbcWrapper (ici on ne connaît pas le ServletContext).
 	 */
-	public static final JdbcWrapper SINGLETON = new JdbcWrapper(new Counter(
-			Counter.SQL_COUNTER_NAME, "db.png"));
+	public static final JdbcWrapper SINGLETON = new JdbcWrapper(
+			new Counter(Counter.SQL_COUNTER_NAME, "db.png"));
 
 	// au lieu d'utiliser int avec des synchronized partout, on utilise AtomicInteger
 	static final AtomicInteger ACTIVE_CONNECTION_COUNT = new AtomicInteger();
@@ -74,8 +74,8 @@ public final class JdbcWrapper {
 	private boolean weblogic;
 	private boolean jonas;
 
-	static final class ConnectionInformationsComparator implements
-			Comparator<ConnectionInformations>, Serializable {
+	static final class ConnectionInformationsComparator
+			implements Comparator<ConnectionInformations>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
@@ -202,8 +202,8 @@ public final class JdbcWrapper {
 			} finally {
 				if ("close".equals(methodName) && !alreadyClosed) {
 					USED_CONNECTION_COUNT.decrementAndGet();
-					USED_CONNECTION_INFORMATIONS.remove(ConnectionInformations
-							.getUniqueIdOfConnection(connection));
+					USED_CONNECTION_INFORMATIONS
+							.remove(ConnectionInformations.getUniqueIdOfConnection(connection));
 					alreadyClosed = true;
 				}
 			}
@@ -227,8 +227,8 @@ public final class JdbcWrapper {
 		}
 	}
 
-	private static class ConnectionManagerInvocationHandler extends
-			AbstractInvocationHandler<Object> {
+	private static class ConnectionManagerInvocationHandler
+			extends AbstractInvocationHandler<Object> {
 		// classe sérialisable pour glassfish v2.1.1, issue 229: Exception in NamingManagerImpl copyMutableObject()
 		private static final long serialVersionUID = 1L;
 
@@ -246,8 +246,8 @@ public final class JdbcWrapper {
 		}
 	}
 
-	private abstract static class AbstractInvocationHandler<T> implements InvocationHandler,
-			Serializable {
+	private abstract static class AbstractInvocationHandler<T>
+			implements InvocationHandler, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		@SuppressWarnings("all")
@@ -433,8 +433,8 @@ public final class JdbcWrapper {
 		// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
 		try {
-			final boolean rewrapDataSources = Boolean.parseBoolean(Parameters
-					.getParameter(Parameter.REWRAP_DATASOURCES));
+			final boolean rewrapDataSources = Boolean
+					.parseBoolean(Parameters.getParameter(Parameter.REWRAP_DATASOURCES));
 			if (rewrapDataSources) {
 				// on annule le rebinding éventuellement fait avant par SessionListener
 				// si rewrap-datasources est défini dans le filter
@@ -542,15 +542,14 @@ public final class JdbcWrapper {
 	private boolean isJBossOrGlassfishDataSource(String dataSourceClassName) {
 		return jboss
 				&& "org.jboss.resource.adapter.jdbc.WrapperDataSource".equals(dataSourceClassName)
-				|| jboss
-				&& "org.jboss.jca.adapters.jdbc.WrapperDataSource".equals(dataSourceClassName)
+				|| jboss && "org.jboss.jca.adapters.jdbc.WrapperDataSource"
+						.equals(dataSourceClassName)
 				|| glassfish && "com.sun.gjc.spi.jdbc40.DataSource40".equals(dataSourceClassName);
 	}
 
 	private boolean isWildfly9DataSource(String dataSourceClassName) {
-		return jboss
-				&& "org.jboss.as.connector.subsystems.datasources.WildFlyDataSource"
-						.equals(dataSourceClassName);
+		return jboss && "org.jboss.as.connector.subsystems.datasources.WildFlyDataSource"
+				.equals(dataSourceClassName);
 	}
 
 	private void rewrapWebLogicDataSource(DataSource dataSource) throws IllegalAccessException {
@@ -640,8 +639,8 @@ public final class JdbcWrapper {
 
 			// si jboss, glassfish ou weblogic avec datasource, on désencapsule aussi les objets wrappés
 			final Map<String, DataSource> jndiDataSources = JdbcWrapperHelper.getJndiDataSources();
-			final boolean rewrapDataSources = Boolean.parseBoolean(Parameters
-					.getParameter(Parameter.REWRAP_DATASOURCES));
+			final boolean rewrapDataSources = Boolean
+					.parseBoolean(Parameters.getParameter(Parameter.REWRAP_DATASOURCES));
 			for (final Map.Entry<String, DataSource> entry : jndiDataSources.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
@@ -700,7 +699,8 @@ public final class JdbcWrapper {
 
 	Context createContextProxy(final Context context) {
 		assert context != null;
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Context>(context) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Context>(
+				context) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */
@@ -752,16 +752,16 @@ public final class JdbcWrapper {
 			final Object baseWrapperManagedConnection = JdbcWrapperHelper.getFieldValue(connection,
 					"mc");
 			final String conFieldName = "con";
-			Connection con = (Connection) JdbcWrapperHelper.getFieldValue(
-					baseWrapperManagedConnection, conFieldName);
+			Connection con = (Connection) JdbcWrapperHelper
+					.getFieldValue(baseWrapperManagedConnection, conFieldName);
 			// on teste isProxyAlready ici pour raison de perf
 			if (!isProxyAlready(con)) {
 				con = createConnectionProxy(con);
 				JdbcWrapperHelper.setFieldValue(baseWrapperManagedConnection, conFieldName, con);
 			}
-		} else if (glassfish
-				&& ("com.sun.gjc.spi.jdbc40.ConnectionHolder40".equals(connection.getClass()
-						.getName()) || "com.sun.gjc.spi.jdbc40.ConnectionWrapper40"
+		} else if (glassfish && ("com.sun.gjc.spi.jdbc40.ConnectionHolder40"
+				.equals(connection.getClass().getName())
+				|| "com.sun.gjc.spi.jdbc40.ConnectionWrapper40"
 						.equals(connection.getClass().getName()))) {
 			// pour glassfish,
 			// result instance de com.sun.gjc.spi.jdbc40.ConnectionHolder40
@@ -871,7 +871,8 @@ public final class JdbcWrapper {
 		// Rq : on ne réévalue pas le paramètre ici pour raison de performances sur la recherche
 		// dans les paramètres du système, du contexte et du filtre alors que dans 99.999999999%
 		// des exécutions il n'y a pas le paramètre.
-		final InvocationHandler invocationHandler = new StatementInvocationHandler(query, statement);
+		final InvocationHandler invocationHandler = new StatementInvocationHandler(query,
+				statement);
 		return createProxy(statement, invocationHandler);
 	}
 
@@ -902,9 +903,8 @@ public final class JdbcWrapper {
 	}
 
 	private static boolean isProxyAlready(Object object) {
-		return Proxy.isProxyClass(object.getClass())
-				&& Proxy.getInvocationHandler(object).getClass().getName()
-						.equals(DelegatingInvocationHandler.class.getName());
+		return Proxy.isProxyClass(object.getClass()) && Proxy.getInvocationHandler(object)
+				.getClass().getName().equals(DelegatingInvocationHandler.class.getName());
 		// utilisation de Proxy.getInvocationHandler(object).getClass().getName().equals(DelegatingInvocationHandler.class.getName())
 		// et non de Proxy.getInvocationHandler(object) instanceof DelegatingInvocationHandler
 		// pour issue 97 (classLoaders différents pour les classes DelegatingInvocationHandler)

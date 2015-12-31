@@ -228,12 +228,12 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			write("</td> <td align='center' class='noPrint'>");
 			write("<a href='?action=kill_thread&amp;threadId=");
 			write(threadInformations.getGlobalThreadId());
-			final String confirmKillThread = javascriptEncode(getFormattedString(
-					"confirm_kill_thread", threadInformations.getName()));
+			final String confirmKillThread = javascriptEncode(
+					getFormattedString("confirm_kill_thread", threadInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 			writeDirectly("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
-			final String title = htmlEncode(getFormattedString("kill_thread",
-					threadInformations.getName()));
+			final String title = htmlEncode(
+					getFormattedString("kill_thread", threadInformations.getName()));
 			writeDirectly("<img width='16' height='16' src='?resource=stop.png' alt='" + title
 					+ "' title='" + title + "' />");
 			write("</a>");

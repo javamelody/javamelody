@@ -137,9 +137,9 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 		write("<tr valign='top'><td>");
 		if (mbean.getName().indexOf(MBeans.ATTRIBUTES_SEPARATOR) == -1
 				&& attributeName.indexOf(MBeans.ATTRIBUTES_SEPARATOR) == -1) {
-			writeDirectly("<a href='?jmxValue="
-					+ mbean.getName().replace(" ", "%20").replace("'", "%27") + '.' + attributeName
-					+ "' ");
+			writeDirectly(
+					"<a href='?jmxValue=" + mbean.getName().replace(" ", "%20").replace("'", "%27")
+							+ '.' + attributeName + "' ");
 			writeln("title=\"#Lien_valeur_mbeans#\">-</a>&nbsp;");
 		} else {
 			// si le nom du mbean ou si le nom de l'attribut contient le caractère séparateur ('|'),

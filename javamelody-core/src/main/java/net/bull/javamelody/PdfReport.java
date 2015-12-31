@@ -36,7 +36,7 @@ class PdfReport {
 
 	PdfReport(Collector collector, boolean collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, OutputStream output)
-			throws IOException {
+					throws IOException {
 		super();
 		assert output != null;
 		this.output = output;
@@ -45,8 +45,8 @@ class PdfReport {
 			final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(
 					collector.getApplication(), range, output);
 			this.document = pdfDocumentFactory.createDocument();
-			this.pdfCoreReport = new PdfCoreReport(collector, collectorServer,
-					javaInformationsList, range, pdfDocumentFactory, document);
+			this.pdfCoreReport = new PdfCoreReport(collector, collectorServer, javaInformationsList,
+					range, pdfDocumentFactory, document);
 		} catch (final DocumentException e) {
 			throw createIOException(e);
 		}
@@ -54,7 +54,7 @@ class PdfReport {
 
 	PdfReport(Collector collector, boolean collectorServer,
 			List<JavaInformations> javaInformationsList, Period period, OutputStream output)
-			throws IOException {
+					throws IOException {
 		this(collector, collectorServer, javaInformationsList, period.getRange(), output);
 	}
 

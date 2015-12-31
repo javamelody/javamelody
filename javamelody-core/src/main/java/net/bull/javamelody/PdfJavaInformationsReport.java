@@ -98,9 +98,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			assert x == 0;
 			final double myPercent = Math.max(Math.min(percentValue, 100d), 0d);
 			final int fullBlockCount = (int) Math.floor(myPercent / (UNIT_SIZE * PARTIAL_BLOCKS));
-			final int partialBlockIndex = (int) Math.floor((myPercent - fullBlockCount * UNIT_SIZE
-					* PARTIAL_BLOCKS)
-					/ UNIT_SIZE);
+			final int partialBlockIndex = (int) Math
+					.floor((myPercent - fullBlockCount * UNIT_SIZE * PARTIAL_BLOCKS) / UNIT_SIZE);
 
 			addImage(getBarImage(fullBlockCount > 0 || partialBlockIndex > 0 ? "a" : "a0"));
 
@@ -170,8 +169,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		return table;
 	}
 
-	private void writeSummary(JavaInformations javaInformations) throws BadElementException,
-			IOException {
+	private void writeSummary(JavaInformations javaInformations)
+			throws BadElementException, IOException {
 		addCell(getString("Host") + ':');
 		currentTable.addCell(new Phrase(javaInformations.getHost(), boldCellFont));
 		addCell(getString("memoire_utilisee") + ':');
@@ -190,7 +189,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			addCell(getString("nb_sessions_http") + ':');
 			addCell(integerFormat.format(javaInformations.getSessionCount()));
 		}
-		addCell(getString("nb_threads_actifs") + "\n(" + getString("Requetes_http_en_cours") + "):");
+		addCell(getString("nb_threads_actifs") + "\n(" + getString("Requetes_http_en_cours")
+				+ "):");
 		addCell(integerFormat.format(javaInformations.getActiveThreadCount()));
 		if (!noDatabase) {
 			addCell(getString("nb_connexions_actives") + ':');
@@ -218,10 +218,11 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		}
 		if (javaInformations.getSystemCpuLoad() >= 0) {
 			addCell(getString("systemCpuLoad") + ':');
-			final Phrase systemCpuLoadPhrase = new Phrase(decimalFormat.format(javaInformations
-					.getSystemCpuLoad()) + BAR_SEPARATOR, cellFont);
-			final Image systemCpuLoadImage = Image.getInstance(
-					Bar.toBarWithAlert(javaInformations.getSystemCpuLoad()), null);
+			final Phrase systemCpuLoadPhrase = new Phrase(
+					decimalFormat.format(javaInformations.getSystemCpuLoad()) + BAR_SEPARATOR,
+					cellFont);
+			final Image systemCpuLoadImage = Image
+					.getInstance(Bar.toBarWithAlert(javaInformations.getSystemCpuLoad()), null);
 			systemCpuLoadImage.scalePercent(50);
 			systemCpuLoadPhrase.add(new Chunk(systemCpuLoadImage, 0, 0));
 			currentTable.addCell(systemCpuLoadPhrase);
@@ -237,8 +238,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		}
 	}
 
-	private void writeDetails(JavaInformations javaInformations) throws BadElementException,
-			IOException {
+	private void writeDetails(JavaInformations javaInformations)
+			throws BadElementException, IOException {
 		addCell(getString("OS") + ':');
 		final Phrase osPhrase = new Phrase("", cellFont);
 		final String osIconName = HtmlJavaInformationsReport
@@ -295,9 +296,9 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 		if (javaInformations.isDependenciesEnabled()) {
 			addCell(getString("Dependencies") + ':');
-			addCell(getFormattedString("nb_dependencies", javaInformations.getDependenciesList()
-					.size())
-					+ " ;\n" + javaInformations.getDependencies());
+			addCell(getFormattedString("nb_dependencies",
+					javaInformations.getDependenciesList().size()) + " ;\n"
+					+ javaInformations.getDependencies());
 		}
 		addCell("");
 		addCell("");
@@ -309,8 +310,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		final String applicationServerIconName = HtmlJavaInformationsReport
 				.getApplicationServerIconName(serverInfo);
 		if (applicationServerIconName != null) {
-			final Image applicationServerImage = PdfDocumentFactory.getImage("servers/"
-					+ applicationServerIconName);
+			final Image applicationServerImage = PdfDocumentFactory
+					.getImage("servers/" + applicationServerIconName);
 			applicationServerImage.scalePercent(40);
 			serverInfoPhrase.add(new Chunk(applicationServerImage, 0, 0));
 			serverInfoPhrase.add("   ");
@@ -346,7 +347,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			addCell("");
 			final Anchor anchor = new Anchor("DataSource reference", PdfFonts.BLUE.getFont());
 			anchor.setName("DataSource reference");
-			anchor.setReference("http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
+			anchor.setReference(
+					"http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
 			currentTable.addCell(anchor);
 		}
 	}
@@ -365,9 +367,11 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 					+ integerFormat.format(currentThreadsBusy) + DIVIDE
 					+ integerFormat.format(tomcatInformations.getMaxThreads()) + BAR_SEPARATOR,
 					cellFont);
-			final Image threadsImage = Image.getInstance(
-					Bar.toBarWithAlert(100d * currentThreadsBusy
-							/ tomcatInformations.getMaxThreads()), null);
+			final Image threadsImage = Image
+					.getInstance(
+							Bar.toBarWithAlert(
+									100d * currentThreadsBusy / tomcatInformations.getMaxThreads()),
+							null);
 			threadsImage.scalePercent(50);
 			phrase.add(new Chunk(threadsImage, 0, 0));
 
@@ -399,7 +403,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 				final Phrase permGenPhrase = new Phrase(
 						integerFormat.format(usedPermGen / 1024 / 1024) + ' ' + getString("Mo")
 								+ DIVIDE + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
-								+ getString("Mo") + BAR_SEPARATOR, cellFont);
+								+ getString("Mo") + BAR_SEPARATOR,
+						cellFont);
 				final Image permGenImage = Image.getInstance(
 						Bar.toBarWithAlert(memoryInformations.getUsedPermGenPercentage()), null);
 				permGenImage.scalePercent(50);

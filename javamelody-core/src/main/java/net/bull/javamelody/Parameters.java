@@ -75,8 +75,8 @@ final class Parameters {
 
 	static void initialize(ServletContext context) {
 		if ("1.6".compareTo(JAVA_VERSION) > 0) {
-			throw new IllegalStateException("La version java doit être 1.6 au minimum et non "
-					+ JAVA_VERSION);
+			throw new IllegalStateException(
+					"La version java doit être 1.6 au minimum et non " + JAVA_VERSION);
 		}
 		servletContext = context;
 
@@ -179,8 +179,8 @@ final class Parameters {
 				input.close();
 			}
 			@SuppressWarnings("unchecked")
-			final List<String> propertyNames = (List<String>) Collections.list(properties
-					.propertyNames());
+			final List<String> propertyNames = (List<String>) Collections
+					.list(properties.propertyNames());
 			// propertyNames ne sont pas ordonnés donc on les trie par ordre alphabétique
 			Collections.sort(propertyNames);
 			for (final String property : propertyNames) {
@@ -200,8 +200,8 @@ final class Parameters {
 		if (Parameters.getParameter(Parameter.TRANSPORT_FORMAT) == null) {
 			transportFormat = TransportFormat.SERIALIZED;
 		} else {
-			transportFormat = TransportFormat.valueOfIgnoreCase(Parameters
-					.getParameter(Parameter.TRANSPORT_FORMAT));
+			transportFormat = TransportFormat
+					.valueOfIgnoreCase(Parameters.getParameter(Parameter.TRANSPORT_FORMAT));
 		}
 		final String suffix = getMonitoringPath() + "?collector=stop&format="
 				+ transportFormat.getCode();

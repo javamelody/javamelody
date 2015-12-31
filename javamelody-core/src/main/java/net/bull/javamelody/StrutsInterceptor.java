@@ -29,10 +29,10 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 public final class StrutsInterceptor extends AbstractInterceptor {
 	private static final long serialVersionUID = 6536441072950545240L;
 	private static final Counter STRUTS_COUNTER = MonitoringProxy.getStrutsCounter();
-	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(STRUTS_COUNTER
-			.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean COUNTER_HIDDEN = Parameters
+			.isCounterHidden(STRUTS_COUNTER.getName());
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 
 	/**
 	 * Constructeur.

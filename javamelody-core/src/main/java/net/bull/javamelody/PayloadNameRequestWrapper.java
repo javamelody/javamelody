@@ -47,8 +47,8 @@ import javax.xml.stream.XMLStreamReader;
  * @author dhartford, roy.paterson, evernat
  */
 public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
-	private static final Pattern GWT_RPC_SEPARATOR_CHAR_PATTERN = Pattern.compile(Pattern
-			.quote("|"));
+	private static final Pattern GWT_RPC_SEPARATOR_CHAR_PATTERN = Pattern
+			.compile(Pattern.quote("|"));
 
 	/**
 	 * Name of request, or null if we don't know based on payload @null
@@ -97,7 +97,7 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 				requestType = "GWT-RPC";
 			} else if (contentType.startsWith("application/soap+xml") //SOAP 1.2
 					|| contentType.startsWith("text/xml") //SOAP 1.1
-					&& request.getHeader("SOAPAction") != null) {
+							&& request.getHeader("SOAPAction") != null) {
 				//parse SOAP method name
 				name = parseSoapMethodName(getBufferedInputStream(), getCharacterEncoding());
 				requestType = "SOAP";
@@ -281,8 +281,8 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 			if (characterEncoding == null) {
 				reader = new BufferedReader(new InputStreamReader(this.getInputStream()));
 			} else {
-				reader = new BufferedReader(new InputStreamReader(this.getInputStream(),
-						characterEncoding));
+				reader = new BufferedReader(
+						new InputStreamReader(this.getInputStream(), characterEncoding));
 			}
 		}
 		return reader;

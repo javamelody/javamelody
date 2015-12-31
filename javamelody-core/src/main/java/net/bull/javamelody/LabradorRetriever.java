@@ -320,8 +320,8 @@ class LabradorRetriever {
 	}
 
 	private static boolean shouldMock() {
-		return Boolean.parseBoolean(System.getProperty(Parameters.PARAMETER_SYSTEM_PREFIX
-				+ "mockLabradorRetriever"));
+		return Boolean.parseBoolean(
+				System.getProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever"));
 	}
 
 	// bouchon pour tests unitaires
@@ -333,8 +333,8 @@ class LabradorRetriever {
 				&& !request.contains(HttpParameters.JMX_VALUE)) {
 			final String message = request.contains("/test2") ? null
 					: "ceci est message pour le rapport";
-			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null), new Counter(
-					"services", null), new Counter(Counter.ERROR_COUNTER_NAME, null),
+			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null),
+					new Counter("services", null), new Counter(Counter.ERROR_COUNTER_NAME, null),
 					new JavaInformations(null, true), message);
 		} else {
 			result = LabradorMock.createMockResultOfPartCall(request);
@@ -377,8 +377,8 @@ class LabradorRetriever {
 			} else if (request.contains(HttpParameters.JMX_VALUE)) {
 				result = "-1";
 			} else if (request.contains(HttpParameters.JVM_PART)) {
-				result = Collections.singletonList(new JavaInformations(Parameters
-						.getServletContext(), false));
+				result = Collections
+						.singletonList(new JavaInformations(Parameters.getServletContext(), false));
 			} else {
 				result = null;
 			}

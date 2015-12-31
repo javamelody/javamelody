@@ -46,8 +46,8 @@ public class TestRange {
 	public void setUp() {
 		Utils.initialize();
 		periodRange = Period.JOUR.getRange();
-		customRange = Range.createCustomRange(
-				new Date(System.currentTimeMillis() - ONE_DAY_MILLIS), new Date());
+		customRange = Range.createCustomRange(new Date(System.currentTimeMillis() - ONE_DAY_MILLIS),
+				new Date());
 	}
 
 	/** Test. */
@@ -83,16 +83,12 @@ public class TestRange {
 	public void testParse() {
 		I18N.bindLocale(Locale.FRENCH);
 		try {
-			assertEquals("parse1", periodRange.getPeriod(), Range.parse(periodRange.getValue())
-					.getPeriod());
-			assertTrue(
-					"parse2",
-					isSameDay(customRange.getStartDate(), Range.parse(customRange.getValue())
-							.getStartDate()));
-			assertTrue(
-					"parse3",
-					isSameDay(customRange.getEndDate(), Range.parse(customRange.getValue())
-							.getEndDate()));
+			assertEquals("parse1", periodRange.getPeriod(),
+					Range.parse(periodRange.getValue()).getPeriod());
+			assertTrue("parse2", isSameDay(customRange.getStartDate(),
+					Range.parse(customRange.getValue()).getStartDate()));
+			assertTrue("parse3", isSameDay(customRange.getEndDate(),
+					Range.parse(customRange.getValue()).getEndDate()));
 
 			// on teste le résultat en cas d'erreur de format
 			assertNotNull("parse4",
@@ -119,8 +115,9 @@ public class TestRange {
 
 	@SuppressWarnings("deprecation")
 	private static boolean isSameDay(Date date1, Date date2) {
-		return (date1.getTime() - date1.getTimezoneOffset() * ONE_MINUTE_MILLIS) / ONE_DAY_MILLIS == (date2
-				.getTime() - date2.getTimezoneOffset() * ONE_MINUTE_MILLIS) / ONE_DAY_MILLIS;
+		return (date1.getTime() - date1.getTimezoneOffset() * ONE_MINUTE_MILLIS)
+				/ ONE_DAY_MILLIS == (date2.getTime()
+						- date2.getTimezoneOffset() * ONE_MINUTE_MILLIS) / ONE_DAY_MILLIS;
 	}
 
 	/** Test. */

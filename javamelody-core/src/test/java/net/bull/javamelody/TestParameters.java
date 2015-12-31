@@ -188,7 +188,8 @@ public class TestParameters {
 	 * @throws IOException e */
 	@Test
 	public void testGetCollectorUrlsByApplication() throws IOException {
-		assertNotNull("getCollectorUrlsByApplications", Parameters.getCollectorUrlsByApplications());
+		assertNotNull("getCollectorUrlsByApplications",
+				Parameters.getCollectorUrlsByApplications());
 	}
 
 	/** Test.
@@ -201,11 +202,11 @@ public class TestParameters {
 		try {
 			Parameters.addCollectorApplication(application,
 					Parameters.parseUrl("http://localhost:8090/test"));
-			assertEquals("addCollectorApplication", size + 1, Parameters
-					.getCollectorUrlsByApplications().size());
+			assertEquals("addCollectorApplication", size + 1,
+					Parameters.getCollectorUrlsByApplications().size());
 			Parameters.removeCollectorApplication(application);
-			assertEquals("removeCollectorApplication", size, Parameters
-					.getCollectorUrlsByApplications().size());
+			assertEquals("removeCollectorApplication", size,
+					Parameters.getCollectorUrlsByApplications().size());
 			// pour que le test ait une application à lire la prochaine fois
 			Parameters.addCollectorApplication(application,
 					Parameters.parseUrl("http://localhost:8090/test"));

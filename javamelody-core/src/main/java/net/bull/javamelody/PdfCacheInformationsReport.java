@@ -73,8 +73,8 @@ class PdfCacheInformationsReport extends PdfAbstractTableReport {
 	private void addConfigurationReference() throws DocumentException {
 		final Anchor ehcacheAnchor = new Anchor("Configuration reference", PdfFonts.BLUE.getFont());
 		ehcacheAnchor.setName("Ehcache configuration reference");
-		ehcacheAnchor
-				.setReference("http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary");
+		ehcacheAnchor.setReference(
+				"http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary");
 		ehcacheAnchor.setFont(PdfFonts.BLUE.getFont());
 		final Paragraph ehcacheParagraph = new Paragraph();
 		ehcacheParagraph.add(ehcacheAnchor);

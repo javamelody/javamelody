@@ -119,15 +119,15 @@ class JobInformations implements Serializable {
 				final Map<String, JobExecutionContext> currentlyExecutingJobsByFullName = new LinkedHashMap<String, JobExecutionContext>();
 				for (final JobExecutionContext currentlyExecutingJob : (List<JobExecutionContext>) scheduler
 						.getCurrentlyExecutingJobs()) {
-					final JobDetail jobDetail = QuartzAdapter.getSingleton().getContextJobDetail(
-							currentlyExecutingJob);
-					final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(
-							jobDetail);
+					final JobDetail jobDetail = QuartzAdapter.getSingleton()
+							.getContextJobDetail(currentlyExecutingJob);
+					final String jobFullName = QuartzAdapter.getSingleton()
+							.getJobFullName(jobDetail);
 					currentlyExecutingJobsByFullName.put(jobFullName, currentlyExecutingJob);
 				}
 				for (final JobDetail jobDetail : getAllJobsOfScheduler(scheduler)) {
-					final String jobFullName = QuartzAdapter.getSingleton().getJobFullName(
-							jobDetail);
+					final String jobFullName = QuartzAdapter.getSingleton()
+							.getJobFullName(jobDetail);
 					final JobExecutionContext jobExecutionContext = currentlyExecutingJobsByFullName
 							.get(jobFullName);
 					result.add(new JobInformations(jobDetail, jobExecutionContext, scheduler));
@@ -171,10 +171,10 @@ class JobInformations implements Serializable {
 	private static Date getNextFireTime(List<Trigger> triggers) {
 		Date nextFireTime = null;
 		for (final Trigger trigger : triggers) {
-			final Date triggerNextFireTime = QuartzAdapter.getSingleton().getTriggerNextFireTime(
-					trigger);
-			if (nextFireTime == null || triggerNextFireTime != null
-					&& nextFireTime.after(triggerNextFireTime)) {
+			final Date triggerNextFireTime = QuartzAdapter.getSingleton()
+					.getTriggerNextFireTime(trigger);
+			if (nextFireTime == null
+					|| triggerNextFireTime != null && nextFireTime.after(triggerNextFireTime)) {
 				nextFireTime = triggerNextFireTime;
 			}
 		}

@@ -67,8 +67,8 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void testClassesInInclude() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(null, Arrays.asList(
-				"net.bull", "java"));
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
+				Arrays.asList("net.bull", "java"));
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
 		samplingProfiler.clear();
@@ -100,8 +100,8 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void testConstructor() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(Arrays.asList("java",
-				"javax."), null);
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(
+				Arrays.asList("java", "javax."), null);
 		assertEmptyHotspots(samplingProfiler);
 	}
 

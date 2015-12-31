@@ -195,7 +195,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeAnchor("currentRequests", I18N.getString("Requetes_en_cours"));
 			writeln("#Requetes_en_cours#</h3>");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
-			writeCurrentRequests(javaInformationsList.get(0), counters, counterReportsByCounterName);
+			writeCurrentRequests(javaInformationsList.get(0), counters,
+					counterReportsByCounterName);
 		}
 
 		writeln("<h3 class='chapterTitle'><img src='?resource=systeminfo.png' alt='#Informations_systemes#'/>");
@@ -248,8 +249,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeSummary() throws IOException {
 		final String javaMelodyUrl = "<a href='https://github.com/javamelody/javamelody/wiki' target='_blank'>JavaMelody</a>";
 		if (range.getPeriod() == Period.TOUT) {
-			final String startDate = I18N.createDateAndTimeFormat().format(
-					collector.getCounters().get(0).getStartDate());
+			final String startDate = I18N.createDateAndTimeFormat()
+					.format(collector.getCounters().get(0).getStartDate());
 			writeDirectly(getFormattedString("Statistiques", javaMelodyUrl,
 					I18N.getCurrentDateAndTime(), startDate, collector.getApplication()));
 		} else {
@@ -257,8 +258,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					I18N.getCurrentDateAndTime(), collector.getApplication()));
 		}
 		if (javaInformationsList.get(0).getContextDisplayName() != null) {
-			writeDirectly(htmlEncodeButNotSpace(" ("
-					+ javaInformationsList.get(0).getContextDisplayName() + ')'));
+			writeDirectly(htmlEncodeButNotSpace(
+					" (" + javaInformationsList.get(0).getContextDisplayName() + ')'));
 		}
 		writeln("");
 	}
@@ -315,7 +316,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("</div></div>");
 	}
 
-	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters) throws IOException {
+	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters)
+			throws IOException {
 		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
 		for (final Counter counter : counters) {
 			final HtmlCounterReport htmlCounterReport = writeCounter(counter);
@@ -345,8 +347,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeCounterTitle(Counter counter) throws IOException {
 		writeln("<h3 class='chapterTitle'><img src='?resource=" + counter.getIconName() + "' alt='"
 				+ counter.getName() + "'/>");
-		writeAnchor(counter.getName(), I18N.getString("Stats") + ' '
-				+ counter.getName().toLowerCase(Locale.ENGLISH));
+		writeAnchor(counter.getName(),
+				I18N.getString("Stats") + ' ' + counter.getName().toLowerCase(Locale.ENGLISH));
 		final String counterLabel = getString(counter.getName() + "Label");
 		write(getFormattedString("Statistiques_compteur", counterLabel));
 		writeln(" - " + range.getLabel() + "</h3>");
@@ -357,8 +359,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		new HtmlForms(writer).writeAddAndRemoveApplicationLinks(currentApplication);
 	}
 
-	void writeMessageIfNotNull(String message, String partToRedirectTo, String anchorNameForRedirect)
-			throws IOException {
+	void writeMessageIfNotNull(String message, String partToRedirectTo,
+			String anchorNameForRedirect) throws IOException {
 		if (message != null) {
 			writeln(SCRIPT_BEGIN);
 			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
@@ -370,8 +372,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					writeln("location.href = '?'");
 				} else {
 					writeln("if (location.href.indexOf('?') != -1) {");
-					writeDirectly("location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
-							+ anchorNameForRedirect + "';");
+					writeDirectly(
+							"location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
+									+ anchorNameForRedirect + "';");
 					writeln("} else {");
 					writeDirectly("location.href = '#" + anchorNameForRedirect + "';");
 					writeln("}");
@@ -851,7 +854,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				write("<a href='?part=" + part + graphParameter + urlEncode(graphName)
 						+ "&amp;period=" + myPeriod.getCode() + "' ");
 			}
-			write("title='" + getFormattedString("Choisir_periode", myPeriod.getLinkLabel()) + "'>");
+			write("title='" + getFormattedString("Choisir_periode", myPeriod.getLinkLabel())
+					+ "'>");
 			write("<img src='?resource=" + myPeriod.getIconName() + "' alt='"
 					+ myPeriod.getLinkLabel() + "' /> ");
 			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;");

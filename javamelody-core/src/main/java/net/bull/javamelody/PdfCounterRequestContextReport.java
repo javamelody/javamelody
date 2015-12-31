@@ -108,8 +108,8 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		writeContexts(rootCurrentContexts);
 	}
 
-	private void writeContexts(List<CounterRequestContext> contexts) throws DocumentException,
-			IOException {
+	private void writeContexts(List<CounterRequestContext> contexts)
+			throws DocumentException, IOException {
 		boolean displayRemoteUser = false;
 		for (final CounterRequestContext context : contexts) {
 			if (context.getRemoteUser() != null) {
@@ -188,8 +188,8 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
 		// attention, cela ne marcherait pas sur le serveur de collecte, à partir du seul threadId
 		// s'il y a plusieurs instances en cluster
-		final ThreadInformations threadInformations = threadInformationsByThreadId.get(rootContext
-				.getThreadId());
+		final ThreadInformations threadInformations = threadInformationsByThreadId
+				.get(rootContext.getThreadId());
 		if (threadInformations == null) {
 			addCell(""); // un décalage n'a pas permis de récupérer le thread de ce context
 		} else {
@@ -225,8 +225,8 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		}
 	}
 
-	private void writeDurations(List<CounterRequestContext> contexts) throws DocumentException,
-			IOException {
+	private void writeDurations(List<CounterRequestContext> contexts)
+			throws DocumentException, IOException {
 		getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
 
 		final Paragraph paragraph = new Paragraph("", cellFont);
@@ -237,8 +237,8 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 			}
 			final int duration = context.getDuration(timeOfSnapshot);
 			final Counter parentCounter = context.getParentCounter();
-			final PdfCounterReport counterReport = counterReportsByCounterName.get(parentCounter
-					.getName());
+			final PdfCounterReport counterReport = counterReportsByCounterName
+					.get(parentCounter.getName());
 			if (parentCounter.getIconName() != null) {
 				paragraph.add(new Chunk(getImage(parentCounter.getIconName()), 0, -1));
 			}
@@ -254,8 +254,8 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		addCell(paragraph);
 	}
 
-	private void writeRequests(List<CounterRequestContext> contexts) throws DocumentException,
-			IOException {
+	private void writeRequests(List<CounterRequestContext> contexts)
+			throws DocumentException, IOException {
 		final PdfPCell defaultCell = getDefaultCell();
 		final PdfPCell requestCell = new PdfPCell();
 		final Paragraph phrase = new Paragraph("", cellFont);
@@ -274,8 +274,8 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 
 	private void writeRequest(CounterRequestContext context, PdfPCell cell, int margin)
 			throws DocumentException, IOException {
-		final Paragraph paragraph = new Paragraph(getDefaultCell().getLeading()
-				+ cellFont.getSize());
+		final Paragraph paragraph = new Paragraph(
+				getDefaultCell().getLeading() + cellFont.getSize());
 		paragraph.setIndentationLeft(margin);
 		if (context.getParentCounter().getIconName() != null) {
 			paragraph.add(new Chunk(getImage(context.getParentCounter().getIconName()), 0, -1));

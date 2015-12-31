@@ -121,8 +121,8 @@ class CacheInformations implements Serializable {
 			// getInMemoryHits, getCacheHits et getCacheMisses existent en v1.2.1 et v1.2.3
 			// mais avec int comme résultat et existent depuis v1.2.4 avec long comme résultat
 			// donc on cast en Number et non en Integer ou en Long
-			final Number result = (Number) Statistics.class
-					.getMethod(methodName, (Class<?>[]) null).invoke(statistics, (Object[]) null);
+			final Number result = (Number) Statistics.class.getMethod(methodName, (Class<?>[]) null)
+					.invoke(statistics, (Object[]) null);
 			return result.longValue();
 		} catch (final NoSuchMethodException e) {
 			throw new IllegalArgumentException(e);
@@ -249,8 +249,8 @@ class CacheInformations implements Serializable {
 		if (!eternal) {
 			sb.append(", timeToLiveSeconds = ").append(configuration.getTimeToLiveSeconds());
 			sb.append(", timeToIdleSeconds = ").append(configuration.getTimeToIdleSeconds());
-			sb.append(", memoryStoreEvictionPolicy = ").append(
-					configuration.getMemoryStoreEvictionPolicy());
+			sb.append(", memoryStoreEvictionPolicy = ")
+					.append(configuration.getMemoryStoreEvictionPolicy());
 		}
 		sb.append(", diskPersistent = ").append(configuration.isDiskPersistent());
 		sb.append(']');

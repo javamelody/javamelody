@@ -73,9 +73,9 @@ public class TestMonitoringFilterInit {
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		expect(config.getFilterName()).andReturn(FILTER_NAME).anyTimes();
 		// anyTimes sur getInitParameter car TestJdbcDriver a pu fixer la propriété système à false
-		expect(
-				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
+		expect(context.getInitParameter(
+				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode())).andReturn(null)
+						.anyTimes();
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
@@ -99,18 +99,18 @@ public class TestMonitoringFilterInit {
 		try {
 			init();
 			setUp();
-			expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode())).andReturn(
-					"http,sql").anyTimes();
-			expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode())).andReturn(
-					"[0-9]").anyTimes();
+			expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode()))
+					.andReturn("http,sql").anyTimes();
+			expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode()))
+					.andReturn("[0-9]").anyTimes();
 			init();
 			setUp();
-			expect(config.getInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode())).andReturn(
-					"/static/*").anyTimes();
+			expect(config.getInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode()))
+					.andReturn("/static/*").anyTimes();
 			init();
 			setUp();
-			expect(config.getInitParameter(Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(
-					"127\\.0\\.0\\.1").anyTimes();
+			expect(config.getInitParameter(Parameter.ALLOWED_ADDR_PATTERN.getCode()))
+					.andReturn("127\\.0\\.0\\.1").anyTimes();
 			init();
 
 			// pour ce MonitoringFilter, instanceEnabled sera false

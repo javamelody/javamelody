@@ -156,8 +156,8 @@ final class MBeans {
 				// n'arrive probablement pas, mais au cas où
 				firstPropertyValue = null;
 			} else {
-				firstPropertyValue = name.getKeyProperty(keyPropertyListString
-						.substring(0, indexOf));
+				firstPropertyValue = name
+						.getKeyProperty(keyPropertyListString.substring(0, indexOf));
 			}
 			if ("Servlet".equals(firstPropertyValue) && "jonas".equals(domain)) {
 				// la partie "jonas:j2eeType=Servlet" dans Jonas (5.1.0) est trop lourde
@@ -212,7 +212,8 @@ final class MBeans {
 		return new MBeanNode(mbeanName, description, attributes);
 	}
 
-	private List<MBeanAttribute> getAttributes(ObjectName name, MBeanAttributeInfo[] attributeInfos) {
+	private List<MBeanAttribute> getAttributes(ObjectName name,
+			MBeanAttributeInfo[] attributeInfos) {
 		final List<String> attributeNames = new ArrayList<String>(attributeInfos.length);
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
@@ -221,8 +222,8 @@ final class MBeans {
 				attributeNames.add(attribute.getName());
 			}
 		}
-		final String[] attributeNamesArray = attributeNames.toArray(new String[attributeNames
-				.size()]);
+		final String[] attributeNamesArray = attributeNames
+				.toArray(new String[attributeNames.size()]);
 		final List<MBeanAttribute> result = new ArrayList<MBeanAttribute>();
 		try {
 			// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
@@ -356,8 +357,8 @@ final class MBeans {
 			for (final MBeanServer mbeanServer : mBeanServers) {
 				try {
 					final MBeans mbeans = new MBeans(mbeanServer);
-					final Object jmxValue = mbeans.convertValueIfNeeded(mbeans.getAttribute(
-							new ObjectName(name), attribute));
+					final Object jmxValue = mbeans.convertValueIfNeeded(
+							mbeans.getAttribute(new ObjectName(name), attribute));
 					result.add(jmxValue);
 					instanceNotFoundException = null;
 					// ObjectName trouvé dans ce MBeanServer, inutile de chercher dans les suivants
@@ -381,8 +382,8 @@ final class MBeans {
 	}
 
 	static String getConvertedAttributes(String jmxValueParameter) {
-		final List<String> mbeanAttributes = Arrays.asList(jmxValueParameter.split("["
-				+ ATTRIBUTES_SEPARATOR + ']'));
+		final List<String> mbeanAttributes = Arrays
+				.asList(jmxValueParameter.split("[" + ATTRIBUTES_SEPARATOR + ']'));
 		final List<Object> jmxValues = getConvertedAttributes(mbeanAttributes);
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;
@@ -401,8 +402,8 @@ final class MBeans {
 		for (final MBeanAttributeInfo attributeInfo : attributeInfos) {
 			if (name.equals(attributeInfo.getName())) {
 				// certaines descriptions d'attributs comme les NamingResources dans Tomcat 7 contiennent aussi des espaces qui se suivent
-				final String attributeDescription = formatDescription(attributeInfo
-						.getDescription());
+				final String attributeDescription = formatDescription(
+						attributeInfo.getDescription());
 				if (attributeDescription == null || name.equals(attributeDescription)
 						|| attributeDescription.length() == 0) {
 					// les attributs des MBeans de java.lang ont des descriptions égales aux noms,

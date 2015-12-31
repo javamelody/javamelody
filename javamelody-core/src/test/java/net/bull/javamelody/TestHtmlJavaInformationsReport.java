@@ -78,11 +78,16 @@ public class TestHtmlJavaInformationsReport {
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
 		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
 		try {
-			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-					new ObjectName("Catalina:type=ThreadPool,name=jk-8009")).getObjectName());
-			mBeans.add(mBeanServer.registerMBean(new GlobalRequestProcessor(),
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8009"))
+			mBeans.add(mBeanServer
+					.registerMBean(new ThreadPool(),
+							new ObjectName("Catalina:type=ThreadPool,name=jk-8009"))
 					.getObjectName());
+			mBeans.add(
+					mBeanServer
+							.registerMBean(new GlobalRequestProcessor(),
+									new ObjectName(
+											"Catalina:type=GlobalRequestProcessor,name=jk-8009"))
+							.getObjectName());
 			TomcatInformations.initMBeans();
 			final List<JavaInformations> myJavaInformationsList = Arrays
 					.asList(new JavaInformations(null, true));
@@ -91,13 +96,18 @@ public class TestHtmlJavaInformationsReport {
 			htmlReport.toHtml();
 			assertNotEmptyAndClear(writer);
 
-			mBeans.add(mBeanServer.registerMBean(new ThreadPool(),
-					new ObjectName("Catalina:type=ThreadPool,name=jk-8010")).getObjectName());
+			mBeans.add(mBeanServer
+					.registerMBean(new ThreadPool(),
+							new ObjectName("Catalina:type=ThreadPool,name=jk-8010"))
+					.getObjectName());
 			final GlobalRequestProcessor jk8010 = new GlobalRequestProcessor();
 			jk8010.setrequestCount(0);
-			mBeans.add(mBeanServer.registerMBean(jk8010,
-					new ObjectName("Catalina:type=GlobalRequestProcessor,name=jk-8010"))
-					.getObjectName());
+			mBeans.add(
+					mBeanServer
+							.registerMBean(jk8010,
+									new ObjectName(
+											"Catalina:type=GlobalRequestProcessor,name=jk-8010"))
+							.getObjectName());
 			TomcatInformations.initMBeans();
 			final List<JavaInformations> myJavaInformationsList2 = Arrays
 					.asList(new JavaInformations(null, true));

@@ -198,8 +198,8 @@ public class TestPdfReport {
 		}
 	}
 
-	private void job(Collector collector, ByteArrayOutputStream output) throws IOException,
-			SchedulerException {
+	private void job(Collector collector, ByteArrayOutputStream output)
+			throws IOException, SchedulerException {
 		// job quartz
 		JobGlobalListener.initJobGlobalListener();
 		JobGlobalListener.getJobCounter().clear();
@@ -276,8 +276,8 @@ public class TestPdfReport {
 	}
 
 	private void rootContexts(Counter counter, Collector collector,
-			JavaInformations javaInformations, ByteArrayOutputStream output) throws IOException,
-			DocumentException {
+			JavaInformations javaInformations, ByteArrayOutputStream output)
+					throws IOException, DocumentException {
 		PdfReport pdfReport;
 		TestCounter.bindRootContexts("first request", counter, 3);
 		pdfReport = new PdfReport(collector, false, Collections.singletonList(javaInformations),
@@ -349,8 +349,8 @@ public class TestPdfReport {
 				Period.TOUT.getRange(), true, document);
 		pdfCounterReport.toPdf();
 		pdfCounterReport.writeRequestDetails();
-		final PdfCounterReport pdfErrorCounterReport = new PdfCounterReport(collector,
-				errorCounter, Period.TOUT.getRange(), true, document);
+		final PdfCounterReport pdfErrorCounterReport = new PdfCounterReport(collector, errorCounter,
+				Period.TOUT.getRange(), true, document);
 		pdfErrorCounterReport.writeRequestDetails();
 		document.close();
 		assertNotEmptyAndClear(output);
@@ -362,7 +362,8 @@ public class TestPdfReport {
 	@Test
 	public void testEmptyPdfCounterRequestContext() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null, output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
+				output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
@@ -381,7 +382,8 @@ public class TestPdfReport {
 	@Test
 	public void testPdfThreadInformationsReport() throws IOException, DocumentException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null, output);
+		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
+				output);
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		boolean stackTraceEnabled = true;
@@ -405,8 +407,10 @@ public class TestPdfReport {
 		// writeDeadlocks
 		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
 		final Thread thread = Thread.currentThread();
-		threads.add(new ThreadInformations(thread, null, 10, 10, false, Parameters.getHostAddress()));
-		threads.add(new ThreadInformations(thread, null, 10, 10, true, Parameters.getHostAddress()));
+		threads.add(
+				new ThreadInformations(thread, null, 10, 10, false, Parameters.getHostAddress()));
+		threads.add(
+				new ThreadInformations(thread, null, 10, 10, true, Parameters.getHostAddress()));
 		final Document document3 = pdfDocumentFactory.createDocument();
 		document3.open();
 		stackTraceEnabled = false;

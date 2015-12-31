@@ -86,12 +86,11 @@ class DatabaseInformations implements Serializable {
 						"innodb_status");
 				break;
 			case ORACLE:
-				tmp = Arrays
-						.asList("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
-								"invalidObjects", "disabledConstraints", "instance", "database",
-								"nlsParameters", "tablespaceFreespace", "datafileIo",
-								"tablespaceExtents", "ratios", "parameters",
-								"rollbackSegmentStatistics", "statistics", "events");
+				tmp = Arrays.asList("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
+						"invalidObjects", "disabledConstraints", "instance", "database",
+						"nlsParameters", "tablespaceFreespace", "datafileIo", "tablespaceExtents",
+						"ratios", "parameters", "rollbackSegmentStatistics", "statistics",
+						"events");
 				break;
 			case DB2:
 				tmp = Arrays.asList("mon_current_sql", "mon_db_summary", "mon_lockwaits",
@@ -165,8 +164,8 @@ class DatabaseInformations implements Serializable {
 					return database;
 				}
 			}
-			throw new IllegalArgumentException(I18N.getFormattedString(
-					"type_base_de_donnees_inconnu", databaseName));
+			throw new IllegalArgumentException(
+					I18N.getFormattedString("type_base_de_donnees_inconnu", databaseName));
 		}
 	}
 
@@ -287,8 +286,8 @@ class DatabaseInformations implements Serializable {
 		// on commence par voir si le driver jdbc a été utilisé
 		// car s'il n'y a pas de datasource une exception est déclenchée
 		if (Parameters.getLastConnectUrl() != null) {
-			final Connection connection = DriverManager.getConnection(
-					Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo());
+			final Connection connection = DriverManager
+					.getConnection(Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo());
 			connection.setAutoCommit(false);
 			return connection;
 		}

@@ -89,13 +89,12 @@ public class TestCollectorServlet {
 		verify(context);
 
 		setUp();
-		expect(
-				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.LOG.getCode())).andReturn(TRUE).anyTimes();
-		expect(
-				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("127\\.0\\.0\\.1")
-				.anyTimes();
+		expect(context
+				.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.LOG.getCode()))
+						.andReturn(TRUE).anyTimes();
+		expect(context.getInitParameter(
+				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.ALLOWED_ADDR_PATTERN.getCode()))
+						.andReturn("127\\.0\\.0\\.1").anyTimes();
 		replay(config);
 		replay(context);
 		collectorServlet.init(config);
@@ -126,10 +125,9 @@ public class TestCollectorServlet {
 			expect(request.getParameter("application")).andReturn(application).anyTimes();
 		}
 		if (pattern != null) {
-			expect(
-					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn(pattern)
-					.anyTimes();
+			expect(context.getInitParameter(
+					Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.ALLOWED_ADDR_PATTERN.getCode()))
+							.andReturn(pattern).anyTimes();
 			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR).anyTimes();
 		}
 		replay(config);
@@ -159,8 +157,8 @@ public class TestCollectorServlet {
 		doPost(TEST, "http://une url,pas une url", true);
 	}
 
-	private void doPost(String appName, String appUrls, boolean allowed) throws IOException,
-			ServletException {
+	private void doPost(String appName, String appUrls, boolean allowed)
+			throws IOException, ServletException {
 		setUp();
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
@@ -177,10 +175,9 @@ public class TestCollectorServlet {
 		expect(request.getParameter("appName")).andReturn(appName).anyTimes();
 		expect(request.getParameter("appUrls")).andReturn(appUrls).anyTimes();
 		if (!allowed) {
-			expect(
-					context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-							+ Parameter.ALLOWED_ADDR_PATTERN.getCode())).andReturn("none")
-					.anyTimes();
+			expect(context.getInitParameter(
+					Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.ALLOWED_ADDR_PATTERN.getCode()))
+							.andReturn("none").anyTimes();
 			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR).anyTimes();
 		}
 		replay(config);

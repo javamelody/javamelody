@@ -105,8 +105,8 @@ class PdfCoreReport extends PdfAbstractReport {
 		if (!collectorServer) {
 			addParagraph(getString("Requetes_en_cours"), "hourglass.png");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
-			pdfCounterRequestContextReports.addAll(writeCurrentRequests(
-					javaInformationsList.get(0), counters, pdfCounterReports));
+			pdfCounterRequestContextReports.addAll(
+					writeCurrentRequests(javaInformationsList.get(0), counters, pdfCounterReports));
 		}
 
 		addToDocument(new Phrase("\n", normalFont));
@@ -171,8 +171,8 @@ class PdfCoreReport extends PdfAbstractReport {
 	private String buildSummary() {
 		final String tmp;
 		if (range.getPeriod() == Period.TOUT) {
-			final String startDate = I18N.createDateAndTimeFormat().format(
-					collector.getCounters().get(0).getStartDate());
+			final String startDate = I18N.createDateAndTimeFormat()
+					.format(collector.getCounters().get(0).getStartDate());
 			tmp = getFormattedString("Statistiques", "JavaMelody", I18N.getCurrentDateAndTime(),
 					startDate, collector.getApplication());
 		} else {
@@ -196,8 +196,8 @@ class PdfCoreReport extends PdfAbstractReport {
 			addToDocument(jrobinParagraph);
 			return;
 		}
-		final Paragraph jrobinParagraph = new Paragraph("", FontFactory.getFont(
-				FontFactory.HELVETICA, 9f, Font.NORMAL));
+		final Paragraph jrobinParagraph = new Paragraph("",
+				FontFactory.getFont(FontFactory.HELVETICA, 9f, Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
 		int i = 0;
@@ -223,8 +223,8 @@ class PdfCoreReport extends PdfAbstractReport {
 					// un retour après httpSessions et avant activeThreads pour l'alignement
 					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
 				}
-				final Image image = Image.getInstance(jrobin.graph(range, SMALL_GRAPH_WIDTH,
-						SMALL_GRAPH_HEIGHT));
+				final Image image = Image
+						.getInstance(jrobin.graph(range, SMALL_GRAPH_WIDTH, SMALL_GRAPH_HEIGHT));
 				image.scalePercent(50);
 				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
 				jrobinParagraph.add(new Phrase(" "));
@@ -256,8 +256,8 @@ class PdfCoreReport extends PdfAbstractReport {
 			}
 			for (final JRobin jrobin : counterJRobins) {
 				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
-				final Image image = Image.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH,
-						LARGE_GRAPH_HEIGHT));
+				final Image image = Image
+						.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH, LARGE_GRAPH_HEIGHT));
 				jrobinTable.addCell(image);
 			}
 		}
@@ -266,8 +266,8 @@ class PdfCoreReport extends PdfAbstractReport {
 		newPage();
 	}
 
-	private List<PdfCounterReport> writeCounters(List<Counter> counters) throws IOException,
-			DocumentException {
+	private List<PdfCounterReport> writeCounters(List<Counter> counters)
+			throws IOException, DocumentException {
 		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
 		for (final Counter counter : counters) {
 			pdfCounterReports.add(writeCounter(counter));
@@ -277,9 +277,8 @@ class PdfCoreReport extends PdfAbstractReport {
 
 	private PdfCounterReport writeCounter(Counter counter) throws DocumentException, IOException {
 		final String counterLabel = getString(counter.getName() + "Label");
-		addParagraph(
-				getFormattedString("Statistiques_compteur", counterLabel) + " - "
-						+ range.getLabel(), counter.getIconName());
+		addParagraph(getFormattedString("Statistiques_compteur", counterLabel) + " - "
+				+ range.getLabel(), counter.getIconName());
 		final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter, range,
 				false, getDocument());
 		pdfCounterReport.toPdf();
@@ -293,8 +292,8 @@ class PdfCoreReport extends PdfAbstractReport {
 		}
 	}
 
-	private void writeCounterDetails(PdfCounterReport pdfCounterReport) throws DocumentException,
-			IOException {
+	private void writeCounterDetails(PdfCounterReport pdfCounterReport)
+			throws DocumentException, IOException {
 		final String counterLabel = getString(pdfCounterReport.getCounterName() + "Label");
 		addParagraph(getFormattedString("Statistiques_compteur_detaillees", counterLabel) + " - "
 				+ range.getLabel(), pdfCounterReport.getCounterIconName());
@@ -331,7 +330,7 @@ class PdfCoreReport extends PdfAbstractReport {
 
 	private void writeCurrentRequestsDetails(
 			List<PdfCounterRequestContextReport> pdfCounterRequestContextReports)
-			throws IOException, DocumentException {
+					throws IOException, DocumentException {
 		for (final PdfCounterRequestContextReport pdfCounterRequestContextReport : pdfCounterRequestContextReports) {
 			pdfCounterRequestContextReport.writeContextDetails();
 		}
@@ -343,8 +342,8 @@ class PdfCoreReport extends PdfAbstractReport {
 	private void writeThreads(boolean includeDetails) throws DocumentException, IOException {
 		String eol = "";
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			addToDocument(new Phrase(eol
-					+ getFormattedString("Threads_sur", javaInformations.getHost()) + ": ",
+			addToDocument(new Phrase(
+					eol + getFormattedString("Threads_sur", javaInformations.getHost()) + ": ",
 					boldFont));
 			addToDocument(new Phrase(getFormattedString("thread_count",
 					javaInformations.getThreadCount(), javaInformations.getPeakThreadCount(),
@@ -438,8 +437,8 @@ class PdfCoreReport extends PdfAbstractReport {
 		addToDocument(new Phrase(string, cellFont));
 	}
 
-	private void addParagraph(String paragraphTitle, String iconName) throws DocumentException,
-			IOException {
+	private void addParagraph(String paragraphTitle, String iconName)
+			throws DocumentException, IOException {
 		addToDocument(pdfDocumentFactory.createParagraphElement(paragraphTitle, iconName));
 	}
 }

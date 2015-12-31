@@ -62,8 +62,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	private boolean instanceEnabled;
 
-	static final class SessionInformationsComparator implements Comparator<SessionInformations>,
-			Serializable {
+	static final class SessionInformationsComparator
+			implements Comparator<SessionInformations>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */

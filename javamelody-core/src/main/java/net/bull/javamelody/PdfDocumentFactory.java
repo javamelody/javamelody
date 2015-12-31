@@ -152,7 +152,8 @@ class PdfDocumentFactory {
 
 		// we add some meta information to the document (after writer)
 		document.addAuthor(application);
-		document.addCreator("JavaMelody par E. Vernat, https://github.com/javamelody/javamelody/wiki");
+		document.addCreator(
+				"JavaMelody par E. Vernat, https://github.com/javamelody/javamelody/wiki");
 		document.addTitle(title);
 		return document;
 	}
@@ -172,8 +173,8 @@ class PdfDocumentFactory {
 	}
 
 	// We create a writer that listens to the document and directs a PDF-stream to output
-	private void createWriter(Document document, String title) throws DocumentException,
-			IOException {
+	private void createWriter(Document document, String title)
+			throws DocumentException, IOException {
 		final PdfWriter writer = PdfWriter.getInstance(document, output);
 		//writer.setViewerPreferences(PdfWriter.PageLayoutTwoColumnLeft);
 
@@ -234,7 +235,7 @@ class PdfDocumentFactory {
 	}
 
 	static Image getImage(String resourceFileName) throws BadElementException, IOException {
-		return Image.getInstance(PdfDocumentFactory.class.getResource(Parameters
-				.getResourcePath(resourceFileName)));
+		return Image.getInstance(
+				PdfDocumentFactory.class.getResource(Parameters.getResourcePath(resourceFileName)));
 	}
 }

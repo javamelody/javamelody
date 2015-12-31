@@ -70,8 +70,8 @@ public class CollectorServlet extends HttpServlet {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-			IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		if (!httpAuth.isAllowed(req, resp)) {
 			return;
 		}
@@ -86,8 +86,7 @@ public class CollectorServlet extends HttpServlet {
 				return;
 			}
 			if (!collectorServer.isApplicationDataAvailable(application)) {
-				resp.sendError(
-						HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Data unavailable for the application "
 								+ I18N.htmlEncode(application, false));
 				return;
@@ -131,8 +130,8 @@ public class CollectorServlet extends HttpServlet {
 			LOGGER.info("monitored application added: " + appName);
 			LOGGER.info("urls of the monitored application: " + appUrls);
 			CollectorController.showAlertAndRedirectTo(resp,
-					I18N.getFormattedString("application_ajoutee", appName), "?application="
-							+ appName);
+					I18N.getFormattedString("application_ajoutee", appName),
+					"?application=" + appName);
 		} catch (final FileNotFoundException e) {
 			final String message = I18N.getString("monitoring_configure");
 			LOGGER.warn(message, e);

@@ -50,8 +50,8 @@ public class TestMBeans {
 		Utils.initialize();
 		mbeans = new MBeans();
 		mBeanServer = MBeans.getPlatformMBeanServer();
-		final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool(), new ObjectName(
-				"Catalina:type=ThreadPool"));
+		final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool(),
+				new ObjectName("Catalina:type=ThreadPool"));
 		mbeansList.add(mBean1.getObjectName());
 		final ObjectInstance mBean2 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
 				new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"));
@@ -87,7 +87,8 @@ public class TestMBeans {
 	 * @throws JMException e */
 	@Test
 	public void testGetTomcatGlobalRequestProcessors() throws JMException {
-		assertNotNull("getTomcatGlobalRequestProcessors", mbeans.getTomcatGlobalRequestProcessors());
+		assertNotNull("getTomcatGlobalRequestProcessors",
+				mbeans.getTomcatGlobalRequestProcessors());
 	}
 
 	/** Test.
@@ -110,10 +111,8 @@ public class TestMBeans {
 		final String firstMBean = mbeansList.get(0).toString();
 		final String message = "getConvertedAttributes";
 		assertNotNull(message, MBeans.getConvertedAttributes(firstMBean + ".maxThreads"));
-		assertNotNull(
-				message,
-				MBeans.getConvertedAttributes(firstMBean + ".maxThreads|" + firstMBean
-						+ ".maxThreads"));
+		assertNotNull(message, MBeans
+				.getConvertedAttributes(firstMBean + ".maxThreads|" + firstMBean + ".maxThreads"));
 		assertNotNull(message, MBeans.getConvertedAttributes(firstMBean + ".intArrayAsInJRockit"));
 		assertNotNull(message,
 				MBeans.getConvertedAttributes(firstMBean + ".doubleArrayAsInJRockit"));

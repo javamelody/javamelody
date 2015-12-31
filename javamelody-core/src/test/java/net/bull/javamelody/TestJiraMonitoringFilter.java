@@ -84,9 +84,9 @@ public class TestJiraMonitoringFilter { // NOPMD
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		expect(config.getFilterName()).andReturn(FILTER_NAME).anyTimes();
 		// anyTimes sur getInitParameter car TestJdbcDriver a pu fixer la propriété système à false
-		expect(
-				context.getInitParameter(Parameters.PARAMETER_SYSTEM_PREFIX
-						+ Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
+		expect(context.getInitParameter(
+				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode())).andReturn(null)
+						.anyTimes();
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
@@ -172,8 +172,8 @@ public class TestJiraMonitoringFilter { // NOPMD
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-		expect(request.getHeaders("Accept-Encoding")).andReturn(
-				Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+		expect(request.getHeaders("Accept-Encoding"))
+				.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 		if (session != null) {
 			expect(request.isRequestedSessionIdValid()).andReturn(Boolean.TRUE).anyTimes();
 			expect(request.getSession(false)).andReturn(session).anyTimes();

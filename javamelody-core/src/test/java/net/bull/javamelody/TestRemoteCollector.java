@@ -51,8 +51,8 @@ public class TestRemoteCollector {
 				null);
 		remoteCollector.executeActionAndCollectData(Action.INVALIDATE_SESSION, null, "nothing",
 				null, null, null);
-		remoteCollector.executeActionAndCollectData(Action.KILL_THREAD, null, null, "nothing",
-				null, null);
+		remoteCollector.executeActionAndCollectData(Action.KILL_THREAD, null, null, "nothing", null,
+				null);
 		remoteCollector.executeActionAndCollectData(Action.PAUSE_JOB, null, null, null, "nothing",
 				null);
 	}

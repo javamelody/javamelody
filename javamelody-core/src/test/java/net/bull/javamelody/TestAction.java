@@ -99,8 +99,8 @@ public class TestAction {
 
 		assertNotNull("message GC", Action.GC.execute(collector, null, counterName, sessionId,
 				threadId, jobId, cacheId));
-		assertNotNull("message GC", Action.GC.execute(collector, null, null, counterName,
-				sessionId, threadId, jobId, cacheId));
+		assertNotNull("message GC", Action.GC.execute(collector, null, null, counterName, sessionId,
+				threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, null,
@@ -114,8 +114,8 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, "inconnu"));
-		assertNotNull("message PURGE_OBSOLETE_FILES", Action.PURGE_OBSOLETE_FILES.execute(
-				collector, null, null, counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message PURGE_OBSOLETE_FILES", Action.PURGE_OBSOLETE_FILES.execute(collector,
+				null, null, counterName, sessionId, threadId, jobId, cacheId));
 		final String heapDump1 = Action.HEAP_DUMP.execute(collector, null, null, counterName,
 				sessionId, threadId, jobId, cacheId);
 		assertNotNull("message HEAP_DUMP", heapDump1);
@@ -129,7 +129,8 @@ public class TestAction {
 		final File[] files = Parameters.TEMPORARY_DIRECTORY.listFiles();
 		if (files != null) {
 			for (final File file : files) {
-				if (!file.isDirectory() && file.getName().startsWith("heapdump") && !file.delete()) {
+				if (!file.isDirectory() && file.getName().startsWith("heapdump")
+						&& !file.delete()) {
 					file.deleteOnExit();
 				}
 			}
@@ -230,8 +231,8 @@ public class TestAction {
 			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
 
 			//Define a Trigger that will fire "later"
-			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, new Date(
-					System.currentTimeMillis() + 60000));
+			final Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+					new Date(System.currentTimeMillis() + 60000));
 			//Schedule the job with the trigger
 			scheduler.scheduleJob(job, trigger);
 
@@ -261,10 +262,8 @@ public class TestAction {
 		}
 		assertNull("message KILL_THREAD 2", Action.KILL_THREAD.execute(collector, null, null,
 				counterName, sessionId, "nopid_noip_id", jobId, cacheId));
-		assertNull(
-				"message KILL_THREAD 3",
-				Action.KILL_THREAD.execute(collector, null, null, counterName, sessionId,
-						PID.getPID() + "_noip_id", jobId, cacheId));
+		assertNull("message KILL_THREAD 3", Action.KILL_THREAD.execute(collector, null, null,
+				counterName, sessionId, PID.getPID() + "_noip_id", jobId, cacheId));
 		final Thread myThread = new Thread(new Runnable() {
 			/** {@inheritDoc} */
 			@Override

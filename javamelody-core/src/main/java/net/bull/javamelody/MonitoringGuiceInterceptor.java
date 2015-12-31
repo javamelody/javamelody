@@ -31,10 +31,10 @@ import org.aopalliance.intercept.MethodInvocation;
 public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializable {
 	private static final long serialVersionUID = -6594338383847482623L;
 	private static final Counter GUICE_COUNTER = MonitoringProxy.getGuiceCounter();
-	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(GUICE_COUNTER
-			.getName());
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean COUNTER_HIDDEN = Parameters
+			.isCounterHidden(GUICE_COUNTER.getName());
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 
 	/**
 	 * Constructeur.
@@ -103,8 +103,8 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 	}
 
 	private static String getMethodPart(MethodInvocation invocation) {
-		final MonitoredWithGuice methodAnnotation = invocation.getMethod().getAnnotation(
-				MonitoredWithGuice.class);
+		final MonitoredWithGuice methodAnnotation = invocation.getMethod()
+				.getAnnotation(MonitoredWithGuice.class);
 		if (methodAnnotation == null || methodAnnotation.name() == null
 				|| methodAnnotation.name().length() == 0) {
 			return invocation.getMethod().getName();

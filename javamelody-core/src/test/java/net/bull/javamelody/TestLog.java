@@ -63,13 +63,13 @@ public class TestLog {
 	@Test
 	public void testRegister() {
 		try {
-			final int countAppendersBefore = Collections.list(
-					Logger.getRootLogger().getAllAppenders()).size();
+			final int countAppendersBefore = Collections
+					.list(Logger.getRootLogger().getAllAppenders()).size();
 			logbackAppender.register();
 			log4jAppender.register();
 			loggingHandler.register();
-			final int countAppendersAfter = Collections.list(
-					Logger.getRootLogger().getAllAppenders()).size();
+			final int countAppendersAfter = Collections
+					.list(Logger.getRootLogger().getAllAppenders()).size();
 			assertSame("register", countAppendersBefore + 1, countAppendersAfter);
 		} finally {
 			logbackAppender.deregister();
@@ -137,8 +137,8 @@ public class TestLog {
 			Logger.getRootLogger().warn("test warn log4j", new IllegalStateException("test"));
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME)
 					.warning("test 2");
-			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME).info(
-					"test 3");
+			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME)
+					.info("test 3");
 			final int requestsCountAfter = logCounter.getRequestsCount();
 			// cela peut ne pas être égal si un autre thread a loggué des warnings en même temps
 			if (requestsCountAfter < requestsCountBefore + 3) {

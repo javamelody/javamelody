@@ -116,8 +116,8 @@ class HtmlController {
 	}
 
 	static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
-		return new BufferedWriter(new OutputStreamWriter(httpResponse.getOutputStream(),
-				HTML_CHARSET));
+		return new BufferedWriter(
+				new OutputStreamWriter(httpResponse.getOutputStream(), HTML_CHARSET));
 	}
 
 	private void doHtmlPart(HttpServletRequest httpRequest, String part, HtmlReport htmlReport)
@@ -152,12 +152,12 @@ class HtmlController {
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
 			doProcesses(htmlReport);
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			final int requestIndex = DatabaseInformations.parseRequestIndex(httpRequest
-					.getParameter(REQUEST_PARAMETER));
+			final int requestIndex = DatabaseInformations
+					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
 			doDatabase(htmlReport, requestIndex);
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(httpRequest
-					.getParameter(FORMAT_PARAMETER));
+			final boolean withoutHeaders = HTML_BODY_FORMAT
+					.equalsIgnoreCase(httpRequest.getParameter(FORMAT_PARAMETER));
 			doConnections(htmlReport, withoutHeaders);
 		} else if (JNDI_PART.equalsIgnoreCase(part)) {
 			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
@@ -176,8 +176,8 @@ class HtmlController {
 			if (sessionId == null) {
 				sessionsInformations = SessionListener.getAllSessionsInformations();
 			} else {
-				sessionsInformations = Collections.singletonList(SessionListener
-						.getSessionInformationsBySessionId(sessionId));
+				sessionsInformations = Collections.singletonList(
+						SessionListener.getSessionInformationsBySessionId(sessionId));
 			}
 		} else {
 			sessionsInformations = collectorServer.collectSessionInformations(getApplication(),
@@ -252,8 +252,8 @@ class HtmlController {
 			if (!isFromCollectorServer()) {
 				databaseInformations = new DatabaseInformations(index);
 			} else {
-				databaseInformations = collectorServer.collectDatabaseInformations(
-						getApplication(), index);
+				databaseInformations = collectorServer.collectDatabaseInformations(getApplication(),
+						index);
 			}
 			htmlReport.writeDatabase(databaseInformations);
 		} catch (final Exception e) {

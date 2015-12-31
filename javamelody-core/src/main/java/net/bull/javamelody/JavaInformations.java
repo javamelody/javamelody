@@ -50,7 +50,8 @@ class JavaInformations implements Serializable { // NOPMD
 	static final double HIGH_USAGE_THRESHOLD_IN_PERCENTS = 95d;
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final Date START_DATE = new Date();
-	private static final boolean SYSTEM_CPU_LOAD_ENABLED = "1.7".compareTo(Parameters.JAVA_VERSION) < 0;
+	private static final boolean SYSTEM_CPU_LOAD_ENABLED = "1.7"
+			.compareTo(Parameters.JAVA_VERSION) < 0;
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
 	private final MemoryInformations memoryInformations;
@@ -96,8 +97,8 @@ class JavaInformations implements Serializable { // NOPMD
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
 
-	static final class ThreadInformationsComparator implements Comparator<ThreadInformations>,
-			Serializable {
+	static final class ThreadInformationsComparator
+			implements Comparator<ThreadInformations>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
@@ -107,8 +108,8 @@ class JavaInformations implements Serializable { // NOPMD
 		}
 	}
 
-	static final class CacheInformationsComparator implements Comparator<CacheInformations>,
-			Serializable {
+	static final class CacheInformationsComparator
+			implements Comparator<CacheInformations>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
@@ -118,8 +119,8 @@ class JavaInformations implements Serializable { // NOPMD
 		}
 	}
 
-	static final class JobInformationsComparator implements Comparator<JobInformations>,
-			Serializable {
+	static final class JobInformationsComparator
+			implements Comparator<JobInformations>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/** {@inheritDoc} */
@@ -340,8 +341,8 @@ class JavaInformations implements Serializable { // NOPMD
 			final boolean deadlocked = deadlockedThreads != null
 					&& Arrays.binarySearch(deadlockedThreads, thread.getId()) >= 0;
 			// stackTraceElementList est une ArrayList et non unmodifiableList pour lisibilité xml
-			threadInfosList.add(new ThreadInformations(thread, stackTraceElementList,
-					cpuTimeMillis, userTimeMillis, deadlocked, hostAddress));
+			threadInfosList.add(new ThreadInformations(thread, stackTraceElementList, cpuTimeMillis,
+					userTimeMillis, deadlocked, hostAddress));
 		}
 		// on retourne ArrayList et non unmodifiableList pour lisibilité du xml par xstream
 		return threadInfosList;
@@ -436,7 +437,8 @@ class JavaInformations implements Serializable { // NOPMD
 		final Map<String, Map<String, Object>> dataSourcesProperties = JdbcWrapper
 				.getBasicDataSourceProperties();
 		final StringBuilder sb = new StringBuilder();
-		for (final Map.Entry<String, Map<String, Object>> entry : dataSourcesProperties.entrySet()) {
+		for (final Map.Entry<String, Map<String, Object>> entry : dataSourcesProperties
+				.entrySet()) {
 			final Map<String, Object> dataSourceProperties = entry.getValue();
 			if (dataSourceProperties.isEmpty()) {
 				continue;

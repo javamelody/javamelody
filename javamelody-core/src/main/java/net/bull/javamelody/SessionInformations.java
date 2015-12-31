@@ -117,8 +117,8 @@ class SessionInformations implements Serializable {
 		final long now = System.currentTimeMillis();
 		lastAccess = new Date(now - session.getLastAccessedTime());
 		age = new Date(now - session.getCreationTime());
-		expirationDate = new Date(session.getLastAccessedTime() + session.getMaxInactiveInterval()
-				* 1000L);
+		expirationDate = new Date(
+				session.getLastAccessedTime() + session.getMaxInactiveInterval() * 1000L);
 
 		final List<String> attributeNames = Collections.list(session.getAttributeNames());
 		attributeCount = attributeNames.size();

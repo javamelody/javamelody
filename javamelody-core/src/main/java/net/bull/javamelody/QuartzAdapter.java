@@ -118,8 +118,8 @@ class QuartzAdapter {
 
 	void addGlobalJobListener(JobListener jobGlobalListener) throws SchedulerException {
 		final Scheduler defaultScheduler;
-		if (Boolean.parseBoolean(Parameters
-				.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
+		if (Boolean.parseBoolean(
+				Parameters.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
 			defaultScheduler = null;
 			LOG.debug("Initialization of Quartz default listener has been disabled");
 		} else {
@@ -184,7 +184,8 @@ class QuartzAdapter {
 	}
 
 	boolean isTriggerPaused(Trigger trigger, Scheduler scheduler) throws SchedulerException {
-		return scheduler.getTriggerState(trigger.getName(), trigger.getGroup()) == Trigger.STATE_PAUSED;
+		return scheduler.getTriggerState(trigger.getName(),
+				trigger.getGroup()) == Trigger.STATE_PAUSED;
 	}
 
 	void pauseJob(JobDetail jobDetail, Scheduler scheduler) throws SchedulerException {

@@ -61,8 +61,10 @@ class PdfCounterErrorReport extends PdfAbstractTableReport {
 		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);
 		final boolean displayHttpRequest = HtmlCounterErrorReport.shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
-			addToDocument(new Phrase(getFormattedString("Dernieres_erreurs_seulement",
-					Counter.MAX_ERRORS_COUNT) + '\n', severeFont));
+			addToDocument(new Phrase(
+					getFormattedString("Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT)
+							+ '\n',
+					severeFont));
 		}
 		writeHeader(displayUser, displayHttpRequest);
 

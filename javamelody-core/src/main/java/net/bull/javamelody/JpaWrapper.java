@@ -29,8 +29,8 @@ import javax.persistence.Query;
  * @author Emeric Vernat
  */
 public final class JpaWrapper {
-	private static final boolean DISABLED = Boolean.parseBoolean(Parameters
-			.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
 
 	private JpaWrapper() {
@@ -52,8 +52,8 @@ public final class JpaWrapper {
 			return entityManagerFactory;
 		}
 		// on veut monitorer seulement les EntityManager retournés par les deux méthodes createEntityManager
-		return JdbcWrapper.createProxy(entityManagerFactory, new EntityManagerFactoryHandler(
-				entityManagerFactory));
+		return JdbcWrapper.createProxy(entityManagerFactory,
+				new EntityManagerFactoryHandler(entityManagerFactory));
 	}
 
 	static EntityManager createEntityManagerProxy(final EntityManager entityManager) {
@@ -139,8 +139,7 @@ public final class JpaWrapper {
 
 		private boolean isMergePersistRefreshRemoveDetachOrLockMethod(String methodName,
 				Object[] args) {
-			return args != null
-					&& args.length > 0
+			return args != null && args.length > 0
 					&& ("merge".equals(methodName) || "persist".equals(methodName)
 							|| "refresh".equals(methodName) || "remove".equals(methodName)
 							|| "detach".equals(methodName) || "lock".equals(methodName));
@@ -203,8 +202,8 @@ public final class JpaWrapper {
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
 				throws Throwable {
 			final String methodName = method.getName();
-			if (("getSingleResult".equals(methodName) || "getResultList".equals(methodName) || "executeUpdate"
-					.equals(methodName)) && (args == null || args.length == 0)) {
+			if (("getSingleResult".equals(methodName) || "getResultList".equals(methodName)
+					|| "executeUpdate".equals(methodName)) && (args == null || args.length == 0)) {
 				return doInvoke(query, method, args, requestName);
 			} else if (methodName.startsWith("set") && method.getReturnType() != null
 					&& Query.class.isAssignableFrom(method.getReturnType())) {

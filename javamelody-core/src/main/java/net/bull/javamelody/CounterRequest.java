@@ -146,9 +146,9 @@ class CounterRequest implements Cloneable, Serializable {
 		//      http://web.archive.org/web/20050512031826/http://helios.bto.ed.ac.uk/bto/statistics/tress3.html
 		//		http://www.bmj.com/collections/statsbk/2.html
 		if (hits > 0) {
-			return (int) Math.sqrt((durationsSquareSum - (double) durationsSum * durationsSum
-					/ hits)
-					/ (hits - 1));
+			return (int) Math
+					.sqrt((durationsSquareSum - (double) durationsSum * durationsSum / hits)
+							/ (hits - 1));
 		}
 		return -1;
 	}
@@ -287,7 +287,8 @@ class CounterRequest implements Cloneable, Serializable {
 					final String requestId = entry.getKey();
 					Long nbExecutions = childRequestsExecutionsByRequestId.get(requestId);
 					if (nbExecutions == null) {
-						if (childRequestsExecutionsByRequestId.size() >= Counter.MAX_REQUESTS_COUNT) {
+						if (childRequestsExecutionsByRequestId
+								.size() >= Counter.MAX_REQUESTS_COUNT) {
 							// Si le nombre de requêtes est supérieur à 10000 (sql non bindé par ex.),
 							// on essaye ici d'éviter de saturer la mémoire (et le disque dur)
 							// avec toutes ces requêtes différentes, donc on ignore cette nouvelle requête.
