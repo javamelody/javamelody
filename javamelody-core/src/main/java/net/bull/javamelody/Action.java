@@ -45,74 +45,46 @@ import net.sf.ehcache.CacheManager;
  * @author <a href="mailto:davidkarlsen@gmail.com">David J. M. Karlsen (IBM heapdump support)<a>
  */
 enum Action { // NOPMD
-	/**
-	 * Test d'envoi du rapport pdf par mail.
-	 */
+	/** Test d'envoi du rapport pdf par mail. */
 	MAIL_TEST(""),
 
-	/**
-	 * Réinitialisation d'un compteur non périodique.
-	 */
+	/** Réinitialisation d'un compteur non périodique. */
 	CLEAR_COUNTER("http"),
 
-	/**
-	 * Garbage Collect.
-	 */
+	/** Garbage Collect. */
 	GC("systeminfo"),
 
-	/**
-	 * Invalidations des sessions http.
-	 */
+	/** Invalidations des sessions http. */
 	INVALIDATE_SESSIONS("systeminfo"),
 
-	/**
-	 * Invalidation d'une session http.
-	 */
+	/** Invalidation d'une session http. */
 	INVALIDATE_SESSION(""),
 
-	/**
-	 * Invalidation de la session http courante.
-	 */
+	/** Invalidation de la session http courante. */
 	LOGOUT(""),
 
-	/**
-	 * Heap dump.
-	 */
+	/** Heap dump. */
 	HEAP_DUMP("systeminfo"),
 
-	/**
-	 * Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()})
-	 */
+	/** Purge le contenu de tous les caches (ie, for ALL_CACHE_MANAGERS {cacheManager.clearAll()}). */
 	CLEAR_CACHES("caches"),
 
-	/**
-	 * Purge le contenu  d'un cache
-	 */
+	/** Purge le contenu  d'un cache. */
 	CLEAR_CACHE("caches"),
 
-	/**
-	 * Tue un thread java.
-	 */
+	/** Tue un thread java. */
 	KILL_THREAD("threads"),
 
-	/**
-	 * Met un job quartz en pause.
-	 */
+	/** Met un job quartz en pause. */
 	PAUSE_JOB("jobs"),
 
-	/**
-	 * Enlève la pause d'un job quartz.
-	 */
+	/** Enlève la pause d'un job quartz. */
 	RESUME_JOB("jobs"),
 
-	/**
-	 * Réinitialisation des hotspots.
-	 */
+	/** Réinitialisation des hotspots. */
 	CLEAR_HOTSPOTS(""),
 
-	/**
-	 * Purge les fichiers .rrd et .ser.gz obsolètes.
-	 */
+	/** Purge les fichiers .rrd et .ser.gz obsolètes. */
 	PURGE_OBSOLETE_FILES("bottom");
 
 	static final String JAVA_VENDOR = System.getProperty("java.vendor");
