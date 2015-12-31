@@ -118,13 +118,13 @@ class DatabaseInformations implements Serializable {
 			return addPrefix(tmp);
 		}
 
-		private List<String> addPrefix(List<String> requestNames) {
-			final List<String> result = new ArrayList<String>(requestNames.size());
+		private List<String> addPrefix(List<String> requests) {
+			final List<String> list = new ArrayList<String>(requests.size());
 			final String prefix = this.toString().toLowerCase(Locale.ENGLISH) + '.';
-			for (final String requestName : requestNames) {
-				result.add(prefix + requestName);
+			for (final String requestName : requests) {
+				list.add(prefix + requestName);
 			}
-			return result;
+			return list;
 		}
 
 		String getUrlIdentifier() {
