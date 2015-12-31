@@ -126,7 +126,7 @@ public class MButtonTabComponent extends JPanel {
 		/**
 		 * Constructor.
 		 */
-		public TabButton() {
+		TabButton() {
 			super();
 			final int size = 17;
 			setPreferredSize(new Dimension(size, size));
