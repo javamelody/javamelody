@@ -104,33 +104,10 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 		//body
 		body = "";
-		// CHECKSTYLE:OFF
 		expect(request.getInputStream()).andAnswer(new IAnswer<ServletInputStream>() {
 			@Override
 			public ServletInputStream answer() throws Throwable {
-				final ByteArrayInputStream stream = new ByteArrayInputStream(body.getBytes());
-				return new ServletInputStream() {
-					// CHECKSTYLE:ON
-					@Override
-					public int read() throws IOException {
-						return stream.read();
-					}
-
-					@Override
-					public boolean isFinished() {
-						return false;
-					}
-
-					@Override
-					public boolean isReady() {
-						return false;
-					}
-
-					@Override
-					public void setReadListener(ReadListener readListener) {
-						// nothing
-					}
-				};
+				return createServletOutputStream();
 			}
 		});
 
@@ -188,6 +165,33 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		} //end if form-encoded params in request body
 
 		return parameterMap;
+	}
+
+	ServletInputStream createServletOutputStream() {
+		final ByteArrayInputStream stream = new ByteArrayInputStream(body.getBytes());
+		// CHECKSTYLE:OFF
+		return new ServletInputStream() {
+			// CHECKSTYLE:ON
+			@Override
+			public int read() throws IOException {
+				return stream.read();
+			}
+
+			@Override
+			public boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			public boolean isReady() {
+				return false;
+			}
+
+			@Override
+			public void setReadListener(ReadListener readListener) {
+				// nothing
+			}
+		};
 	}
 
 	private static String slurp(InputStream stream) throws IOException {
