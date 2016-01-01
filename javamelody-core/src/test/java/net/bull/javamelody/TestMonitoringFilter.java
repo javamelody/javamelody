@@ -402,8 +402,9 @@ public class TestMonitoringFilter { // NOPMD
 	private ServletInputStream createInputStreamForString(final String string) {
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
 				string.getBytes());
+		// CHECKSTYLE:OFF
 		final ServletInputStream inputStream = new ServletInputStream() {
-			/** {@inheritDoc} */
+			// CHECKSTYLE:ON
 			@Override
 			public int read() throws IOException {
 				return byteArrayInputStream.read();

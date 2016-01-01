@@ -104,11 +104,13 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 		//body
 		body = "";
+		// CHECKSTYLE:OFF
 		expect(request.getInputStream()).andAnswer(new IAnswer<ServletInputStream>() {
 			@Override
 			public ServletInputStream answer() throws Throwable {
 				final ByteArrayInputStream stream = new ByteArrayInputStream(body.getBytes());
 				return new ServletInputStream() {
+					// CHECKSTYLE:ON
 					@Override
 					public int read() throws IOException {
 						return stream.read();
