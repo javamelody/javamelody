@@ -15,7 +15,7 @@
                        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="test-jse" transaction-type="RESOURCE_LOCAL">
 		<provider>net.bull.javamelody.JpaPersistence</provider>
-		<class>net.bull.javamelody.TestJpa$Person</class>
+		<class>net.bull.javamelody.Person</class>
 		<properties>
 			<property name="openjpa.RuntimeUnenhancedClasses" value="supported" />
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />

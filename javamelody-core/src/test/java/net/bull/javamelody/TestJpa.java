@@ -20,13 +20,9 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -45,41 +41,6 @@ import org.junit.Test;
  */
 public class TestJpa {
 	private static final String PERSON_NAME = "emeric";
-
-	/**
-	 * Jpa Entity pour test.
-	 * @author Emeric Vernat
-	 */
-	@Entity
-	@NamedQuery(name = "Person.findByName", query = "select p from TestJpa$Person p where p.name = :name")
-	public static class Person {
-		@Id
-		@GeneratedValue
-		private long id;
-
-		private String name;
-
-		/**
-		 * @return id
-		 */
-		public long getId() {
-			return id;
-		}
-
-		/**
-		 * @return String
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * @param name String
-		 */
-		public void setName(String name) {
-			this.name = name;
-		}
-	}
 
 	/**
 	 * (Ré)initialisation.
@@ -170,25 +131,23 @@ public class TestJpa {
 				assertCounter("NamedQuery(Person.findByName, Person)");
 
 				final Query nativeQuery = em
-						.createNativeQuery("select * from \"TestJpa$Person\" where name = ?");
+						.createNativeQuery("select * from Person where name = ?");
 				nativeQuery.setParameter(1, PERSON_NAME).getSingleResult();
-				assertCounter("NativeQuery(select * from \"TestJpa$Person\" where name = ?)");
+				assertCounter("NativeQuery(select * from Person where name = ?)");
 
-				final Query nativeQuery2 = em.createNativeQuery(
-						"select * from \"TestJpa$Person\" where name = ?", Person.class);
+				final Query nativeQuery2 = em
+						.createNativeQuery("select * from Person where name = ?", Person.class);
 				nativeQuery2.setParameter(1, PERSON_NAME).getSingleResult();
-				assertCounter(
-						"NativeQuery(select * from \"TestJpa$Person\" where name = ?, Person)");
+				assertCounter("NativeQuery(select * from Person where name = ?, Person)");
 
-				final Query query = em
-						.createQuery("select p from TestJpa$Person p where p.name = :name");
+				final Query query = em.createQuery("select p from Person p where p.name = :name");
 				query.setParameter(nameParameter, PERSON_NAME).getSingleResult();
-				assertCounter("Query(select p from TestJpa$Person p where p.name = :name)");
+				assertCounter("Query(select p from Person p where p.name = :name)");
 
-				final TypedQuery<Person> query2 = em.createQuery(
-						"select p from TestJpa$Person p where p.name = :name", Person.class);
+				final TypedQuery<Person> query2 = em
+						.createQuery("select p from Person p where p.name = :name", Person.class);
 				query2.setParameter(nameParameter, PERSON_NAME).getSingleResult();
-				assertCounter("Query(select p from TestJpa$Person p where p.name = :name, Person)");
+				assertCounter("Query(select p from Person p where p.name = :name, Person)");
 
 				final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 				final CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
@@ -197,8 +156,7 @@ public class TestJpa {
 				final CriteriaQuery<Object> criteriaQuery2 = criteriaQuery
 						.where(criteriaBuilder.equal(from.get(nameParameter), PERSON_NAME));
 				em.createQuery(criteriaQuery2).getSingleResult();
-				assertCounter("Query(SELECT t FROM TestJpa$Person t WHERE t.name = '" + PERSON_NAME
-						+ "')");
+				assertCounter("Query(SELECT p FROM Person p WHERE p.name = '" + PERSON_NAME + "')");
 			} finally {
 				em.close();
 			}

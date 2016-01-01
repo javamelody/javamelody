@@ -193,8 +193,10 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	private static String slurp(InputStream stream) throws IOException {
 		final StringBuilder buffer = new StringBuilder();
 		final Reader reader = new InputStreamReader(stream);
-		for (int n; (n = reader.read()) != -1;) {
-			buffer.append((char) n);
+		int c = reader.read();
+		while (c != -1) {
+			buffer.append((char) c);
+			c = reader.read();
 		}
 		return buffer.toString();
 	}
