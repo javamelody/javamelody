@@ -73,8 +73,8 @@ public class MTable<T> extends MListTable<T> {
 	};
 
 	/**
-	* Constructeur.
-	*/
+	 * Constructeur.
+	 */
 	public MTable() {
 		// on utilise le modèle par défaut créé par la méthode createDefaultDataModel() ci-dessus
 		this(null);
