@@ -4,15 +4,15 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import net.bull.javamelody.MonitoringFilter;
-import net.bull.javamelody.Parameter;
-import net.bull.javamelody.SessionListener;
-
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+
+import net.bull.javamelody.MonitoringFilter;
+import net.bull.javamelody.Parameter;
+import net.bull.javamelody.SessionListener;
 
 /**
  * @author speralta, evernat
