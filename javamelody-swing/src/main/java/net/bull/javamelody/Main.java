@@ -31,10 +31,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import org.apache.log4j.Logger;
+
 import net.bull.javamelody.swing.util.MSwingUtilities;
 import net.bull.javamelody.swing.util.ShadowPopupFactory;
-
-import org.apache.log4j.Logger;
 
 /**
  * Classe Main.

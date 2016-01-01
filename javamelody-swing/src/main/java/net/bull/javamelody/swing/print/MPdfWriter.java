@@ -25,9 +25,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.table.TableColumnModel;
 
-import net.bull.javamelody.I18NAdapter;
-import net.bull.javamelody.swing.table.MBasicTable;
-
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
@@ -41,6 +38,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+
+import net.bull.javamelody.I18NAdapter;
+import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
  * Objet d'impression/export pour Pdf (portrait ou paysage) en utilisant iText.

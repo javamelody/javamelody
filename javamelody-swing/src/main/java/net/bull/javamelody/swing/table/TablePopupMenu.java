@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
+import org.apache.log4j.Logger;
+
 import net.bull.javamelody.swing.MMenuItem;
 import net.bull.javamelody.swing.print.MCsvLocalWriter;
 import net.bull.javamelody.swing.print.MHtmlWriter;
@@ -35,8 +37,6 @@ import net.bull.javamelody.swing.print.MPrinter;
 import net.bull.javamelody.swing.print.MRtfWriter;
 import net.bull.javamelody.swing.print.MXmlWriter;
 import net.bull.javamelody.swing.util.MSwingUtilities;
-
-import org.apache.log4j.Logger;
 
 /**
  * Popup menu des tables.

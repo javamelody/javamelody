@@ -29,13 +29,13 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
+import com.lowagie.text.Font;
+
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDateTableCellRenderer;
 import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
-
-import com.lowagie.text.Font;
 
 /**
  * Panel des erreurs http et dans les logs ou dans les jobs.

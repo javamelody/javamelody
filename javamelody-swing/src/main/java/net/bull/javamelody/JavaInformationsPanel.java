@@ -34,12 +34,12 @@ import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+import com.lowagie.text.Font;
+
 import net.bull.javamelody.PdfJavaInformationsReport.Bar;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.util.SpringUtilities;
-
-import com.lowagie.text.Font;
 
 /**
  * Panel des informations systèmes.

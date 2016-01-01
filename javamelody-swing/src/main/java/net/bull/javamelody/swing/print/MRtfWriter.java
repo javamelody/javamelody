@@ -22,9 +22,6 @@ import java.io.OutputStream;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import net.bull.javamelody.I18NAdapter;
-import net.bull.javamelody.swing.table.MBasicTable;
-
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -38,6 +35,9 @@ import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.field.RtfPageNumber;
 import com.lowagie.text.rtf.field.RtfTotalPageNumber;
 import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
+
+import net.bull.javamelody.I18NAdapter;
+import net.bull.javamelody.swing.table.MBasicTable;
 
 /**
  * Objet d'impression/export pour Rtf (portrait ou paysage) en utilisant iText-RTF.

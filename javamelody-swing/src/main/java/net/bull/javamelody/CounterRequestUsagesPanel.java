@@ -26,11 +26,11 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 
+import com.lowagie.text.Font;
+
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.swing.table.MTable;
 import net.bull.javamelody.swing.table.MTableScrollPane;
-
-import com.lowagie.text.Font;
 
 /**
  * Panel des utilisations d'une requêtes.
