@@ -148,8 +148,8 @@ class MainFrame extends JFrame {
 	 */
 	public void setBlurContentPane(boolean blur) {
 		final JXLayer jxLayer = (JXLayer) getContentPane();
-		if (blur && jxLayer.getBufferedImageOp() instanceof FastBlurFilter || !blur
-				&& !(jxLayer.getBufferedImageOp() instanceof FastBlurFilter)) {
+		if (blur && jxLayer.getBufferedImageOp() instanceof FastBlurFilter
+				|| !blur && !(jxLayer.getBufferedImageOp() instanceof FastBlurFilter)) {
 			return;
 		}
 		final BufferedImageOp bio = new FastBlurFilter(1);
@@ -165,8 +165,7 @@ class MainFrame extends JFrame {
 				lastActivity = System.currentTimeMillis();
 			}
 		};
-		Toolkit.getDefaultToolkit().addAWTEventListener(
-				awtEventListener,
+		Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener,
 				AWTEvent.KEY_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK
 						| AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK);
 		final Timer activityMonitorTimer = new Timer("ActivityMonitorTimer", true);

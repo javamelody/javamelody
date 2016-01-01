@@ -240,8 +240,8 @@ public abstract class MPrinter {
 	public void print(final MBasicTable table) throws IOException {
 		final File file = getFile(table);
 		if (file != null) {
-			try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(
-					file))) {
+			try (final OutputStream outputStream = new BufferedOutputStream(
+					new FileOutputStream(file))) {
 				print(table, outputStream);
 			}
 
@@ -262,8 +262,8 @@ public abstract class MPrinter {
 		try {
 			Desktop.getDesktop().open(targetFile);
 		} catch (final IOException e) {
-			throw new IOException("Is there an associated application for \""
-					+ targetFile.getName() + "\"?\n" + e.getMessage(), e);
+			throw new IOException("Is there an associated application for \"" + targetFile.getName()
+					+ "\"?\n" + e.getMessage(), e);
 		}
 
 		// on pourrait imprimer le fichier directement (par exemple CSV avec Excel) en supposant que Desktop.getDesktop().isDesktopSupported()

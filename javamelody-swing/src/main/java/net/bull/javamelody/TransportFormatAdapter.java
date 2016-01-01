@@ -46,7 +46,8 @@ public final class TransportFormatAdapter {
 	 * @param output OutputStream
 	 * @throws IOException e
 	 */
-	public static void writeJson(Serializable serializable, OutputStream output) throws IOException {
+	public static void writeJson(Serializable serializable, OutputStream output)
+			throws IOException {
 		TransportFormat.JSON.writeSerializableTo(serializable, output);
 	}
 }

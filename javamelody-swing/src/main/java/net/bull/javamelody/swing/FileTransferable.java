@@ -73,13 +73,14 @@ class FileTransferable extends ArrayList<File> implements Transferable {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+	public Object getTransferData(DataFlavor flavor)
+			throws UnsupportedFlavorException, IOException {
 		if (flavor.equals(FLAVORS[FILE])) {
 			final File tmpFile = get(0);
 			if (!tmpFile.exists()) {
 				try {
-					try (final OutputStream output = new BufferedOutputStream(new FileOutputStream(
-							tmpFile))) {
+					try (final OutputStream output = new BufferedOutputStream(
+							new FileOutputStream(tmpFile))) {
 						output.write(data);
 					}
 				} finally {

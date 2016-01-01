@@ -70,8 +70,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 				setToolTipText(null);
 			} else {
 				final MTable<ThreadInformations> myTable = getTable();
-				final ThreadInformations threadInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final ThreadInformations threadInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				setToolTipText(convertStackTraceToHtml(threadInformations.getName(),
 						threadInformations.getStackTrace()));
 			}
@@ -96,8 +96,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 				setIcon(null);
 			} else {
 				final MTable<ThreadInformations> myTable = getTable();
-				final ThreadInformations threadInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final ThreadInformations threadInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				setIcon(ImageIconCache.getImageIcon("bullets/"
 						+ HtmlThreadInformationsReport.getStateIcon(threadInformations)));
 			}
@@ -190,8 +190,8 @@ class ThreadInformationsPanel extends MelodyPanel {
 					final ThreadInformations threadInformations = getTable().getSelectedObject();
 					killThreadButton.setEnabled(threadInformations != null);
 					if (threadInformations != null) {
-						killThreadButton.setToolTipText(getFormattedString("kill_thread",
-								threadInformations.getName()));
+						killThreadButton.setToolTipText(
+								getFormattedString("kill_thread", threadInformations.getName()));
 					} else {
 						killThreadButton.setToolTipText(null);
 					}

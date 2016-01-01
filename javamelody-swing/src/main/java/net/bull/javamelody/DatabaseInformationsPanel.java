@@ -66,8 +66,8 @@ class DatabaseInformationsPanel extends MelodyPanel {
 
 		setName(getString("database"));
 		final String selectedRequestName = databaseInformations.getSelectedRequestName();
-		final JLabel titleLabel = Utilities.createParagraphTitle(getString("database") + " : "
-				+ getString(selectedRequestName), "db.png");
+		final JLabel titleLabel = Utilities.createParagraphTitle(
+				getString("database") + " : " + getString(selectedRequestName), "db.png");
 		add(titleLabel, BorderLayout.NORTH);
 
 		final MTableScrollPane<DatabaseInformations> scrollPane = createScrollPane();
@@ -140,8 +140,8 @@ class DatabaseInformationsPanel extends MelodyPanel {
 	// SuppressWarnings pour jdk 1.7 en conservant compatibilité avec javac 1.6
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private JPanel createButtonsPanel() {
-		final JComboBox requestComboBox = new JComboBox(databaseInformations.getRequestNames()
-				.toArray());
+		final JComboBox requestComboBox = new JComboBox(
+				databaseInformations.getRequestNames().toArray());
 		requestComboBox.setFont(requestComboBox.getFont().deriveFont(Font.BOLD));
 		requestComboBox.setSelectedIndex(databaseInformations.getSelectedRequestIndex());
 		requestComboBox.setRenderer(new DefaultListCellRenderer() {

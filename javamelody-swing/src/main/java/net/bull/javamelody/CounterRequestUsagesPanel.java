@@ -50,8 +50,8 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final MTable<CounterRequest> myTable = getTable();
-			final CounterRequest counterRequest = myTable.getList().get(
-					myTable.convertRowIndexToModel(row));
+			final CounterRequest counterRequest = myTable.getList()
+					.get(myTable.convertRowIndexToModel(row));
 			final Counter counter = getCounterByRequestId(counterRequest);
 			setIcon(getCounterIcon(counter, 0));
 			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
@@ -66,8 +66,8 @@ class CounterRequestUsagesPanel extends CounterRequestAbstractPanel {
 				50);
 		setName(graphLabel);
 
-		final JLabel label = new JLabel(' ' + getString("Utilisations_de") + ' '
-				+ request.getName());
+		final JLabel label = new JLabel(
+				' ' + getString("Utilisations_de") + ' ' + request.getName());
 		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
 		add(label, BorderLayout.NORTH);

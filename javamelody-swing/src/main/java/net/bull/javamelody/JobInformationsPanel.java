@@ -51,10 +51,10 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class JobInformationsPanel extends MelodyPanel {
-	private static final ImageIcon RESUME_ICON = ImageIconCache.getScaledImageIcon(
-			"control_play_blue.png", 18, 18);
-	private static final ImageIcon PAUSE_ICON = ImageIconCache.getScaledImageIcon(
-			"control_pause_blue.png", 18, 18);
+	private static final ImageIcon RESUME_ICON = ImageIconCache
+			.getScaledImageIcon("control_play_blue.png", 18, 18);
+	private static final ImageIcon PAUSE_ICON = ImageIconCache
+			.getScaledImageIcon("control_pause_blue.png", 18, 18);
 	private static final long serialVersionUID = 1L;
 
 	private final Counter jobCounter;
@@ -77,8 +77,8 @@ class JobInformationsPanel extends MelodyPanel {
 				date = null;
 			} else {
 				final MTable<JobInformations> myTable = getTable();
-				final JobInformations jobInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final JobInformations jobInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				final CounterRequest counterRequest = getCounterRequest(jobInformations);
 				if (counterRequest.getMean() >= 0) {
 					date = new Date(1L * counterRequest.getMean());
@@ -114,8 +114,8 @@ class JobInformationsPanel extends MelodyPanel {
 				setToolTipText(null);
 			} else {
 				final MTable<JobInformations> myTable = getTable();
-				final JobInformations jobInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final JobInformations jobInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				final long elapsedTime = jobInformations.getElapsedTime();
 				if (elapsedTime >= 0) {
 					date = new Date(elapsedTime);
@@ -149,8 +149,8 @@ class JobInformationsPanel extends MelodyPanel {
 				setToolTipText(null);
 			} else {
 				final MTable<JobInformations> myTable = getTable();
-				final JobInformations jobInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final JobInformations jobInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				final String description = jobInformations.getDescription();
 				if (description != null) {
 					setToolTipText("<html>" + description.replaceAll("\n", "<br/>"));
@@ -181,8 +181,8 @@ class JobInformationsPanel extends MelodyPanel {
 				setIcon(null);
 			} else {
 				final MTable<JobInformations> myTable = getTable();
-				final JobInformations jobInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final JobInformations jobInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				final CounterRequest counterRequest = getCounterRequest(jobInformations);
 				final String stackTrace = counterRequest.getStackTrace();
 				if (stackTrace == null) {
@@ -190,9 +190,8 @@ class JobInformationsPanel extends MelodyPanel {
 					setIcon(ImageIconCache.getImageIcon("bullets/green.png"));
 				} else {
 					setIcon(ImageIconCache.getImageIcon("bullets/red.png"));
-					setToolTipText("<html>"
-							+ stackTrace.replace("[See nested", "\n[See nested").replaceAll("\n",
-									"<br/>"));
+					setToolTipText("<html>" + stackTrace.replace("[See nested", "\n[See nested")
+							.replaceAll("\n", "<br/>"));
 				}
 			}
 			// sans texte
@@ -220,8 +219,8 @@ class JobInformationsPanel extends MelodyPanel {
 				text = null;
 			} else {
 				final MTable<JobInformations> myTable = getTable();
-				final JobInformations jobInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final JobInformations jobInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				// on n'affiche pas la période si >= 1 jour car ce formateur ne saurait pas l'afficher
 				if (jobInformations.getRepeatInterval() > 0
 						&& jobInformations.getRepeatInterval() < ONE_DAY_MILLIS) {
@@ -237,8 +236,8 @@ class JobInformationsPanel extends MelodyPanel {
 		}
 	}
 
-	JobInformationsPanel(RemoteCollector remoteCollector,
-			List<JobInformations> jobInformationsList, Counter rangeJobCounter) {
+	JobInformationsPanel(RemoteCollector remoteCollector, List<JobInformations> jobInformationsList,
+			Counter rangeJobCounter) {
 		super(remoteCollector);
 		assert jobInformationsList != null;
 		assert rangeJobCounter != null;

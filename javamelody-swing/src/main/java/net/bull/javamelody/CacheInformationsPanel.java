@@ -42,8 +42,8 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class CacheInformationsPanel extends MelodyPanel {
-	private static final ImageIcon CLEAR_CACHES_ICON = ImageIconCache.getScaledImageIcon(
-			"user-trash.png", 18, 18);
+	private static final ImageIcon CLEAR_CACHES_ICON = ImageIconCache
+			.getScaledImageIcon("user-trash.png", 18, 18);
 
 	private static final long serialVersionUID = 1L;
 
@@ -67,8 +67,7 @@ class CacheInformationsPanel extends MelodyPanel {
 
 		add(scrollPane, BorderLayout.NORTH);
 
-		final MHyperLink hyperLink = new MHyperLink(
-				" Configuration reference",
+		final MHyperLink hyperLink = new MHyperLink(" Configuration reference",
 				"http://ehcache.sourceforge.net/apidocs/net/sf/ehcache/config/CacheConfiguration.html#field_summary");
 		add(hyperLink, BorderLayout.WEST);
 
@@ -100,16 +99,17 @@ class CacheInformationsPanel extends MelodyPanel {
 		myTable.addColumn("inMemoryObjectCount", getString("Nb_objets_en_memoire"));
 		myTable.addColumn("onDiskObjectCount", getString("Nb_objets_sur_disque"));
 		if (hitsRatioEnabled) {
-			myTable.addColumn("inMemoryHitsRatio", "<html>"
-					+ getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
+			myTable.addColumn("inMemoryHitsRatio",
+					"<html>" + getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
 			myTable.addColumn("hitsRatio",
 					"<html>" + getString("Efficacite_cache").replaceAll("\n", "<br/>"));
 			// la hauteur des entêtes de colonnes est calculée selon la hauteur pour la première colonne
 			// (see BasicTableHeaderUI.getHeaderHeight()),
 			// donc on agrandit la hauteur de la première entête de colonne, pour qu'elle soit adaptée
 			// aux deux ci-dessus
-			myTable.getColumn("name").setHeaderValue(
-					"<html><font size=1><br/></font>" + myTable.getColumn("name").getHeaderValue()
+			myTable.getColumn("name")
+					.setHeaderValue("<html><font size=1><br/></font>"
+							+ myTable.getColumn("name").getHeaderValue()
 							+ "<font size=1><br/>&nbsp;</font>");
 		}
 		if (configurationEnabled) {
@@ -129,8 +129,8 @@ class CacheInformationsPanel extends MelodyPanel {
 					final CacheInformations cacheInformations = getTable().getSelectedObject();
 					clearCacheButton.setEnabled(cacheInformations != null);
 					if (cacheInformations != null) {
-						clearCacheButton.setToolTipText(getFormattedString("Purge_cache",
-								cacheInformations.getName()));
+						clearCacheButton.setToolTipText(
+								getFormattedString("Purge_cache", cacheInformations.getName()));
 					} else {
 						clearCacheButton.setToolTipText(null);
 					}
@@ -179,8 +179,8 @@ class CacheInformationsPanel extends MelodyPanel {
 
 	final void actionClearCaches() {
 		try {
-			final String message = getRemoteCollector().executeActionAndCollectData(
-					Action.CLEAR_CACHES, null, null, null, null, null);
+			final String message = getRemoteCollector()
+					.executeActionAndCollectData(Action.CLEAR_CACHES, null, null, null, null, null);
 			showMessage(message);
 			MainPanel.refreshMainTabFromChild(this);
 		} catch (final IOException ex) {

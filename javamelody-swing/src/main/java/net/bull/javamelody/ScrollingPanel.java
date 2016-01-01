@@ -47,8 +47,8 @@ import net.bull.javamelody.swing.Utilities;
 class ScrollingPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
-	private static final ImageIcon PURGE_OBSOLETE_FILES_ICON = ImageIconCache.getScaledImageIcon(
-			"user-trash.png", 12, 12);
+	private static final ImageIcon PURGE_OBSOLETE_FILES_ICON = ImageIconCache
+			.getScaledImageIcon("user-trash.png", 12, 12);
 	private static final String DETAILS_KEY = "Details";
 
 	private static final long serialVersionUID = 1L;
@@ -85,8 +85,8 @@ class ScrollingPanel extends MelodyPanel {
 			addParagraphTitle(getString("Jobs"), "jobs.png");
 			// on ne peut utiliser collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME),
 			// en revanche collector.getCounterByName(Counter.JOB_COUNTER_NAME) contient ici les bonnes données
-			final Counter rangeJobCounter = getCollector().getCounterByName(
-					Counter.JOB_COUNTER_NAME);
+			final Counter rangeJobCounter = getCollector()
+					.getCounterByName(Counter.JOB_COUNTER_NAME);
 			addJobs(rangeJobCounter);
 			addCounter(rangeJobCounter);
 		}
@@ -154,9 +154,8 @@ class ScrollingPanel extends MelodyPanel {
 
 	private void addCounter(Counter counter) {
 		final String counterLabel = getString(counter.getName() + "Label");
-		addParagraphTitle(
-				getFormattedString("Statistiques_compteur", counterLabel) + " - "
-						+ range.getLabel(), counter.getIconName());
+		addParagraphTitle(getFormattedString("Statistiques_compteur", counterLabel) + " - "
+				+ range.getLabel(), counter.getIconName());
 		// pas de graphique dans les statistiques globales
 		final boolean includeGraph = false;
 		final StatisticsPanel statisticsPanel = new StatisticsPanel(getRemoteCollector(), counter,
@@ -202,7 +201,8 @@ class ScrollingPanel extends MelodyPanel {
 	private void addSystemInformations() {
 		addParagraphTitle(getString("Informations_systemes"), "systeminfo.png");
 		final List<JavaInformations> list = getJavaInformationsList();
-		add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl, collectorServer));
+		add(new SystemInformationsButtonsPanel(getRemoteCollector(), monitoringUrl,
+				collectorServer));
 
 		final List<JavaInformationsPanel> javaInformationsPanelList = new ArrayList<>(list.size());
 		final JPanel westJavaInformationsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -214,7 +214,8 @@ class ScrollingPanel extends MelodyPanel {
 			javaInformationsPanelList.add(javaInformationsPanel);
 			westJavaInformationsPanel.add(javaInformationsPanel);
 		}
-		final MButton javaInformationsDetailsButton = new MButton(getString(DETAILS_KEY), PLUS_ICON);
+		final MButton javaInformationsDetailsButton = new MButton(getString(DETAILS_KEY),
+				PLUS_ICON);
 		javaInformationsDetailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -238,8 +239,7 @@ class ScrollingPanel extends MelodyPanel {
 					getRemoteCollector(), javaInformations);
 			threadInformationsPanel.setVisible(false);
 			final JLabel summaryLabel = new JLabel("<html><b>"
-					+ getFormattedString("Threads_sur", javaInformations.getHost())
-					+ ": </b>"
+					+ getFormattedString("Threads_sur", javaInformations.getHost()) + ": </b>"
 					+ getFormattedString("thread_count", javaInformations.getThreadCount(),
 							javaInformations.getPeakThreadCount(),
 							javaInformations.getTotalStartedThreadCount()));
@@ -283,9 +283,8 @@ class ScrollingPanel extends MelodyPanel {
 			final CacheInformationsPanel cacheInformationsPanel = new CacheInformationsPanel(
 					getRemoteCollector(), cacheInformationsList);
 			cacheInformationsPanel.setVisible(false);
-			final JLabel summaryLabel = new JLabel("<html><b>"
-					+ getFormattedString("caches_sur", cacheInformationsList.size(),
-							javaInformations.getHost()) + "</b>");
+			final JLabel summaryLabel = new JLabel("<html><b>" + getFormattedString("caches_sur",
+					cacheInformationsList.size(), javaInformations.getHost()) + "</b>");
 			final MButton detailsButton = new MButton(getString(DETAILS_KEY), PLUS_ICON);
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
@@ -316,10 +315,9 @@ class ScrollingPanel extends MelodyPanel {
 			final JobInformationsPanel jobInformationsPanel = new JobInformationsPanel(
 					getRemoteCollector(), jobInformationsList, rangeJobCounter);
 			jobInformationsPanel.setVisible(false);
-			final JLabel summaryLabel = new JLabel("<html><b>"
-					+ getFormattedString("jobs_sur", jobInformationsList.size(),
-							javaInformations.getHost(),
-							javaInformations.getCurrentlyExecutingJobCount()) + "</b>");
+			final JLabel summaryLabel = new JLabel("<html><b>" + getFormattedString("jobs_sur",
+					jobInformationsList.size(), javaInformations.getHost(),
+					javaInformations.getCurrentlyExecutingJobCount()) + "</b>");
 			final MButton detailsButton = new MButton(getString(DETAILS_KEY), PLUS_ICON);
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
@@ -346,8 +344,8 @@ class ScrollingPanel extends MelodyPanel {
 		final long displayDuration = System.currentTimeMillis() - start;
 		final JLabel lastCollectDurationLabel = new JLabel(getString("temps_derniere_collecte")
 				+ ": " + getCollector().getLastCollectDuration() + ' ' + getString("ms"));
-		final JLabel displayDurationLabel = new JLabel(getString("temps_affichage") + ": "
-				+ displayDuration + ' ' + getString("ms"));
+		final JLabel displayDurationLabel = new JLabel(
+				getString("temps_affichage") + ": " + displayDuration + ' ' + getString("ms"));
 		final JLabel overheadLabel = new JLabel(getString("Estimation_overhead_memoire") + ": < "
 				+ (getCollector().getEstimatedMemorySize() / 1024 / 1024 + 1) + ' '
 				+ getString("Mo"));

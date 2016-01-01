@@ -45,8 +45,8 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class HotspotsPanel extends MelodyPanel {
-	private static final ImageIcon CLEAR_HOTSPOTS_ICON = ImageIconCache.getScaledImageIcon(
-			"user-trash.png", 16, 16);
+	private static final ImageIcon CLEAR_HOTSPOTS_ICON = ImageIconCache
+			.getScaledImageIcon("user-trash.png", 16, 16);
 
 	private static final long serialVersionUID = 1L;
 
@@ -72,8 +72,8 @@ class HotspotsPanel extends MelodyPanel {
 				text = null;
 			} else {
 				final MTable<SampledMethod> myTable = getTable();
-				final SampledMethod method = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final SampledMethod method = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				text = "<html>" + method.getClassName() + ".<b>" + method.getMethodName() + "</b>";
 			}
 			// et texte selon la méthode

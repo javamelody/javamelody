@@ -54,7 +54,8 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		this.javaInformations = javaInformations;
 
 		final CounterRequestForContextTable myTable = (CounterRequestForContextTable) getTable();
-		myTable.init(new CounterRequestContextData(getCounters(), currentRequests, javaInformations));
+		myTable.init(
+				new CounterRequestContextData(getCounters(), currentRequests, javaInformations));
 
 		final MTableScrollPane<CounterRequest> scrollPane = new MTableScrollPane<>(getTable());
 
@@ -70,8 +71,8 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 		add(buttonsPanel, BorderLayout.SOUTH);
 	}
 
-	CounterRequestContextPanel createDetailsPanel(
-			final List<CounterRequestContext> currentRequests, MButton detailsButton) {
+	CounterRequestContextPanel createDetailsPanel(final List<CounterRequestContext> currentRequests,
+			MButton detailsButton) {
 		addCurrentRequestsCount(currentRequests.size());
 
 		final MButton pdfButton = createPdfButton();
@@ -96,8 +97,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 	void addCurrentRequestsCount(int currentRequestsSize) {
 		final DecimalFormat integerFormat = I18N.createIntegerFormat();
 		final String text = getFormattedString("nb_requete_en_cours",
-				integerFormat.format(currentRequestsSize))
-				+ "     ";
+				integerFormat.format(currentRequestsSize)) + "     ";
 		buttonsPanel.add(new JLabel(text), 0);
 	}
 
@@ -116,8 +116,8 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 	}
 
 	final void actionKillThread(ThreadInformations threadInformations) {
-		if (threadInformations != null
-				&& confirm(getFormattedString("confirm_kill_thread", threadInformations.getName()))) {
+		if (threadInformations != null && confirm(
+				getFormattedString("confirm_kill_thread", threadInformations.getName()))) {
 			try {
 				final String message = getRemoteCollector().executeActionAndCollectData(
 						Action.KILL_THREAD, null, null, threadInformations.getGlobalThreadId(),
@@ -132,7 +132,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 	static void writeAllCurrentRequestsAsPart(PdfOtherReport pdfOtherReport,
 			Map<JavaInformations, List<CounterRequestContext>> currentRequests, Collector collector)
-			throws IOException {
+					throws IOException {
 		long timeOfSnapshot = System.currentTimeMillis();
 		final List<Counter> counters = collector.getCounters();
 		final Map<JavaInformations, List<CounterRequestContext>> allCurrentRequests = new LinkedHashMap<>();

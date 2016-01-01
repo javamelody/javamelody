@@ -148,7 +148,8 @@ class StatisticsPanel extends MelodyPanel {
 		detailsPanel.validate();
 	}
 
-	void showRequestsAggregatedOrFilteredByClassName(String requestId, final MButton detailsButton) {
+	void showRequestsAggregatedOrFilteredByClassName(String requestId,
+			final MButton detailsButton) {
 		final List<CounterRequest> requests = new CounterRequestAggregation(counter)
 				.getRequestsAggregatedOrFilteredByClassName(requestId);
 		tablePanel.setList(requests);

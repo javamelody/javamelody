@@ -143,8 +143,8 @@ class MelodyPanel extends JPanel {
 				ImageIconCache.getImageIcon("action_refresh.png"));
 		refreshButton.setToolTipText(getString("Rafraichir") + " (F5)");
 		refreshButton.setActionCommand("refresh");
-		refreshButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-				KeyStroke.getKeyStroke("F5"), "doRefresh");
+		refreshButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke("F5"), "doRefresh");
 		refreshButton.getActionMap().put("doRefresh", new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
@@ -209,10 +209,10 @@ class MelodyPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				final JPopupMenu popupMenu = new JPopupMenu();
-				final MMenuItem xmlMenuItem = new MMenuItem("XML", ImageIconCache
-						.getImageIcon("xml.png"));
-				final MMenuItem jsonMenuItem = new MMenuItem("JSON", ImageIconCache
-						.getImageIcon("xml.png"));
+				final MMenuItem xmlMenuItem = new MMenuItem("XML",
+						ImageIconCache.getImageIcon("xml.png"));
+				final MMenuItem jsonMenuItem = new MMenuItem("JSON",
+						ImageIconCache.getImageIcon("xml.png"));
 				xmlMenuItem.setToolTipText(getString("export_xml"));
 				jsonMenuItem.setToolTipText(getString("export_json"));
 				xmlMenuItem.setActionCommand(TransportFormat.XML.toString());
@@ -230,8 +230,8 @@ class MelodyPanel extends JPanel {
 	private Serializable createDefaultSerializable() {
 		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
 		final List<Counter> counters = getCollector().getCounters();
-		final List<Serializable> serialized = new ArrayList<>(counters.size()
-				+ javaInformationsList.size());
+		final List<Serializable> serialized = new ArrayList<>(
+				counters.size() + javaInformationsList.size());
 		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
 		for (final Counter counter : counters) {
 			serialized.add(counter.clone());

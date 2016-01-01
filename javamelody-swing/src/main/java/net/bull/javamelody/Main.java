@@ -105,15 +105,16 @@ public final class Main {
 		if (locale != null) {
 			System.setProperty("user.language", locale);
 		}
-		final boolean collectorServer = Boolean.parseBoolean(System
-				.getProperty("javamelody.collectorServer"));
+		final boolean collectorServer = Boolean
+				.parseBoolean(System.getProperty("javamelody.collectorServer"));
 		final List<URL> urls = Arrays.asList(new URL(url));
 		final Range selectedRange = Range.parse(range);
 		log("Monitoring of " + application + " on " + url);
 		log("creating frame");
 		final RemoteCollector remoteCollector = new RemoteCollector(application, urls);
 		remoteCollector.setCookies(System.getProperty("cookies"));
-		final MainPanel contentPane = new MainPanel(remoteCollector, selectedRange, collectorServer);
+		final MainPanel contentPane = new MainPanel(remoteCollector, selectedRange,
+				collectorServer);
 		final MainFrame frame = new MainFrame();
 		frame.setTitle(I18N.getFormattedString("Monitoring_sur", application));
 		frame.addWindowListener(new WindowAdapter() {

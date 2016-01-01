@@ -226,7 +226,8 @@ public final class ShadowPopupFactory extends PopupFactory {
 
 		// Returns a previously used <code>ShadowPopup</code>, or a new one
 		// if none of the popups have been recycled.
-		static Popup getInstance(Component owner, Component contents, int x, int y, Popup delegate) {
+		static Popup getInstance(Component owner, Component contents, int x, int y,
+				Popup delegate) {
 			ShadowPopup result;
 			synchronized (ShadowPopup.class) {
 				if (cache == null) {
@@ -559,8 +560,8 @@ public final class ShadowPopupFactory extends PopupFactory {
 			g.drawImage(SHADOW, x + 10, y + height - 5, x + width - 5, y + height, 5, 6, 6, 11,
 					null, c);
 			g.drawImage(SHADOW, x + width - 5, y + 5, x + width, y + 10, 6, 0, 11, 5, null, c);
-			g.drawImage(SHADOW, x + width - 5, y + 10, x + width, y + height - 5, 6, 5, 11, 6,
-					null, c);
+			g.drawImage(SHADOW, x + width - 5, y + 10, x + width, y + height - 5, 6, 5, 11, 6, null,
+					c);
 			g.drawImage(SHADOW, x + width - 5, y + height - 5, x + width, y + height, 6, 6, 11, 11,
 					null, c);
 		}

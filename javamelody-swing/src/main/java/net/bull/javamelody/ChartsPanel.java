@@ -146,8 +146,8 @@ class ChartsPanel extends MelodyPanel {
 
 	final void showOtherJRobinsPanel() throws IOException {
 		if (otherJRobinsPanel == null) {
-			final Map<String, byte[]> otherJRobins = getRemoteCollector().collectOtherJRobins(
-					CHART_WIDTH, CHART_HEIGHT);
+			final Map<String, byte[]> otherJRobins = getRemoteCollector()
+					.collectOtherJRobins(CHART_WIDTH, CHART_HEIGHT);
 			otherJRobinsPanel = createJRobinPanel(otherJRobins);
 			otherJRobinsPanel.setVisible(false);
 			add(otherJRobinsPanel, BorderLayout.SOUTH);

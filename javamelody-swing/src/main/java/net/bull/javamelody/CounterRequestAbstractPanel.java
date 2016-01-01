@@ -109,8 +109,8 @@ abstract class CounterRequestAbstractPanel extends MelodyPanel {
 				@Override
 				public void valueChanged(ListSelectionEvent e) {
 					final CounterRequest counterRequest = getTable().getSelectedObject();
-					usagesButton.setEnabled(counterRequest != null
-							&& doesRequestDisplayUsages(counterRequest));
+					usagesButton.setEnabled(
+							counterRequest != null && doesRequestDisplayUsages(counterRequest));
 				}
 			});
 			usagesButton.setEnabled(false);

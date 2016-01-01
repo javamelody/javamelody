@@ -131,8 +131,8 @@ class CounterRequestForContextTable extends CounterRequestTable {
 				executedMethod = threadInformations.getExecutedMethod();
 			}
 
-			return super.getTableCellRendererComponent(jtable, executedMethod, isSelected,
-					hasFocus, row, column);
+			return super.getTableCellRendererComponent(jtable, executedMethod, isSelected, hasFocus,
+					row, column);
 		}
 	}
 
@@ -210,10 +210,10 @@ class CounterRequestForContextTable extends CounterRequestTable {
 			final Counter counter = context.getParentCounter();
 			setIcon(CounterRequestAbstractPanel.getCounterIcon(counter, margin));
 			final CounterRequestContext counterRequestContext = getCounterRequestContext(row);
-			final int duration = counterRequestContext.getDuration(counterRequestContext
-					.getParentCounter().getStartDate().getTime());
-			final CounterRequestAggregation aggregation = getData().getAggregationForCounter(
-					counter);
+			final int duration = counterRequestContext
+					.getDuration(counterRequestContext.getParentCounter().getStartDate().getTime());
+			final CounterRequestAggregation aggregation = getData()
+					.getAggregationForCounter(counter);
 			final Component result = super.getTableCellRendererComponent(jtable, duration,
 					isSelected, hasFocus, row, column);
 			StatisticsTablePanel.setStyleBasedOnThresholds(this, duration, aggregation);
@@ -265,8 +265,8 @@ class CounterRequestForContextTable extends CounterRequestTable {
 			} else {
 				totalChildHits = context.getTotalChildHits();
 			}
-			return super.getTableCellRendererComponent(jtable, totalChildHits, isSelected,
-					hasFocus, row, column);
+			return super.getTableCellRendererComponent(jtable, totalChildHits, isSelected, hasFocus,
+					row, column);
 		}
 	}
 
@@ -430,8 +430,8 @@ class CounterRequestForContextTable extends CounterRequestTable {
 				final ThreadInformations threadInformations = getSelectedThreadInformations();
 				killThreadButton.setEnabled(threadInformations != null);
 				if (threadInformations != null) {
-					killThreadButton.setToolTipText(getFormattedString("kill_thread",
-							threadInformations.getName()));
+					killThreadButton.setToolTipText(
+							getFormattedString("kill_thread", threadInformations.getName()));
 				} else {
 					killThreadButton.setToolTipText(null);
 				}
@@ -452,8 +452,8 @@ class CounterRequestForContextTable extends CounterRequestTable {
 		final int selectedRow = getSelectedRow();
 		if (selectedRow >= 0) {
 			final int modelRow = convertRowIndexToModel(selectedRow);
-			final CounterRequestContext counterRequestContext = getData().getAllContexts().get(
-					modelRow);
+			final CounterRequestContext counterRequestContext = getData().getAllContexts()
+					.get(modelRow);
 			return getData().getThreadInformationsByCounterRequestContext(counterRequestContext);
 		}
 		return null;

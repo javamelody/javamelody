@@ -138,8 +138,8 @@ class MainPanel extends MelodyPanel {
 		this.selectedRange = selectedRange;
 		final List<URL> newUrls = new ArrayList<>(initialURLs.size());
 		for (final URL url : initialURLs) {
-			final URL newUrl = new URL(url.toString() + '&' + PERIOD_PARAMETER + '='
-					+ selectedRange.getValue());
+			final URL newUrl = new URL(
+					url.toString() + '&' + PERIOD_PARAMETER + '=' + selectedRange.getValue());
 			newUrls.add(newUrl);
 		}
 		getRemoteCollector().setURLs(newUrls);

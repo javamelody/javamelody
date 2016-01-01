@@ -59,8 +59,8 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final MTable<CounterRequest> myTable = getTable();
-			final CounterRequest counterRequest = myTable.getList().get(
-					myTable.convertRowIndexToModel(row));
+			final CounterRequest counterRequest = myTable.getList()
+					.get(myTable.convertRowIndexToModel(row));
 			final Integer myValue;
 			if (counterRequest.hasChildHits()) {
 				myValue = (Integer) value;
@@ -85,8 +85,8 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final MTable<CounterRequest> myTable = getTable();
-			final CounterRequest counterRequest = myTable.getList().get(
-					myTable.convertRowIndexToModel(row));
+			final CounterRequest counterRequest = myTable.getList()
+					.get(myTable.convertRowIndexToModel(row));
 			final Counter counter = getCounterByRequestId(counterRequest);
 			if (counterRequest.equals(getRequest())) {
 				setIcon(getCounterIcon(counter, 0));
@@ -109,8 +109,8 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
 			final MTable<CounterRequest> myTable = getTable();
-			final CounterRequest counterRequest = myTable.getList().get(
-					myTable.convertRowIndexToModel(row));
+			final CounterRequest counterRequest = myTable.getList()
+					.get(myTable.convertRowIndexToModel(row));
 			final CounterRequest parentRequest = getRequest();
 
 			final Float executionsByRequest;

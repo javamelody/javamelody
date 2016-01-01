@@ -56,8 +56,8 @@ class CounterRequestContextData {
 		this.counters = counters;
 		this.javaInformations = javaInformations;
 		this.contexts = currentRequests;
-		Collections.sort(contexts, Collections.reverseOrder(new CounterRequestContextComparator(
-				System.currentTimeMillis())));
+		Collections.sort(contexts, Collections
+				.reverseOrder(new CounterRequestContextComparator(System.currentTimeMillis())));
 
 		this.threadInformationsById = new HashMap<>();
 		this.allContexts = new ArrayList<>();
@@ -75,8 +75,8 @@ class CounterRequestContextData {
 		}
 		final Map<String, CounterRequest> requestsById = mapAllRequestsById();
 		for (final CounterRequestContext context : allContexts) {
-			final String requestId = new CounterRequest(context.getRequestName(), context
-					.getParentCounter().getName()).getId();
+			final String requestId = new CounterRequest(context.getRequestName(),
+					context.getParentCounter().getName()).getId();
 			final CounterRequest request = requestsById.get(requestId);
 			allRequests.add(request);
 		}

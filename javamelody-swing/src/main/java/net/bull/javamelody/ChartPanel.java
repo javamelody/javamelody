@@ -104,8 +104,8 @@ class ChartPanel extends MelodyPanel {
 			this.imageLabel.setName(graphLabel);
 
 			final JScrollPane scrollPane = new JScrollPane(imageLabel);
-			scrollPane
-					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrollPane.setHorizontalScrollBarPolicy(
+					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			add(scrollPane, BorderLayout.CENTER);
 
@@ -146,8 +146,8 @@ class ChartPanel extends MelodyPanel {
 			final MButton exportButton = new MButton(getString("Exporter") + "...");
 			exportButton.setToolTipText(exportButton.getText() + " (F12)");
 			exportButton.setActionCommand("export");
-			exportButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-					KeyStroke.getKeyStroke("F12"), "doExport");
+			exportButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+					.put(KeyStroke.getKeyStroke("F12"), "doExport");
 			exportButton.getActionMap().put("doExport", new AbstractAction() {
 				private static final long serialVersionUID = 1L;
 
@@ -204,8 +204,8 @@ class ChartPanel extends MelodyPanel {
 		swingWorker.execute();
 	}
 
-	final byte[] collectJRobin(int value, int width, int height) throws IOException,
-			InterruptedException {
+	final byte[] collectJRobin(int value, int width, int height)
+			throws IOException, InterruptedException {
 		// on attend 300 ms avant de voir si l'utilisateur se stabilise sur une valeur de zoom
 		// et sinon inutile de charger l'image avec cette valeur de zoom
 		Thread.sleep(300);

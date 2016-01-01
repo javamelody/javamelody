@@ -56,8 +56,8 @@ public final class Utilities {
 		public void mouseWheelMoved(MouseWheelEvent event) {
 			// on reporte l'évènement mouseWheelMoved de ce scrollPane vers son parent
 			final Container parent = event.getComponent().getParent();
-			parent.dispatchEvent(SwingUtilities.convertMouseEvent(event.getComponent(), event,
-					parent));
+			parent.dispatchEvent(
+					SwingUtilities.convertMouseEvent(event.getComponent(), event, parent));
 		}
 	};
 
@@ -99,14 +99,15 @@ public final class Utilities {
 	 * @param table JTable
 	 */
 	public static void adjustTableHeight(final JTable table) {
-		table.setPreferredScrollableViewportSize(new Dimension(-1, table.getPreferredSize().height));
+		table.setPreferredScrollableViewportSize(
+				new Dimension(-1, table.getPreferredSize().height));
 		// on utilise invokeLater pour configurer le scrollPane car lors de l'exécution ce cette méthode
 		// la table n'est pas encore dans son scrollPane parent
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				final JScrollPane scrollPane = MSwingUtilities.getAncestorOfClass(
-						JScrollPane.class, table);
+				final JScrollPane scrollPane = MSwingUtilities.getAncestorOfClass(JScrollPane.class,
+						table);
 				scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 				// Puisqu'il n'y a pas d'ascenceur sur ce scrollPane,
 				// il est inutile que la mollette de souris serve à bouger cet ascenseur,

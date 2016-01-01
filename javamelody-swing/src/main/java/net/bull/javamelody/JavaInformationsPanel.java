@@ -82,15 +82,17 @@ class JavaInformationsPanel extends MelodyPanel {
 		addLabel(getString("memoire_utilisee"));
 		//		writeGraph("usedMemory", integerFormat.format(usedMemory / 1024 / 1024));
 		final String divide = " / ";
-		addJLabel(toBarWithAlert(integerFormat.format(usedMemory / 1024 / 1024) + ' '
-				+ getString("Mo") + divide + integerFormat.format(maxMemory / 1024 / 1024) + ' '
-				+ getString("Mo"), memoryInformations.getUsedMemoryPercentage(), "-Xmx"));
+		addJLabel(toBarWithAlert(
+				integerFormat.format(usedMemory / 1024 / 1024) + ' ' + getString("Mo") + divide
+						+ integerFormat.format(maxMemory / 1024 / 1024) + ' ' + getString("Mo"),
+				memoryInformations.getUsedMemoryPercentage(), "-Xmx"));
 		if (javaInformations.getSessionCount() >= 0) {
 			addLabel(getString("nb_sessions_http"));
 			// 			writeGraph("httpSessions", integerFormat.format(javaInformations.getSessionCount()));
 			addValue(integerFormat.format(javaInformations.getSessionCount()));
 		}
-		addLabel(getString("nb_threads_actifs") + "\n(" + getString("Requetes_http_en_cours") + ')');
+		addLabel(
+				getString("nb_threads_actifs") + "\n(" + getString("Requetes_http_en_cours") + ')');
 		//		writeGraph("activeThreads", integerFormat.format(javaInformations.getActiveThreadCount()));
 		addValue(integerFormat.format(javaInformations.getActiveThreadCount()));
 		if (!noDatabase) {
@@ -170,8 +172,9 @@ class JavaInformationsPanel extends MelodyPanel {
 			final long unixMaxFileDescriptorCount = javaInformations
 					.getUnixMaxFileDescriptorCount();
 			addLabel(getString("nb_fichiers"));
-			addJLabel(toBarWithAlert(integerFormat.format(unixOpenFileDescriptorCount) + " / "
-					+ integerFormat.format(unixMaxFileDescriptorCount),
+			addJLabel(toBarWithAlert(
+					integerFormat.format(unixOpenFileDescriptorCount) + " / "
+							+ integerFormat.format(unixMaxFileDescriptorCount),
 					javaInformations.getUnixOpenFileDescriptorPercentage(), null));
 			// writeGraph("fileDescriptors", integerFormat.format(unixOpenFileDescriptorCount));
 		}
@@ -215,8 +218,8 @@ class JavaInformationsPanel extends MelodyPanel {
 					.getApplicationServerIconName(serverInfo);
 			final JLabel serverInfoLabel = new JLabel(serverInfo);
 			if (applicationServerIconName != null) {
-				serverInfoLabel.setIcon(ImageIconCache.getImageIcon("servers/"
-						+ applicationServerIconName));
+				serverInfoLabel.setIcon(
+						ImageIconCache.getImageIcon("servers/" + applicationServerIconName));
 			}
 			addJLabel(serverInfoLabel);
 			addLabel(getString("Contexte_webapp"));
@@ -267,8 +270,8 @@ class JavaInformationsPanel extends MelodyPanel {
 					+ integerFormat.format(tomcatInformations.getProcessingTime()) + '\n'
 					+ getString("maxProcessingTime") + equals
 					+ integerFormat.format(tomcatInformations.getMaxTime());
-			final JLabel label = toBarWithAlert(value, 100d * currentThreadsBusy
-					/ tomcatInformations.getMaxThreads(), null);
+			final JLabel label = toBarWithAlert(value,
+					100d * currentThreadsBusy / tomcatInformations.getMaxThreads(), null);
 			label.setVerticalTextPosition(SwingConstants.TOP);
 			addJLabel(label);
 			//			if (onlyOne) {
@@ -299,8 +302,8 @@ class JavaInformationsPanel extends MelodyPanel {
 			if (maxPermGen > 0) {
 				addJLabel(toBarWithAlert(
 						permGen + " / " + integerFormat.format(maxPermGen / 1024 / 1024) + ' '
-								+ getString("Mo"), memoryInformations.getUsedPermGenPercentage(),
-						"-XX:MaxPermSize"));
+								+ getString("Mo"),
+						memoryInformations.getUsedPermGenPercentage(), "-XX:MaxPermSize"));
 			} else {
 				addValue(permGen);
 			}
@@ -311,8 +314,8 @@ class JavaInformationsPanel extends MelodyPanel {
 		final int nbDependencies = javaInformations.getDependenciesList().size();
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.setOpaque(false);
-		final JLabel nbDependenciesLabel = new JLabel(getFormattedString("nb_dependencies",
-				nbDependencies));
+		final JLabel nbDependenciesLabel = new JLabel(
+				getFormattedString("nb_dependencies", nbDependencies));
 		panel.add(nbDependenciesLabel, BorderLayout.CENTER);
 		if (nbDependencies > 0) {
 			nbDependenciesLabel.setText(nbDependenciesLabel.getText() + " ; ");

@@ -49,8 +49,8 @@ import net.bull.javamelody.swing.MButton;
  */
 class MainButtonsPanel extends MelodyPanel {
 	private static final Color BACKGROUND = new Color(186, 207, 226);
-	private static final ImageIcon MONITORING_ICON = ImageIconCache.getScaledImageIcon(
-			"systemmonitor.png", 16, 16);
+	private static final ImageIcon MONITORING_ICON = ImageIconCache
+			.getScaledImageIcon("systemmonitor.png", 16, 16);
 	private static final long serialVersionUID = 1L;
 
 	private final boolean collectorServer;
@@ -76,8 +76,8 @@ class MainButtonsPanel extends MelodyPanel {
 		final MButton onlineHelpButton = createOnlineHelpButton();
 
 		final MButton monitoringButton = new MButton(getString("Monitoring"), MONITORING_ICON);
-		monitoringButton.setToolTipText(getFormattedString("Monitoring_sur",
-				remoteCollector.getApplication()));
+		monitoringButton.setToolTipText(
+				getFormattedString("Monitoring_sur", remoteCollector.getApplication()));
 		centerPanel.add(refreshButton);
 		centerPanel.add(pdfButton);
 		centerPanel.add(xmlJsonButton);
@@ -119,9 +119,8 @@ class MainButtonsPanel extends MelodyPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Desktop.getDesktop().browse(
-							new URI(monitoringUrl.toExternalForm() + "?resource="
-									+ getString("help_url")));
+					Desktop.getDesktop().browse(new URI(
+							monitoringUrl.toExternalForm() + "?resource=" + getString("help_url")));
 				} catch (final Exception ex) {
 					showException(ex);
 				}
@@ -150,8 +149,9 @@ class MainButtonsPanel extends MelodyPanel {
 		final String customPeriodLinkLabel = getString("personnalisee");
 		final MButton customPeriodButton = new MButton(customPeriodLinkLabel,
 				ImageIconCache.getImageIcon("calendar.png"));
-		customPeriodButton.setToolTipText(getFormattedString("Choisir_periode",
-				customPeriodLinkLabel) + " (Alt-" + customPeriodLinkLabel.charAt(0) + ')');
+		customPeriodButton
+				.setToolTipText(getFormattedString("Choisir_periode", customPeriodLinkLabel)
+						+ " (Alt-" + customPeriodLinkLabel.charAt(0) + ')');
 		customPeriodButton.setMnemonic(customPeriodLinkLabel.charAt(0));
 		centerPanel.add(customPeriodButton);
 
@@ -173,8 +173,8 @@ class MainButtonsPanel extends MelodyPanel {
 				ImageIconCache.getImageIcon("action_help.png"));
 		onlineHelpButton.setToolTipText(getString("Afficher_aide_en_ligne") + " (F1)");
 		onlineHelpButton.setActionCommand("help");
-		onlineHelpButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-				KeyStroke.getKeyStroke("F1"), "doHelp");
+		onlineHelpButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke("F1"), "doHelp");
 		onlineHelpButton.getActionMap().put("doHelp", new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
@@ -205,12 +205,12 @@ class MainButtonsPanel extends MelodyPanel {
 		final Collector collector = getCollector();
 		final List<JavaInformations> javaInformationsList = getJavaInformationsList();
 		final RemoteCollector remoteCollector = getRemoteCollector();
-		final Map<String, byte[]> smallGraphs = remoteCollector.collectJRobins(
-				PdfCoreReport.SMALL_GRAPH_WIDTH, PdfCoreReport.SMALL_GRAPH_HEIGHT);
+		final Map<String, byte[]> smallGraphs = remoteCollector
+				.collectJRobins(PdfCoreReport.SMALL_GRAPH_WIDTH, PdfCoreReport.SMALL_GRAPH_HEIGHT);
 		final Map<String, byte[]> smallOtherGraphs = remoteCollector.collectOtherJRobins(
 				PdfCoreReport.SMALL_GRAPH_WIDTH, PdfCoreReport.SMALL_GRAPH_HEIGHT);
-		final Map<String, byte[]> largeGraphs = remoteCollector.collectJRobins(
-				PdfCoreReport.LARGE_GRAPH_WIDTH, PdfCoreReport.LARGE_GRAPH_HEIGHT);
+		final Map<String, byte[]> largeGraphs = remoteCollector
+				.collectJRobins(PdfCoreReport.LARGE_GRAPH_WIDTH, PdfCoreReport.LARGE_GRAPH_HEIGHT);
 		try (final OutputStream output = createFileOutputStream(tempFile)) {
 			final PdfReport pdfReport = new PdfReport(collector, collectorServer,
 					javaInformationsList, range, output);
@@ -226,9 +226,8 @@ class MainButtonsPanel extends MelodyPanel {
 							.getCurrentRequests().values()) {
 						currentRequests.addAll(requests);
 					}
-					Collections.sort(currentRequests, Collections
-							.reverseOrder(new CounterRequestContextComparator(System
-									.currentTimeMillis())));
+					Collections.sort(currentRequests, Collections.reverseOrder(
+							new CounterRequestContextComparator(System.currentTimeMillis())));
 					pdfReport.setCurrentRequests(currentRequests);
 				}
 				pdfReport.toPdf();

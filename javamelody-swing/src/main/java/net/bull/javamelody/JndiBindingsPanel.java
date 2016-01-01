@@ -76,8 +76,8 @@ class JndiBindingsPanel extends MelodyPanel {
 				setIcon(null);
 			} else {
 				final MTable<JndiBinding> myTable = getTable();
-				final JndiBinding jndiBinding = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final JndiBinding jndiBinding = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				if (jndiBinding.getContextPath() != null) {
 					setIcon(FOLDER_ICON);
 				} else {

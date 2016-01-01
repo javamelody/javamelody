@@ -50,8 +50,8 @@ class HeapInformationsPanel extends MelodyPanel {
 
 	private static final ImageIcon GC_ICON = ImageIconCache.getScaledImageIcon("broom.png", 16, 16);
 
-	private static final ImageIcon HEAP_DUMP_ICON = ImageIconCache.getScaledImageIcon(
-			"heapdump.png", 16, 16);
+	private static final ImageIcon HEAP_DUMP_ICON = ImageIconCache
+			.getScaledImageIcon("heapdump.png", 16, 16);
 
 	@SuppressWarnings("all")
 	private HeapHistogram heapHistogram;
@@ -88,14 +88,14 @@ class HeapInformationsPanel extends MelodyPanel {
 				pctTaille = null;
 			} else if (jtable instanceof MTable) {
 				final MTable<ClassInfo> myTable = (MTable<ClassInfo>) jtable;
-				final ClassInfo classInfo = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final ClassInfo classInfo = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				pctTaille = classInfo.getBytes() * 100 / totalBytes;
 			} else {
 				pctTaille = -1L;
 			}
-			return super.getTableCellRendererComponent(jtable, pctTaille, isSelected, hasFocus,
-					row, column);
+			return super.getTableCellRendererComponent(jtable, pctTaille, isSelected, hasFocus, row,
+					column);
 		}
 	}
 
@@ -118,8 +118,8 @@ class HeapInformationsPanel extends MelodyPanel {
 				pctInstances = null;
 			} else if (jtable instanceof MTable) {
 				final MTable<ClassInfo> myTable = (MTable<ClassInfo>) jtable;
-				final ClassInfo classInfo = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final ClassInfo classInfo = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				pctInstances = classInfo.getInstancesCount() * 100 / totalInstances;
 			} else {
 				pctInstances = -1L;

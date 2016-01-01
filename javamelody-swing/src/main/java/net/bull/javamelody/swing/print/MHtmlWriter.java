@@ -100,8 +100,8 @@ public class MHtmlWriter extends MPrinter {
 		out.write("<!-- Fichier genere par ");
 		out.write(System.getProperty("user.name"));
 		out.write(" le ");
-		out.write(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
-				new Date()));
+		out.write(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG)
+				.format(new Date()));
 		out.write(" -->");
 		out.write(eol);
 
@@ -128,7 +128,8 @@ public class MHtmlWriter extends MPrinter {
 
 	private void writeHtmlTable(final MBasicTable table, final boolean isSelection,
 			final Writer out, final String eol) throws IOException {
-		out.write("<table width=\"100%\" border=\"1\" cellspacing=\"0\" bordercolor=\"#000000\" cellpadding=\"2\">");
+		out.write(
+				"<table width=\"100%\" border=\"1\" cellspacing=\"0\" bordercolor=\"#000000\" cellpadding=\"2\">");
 		out.write(eol);
 		out.write(eol);
 		out.write("  <tr align=\"center\" class=\"smallFont\">");

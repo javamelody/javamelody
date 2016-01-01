@@ -48,8 +48,8 @@ public class MListTable<T> extends MBasicTable {
 	@Override
 	public void setModel(final TableModel tableModel) {
 		if (!(tableModel instanceof MListTableModel)) {
-			throw new IllegalArgumentException("model doit être instance de "
-					+ MListTableModel.class.getName());
+			throw new IllegalArgumentException(
+					"model doit être instance de " + MListTableModel.class.getName());
 		}
 		super.setModel(tableModel);
 	}

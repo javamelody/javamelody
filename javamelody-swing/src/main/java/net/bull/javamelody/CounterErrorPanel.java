@@ -66,15 +66,14 @@ class CounterErrorPanel extends MelodyPanel {
 				setToolTipText(null);
 			} else {
 				final MTable<CounterError> myTable = getTable();
-				final CounterError counterError = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final CounterError counterError = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				final String stackTrace = counterError.getStackTrace();
 				if (stackTrace == null) {
 					setToolTipText(null);
 				} else {
-					setToolTipText("<html>"
-							+ stackTrace.replace("[See nested", "\n[See nested").replaceAll("\n",
-									"<br/>"));
+					setToolTipText("<html>" + stackTrace.replace("[See nested", "\n[See nested")
+							.replaceAll("\n", "<br/>"));
 				}
 			}
 			return this;
@@ -111,8 +110,8 @@ class CounterErrorPanel extends MelodyPanel {
 		final boolean displayUser = HtmlCounterErrorReport.shouldDisplayUser(errors);
 		final boolean displayHttpRequest = HtmlCounterErrorReport.shouldDisplayHttpRequest(errors);
 		if (errors.size() >= Counter.MAX_ERRORS_COUNT) {
-			final JLabel warnLabel = new JLabel(' ' + getFormattedString(
-					"Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT));
+			final JLabel warnLabel = new JLabel(' '
+					+ getFormattedString("Dernieres_erreurs_seulement", Counter.MAX_ERRORS_COUNT));
 			warnLabel.setFont(warnLabel.getFont().deriveFont(Font.BOLD));
 			warnLabel.setForeground(Color.RED);
 			add(warnLabel, BorderLayout.NORTH);
@@ -148,8 +147,8 @@ class CounterErrorPanel extends MelodyPanel {
 				if (e.getClickCount() == 2) {
 					final CounterError counterError = getTable().getSelectedObject();
 					if (counterError.getStackTrace() != null) {
-						Utilities.showTextInPopup(CounterErrorPanel.this,
-								counterError.getMessage(), counterError.getStackTrace());
+						Utilities.showTextInPopup(CounterErrorPanel.this, counterError.getMessage(),
+								counterError.getStackTrace());
 					}
 				}
 			}

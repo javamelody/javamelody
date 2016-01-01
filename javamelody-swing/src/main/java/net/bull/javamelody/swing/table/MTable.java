@@ -140,7 +140,8 @@ public class MTable<T> extends MListTable<T> {
 	 * @param cellRenderer
 	 *           Renderer des cellules dans cette colonne
 	 */
-	public void setColumnCellRenderer(final String attribute, final TableCellRenderer cellRenderer) {
+	public void setColumnCellRenderer(final String attribute,
+			final TableCellRenderer cellRenderer) {
 		getColumn(attribute).setCellRenderer(cellRenderer);
 	}
 

@@ -101,8 +101,8 @@ class TablePopupMenu extends JPopupMenu {
 			printers.add(new MJsonWriter());
 		} catch (final ClassNotFoundException e) {
 			// l'export XML et JSON ne seront pas disponibles dans cette application
-			Logger.getLogger(TablePopupMenu.class).debug(
-					"Exports XML et JSON non disponibles sans XStream et XPP3");
+			Logger.getLogger(TablePopupMenu.class)
+					.debug("Exports XML et JSON non disponibles sans XStream et XPP3");
 		}
 		printers.add(new MJavaPrinter());
 		return printers;

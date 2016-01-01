@@ -42,8 +42,9 @@ public abstract class AbstractFilter implements BufferedImageOp {
 			cm = destCM;
 		}
 
-		return new BufferedImage(cm, cm.createCompatibleWritableRaster(src.getWidth(),
-				src.getHeight()), cm.isAlphaPremultiplied(), null);
+		return new BufferedImage(cm,
+				cm.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),
+				cm.isAlphaPremultiplied(), null);
 	}
 
 	/**

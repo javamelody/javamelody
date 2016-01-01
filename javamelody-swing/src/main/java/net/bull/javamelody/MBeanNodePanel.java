@@ -87,8 +87,8 @@ class MBeanNodePanel extends JPanel {
 			if (e.getClickCount() == 2) {
 				final MTable<MBeanAttribute> table = (MTable<MBeanAttribute>) e.getComponent();
 				final MBeanAttribute attribute = table.getSelectedObject();
-				Utilities
-						.showTextInPopup(table, attribute.getName(), attribute.getFormattedValue());
+				Utilities.showTextInPopup(table, attribute.getName(),
+						attribute.getFormattedValue());
 			}
 		}
 	};

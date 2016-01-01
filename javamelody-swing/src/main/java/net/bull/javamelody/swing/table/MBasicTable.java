@@ -192,7 +192,8 @@ public class MBasicTable extends JTable {
 	@Override
 	protected void createDefaultRenderers() {
 		final Map<Class<?>, TableCellRenderer> map = getDefaultTableCellRenderers();
-		super.defaultRenderersByColumnClass = new Hashtable<Class<?>, TableCellRenderer>(map.size());
+		super.defaultRenderersByColumnClass = new Hashtable<Class<?>, TableCellRenderer>(
+				map.size());
 		super.defaultRenderersByColumnClass.putAll(map);
 	}
 
@@ -284,8 +285,8 @@ public class MBasicTable extends JTable {
 				text = ((JTextComponent) rendererComponent).getText();
 				text = getToolTipTextIfNoText(text, rendererComponent);
 			} else if (rendererComponent instanceof JCheckBox) {
-				text = String.valueOf(((JCheckBox) rendererComponent).isSelected() ? "vrai"
-						: "faux");
+				text = String
+						.valueOf(((JCheckBox) rendererComponent).isSelected() ? "vrai" : "faux");
 			} else {
 				text = value.toString();
 			}

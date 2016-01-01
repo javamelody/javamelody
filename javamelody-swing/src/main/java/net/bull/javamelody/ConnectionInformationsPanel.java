@@ -73,14 +73,14 @@ class ConnectionInformationsPanel extends MelodyPanel {
 				setToolTipText(null);
 			} else {
 				final MTable<ConnectionInformations> myTable = getTable();
-				final ConnectionInformations connectionInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
-				final String description = getDateFormat().format(
-						connectionInformations.getOpeningDate());
+				final ConnectionInformations connectionInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
+				final String description = getDateFormat()
+						.format(connectionInformations.getOpeningDate());
 				final List<StackTraceElement> stackTrace = connectionInformations
 						.getOpeningStackTrace();
-				setToolTipText(ThreadInformationsPanel.convertStackTraceToHtml(description,
-						stackTrace));
+				setToolTipText(
+						ThreadInformationsPanel.convertStackTraceToHtml(description, stackTrace));
 			}
 			// et texte selon la valeur (nom du thread)
 			return super.getTableCellRendererComponent(jtable, value, isSelected, hasFocus, row,
@@ -105,9 +105,10 @@ class ConnectionInformationsPanel extends MelodyPanel {
 				text = null;
 			} else {
 				final MTable<ConnectionInformations> myTable = getTable();
-				final ConnectionInformations connectionInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
-				final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(connectionInformations);
+				final ConnectionInformations connectionInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
+				final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(
+						connectionInformations);
 				if (threadInformations != null) {
 					text = threadInformations.getName();
 					setToolTipText(ThreadInformationsPanel.convertStackTraceToHtml(
@@ -182,8 +183,8 @@ class ConnectionInformationsPanel extends MelodyPanel {
 		centerPanel.add(scrollPane, BorderLayout.CENTER);
 		add(centerPanel, BorderLayout.CENTER);
 
-		final JLabel nbConnectionsLabel = new JLabel(getFormattedString("nb_connexions_ouvertes",
-				connectionInformationsList.size()));
+		final JLabel nbConnectionsLabel = new JLabel(
+				getFormattedString("nb_connexions_ouvertes", connectionInformationsList.size()));
 		nbConnectionsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		final JPanel southPanel = new JPanel(new BorderLayout());
 		southPanel.setOpaque(false);
@@ -249,7 +250,8 @@ class ConnectionInformationsPanel extends MelodyPanel {
 			public void actionPerformed(ActionEvent e) {
 				final ConnectionInformations connectionInformations = getTable()
 						.getSelectedObject();
-				final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(connectionInformations);
+				final ThreadInformations threadInformations = getThreadInformationsByConnectionInformations(
+						connectionInformations);
 				showStackTraceInPopup(connectionInformations, threadInformations);
 			}
 		});

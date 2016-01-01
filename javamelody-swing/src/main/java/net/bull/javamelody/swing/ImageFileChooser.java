@@ -53,7 +53,8 @@ public class ImageFileChooser extends JFileChooser {
 	 */
 	public ImageFileChooser() {
 		super();
-		setFileFilter(new MExtensionFileFilter(extensions, I18NAdapter.getString("Fichiers_images")));
+		setFileFilter(
+				new MExtensionFileFilter(extensions, I18NAdapter.getString("Fichiers_images")));
 		setAccessory(new ImageFilePreviewer(this));
 	}
 
@@ -218,8 +219,8 @@ public class ImageFileChooser extends JFileChooser {
 			if (image == null) {
 				return null;
 			}
-			final BufferedImage compatibleImage = getGraphicsConfiguration().createCompatibleImage(
-					image.getWidth(), image.getHeight());
+			final BufferedImage compatibleImage = getGraphicsConfiguration()
+					.createCompatibleImage(image.getWidth(), image.getHeight());
 			final Graphics g = compatibleImage.getGraphics();
 			g.drawImage(image, 0, 0, null);
 			g.dispose();

@@ -50,8 +50,8 @@ import net.bull.javamelody.swing.table.MTableScrollPane;
  * @author Emeric Vernat
  */
 class SessionInformationsPanel extends MelodyPanel {
-	private static final ImageIcon INVALIDATE_SESSION_ICON = ImageIconCache.getScaledImageIcon(
-			"user-trash.png", 16, 16);
+	private static final ImageIcon INVALIDATE_SESSION_ICON = ImageIconCache
+			.getScaledImageIcon("user-trash.png", 16, 16);
 
 	private static final long serialVersionUID = 1L;
 
@@ -77,8 +77,8 @@ class SessionInformationsPanel extends MelodyPanel {
 				setToolTipText(null);
 			} else {
 				final MTable<SessionInformations> myTable = getTable();
-				final SessionInformations sessionInformations = myTable.getList().get(
-						myTable.convertRowIndexToModel(row));
+				final SessionInformations sessionInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
 				final String country = sessionInformations.getCountry();
 				if (country == null) {
 					setIcon(null);

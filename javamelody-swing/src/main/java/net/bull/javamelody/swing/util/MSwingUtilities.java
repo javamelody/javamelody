@@ -67,8 +67,8 @@ public final class MSwingUtilities {
 	 */
 	public static boolean showConfirmation(Component component, String message) {
 		return JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(component), message,
-				UIManager.getString("OptionPane.titleText"), JOptionPane.OK_OPTION
-						| JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
+				UIManager.getString("OptionPane.titleText"),
+				JOptionPane.OK_OPTION | JOptionPane.CANCEL_OPTION) == JOptionPane.OK_OPTION;
 	}
 
 	/**
@@ -98,7 +98,8 @@ public final class MSwingUtilities {
 	 *           Component
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getAncestorOfClass(final Class<T> componentClass, final Component component) {
+	public static <T> T getAncestorOfClass(final Class<T> componentClass,
+			final Component component) {
 		return (T) SwingUtilities.getAncestorOfClass(componentClass, component);
 	}
 
