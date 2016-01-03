@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 final class LOG {
 	static final boolean LOG4J_ENABLED = isLog4jEnabled();
+	static final boolean LOG4J2_ENABLED = isLog4j2Enabled();
 	static final boolean LOGBACK_ENABLED = isLogbackEnabled();
 
 	static final int MAX_DEBUGGING_LOGS_COUNT = 50;
@@ -137,6 +138,17 @@ final class LOG {
 		}
 	}
 
+	private static boolean isLog4j2Enabled() {
+		try {
+			Class.forName("org.apache.logging.log4j.Logger");
+			// v2.4.1 is needed, so check ConfigurationBuilder which exists since v2.4
+			Class.forName("org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder");
+			return true;
+		} catch (final Throwable e) { // NOPMD
+			return false;
+		}
+	}
+
 	private static boolean isLogbackEnabled() {
 		try {
 			Class.forName("ch.qos.logback.classic.Logger");
@@ -167,6 +179,8 @@ final class LOG {
 		// sinon, on prend selon ce qui est présent Logback ou Log4J ou java.util.logging
 		if (LOGBACK_ENABLED) {
 			return new LogbackLogger();
+		} else if (LOG4J2_ENABLED) {
+			return new Log4J2Logger();
 		} else if (LOG4J_ENABLED) {
 			return new Log4JLogger();
 		} else {

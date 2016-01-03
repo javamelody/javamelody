@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import java.util.Collections;
 
 import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 public class TestLog {
 	private LogbackAppender logbackAppender;
 	private Log4JAppender log4jAppender;
+	private Log4J2Appender log4j2Appender;
 	private LoggingHandler loggingHandler;
 
 	/** Initialisation. */
@@ -44,6 +46,7 @@ public class TestLog {
 		Utils.initialize();
 		logbackAppender = new LogbackAppender();
 		log4jAppender = new Log4JAppender();
+		log4j2Appender = new Log4J2Appender();
 		loggingHandler = new LoggingHandler();
 	}
 
@@ -51,6 +54,9 @@ public class TestLog {
 	@Test
 	public void testGetSingleton() {
 		assertNotNull("getSingleton not null", LogbackAppender.getSingleton());
+		assertNotNull("getSingleton not null", Log4J2Appender.getSingleton());
+		assertSame("getSingleton same", Log4J2Appender.getSingleton(),
+				Log4J2Appender.getSingleton());
 		assertNotNull("getSingleton not null", Log4JAppender.getSingleton());
 		assertSame("getSingleton same", Log4JAppender.getSingleton(), Log4JAppender.getSingleton());
 		assertNotNull("getSingleton not null", LoggingHandler.getSingleton());
@@ -67,6 +73,7 @@ public class TestLog {
 					.list(Logger.getRootLogger().getAllAppenders()).size();
 			logbackAppender.register();
 			log4jAppender.register();
+			log4j2Appender.register();
 			loggingHandler.register();
 			final int countAppendersAfter = Collections
 					.list(Logger.getRootLogger().getAllAppenders()).size();
@@ -74,6 +81,7 @@ public class TestLog {
 		} finally {
 			logbackAppender.deregister();
 			log4jAppender.deregister();
+			log4j2Appender.deregister();
 			loggingHandler.deregister();
 		}
 	}
@@ -98,11 +106,13 @@ public class TestLog {
 	public void testDeregister() {
 		logbackAppender.register();
 		log4jAppender.register();
+		log4j2Appender.register();
 		loggingHandler.register();
 		final int countAppendersBefore = Collections.list(Logger.getRootLogger().getAllAppenders())
 				.size();
 		logbackAppender.deregister();
 		log4jAppender.deregister();
+		log4j2Appender.deregister();
 		loggingHandler.deregister();
 		final int countAppendersAfter = Collections.list(Logger.getRootLogger().getAllAppenders())
 				.size();
@@ -124,6 +134,7 @@ public class TestLog {
 		try {
 			logbackAppender.register();
 			log4jAppender.register();
+			log4j2Appender.register();
 			loggingHandler.register();
 			final Counter logCounter = LoggingHandler.getLogCounter();
 			logCounter.clear();
@@ -135,18 +146,22 @@ public class TestLog {
 			Logger.getRootLogger().info("test info log4j");
 			Logger.getRootLogger().warn("test warn log4j");
 			Logger.getRootLogger().warn("test warn log4j", new IllegalStateException("test"));
+			LogManager.getRootLogger().error("test error log4j 2");
+			LogManager.getRootLogger().error("test error log4j 2",
+					new IllegalStateException("test"));
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME)
 					.warning("test 2");
 			java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME)
 					.info("test 3");
 			final int requestsCountAfter = logCounter.getRequestsCount();
 			// cela peut ne pas être égal si un autre thread a loggué des warnings en même temps
-			if (requestsCountAfter < requestsCountBefore + 3) {
+			if (requestsCountAfter < requestsCountBefore + 4) {
 				fail("testAppend failed, requests : " + logCounter.getRequests());
 			}
 		} finally {
 			logbackAppender.deregister();
 			log4jAppender.deregister();
+			log4j2Appender.deregister();
 			loggingHandler.deregister();
 		}
 	}

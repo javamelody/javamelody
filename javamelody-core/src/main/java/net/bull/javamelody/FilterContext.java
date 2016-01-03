@@ -283,6 +283,11 @@ class FilterContext {
 			Log4JAppender.getSingleton().register();
 		}
 
+		if (LOG.LOG4J2_ENABLED) {
+			// si log4j2 est disponible on branche aussi l'appender pour le counter de logs
+			Log4J2Appender.getSingleton().register();
+		}
+
 		if (LOG.LOGBACK_ENABLED) {
 			// si logback est disponible on branche aussi l'appender pour le counter de logs
 			LogbackAppender.getSingleton().register();

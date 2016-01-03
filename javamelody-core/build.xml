@@ -65,6 +65,8 @@
 					<include name="xwork-2.1.0.jar" />
 					<include name="xstream-1.4.2.jar" />
 					<include name="log4j-1.2.16.jar" />
+					<include name="log4j-api-2.5.jar" />
+					<include name="log4j-core-2.5.jar" />
 					<include name="slf4j-api-1.5.11.jar" />
 					<include name="logback-classic-0.9.19.jar" />
 					<include name="logback-core-0.9.19.jar" />
