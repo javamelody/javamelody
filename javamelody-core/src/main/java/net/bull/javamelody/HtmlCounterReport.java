@@ -284,7 +284,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 						+ getFormattedString("temps_fils_moyen", childCounterName) + "</th>");
 			}
 			table.nextRow();
-			write("<td>");
+			write("<td class='wrappedText'>");
 			writeCounterIcon(request);
 			writeDirectly(htmlEncodeRequestName(request.getId(), request.getName()));
 			if (hasChildren) {
@@ -329,7 +329,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		private void writeChildRequest(CounterRequest childRequest, float executionsByRequest,
 				boolean allChildHitsDisplayed) throws IOException {
 			writeln("<td>");
-			writeln("<div style='margin-left: 10px;'>");
+			writeln("<div style='margin-left: 10px;' class='wrappedText'>");
 			writeCounterIcon(childRequest);
 			writeRequestGraph(childRequest.getId(), childRequest.getName());
 			writeln("</div></td><td align='right'>");
@@ -647,7 +647,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 	private void writeRequest(CounterRequest request, boolean includeGraph,
 			boolean includeDetailLink, boolean includeSummaryPerClassLink) throws IOException {
 		final String nextColumn = "</td> <td align='right'>";
-		write("<td>");
+		write("<td class='wrappedText'>");
 		writeRequestName(request.getId(), request.getName(), includeGraph, includeDetailLink,
 				includeSummaryPerClassLink);
 		final CounterRequest globalRequest = counterRequestAggregation.getGlobalRequest();

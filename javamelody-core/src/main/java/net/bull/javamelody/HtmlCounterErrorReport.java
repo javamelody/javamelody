@@ -80,14 +80,14 @@ class HtmlCounterErrorReport extends HtmlAbstractReport {
 			throws IOException {
 		write("<td align='right'>");
 		write(dateTimeFormat.format(error.getDate()));
-		write("</td><td>");
+		write("</td><td class='wrappedText'>");
 		if (displayHttpRequest) {
 			if (error.getHttpRequest() == null) {
 				write("&nbsp;");
 			} else {
 				writeDirectly(htmlEncode(error.getHttpRequest()));
 			}
-			write("</td><td>");
+			write("</td><td class='wrappedText'>");
 		}
 		if (displayUser) {
 			if (error.getRemoteUser() == null) {
@@ -95,7 +95,7 @@ class HtmlCounterErrorReport extends HtmlAbstractReport {
 			} else {
 				writeDirectly(htmlEncode(error.getRemoteUser()));
 			}
-			write("</td><td>");
+			write("</td><td class='wrappedText'>");
 		}
 		if (error.getStackTrace() != null) {
 			writeln("<a class='tooltip'>");

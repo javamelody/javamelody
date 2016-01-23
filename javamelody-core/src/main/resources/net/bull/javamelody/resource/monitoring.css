@@ -122,6 +122,12 @@ table thead th:last-child {
 	border-top-right-radius: 5px
 }
 
+.wrappedText {
+	/* wrap very long words in requests and errors cells */
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
 .tooltip em {
 	display: none;
 }

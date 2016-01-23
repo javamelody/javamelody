@@ -319,7 +319,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		for (final CounterRequestContext context : contexts) {
 			write("<div style='margin-left: ");
 			write(Integer.toString(margin));
-			writeln("px;'>");
+			writeln("px;' class='wrappedText'>");
 			writeRequest(context, counterRequestContextReportHelper);
 			write("</div>");
 			margin += 10;
