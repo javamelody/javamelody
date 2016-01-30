@@ -259,7 +259,7 @@ public final class Main {
 		final URL res = Main.class.getResource(resource);
 
 		// put this jar in a file system so that we can load jars from there
-		File tmp;
+		final File tmp;
 		try {
 			tmp = File.createTempFile(fileName, suffix);
 		} catch (final IOException e) {

@@ -376,7 +376,7 @@ final class Parameters {
 			// api servlet 2.5 (Java EE 5) minimum pour appeler ServletContext.getContextPath
 			return context.getContextPath();
 		}
-		URL webXmlUrl;
+		final URL webXmlUrl;
 		try {
 			webXmlUrl = context.getResource("/WEB-INF/web.xml");
 		} catch (final MalformedURLException e) {

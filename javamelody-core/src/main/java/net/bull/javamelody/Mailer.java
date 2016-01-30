@@ -110,7 +110,7 @@ class Mailer {
 	private Properties getPropertiesFromSession(Object jndiSession) {
 		// On récupère ici les propriétés déclarées d'une session mail par réflexion.
 		// Le paramètre jndiSession n'est pas indiqué de type Session car le cast ne marcherait pas.
-		Method getPropertiesMethod;
+		final Method getPropertiesMethod;
 		try {
 			getPropertiesMethod = jndiSession.getClass().getMethod("getProperties", (Class[]) null);
 			return (Properties) getPropertiesMethod.invoke(jndiSession, (Object[]) null);
