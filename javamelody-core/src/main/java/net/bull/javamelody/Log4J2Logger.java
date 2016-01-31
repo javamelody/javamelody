@@ -29,6 +29,18 @@ class Log4J2Logger implements JavaMelodyLogger {
 
 	/** {@inheritDoc} */
 	@Override
+	public void info(String msg, Throwable throwable) {
+		LOGGER.info(msg, throwable);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void warn(String msg, Throwable throwable) {
+		LOGGER.warn(msg, throwable);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void debug(String msg) {
 		LOGGER.debug(msg);
 	}
@@ -43,18 +55,6 @@ class Log4J2Logger implements JavaMelodyLogger {
 	@Override
 	public void info(String msg) {
 		LOGGER.info(msg);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void info(String msg, Throwable throwable) {
-		LOGGER.info(msg, throwable);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void warn(String msg, Throwable throwable) {
-		LOGGER.warn(msg, throwable);
 	}
 
 	/** {@inheritDoc} */
