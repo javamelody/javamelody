@@ -55,7 +55,8 @@ class DatabaseInformations implements Serializable {
 		H2("H2"),
 		HSQLDB("HSQL Database Engine"),
 		SQLSERVER("Microsoft SQL Server"),
-		SYBASE("Sybase SQL Server", "Adaptive Server Enterprise");
+		SYBASE("Sybase SQL Server", "Adaptive Server Enterprise"),
+		INFORMIX("Informix Dynamic Server");
 
 		// RESOURCE_BUNDLE_BASE_NAME vaut "net.bull.javamelody.resource.databaseInformations"
 		// ce qui charge net.bull.javamelody.resource.databaseInformations.properties
@@ -69,7 +70,9 @@ class DatabaseInformations implements Serializable {
 			this.databaseNames = Arrays.asList(databaseNames);
 		}
 
+		// CHECKSTYLE:OFF
 		List<String> getRequestNames() {
+			// CHECKSTYLE:ON
 			final List<String> tmp;
 			switch (this) {
 			case POSTGRESQL:
@@ -111,6 +114,10 @@ class DatabaseInformations implements Serializable {
 				tmp = Arrays.asList("sp_who", "connections", "sp_lock", "lock",
 						"running_stored_procedure", "used_temporary_tables", "used_tables",
 						"sp_version");
+				break;
+			case INFORMIX:
+				tmp = Arrays.asList("version", "sessions", "resources_by_user", "current_queries",
+						"config");
 				break;
 			default:
 				throw new IllegalStateException();
