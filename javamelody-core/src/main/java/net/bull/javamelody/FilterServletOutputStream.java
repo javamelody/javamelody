@@ -30,6 +30,7 @@ import javax.servlet.WriteListener;
 class FilterServletOutputStream extends ServletOutputStream {
 	private final OutputStream stream;
 	private final ServletOutputStream servletOutputStream;
+	private boolean closed;
 
 	/**
 	 * Constructeur.
@@ -57,12 +58,16 @@ class FilterServletOutputStream extends ServletOutputStream {
 	@Override
 	public void close() throws IOException {
 		stream.close();
+		closed = true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void flush() throws IOException {
-		stream.flush();
+		// issue 532: do not flush a closed output stream
+		if (!closed) {
+			stream.flush();
+		}
 	}
 
 	/** {@inheritDoc} */
