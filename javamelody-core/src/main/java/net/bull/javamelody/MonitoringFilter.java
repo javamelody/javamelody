@@ -334,6 +334,12 @@ public class MonitoringFilter implements Filter {
 				session.setAttribute(SessionInformations.SESSION_REMOTE_USER, remoteUser);
 			}
 		}
+		if (session.getAttribute(SessionInformations.SESSION_USER_AGENT) == null) {
+			final String userAgent = httpRequest.getHeader("User-Agent");
+			if (userAgent != null) {
+				session.setAttribute(SessionInformations.SESSION_USER_AGENT, userAgent);
+			}
+		}
 	}
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)

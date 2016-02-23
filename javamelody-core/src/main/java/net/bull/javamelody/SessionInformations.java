@@ -21,10 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -40,7 +43,31 @@ class SessionInformations implements Serializable {
 	static final String SESSION_COUNTRY_KEY = "javamelody.country";
 	static final String SESSION_REMOTE_ADDR = "javamelody.remoteAddr";
 	static final String SESSION_REMOTE_USER = "javamelody.remoteUser";
+	static final String SESSION_USER_AGENT = "javamelody.userAgent";
+
 	private static final long serialVersionUID = -2689338895804445093L;
+
+	private static final List<String> BROWSERS = Arrays.asList("Edge", "Chrome", "CriOS", "Firefox",
+			"Safari", "MSIE", "Trident", "Opera" // IEMobile dans MSIE 
+	);
+
+	private static final List<String> OS = Arrays.asList(
+			// Android avant Linux. iPhone, iPad dans Mac OS. *bot et (yahoo) slurp ignorés
+			"Windows", "Android", "Linux", "Mac OS");
+
+	private static final Map<String, String> WINDOWS_CODE_TO_NAME_MAP = new LinkedHashMap<String, String>();
+
+	static {
+		// see https://msdn.microsoft.com/en-us/library/ms537503%28v=vs.85%29.aspx
+		WINDOWS_CODE_TO_NAME_MAP.put("NT 6.3", "8.1");
+		WINDOWS_CODE_TO_NAME_MAP.put("NT 6.2", "8");
+		WINDOWS_CODE_TO_NAME_MAP.put("NT 6.1", "7");
+		WINDOWS_CODE_TO_NAME_MAP.put("NT 6.0", "Vista");
+		WINDOWS_CODE_TO_NAME_MAP.put("NT 5.2", "Server 2003/XP");
+		WINDOWS_CODE_TO_NAME_MAP.put("NT 5.1", "XP");
+		// others ommitted
+	}
+
 	// on utilise ce ByteArrayOutputStream pour calculer les tailles sérialisées,
 	// on n'a qu'une instance pour éviter d'instancier un gros tableau d'octets à chaque session
 	@SuppressWarnings("all")
@@ -54,6 +81,7 @@ class SessionInformations implements Serializable {
 	private final String country;
 	private final String remoteAddr;
 	private final String remoteUser;
+	private final String userAgent;
 	private final int serializedSize;
 	@SuppressWarnings("all")
 	private final List<SessionAttribute> attributes;
@@ -154,6 +182,13 @@ class SessionInformations implements Serializable {
 			remoteUser = user.toString();
 		}
 
+		final Object agent = session.getAttribute(SESSION_USER_AGENT);
+		if (agent == null) {
+			userAgent = null;
+		} else {
+			userAgent = agent.toString();
+		}
+
 		serializedSize = computeSerializedSize(session, attributeNames);
 
 		if (includeAttributes) {
@@ -244,6 +279,50 @@ class SessionInformations implements Serializable {
 
 	String getRemoteAddr() {
 		return remoteAddr;
+	}
+
+	String getBrowser() {
+		if (userAgent == null) {
+			return null;
+		}
+		final String[] userAgentSplitted = userAgent.split("[ ;]");
+		for (final String browser : BROWSERS) {
+			for (final String ua : userAgentSplitted) {
+				if (ua.contains(browser)) {
+					final String result = ua.trim();
+					// for user agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko
+					// see http://www.useragentstring.com/pages/Internet%20Explorer/
+					return result.replace("Trident/7.0", "MSIE 11.0");
+				}
+			}
+		}
+		// browser unknown, the complete userAgent will still be displayed in the session attributes
+		return null;
+	}
+
+	String getOs() {
+		if (userAgent == null) {
+			return null;
+		}
+		final String[] userAgentSplitted = userAgent.split("[();]");
+		for (final String os : OS) {
+			for (final String ua : userAgentSplitted) {
+				if (ua.contains(os)) {
+					String result = ua.trim();
+					if (result.contains("Windows")) {
+						for (final Map.Entry<String, String> entry : WINDOWS_CODE_TO_NAME_MAP
+								.entrySet()) {
+							final String code = entry.getKey();
+							final String name = entry.getValue();
+							result = result.replace(code, name);
+						}
+					}
+					return result;
+				}
+			}
+		}
+		// OS unknown, the complete userAgent will still be displayed in the session attributes
+		return null;
 	}
 
 	String getRemoteUser() {

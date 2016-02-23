@@ -49,7 +49,7 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
-	private final Map<String, Image> imagesByCountry = new HashMap<String, Image>();
+	private final Map<String, Image> imagesByFileName = new HashMap<String, Image>();
 
 	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations,
 			Document document) {
@@ -122,6 +122,8 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 		headers.add(getString("Taille_serialisee"));
 		headers.add(getString("Adresse_IP"));
 		headers.add(getString("Pays"));
+		headers.add(getString("Navigateur"));
+		headers.add(getString("OS"));
 		if (displayUser) {
 			headers.add(getString("Utilisateur"));
 		}
@@ -163,6 +165,7 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 		}
 		defaultCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		writeCountry(session);
+		writeBrowserAndOs(session);
 		if (displayUser) {
 			defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 			final String remoteUser = session.getRemoteUser();
@@ -179,7 +182,8 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 		if (country == null) {
 			addCell("");
 		} else {
-			final Image image = getCountryImage(country);
+			final String fileName = "flags/" + country + ".gif";
+			final Image image = getImageByFileName(fileName);
 			if (image == null) {
 				addCell(country);
 			} else {
@@ -188,17 +192,48 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 		}
 	}
 
-	private Image getCountryImage(String country) throws BadElementException, IOException {
-		assert country != null;
-		Image image = imagesByCountry.get(country);
+	private void writeBrowserAndOs(SessionInformations session)
+			throws IOException, BadElementException {
+		final String browser = session.getBrowser();
+		if (browser == null) {
+			addCell("");
+		} else {
+			final String browserIconName = HtmlSessionInformationsReport
+					.getBrowserIconName(browser);
+			final String fileName = "browsers/" + browserIconName;
+			final Image image = getImageByFileName(fileName);
+			if (image == null) {
+				addCell(browser);
+			} else {
+				addCell(new Phrase(new Chunk(image, 0, 0)));
+			}
+		}
+
+		final String os = session.getOs();
+		if (os == null) {
+			addCell("");
+		} else {
+			final String osIconName = HtmlSessionInformationsReport.getOSIconName(os);
+			final String fileName = "servers/" + osIconName;
+			final Image image = getImageByFileName(fileName);
+			if (image == null) {
+				addCell(os);
+			} else {
+				addCell(new Phrase(new Chunk(image, 0, 0)));
+			}
+		}
+	}
+
+	private Image getImageByFileName(String fileName) throws BadElementException, IOException {
+		assert fileName != null;
+		Image image = imagesByFileName.get(fileName);
 		if (image == null) {
-			final String fileName = "flags/" + country + ".gif";
 			if (getClass().getResource(Parameters.getResourcePath(fileName)) == null) {
 				return null;
 			}
 			image = PdfDocumentFactory.getImage(fileName);
 			image.scalePercent(40);
-			imagesByCountry.put(country, image);
+			imagesByFileName.put(fileName, image);
 		}
 		return image;
 	}

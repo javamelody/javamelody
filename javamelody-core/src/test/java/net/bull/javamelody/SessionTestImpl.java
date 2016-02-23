@@ -42,6 +42,8 @@ public class SessionTestImpl implements HttpSession {
 			attributes.put(SessionInformations.SESSION_COUNTRY_KEY, "fr");
 			attributes.put(SessionInformations.SESSION_REMOTE_ADDR, "localhost");
 			attributes.put(SessionInformations.SESSION_REMOTE_USER, "admin");
+			attributes.put(SessionInformations.SESSION_USER_AGENT,
+					"Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko");
 			attributes.put("test", null);
 		} else {
 			attributes.put("not serializable", new Object());
@@ -64,6 +66,10 @@ public class SessionTestImpl implements HttpSession {
 
 	void setCountry(String country) {
 		attributes.put(SessionInformations.SESSION_COUNTRY_KEY, country);
+	}
+
+	void setUserAgent(String userAgent) {
+		attributes.put(SessionInformations.SESSION_USER_AGENT, userAgent);
 	}
 
 	boolean isInvalidated() {

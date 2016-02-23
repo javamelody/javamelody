@@ -98,6 +98,85 @@ class SessionInformationsPanel extends MelodyPanel {
 		}
 	}
 
+	private class BrowserTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		BrowserTableCellRenderer() {
+			super();
+			setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// icône et tooltip correspondant au navigateur
+			if (row == -1) {
+				setIcon(null);
+				setToolTipText(null);
+			} else {
+				final MTable<SessionInformations> myTable = getTable();
+				final SessionInformations sessionInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
+				final String browser = sessionInformations.getBrowser();
+				if (browser == null) {
+					setIcon(null);
+				} else {
+					final String browserIconName = HtmlSessionInformationsReport
+							.getBrowserIconName(browser);
+					final String fileName = "browsers/" + browserIconName;
+					if (getClass().getResource(Parameters.getResourcePath(fileName)) == null) {
+						setIcon(null);
+					} else {
+						setIcon(ImageIconCache.getImageIcon(fileName));
+					}
+				}
+				setToolTipText(browser);
+			}
+			// sans texte
+			return super.getTableCellRendererComponent(jtable, null, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
+	private class OsTableCellRenderer extends MDefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		OsTableCellRenderer() {
+			super();
+			setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable jtable, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			// icône et tooltip correspondant au navigateur
+			if (row == -1) {
+				setIcon(null);
+				setToolTipText(null);
+			} else {
+				final MTable<SessionInformations> myTable = getTable();
+				final SessionInformations sessionInformations = myTable.getList()
+						.get(myTable.convertRowIndexToModel(row));
+				final String os = sessionInformations.getOs();
+				if (os == null) {
+					setIcon(null);
+				} else {
+					final String osIconName = HtmlSessionInformationsReport.getOSIconName(os);
+					final String fileName = "servers/" + osIconName;
+					if (getClass().getResource(Parameters.getResourcePath(fileName)) == null) {
+						setIcon(null);
+					} else {
+						setIcon(ImageIconCache.getImageIcon(fileName));
+					}
+				}
+				setToolTipText(os);
+			}
+			// sans texte
+			return super.getTableCellRendererComponent(jtable, null, isSelected, hasFocus, row,
+					column);
+		}
+	}
+
 	SessionInformationsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
 
@@ -148,6 +227,8 @@ class SessionInformationsPanel extends MelodyPanel {
 		myTable.addColumn("serializedSize", getString("Taille_serialisee"));
 		myTable.addColumn("remoteAddr", getString("Adresse_IP"));
 		myTable.addColumn("countryDisplay", getString("Pays"));
+		myTable.addColumn("browser", getString("Navigateur"));
+		myTable.addColumn("os", getString("OS"));
 
 		if (displayUser) {
 			myTable.addColumn("remoteUser", getString("Utilisateur"));
@@ -161,6 +242,8 @@ class SessionInformationsPanel extends MelodyPanel {
 		dateAndTimeTableCellRenderer.setDateFormat(I18N.createDateAndTimeFormat());
 		myTable.setColumnCellRenderer("expirationDate", dateAndTimeTableCellRenderer);
 		myTable.setColumnCellRenderer("countryDisplay", new CountryTableCellRenderer());
+		myTable.setColumnCellRenderer("browser", new BrowserTableCellRenderer());
+		myTable.setColumnCellRenderer("os", new OsTableCellRenderer());
 
 		return tableScrollPane;
 	}

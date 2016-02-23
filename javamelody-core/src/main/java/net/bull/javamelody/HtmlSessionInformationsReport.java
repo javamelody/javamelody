@@ -23,6 +23,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 
@@ -33,6 +34,10 @@ import net.bull.javamelody.SessionInformations.SessionAttribute;
  * @author Emeric Vernat
  */
 class HtmlSessionInformationsReport extends HtmlAbstractReport {
+	private static final String[] OS = { "linux", "windows", "mac", "solaris", "hp", "ibm",
+			"android", };
+	private static final String[] BROWSERS = { "chrome", "crios", "edge", "firefox", "msie",
+			"opera", "safari", };
 	private static final String A_HREF_PART_SESSIONS = "<a href='?part=sessions";
 	private final List<SessionInformations> sessionsInformations;
 	private final HttpSession currentSession;
@@ -91,7 +96,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		write("<th>#Session_id#</th><th class='sorttable_numeric'>#Dernier_acces#</th>");
 		write("<th class='sorttable_numeric'>#Age#</th><th class='sorttable_date'>#Expiration#</th>");
 		write("<th class='sorttable_numeric'>#Nb_attributs#</th><th>#Serialisable#</th><th>#Taille_serialisee#</th>");
-		write("<th class='sorttable_numeric'>#Adresse_IP#</th><th>#Pays#</th>");
+		write("<th class='sorttable_numeric'>#Adresse_IP#</th><th>#Pays#</th><th>#Navigateur#</th><th>#OS#</th>");
 		if (displayUser) {
 			write("<th>#Utilisateur#</th>");
 		}
@@ -169,6 +174,8 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		}
 		write(nextColumnAlignCenter);
 		writeCountry(session);
+		write(nextColumnAlignCenter);
+		writeBrowserAndOs(session);
 		if (displayUser) {
 			write(nextColumn);
 			final String remoteUser = session.getRemoteUser();
@@ -179,13 +186,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			}
 		}
 		write("</td><td align='center' class='noPrint'>");
-		write(A_HREF_PART_SESSIONS);
-		write("&amp;action=invalidate_session&amp;sessionId=");
-		write(urlEncode(session.getId()));
-		write("' onclick=\"javascript:return confirm('"
-				+ getStringForJavascript("confirm_invalidate_session") + "');\">");
-		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");
-		write("</a>");
+		writeInvalidateSessionLink(session);
 		write("</td>");
 	}
 
@@ -207,6 +208,63 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 				write("' />");
 			}
 		}
+	}
+
+	private void writeBrowserAndOs(SessionInformations session) throws IOException {
+		final String browser = session.getBrowser();
+		if (browser == null) {
+			write("&nbsp;");
+		} else {
+			final String browserIconName = getBrowserIconName(browser);
+			if (browserIconName != null) {
+				final String browserEncoded = htmlEncode(browser);
+				writeDirectly("<img src='?resource=browsers/" + browserIconName + "' alt='"
+						+ browserEncoded + "' title='" + browserEncoded + "'/>");
+			}
+		}
+		write("</td><td align='center'>");
+
+		final String os = session.getOs();
+		if (os == null) {
+			write("&nbsp;");
+		} else {
+			final String osIconName = getOSIconName(os);
+			if (osIconName != null) {
+				final String osEncoded = htmlEncode(os);
+				writeDirectly("<img src='?resource=servers/" + osIconName + "' alt='" + osEncoded
+						+ "' title='" + osEncoded + "' />");
+			}
+		}
+	}
+
+	static String getOSIconName(String os) {
+		final String tmp = os.toLowerCase(Locale.ENGLISH);
+		for (final String anOS : OS) {
+			if (tmp.contains(anOS)) {
+				return anOS + ".png";
+			}
+		}
+		return null;
+	}
+
+	static String getBrowserIconName(String browser) {
+		final String tmp = browser.toLowerCase(Locale.ENGLISH);
+		for (final String aBrowser : BROWSERS) {
+			if (tmp.contains(aBrowser)) {
+				return aBrowser + ".png";
+			}
+		}
+		return null;
+	}
+
+	private void writeInvalidateSessionLink(SessionInformations session) throws IOException {
+		write(A_HREF_PART_SESSIONS);
+		write("&amp;action=invalidate_session&amp;sessionId=");
+		write(urlEncode(session.getId()));
+		write("' onclick=\"javascript:return confirm('"
+				+ getStringForJavascript("confirm_invalidate_session") + "');\">");
+		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");
+		write("</a>");
 	}
 
 	void writeSessionDetails(String sessionId, SessionInformations sessionInformations)
