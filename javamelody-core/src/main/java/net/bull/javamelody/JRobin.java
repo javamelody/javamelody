@@ -373,6 +373,23 @@ final class JRobin {
 				addValue(value);
 			}
 			throw createIOException(e);
+		} catch (final IllegalArgumentException e) {
+			// catch IllegalArgumentException for issue 533:
+			//			java.lang.IllegalArgumentException
+			//			at java.nio.Buffer.position(Buffer.java:244)
+			//			at net.bull.javamelody.RrdNioBackend.read(RrdNioBackend.java:147)
+			//          ...
+			//			at org.jrobin.core.RrdDbPool.requestRrdDb(RrdDbPool.java:103)
+			//			at net.bull.javamelody.JRobin.addValue(JRobin.java:334)
+
+			// le fichier RRD a été corrompu, par exemple en tuant le process java au milieu
+			// d'un write, donc on efface le fichier corrompu et on le recrée pour corriger
+			// le problème
+			LOG.debug("A JRobin file was found corrupted and was reset: "
+					+ new File(rrdFileName).getPath());
+			resetFile();
+			addValue(value);
+			throw createIOException(e);
 		}
 	}
 
