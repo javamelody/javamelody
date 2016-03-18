@@ -80,24 +80,24 @@ class HtmlCounterErrorReport extends HtmlAbstractReport {
 			throws IOException {
 		write("<td align='right'>");
 		write(dateTimeFormat.format(error.getDate()));
-		write("</td><td class='wrappedText'>");
 		if (displayHttpRequest) {
+			write("</td><td class='wrappedText'>");
 			if (error.getHttpRequest() == null) {
 				write("&nbsp;");
 			} else {
 				writeDirectly(htmlEncode(error.getHttpRequest()));
 			}
-			write("</td><td class='wrappedText'>");
 		}
 		if (displayUser) {
+			write("</td><td class='wrappedText'>");
 			if (error.getRemoteUser() == null) {
 				write("&nbsp;");
 			} else {
 				writeDirectly(htmlEncode(error.getRemoteUser()));
 			}
-			write("</td><td class='wrappedText'>");
 		}
 		if (error.getStackTrace() != null) {
+			write("</td><td>"); // pas wrappedText ici, sinon bug de largeur du tooltip sous IE11 en résolution réduite
 			writeln("<a class='tooltip'>");
 			writeln("<em>");
 			// writeDirectly pour ne pas gérer de traductions si la stack-trace contient '#'
@@ -107,6 +107,7 @@ class HtmlCounterErrorReport extends HtmlAbstractReport {
 			writeDirectly(htmlEncode(error.getMessage()));
 			writeln("</a>");
 		} else {
+			write("</td><td class='wrappedText'>");
 			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
 			writeDirectly(htmlEncode(error.getMessage()));
 		}
