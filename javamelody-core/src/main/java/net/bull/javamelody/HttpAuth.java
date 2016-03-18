@@ -19,8 +19,10 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,11 +33,19 @@ import javax.servlet.http.HttpServletResponse;
  * @author Emeric Vernat
  */
 class HttpAuth {
+	private static final long AUTH_FAILURES_MAX = 10;
+
+	private static final long LOCK_DURATION = 60L * 60 * 1000;
+
 	private final Pattern allowedAddrPattern;
 	/**
 	 * List of authorized people, when using the "authorized-users" parameter.
 	 */
 	private final List<String> authorizedUsers;
+
+	private final AtomicInteger authFailuresCount = new AtomicInteger();
+
+	private Date firstFailureDate;
 
 	HttpAuth() {
 		super();
@@ -78,7 +88,12 @@ class HttpAuth {
 		if (!isUserAuthorized(httpRequest)) {
 			// Not allowed, so report he's unauthorized
 			httpResponse.setHeader("WWW-Authenticate", "BASIC realm=\"JavaMelody\"");
-			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			if (isLocked()) {
+				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+						"Unauthorized (locked)");
+			} else {
+				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+			}
 			return false;
 		}
 		return true;
@@ -111,6 +126,41 @@ class HttpAuth {
 		// Decode it
 		final String userpassDecoded = Base64Coder.decodeString(userpassEncoded);
 
-		return authorizedUsers.contains(userpassDecoded);
+		final boolean authOk = authorizedUsers.contains(userpassDecoded);
+		return checkLockAgainstBruteForceAttack(authOk);
+	}
+
+	private boolean checkLockAgainstBruteForceAttack(boolean authOk) {
+		if (firstFailureDate == null) {
+			if (!authOk) {
+				// auth failed for the first time, insert coin to try again
+				firstFailureDate = new Date();
+				authFailuresCount.set(1);
+			}
+		} else {
+			if (isLocked()) {
+				// if too many failures, lock auth attemps for some time
+				if (System.currentTimeMillis() - firstFailureDate.getTime() < LOCK_DURATION) {
+					return false;
+				}
+				// lock is expired, reset
+				firstFailureDate = null;
+				authFailuresCount.set(0);
+				return checkLockAgainstBruteForceAttack(authOk);
+			}
+			if (authOk) {
+				// no more failure, reset
+				firstFailureDate = null;
+				authFailuresCount.set(0);
+			} else {
+				// one more failure, insert coin to try again
+				authFailuresCount.incrementAndGet();
+			}
+		}
+		return authOk;
+	}
+
+	private boolean isLocked() {
+		return authFailuresCount.get() > AUTH_FAILURES_MAX;
 	}
 }
