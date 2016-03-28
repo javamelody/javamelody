@@ -190,7 +190,7 @@ public enum Parameter {
 	GZIP_COMPRESSION_DISABLED("gzip-compression-disabled"),
 
 	/**
-	 * Active les actions Ramasse-miettes, Invalidation sessions et Heap-dump (false par défaut).
+	 * Active les actions systèmes telles que Ramasse-miettes, Invalidation sessions et Heap-dump (true par défaut).
 	 */
 	SYSTEM_ACTIONS_ENABLED("system-actions-enabled"),
 
