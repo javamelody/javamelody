@@ -28,10 +28,10 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -168,7 +168,9 @@ final class Parameters {
 		// le fichier applications.properties contient les noms et les urls des applications à monitorer
 		// par ex.: recette=http://recette1:8080/myapp
 		// ou production=http://prod1:8080/myapp,http://prod2:8080/myapp
-		final Map<String, List<URL>> result = new LinkedHashMap<String, List<URL>>();
+		// Dans une instance de Properties, les propriétés ne sont pas ordonnées,
+		// mais elles seront ordonnées lorsqu'elles seront mises dans cette TreeMap
+		final Map<String, List<URL>> result = new TreeMap<String, List<URL>>();
 		final File file = getCollectorApplicationsFile();
 		if (file.exists()) {
 			final Properties properties = new Properties();
@@ -181,8 +183,6 @@ final class Parameters {
 			@SuppressWarnings("unchecked")
 			final List<String> propertyNames = (List<String>) Collections
 					.list(properties.propertyNames());
-			// propertyNames ne sont pas ordonnés donc on les trie par ordre alphabétique
-			Collections.sort(propertyNames);
 			for (final String property : propertyNames) {
 				result.put(property, parseUrl(String.valueOf(properties.get(property))));
 			}
