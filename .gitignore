@@ -1,2 +1,6 @@
 target
 plugins
+.idea
+*.iml
+*.diff
+*.out
