@@ -42,7 +42,13 @@ class CounterError implements Serializable {
 		super();
 		assert message != null;
 		this.time = System.currentTimeMillis();
+		if (message != null && message.length() > 1024){
+			message = message.substring(0, 1024);//avoid possible memory errors as javamelody store 100 errors in memory
+		}
 		this.message = message;
+		if (stackTrace != null && stackTrace.length() > 10000){
+			stackTrace = stackTrace.substring(0, 10000);
+		}
 		this.stackTrace = stackTrace;
 		final HttpServletRequest currentRequest = getCurrentRequest();
 		if (currentRequest == null) {
