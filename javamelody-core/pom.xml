@@ -262,13 +262,10 @@
 	</dependencies>
 
 	<distributionManagement>
-		<!-- "mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn, 
-			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit, https://maven2-repository.dev.java.net/ 
-			http://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins -->
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>maven.jenkins-ci.org</id>
-			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+			<url>https://repo.jenkins-ci.org/releases/</url>
 		</repository>
 		<snapshotRepository>
 			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
