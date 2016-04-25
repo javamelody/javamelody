@@ -75,6 +75,12 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.5</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>0.9.19</version>
@@ -219,6 +225,11 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+	<properties>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<sourceDirectory>../javamelody-core/src/test/java</sourceDirectory>
 		<resources>
