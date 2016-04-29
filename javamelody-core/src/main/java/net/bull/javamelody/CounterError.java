@@ -37,7 +37,7 @@ class CounterError implements Serializable {
 	 * Default max size of error message.
 	 */
 	public static final int DEFAULT_MESSAGE_MAX_SIZE = 1000;
-	public static final int DEFAULT_STACKTRACE_MAX_SIZE = 10000;
+	public static final int DEFAULT_STACKTRACE_MAX_SIZE = 50000;
 
 	private final long time;
 	private final String remoteUser;
