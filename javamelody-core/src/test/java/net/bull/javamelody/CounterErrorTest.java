@@ -1,55 +1,53 @@
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by zvrablik on 4/22/16.
  */
 public class CounterErrorTest {
-    @Before
-    public void setUp() {
-        Utils.initialize();
-    }
+	/**
+	 * Init.
+	 */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
 
-    @Test
-    public void testMessageAndStackTraceSize() throws IOException {
-        String message = "aaaaaaaaaa";
-        String stackTrace = "bbbbbbbb";
-        CounterError counterError = new CounterError(message, stackTrace);
-        assertEquals(message, counterError.getMessage());
-        assertEquals(stackTrace, counterError.getStackTrace());
-    }
+	/**
+	 * Test.
+	 */
+	@Test
+	public void testMessageAndStackTraceLengthSmall() {
+		final String message = "aaaaaaaaaa";
+		final String stackTrace = "bbbbbbbb";
+		final CounterError counterError = new CounterError(message, stackTrace);
+		assertEquals(message, counterError.getMessage());
+		assertEquals(stackTrace, counterError.getStackTrace());
+	}
 
-    @Test
-    public void testMessageAndStackTraceSize4() throws IOException {
-        String message = "aaaaaaaaaa";
-        Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX+"log.size.message", "4");
-        Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX+"log.size.stacktrace", "5");
-
-        String stackTrace = "bbbbbbbb";
-        CounterError counterError = new CounterError(message, stackTrace);
-        String expectedMessage = "aaaa";
-        assertEquals(expectedMessage, counterError.getMessage());
-
-        String expectedStackTrace = "bbbbb";
-        assertEquals(expectedStackTrace, counterError.getStackTrace());
-    }
-
-    @Test
-    public void testMessageAndStackTraceSizeInvalidValues() throws IOException {
-        String message = "aaaaaaaaaa";
-        Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX+"log.size.message", "a4");
-        Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX+"log.size.stacktrace", "a5");
-
-        String stackTrace = "bbbbbbbb";
-        CounterError counterError = new CounterError(message, stackTrace);
-        assertEquals(message, counterError.getMessage());
-
-        assertEquals(stackTrace, counterError.getStackTrace());
-    }
+	/**
+	 * Test.
+	 */
+	@Test
+	public void testMessageAndStackTraceLengthBig() {
+		final int messageMaxLength = 1000;
+		final int stackTraceMaxLength = 50000;
+		final StringBuilder message = new StringBuilder();
+		final StringBuilder stackTrace = new StringBuilder();
+		for (int i = 0; i < messageMaxLength + 1; i++) {
+			message.append('a');
+		}
+		for (int i = 0; i < stackTraceMaxLength + 1; i++) {
+			stackTrace.append('b');
+		}
+		final CounterError counterError = new CounterError(message.toString(),
+				stackTrace.toString());
+		assertEquals("message length", messageMaxLength, counterError.getMessage().length());
+		assertEquals("stackTrace length", stackTraceMaxLength,
+				counterError.getStackTrace().length());
+	}
 }
