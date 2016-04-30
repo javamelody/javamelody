@@ -126,7 +126,7 @@ class JndiBinding implements Serializable {
 		final String className = binding.getClassName();
 		final Object object = binding.getObject();
 		final String contextPath;
-		String value;
+		final String value;
 		if (object instanceof Context
 				// "javax.naming.Context".equals(className) nécessaire pour le path "comp" dans JBoss 6.0
 				|| "javax.naming.Context".equals(className)

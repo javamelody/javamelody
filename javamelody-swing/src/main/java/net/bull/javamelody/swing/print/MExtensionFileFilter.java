@@ -156,7 +156,7 @@ public class MExtensionFileFilter extends FileFilter {
 	@Override
 	public String getDescription() {
 		if (fullDescription == null) {
-			String temp;
+			final String temp;
 			if (description == null || isExtensionListInDescription()) {
 				final StringBuilder sb = new StringBuilder();
 				sb.append(description == null ? "(" : description + " (");

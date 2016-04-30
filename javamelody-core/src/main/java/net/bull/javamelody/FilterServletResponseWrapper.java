@@ -134,7 +134,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 			final String charEnc = getResponse().getCharacterEncoding();
 			// HttpServletResponse.getCharacterEncoding() shouldn't return null
 			// according the spec, so feel free to remove that "if"
-			PrintWriter result;
+			final PrintWriter result;
 			if (charEnc == null) {
 				result = new PrintWriter(outputStream);
 			} else {

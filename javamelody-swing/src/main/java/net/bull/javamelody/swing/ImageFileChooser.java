@@ -67,7 +67,7 @@ public class ImageFileChooser extends JFileChooser {
 	 * @return File
 	 */
 	public static File chooseImage(Component parent, boolean openOrSave, String fileName) {
-		int result;
+		final int result;
 		if (fileName != null) {
 			IMAGE_FILE_CHOOSER.setSelectedFile(new File(fileName));
 		}

@@ -228,7 +228,7 @@ public final class ShadowPopupFactory extends PopupFactory {
 		// if none of the popups have been recycled.
 		static Popup getInstance(Component owner, Component contents, int x, int y,
 				Popup delegate) {
-			ShadowPopup result;
+			final ShadowPopup result;
 			synchronized (ShadowPopup.class) {
 				if (cache == null) {
 					cache = new ArrayList<>(MAX_CACHE_SIZE);

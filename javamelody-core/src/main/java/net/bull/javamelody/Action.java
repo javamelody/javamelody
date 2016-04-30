@@ -142,25 +142,25 @@ enum Action { // NOPMD
 	}
 
 	/**
-	* Exécute l'action.
-	* @param collector Collector pour une réinitialisation et test de mail
-	* @param collectorServer Serveur de collecte pour test de mail (null s'il n'y en a pas)
-	* @param currentSession session http de l'utilisateur exécutant l'action (null sinon)
-	* @param counterName Nom du compteur pour une réinitialisation
-	* @param sessionId Identifiant de session pour invalidation (null sinon)
-	* @param threadId Identifiant du thread sous la forme pid_ip_id
-	* @param jobId Identifiant du job sous la forme pid_ip_id
-	* @param cacheId Identifiant du cache à vider
-	* @return Message de résultat
-	* @throws IOException e
-	* @since 1.49
-	*/
+	 * Exécute l'action.
+	 * @param collector Collector pour une réinitialisation et test de mail
+	 * @param collectorServer Serveur de collecte pour test de mail (null s'il n'y en a pas)
+	 * @param currentSession session http de l'utilisateur exécutant l'action (null sinon)
+	 * @param counterName Nom du compteur pour une réinitialisation
+	 * @param sessionId Identifiant de session pour invalidation (null sinon)
+	 * @param threadId Identifiant du thread sous la forme pid_ip_id
+	 * @param jobId Identifiant du job sous la forme pid_ip_id
+	 * @param cacheId Identifiant du cache à vider
+	 * @return Message de résultat
+	 * @throws IOException e
+	 * @since 1.49
+	 */
 	// CHECKSTYLE:OFF
 	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
 			String counterName, String sessionId, String threadId, String jobId, String cacheId)
-					throws IOException {
+			throws IOException {
 		// CHECKSTYLE:ON
-		String messageForReport;
+		final String messageForReport;
 		switch (this) {
 		case CLEAR_COUNTER:
 			assert collector != null;
@@ -258,7 +258,7 @@ enum Action { // NOPMD
 	}
 
 	private String clearCounter(Collector collector, String counterName) {
-		String messageForReport;
+		final String messageForReport;
 		if (ALL.equalsIgnoreCase(counterName)) {
 			for (final Counter counter : collector.getCounters()) {
 				collector.clearCounter(counter.getName());

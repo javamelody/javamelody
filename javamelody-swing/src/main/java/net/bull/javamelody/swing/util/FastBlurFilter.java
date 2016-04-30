@@ -104,7 +104,7 @@ public class FastBlurFilter extends AbstractFilter {
 			return new int[0];
 		}
 
-		int[] pix;
+		final int[] pix;
 		if (pixels == null) {
 			pix = new int[w * h];
 		} else if (pixels.length < w * h) {
