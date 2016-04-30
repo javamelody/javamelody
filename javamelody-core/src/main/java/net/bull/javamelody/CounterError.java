@@ -32,6 +32,13 @@ class CounterError implements Serializable {
 	private static final long serialVersionUID = 5690702786722045646L;
 	@SuppressWarnings("all")
 	private static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_CONTEXT = new ThreadLocal<HttpServletRequest>();
+
+	/**
+	 * Default max size of error message.
+	 */
+	public static final int DEFAULT_MESSAGE_MAX_SIZE = 1000;
+	public static final int DEFAULT_STACKTRACE_MAX_SIZE = 50000;
+
 	private final long time;
 	private final String remoteUser;
 	private final String httpRequest;
@@ -42,7 +49,43 @@ class CounterError implements Serializable {
 		super();
 		assert message != null;
 		this.time = System.currentTimeMillis();
+
+		String messageMaxSizeText = Parameters.getParameterByName("log.size.message");
+		int messageMaxSize;
+		if (messageMaxSizeText == null || messageMaxSizeText.isEmpty()){
+			messageMaxSize = DEFAULT_MESSAGE_MAX_SIZE;
+		} else {
+			try {
+				messageMaxSize = Integer.parseInt(messageMaxSizeText);
+			} catch (NumberFormatException e){
+				messageMaxSize = DEFAULT_MESSAGE_MAX_SIZE;
+				LOG.warn("Error message max size is not correct number. Used default value. Invalid value:" + messageMaxSizeText, e);
+			}
+		}
+		LOG.info("Max error message size " + messageMaxSize);
+
+		if ( message.length() > messageMaxSize){
+			message = message.substring(0, messageMaxSize);//avoid possible memory errors as javamelody store 100 errors in memory
+		}
 		this.message = message;
+
+		String stackTraceMaxSizeText = Parameters.getParameterByName("log.size.stacktrace");
+		int stackTraceMaxSize;
+		if (stackTraceMaxSizeText == null || stackTraceMaxSizeText.isEmpty()){
+			stackTraceMaxSize = DEFAULT_STACKTRACE_MAX_SIZE;
+		} else {
+			try {
+				stackTraceMaxSize = Integer.parseInt(stackTraceMaxSizeText);
+			} catch (NumberFormatException e){
+				stackTraceMaxSize = DEFAULT_STACKTRACE_MAX_SIZE;
+				LOG.warn("Error stack trace max size is not correct number. Used default value. Invalid value:" + stackTraceMaxSizeText, e);
+			}
+		}
+		LOG.info("Max stack trace size " + stackTraceMaxSize);
+
+		if (stackTrace != null && stackTrace.length() > stackTraceMaxSize){
+			stackTrace = stackTrace.substring(0, stackTraceMaxSize);
+		}
 		this.stackTrace = stackTrace;
 		final HttpServletRequest currentRequest = getCurrentRequest();
 		if (currentRequest == null) {
