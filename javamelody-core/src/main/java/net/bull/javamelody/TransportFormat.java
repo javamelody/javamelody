@@ -264,7 +264,7 @@ enum TransportFormat {
 	Serializable readSerializableFrom(InputStream input)
 			throws IOException, ClassNotFoundException {
 		final InputStream bufferedInput = new BufferedInputStream(input);
-		Object result;
+		final Object result;
 		switch (this) {
 		case SERIALIZED:
 			final ObjectInputStream in = createObjectInputStream(bufferedInput);
@@ -285,7 +285,7 @@ enum TransportFormat {
 			throw new IllegalStateException(toString());
 		}
 		if (NULL_VALUE.equals(result)) {
-			result = null;
+			return null;
 		}
 		// c'est un Serializable que l'on a écrit
 		return (Serializable) result;

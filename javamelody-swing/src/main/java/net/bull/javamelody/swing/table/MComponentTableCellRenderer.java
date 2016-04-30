@@ -38,14 +38,12 @@ public class MComponentTableCellRenderer extends MDefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(final JTable table, final Object value,
 			final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-		Component component;
+		final Component component;
 		if (error || value == null) {
 			setText(null);
 			error = false;
 			component = this;
-		}
-
-		if (value instanceof Component) {
+		} else if (value instanceof Component) {
 			component = (Component) value;
 		} else {
 			this.setText(ERROR_TEXT);
