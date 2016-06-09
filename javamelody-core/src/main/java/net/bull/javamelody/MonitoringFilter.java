@@ -64,6 +64,9 @@ public class MonitoringFilter implements Filter {
 	private String monitoringUrl;
 	private boolean servletApi2;
 
+	private boolean persistIpAddress;
+	private String httpSessionAttributeName;
+
 	/**
 	 * Constructeur.
 	 */
@@ -119,9 +122,14 @@ public class MonitoringFilter implements Filter {
 		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));
 		if (Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN) != null) {
 			// lance une PatternSyntaxException si la syntaxe du pattern est invalide
-			urlExcludePattern = Pattern
-					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
+			urlExcludePattern = Pattern.compile(Parameters
+					.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
+		persistIpAddress = Boolean.parseBoolean(Parameters
+				.getParameter(Parameter.PERSIST_IP_ADDRESS));
+
+		httpSessionAttributeName = Parameters
+				.getParameter(Parameter.PERSIST_HTTP_SESSION_ATTRIBUTE_NAME);
 
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter init done in " + duration + " ms");
@@ -182,8 +190,7 @@ public class MonitoringFilter implements Filter {
 			HttpServletResponse httpResponse) throws IOException, ServletException {
 		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
 				httpResponse);
-		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest,
-				wrappedResponse);
+		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest, wrappedResponse);
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
 		boolean systemError = false;
@@ -224,8 +231,7 @@ public class MonitoringFilter implements Filter {
 				// voir aussi http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6440250)
 				// et car des millisecondes suffisent pour une requête http
 				final long duration = Math.max(System.currentTimeMillis() - start, 0);
-				final long cpuUsedMillis = (ThreadInformations.getCurrentThreadCpuTime()
-						- startCpuTime) / 1000000;
+				final long cpuUsedMillis = (ThreadInformations.getCurrentThreadCpuTime() - startCpuTime) / 1000000;
 
 				JdbcWrapper.ACTIVE_THREAD_COUNT.decrementAndGet();
 
@@ -238,8 +244,7 @@ public class MonitoringFilter implements Filter {
 					errorCounter.addRequestForSystemError(systemException.toString(), duration,
 							cpuUsedMillis, stackTrace.toString());
 				} else if (wrappedResponse.getCurrentStatus() >= HttpServletResponse.SC_BAD_REQUEST
-						&& wrappedResponse
-								.getCurrentStatus() != HttpServletResponse.SC_UNAUTHORIZED) {
+						&& wrappedResponse.getCurrentStatus() != HttpServletResponse.SC_UNAUTHORIZED) {
 					// SC_UNAUTHORIZED (401) is not an error, it is the first handshake of a Basic (or Digest) Auth (issue 455)
 					systemError = true;
 					errorCounter.addRequestForSystemError(
@@ -362,17 +367,14 @@ public class MonitoringFilter implements Filter {
 			}
 
 			if (!collector.isStopped()) {
-				LOG.debug(
-						"Stopping the javamelody collector in this webapp, because a collector server from "
-								+ httpRequest.getRemoteAddr()
-								+ " wants to collect the data itself");
+				LOG.debug("Stopping the javamelody collector in this webapp, because a collector server from "
+						+ httpRequest.getRemoteAddr() + " wants to collect the data itself");
 				filterContext.stopCollector();
 			}
 		}
 	}
 
-	private static String getCompleteRequestName(HttpServletRequest httpRequest,
-			boolean includeQueryString) {
+	private String getCompleteRequestName(HttpServletRequest httpRequest, boolean includeQueryString) {
 		// on ne prend pas httpRequest.getPathInfo()
 		// car requestURI == <context>/<servlet>/<pathInfo>,
 		// et dans le cas où il y a plusieurs servlets (par domaine fonctionnel ou technique)
@@ -391,6 +393,20 @@ public class MonitoringFilter implements Filter {
 		} else {
 			method = httpRequest.getMethod();
 		}
+		String httpSessionAttributeValue = "";
+		if (persistIpAddress) {
+			httpSessionAttributeValue = ' ' + Parameters.getHostAddress();
+		}
+
+		if (httpSessionAttributeName != null) {
+			final HttpSession session = httpRequest.getSession(false);
+			if (session != null) {
+				Object value = session.getAttribute(httpSessionAttributeName);
+				if (value != null) {
+					httpSessionAttributeValue = httpSessionAttributeValue + ' ' + value;
+				}
+			}
+		}
 		if (!includeQueryString) {
 			//Check payload request to support GWT, SOAP, and XML-RPC statistic gathering
 			if (httpRequest instanceof PayloadNameRequestWrapper) {
@@ -399,19 +415,20 @@ public class MonitoringFilter implements Filter {
 						+ wrapper.getPayloadRequestType();
 			}
 
-			return tmp + ' ' + method;
+			return tmp + ' ' + method + httpSessionAttributeValue;
 		}
 		final String queryString = httpRequest.getQueryString();
 		if (queryString == null) {
-			return tmp + ' ' + method;
+			return tmp + ' ' + method + httpSessionAttributeValue;
 		}
-		return tmp + '?' + queryString + ' ' + method;
+		return tmp + '?' + queryString + ' ' + method + httpSessionAttributeValue;
 	}
 
 	private boolean isRequestExcluded(HttpServletRequest httpRequest) {
-		return urlExcludePattern != null && urlExcludePattern.matcher(
-				httpRequest.getRequestURI().substring(httpRequest.getContextPath().length()))
-				.matches();
+		return urlExcludePattern != null
+				&& urlExcludePattern.matcher(
+						httpRequest.getRequestURI()
+								.substring(httpRequest.getContextPath().length())).matches();
 	}
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
