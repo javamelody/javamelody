@@ -417,7 +417,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			writeln("  height = Math.round(width * initialHeight / initialWidth) - 48;");
 			// reload the images
 			// rq : on utilise des caractères unicode pour éviter des warnings
-			writeln("  document.getElementById('img').src = '?graph=" + urlEncode(graphName)
+			writeln("  document.getElementById('img').src = '?graph=" + I18N.htmlEncode(urlEncode(graphName), false)
 					+ "\\u0026width=' + width + '\\u0026height=' + height;");
 			writeln("  document.getElementById('img').style.width = '';");
 			writeln("}");
