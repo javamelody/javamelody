@@ -291,7 +291,7 @@ class MonitoringController {
 
 	private void doCompressedSerializable(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, List<JavaInformations> javaInformationsList)
-					throws IOException {
+			throws IOException {
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (HtmlController.isLocalCollectNeeded(part)
 				&& httpRequest.getParameter(PERIOD_PARAMETER) != null) {
@@ -498,7 +498,7 @@ class MonitoringController {
 
 	private static void doCustomReport(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, String reportName)
-					throws ServletException, IOException {
+			throws ServletException, IOException {
 		final String customReportPath = Parameters.getParameterByName(reportName);
 		if (customReportPath.length() > 0 && customReportPath.charAt(0) == '/'
 				&& Parameters.getServletContext().getRequestDispatcher(customReportPath) != null) {

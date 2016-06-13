@@ -90,8 +90,8 @@ public class RrdNioBackend extends RrdFileBackend {
 		final long length = getLength();
 		if (length > 0) {
 			final FileChannel.MapMode mapMode =
-			// (issue 328) readOnly ? FileChannel.MapMode.READ_ONLY :
-			FileChannel.MapMode.READ_WRITE;
+					// (issue 328) readOnly ? FileChannel.MapMode.READ_ONLY :
+					FileChannel.MapMode.READ_WRITE;
 			byteBuffer = file.getChannel().map(mapMode, 0, length);
 		}
 	}

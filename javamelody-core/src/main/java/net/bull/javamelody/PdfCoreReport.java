@@ -330,7 +330,7 @@ class PdfCoreReport extends PdfAbstractReport {
 
 	private void writeCurrentRequestsDetails(
 			List<PdfCounterRequestContextReport> pdfCounterRequestContextReports)
-					throws IOException, DocumentException {
+			throws IOException, DocumentException {
 		for (final PdfCounterRequestContextReport pdfCounterRequestContextReport : pdfCounterRequestContextReports) {
 			pdfCounterRequestContextReport.writeContextDetails();
 		}

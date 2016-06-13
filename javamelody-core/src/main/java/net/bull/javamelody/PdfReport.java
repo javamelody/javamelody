@@ -36,7 +36,7 @@ class PdfReport {
 
 	PdfReport(Collector collector, boolean collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, OutputStream output)
-					throws IOException {
+			throws IOException {
 		super();
 		assert output != null;
 		this.output = output;
@@ -54,7 +54,7 @@ class PdfReport {
 
 	PdfReport(Collector collector, boolean collectorServer,
 			List<JavaInformations> javaInformationsList, Period period, OutputStream output)
-					throws IOException {
+			throws IOException {
 		this(collector, collectorServer, javaInformationsList, period.getRange(), output);
 	}
 

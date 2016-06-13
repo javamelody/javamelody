@@ -277,7 +277,7 @@ public class TestPdfReport {
 
 	private void rootContexts(Counter counter, Collector collector,
 			JavaInformations javaInformations, ByteArrayOutputStream output)
-					throws IOException, DocumentException {
+			throws IOException, DocumentException {
 		PdfReport pdfReport;
 		TestCounter.bindRootContexts("first request", counter, 3);
 		pdfReport = new PdfReport(collector, false, Collections.singletonList(javaInformations),

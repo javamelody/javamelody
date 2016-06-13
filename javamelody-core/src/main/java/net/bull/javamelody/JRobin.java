@@ -282,9 +282,9 @@ final class JRobin {
 		graphDef.setTitle(titleStart + titleEnd);
 		graphDef.setFirstDayOfWeek(
 				Calendar.getInstance(I18N.getCurrentLocale()).getFirstDayOfWeek());
-				// or if the user locale patch is merged we should do:
-				// (https://sourceforge.net/tracker/?func=detail&aid=3403733&group_id=82668&atid=566807)
-				//graphDef.setLocale(I18N.getCurrentLocale());
+		// or if the user locale patch is merged we should do:
+		// (https://sourceforge.net/tracker/?func=detail&aid=3403733&group_id=82668&atid=566807)
+		//graphDef.setLocale(I18N.getCurrentLocale());
 
 		// rq : la largeur et la hauteur de l'image sont plus grandes que celles fournies
 		// car jrobin ajoute la largeur et la hauteur des textes et autres

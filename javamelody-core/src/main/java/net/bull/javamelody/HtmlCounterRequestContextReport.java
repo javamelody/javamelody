@@ -314,7 +314,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 
 	private void writeRequests(List<CounterRequestContext> contexts,
 			CounterRequestContextReportHelper counterRequestContextReportHelper)
-					throws IOException {
+			throws IOException {
 		int margin = 0;
 		for (final CounterRequestContext context : contexts) {
 			write("<div style='margin-left: ");
@@ -328,7 +328,7 @@ class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 
 	private void writeRequest(CounterRequestContext context,
 			CounterRequestContextReportHelper counterRequestContextReportHelper)
-					throws IOException {
+			throws IOException {
 		final Counter parentCounter = context.getParentCounter();
 		if (parentCounter.getIconName() != null) {
 			write("<img src='?resource=");

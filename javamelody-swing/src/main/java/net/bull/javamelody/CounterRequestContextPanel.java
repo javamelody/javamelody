@@ -132,7 +132,7 @@ class CounterRequestContextPanel extends CounterRequestAbstractPanel {
 
 	static void writeAllCurrentRequestsAsPart(PdfOtherReport pdfOtherReport,
 			Map<JavaInformations, List<CounterRequestContext>> currentRequests, Collector collector)
-					throws IOException {
+			throws IOException {
 		long timeOfSnapshot = System.currentTimeMillis();
 		final List<Counter> counters = collector.getCounters();
 		final Map<JavaInformations, List<CounterRequestContext>> allCurrentRequests = new LinkedHashMap<>();

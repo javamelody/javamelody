@@ -79,7 +79,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 
 	private void writeClassInfoSummaryAndDetails(List<ClassInfo> classHistogram,
 			long totalInstances, long totalBytes, boolean heap, boolean sourceDisplayed)
-					throws IOException {
+			throws IOException {
 		final List<ClassInfo> summaryClassHistogram = new ArrayList<ClassInfo>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {

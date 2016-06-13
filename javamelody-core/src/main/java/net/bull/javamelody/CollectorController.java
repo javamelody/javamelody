@@ -184,7 +184,7 @@ class CollectorController { // NOPMD
 
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			String application, MonitoringController monitoringController, String partParameter)
-					throws IOException, ServletException {
+			throws IOException, ServletException {
 		if (MonitoringController.isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
@@ -205,7 +205,7 @@ class CollectorController { // NOPMD
 
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
 			MonitoringController monitoringController, String partParameter)
-					throws IOException, ServletException {
+			throws IOException, ServletException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, WEB_XML_PART);

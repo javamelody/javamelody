@@ -166,7 +166,7 @@ class SerializableController { // NOPMD
 	@SuppressWarnings("unchecked")
 	private Serializable createOtherSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList, String messageForReport)
-					throws IOException {
+			throws IOException {
 		final Range range = getRangeForSerializable(httpRequest);
 		final String part = httpRequest.getParameter(PART_PARAMETER);
 		if (JROBINS_PART.equalsIgnoreCase(part)) {
