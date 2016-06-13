@@ -195,6 +195,11 @@ public enum Parameter {
 	SYSTEM_ACTIONS_ENABLED("system-actions-enabled"),
 
 	/**
+	 * Active la protection contre CSRF (false par défaut).
+	 */
+	CSRF_PROTECTION_ENABLED("csrf-protection-enabled"),
+
+	/**
 	 * Expression régulière (null par défaut) pour restreindre l'accès au monitoring à certaines adresses IP.
 	 */
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),

@@ -75,7 +75,8 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			writeln("#caches_statistics_enable#<br/>");
 		}
 		if (systemActionsEnabled) {
-			writeln("<a href='?action=clear_caches' onclick=\"javascript:return confirm('"
+			writeln("<a href='?action=clear_caches" + getCsrfTokenUrlPart()
+					+ "' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_purge_caches") + "');\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -115,7 +116,7 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 					getFormattedString("confirm_purge_cache", cacheInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 			writeDirectly("<a href='?action=clear_cache&amp;cacheId="
-					+ urlEncode(cacheInformations.getName())
+					+ urlEncode(cacheInformations.getName()) + getCsrfTokenUrlPart()
 					+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
 			final String title = htmlEncode(
 					getFormattedString("Purge_cache", cacheInformations.getName()));

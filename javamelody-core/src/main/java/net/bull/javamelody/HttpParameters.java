@@ -45,6 +45,7 @@ final class HttpParameters {
 	static final String HEIGHT_PARAMETER = "height";
 	static final String MAX_PARAMETER = "max";
 	static final String REPORT_PARAMETER = "report";
+	static final String TOKEN_PARAMETER = "token";
 	static final String HEAP_HISTO_PART = "heaphisto";
 	static final String PROCESSES_PART = "processes";
 	static final String CURRENT_REQUESTS_PART = "currentRequests";

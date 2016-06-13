@@ -121,8 +121,8 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln(A_HREF_PART_SESSIONS
-				+ "&amp;action=invalidate_sessions' onclick=\"javascript:return confirm('"
+		writeln(A_HREF_PART_SESSIONS + "&amp;action=invalidate_sessions" + getCsrfTokenUrlPart()
+				+ "' onclick=\"javascript:return confirm('"
 				+ getStringForJavascript("confirm_invalidate_sessions") + "');\">");
 		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_sessions#' title='#invalidate_sessions#' /> #invalidate_sessions#</a>");
 		writeln("</div>");
@@ -261,6 +261,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		write(A_HREF_PART_SESSIONS);
 		write("&amp;action=invalidate_session&amp;sessionId=");
 		write(urlEncode(session.getId()));
+		write(getCsrfTokenUrlPart());
 		write("' onclick=\"javascript:return confirm('"
 				+ getStringForJavascript("confirm_invalidate_session") + "');\">");
 		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");

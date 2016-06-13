@@ -110,7 +110,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln(" class='noPrint'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
 				writeln(separator);
 				writeln("<a href='?action=remove_application&amp;application=" + currentApplication
-						+ "' class='noPrint' ");
+						+ getCsrfTokenUrlPart() + "' class='noPrint' ");
 				final String messageConfirmation = getFormattedString("confirm_remove_application",
 						currentApplication);
 				writeln("onclick=\"javascript:return confirm('"
@@ -308,8 +308,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			}
 		}
 		if (SessionListener.getCurrentSession() != null) {
-			writeDirectly("    <div class='menuButton'><a href='?action=logout'>"
-					+ I18N.getString("logout") + "</a></div>");
+			writeDirectly("    <div class='menuButton'><a href='?action=logout"
+					+ getCsrfTokenUrlPart() + "'>" + I18N.getString("logout") + "</a></div>");
 			writeln("");
 		}
 		writeln("  </div></div>");
@@ -326,7 +326,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 		if (range.getPeriod() == Period.TOUT && counterReportsByCounterName.size() > 1) {
 			writeln("<div align='right'>");
-			writeln("<a href='?action=clear_counter&amp;counter=all' title='#Vider_toutes_stats#'");
+			writeln("<a href='?action=clear_counter&amp;counter=all" + getCsrfTokenUrlPart()
+					+ "' title='#Vider_toutes_stats#'");
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_vider_toutes_stats")
 					+ "');\">#Reinitialiser_toutes_stats#</a>");
@@ -684,17 +685,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		final String endOfOnClickConfirm = "');\">";
 		if (isGcEnabled()) {
-			write("<a href='?action=gc' onclick=\"javascript:return confirm('"
+			write("<a href='?action=gc" + getCsrfTokenUrlPart()
+					+ "' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
-			write("<a href='?action=gc' onclick=\"javascript:alert('"
+			write("<a href='?action=gc" + getCsrfTokenUrlPart() + "' onclick=\"javascript:alert('"
 					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
 			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
-		write("<a href='?action=heap_dump' onclick=\"javascript:return confirm('"
+		write("<a href='?action=heap_dump" + getCsrfTokenUrlPart()
+				+ "' onclick=\"javascript:return confirm('"
 				+ getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
 		write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 		writeln(separator);
@@ -704,7 +707,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(separator);
 		}
 		if (isSessionsEnabled()) {
-			write("<a href='?action=invalidate_sessions' onclick=\"javascript:return confirm('"
+			write("<a href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
+					+ "' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_invalidate_sessions") + endOfOnClickConfirm);
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
@@ -875,7 +879,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				+ (collector.getEstimatedMemorySize() / 1024 / 1024 + 1) + " #Mo#");
 		writeln("<br/>#Usage_disque#: " + (collector.getDiskUsage() / 1024 / 1024 + 1) + " #Mo#");
 		if (Parameters.isSystemActionsEnabled()) {
-			writeln("&nbsp;&nbsp;&nbsp;<a href='?action=purge_obsolete_files' class='noPrint'>");
+			writeln("&nbsp;&nbsp;&nbsp;<a href='?action=purge_obsolete_files"
+					+ getCsrfTokenUrlPart() + "' class='noPrint'>");
 			writeln("<img width='14' height='14' src='?resource=user-trash.png' alt='#Purger_les_fichiers_obsoletes#' title='#Purger_les_fichiers_obsoletes#'/></a>");
 		}
 		if (Parameters.JAVAMELODY_VERSION != null) {

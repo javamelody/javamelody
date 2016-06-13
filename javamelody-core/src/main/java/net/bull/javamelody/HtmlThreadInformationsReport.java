@@ -228,6 +228,7 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			write("</td> <td align='center' class='noPrint'>");
 			write("<a href='?action=kill_thread&amp;threadId=");
 			write(threadInformations.getGlobalThreadId());
+			write(getCsrfTokenUrlPart());
 			final String confirmKillThread = javascriptEncode(
 					getFormattedString("confirm_kill_thread", threadInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'

@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody;
 
+import static net.bull.javamelody.HttpParameters.TOKEN_PARAMETER;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +46,7 @@ import javax.servlet.http.HttpSessionListener;
  */
 public class SessionListener implements HttpSessionListener, HttpSessionActivationListener,
 		ServletContextListener, Serializable {
+	static final String CSRF_TOKEN_SESSION_NAME = "javamelody." + TOKEN_PARAMETER;
 	private static final String SESSION_ACTIVATION_KEY = "javamelody.sessionActivation";
 	private static final long serialVersionUID = -1624944319058843901L;
 	// au lieu d'utiliser un int avec des synchronized partout, on utilise un AtomicInteger

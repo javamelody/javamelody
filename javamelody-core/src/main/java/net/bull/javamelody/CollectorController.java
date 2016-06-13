@@ -79,6 +79,9 @@ class CollectorController { // NOPMD
 
 	private static final String COOKIE_NAME = "javamelody.application";
 
+	private static final boolean CSRF_PROTECTION_ENABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.CSRF_PROTECTION_ENABLED));
+
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 
 	private final CollectorServer collectorServer;
@@ -105,6 +108,9 @@ class CollectorController { // NOPMD
 		try {
 			final String actionParameter = req.getParameter(ACTION_PARAMETER);
 			if (actionParameter != null) {
+				if (CSRF_PROTECTION_ENABLED) {
+					MonitoringController.checkCsrfToken(req);
+				}
 				final String messageForReport;
 				if ("remove_application".equalsIgnoreCase(actionParameter)) {
 					collectorServer.removeCollectorApplication(application);

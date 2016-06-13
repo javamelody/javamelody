@@ -551,7 +551,8 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		}
 		writeln(separator);
 		if (range.getPeriod() == Period.TOUT) {
-			writeln("<a href='?action=clear_counter&amp;counter=" + counterName + "' title='"
+			writeln("<a href='?action=clear_counter&amp;counter=" + counterName
+					+ getCsrfTokenUrlPart() + "' title='"
 					+ getFormattedString("Vider_stats", counterName) + '\'');
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
 					+ javascriptEncode(getFormattedString("confirm_vider_stats", counterName))

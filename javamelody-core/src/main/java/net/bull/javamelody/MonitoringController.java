@@ -41,6 +41,7 @@ import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.TOKEN_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
@@ -88,6 +89,8 @@ class MonitoringController {
 
 	private static final boolean GZIP_COMPRESSION_DISABLED = Boolean
 			.parseBoolean(Parameters.getParameter(Parameter.GZIP_COMPRESSION_DISABLED));
+	private static final boolean CSRF_PROTECTION_ENABLED = Boolean
+			.parseBoolean(Parameters.getParameter(Parameter.CSRF_PROTECTION_ENABLED));
 
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
@@ -106,6 +109,9 @@ class MonitoringController {
 		assert httpRequest != null;
 		final String actionParameter = httpRequest.getParameter(ACTION_PARAMETER);
 		if (actionParameter != null) {
+			if (CSRF_PROTECTION_ENABLED) {
+				checkCsrfToken(httpRequest);
+			}
 			try {
 				// langue préférée du navigateur, getLocale ne peut être null
 				I18N.bindLocale(httpRequest.getLocale());
@@ -129,6 +135,18 @@ class MonitoringController {
 			}
 		}
 		return null;
+	}
+
+	static void checkCsrfToken(HttpServletRequest httpRequest) {
+		final String token = httpRequest.getParameter(TOKEN_PARAMETER);
+		if (token == null) {
+			throw new IllegalArgumentException("csrf token missing");
+		}
+		final HttpSession session = httpRequest.getSession(false);
+		if (session == null
+				|| !token.equals(session.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME))) {
+			throw new IllegalArgumentException("invalid token parameter");
+		}
 	}
 
 	void doActionIfNeededAndReport(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -231,6 +249,9 @@ class MonitoringController {
 
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
+		if (CSRF_PROTECTION_ENABLED && SessionListener.getCurrentSession() == null) {
+			SessionListener.bindSession(httpRequest.getSession());
+		}
 		final HtmlController htmlController = new HtmlController(collector, collectorServer,
 				messageForReport, anchorNameForRedirect);
 		// on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte

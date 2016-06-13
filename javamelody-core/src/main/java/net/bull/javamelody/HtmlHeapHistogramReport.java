@@ -169,17 +169,20 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		}
 		writeln(separator);
 		if (Action.GC_ENABLED) {
-			writeln("<a href='?part=heaphisto&amp;action=gc' onclick=\"javascript:return confirm('"
+			writeln("<a href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
+					+ "' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_ramasse_miette") + "');\">");
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		} else {
-			writeln("<a href='?part=heaphisto&amp;action=gc' onclick=\"javascript:alert('"
+			writeln("<a href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
+					+ "' onclick=\"javascript:alert('"
 					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
 			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 			writeln(separator);
 		}
-		writeln("<a href='?part=heaphisto&amp;action=heap_dump' onclick=\"javascript:return confirm('"
+		writeln("<a href='?part=heaphisto&amp;action=heap_dump" + getCsrfTokenUrlPart()
+				+ "' onclick=\"javascript:return confirm('"
 				+ getStringForJavascript("confirm_heap_dump") + "');\">");
 		writeln("<img src='?resource=heapdump.png' width='16' height='16' alt='#heap_dump#' /> #heap_dump#</a>");
 		writeln(separator);
