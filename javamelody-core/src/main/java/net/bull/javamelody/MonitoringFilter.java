@@ -336,9 +336,7 @@ public class MonitoringFilter implements Filter {
 		}
 		if (session.getAttribute(SessionInformations.SESSION_USER_AGENT) == null) {
 			final String userAgent = httpRequest.getHeader("User-Agent");
-			if (userAgent != null) {
-				session.setAttribute(SessionInformations.SESSION_USER_AGENT, userAgent);
-			}
+			session.setAttribute(SessionInformations.SESSION_USER_AGENT, userAgent);
 		}
 	}
 
