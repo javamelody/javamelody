@@ -247,4 +247,20 @@ public class JpaPersistence implements PersistenceProvider {
 			return method.invoke(info, args);
 		}
 	}
+
+	/**
+	 * @since jpa2.1
+	 */
+	//@Override
+	public void generateSchema(PersistenceUnitInfo info, Map map) {
+		delegate.generateSchema(info, map);
+	}
+
+	/**
+	 * @since jpa2.1
+	 */
+	//@Override
+	public boolean generateSchema(String persistenceUnitName, Map map) {
+		return delegate.generateSchema(persistenceUnitName, map);
+	}
 }
