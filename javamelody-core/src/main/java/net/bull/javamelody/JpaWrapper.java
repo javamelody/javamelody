@@ -23,6 +23,10 @@ import java.lang.reflect.Method;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.criteria.CommonAbstractCriteria;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 
 /**
  * Cette classe est utile pour construire des proxy pour JPA.
@@ -30,7 +34,7 @@ import javax.persistence.Query;
  */
 public final class JpaWrapper {
 	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+					.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
 
 	private JpaWrapper() {
@@ -47,13 +51,13 @@ public final class JpaWrapper {
 	 * @return EntityManagerFactory
 	 */
 	public static EntityManagerFactory createEntityManagerFactoryProxy(
-			final EntityManagerFactory entityManagerFactory) {
+					final EntityManagerFactory entityManagerFactory) {
 		if (DISABLED || !JPA_COUNTER.isDisplayed()) {
 			return entityManagerFactory;
 		}
 		// on veut monitorer seulement les EntityManager retournés par les deux méthodes createEntityManager
 		return JdbcWrapper.createProxy(entityManagerFactory,
-				new EntityManagerFactoryHandler(entityManagerFactory));
+						new EntityManagerFactoryHandler(entityManagerFactory));
 	}
 
 	static EntityManager createEntityManagerProxy(final EntityManager entityManager) {
@@ -68,7 +72,7 @@ public final class JpaWrapper {
 	}
 
 	static Object doInvoke(final Object object, final Method method, final Object[] args,
-			final String requestName) throws Throwable {
+					final String requestName) throws Throwable {
 		boolean systemError = false;
 		try {
 			JPA_COUNTER.bindContextIncludingCpu(requestName);
@@ -95,7 +99,7 @@ public final class JpaWrapper {
 		/** {@inheritDoc} */
 		@Override
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
-				throws Throwable {
+						throws Throwable {
 			Object result = method.invoke(entityManagerFactory, args);
 			if (result instanceof EntityManager) {
 				result = createEntityManagerProxy((EntityManager) result);
@@ -115,7 +119,7 @@ public final class JpaWrapper {
 		/** {@inheritDoc} */
 		@Override
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
-				throws Throwable {
+						throws Throwable {
 			final String methodName = method.getName();
 			if (isCreateSomeQuery(method)) {
 				Query query = (Query) method.invoke(entityManager, args);
@@ -128,7 +132,7 @@ public final class JpaWrapper {
 				return doInvoke(entityManager, method, args, requestName);
 			} else if (isMergePersistRefreshRemoveDetachOrLockMethod(methodName, args)) {
 				final String requestName = method.getName() + '('
-						+ args[0].getClass().getSimpleName() + ')';
+								+ args[0].getClass().getSimpleName() + ')';
 				return doInvoke(entityManager, method, args, requestName);
 			} else if ("flush".equals(methodName)) {
 				final String requestName = "flush()";
@@ -138,35 +142,79 @@ public final class JpaWrapper {
 		}
 
 		private boolean isMergePersistRefreshRemoveDetachOrLockMethod(String methodName,
-				Object[] args) {
+						Object[] args) {
 			return args != null && args.length > 0
-					&& ("merge".equals(methodName) || "persist".equals(methodName)
+							&& ("merge".equals(methodName) || "persist".equals(methodName)
 							|| "refresh".equals(methodName) || "remove".equals(methodName)
 							|| "detach".equals(methodName) || "lock".equals(methodName));
 		}
 
 		private boolean isOneOfFindMethods(Object[] args, String methodName) {
 			return "find".equals(methodName) && args != null && args.length > 0
-					&& args[0] instanceof Class;
+							&& args[0] instanceof Class;
 		}
 
 		private boolean isCreateSomeQuery(Method method) {
 			final String methodName = method.getName();
 			final Class<?> returnType = method.getReturnType();
 			final boolean methodNameOk = "createQuery".equals(methodName)
-					|| "createNamedQuery".equals(methodName)
-					|| "createNativeQuery".equals(methodName)
-					// JavaEE 7:
-					|| "createStoredProcedureQuery".equals(methodName)
-					|| "createNamedStoredProcedureQuery".equals(methodName);
+							|| "createNamedQuery".equals(methodName)
+							|| "createNativeQuery".equals(methodName)
+							// JavaEE 7:
+							|| "createStoredProcedureQuery".equals(methodName)
+							|| "createNamedStoredProcedureQuery".equals(methodName);
 			return methodNameOk && returnType != null && Query.class.isAssignableFrom(returnType);
 		}
 
 		private String getQueryRequestName(String methodName, Object[] args) {
+			// Handle CriteriaQuery stuff differently: else we would get
+			// a new generic name (similar to Object.toString()) for every instance of the query
+			if ("createQuery".equals(methodName) && args.length == 1 && args[0] instanceof CommonAbstractCriteria) {
+				return getCriteriaQueryRequestName(((CommonAbstractCriteria)args[0]).getClass());
+			}
 			final StringBuilder requestName = new StringBuilder();
 			requestName.append(methodName, "create".length(), methodName.length());
 			appendArgs(requestName, args);
 			return requestName.toString();
+		}
+
+
+		private String getCriteriaCreateQueryArgName(Class<? extends CommonAbstractCriteria> criteriaQueryClass) {
+			if (CriteriaQuery.class.isAssignableFrom(criteriaQueryClass)) {
+				return CriteriaQuery.class.getSimpleName();
+			}
+			if (CriteriaUpdate.class.isAssignableFrom(criteriaQueryClass)) {
+				return CriteriaUpdate.class.getSimpleName();
+			}
+			if (CriteriaDelete.class.isAssignableFrom(criteriaQueryClass)) {
+				return CriteriaDelete.class.getSimpleName();
+			}
+			return criteriaQueryClass.getSimpleName();
+		}
+
+		/**
+		 * Analyze the stacktrace of the current thread and (hopefully) find the fist
+		 * entry that is not from JavaMelody itself and is not from other proxies
+		 */
+		private String getCriteriaQueryRequestName(Class<? extends CommonAbstractCriteria> criteriaQueryClass) {
+			String methodName = getCriteriaCreateQueryArgName(criteriaQueryClass);
+
+			StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+			for (StackTraceElement element : stack) {
+				String stackEntryclassName = element.getClassName();
+				if (stackEntryclassName.startsWith(Thread.class.getCanonicalName())
+								|| stackEntryclassName.startsWith("net.bull.javamelody")
+								// TODO: discover proxy methods in JDKs of other vendors
+								// or at least implement a way to let the user provide a method to skip entries
+								|| stackEntryclassName.startsWith("com.sun.proxy.$Proxy")) {
+					continue;
+				}
+				//TODO: element.toString() contains line number => a monitor name for a specific query might change
+				// although the query itself did not change.
+				// Problem: I cannot think of a better way to uniquely identify a query
+				return methodName + '(' + element.toString() + ')';
+			}
+			return methodName + "(<unknown location>)";
 		}
 
 		private static void appendArgs(StringBuilder requestName, Object[] args) {
@@ -200,13 +248,13 @@ public final class JpaWrapper {
 		/** {@inheritDoc} */
 		@Override
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
-				throws Throwable {
+						throws Throwable {
 			final String methodName = method.getName();
 			if (("getSingleResult".equals(methodName) || "getResultList".equals(methodName)
-					|| "executeUpdate".equals(methodName)) && (args == null || args.length == 0)) {
+							|| "executeUpdate".equals(methodName)) && (args == null || args.length == 0)) {
 				return doInvoke(query, method, args, requestName);
 			} else if (methodName.startsWith("set") && method.getReturnType() != null
-					&& Query.class.isAssignableFrom(method.getReturnType())) {
+							&& Query.class.isAssignableFrom(method.getReturnType())) {
 				method.invoke(query, args);
 				// on ne récupère pas la query en résultat, car ce doit être la même qu'en entrée.
 				// donc on retourne le proxy
