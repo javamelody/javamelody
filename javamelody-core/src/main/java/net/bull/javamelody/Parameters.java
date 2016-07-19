@@ -442,10 +442,16 @@ final class Parameters {
 		if (result != null) {
 			return result;
 		}
+
 		if (servletContext != null) {
-			result = servletContext.getInitParameter(globalName);
-			if (result != null) {
-				return result;
+			try {
+				result = servletContext.getInitParameter(globalName);
+				if (result != null) {
+					return result;
+				}
+			} catch (NullPointerException ignored) {
+				// if servletContext is just a proxy, it is allways != null
+				// but it might not have been initialized
 			}
 			// issue 463: in a ServletContextListener, it's also possible to call servletContext.setAttribute("javamelody.log", "true"); for example
 			final Object attribute = servletContext.getAttribute(globalName);
