@@ -19,10 +19,15 @@ package net.bull.javamelody;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+
+import net.bull.javamelody.naming.DefaultJpaNamingStrategy;
+import net.bull.javamelody.naming.JpaNamingStrategy;
 
 /**
  * Cette classe est utile pour construire des proxy pour JPA.
@@ -32,9 +37,42 @@ public final class JpaWrapper {
 	private static final boolean DISABLED = Boolean
 			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
+	private static final JpaNamingStrategy JPA_NAMING_STRATEGY;
+	private static final String JPA_NAMING_STRATEGY_SYSPROP_NAME = "net.bull.javamelody.naming.JpaNamingStrategy";
 
 	private JpaWrapper() {
 		super();
+	}
+
+	static {
+		JPA_NAMING_STRATEGY = createNamingStrategy();
+	}
+
+	private static JpaNamingStrategy createNamingStrategy() {
+		// try via system property
+		String implClassName = System.getProperty(JPA_NAMING_STRATEGY_SYSPROP_NAME);
+		if (implClassName != null && !implClassName.isEmpty()) {
+			try {
+				return (JpaNamingStrategy) Class.forName(implClassName)
+								.getConstructor()
+								.newInstance();
+			} catch (final Exception e) {
+				throw new IllegalStateException("Could not instantiate class: " + implClassName
+								+ " defined in system propperty: " + JPA_NAMING_STRATEGY_SYSPROP_NAME
+								, e);
+			}
+		}
+
+		// try ServiceLoader/SPI
+		Iterator<JpaNamingStrategy> strategyImplIter = ServiceLoader
+						.load(JpaNamingStrategy.class)
+						.iterator();
+		if (strategyImplIter.hasNext()) {
+			return strategyImplIter.next();
+		}
+
+		// Fall back to default
+		return new DefaultJpaNamingStrategy();
 	}
 
 	static Counter getJpaCounter() {
@@ -115,23 +153,19 @@ public final class JpaWrapper {
 		/** {@inheritDoc} */
 		@Override
 		public Object invoke(final Object proxy, final Method method, final Object[] args)
-				throws Throwable {
-			final String methodName = method.getName();
-			if (isCreateSomeQuery(method)) {
+						throws Throwable {
+			JpaMethod jpaMethod = JpaMethod.forCall(method, args);
+			assert jpaMethod != null;
+			assert method != null;
+			String requestName = JPA_NAMING_STRATEGY.getRequestName(jpaMethod, method, args);
+			assert requestName != null;
+
+			if (jpaMethod.isQuery() && jpaMethod.isMonitored()) {
 				Query query = (Query) method.invoke(entityManager, args);
-				// (pas besoin de proxy pour getCriteriaBuilder() car cela repasse par entityManager.createQuery(criteriaQuery)
-				final String requestName = getQueryRequestName(methodName, args);
 				query = createQueryProxy(query, requestName);
 				return query;
-			} else if (isOneOfFindMethods(args, methodName)) {
-				final String requestName = "find(" + ((Class<?>) args[0]).getSimpleName() + ')';
-				return doInvoke(entityManager, method, args, requestName);
-			} else if (isMergePersistRefreshRemoveDetachOrLockMethod(methodName, args)) {
-				final String requestName = method.getName() + '('
-						+ args[0].getClass().getSimpleName() + ')';
-				return doInvoke(entityManager, method, args, requestName);
-			} else if ("flush".equals(methodName)) {
-				final String requestName = "flush()";
+			}
+			if (jpaMethod.isMonitored()) {
 				return doInvoke(entityManager, method, args, requestName);
 			}
 			return method.invoke(entityManager, args);
