@@ -232,7 +232,7 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
 			<version>3.3.0</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>
