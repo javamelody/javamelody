@@ -9,21 +9,22 @@ import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.bull.javamelody.MonitoredWithAnnotationPointcut;
 import net.bull.javamelody.MonitoringFilter;
 import net.bull.javamelody.MonitoringSpringAdvisor;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
+import net.bull.javamelody.SpringDataSourceBeanPostProcessor;
 
 /**
  * @author speralta, evernat
  */
 @Configuration
-@ImportResource("classpath:net/bull/javamelody/monitoring-spring.xml")
+//replaced by methods below: @ImportResource("classpath:net/bull/javamelody/monitoring-spring.xml")
 @SuppressWarnings("javadoc")
 public class JavaMelodyConfiguration implements ServletContextInitializer {
 	@Override
@@ -53,6 +54,23 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 		return javaMelody;
 	}
 
+	// monitoring of jdbc datasources:
+	@Bean
+	public SpringDataSourceBeanPostProcessor monitoringDataSourceBeanPostProcessor() {
+		SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
+		processor.setExcludedDatasources(null);
+		return processor;
+	}
+
+	// monitoring of beans or methods having @MonitoredWithSpring:
+	@Bean
+	public MonitoringSpringAdvisor monitoringAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new MonitoredWithAnnotationPointcut());
+		return interceptor;
+	}
+
+	// monitoring of all services and controllers (even without having @MonitoredWithSpring):
 	@Bean
 	public MonitoringSpringAdvisor springServiceMonitoringAdvisor() {
 		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
