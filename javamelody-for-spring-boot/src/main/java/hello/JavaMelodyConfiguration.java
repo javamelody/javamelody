@@ -4,13 +4,18 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import net.bull.javamelody.MonitoringFilter;
+import net.bull.javamelody.MonitoringSpringAdvisor;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 
@@ -46,5 +51,26 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 
 		javaMelody.addUrlPatterns("/*");
 		return javaMelody;
+	}
+
+	@Bean
+	public MonitoringSpringAdvisor springServiceMonitoringAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new AnnotationMatchingPointcut(Service.class));
+		return interceptor;
+	}
+
+	@Bean
+	public MonitoringSpringAdvisor springControllerMonitoringAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new AnnotationMatchingPointcut(Controller.class));
+		return interceptor;
+	}
+
+	@Bean
+	public MonitoringSpringAdvisor springRestControllerMonitoringAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new AnnotationMatchingPointcut(RestController.class));
+		return interceptor;
 	}
 }
