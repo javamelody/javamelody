@@ -18,6 +18,7 @@
 package net.bull.javamelody;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Liste des paramètres, tous optionnels.
@@ -76,7 +77,7 @@ public enum Parameter {
 
 	/**
 	 * Expression régulière pour exclure certaines urls du monitoring (null par défaut).
-	 * Voir {@link java.util.regex.Pattern http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html}
+	 * Voir {@link Pattern http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html}
 	 */
 	URL_EXCLUDE_PATTERN("url-exclude-pattern"),
 
@@ -103,6 +104,15 @@ public enum Parameter {
 	 * Expression régulière (null par défaut) pour transformer la description d'une requête jpa.
 	 */
 	JPA_TRANSFORM_PATTERN("jpa-transform-pattern"),
+
+	/**
+	 * Fully qualified name of a class implementing {@link JpaNamingStrategy} (Default: null).
+	 * null or an empty string will fallback to {@link JpaDefaultNamingStrategy}.
+	 *
+	 * The implementation is responsible for generating the request name of a JPA query
+	 * (JPQL and CriteriaQuery) displayed in the JPA section.
+	 */
+	JPA_NAMING_STRATEGY("jpa-naming-strategy"),
 
 	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une méthode spring.

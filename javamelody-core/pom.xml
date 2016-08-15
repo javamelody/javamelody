@@ -75,6 +75,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
 			<version>2.1.5</version>
@@ -192,7 +198,7 @@
 			<version>7.0.27</version>
 			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle spring aop (qui inclus spring core, spring 
+		<!-- Dépendance optionnelle spring aop (qui inclus spring core, spring
 			beans, aop alliance et commons-logging) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -290,8 +296,8 @@
 			<resource>
 				<directory>${project.basedir}/src/main/resources</directory>
 			</resource>
-			<!-- uniquement pour inclure les fichiers de licence et user_guide dans 
-				le jar produit par maven (celui qui contient pom.properties et pom.xml avec 
+			<!-- uniquement pour inclure les fichiers de licence et user_guide dans
+				le jar produit par maven (celui qui contient pom.properties et pom.xml avec
 				la version) -->
 			<resource>
 				<directory>${project.basedir}</directory>
@@ -317,7 +323,7 @@
 					<testCompilerArgument>-XDignore.symbol.file=true -Xlint</testCompilerArgument>
 				</configuration>
 			</plugin>
-			<!-- pour produire un jar lors du goal package comme celui produit par 
+			<!-- pour produire un jar lors du goal package comme celui produit par
 				ant mais avec pom.properties et pom.xml pour publication dans un repository -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
