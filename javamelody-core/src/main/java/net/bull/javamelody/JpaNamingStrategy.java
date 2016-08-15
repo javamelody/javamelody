@@ -8,17 +8,17 @@
  * Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
  */
 
-package net.bull.javamelody.naming;
+package net.bull.javamelody;
 import java.lang.reflect.Method;
 
 import javax.persistence.EntityManager;
-
-import net.bull.javamelody.JpaMethod;
 
 public interface JpaNamingStrategy {
 
 	/**
 	 * Implementors must calculate a nonnull String that will get displayed in the JPA section.
+	 *
+	 * The implementing class <b>must</b> habe a public no-args constructor.
 	 *
 	 * @param jpaMethod A normalization of the method that got called on the {@link EntityManager}.
 	 * 					Corresponds with param javaMethod.

@@ -8,15 +8,13 @@
  * Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
  */
 
-package net.bull.javamelody.naming;
+package net.bull.javamelody;
 import java.lang.reflect.Method;
-
-import net.bull.javamelody.JpaMethod;
 
 /**
  * Default naming strategy.
  */
-public class DefaultJpaNamingStrategy implements JpaNamingStrategy {
+public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
 	@Override
 	public String getRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
 		switch (jpaMethod) {
@@ -36,19 +34,19 @@ public class DefaultJpaNamingStrategy implements JpaNamingStrategy {
 		case LOCK:
 			return getMethodWithEntityArgRequestName(jpaMethod, javaMethod, args);
 		case FLUSH:
-			return getNoArgsRequestName(jpaMethod, javaMethod, args);
+			return getNoArgsRequestName(jpaMethod, javaMethod);
 		case OTHER:
 		default:
 			return getOtherRequestName(jpaMethod, javaMethod, args);
 		}
 	}
 
-	private String getOtherRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+	protected String getOtherRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
 		int argsLen = args == null ? 0 : args.length;
 		return "other: " + javaMethod.getName() + "(?" + argsLen + "?)";
 	}
 
-	public String getQueryRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+	protected String getQueryRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
 		final StringBuilder requestName = new StringBuilder();
 		String methodName = javaMethod.getName();
 		requestName.append(methodName, "create".length(), methodName.length());
@@ -56,21 +54,21 @@ public class DefaultJpaNamingStrategy implements JpaNamingStrategy {
 		return requestName.toString();
 	}
 
-	public String getMethodWithClassArgRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+	protected String getMethodWithClassArgRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
 		final String requestName = javaMethod.getName() + '(' + ((Class<?>)args[0]).getSimpleName() + ')';
 		return requestName;
 	}
 
-	public String getMethodWithEntityArgRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+	protected String getMethodWithEntityArgRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
 		final String requestName = javaMethod.getName() + '(' + args[0].getClass().getSimpleName() + ')';
 		return requestName;
 	}
 
-	public String getNoArgsRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+	protected String getNoArgsRequestName(JpaMethod jpaMethod, Method javaMethod) {
 		return javaMethod.getName() + "()";
 	}
 
-	private void appendArgs(StringBuilder requestName, Object[] args) {
+	protected void appendArgs(StringBuilder requestName, Object[] args) {
 		requestName.append('(');
 		if (args != null) {
 			String separator = "";

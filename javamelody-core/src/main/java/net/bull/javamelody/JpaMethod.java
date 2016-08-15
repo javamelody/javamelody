@@ -1,11 +1,19 @@
 /*
- * Copyright © 2016 DV Bern AG, Switzerland
+ * Copyright 2008-2016 by Emeric Vernat
  *
- * Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
- * geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
- * insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
- * elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
- * Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+ *     This file is part of Java Melody.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package net.bull.javamelody;
@@ -63,10 +71,28 @@ public enum JpaMethod {
 		return query;
 	}
 
+	/**
+	 * Used by the proxy class to determine if the called method is of relevance for JavaMelody processing.
+	 */
 	private interface MethodMatcher extends Serializable {
 		boolean matches(JpaMethod method, Method javaMethod, Object[] args);
 	}
 
+	/**
+	 * Does not match anything => method call not monitored by JavaMelody.
+	 */
+	private static class NoMethodMatcher implements MethodMatcher {
+		private static final long serialVersionUID = -7909606883659502100L;
+
+		@Override
+		public boolean matches(JpaMethod method, Method javaMethod, Object[] args) {
+			return false;
+		}
+	}
+
+	/**
+	 * Matches on exact method name.
+	 */
 	private static class MethodNameMatcher implements MethodMatcher {
 		private static final long serialVersionUID = 3000368936257282142L;
 		private final String methodName;
@@ -85,15 +111,9 @@ public enum JpaMethod {
 		}
 	}
 
-	private static class NoMethodMatcher implements MethodMatcher {
-		private static final long serialVersionUID = -7909606883659502100L;
-
-		@Override
-		public boolean matches(JpaMethod method, Method javaMethod, Object[] args) {
-			return false;
-		}
-	}
-
+	/**
+	 * Matches on method name and the method must have at least one argument.
+	 */
 	private static class MethodWithArgsMethodMatcher extends MethodNameMatcher {
 		private static final long serialVersionUID = -6626632123950888074L;
 
@@ -107,6 +127,9 @@ public enum JpaMethod {
 		}
 	}
 
+	/**
+	 * See {@link MethodWithArgsMethodMatcher}. Also, the called method must return a {@link Query}
+	 */
 	private static class ReturnQueryMethodMatcher extends MethodWithArgsMethodMatcher {
 		private static final long serialVersionUID = 8359075693226965998L;
 
