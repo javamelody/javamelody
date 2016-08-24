@@ -365,7 +365,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (message != null) {
 			writeln(SCRIPT_BEGIN);
 			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
-			writeDirectly("alert(\"" + javascriptEncode(message) + "\");");
+			writeDirectly("alert(\"" + htmlEncodeButNotSpace(javascriptEncode(message)) + "\");");
 			writeln("");
 			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
 			if (partToRedirectTo == null) {
