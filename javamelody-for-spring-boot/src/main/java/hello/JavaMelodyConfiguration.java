@@ -4,6 +4,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
@@ -52,6 +53,13 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 
 		javaMelody.addUrlPatterns("/*");
 		return javaMelody;
+	}
+
+	// Note: if you have auto-proxy issues, you can add the following in your application.properties instead of that method:
+	// spring.aop.proxy-target-class=true
+	@Bean
+	public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
+		return new DefaultAdvisorAutoProxyCreator();
 	}
 
 	// monitoring of jdbc datasources:
