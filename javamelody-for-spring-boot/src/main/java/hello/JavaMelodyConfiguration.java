@@ -55,8 +55,6 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 		return javaMelody;
 	}
 
-	// Note: if you have auto-proxy issues, you can add the following in your application.properties instead of that method:
-	// spring.aop.proxy-target-class=true
 	@Bean
 	public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
 		return new DefaultAdvisorAutoProxyCreator();
