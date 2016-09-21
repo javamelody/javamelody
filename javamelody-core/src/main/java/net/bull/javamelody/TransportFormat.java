@@ -50,9 +50,6 @@ enum TransportFormat {
 
 	/**
 	 * XML (avec XStream/XPP).
-	 * <br/>Selon http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking,
-	 * la sérialisation java est 75% plus performante en temps que xml (xstream/xpp)
-	 * et à peine plus gourmande en taille de flux.
 	 */
 	XML("text/xml; charset=utf-8"),
 

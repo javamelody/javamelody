@@ -212,8 +212,7 @@ final class JRobin {
 
 		try {
 			// Rq : il pourrait être envisagé de récupérer les données dans les fichiers rrd ou autre stockage
-			// puis de faire des courbes en sparklines html (sauvegardées dans la page html)
-			// ou avec http://code.google.com/apis/chart/types.html#sparkline ou jfreechart
+			// puis de faire des courbes en sparklines html (écrites dans la page html) ou jfreechart
 
 			// create common part of graph definition
 			final RrdGraphDef graphDef = new RrdGraphDef();

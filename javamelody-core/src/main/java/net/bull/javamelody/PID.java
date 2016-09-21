@@ -48,7 +48,7 @@ final class PID {
 		String pid;
 		// following is not always reliable as is (for example, see issue 3 on solaris 10
 		// or http://blog.igorminar.com/2007/03/how-java-application-can-discover-its.html)
-		// Author: Santhosh Kumar T, http://code.google.com/p/jlibs/, licence LGPL
+		// Author: Santhosh Kumar T, https://github.com/santhosh-tekuri/jlibs, licence LGPL
 		// Author getpids.exe: Daniel Scheibli, http://www.scheibli.com/projects/getpids/index.html, licence GPL
 		final String[] cmd;
 		File tempFile = null;

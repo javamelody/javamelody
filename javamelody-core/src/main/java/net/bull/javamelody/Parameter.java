@@ -262,9 +262,6 @@ public enum Parameter {
 	/**
 	 * Format du transport entre un serveur de collecte et une application monitorée
 	 * (serialized : sérialisation java par défaut et recommandée pour les performances, xml : possible).
-	 * <br/>Selon http://code.google.com/p/thrift-protobuf-compare/wiki/Benchmarking?ts=1237772203&updated=Benchmarking,
-	 * la sérialisation java est 75% plus performante en temps que xml (xstream/xpp)
-	 * et à peine plus gourmande en taille de flux.
 	 */
 	TRANSPORT_FORMAT("transport-format"),
 

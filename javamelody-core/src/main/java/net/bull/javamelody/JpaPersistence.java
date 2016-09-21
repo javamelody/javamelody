@@ -194,7 +194,7 @@ public class JpaPersistence implements PersistenceProvider {
 
 	private void guessDelegate() {
 		// https://issues.apache.org/jira/browse/SIRONA-44
-		// https://code.google.com/p/javamelody/issues/detail?id=460
+		// https://github.com/javamelody/javamelody/issues/460
 		final List<PersistenceProvider> persistenceProviders = PersistenceProviderResolverHolder
 				.getPersistenceProviderResolver().getPersistenceProviders();
 		for (final PersistenceProvider persistenceProvider : persistenceProviders) {
