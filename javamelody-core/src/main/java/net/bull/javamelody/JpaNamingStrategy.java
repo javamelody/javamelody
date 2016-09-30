@@ -20,6 +20,7 @@ package net.bull.javamelody;
 import java.lang.reflect.Method;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Interface to implement jpa method to request name conversion.
@@ -29,6 +30,25 @@ import javax.persistence.EntityManager;
 public interface JpaNamingStrategy {
 
 	/**
+	 * Build the request name for all EntityManager.create*Query() methods.
+	 *
+	 * Implementors must calculate a nonnull String that will get displayed in the JPA section.
+	 *
+	 * The implementing class <b>must</b> habe a public no-args constructor.
+	 *
+	 * @param query The {@link Query} created by the current invocation of EntityManager.create*Query().
+	 * @param jpaMethod A normalization of the method that got called on the {@link EntityManager}.
+	 * 					Corresponds with param javaMethod.
+	 * @param javaMethod The method that got called on the {@link EntityManager}.
+	 * 					 Corresponds with param jpaMethod.
+	 * @param args Nullable, the arguments for javaMethod
+	 * @return a non-null String that represents the request name of the JPA-Counter.
+	 */
+	String getCreateQueryRequestName(Query query, JpaMethod jpaMethod, Method javaMethod, Object[] args);
+
+	/**
+	 * Build the request name for all other (i.E.: not EntityManager.create*Query()) methods.
+
 	 * Implementors must calculate a nonnull String that will get displayed in the JPA section.
 	 *
 	 * The implementing class <b>must</b> habe a public no-args constructor.
