@@ -128,7 +128,12 @@ class MonitoringController {
 				final String cacheId = httpRequest.getParameter(CACHE_ID_PARAMETER);
 				messageForReport = action.execute(collector, collectorServer, currentSession,
 						counterName, sessionId, threadId, jobId, cacheId);
-				anchorNameForRedirect = action.getContextName(counterName);
+				if (collector.getCounterByName(counterName) != null) {
+					// on ne veut pas d'injection de faux counterName dans l'ancre
+					anchorNameForRedirect = action.getContextName(counterName);
+				} else {
+					anchorNameForRedirect = action.getContextName(null);
+				}
 				return messageForReport;
 			} finally {
 				I18N.unbindLocale();
