@@ -490,7 +490,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		}
 
 		// 2. débit et liens
-		writeSizeAndLinks(requests, counterName, globalRequest);
+		writeSizeAndLinks(requests, globalRequest);
 
 		// 3. détails par requêtes (non visible par défaut)
 		writeln("<div id='details" + counterName + "' style='display: none;'>");
@@ -506,8 +506,8 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		}
 	}
 
-	private void writeSizeAndLinks(List<CounterRequest> requests, String counterName,
-			CounterRequest globalRequest) throws IOException {
+	private void writeSizeAndLinks(List<CounterRequest> requests, CounterRequest globalRequest)
+			throws IOException {
 		final long end;
 		if (range.getEndDate() != null) {
 			// l'utilisateur a choisi une période personnalisée de date à date,
@@ -535,27 +535,27 @@ class HtmlCounterReport extends HtmlAbstractReport {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (counter.isBusinessFacadeCounter()) {
 			writeln(separator);
-			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counterName
+			writeln("<a href='?part=counterSummaryPerClass&amp;counter=" + counter.getName()
 					+ "' class='noPrint'>#Resume_par_classe#</a>");
 			if (isPdfEnabled()) {
 				writeln(separator);
 				writeln("<a href='?part=runtimeDependencies&amp;format=pdf&amp;counter="
-						+ counterName + "' class='noPrint'>#Dependances#</a>");
+						+ counter.getName() + "' class='noPrint'>#Dependances#</a>");
 			}
 		}
 		writeln(separator);
-		writeShowHideLink("details" + counterName, "#Details#");
+		writeShowHideLink("details" + counter.getName(), "#Details#");
 		if (isErrorCounter()) {
 			writeln(separator);
-			writeShowHideLink("logs" + counterName, "#Dernieres_erreurs#");
+			writeShowHideLink("logs" + counter.getName(), "#Dernieres_erreurs#");
 		}
 		writeln(separator);
 		if (range.getPeriod() == Period.TOUT) {
-			writeln("<a href='?action=clear_counter&amp;counter=" + counterName
+			writeln("<a href='?action=clear_counter&amp;counter=" + counter.getName()
 					+ getCsrfTokenUrlPart() + "' title='"
-					+ getFormattedString("Vider_stats", counterName) + '\'');
+					+ getFormattedString("Vider_stats", counter.getName()) + '\'');
 			writeln("class='noPrint' onclick=\"javascript:return confirm('"
-					+ javascriptEncode(getFormattedString("confirm_vider_stats", counterName))
+					+ javascriptEncode(getFormattedString("confirm_vider_stats", counter.getName()))
 					+ "');\">#Reinitialiser#</a>");
 		}
 		writeln("</div>");
