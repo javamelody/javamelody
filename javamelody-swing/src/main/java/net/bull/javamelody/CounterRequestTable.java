@@ -48,9 +48,9 @@ class CounterRequestTable extends MTable<CounterRequest> {
 	private final RemoteCollector remoteCollector;
 
 	@SuppressWarnings("all")
-	private final Map<String, CounterRequest> counterRequestByRequestName = new HashMap<String, CounterRequest>();
+	private final Map<String, CounterRequest> counterRequestByRequestName = new HashMap<>();
 	@SuppressWarnings("all")
-	private final Map<String, BufferedImage> requestChartByRequestName = new HashMap<String, BufferedImage>();
+	private final Map<String, BufferedImage> requestChartByRequestName = new HashMap<>();
 
 	private class ImageToolTip extends JToolTip {
 		private static final long serialVersionUID = 1L;

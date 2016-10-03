@@ -36,7 +36,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 	private final JTable table;
 
 	@SuppressWarnings("all")
-	private List<T> list = new ArrayList<T>(0);
+	private List<T> list = new ArrayList<>(0);
 
 	/**
 	 * Constructeur.
