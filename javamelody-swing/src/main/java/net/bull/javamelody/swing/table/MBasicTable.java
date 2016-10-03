@@ -60,8 +60,7 @@ public class MBasicTable extends JTable {
 
 	// Singleton statique pour renderers par défaut des cellules.
 	@SuppressWarnings("all")
-	private static final Map<Class<?>, TableCellRenderer> DEFAULT_RENDERERS = new HashMap<>(
-			25);
+	private static final Map<Class<?>, TableCellRenderer> DEFAULT_RENDERERS = new HashMap<>(25);
 
 	@SuppressWarnings("all")
 	private static final KeyHandler KEY_HANDLER = new KeyHandler();

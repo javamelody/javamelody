@@ -367,11 +367,8 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 					+ integerFormat.format(currentThreadsBusy) + DIVIDE
 					+ integerFormat.format(tomcatInformations.getMaxThreads()) + BAR_SEPARATOR,
 					cellFont);
-			final Image threadsImage = Image
-					.getInstance(
-							Bar.toBarWithAlert(
-									100d * currentThreadsBusy / tomcatInformations.getMaxThreads()),
-							null);
+			final Image threadsImage = Image.getInstance(Bar.toBarWithAlert(
+					100d * currentThreadsBusy / tomcatInformations.getMaxThreads()), null);
 			threadsImage.scalePercent(50);
 			phrase.add(new Chunk(threadsImage, 0, 0));
 
