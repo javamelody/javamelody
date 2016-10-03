@@ -63,7 +63,7 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 	// monitoring of jdbc datasources:
 	@Bean
 	public SpringDataSourceBeanPostProcessor monitoringDataSourceBeanPostProcessor() {
-		SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
+		final SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
 		processor.setExcludedDatasources(null);
 		return processor;
 	}
