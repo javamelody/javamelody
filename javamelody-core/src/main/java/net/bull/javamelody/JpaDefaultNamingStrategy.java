@@ -19,6 +19,8 @@ package net.bull.javamelody;
 
 import java.lang.reflect.Method;
 
+import javax.persistence.Query;
+
 /**
  * Default naming strategy.
  * @author Christoph Linder
@@ -51,6 +53,12 @@ public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
 		default:
 			return getOtherRequestName(javaMethod, args);
 		}
+	}
+
+	@Override
+	public String getCreateQueryRequestName(Query query, JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+		// The default naming strategy does not need the query
+		return getRequestName(jpaMethod, javaMethod, args);
 	}
 
 	protected String getOtherRequestName(Method javaMethod, Object[] args) {

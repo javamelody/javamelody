@@ -29,31 +29,38 @@ import javax.persistence.Query;
  * @author Emeric Vernat
  */
 public final class JpaWrapper {
-	static final JpaNamingStrategy JPA_NAMING_STRATEGY;
+
+	/**
+	 * Initialization on Demand Holder, allows usage of parameters in web.xml.
+	 * Without this, JPA would get initialized before the web container and parameters in web.xml could not be used.
+	 *
+	 * Please note: do not move the DISABLED param here since this will trigger
+	 * lazy instantiation during JPA init whis is too early.
+	 */
+	private static final class NamingStrategyHolder {
+		static final JpaNamingStrategy JPA_NAMING_STRATEGY = createNamingStrategy();
+
+		private static JpaNamingStrategy createNamingStrategy() {
+			final String implClassName = Parameters.getParameter(Parameter.JPA_NAMING_STRATEGY);
+			if (implClassName == null || implClassName.trim().isEmpty()) {
+				return new JpaDefaultNamingStrategy();
+			}
+
+			try {
+				return (JpaNamingStrategy) Class.forName(implClassName).getConstructor().newInstance();
+			} catch (final Exception e) {
+				throw new IllegalStateException("Could not instantiate class: " + implClassName
+								+ " defined in parameter: " + Parameter.JPA_NAMING_STRATEGY.getCode(), e);
+			}
+		}
+	}
+
 	private static final boolean DISABLED = Boolean
 			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
 
 	private JpaWrapper() {
 		super();
-	}
-
-	static {
-		JPA_NAMING_STRATEGY = createNamingStrategy();
-	}
-
-	private static JpaNamingStrategy createNamingStrategy() {
-		final String implClassName = Parameters.getParameter(Parameter.JPA_NAMING_STRATEGY);
-		if (implClassName == null || implClassName.trim().isEmpty()) {
-			return new JpaDefaultNamingStrategy();
-		}
-
-		try {
-			return (JpaNamingStrategy) Class.forName(implClassName).getConstructor().newInstance();
-		} catch (final Exception e) {
-			throw new IllegalStateException("Could not instantiate class: " + implClassName
-					+ " defined in parameter: " + Parameter.JPA_NAMING_STRATEGY.getCode(), e);
-		}
 	}
 
 	static Counter getJpaCounter() {
@@ -139,7 +146,7 @@ public final class JpaWrapper {
 
 			if (jpaMethod.isQuery() && jpaMethod.isMonitored()) {
 				Query query = (Query) method.invoke(entityManager, args);
-				final String requestName = getRequestName(jpaMethod, method, args);
+				final String requestName = getCreateQueryRequestName(query, jpaMethod, method, args);
 				query = createQueryProxy(query, requestName);
 				return query;
 			}
@@ -150,9 +157,16 @@ public final class JpaWrapper {
 			return method.invoke(entityManager, args);
 		}
 
-		private String getRequestName(final JpaMethod jpaMethod, final Method method,
+		private String getCreateQueryRequestName(final Query query, final JpaMethod jpaMethod, final Method method,
 				final Object[] args) {
-			final String requestName = JPA_NAMING_STRATEGY.getRequestName(jpaMethod, method, args);
+			final String requestName = NamingStrategyHolder.JPA_NAMING_STRATEGY.getCreateQueryRequestName(query, jpaMethod, method, args);
+			assert requestName != null;
+			return requestName;
+		}
+
+		private String getRequestName(final JpaMethod jpaMethod, final Method method,
+						final Object[] args) {
+			final String requestName = NamingStrategyHolder.JPA_NAMING_STRATEGY.getRequestName(jpaMethod, method, args);
 			assert requestName != null;
 			return requestName;
 		}
