@@ -19,21 +19,30 @@ package net.bull.javamelody;
 
 import java.lang.reflect.Method;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 /**
- * Default naming strategy.
+ * JPA naming strategy.
  * @author Christoph Linder
+ * @author Emeric Vernat
  */
-public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
+public class JpaNamingStrategy {
 	private static final Class<?> HIBERNATE_QUERY_CLASS = getClass("org.hibernate.Query");
 
 	private static final Class<?> ECLIPSELINK_QUERY_CLASS = getClass(
 			"org.eclipse.persistence.jpa.JpaQuery");
 
-	/** {@inheritDoc} */
+	/**
+	 * Calculate a non-null String that will get displayed in the JPA requests.
+	 *
+	 * @param jpaMethod A normalization of the method that got called on the {@link EntityManager}.
+	 * @param javaMethod The method that got called on the {@link EntityManager}.
+	 * @param args Nullable, the arguments for javaMethod
+	 * @param query JPA query if jpaMethod.isQuery() or null otherwise
+	 * @return a non-null String that represents the request name of the JPA-Counter.
+	 */
 	// CHECKSTYLE:OFF
-	@Override
 	public String getRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args,
 			Query query) {
 		// CHECKSTYLE:ON

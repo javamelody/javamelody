@@ -307,15 +307,7 @@ public enum Parameter {
 	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger,
 	 * such as net.bull.javamelody.Log4JLogger, net.bull.javamelody.JavaLogger or net.bull.javamelody.LogbackLogger.
 	 */
-	LOGGER_CLASS("logger-class"),
-
-	/**
-	 * Fully qualified name of a class implementing {@link JpaNamingStrategy} (Default: {@link JpaDefaultNamingStrategy}).
-	 *
-	 * The implementation is responsible for generating the request name of a JPA query
-	 * (JPQL and CriteriaQuery) displayed in the JPA section.
-	 */
-	JPA_NAMING_STRATEGY("jpa-naming-strategy");
+	LOGGER_CLASS("logger-class");
 
 	private final String code;
 

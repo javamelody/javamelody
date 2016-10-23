@@ -29,31 +29,12 @@ import javax.persistence.Query;
  * @author Emeric Vernat
  */
 public final class JpaWrapper {
-	static final JpaNamingStrategy JPA_NAMING_STRATEGY;
 	private static final boolean DISABLED = Boolean
 			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
 
 	private JpaWrapper() {
 		super();
-	}
-
-	static {
-		JPA_NAMING_STRATEGY = createNamingStrategy();
-	}
-
-	private static JpaNamingStrategy createNamingStrategy() {
-		final String implClassName = Parameters.getParameter(Parameter.JPA_NAMING_STRATEGY);
-		if (implClassName == null || implClassName.trim().isEmpty()) {
-			return new JpaDefaultNamingStrategy();
-		}
-
-		try {
-			return (JpaNamingStrategy) Class.forName(implClassName).getConstructor().newInstance();
-		} catch (final Exception e) {
-			throw new IllegalStateException("Could not instantiate class: " + implClassName
-					+ " defined in parameter: " + Parameter.JPA_NAMING_STRATEGY.getCode(), e);
-		}
 	}
 
 	static Counter getJpaCounter() {
@@ -123,6 +104,8 @@ public final class JpaWrapper {
 	}
 
 	private static class EntityManagerHandler implements InvocationHandler {
+		private static final JpaNamingStrategy JPA_NAMING_STRATEGY = new JpaNamingStrategy();
+
 		private final EntityManager entityManager;
 
 		EntityManagerHandler(final EntityManager entityManager) {
