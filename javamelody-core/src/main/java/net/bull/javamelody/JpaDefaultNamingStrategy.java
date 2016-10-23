@@ -19,15 +19,23 @@ package net.bull.javamelody;
 
 import java.lang.reflect.Method;
 
+import javax.persistence.Query;
+
 /**
  * Default naming strategy.
  * @author Christoph Linder
  */
 public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
+	private static final Class<?> HIBERNATE_QUERY_CLASS = getClass("org.hibernate.Query");
+
+	private static final Class<?> ECLIPSELINK_QUERY_CLASS = getClass(
+			"org.eclipse.persistence.jpa.JpaQuery");
+
 	/** {@inheritDoc} */
 	// CHECKSTYLE:OFF
 	@Override
-	public String getRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args) {
+	public String getRequestName(JpaMethod jpaMethod, Method javaMethod, Object[] args,
+			Query query) {
 		// CHECKSTYLE:ON
 		switch (jpaMethod) {
 		case CREATE_QUERY:
@@ -35,7 +43,7 @@ public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
 		case CREATE_NATIVE_QUERY:
 		case CREATE_STORED_PROCEDURE_QUERY:
 		case CREATE_NAMED_STORED_PROCEDURE_QUERY:
-			return getQueryRequestName(javaMethod, args);
+			return getQueryRequestName(javaMethod, args, query);
 		case FIND:
 			return getMethodWithClassArgRequestName(javaMethod, args);
 		case MERGE:
@@ -58,11 +66,29 @@ public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
 		return "other: " + javaMethod.getName() + "(?" + argsLen + "?)";
 	}
 
-	protected String getQueryRequestName(Method javaMethod, Object[] args) {
+	protected String getQueryRequestName(Method javaMethod, Object[] args, Query query) {
 		final StringBuilder requestName = new StringBuilder();
 		final String methodName = javaMethod.getName();
 		requestName.append(methodName, "create".length(), methodName.length());
 		appendArgs(requestName, args);
+
+		// with help from Christoph Linder
+		// and https://antoniogoncalves.org/2012/05/24/how-to-get-the-jpqlsql-string-from-a-criteriaquery-in-jpa/
+		if (HIBERNATE_QUERY_CLASS != null && query.getClass().getName().startsWith("org.hibernate.")
+				&& requestName.lastIndexOf("@") != -1) {
+			// in order to have only one request name instead of patterns like 
+			// Query(org.hibernate.jpa.criteria.CriteriaQueryImpl@3b0cc2dc)
+			final Object unwrappedQuery = query.unwrap(HIBERNATE_QUERY_CLASS);
+			return unwrappedQuery.toString();
+		} else if (ECLIPSELINK_QUERY_CLASS != null
+				&& query.getClass().getName().startsWith("org.eclipse.")
+				&& requestName.lastIndexOf("@") != -1) {
+			// in order to have only one request name instead of patterns like 
+			// Query(org.eclipse.persistence.internal.jpa.querydef.CriteriaQueryImpl@6a55299e)
+			final Object unwrappedQuery = query.unwrap(ECLIPSELINK_QUERY_CLASS);
+			return unwrappedQuery.toString();
+		}
+
 		return requestName.toString();
 	}
 
@@ -99,5 +125,13 @@ public class JpaDefaultNamingStrategy implements JpaNamingStrategy {
 			}
 		}
 		requestName.append(')');
+	}
+
+	private static Class<?> getClass(String className) {
+		try {
+			return Class.forName(className);
+		} catch (final ClassNotFoundException e) {
+			return null;
+		}
 	}
 }

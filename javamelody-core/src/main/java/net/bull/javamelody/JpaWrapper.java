@@ -139,20 +139,21 @@ public final class JpaWrapper {
 
 			if (jpaMethod.isQuery() && jpaMethod.isMonitored()) {
 				Query query = (Query) method.invoke(entityManager, args);
-				final String requestName = getRequestName(jpaMethod, method, args);
+				final String requestName = getRequestName(jpaMethod, method, args, query);
 				query = createQueryProxy(query, requestName);
 				return query;
 			}
 			if (jpaMethod.isMonitored()) {
-				final String requestName = getRequestName(jpaMethod, method, args);
+				final String requestName = getRequestName(jpaMethod, method, args, null);
 				return doInvoke(entityManager, method, args, requestName);
 			}
 			return method.invoke(entityManager, args);
 		}
 
 		private String getRequestName(final JpaMethod jpaMethod, final Method method,
-				final Object[] args) {
-			final String requestName = JPA_NAMING_STRATEGY.getRequestName(jpaMethod, method, args);
+				final Object[] args, Query query) {
+			final String requestName = JPA_NAMING_STRATEGY.getRequestName(jpaMethod, method, args,
+					query);
 			assert requestName != null;
 			return requestName;
 		}
