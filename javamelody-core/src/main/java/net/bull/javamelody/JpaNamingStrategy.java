@@ -127,8 +127,6 @@ public class JpaNamingStrategy {
 				if (arg instanceof Class) {
 					requestName.append(((Class<?>) arg).getSimpleName());
 				} else {
-					// in order to have only one request name for pattern like Query(org.hibernate.jpa.criteria.CriteriaQueryImpl@3b0cc2dc):
-					// if (arg.toString().endsWith("@3b0cc2dc")) then we could remove "@3b0cc2dc"
 					requestName.append(arg);
 				}
 			}
