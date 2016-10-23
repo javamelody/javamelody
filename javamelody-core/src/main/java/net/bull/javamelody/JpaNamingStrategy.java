@@ -27,7 +27,7 @@ import javax.persistence.Query;
  * @author Christoph Linder
  * @author Emeric Vernat
  */
-public class JpaNamingStrategy {
+class JpaNamingStrategy {
 	private static final Class<?> HIBERNATE_QUERY_CLASS = getClass("org.hibernate.Query");
 
 	private static final Class<?> ECLIPSELINK_QUERY_CLASS = getClass(
