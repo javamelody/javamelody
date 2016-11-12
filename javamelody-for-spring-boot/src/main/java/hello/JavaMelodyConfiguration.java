@@ -55,6 +55,11 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 		return javaMelody;
 	}
 
+	// Note: if you have auto-proxy issues, you can add the following dependency in your pom.xml:
+	// <dependency>
+	//   <groupId>org.aspectj</groupId>
+	//   <artifactId>aspectjweaver</artifactId>
+	// </dependency> 
 	@Bean
 	public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
 		return new DefaultAdvisorAutoProxyCreator();
