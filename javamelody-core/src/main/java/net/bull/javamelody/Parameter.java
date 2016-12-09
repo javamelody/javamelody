@@ -307,7 +307,12 @@ public enum Parameter {
 	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger,
 	 * such as net.bull.javamelody.Log4JLogger, net.bull.javamelody.JavaLogger or net.bull.javamelody.LogbackLogger.
 	 */
-	LOGGER_CLASS("logger-class");
+	LOGGER_CLASS("logger-class"),
+
+	/**
+	 * Expose counters as JMX mbeans. Disabled by default.
+	 */
+	JMX_EXPOSE_ENABLED("jmx-expose");
 
 	private final String code;
 

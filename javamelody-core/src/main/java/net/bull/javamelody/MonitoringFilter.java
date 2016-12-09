@@ -123,6 +123,10 @@ public class MonitoringFilter implements Filter {
 					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
 
+		if (Parameters.isJmxExposeEnabled()) {
+			JMXExpose.start(collector, config.getServletContext());
+		}
+
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter init done in " + duration + " ms");
 	}
@@ -134,6 +138,9 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 		final long start = System.currentTimeMillis();
+
+		JMXExpose.stop();
+
 		try {
 			if (filterContext != null) {
 				filterContext.destroy();

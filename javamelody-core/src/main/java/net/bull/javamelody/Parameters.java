@@ -331,6 +331,15 @@ final class Parameters {
 	}
 
 	/**
+	 * Returns true if exposing counters via JMX is enabled.
+	 * @return boolean
+	 */
+	static boolean isJmxExposeEnabled() {
+		final String parameter = Parameters.getParameter(Parameter.JMX_EXPOSE_ENABLED);
+		return Boolean.parseBoolean(parameter);
+	}
+
+	/**
 	 * Retourne false si le paramètre displayed-counters n'a pas été défini
 	 * ou si il contient le compteur dont le nom est paramètre,
 	 * et retourne true sinon (c'est-à-dire si le paramètre displayed-counters est défini
