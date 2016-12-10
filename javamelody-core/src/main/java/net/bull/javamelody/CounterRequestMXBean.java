@@ -9,5 +9,5 @@ package net.bull.javamelody;
  * @author Alexey Pushkin
  */
 public interface CounterRequestMXBean {
-    CounterRequestAggregationData getCounterRequestAggregation();
+	CounterRequestAggregationData getCounterRequestAggregation();
 }

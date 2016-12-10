@@ -9,9 +9,9 @@ package net.bull.javamelody;
 public class CounterRequestData {
 	private CounterRequest request;
 
-    public CounterRequestData (CounterRequest request) {
+	public CounterRequestData(CounterRequest request) {
 		this.request = request;
-    }
+	}
 
 	public String getName() {
 		return request.getName();
