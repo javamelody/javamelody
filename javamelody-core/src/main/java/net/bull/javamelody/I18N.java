@@ -178,10 +178,15 @@ final class I18N {
 			while (index != -1) {
 				writer.write(html, begin, index - begin);
 				final int nextIndex = html.indexOf('#', index + 1);
-				final String key = html.substring(index + 1, nextIndex);
-				writer.write(resourceBundle.getString(key));
-				begin = nextIndex + 1;
-				index = html.indexOf('#', begin);
+				if (nextIndex > index + 1) {
+					final String key = html.substring(index + 1, nextIndex);
+					writer.write(resourceBundle.getString(key));
+					begin = nextIndex + 1;
+					index = html.indexOf('#', begin);
+				} else {
+					html.substring(index);
+					index = -1;
+				}
 			}
 			writer.write(html, begin, html.length() - begin);
 		}
