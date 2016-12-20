@@ -309,7 +309,8 @@ public final class JdbcWrapper {
 		final String serverInfo = servletContext.getServerInfo();
 		jboss = serverInfo.contains("JBoss") || serverInfo.contains("WildFly");
 		glassfish = serverInfo.contains("GlassFish")
-				|| serverInfo.contains("Sun Java System Application Server");
+				|| serverInfo.contains("Sun Java System Application Server")
+				|| serverInfo.contains("Payara");
 		weblogic = serverInfo.contains("WebLogic");
 		jonas = System.getProperty("jonas.name") != null;
 		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
