@@ -51,7 +51,7 @@ public abstract class MListTableModel<T> extends AbstractTableModel {
 
 	/** {@inheritDoc} */
 	@Override
-	public abstract Object getValueAt(final int rowIndex, final int columnIndex);
+	public abstract Object getValueAt(int rowIndex, int columnIndex);
 
 	/**
 	 * Retourne la table liée à ce modèle.

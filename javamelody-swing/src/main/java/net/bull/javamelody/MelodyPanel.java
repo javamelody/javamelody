@@ -195,7 +195,7 @@ class MelodyPanel extends JPanel {
 					final File tempFile = new File(System.getProperty("java.io.tmpdir"), PdfReport
 							.getFileName(application).replace(".pdf", "." + format.getCode()));
 					tempFile.deleteOnExit();
-					try (final OutputStream output = createFileOutputStream(tempFile)) {
+					try (OutputStream output = createFileOutputStream(tempFile)) {
 						format.writeSerializableTo(mySerializable, output);
 					}
 					Desktop.getDesktop().open(tempFile);

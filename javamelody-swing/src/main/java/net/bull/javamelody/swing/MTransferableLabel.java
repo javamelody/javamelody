@@ -144,7 +144,7 @@ public class MTransferableLabel extends JLabel {
 		if (imageData != null) {
 			final File file = ImageFileChooser.chooseImage(this, false, getFileName());
 			if (file != null) {
-				try (final OutputStream fileOutputStream = new BufferedOutputStream(
+				try (OutputStream fileOutputStream = new BufferedOutputStream(
 						new FileOutputStream(file))) {
 					fileOutputStream.write(imageData);
 				}
