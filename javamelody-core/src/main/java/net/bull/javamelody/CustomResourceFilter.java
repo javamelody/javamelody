@@ -82,7 +82,11 @@ public class CustomResourceFilter implements Filter {
 			final HttpServletResponse httpResponse = (HttpServletResponse) response;
 			MonitoringController.addHeadersForResource(httpResponse, customResource);
 
-			request.getRequestDispatcher(customResource).include(request, response);
+			if (customResources.get("useForward") == null) {
+				request.getRequestDispatcher(customResource).include(request, response);
+			} else {
+				request.getRequestDispatcher(customResource).forward(request, response);
+			}
 		} else {
 			chain.doFilter(request, response);
 		}

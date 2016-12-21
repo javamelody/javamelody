@@ -35,6 +35,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,6 +94,16 @@ public class TestCustomResourceFilter { // NOPMD
 	}
 
 	/**
+	 * testCustomResourceUsingForward.
+	 * @throws IOException e
+	 * @throws ServletException e
+	 */
+	@Test
+	public void testCustomResourceUsingForward() throws IOException, ServletException {
+		doTestResource(MONITORING_CSS);
+	}
+
+	/**
 	 * testRessource.
 	 * @throws IOException e
 	 * @throws ServletException e
@@ -121,6 +132,8 @@ public class TestCustomResourceFilter { // NOPMD
 		if (CUSTOM_RESOURCES.get(resource) != null) {
 			expect(request.getRequestDispatcher(CUSTOM_RESOURCES.get(resource)))
 					.andReturn(requestDispatcher);
+			requestDispatcher.include(request, response);
+			EasyMock.expectLastCall().once();
 		}
 
 		replay(config);
