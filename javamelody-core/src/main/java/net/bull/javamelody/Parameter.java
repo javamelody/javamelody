@@ -307,7 +307,16 @@ public enum Parameter {
 	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger,
 	 * such as net.bull.javamelody.Log4JLogger, net.bull.javamelody.JavaLogger or net.bull.javamelody.LogbackLogger.
 	 */
-	LOGGER_CLASS("logger-class");
+	LOGGER_CLASS("logger-class"),
+
+	/** Name of http session attribute to be persisted.
+	*/
+	PERSIST_HTTP_SESSION_ATTRIBUTE_NAME("persist-http-session-attribute-name"),
+
+	/**
+	 * true| false, true will persist (serialize) ip address, default false.
+	 */
+	PERSIST_IP_ADDRESS("persist-ip-address");
 
 	private final String code;
 
