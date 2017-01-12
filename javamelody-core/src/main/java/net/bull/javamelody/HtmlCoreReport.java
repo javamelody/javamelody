@@ -223,10 +223,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<h3 class='chapterTitle'><img src='?resource=jobs.png' alt='#Jobs#'/>");
 			writeAnchor("jobs", I18N.getString("Jobs"));
 			writeln("#Jobs#</h3>");
-			final Counter rangeJobCounter = collector.getRangeCounter(range,
-					Counter.JOB_COUNTER_NAME);
-			writeJobs(rangeJobCounter);
-			writeCounter(rangeJobCounter);
+			writeJobs(collector.getRangeCounter(range, Counter.JOB_COUNTER_NAME));
 		}
 
 		if (isCacheEnabled()) {
@@ -676,6 +673,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("</div></div><br/>");
 			i++;
 		}
+
+		writeCounter(rangeJobCounter);
 	}
 
 	// CHECKSTYLE:OFF
