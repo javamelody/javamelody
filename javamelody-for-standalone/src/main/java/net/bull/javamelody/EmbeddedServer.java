@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.Map;
 
 import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -31,7 +30,8 @@ public class EmbeddedServer {
 		final ServletContextHandler context = new ServletContextHandler(contexts, "/",
 				ServletContextHandler.SESSIONS);
 
-		final Filter monitoringFilter = new net.bull.javamelody.MonitoringFilter();
+		final net.bull.javamelody.MonitoringFilter monitoringFilter = new net.bull.javamelody.MonitoringFilter();
+		monitoringFilter.setApplicationType("Standalone");
 		final FilterHolder filterHolder = new FilterHolder(monitoringFilter);
 		if (parameters != null) {
 			for (final Map.Entry<Parameter, String> entry : parameters.entrySet()) {

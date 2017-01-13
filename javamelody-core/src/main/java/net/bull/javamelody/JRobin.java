@@ -42,6 +42,7 @@ import org.jrobin.core.RrdDef;
 import org.jrobin.core.RrdException;
 import org.jrobin.core.Sample;
 import org.jrobin.core.Util;
+import org.jrobin.data.DataProcessor;
 import org.jrobin.graph.RrdGraph;
 import org.jrobin.graph.RrdGraphDef;
 
@@ -403,6 +404,26 @@ final class JRobin {
 				// release RRD database reference
 				rrdPool.release(rrdDb);
 			}
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+	}
+
+	double getMeanValue(final Range range) throws IOException {
+		assert range.getPeriod() == null;
+		final String dataSourceName = getDataSourceName();
+		final long endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
+		final long startTime = range.getStartDate().getTime() / 1000;
+		//		if (range.getPeriod() != null) {
+		//			endTime = Util.getTime();
+		//			startTime = endTime - range.getPeriod().getDurationSeconds();
+		//		}
+		try {
+			final DataProcessor dproc = new DataProcessor(startTime, endTime);
+			dproc.addDatasource("average", rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
+			dproc.setPoolUsed(true);
+			dproc.processData();
+			return dproc.getAggregate("average", ConsolFuns.CF_AVERAGE);
 		} catch (final RrdException e) {
 			throw createIOException(e);
 		}

@@ -223,6 +223,11 @@ public enum Parameter {
 	PLUGIN_AUTHENTICATION_DISABLED("plugin-authentication-disabled"),
 
 	/**
+	 * Désactive l'update-check (false par défaut).
+	 */
+	UPDATE_CHECK_DISABLED("update-check-disabled"),
+
+	/**
 	 * Désactive le monitoring (false par défaut).
 	 */
 	DISABLED("disabled"),

@@ -84,6 +84,8 @@ class CollectorServer {
 			// avec une exécution de suite en asynchrone pour initialiser les données
 			timer.schedule(collectTask, 100, periodMillis);
 			JRobin.initBackendFactory(timer);
+
+			UpdateChecker.init(timer, null, UpdateChecker.COLLECTOR_SERVER_APPLICATION_TYPE);
 			initOk = true;
 		} finally {
 			if (!initOk) {

@@ -60,6 +60,19 @@ public class JiraMonitoringFilter extends PluginMonitoringFilter {
 
 	/** {@inheritDoc} */
 	@Override
+	public String getApplicationType() {
+		if (jira) {
+			return "JIRA";
+		} else if (confluence) {
+			return "Confluence";
+		} else if (bamboo) {
+			return "Bamboo";
+		}
+		return "?";
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public void init(FilterConfig config) throws ServletException {
 		super.init(config);
 

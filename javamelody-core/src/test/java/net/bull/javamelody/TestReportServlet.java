@@ -87,7 +87,7 @@ public class TestReportServlet {
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY))
-				.andReturn(new FilterContext()).anyTimes();
+				.andReturn(new FilterContext("Classic")).anyTimes();
 		reportServlet = new ReportServlet();
 		replay(config);
 		replay(context);

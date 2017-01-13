@@ -36,7 +36,9 @@ public class JavaMelodyConfiguration implements ServletContextInitializer {
 	@Bean
 	public FilterRegistrationBean javaMelody() {
 		final FilterRegistrationBean javaMelody = new FilterRegistrationBean();
-		javaMelody.setFilter(new MonitoringFilter());
+		final MonitoringFilter filter = new MonitoringFilter();
+		filter.setApplicationType("Spring Boot");
+		javaMelody.setFilter(filter);
 		javaMelody.setAsyncSupported(true);
 		javaMelody.setName("javamelody");
 		javaMelody.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
