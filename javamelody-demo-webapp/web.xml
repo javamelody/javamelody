@@ -25,11 +25,11 @@
 	<!-- configuration pour monitoring javamelody -->
 	<context-param>
 		<param-name>javamelody.sampling-seconds</param-name>
-		<param-value>60</param-value>
+		<param-value>1</param-value>
 	</context-param>
 	<context-param>
 		<param-name>javamelody.sampling-excluded-packages</param-name>
-		<param-value>java,sun,com.sun,javax,org.apache,com.mysql</param-value>
+		<param-value>java,sun,com.sun,javax,org.apache,org.h2</param-value>
 	</context-param>
 	<context-param>
 		<param-name>javamelody.log</param-name>
