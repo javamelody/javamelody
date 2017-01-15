@@ -85,14 +85,14 @@ class JpaNamingStrategy {
 		// and https://antoniogoncalves.org/2012/05/24/how-to-get-the-jpqlsql-string-from-a-criteriaquery-in-jpa/
 		if (HIBERNATE_QUERY_CLASS != null && query.getClass().getName().startsWith("org.hibernate.")
 				&& requestName.lastIndexOf("@") != -1) {
-			// in order to have only one request name instead of patterns like 
+			// in order to have only one request name instead of patterns like
 			// Query(org.hibernate.jpa.criteria.CriteriaQueryImpl@3b0cc2dc)
 			final Object unwrappedQuery = query.unwrap(HIBERNATE_QUERY_CLASS);
 			return unwrappedQuery.toString();
 		} else if (ECLIPSELINK_QUERY_CLASS != null
 				&& query.getClass().getName().startsWith("org.eclipse.")
 				&& requestName.lastIndexOf("@") != -1) {
-			// in order to have only one request name instead of patterns like 
+			// in order to have only one request name instead of patterns like
 			// Query(org.eclipse.persistence.internal.jpa.querydef.CriteriaQueryImpl@6a55299e)
 			final Object unwrappedQuery = query.unwrap(ECLIPSELINK_QUERY_CLASS);
 			return unwrappedQuery.toString();
