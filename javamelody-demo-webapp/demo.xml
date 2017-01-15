@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Context docBase="$CATALINA_HOME/webapps/demo.war" path="/demo" reloadable="true" > 
+	<Resource name="jdbc/demo_javamelody" auth="Container"
+        	type="javax.sql.DataSource"
+	        driverClassName="org.h2.Driver"
+        	url="jdbc:h2:/opt/data/demo/h2"
+        	username="sa" password=""
+	        maxTotal="20" maxIdle="10" maxWaitMillis="-1"
+        	description="Datasource"  />
+</Context>
