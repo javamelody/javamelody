@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
-<Context docBase="$CATALINA_HOME/webapps/demo.war" path="/demo" reloadable="true" > 
+<Context docBase="$CATALINA_HOME/webapps/demo.war" path="/demo" reloadable="false" > 
 	<Resource name="jdbc/demo_javamelody" auth="Container"
         	type="javax.sql.DataSource"
 	        driverClassName="org.h2.Driver"
