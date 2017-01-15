@@ -24,10 +24,6 @@
 
 	<!-- configuration pour monitoring javamelody -->
 	<context-param>
-		<param-name>javamelody.system-actions-enabled</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<context-param>
 		<param-name>javamelody.sampling-seconds</param-name>
 		<param-value>60</param-value>
 	</context-param>
