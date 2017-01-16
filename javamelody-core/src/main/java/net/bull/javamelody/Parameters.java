@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
-
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
@@ -367,6 +366,12 @@ final class Parameters {
 	}
 
 	static String getContextPath(ServletContext context) {
+		// Configured application name
+		String appName = getParameter(Parameter.APPLICATION_NAME);
+		if (appName != null && appName.length() > 0) {
+			return appName;
+		}
+
 		// cette méthode retourne le contextPath de la webapp
 		// en utilisant ServletContext.getContextPath si servlet api 2.5
 		// ou en se débrouillant sinon

@@ -312,7 +312,12 @@ public enum Parameter {
 	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger,
 	 * such as net.bull.javamelody.Log4JLogger, net.bull.javamelody.JavaLogger or net.bull.javamelody.LogbackLogger.
 	 */
-	LOGGER_CLASS("logger-class");
+	LOGGER_CLASS("logger-class"),
+
+	/**
+	 * Configured application name. Override context name.
+	 */
+	APPLICATION_NAME("application-name");
 
 	private final String code;
 
