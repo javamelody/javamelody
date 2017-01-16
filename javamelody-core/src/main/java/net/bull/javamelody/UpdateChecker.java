@@ -88,6 +88,10 @@ final class UpdateChecker {
 		return newJavamelodyVersion;
 	}
 
+	private static void setNewJavamelodyVersion(final String javamelodyVersion) {
+		newJavamelodyVersion = javamelodyVersion;
+	}
+
 	void checkForUpdate() throws IOException {
 		final String anonymousData = getAnonymousData();
 		final HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL)
@@ -110,7 +114,7 @@ final class UpdateChecker {
 		final String javamelodyVersion = properties.getProperty("version");
 		if (javamelodyVersion != null
 				&& javamelodyVersion.compareTo(Parameters.JAVAMELODY_VERSION) < 0) {
-			newJavamelodyVersion = javamelodyVersion;
+			setNewJavamelodyVersion(javamelodyVersion);
 		}
 	}
 
