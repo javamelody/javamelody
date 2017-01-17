@@ -282,6 +282,17 @@ final class UpdateChecker {
 		return null;
 	}
 
+	private static MessageDigest getMessageDigestInstance() {
+		// SHA1 est un algorithme de hashage qui évite les conflits à 2^80 près entre
+		// les identifiants supposés uniques (SHA1 est mieux que MD5 qui est mieux que CRC32).
+		try {
+			return MessageDigest.getInstance("SHA-1");
+		} catch (final NoSuchAlgorithmException e) {
+			// ne peut arriver car SHA1 est un algorithme disponible par défaut dans le JDK Sun
+			throw new IllegalStateException(e);
+		}
+	}
+
 	private static String hash(String value) {
 		final MessageDigest messageDigest = getMessageDigestInstance();
 		messageDigest.update(value.getBytes());
@@ -300,16 +311,5 @@ final class UpdateChecker {
 		}
 
 		return sb.toString();
-	}
-
-	private static MessageDigest getMessageDigestInstance() {
-		// SHA1 est un algorithme de hashage qui évite les conflits à 2^80 près entre
-		// les identifiants supposés uniques (SHA1 est mieux que MD5 qui est mieux que CRC32).
-		try {
-			return MessageDigest.getInstance("SHA-1");
-		} catch (final NoSuchAlgorithmException e) {
-			// ne peut arriver car SHA1 est un algorithme disponible par défaut dans le JDK Sun
-			throw new IllegalStateException(e);
-		}
 	}
 }
