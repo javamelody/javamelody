@@ -357,7 +357,7 @@ final class Parameters {
 	 */
 	static String getCurrentApplication() {
 		// use explicitly configured application name (if configured)
-		String applicationName = getParameter(Parameter.APPLICATION_NAME);
+		final String applicationName = getParameter(Parameter.APPLICATION_NAME);
 		if (applicationName != null) {
 			return applicationName;
 		}
