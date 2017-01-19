@@ -30,6 +30,7 @@ import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
+import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JMX_VALUE;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
 import static net.bull.javamelody.HttpParameters.JNLP_PART;
@@ -607,12 +608,7 @@ public class TestMonitoringFilter { // NOPMD
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
-		parameters.put(SESSION_ID_PARAMETER, "expired session");
-		monitoring(parameters);
-		parameters.remove(SESSION_ID_PARAMETER);
+		monitoringSessionsPart(parameters);
 		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		monitoring(parameters, false);
 		parameters.put(PART_PARAMETER, POM_XML_PART);
@@ -622,6 +618,10 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, JNLP_PART);
+		monitoring(parameters);
+		setProperty(Parameter.SAMPLING_SECONDS, "60");
+		setUp();
+		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
 		monitoring(parameters);
 		parameters.remove(PART_PARAMETER);
 		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
@@ -644,6 +644,16 @@ public class TestMonitoringFilter { // NOPMD
 			exception = true;
 		}
 		assertTrue("exception if unknown part", exception);
+	}
+
+	private void monitoringSessionsPart(final Map<String, String> parameters)
+			throws IOException, ServletException {
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(SESSION_ID_PARAMETER, "expired session");
+		monitoring(parameters);
+		parameters.remove(SESSION_ID_PARAMETER);
 	}
 
 	private void doMonitoringWithGraphPart() throws IOException, ServletException {
@@ -809,12 +819,7 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.remove(HEIGHT_PARAMETER);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
-		parameters.put(SESSION_ID_PARAMETER, "expired session");
-		monitoring(parameters);
-		parameters.remove(SESSION_ID_PARAMETER);
+		monitoringSessionsPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, JNDI_PART);
