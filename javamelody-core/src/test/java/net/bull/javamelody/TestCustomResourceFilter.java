@@ -23,8 +23,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -56,12 +57,24 @@ public class TestCustomResourceFilter { // NOPMD
 	 */
 	@Before
 	public void setUp() {
+		init(false);
+	}
+
+	private void init(boolean useForward) {
 		Utils.initialize();
 		config = createNiceMock(FilterConfig.class);
+		final List<String> initParameterNames = new ArrayList<String>();
+		initParameterNames.add(MONITORING_CSS);
+		if (useForward) {
+			initParameterNames.add("useForward");
+		}
 		expect(config.getInitParameterNames())
-				.andReturn(Collections.enumeration(Arrays.asList(MONITORING_CSS)));
+				.andReturn(Collections.enumeration(initParameterNames));
 		for (final Map.Entry<String, String> entry : CUSTOM_RESOURCES.entrySet()) {
 			expect(config.getInitParameter(entry.getKey())).andReturn(entry.getValue());
+		}
+		if (useForward) {
+			expect(config.getInitParameter("useForward")).andReturn("true").anyTimes();
 		}
 
 		final ServletContext context = createNiceMock(ServletContext.class);
@@ -100,7 +113,8 @@ public class TestCustomResourceFilter { // NOPMD
 	 */
 	@Test
 	public void testCustomResourceUsingForward() throws IOException, ServletException {
-		doTestResource(MONITORING_CSS);
+		init(true);
+		doTestResource(MONITORING_CSS, true);
 	}
 
 	/**
@@ -124,15 +138,25 @@ public class TestCustomResourceFilter { // NOPMD
 	}
 
 	private void doTestResource(String resource) throws IOException, ServletException {
+		doTestResource(resource, false);
+	}
+
+	private void doTestResource(String resource, boolean useForward)
+			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final RequestDispatcher requestDispatcher = createNiceMock(RequestDispatcher.class);
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final FilterChain chain = createNiceMock(FilterChain.class);
 		expect(request.getParameter("resource")).andReturn(resource);
+
 		if (CUSTOM_RESOURCES.get(resource) != null) {
 			expect(request.getRequestDispatcher(CUSTOM_RESOURCES.get(resource)))
 					.andReturn(requestDispatcher);
-			requestDispatcher.include(request, response);
+			if (useForward) {
+				requestDispatcher.forward(request, response);
+			} else {
+				requestDispatcher.include(request, response);
+			}
 			EasyMock.expectLastCall().once();
 		}
 
