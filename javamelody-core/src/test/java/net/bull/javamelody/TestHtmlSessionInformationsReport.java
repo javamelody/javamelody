@@ -57,13 +57,21 @@ public class TestHtmlSessionInformationsReport {
 		serializableButNotSession.setAttribute("serializable but not",
 				Collections.singleton(new Object()));
 		sessions.add(new SessionInformations(serializableButNotSession, false));
+		final SessionTestImpl mySession = new SessionTestImpl("myId", true,
+				System.currentTimeMillis());
+		sessions.add(new SessionInformations(mySession, false));
 		final StringWriter writer = new StringWriter();
 		new HtmlSessionInformationsReport(Collections.<SessionInformations> emptyList(), writer)
 				.toHtml();
 		assertNotEmptyAndClear(writer);
 
-		new HtmlSessionInformationsReport(sessions, writer).toHtml();
-		assertNotEmptyAndClear(writer);
+		try {
+			SessionListener.bindSession(mySession);
+			new HtmlSessionInformationsReport(sessions, writer).toHtml();
+			assertNotEmptyAndClear(writer);
+		} finally {
+			SessionListener.unbindSession();
+		}
 
 		// aucune session sérialisable
 		new HtmlSessionInformationsReport(Collections

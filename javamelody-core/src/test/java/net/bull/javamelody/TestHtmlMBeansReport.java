@@ -95,6 +95,12 @@ public class TestHtmlMBeansReport {
 					new ObjectName("java.lang:type=Object"));
 			mBeans.add(mBean4.getObjectName());
 
+			// test name avec "|"
+			final ObjectInstance mBean5 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
+					new ObjectName("testseparator" + MBeans.ATTRIBUTES_SEPARATOR
+							+ "testseparator:type=X"));
+			mBeans.add(mBean5.getObjectName());
+
 			// on force à null une des descriptions de bean et une des descriptions d'attribut
 			final MBeanInfo mbeanInfo = mBeanServer.getMBeanInfo(mBeans.get(0));
 			JdbcWrapperHelper.setFieldValue(mbeanInfo, "description", null);

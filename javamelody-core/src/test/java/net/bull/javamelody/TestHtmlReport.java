@@ -135,6 +135,8 @@ public class TestHtmlReport {
 		counter.addRequest("test1", 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 100000, 50000, true, 10000);
+		// requête pour businessFacadeCounter
+		servicesCounter.addRequest("testServices", 100, 50, false, -1);
 		final StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < 5010; i++) {
 			// HtmlCounterReport.MAX_REQUEST_LENGTH = 5000
