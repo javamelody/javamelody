@@ -107,6 +107,7 @@ public class TestJpa {
 					p.setName(PERSON_NAME);
 
 					emInit.persist(p);
+					emInit.flush();
 					transaction.commit();
 				} catch (final Exception e) {
 					transaction.rollback();
