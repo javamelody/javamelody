@@ -20,6 +20,8 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -29,6 +31,9 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceProviderResolverHolder;
+import javax.persistence.spi.ProviderUtil;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -171,5 +176,31 @@ public class TestJpa {
 		assertEquals("getRequestsCount", 1, counter.getRequestsCount());
 		assertEquals("requestName", method, counter.getRequests().get(0).getName());
 		counter.clear();
+	}
+
+	/**
+	 * Test de JpaPersistence.
+	 */
+	@Test
+	public void testJpaPersistence() {
+		final PersistenceProvider jpaPersistence = getJpaPersistence();
+
+		final ProviderUtil providerUtil = jpaPersistence.getProviderUtil();
+		assertNotNull("getProviderUtil", providerUtil);
+		// providerUtil == JpaPersistence.DUMMY_PROVIDER_UTIL
+		providerUtil.isLoadedWithoutReference(null, null);
+		providerUtil.isLoadedWithReference(null, null);
+		providerUtil.isLoaded(null);
+	}
+
+	private PersistenceProvider getJpaPersistence() {
+		final List<PersistenceProvider> persistenceProviders = PersistenceProviderResolverHolder
+				.getPersistenceProviderResolver().getPersistenceProviders();
+		for (final PersistenceProvider persistenceProvider : persistenceProviders) {
+			if (persistenceProvider instanceof JpaPersistence) {
+				return persistenceProvider;
+			}
+		}
+		throw new IllegalStateException("JpaPersistence not found in PersistenceProviders");
 	}
 }
