@@ -160,6 +160,7 @@ public class TestMonitoringFilter { // NOPMD
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		monitoringFilter = new MonitoringFilter();
+		monitoringFilter.setApplicationType("Test");
 		replay(config);
 		replay(context);
 		monitoringFilter.init(config);

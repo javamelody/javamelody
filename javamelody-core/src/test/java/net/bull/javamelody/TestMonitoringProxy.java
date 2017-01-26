@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
@@ -73,5 +74,8 @@ public class TestMonitoringProxy {
 				.createProxy(new SpringTestFacadeImpl(), "my facade name");
 		assertNotNull("now()", springTestFacade2.now());
 		assertSame(requestsCount, 4, servicesCounter.getRequestsCount());
+
+		assertEquals("getName", "facade name",
+				new MonitoringProxy(new SpringTestFacadeImpl(), "facade name").getName());
 	}
 }
