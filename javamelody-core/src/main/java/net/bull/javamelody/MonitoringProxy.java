@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * 		facade = MonitoringProxy.createProxy(facade);
  * @author Emeric Vernat
  */
-public final class MonitoringProxy implements InvocationHandler, Serializable {
+public class MonitoringProxy implements InvocationHandler, Serializable {
 	// cette classe ainsi que JdbcWrapper.DelegatingInvocationHandler sont sérialisables
 	// pour qu'un proxy soit sérialisable si la façade est sérialisable
 	private static final long serialVersionUID = 1882880665014391301L;
@@ -75,7 +75,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	 * Constructeur privé : instanciation pour méthode createProxy ci-dessous.
 	 * @param facade Object
 	 */
-	private MonitoringProxy(Object facade) {
+	protected MonitoringProxy(Object facade) {
 		this(facade, null);
 	}
 
@@ -84,7 +84,7 @@ public final class MonitoringProxy implements InvocationHandler, Serializable {
 	 * @param facade Object
 	 * @param name override of the interface name in the statistics
 	 */
-	private MonitoringProxy(Object facade, String name) {
+	protected MonitoringProxy(Object facade, String name) {
 		super();
 		this.facade = facade;
 		// quand cet intercepteur est utilisé, le compteur est affiché
