@@ -49,6 +49,7 @@
 					<include name="hibernate-3.2.6.ga.jar" />
 					<include name="hibernate-jpa-2.1-api-1.0.0.Final.jar" />
 					<include name="mongodb-driver-3.3.0.jar" />
+					<include name="bson-3.3.0.jar" />
 					<include name="jsf-impl-2.1.5.jar" />
 					<include name="javax.faces-api-2.1.jar" />
 					<include name="javax.el-api-2.2.1.jar" />
