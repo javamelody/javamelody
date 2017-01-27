@@ -131,6 +131,14 @@ public class TestHtmlJavaInformationsReport {
 		}
 	}
 
+	/** Test. */
+	@Test
+	public void testToBar() {
+		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(10));
+		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(10, "detail"));
+		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(100, "detail"));
+	}
+
 	private static void assertNotEmptyAndClear(final StringWriter writer) {
 		assertTrue("rapport vide", writer.getBuffer().length() > 0);
 		writer.getBuffer().setLength(0);

@@ -762,6 +762,11 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);
 
+		setProperty(Parameter.SAMPLING_SECONDS, "60");
+		setUp();
+		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
+		monitoring(parameters);
+
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
