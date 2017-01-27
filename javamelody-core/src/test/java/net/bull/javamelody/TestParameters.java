@@ -163,6 +163,9 @@ public class TestParameters {
 		Parameters.initialize((ServletContext) null);
 		// null car pas de servletContext
 		assertNull("getCurrentApplication", Parameters.getCurrentApplication());
+		setProperty(Parameter.APPLICATION_NAME, "test application");
+		assertEquals("getCurrentApplication", "test application",
+				Parameters.getCurrentApplication());
 	}
 
 	/** Test. */
