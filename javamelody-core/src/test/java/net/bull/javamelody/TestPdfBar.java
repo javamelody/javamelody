@@ -40,7 +40,10 @@ public class TestPdfBar {
 	 * @throws IOException e */
 	@Test
 	public void testToPdf() throws IOException {
+		assertNotNull("toBar", PdfJavaInformationsReport.Bar.toBar(0));
+		assertNotNull("toBar", PdfJavaInformationsReport.Bar.toBar(1));
 		assertNotNull("toBar", PdfJavaInformationsReport.Bar.toBar(10));
+		assertNotNull("toBar", PdfJavaInformationsReport.Bar.toBar(15));
 		assertNotNull("toBarWithAlert", PdfJavaInformationsReport.Bar.toBarWithAlert(10));
 		assertNotNull("toBarWithAlert", PdfJavaInformationsReport.Bar.toBarWithAlert(100));
 	}

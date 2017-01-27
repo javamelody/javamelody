@@ -134,9 +134,13 @@ public class TestHtmlJavaInformationsReport {
 	/** Test. */
 	@Test
 	public void testToBar() {
+		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(0));
+		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(1));
 		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(10));
+		assertNotNull("toBar", HtmlJavaInformationsReport.toBar(15));
 		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(10, "detail"));
 		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(100, "detail"));
+		assertNotNull("toBarWithAlert", HtmlJavaInformationsReport.toBarWithAlert(100, null));
 	}
 
 	private static void assertNotEmptyAndClear(final StringWriter writer) {
