@@ -157,6 +157,15 @@ public class TestJiraMonitoringFilter { // NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
+	public void testSessionTimer() throws ServletException, IOException {
+		Utils.setProperty(Parameter.RESOLUTION_SECONDS, "5");
+		doJiraFilter(null);
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
 	public void testInvalidatedSession() throws ServletException, IOException {
 		jiraMonitoringFilter.unregisterInvalidatedSessions();
 

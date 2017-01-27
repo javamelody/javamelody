@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,6 +57,8 @@ public class TestRemoteCollector {
 				null);
 		remoteCollector.executeActionAndCollectData(Action.PAUSE_JOB, null, null, null, "nothing",
 				null);
+		remoteCollector.executeActionAndCollectData(Action.CLEAR_CACHE, null, null, null, null,
+				"nothing");
 	}
 
 	/** Test.
@@ -75,5 +79,7 @@ public class TestRemoteCollector {
 		remoteCollector.disableAggregation();
 		remoteCollector.executeActionAndCollectData(Action.CLEAR_COUNTER, "all", null, null, null,
 				null);
+		remoteCollector.collectDataIncludingCurrentRequests();
+		assertNotNull("getCurrentRequests", remoteCollector.getCurrentRequests());
 	}
 }
