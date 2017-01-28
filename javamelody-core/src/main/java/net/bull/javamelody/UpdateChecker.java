@@ -56,18 +56,23 @@ final class UpdateChecker {
 
 	private final String applicationType;
 
-	private UpdateChecker(final Collector collector, final String applicationType) {
+	private final String serverUrl;
+
+	private UpdateChecker(final Collector collector, final String applicationType,
+			final String serverUrl) {
 		super();
 		assert applicationType != null;
 		assert collector != null || COLLECTOR_SERVER_APPLICATION_TYPE.equals(applicationType);
 		this.collector = collector;
 		this.applicationType = applicationType;
+		this.serverUrl = serverUrl;
 	}
 
 	static void init(final Timer timer, final Collector collector, final String applicationType) {
 		final String updateCheckDisabled = Parameters.getParameter(Parameter.UPDATE_CHECK_DISABLED);
 		if (updateCheckDisabled == null || !Boolean.parseBoolean(updateCheckDisabled)) {
-			final UpdateChecker updateChecker = new UpdateChecker(collector, applicationType);
+			final UpdateChecker updateChecker = new UpdateChecker(collector, applicationType,
+					SERVER_URL);
 			final TimerTask updateCheckerTimerTask = new TimerTask() {
 				@Override
 				public void run() {
@@ -84,6 +89,11 @@ final class UpdateChecker {
 		}
 	}
 
+	static UpdateChecker createForTest(final Collector collector, final String applicationType,
+			final String serverUrl) {
+		return new UpdateChecker(collector, applicationType, serverUrl);
+	}
+
 	static String getNewJavamelodyVersion() {
 		return newJavamelodyVersion;
 	}
@@ -94,7 +104,7 @@ final class UpdateChecker {
 
 	void checkForUpdate() throws IOException {
 		final String anonymousData = getAnonymousData();
-		final HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL)
+		final HttpURLConnection connection = (HttpURLConnection) new URL(serverUrl)
 				.openConnection();
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);

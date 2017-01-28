@@ -801,6 +801,10 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.remove(GRAPH);
 
+		setProperty(Parameter.SAMPLING_SECONDS, "60");
+		setUp();
+		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
+		monitoring(parameters);
 		parameters.put(PART_PARAMETER, JVM_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, THREADS_PART);
