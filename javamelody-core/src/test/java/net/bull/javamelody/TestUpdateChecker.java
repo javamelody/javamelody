@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Timer;
 
 import javax.servlet.ServletContext;
 
@@ -65,6 +66,9 @@ public class TestUpdateChecker {
 		verify(context);
 		final Collector collector = new Collector("test",
 				Arrays.asList(new Counter("http", null), new Counter("sql", null)));
+		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
+		assertNotNull(new SessionListener());
+		collector.collectWithoutErrors(Arrays.asList(new JavaInformations(null, true)));
 		final String serverUrl = "http://dummy";
 		final UpdateChecker updateCheckerCollectorServer = UpdateChecker.createForTest(null,
 				UpdateChecker.COLLECTOR_SERVER_APPLICATION_TYPE, serverUrl);
