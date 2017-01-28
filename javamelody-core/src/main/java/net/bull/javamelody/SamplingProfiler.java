@@ -69,7 +69,7 @@ class SamplingProfiler {
 			this.hash = className.hashCode() * 31 + methodName.hashCode();
 		}
 
-		// hashCode is transient
+		// hash is transient
 		private Object readResolve() {
 			this.hash = className.hashCode() * 31 + methodName.hashCode();
 			return this;
