@@ -33,6 +33,8 @@ import javax.servlet.ServletContext;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sf.ehcache.CacheManager;
+
 /**
  * Test unitaire de la classe UpdateChecker.
  * @author Emeric Vernat
@@ -78,6 +80,11 @@ public class TestUpdateChecker {
 			// UnknownHostException is ok for url http://dummy
 			assertNotNull(updateCheckerCollectorServer);
 		}
+		Utils.setProperty(Parameter.NO_DATABASE, "true");
+		Utils.setProperty(Parameter.LOG, "true");
+		if (CacheManager.getInstance().getCache("test") == null) {
+			CacheManager.getInstance().addCache("test");
+		}
 		final UpdateChecker updateChecker = UpdateChecker.createForTest(collector, "Classic",
 				serverUrl);
 		try {
@@ -86,5 +93,6 @@ public class TestUpdateChecker {
 			// UnknownHostException is ok for url http://dummy
 			assertNotNull(updateChecker);
 		}
+		CacheManager.getInstance().removeCache("test");
 	}
 }
