@@ -70,6 +70,7 @@ public class TestUpdateChecker {
 				Arrays.asList(new Counter("http", null), new Counter("sql", null)));
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 		assertNotNull(new SessionListener());
+		TestDatabaseInformations.initJdbcDriverParameters();
 		collector.collectWithoutErrors(Arrays.asList(new JavaInformations(null, true)));
 		final String serverUrl = "http://dummy";
 		final UpdateChecker updateCheckerCollectorServer = UpdateChecker.createForTest(null,
