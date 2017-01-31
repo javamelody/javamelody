@@ -19,7 +19,7 @@
 	<br/><br/>
 	- And links to some <a href='?jmxValue=java.lang:type=Memory.HeapMemoryUsage'>mbean (jmx) value</a>,
 	and <a href='?part=lastValue&amp;graph=cpu'>last value of a chart</a>
-	or <a href='?part=sessions&amp;format=json'>session data as json</a>.
+	<!-- or <a href='?part=sessions&amp;format=json'>session data as json</a>.  -->
 	
 	<br/><br/>
 	- Whatever.

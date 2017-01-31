@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 class FilterContext {
 	private static final boolean MOJARRA_AVAILABLE = isMojarraAvailable();
 
+	private final String applicationType;
 	private final Collector collector;
 	private final Timer timer;
 	private final SamplingProfiler samplingProfiler;
@@ -57,8 +58,10 @@ class FilterContext {
 		}
 	}
 
-	FilterContext() {
+	FilterContext(final String applicationType) {
 		super();
+		assert applicationType != null;
+		this.applicationType = applicationType;
 
 		boolean initOk = false;
 		this.timer = new Timer("javamelody"
@@ -104,6 +107,8 @@ class FilterContext {
 			this.collectTimerTask = new CollectTimerTask(collector);
 
 			initCollect();
+
+			UpdateChecker.init(timer, collector, applicationType);
 
 			initOk = true;
 		} finally {
@@ -304,7 +309,7 @@ class FilterContext {
 		}
 	}
 
-	private static void logSystemInformationsAndParameters() {
+	private void logSystemInformationsAndParameters() {
 		// log les principales informations sur le système et sur les paramètres définis spécifiquement
 		LOG.debug("OS: " + System.getProperty("os.name") + ' '
 				+ System.getProperty("sun.os.patch.level") + ", " + System.getProperty("os.arch")
@@ -318,6 +323,7 @@ class FilterContext {
 		if (location != null) {
 			LOG.debug("JavaMelody classes loaded from: " + location);
 		}
+		LOG.debug("Application type: " + applicationType);
 		LOG.debug("Host: " + Parameters.getHostName() + '@' + Parameters.getHostAddress());
 		for (final Parameter parameter : Parameter.values()) {
 			final String value = Parameters.getParameter(parameter);
@@ -345,12 +351,9 @@ class FilterContext {
 
 	void stopCollector() {
 		// cette méthode est appelée par MonitoringFilter lorsqu'il y a un serveur de collecte
-		if (samplingProfiler != null && collectTimerTask != null) {
-			// s'il y a un samplingProfiler, on arrête juste la tâche de collecte, mais pas le timer et la tâche de sampling
+		if (collectTimerTask != null) {
+			// on arrête juste la tâche de collecte, mais pas le timer, ni la tâche d'UpdateChecker ni la tâche de sampling
 			collectTimerTask.cancel();
-		} else if (timer != null) {
-			// s'il n'y a pas de samplingProfiler, on arrête le timer et le thread devenus inutiles
-			timer.cancel();
 		}
 		// arrêt du collector
 		collector.stop();

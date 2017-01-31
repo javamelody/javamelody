@@ -63,6 +63,9 @@ public class TestCounterStorage {
 		if (!notObsoleteFile.delete()) {
 			notObsoleteFile.deleteOnExit();
 		}
+
+		Utils.setProperty(Parameter.OBSOLETE_STATS_DAYS, "1");
+		CounterStorage.deleteObsoleteCounterFiles(counter.getApplication());
 	}
 
 	private void checkSetup(final File storageDir, final File obsoleteFile,

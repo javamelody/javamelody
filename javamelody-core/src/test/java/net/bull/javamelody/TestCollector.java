@@ -412,6 +412,16 @@ public class TestCollector {
 		assertTrue("getCurrentThreadCpuTime", ThreadInformations.getCurrentThreadCpuTime() > 0);
 	}
 
+	/** Test. */
+	@Test
+	public void testCollectorSamplingProfiler() {
+		final SamplingProfiler samplingProfiler = new SamplingProfiler();
+		final List<Counter> counters = Collections.emptyList();
+		final Collector collector = new Collector("test", counters, samplingProfiler);
+		assertNotNull("getSamplingProfiler", collector.getSamplingProfiler());
+		assertNotNull("getHotspots", collector.getHotspots());
+	}
+
 	/** Test.
 	 * @throws IOException e
 	 * @throws SQLException e */
@@ -447,6 +457,8 @@ public class TestCollector {
 			collectorServer.collectHeapHistogram(application);
 			collectorServer.collectHotspots(application);
 			collectorServer.getCollectorByApplication(application);
+			assertNull("getCollectorByApplication",
+					collectorServer.getCollectorByApplication("dummy"));
 			collectorServer.getJavaInformationsByApplication(application);
 			collectorServer.isApplicationDataAvailable(application);
 			collectorServer.getFirstApplication();

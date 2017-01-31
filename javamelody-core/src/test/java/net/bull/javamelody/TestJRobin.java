@@ -67,6 +67,7 @@ public class TestJRobin {
 		jrobin.graph(customRange, 80, 80);
 
 		jrobin.getLastValue();
+		jrobin.getMeanValue(customRange);
 		jrobin.deleteFile();
 		jrobin.toString();
 	}
@@ -133,6 +134,8 @@ public class TestJRobin {
 	 * @throws IOException e */
 	@Test
 	public void testDeleteObsoleteJRobinFiles() throws IOException {
+		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);
+		Utils.setProperty(Parameter.OBSOLETE_GRAPHS_DAYS, "1");
 		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);
 	}
 }

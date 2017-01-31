@@ -121,6 +121,11 @@ public final class JdbcWrapper {
 					// executeUpdate(String, ...) ou execute(String sql),
 					// alors la requête sql est le premier argument (et pas query)
 					requestName = (String) args[0];
+				} else if ("executeBatch".equals(methodName)
+						&& !requestName.startsWith("/* BATCH */ ")) {
+					// if executeBatch, add a prefix in the request name to explain that
+					// 1 batch "hit" is equivalent to several exec of the request in the db
+					requestName = "/* BATCH */ " + requestName;
 				}
 
 				// si on n'a pas trouvé la requête, on prend "null"
@@ -309,7 +314,8 @@ public final class JdbcWrapper {
 		final String serverInfo = servletContext.getServerInfo();
 		jboss = serverInfo.contains("JBoss") || serverInfo.contains("WildFly");
 		glassfish = serverInfo.contains("GlassFish")
-				|| serverInfo.contains("Sun Java System Application Server");
+				|| serverInfo.contains("Sun Java System Application Server")
+				|| serverInfo.contains("Payara");
 		weblogic = serverInfo.contains("WebLogic");
 		jonas = System.getProperty("jonas.name") != null;
 		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()

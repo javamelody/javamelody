@@ -299,6 +299,8 @@ public class TestCompressionServletResponseWrapper {
 		stream.write(new byte[8]);
 		stream.write(new byte[8], 1, 7);
 		stream.write(new byte[8], 1, 0);
+		stream.isReady();
+		stream.setWriteListener(null);
 		stream.flush();
 		stream.close();
 

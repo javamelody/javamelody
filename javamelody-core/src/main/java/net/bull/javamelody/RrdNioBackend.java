@@ -68,6 +68,11 @@ public class RrdNioBackend extends RrdFileBackend {
 		} catch (final IOException ioe) {
 			super.close(); // NOPMD
 			throw ioe;
+		} catch (final IllegalStateException e) {
+			// issue #592 (IllegalStateException: Timer already cancelled)
+			unmapFile();
+			super.close(); // NOPMD
+			throw e;
 		}
 	}
 

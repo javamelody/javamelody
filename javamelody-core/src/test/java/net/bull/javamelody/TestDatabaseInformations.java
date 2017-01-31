@@ -88,6 +88,7 @@ public class TestDatabaseInformations {
 		assertNotNull("getNbColumns", databaseInformations.getNbColumns());
 		assertNotNull("getResult", databaseInformations.getResult());
 		assertNotNull("getRequestNames", databaseInformations.getRequestNames());
+		assertNotNull("toString", databaseInformations.toString());
 	}
 
 	/** Test. */

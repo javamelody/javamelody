@@ -223,6 +223,11 @@ public enum Parameter {
 	PLUGIN_AUTHENTICATION_DISABLED("plugin-authentication-disabled"),
 
 	/**
+	 * Désactive l'update-check (false par défaut).
+	 */
+	UPDATE_CHECK_DISABLED("update-check-disabled"),
+
+	/**
 	 * Désactive le monitoring (false par défaut).
 	 */
 	DISABLED("disabled"),
@@ -312,7 +317,12 @@ public enum Parameter {
 	/**
 	 * Expose counters as JMX mbeans. Disabled by default.
 	 */
-	JMX_EXPOSE_ENABLED("jmx-expose");
+	JMX_EXPOSE_ENABLED("jmx-expose"),
+
+	/**
+   * Explicit name of the monitored application (in case the automatic name detection fails somehow).
+	 */
+	APPLICATION_NAME("application-name");
 
 	private final String code;
 

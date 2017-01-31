@@ -48,7 +48,6 @@ import org.junit.Test;
  */
 public class TestReportServlet {
 	private static final String CONTEXT_PATH = "/test";
-	private ReportServlet reportServlet;
 
 	/**
 	 * Initialisation.
@@ -65,6 +64,33 @@ public class TestReportServlet {
 		} catch (final NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	/** Test. */
+	@Test
+	public void testDestroy() {
+		new ReportServlet().destroy();
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoGet() throws ServletException, IOException {
+		doGet(Collections.<String, String> emptyMap(), true);
+
+		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
+		try {
+			doGet(Collections.<String, String> emptyMap(), false);
+			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
+			doGet(Collections.<String, String> emptyMap(), false);
+		} finally {
+			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
+		}
+	}
+
+	private void doGet(Map<String, String> parameters, boolean checkResultContent)
+			throws IOException, ServletException {
 		final ServletContext parametersContext = createNiceMock(ServletContext.class);
 		expect(parametersContext.getMajorVersion()).andReturn(2).anyTimes();
 		expect(parametersContext.getMinorVersion()).andReturn(5).anyTimes();
@@ -87,42 +113,14 @@ public class TestReportServlet {
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY))
-				.andReturn(new FilterContext()).anyTimes();
-		reportServlet = new ReportServlet();
+				.andReturn(new FilterContext("Classic")).anyTimes();
+		final ReportServlet reportServlet = new ReportServlet();
 		replay(config);
 		replay(context);
 		reportServlet.init(config);
 		verify(config);
 		verify(context);
-	}
 
-	/** Test. */
-	@Test
-	public void testDestroy() {
-		reportServlet.destroy();
-	}
-
-	/** Test.
-	 * @throws ServletException e
-	 * @throws IOException e */
-	@Test
-	public void testDoGet() throws ServletException, IOException {
-		doGet(Collections.<String, String> emptyMap(), true);
-
-		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
-		try {
-			setUp();
-			doGet(Collections.<String, String> emptyMap(), false);
-			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
-			setUp();
-			doGet(Collections.<String, String> emptyMap(), false);
-		} finally {
-			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
-		}
-	}
-
-	private void doGet(Map<String, String> parameters, boolean checkResultContent)
-			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		expect(request.getRequestURL()).andReturn(new StringBuffer("/test/monitoring")).anyTimes();

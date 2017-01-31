@@ -87,7 +87,8 @@ public class TestAction {
 		counter.addRequest("test1", 0, 1, false, 1000);
 		counter.addRequest("test2", 1000, 900, false, 1000);
 		counter.addRequest("test3", 10000, 1000, true, 10000);
-		final Collector collector = new Collector("test", Collections.singletonList(counter));
+		final Collector collector = new Collector("test", Collections.singletonList(counter),
+				new SamplingProfiler());
 		final String counterName = counter.getName();
 		final String sessionId = "sessionId";
 		final String threadId = "threadId";
@@ -114,6 +115,8 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_HOTSPOTS", Action.CLEAR_HOTSPOTS.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message PURGE_OBSOLETE_FILES", Action.PURGE_OBSOLETE_FILES.execute(collector,
 				null, null, counterName, sessionId, threadId, jobId, cacheId));
 		final String heapDump1 = Action.HEAP_DUMP.execute(collector, null, null, counterName,

@@ -83,6 +83,7 @@ class RemoteCall {
 	}
 
 	// utilisée dans scripts Jenkins par exemple
+	// see https://github.com/javamelody/javamelody/wiki/ScriptsAndAlerts
 	JavaInformations collectJavaInformations() throws IOException {
 		final URL jvmUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + JVM_PART);
 		final List<JavaInformations> list = collectForUrl(jvmUrl);
@@ -108,6 +109,7 @@ class RemoteCall {
 		return collectForUrl(url);
 	}
 
+	// pourrait être utilisée dans scripts Jenkins par exemple
 	List<Serializable> executeActionAndCollectData(Action action, String counterName,
 			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
 		assert action != null;

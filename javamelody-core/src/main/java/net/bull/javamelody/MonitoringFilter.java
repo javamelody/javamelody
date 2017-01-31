@@ -50,6 +50,10 @@ public class MonitoringFilter implements Filter {
 
 	private boolean instanceEnabled;
 
+	// "Classic" by default
+	// (not "Jenkins", "JIRA", "Confluence", "Bamboo", "Sonar", "Liferay", "Alfresco", "Grails", "Collector server")
+	private String applicationType = "Classic";
+
 	// Ces variables httpCounter et errorCounter conservent un état qui est global au filtre
 	// et à l'application (donc thread-safe).
 	private Counter httpCounter;
@@ -85,6 +89,20 @@ public class MonitoringFilter implements Filter {
 		instanceCreated = newInstanceCreated;
 	}
 
+	/**
+	 * @return Type of application
+	 */
+	public String getApplicationType() {
+		return applicationType;
+	}
+
+	/**
+	 * @param applicationType Type of application
+	 */
+	public void setApplicationType(final String applicationType) {
+		this.applicationType = applicationType;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
@@ -109,7 +127,7 @@ public class MonitoringFilter implements Filter {
 
 		LOG.debug("JavaMelody filter init started");
 
-		this.filterContext = new FilterContext();
+		this.filterContext = new FilterContext(getApplicationType());
 		this.httpAuth = new HttpAuth();
 		config.getServletContext().setAttribute(ReportServlet.FILTER_CONTEXT_KEY, filterContext);
 		final Collector collector = filterContext.getCollector();

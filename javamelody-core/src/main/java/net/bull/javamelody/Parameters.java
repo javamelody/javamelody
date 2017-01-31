@@ -365,6 +365,11 @@ final class Parameters {
 	 * @return Nom de l'application courante et nom du sous-répertoire de stockage dans une application monitorée.
 	 */
 	static String getCurrentApplication() {
+		// use explicitly configured application name (if configured)
+		final String applicationName = getParameter(Parameter.APPLICATION_NAME);
+		if (applicationName != null) {
+			return applicationName;
+		}
 		if (servletContext != null) {
 			// Le nom de l'application et donc le stockage des fichiers est dans le sous-répertoire
 			// ayant pour nom le contexte de la webapp et le nom du serveur

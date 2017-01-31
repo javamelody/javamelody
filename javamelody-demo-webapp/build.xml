@@ -27,7 +27,7 @@
 		<tstamp>
 			<format property="TODAY_yyyyMMdd" pattern="yyyy-MM-dd" />
 		</tstamp>
-		<echo file="build/VERSION.properties" message="version=SNAPSHOT-${TODAY_yyyyMMdd}" />
+		<echo file="build/JAVAMELODY-VERSION.properties" message="version=SNAPSHOT-${TODAY_yyyyMMdd}" />
 
 		<ant dir="../javamelody-core" antfile="build.xml" target="clean" />
 		<ant dir="../javamelody-core" antfile="build.xml" target="jar" />
@@ -52,18 +52,11 @@
 	<!-- Construction du war -->
 	<target name="war" depends="build">
 		<echo message="Construction du war" level="info" />
-		<delete file="javamelody-demo-webapp.war" />
-		<copy file="cloudbees-web.xml" todir="build/" overwrite="true" />
-		<replace file="build/cloudbees-web.xml" failOnNoReplacements="true">
-			<replacefilter token="@jdbc.username@" value="${jdbc.username}" />
-			<replacefilter token="@jdbc.password@" value="${jdbc.password}" />
-			<replacefilter token="@jdbc.url@" value="${jdbc.url}" />
-		</replace>
-		<jar destfile="javamelody-demo-webapp.war">
+		<delete file="demo.war" />
+		<jar destfile="demo.war">
 			<zipfileset file="web.xml" prefix="WEB-INF" />
 			<zipfileset dir="pages" prefix="WEB-INF/pages" />
-			<zipfileset file="build/cloudbees-web.xml" prefix="WEB-INF" />
-			<zipfileset file="build/VERSION.properties" prefix="WEB-INF/classes" />
+			<zipfileset file="build/JAVAMELODY-VERSION.properties" prefix="WEB-INF/classes" />
 			<zipfileset file="build/*.class" prefix="WEB-INF/classes" />
 			<zipfileset file="../javamelody-core/javamelody.jar" prefix="WEB-INF/lib" />
 			<zipfileset file="../javamelody-core/src/test/test-webapp/WEB-INF/lib/xpp3_min-1.1.4c.jar" prefix="WEB-INF/lib" />

@@ -251,14 +251,16 @@ public class JpaPersistence implements PersistenceProvider {
 	/** {@inheritDoc} */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void generateSchema(PersistenceUnitInfo info, Map map) {
-		delegate.generateSchema(info, map);
+	public void generateSchema(final PersistenceUnitInfo info, final Map map) {
+		final PersistenceProvider persistenceProvider = findDelegate(map);
+		persistenceProvider.generateSchema(info, map);
 	}
 
 	/** {@inheritDoc} */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean generateSchema(String persistenceUnitName, Map map) {
-		return delegate.generateSchema(persistenceUnitName, map);
+	public boolean generateSchema(final String persistenceUnitName, final Map map) {
+		final PersistenceProvider persistenceProvider = findDelegate(map);
+		return persistenceProvider.generateSchema(persistenceUnitName, map);
 	}
 }

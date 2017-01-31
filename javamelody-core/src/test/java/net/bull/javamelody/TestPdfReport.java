@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody;
+package net.bull.javamelody; // NOPMD
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -242,23 +243,33 @@ public class TestPdfReport {
 			pdfReport.toPdf();
 			assertNotEmptyAndClear(output);
 
-			//Define a Trigger that will fire "now"
-			final JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-			job.setDescription("description");
-			final SimpleTrigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date());
-			//Schedule the job with the trigger
-			scheduler.scheduleJob(job, trigger);
+			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
+			// (aléatoirement il y en a 2/10 qui font une erreur)
+			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<JobDetail, SimpleTrigger>();
+			for (int i = 0; i < 10; i++) {
+				//Define a Trigger that will fire "now"
+				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
+						JobTestImpl.class);
+				job.setDescription("description");
 
-			// JobTestImpl fait un sleep de 2s au plus, donc on l'attend pour le compter
+				final SimpleTrigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
+						new Date());
+				//Schedule the job with the trigger
+				scheduler.scheduleJob(job, trigger);
+				triggersByJob.put(job, trigger);
+			}
+			// JobTestImpl fait un sleep de 2s au plus, donc on attend les jobs pour les compter
 			try {
-				Thread.sleep(2100);
+				Thread.sleep(3000);
 			} catch (final InterruptedException e) {
 				throw new IllegalStateException(e);
 			}
-			// et on le relance pour qu'il soit en cours
-			trigger.setRepeatInterval(60000);
-			scheduler.scheduleJob(job, trigger);
+
+			for (final Map.Entry<JobDetail, SimpleTrigger> entry : triggersByJob.entrySet()) {
+				// et on les relance pour qu'ils soient en cours
+				entry.getValue().setRepeatInterval(60000);
+				scheduler.scheduleJob(entry.getKey(), entry.getValue());
+			}
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			final List<JavaInformations> javaInformationsList2 = Collections

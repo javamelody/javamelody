@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
 <!DOCTYPE web-app 
 	[
 		<!ENTITY services_appli1 SYSTEM "services_appli1.xml"> 
 		<!ENTITY services_referentiel1 SYSTEM "services_referentiel1.xml">
 	]>
+-->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 
-	<!-- Services -->
+	<!-- Services
 	&services_appli1;
 	&services_referentiel1;
-	
+	 -->
+	 
 	<!-- configuration datasource -->
 	<context-param>
 		<param-name>appwhite1.datasource</param-name>
@@ -21,16 +24,12 @@
 
 	<!-- configuration pour monitoring javamelody -->
 	<context-param>
-		<param-name>javamelody.system-actions-enabled</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<context-param>
 		<param-name>javamelody.sampling-seconds</param-name>
 		<param-value>1</param-value>
 	</context-param>
 	<context-param>
 		<param-name>javamelody.sampling-excluded-packages</param-name>
-		<param-value>java,sun,com.sun,javax,org.apache,com.mysql</param-value>
+		<param-value>java,sun,com.sun,javax,org.apache,org.h2</param-value>
 	</context-param>
 	<context-param>
 		<param-name>javamelody.log</param-name>
@@ -120,6 +119,96 @@
 	<servlet-mapping>
 		<servlet-name>BuildInfoServlet</servlet-name>
 		<url-pattern>/version</url-pattern>
+	</servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdresseService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.annuaire.AdresseGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdresseService</servlet-name>
+        <url-pattern>/appli1/AdresseService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CompetenceService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.annuaire.CompetenceGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CompetenceService</servlet-name>
+        <url-pattern>/appli1/CompetenceService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>MailService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.annuaire.MailGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MailService</servlet-name>
+        <url-pattern>/appli1/MailService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>PermissionService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.secu.PermissionGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PermissionService</servlet-name>
+        <url-pattern>/appli1/PermissionService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>PersonneService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.annuaire.PersonneGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PersonneService</servlet-name>
+        <url-pattern>/appli1/PersonneService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RoleService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.secu.RoleGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RoleService</servlet-name>
+        <url-pattern>/appli1/RoleService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>TelephoneService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.annuaire.TelephoneGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TelephoneService</servlet-name>
+        <url-pattern>/appli1/TelephoneService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UtilisateurService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.secu.UtilisateurGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UtilisateurService</servlet-name>
+        <url-pattern>/appli1/UtilisateurService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AuthentificationService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.secu.AuthentificationGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthentificationService</servlet-name>
+        <url-pattern>/appli1/AuthentificationService</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>PrintUtilsService</servlet-name>
+        <servlet-class>fr.appwhite1.server.business.utils.PrintUtilsGwtServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PrintUtilsService</servlet-name>
+        <url-pattern>/appli1/PrintUtilsService</url-pattern>
+    </servlet-mapping>
+
+	<servlet>
+		<servlet-name>GradeService</servlet-name>
+		<servlet-class>fr.referentiel.server.business.ref.GradeGwtServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GradeService</servlet-name>
+		<url-pattern>/referentiel1/GradeService</url-pattern>
 	</servlet-mapping>
 
 	<!-- Initialisation de la webapp -->

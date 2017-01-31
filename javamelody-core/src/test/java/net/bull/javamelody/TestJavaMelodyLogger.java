@@ -53,9 +53,11 @@ public class TestJavaMelodyLogger {
 	public void testLoggers() {
 		final JavaMelodyLogger javaLogger = new JavaLogger();
 		final JavaMelodyLogger log4jLogger = new Log4JLogger();
+		final JavaMelodyLogger log4j2Logger = new Log4J2Logger();
 		final JavaMelodyLogger logbackLogger = new LogbackLogger();
 		logs(javaLogger);
 		logs(log4jLogger);
+		logs(log4j2Logger);
 		logs(logbackLogger);
 	}
 
@@ -72,6 +74,7 @@ public class TestJavaMelodyLogger {
 		expect(request.getContextPath()).andReturn("/test").anyTimes();
 		expect(request.getQueryString()).andReturn("param1=1").anyTimes();
 		expect(request.getMethod()).andReturn("GET").anyTimes();
+		expect(request.getHeader("X-Forwarded-For")).andReturn("w.x.y.z").anyTimes();
 
 		replay(request);
 		logger.logHttpRequest(request, "test", 1000, false, 10000, "javamelody");

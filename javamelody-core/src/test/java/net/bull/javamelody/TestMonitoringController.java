@@ -27,6 +27,7 @@ import java.util.Arrays;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -84,5 +85,21 @@ public class TestMonitoringController {
 				httpResponse2);
 		verify(httpRequest2);
 		verify(httpResponse2);
+	}
+
+	/** Test. */
+	@Test
+	public void testCheckCsrfToken() {
+		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
+		final HttpSession httpSession = createNiceMock(HttpSession.class);
+		final String token = "dummy token";
+		expect(httpRequest.getParameter(HttpParameters.TOKEN_PARAMETER)).andReturn(token);
+		expect(httpRequest.getSession(false)).andReturn(httpSession);
+		expect(httpSession.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME)).andReturn(token);
+		replay(httpRequest);
+		replay(httpSession);
+		MonitoringController.checkCsrfToken(httpRequest);
+		verify(httpRequest);
+		verify(httpSession);
 	}
 }

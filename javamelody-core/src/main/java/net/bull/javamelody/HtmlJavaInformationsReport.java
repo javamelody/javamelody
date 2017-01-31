@@ -219,7 +219,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 				writeln("<img src='?resource=servers/" + applicationServerIconName
 						+ "' alt='#Serveur#'/>");
 			}
-			writeln(serverInfo + columnEnd);
+			writeDirectly(serverInfo + columnEnd);
 			writeln("<tr><td>#Contexte_webapp#: </td><td>" + javaInformations.getContextPath()
 					+ columnEnd);
 		}

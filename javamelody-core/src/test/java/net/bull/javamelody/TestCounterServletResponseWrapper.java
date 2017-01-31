@@ -66,6 +66,8 @@ public class TestCounterServletResponseWrapper {
 		wrapper.write(new byte[8]);
 		wrapper.write(new byte[8], 1, 7);
 		assertEquals("dataLength", 16, wrapper.getDataLength());
+		wrapper.isReady();
+		wrapper.setWriteListener(null);
 		wrapper.flush();
 		wrapper.close();
 	}

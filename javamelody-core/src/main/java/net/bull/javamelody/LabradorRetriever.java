@@ -330,7 +330,8 @@ class LabradorRetriever {
 		final Object result;
 		final String request = url.toString();
 		if (!request.contains(HttpParameters.PART_PARAMETER + '=')
-				&& !request.contains(HttpParameters.JMX_VALUE)) {
+				&& !request.contains(HttpParameters.JMX_VALUE)
+				|| request.contains(HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART)) {
 			final String message = request.contains("/test2") ? null
 					: "ceci est message pour le rapport";
 			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null),

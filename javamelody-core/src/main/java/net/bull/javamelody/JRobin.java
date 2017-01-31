@@ -34,6 +34,7 @@ import java.util.Timer;
 
 import javax.imageio.ImageIO;
 
+import org.jrobin.core.ConsolFuns;
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdDbPool;
@@ -41,6 +42,7 @@ import org.jrobin.core.RrdDef;
 import org.jrobin.core.RrdException;
 import org.jrobin.core.Sample;
 import org.jrobin.core.Util;
+import org.jrobin.data.DataProcessor;
 import org.jrobin.graph.RrdGraph;
 import org.jrobin.graph.RrdGraphDef;
 
@@ -173,8 +175,8 @@ final class JRobin {
 			final int heartbeat = step * 2;
 			rrdDef.addDatasource(getDataSourceName(), dsType, heartbeat, 0, Double.NaN);
 			// several archives
-			final String average = "AVERAGE";
-			final String max = "MAX";
+			final String average = ConsolFuns.CF_AVERAGE;
+			final String max = ConsolFuns.CF_MAX;
 			// 1 jour
 			rrdDef.addArchive(average, 0.25, 1, DAY / step);
 			rrdDef.addArchive(max, 0.25, 1, DAY / step);
@@ -303,18 +305,18 @@ final class JRobin {
 	private void initGraphSource(RrdGraphDef graphDef, int height, boolean maxHidden) {
 		final String dataSourceName = getDataSourceName();
 		final String average = "average";
-		graphDef.datasource(average, rrdFileName, dataSourceName, "AVERAGE");
+		graphDef.datasource(average, rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
 		graphDef.setMinValue(0);
 		final String moyenneLabel = I18N.getString("Moyenne");
 		graphDef.area(average, getPaint(height), moyenneLabel);
-		graphDef.gprint(average, "AVERAGE", moyenneLabel + ": %9.0f %S\\r");
-		//graphDef.gprint(average, "MIN", "Minimum: %9.0f %S\\r");
+		graphDef.gprint(average, ConsolFuns.CF_AVERAGE, moyenneLabel + ": %9.0f %S\\r");
+		//graphDef.gprint(average, ConsolFuns.CF_MIN, "Minimum: %9.0f %S\\r");
 		if (!maxHidden) {
 			final String max = "max";
 			graphDef.datasource(max, rrdFileName, dataSourceName, "MAX");
 			final String maximumLabel = I18N.getString("Maximum");
 			graphDef.line(max, Color.BLUE, maximumLabel);
-			graphDef.gprint(max, "MAX", maximumLabel + ": %9.0f %S\\r");
+			graphDef.gprint(max, ConsolFuns.CF_MAX, maximumLabel + ": %9.0f %S\\r");
 		}
 		// graphDef.comment("JRobin :: RRDTool Choice for the Java World");
 	}
@@ -402,6 +404,26 @@ final class JRobin {
 				// release RRD database reference
 				rrdPool.release(rrdDb);
 			}
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+	}
+
+	double getMeanValue(final Range range) throws IOException {
+		assert range.getPeriod() == null;
+		final String dataSourceName = getDataSourceName();
+		final long endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
+		final long startTime = range.getStartDate().getTime() / 1000;
+		//		if (range.getPeriod() != null) {
+		//			endTime = Util.getTime();
+		//			startTime = endTime - range.getPeriod().getDurationSeconds();
+		//		}
+		try {
+			final DataProcessor dproc = new DataProcessor(startTime, endTime);
+			dproc.addDatasource("average", rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
+			dproc.setPoolUsed(true);
+			dproc.processData();
+			return dproc.getAggregate("average", ConsolFuns.CF_AVERAGE);
 		} catch (final RrdException e) {
 			throw createIOException(e);
 		}
