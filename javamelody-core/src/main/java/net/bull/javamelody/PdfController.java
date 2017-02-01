@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
+import static net.bull.javamelody.HttpParameters.GRAPH_PART;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
 import static net.bull.javamelody.HttpParameters.JNDI_PART;
@@ -117,6 +118,12 @@ class PdfController {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
 					httpResponse.getOutputStream());
 			pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
+		} else if (GRAPH_PART.equalsIgnoreCase(part)) {
+			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
+					httpResponse.getOutputStream());
+			pdfOtherReport.writeRequestAndGraphDetail(collector, collectorServer, range, requestId);
 		} else {
 			throw new IllegalArgumentException(part);
 		}

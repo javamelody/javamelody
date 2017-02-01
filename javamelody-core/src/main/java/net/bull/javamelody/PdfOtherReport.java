@@ -215,6 +215,18 @@ class PdfOtherReport {
 		document.close();
 	}
 
+	void writeRequestAndGraphDetail(Collector collector, CollectorServer collectorServer,
+			Range range, String requestId) throws IOException {
+		try {
+			document.open();
+			new PdfRequestAndGraphDetailReport(collector, collectorServer, range, requestId,
+					pdfDocumentFactory, document).toPdf();
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
 	void writeRuntimeDependencies(Counter counter, Range range) throws IOException {
 		try {
 			final Document myDocument = pdfDocumentFactory.createDocument(true);

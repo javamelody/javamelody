@@ -845,9 +845,14 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					+ "' title='#Rafraichir#'>");
 		}
 		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (graphName == null && isPdfEnabled()) {
+		if (isPdfEnabled()) {
 			writeln(separator);
-			write("<a href='?format=pdf' title='#afficher_PDF#'>");
+			if (graphName == null) {
+				write("<a href='?format=pdf' title='#afficher_PDF#'>");
+			} else {
+				write("<a href='?part=" + part + graphParameter + urlEncode(graphName)
+						+ "&amp;format=pdf' title='#afficher_PDF#'>");
+			}
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln(separator);
