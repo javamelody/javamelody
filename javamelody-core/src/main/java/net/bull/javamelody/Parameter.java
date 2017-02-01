@@ -320,7 +320,7 @@ public enum Parameter {
 	JMX_EXPOSE_ENABLED("jmx-expose"),
 
 	/**
-   * Explicit name of the monitored application (in case the automatic name detection fails somehow).
+	 * Explicit name of the monitored application (in case the automatic name detection fails somehow).
 	 */
 	APPLICATION_NAME("application-name");
 
