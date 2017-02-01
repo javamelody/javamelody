@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import javax.management.JMException;
 import javax.naming.Binding;
@@ -305,6 +306,48 @@ public class TestPdfOtherReport {
 				.singletonMap(javaInformations, requests);
 		pdfOtherReport.writeAllCurrentRequestsAsPart(currentRequests, collector,
 				collector.getCounters(), timeOfSnapshot);
+		assertNotEmptyAndClear(output);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testWriteRequestAndGraphDetail() throws IOException {
+		final Counter sqlCounter = new Counter("sql", "db.png");
+		final Counter httpCounter = new Counter("http", "db.png", sqlCounter);
+		final Counter errorCounter = new Counter("error", "db.png");
+		final List<Counter> counters = new ArrayList<Counter>();
+		counters.add(httpCounter);
+		counters.add(sqlCounter);
+		counters.add(errorCounter);
+		final Collector collector = new Collector("test", counters);
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+
+		httpCounter.bindContext("test 1", "complete test 1", null, -1);
+		sqlCounter.bindContext("sql1", "sql 1", null, -1);
+		sqlCounter.addRequest("sql1", 100, 100, false, -1);
+		httpCounter.addRequest("test 1", 0, 0, false, 1000);
+		errorCounter.addRequestForSystemError("test error", 0, 0, " a stack-trace");
+		collector.collectWithoutErrors(Arrays.asList(javaInformations));
+		final String requestId = httpCounter.getRequests().get(0).getId();
+		final String requestId2 = errorCounter.getRequests().get(0).getId();
+
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport.writeRequestAndGraphDetail(collector, null, Period.TOUT.getRange(),
+				requestId);
+		assertNotEmptyAndClear(output);
+
+		final PdfOtherReport pdfOtherReport2 = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport2.writeRequestAndGraphDetail(collector, null, Period.TOUT.getRange(),
+				requestId2);
+		assertNotEmptyAndClear(output);
+
+		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
+		final String graphName = "usedMemory";
+		final PdfOtherReport pdfOtherReport3 = new PdfOtherReport(TEST_APP, output);
+		pdfOtherReport3.writeRequestAndGraphDetail(collector, null, Period.TOUT.getRange(),
+				graphName);
 		assertNotEmptyAndClear(output);
 	}
 

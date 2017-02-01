@@ -771,6 +771,11 @@ public class TestMonitoringFilter { // NOPMD
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
 
+		parameters.put(PART_PARAMETER, GRAPH);
+		parameters.put(GRAPH, "usedMemory");
+		monitoring(parameters);
+		parameters.remove(GRAPH);
+
 		parameters.put(PART_PARAMETER, "unknown part");
 		boolean exception = false;
 		try {
