@@ -18,7 +18,7 @@
 package net.bull.javamelody;
 
 /**
- * MXBean which exposes CounterRequestAggregation data via JMX
+ * MXBean which exposes CounterRequestAggregation data via JMX.
  * @see javax.management.MXBean
  * @see CounterRequestAggregation
  *

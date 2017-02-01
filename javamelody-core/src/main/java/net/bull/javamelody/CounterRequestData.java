@@ -18,13 +18,13 @@
 package net.bull.javamelody;
 
 /**
- * Used to expose CounterRequest data via JMX
+ * Used to expose CounterRequest data via JMX.
  * @see CounterRequest
  *
  * @author Alexey Pushkin
  */
 public class CounterRequestData {
-	private CounterRequest request;
+	private final CounterRequest request;
 
 	public CounterRequestData(CounterRequest request) {
 		this.request = request;

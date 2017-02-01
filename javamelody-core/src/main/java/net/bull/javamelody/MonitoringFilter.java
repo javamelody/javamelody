@@ -61,6 +61,7 @@ public class MonitoringFilter implements Filter {
 
 	private boolean monitoringDisabled;
 	private boolean logEnabled;
+	private boolean jmxExposeEnabled;
 	private Pattern urlExcludePattern;
 	private FilterContext filterContext;
 	private HttpAuth httpAuth;
@@ -141,8 +142,10 @@ public class MonitoringFilter implements Filter {
 					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
 
-		if (Parameters.isJmxExposeEnabled()) {
-			JMXExpose.start(collector, config.getServletContext());
+		jmxExposeEnabled = Boolean
+				.parseBoolean(Parameters.getParameter(Parameter.JMX_EXPOSE_ENABLED));
+		if (jmxExposeEnabled) {
+			JMXExpose.start(collector);
 		}
 
 		final long duration = System.currentTimeMillis() - start;
@@ -157,7 +160,9 @@ public class MonitoringFilter implements Filter {
 		}
 		final long start = System.currentTimeMillis();
 
-		JMXExpose.stop();
+		if (jmxExposeEnabled) {
+			JMXExpose.stop();
+		}
 
 		try {
 			if (filterContext != null) {

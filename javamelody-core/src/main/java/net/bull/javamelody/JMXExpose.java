@@ -19,44 +19,37 @@ package net.bull.javamelody;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.servlet.ServletContext;
 
 /**
- * Registers CounterRequestMXBean beans for each of the enabled counters
+ * Registers CounterRequestMXBean beans for each of the enabled counters.
  * The beans are registered under "net.bull.javamelody:type=CounterRequest,context=<webapp>,name=<counter name>" names.
  *
  * @author Alexey Pushkin
  */
-public class JMXExpose {
+class JMXExpose {
 	private static Set<ObjectName> names = new HashSet<ObjectName>();
 
-	/**
-	 * Registers CounterRequestMXBean beans
-	 *
-	 * @param collector
-	 * @param servletContext
-	 */
-	public static void start(Collector collector, ServletContext servletContext) {
+	public static void start(Collector collector) {
 		try {
-			String webapp = new File(servletContext.getRealPath("/")).getName();
-			MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
-			List<Counter> counters = collector.getCounters();
-			for (Counter counter : counters) {
-				CounterRequestMXBean mxBean = new CounterRequestMXBeanImpl(counter);
-				ObjectName name = new ObjectName(
+			final String webapp = new File(Parameters.getServletContext().getRealPath("/"))
+					.getName();
+			final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+			final List<Counter> counters = collector.getCounters();
+			for (final Counter counter : counters) {
+				final CounterRequestMXBean mxBean = new CounterRequestMXBeanImpl(counter);
+				final ObjectName name = new ObjectName(
 						String.format("net.bull.javamelody:type=CounterRequest,context=%s,name=%s",
 								webapp, counter.getName()));
 				platformMBeanServer.registerMBean(mxBean, name);
 				names.add(name);
 			}
-		} catch (JMException e) {
+		} catch (final JMException e) {
 			LOG.warn("failed to register JMX beans", e);
 		}
 	}
@@ -67,14 +60,11 @@ public class JMXExpose {
 	 */
 	public static void stop() {
 		try {
-			MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
-			Iterator<ObjectName> it = names.iterator();
-			while (it.hasNext()) {
-				ObjectName name = it.next();
+			final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+			for (final ObjectName name : names) {
 				platformMBeanServer.unregisterMBean(name);
-				it.remove();
 			}
-		} catch (JMException e) {
+		} catch (final JMException e) {
 			LOG.warn("failed to unregister JMX beans", e);
 		}
 	}
