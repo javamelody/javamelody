@@ -317,7 +317,7 @@ public enum Parameter {
 	/**
 	 * Expose counters as JMX mbeans. Disabled by default.
 	 */
-	JMX_EXPOSE_ENABLED("jmx-expose"),
+	JMX_EXPOSE_ENABLED("jmx-expose-enabled"),
 
 	/**
 	 * Explicit name of the monitored application (in case the automatic name detection fails somehow).

@@ -24,10 +24,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
+
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 /**
  * Contexte du filtre http pour initialisation et destruction.
@@ -41,6 +47,7 @@ class FilterContext {
 	private final Timer timer;
 	private final SamplingProfiler samplingProfiler;
 	private final TimerTask collectTimerTask;
+	private final Set<ObjectName> jmxNames = new HashSet<ObjectName>();
 
 	private static final class CollectTimerTask extends TimerTask {
 		private final Collector collector;
@@ -107,6 +114,10 @@ class FilterContext {
 			this.collectTimerTask = new CollectTimerTask(collector);
 
 			initCollect();
+
+			if (Boolean.parseBoolean(Parameters.getParameter(Parameter.JMX_EXPOSE_ENABLED))) {
+				initJmxExpose();
+			}
 
 			UpdateChecker.init(timer, collector, applicationType);
 
@@ -349,6 +360,38 @@ class FilterContext {
 		return null;
 	}
 
+	/**
+	 * Registers CounterRequestMXBean beans for each of the enabled counters.
+	 * The beans are registered under "net.bull.javamelody:type=CounterRequest,context=<webapp>,name=<counter name>" names.
+	 * @author Alexey Pushkin
+	 */
+	private void initJmxExpose() {
+		final String packageName = getClass().getName().substring(0,
+				getClass().getName().length() - getClass().getSimpleName().length() - 1);
+		String webapp = Parameters.getContextPath(Parameters.getServletContext());
+		if (webapp.length() >= 1 && webapp.charAt(0) == '/') {
+			webapp = webapp.substring(1, webapp.length());
+		}
+		final List<Counter> counters = collector.getCounters();
+		final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+		try {
+			for (final Counter counter : counters) {
+				if (!Parameters.isCounterHidden(counter.getName())) {
+					final CounterRequestMXBean.CounterRequestMXBeanImpl mxBean = new CounterRequestMXBean.CounterRequestMXBeanImpl(
+							counter);
+					final ObjectName name = new ObjectName(
+							packageName + ":type=CounterRequest,context=" + webapp + ",name="
+									+ counter.getName());
+					platformMBeanServer.registerMBean(mxBean, name);
+					jmxNames.add(name);
+				}
+			}
+			LOG.debug("JMX mbeans registered");
+		} catch (final JMException e) {
+			LOG.warn("failed to register JMX mbeans", e);
+		}
+	}
+
 	void stopCollector() {
 		// cette méthode est appelée par MonitoringFilter lorsqu'il y a un serveur de collecte
 		if (collectTimerTask != null) {
@@ -378,6 +421,8 @@ class FilterContext {
 				if (JobInformations.QUARTZ_AVAILABLE) {
 					JobGlobalListener.destroyJobGlobalListener();
 				}
+
+				unregisterJmxExpose();
 			}
 		} finally {
 			MonitoringInitialContextFactory.stop();
@@ -425,6 +470,23 @@ class FilterContext {
 			Log4JAppender.getSingleton().deregister();
 		}
 		LoggingHandler.getSingleton().deregister();
+	}
+
+	/**
+	 * Unregisters CounterRequestMXBean beans.
+	 */
+	private void unregisterJmxExpose() {
+		if (jmxNames.isEmpty()) {
+			return;
+		}
+		try {
+			final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+			for (final ObjectName name : jmxNames) {
+				platformMBeanServer.unregisterMBean(name);
+			}
+		} catch (final JMException e) {
+			LOG.warn("failed to unregister JMX beans", e);
+		}
 	}
 
 	Collector getCollector() {

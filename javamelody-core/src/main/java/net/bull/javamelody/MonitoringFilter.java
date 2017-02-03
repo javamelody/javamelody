@@ -61,7 +61,6 @@ public class MonitoringFilter implements Filter {
 
 	private boolean monitoringDisabled;
 	private boolean logEnabled;
-	private boolean jmxExposeEnabled;
 	private Pattern urlExcludePattern;
 	private FilterContext filterContext;
 	private HttpAuth httpAuth;
@@ -142,12 +141,6 @@ public class MonitoringFilter implements Filter {
 					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
 
-		jmxExposeEnabled = Boolean
-				.parseBoolean(Parameters.getParameter(Parameter.JMX_EXPOSE_ENABLED));
-		if (jmxExposeEnabled) {
-			JMXExpose.start(collector);
-		}
-
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter init done in " + duration + " ms");
 	}
@@ -159,10 +152,6 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 		final long start = System.currentTimeMillis();
-
-		if (jmxExposeEnabled) {
-			JMXExpose.stop();
-		}
 
 		try {
 			if (filterContext != null) {
