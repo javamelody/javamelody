@@ -550,6 +550,17 @@ public class TestMonitoringFilter { // NOPMD
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		setUp();
 		monitoring(Collections.<String, String> emptyMap());
+		setProperty(Parameter.MAIL_SESSION, null);
+		setProperty(Parameter.ADMIN_EMAILS, null);
+
+		try {
+			setProperty(Parameter.JMX_EXPOSE_ENABLED, Boolean.TRUE.toString());
+			setUp();
+			monitoring(Collections.<String, String> emptyMap());
+		} finally {
+			monitoringFilter.destroy();
+			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
+		}
 	}
 
 	/** Test.
