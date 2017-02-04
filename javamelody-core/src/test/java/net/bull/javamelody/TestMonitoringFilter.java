@@ -543,6 +543,21 @@ public class TestMonitoringFilter { // NOPMD
 		} finally {
 			setProperty(Parameter.MONITORING_PATH, "/monitoring");
 		}
+		try {
+			setProperty(Parameter.JMX_EXPOSE_ENABLED, Boolean.TRUE.toString());
+			setUp();
+			monitoring(Collections.<String, String> emptyMap());
+		} finally {
+			monitoringFilter.destroy();
+			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
+		}
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoMonitoringWithMail() throws ServletException, IOException {
 		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
 		setUp();
@@ -552,15 +567,6 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(Collections.<String, String> emptyMap());
 		setProperty(Parameter.MAIL_SESSION, null);
 		setProperty(Parameter.ADMIN_EMAILS, null);
-
-		try {
-			setProperty(Parameter.JMX_EXPOSE_ENABLED, Boolean.TRUE.toString());
-			setUp();
-			monitoring(Collections.<String, String> emptyMap());
-		} finally {
-			monitoringFilter.destroy();
-			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
-		}
 	}
 
 	/** Test.
