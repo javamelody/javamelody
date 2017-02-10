@@ -137,7 +137,7 @@ public class RrdNioBackend extends RrdFileBackend {
 			method = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
 		} catch (Exception e) {
 		}
-		return method == null;
+		return method != null;
 	}
 
 	/**
