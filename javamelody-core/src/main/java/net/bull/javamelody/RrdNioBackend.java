@@ -26,6 +26,9 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Timer;
@@ -104,10 +107,34 @@ public class RrdNioBackend extends RrdFileBackend {
 	private void unmapFile() {
 		if (byteBuffer != null) {
 			if (byteBuffer instanceof DirectBuffer) {
-				((DirectBuffer) byteBuffer).cleaner().clean();
+				if (!isJdk9Runtime()) {
+					((DirectBuffer) byteBuffer).cleaner().clean();
+				} else {
+					try {
+						final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+						final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+						theUnsafeField.setAccessible(true);
+						final Object theUnsafe = theUnsafeField.get(null);
+						final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner",
+								ByteBuffer.class);
+						invokeCleanerMethod.invoke(theUnsafe, byteBuffer);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+				byteBuffer = null;
 			}
-			byteBuffer = null;
 		}
+	}
+
+	private boolean isJdk9Runtime() {
+		Method method = null;
+		try {
+			method = DirectBuffer.class.getMethod("cleaner");
+		} catch (Exception e) {
+		}
+		return method == null;
 	}
 
 	/**
