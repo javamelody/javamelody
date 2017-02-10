@@ -131,7 +131,10 @@ public class RrdNioBackend extends RrdFileBackend {
 	private boolean isJdk9Runtime() {
 		Method method = null;
 		try {
-			method = DirectBuffer.class.getMethod("cleaner");
+			final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+			final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
+			theUnsafeField.setAccessible(true);
+			method = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
 		} catch (Exception e) {
 		}
 		return method == null;
