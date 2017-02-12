@@ -108,20 +108,20 @@ public class RrdNioBackend extends RrdFileBackend {
 
 	private void unmapFile() {
 		if (byteBuffer != null) {
-			if (byteBuffer instanceof DirectBuffer) {
-				if (JAVA9_INVOKE_CLEANER == null || THE_UNSAFE == null) {
+			if (JAVA9_INVOKE_CLEANER == null || THE_UNSAFE == null) {
+				if (byteBuffer instanceof DirectBuffer) {
 					// for Java 8 and before
 					((DirectBuffer) byteBuffer).cleaner().clean();
-				} else {
-					// for Java 9 and later:
-					// sun.nio.ch.DirectBuffer methods are not accessible,
-					// so the new sun.misc.Unsafe.theUnsafe.invokeCleaner(ByteBuffer) is used.
-					// See https://bugs.openjdk.java.net/browse/JDK-8171377
-					try {
-						JAVA9_INVOKE_CLEANER.invoke(THE_UNSAFE, byteBuffer);
-					} catch (final Exception e) {
-						throw new IllegalStateException(e);
-					}
+				}
+			} else {
+				// for Java 9 and later:
+				// sun.nio.ch.DirectBuffer methods are not accessible,
+				// so the new sun.misc.Unsafe.theUnsafe.invokeCleaner(ByteBuffer) is used.
+				// See https://bugs.openjdk.java.net/browse/JDK-8171377
+				try {
+					JAVA9_INVOKE_CLEANER.invoke(THE_UNSAFE, byteBuffer);
+				} catch (final Exception e) {
+					throw new IllegalStateException(e);
 				}
 			}
 			byteBuffer = null;
