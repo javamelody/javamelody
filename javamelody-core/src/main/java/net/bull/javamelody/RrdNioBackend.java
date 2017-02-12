@@ -43,6 +43,8 @@ import sun.nio.ch.DirectBuffer; // NOPMD
  * by using fast java.nio.* package. This is the default backend engine since JRobin 1.4.0.
  */
 public class RrdNioBackend extends RrdFileBackend {
+	private static final Object THE_UNSAFE = getTheUnsafe();
+	private static final Method JAVA9_INVOKE_CLEANER = getJava9InvokeCleaner();
 	private static Timer fileSyncTimer;
 
 	private MappedByteBuffer byteBuffer;
@@ -107,37 +109,43 @@ public class RrdNioBackend extends RrdFileBackend {
 	private void unmapFile() {
 		if (byteBuffer != null) {
 			if (byteBuffer instanceof DirectBuffer) {
-				if (!isJdk9Runtime()) {
+				if (JAVA9_INVOKE_CLEANER == null || THE_UNSAFE == null) {
+					// for Java 8 and before
 					((DirectBuffer) byteBuffer).cleaner().clean();
 				} else {
+					// for Java 9 and later:
+					// sun.nio.ch.DirectBuffer methods are not accessible,
+					// so the new sun.misc.Unsafe.theUnsafe.invokeCleaner(ByteBuffer) is used.
+					// See https://bugs.openjdk.java.net/browse/JDK-8171377
 					try {
-						final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-						final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
-						theUnsafeField.setAccessible(true);
-						final Object theUnsafe = theUnsafeField.get(null);
-						final Method invokeCleanerMethod = unsafeClass.getMethod("invokeCleaner",
-								ByteBuffer.class);
-						invokeCleanerMethod.invoke(theUnsafe, byteBuffer);
-					} catch (Exception e) {
-						e.printStackTrace();
+						JAVA9_INVOKE_CLEANER.invoke(THE_UNSAFE, byteBuffer);
+					} catch (final Exception e) {
+						throw new IllegalStateException(e);
 					}
 				}
-
-				byteBuffer = null;
 			}
+			byteBuffer = null;
 		}
 	}
 
-	private boolean isJdk9Runtime() {
-		Method method = null;
+	private static Object getTheUnsafe() {
 		try {
 			final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
 			final Field theUnsafeField = unsafeClass.getDeclaredField("theUnsafe");
 			theUnsafeField.setAccessible(true);
-			method = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
-		} catch (Exception e) {
+			return theUnsafeField.get(null);
+		} catch (final Exception e) {
+			return null;
 		}
-		return method != null;
+	}
+
+	private static Method getJava9InvokeCleaner() {
+		try {
+			final Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+			return unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	/**
