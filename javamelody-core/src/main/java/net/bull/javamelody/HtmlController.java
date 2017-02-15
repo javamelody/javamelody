@@ -129,7 +129,7 @@ class HtmlController {
 			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeRequestUsages(graphName);
 		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			doCurrentRequests(htmlReport);
+			htmlReport.writeAllCurrentRequestsAsPart();
 		} else if (THREADS_PART.equalsIgnoreCase(part)) {
 			htmlReport.writeAllThreadsAsPart();
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
@@ -201,10 +201,6 @@ class HtmlController {
 			final List<SampledMethod> hotspots = collectorServer.collectHotspots(getApplication());
 			htmlReport.writeHotspots(hotspots);
 		}
-	}
-
-	private void doCurrentRequests(HtmlReport htmlReport) throws IOException {
-		htmlReport.writeAllCurrentRequestsAsPart();
 	}
 
 	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
