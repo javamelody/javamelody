@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
  * @author Emeric Vernat
  */
 final class JavaHTMLizer {
+	private static final String BR = "<br />\n";
+
 	private static final List<Pattern> RESERVED_WORDS_PATTERNS = createReservedWordPatterns(
 			Arrays.asList("class", "finally", "return", "new", "public", "static", "final", "void",
 					"synchronized", "interface", "enum", "private", "protected", "import",
@@ -52,7 +54,7 @@ final class JavaHTMLizer {
 		super();
 	}
 
-	public static String htmlize(final String javaSource) {
+	static String htmlize(final String javaSource) {
 		String result = "-" + javaSource;
 		result = htmlEscape(result);
 		result = formatReservedWords(result);
@@ -61,12 +63,37 @@ final class JavaHTMLizer {
 		return result.substring(1);
 	}
 
-	public static String htmlizeFull(final String javaSource) {
+	static String htmlizeFull(final String javaSource) {
 		final String result = htmlize(javaSource);
-		final String start = "<html><body><style>code .string { color: blue; } code .comment { font-style: italic; color: green; }"
-				+ " code .keyword { font-weight: bold; color: purple; }</style><code>";
+		final String start = "<html><body><style>" + "code { font-size: 12px; } "
+				+ "code .string { color: blue; } "
+				+ "code .comment { font-style: italic; color: green; } "
+				+ "code .keyword { font-weight: bold; color: purple; } "
+				+ "code .comment .keyword { color: green; font-weight: normal; } "
+				+ "code .comment .string { color: green; } " + "</style><code>";
 		final String end = "</code></body></html>";
 		return start + result + end;
+	}
+
+	static String addLineNumbers(final String javaSource) {
+		final StringBuilder sb = new StringBuilder(javaSource);
+		sb.insert(0, "<a name=1 href=#1>1</a> ");
+		int line = 2;
+		int index = sb.indexOf(BR);
+		while (index != -1) {
+			final int offset = index + BR.length();
+			final String strLine = Integer.toString(line);
+			sb.insert(offset, "</a> ");
+			sb.insert(offset, strLine);
+			sb.insert(offset, '>');
+			sb.insert(offset, strLine);
+			sb.insert(offset, " href=#");
+			sb.insert(offset, strLine);
+			sb.insert(offset, "<a name=");
+			index = sb.indexOf(BR, index + 1);
+			line++;
+		}
+		return sb.toString();
 	}
 
 	private static List<Pattern> createReservedWordPatterns(final List<String> reservedWords) {
@@ -86,7 +113,7 @@ final class JavaHTMLizer {
 		escapeMaps.put('\"', "&quot;");
 		escapeMaps.put('&', "&amp;");
 		escapeMaps.put('\'', "&#39;");
-		escapeMaps.put('\n', "<br />\n");
+		escapeMaps.put('\n', BR);
 		return escapeMaps;
 	}
 
