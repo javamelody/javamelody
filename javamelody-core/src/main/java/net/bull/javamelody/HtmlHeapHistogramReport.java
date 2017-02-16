@@ -125,34 +125,34 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 
 	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
 			boolean heap, boolean sourceDisplayed) throws IOException {
-		write("<td>");
+		writeDirectly("<td>");
 		if (heap) {
-			write(classInfo.getName());
+			writeDirectly(classInfo.getName());
 		} else {
 			// encodage nécessaire dans PermGen pour "<methodKlass>" par exemple
-			write(classInfo.getName().replaceAll("[<]", "&lt;").replaceAll("[>]", "&gt;"));
+			writeDirectly(classInfo.getName().replaceAll("[<]", "&lt;").replaceAll("[>]", "&gt;"));
 		}
 		final String nextColumnAlignRight = "</td><td align='right'>";
-		write(nextColumnAlignRight);
+		writeDirectly(nextColumnAlignRight);
 		final long bytes = classInfo.getBytes();
 		final long instancesCount = classInfo.getInstancesCount();
-		write(integerFormat.format(bytes / 1024));
-		write(nextColumnAlignRight);
-		write(integerFormat.format(bytes * 100 / totalBytes));
-		write(nextColumnAlignRight);
-		write(integerFormat.format(instancesCount));
-		write(nextColumnAlignRight);
-		write(integerFormat.format(instancesCount * 100 / totalInstances));
-		write("</td>");
+		writeDirectly(integerFormat.format(bytes / 1024));
+		writeDirectly(nextColumnAlignRight);
+		writeDirectly(integerFormat.format(bytes * 100 / totalBytes));
+		writeDirectly(nextColumnAlignRight);
+		writeDirectly(integerFormat.format(instancesCount));
+		writeDirectly(nextColumnAlignRight);
+		writeDirectly(integerFormat.format(instancesCount * 100 / totalInstances));
+		writeDirectly("</td>");
 		if (sourceDisplayed) {
-			write("<td>");
+			writeDirectly("<td>");
 			final String source = classInfo.getSource();
 			if (source == null) {
-				write("&nbsp;");
+				writeDirectly("&nbsp;");
 			} else {
-				write(source);
+				writeDirectly(source);
 			}
-			write("</td>");
+			writeDirectly("</td>");
 		}
 	}
 
