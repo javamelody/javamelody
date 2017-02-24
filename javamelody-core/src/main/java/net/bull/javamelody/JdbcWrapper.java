@@ -27,7 +27,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -72,7 +71,6 @@ public final class JdbcWrapper {
 	private boolean jboss;
 	private boolean glassfish;
 	private boolean weblogic;
-	private boolean jonas;
 
 	static final class ConnectionInformationsComparator
 			implements Comparator<ConnectionInformations>, Serializable {
@@ -317,7 +315,6 @@ public final class JdbcWrapper {
 				|| serverInfo.contains("Sun Java System Application Server")
 				|| serverInfo.contains("Payara");
 		weblogic = serverInfo.contains("WebLogic");
-		jonas = System.getProperty("jonas.name") != null;
 		connectionInformationsEnabled = Parameters.isSystemActionsEnabled()
 				&& !Parameters.isNoDatabase();
 	}
@@ -522,9 +519,6 @@ public final class JdbcWrapper {
 			// rewrap pour tomee/openejb plus récents (cf issue 104),
 			rewrapTomEEDataSource(dataSource);
 			LOG.debug(dataSourceRewrappedMessage);
-		} else if (jonas) {
-			// JONAS (si rewrap-datasources==true)
-			rewrapJonasDataSource(jndiName, dataSource);
 		} else {
 			LOG.info("Datasource can't be rewrapped: " + jndiName + " of class "
 					+ dataSourceClassName);
@@ -607,37 +601,6 @@ public final class JdbcWrapper {
 		}
 	}
 
-	private void rewrapJonasDataSource(String jndiName, DataSource dataSource)
-			throws IllegalAccessException {
-		// cette méthode est utilisée sous jonas seulement is rewrap-datasources==true
-		final String dataSourceClassName = dataSource.getClass().getName();
-		if ("org.ow2.jonas.jndi.interceptors.impl.datasource.DatasourceWrapper"
-				.equals(dataSourceClassName)) {
-			// JONAS (si rewrap-datasource==true)
-			Object wrappedDataSource = JdbcWrapperHelper.getFieldValue(dataSource,
-					"wrappedDataSource");
-			final String wrappedDataSourceClassName = wrappedDataSource.getClass().getName();
-			LOG.debug("Jonas wrappedDatasource needs rewrap: " + jndiName + " of class "
-					+ dataSourceClassName);
-			if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(wrappedDataSourceClassName)) {
-				Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(wrappedDataSource,
-						"cm");
-				javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
-				JdbcWrapperHelper.setFieldValue(wrappedDataSource, "cm", javaxConnectionManager);
-			} else {
-				// rq: cela ne semble pas forcément suffire de faire un proxy de wrappedDataSource
-				wrappedDataSource = createDataSourceProxy((DataSource) wrappedDataSource);
-				JdbcWrapperHelper.setFieldValue(dataSource, "wrappedDataSource", wrappedDataSource);
-			}
-			LOG.debug("Datasource rewrapped: " + jndiName);
-		} else if ("org.ow2.jonas.ee.jdbc.DataSourceImpl".equals(dataSourceClassName)) {
-			Object javaxConnectionManager = JdbcWrapperHelper.getFieldValue(dataSource, "cm");
-			javaxConnectionManager = createJavaxConnectionManagerProxy(javaxConnectionManager);
-			JdbcWrapperHelper.setFieldValue(dataSource, "cm", javaxConnectionManager);
-			LOG.debug("Datasource rewrapped: " + jndiName);
-		}
-	}
-
 	boolean stop() {
 		boolean ok;
 		try {
@@ -682,8 +645,6 @@ public final class JdbcWrapper {
 		} else if (isDbcpDataSource(dataSourceClassName)) {
 			unwrap(dataSource, "dataSource", dataSourceUnwrappedMessage);
 		}
-		// else if (jonas) { }
-		// pour jonas, le unwrap serait compliqué
 	}
 
 	private void unwrap(Object parentObject, String fieldName, String unwrappedMessage)
@@ -741,7 +702,7 @@ public final class JdbcWrapper {
 		return createProxy(driver, invocationHandler);
 	}
 
-	// pour jboss, glassfish ou jonas
+	// pour jboss ou glassfish
 	private Object createJavaxConnectionManagerProxy(Object javaxConnectionManager) {
 		assert javaxConnectionManager != null;
 		final InvocationHandler invocationHandler = new ConnectionManagerInvocationHandler(
@@ -841,16 +802,7 @@ public final class JdbcWrapper {
 		}
 		final ConnectionInvocationHandler invocationHandler = new ConnectionInvocationHandler(
 				connection);
-		final Connection result;
-		if (jonas) {
-			// si jonas, on ne garde que l'interface java.sql.Connection
-			// car sinon on a NoClassDefFoundError: org.ow2.jonas.resource.internal.cm.ManagedConnectionInfo
-			// à la création du proxy (dans le cas d'un EAR avec des ejbs dans des jars et un war)
-			result = createProxy(connection, invocationHandler,
-					Arrays.asList(new Class<?>[] { Connection.class }));
-		} else {
-			result = createProxy(connection, invocationHandler);
-		}
+		final Connection result = createProxy(connection, invocationHandler);
 		if (result != connection) { // NOPMD
 			invocationHandler.init();
 		}

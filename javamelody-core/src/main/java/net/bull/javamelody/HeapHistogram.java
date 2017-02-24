@@ -302,7 +302,7 @@ class HeapHistogram implements Serializable {
 					// "vfs:/" pour jboss 6.0
 					src = src.substring("vfs:/".length());
 				} else if (src.startsWith("reference:file:/")) {
-					// "reference:file:/" pour les bundles jonas
+					// "reference:file:/" pour les bundles osgi
 					src = src.substring("reference:file:/".length());
 				}
 				if (src.endsWith(".jar") || src.endsWith(".war")) {

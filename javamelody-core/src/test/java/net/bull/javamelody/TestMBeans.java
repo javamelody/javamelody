@@ -57,14 +57,8 @@ public class TestMBeans {
 				new ObjectName("Catalina:type=GlobalRequestProcessor,name=http-8080"));
 		mbeansList.add(mBean2.getObjectName());
 		final ObjectInstance mBean3 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
-				new ObjectName("jonas:j2eeType=Servlet"));
-		mbeansList.add(mBean3.getObjectName());
-		final ObjectInstance mBean4 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
-				new ObjectName("notjonas:type=Servlet"));
-		mbeansList.add(mBean4.getObjectName());
-		final ObjectInstance mBean5 = mBeanServer.registerMBean(new GlobalRequestProcessor(),
 				new ObjectName("jboss.deployment:type=Servlet"));
-		mbeansList.add(mBean5.getObjectName());
+		mbeansList.add(mBean3.getObjectName());
 	}
 
 	/** After.

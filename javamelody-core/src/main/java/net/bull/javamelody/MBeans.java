@@ -159,10 +159,6 @@ final class MBeans {
 				firstPropertyValue = name
 						.getKeyProperty(keyPropertyListString.substring(0, indexOf));
 			}
-			if ("Servlet".equals(firstPropertyValue) && "jonas".equals(domain)) {
-				// la partie "jonas:j2eeType=Servlet" dans Jonas (5.1.0) est trop lourde
-				continue;
-			}
 			MBeanNode firstPropertyNode = getMBeanNodeFromList(domainNode.getChildren(),
 					firstPropertyValue);
 			if (firstPropertyNode == null) {
