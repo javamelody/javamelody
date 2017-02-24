@@ -17,11 +17,14 @@
  */
 package net.bull.javamelody;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -175,6 +178,18 @@ class CacheInformations implements Serializable {
 	}
 
 	private static boolean isEhcache27() {
+		final InputStream input = Ehcache.class
+				.getResourceAsStream("/net/sf/ehcache/version.properties");
+		if (input != null) {
+			try {
+				final Properties properties = new Properties();
+				properties.load(input);
+				final String version = properties.getProperty("version");
+				return "2.7".compareTo(version) <= 0;
+			} catch (final IOException e) { // NOPMD
+				// continue
+			}
+		}
 		try {
 			// ce Class.forName est nécessaire sur le serveur de collecte
 			Class.forName("net.sf.ehcache.statistics.StatisticsGateway");

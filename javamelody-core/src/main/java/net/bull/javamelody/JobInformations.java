@@ -102,6 +102,7 @@ class JobInformations implements Serializable {
 	private static boolean isQuartzAvailable() {
 		try {
 			Class.forName("org.quartz.Job");
+			Class.forName("org.quartz.impl.SchedulerRepository");
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
