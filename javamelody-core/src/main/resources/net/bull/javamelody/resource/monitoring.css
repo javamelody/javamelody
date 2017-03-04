@@ -27,19 +27,11 @@ a:visited {
 }
 
 a img {
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 
 a:hover img {
 	transform: scale(1.25);
-	-ms-transform: scale(1.25); /* IE 9 */
-	-moz-transform: scale(1.25); /* Firefox */
-	-webkit-transform: scale(1.25); /* Safari and Chrome */
-	-o-transform: scale(1.25); /* Opera */
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
@@ -49,32 +41,18 @@ a:hover img {
 }
 
 .synthese {
-	-moz-box-shadow: 2px 2px 3px #888;
-	-webkit-box-shadow: 2px 2px 3px #888;
 	box-shadow: 2px 2px 3px #888;
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=#888888,
-		direction=135, strength=3);
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 
 .synthese:hover {
 	transform: scale(1.05);
-	-ms-transform: scale(1.05); /* IE 9 */
-	-moz-transform: scale(1.05); /* Firefox */
-	-webkit-transform: scale(1.05); /* Safari and Chrome */
-	-o-transform: scale(1.05); /* Opera */
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
 table {
 	border-color: gray;
 	border-spacing: 0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 	border-radius: 5px;
 }
 
@@ -99,26 +77,18 @@ td {
 }
 
 table tr:last-child td:first-child {
-	-moz-border-radius-bottomleft: 5px;
-	-webkit-border-bottom-left-radius: 5px;
 	border-bottom-left-radius: 5px
 }
 
 table tr:last-child td:last-child {
-	-moz-border-radius-bottomright: 5px;
-	-webkit-border-bottom-right-radius: 5px;
 	border-bottom-right-radius: 5px
 }
 
 table thead th:first-child {
-	-moz-border-radius-topleft: 5px;
-	-webkit-border-top-left-radius: 5px;
 	border-top-left-radius: 5px
 }
 
 table thead th:last-child {
-	-moz-border-radius-topright: 5px;
-	-webkit-border-top-right-radius: 5px;
 	border-top-right-radius: 5px
 }
 
@@ -154,11 +124,7 @@ table thead th:last-child {
 	color: #000;
 	border: 1px solid #bbb;
 	background: #ffc;
-	-moz-box-shadow: 3px 3px 4px #888;
-	-webkit-box-shadow: 3px 3px 4px #888;
 	box-shadow: 3px 3px 4px #888;
-	filter: progid:DXImageTransform.Microsoft.Shadow(color=#888888,
-		direction=135, strength=3);
 }
 
 div#track,div#handle {
@@ -205,40 +171,26 @@ div#handle {
 form {
 	background-color: #F5F5F5;
 	font-size: 11px;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
 	border-radius: 2px;
-	-moz-box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
-	-webkit-box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
 	box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
 }
 
 input[type=text] {
 	border: 1px solid #b9b9b9;
 	border-top: 1px solid #a0a0a0;
-	-moz-border-radius: 1px;
-	-webkit-border-radius: 1px;
 	border-radius: 1px;
-	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
-	-o-transition: all 0.3s ease;
-	-ms-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 
 input[type=text]:hover {
 	border: 1px solid #999999;
 	border-top: 1px solid #808080;
-	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 input[type=text]:focus {
 	outline: none;
 	border: 1px solid #4d90fe;
-	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -261,7 +213,6 @@ input[type=submit] {
 	vertical-align: baseline;
 	text-align: center;
 	cursor: pointer;
-	-moz-user-select: none;
 	color: rgba(0, 0, 0, 0.8);
 	border: medium none transparent;
 	background-color: #E6E6E6;
@@ -312,7 +263,6 @@ input[type=checkbox] {
 .menuShow,.menuHide {
 	/* we specify the transition length for hiding and showing */
 	transition: margin-right .4s ease-in;
-	-webkit-transition: margin-right .4s ease-in;
 }
 
 .menuHide {
@@ -359,17 +309,12 @@ input[type=checkbox] {
 .menuButton:hover {
 	background: #6C6D76;
 	transition: background .3s linear;
-	-o-transition: background .3s linear;
-	-moz-transition: background .3s linear;
-	-webkit-transition: background .3s linear;
 }
 
 #menuDeco {
 	width: 188px;
 	float: left;
 	box-shadow: 0px 0px 5px #000;
-	-moz-box-shadow: 0px 0px 5px #000;
-	-webkit-box-shadow: 0px 0px 5px #000;
 }
 
 @media print {
