@@ -124,8 +124,8 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 			writeDirectly(encodedText);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
-				writeln(htmlEncode(stackTraceElement.toString()));
-				writeln("<br/>");
+				writeDirectly(htmlEncode(stackTraceElement.toString()));
+				writeDirectly("<br/>");
 			}
 			writeln("</em>");
 			writeDirectly(encodedText);

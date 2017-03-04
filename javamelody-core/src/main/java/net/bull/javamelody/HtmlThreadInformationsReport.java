@@ -202,8 +202,8 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			writeDirectly(encodedName);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
-				write(htmlEncode(stackTraceElement.toString()));
-				writeln("<br/>");
+				writeDirectly(htmlEncode(stackTraceElement.toString()));
+				writeDirectly("<br/>");
 			}
 			writeln("</em>");
 			writeDirectly(encodedName);
@@ -214,12 +214,12 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 		}
 	}
 
-	void writeExecutedMethod(ThreadInformations threadInformations) throws IOException {
+	private void writeExecutedMethod(ThreadInformations threadInformations) throws IOException {
 		final String executedMethod = threadInformations.getExecutedMethod();
 		if (executedMethod != null && executedMethod.length() != 0) {
-			write(htmlEncode(executedMethod));
+			writeDirectly(htmlEncode(threadInformations.getExecutedMethod()));
 		} else {
-			write("&nbsp;");
+			writeDirectly("&nbsp;");
 		}
 	}
 
