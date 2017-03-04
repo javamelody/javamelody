@@ -175,7 +175,7 @@ class SamplingProfiler {
 		final String[] packages = packageNames.toArray(new String[packageNames.size()]);
 		for (int i = 0; i < packages.length; i++) {
 			packages[i] = packages[i].trim(); // NOPMD
-			if (packages[i].length() == 0) {
+			if (packages[i].isEmpty()) {
 				throw new IllegalArgumentException(
 						"A package can not be empty, item " + i + " in " + packageNames);
 			}

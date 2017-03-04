@@ -505,7 +505,7 @@ class MonitoringController {
 			HttpServletResponse httpResponse, String reportName)
 			throws ServletException, IOException {
 		final String customReportPath = Parameters.getParameterByName(reportName);
-		if (customReportPath.length() > 0 && customReportPath.charAt(0) == '/'
+		if (!customReportPath.isEmpty() && customReportPath.charAt(0) == '/'
 				&& Parameters.getServletContext().getRequestDispatcher(customReportPath) != null) {
 			Parameters.getServletContext().getRequestDispatcher(customReportPath)
 					.forward(httpRequest, httpResponse);

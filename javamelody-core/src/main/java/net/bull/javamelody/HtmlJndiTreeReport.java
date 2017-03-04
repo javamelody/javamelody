@@ -43,7 +43,7 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 		writeln("<br/>");
 
 		final String title;
-		if (path.length() == 0) {
+		if (path.isEmpty()) {
 			title = getString("Arbre_JNDI");
 		} else {
 			title = getFormattedString("Arbre_JNDI_pour_contexte", htmlEncode(path));

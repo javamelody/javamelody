@@ -136,7 +136,7 @@ class PdfOtherReport {
 	void writeJndi(List<JndiBinding> jndiBindings, String path) throws IOException {
 		try {
 			document.open();
-			if (path.length() == 0) {
+			if (path.isEmpty()) {
 				addParagraph(getString("Arbre_JNDI"), "jndi.png");
 			} else {
 				addParagraph(getFormattedString("Arbre_JNDI_pour_contexte", path), "jndi.png");

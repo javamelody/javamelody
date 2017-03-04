@@ -329,7 +329,7 @@ public class MonitoringFilter implements Filter {
 		if (session.getAttribute(SessionInformations.SESSION_COUNTRY_KEY) == null) {
 			// langue préférée du navigateur, getLocale ne peut être null
 			final Locale locale = httpRequest.getLocale();
-			if (locale.getCountry().length() > 0) {
+			if (!locale.getCountry().isEmpty()) {
 				session.setAttribute(SessionInformations.SESSION_COUNTRY_KEY, locale.getCountry());
 			} else {
 				session.setAttribute(SessionInformations.SESSION_COUNTRY_KEY, locale.getLanguage());

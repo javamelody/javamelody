@@ -206,7 +206,7 @@ class FilterContext {
 				counter.setDisplayed(false);
 			}
 		}
-		if (displayedCounters.length() != 0) {
+		if (!displayedCounters.isEmpty()) {
 			for (final String displayedCounter : displayedCounters.split(",")) {
 				final String displayedCounterName = displayedCounter.trim();
 				boolean found = false;

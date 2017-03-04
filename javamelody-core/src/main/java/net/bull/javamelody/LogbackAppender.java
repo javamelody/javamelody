@@ -85,7 +85,7 @@ public class LogbackAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		if (event.getLevel().isGreaterOrEqual(THRESHOLD)) {
 			final String output = messageLayout.doLayout(event);
 			String stackTrace = exceptionLayout.doLayout(event);
-			if (stackTrace.length() == 0) {
+			if (stackTrace.isEmpty()) {
 				stackTrace = null;
 			}
 			LoggingHandler.addErrorLogToCounter(output, stackTrace);

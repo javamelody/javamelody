@@ -86,7 +86,7 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 
 		private void writeRow(String[] row) throws IOException {
 			for (final String value : row) {
-				if (value == null || value.length() == 0) {
+				if (value == null || value.isEmpty()) {
 					write("<td>&nbsp;</td>");
 				} else {
 					if (isNumber(value)) {

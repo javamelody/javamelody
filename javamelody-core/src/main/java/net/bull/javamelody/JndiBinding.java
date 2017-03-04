@@ -100,7 +100,7 @@ class JndiBinding implements Serializable {
 					final JndiBinding jndiBinding = createJndiBinding(normalizedPath, binding);
 					// si on veux corriger http://java.net/jira/browse/GLASSFISH-12831
 					// sous glassfish 3.0.1 et non 3.1, les bindings d'un contexte contienne le contexte lui-même
-					//		if (jndiBinding.getName().length() == 0) {
+					//		if (jndiBinding.getName().isEmpty()) {
 					//			return;
 					//		}
 					result.add(jndiBinding);
@@ -133,7 +133,7 @@ class JndiBinding implements Serializable {
 				// pour jetty :
 				|| object instanceof Reference
 						&& "javax.naming.Context".equals(((Reference) object).getClassName())) {
-			if (path.length() > 0) {
+			if (!path.isEmpty()) {
 				contextPath = path + '/' + name;
 			} else {
 				// nécessaire pour jonas 5.1.0
@@ -182,7 +182,7 @@ class JndiBinding implements Serializable {
 		if (result.startsWith(path)) {
 			result = result.substring(path.length());
 		}
-		if (result.length() > 0 && result.charAt(0) == '/') {
+		if (!result.isEmpty() && result.charAt(0) == '/') {
 			result = result.substring(1);
 		}
 		return result;

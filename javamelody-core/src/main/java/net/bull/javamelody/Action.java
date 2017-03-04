@@ -317,7 +317,7 @@ enum Action { // NOPMD
 				heapDumpPath = ((com.sun.management.VMOption) vmOption).getValue();
 			}
 			final String path;
-			if (heapDumpPath == null || heapDumpPath.length() == 0) {
+			if (heapDumpPath == null || heapDumpPath.isEmpty()) {
 				path = Parameters.TEMPORARY_DIRECTORY.getPath();
 			} else {
 				// -XX:HeapDumpPath=/tmp par exemple a été spécifié comme paramètre de VM.

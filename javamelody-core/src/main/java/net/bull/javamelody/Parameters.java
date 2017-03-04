@@ -302,7 +302,7 @@ final class Parameters {
 		// sinon on considère que c'est un chemin relatif par rapport au répertoire temporaire
 		// ('temp' dans TOMCAT_HOME pour tomcat).
 		final String directory;
-		if (dir.length() > 0 && new File(dir).isAbsolute()) {
+		if (!dir.isEmpty() && new File(dir).isAbsolute()) {
 			directory = dir;
 		} else {
 			directory = TEMPORARY_DIRECTORY.getPath() + '/' + dir;

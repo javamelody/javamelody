@@ -71,7 +71,7 @@ class PdfDatabaseInformationsReport extends PdfAbstractTableReport {
 		final PdfPCell defaultCell = getDefaultCell();
 		defaultCell.setVerticalAlignment(Element.ALIGN_TOP);
 		for (final String value : row) {
-			if (value == null || value.length() == 0) {
+			if (value == null || value.isEmpty()) {
 				addCell("");
 			} else {
 				if (isNumber(value)) {

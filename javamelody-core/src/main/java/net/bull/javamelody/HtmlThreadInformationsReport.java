@@ -214,9 +214,9 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 		}
 	}
 
-	private void writeExecutedMethod(ThreadInformations threadInformations) throws IOException {
+	void writeExecutedMethod(ThreadInformations threadInformations) throws IOException {
 		final String executedMethod = threadInformations.getExecutedMethod();
-		if (executedMethod != null && executedMethod.length() != 0) {
+		if (executedMethod != null && !executedMethod.isEmpty()) {
 			writeDirectly(htmlEncode(threadInformations.getExecutedMethod()));
 		} else {
 			writeDirectly("&nbsp;");

@@ -401,7 +401,7 @@ final class MBeans {
 				final String attributeDescription = formatDescription(
 						attributeInfo.getDescription());
 				if (attributeDescription == null || name.equals(attributeDescription)
-						|| attributeDescription.length() == 0) {
+						|| attributeDescription.isEmpty()) {
 					// les attributs des MBeans de java.lang ont des descriptions égales aux noms,
 					// ce sont des descriptions inutiles
 					return null;

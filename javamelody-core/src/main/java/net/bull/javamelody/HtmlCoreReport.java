@@ -72,7 +72,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<br/>");
 			final DateFormat dateFormat = I18N.createDateFormat();
 			final String dateFormatPattern;
-			if (getString("dateFormatPattern").length() == 0) {
+			if (getString("dateFormatPattern").isEmpty()) {
 				final String pattern = ((SimpleDateFormat) dateFormat).toPattern();
 				dateFormatPattern = pattern.toLowerCase(I18N.getCurrentLocale());
 			} else {

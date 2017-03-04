@@ -96,7 +96,7 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 		final MonitoredWithGuice classAnnotation = targetClass
 				.getAnnotation(MonitoredWithGuice.class);
 		if (classAnnotation == null || classAnnotation.name() == null
-				|| classAnnotation.name().length() == 0) {
+				|| classAnnotation.name().isEmpty()) {
 			return targetClass.getSimpleName();
 		}
 		return classAnnotation.name();
@@ -106,7 +106,7 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 		final MonitoredWithGuice methodAnnotation = invocation.getMethod()
 				.getAnnotation(MonitoredWithGuice.class);
 		if (methodAnnotation == null || methodAnnotation.name() == null
-				|| methodAnnotation.name().length() == 0) {
+				|| methodAnnotation.name().isEmpty()) {
 			return invocation.getMethod().getName();
 		}
 		return methodAnnotation.name();

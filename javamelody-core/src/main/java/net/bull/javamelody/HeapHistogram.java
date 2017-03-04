@@ -339,7 +339,7 @@ class HeapHistogram implements Serializable {
 		}
 
 		static long parseLongWithK(String text) {
-			assert text.length() > 0;
+			assert !text.isEmpty();
 			if (text.charAt(text.length() - 1) == 'k') {
 				String t = text.substring(0, text.length() - 1);
 				if (t.charAt(0) == '+') {

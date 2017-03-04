@@ -161,7 +161,7 @@ final class JdbcWrapperHelper {
 			dataSources.putAll(getJndiDataSourcesAt("java:global/jdbc"));
 			// pour WebLogic 10 et WebSphere 7, cf issue 68
 			dataSources.putAll(getJndiDataSourcesAt("jdbc"));
-		} else if (datasourcesParameter.trim().length() != 0) { // NOPMD
+		} else if (!datasourcesParameter.trim().isEmpty()) { // NOPMD
 			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
 				final String jndiName = datasource.trim();
