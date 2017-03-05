@@ -107,7 +107,6 @@ table thead th:last-child {
 	position: relative;
 	/* marche pas avec texte long qui se wrappe: z-index: 500; */
 	text-decoration: none;
-	text-align: left;
 }
 
 .tooltip:hover em {
@@ -125,6 +124,7 @@ table thead th:last-child {
 	border: 1px solid #bbb;
 	background: #ffc;
 	box-shadow: 3px 3px 4px #888;
+	text-align: left;
 }
 
 div#track, div#handle {
