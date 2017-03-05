@@ -113,7 +113,7 @@ table thead th:last-child {
 	font-style: normal;
 	display: block;
 	position: absolute;
-	top: 20px;
+	top: 12px;
 	left: 20px;
 	/* une width fixe est nécessaire pour MSIE 7,
 	mais cela gâcherait tout sur firefox, chrome ou MSIE8 qui n'en ont pas besoin
