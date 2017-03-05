@@ -327,3 +327,31 @@ input[type=checkbox] {
 		display: none;
 	}
 }
+
+/* JavaHTMLizer */
+code {
+	font-size: 12px;
+}
+
+code .string {
+	color: blue;
+}
+
+code .comment {
+	font-style: italic;
+	color: green;
+}
+
+code .keyword {
+	font-weight: bold;
+	color: purple;
+}
+
+code .comment .keyword {
+	color: green;
+	font-weight: normal;
+}
+
+code .comment .string {
+	color: green;
+}
