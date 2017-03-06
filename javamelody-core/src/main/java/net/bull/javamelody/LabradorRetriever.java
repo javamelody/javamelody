@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -223,6 +224,47 @@ class LabradorRetriever {
 				}
 				httpResponse.setContentType(connection.getContentType());
 				TransportFormat.pump(input, httpResponse.getOutputStream());
+			} finally {
+				try {
+					input.close();
+				} finally {
+					close(connection);
+					dataLength = counterInputStream.getDataLength();
+				}
+			}
+		} finally {
+			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
+					+ dataLength / 1024 + " KB read for " + url);
+		}
+	}
+
+	void downloadTo(OutputStream output) throws IOException {
+		if (shouldMock()) {
+			return;
+		}
+		assert output != null;
+		final long start = System.currentTimeMillis();
+		int dataLength = -1;
+		try {
+			final URLConnection connection = openConnection(url, headers);
+			if (url.getUserInfo() != null) {
+				final String authorization = Base64Coder.encodeString(url.getUserInfo());
+				connection.setRequestProperty("Authorization", "Basic " + authorization);
+			}
+			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
+			// puisque le filtre de monitoring n'est pas censé créer des sessions
+			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
+
+			connection.connect();
+
+			final CounterInputStream counterInputStream = new CounterInputStream(
+					connection.getInputStream());
+			InputStream input = counterInputStream;
+			try {
+				if ("gzip".equals(connection.getContentEncoding())) {
+					input = new GZIPInputStream(input);
+				}
+				TransportFormat.pump(input, output);
 			} finally {
 				try {
 					input.close();

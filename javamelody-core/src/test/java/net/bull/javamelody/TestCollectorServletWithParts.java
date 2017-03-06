@@ -20,6 +20,7 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
 import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
@@ -45,6 +46,7 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SOURCE_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -188,6 +190,9 @@ public class TestCollectorServletWithParts {
 		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, SOURCE_PART);
+		parameters.put(CLASS_PARAMETER, "java.lang.String");
 		doPart(parameters);
 	}
 

@@ -20,6 +20,7 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
 import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
@@ -46,6 +47,7 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SOURCE_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -210,6 +212,10 @@ class CollectorController { // NOPMD
 				|| POM_XML_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, partParameter);
+		} else if (SOURCE_PART.equalsIgnoreCase(partParameter)) {
+			noCache(resp);
+			doProxy(req, resp, application, partParameter + '&' + CLASS_PARAMETER + '='
+					+ req.getParameter(CLASS_PARAMETER));
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
 					"connexions_intro", "db.png");
@@ -249,7 +255,10 @@ class CollectorController { // NOPMD
 		// dans tout l'éventuel cluster
 		final URL url = getUrlsByApplication(application).get(0);
 		// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
-		final URL proxyUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + partParameter);
+		final URL proxyUrl = new URL(
+				url.toString().replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
+						.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT) + '&'
+						+ PART_PARAMETER + '=' + partParameter);
 		new LabradorRetriever(proxyUrl).copyTo(req, resp);
 	}
 

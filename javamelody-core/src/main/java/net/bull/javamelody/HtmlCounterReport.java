@@ -151,10 +151,19 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			}
 			if (request != null && request.getStackTrace() != null) {
 				writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
-				// writeDirectly pour ne pas gérer de traductions si la stack-trace contient '#'
-				writeDirectly(htmlEncodeButNotSpace(request.getStackTrace()).replaceAll("\t",
-						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+				writeStackTrace(request);
 				writeln("</font></blockquote></blockquote>");
+			}
+		}
+
+		private void writeStackTrace(CounterRequest request) throws IOException {
+			for (final String element : request.getStackTrace().split("\n|\r")) {
+				if (!element.isEmpty()) {
+					// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
+					writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElement(element)
+							.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+					writeDirectly("<br/>\n");
+				}
 			}
 		}
 

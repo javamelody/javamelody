@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody; // NOPMD
 
+import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
@@ -38,6 +39,7 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SOURCE_PART;
 import static net.bull.javamelody.HttpParameters.TEXT_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
@@ -136,6 +138,9 @@ class HtmlController {
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
 			htmlReport.writeCounterSummaryPerClass(counterName, requestId);
+		} else if (SOURCE_PART.equalsIgnoreCase(part)) {
+			final String className = httpRequest.getParameter(CLASS_PARAMETER);
+			htmlReport.writeSource(className);
 		} else {
 			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
 		}

@@ -69,7 +69,7 @@ class HtmlHotspotsReport extends HtmlAbstractReport {
 
 	private void writeHotspot(SampledMethod hotspot) throws IOException {
 		write("<td>");
-		writeDirectly(htmlEncode(hotspot.getClassName()));
+		writeDirectly(HtmlSourceReport.addLinkToClassName(hotspot.getClassName()));
 		write(".<b>");
 		writeDirectly(htmlEncode(hotspot.getMethodName()));
 		write("</b>");

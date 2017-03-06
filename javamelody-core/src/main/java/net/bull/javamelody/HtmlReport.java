@@ -126,6 +126,13 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
+	void writeSource(String className) throws IOException {
+		assert className != null;
+		writeHtmlHeader();
+		new HtmlSourceReport(className, getWriter()).toHtml();
+		writeHtmlFooter();
+	}
+
 	void writeHtmlHeader() throws IOException {
 		writeHtmlHeader(false, false);
 	}
@@ -159,6 +166,8 @@ class HtmlReport extends HtmlAbstractReport {
 		writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
 		// Effect slidedown/slideup décrit ici http://madrobby.github.com/scriptaculous/effect-slidedown/
 		writeln("<script type='text/javascript' src='?resource=effects.js'></script>");
+		// open dialog (for java sources), http://www.p51labs.com/lightwindow/
+		writeln("<script type='text/javascript' src='?resource=lightwindow.js'></script>");
 		if (includeSlider) {
 			writeln("<script type='text/javascript' src='?resource=slider.js'></script>");
 		}

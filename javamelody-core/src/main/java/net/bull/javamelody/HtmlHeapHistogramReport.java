@@ -126,11 +126,12 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
 			boolean heap, boolean sourceDisplayed) throws IOException {
 		writeDirectly("<td>");
+		final String classInfoName = classInfo.getName();
 		if (heap) {
-			writeDirectly(classInfo.getName());
+			writeDirectly(HtmlSourceReport.addLinkToClassName(classInfoName));
 		} else {
 			// encodage nécessaire dans PermGen pour "<methodKlass>" par exemple
-			writeDirectly(classInfo.getName().replaceAll("[<]", "&lt;").replaceAll("[>]", "&gt;"));
+			writeDirectly(classInfoName.replaceAll("[<]", "&lt;").replaceAll("[>]", "&gt;"));
 		}
 		final String nextColumnAlignRight = "</td><td align='right'>";
 		writeDirectly(nextColumnAlignRight);

@@ -18,6 +18,7 @@
 package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
@@ -48,6 +49,7 @@ import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.SOURCE_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
@@ -654,6 +656,8 @@ public class TestMonitoringFilter { // NOPMD
 
 		doMonitoringWithGraphPart();
 
+		doMonitoringWithSourcePart();
+
 		parameters.put(PART_PARAMETER, "unknown part");
 		boolean exception = false;
 		try {
@@ -687,6 +691,33 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(PART_PARAMETER, USAGES_PART);
 		parameters.put(GRAPH, "unknown");
 		monitoring(parameters);
+	}
+
+	private void doMonitoringWithSourcePart() throws IOException, ServletException {
+		final Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put(PART_PARAMETER, SOURCE_PART);
+		// classe java du jdk
+		parameters.put(CLASS_PARAMETER, "java.lang.String");
+		monitoring(parameters);
+		// classe interne dans le même fichier
+		parameters.put(CLASS_PARAMETER, "java.lang.Thread$State");
+		monitoring(parameters);
+		// classe javax du jdk
+		parameters.put(CLASS_PARAMETER, "javax.naming.InitialContext");
+		monitoring(parameters);
+		// classe inexistante
+		parameters.put(CLASS_PARAMETER, "java.dummy");
+		monitoring(parameters);
+		// classe d'un jar construit par Maven
+		parameters.put(CLASS_PARAMETER, "org.jrobin.core.RrdDb");
+		monitoring(parameters);
+		// classe d'un jar construit par Maven, sans sources
+		parameters.put(CLASS_PARAMETER, "org.apache.tomcat.dbcp.dbcp.BasicDataSource");
+		monitoring(parameters);
+		// classe d'un jar non construit par Maven
+		parameters.put(CLASS_PARAMETER, "com.lowagie.text.Document");
+		monitoring(parameters);
+		parameters.remove(CLASS_PARAMETER);
 	}
 
 	private void monitorJdbcParts(Map<String, String> parameters)

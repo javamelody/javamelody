@@ -98,6 +98,11 @@ table thead th:last-child {
 	word-break: break-all;
 }
 
+.tooltip {
+	/* pour que <div class=tooltip> soit comme <a> */
+	color: #0000BB;
+}
+
 .tooltip em {
 	display: none;
 }
@@ -354,4 +359,137 @@ code .comment .keyword {
 
 code .comment .string {
 	color: green;
+}
+
+/* lightwindow, http://www.p51labs.com/lightwindow/ */
+#lightwindow_overlay {
+	/* REQUIRED */
+	display: none;
+	visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100px;
+	z-index: 500;
+	/* REQUIRED */
+}
+
+#lightwindow {
+	/* REQUIRED */
+	/* Of Note - The height and width of this element are set to 0px */
+	display: none;
+	visibility: hidden;
+	position: absolute;
+	z-index: 999;
+	line-height: 0px;
+	/* REQUIRED */
+}
+
+	#lightwindow_container {
+		/* REQUIRED */
+		display: none;
+		visibility: hidden;
+		position: absolute;
+		/* REQUIRED */
+		padding: 0 0 0 0;
+		margin: 0 0 0 0;
+	}
+
+	/* IE6 needs this or it messes with our positioning */
+	* html #lightwindow_container {
+		overflow: hidden;
+	}
+
+	#lightwindow_contents {
+		overflow: hidden;
+		z-index: 0;
+		position: relative;
+		border: 10px solid #ffffff;
+		background-color: #ffffff;
+	}
+
+#lightwindow_loading {
+	/* REQUIRED */
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	z-index: 9999;
+	position: absolute;
+	/* REQUIRED */
+	background-color: #f0f0f0;
+	padding: 10px;
+}
+
+	#lightwindow_loading_shim {
+		display: none;
+		left: 0px; 
+		position: absolute; 
+		top: 0px;
+		width: 100%; 
+		height: 100%;
+	}
+
+	#lightwindow_loading span {
+		font-size: 12px;
+		line-height: 32px;
+		color: #444444;
+		float: left;
+		padding: 0 10px 0 0;
+	}
+
+	#lightwindow_loading span a,
+	#lightwindow_loading span a:link,
+	#lightwindow_loading span a:visited {
+		color: #09F;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	#lightwindow_loading span a:hover,
+	#lightwindow_loading span a:active {
+		text-decoration: underline;
+	}
+
+	#lightwindow_loading img {
+		float: left;
+		margin: 0 10px 0 0;
+	}
+	
+#lightwindow_title_bar {
+	height: 25px;
+	overflow: hidden;
+}
+
+	#lightwindow_title_bar_title {
+		color: lightgray;
+		font-size: 14px;
+		font-weight: bold;
+		line-height: 25px;
+		text-align: left;
+		float: left;
+	}
+
+	a#lightwindow_title_bar_close_link,	
+	a:link#lightwindow_title_bar_close_link,
+	a:visited#lightwindow_title_bar_close_link {
+		float: right;
+		text-align: right;
+		cursor: pointer;
+		color: lightgray;
+		line-height: 25px;
+		padding: 0;
+		margin: 0;
+	}
+
+	a:hover#lightwindow_title_bar_close_link,
+	a:active#lightwindow_title_bar_close_link {
+		color: #ffffff;
+		text-decoration: none;
+	}
+
+#lightwindow p {
+	color: #000000;
+	padding-right: 10px;
 }

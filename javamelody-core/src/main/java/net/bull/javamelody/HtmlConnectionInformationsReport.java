@@ -118,18 +118,19 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 		final String encodedText = htmlEncode(text);
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
-			writeln("<a class='tooltip'>");
+			writeln("<div class='tooltip'>");
 			writeln("<em>");
 			// writeDirectly pour ne pas gérer de traductions si le texte contient '#'
 			writeDirectly(encodedText);
 			writeln("<br/>");
 			for (final StackTraceElement stackTraceElement : stackTrace) {
-				writeDirectly(htmlEncode(stackTraceElement.toString()));
+				writeDirectly(
+						HtmlSourceReport.htmlEncodeStackTraceElement(stackTraceElement.toString()));
 				writeDirectly("<br/>");
 			}
 			writeln("</em>");
 			writeDirectly(encodedText);
-			writeln("</a>");
+			writeln("</div>");
 		} else {
 			// writeDirectly pour ne pas gérer de traductions si le texte contient '#'
 			writeDirectly(encodedText);

@@ -26,6 +26,7 @@ final class HttpParameters {
 	static final String HTML_CONTENT_TYPE = "text/html; charset=" + HTML_CHARSET;
 	static final String TEXT_CONTENT_TYPE = "text/plain; charset=" + HTML_CHARSET;
 	static final String CONTENT_DISPOSITION = "Content-Disposition";
+
 	static final String ACTION_PARAMETER = "action";
 	static final String PART_PARAMETER = "part";
 	static final String PERIOD_PARAMETER = "period";
@@ -46,6 +47,8 @@ final class HttpParameters {
 	static final String MAX_PARAMETER = "max";
 	static final String REPORT_PARAMETER = "report";
 	static final String TOKEN_PARAMETER = "token";
+	static final String CLASS_PARAMETER = "class";
+
 	static final String HEAP_HISTO_PART = "heaphisto";
 	static final String PROCESSES_PART = "processes";
 	static final String CURRENT_REQUESTS_PART = "currentRequests";
@@ -72,6 +75,7 @@ final class HttpParameters {
 	static final String OTHER_JROBINS_PART = "otherJRobins";
 	static final String EXPLAIN_PLAN_PART = "explainPlan";
 	static final String APPLICATIONS_PART = "applications";
+	static final String SOURCE_PART = "source";
 
 	/**
 	 * Constructeur privé: pas d'instance.

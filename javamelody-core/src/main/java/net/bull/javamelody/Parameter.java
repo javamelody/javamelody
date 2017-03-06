@@ -322,7 +322,12 @@ public enum Parameter {
 	/**
 	 * Explicit name of the monitored application (in case the automatic name detection fails somehow).
 	 */
-	APPLICATION_NAME("application-name");
+	APPLICATION_NAME("application-name"),
+
+	/**
+	 * Comma separated list of Maven repositories URLs (https://repo1.maven.org/maven2/ by default).
+	 */
+	MAVEN_REPOSITORIES("maven-repositories");
 
 	private final String code;
 
