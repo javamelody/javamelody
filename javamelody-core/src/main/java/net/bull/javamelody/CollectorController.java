@@ -206,12 +206,10 @@ class CollectorController { // NOPMD
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
 			MonitoringController monitoringController, String partParameter)
 			throws IOException, ServletException {
-		if (WEB_XML_PART.equalsIgnoreCase(partParameter)) {
+		if (WEB_XML_PART.equalsIgnoreCase(partParameter)
+				|| POM_XML_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
-			doProxy(req, resp, application, WEB_XML_PART);
-		} else if (POM_XML_PART.equalsIgnoreCase(partParameter)) {
-			noCache(resp);
-			doProxy(req, resp, application, POM_XML_PART);
+			doProxy(req, resp, application, partParameter);
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
 					"connexions_intro", "db.png");
