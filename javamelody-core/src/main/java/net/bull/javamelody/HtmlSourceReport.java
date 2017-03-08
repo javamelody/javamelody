@@ -31,7 +31,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +47,9 @@ import java.util.zip.ZipInputStream;
  */
 class HtmlSourceReport extends HtmlAbstractReport {
 	private static final String MAVEN_CENTRAL = "http://repo1.maven.org/maven2";
+
+	private static final File LOCAL_REPO = new File(
+			System.getProperty("user.home") + "/.m2/repository");
 
 	private static final File JDK_SRC_FILE = getJdkSrcFile();
 
@@ -132,9 +135,13 @@ class HtmlSourceReport extends HtmlAbstractReport {
 				"sources/" + artifactId + '-' + version + "-sources.jar");
 		if (!srcJarFile.exists() || srcJarFile.length() == 0) {
 			for (final String mavenRepository : getMavenRepositories()) {
-				final URL sourceUrl = new URL(
-						mavenRepository + '/' + groupId.replace('.', '/') + '/' + artifactId + '/'
-								+ version + '/' + artifactId + '-' + version + "-sources.jar");
+				final String url = mavenRepository + '/' + groupId.replace('.', '/') + '/'
+						+ artifactId + '/' + version + '/' + artifactId + '-' + version
+						+ "-sources.jar";
+				if (!url.startsWith("http") && new File(url).exists()) {
+					return getSourceFromJar(clazz, new File(url));
+				}
+				final URL sourceUrl = new URL(url);
 				srcJarFile.getParentFile().mkdirs();
 				final OutputStream output = new FileOutputStream(srcJarFile);
 				try {
@@ -193,7 +200,7 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			}
 			return result;
 		}
-		return Collections.singletonList(MAVEN_CENTRAL);
+		return Arrays.asList(LOCAL_REPO.getPath(), MAVEN_CENTRAL);
 	}
 
 	@Override
