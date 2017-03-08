@@ -178,8 +178,8 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		}
 	}
 
-	private void delete(File file) {
-		file.delete();
+	private boolean delete(File file) {
+		return file.delete();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
