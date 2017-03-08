@@ -182,10 +182,14 @@ class CacheInformations implements Serializable {
 				.getResourceAsStream("/net/sf/ehcache/version.properties");
 		if (input != null) {
 			try {
-				final Properties properties = new Properties();
-				properties.load(input);
-				final String version = properties.getProperty("version");
-				return "2.7".compareTo(version) <= 0;
+				try {
+					final Properties properties = new Properties();
+					properties.load(input);
+					final String version = properties.getProperty("version");
+					return "2.7".compareTo(version) <= 0;
+				} finally {
+					input.close();
+				}
 			} catch (final IOException e) { // NOPMD
 				// continue
 			}
