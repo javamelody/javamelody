@@ -198,7 +198,6 @@ class LabradorRetriever {
 		}
 		assert httpRequest != null;
 		assert httpResponse != null;
-		final OutputStream output = httpResponse.getOutputStream();
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;
 		try {
@@ -216,7 +215,7 @@ class LabradorRetriever {
 
 			connection.connect();
 			httpResponse.setContentType(connection.getContentType());
-
+			final OutputStream output = httpResponse.getOutputStream();
 			dataLength = pump(output, connection);
 		} finally {
 			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
