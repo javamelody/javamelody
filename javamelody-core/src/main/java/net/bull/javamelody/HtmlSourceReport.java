@@ -148,10 +148,7 @@ class HtmlSourceReport extends HtmlAbstractReport {
 					}
 					return getSourceFromJar(clazz, new File(url));
 				}
-				if (!srcJarFile.getParentFile().exists() && !srcJarFile.getParentFile().mkdirs()) {
-					throw new IllegalStateException(
-							"Can't create directory " + srcJarFile.getParentFile().getPath());
-				}
+				mkdirs(srcJarFile);
 				final OutputStream output = new FileOutputStream(srcJarFile);
 				try {
 					final URL sourceUrl = new URL(url);
@@ -172,6 +169,13 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			return getSourceFromJar(clazz, srcJarFile);
 		}
 		return null;
+	}
+
+	private void mkdirs(File directory) {
+		if (!directory.getParentFile().exists() && !directory.getParentFile().mkdirs()) {
+			throw new IllegalStateException(
+					"Can't create directory " + directory.getParentFile().getPath());
+		}
 	}
 
 	private void delete(File file) {
