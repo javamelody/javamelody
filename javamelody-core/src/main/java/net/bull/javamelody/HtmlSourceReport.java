@@ -138,7 +138,10 @@ class HtmlSourceReport extends HtmlAbstractReport {
 				final String url = mavenRepository + '/' + groupId.replace('.', '/') + '/'
 						+ artifactId + '/' + version + '/' + artifactId + '-' + version
 						+ "-sources.jar";
-				if (!url.startsWith("http") && new File(url).exists()) {
+				if (!url.startsWith("http")) {
+					if (!new File(url).exists()) {
+						continue;
+					}
 					return getSourceFromJar(clazz, new File(url));
 				}
 				final URL sourceUrl = new URL(url);
