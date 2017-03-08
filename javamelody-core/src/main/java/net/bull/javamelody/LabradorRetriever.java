@@ -198,6 +198,7 @@ class LabradorRetriever {
 		}
 		assert httpRequest != null;
 		assert httpResponse != null;
+		final OutputStream output = httpResponse.getOutputStream();
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;
 		try {
@@ -214,24 +215,9 @@ class LabradorRetriever {
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
 
 			connection.connect();
+			httpResponse.setContentType(connection.getContentType());
 
-			final CounterInputStream counterInputStream = new CounterInputStream(
-					connection.getInputStream());
-			InputStream input = counterInputStream;
-			try {
-				if ("gzip".equals(connection.getContentEncoding())) {
-					input = new GZIPInputStream(input);
-				}
-				httpResponse.setContentType(connection.getContentType());
-				TransportFormat.pump(input, httpResponse.getOutputStream());
-			} finally {
-				try {
-					input.close();
-				} finally {
-					close(connection);
-					dataLength = counterInputStream.getDataLength();
-				}
-			}
+			dataLength = pump(output, connection);
 		} finally {
 			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
 					+ dataLength / 1024 + " KB read for " + url);
@@ -257,26 +243,32 @@ class LabradorRetriever {
 
 			connection.connect();
 
-			final CounterInputStream counterInputStream = new CounterInputStream(
-					connection.getInputStream());
-			InputStream input = counterInputStream;
-			try {
-				if ("gzip".equals(connection.getContentEncoding())) {
-					input = new GZIPInputStream(input);
-				}
-				TransportFormat.pump(input, output);
-			} finally {
-				try {
-					input.close();
-				} finally {
-					close(connection);
-					dataLength = counterInputStream.getDataLength();
-				}
-			}
+			dataLength = pump(output, connection);
 		} finally {
 			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
 					+ dataLength / 1024 + " KB read for " + url);
 		}
+	}
+
+	private int pump(OutputStream output, URLConnection connection) throws IOException {
+		final int dataLength;
+		final CounterInputStream counterInputStream = new CounterInputStream(
+				connection.getInputStream());
+		InputStream input = counterInputStream;
+		try {
+			if ("gzip".equals(connection.getContentEncoding())) {
+				input = new GZIPInputStream(input);
+			}
+			TransportFormat.pump(input, output);
+		} finally {
+			try {
+				input.close();
+			} finally {
+				close(connection);
+				dataLength = counterInputStream.getDataLength();
+			}
+		}
+		return dataLength;
 	}
 
 	/**
