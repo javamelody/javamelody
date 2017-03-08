@@ -106,11 +106,15 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			final InputStream inputStream = zipFile.getInputStream(entry);
 			try {
 				final Reader reader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-				final char[] chars = new char[1024];
-				int read = reader.read(chars);
-				while (read != -1) {
-					writer.write(chars, 0, read);
-					read = reader.read(chars);
+				try {
+					final char[] chars = new char[1024];
+					int read = reader.read(chars);
+					while (read != -1) {
+						writer.write(chars, 0, read);
+						read = reader.read(chars);
+					}
+				} finally {
+					reader.close();
 				}
 			} finally {
 				inputStream.close();
@@ -144,17 +148,20 @@ class HtmlSourceReport extends HtmlAbstractReport {
 					}
 					return getSourceFromJar(clazz, new File(url));
 				}
-				final URL sourceUrl = new URL(url);
-				srcJarFile.getParentFile().mkdirs();
+				if (!srcJarFile.getParentFile().exists() && !srcJarFile.getParentFile().mkdirs()) {
+					throw new IllegalStateException(
+							"Can't create directory " + srcJarFile.getParentFile().getPath());
+				}
 				final OutputStream output = new FileOutputStream(srcJarFile);
 				try {
+					final URL sourceUrl = new URL(url);
 					final LabradorRetriever labradorRetriever = new LabradorRetriever(sourceUrl);
 					labradorRetriever.downloadTo(output);
 					// si trouvé, on arrête
 					break;
 				} catch (final IOException e) {
 					output.close();
-					srcJarFile.delete();
+					delete(srcJarFile);
 					// si non trouvé, on continue avec le repo suivant s'il y en a un
 				} finally {
 					output.close();
@@ -165,6 +172,10 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			return getSourceFromJar(clazz, srcJarFile);
 		}
 		return null;
+	}
+
+	private void delete(File file) {
+		file.delete();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
