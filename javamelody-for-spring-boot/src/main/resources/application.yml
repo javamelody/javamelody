@@ -1,0 +1,12 @@
+javamelody:
+  # Enable JavaMelody auto-configuration (default: true)
+  enabled: true
+  # Application type (default: "Spring Boot")
+  application-type: Spring Boot App
+  # Name of the JavaMelody monitoring filter (default: "javamelody")
+  filter-name: JavaMelodyMonitoring
+  # Optional initialization parameters for JavaMelody
+  # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
+  init-parameters:
+    log: true
+    monitoring-path: /admin/performance
