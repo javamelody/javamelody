@@ -204,7 +204,8 @@
 			<zipfileset file="src/main/jira/javamelody_i18n.properties" />
 			<zipfileset file="build/atlassian-plugin.xml" />
 			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
+				<!-- override user.name -->
+				<attribute name="Built-By" value="Emeric Vernat" />
 				<attribute name="Built-Date" value="${TODAY_FR}" />
 				<attribute name="Build-Jdk" value="${java.version}" />
 				<section name="javamelody">
