@@ -71,8 +71,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>javamelody-core</artifactId>
-      <!-- TODO: Replace version with ${project.version} -->
-      <version>1.63.0</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
