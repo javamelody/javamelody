@@ -77,11 +77,11 @@ Example for `application.properties`:
     #    log http requests
     javamelody.init-parameters.log=true
     #    to exclude images, css, fonts and js urls from the monitoring:
-    # javamelody.init-parameters.url-exclude-pattern: (/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)
+    # javamelody.init-parameters.url-exclude-pattern=(/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)
     #    to add basic auth:
-    # javamelody.init-parameters.authorized-users: admin:pwd
+    # javamelody.init-parameters.authorized-users=admin:pwd
     #    to change the default storage directory:
-    # javamelody.init-parameters.storage-directory: /tmp/javamelody
+    # javamelody.init-parameters.storage-directory=/tmp/javamelody
     #    to change the default "/monitoring" path
     # javamelody.init-parameters.monitoring-path=/admin/performance
 
