@@ -23,6 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-spring-boot-starter/ -->
 		<javamelody.version>${project.version}</javamelody.version>
 	</properties>
 
