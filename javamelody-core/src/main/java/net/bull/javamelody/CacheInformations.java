@@ -179,7 +179,7 @@ class CacheInformations implements Serializable {
 
 	private static boolean isEhcache27() {
 		try {
-			final InputStream input = Ehcache.class
+			final InputStream input = Class.forName("net.sf.ehcache.Ehcache")
 					.getResourceAsStream("/net/sf/ehcache/version.properties");
 			if (input != null) {
 				try {
