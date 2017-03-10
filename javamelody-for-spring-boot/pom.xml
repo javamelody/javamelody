@@ -34,6 +34,13 @@
 			<version>${javamelody.version}</version>
 		</dependency>
 
+		<!--  Note: if you have auto-proxy issues, you can add the following dependency:
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency> 
+		-->
+ 
 		<!-- Optional: iText dependency for PDF exports in JavaMelody -->
 		<dependency>
 			<groupId>com.lowagie</groupId>
