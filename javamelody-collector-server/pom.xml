@@ -101,7 +101,7 @@
 							<type>jar</type>
 							<includes>
 								<include>LICENSE</include>
-								<include>VERSION.properties</include>
+								<include>JAVAMELODY-VERSION.properties</include>
 								<!-- Main-Class to launch as "java -jar javamelody-xxx.war" with Winstone -->
 								<include>net/bull/javamelody/Main.class</include>
 							</includes>
