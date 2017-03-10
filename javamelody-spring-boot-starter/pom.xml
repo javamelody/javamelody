@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.bull.javamelody</groupId>
@@ -11,8 +12,6 @@
   <name>JavaMelody - Spring Boot Starter</name>
   <description>Spring Boot Starter for JavaMelody</description>
   <url>https://github.com/javamelody/javamelody/wiki</url>
-
-  <inceptionYear>2008</inceptionYear>
 
   <licenses>
     <license>
@@ -33,11 +32,6 @@
     </developer>
   </developers>
 
-  <issueManagement>
-    <system>GITHUB</system>
-    <url>https://github.com/javamelody/javamelody/issues</url>
-  </issueManagement>
-
   <scm>
     <connection>scm:git:git@github.com:javamelody/javamelody.git</connection>
     <developerConnection>scm:git:git@github.com:javamelody/javamelody.git</developerConnection>
@@ -45,39 +39,27 @@
     <tag>HEAD</tag>
   </scm>
 
-  <ciManagement>
-    <system>Jenkins</system>
-    <url>https://javamelody.ci.cloudbees.com/job/javamelody/</url>
-  </ciManagement>
-
-  <mailingLists>
-    <mailingList>
-      <name>User List</name>
-      <subscribe>http://groups.google.com/group/javamelody/subscribe</subscribe>
-      <post>javamelody@googlegroups.com</post>
-      <archive>http://groups.google.com/group/javamelody</archive>
-    </mailingList>
-  </mailingLists>
-
-  <organization>
-    <name>Emeric Vernat</name>
-  </organization>
-
   <prerequisites>
     <maven>3.0.4</maven>
   </prerequisites>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.6</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <spring.version>4.3.7.RELEASE</spring.version>
+    <spring-boot.version>1.5.2.RELEASE</spring-boot.version>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>javamelody-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-      <version>${aspectjweaver.version}</version>
-      <scope>runtime</scope>
+      <version>1.63.0</version>
+      <!-- TODO: Replace before commit -->
+      <!-- <version>${project.version}</version> -->
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -98,30 +80,6 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
-
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>maven.jenkins-ci.org</id>
-      <url>https://repo.jenkins-ci.org/releases/</url>
-    </repository>
-    <snapshotRepository>
-      <!-- prevent accidental deployment of SNAPSHOTS to repository -->
-      <id>snapshot</id>
-      <url>file:.</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.6</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <aspectjweaver.version>1.8.9</aspectjweaver.version>
-    <spring.version>4.3.7.RELEASE</spring.version>
-    <spring-boot.version>1.5.2.RELEASE</spring-boot.version>
-  </properties>
 
   <build>
     <plugins>
