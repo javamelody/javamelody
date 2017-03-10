@@ -1,3 +1,20 @@
+/*
+ * Copyright 2008-2017 by Emeric Vernat
+ *
+ *     This file is part of Java Melody.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.bull.javamelody;
 
 import java.util.Arrays;
@@ -24,8 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Spring Boot auto-configuration for JavaMelody.
  *
  * <p>
- * This class is picked up by the Spring Boot auto-configuration mechanism and creates the beans required to set up
- * JavaMelody. The monitoring filter is created with the name "javamelody" and the application type "Spring Boot".
+ * This class is picked up by the Spring Boot auto-configuration mechanism and creates the beans required to set up JavaMelody.
  * Configuration values are injected using {@link JavaMelodyConfigurationProperties}.
  * </p>
  *
@@ -47,109 +63,123 @@ import org.springframework.web.bind.annotation.RestController;
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "enabled", matchIfMissing = true)
 public class JavaMelodyAutoConfiguration {
-  public static final String REGISTRATION_BEAN_NAME = "javamelody-registration";
-  public static final String DEFAULT_FILTER_NAME = "javamelody";
-  public static final String DEFAULT_APPLICATION_TYPE = "Spring Boot";
+	/**
+	 * Name of the FilterRegistrationBean.
+	 */
+	public static final String REGISTRATION_BEAN_NAME = "javamelody-registration";
 
-  /**
-   * Registers the JavaMelody session listener.
-   */
-  @Bean
-  public SessionListener monitoringSessionListener() {
-    return new SessionListener();
-  }
+	/**
+	 * Registers the JavaMelody session listener.
+	 * @return SessionListener
+	 */
+	@Bean
+	public SessionListener monitoringSessionListener() {
+		return new SessionListener();
+	}
 
-  /**
-   * Registers the JavaMelody monitoring filter. The filter can be overridden completely by creating a custom
-   * {@link FilterRegistrationBean} with the name "javamelody-registration" in the application context.
-   */
-  @Bean(name = REGISTRATION_BEAN_NAME)
-  @ConditionalOnMissingBean(name = REGISTRATION_BEAN_NAME)
-  public FilterRegistrationBean monitoringFilter(JavaMelodyConfigurationProperties properties) {
-    FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+	/**
+	 * Registers the JavaMelody monitoring filter. The filter can be overridden completely by creating a custom
+	 * {@link FilterRegistrationBean} with the name "javamelody-registration" in the application context.
+	 * @param properties JavaMelodyConfigurationProperties
+	 * @return FilterRegistrationBean
+	 */
+	@Bean(name = REGISTRATION_BEAN_NAME)
+	@ConditionalOnMissingBean(name = REGISTRATION_BEAN_NAME)
+	public FilterRegistrationBean monitoringFilter(JavaMelodyConfigurationProperties properties) {
+		final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 
-    // Create the monitoring filter and set its configuration parameters.
-    MonitoringFilter filter = new MonitoringFilter();
-    filter.setApplicationType(DEFAULT_APPLICATION_TYPE);
+		// Create the monitoring filter and set its configuration parameters.
+		final MonitoringFilter filter = new MonitoringFilter();
+		filter.setApplicationType("Spring Boot");
 
-    // Wrap the monitoring filter in the registration bean.
-    registrationBean.setFilter(filter);
-    registrationBean.setAsyncSupported(true);
-    registrationBean.setName(DEFAULT_FILTER_NAME);
-    registrationBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
+		// Wrap the monitoring filter in the registration bean.
+		registrationBean.setFilter(filter);
+		registrationBean.setAsyncSupported(true);
+		registrationBean.setName("javamelody");
+		registrationBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
 
-    // Set the initialization parameter for the monitoring filter.
-    for (Entry<String, String> parameter : properties.getInitParameters().entrySet()) {
-      registrationBean.addInitParameter(parameter.getKey(), parameter.getValue());
-    }
+		// Set the initialization parameter for the monitoring filter.
+		for (final Entry<String, String> parameter : properties.getInitParameters().entrySet()) {
+			registrationBean.addInitParameter(parameter.getKey(), parameter.getValue());
+		}
 
-    // Set the URL patterns to activate the monitoring filter for.
-    registrationBean.addUrlPatterns("/*");
-    return registrationBean;
-  }
+		// Set the URL patterns to activate the monitoring filter for.
+		registrationBean.addUrlPatterns("/*");
+		return registrationBean;
+	}
 
-  @Bean
-  @ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
-  public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-    return new DefaultAdvisorAutoProxyCreator();
-  }
+	/**
+	 * @return DefaultAdvisorAutoProxyCreator
+	 */
+	@Bean
+	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
+	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+		return new DefaultAdvisorAutoProxyCreator();
+	}
 
-  /**
-   * Monitoring of JDBC Data Sources
-   */
-  @Bean
-  public SpringDataSourceBeanPostProcessor monitoringDataSourceBeanPostProcessor(
-      @Value("${javamelody.excluded-datasources:}") String excludedDatasources) {
-    // IMPORTANT: We cannot inject JavaMelodyConfigurationProperties here because of bean load order! Therefore we have
-    // to use that rather dirty way to inject the configuration value.
-    SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
-    if (excludedDatasources != null && excludedDatasources.trim().length() > 0) {
-      processor.setExcludedDatasources(new HashSet<String>(Arrays.asList(excludedDatasources.split(","))));
-    }
-    return processor;
-  }
+	/**
+	 * Monitoring of JDBC Data Sources
+	 * @param excludedDatasources Comma separated list of excluded datasources
+	 * @return SpringDataSourceBeanPostProcessor
+	 */
+	@Bean
+	public SpringDataSourceBeanPostProcessor monitoringDataSourceBeanPostProcessor(
+			@Value("${javamelody.excluded-datasources:}") String excludedDatasources) {
+		// IMPORTANT: We cannot inject JavaMelodyConfigurationProperties here because of bean load order! Therefore we have
+		// to use that rather dirty way to inject the configuration value.
+		final SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
+		if (excludedDatasources != null && excludedDatasources.trim().length() > 0) {
+			processor.setExcludedDatasources(
+					new HashSet<String>(Arrays.asList(excludedDatasources.split(","))));
+		}
+		return processor;
+	}
 
-  /**
-   * Monitoring of beans and methods having the {@link MonitoredWithSpring} annotation.
-   */
-  @Bean
-  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
-  public MonitoringSpringAdvisor monitoringSpringAdvisor() {
-    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-    interceptor.setPointcut(new MonitoredWithAnnotationPointcut());
-    return interceptor;
-  }
+	/**
+	 * Monitoring of beans and methods having the {@link MonitoredWithSpring} annotation.
+	 * @return MonitoringSpringAdvisor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public MonitoringSpringAdvisor monitoringSpringAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new MonitoredWithAnnotationPointcut());
+		return interceptor;
+	}
 
-  /**
-   * Monitoring of beans having the {@link Service} annotation.
-   */
-  @Bean
-  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
-  public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
-    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-    interceptor.setPointcut(new AnnotationMatchingPointcut(Service.class));
-    return interceptor;
-  }
+	/**
+	 * Monitoring of beans having the {@link Service} annotation.
+	 * @return MonitoringSpringAdvisor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new AnnotationMatchingPointcut(Service.class));
+		return interceptor;
+	}
 
-  /**
-   * Monitoring of beans having the {@link Controller} annotation.
-   */
-  @Bean
-  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
-  public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
-    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-    interceptor.setPointcut(new AnnotationMatchingPointcut(Controller.class));
-    return interceptor;
-  }
+	/**
+	 * Monitoring of beans having the {@link Controller} annotation.
+	 * @return MonitoringSpringAdvisor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new AnnotationMatchingPointcut(Controller.class));
+		return interceptor;
+	}
 
-  /**
-   * Monitoring of beans having the {@link RestController} annotation.
-   */
-  @Bean
-  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
-  public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
-    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-    interceptor.setPointcut(new AnnotationMatchingPointcut(RestController.class));
-    return interceptor;
-  }
+	/**
+	 * Monitoring of beans having the {@link RestController} annotation.
+	 * @return MonitoringSpringAdvisor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
+		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+		interceptor.setPointcut(new AnnotationMatchingPointcut(RestController.class));
+		return interceptor;
+	}
 }

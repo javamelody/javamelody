@@ -2,124 +2,121 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.bull.javamelody</groupId>
-  <artifactId>javamelody-spring-boot-starter</artifactId>
-  <version>1.64.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>net.bull.javamelody</groupId>
+	<artifactId>javamelody-spring-boot-starter</artifactId>
+	<version>1.64.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>JavaMelody - Spring Boot Starter</name>
-  <description>Spring Boot Starter for JavaMelody</description>
-  <url>https://github.com/javamelody/javamelody/wiki</url>
+	<name>JavaMelody - Spring Boot Starter</name>
+	<description>Spring Boot Starter for JavaMelody</description>
+	<url>https://github.com/javamelody/javamelody/wiki</url>
 
-  <licenses>
-    <license>
-      <name>ASL</name>
-      <url>LICENSE</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+	<licenses>
+		<license>
+			<name>ASL</name>
+			<url>LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-  <developers>
-    <developer>
-      <name>Emeric Vernat</name>
-      <email>evernat@free.fr</email>
-    </developer>
-    <developer>
-      <name>Georg Wittberger</name>
-      <email>georg.wittberger@gmail.com</email>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<name>Emeric Vernat</name>
+			<email>evernat@free.fr</email>
+		</developer>
+		<developer>
+			<name>Georg Wittberger</name>
+			<email>georg.wittberger@gmail.com</email>
+		</developer>
+	</developers>
 
-  <scm>
-    <connection>scm:git:git@github.com:javamelody/javamelody.git</connection>
-    <developerConnection>scm:git:git@github.com:javamelody/javamelody.git</developerConnection>
-    <url>https://github.com/javamelody/javamelody</url>
-    <tag>HEAD</tag>
-  </scm>
+	<scm>
+		<connection>scm:git:git@github.com:javamelody/javamelody.git</connection>
+		<developerConnection>scm:git:git@github.com:javamelody/javamelody.git</developerConnection>
+		<url>https://github.com/javamelody/javamelody</url>
+		<tag>HEAD</tag>
+	</scm>
 
-  <prerequisites>
-    <maven>3.0.4</maven>
-  </prerequisites>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.6</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <spring.version>4.3.7.RELEASE</spring.version>
-    <spring-boot.version>1.5.2.RELEASE</spring-boot.version>
-    <junit.version>4.12</junit.version>
-    <assertj.version>2.6.0</assertj.version>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.6</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<spring.version>4.3.7.RELEASE</spring.version>
+		<spring-boot.version>1.5.2.RELEASE</spring-boot.version>
+		<junit.version>4.12</junit.version>
+		<assertj.version>2.6.0</assertj.version>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>javamelody-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-autoconfigure</artifactId>
-      <version>${spring-boot.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <version>${spring-boot.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <version>${spring-boot.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>${spring.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>${assertj.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<version>${spring-boot.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${spring-boot.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring-boot.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
-        <configuration>
-          <excludes>
-            <exclude>**/Thumbs.db</exclude>
-          </excludes>
-          <archive>
-            <manifestEntries>
-              <Implementation-Title>${project.name}</Implementation-Title>
-              <Implementation-Version>${project.version}</Implementation-Version>
-              <Implementation-Vendor>Emeric Vernat</Implementation-Vendor>
-              <!-- Override user.name in Built-By -->
-              <Built-By>Emeric Vernat</Built-By>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor>Emeric Vernat</Implementation-Vendor>
+							<!-- Override user.name in Built-By -->
+							<Built-By>Emeric Vernat</Built-By>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

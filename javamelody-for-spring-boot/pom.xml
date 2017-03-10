@@ -2,73 +2,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.2.RELEASE</version>
-  </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.2.RELEASE</version>
+	</parent>
 
-  <groupId>net.bull.javamelody</groupId>
-  <artifactId>javamelody-for-spring-boot</artifactId>
-  <version>1.64.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>net.bull.javamelody</groupId>
+	<artifactId>javamelody-for-spring-boot</artifactId>
+	<version>1.64.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>JavaMelody - Spring Boot Example</name>
-  <description>Example of embedding JavaMelody in a Spring Boot web application</description>
-  <url>https://github.com/javamelody/javamelody/wiki</url>
+	<name>JavaMelody - Spring Boot Example</name>
+	<description>Example of embedding JavaMelody in a Spring Boot web application</description>
+	<url>https://github.com/javamelody/javamelody/wiki</url>
 
-  <properties>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
-    <javamelody.version>${project.version}</javamelody.version>
-  </properties>
+	<properties>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<javamelody.version>${project.version}</javamelody.version>
+	</properties>
 
-  <dependencies>
-    <!-- JavaMelody Spring Boot Starter -->
-    <dependency>
-      <groupId>net.bull.javamelody</groupId>
-      <artifactId>javamelody-spring-boot-starter</artifactId>
-      <version>${javamelody.version}</version>
-    </dependency>
+	<dependencies>
+		<!-- JavaMelody Spring Boot Starter -->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-spring-boot-starter</artifactId>
+			<version>${javamelody.version}</version>
+		</dependency>
 
-    <!-- Optional: iText dependency for PDF exports in JavaMelody -->
-    <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-      <version>2.1.7</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>bcmail-jdk14</artifactId>
-          <groupId>bouncycastle</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bcprov-jdk14</artifactId>
-          <groupId>bouncycastle</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bctsp-jdk14</artifactId>
-          <groupId>bouncycastle</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+		<!-- Optional: iText dependency for PDF exports in JavaMelody -->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bctsp-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-    <!-- Spring Boot Web Starter -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-  </dependencies>
+		<!-- Spring Boot Web Starter -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+	</dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2008-2017 by Emeric Vernat
+ *
+ *     This file is part of Java Melody.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.bull.javamelody;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,66 +37,80 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import net.bull.javamelody.TestJavaMelodyAutoConfiguration.TestContextConfiguration;
 
+/**
+ * Test JavaMelodyAutoConfiguration.
+ * @author Georg Wittberger
+ */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestContextConfiguration.class)
 @WebAppConfiguration
 @TestPropertySource(properties = { "javamelody.init-parameters.log=true",
-    "javamelody.init-parameters.monitoring-path=/test/path", "javamelody.excluded-datasources=ds1,ds2" })
+		"javamelody.init-parameters.monitoring-path=/test/path",
+		"javamelody.excluded-datasources=ds1,ds2" })
 public class TestJavaMelodyAutoConfiguration {
-  @Configuration
-  @EnableAutoConfiguration
-  static class TestContextConfiguration {
-  }
+	@Configuration
+	@EnableAutoConfiguration
+	static class TestContextConfiguration {
+		// nothing
+	}
 
-  @Autowired
-  private ApplicationContext context;
+	@Autowired
+	private ApplicationContext context;
 
-  @Test
-  public void testJavaMelodyAutoConfigurationIsCreated() {
-    // It should create a session listener.
-    SessionListener sessionListener = context.getBean(SessionListener.class);
-    assertThat(sessionListener).isNotNull();
+	/**
+	 * test.
+	 */
+	@Test
+	public void testJavaMelodyAutoConfigurationIsCreated() {
+		// It should create a session listener.
+		final SessionListener sessionListener = context.getBean(SessionListener.class);
+		assertThat(sessionListener).isNotNull();
 
-    // It should create a registration bean named "javamelody-registration".
-    Object registrationBean = context.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
-    assertThat(registrationBean).isNotNull();
-    assertThat(registrationBean).isInstanceOf(FilterRegistrationBean.class);
+		// It should create a registration bean named "javamelody-registration".
+		final Object registrationBean = context
+				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
+		assertThat(registrationBean).isNotNull();
+		assertThat(registrationBean).isInstanceOf(FilterRegistrationBean.class);
 
-    // It should create a filter registration bean with the appropriately configured monitoring filter.
-    FilterRegistrationBean filterRegistrationBean = (FilterRegistrationBean) registrationBean;
-    assertThat(filterRegistrationBean.getFilter()).isNotNull();
-    assertThat(filterRegistrationBean.getFilter()).isInstanceOf(MonitoringFilter.class);
-    assertThat(filterRegistrationBean.getInitParameters()).containsEntry("log", "true");
-    assertThat(filterRegistrationBean.getInitParameters()).containsEntry("monitoring-path", "/test/path");
-    assertThat(filterRegistrationBean.getUrlPatterns()).containsExactly("/*");
+		// It should create a filter registration bean with the appropriately configured monitoring filter.
+		final FilterRegistrationBean filterRegistrationBean = (FilterRegistrationBean) registrationBean;
+		assertThat(filterRegistrationBean.getFilter()).isNotNull();
+		assertThat(filterRegistrationBean.getFilter()).isInstanceOf(MonitoringFilter.class);
+		assertThat(filterRegistrationBean.getInitParameters()).containsEntry("log", "true");
+		assertThat(filterRegistrationBean.getInitParameters()).containsEntry("monitoring-path",
+				"/test/path");
+		assertThat(filterRegistrationBean.getUrlPatterns()).containsExactly("/*");
 
-    // It should create the monitoring filter with the application type "Spring Boot".
-    MonitoringFilter monitoringFilter = (MonitoringFilter) filterRegistrationBean.getFilter();
-    assertThat(monitoringFilter.getApplicationType()).isEqualTo(JavaMelodyAutoConfiguration.DEFAULT_APPLICATION_TYPE);
+		// It should create the monitoring filter with the application type "Spring Boot".
+		final MonitoringFilter monitoringFilter = (MonitoringFilter) filterRegistrationBean
+				.getFilter();
+		assertThat(monitoringFilter.getApplicationType()).isEqualTo("Sprint Boot");
 
-    // It should create an auto-proxy creator.
-    DefaultAdvisorAutoProxyCreator autoProxyCreator = context.getBean(DefaultAdvisorAutoProxyCreator.class);
-    assertThat(autoProxyCreator).isNotNull();
+		// It should create an auto-proxy creator.
+		final DefaultAdvisorAutoProxyCreator autoProxyCreator = context
+				.getBean(DefaultAdvisorAutoProxyCreator.class);
+		assertThat(autoProxyCreator).isNotNull();
 
-    // It should create a bean post-processor for data sources.
-    SpringDataSourceBeanPostProcessor dataSourcePostProcessor = context
-        .getBean(SpringDataSourceBeanPostProcessor.class);
-    assertThat(dataSourcePostProcessor).isNotNull();
-    // Cannot test excluded data sources since there is no public accessor for that.
+		// It should create a bean post-processor for data sources.
+		final SpringDataSourceBeanPostProcessor dataSourcePostProcessor = context
+				.getBean(SpringDataSourceBeanPostProcessor.class);
+		assertThat(dataSourcePostProcessor).isNotNull();
+		// Cannot test excluded data sources since there is no public accessor for that.
 
-    // It should create interceptors to monitor Spring services and controllers.
-    Map<String, MonitoringSpringAdvisor> springAdvisors = context.getBeansOfType(MonitoringSpringAdvisor.class);
-    boolean monitoredWithAdvisorFound = false;
-    int stereotypeAdvisorsCount = 0;
-    for (MonitoringSpringAdvisor springAdvisor : springAdvisors.values()) {
-      if (springAdvisor.getPointcut() instanceof MonitoredWithAnnotationPointcut) {
-        monitoredWithAdvisorFound = true;
-      } else if (springAdvisor.getPointcut() instanceof AnnotationMatchingPointcut) {
-        stereotypeAdvisorsCount++;
-        // Maybe use synthetic @Service, @Controller and @RestController classes to check if point cuts match.
-      }
-    }
-    assertThat(monitoredWithAdvisorFound).isTrue();
-    assertThat(stereotypeAdvisorsCount).isEqualTo(3);
-  }
+		// It should create interceptors to monitor Spring services and controllers.
+		final Map<String, MonitoringSpringAdvisor> springAdvisors = context
+				.getBeansOfType(MonitoringSpringAdvisor.class);
+		boolean monitoredWithAdvisorFound = false;
+		int stereotypeAdvisorsCount = 0;
+		for (final MonitoringSpringAdvisor springAdvisor : springAdvisors.values()) {
+			if (springAdvisor.getPointcut() instanceof MonitoredWithAnnotationPointcut) {
+				monitoredWithAdvisorFound = true;
+			} else if (springAdvisor.getPointcut() instanceof AnnotationMatchingPointcut) {
+				stereotypeAdvisorsCount++;
+				// Maybe use synthetic @Service, @Controller and @RestController classes to check if point cuts match.
+			}
+		}
+		assertThat(monitoredWithAdvisorFound).isTrue();
+		assertThat(stereotypeAdvisorsCount).isEqualTo(3);
+	}
 }
