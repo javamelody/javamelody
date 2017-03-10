@@ -2,7 +2,7 @@
 
 Spring Boot Starter to facilitate the integration of JavaMelody in Spring Boot web applications.
 
-See the [example project](https://github.com/javamelody/javamelody/tree/master/javamelody-for-spring-boot) for a demonstration.
+See the [example project](../javamelody-for-spring-boot) for a demonstration.
 
 ## Integration
 
@@ -52,8 +52,17 @@ Example for `application.yml`:
       # Initialization parameters for JavaMelody (optional)
       # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
       init-parameters:
+        # log http requests
         log: true
-        monitoring-path: /admin/performance
+        # to exclude images, css, fonts and js urls from the monitoring:
+        #url-exclude-pattern: (/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)
+        # to add basic auth:
+        #authorized-users: admin:pwd
+        # to change the default storage directory:
+        #storage-directory: /tmp/javamelody
+        # to change the default "/monitoring" path
+        #monitoring-path: /admin/performance
+
 
 Example for `application.properties`:
 
@@ -65,8 +74,16 @@ Example for `application.properties`:
     javamelody.spring-monitoring-enabled=true
     # Initialization parameters for JavaMelody (optional)
     # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
+    #    log http requests
     javamelody.init-parameters.log=true
-    javamelody.init-parameters.monitoring-path=/admin/performance
+    #    to exclude images, css, fonts and js urls from the monitoring:
+    # javamelody.init-parameters.url-exclude-pattern: (/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)
+    #    to add basic auth:
+    # javamelody.init-parameters.authorized-users: admin:pwd
+    #    to change the default storage directory:
+    # javamelody.init-parameters.storage-directory: /tmp/javamelody
+    #    to change the default "/monitoring" path
+    # javamelody.init-parameters.monitoring-path=/admin/performance
 
 ## License
 
