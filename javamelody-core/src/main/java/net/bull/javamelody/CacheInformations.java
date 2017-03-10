@@ -178,23 +178,23 @@ class CacheInformations implements Serializable {
 	}
 
 	private static boolean isEhcache27() {
-		final InputStream input = Ehcache.class
-				.getResourceAsStream("/net/sf/ehcache/version.properties");
-		if (input != null) {
-			try {
-				try {
-					final Properties properties = new Properties();
-					properties.load(input);
-					final String version = properties.getProperty("version");
-					return "2.7".compareTo(version) <= 0;
-				} finally {
-					input.close();
-				}
-			} catch (final IOException e) { // NOPMD
-				// continue
-			}
-		}
 		try {
+			final InputStream input = Ehcache.class
+					.getResourceAsStream("/net/sf/ehcache/version.properties");
+			if (input != null) {
+				try {
+					try {
+						final Properties properties = new Properties();
+						properties.load(input);
+						final String version = properties.getProperty("version");
+						return "2.7".compareTo(version) <= 0;
+					} finally {
+						input.close();
+					}
+				} catch (final IOException e) { // NOPMD
+					// continue
+				}
+			}
 			// ce Class.forName est nécessaire sur le serveur de collecte
 			Class.forName("net.sf.ehcache.statistics.StatisticsGateway");
 			return true;
