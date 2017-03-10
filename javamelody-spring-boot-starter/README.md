@@ -47,6 +47,8 @@ Example for `application.yml`:
       enabled: true
       # Data source names to exclude from monitoring (optional, comma-separated)
       excluded-datasources: secretSource,topSecretSource
+      # Enable monitoring of Spring services and controllers (optional, default: true)
+      spring-monitoring-enabled: true
       # Initialization parameters for JavaMelody (optional)
       # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
       init-parameters:
@@ -59,6 +61,8 @@ Example for `application.properties`:
     javamelody.enabled=true
     # Data source names to exclude from monitoring (optional, comma-separated)
     javamelody.excluded-datasources=secretSource,topSecretSource
+    # Enable monitoring of Spring services and controllers (optional, default: true)
+    javamelody.spring-monitoring-enabled=true
     # Initialization parameters for JavaMelody (optional)
     # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
     javamelody.init-parameters.log=true

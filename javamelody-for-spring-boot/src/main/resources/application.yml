@@ -1,7 +1,5 @@
 javamelody:
-  # Enable JavaMelody auto-configuration (default: true)
-  enabled: true
-  # Optional initialization parameters for JavaMelody
+  # Initialization parameters for JavaMelody
   # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
   init-parameters:
     log: true
