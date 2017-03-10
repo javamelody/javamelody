@@ -84,7 +84,7 @@ public class TestJavaMelodyAutoConfiguration {
 		// It should create the monitoring filter with the application type "Spring Boot".
 		final MonitoringFilter monitoringFilter = (MonitoringFilter) filterRegistrationBean
 				.getFilter();
-		assertThat(monitoringFilter.getApplicationType()).isEqualTo("Sprint Boot");
+		assertThat(monitoringFilter.getApplicationType()).isEqualTo("Spring Boot");
 
 		// It should create an auto-proxy creator.
 		final DefaultAdvisorAutoProxyCreator autoProxyCreator = context
