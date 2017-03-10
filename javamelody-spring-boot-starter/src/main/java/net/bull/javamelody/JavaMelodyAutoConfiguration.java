@@ -1,11 +1,14 @@
 package net.bull.javamelody;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import javax.servlet.DispatcherType;
 
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -95,9 +98,14 @@ public class JavaMelodyAutoConfiguration {
    * Monitoring of JDBC Data Sources
    */
   @Bean
-  public SpringDataSourceBeanPostProcessor monitoringDataSourceBeanPostProcessor() {
+  public SpringDataSourceBeanPostProcessor monitoringDataSourceBeanPostProcessor(
+      @Value("${javamelody.excluded-datasources:}") String excludedDatasources) {
+    // IMPORTANT: We cannot inject JavaMelodyConfigurationProperties here because of bean load order! Therefore we have
+    // to use that rather dirty way to inject the configuration value.
     SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
-    processor.setExcludedDatasources(null);
+    if (excludedDatasources != null && excludedDatasources.trim().length() > 0) {
+      processor.setExcludedDatasources(new HashSet<String>(Arrays.asList(excludedDatasources.split(","))));
+    }
     return processor;
   }
 
@@ -105,8 +113,9 @@ public class JavaMelodyAutoConfiguration {
    * Monitoring of beans and methods having the {@link MonitoredWithSpring} annotation.
    */
   @Bean
+  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
   public MonitoringSpringAdvisor monitoringSpringAdvisor() {
-    final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
     interceptor.setPointcut(new MonitoredWithAnnotationPointcut());
     return interceptor;
   }
@@ -115,8 +124,9 @@ public class JavaMelodyAutoConfiguration {
    * Monitoring of beans having the {@link Service} annotation.
    */
   @Bean
+  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
   public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
-    final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
     interceptor.setPointcut(new AnnotationMatchingPointcut(Service.class));
     return interceptor;
   }
@@ -125,8 +135,9 @@ public class JavaMelodyAutoConfiguration {
    * Monitoring of beans having the {@link Controller} annotation.
    */
   @Bean
+  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
   public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
-    final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
     interceptor.setPointcut(new AnnotationMatchingPointcut(Controller.class));
     return interceptor;
   }
@@ -135,8 +146,9 @@ public class JavaMelodyAutoConfiguration {
    * Monitoring of beans having the {@link RestController} annotation.
    */
   @Bean
+  @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
   public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
-    final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
+    MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
     interceptor.setPointcut(new AnnotationMatchingPointcut(RestController.class));
     return interceptor;
   }

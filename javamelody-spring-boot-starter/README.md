@@ -43,9 +43,11 @@ Use the configuration properties prefixed with `javamelody` in your `application
 Example for `application.yml`:
 
     javamelody:
-      # Enable JavaMelody auto-configuration (default: true)
+      # Enable JavaMelody auto-configuration (optional, default: true)
       enabled: true
-      # Optional initialization parameters for JavaMelody
+      # Data source names to exclude from monitoring (optional, comma-separated)
+      excluded-datasources: secretSource,topSecretSource
+      # Initialization parameters for JavaMelody (optional)
       # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
       init-parameters:
         log: true
@@ -53,9 +55,11 @@ Example for `application.yml`:
 
 Example for `application.properties`:
 
-    # Enable JavaMelody auto-configuration (default: true)
+    # Enable JavaMelody auto-configuration (optional, default: true)
     javamelody.enabled=true
-    # Optional initialization parameters for JavaMelody
+    # Data source names to exclude from monitoring (optional, comma-separated)
+    javamelody.excluded-datasources=secretSource,topSecretSource
+    # Initialization parameters for JavaMelody (optional)
     # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
     javamelody.init-parameters.log=true
     javamelody.init-parameters.monitoring-path=/admin/performance

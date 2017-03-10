@@ -17,6 +17,7 @@ public class JavaMelodyConfigurationProperties {
   public static final String PREFIX = "javamelody";
 
   private boolean enabled = true;
+  private String excludedDatasources;
   private Map<String, String> initParameters = new HashMap<String, String>();
 
   /**
@@ -35,6 +36,24 @@ public class JavaMelodyConfigurationProperties {
    */
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
+  }
+
+  /**
+   * Returns a comma-separated list of data source names which should be excluded from monitoring.
+   *
+   * @return Data source names to exclude from monitoring.
+   */
+  public String getExcludedDatasources() {
+    return excludedDatasources;
+  }
+
+  /**
+   * Sets a comma-separated list of data source names which should be excluded from monitoring.
+   *
+   * @param excludedDatasources Data source names to exclude from monitoring.
+   */
+  public void setExcludedDatasources(String excludedDatasources) {
+    this.excludedDatasources = excludedDatasources;
   }
 
   /**
@@ -57,6 +76,7 @@ public class JavaMelodyConfigurationProperties {
 
   @Override
   public String toString() {
-    return "JavaMelodyConfigurationProperties [enabled=" + enabled + ", initParameters=" + initParameters + "]";
+    return "JavaMelodyConfigurationProperties [enabled=" + enabled + ", excludedDatasources=" + excludedDatasources
+        + ", initParameters=" + initParameters + "]";
   }
 }
