@@ -15,6 +15,7 @@
 		<module>javamelody-swing</module>
 		<module>javamelody-collector-server</module>
 		<module>javamelody-for-standalone</module>
+		<module>javamelody-spring-boot-starter</module>
 		<module>javamelody-test-webapp</module>
 	</modules>
 </project>

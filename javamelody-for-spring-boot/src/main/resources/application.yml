@@ -1,0 +1,6 @@
+javamelody:
+  # Initialization parameters for JavaMelody
+  # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
+  init-parameters:
+    log: true
+    monitoring-path: /admin/performance
