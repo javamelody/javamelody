@@ -14,14 +14,17 @@ License ASL, http://www.apache.org/licenses/LICENSE-2.0
 
 Simply add the following dependency to your Maven POM:
 
+```xml
     <dependency>
       <groupId>net.bull.javamelody</groupId>
       <artifactId>javamelody-spring-boot-starter</artifactId>
       <version>1.64.0</version>
     </dependency>
+```
 
 Optionally add the iText dependency if you want to use PDF exports:
 
+```xml
     <dependency>
       <groupId>com.lowagie</groupId>
       <artifactId>itext</artifactId>
@@ -41,6 +44,7 @@ Optionally add the iText dependency if you want to use PDF exports:
         </exclusion>
       </exclusions>
     </dependency>
+```
 
 ## Configuration
 
@@ -48,6 +52,7 @@ Use the configuration properties prefixed with `javamelody` in your `application
 
 Example for `application.yml`:
 
+```yml
     javamelody:
       # Enable JavaMelody auto-configuration (optional, default: true)
       enabled: true
@@ -68,10 +73,11 @@ Example for `application.yml`:
         #storage-directory: /tmp/javamelody
         # to change the default "/monitoring" path
         #monitoring-path: /admin/performance
-
+```
 
 Example for `application.properties`:
 
+```properties
     # Enable JavaMelody auto-configuration (optional, default: true)
     javamelody.enabled=true
     # Data source names to exclude from monitoring (optional, comma-separated)
@@ -90,3 +96,4 @@ Example for `application.properties`:
     # javamelody.init-parameters.storage-directory=/tmp/javamelody
     #    to change the default "/monitoring" path
     # javamelody.init-parameters.monitoring-path=/admin/performance
+```
