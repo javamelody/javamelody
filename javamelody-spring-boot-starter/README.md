@@ -4,6 +4,12 @@ Spring Boot Starter to facilitate the integration of JavaMelody in Spring Boot w
 
 See the [example project](../javamelody-for-spring-boot) for a demonstration.
 
+See https://github.com/javamelody/javamelody/wiki
+
+Continuous integration: https://javamelody.ci.cloudbees.com/job/javamelody-spring-boot-starter/
+
+License ASL, http://www.apache.org/licenses/LICENSE-2.0
+
 ## Integration
 
 Simply add the following dependency to your Maven POM:
@@ -84,7 +90,3 @@ Example for `application.properties`:
     # javamelody.init-parameters.storage-directory=/tmp/javamelody
     #    to change the default "/monitoring" path
     # javamelody.init-parameters.monitoring-path=/admin/performance
-
-## License
-
-[ASL](http://www.apache.org/licenses/LICENSE-2.0)
