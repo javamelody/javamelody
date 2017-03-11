@@ -98,20 +98,30 @@ class HtmlCounterErrorReport extends HtmlAbstractReport {
 		}
 		if (error.getStackTrace() != null) {
 			write("</td><td>"); // pas wrappedText ici, sinon bug de largeur du tooltip sous IE11 en résolution réduite
-			writeln("<a class='tooltip'>");
+			writeln("<div class='tooltip'>");
 			writeln("<em>");
-			// writeDirectly pour ne pas gérer de traductions si la stack-trace contient '#'
-			writeDirectly(htmlEncode(error.getStackTrace()));
+			writeStackTrace(error);
 			writeln("</em>");
 			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
 			writeDirectly(htmlEncode(error.getMessage()));
-			writeln("</a>");
+			writeln("</div>");
 		} else {
 			write("</td><td class='wrappedText'>");
 			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
 			writeDirectly(htmlEncode(error.getMessage()));
 		}
 		write("</td>");
+	}
+
+	private void writeStackTrace(CounterError error) throws IOException {
+		for (final String element : error.getStackTrace().split("\n|\r")) {
+			if (!element.isEmpty()) {
+				// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
+				writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElement(element).replaceAll("\t",
+						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+				writeDirectly("<br/>\n");
+			}
+		}
 	}
 
 	static boolean shouldDisplayUser(List<CounterError> errors) {
