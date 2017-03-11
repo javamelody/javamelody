@@ -126,7 +126,8 @@
 			<zipfileset file="JAVAMELODY-VERSION.properties" />
 			<zipfileset file="LICENSE" />
 			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
+				<!-- override user.name -->
+				<attribute name="Built-By" value="Emeric Vernat" />
 				<attribute name="Built-Date" value="${TODAY_FR}" />
 				<attribute name="Build-Jdk" value="${java.version}" />
 				<section name="javamelody">
