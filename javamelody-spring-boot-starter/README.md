@@ -17,7 +17,7 @@ Simply add the following dependency to your Maven POM:
     <dependency>
       <groupId>net.bull.javamelody</groupId>
       <artifactId>javamelody-spring-boot-starter</artifactId>
-      <version>1.64.0-SNAPSHOT</version>
+      <version>1.64.0</version>
     </dependency>
 
 Optionally add the iText dependency if you want to use PDF exports:
