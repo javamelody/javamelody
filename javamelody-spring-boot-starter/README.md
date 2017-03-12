@@ -10,6 +10,6 @@ License ASL, http://www.apache.org/licenses/LICENSE-2.0
 
 ## Integration
 
-See [documentation](https://github.com/javamelody/javamelody/wiki/SpringBootStarter].
+See [documentation](../../../wiki/SpringBootStarter).
 
 See the [example project](../javamelody-for-spring-boot) for a demonstration.

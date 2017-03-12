@@ -1,6 +1,6 @@
 # JavaMelody for Spring Boot Example
 
-This example project demonstrates how to integrate JavaMelody in a Spring Boot web application using our [starter package](../javamelody-spring-boot-starter).
+This example project demonstrates how to integrate JavaMelody in a Spring Boot web application using our [starter package](../../../wiki/SpringBootStarter).
 
 There are only two essential things to add to any basic Spring Boot project:
 
