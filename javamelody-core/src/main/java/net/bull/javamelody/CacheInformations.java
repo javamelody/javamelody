@@ -187,7 +187,7 @@ class CacheInformations implements Serializable {
 						final Properties properties = new Properties();
 						properties.load(input);
 						final String version = properties.getProperty("version");
-						return "2.7".compareTo(version) <= 0;
+						return "2.7".compareTo(version) <= 0 || "2.10".compareTo(version) <= 0;
 					} finally {
 						input.close();
 					}
