@@ -858,8 +858,16 @@ class Collector { // NOPMD
 			if (jrobin == null) {
 				jrobin = requestJRobinsById.get(graphName);
 				if (jrobin == null) {
-					// un graph n'est pas toujours de suite dans jrobin
-					return null;
+					try {
+						// Use a temporary JRobin instance to create the graph.
+						// The real request name can not be got at this point,
+						// passing the graphName as the request name.
+						jrobin = JRobin.createInstance(getApplication(), graphName, graphName);
+						return jrobin;
+					} catch (IOException e) {
+						// The graph may not be available
+						return null;
+					}
 				}
 			}
 		}
