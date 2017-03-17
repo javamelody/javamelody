@@ -851,7 +851,7 @@ class Collector { // NOPMD
 		return jrobin;
 	}
 
-	JRobin getJRobin(String graphName) {
+	JRobin getJRobin(String graphName) throws IOException {
 		JRobin jrobin = counterJRobins.get(graphName);
 		if (jrobin == null) {
 			jrobin = otherJRobins.get(graphName);
@@ -859,7 +859,10 @@ class Collector { // NOPMD
 				jrobin = requestJRobinsById.get(graphName);
 				if (jrobin == null) {
 					// un graph n'est pas toujours de suite dans jrobin
-					return null;
+					// Use a temporary JRobin instance to create the graph.
+					// The real request name can not be got at this point, passing the graphName as the request name.
+					jrobin = JRobin.createInstanceIfFileExists(getApplication(), graphName,
+							graphName);
 				}
 			}
 		}

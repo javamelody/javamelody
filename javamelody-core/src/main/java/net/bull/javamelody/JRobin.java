@@ -143,14 +143,32 @@ final class JRobin {
 
 	static JRobin createInstance(String application, String name, String requestName)
 			throws IOException {
-		final File dir = Parameters.getStorageDirectory(application);
-		final File rrdFile = new File(dir, name + ".rrd");
+		final File rrdFile = getRrdFile(application, name);
 		final int step = Parameters.getResolutionSeconds();
 		try {
 			return new JRobin(application, name, rrdFile, step, requestName);
 		} catch (final RrdException e) {
 			throw createIOException(e);
 		}
+	}
+
+	static JRobin createInstanceIfFileExists(String application, String name, String requestName)
+			throws IOException {
+		final File rrdFile = getRrdFile(application, name);
+		if (rrdFile.exists()) {
+			final int step = Parameters.getResolutionSeconds();
+			try {
+				return new JRobin(application, name, rrdFile, step, requestName);
+			} catch (final RrdException e) {
+				throw createIOException(e);
+			}
+		}
+		return null;
+	}
+
+	private static File getRrdFile(String application, String name) {
+		final File dir = Parameters.getStorageDirectory(application);
+		return new File(dir, name + ".rrd");
 	}
 
 	private void init() throws IOException, RrdException {

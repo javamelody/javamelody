@@ -167,7 +167,8 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			}
 		}
 
-		private boolean isGraphDisplayed(Collector collector, CounterRequest request) {
+		private boolean isGraphDisplayed(Collector collector, CounterRequest request)
+				throws IOException {
 			return request == null || getCounterByRequestId(request) != null
 					&& isRequestGraphDisplayed(getCounterByRequestId(request))
 					// on vérifie aussi que l'instance de jrobin existe pour faire le graph,

@@ -291,7 +291,7 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 		return null;
 	}
 
-	private boolean isGraphDisplayed() {
+	private boolean isGraphDisplayed() throws IOException {
 		return request == null || getCounterByRequestId(request) != null
 				&& HtmlCounterReport.isRequestGraphDisplayed(getCounterByRequestId(request))
 				// on vérifie aussi que l'instance de jrobin existe pour faire le graph,
