@@ -35,6 +35,8 @@ import java.util.Map;
  */
 class CounterRequest implements Cloneable, Serializable {
 	private static final long serialVersionUID = -4301825473892026959L;
+	private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
+
 	private final String name;
 	private final String id;
 	// tous ces champs de type long sont initialisés à 0,
@@ -396,20 +398,18 @@ class CounterRequest implements Cloneable, Serializable {
 		messageDigest.update(name.getBytes());
 		final byte[] digest = messageDigest.digest();
 
-		final StringBuilder sb = new StringBuilder(digest.length * 2);
-		sb.append(counterName);
-		// encodage en chaîne hexadécimale,
+		final int l = counterName.length();
+		final char[] chars = new char[l + digest.length * 2];
+		// copie du counterName au début de chars
+		counterName.getChars(0, l, chars, 0);
+		// encodage en chaîne hexadécimale du digest,
 		// puisque les caractères bizarres ne peuvent être utilisés sur un système de fichiers
-		int j;
-		for (final byte element : digest) {
-			j = element < 0 ? 256 + element : element;
-			if (j < 16) {
-				sb.append('0');
-			}
-			sb.append(Integer.toHexString(j));
+		for (int j = 0; j < digest.length; j++) {
+			final int v = digest[j] & 0xFF;
+			chars[j * 2 + l] = HEX_ARRAY[v >>> 4];
+			chars[j * 2 + 1 + l] = HEX_ARRAY[v & 0x0F];
 		}
-
-		return sb.toString();
+		return new String(chars);
 	}
 
 	private static MessageDigest getMessageDigestInstance() {
