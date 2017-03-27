@@ -477,7 +477,9 @@ class JavaInformations implements Serializable { // NOPMD
 		}
 		final List<String> result = new ArrayList<String>(dependencies.size());
 		for (final String dependency : dependencies) {
-			result.add(dependency.substring(directory.length()));
+			if (dependency.endsWith(".jar") || dependency.endsWith(".JAR")) {
+				result.add(dependency.substring(directory.length()));
+			}
 		}
 		Collections.sort(result);
 		return result;
@@ -697,10 +699,8 @@ class JavaInformations implements Serializable { // NOPMD
 		}
 		final StringBuilder sb = new StringBuilder();
 		for (final String dependency : getDependenciesList()) {
-			if (dependency.endsWith(".jar") || dependency.endsWith(".JAR")) {
-				sb.append(dependency);
-				sb.append(",\n");
-			}
+			sb.append(dependency);
+			sb.append(",\n");
 		}
 		if (sb.length() >= 2) {
 			sb.delete(sb.length() - 2, sb.length());
