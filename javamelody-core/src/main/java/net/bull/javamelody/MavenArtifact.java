@@ -131,7 +131,7 @@ final class MavenArtifact {
 		try {
 			ZipEntry entry = zipInputStream.getNextEntry();
 			while (entry != null) {
-				if (entry.getName().startsWith("META-INF/")
+				if (entry.getName().startsWith("META-INF/maven/")
 						&& entry.getName().endsWith("/pom.properties")) {
 					final Properties properties = new Properties();
 					properties.load(zipInputStream);
