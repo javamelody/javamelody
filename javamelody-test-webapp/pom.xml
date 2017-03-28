@@ -203,6 +203,13 @@
 			<version>3.6.9.Final</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- Dépendance optionnelle mongodb-driver -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver</artifactId>
+			<version>3.3.0</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
