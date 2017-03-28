@@ -54,7 +54,6 @@ import java.io.Serializable;
 import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -76,7 +75,7 @@ class MonitoringController {
 				webXmlAsStream.close();
 				webXmlExists = true;
 			}
-			final InputStream pomXmlAsStream = getPomXmlAsStream();
+			final InputStream pomXmlAsStream = MavenArtifact.getWebappPomXmlAsStream();
 			if (pomXmlAsStream != null) {
 				pomXmlAsStream.close();
 				pomXmlExists = true;
@@ -454,7 +453,7 @@ class MonitoringController {
 		final OutputStream out = httpResponse.getOutputStream();
 		httpResponse.setContentType("application/xml");
 		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=pom.xml");
-		final InputStream in = getPomXmlAsStream();
+		final InputStream in = MavenArtifact.getWebappPomXmlAsStream();
 		if (in != null) {
 			try {
 				TransportFormat.pump(in, out);
@@ -471,24 +470,6 @@ class MonitoringController {
 			return null;
 		}
 		return new BufferedInputStream(webXml);
-	}
-
-	private static InputStream getPomXmlAsStream() {
-		final Set<?> mavenDir = Parameters.getServletContext().getResourcePaths("/META-INF/maven/");
-		if (mavenDir == null || mavenDir.isEmpty()) {
-			return null;
-		}
-		final Set<?> groupDir = Parameters.getServletContext()
-				.getResourcePaths((String) mavenDir.iterator().next());
-		if (groupDir == null || groupDir.isEmpty()) {
-			return null;
-		}
-		final InputStream pomXml = Parameters.getServletContext()
-				.getResourceAsStream(groupDir.iterator().next() + "pom.xml");
-		if (pomXml == null) {
-			return null;
-		}
-		return new BufferedInputStream(pomXml);
 	}
 
 	private void doJnlp(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -529,16 +510,14 @@ class MonitoringController {
 	}
 
 	static boolean isJavaInformationsNeeded(HttpServletRequest httpRequest) {
-		return httpRequest.getParameter(RESOURCE_PARAMETER) == null
-				&& httpRequest.getParameter(GRAPH_PARAMETER) == null
-				&& (httpRequest.getParameter(PART_PARAMETER) == null
-						|| CURRENT_REQUESTS_PART
-								.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
-						|| DEFAULT_WITH_CURRENT_REQUESTS_PART
-								.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
-						|| JVM_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
-						|| THREADS_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
-						|| THREADS_DUMP_PART
-								.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER)));
+		if (httpRequest.getParameter(RESOURCE_PARAMETER) == null
+				&& httpRequest.getParameter(GRAPH_PARAMETER) == null) {
+			final String part = httpRequest.getParameter(PART_PARAMETER);
+			return part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part)
+					|| DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(part)
+					|| JVM_PART.equalsIgnoreCase(part) || THREADS_PART.equalsIgnoreCase(part)
+					|| THREADS_DUMP_PART.equalsIgnoreCase(part);
+		}
+		return false;
 	}
 }

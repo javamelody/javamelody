@@ -17,40 +17,24 @@
  */
 package net.bull.javamelody;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.CodeSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 /**
  * Rapport html pour afficher un fichier source java.
  * @author Emeric Vernat
  */
 class HtmlSourceReport extends HtmlAbstractReport {
-	private static final String MAVEN_CENTRAL = "http://repo1.maven.org/maven2";
-
-	private static final File LOCAL_REPO = new File(
-			System.getProperty("user.home") + "/.m2/repository");
-
 	private static final File JDK_SRC_FILE = getJdkSrcFile();
 
 	private final String source;
@@ -72,14 +56,19 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			return null;
 		}
 
-		if (clazz.getName().startsWith("java.") || clazz.getName().startsWith("javax.")
-				&& clazz.getProtectionDomain().getCodeSource() == null) {
+		final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+		if (clazz.getName().startsWith("java.")
+				|| clazz.getName().startsWith("javax.") && codeSource == null) {
 			if (JDK_SRC_FILE != null) {
 				return getSourceFromJar(clazz, JDK_SRC_FILE);
 			}
-			return null;
+		} else if (codeSource != null) {
+			final File sourceJarFile = MavenArtifact.getSourceJarFile(codeSource.getLocation());
+			if (sourceJarFile != null) {
+				return getSourceFromJar(clazz, sourceJarFile);
+			}
 		}
-		return getSourceFromMavenRepo(clazz);
+		return null;
 	}
 
 	private static File getJdkSrcFile() {
@@ -123,102 +112,6 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		} finally {
 			zipFile.close();
 		}
-	}
-
-	private String getSourceFromMavenRepo(Class<?> clazz) throws IOException {
-		final Map<String, String> mavenCoordinates = getMavenCoordinates(clazz);
-		if (mavenCoordinates == null) {
-			return null;
-		}
-		final String groupId = mavenCoordinates.get("groupId");
-		final String artifactId = mavenCoordinates.get("artifactId");
-		final String version = mavenCoordinates.get("version");
-		final File storageDirectory = Parameters
-				.getStorageDirectory(Parameters.getCurrentApplication());
-		final File srcJarFile = new File(storageDirectory,
-				"sources/" + artifactId + '-' + version + "-sources.jar");
-		if (!srcJarFile.exists() || srcJarFile.length() == 0) {
-			for (final String mavenRepository : getMavenRepositories()) {
-				final String url = mavenRepository + '/' + groupId.replace('.', '/') + '/'
-						+ artifactId + '/' + version + '/' + artifactId + '-' + version
-						+ "-sources.jar";
-				if (!url.startsWith("http")) {
-					if (!new File(url).exists()) {
-						continue;
-					}
-					return getSourceFromJar(clazz, new File(url));
-				}
-				mkdirs(srcJarFile);
-				final OutputStream output = new FileOutputStream(srcJarFile);
-				try {
-					final URL sourceUrl = new URL(url);
-					final LabradorRetriever labradorRetriever = new LabradorRetriever(sourceUrl);
-					labradorRetriever.downloadTo(output);
-					// si trouvé, on arrête
-					break;
-				} catch (final IOException e) {
-					output.close();
-					delete(srcJarFile);
-					// si non trouvé, on continue avec le repo suivant s'il y en a un
-				} finally {
-					output.close();
-				}
-			}
-		}
-		if (srcJarFile.exists()) {
-			return getSourceFromJar(clazz, srcJarFile);
-		}
-		return null;
-	}
-
-	private void mkdirs(File directory) {
-		if (!directory.getParentFile().exists() && !directory.getParentFile().mkdirs()) {
-			throw new IllegalStateException(
-					"Can't create directory " + directory.getParentFile().getPath());
-		}
-	}
-
-	private boolean delete(File file) {
-		return file.delete();
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private Map<String, String> getMavenCoordinates(Class<?> clazz) throws IOException {
-		final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
-		if (codeSource == null) {
-			return null;
-		}
-		final URL location = codeSource.getLocation();
-		final ZipInputStream zipInputStream = new ZipInputStream(
-				new BufferedInputStream(location.openStream(), 4096));
-		try {
-			ZipEntry entry = zipInputStream.getNextEntry();
-			while (entry != null) {
-				if (entry.getName().startsWith("META-INF/")
-						&& entry.getName().endsWith("/pom.properties")) {
-					final Properties properties = new Properties();
-					properties.load(zipInputStream);
-					return new HashMap<String, String>((Map) properties);
-				}
-				zipInputStream.closeEntry();
-				entry = zipInputStream.getNextEntry();
-			}
-		} finally {
-			zipInputStream.close();
-		}
-		return null;
-	}
-
-	private List<String> getMavenRepositories() {
-		final String parameter = Parameters.getParameter(Parameter.MAVEN_REPOSITORIES);
-		if (parameter != null) {
-			final List<String> result = new ArrayList<String>();
-			for (final String repo : parameter.split(",")) {
-				result.add(repo.trim());
-			}
-			return result;
-		}
-		return Arrays.asList(LOCAL_REPO.getPath(), MAVEN_CENTRAL);
 	}
 
 	@Override
