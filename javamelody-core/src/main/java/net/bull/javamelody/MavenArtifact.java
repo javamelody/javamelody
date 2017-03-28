@@ -18,6 +18,8 @@
 package net.bull.javamelody;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,9 +28,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -67,48 +67,52 @@ final class MavenArtifact {
 	}
 
 	static File getSourceJarFile(URL classesJarFileUrl) throws IOException {
-		final Map<String, String> mavenCoordinates = getMavenCoordinatesFromJarFile(
-				classesJarFileUrl);
-		if (mavenCoordinates == null) {
+		final byte[] pomProperties = readMavenFileFromJarFile(classesJarFileUrl, "pom.properties");
+		if (pomProperties == null) {
 			return null;
 		}
-		final String groupId = mavenCoordinates.get("groupId");
-		final String artifactId = mavenCoordinates.get("artifactId");
-		final String version = mavenCoordinates.get("version");
+		final Properties properties = new Properties();
+		properties.load(new ByteArrayInputStream(pomProperties));
+		final String groupId = properties.getProperty("groupId");
+		final String artifactId = properties.getProperty("artifactId");
+		final String version = properties.getProperty("version");
+		final String filePath = groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/'
+				+ artifactId + '-' + version + "-sources.jar";
+		return getMavenArtifact(filePath);
+	}
+
+	private static File getMavenArtifact(String filePath) throws IOException {
 		final File storageDirectory = Parameters
 				.getStorageDirectory(Parameters.getCurrentApplication());
-		final File srcJarFile = new File(storageDirectory,
-				"sources/" + artifactId + '-' + version + "-sources.jar");
-		if (!srcJarFile.exists() || srcJarFile.length() == 0) {
+		final File file = new File(storageDirectory,
+				"sources/" + filePath.substring(filePath.lastIndexOf('/') + 1));
+		if (!file.exists() || file.length() == 0) {
 			for (final String mavenRepository : getMavenRepositories()) {
-				final String url = mavenRepository + '/' + groupId.replace('.', '/') + '/'
-						+ artifactId + '/' + version + '/' + artifactId + '-' + version
-						+ "-sources.jar";
+				final String url = mavenRepository + '/' + filePath;
 				if (!url.startsWith("http")) {
-					if (!new File(url).exists()) { // NOPMD
+					if (!new File(url).exists()) {
 						continue;
 					}
 					return new File(url);
 				}
-				mkdirs(srcJarFile.getParentFile());
-				final OutputStream output = new FileOutputStream(srcJarFile);
+				mkdirs(file.getParentFile());
+				final OutputStream output = new FileOutputStream(file);
 				try {
-					final URL sourceUrl = new URL(url);
-					final LabradorRetriever labradorRetriever = new LabradorRetriever(sourceUrl);
+					final LabradorRetriever labradorRetriever = new LabradorRetriever(new URL(url));
 					labradorRetriever.downloadTo(output);
 					// si trouvé, on arrête
 					break;
 				} catch (final IOException e) {
 					output.close();
-					delete(srcJarFile);
+					delete(file);
 					// si non trouvé, on continue avec le repo suivant s'il y en a un
 				} finally {
 					output.close();
 				}
 			}
 		}
-		if (srcJarFile.exists()) {
-			return srcJarFile;
+		if (file.exists()) {
+			return file;
 		}
 		return null;
 	}
@@ -123,8 +127,7 @@ final class MavenArtifact {
 		return file.delete();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Map<String, String> getMavenCoordinatesFromJarFile(URL jarFileLocation)
+	private static byte[] readMavenFileFromJarFile(URL jarFileLocation, String pomFileName)
 			throws IOException {
 		final ZipInputStream zipInputStream = new ZipInputStream(
 				new BufferedInputStream(jarFileLocation.openStream(), 4096));
@@ -132,10 +135,10 @@ final class MavenArtifact {
 			ZipEntry entry = zipInputStream.getNextEntry();
 			while (entry != null) {
 				if (entry.getName().startsWith("META-INF/maven/")
-						&& entry.getName().endsWith("/pom.properties")) {
-					final Properties properties = new Properties();
-					properties.load(zipInputStream);
-					return new HashMap<String, String>((Map) properties);
+						&& entry.getName().endsWith("/" + pomFileName)) {
+					final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					TransportFormat.pump(zipInputStream, byteArrayOutputStream);
+					return byteArrayOutputStream.toByteArray();
 				}
 				zipInputStream.closeEntry();
 				entry = zipInputStream.getNextEntry();
