@@ -550,7 +550,7 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			if (isPdfEnabled()) {
 				writeln(separator);
 				writeln("<a href='?part=runtimeDependencies&amp;format=pdf&amp;counter="
-						+ counter.getName() + "' class='noPrint'>#Dependances#</a>");
+						+ counter.getName() + "' class='noPrint'>#Dependencies#</a>");
 			}
 		}
 		writeln(separator);

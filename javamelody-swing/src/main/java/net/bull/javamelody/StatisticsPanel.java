@@ -293,7 +293,7 @@ class StatisticsPanel extends MelodyPanel {
 	}
 
 	private MButton createRuntimeDependenciesButton() {
-		final MButton runtimeDependenciesButton = new MButton(getString("Dependances"),
+		final MButton runtimeDependenciesButton = new MButton(getString("Dependencies"),
 				ImageIconCache.getImageIcon("pdf.png"));
 		runtimeDependenciesButton.addActionListener(new ActionListener() {
 			@Override
