@@ -24,6 +24,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
 import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
+import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
@@ -56,6 +57,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -133,6 +135,18 @@ class SerializableController { // NOPMD
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
+		} else if (DEPENDENCIES_PART.equalsIgnoreCase(part)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final Map<String, MavenArtifact> webappDependencies = MavenArtifact
+					.getWebappDependencies();
+			for (final MavenArtifact dependency : webappDependencies.values()) {
+				if (dependency != null) {
+					// preload licenses with parent of dependency when needed
+					dependency.getLicenseUrlsByName();
+				}
+			}
+			return new TreeMap<String, MavenArtifact>(webappDependencies);
 		} else if (httpRequest.getParameter(JMX_VALUE) != null) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();

@@ -245,6 +245,14 @@ class RemoteCollector {
 		return result;
 	}
 
+	Map<String, MavenArtifact> collectWebappDependencies() throws IOException {
+		// récupération à la demande des dépendances,
+		// contrairement aux requêtes en cours ou aux processus, un serveur de l'application suffira
+		// car le résultat est identique dans tout l'éventuel cluster
+		final URL url = urls.get(0);
+		return createRemoteCall(url).collectWebappDependencies();
+	}
+
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {
 		// récupération à la demande des requêtes en cours
 		final Map<JavaInformations, List<CounterRequestContext>> result = new LinkedHashMap<JavaInformations, List<CounterRequestContext>>();

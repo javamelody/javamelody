@@ -49,6 +49,8 @@ class JavaInformationsPanel extends MelodyPanel {
 	static final ImageIcon PLUS_ICON = ImageIconCache.getImageIcon("bullets/plus.png");
 	static final ImageIcon MINUS_ICON = ImageIconCache.getImageIcon("bullets/minus.png");
 
+	private static final ImageIcon BEANS_ICON = ImageIconCache.getScaledImageIcon("beans.png", 14,
+			14);
 	private static final ImageIcon XML_ICON = ImageIconCache.getScaledImageIcon("xml.png", 14, 14);
 	private static final long serialVersionUID = 1L;
 
@@ -203,10 +205,8 @@ class JavaInformationsPanel extends MelodyPanel {
 
 		writeDatabaseVersionAndDataSourceDetails();
 
-		if (javaInformations.isDependenciesEnabled()) {
-			addLabel(getString("Dependencies"));
-			writeDependencies();
-		}
+		addLabel(getString("Dependencies"));
+		writeDependencies();
 		makeGrid();
 	}
 
@@ -311,53 +311,39 @@ class JavaInformationsPanel extends MelodyPanel {
 	}
 
 	private void writeDependencies() {
-		final int nbDependencies = javaInformations.getDependenciesList().size();
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.setOpaque(false);
-		final JLabel nbDependenciesLabel = new JLabel(
-				getFormattedString("nb_dependencies", nbDependencies));
-		panel.add(nbDependenciesLabel, BorderLayout.CENTER);
-		if (nbDependencies > 0) {
-			nbDependenciesLabel.setText(nbDependenciesLabel.getText() + " ; ");
-			final JPanel buttonsPanel = new JPanel(new BorderLayout());
-			buttonsPanel.setOpaque(false);
-			final MButton detailsButton = new MButton(getString("Details"), PLUS_ICON);
-			buttonsPanel.add(detailsButton, BorderLayout.WEST);
-			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
-				final MButton pomXmlButton = new MButton(getString("pom.xml"), XML_ICON);
-				buttonsPanel.add(pomXmlButton, BorderLayout.EAST);
-				pomXmlButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						try {
-							Desktop.getDesktop().browse(
-									new URI(getMonitoringUrl().toExternalForm() + "?part=pom.xml"));
-						} catch (final Exception ex) {
-							showException(ex);
-						}
-					}
-				});
+		final JPanel buttonsPanel = new JPanel(new BorderLayout());
+		buttonsPanel.setOpaque(false);
+		final MButton dependenciesButton = new MButton(getString("Dependencies"), BEANS_ICON);
+		buttonsPanel.add(dependenciesButton, BorderLayout.WEST);
+		dependenciesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					MainPanel.addOngletFromChild(buttonsPanel,
+							new DependenciesPanel(getRemoteCollector()));
+				} catch (final IOException ex) {
+					showException(ex);
+				}
 			}
-			panel.add(buttonsPanel, BorderLayout.EAST);
-
-			final JLabel dependenciesLabel = new JLabel(
-					replaceLineFeedWithHtmlBr(javaInformations.getDependencies()));
-			dependenciesLabel.setVisible(false);
-			panel.add(dependenciesLabel, BorderLayout.SOUTH);
-			final JPanel localGridPanel = gridPanel;
-			detailsButton.addActionListener(new ActionListener() {
+		});
+		if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
+			final MButton pomXmlButton = new MButton(getString("pom.xml"), XML_ICON);
+			buttonsPanel.add(pomXmlButton, BorderLayout.EAST);
+			pomXmlButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					dependenciesLabel.setVisible(!dependenciesLabel.isVisible());
-					localGridPanel.validate();
-					if (detailsButton.getIcon() == PLUS_ICON) {
-						detailsButton.setIcon(MINUS_ICON);
-					} else {
-						detailsButton.setIcon(PLUS_ICON);
+					try {
+						Desktop.getDesktop().browse(
+								new URI(getMonitoringUrl().toExternalForm() + "?part=pom.xml"));
+					} catch (final Exception ex) {
+						showException(ex);
 					}
 				}
 			});
 		}
+		panel.add(buttonsPanel, BorderLayout.WEST);
 		gridPanel.add(panel);
 	}
 

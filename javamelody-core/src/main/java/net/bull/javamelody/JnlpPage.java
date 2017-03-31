@@ -106,20 +106,11 @@ class JnlpPage {
 		if (Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL) != null) {
 			jarFileUrl = Parameters.getParameter(Parameter.JAVAMELODY_SWING_URL);
 			//		} else if (Parameters.JAVAMELODY_VERSION != null) {
-			//			if (Parameters.JAVAMELODY_VERSION.compareTo("1.49.0") <= 0) {
-			//				jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-"
-			//						+ Parameters.JAVAMELODY_VERSION + ".jar";
-			//			} else {
-			//				// files can't be added in googlecode downloads anymore,
-			//				// at the moment, javamelody-swing v1.49 is used for v1.50 and later
-			//				jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing-1.49.0.jar";
-			//			}
-			//		} else {
-			//			jarFileUrl = "http://javamelody.googlecode.com/files/javamelody-swing.jar";
-			//		}
+			//			jarFileUrl = "https://github.com/javamelody/javamelody/releases/download/javamelody-core-1.49.0/javamelody-swing-"
+			//					+ Parameters.JAVAMELODY_VERSION + ".jar";
 		} else {
-			// TODO publish newer javamelody-swing files on github an review code above
-			jarFileUrl = "https://github.com/javamelody/javamelody/releases/download/javamelody-core-1.49.0/javamelody-swing-1.56.0.jar";
+			// TODO publish newer javamelody-swing files on github and review code above
+			jarFileUrl = "https://github.com/javamelody/javamelody/releases/download/javamelody-core-1.49.0/javamelody-swing-1.66.0.jar";
 		}
 		return jarFileUrl;
 	}

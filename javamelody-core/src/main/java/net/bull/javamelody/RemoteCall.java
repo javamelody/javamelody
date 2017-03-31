@@ -20,6 +20,7 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
@@ -258,6 +259,13 @@ class RemoteCall {
 			mbeansByTitle.put(title + " (" + getHostAndPort(url) + ')', mbeans);
 		}
 		return mbeansByTitle;
+	}
+
+	Map<String, MavenArtifact> collectWebappDependencies() throws IOException {
+		// récupération à la demande des dépendances
+		final URL dependenciesUrl = new URL(
+				url.toString() + '&' + PART_PARAMETER + '=' + DEPENDENCIES_PART);
+		return collectForUrl(dependenciesUrl);
 	}
 
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {
