@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -92,8 +91,6 @@ class JavaInformations implements Serializable { // NOPMD
 	private final List<CacheInformations> cacheInformationsList;
 	@SuppressWarnings("all")
 	private final List<JobInformations> jobInformationsList;
-	@SuppressWarnings("all")
-	private final List<String> dependenciesList;
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
 
@@ -159,12 +156,10 @@ class JavaInformations implements Serializable { // NOPMD
 			serverInfo = null;
 			contextPath = null;
 			contextDisplayName = null;
-			dependenciesList = null;
 		} else {
 			serverInfo = servletContext.getServerInfo();
 			contextPath = Parameters.getContextPath(servletContext);
 			contextDisplayName = servletContext.getServletContextName();
-			dependenciesList = buildDependenciesList(servletContext);
 		}
 		startDate = START_DATE;
 		jvmArguments = buildJvmArguments();
@@ -461,30 +456,6 @@ class JavaInformations implements Serializable { // NOPMD
 		return sb.toString();
 	}
 
-	private static List<String> buildDependenciesList(ServletContext servletContext) {
-		final String directory = "/WEB-INF/lib/";
-
-		final Set<String> dependencies;
-		try {
-			dependencies = servletContext.getResourcePaths(directory);
-		} catch (final Exception e) {
-			// Tomcat 8 can throw "IllegalStateException: The resources may not be accessed if they are not currently started"
-			// for some ServletContext states (issue 415)
-			return Collections.emptyList();
-		}
-		if (dependencies == null || dependencies.isEmpty()) {
-			return Collections.emptyList();
-		}
-		final List<String> result = new ArrayList<String>(dependencies.size());
-		for (final String dependency : dependencies) {
-			if (dependency.endsWith(".jar") || dependency.endsWith(".JAR")) {
-				result.add(dependency.substring(directory.length()));
-			}
-		}
-		Collections.sort(result);
-		return result;
-	}
-
 	private static boolean isSunOsMBean(OperatingSystemMXBean operatingSystem) {
 		// on ne teste pas operatingSystem instanceof com.sun.management.OperatingSystemMXBean
 		// car le package com.sun n'existe à priori pas sur une jvm tierce
@@ -680,32 +651,6 @@ class JavaInformations implements Serializable { // NOPMD
 			}
 		}
 		return result;
-	}
-
-	boolean isDependenciesEnabled() {
-		return dependenciesList != null && !dependenciesList.isEmpty();
-	}
-
-	List<String> getDependenciesList() {
-		if (dependenciesList != null) {
-			return Collections.unmodifiableList(dependenciesList);
-		}
-		return Collections.emptyList();
-	}
-
-	String getDependencies() {
-		if (!isDependenciesEnabled()) {
-			return null;
-		}
-		final StringBuilder sb = new StringBuilder();
-		for (final String dependency : getDependenciesList()) {
-			sb.append(dependency);
-			sb.append(",\n");
-		}
-		if (sb.length() >= 2) {
-			sb.delete(sb.length() - 2, sb.length());
-		}
-		return sb.toString();
 	}
 
 	boolean isStackTraceEnabled() {

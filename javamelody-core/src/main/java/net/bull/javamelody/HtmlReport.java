@@ -133,6 +133,13 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
+	void writeDependencies() throws IOException {
+		writeHtmlHeader();
+		final Map<String, MavenArtifact> dependencies = MavenArtifact.getWebappDependencies();
+		new HtmlDependenciesReport(dependencies, getWriter()).toHtml();
+		writeHtmlFooter();
+	}
+
 	void writeHtmlHeader() throws IOException {
 		writeHtmlHeader(false, false);
 	}

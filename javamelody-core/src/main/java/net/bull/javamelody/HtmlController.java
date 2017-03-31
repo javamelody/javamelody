@@ -23,6 +23,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PART;
@@ -141,6 +142,8 @@ class HtmlController {
 		} else if (SOURCE_PART.equalsIgnoreCase(part)) {
 			final String className = httpRequest.getParameter(CLASS_PARAMETER);
 			htmlReport.writeSource(className);
+		} else if (DEPENDENCIES_PART.equalsIgnoreCase(part)) {
+			htmlReport.writeDependencies();
 		} else {
 			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
 		}

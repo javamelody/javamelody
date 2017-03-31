@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
@@ -209,7 +210,8 @@ class CollectorController { // NOPMD
 			MonitoringController monitoringController, String partParameter)
 			throws IOException, ServletException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)
-				|| POM_XML_PART.equalsIgnoreCase(partParameter)) {
+				|| POM_XML_PART.equalsIgnoreCase(partParameter)
+				|| DEPENDENCIES_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, partParameter);
 		} else if (SOURCE_PART.equalsIgnoreCase(partParameter)) {

@@ -294,12 +294,6 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 					+ ' ' + getString("Mo"));
 		}
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
-		if (javaInformations.isDependenciesEnabled()) {
-			addCell(getString("Dependencies") + ':');
-			addCell(getFormattedString("nb_dependencies",
-					javaInformations.getDependenciesList().size()) + " ;\n"
-					+ javaInformations.getDependencies());
-		}
 		addCell("");
 		addCell("");
 	}

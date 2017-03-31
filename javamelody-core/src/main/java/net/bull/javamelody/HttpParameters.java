@@ -76,6 +76,7 @@ final class HttpParameters {
 	static final String EXPLAIN_PLAN_PART = "explainPlan";
 	static final String APPLICATIONS_PART = "applications";
 	static final String SOURCE_PART = "source";
+	static final String DEPENDENCIES_PART = "dependencies";
 
 	/**
 	 * Constructeur privé: pas d'instance.

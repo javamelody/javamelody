@@ -396,9 +396,6 @@ public class TestCollector {
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		javaInformations.getUnixMaxFileDescriptorCount();
 		javaInformations.getContextPath();
-		javaInformations.isDependenciesEnabled();
-		javaInformations.getDependenciesList();
-		javaInformations.getDependencies();
 		javaInformations.isStackTraceEnabled();
 		javaInformations.isCacheEnabled();
 		javaInformations.doesWebXmlExists();

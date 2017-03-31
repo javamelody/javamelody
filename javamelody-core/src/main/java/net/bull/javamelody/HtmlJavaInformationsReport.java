@@ -40,7 +40,6 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	private static final int FULL_BLOCKS = 10;
 	private static final double UNIT_SIZE = (MAX_VALUE - MIN_VALUE)
 			/ (FULL_BLOCKS * PARTIAL_BLOCKS);
-	private static int uniqueByPageSequence;
 
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
@@ -200,11 +199,10 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 
-		if (javaInformations.isDependenciesEnabled()) {
-			writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
-			writeDependencies(javaInformations);
-			writeln(columnEnd);
-		}
+		writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
+		writeDependencies(javaInformations);
+		writeln(columnEnd);
+
 		writeln("</table>");
 	}
 
@@ -341,21 +339,12 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 	}
 
 	private void writeDependencies(JavaInformations javaInformations) throws IOException {
-		final int nbDependencies = javaInformations.getDependenciesList().size();
-		writeln(getFormattedString("nb_dependencies", nbDependencies));
-		if (nbDependencies > 0) {
-			uniqueByPageSequence++;
-			writeln(" ; &nbsp;&nbsp;&nbsp;");
-			writeShowHideLink("detailsDependencies" + uniqueByPageSequence, "#Details#");
-			if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
-				writeln("&nbsp;&nbsp;&nbsp;<a href='?part=pom.xml' class='noPrint'>");
-				writeln("<img src='?resource=xml.png' width='14' height='14' alt=\"#pom.xml#\"/> #pom.xml#</a>");
-			}
-			writeln("<br/>");
-			writeln("<div id='detailsDependencies" + uniqueByPageSequence
-					+ "' style='display: none;'><div>");
-			writeln(htmlEncodeButNotSpace(javaInformations.getDependencies()));
-			writeln("</div></div>");
+		writeln("<a href='?part=dependencies' class='noPrint'>");
+		writeln("<img src='?resource=beans.png' width='14' height='14' alt='#Dependencies#'> #Dependencies#</a>");
+		if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
+			writeln("&nbsp;&nbsp;&nbsp;");
+			writeln("<a href='?part=pom.xml' class='noPrint'>");
+			writeln("<img src='?resource=xml.png' width='14' height='14' alt=\"#pom.xml#\"/> #pom.xml#</a>");
 		}
 	}
 
