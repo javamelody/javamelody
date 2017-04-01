@@ -122,7 +122,7 @@ final class UpdateChecker {
 			input.close();
 		}
 		final String javamelodyVersion = properties.getProperty("version");
-		if (javamelodyVersion != null
+		if (javamelodyVersion != null && Parameters.JAVAMELODY_VERSION != null
 				&& javamelodyVersion.compareTo(Parameters.JAVAMELODY_VERSION) > 0) {
 			setNewJavamelodyVersion(javamelodyVersion);
 		}
