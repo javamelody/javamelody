@@ -63,6 +63,8 @@ final class MavenArtifact implements Serializable { // NOPMD
 	private static final File LOCAL_REPO = new File(
 			System.getProperty("user.home") + "/.m2/repository");
 
+	private static Map<String, String> sourceFilePathsByJarFileNames;
+
 	private String name;
 	private String url;
 	private String groupId;
@@ -253,8 +255,7 @@ final class MavenArtifact implements Serializable { // NOPMD
 	private void update() throws IOException {
 		if (!updated && version != null) {
 			updated = true;
-			final String filePath = groupId.replace('.', '/') + '/' + artifactId + '/' + version
-					+ '/' + artifactId + '-' + version + ".pom";
+			final String filePath = getPath(".pom");
 			final File pomXml = getMavenArtifact(filePath);
 			if (pomXml != null) {
 				final InputStream input = new FileInputStream(pomXml);
@@ -347,6 +348,11 @@ final class MavenArtifact implements Serializable { // NOPMD
 			}
 		}
 		return false;
+	}
+
+	private String getPath(String extension) {
+		return groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/' + artifactId + '-'
+				+ version + extension;
 	}
 
 	static Map<String, MavenArtifact> getWebappDependencies() throws IOException {
@@ -446,16 +452,41 @@ final class MavenArtifact implements Serializable { // NOPMD
 	static File getSourceJarFile(URL classesJarFileUrl) throws IOException {
 		final byte[] pomProperties = readMavenFileFromJarFile(classesJarFileUrl, "pom.properties");
 		if (pomProperties == null) {
+			final Map<String, String> sourceFilePaths = getSourceFilePathsByJarFileNames();
+			final String file = classesJarFileUrl.getFile();
+			final String sourceFilePath = sourceFilePaths
+					.get(file.substring(file.lastIndexOf('/') + 1));
+			if (sourceFilePath != null) {
+				return getMavenArtifact(sourceFilePath);
+			}
 			return null;
 		}
 		final Properties properties = new Properties();
 		properties.load(new ByteArrayInputStream(pomProperties));
-		final String groupId = properties.getProperty("groupId");
-		final String artifactId = properties.getProperty("artifactId");
-		final String version = properties.getProperty("version");
-		final String filePath = groupId.replace('.', '/') + '/' + artifactId + '/' + version + '/'
-				+ artifactId + '-' + version + "-sources.jar";
+		final MavenArtifact mavenArtifact = new MavenArtifact();
+		mavenArtifact.groupId = properties.getProperty("groupId");
+		mavenArtifact.artifactId = properties.getProperty("artifactId");
+		mavenArtifact.version = properties.getProperty("version");
+		final String filePath = mavenArtifact.getPath("-sources.jar");
 		return getMavenArtifact(filePath);
+	}
+
+	private static synchronized Map<String, String> getSourceFilePathsByJarFileNames()
+			throws IOException {
+		if (sourceFilePathsByJarFileNames == null) {
+			final Map<String, MavenArtifact> webappDependencies = getWebappDependencies();
+			final Map<String, String> sourceFilePaths = new HashMap<String, String>();
+			for (final Map.Entry<String, MavenArtifact> entry : webappDependencies.entrySet()) {
+				final String jarFileName = entry.getKey();
+				final MavenArtifact dependency = entry.getValue();
+				if (dependency != null) {
+					final String filePath = dependency.getPath("-sources.jar");
+					sourceFilePaths.put(jarFileName, filePath);
+				}
+			}
+			sourceFilePathsByJarFileNames = sourceFilePaths;
+		}
+		return sourceFilePathsByJarFileNames;
 	}
 
 	private static File getMavenArtifact(String filePath) throws IOException {
