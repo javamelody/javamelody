@@ -689,7 +689,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	// CHECKSTYLE:OFF
-	private void writeSystemActionsLinks() throws IOException {
+	private void writeSystemActionsLinks() throws IOException { // NOPMD
 		// CHECKSTYLE:ON
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -755,6 +755,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(separator);
 			write("<a href='?part=jndi'>");
 			write("<img src='?resource=jndi.png' width='20' height='20' alt=\"#Arbre_JNDI#\" /> #Arbre_JNDI#</a>");
+		}
+
+		if (SpringContext.getSingleton() != null) {
+			writeln(separator);
+			write("<a href='?part=springBeans'>");
+			write("<img src='?resource=beans.png' width='20' height='20' alt=\"#Spring_beans#\" /> #Spring_beans#</a>");
 		}
 
 		if (isDatabaseEnabled()) {

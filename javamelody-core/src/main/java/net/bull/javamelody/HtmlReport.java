@@ -140,6 +140,13 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
+	void writeSpringContext() throws IOException {
+		writeHtmlHeader();
+		final SpringContext springContext = SpringContext.getSingleton();
+		new HtmlSpringContextReport(springContext, getWriter()).toHtml();
+		writeHtmlFooter();
+	}
+
 	void writeHtmlHeader() throws IOException {
 		writeHtmlHeader(false, false);
 	}

@@ -41,6 +41,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SOURCE_PART;
+import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
 import static net.bull.javamelody.HttpParameters.TEXT_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
@@ -144,6 +145,8 @@ class HtmlController {
 			htmlReport.writeSource(className);
 		} else if (DEPENDENCIES_PART.equalsIgnoreCase(part)) {
 			htmlReport.writeDependencies();
+		} else if (SPRING_BEANS_PART.equalsIgnoreCase(part)) {
+			htmlReport.writeSpringContext();
 		} else {
 			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
 		}

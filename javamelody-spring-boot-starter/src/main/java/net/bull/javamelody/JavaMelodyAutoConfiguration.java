@@ -182,4 +182,12 @@ public class JavaMelodyAutoConfiguration {
 		interceptor.setPointcut(new AnnotationMatchingPointcut(RestController.class));
 		return interceptor;
 	}
+
+	/**
+	 * @return Enregistrement du context Spring.
+	 */
+	@Bean
+	public SpringContext javamelodySpringContext() {
+		return new SpringContext();
+	}
 }
