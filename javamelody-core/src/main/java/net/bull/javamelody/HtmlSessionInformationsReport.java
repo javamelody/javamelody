@@ -301,7 +301,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		write("<td>");
 		writeDirectly(htmlEncodeButNotSpace(sessionAttribute.getName()));
 		write("</td><td>");
-		write(String.valueOf(sessionAttribute.getType()));
+		write(HtmlSourceReport.addLinkToClassName(sessionAttribute.getType()));
 		write("</td><td align='center'>");
 		if (sessionAttribute.isSerializable()) {
 			write("#oui#");
