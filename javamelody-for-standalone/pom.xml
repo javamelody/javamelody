@@ -15,7 +15,8 @@
 	</prerequisites>
 	<properties>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
-		<jettyVersion>9.2.9.v20150224</jettyVersion>
+		<!-- (9.2.21 is the last version supporting Java 7) -->
+		<jettyVersion>9.2.21.v20170120</jettyVersion>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
 		<javamelodyVersion>${project.version}</javamelodyVersion>
 
@@ -62,7 +63,7 @@
 				<!-- Use "mvn exec:java" -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.4.0</version>
+				<version>1.6.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -77,7 +78,7 @@
 			<!-- Configuration compilation -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.6.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
