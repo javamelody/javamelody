@@ -82,18 +82,23 @@ class DatabaseInformations implements Serializable {
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
+				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
+						"innodb_status", "unusedIndexes", "longRunning", "tableStats",
+						"eventsWaits", "tableIoWaits", "indexIoWaits", "tableLockWaits",
+						"tablesWithoutPk", "perfDigests", "memory");
+				break;
 			case MYSQL4:
-				// les noms des requêtes sont les mêmes, mais la requête SQL correspondant à "innodb_status"
+				// les noms des premières requêtes sont les mêmes, mais la requête SQL correspondant à "innodb_status"
 				// n'est pas identique entre MYSQL 5+ et MYSQL 4 (issue 195)
 				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
 						"innodb_status");
 				break;
 			case ORACLE:
 				tmp = Arrays.asList("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
-						"invalidObjects", "disabledConstraints", "instance", "database",
-						"nlsParameters", "tablespaceFreespace", "datafileIo", "tablespaceExtents",
-						"ratios", "parameters", "rollbackSegmentStatistics", "statistics",
-						"events");
+						"invalidObjects", "disabledConstraints", "tableStats", "instance",
+						"database", "nlsParameters", "tablespaceFreespace", "datafileIo",
+						"tablespaceExtents", "ratios", "parameters", "rollbackSegmentStatistics",
+						"statistics", "events");
 				break;
 			case DB2:
 				tmp = Arrays.asList("mon_current_sql", "mon_db_summary", "mon_lockwaits",
