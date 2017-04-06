@@ -826,8 +826,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeDirectly("<br/>");
 				for (final StackTraceElement stackTraceElement : lastCollectException
 						.getStackTrace()) {
-					writeDirectly(HtmlSourceReport
-							.htmlEncodeStackTraceElement(stackTraceElement.toString()));
+					writeDirectly(htmlEncode(stackTraceElement.toString()));
 					writeDirectly("<br/>");
 				}
 				writeln("</em>");
