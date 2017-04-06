@@ -40,6 +40,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private static final String END_DIV = "</div>";
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
+	private static final boolean SPRING_AVAILABLE = isSpringAvailable();
 
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
@@ -757,7 +758,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			write("<img src='?resource=jndi.png' width='20' height='20' alt=\"#Arbre_JNDI#\" /> #Arbre_JNDI#</a>");
 		}
 
-		if (SpringContext.getSingleton() != null) {
+		if (SPRING_AVAILABLE && SpringContext.getSingleton() != null) {
 			writeln(separator);
 			write("<a href='?part=springBeans'>");
 			write("<img src='?resource=beans.png' width='20' height='20' alt=\"#Spring_beans#\" /> #Spring_beans#</a>");
@@ -925,5 +926,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(END_DIV);
 		}
 		writeln(END_DIV);
+	}
+
+	private static boolean isSpringAvailable() {
+		try {
+			Class.forName("org.springframework.context.ApplicationContextAware");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			// pour collector server
+			return false;
+		}
 	}
 }
