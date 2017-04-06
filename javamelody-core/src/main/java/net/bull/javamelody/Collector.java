@@ -39,6 +39,7 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * @author Emeric Vernat
  */
 class Collector { // NOPMD
+	private static final long NOT_A_NUMBER = Long.MIN_VALUE;
 	// période entre 2 collectes en milli-secondes
 	private final int periodMillis;
 	private final String application;
@@ -56,11 +57,11 @@ class Collector { // NOPMD
 	private final Map<String, CounterRequest> requestsById = new HashMap<String, CounterRequest>();
 	private final Map<Counter, Counter> dayCountersByCounter = new LinkedHashMap<Counter, Counter>();
 	private final Map<Counter, Boolean> firstCollectDoneByCounter = new HashMap<Counter, Boolean>();
-	private long transactionCount;
-	private long cpuTimeMillis;
-	private long gcTimeMillis;
-	private long tomcatBytesReceived;
-	private long tomcatBytesSent;
+	private long transactionCount = NOT_A_NUMBER;
+	private long cpuTimeMillis = NOT_A_NUMBER;
+	private long gcTimeMillis = NOT_A_NUMBER;
+	private long tomcatBytesReceived = NOT_A_NUMBER;
+	private long tomcatBytesSent = NOT_A_NUMBER;
 	private long lastCollectDuration;
 	private long estimatedMemorySize;
 	private long diskUsage;
@@ -437,11 +438,13 @@ class Collector { // NOPMD
 
 		// collecte du pourcentage de temps en ramasse-miette
 		if (garbageCollectionTimeMillis >= 0) {
-			// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
-			final int gcPercentage = Math
-					.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
-							/ periodMillis / availableProcessors), 100);
-			getOtherJRobin("gc").addValue(gcPercentage);
+			if (this.gcTimeMillis != NOT_A_NUMBER) {
+				// %gc = delta(somme(Temps GC)) / période / nb total de coeurs
+				final int gcPercentage = Math
+						.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
+								/ periodMillis / availableProcessors), 100);
+				getOtherJRobin("gc").addValue(gcPercentage);
+			}
 			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
 
@@ -465,9 +468,11 @@ class Collector { // NOPMD
 
 		if (!noDatabase) {
 			// collecte du nombre de transactions base de données par minute
-			final double periodMinutes = periodMillis / 60000d;
-			getOtherJRobin("transactionsRate")
-					.addValue((databaseTransactionCount - this.transactionCount) / periodMinutes);
+			if (this.transactionCount != NOT_A_NUMBER) {
+				final double periodMinutes = periodMillis / 60000d;
+				getOtherJRobin("transactionsRate").addValue(
+						(databaseTransactionCount - this.transactionCount) / periodMinutes);
+			}
 			this.transactionCount = databaseTransactionCount;
 		}
 
@@ -520,10 +525,13 @@ class Collector { // NOPMD
 			// cpuPercentage ne peut être supérieur à 100
 			// car ce serait une valeur aberrante due aux imprécisions de mesure
 
-			// en gros, %cpu = delta(somme(Temps cpu)) / période / nb total de coeurs
-			final int cpuPercentage = Math.min((int) ((processesCpuTimeMillis - this.cpuTimeMillis)
-					* 100 / periodMillis / availableProcessors), 100);
-			getCounterJRobin("cpu").addValue(cpuPercentage);
+			if (this.cpuTimeMillis != NOT_A_NUMBER) {
+				// en gros, %cpu = delta(somme(Temps cpu)) / période / nb total de coeurs
+				final int cpuPercentage = Math
+						.min((int) ((processesCpuTimeMillis - this.cpuTimeMillis) * 100
+								/ periodMillis / availableProcessors), 100);
+				getCounterJRobin("cpu").addValue(cpuPercentage);
+			}
 			this.cpuTimeMillis = processesCpuTimeMillis;
 		}
 
@@ -554,11 +562,13 @@ class Collector { // NOPMD
 	private void collectTomcatValues(int tomcatBusyThreads, long bytesReceived, long bytesSent)
 			throws IOException {
 		getOtherJRobin("tomcatBusyThreads").addValue(tomcatBusyThreads);
-		final double periodMinutes = periodMillis / 60000d;
-		getOtherJRobin("tomcatBytesReceived")
-				.addValue((bytesReceived - this.tomcatBytesReceived) / periodMinutes);
-		getOtherJRobin("tomcatBytesSent")
-				.addValue((bytesSent - this.tomcatBytesSent) / periodMinutes);
+		if (this.tomcatBytesSent != NOT_A_NUMBER) {
+			final double periodMinutes = periodMillis / 60000d;
+			getOtherJRobin("tomcatBytesReceived")
+					.addValue((bytesReceived - this.tomcatBytesReceived) / periodMinutes);
+			getOtherJRobin("tomcatBytesSent")
+					.addValue((bytesSent - this.tomcatBytesSent) / periodMinutes);
+		}
 		this.tomcatBytesReceived = bytesReceived;
 		this.tomcatBytesSent = bytesSent;
 	}
