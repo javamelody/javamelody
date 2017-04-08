@@ -49,6 +49,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SOURCE_PART;
+import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -211,7 +212,8 @@ class CollectorController { // NOPMD
 			throws IOException, ServletException {
 		if (WEB_XML_PART.equalsIgnoreCase(partParameter)
 				|| POM_XML_PART.equalsIgnoreCase(partParameter)
-				|| DEPENDENCIES_PART.equalsIgnoreCase(partParameter)) {
+				|| DEPENDENCIES_PART.equalsIgnoreCase(partParameter)
+				|| SPRING_BEANS_PART.equalsIgnoreCase(partParameter)) {
 			noCache(resp);
 			doProxy(req, resp, application, partParameter);
 		} else if (SOURCE_PART.equalsIgnoreCase(partParameter)) {

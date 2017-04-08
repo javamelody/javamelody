@@ -93,6 +93,7 @@ class JavaInformations implements Serializable { // NOPMD
 	private final List<JobInformations> jobInformationsList;
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
+	private final boolean springBeanExists;
 
 	static final class ThreadInformationsComparator
 			implements Comparator<ThreadInformations>, Serializable {
@@ -168,6 +169,7 @@ class JavaInformations implements Serializable { // NOPMD
 		peakThreadCount = threadBean.getPeakThreadCount();
 		totalStartedThreadCount = threadBean.getTotalStartedThreadCount();
 		freeDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getFreeSpace();
+		springBeanExists = SpringContext.getSingleton() != null;
 
 		if (includeDetails) {
 			dataBaseVersion = buildDataBaseVersion();
@@ -669,6 +671,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 	boolean isJobEnabled() {
 		return jobInformationsList != null && !jobInformationsList.isEmpty();
+	}
+
+	boolean isSpringBeansEnabled() {
+		return springBeanExists;
 	}
 
 	/** {@inheritDoc} */
