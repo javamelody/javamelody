@@ -384,7 +384,7 @@ class Collector { // NOPMD
 	}
 
 	// CHECKSTYLE:OFF
-	private void collectOtherJavaInformations(List<JavaInformations> javaInformationsList)
+	private void collectOtherJavaInformations(List<JavaInformations> javaInformationsList) // NOPMD
 			throws IOException {
 		// CHECKSTYLE:ON
 		long usedNonHeapMemory = 0;
