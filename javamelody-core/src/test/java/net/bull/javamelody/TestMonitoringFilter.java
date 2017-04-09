@@ -905,6 +905,8 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, MBEANS_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(PART_PARAMETER, DATABASE_PART);
 		monitoring(parameters);

@@ -26,6 +26,7 @@ import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
 import static net.bull.javamelody.HttpParameters.DATABASE_PART;
+import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
 import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
@@ -47,6 +48,7 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SOURCE_PART;
+import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
@@ -154,9 +156,29 @@ public class TestCollectorServletWithParts {
 		parameters.put(FORMAT_PARAMETER, "pdf");
 		doPart(parameters);
 		parameters.remove(FORMAT_PARAMETER);
-		parameters.put(PART_PARAMETER, WEB_XML_PART);
-		doPart(parameters);
 		parameters.put(PART_PARAMETER, POM_XML_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		doPart(parameters);
+		parameters.put(FORMAT_PARAMETER, "pdf");
+		doPart(parameters);
+		parameters.remove(FORMAT_PARAMETER);
+		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		doPart(parameters);
+		parameters.put(PART_PARAMETER, SOURCE_PART);
+		parameters.put(CLASS_PARAMETER, "java.lang.String");
+		doPart(parameters);
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoPartForSystemActions() throws IOException, ServletException {
+		final Map<String, String> parameters = new LinkedHashMap<String, String>();
+		parameters.put(PART_PARAMETER, WEB_XML_PART);
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, JNDI_PART);
 		doPart(parameters);
@@ -169,8 +191,6 @@ public class TestCollectorServletWithParts {
 		parameters.put(JMX_VALUE, "JMImplementation:type=MBeanServerDelegate.MBeanServerId");
 		doPart(parameters);
 		parameters.remove(JMX_VALUE);
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
-		doPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
 		parameters.put(FORMAT_PARAMETER, "pdf");
@@ -187,12 +207,9 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, SESSIONS_PART);
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
-		doPart(parameters);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, SOURCE_PART);
-		parameters.put(CLASS_PARAMETER, "java.lang.String");
+		parameters.put(PART_PARAMETER, SPRING_BEANS_PART);
 		doPart(parameters);
 	}
 
