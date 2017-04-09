@@ -317,7 +317,7 @@ final class MavenArtifact implements Serializable { // NOPMD
 		return getAllDependencies(1);
 	}
 
-	List<MavenArtifact> getAllDependencies(int level) throws IOException {
+	private List<MavenArtifact> getAllDependencies(int level) throws IOException {
 		if (level > 10) {
 			// limit recursivity against cycle (for example dom4j 1.5.2 <-> jaxen 1.1-beta-4)
 			return Collections.emptyList();
@@ -432,6 +432,10 @@ final class MavenArtifact implements Serializable { // NOPMD
 	}
 
 	static InputStream getWebappPomXmlAsStream() {
+		return getWebappPomFile("pom.xml");
+	}
+
+	private static InputStream getWebappPomFile(String pomFilename) {
 		final Set<?> mavenDir = Parameters.getServletContext().getResourcePaths("/META-INF/maven/");
 		if (mavenDir == null || mavenDir.isEmpty()) {
 			return null;
@@ -442,7 +446,7 @@ final class MavenArtifact implements Serializable { // NOPMD
 			return null;
 		}
 		final InputStream pomXml = Parameters.getServletContext()
-				.getResourceAsStream(groupDir.iterator().next() + "pom.xml");
+				.getResourceAsStream(groupDir.iterator().next() + pomFilename);
 		if (pomXml == null) {
 			return null;
 		}
