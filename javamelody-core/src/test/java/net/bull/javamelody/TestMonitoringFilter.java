@@ -51,6 +51,7 @@ import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SOURCE_PART;
+import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
@@ -97,6 +98,8 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -641,6 +644,11 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(PART_PARAMETER, JNLP_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		monitoring(parameters);
+		final ApplicationContext context = new ClassPathXmlApplicationContext(
+				new String[] { "net/bull/javamelody/monitoring-spring.xml", });
+		context.getBeanDefinitionNames();
+		parameters.put(PART_PARAMETER, SPRING_BEANS_PART);
 		monitoring(parameters);
 		setProperty(Parameter.SAMPLING_SECONDS, "60");
 		setUp();
