@@ -22,7 +22,11 @@ import java.io.Writer;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,16 +52,49 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private final long start = System.currentTimeMillis();
 	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
 
+	private static class MapValueComparator<K, V extends Comparable<V>>
+			implements Comparator<Map.Entry<K, V>> {
+		MapValueComparator() {
+			super();
+		}
+
+		@Override
+		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+			return o1.getValue().compareTo(o2.getValue());
+		}
+	}
+
 	private static class HtmlForms extends HtmlAbstractReport {
+		private static final Comparator<Map.Entry<String, Date>> MAP_VALUE_COMPARATOR = Collections
+				.reverseOrder(new MapValueComparator<String, Date>());
+
 		HtmlForms(Writer writer) {
 			super(writer);
 		}
 
-		void writeCustomPeriodLink(Range range, String graphName, String part) throws IOException {
+		void writeCustomPeriodLinks(Map<String, Date> datesByWebappVersions, Range currentRange,
+				String graphName, String part) throws IOException {
 			writeln("<a href=\"javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();\" ");
-			final String linkLabel = getString("personnalisee");
-			writeln("title='" + getFormattedString("Choisir_periode", linkLabel) + "'>");
+			writeln("title='" + getFormattedString("Choisir_periode", getString("personnalisee"))
+					+ "'>");
 			writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> #personnalisee#</a>");
+
+			if (!datesByWebappVersions.isEmpty()) {
+				writeln("&nbsp;<a href=\"javascript:showHide('deploymentPeriod');\" ");
+				writeln("title='"
+						+ getFormattedString("Choisir_periode", getString("par_deploiement"))
+						+ "'>");
+				writeln("<img src='?resource=calendar.png' alt='#par_deploiement#' /> #par_deploiement#</a>");
+			}
+
+			writeCustomPeriodDiv(currentRange, graphName, part);
+			if (!datesByWebappVersions.isEmpty()) {
+				writeDeploymentPeriodDiv(datesByWebappVersions, currentRange, graphName, part);
+			}
+		}
+
+		private void writeCustomPeriodDiv(Range currentRange, String graphName, String part)
+				throws IOException {
 			writeln("<div id='customPeriod' style='display: none;'>");
 			writeln(SCRIPT_BEGIN);
 			writeln("function validateCustomPeriodForm() {");
@@ -80,17 +117,65 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			}
 			writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
 			writeln("<br/><b>#startDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='startDate' ");
-			if (range.getStartDate() != null) {
-				writeln("value='" + dateFormat.format(range.getStartDate()) + '\'');
+			if (currentRange.getStartDate() != null) {
+				writeln("value='" + dateFormat.format(currentRange.getStartDate()) + '\'');
 			}
 			writeln("/>&nbsp;&nbsp;<b>#endDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='endDate' ");
-			if (range.getEndDate() != null) {
-				writeln("value='" + dateFormat.format(range.getEndDate()) + '\'');
+			if (currentRange.getEndDate() != null) {
+				writeln("value='" + dateFormat.format(currentRange.getEndDate()) + '\'');
 			}
 			writeln("/>&nbsp;&nbsp;");
 			writeDirectly('(' + dateFormatPattern + ')');
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' value='#ok#'/><br/><br/>");
 			writeln("<input type='hidden' name='period' value=''/>");
+			if (graphName != null) {
+				writeln("<input type='hidden' name='part' value='" + part + "'/>");
+				writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
+			}
+			writeln("</form><br/>");
+			writeln(END_DIV);
+		}
+
+		private void writeDeploymentPeriodDiv(Map<String, Date> datesByWebappVersions,
+				Range currentRange, String graphName, String part) throws IOException {
+			writeln("<div id='deploymentPeriod' style='display: none;'>");
+			writeln("<br/>");
+			final DateFormat dateFormat = I18N.createDateFormat();
+			final String currentRangeValue = currentRange.getValue();
+			final String startDateLabel = I18N.getString("startDate")
+					.toLowerCase(I18N.getCurrentLocale());
+			final String endDateLabel = I18N.getString("endDate");
+			writeln("<form name='deploymentPeriodForm' method='get' action=''>");
+			writeln("<br/><b>#Version#</b>&nbsp;&nbsp;");
+			writeln("<select name='period' onchange='document.deploymentPeriodForm.submit();'>");
+			writeDirectly("<option>&nbsp;</option>");
+			// on doit retrier les versions ici, notamment s'il y en a une ajoutée à la fin
+			final List<Map.Entry<String, Date>> orderedVersionsByDate = new ArrayList<Map.Entry<String, Date>>(
+					datesByWebappVersions.entrySet());
+			Collections.sort(orderedVersionsByDate, MAP_VALUE_COMPARATOR);
+			String previousDate = null;
+			for (final Map.Entry<String, Date> entry : orderedVersionsByDate) {
+				final String version = entry.getKey();
+				final String date = dateFormat.format(entry.getValue());
+				final String label;
+				if (previousDate == null) {
+					previousDate = dateFormat.format(new Date());
+					label = version + ' ' + startDateLabel + ' ' + date;
+				} else {
+					label = version + ' ' + startDateLabel + ' ' + date + ' ' + endDateLabel + ' '
+							+ previousDate;
+				}
+				final String rangeValue = date + Range.CUSTOM_PERIOD_SEPARATOR + previousDate;
+				writeDirectly("<option value='" + rangeValue + "'");
+				if (rangeValue.equals(currentRangeValue)) {
+					writeDirectly(" selected='selected'");
+				}
+				writeDirectly(">");
+				writeDirectly(htmlEncodeButNotSpace(label));
+				writeDirectly("</option>");
+				previousDate = date;
+			}
+			writeln("</select><br/><br/>");
 			if (graphName != null) {
 				writeln("<input type='hidden' name='part' value='" + part + "'/>");
 				writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
@@ -265,9 +350,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeDirectly(getFormattedString("Statistiques_sans_depuis", javaMelodyUrl,
 					I18N.getCurrentDateAndTime(), collector.getApplication()));
 		}
-		if (javaInformationsList.get(0).getContextDisplayName() != null) {
-			writeDirectly(htmlEncodeButNotSpace(
-					" (" + javaInformationsList.get(0).getContextDisplayName() + ')'));
+		final String contextDisplayName = javaInformationsList.get(0).getContextDisplayName();
+		final String webappVersion = javaInformationsList.get(0).getWebappVersion();
+		if (contextDisplayName != null) {
+			writeDirectly(" (");
+			writeDirectly(htmlEncodeButNotSpace(contextDisplayName));
+			if (webappVersion != null) {
+				writeDirectly(", " + htmlEncodeButNotSpace(webappVersion));
+			}
+			writeDirectly(")");
+		} else if (webappVersion != null) {
+			writeDirectly(" (");
+			writeDirectly(htmlEncodeButNotSpace(webappVersion));
+			writeDirectly(")");
 		}
 		writeln("");
 	}
@@ -889,7 +984,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					+ myPeriod.getLinkLabel() + "' /> ");
 			writeln(myPeriod.getLinkLabel() + "</a>&nbsp;");
 		}
-		new HtmlForms(getWriter()).writeCustomPeriodLink(range, graphName, part);
+		final HtmlForms htmlForms = new HtmlForms(getWriter());
+		final Map<String, Date> datesByWebappVersions = collector.getDatesByWebappVersions();
+		htmlForms.writeCustomPeriodLinks(datesByWebappVersions, range, graphName, part);
 
 		writeln(END_DIV);
 	}

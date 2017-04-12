@@ -77,6 +77,7 @@ class JavaInformations implements Serializable { // NOPMD
 	private final String serverInfo;
 	private final String contextPath;
 	private final String contextDisplayName;
+	private final String webappVersion;
 	private final Date startDate;
 	private final String jvmArguments;
 	private final long freeDiskSpaceInTemp;
@@ -157,10 +158,12 @@ class JavaInformations implements Serializable { // NOPMD
 			serverInfo = null;
 			contextPath = null;
 			contextDisplayName = null;
+			webappVersion = null;
 		} else {
 			serverInfo = servletContext.getServerInfo();
 			contextPath = Parameters.getContextPath(servletContext);
 			contextDisplayName = servletContext.getServletContextName();
+			webappVersion = MavenArtifact.getWebappVersion();
 		}
 		startDate = START_DATE;
 		jvmArguments = buildJvmArguments();
@@ -588,6 +591,10 @@ class JavaInformations implements Serializable { // NOPMD
 
 	String getContextDisplayName() {
 		return contextDisplayName;
+	}
+
+	String getWebappVersion() {
+		return webappVersion;
 	}
 
 	Date getStartDate() {

@@ -65,6 +65,8 @@ final class MavenArtifact implements Serializable { // NOPMD
 
 	private static Map<String, String> sourceFilePathsByJarFileNames;
 
+	private static String webappVersion;
+
 	private String name;
 	private String url;
 	private String groupId;
@@ -433,6 +435,36 @@ final class MavenArtifact implements Serializable { // NOPMD
 
 	static InputStream getWebappPomXmlAsStream() {
 		return getWebappPomFile("pom.xml");
+	}
+
+	static synchronized String getWebappVersion() {
+		if (webappVersion == null) {
+			webappVersion = Parameters.getParameter(Parameter.APPLICATION_VERSION);
+			if (webappVersion == null) {
+				final InputStream input = getWebappPomFile("pom.properties");
+				if (input != null) {
+					try {
+						try {
+							final Properties properties = new Properties();
+							properties.load(input);
+							webappVersion = properties.getProperty("version");
+						} finally {
+							input.close();
+						}
+					} catch (final IOException e) {
+						LOG.debug(e.toString(), e);
+					}
+				}
+				if (webappVersion == null) {
+					// remember that the webapp version can't be found
+					webappVersion = "";
+				}
+			}
+		}
+		if (webappVersion.isEmpty()) {
+			return null;
+		}
+		return webappVersion;
 	}
 
 	private static InputStream getWebappPomFile(String pomFilename) {

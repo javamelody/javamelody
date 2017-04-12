@@ -326,6 +326,11 @@ public enum Parameter {
 	APPLICATION_NAME("application-name"),
 
 	/**
+	 * Explicit version of the monitored application (to override the version from Maven files for example).
+	 */
+	APPLICATION_VERSION("application-version"),
+
+	/**
 	 * Comma separated list of Maven repositories URLs (https://repo1.maven.org/maven2/ by default).
 	 */
 	MAVEN_REPOSITORIES("maven-repositories");

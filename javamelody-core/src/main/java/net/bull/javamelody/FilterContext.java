@@ -335,6 +335,7 @@ class FilterContext {
 			LOG.debug("JavaMelody classes loaded from: " + location);
 		}
 		LOG.debug("Application type: " + applicationType);
+		LOG.debug("Application version: " + MavenArtifact.getWebappVersion());
 		LOG.debug("Host: " + Parameters.getHostName() + '@' + Parameters.getHostAddress());
 		for (final Parameter parameter : Parameter.values()) {
 			final String value = Parameters.getParameter(parameter);

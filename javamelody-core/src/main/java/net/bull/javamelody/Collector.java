@@ -18,7 +18,13 @@
 package net.bull.javamelody;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -28,7 +34,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.bull.javamelody.Counter.CounterRequestContextComparator;
@@ -39,7 +47,10 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * @author Emeric Vernat
  */
 class Collector { // NOPMD
+	private static final String VERSIONS_FILENAME = "versions.properties";
+	private static final String VERSIONS_DATE_PATTERN = "yyyy/MM/dd";
 	private static final long NOT_A_NUMBER = Long.MIN_VALUE;
+
 	// période entre 2 collectes en milli-secondes
 	private final int periodMillis;
 	private final String application;
@@ -68,6 +79,10 @@ class Collector { // NOPMD
 	private Date lastDateOfDeletedObsoleteFiles = new Date();
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
+	/**
+	 * Les versions de l'applications avec pour chacune la date de déploiement.
+	 */
+	private final Map<String, Date> datesByWebappVersions;
 
 	/**
 	 * Constructeur.
@@ -122,6 +137,8 @@ class Collector { // NOPMD
 			LOG.warn("exception while reading counters data from files in "
 					+ Parameters.getStorageDirectory(application), e);
 		}
+
+		datesByWebappVersions = readDatesByWebappVersions();
 	}
 
 	/**
@@ -145,6 +162,10 @@ class Collector { // NOPMD
 			throw new IllegalStateException("Hotspots sampling is not enabled in this server");
 		}
 		return samplingProfiler.getHotspots(1000);
+	}
+
+	Map<String, Date> getDatesByWebappVersions() {
+		return Collections.unmodifiableMap(datesByWebappVersions);
 	}
 
 	/**
@@ -345,6 +366,14 @@ class Collector { // NOPMD
 					deleteObsoleteFiles();
 				} finally {
 					lastDateOfDeletedObsoleteFiles = new Date();
+				}
+			}
+
+			if (!javaInformationsList.isEmpty()) {
+				final String webappVersion = javaInformationsList.get(0).getWebappVersion();
+				if (webappVersion != null && !datesByWebappVersions.containsKey(webappVersion)) {
+					addWebappVersion(webappVersion);
+					datesByWebappVersions.put(webappVersion, new Date());
 				}
 			}
 
@@ -915,6 +944,67 @@ class Collector { // NOPMD
 			}
 		}
 		return Collections.unmodifiableCollection(displayedJRobins);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Date> readDatesByWebappVersions() {
+		final Map<String, Date> result = new HashMap<String, Date>();
+		final File storageDirectory = Parameters.getStorageDirectory(application);
+		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
+		if (versionsFile.exists()) {
+			final Properties versionsProperties = new Properties();
+			try {
+				final InputStream input = new FileInputStream(versionsFile);
+				try {
+					versionsProperties.load(input);
+				} finally {
+					input.close();
+				}
+				final List<String> propertyNames = (List<String>) Collections
+						.list(versionsProperties.propertyNames());
+				final SimpleDateFormat dateFormat = new SimpleDateFormat(VERSIONS_DATE_PATTERN,
+						Locale.US);
+				for (final String version : propertyNames) {
+					try {
+						final Date date = dateFormat.parse(versionsProperties.getProperty(version));
+						result.put(version, date);
+					} catch (final ParseException e) {
+						continue;
+					}
+				}
+			} catch (final IOException e) {
+				// lecture échouée, tant pis
+				LOG.warn("exception while reading versions in " + versionsFile, e);
+			}
+		}
+		return result;
+	}
+
+	private void addWebappVersion(String webappVersion) throws IOException {
+		assert webappVersion != null && !webappVersion.isEmpty();
+		final File storageDirectory = Parameters.getStorageDirectory(application);
+		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
+		final Properties versionsProperties = new Properties();
+		if (versionsFile.exists()) {
+			final InputStream input = new FileInputStream(versionsFile);
+			try {
+				versionsProperties.load(input);
+			} finally {
+				input.close();
+			}
+		}
+		assert versionsProperties.getProperty(webappVersion) == null;
+
+		final SimpleDateFormat dateFormat = new SimpleDateFormat(VERSIONS_DATE_PATTERN, Locale.US);
+		versionsProperties.setProperty(webappVersion, dateFormat.format(new Date()));
+
+		final OutputStream output = new FileOutputStream(versionsFile);
+		try {
+			versionsProperties.store(output, "Application deployments with versions and dates");
+		} finally {
+			output.close();
+		}
+		LOG.debug("New application version added: " + webappVersion);
 	}
 
 	/**
