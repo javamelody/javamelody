@@ -340,7 +340,7 @@ class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 	private void writeDependencies(JavaInformations javaInformations) throws IOException {
 		writeln("<a href='?part=dependencies' class='noPrint'>");
-		writeln("<img src='?resource=beans.png' width='14' height='14' alt='#Dependencies#'> #Dependencies#</a>");
+		writeln("<img src='?resource=beans.png' width='14' height='14' alt='#Dependencies#'/> #Dependencies#</a>");
 		if (javaInformations.doesPomXmlExists() && Parameters.isSystemActionsEnabled()) {
 			writeln("&nbsp;&nbsp;&nbsp;");
 			writeln("<a href='?part=pom.xml' class='noPrint'>");
