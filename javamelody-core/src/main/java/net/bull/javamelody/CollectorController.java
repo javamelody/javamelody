@@ -470,6 +470,36 @@ class CollectorController { // NOPMD
 		writer.close();
 	}
 
+	static void writeDataUnavailableForApplication(String application, HttpServletResponse resp)
+			throws IOException {
+		noCache(resp);
+		resp.setContentType(HTML_CONTENT_TYPE);
+		final PrintWriter writer = createWriterFromOutputStream(resp);
+		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
+				+ "'><head><title>Monitoring</title></head><body>");
+		writer.write(
+				I18N.htmlEncode(I18N.getFormattedString("data_unavailable", application), false));
+		writer.write("<br/><br/>");
+		writer.write("<a href='?'><img src='?resource=action_back.png' alt=\""
+				+ I18N.getString("Retour") + "\"/> " + I18N.getString("Retour") + "</a>");
+		if (Parameters.getCollectorApplicationsFile().canWrite()) {
+			writer.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writer.write("<a href='?action=remove_application&amp;application="
+					+ I18N.urlEncode(application) + HtmlAbstractReport.getCsrfTokenUrlPart()
+					+ "' ");
+			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
+					application);
+			writer.write("onclick=\"javascript:return confirm('"
+					+ I18N.javascriptEncode(messageConfirmation) + "');\">");
+			final String removeApplicationLabel = I18N.getFormattedString("remove_application",
+					application);
+			writer.write("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
+					+ "\"/> " + removeApplicationLabel + "</a>");
+		}
+		writer.write("</body></html>");
+		writer.close();
+	}
+
 	static void showAlertAndRedirectTo(HttpServletResponse resp, String message, String redirectTo)
 			throws IOException {
 		resp.setContentType(HTML_CONTENT_TYPE);

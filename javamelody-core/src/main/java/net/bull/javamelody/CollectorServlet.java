@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody; // NOPMD
 
+import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
@@ -85,10 +87,9 @@ public class CollectorServlet extends HttpServlet {
 				CollectorController.writeOnlyAddApplication(resp);
 				return;
 			}
-			if (!collectorServer.isApplicationDataAvailable(application)) {
-				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Data unavailable for the application "
-								+ I18N.htmlEncode(application, false));
+			if (!collectorServer.isApplicationDataAvailable(application)
+					&& req.getParameter(ACTION_PARAMETER) == null) {
+				CollectorController.writeDataUnavailableForApplication(application, resp);
 				return;
 			}
 			collectorController.doMonitoring(req, resp, application);
