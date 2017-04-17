@@ -44,6 +44,10 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 		assert response != null;
 	}
 
+	HttpServletResponse getHttpServletResponse() {
+		return (HttpServletResponse) getResponse();
+	}
+
 	/**
 	 * @return ServletOutputStream
 	 */
@@ -131,7 +135,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 			}
 
 			final ServletOutputStream outputStream = getOutputStream();
-			final String charEnc = getResponse().getCharacterEncoding();
+			final String charEnc = getHttpServletResponse().getCharacterEncoding();
 			// HttpServletResponse.getCharacterEncoding() shouldn't return null
 			// according the spec, so feel free to remove that "if"
 			final PrintWriter result;

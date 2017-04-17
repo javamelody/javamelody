@@ -72,6 +72,6 @@ class CounterServletResponseWrapper extends FilterServletResponseWrapper {
 	/** {@inheritDoc} */
 	@Override
 	public ServletOutputStream createOutputStream() throws IOException {
-		return new CounterResponseStream((HttpServletResponse) getResponse());
+		return new CounterResponseStream(getHttpServletResponse());
 	}
 }

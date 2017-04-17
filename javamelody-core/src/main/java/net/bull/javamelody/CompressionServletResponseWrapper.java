@@ -43,8 +43,7 @@ class CompressionServletResponseWrapper extends FilterServletResponseWrapper {
 	/** {@inheritDoc} */
 	@Override
 	public ServletOutputStream createOutputStream() {
-		return new CompressionResponseStream((HttpServletResponse) getResponse(),
-				compressionThreshold);
+		return new CompressionResponseStream(getHttpServletResponse(), compressionThreshold);
 	}
 
 	/**
