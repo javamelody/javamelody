@@ -558,6 +558,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	void addRumHit(String requestName, long networkTime, long domProcessing, long pageRendering) {
+		assert HTTP_COUNTER_NAME.equals(name);
 		final String aggregateRequestName = getAggregateRequestName(requestName);
 		final CounterRequest request = requests.get(aggregateRequestName);
 		if (request != null) {
