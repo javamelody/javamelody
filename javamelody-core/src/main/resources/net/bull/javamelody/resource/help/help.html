@@ -250,11 +250,7 @@ But wait times like sleeping or waiting for I/O do not consume cpu, so they are 
 Like all tables of the report, the tables of statistics can be ordered in ascending or descending order by clicking on headers of columns.<br/>
 The statistics are persisted for each counter: a restart of the application server has no influence on them.<br/>
 If a collect server is used to display the monitoring of several servers in a farm or in a cluster,
-the statistics of counters are global for all servers.<br/><br/>
-Note: In MS Windows XP (before Vista), the clock resolution used is about 16 ms (either 0, either 16, or 32 ms).
-So the time of an execution is not accurate below 16 ms with Windows XP.
-This is in part corrected by use of a mean when there are sufficient executions.
-But this is not grave because in general, the problematic requests will have an execution time much longer than 16 ms.<br/>
+the statistics of counters are global for all servers.<br/>
 
 <h3><img width='24' height='24' src='?resource=error.png' alt='Http system errors'/>
 Statistics of http system errors</h3>
