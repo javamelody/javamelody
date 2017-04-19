@@ -112,6 +112,7 @@ table thead th:last-child {
 	position: relative;
 	/* marche pas avec texte long qui se wrappe: z-index: 500; */
 	text-decoration: none;
+	overflow: visible; /* for RUM tooltips */
 }
 
 .tooltip:hover em {
@@ -157,6 +158,52 @@ div#handle {
 .explainPlan {
 	font-size: 8pt;
 	font-family: monospace;
+}
+
+.rumData {
+	width: 100%;
+	height: 20px;
+	table-layout: fixed; /* works with overflow: hidden; white-space: nowrap; below */
+}
+
+.rumDataNetwork {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.rumDataPageRendering {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.rumDataNetwork, .rumDataServer, .rumDataDomProcessing, .rumDataPageRendering {
+	text-align: center;
+	font-size: 11px;
+	color: white;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 0px;
+}
+
+.rumDataNetwork {
+	/* green gradient */
+	background-image: linear-gradient(to bottom, #5cb85c 0px, #449d44 100%);
+}
+
+.rumDataServer {
+	/* red gradient */
+	background-image: linear-gradient(to bottom, #d9534f 0px, #c9302c 100%);
+}
+
+.rumDataDomProcessing {
+	/* orange gradient */
+	background-image: linear-gradient(to bottom, #f0ad4e 0px, #ec971f 100%);	
+}
+
+.rumDataPageRendering {
+	/* blue gradient */
+	background-image: linear-gradient(to bottom, #5bc0de 0px, #31b0d5 100%);
 }
 
 .info {

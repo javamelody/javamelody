@@ -56,6 +56,8 @@ class CounterRequest implements Cloneable, Serializable {
 	@SuppressWarnings("all")
 	private Map<String, Long> childRequestsExecutionsByRequestId;
 
+	private CounterRequestRumData rumData;
+
 	/**
 	 * Interface du contexte d'une requête en cours.
 	 */
@@ -257,6 +259,10 @@ class CounterRequest implements Cloneable, Serializable {
 		return stackTrace;
 	}
 
+	CounterRequestRumData getRumData() {
+		return rumData;
+	}
+
 	void addHit(long duration, long cpuTime, boolean systemError, String systemErrorStackTrace,
 			int responseSize) {
 		hits++;
@@ -326,6 +332,13 @@ class CounterRequest implements Cloneable, Serializable {
 			}
 			addChildRequests(request.childRequestsExecutionsByRequestId);
 		}
+		if (request.rumData != null) {
+			if (rumData != null) {
+				rumData.addHits(request.rumData);
+			} else {
+				rumData = request.rumData.clone();
+			}
+		}
 	}
 
 	void removeHits(CounterRequest request) {
@@ -350,6 +363,9 @@ class CounterRequest implements Cloneable, Serializable {
 			childDurationsSum -= request.childDurationsSum;
 
 			removeChildHits(request);
+		}
+		if (rumData != null && request.rumData != null) {
+			rumData.removeHits(request.rumData);
 		}
 	}
 
@@ -376,6 +392,13 @@ class CounterRequest implements Cloneable, Serializable {
 		}
 	}
 
+	void addRumHit(long networkTime, long domProcessing, long pageRendering) {
+		if (rumData == null) {
+			rumData = new CounterRequestRumData();
+		}
+		rumData.addHit(networkTime, domProcessing, pageRendering);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public CounterRequest clone() { // NOPMD
@@ -384,6 +407,9 @@ class CounterRequest implements Cloneable, Serializable {
 			if (childRequestsExecutionsByRequestId != null) {
 				// getChildRequestsExecutionsByRequestId fait déjà un clone de la map
 				clone.childRequestsExecutionsByRequestId = getChildRequestsExecutionsByRequestId();
+			}
+			if (rumData != null) {
+				clone.rumData = rumData.clone();
 			}
 			return clone;
 		} catch (final CloneNotSupportedException e) {

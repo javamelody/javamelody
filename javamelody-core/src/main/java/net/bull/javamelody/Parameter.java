@@ -333,7 +333,12 @@ public enum Parameter {
 	/**
 	 * Comma separated list of Maven repositories URLs (https://repo1.maven.org/maven2/ by default).
 	 */
-	MAVEN_REPOSITORIES("maven-repositories");
+	MAVEN_REPOSITORIES("maven-repositories"),
+
+	/**
+	 * If Real User Monitoring enabled by injecting Boomerang javascript into html page ("false" by default).
+	 */
+	RUM_ENABLED("rum-enabled");
 
 	private final String code;
 

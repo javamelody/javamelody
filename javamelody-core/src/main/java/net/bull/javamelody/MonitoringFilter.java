@@ -18,6 +18,9 @@
 package net.bull.javamelody;
 
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
+import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
+import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
+import static net.bull.javamelody.HttpParameters.RUM_PART;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -61,6 +64,7 @@ public class MonitoringFilter implements Filter {
 
 	private boolean monitoringDisabled;
 	private boolean logEnabled;
+	private boolean rumEnabled;
 	private Pattern urlExcludePattern;
 	private FilterContext filterContext;
 	private HttpAuth httpAuth;
@@ -135,6 +139,7 @@ public class MonitoringFilter implements Filter {
 		this.errorCounter = collector.getCounterByName(Counter.ERROR_COUNTER_NAME);
 
 		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));
+		rumEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.RUM_ENABLED));
 		if (Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN) != null) {
 			// lance une PatternSyntaxException si la syntaxe du pattern est invalide
 			urlExcludePattern = Pattern
@@ -199,12 +204,17 @@ public class MonitoringFilter implements Filter {
 
 	private void doFilter(FilterChain chain, HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws IOException, ServletException {
-		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
-				httpResponse);
-		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest,
-				wrappedResponse);
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
+		HttpServletResponse httpResponse2 = httpResponse;
+		if (rumEnabled) {
+			httpResponse2 = RumInjector.createRumResponseWrapper(httpRequest, httpResponse,
+					getRequestName(httpRequest));
+		}
+		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
+				httpResponse2);
+		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest,
+				wrappedResponse);
 		boolean systemError = false;
 		Throwable systemException = null;
 		String requestName = getRequestName(wrappedRequest);
@@ -361,6 +371,22 @@ public class MonitoringFilter implements Filter {
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException, ServletException {
+		if (rumEnabled) {
+			// these 2 ifs must be before isAllowed verification
+			if (RumInjector.isRumResource(httpRequest.getParameter(RESOURCE_PARAMETER))) {
+				// this is to give the boomerang.min.js content
+				MonitoringController.doResource(httpResponse,
+						httpRequest.getParameter(RESOURCE_PARAMETER));
+				return;
+			} else if (RUM_PART.equals(httpRequest.getParameter(PART_PARAMETER))) {
+				// this is the call by the boomerang beacon to notify RUM data
+				MonitoringController.noCache(httpResponse);
+				httpResponse.setContentType("image/png");
+				RumInjector.addRumHit(httpRequest, httpCounter);
+				return;
+			}
+		}
+
 		if (!isAllowed(httpRequest, httpResponse)) {
 			return;
 		}

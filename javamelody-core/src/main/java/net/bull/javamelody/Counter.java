@@ -557,6 +557,16 @@ class Counter implements Cloneable, Serializable { // NOPMD
 		}
 	}
 
+	void addRumHit(String requestName, long networkTime, long domProcessing, long pageRendering) {
+		final String aggregateRequestName = getAggregateRequestName(requestName);
+		final CounterRequest request = requests.get(aggregateRequestName);
+		if (request != null) {
+			synchronized (request) {
+				request.addRumHit(networkTime, domProcessing, pageRendering);
+			}
+		}
+	}
+
 	/**
 	 * Retourne true si ce counter est un counter d'error
 	 * (c'est-à-dire si son nom est "error", "log" ou "job")

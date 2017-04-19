@@ -20,6 +20,7 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -113,6 +114,9 @@ class HtmlCounterReport extends HtmlAbstractReport {
 			requestsById = mapAllRequestsById();
 			final CounterRequest request = requestsById.get(graphName);
 			if (request != null) {
+				if (request.getRumData() != null && request.getRumData().getHits() > 0) {
+					writeRequestRumData(request);
+				}
 				writeRequest(request);
 
 				if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)
@@ -268,6 +272,42 @@ class HtmlCounterReport extends HtmlAbstractReport {
 				}
 			}
 			return false;
+		}
+
+		private void writeRequestRumData(CounterRequest request) throws IOException {
+			final CounterRequestRumData rumData = request.getRumData();
+			final DecimalFormat percentUsFormat = new DecimalFormat("0.00",
+					DecimalFormatSymbols.getInstance(Locale.US));
+			final DecimalFormat percentLocaleFormat = I18N.createPercentFormat();
+			final int networkTimeMean = rumData.getNetworkTimeMean();
+			final int serverMean = request.getMean();
+			final int domProcessingMean = rumData.getDomProcessingMean();
+			final int pageRenderingMean = rumData.getPageRenderingMean();
+			final int total = networkTimeMean + serverMean + domProcessingMean + pageRenderingMean;
+			final double networkPercent = 100d * networkTimeMean / total;
+			final double serverPercent = 100d * serverMean / total;
+			final double domProcessingPercent = 100d * domProcessingMean / total;
+			final double pageRenderingPercent = 100d * pageRenderingMean / total;
+			writeln("<br/><table class='rumData' summary=''><tr>");
+			writeln("<td class='rumDataNetwork tooltip' style='width:"
+					+ percentUsFormat.format(networkPercent) + "%'><em>#Network#: "
+					+ integerFormat.format(networkTimeMean) + " ms ("
+					+ percentLocaleFormat.format(networkPercent) + "%)</em>#Network#</td>");
+			writeln("<td class='rumDataServer tooltip' style='width:"
+					+ percentUsFormat.format(serverPercent) + "%'><em>#Server#: "
+					+ integerFormat.format(serverMean) + " ms ("
+					+ percentLocaleFormat.format(serverPercent) + "%)</em>#Server#</td>");
+			writeln("<td class='rumDataDomProcessing tooltip' style='width:"
+					+ percentUsFormat.format(domProcessingPercent) + "%'><em>#DOM_processing#:"
+					+ integerFormat.format(domProcessingMean) + " ms ("
+					+ percentLocaleFormat.format(domProcessingPercent)
+					+ "%)</em>#DOM_processing#</td>");
+			writeln("<td class='rumDataPageRendering tooltip' style='width:"
+					+ percentUsFormat.format(pageRenderingPercent) + "%'><em>#Page_rendering#:"
+					+ integerFormat.format(pageRenderingMean) + " ms ("
+					+ percentLocaleFormat.format(pageRenderingPercent)
+					+ "%)</em>#Page_rendering#</td>");
+			writeln("</tr></table>");
 		}
 
 		private void writeRequest(CounterRequest request) throws IOException {

@@ -341,10 +341,11 @@ class MonitoringController {
 		}
 	}
 
-	private void doResource(HttpServletResponse httpResponse, String resource) throws IOException {
+	static void doResource(HttpServletResponse httpResponse, String resource) throws IOException {
 		// on enlève tout ".." dans le paramètre par sécurité
 		final String localResource = Parameters.getResourcePath(resource.replace("..", ""));
-		final InputStream resourceAsStream = getClass().getResourceAsStream(localResource);
+		final InputStream resourceAsStream = MonitoringController.class
+				.getResourceAsStream(localResource);
 		if (resourceAsStream == null) {
 			httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
 			return;
