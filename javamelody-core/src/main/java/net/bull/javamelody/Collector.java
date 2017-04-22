@@ -473,6 +473,8 @@ class Collector { // NOPMD
 						.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
 								/ periodMillis / availableProcessors), 100);
 				getOtherJRobin("gc").addValue(gcPercentage);
+			} else {
+				getOtherJRobin("gc").addValue(0d);
 			}
 			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
@@ -501,6 +503,8 @@ class Collector { // NOPMD
 				final double periodMinutes = periodMillis / 60000d;
 				getOtherJRobin("transactionsRate").addValue(
 						(databaseTransactionCount - this.transactionCount) / periodMinutes);
+			} else {
+				getOtherJRobin("transactionsRate").addValue(0d);
 			}
 			this.transactionCount = databaseTransactionCount;
 		}
@@ -560,6 +564,8 @@ class Collector { // NOPMD
 						.min((int) ((processesCpuTimeMillis - this.cpuTimeMillis) * 100
 								/ periodMillis / availableProcessors), 100);
 				getCounterJRobin("cpu").addValue(cpuPercentage);
+			} else {
+				getCounterJRobin("cpu").addValue(0d);
 			}
 			this.cpuTimeMillis = processesCpuTimeMillis;
 		}
@@ -597,6 +603,9 @@ class Collector { // NOPMD
 					.addValue((bytesReceived - this.tomcatBytesReceived) / periodMinutes);
 			getOtherJRobin("tomcatBytesSent")
 					.addValue((bytesSent - this.tomcatBytesSent) / periodMinutes);
+		} else {
+			getOtherJRobin("tomcatBytesReceived").addValue(0d);
+			getOtherJRobin("tomcatBytesSent").addValue(0d);
 		}
 		this.tomcatBytesReceived = bytesReceived;
 		this.tomcatBytesSent = bytesSent;
