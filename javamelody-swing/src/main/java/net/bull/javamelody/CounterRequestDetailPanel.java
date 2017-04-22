@@ -20,10 +20,13 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -63,10 +66,18 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		scrollPane.getHorizontalScrollBar().setFocusable(false);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+		final JPanel northPanel = new JPanel(new BorderLayout());
+		if (request.getRumData() != null && request.getRumData().getHits() != 0) {
+			final JPanel requestRumDataPanel = createRequestRumDataPanel();
+			requestRumDataPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 0));
+			northPanel.add(requestRumDataPanel, BorderLayout.WEST);
+		}
 		final RemoteCollector remoteCollector = getRemoteCollector();
 		final CounterRequestDetailTablePanel counterRequestDetailTablePanel = new CounterRequestDetailTablePanel(
 				remoteCollector, request);
-		panel.add(counterRequestDetailTablePanel, BorderLayout.NORTH);
+		counterRequestDetailTablePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+		northPanel.add(counterRequestDetailTablePanel, BorderLayout.SOUTH);
+		panel.add(northPanel, BorderLayout.NORTH);
 
 		if (CounterRequestTable.isRequestGraphDisplayed(getCounterByRequestId(request))) {
 			final MButton refreshButton = createRefreshButton();
@@ -103,6 +114,40 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		}
 
 		add(scrollPane);
+	}
+
+	private JPanel createRequestRumDataPanel() {
+		final JPanel rumDataPanel = new JPanel(new GridLayout(1, 4, 40, 0));
+		final CounterRequestRumData rumData = request.getRumData();
+		final DecimalFormat percentFormat = I18N.createPercentFormat();
+		final DecimalFormat integerFormat = I18N.createIntegerFormat();
+		final int networkTimeMean = rumData.getNetworkTimeMean();
+		final int serverMean = request.getMean();
+		final int domProcessingMean = rumData.getDomProcessingMean();
+		final int pageRenderingMean = rumData.getPageRenderingMean();
+		final int total = networkTimeMean + serverMean + domProcessingMean + pageRenderingMean;
+		final double networkPercent = 100d * networkTimeMean / total;
+		final double serverPercent = 100d * serverMean / total;
+		final double domProcessingPercent = 100d * domProcessingMean / total;
+		final double pageRenderingPercent = 100d * pageRenderingMean / total;
+
+		final String networkLabel = I18N.getString("Network") + ": "
+				+ integerFormat.format(networkTimeMean) + " ms ("
+				+ percentFormat.format(networkPercent) + "%)";
+		final String serverLabel = I18N.getString("Server") + " : "
+				+ integerFormat.format(serverMean) + " ms (" + percentFormat.format(serverPercent)
+				+ "%)";
+		final String domProcessingLabel = I18N.getString("DOM_processing") + " : "
+				+ integerFormat.format(domProcessingMean) + " ms ("
+				+ percentFormat.format(domProcessingPercent) + "%)";
+		final String pageRenderingLabel = I18N.getString("Page_rendering") + " : "
+				+ integerFormat.format(pageRenderingMean) + " ms ("
+				+ percentFormat.format(pageRenderingPercent) + "%)";
+		rumDataPanel.add(new JLabel(networkLabel));
+		rumDataPanel.add(new JLabel(serverLabel));
+		rumDataPanel.add(new JLabel(domProcessingLabel));
+		rumDataPanel.add(new JLabel(pageRenderingLabel));
+		return rumDataPanel;
 	}
 
 	private JPanel createSqlRequestExplainPlanPanel(String sqlRequestExplainPlan) {

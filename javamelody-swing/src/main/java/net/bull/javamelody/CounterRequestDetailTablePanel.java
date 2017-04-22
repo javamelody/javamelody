@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
@@ -131,8 +130,6 @@ class CounterRequestDetailTablePanel extends CounterRequestAbstractPanel {
 		final Map<String, CounterRequest> requestsById = mapAllRequestsById();
 		this.request = requestsById.get(request.getId());
 		this.childRequestsExecutions = this.request.getChildRequestsExecutionsByRequestId();
-
-		setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
 		final MTableScrollPane<CounterRequest> scrollPane = createScrollPane();
 		final List<CounterRequest> requests = new ArrayList<>();
