@@ -89,6 +89,10 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 	@Override
 	void toPdf() throws DocumentException, IOException {
 		if (request != null) {
+			if (request.getRumData() != null && request.getRumData().getHits() != 0) {
+				writeRequestRumData();
+			}
+
 			writeHeader();
 
 			writeRequests();
@@ -115,6 +119,39 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 			paragraph.add(new Phrase(request.getStackTrace().replace("\t", "        "), cellFont));
 			addToDocument(paragraph);
 		}
+	}
+
+	private void writeRequestRumData() throws DocumentException {
+		final CounterRequestRumData rumData = request.getRumData();
+		final DecimalFormat percentFormat = I18N.createPercentFormat();
+		final int networkTimeMean = rumData.getNetworkTimeMean();
+		final int serverMean = request.getMean();
+		final int domProcessingMean = rumData.getDomProcessingMean();
+		final int pageRenderingMean = rumData.getPageRenderingMean();
+		final int total = networkTimeMean + serverMean + domProcessingMean + pageRenderingMean;
+		final double networkPercent = 100d * networkTimeMean / total;
+		final double serverPercent = 100d * serverMean / total;
+		final double domProcessingPercent = 100d * domProcessingMean / total;
+		final double pageRenderingPercent = 100d * pageRenderingMean / total;
+
+		final PdfPTable table = new PdfPTable(2);
+		table.setHorizontalAlignment(Element.ALIGN_LEFT);
+		table.setWidthPercentage(25);
+		table.getDefaultCell().setBorderWidth(0);
+		table.addCell(new Phrase(I18N.getString("Network"), cellFont));
+		table.addCell(new Phrase(integerFormat.format(networkTimeMean) + " ms ("
+				+ percentFormat.format(networkPercent) + "%)", cellFont));
+		table.addCell(new Phrase(I18N.getString("Server"), cellFont));
+		table.addCell(new Phrase(integerFormat.format(serverMean) + " ms ("
+				+ percentFormat.format(serverPercent) + "%)", cellFont));
+		table.addCell(new Phrase(I18N.getString("DOM_processing"), cellFont));
+		table.addCell(new Phrase(integerFormat.format(domProcessingMean) + " ms ("
+				+ percentFormat.format(domProcessingPercent) + "%)", cellFont));
+		table.addCell(new Phrase(I18N.getString("Page_rendering"), cellFont));
+		table.addCell(new Phrase(integerFormat.format(pageRenderingMean) + " ms ("
+				+ percentFormat.format(pageRenderingPercent) + "%)", cellFont));
+		addToDocument(table);
+		addToDocument(new Phrase("\n", cellFont));
 	}
 
 	private void writeHeader() throws DocumentException {
