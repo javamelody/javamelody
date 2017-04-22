@@ -103,7 +103,7 @@ class HtmlInjectorResponseStream extends FilterServletOutputStream {
 	private static int indexOf(byte[] sourceBytes, byte[] targetBytes, int sourceOffset,
 			int sourceLength) {
 		final byte first = targetBytes[0];
-		final int max = sourceOffset + (sourceLength - targetBytes.length);
+		final int max = sourceOffset + sourceLength - targetBytes.length;
 
 		for (int i = sourceOffset; i <= max; i++) {
 			// Look for first byte
