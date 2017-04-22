@@ -18,6 +18,7 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -53,7 +54,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
 
 	private static class MapValueComparator<K, V extends Comparable<V>>
-			implements Comparator<Map.Entry<K, V>> {
+			implements Comparator<Map.Entry<K, V>>, Serializable {
+		private static final long serialVersionUID = 1L;
+
 		MapValueComparator() {
 			super();
 		}
