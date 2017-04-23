@@ -123,7 +123,6 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 
 	private void writeRequestRumData() throws DocumentException {
 		final CounterRequestRumData rumData = request.getRumData();
-		final DecimalFormat percentFormat = I18N.createPercentFormat();
 		final int networkTimeMean = rumData.getNetworkTimeMean();
 		final int serverMean = request.getMean();
 		final int domProcessingMean = rumData.getDomProcessingMean();
@@ -134,6 +133,7 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 		final double domProcessingPercent = 100d * domProcessingMean / total;
 		final double pageRenderingPercent = 100d * pageRenderingMean / total;
 
+		final DecimalFormat percentFormat = I18N.createPercentFormat();
 		final PdfPTable table = new PdfPTable(2);
 		table.setHorizontalAlignment(Element.ALIGN_LEFT);
 		table.setWidthPercentage(25);
