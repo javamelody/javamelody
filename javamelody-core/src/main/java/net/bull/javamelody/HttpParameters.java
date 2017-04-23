@@ -79,6 +79,7 @@ final class HttpParameters {
 	static final String DEPENDENCIES_PART = "dependencies";
 	static final String SPRING_BEANS_PART = "springBeans";
 	static final String RUM_PART = "rum";
+	static final String WEBAPP_VERSIONS_PART = "webappVersions";
 
 	/**
 	 * Constructeur privé: pas d'instance.

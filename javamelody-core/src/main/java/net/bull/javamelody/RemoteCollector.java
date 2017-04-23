@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -251,6 +252,11 @@ class RemoteCollector {
 		// car le résultat est identique dans tout l'éventuel cluster
 		final URL url = urls.get(0);
 		return createRemoteCall(url).collectWebappDependencies();
+	}
+
+	Map<String, Date> collectWebappVersions() throws IOException {
+		final URL url = urls.get(0);
+		return createRemoteCall(url).collectWebappVersions();
 	}
 
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {

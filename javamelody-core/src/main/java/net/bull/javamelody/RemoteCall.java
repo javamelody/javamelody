@@ -39,6 +39,7 @@ import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.WEBAPP_VERSIONS_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -266,6 +268,12 @@ class RemoteCall {
 		final URL dependenciesUrl = new URL(
 				url.toString() + '&' + PART_PARAMETER + '=' + DEPENDENCIES_PART);
 		return collectForUrl(dependenciesUrl);
+	}
+
+	Map<String, Date> collectWebappVersions() throws IOException {
+		final URL webappVersionsUrl = new URL(
+				url.toString() + '&' + PART_PARAMETER + '=' + WEBAPP_VERSIONS_PART);
+		return collectForUrl(webappVersionsUrl);
 	}
 
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {

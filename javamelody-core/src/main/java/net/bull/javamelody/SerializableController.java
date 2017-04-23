@@ -47,12 +47,14 @@ import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
+import static net.bull.javamelody.HttpParameters.WEBAPP_VERSIONS_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -173,6 +175,8 @@ class SerializableController { // NOPMD
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<ConnectionInformations>(
 					JdbcWrapper.getConnectionInformationsList());
+		} else if (WEBAPP_VERSIONS_PART.equalsIgnoreCase(part)) {
+			return new LinkedHashMap<String, Date>(collector.getDatesByWebappVersions());
 		}
 		return createOtherSerializable(httpRequest, javaInformationsList, messageForReport);
 	}

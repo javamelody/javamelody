@@ -67,7 +67,16 @@ class MainButtonsPanel extends MelodyPanel {
 		add(centerPanel, BorderLayout.CENTER);
 		final CustomPeriodPanel customPeriodPanel = new CustomPeriodPanel(remoteCollector,
 				selectedRange);
-		add(customPeriodPanel, BorderLayout.SOUTH);
+		final DeploymentPeriodPanel deploymentPeriodPanel = createDeploymentPeriodPanel(
+				remoteCollector, selectedRange);
+		final JPanel customPeriodsPanel = new JPanel(new BorderLayout());
+		customPeriodsPanel.setOpaque(false);
+		if (deploymentPeriodPanel != null) {
+			customPeriodsPanel.add(deploymentPeriodPanel, BorderLayout.NORTH);
+		}
+		customPeriodsPanel.add(customPeriodPanel, BorderLayout.SOUTH);
+		add(customPeriodsPanel, BorderLayout.SOUTH);
+
 		final MButton refreshButton = createRefreshButton();
 		final MButton pdfButton = createPdfButton();
 		// on ne peut pas instancier defaultSerializable ici car sinon,
@@ -84,7 +93,8 @@ class MainButtonsPanel extends MelodyPanel {
 		centerPanel.add(onlineHelpButton);
 		centerPanel.add(monitoringButton);
 
-		addPeriodButtons(centerPanel, customPeriodPanel);
+		addPeriodButtons(centerPanel, customPeriodPanel, deploymentPeriodPanel);
+		addCustomPeriodsButtons(centerPanel, customPeriodPanel, deploymentPeriodPanel);
 
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
@@ -128,7 +138,22 @@ class MainButtonsPanel extends MelodyPanel {
 		});
 	}
 
-	private void addPeriodButtons(JPanel centerPanel, final CustomPeriodPanel customPeriodPanel) {
+	private DeploymentPeriodPanel createDeploymentPeriodPanel(RemoteCollector remoteCollector,
+			Range selectedRange) {
+		try {
+			final DeploymentPeriodPanel deploymentPeriodPanel = new DeploymentPeriodPanel(
+					remoteCollector, selectedRange);
+			if (deploymentPeriodPanel.getWebappVersions().isEmpty()) {
+				return null;
+			}
+			return deploymentPeriodPanel;
+		} catch (final IOException e) {
+			return null;
+		}
+	}
+
+	private void addPeriodButtons(JPanel centerPanel, final CustomPeriodPanel customPeriodPanel,
+			final DeploymentPeriodPanel deploymentPeriodPanel) {
 		centerPanel.add(new JLabel("        " + getString("Choix_periode") + " : "));
 		for (final Period myPeriod : Period.values()) {
 			final String linkLabel = myPeriod.getLinkLabel();
@@ -141,11 +166,19 @@ class MainButtonsPanel extends MelodyPanel {
 			myPeriodButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					customPeriodPanel.setVisible(false);
+					if (deploymentPeriodPanel != null) {
+						deploymentPeriodPanel.setVisible(false);
+					}
 					actionChangePeriod(myPeriod.getRange());
 				}
 			});
 		}
+	}
 
+	private void addCustomPeriodsButtons(JPanel centerPanel,
+			final CustomPeriodPanel customPeriodPanel,
+			final DeploymentPeriodPanel deploymentPeriodPanel) {
 		final String customPeriodLinkLabel = getString("personnalisee");
 		final MButton customPeriodButton = new MButton(customPeriodLinkLabel,
 				ImageIconCache.getImageIcon("calendar.png"));
@@ -163,9 +196,35 @@ class MainButtonsPanel extends MelodyPanel {
 				if (customPeriodPanel.isVisible()) {
 					customPeriodPanel.requestFocusInStartField();
 				}
+				if (deploymentPeriodPanel != null) {
+					deploymentPeriodPanel.setVisible(false);
+				}
 				validate();
 			}
 		});
+
+		if (deploymentPeriodPanel != null) {
+			final String deploymentLabel = getString("par_deploiement");
+			final MButton deploymentButton = new MButton(deploymentLabel,
+					ImageIconCache.getImageIcon("calendar.png"));
+			deploymentButton.setToolTipText(
+					getFormattedString("Choisir_periode", deploymentLabel) + " (Alt-D)");
+			deploymentButton.setMnemonic('D');
+			centerPanel.add(deploymentButton);
+
+			deploymentPeriodPanel.setVisible(false);
+			deploymentButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					deploymentPeriodPanel.setVisible(!deploymentPeriodPanel.isVisible());
+					if (deploymentPeriodPanel.isVisible()) {
+						deploymentPeriodPanel.requestFocusInVersionField();
+					}
+					customPeriodPanel.setVisible(false);
+					validate();
+				}
+			});
+		}
 	}
 
 	private MButton createOnlineHelpButton() {

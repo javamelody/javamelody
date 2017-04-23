@@ -31,7 +31,7 @@ import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MDateField;
 
 /**
- * Panel des boutons principaux.
+ * Panel de saisie de la période personnalisée.
  * @author Emeric Vernat
  */
 class CustomPeriodPanel extends MelodyPanel {
