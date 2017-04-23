@@ -123,17 +123,17 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 
 	private void writeRequestRumData() throws DocumentException {
 		final CounterRequestRumData rumData = request.getRumData();
+		final DecimalFormat percentFormat = I18N.createPercentFormat();
 		final int networkTimeMean = rumData.getNetworkTimeMean();
 		final int serverMean = request.getMean();
 		final int domProcessingMean = rumData.getDomProcessingMean();
 		final int pageRenderingMean = rumData.getPageRenderingMean();
-		final int total = networkTimeMean + serverMean + domProcessingMean + pageRenderingMean;
-		final double networkPercent = 100d * networkTimeMean / total;
-		final double serverPercent = 100d * serverMean / total;
-		final double domProcessingPercent = 100d * domProcessingMean / total;
-		final double pageRenderingPercent = 100d * pageRenderingMean / total;
+		final int totalTime = networkTimeMean + serverMean + domProcessingMean + pageRenderingMean;
+		final double networkPercent = 100d * networkTimeMean / totalTime;
+		final double serverPercent = 100d * serverMean / totalTime;
+		final double domProcessingPercent = 100d * domProcessingMean / totalTime;
+		final double pageRenderingPercent = 100d * pageRenderingMean / totalTime;
 
-		final DecimalFormat percentFormat = I18N.createPercentFormat();
 		final PdfPTable table = new PdfPTable(2);
 		table.setHorizontalAlignment(Element.ALIGN_LEFT);
 		table.setWidthPercentage(25);
