@@ -23,12 +23,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,6 +49,8 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * @author Emeric Vernat
  */
 class Collector { // NOPMD
+	private static final Comparator<Map.Entry<String, Date>> WEBAPP_VERSIONS_VALUE_COMPARATOR = Collections
+			.reverseOrder(new MapValueComparator<String, Date>());
 	private static final String VERSIONS_FILENAME = "versions.properties";
 	private static final String VERSIONS_DATE_PATTERN = "yyyy/MM/dd";
 	private static final long NOT_A_NUMBER = Long.MIN_VALUE;
@@ -83,6 +87,20 @@ class Collector { // NOPMD
 	 * Les versions de l'applications avec pour chacune la date de déploiement.
 	 */
 	private final Map<String, Date> datesByWebappVersions;
+
+	private static class MapValueComparator<K, V extends Comparable<V>>
+			implements Comparator<Map.Entry<K, V>>, Serializable {
+		private static final long serialVersionUID = 1L;
+
+		MapValueComparator() {
+			super();
+		}
+
+		@Override
+		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+			return o1.getValue().compareTo(o2.getValue());
+		}
+	}
 
 	/**
 	 * Constructeur.
@@ -165,7 +183,14 @@ class Collector { // NOPMD
 	}
 
 	Map<String, Date> getDatesByWebappVersions() {
-		return Collections.unmodifiableMap(datesByWebappVersions);
+		final List<Map.Entry<String, Date>> entries = new ArrayList<Map.Entry<String, Date>>(
+				datesByWebappVersions.entrySet());
+		Collections.sort(entries, WEBAPP_VERSIONS_VALUE_COMPARATOR);
+		final Map<String, Date> map = new LinkedHashMap<String, Date>();
+		for (final Map.Entry<String, Date> entry : entries) {
+			map.put(entry.getKey(), entry.getValue());
+		}
+		return Collections.unmodifiableMap(map);
 	}
 
 	/**

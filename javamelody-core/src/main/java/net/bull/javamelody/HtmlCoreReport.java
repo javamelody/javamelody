@@ -18,15 +18,11 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -53,24 +49,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private final long start = System.currentTimeMillis();
 	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
 
-	private static class MapValueComparator<K, V extends Comparable<V>>
-			implements Comparator<Map.Entry<K, V>>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		MapValueComparator() {
-			super();
-		}
-
-		@Override
-		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-			return o1.getValue().compareTo(o2.getValue());
-		}
-	}
-
 	private static class HtmlForms extends HtmlAbstractReport {
-		private static final Comparator<Map.Entry<String, Date>> MAP_VALUE_COMPARATOR = Collections
-				.reverseOrder(new MapValueComparator<String, Date>());
-
 		HtmlForms(Writer writer) {
 			super(writer);
 		}
@@ -153,11 +132,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<select name='period' onchange='document.deploymentPeriodForm.submit();'>");
 			writeDirectly("<option>&nbsp;</option>");
 			// on doit retrier les versions ici, notamment s'il y en a une ajoutée à la fin
-			final List<Map.Entry<String, Date>> orderedVersionsByDate = new ArrayList<Map.Entry<String, Date>>(
-					datesByWebappVersions.entrySet());
-			Collections.sort(orderedVersionsByDate, MAP_VALUE_COMPARATOR);
 			String previousDate = null;
-			for (final Map.Entry<String, Date> entry : orderedVersionsByDate) {
+			for (final Map.Entry<String, Date> entry : datesByWebappVersions.entrySet()) {
 				final String version = entry.getKey();
 				final String date = dateFormat.format(entry.getValue());
 				final String label;
