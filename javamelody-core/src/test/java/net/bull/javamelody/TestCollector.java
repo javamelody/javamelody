@@ -240,6 +240,10 @@ public class TestCollector {
 			TomcatInformations.initMBeans();
 			final Collector collector = new Collector(TEST,
 					Arrays.asList(new Counter("http", null)));
+			// first time to initialize against NOT_A_NUMBER
+			collector.collectWithoutErrors(
+					Collections.singletonList(new JavaInformations(null, true)));
+			// second time to add value
 			collector.collectWithoutErrors(
 					Collections.singletonList(new JavaInformations(null, true)));
 		} finally {
