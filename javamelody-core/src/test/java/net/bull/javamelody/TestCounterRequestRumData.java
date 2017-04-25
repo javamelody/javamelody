@@ -35,6 +35,22 @@ public class TestCounterRequestRumData {
 		final CounterRequestRumData rumData = new CounterRequestRumData();
 		assertNotNull("toString", rumData.toString());
 		assertEquals("getHits", 0, rumData.getHits());
+		assertEquals("getNetworkTimeMean", -1, rumData.getNetworkTimeMean());
+		assertEquals("getDomProcessingMean", -1, rumData.getDomProcessingMean());
+		assertEquals("getPageRenderingMean", -1, rumData.getPageRenderingMean());
+
+		rumData.addHits(rumData);
+		assertEquals("getHits", 0, rumData.getHits());
+		rumData.removeHits(rumData);
+		assertEquals("getHits", 0, rumData.getHits());
+		rumData.addHit(-1, 0, 0);
+		rumData.addHit(0, -1, 0);
+		rumData.addHit(0, 0, -1);
+		rumData.addHit(300001, 0, 0);
+		rumData.addHit(0, 300001, 0);
+		rumData.addHit(0, 0, 300001);
+		assertEquals("getHits", 0, rumData.getHits());
+
 		rumData.addHit(10, 20, 30);
 		assertEquals("getHits", 1, rumData.getHits());
 		rumData.addHit(10, 20, 30);
