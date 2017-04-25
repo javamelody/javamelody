@@ -952,6 +952,7 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.remove(COUNTER_PARAMETER);
 		parameters.remove(PERIOD_PARAMETER);
 		parameters.put(PART_PARAMETER, WEBAPP_VERSIONS_PART);
+		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
