@@ -142,7 +142,7 @@ public class TestRumInjector {
 		addRumHit(httpCounter, requestName, "-100", "200", "300", "400");
 		addRumHit(httpCounter, requestName, "300001", "200", "300", "400");
 		addRumHit(httpCounter, requestName, "100", "-200", "300", "400");
-		addRumHit(httpCounter, requestName, "100", "300001", "300", "400");
+		addRumHit(httpCounter, requestName, "100", "300101", "300", "400");
 		addRumHit(httpCounter, requestName, "100", "200", "-300", "400");
 		addRumHit(httpCounter, requestName, "100", "200", "300001", "400");
 		addRumHit(httpCounter, requestName, "100", "200", "300", "-400");
