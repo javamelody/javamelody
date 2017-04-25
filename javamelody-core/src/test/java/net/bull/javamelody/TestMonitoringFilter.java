@@ -55,6 +55,7 @@ import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
+import static net.bull.javamelody.HttpParameters.WEBAPP_VERSIONS_PART;
 import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
 import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 import static org.easymock.EasyMock.createNiceMock;
@@ -294,6 +295,19 @@ public class TestMonitoringFilter { // NOPMD
 			//			doFilter(createNiceMock(HttpServletRequest.class), new Exception(test));
 		} finally {
 			setProperty(Parameter.LOG, null);
+		}
+
+		setProperty(Parameter.RUM_ENABLED, TRUE);
+		try {
+			setUp();
+			final HttpServletRequest requestForRum = createNiceMock(HttpServletRequest.class);
+			expect(requestForRum.getHeader("accept")).andReturn("text/html");
+			expect(requestForRum.getInputStream())
+					.andReturn(createInputStreamForString("<html><body>test</body></html>"))
+					.anyTimes();
+			doFilter(requestForRum);
+		} finally {
+			setProperty(Parameter.RUM_ENABLED, null);
 		}
 	}
 
@@ -556,6 +570,18 @@ public class TestMonitoringFilter { // NOPMD
 		} finally {
 			monitoringFilter.destroy();
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
+		}
+		try {
+			setProperty(Parameter.RUM_ENABLED, Boolean.TRUE.toString());
+			setUp();
+			monitoring(Collections.<String, String> emptyMap());
+			monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER,
+					"boomerang.min.js"));
+			monitoring(Collections.<String, String> singletonMap(PART_PARAMETER,
+					HttpParameters.RUM_PART), false);
+		} finally {
+			monitoringFilter.destroy();
+			setProperty(Parameter.RUM_ENABLED, null);
 		}
 	}
 
@@ -925,6 +951,7 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.remove(COUNTER_PARAMETER);
 		parameters.remove(PERIOD_PARAMETER);
+		parameters.put(PART_PARAMETER, WEBAPP_VERSIONS_PART);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
