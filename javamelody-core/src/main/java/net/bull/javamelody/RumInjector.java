@@ -59,7 +59,9 @@ final class RumInjector implements HtmlToInject {
 
 		// requestName is of the form "/path/to/file GET"
 		// first remove " GET" part
-		String tmp = requestName.substring(0, requestName.lastIndexOf(' '));
+		final int lastIndexOfSpace = requestName.lastIndexOf(' ');
+		assert lastIndexOfSpace != -1;
+		String tmp = requestName.substring(0, lastIndexOfSpace);
 		// replace each subpath by ".."
 		tmp = tmp.replaceAll("/[^/]+", "/..");
 		// remove first subpath
