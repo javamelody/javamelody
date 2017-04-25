@@ -45,6 +45,7 @@ import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
 import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
 import static net.bull.javamelody.HttpParameters.POM_XML_PART;
 import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
+import static net.bull.javamelody.HttpParameters.REPORT_PARAMETER;
 import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
 import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
@@ -696,6 +697,22 @@ public class TestMonitoringFilter { // NOPMD
 		doMonitoringWithSourcePart();
 
 		doMonitoringWithUnknownPart();
+	}
+
+	/**
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoMonitoringWithReportParameter() throws ServletException, IOException {
+		final Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put(REPORT_PARAMETER, "customReport");
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "");
+		monitoring(parameters, false);
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "test");
+		monitoring(parameters, false);
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "/test");
+		monitoring(parameters, false);
+		parameters.remove(REPORT_PARAMETER);
 	}
 
 	private void doMonitoringWithUnknownPart() throws IOException, ServletException {
