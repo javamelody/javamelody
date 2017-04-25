@@ -249,6 +249,7 @@ public class TestCollectorServletWithParts {
 		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
 		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
 		doPart(parameters);
+		parameters.remove(REQUEST_PARAMETER);
 	}
 
 	/** Test.

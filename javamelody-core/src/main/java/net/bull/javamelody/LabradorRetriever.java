@@ -391,7 +391,9 @@ class LabradorRetriever {
 					|| request.contains(HttpParameters.MBEANS_PART)
 					|| request.contains(HttpParameters.HOTSPOTS_PART)) {
 				result = Collections.emptyList();
-			} else if (request.contains(HttpParameters.CURRENT_REQUESTS_PART)) {
+			} else if (request.contains(HttpParameters.CURRENT_REQUESTS_PART)
+					|| request.contains(HttpParameters.WEBAPP_VERSIONS_PART)
+					|| request.contains(HttpParameters.DEPENDENCIES_PART)) {
 				result = Collections.emptyMap();
 			} else if (request.contains(HttpParameters.DATABASE_PART)) {
 				try {

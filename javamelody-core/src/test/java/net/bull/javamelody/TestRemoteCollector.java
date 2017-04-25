@@ -81,5 +81,7 @@ public class TestRemoteCollector {
 				null);
 		remoteCollector.collectDataIncludingCurrentRequests();
 		assertNotNull("getCurrentRequests", remoteCollector.getCurrentRequests());
+		assertNotNull("collectWebappVersions", remoteCollector.collectWebappVersions());
+		assertNotNull("collectWebappDependencies", remoteCollector.collectWebappDependencies());
 	}
 }
