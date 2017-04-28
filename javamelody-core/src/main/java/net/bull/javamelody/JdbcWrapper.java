@@ -462,7 +462,7 @@ public final class JdbcWrapper {
 								+ dataSourceProxy.getClass().getName());
 					}
 				} catch (final Throwable t) { // NOPMD
-					// ça n'a pas marché, tant pis pour celle-ci, mais continuons avec les autres
+					// ça n'a pas marché, tant pis pour celle-ci qui semble invalide, mais continuons avec les autres
 					LOG.debug("rebinding datasource " + jndiName + " failed, skipping it", t);
 				}
 			}
