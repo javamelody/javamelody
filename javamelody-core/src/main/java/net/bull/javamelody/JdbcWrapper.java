@@ -448,16 +448,22 @@ public final class JdbcWrapper {
 			for (final Map.Entry<String, DataSource> entry : jndiDataSources.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				if (rewrapDataSources || isServerNeedsRewrap(jndiName)) {
-					rewrapDataSource(jndiName, dataSource);
-				} else if (!isProxyAlready(dataSource)) {
-					// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
-					final DataSource dataSourceProxy = createDataSourceProxy(jndiName, dataSource);
-					JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
-							dataSourceProxy);
-					LOG.debug("datasource rebinded: " + jndiName + " from class "
-							+ dataSource.getClass().getName() + " to class "
-							+ dataSourceProxy.getClass().getName());
+				try {
+					if (rewrapDataSources || isServerNeedsRewrap(jndiName)) {
+						rewrapDataSource(jndiName, dataSource);
+					} else if (!isProxyAlready(dataSource)) {
+						// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
+						final DataSource dataSourceProxy = createDataSourceProxy(jndiName,
+								dataSource);
+						JdbcWrapperHelper.rebindDataSource(servletContext, jndiName, dataSource,
+								dataSourceProxy);
+						LOG.debug("datasource rebinded: " + jndiName + " from class "
+								+ dataSource.getClass().getName() + " to class "
+								+ dataSourceProxy.getClass().getName());
+					}
+				} catch (final Throwable t) { // NOPMD
+					// ça n'a pas marché, tant pis pour celle-ci, mais continuons avec les autres
+					LOG.debug("rebinding datasource " + jndiName + " failed, skipping it", t);
 				}
 			}
 			ok = true;
