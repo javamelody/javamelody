@@ -389,7 +389,6 @@ class JavaInformations implements Serializable { // NOPMD
 					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
 					connection.close();
 				}
-				return result.toString();
 			}
 
 			// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
