@@ -29,4 +29,6 @@
 		<property name="targetName" value="targetDataSource" />
 	</bean>
 	-->
+
+	<bean id="javamelodySpringContext" class="net.bull.javamelody.SpringContext" />
 </beans>
