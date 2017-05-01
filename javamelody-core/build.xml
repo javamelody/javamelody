@@ -54,14 +54,18 @@
 					<include name="javax.faces-api-2.1.jar" />
 					<include name="javax.el-api-2.2.1.jar" />
 					<include name="tomcat-jdbc-7.0.27.jar" />
+					<include name="tomcat-jdbc-7.0.27.jar" />
+					<include name="spring-web-3.1.0.RELEASE.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="jrobin-1.5.9.1.jar" />
 					<include name="itext-2.1.7.jar" />
-					<include name="spring-aop-2.5.6.jar" />
-					<include name="spring-core-2.5.6.jar" />
-					<include name="spring-context-2.5.6.jar" />
-					<include name="spring-beans-2.5.6.jar" />
+					<include name="spring-aop-3.1.0.RELEASE.jar" />
+					<include name="spring-asm-3.1.0.RELEASE.jar" />
+					<include name="spring-core-3.1.0.RELEASE.jar" />
+					<include name="spring-context-3.1.0.RELEASE.jar" />
+					<include name="spring-beans-3.1.0.RELEASE.jar" />
+					<include name="spring-expression-3.1.0.RELEASE.jar" />
 					<include name="aopalliance-1.0.jar" />
 					<include name="guice-2.0.jar" />
 					<include name="xwork-2.1.0.jar" />

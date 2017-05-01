@@ -30,7 +30,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  *
  * @author David J. M. Karlsen (davidkarlsen at gmail.com), Emeric Vernat
  */
-public class SpringDataSourceFactoryBean extends AbstractFactoryBean {
+public class SpringDataSourceFactoryBean extends AbstractFactoryBean<DataSource> {
 	private String targetName;
 
 	// exemple :
@@ -59,8 +59,7 @@ public class SpringDataSourceFactoryBean extends AbstractFactoryBean {
 		if (targetName == null) {
 			throw new IllegalStateException("targetName must not be null");
 		}
-		final DataSource dataSource = (DataSource) getBeanFactory().getBean(targetName,
-				DataSource.class);
+		final DataSource dataSource = getBeanFactory().getBean(targetName, DataSource.class);
 		JdbcWrapper.registerSpringDataSource(targetName, dataSource);
 		final DataSource result = JdbcWrapper.SINGLETON.createDataSourceProxy(targetName,
 				dataSource);
