@@ -112,5 +112,10 @@ public class TestJavaMelodyAutoConfiguration {
 		}
 		assertThat(monitoredWithAdvisorFound).isTrue();
 		assertThat(stereotypeAdvisorsCount).isEqualTo(3);
+
+		// It should create a bean post-processor for rest templates.
+		final SpringRestTemplateBeanPostProcessor restTemplatePostProcessor = context
+				.getBean(SpringRestTemplateBeanPostProcessor.class);
+		assertThat(restTemplatePostProcessor).isNotNull();
 	}
 }

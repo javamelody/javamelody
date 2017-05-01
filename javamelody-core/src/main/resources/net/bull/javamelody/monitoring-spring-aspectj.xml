@@ -30,5 +30,7 @@
 	</bean>
 	-->
 
+	<bean id="springRestTemplateBeanPostProcessor" class="net.bull.javamelody.SpringRestTemplateBeanPostProcessor" />
+
 	<bean id="javamelodySpringContext" class="net.bull.javamelody.SpringContext" />
 </beans>

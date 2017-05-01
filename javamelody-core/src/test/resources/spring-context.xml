@@ -52,4 +52,6 @@
 			</set>
 		</property>
 	</bean>
+
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
 </beans>

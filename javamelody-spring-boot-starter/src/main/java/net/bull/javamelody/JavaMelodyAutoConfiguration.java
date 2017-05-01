@@ -184,6 +184,16 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
+	 * Monitoring of RestTemplate beans.
+	 * @return SpringRestTemplateBeanPostProcessor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public SpringRestTemplateBeanPostProcessor monitoringRestTemplateBeanPostProcessor() {
+		return new SpringRestTemplateBeanPostProcessor();
+	}
+
+	/**
 	 * @return Enregistrement du context Spring.
 	 */
 	@Bean
