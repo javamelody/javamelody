@@ -247,9 +247,11 @@ public class TestJdbcWrapper {
 	@Test
 	public void testCreateConnectionProxy() throws SQLException, IllegalAccessException {
 		DriverManager.registerDriver(driver);
+		final int usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		// nécessite la dépendance vers la base de données H2
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
-		final int usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
+		assertEquals("getUsedConnectionCount1", usedConnectionCount + 1,
+				JdbcWrapper.getUsedConnectionCount());
 		try {
 			jdbcWrapper.rewrapConnection(connection);
 			connection = jdbcWrapper.createConnectionProxy(connection);
@@ -290,9 +292,9 @@ public class TestJdbcWrapper {
 					JdbcWrapper.getConnectionInformationsList());
 		} finally {
 			connection.close();
-			assertEquals("getUsedConnectionCount4", usedConnectionCount,
-					JdbcWrapper.getUsedConnectionCount());
 		}
+		assertEquals("getUsedConnectionCount4", usedConnectionCount,
+				JdbcWrapper.getUsedConnectionCount());
 
 		assertEquals("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
 
