@@ -142,9 +142,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringAdvisor() {
-		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-		interceptor.setPointcut(new MonitoredWithAnnotationPointcut());
-		return interceptor;
+		return new MonitoringSpringAdvisor(new MonitoredWithAnnotationPointcut());
 	}
 
 	/**
@@ -154,9 +152,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
-		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-		interceptor.setPointcut(new AnnotationMatchingPointcut(Service.class));
-		return interceptor;
+		return new MonitoringSpringAdvisor(new AnnotationMatchingPointcut(Service.class));
 	}
 
 	/**
@@ -166,9 +162,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
-		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-		interceptor.setPointcut(new AnnotationMatchingPointcut(Controller.class));
-		return interceptor;
+		return new MonitoringSpringAdvisor(new AnnotationMatchingPointcut(Controller.class));
 	}
 
 	/**
@@ -178,9 +172,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
-		final MonitoringSpringAdvisor interceptor = new MonitoringSpringAdvisor();
-		interceptor.setPointcut(new AnnotationMatchingPointcut(RestController.class));
-		return interceptor;
+		return new MonitoringSpringAdvisor(new AnnotationMatchingPointcut(RestController.class));
 	}
 
 	/**

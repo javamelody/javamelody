@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 
 /**
@@ -35,5 +36,14 @@ public class MonitoringSpringAdvisor extends DefaultPointcutAdvisor {
 		setAdvice(new MonitoringSpringInterceptor());
 		// ordre par rapport aux autres advisors/aspects (issue 32)
 		setOrder(0);
+	}
+
+	/**
+	 * Constructeur.
+	 * @param pointcut Pointcut
+	 */
+	public MonitoringSpringAdvisor(Pointcut pointcut) {
+		this();
+		setPointcut(pointcut);
 	}
 }
