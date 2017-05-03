@@ -19,6 +19,7 @@ package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_KEY_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
@@ -125,8 +126,9 @@ class MonitoringController {
 				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
 				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
 				final String cacheId = httpRequest.getParameter(CACHE_ID_PARAMETER);
+				final String cacheKey = httpRequest.getParameter(CACHE_KEY_PARAMETER);
 				messageForReport = action.execute(collector, collectorServer, currentSession,
-						counterName, sessionId, threadId, jobId, cacheId);
+						counterName, sessionId, threadId, jobId, cacheId, cacheKey);
 				if (collector.getCounterByName(counterName) != null) {
 					// on ne veut pas d'injection de faux counterName dans l'ancre
 					anchorNameForRedirect = action.getContextName(counterName);

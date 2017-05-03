@@ -34,6 +34,7 @@ final class HttpParameters {
 	static final String THREAD_ID_PARAMETER = "threadId";
 	static final String JOB_ID_PARAMETER = "jobId";
 	static final String CACHE_ID_PARAMETER = "cacheId";
+	static final String CACHE_KEY_PARAMETER = "cacheKey";
 	static final String COLLECTOR_PARAMETER = "collector";
 	static final String REQUEST_PARAMETER = "request";
 	static final String PATH_PARAMETER = "path";

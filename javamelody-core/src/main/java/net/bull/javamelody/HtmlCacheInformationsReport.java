@@ -62,6 +62,7 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		if (configurationEnabled) {
 			write("<th>#Configuration#</th>");
 		}
+		write("<th>#Keys#</th>");
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Purger#</th>");
 		}
@@ -108,6 +109,34 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		if (configurationEnabled) {
 			write("</td> <td>");
 			write(cacheInformations.getConfiguration());
+		}
+		write("</td><td>");
+		if (cacheInformations.getCacheKeys() != null && !cacheInformations.getCacheKeys().isEmpty()) {
+			final String cacheKeysId = "cacheKeys-" + htmlEncodeButNotSpace(cacheInformations.getName());
+			writeShowHideLink(cacheKeysId, "#Keys#");
+			write("<div id='" + cacheKeysId + "' style='display: none;'>");
+			for (Object key : cacheInformations.getCacheKeys()) {
+				if (key != null) {
+					write("<div>" + key.toString());
+					if (systemActionsEnabled) {
+						write("<span class='noPrint'>");
+						final String confirmClearCache = javascriptEncode(
+								getFormattedString("confirm_purge_cache", cacheInformations.getName()));
+						// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+						writeDirectly("<a href='?action=clear_cache_key&amp;cacheId="
+								+ urlEncode(cacheInformations.getName())
+								+ "&amp;cacheKey=" + urlEncode(key.toString()) + getCsrfTokenUrlPart()
+								+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
+						final String title = htmlEncode(
+								getFormattedString("Purge_cache", cacheInformations.getName()));
+						writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='" + title
+								+ "' title='" + title + "' /></a>");
+						write("</span>");
+					}
+					write("</div>");
+				}
+			}
+			write("</div>");
 		}
 		write("</td>");
 		if (systemActionsEnabled) {

@@ -56,11 +56,13 @@ class CacheInformations implements Serializable {
 	private final long cacheHits;
 	private final long cacheMisses;
 	private final String configuration;
+	private final List cacheKeys;
 
 	CacheInformations(Ehcache cache) {
 		super();
 		assert cache != null;
 		this.name = cache.getName();
+		this.cacheKeys = cache.getKeys();
 
 		if (EHCACHE_2_7) {
 			// Depuis ehcache 2.7.0, cache.getStatistics() retourne "StatisticsGateway" qui est nouvelle et plus "Statistics".
@@ -311,6 +313,10 @@ class CacheInformations implements Serializable {
 
 	String getConfiguration() {
 		return configuration;
+	}
+
+	List getCacheKeys() {
+		return cacheKeys;
 	}
 
 	/** {@inheritDoc} */
