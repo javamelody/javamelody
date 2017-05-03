@@ -62,7 +62,7 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			return;
 		}
 		writeTitle("system-users.png", getString("Sessions"));
-		writeSessions(sessionsInformations);
+
 		long totalSerializedSize = 0;
 		int nbSerializableSessions = 0;
 		for (final SessionInformations sessionInformations : sessionsInformations) {
@@ -78,9 +78,10 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		} else {
 			meanSerializedSize = -1;
 		}
-		writeln("<div align='right'>"
-				+ getFormattedString("nb_sessions", sessionsInformations.size()) + "<br/><br/>"
-				+ getFormattedString("taille_moyenne_sessions", meanSerializedSize) + "</div>");
+
+		writeSessionsSizes(sessionsInformations.size(), meanSerializedSize);
+		writeSessions(sessionsInformations);
+		writeSessionsSizes(sessionsInformations.size(), meanSerializedSize);
 	}
 
 	private void writeSessions(List<SessionInformations> sessions) throws IOException {
@@ -106,6 +107,12 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			writeSession(session, displayUser);
 		}
 		table.endTable();
+	}
+
+	private void writeSessionsSizes(int sessionsInfoSize, long meanSerializedSize) throws IOException {
+		writeln("<div align='right'>"
+				+ getFormattedString("nb_sessions", sessionsInfoSize) + "<br/><br/>"
+				+ getFormattedString("taille_moyenne_sessions", meanSerializedSize) + "</div>");
 	}
 
 	private void writeBackAndRefreshLinks() throws IOException {
