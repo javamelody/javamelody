@@ -250,7 +250,7 @@ public class TestJdbcWrapper {
 		final int usedConnectionCount = JdbcWrapper.getUsedConnectionCount();
 		// nécessite la dépendance vers la base de données H2
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
-		assertEquals("getUsedConnectionCount1", usedConnectionCount + 1,
+		assertEquals("getUsedConnectionCount1", usedConnectionCount,
 				JdbcWrapper.getUsedConnectionCount());
 		try {
 			jdbcWrapper.rewrapConnection(connection);
@@ -295,6 +295,13 @@ public class TestJdbcWrapper {
 		}
 		assertEquals("getUsedConnectionCount4", usedConnectionCount,
 				JdbcWrapper.getUsedConnectionCount());
+		connection = DriverManager.getConnection(H2_DATABASE_URL + "?driver=org.h2.Driver");
+		try {
+			assertEquals("getUsedConnectionCount1", usedConnectionCount + 1,
+					JdbcWrapper.getUsedConnectionCount());
+		} finally {
+			connection.close();
+		}
 
 		assertEquals("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
 
