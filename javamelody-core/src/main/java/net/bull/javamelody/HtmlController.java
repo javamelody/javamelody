@@ -46,6 +46,8 @@ import static net.bull.javamelody.HttpParameters.TEXT_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
+import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
+import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -174,6 +176,8 @@ class HtmlController {
 			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
 			doMBeans(htmlReport);
+		} else if (CACHE_KEYS_PART.equalsIgnoreCase(part)) {
+			doCacheKeys(htmlReport, httpRequest.getParameter(CACHE_ID_PARAMETER));
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -307,6 +311,18 @@ class HtmlController {
 		} catch (final Exception e) {
 			LOG.warn("mbeans report failed", e);
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
+		}
+	}
+
+	private void doCacheKeys(HtmlReport htmlReport, String cacheId) throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		if (cacheId != null) {
+			if (!isFromCollectorServer()) {
+				CacheInformations cacheInfo = CacheInformations.buildCacheInformationsWithKeys(cacheId);
+				htmlReport.writeCacheWithKeys(cacheId, cacheInfo, messageForReport,
+						CACHE_KEYS_PART + "&" + CACHE_ID_PARAMETER + "=" + I18N.urlEncode(cacheId));
+			}
 		}
 	}
 

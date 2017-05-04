@@ -81,6 +81,7 @@ final class HttpParameters {
 	static final String SPRING_BEANS_PART = "springBeans";
 	static final String RUM_PART = "rum";
 	static final String WEBAPP_VERSIONS_PART = "webappVersions";
+	static final String CACHE_KEYS_PART = "cacheKeys";
 
 	/**
 	 * Constructeur privé: pas d'instance.

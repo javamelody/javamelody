@@ -235,7 +235,7 @@ enum Action { // NOPMD
 			break;
 		case CLEAR_CACHE_KEY:
 			clearCacheKey(cacheId, cacheKey);
-			messageForReport = I18N.getFormattedString("cache_purge", cacheId, cacheKey);
+			messageForReport = I18N.getFormattedString("cache_key_purge", cacheId, cacheKey);
 			break;
 		case KILL_THREAD:
 			assert threadId != null;
