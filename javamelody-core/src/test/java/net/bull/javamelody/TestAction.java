@@ -46,6 +46,7 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * Test unitaire de la classe Action.
@@ -106,6 +107,7 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, null,
 				ALL, sessionId, threadId, jobId, cacheId));
+
 		if (CacheManager.getInstance().getCache(cacheId) == null) {
 			CacheManager.getInstance().addCache(cacheId);
 		}
@@ -115,6 +117,19 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element("1", "value"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "1"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "3"));
+		CacheManager.getInstance().removeCache(cacheId);
+
 		assertNotNull("message CLEAR_HOTSPOTS", Action.CLEAR_HOTSPOTS.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message PURGE_OBSOLETE_FILES", Action.PURGE_OBSOLETE_FILES.execute(collector,
@@ -138,6 +153,20 @@ public class TestAction {
 				}
 			}
 		}
+
+		invalidateSessions(collector, counterName, sessionId, threadId, jobId, cacheId, session);
+
+		killThread(collector, counterName, sessionId, threadId, jobId, cacheId);
+
+		jobs(collector, counterName, sessionId, threadId, jobId, cacheId);
+
+		mailTest(collector);
+
+		verify(session);
+	}
+
+	private void invalidateSessions(Collector collector, String counterName, String sessionId,
+			String threadId, String jobId, String cacheId, HttpSession session) throws IOException {
 		assertNotNull("message INVALIDATE_SESSIONS", Action.INVALIDATE_SESSIONS.execute(collector,
 				null, session, counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message INVALIDATE_SESSION", Action.INVALIDATE_SESSION.execute(collector,
@@ -147,14 +176,6 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message INVALIDATE_SESSION", Action.LOGOUT.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId));
-
-		killThread(collector, counterName, sessionId, threadId, jobId, cacheId);
-
-		jobs(collector, counterName, sessionId, threadId, jobId, cacheId);
-
-		mailTest(collector);
-
-		verify(session);
 	}
 
 	private void mailTest(Collector collector) throws IOException {
