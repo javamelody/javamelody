@@ -221,8 +221,9 @@ class CollectorController { // NOPMD
 			doProxy(req, resp, application, partParameter + '&' + CLASS_PARAMETER + '='
 					+ req.getParameter(CLASS_PARAMETER));
 		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
-			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART, "Connexions_jdbc_ouvertes",
-					"connexions_intro", "db.png");
+			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART,
+					I18N.getString("Connexions_jdbc_ouvertes"), I18N.getString("connexions_intro"),
+					"db.png");
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);
@@ -267,7 +268,7 @@ class CollectorController { // NOPMD
 	}
 
 	private void doMultiHtmlProxy(HttpServletRequest req, HttpServletResponse resp,
-			String application, String partParameter, String titleKey, String introductionKey,
+			String application, String partParameter, String title, String introduction,
 			String iconName) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		final HtmlReport htmlReport = createHtmlReport(req, resp, writer, application);
@@ -282,15 +283,14 @@ class CollectorController { // NOPMD
 		I18N.writelnTo("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#",
 				writer);
 		writer.write("</a></div>");
-		if (introductionKey != null) {
+		if (introduction != null) {
 			writer.write("<br/>");
-			writer.write(I18N.getString(introductionKey));
+			writer.write(I18N.htmlEncode(introduction, false));
 		}
-		final String title = I18N.getString(titleKey);
 		for (final URL url : getUrlsByApplication(application)) {
 			final String htmlTitle = "<h3 class='chapterTitle'><img src='?resource=" + iconName
-					+ "' alt='" + title + "'/>&nbsp;" + title + " (" + getHostAndPort(url)
-					+ ")</h3>";
+					+ "' alt='" + I18N.urlEncode(title) + "'/>&nbsp;"
+					+ I18N.htmlEncode(title, false) + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
 			final URL proxyUrl = new URL(
