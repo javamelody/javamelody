@@ -147,14 +147,16 @@ class HtmlController {
 			htmlReport.writeSource(className);
 		} else if (DEPENDENCIES_PART.equalsIgnoreCase(part)) {
 			htmlReport.writeDependencies();
-		} else if (SPRING_BEANS_PART.equalsIgnoreCase(part)) {
-			htmlReport.writeSpringContext();
+		} else if (CACHE_KEYS_PART.equalsIgnoreCase(part)) {
+			final boolean withoutHeaders = HTML_BODY_FORMAT
+					.equalsIgnoreCase(httpRequest.getParameter(FORMAT_PARAMETER));
+			doCacheKeys(htmlReport, httpRequest.getParameter(CACHE_ID_PARAMETER), withoutHeaders);
 		} else {
 			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
 		}
 	}
 
-	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
+	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part, // NOPMD
 			HtmlReport htmlReport) throws IOException {
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));
@@ -176,10 +178,8 @@ class HtmlController {
 			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
 			doMBeans(htmlReport);
-		} else if (CACHE_KEYS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT
-					.equalsIgnoreCase(httpRequest.getParameter(FORMAT_PARAMETER));
-			doCacheKeys(htmlReport, httpRequest.getParameter(CACHE_ID_PARAMETER), withoutHeaders);
+		} else if (SPRING_BEANS_PART.equalsIgnoreCase(part)) {
+			htmlReport.writeSpringContext();
 		} else {
 			throw new IllegalArgumentException(part);
 		}
