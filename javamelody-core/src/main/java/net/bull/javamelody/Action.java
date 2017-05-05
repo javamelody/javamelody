@@ -71,7 +71,8 @@ enum Action { // NOPMD
 
 	/** Purge le contenu  d'un cache. */
 	CLEAR_CACHE("caches"),
-	
+
+	/** Purge la clé d'un cache. */
 	CLEAR_CACHE_KEY("caches"),
 
 	/** Tue un thread java. */
@@ -144,11 +145,13 @@ enum Action { // NOPMD
 	}
 
 	// CHECKSTYLE:OFF
+	// since 1.49
 	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
-			String counterName, String sessionId, String threadId, String jobId, String cacheId) throws IOException {
+			String counterName, String sessionId, String threadId, String jobId, String cacheId)
+			throws IOException {
 		// CHECKSTYLE:ON
-		return execute(collector, collectorServer, currentSession, counterName, sessionId, threadId, jobId,
-				cacheId, null);
+		return execute(collector, collectorServer, currentSession, counterName, sessionId, threadId,
+				jobId, cacheId, null);
 	}
 
 	/**
@@ -161,15 +164,15 @@ enum Action { // NOPMD
 	 * @param threadId Identifiant du thread sous la forme pid_ip_id
 	 * @param jobId Identifiant du job sous la forme pid_ip_id
 	 * @param cacheId Identifiant du cache à vider
-	 * @param cacheKey
+	 * @param cacheKey Identifiant d'une clé de cache à vider
 	 * @return Message de résultat
 	 * @throws IOException e
-	 * @since 1.49
+	 * @since 1.66
 	 */
 	// CHECKSTYLE:OFF
 	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
-			String counterName, String sessionId, String threadId, String jobId, String cacheId, String cacheKey)
-			throws IOException {
+			String counterName, String sessionId, String threadId, String jobId, String cacheId,
+			String cacheKey) throws IOException {
 		// CHECKSTYLE:ON
 		final String messageForReport;
 		switch (this) {
@@ -419,7 +422,16 @@ enum Action { // NOPMD
 		for (final CacheManager cacheManager : allCacheManagers) {
 			final Cache cache = cacheManager.getCache(cacheId);
 			if (cache != null) {
-				cache.remove(cacheKey);
+				final boolean removed = cache.remove(cacheKey);
+				if (!removed) {
+					// if keys are not Strings, we have to find the initial key
+					for (final Object key : cache.getKeys()) {
+						if (key != null && key.toString().equals(cacheKey)) {
+							cache.remove(key);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

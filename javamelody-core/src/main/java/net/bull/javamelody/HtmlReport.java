@@ -377,15 +377,20 @@ class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
-	void writeCacheWithKeys(String cacheId, CacheInformations cacheInformations,
-			String message, String cacheKeyPart)
-			throws IOException {
+	void writeCacheWithKeys(String cacheId, CacheInformations cacheInformations, String message,
+			String cacheKeyPart, boolean withoutHeaders) throws IOException {
 		assert cacheId != null;
-		writeHtmlHeader();
-		new HtmlCacheInformationsReport(Collections.singletonList(cacheInformations),
-				getWriter()).writeCacheWithKeys(cacheId);
-		writeHtmlFooter();
-
-		writeMessageIfNotNull(message, cacheKeyPart); 
+		if (cacheInformations != null) {
+			final HtmlCacheInformationsReport htmlCacheInformationsReport = new HtmlCacheInformationsReport(
+					Collections.singletonList(cacheInformations), getWriter());
+			if (withoutHeaders) {
+				htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
+			} else {
+				writeHtmlHeader();
+				htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
+				writeHtmlFooter();
+				writeMessageIfNotNull(message, cacheKeyPart);
+			}
+		}
 	}
 }

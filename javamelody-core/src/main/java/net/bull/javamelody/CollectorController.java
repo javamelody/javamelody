@@ -20,6 +20,8 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
 import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
+import static net.bull.javamelody.HttpParameters.CACHE_KEY_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
@@ -224,6 +226,12 @@ class CollectorController { // NOPMD
 			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART,
 					I18N.getString("Connexions_jdbc_ouvertes"), I18N.getString("connexions_intro"),
 					"db.png");
+		} else if (CACHE_KEYS_PART.equalsIgnoreCase(partParameter)) {
+			// note: cache keys may not be serializable, so we do not try to serialize them
+			final String cacheId = req.getParameter(CACHE_ID_PARAMETER);
+			doMultiHtmlProxy(req, resp, application,
+					CACHE_KEYS_PART + '&' + CACHE_ID_PARAMETER + '=' + cacheId,
+					I18N.getFormattedString("Keys_cache", cacheId), null, "caches.png");
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);
@@ -444,10 +452,16 @@ class CollectorController { // NOPMD
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {
 			final PrintWriter writer = createWriterFromOutputStream(resp);
-			final String partParameter = req.getParameter(PART_PARAMETER);
+			final String partToRedirectTo;
+			if (req.getParameter(CACHE_ID_PARAMETER) == null) {
+				partToRedirectTo = req.getParameter(PART_PARAMETER);
+			} else {
+				partToRedirectTo = req.getParameter(PART_PARAMETER) + '&' + CACHE_ID_PARAMETER + '='
+						+ req.getParameter(CACHE_ID_PARAMETER);
+			}
 			// la période n'a pas d'importance pour writeMessageIfNotNull
 			new HtmlReport(collector, collectorServer, javaInformationsList, Period.TOUT, writer)
-					.writeMessageIfNotNull(message, partParameter);
+					.writeMessageIfNotNull(message, partToRedirectTo);
 			writer.close();
 		}
 	}
@@ -523,6 +537,7 @@ class CollectorController { // NOPMD
 		final String threadIdParameter = req.getParameter(THREAD_ID_PARAMETER);
 		final String jobIdParameter = req.getParameter(JOB_ID_PARAMETER);
 		final String cacheIdParameter = req.getParameter(CACHE_ID_PARAMETER);
+		final String cacheKeyParameter = req.getParameter(CACHE_KEY_PARAMETER);
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {
@@ -539,6 +554,9 @@ class CollectorController { // NOPMD
 			}
 			if (cacheIdParameter != null) {
 				actionUrl.append("&cacheId=").append(cacheIdParameter);
+			}
+			if (cacheKeyParameter != null) {
+				actionUrl.append("&cacheKey=").append(cacheKeyParameter);
 			}
 			actionUrls.add(new URL(actionUrl.toString()));
 		}

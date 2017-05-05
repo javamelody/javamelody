@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody; // NOPMD
 
+import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
 import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
@@ -46,8 +48,6 @@ import static net.bull.javamelody.HttpParameters.TEXT_CONTENT_TYPE;
 import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
 import static net.bull.javamelody.HttpParameters.THREADS_PART;
 import static net.bull.javamelody.HttpParameters.USAGES_PART;
-import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
-import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -177,7 +177,9 @@ class HtmlController {
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
 			doMBeans(htmlReport);
 		} else if (CACHE_KEYS_PART.equalsIgnoreCase(part)) {
-			doCacheKeys(htmlReport, httpRequest.getParameter(CACHE_ID_PARAMETER));
+			final boolean withoutHeaders = HTML_BODY_FORMAT
+					.equalsIgnoreCase(httpRequest.getParameter(FORMAT_PARAMETER));
+			doCacheKeys(htmlReport, httpRequest.getParameter(CACHE_ID_PARAMETER), withoutHeaders);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
@@ -274,6 +276,7 @@ class HtmlController {
 	}
 
 	private void doConnections(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
+		assert !isFromCollectorServer();
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), withoutHeaders);
@@ -314,16 +317,14 @@ class HtmlController {
 		}
 	}
 
-	private void doCacheKeys(HtmlReport htmlReport, String cacheId) throws IOException {
-		// par sécurité
-		Action.checkSystemActionsEnabled();
-		if (cacheId != null) {
-			if (!isFromCollectorServer()) {
-				CacheInformations cacheInfo = CacheInformations.buildCacheInformationsWithKeys(cacheId);
-				htmlReport.writeCacheWithKeys(cacheId, cacheInfo, messageForReport,
-						CACHE_KEYS_PART + "&" + CACHE_ID_PARAMETER + "=" + I18N.urlEncode(cacheId));
-			}
-		}
+	private void doCacheKeys(HtmlReport htmlReport, String cacheId, boolean withoutHeaders)
+			throws IOException {
+		assert !isFromCollectorServer();
+		final CacheInformations cacheInfo = CacheInformations
+				.buildCacheInformationsWithKeys(cacheId);
+		htmlReport.writeCacheWithKeys(cacheId, cacheInfo, messageForReport,
+				CACHE_KEYS_PART + '&' + CACHE_ID_PARAMETER + '=' + I18N.urlEncode(cacheId),
+				withoutHeaders);
 	}
 
 	void writeHtmlToLastShutdownFile() {

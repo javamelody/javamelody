@@ -56,7 +56,7 @@ class CacheInformations implements Serializable {
 	private final long cacheHits;
 	private final long cacheMisses;
 	private final String configuration;
-	private final List cacheKeys;
+	private final List<?> cacheKeys;
 
 	CacheInformations(Ehcache cache, boolean includeKeys) {
 		super();
@@ -185,26 +185,18 @@ class CacheInformations implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	static CacheInformations buildCacheInformationsWithKeys(final String cacheId) {
-		if (!EHCACHE_AVAILABLE || cacheId == null) {
-			return null;
-		}
-		final List<CacheManager> allCacheManagers;
-		try {
-			allCacheManagers = new ArrayList<CacheManager>(CacheManager.ALL_CACHE_MANAGERS);
-		} catch (final NoSuchFieldError e) {
-			// nécessaire pour ehcache 1.2 ou avant
-			return null;
-		}
-		CacheInformations result = null;
+	static CacheInformations buildCacheInformationsWithKeys(String cacheId) {
+		assert EHCACHE_AVAILABLE;
+		assert cacheId != null;
+		final List<CacheManager> allCacheManagers = new ArrayList<CacheManager>(
+				CacheManager.ALL_CACHE_MANAGERS);
 		for (final CacheManager cacheManager : allCacheManagers) {
 			final Ehcache ehcache = cacheManager.getEhcache(cacheId);
 			if (ehcache != null) {
-				result = new CacheInformations(ehcache, true);
-				break;
+				return new CacheInformations(ehcache, true);
 			}
 		}
-		return result;
+		return null;
 	}
 
 	private static boolean isEhcache27() {
@@ -343,7 +335,7 @@ class CacheInformations implements Serializable {
 		return configuration;
 	}
 
-	List getCacheKeys() {
+	List<?> getCacheKeys() {
 		return cacheKeys;
 	}
 

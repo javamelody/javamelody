@@ -81,7 +81,6 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		if (configurationEnabled) {
 			write("<th>#Configuration#</th>");
 		}
-		write("<th>#Keys#</th>");
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Purger#</th>");
 		}
@@ -94,7 +93,9 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 
 	private void writeCacheInformations(CacheInformations cacheInformations) throws IOException {
 		write("<td>");
-		writeDirectly(htmlEncodeButNotSpace(cacheInformations.getName()));
+		writeDirectly("<a href='?part=cacheKeys&amp;cacheId="
+				+ urlEncode(cacheInformations.getName()) + "'>");
+		writeDirectly(htmlEncodeButNotSpace(cacheInformations.getName()) + "</a>");
 		final String nextColumnAlignRight = "</td> <td align='right'>";
 		if (configurationEnabled) {
 			write(nextColumnAlignRight);
@@ -115,9 +116,7 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			write(cacheInformations.getConfiguration());
 		}
 
-		write("</td><td><a href='?part=cacheKeys&amp;cacheId=");
-		write(urlEncode(cacheInformations.getName()));
-		write("'>#Keys#</a></td>");
+		write("</td>");
 
 		if (systemActionsEnabled) {
 			write("<td align='center' class='noPrint'>");
@@ -154,15 +153,15 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		return false;
 	}
 
-	void writeCacheWithKeys(String cacheId) throws IOException {
-		writeBackAndRefreshLinksForCache(cacheId);
-		writeln("<br/>");
+	void writeCacheWithKeys(String cacheId, boolean withoutHeaders) throws IOException {
+		assert cacheInformationsList.size() == 1;
+		if (!withoutHeaders) {
+			writeBackAndRefreshLinksForCache(cacheId);
+			writeln("<br/>");
 
-		if (cacheInformationsList == null || cacheInformationsList.isEmpty()) {
-			return;
+			writeTitle("caches.png",
+					getFormattedString("Keys_cache", htmlEncodeButNotSpace(cacheId)));
 		}
-		writeTitle("caches.png",
-				getFormattedString("Keys_cache", htmlEncodeButNotSpace(cacheId)));
 		writeCaches(cacheInformationsList);
 
 		writeln("<br/><b>#Keys#</b>");
@@ -172,34 +171,55 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 	private void writeBackAndRefreshLinksForCache(String cacheId) throws IOException {
 		writeln("<div class='noPrint'>");
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<a href='?part=cacheKeys&amp;cacheId=" + urlEncode(cacheId) + "'>");
+		writeDirectly("<a href='?part=cacheKeys&amp;cacheId=" + urlEncode(cacheId) + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln("</div>");
 	}
 
-	private void writeCacheKeys(CacheInformations cacheInformations)
-			throws IOException {
+	private void writeCacheKeys(CacheInformations cacheInformations) throws IOException {
+		final List<?> cacheKeys = cacheInformations.getCacheKeys();
+		assert cacheKeys != null;
+		if (cacheKeys.isEmpty()) {
+			write("<br/>#No_keys#");
+			return;
+		}
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("Keys"));
-		write("<th>#Keys#</th><th>#Purger#</th>");
-		for (final Object key : cacheInformations.getCacheKeys()) {
+		write("<th>#Keys#</th>");
+		if (systemActionsEnabled) {
+			write("<th class='noPrint'>#Purger#</th>");
+		}
+		final String cacheNameEncoded = urlEncode(cacheInformations.getName());
+		final String csrfTokenUrlPart = getCsrfTokenUrlPart();
+		final String confirmClearCache = javascriptEncode(
+				getFormattedString("confirm_purge_cache", cacheInformations.getName()));
+		final String title = htmlEncode(
+				getFormattedString("Purge_cache", cacheInformations.getName()));
+		for (final Object key : cacheKeys) {
 			if (key != null) {
+				final String myKey = key.toString();
 				table.nextRow();
-				write("<td>" + key.toString()+"</td>");
+				writeDirectly("<td>");
+				writeDirectly(htmlEncodeButNotSpace(myKey));
+				writeDirectly("</td>");
 				if (systemActionsEnabled) {
-					write("<td class='noPrint' style='text-align: center;'>");
-					final String confirmClearCache = javascriptEncode(
-							getFormattedString("confirm_purge_cache", cacheInformations.getName()));
-					// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-					writeDirectly("<a href='?part=cacheKeys&amp;action=clear_cache_key&amp;cacheId="
-							+ urlEncode(cacheInformations.getName())
-							+ "&amp;cacheKey=" + urlEncode(key.toString()) + getCsrfTokenUrlPart()
-							+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
-					final String title = htmlEncode(
-							getFormattedString("Purge_cache", cacheInformations.getName()));
-					writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='" + title
-							+ "' title='" + title + "' /></a>");
-					write("</td>");
+					writeDirectly("<td class='noPrint' style='text-align: center;'>");
+					writeDirectly(
+							"<a href='?part=cacheKeys&amp;action=clear_cache_key&amp;cacheId=");
+					writeDirectly(cacheNameEncoded);
+					writeDirectly("&amp;cacheKey=");
+					writeDirectly(urlEncode(myKey));
+					writeDirectly(csrfTokenUrlPart);
+					writeDirectly("' onclick=\"javascript:return confirm('");
+					writeDirectly(confirmClearCache);
+					writeDirectly("');\">");
+					writeDirectly(
+							"<img src='?resource=user-trash.png' width='16' height='16' alt='");
+					writeDirectly(title);
+					writeDirectly("' title='");
+					writeDirectly(title);
+					writeDirectly("' /></a>");
+					writeDirectly("</td>");
 				}
 			}
 		}
