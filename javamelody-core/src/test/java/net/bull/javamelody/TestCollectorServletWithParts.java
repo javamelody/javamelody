@@ -20,6 +20,8 @@ package net.bull.javamelody; // NOPMD
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
 import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
 import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
+import static net.bull.javamelody.HttpParameters.CACHE_KEY_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
 import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
@@ -167,6 +169,8 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
 		doPart(parameters);
+		parameters.put(PART_PARAMETER, CACHE_KEYS_PART);
+		doPart(parameters);
 		parameters.put(PART_PARAMETER, SOURCE_PART);
 		parameters.put(CLASS_PARAMETER, "java.lang.String");
 		doPart(parameters);
@@ -313,6 +317,10 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(ACTION_PARAMETER, Action.CLEAR_CACHE.toString());
 		parameters.put(CACHE_ID_PARAMETER, "aCacheId");
+		doPart(parameters);
+		parameters.put(ACTION_PARAMETER, Action.CLEAR_CACHE_KEY.toString());
+		parameters.put(CACHE_ID_PARAMETER, "aCacheId");
+		parameters.put(CACHE_KEY_PARAMETER, "aCacheKey");
 		doPart(parameters);
 		parameters.put(ACTION_PARAMETER, "remove_application");
 		doPart(parameters);

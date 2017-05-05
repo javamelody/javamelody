@@ -18,6 +18,8 @@
 package net.bull.javamelody; // NOPMD
 
 import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
+import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
 import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
 import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
 import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
@@ -647,15 +649,46 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, THREADS_DUMP_PART);
 		monitoring(parameters);
+		parameters.put(PART_PARAMETER, CACHE_KEYS_PART);
+		final String cacheName = getClass().getName();
+		CacheManager.getInstance().addCache(cacheName);
+		parameters.put(CACHE_ID_PARAMETER, cacheName);
+		monitoring(parameters);
+		parameters.put(FORMAT_PARAMETER, "htmlbody");
+		monitoring(parameters);
+		CacheManager.getInstance().removeCache(cacheName);
+		parameters.remove(CACHE_ID_PARAMETER);
+		parameters.remove(FORMAT_PARAMETER);
+
+		parameters.put(PART_PARAMETER, JNLP_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		monitoring(parameters);
+		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
+		parameters.put(COUNTER_PARAMETER, "services");
+		monitoring(parameters);
+		parameters.put(GRAPH, "unknown service");
+		monitoring(parameters);
+		parameters.remove(COUNTER_PARAMETER);
+
+		doMonitoringWithGraphPart();
+
+		doMonitoringWithSourcePart();
+
+		doMonitoringWithUnknownPart();
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoMonitoringWithPartsForSystemActions() throws ServletException, IOException {
+		final Map<String, String> parameters = new HashMap<String, String>();
 
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(PART_PARAMETER, PROCESSES_PART);
 		monitoring(parameters);
 		monitorJdbcParts(parameters);
-		parameters.remove(FORMAT_PARAMETER);
-		parameters.put(REQUEST_PARAMETER, "0");
-		monitoring(parameters);
-		parameters.remove(REQUEST_PARAMETER);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
 		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
 		//		monitoring(parameters);
@@ -667,10 +700,6 @@ public class TestMonitoringFilter {
 		parameters.put(PART_PARAMETER, JNDI_PART);
 		monitoring(parameters);
 		parameters.put(PART_PARAMETER, MBEANS_PART);
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, JNLP_PART);
-		monitoring(parameters);
-		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
 		monitoring(parameters);
 		final ApplicationContext context = new ClassPathXmlApplicationContext(
 				new String[] { "net/bull/javamelody/monitoring-spring.xml", });
@@ -685,18 +714,6 @@ public class TestMonitoringFilter {
 		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
 		monitoring(parameters);
 		parameters.remove(JMX_VALUE);
-		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, "services");
-		monitoring(parameters);
-		parameters.put(GRAPH, "unknown service");
-		monitoring(parameters);
-		parameters.remove(COUNTER_PARAMETER);
-
-		doMonitoringWithGraphPart();
-
-		doMonitoringWithSourcePart();
-
-		doMonitoringWithUnknownPart();
 	}
 
 	/**
@@ -793,6 +810,10 @@ public class TestMonitoringFilter {
 			parameters.put(PART_PARAMETER, CONNECTIONS_PART);
 			parameters.put(FORMAT_PARAMETER, "htmlbody");
 			monitoring(parameters);
+			parameters.remove(FORMAT_PARAMETER);
+			parameters.put(REQUEST_PARAMETER, "0");
+			monitoring(parameters);
+			parameters.remove(REQUEST_PARAMETER);
 		} finally {
 			try {
 				connection.close();
