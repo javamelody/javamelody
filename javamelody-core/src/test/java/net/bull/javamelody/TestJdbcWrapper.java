@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -169,7 +170,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testCreateDataSourceProxy() throws Exception { // NOPMD
+	public void testCreateDataSourceProxy() throws Exception {
 		// on fait le ménage au cas où TestMonitoringSpringInterceptor ait été exécuté juste avant
 		cleanUp();
 
@@ -350,7 +351,7 @@ public class TestJdbcWrapper {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testRewrapDataSource() throws Exception { // NOPMD
+	public void testRewrapDataSource() throws Exception {
 		final BasicDataSource tomcatDataSource = new BasicDataSource();
 		tomcatDataSource.setUrl(H2_DATABASE_URL);
 		rewrapDataSource(tomcatDataSource);
@@ -367,7 +368,9 @@ public class TestJdbcWrapper {
 		rewrapDataSource(dataSource);
 	}
 
-	private void rewrapDataSource(DataSource dataSource) throws Exception { // NOPMD
+	private void rewrapDataSource(DataSource dataSource)
+			throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		// on utilise java.lang.reflect car la méthode est privée mais on veut vraiment la tester un minimum
 		final Method rewrapDataSourceMethod = JdbcWrapper.class
 				.getDeclaredMethod("rewrapDataSource", String.class, DataSource.class);

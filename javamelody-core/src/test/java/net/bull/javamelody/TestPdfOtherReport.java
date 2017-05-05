@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +50,6 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * Test unitaire de la classe PdfOtherReport.
  * @author Emeric Vernat
  */
-//CHECKSTYLE:OFF
 public class TestPdfOtherReport {
 	private static final String TEST_APP = "test app";
 
@@ -175,11 +173,9 @@ public class TestPdfOtherReport {
 	}
 
 	/** Test.
-	 * @throws IOException e
-	 * @throws NamingException e
-	 * @throws SQLException e */
+	 * @throws Exception e */
 	@Test
-	public void testWriteDatabaseInformations() throws IOException, SQLException, NamingException {
+	public void testWriteDatabaseInformations() throws Exception {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
 		TestDatabaseInformations.initJdbcDriverParameters();

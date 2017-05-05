@@ -45,7 +45,7 @@ import org.junit.Test;
  * Test unitaire de la classe CustomResourceFilter.
  * @author Emeric Vernat
  */
-public class TestCustomResourceFilter { // NOPMD
+public class TestCustomResourceFilter {
 	private static final String MONITORING_CSS = "monitoring.css";
 	private static final Map<String, String> CUSTOM_RESOURCES = Collections
 			.singletonMap(MONITORING_CSS, "customMonitoring.css");

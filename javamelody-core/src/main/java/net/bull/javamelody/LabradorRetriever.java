@@ -378,7 +378,7 @@ class LabradorRetriever {
 
 	private static class LabradorMock { // NOPMD
 		// CHECKSTYLE:OFF
-		static Object createMockResultOfPartCall(String request) throws IOException { // NOPMD
+		static Object createMockResultOfPartCall(String request) throws IOException {
 			// CHECKSTYLE:ON
 			final Object result;
 			if (request.contains(HttpParameters.SESSIONS_PART)

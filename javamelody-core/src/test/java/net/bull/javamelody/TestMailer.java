@@ -49,7 +49,7 @@ public class TestMailer {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testMailerSend() throws Exception { // NOPMD
+	public void testMailerSend() throws Exception {
 		try {
 			send(null, false);
 		} catch (final NamingException e) {

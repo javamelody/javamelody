@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
  * Lecture d'artifacts Maven.
  * @author Emeric Vernat
  */
-final class MavenArtifact implements Serializable { // NOPMD
+final class MavenArtifact implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static final String MAVEN_CENTRAL = "http://repo1.maven.org/maven2";
@@ -111,7 +111,7 @@ final class MavenArtifact implements Serializable { // NOPMD
 	}
 
 	// CHECKSTYLE:OFF
-	private void parseNode(Node node) { // NOPMD
+	private void parseNode(Node node) {
 		// CHECKSTYLE:ON
 		final Map<String, String> properties = new HashMap<String, String>();
 		final String nodeName = node.getNodeName();
@@ -221,7 +221,7 @@ final class MavenArtifact implements Serializable { // NOPMD
 	}
 
 	// CHECKSTYLE:OFF
-	private void parseDependenciesNode(Node dependenciesNode) { // NOPMD
+	private void parseDependenciesNode(Node dependenciesNode) {
 		// CHECKSTYLE:ON
 		final NodeList dependencyNodes = dependenciesNode.getChildNodes();
 		for (int j = 0; j < dependencyNodes.getLength(); j++) {

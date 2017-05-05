@@ -101,11 +101,11 @@ class QuartzAdapter {
 
 	String getCronTriggerExpression(CronTrigger trigger) {
 		// getCronExpression gives a PMD false+
-		return trigger.getCronExpression(); // NOPMD
+		return trigger.getCronExpression();
 	}
 
 	long getSimpleTriggerRepeatInterval(SimpleTrigger trigger) {
-		return trigger.getRepeatInterval(); // NOPMD
+		return trigger.getRepeatInterval();
 	}
 
 	JobDetail getContextJobDetail(JobExecutionContext context) {
@@ -149,7 +149,7 @@ class QuartzAdapter {
 							schedulerClass.getMethod("removeGlobalJobListener", String.class)
 									.invoke(scheduler, jobListener.getName());
 						} catch (final Exception e2) {
-							throw new IllegalArgumentException(e2); // NOPMD
+							throw new IllegalArgumentException(e2);
 						}
 					}
 				}

@@ -161,7 +161,7 @@ final class JdbcWrapperHelper {
 			dataSources.putAll(getJndiDataSourcesAt("java:global/jdbc"));
 			// pour WebLogic 10 et WebSphere 7, cf issue 68
 			dataSources.putAll(getJndiDataSourcesAt("jdbc"));
-		} else if (!datasourcesParameter.trim().isEmpty()) { // NOPMD
+		} else if (!datasourcesParameter.trim().isEmpty()) {
 			final InitialContext initialContext = new InitialContext();
 			for (final String datasource : datasourcesParameter.split(",")) {
 				final String jndiName = datasource.trim();
@@ -431,7 +431,6 @@ final class JdbcWrapperHelper {
 	}
 
 	@SuppressWarnings("all")
-	// CHECKSTYLE:OFF
 	private static Object changeContextWritable(ServletContext servletContext, Object lock)
 			throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException,
 			NamingException {
@@ -559,7 +558,7 @@ final class JdbcWrapperHelper {
 
 	private static Constructor<?> getProxyConstructor(Class<? extends Object> objectClass,
 			Class<?>[] interfacesArray) {
-		final ClassLoader classLoader = objectClass.getClassLoader(); // NOPMD
+		final ClassLoader classLoader = objectClass.getClassLoader();
 		try {
 			final Constructor<?> constructor = Proxy.getProxyClass(classLoader, interfacesArray)
 					.getConstructor(new Class[] { InvocationHandler.class });
@@ -599,5 +598,4 @@ final class JdbcWrapperHelper {
 		}
 		return myInterfaces.toArray(new Class<?>[myInterfaces.size()]);
 	}
-	// CHECKSTYLE:ON
 }

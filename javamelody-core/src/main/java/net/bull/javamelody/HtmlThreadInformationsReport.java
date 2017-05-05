@@ -164,7 +164,7 @@ class HtmlThreadInformationsReport extends HtmlAbstractReport {
 	}
 
 	static String getStateIcon(ThreadInformations threadInformations) {
-		switch (threadInformations.getState()) { // NOPMD
+		switch (threadInformations.getState()) {
 		case RUNNABLE:
 			return "green.png";
 		case WAITING:

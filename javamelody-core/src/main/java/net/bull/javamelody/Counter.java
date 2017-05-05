@@ -110,9 +110,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	// (on garde en non transient pour ne pas avoir null après désérialisation ce qui pourrait donner des NPE)
 	@SuppressWarnings("all")
 	private final ConcurrentMap<Long, CounterRequestContext> rootCurrentContextsByThreadId = new ConcurrentHashMap<Long, CounterRequestContext>();
-	//CHECKSTYLE:OFF
 	private final LinkedList<CounterError> errors; // NOPMD
-	//CHECKSTYLE:ON
 	private Date startDate = new Date();
 	private int maxRequestsCount = MAX_REQUESTS_COUNT;
 	private long estimatedMemorySize;

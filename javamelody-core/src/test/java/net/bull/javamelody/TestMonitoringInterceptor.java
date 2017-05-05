@@ -96,7 +96,7 @@ public class TestMonitoringInterceptor {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testInvoke() throws Exception { // NOPMD
+	public void testInvoke() throws Exception {
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringInterceptor interceptor = new MonitoringInterceptor();
@@ -120,7 +120,7 @@ public class TestMonitoringInterceptor {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testMonitoringTarget() throws Exception { // NOPMD
+	public void testMonitoringTarget() throws Exception {
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringTargetInterceptor interceptor = new MonitoringTargetInterceptor();

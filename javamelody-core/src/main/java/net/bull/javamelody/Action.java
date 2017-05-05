@@ -44,7 +44,7 @@ import net.sf.ehcache.CacheManager;
  * @author Emeric Vernat
  * @author <a href="mailto:davidkarlsen@gmail.com">David J. M. Karlsen (IBM heapdump support)<a>
  */
-enum Action { // NOPMD
+enum Action {
 	/** Test d'envoi du rapport pdf par mail. */
 	MAIL_TEST(""),
 
@@ -136,17 +136,15 @@ enum Action { // NOPMD
 	}
 
 	// méthode conservée pour compatibilité ascendante
-	// CHECKSTYLE:OFF
-	String execute(Collector collector, CollectorServer collectorServer, String counterName, // NOPMD
+	String execute(Collector collector, CollectorServer collectorServer, String counterName,
 			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
-		// CHECKSTYLE:ON
 		return execute(collector, collectorServer, null, counterName, sessionId, threadId, jobId,
 				cacheId, null);
 	}
 
 	// CHECKSTYLE:OFF
 	// since 1.49
-	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
+	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession,
 			String counterName, String sessionId, String threadId, String jobId, String cacheId)
 			throws IOException {
 		// CHECKSTYLE:ON

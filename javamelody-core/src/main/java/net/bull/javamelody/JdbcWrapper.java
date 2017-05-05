@@ -809,7 +809,7 @@ public final class JdbcWrapper {
 		final ConnectionInvocationHandler invocationHandler = new ConnectionInvocationHandler(
 				connection);
 		final Connection result = createProxy(connection, invocationHandler);
-		if (result != connection) { // NOPMD
+		if (result != connection) {
 			invocationHandler.init();
 		}
 		return result;

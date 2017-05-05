@@ -98,7 +98,7 @@ public class TestCollector {
 	/** Test.
 	 * @throws SchedulerException e */
 	@Test
-	public void testToString() throws SchedulerException { // NOPMD
+	public void testToString() throws SchedulerException {
 		final Collector collector = createCollectorWithOneCounter();
 		assertToStringNotEmpty("collector", collector);
 		assertToStringNotEmpty("java", new JavaInformations(null, false));

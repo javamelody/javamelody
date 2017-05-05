@@ -372,7 +372,7 @@ class CollectorController { // NOPMD
 	}
 
 	// CHECKSTYLE:OFF
-	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest, // NOPMD
+	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest,
 			String application) throws IOException {
 		// CHECKSTYLE:ON
 		final String part = httpRequest.getParameter(PART_PARAMETER);

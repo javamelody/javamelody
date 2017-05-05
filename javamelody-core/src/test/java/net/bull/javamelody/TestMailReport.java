@@ -63,7 +63,7 @@ public class TestMailReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testSendReportMail() throws Exception { // NOPMD
+	public void testSendReportMail() throws Exception {
 		final Counter counter = new Counter("http", null);
 		final Collector collector = new Collector("test", Collections.singletonList(counter));
 		final List<JavaInformations> javaInformationslist = Collections

@@ -203,7 +203,7 @@ public class JpaPersistence implements PersistenceProvider {
 				break;
 			}
 		}
-		if (delegate == null) { // NOPMD
+		if (delegate == null) {
 			for (final String provider : PROVIDERS) {
 				try {
 					delegate = newPersistence(provider);
@@ -212,7 +212,7 @@ public class JpaPersistence implements PersistenceProvider {
 					continue;
 				}
 			}
-			if (delegate == null) { // NOPMD
+			if (delegate == null) {
 				throw new IllegalStateException(
 						new ClassNotFoundException("Can't find a delegate"));
 			}

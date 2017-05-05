@@ -51,7 +51,7 @@ public class TestPdfJavaInformationsReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testTomcatInformations() throws Exception { // NOPMD
+	public void testTomcatInformations() throws Exception {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
 				output);

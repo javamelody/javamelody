@@ -219,7 +219,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testWriteRequests() throws Exception { // NOPMD
+	public void testWriteRequests() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 		htmlReport.writeRequestAndGraphDetail("httpHitsRate");
@@ -268,7 +268,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testOtherWrites() throws Exception { // NOPMD
+	public void testOtherWrites() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 
@@ -324,7 +324,7 @@ public class TestHtmlReport {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testWriteConnections() throws Exception { // NOPMD
+	public void testWriteConnections() throws Exception {
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
 

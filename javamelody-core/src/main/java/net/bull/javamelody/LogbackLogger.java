@@ -62,7 +62,7 @@ class LogbackLogger implements JavaMelodyLogger {
 	@Override
 	public void logHttpRequest(HttpServletRequest httpRequest, String requestName, long duration,
 			boolean systemError, int responseSize, String loggerName) {
-		final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(loggerName);
+		final Logger logger = org.slf4j.LoggerFactory.getLogger(loggerName);
 		if (logger.isInfoEnabled()) {
 			logger.info(LOG.buildLogMessage(httpRequest, duration, systemError, responseSize));
 		}

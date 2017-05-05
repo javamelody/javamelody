@@ -112,7 +112,7 @@ import net.sf.ehcache.CacheManager;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestMonitoringFilter { // NOPMD
+public class TestMonitoringFilter {
 	// CHECKSTYLE:ON
 	private static final String FILTER_NAME = "monitoring";
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME

@@ -156,7 +156,7 @@ class HtmlController {
 		}
 	}
 
-	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part, // NOPMD
+	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
 			HtmlReport htmlReport) throws IOException {
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
 			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));

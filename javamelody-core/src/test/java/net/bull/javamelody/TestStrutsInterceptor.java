@@ -50,7 +50,7 @@ public class TestStrutsInterceptor {
 	/** Test.
 	 * @throws Exception e */
 	@Test
-	public void testStruts() throws Exception { // NOPMD
+	public void testStruts() throws Exception {
 		final Counter strutsCounter = MonitoringProxy.getStrutsCounter();
 		strutsCounter.clear();
 		final StrutsInterceptor strutsInterceptor = new StrutsInterceptor();

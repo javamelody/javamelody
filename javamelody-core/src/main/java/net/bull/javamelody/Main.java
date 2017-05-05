@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package net.bull.javamelody; // NOPMD
+package net.bull.javamelody;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -314,7 +314,7 @@ public final class Main {
 	//	 * @author Kohsuke Kawaguchi
 	//	 */
 	//	@SuppressWarnings("all")
-	//	private static final class LogFileOutputStream extends FilterOutputStream { // NOPMD
+	//	private static final class LogFileOutputStream extends FilterOutputStream {
 	//		/**
 	//		 * /dev/null
 	//		 */

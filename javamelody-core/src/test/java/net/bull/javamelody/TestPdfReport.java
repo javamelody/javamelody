@@ -58,6 +58,7 @@ import net.sf.ehcache.Element;
  */
 //CHECKSTYLE:OFF
 public class TestPdfReport {
+	//CHECKSTYLE:ON
 	private static final String TEST_APP = "test app";
 
 	/** Before.
@@ -74,41 +75,42 @@ public class TestPdfReport {
 		JRobin.stop();
 	}
 
+	private void toPdf(Collector collector, boolean collectorServer,
+			List<JavaInformations> javaInformationsList, Map<String, byte[]> graphs)
+			throws IOException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final PdfReport pdfReport = new PdfReport(collector, collectorServer, javaInformationsList,
+				Period.TOUT, output);
+		if (graphs != null) {
+			pdfReport.preInitGraphs(graphs, graphs, graphs);
+		}
+		pdfReport.toPdf();
+		pdfReport.close();
+		assertNotEmptyAndClear(output);
+	}
+
 	/** Test.
-	 * @throws IOException e
-	 * @throws SchedulerException e
-	 * @throws DocumentException e */
+	 * @throws Exception e */
 	@Test
-	public void testToPdf() throws IOException, SchedulerException, DocumentException {
-		//CHECKSTYLE:ON
+	public void testToPdf() throws Exception {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		sqlCounter.setDisplayed(true);
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = JobGlobalListener.getJobCounter();
-		final List<Counter> counters = new ArrayList<Counter>();
-		counters.add(counter);
-		counters.add(sqlCounter);
-		counters.add(errorCounter);
-		counters.add(jobCounter);
+		final List<Counter> counters = Arrays.asList(counter, sqlCounter, errorCounter, jobCounter);
 		counter.addRequest("test1", 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, true, 10000);
 		final Collector collector = new Collector("test", counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(javaInformations);
 		counter.addRequest("test1", 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
 		counter.clear();
 		collector.collectWithoutErrors(javaInformationsList);
-		PdfReport pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT,
-				output);
-		pdfReport.toPdf();
-		pdfReport.close();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, true, javaInformationsList, null);
 
 		final JRobin jrobin = collector.getCounterJRobins().iterator().next();
 		final byte[] graph = jrobin.graph(Period.JOUR.getRange(), 50, 50);
@@ -118,10 +120,7 @@ public class TestPdfReport {
 		graphs.put("3", graph);
 		graphs.put("4", graph);
 
-		pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, true, javaInformationsList, graphs);
 
 		// pour les PDFs suivants, inutile de regénérer toutes les images,
 		// ce qui prendrait beaucoup de temps, donc on utilise preInitGraphs
@@ -133,49 +132,34 @@ public class TestPdfReport {
 		counter.addRequest("test2", 1000, 500, false, 1000);
 		counter.addRequest(buildLongRequestName(), 10000, 5000, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
-		pdfReport = new PdfReport(collector, true, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, true, javaInformationsList, emptyGraphs);
 
-		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, false, javaInformationsList, emptyGraphs);
 
 		// errorCounter
 		errorCounter.addRequestForSystemError("error", -1, -1, null);
 		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
-		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, false, javaInformationsList, emptyGraphs);
 
-		rootContexts(counter, collector, javaInformations, output);
+		rootContexts(counter, collector, javaInformations);
 
-		cache(collector, output);
+		cache(collector);
 
-		job(collector, output);
+		job(collector);
 
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
-		pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-		pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, false, javaInformationsList, emptyGraphs);
 		Utils.setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 
 		I18N.bindLocale(Locale.CHINA);
 		try {
-			pdfReport = new PdfReport(collector, false, javaInformationsList, Period.TOUT, output);
-			pdfReport.preInitGraphs(emptyGraphs, emptyGraphs, emptyGraphs);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+			toPdf(collector, false, javaInformationsList, emptyGraphs);
 		} finally {
 			I18N.unbindLocale();
 		}
 	}
 
-	private void cache(Collector collector, ByteArrayOutputStream output) throws IOException {
+	private void cache(Collector collector) throws IOException {
 		final String cacheName = "testcache";
 		final CacheManager cacheManager = CacheManager.getInstance();
 		cacheManager.addCache(cacheName);
@@ -187,20 +171,15 @@ public class TestPdfReport {
 			// JavaInformations doit être réinstancié pour récupérer les caches
 			final List<JavaInformations> javaInformationsList = Collections
 					.singletonList(new JavaInformations(null, true));
-			final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList,
-					Period.TOUT, output);
 			final Map<String, byte[]> graphs = Collections.emptyMap();
-			pdfReport.preInitGraphs(graphs, graphs, graphs);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+			toPdf(collector, false, javaInformationsList, graphs);
 		} finally {
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache("testcache2");
 		}
 	}
 
-	private void job(Collector collector, ByteArrayOutputStream output)
-			throws IOException, SchedulerException {
+	private void job(Collector collector) throws IOException, SchedulerException {
 		// job quartz
 		JobGlobalListener.initJobGlobalListener();
 		JobGlobalListener.getJobCounter().clear();
@@ -236,12 +215,8 @@ public class TestPdfReport {
 			// (mais "Aucun job" dans le counter)
 			final List<JavaInformations> javaInformationsList = Collections
 					.singletonList(new JavaInformations(null, true));
-			final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList,
-					Period.TOUT, output);
 			final Map<String, byte[]> graphs = Collections.emptyMap();
-			pdfReport.preInitGraphs(graphs, graphs, graphs);
-			pdfReport.toPdf();
-			assertNotEmptyAndClear(output);
+			toPdf(collector, false, javaInformationsList, graphs);
 
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
 			// (aléatoirement il y en a 2/10 qui font une erreur)
@@ -274,11 +249,7 @@ public class TestPdfReport {
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			final List<JavaInformations> javaInformationsList2 = Collections
 					.singletonList(new JavaInformations(null, true));
-			final PdfReport pdfReport2 = new PdfReport(collector, false, javaInformationsList2,
-					Period.TOUT, output);
-			pdfReport2.preInitGraphs(graphs, graphs, graphs);
-			pdfReport2.toPdf();
-			assertNotEmptyAndClear(output);
+			toPdf(collector, false, javaInformationsList2, graphs);
 		} finally {
 			scheduler.shutdown();
 			JobGlobalListener.getJobCounter().clear();
@@ -287,26 +258,17 @@ public class TestPdfReport {
 	}
 
 	private void rootContexts(Counter counter, Collector collector,
-			JavaInformations javaInformations, ByteArrayOutputStream output)
-			throws IOException, DocumentException {
-		PdfReport pdfReport;
+			JavaInformations javaInformations) throws IOException, DocumentException {
 		TestCounter.bindRootContexts("first request", counter, 3);
-		pdfReport = new PdfReport(collector, false, Collections.singletonList(javaInformations),
-				Period.TOUT, output);
 		final Map<String, byte[]> graphs = Collections.emptyMap();
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector, false, Collections.singletonList(javaInformations), graphs);
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
 		myCounter.bindContext("my context", "my context", null, -1);
-		pdfReport = new PdfReport(collector2, false, Collections.singletonList(javaInformations),
-				Period.TOUT, output);
-		pdfReport.preInitGraphs(graphs, graphs, graphs);
-		pdfReport.toPdf();
-		assertNotEmptyAndClear(output);
+		toPdf(collector2, false, Collections.singletonList(javaInformations), graphs);
 
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(
 				collector.getApplication(), null, output);
 		final Document document = pdfDocumentFactory.createDocument();

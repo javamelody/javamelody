@@ -38,10 +38,7 @@ final class LOG {
 
 	private static final JavaMelodyLogger JAVA_MELODY_LOGGER = getJavaMelodyLogger();
 
-	//CHECKSTYLE:OFF
 	private static final LinkedList<String> DEBUGGING_LOGS = new LinkedList<String>(); // NOPMD
-
-	//CHECKSTYLE:ON
 
 	private LOG() {
 		super();
