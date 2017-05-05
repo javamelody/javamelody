@@ -52,19 +52,19 @@ public class TestSpringRestTemplateInterceptor {
 		springCounter.setDisplayed(false);
 		try {
 			restTemplate.getForObject(url, Object.class);
-		} catch (RestClientException e) {
+		} catch (final RestClientException e) {
 			assertSame("requestsCount", 0, springCounter.getRequestsCount());
 		}
 
 		springCounter.setDisplayed(true);
 		try {
 			restTemplate.getForObject(url, Object.class);
-		} catch (RestClientException e) {
+		} catch (final RestClientException e) {
 			assertSame("requestsCount", 1, springCounter.getRequestsCount());
 		}
 		try {
 			restTemplate.getForObject(url + "?var={0}", Object.class, "var value");
-		} catch (RestClientException e) {
+		} catch (final RestClientException e) {
 			assertSame("requestsCount", 1, springCounter.getRequestsCount());
 		}
 	}
