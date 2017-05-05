@@ -56,11 +56,18 @@ class CacheInformations implements Serializable {
 	private final long cacheHits;
 	private final long cacheMisses;
 	private final String configuration;
+	private final List cacheKeys;
 
-	CacheInformations(Ehcache cache) {
+	CacheInformations(Ehcache cache, boolean includeKeys) {
 		super();
 		assert cache != null;
 		this.name = cache.getName();
+
+		if (includeKeys) {
+			this.cacheKeys = cache.getKeys();
+		} else {
+			this.cacheKeys = null;
+		}
 
 		if (EHCACHE_2_7) {
 			// Depuis ehcache 2.7.0, cache.getStatistics() retourne "StatisticsGateway" qui est nouvelle et plus "Statistics".
@@ -165,13 +172,36 @@ class CacheInformations implements Serializable {
 			final String[] cacheNames = cacheManager.getCacheNames();
 			try {
 				for (final String cacheName : cacheNames) {
-					result.add(new CacheInformations(cacheManager.getEhcache(cacheName)));
+					result.add(new CacheInformations(cacheManager.getEhcache(cacheName), false));
 				}
 			} catch (final Exception e) {
 				// Avoid Exception throwing in cache information parsing
 				// (for example with JGroups or TransactionException: transaction not started, issue 402)
 				// and do not log an exception for each cache
 				LOG.debug(e.toString(), e);
+			}
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	static CacheInformations buildCacheInformationsWithKeys(final String cacheId) {
+		if (!EHCACHE_AVAILABLE || cacheId == null) {
+			return null;
+		}
+		final List<CacheManager> allCacheManagers;
+		try {
+			allCacheManagers = new ArrayList<CacheManager>(CacheManager.ALL_CACHE_MANAGERS);
+		} catch (final NoSuchFieldError e) {
+			// nécessaire pour ehcache 1.2 ou avant
+			return null;
+		}
+		CacheInformations result = null;
+		for (final CacheManager cacheManager : allCacheManagers) {
+			final Ehcache ehcache = cacheManager.getEhcache(cacheId);
+			if (ehcache != null) {
+				result = new CacheInformations(ehcache, true);
+				break;
 			}
 		}
 		return result;
@@ -311,6 +341,10 @@ class CacheInformations implements Serializable {
 
 	String getConfiguration() {
 		return configuration;
+	}
+
+	List getCacheKeys() {
+		return cacheKeys;
 	}
 
 	/** {@inheritDoc} */

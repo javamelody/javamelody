@@ -44,6 +44,25 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 
 	@Override
 	void toHtml() throws IOException {
+		writeCaches(cacheInformationsList);
+		write("<div align='right' class='noPrint'>");
+		if (!hitsRatioEnabled) {
+			writeln("#caches_statistics_enable#<br/>");
+		}
+		if (systemActionsEnabled) {
+			writeln("<a href='?action=clear_caches" + getCsrfTokenUrlPart()
+					+ "' onclick=\"javascript:return confirm('"
+					+ getStringForJavascript("confirm_purge_caches") + "');\">");
+			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		}
+		// writeDirectly pour éviter traduction car # dans l'url
+		writeDirectly(
+				"<a href='http://ehcache.org/apidocs/2.9/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
+		writeln("target='_blank'>Configuration reference</a></div>");
+	}
+
+	private void writeCaches(List<CacheInformations> cacheInformations) throws IOException {
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("Caches"));
 		write("<th>#Cache#</th>");
@@ -62,29 +81,15 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		if (configurationEnabled) {
 			write("<th>#Configuration#</th>");
 		}
+		write("<th>#Keys#</th>");
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Purger#</th>");
 		}
-		for (final CacheInformations cacheInformations : cacheInformationsList) {
+		for (final CacheInformations cacheInfos : cacheInformations) {
 			table.nextRow();
-			writeCacheInformations(cacheInformations);
+			writeCacheInformations(cacheInfos);
 		}
 		table.endTable();
-		write("<div align='right' class='noPrint'>");
-		if (!hitsRatioEnabled) {
-			writeln("#caches_statistics_enable#<br/>");
-		}
-		if (systemActionsEnabled) {
-			writeln("<a href='?action=clear_caches" + getCsrfTokenUrlPart()
-					+ "' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_purge_caches") + "');\">");
-			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		}
-		// writeDirectly pour éviter traduction car # dans l'url
-		writeDirectly(
-				"<a href='http://ehcache.org/apidocs/2.9/net/sf/ehcache/config/CacheConfiguration.html#field_summary'");
-		writeln("target='_blank'>Configuration reference</a></div>");
 	}
 
 	private void writeCacheInformations(CacheInformations cacheInformations) throws IOException {
@@ -109,7 +114,11 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			write("</td> <td>");
 			write(cacheInformations.getConfiguration());
 		}
-		write("</td>");
+
+		write("</td><td><a href='?part=cacheKeys&amp;cacheId=");
+		write(urlEncode(cacheInformations.getName()));
+		write("'>#Keys#</a></td>");
+
 		if (systemActionsEnabled) {
 			write("<td align='center' class='noPrint'>");
 			final String confirmClearCache = javascriptEncode(
@@ -143,5 +152,57 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			}
 		}
 		return false;
+	}
+
+	void writeCacheWithKeys(String cacheId) throws IOException {
+		writeBackAndRefreshLinksForCache(cacheId);
+		writeln("<br/>");
+
+		if (cacheInformationsList == null || cacheInformationsList.isEmpty()) {
+			return;
+		}
+		writeTitle("caches.png",
+				getFormattedString("Keys_cache", htmlEncodeButNotSpace(cacheId)));
+		writeCaches(cacheInformationsList);
+
+		writeln("<br/><b>#Keys#</b>");
+		writeCacheKeys(cacheInformationsList.get(0));
+	}
+
+	private void writeBackAndRefreshLinksForCache(String cacheId) throws IOException {
+		writeln("<div class='noPrint'>");
+		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<a href='?part=cacheKeys&amp;cacheId=" + urlEncode(cacheId) + "'>");
+		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		writeln("</div>");
+	}
+
+	private void writeCacheKeys(CacheInformations cacheInformations)
+			throws IOException {
+		final HtmlTable table = new HtmlTable();
+		table.beginTable(getString("Keys"));
+		write("<th>#Keys#</th><th>#Purger#</th>");
+		for (final Object key : cacheInformations.getCacheKeys()) {
+			if (key != null) {
+				table.nextRow();
+				write("<td>" + key.toString()+"</td>");
+				if (systemActionsEnabled) {
+					write("<td class='noPrint' style='text-align: center;'>");
+					final String confirmClearCache = javascriptEncode(
+							getFormattedString("confirm_purge_cache", cacheInformations.getName()));
+					// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+					writeDirectly("<a href='?part=cacheKeys&amp;action=clear_cache_key&amp;cacheId="
+							+ urlEncode(cacheInformations.getName())
+							+ "&amp;cacheKey=" + urlEncode(key.toString()) + getCsrfTokenUrlPart()
+							+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
+					final String title = htmlEncode(
+							getFormattedString("Purge_cache", cacheInformations.getName()));
+					writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='" + title
+							+ "' title='" + title + "' /></a>");
+					write("</td>");
+				}
+			}
+		}
+		table.endTable();
 	}
 }

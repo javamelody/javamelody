@@ -71,6 +71,8 @@ enum Action { // NOPMD
 
 	/** Purge le contenu  d'un cache. */
 	CLEAR_CACHE("caches"),
+	
+	CLEAR_CACHE_KEY("caches"),
 
 	/** Tue un thread java. */
 	KILL_THREAD("threads"),
@@ -138,7 +140,15 @@ enum Action { // NOPMD
 			String sessionId, String threadId, String jobId, String cacheId) throws IOException {
 		// CHECKSTYLE:ON
 		return execute(collector, collectorServer, null, counterName, sessionId, threadId, jobId,
-				cacheId);
+				cacheId, null);
+	}
+
+	// CHECKSTYLE:OFF
+	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
+			String counterName, String sessionId, String threadId, String jobId, String cacheId) throws IOException {
+		// CHECKSTYLE:ON
+		return execute(collector, collectorServer, currentSession, counterName, sessionId, threadId, jobId,
+				cacheId, null);
 	}
 
 	/**
@@ -151,13 +161,14 @@ enum Action { // NOPMD
 	 * @param threadId Identifiant du thread sous la forme pid_ip_id
 	 * @param jobId Identifiant du job sous la forme pid_ip_id
 	 * @param cacheId Identifiant du cache à vider
+	 * @param cacheKey
 	 * @return Message de résultat
 	 * @throws IOException e
 	 * @since 1.49
 	 */
 	// CHECKSTYLE:OFF
 	String execute(Collector collector, CollectorServer collectorServer, HttpSession currentSession, // NOPMD
-			String counterName, String sessionId, String threadId, String jobId, String cacheId)
+			String counterName, String sessionId, String threadId, String jobId, String cacheId, String cacheKey)
 			throws IOException {
 		// CHECKSTYLE:ON
 		final String messageForReport;
@@ -221,6 +232,10 @@ enum Action { // NOPMD
 		case CLEAR_CACHE:
 			clearCache(cacheId);
 			messageForReport = I18N.getFormattedString("cache_purge", cacheId);
+			break;
+		case CLEAR_CACHE_KEY:
+			clearCacheKey(cacheId, cacheKey);
+			messageForReport = I18N.getFormattedString("cache_key_purge", cacheId, cacheKey);
 			break;
 		case KILL_THREAD:
 			assert threadId != null;
@@ -394,6 +409,17 @@ enum Action { // NOPMD
 			final Cache cache = cacheManager.getCache(cacheId);
 			if (cache != null) {
 				cache.removeAll();
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void clearCacheKey(String cacheId, String cacheKey) {
+		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
+		for (final CacheManager cacheManager : allCacheManagers) {
+			final Cache cache = cacheManager.getCache(cacheId);
+			if (cache != null) {
+				cache.remove(cacheKey);
 			}
 		}
 	}

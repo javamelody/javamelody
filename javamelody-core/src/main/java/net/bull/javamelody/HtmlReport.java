@@ -376,4 +376,16 @@ class HtmlReport extends HtmlAbstractReport {
 		}
 		writeHtmlFooter();
 	}
+
+	void writeCacheWithKeys(String cacheId, CacheInformations cacheInformations,
+			String message, String cacheKeyPart)
+			throws IOException {
+		assert cacheId != null;
+		writeHtmlHeader();
+		new HtmlCacheInformationsReport(Collections.singletonList(cacheInformations),
+				getWriter()).writeCacheWithKeys(cacheId);
+		writeHtmlFooter();
+
+		writeMessageIfNotNull(message, cacheKeyPart); 
+	}
 }

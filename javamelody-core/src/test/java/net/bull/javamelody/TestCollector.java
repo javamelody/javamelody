@@ -111,7 +111,7 @@ public class TestCollector {
 		CacheManager.getInstance().addCache("testToString");
 		try {
 			assertToStringNotEmpty("cache",
-					new CacheInformations(CacheManager.getInstance().getEhcache("testToString")));
+					new CacheInformations(CacheManager.getInstance().getEhcache("testToString"), false));
 		} finally {
 			CacheManager.getInstance().shutdown();
 		}
