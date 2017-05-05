@@ -108,6 +108,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 /**
  * Test unitaire de la classe MonitoringFilter.
@@ -653,6 +654,8 @@ public class TestMonitoringFilter {
 		final String cacheName = getClass().getName();
 		CacheManager.getInstance().addCache(cacheName);
 		parameters.put(CACHE_ID_PARAMETER, cacheName);
+		monitoring(parameters);
+		CacheManager.getInstance().getCache(cacheName).put(new Element("1", "value"));
 		monitoring(parameters);
 		parameters.put(FORMAT_PARAMETER, "htmlbody");
 		monitoring(parameters);

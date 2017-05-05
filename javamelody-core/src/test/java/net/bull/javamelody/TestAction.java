@@ -117,16 +117,16 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, "inconnu"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
 		CacheManager.getInstance().getCache(cacheId).put(new Element("1", "value"));
 		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
 		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "1"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "3"));
 		CacheManager.getInstance().removeCache(cacheId);
 
