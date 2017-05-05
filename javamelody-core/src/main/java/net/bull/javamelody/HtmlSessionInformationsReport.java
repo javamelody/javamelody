@@ -79,8 +79,12 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 			meanSerializedSize = -1;
 		}
 
-		writeSessionsSizes(sessionsInformations.size(), meanSerializedSize);
+		if (sessionsInformations.size() > 20) {
+			writeSessionsSizes(sessionsInformations.size(), meanSerializedSize);
+			writeln("<br/>");
+		}
 		writeSessions(sessionsInformations);
+		writeln("<br/>");
 		writeSessionsSizes(sessionsInformations.size(), meanSerializedSize);
 	}
 
@@ -109,10 +113,11 @@ class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		table.endTable();
 	}
 
-	private void writeSessionsSizes(int sessionsInfoSize, long meanSerializedSize) throws IOException {
-		writeln("<div align='right'>"
-				+ getFormattedString("nb_sessions", sessionsInfoSize) + "<br/><br/>"
-				+ getFormattedString("taille_moyenne_sessions", meanSerializedSize) + "</div>");
+	private void writeSessionsSizes(int sessionsInfoSize, long meanSerializedSize)
+			throws IOException {
+		writeln("<div align='right'>" + getFormattedString("nb_sessions", sessionsInfoSize)
+				+ "<br/>" + getFormattedString("taille_moyenne_sessions", meanSerializedSize)
+				+ "</div>");
 	}
 
 	private void writeBackAndRefreshLinks() throws IOException {
