@@ -287,7 +287,8 @@ final class UpdateChecker {
 
 	private static String encode(final String s) {
 		if (s != null) {
-			return "\"" + s.replace("\"", "\\\"").replace("\\", "\\\\") + "\"";
+			return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"").replace('\n', ' ')
+					.replace('\r', ' ') + "\"";
 		}
 		return null;
 	}
