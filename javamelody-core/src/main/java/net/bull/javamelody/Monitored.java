@@ -34,7 +34,7 @@ import javax.interceptor.InterceptorBinding;
  * -2- the method name
  * <p/>
  * If the name attribute is specified on a class it will override the class name part.
- * Default: the full class name.
+ * Default: the simple class name.
  * <p/>
  * If the name attribute is specified on a method it will override the method name part.
  * Default: the name of the method.
