@@ -28,7 +28,7 @@ import javax.interceptor.InvocationContext;
  * Il est destiné à un compteur pour les statistiques d'exécutions de méthodes sur les "façades métiers"
  * ( @Stateless, @Stateful ou @MessageDriven ).
  * Il peut être paramétré dans le fichier ejb-jar.xml pour certains ejb ou pour tous les ejb,
- * ou alors par l'annotation @Interceptors dans les sources java des implémentations d'ejb.
+ * ou alors par l'annotation @javax.interceptor.Interceptors dans les sources java des implémentations d'ejb.
  * @author Emeric Vernat
  */
 public class MonitoringInterceptor implements Serializable {
