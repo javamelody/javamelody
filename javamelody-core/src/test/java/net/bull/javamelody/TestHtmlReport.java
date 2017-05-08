@@ -389,6 +389,9 @@ public class TestHtmlReport {
 		final String cacheName = "test 1";
 		final CacheManager cacheManager = CacheManager.getInstance();
 		cacheManager.addCache(cacheName);
+		// test empty cache name in the cache keys link:
+		// cacheManager.addCache("") does nothing, but cacheManager.addCache(new Cache("", ...)) works
+		cacheManager.addCache(new Cache("", 1000, true, false, 10000, 10000, false, 10000));
 		final String cacheName2 = "test 2";
 		try {
 			final Cache cache = cacheManager.getCache(cacheName);

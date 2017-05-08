@@ -95,7 +95,13 @@ class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		write("<td>");
 		writeDirectly("<a href='?part=cacheKeys&amp;cacheId="
 				+ urlEncode(cacheInformations.getName()) + "'>");
-		writeDirectly(htmlEncodeButNotSpace(cacheInformations.getName()) + "</a>");
+		if (cacheInformations.getName().isEmpty()) {
+			// cache name may be empty
+			write("--");
+		} else {
+			writeDirectly(htmlEncodeButNotSpace(cacheInformations.getName()));
+		}
+		writeln("</a>");
 		final String nextColumnAlignRight = "</td> <td align='right'>";
 		if (configurationEnabled) {
 			write(nextColumnAlignRight);
