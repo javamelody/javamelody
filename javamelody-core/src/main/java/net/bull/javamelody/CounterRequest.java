@@ -149,6 +149,20 @@ class CounterRequest implements Cloneable, Serializable {
 		//      http://web.archive.org/web/20070710000323/http://www.med.umkc.edu/tlwbiostats/variability.html
 		//      http://web.archive.org/web/20050512031826/http://helios.bto.ed.ac.uk/bto/statistics/tress3.html
 		//		http://www.bmj.com/collections/statsbk/2.html
+
+		// Some computes the standard deviation differently, for a new value:
+		// first moment:
+		//        final double dev = value - m1;
+		//        final double nDev = dev / n;
+		//        m1 += nDev;
+		// second moment:
+		//        m2 += dev * nDev * (n - 1);
+		// then
+		//        s = sqrt(m2 / (n - 1))
+		// References:
+		//      https://github.com/apache/sirona/blob/trunk/api/src/main/java/org/apache/sirona/counters/OptimizedStatistics.java
+		//      https://en.wikipedia.org/wiki/Central_moment
+
 		if (hits > 0) {
 			return (int) Math
 					.sqrt((durationsSquareSum - (double) durationsSum * durationsSum / hits)
