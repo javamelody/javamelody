@@ -42,6 +42,7 @@
 					<include name="mail-1.4.1.jar" />
 					<include name="activation.jar" />
 					<include name="ejb-api-3.0.jar" />
+					<include name="javax.interceptor-api-1.2.jar" />
 					<include name="dbcp-6.0.18.jar" />
 					<include name="tomcat-dbcp-8.0.24.jar" />
 					<include name="commons-dbcp2-2.1.1.jar" />
