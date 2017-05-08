@@ -51,6 +51,7 @@ class JavaInformations implements Serializable { // NOPMD
 	private static final Date START_DATE = new Date();
 	private static final boolean SYSTEM_CPU_LOAD_ENABLED = "1.7"
 			.compareTo(Parameters.JAVA_VERSION) < 0;
+	private static final boolean SPRING_AVAILABLE = isSpringAvailable();
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
 	private final MemoryInformations memoryInformations;
@@ -172,7 +173,7 @@ class JavaInformations implements Serializable { // NOPMD
 		peakThreadCount = threadBean.getPeakThreadCount();
 		totalStartedThreadCount = threadBean.getTotalStartedThreadCount();
 		freeDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getFreeSpace();
-		springBeanExists = SpringContext.getSingleton() != null;
+		springBeanExists = SPRING_AVAILABLE && SpringContext.getSingleton() != null;
 
 		if (includeDetails) {
 			dataBaseVersion = buildDataBaseVersion();
@@ -681,6 +682,15 @@ class JavaInformations implements Serializable { // NOPMD
 
 	boolean isSpringBeansEnabled() {
 		return springBeanExists;
+	}
+
+	private static boolean isSpringAvailable() {
+		try {
+			Class.forName("org.springframework.context.ApplicationContextAware");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	/** {@inheritDoc} */
