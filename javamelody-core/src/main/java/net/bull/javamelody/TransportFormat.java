@@ -36,6 +36,9 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
+import com.thoughtworks.xstream.security.NoTypePermission;
+import com.thoughtworks.xstream.security.NullPermission;
+import com.thoughtworks.xstream.security.PrimitiveTypePermission;
 
 /**
  * Liste des formats de transport entre un serveur de collecte et une application monitorée
@@ -64,6 +67,9 @@ enum TransportFormat {
 	// classe interne pour qu'elle ne soit pas chargée avec la classe TransportFormat
 	// et qu'ainsi on ne dépende pas de XStream si on ne se sert pas du format xml
 	private static final class XmlIO {
+		private static final String PACKAGE_NAME = TransportFormat.class.getName().substring(0,
+				TransportFormat.class.getName().length()
+						- TransportFormat.class.getSimpleName().length() - 1);
 		private static final String XML_CHARSET_NAME = "utf-8";
 
 		private XmlIO() {
@@ -86,6 +92,16 @@ enum TransportFormat {
 
 		static Object readFromXml(InputStream bufferedInput) throws IOException {
 			final XStream xstream = createXStream(false);
+			// see http://x-stream.github.io/security.html
+			// clear out existing permissions and set own ones
+			xstream.addPermission(NoTypePermission.NONE);
+			// allow some basics
+			xstream.addPermission(NullPermission.NULL);
+			xstream.addPermission(PrimitiveTypePermission.PRIMITIVES);
+			xstream.allowTypesByWildcard(
+					new String[] { "java.lang.*", "java.util.*", "java.util.concurrent.*" });
+			// allow any type from the same package
+			xstream.allowTypesByWildcard(new String[] { PACKAGE_NAME + ".*" });
 			final InputStreamReader reader = new InputStreamReader(bufferedInput, XML_CHARSET_NAME);
 			try {
 				return xstream.fromXML(reader);
@@ -276,7 +292,7 @@ enum TransportFormat {
 			break;
 		case JSON:
 			// pas possible avec JsonHierarchicalStreamDriver
-			// (http://xstream.codehaus.org/json-tutorial.html)
+			// (http://x-stream.github.io/json-tutorial.html)
 			throw new UnsupportedOperationException();
 		default:
 			throw new IllegalStateException(toString());
