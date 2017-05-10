@@ -397,7 +397,9 @@ class MonitoringController {
 			httpResponse.setContentType("image/png");
 			httpResponse.setContentLength(img.length);
 			final String fileName = graphName + ".png";
-			httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=" + fileName);
+			// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
+			httpResponse.addHeader(CONTENT_DISPOSITION,
+					"inline;filename=" + fileName.replace('\n', '_').replace('\r', '_'));
 			httpResponse.getOutputStream().write(img);
 			httpResponse.flushBuffer();
 		}
