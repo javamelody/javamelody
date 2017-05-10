@@ -73,7 +73,6 @@ class CacheInformations implements Serializable {
 			// Depuis ehcache 2.7.0, cache.getStatistics() retourne "StatisticsGateway" qui est nouvelle et plus "Statistics".
 			// CacheStatistics existe depuis ehcache 1.3.
 			final CacheStatistics statistics = new CacheStatistics(cache);
-			assert statistics != null;
 			this.inMemoryObjectCount = statistics.getMemoryStoreObjectCount(); // ou cache.getStatistics().getLocalHeapSize() en v2.7.0
 			this.onDiskObjectCount = statistics.getDiskStoreObjectCount(); // ou cache.getStatistics().getLocalDiskSize() en v2.7.0
 			this.inMemoryHits = statistics.getInMemoryHits(); // ou cache.getStatistics().localHeapHitCount() en v2.7.0
