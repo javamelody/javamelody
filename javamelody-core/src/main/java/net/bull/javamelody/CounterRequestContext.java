@@ -242,7 +242,7 @@ class CounterRequestContext implements ICounterRequestContext, Cloneable, Serial
 		if (parentContext != null && parentCounter.getName()
 				.equals(parentContext.getParentCounter().getChildCounterName())) {
 			childHits++;
-			childDurationsSum += duration;
+			childDurationsSum += (int) duration;
 		}
 
 		// pour drill-down on conserve pour chaque requête mère, les requêtes filles appelées et le
