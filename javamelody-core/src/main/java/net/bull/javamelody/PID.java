@@ -63,13 +63,12 @@ final class PID {
 					tempFile = File.createTempFile("getpids", ".exe");
 
 					// extract the embedded getpids.exe file from the jar and save it to above file
-					pump(PID.class.getResourceAsStream("resource/getpids.exe"),
-							new FileOutputStream(tempFile), true, true);
+					extractGetPid(tempFile);
 					cmd = new String[] { tempFile.getAbsolutePath() };
 				}
 				process = Runtime.getRuntime().exec(cmd);
 				final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				pump(process.getInputStream(), bout, false, true);
+				TransportFormat.pump(process.getInputStream(), bout);
 
 				final StringTokenizer stok = new StringTokenizer(bout.toString());
 				stok.nextToken(); // this is pid of the process we spanned
@@ -98,20 +97,17 @@ final class PID {
 		return pid;
 	}
 
-	private static void pump(InputStream is, OutputStream os, boolean closeIn, boolean closeOut)
-			throws IOException {
+	private static void extractGetPid(File tempFile) throws IOException {
+		final OutputStream output = new FileOutputStream(tempFile);
 		try {
-			TransportFormat.pump(is, os);
-		} finally {
+			final InputStream input = PID.class.getResourceAsStream("resource/getpids.exe");
 			try {
-				if (closeIn) {
-					is.close();
-				}
+				TransportFormat.pump(input, output);
 			} finally {
-				if (closeOut) {
-					os.close();
-				}
+				input.close();
 			}
+		} finally {
+			output.close();
 		}
 	}
 }
