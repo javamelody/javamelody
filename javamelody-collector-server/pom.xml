@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-collector-server</artifactId>
-	<version>1.66.0-SNAPSHOT</version>
+	<version>1.67.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>JavaMelody - Collector server</name>
 	<description>Optional centralized collector server for Java Melody</description>
