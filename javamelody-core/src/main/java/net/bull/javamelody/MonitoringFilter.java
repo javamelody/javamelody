@@ -402,7 +402,7 @@ public class MonitoringFilter implements Filter {
 		}
 	}
 
-	protected boolean isRumMonitoring(HttpServletRequest httpRequest,
+	protected final boolean isRumMonitoring(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws IOException {
 		if (rumEnabled) {
 			// these 2 ifs must be before isAllowed verification
