@@ -24,6 +24,10 @@
 
 	<!-- configuration pour monitoring javamelody -->
 	<context-param>
+		<param-name>javamelody.rum-enabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
 		<param-name>javamelody.sampling-seconds</param-name>
 		<param-value>1</param-value>
 	</context-param>
