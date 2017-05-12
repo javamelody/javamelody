@@ -371,20 +371,8 @@ public class MonitoringFilter implements Filter {
 
 	private void doMonitoring(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException, ServletException {
-		if (rumEnabled) {
-			// these 2 ifs must be before isAllowed verification
-			if (RumInjector.isRumResource(httpRequest.getParameter(RESOURCE_PARAMETER))) {
-				// this is to give the boomerang.min.js content
-				MonitoringController.doResource(httpResponse,
-						httpRequest.getParameter(RESOURCE_PARAMETER));
-				return;
-			} else if (RUM_PART.equals(httpRequest.getParameter(PART_PARAMETER))) {
-				// this is the call by the boomerang beacon to notify RUM data
-				MonitoringController.noCache(httpResponse);
-				httpResponse.setContentType("image/png");
-				RumInjector.addRumHit(httpRequest, httpCounter);
-				return;
-			}
+		if (isRumMonitoring(httpRequest, httpResponse)) {
+			return;
 		}
 
 		if (!isAllowed(httpRequest, httpResponse)) {
@@ -412,6 +400,26 @@ public class MonitoringFilter implements Filter {
 				filterContext.stopCollector();
 			}
 		}
+	}
+
+	protected final boolean isRumMonitoring(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException {
+		if (rumEnabled) {
+			// these 2 ifs must be before isAllowed verification
+			if (RumInjector.isRumResource(httpRequest.getParameter(RESOURCE_PARAMETER))) {
+				// this is to give the boomerang.min.js content
+				MonitoringController.doResource(httpResponse,
+						httpRequest.getParameter(RESOURCE_PARAMETER));
+				return true;
+			} else if (RUM_PART.equals(httpRequest.getParameter(PART_PARAMETER))) {
+				// this is the call by the boomerang beacon to notify RUM data
+				MonitoringController.noCache(httpResponse);
+				httpResponse.setContentType("image/png");
+				RumInjector.addRumHit(httpRequest, httpCounter);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static String getCompleteRequestName(HttpServletRequest httpRequest,
