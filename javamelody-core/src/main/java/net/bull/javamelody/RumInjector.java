@@ -63,16 +63,20 @@ final class RumInjector implements HtmlToInject {
 		assert lastIndexOfSpace != -1;
 		String tmp = requestName.substring(0, lastIndexOfSpace);
 		// replace each subpath by ".."
-		tmp = tmp.replaceAll("/[^/]+", "/..");
+		while (tmp.indexOf("//") != -1) {
+			tmp = tmp.replaceAll("//", "/");
+		}
+		tmp = tmp.replaceAll("/[^/]*", "/..");
 		// remove first subpath
 		if (tmp.startsWith("/..")) {
 			tmp = tmp.substring(3);
 		}
-		// remove first '/'
-		if (tmp.indexOf('/') == 0) {
-			tmp = tmp.substring(1);
+		String tmp2 = tmp + Parameters.getMonitoringPath();
+		// remove first '/', including when tmp == Parameters.getMonitoringPath()
+		while (tmp2.length() > 0 && tmp2.charAt(0) == '/') {
+			tmp2 = tmp2.substring(1);
 		}
-		return tmp + Parameters.getMonitoringPath();
+		return tmp2;
 	}
 
 	@Override
