@@ -96,57 +96,53 @@ class PdfController {
 
 	private void doPdfPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			String part, List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
-		final boolean done = doPdfPartForSystemActions(httpRequest, httpResponse, part);
+		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
+				httpResponse.getOutputStream());
+		final boolean done = doPdfPartForSystemActions(httpRequest, part, pdfOtherReport);
 		if (done) {
 			return;
 		}
 		if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			doCurrentRequests(httpResponse, javaInformationsList, range);
+			doCurrentRequests(pdfOtherReport, javaInformationsList, range);
 		} else if (RUNTIME_DEPENDENCIES_PART.equalsIgnoreCase(part)) {
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 			final Counter counter = collector.getRangeCounter(range, counterName);
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-					httpResponse.getOutputStream());
 			pdfOtherReport.writeRuntimeDependencies(counter, range);
 		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
 			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
 			final Counter counter = collector.getRangeCounter(range, counterName);
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-					httpResponse.getOutputStream());
 			pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
 		} else if (GRAPH_PART.equalsIgnoreCase(part)) {
 			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-					httpResponse.getOutputStream());
 			pdfOtherReport.writeRequestAndGraphDetail(collector, collectorServer, range, requestId);
 		} else {
 			throw new IllegalArgumentException(part);
 		}
 	}
 
-	private boolean doPdfPartForSystemActions(HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse, String part) throws Exception { // NOPMD
+	private boolean doPdfPartForSystemActions(HttpServletRequest httpRequest, String part,
+			PdfOtherReport pdfOtherReport) throws Exception { // NOPMD
 		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			doSessions(httpResponse);
+			doSessions(pdfOtherReport);
 		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
-			doHotspots(httpResponse);
+			doHotspots(pdfOtherReport);
 		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			doProcesses(httpResponse);
+			doProcesses(pdfOtherReport);
 		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
 			final int index = DatabaseInformations
 					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
-			doDatabase(httpResponse, index);
+			doDatabase(pdfOtherReport, index);
 		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			doJndi(httpResponse, httpRequest.getParameter(PATH_PARAMETER));
+			doJndi(pdfOtherReport, httpRequest.getParameter(PATH_PARAMETER));
 		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			doMBeans(httpResponse);
+			doMBeans(pdfOtherReport);
 		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			doHeapHisto(httpResponse);
+			doHeapHisto(pdfOtherReport);
 		} else {
 			// pas pour nous
 			return false;
@@ -155,10 +151,8 @@ class PdfController {
 		return true;
 	}
 
-	private void doCurrentRequests(HttpServletResponse httpResponse,
+	private void doCurrentRequests(PdfOtherReport pdfOtherReport,
 			List<JavaInformations> javaInformationsList, final Range range) throws IOException {
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
 		final Map<JavaInformations, List<CounterRequestContext>> currentRequests;
 		if (!isFromCollectorServer()) {
@@ -177,11 +171,9 @@ class PdfController {
 				timeOfSnapshot);
 	}
 
-	private void doSessions(HttpServletResponse httpResponse) throws IOException {
+	private void doSessions(PdfOtherReport pdfOtherReport) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		final List<SessionInformations> sessionsInformations;
 		if (!isFromCollectorServer()) {
 			sessionsInformations = SessionListener.getAllSessionsInformations();
@@ -192,11 +184,9 @@ class PdfController {
 		pdfOtherReport.writeSessionInformations(sessionsInformations);
 	}
 
-	private void doHotspots(HttpServletResponse httpResponse) throws IOException {
+	private void doHotspots(PdfOtherReport pdfOtherReport) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		if (!isFromCollectorServer()) {
 			final List<SampledMethod> hotspots = collector.getHotspots();
 			pdfOtherReport.writeHotspots(hotspots);
@@ -206,11 +196,9 @@ class PdfController {
 		}
 	}
 
-	private void doProcesses(HttpServletResponse httpResponse) throws IOException {
+	private void doProcesses(PdfOtherReport pdfOtherReport) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		if (!isFromCollectorServer()) {
 			final List<ProcessInformations> processInformations = ProcessInformations
 					.buildProcessInformations();
@@ -222,7 +210,7 @@ class PdfController {
 		}
 	}
 
-	private void doDatabase(HttpServletResponse httpResponse, final int index) throws Exception { // NOPMD
+	private void doDatabase(PdfOtherReport pdfOtherReport, final int index) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final DatabaseInformations databaseInformations;
@@ -232,16 +220,12 @@ class PdfController {
 			databaseInformations = collectorServer.collectDatabaseInformations(getApplication(),
 					index);
 		}
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		pdfOtherReport.writeDatabaseInformations(databaseInformations);
 	}
 
-	private void doJndi(HttpServletResponse httpResponse, String path) throws Exception { // NOPMD
+	private void doJndi(PdfOtherReport pdfOtherReport, String path) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		final List<JndiBinding> jndiBindings;
 		if (!isFromCollectorServer()) {
 			jndiBindings = JndiBinding.listBindings(path);
@@ -251,11 +235,9 @@ class PdfController {
 		pdfOtherReport.writeJndi(jndiBindings, JndiBinding.normalizePath(path));
 	}
 
-	private void doMBeans(HttpServletResponse httpResponse) throws Exception { // NOPMD
+	private void doMBeans(PdfOtherReport pdfOtherReport) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		if (!isFromCollectorServer()) {
 			final List<MBeanNode> nodes = MBeans.getAllMBeanNodes();
 			pdfOtherReport.writeMBeans(nodes);
@@ -266,7 +248,7 @@ class PdfController {
 		}
 	}
 
-	private void doHeapHisto(HttpServletResponse httpResponse) throws Exception { // NOPMD
+	private void doHeapHisto(PdfOtherReport pdfOtherReport) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final HeapHistogram heapHistogram;
@@ -275,8 +257,6 @@ class PdfController {
 		} else {
 			heapHistogram = collectorServer.collectHeapHistogram(getApplication());
 		}
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
 		pdfOtherReport.writeHeapHistogram(heapHistogram);
 	}
 
