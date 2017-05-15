@@ -929,7 +929,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					+ "' title='#Rafraichir#'>");
 		}
 		write("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
-		if (isPdfEnabled()) {
+		if (isPdfEnabled() && !"usages".equals(part)) {
 			writeln(separator);
 			if (graphName == null) {
 				write("<a href='?format=pdf' title='#afficher_PDF#'>");
