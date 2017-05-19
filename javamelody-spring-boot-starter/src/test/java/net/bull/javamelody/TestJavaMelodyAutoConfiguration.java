@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.EventListener;
 import java.util.Map;
 
 import org.junit.Test;
@@ -28,6 +29,7 @@ import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,8 +62,14 @@ public class TestJavaMelodyAutoConfiguration {
 	/**
 	 * test.
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testJavaMelodyAutoConfigurationIsCreated() {
+		// It should create a session listener.
+		final ServletListenerRegistrationBean<EventListener> sessionListenerRegistrationBean = context
+				.getBean(ServletListenerRegistrationBean.class);
+		assertThat(sessionListenerRegistrationBean).isNotNull();
+
 		// It should create a registration bean named "javamelody-registration".
 		final Object registrationBean = context
 				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
