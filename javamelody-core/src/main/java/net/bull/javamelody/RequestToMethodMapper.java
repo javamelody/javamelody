@@ -18,6 +18,7 @@
 package net.bull.javamelody;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -106,23 +107,28 @@ class RequestToMethodMapper<T> {
 	}
 
 	private Object[] getParameterValues(HttpServletRequest request, Method method) {
-		final java.lang.reflect.Parameter[] parameters = method.getParameters();
+		// note: method.getParameters() existe seulement depuis Java 8
+		final Annotation[][] parameters = method.getParameterAnnotations();
 		final Object[] values = new Object[parameters.length];
 		for (int i = 0; i < parameters.length; i++) {
-			final java.lang.reflect.Parameter parameter = parameters[i];
-			final RequestParameter parameterAnnotation = parameter
-					.getAnnotation(RequestParameter.class);
-			if (parameterAnnotation != null) {
-				values[i] = parameterAnnotation.value().getParameterFrom(request);
-			} else {
-				final RequestAttribute attributeAnnotation = parameter
-						.getAnnotation(RequestAttribute.class);
-				if (attributeAnnotation != null) {
-					values[i] = request.getAttribute(attributeAnnotation.value());
-				} else {
-					throw new IllegalStateException("parameter " + parameter.getName()
-							+ " not annotated in method " + method.getName());
+			final Annotation[] parameter = parameters[i];
+			boolean found = false;
+			for (final Annotation annotation : parameter) {
+				if (annotation.annotationType() == RequestParameter.class) {
+					final HttpParameter requestParameter = ((RequestParameter) annotation).value();
+					values[i] = requestParameter.getParameterFrom(request);
+					found = true;
+					break;
+				} else if (annotation.annotationType() == RequestAttribute.class) {
+					final String requestAttribute = ((RequestAttribute) annotation).value();
+					values[i] = request.getAttribute(requestAttribute);
+					found = true;
+					break;
 				}
+			}
+			if (!found) {
+				throw new IllegalStateException(
+						"a parameter not annotated in method " + method.getName());
 			}
 		}
 		return values;
