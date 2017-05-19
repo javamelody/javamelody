@@ -62,10 +62,6 @@ public class TestJavaMelodyAutoConfiguration {
 	 */
 	@Test
 	public void testJavaMelodyAutoConfigurationIsCreated() {
-		// It should create a session listener.
-		final SessionListener sessionListener = context.getBean(SessionListener.class);
-		assertThat(sessionListener).isNotNull();
-
 		// It should create a registration bean named "javamelody-registration".
 		final Object registrationBean = context
 				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);

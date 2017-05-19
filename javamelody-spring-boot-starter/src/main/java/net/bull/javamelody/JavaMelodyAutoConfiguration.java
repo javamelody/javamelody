@@ -18,10 +18,14 @@
 package net.bull.javamelody;
 
 import java.util.Arrays;
+import java.util.EventListener;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
 
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
@@ -31,6 +35,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
@@ -70,22 +75,33 @@ public class JavaMelodyAutoConfiguration {
 
 	/**
 	 * Registers the JavaMelody session listener.
-	 * @return SessionListener
+	 * @param servletContext ServletContext
+	 * @return ServletListenerRegistrationBean
 	 */
 	@Bean
-	public SessionListener monitoringSessionListener() {
-		return new SessionListener();
+	public ServletListenerRegistrationBean<EventListener> monitoringSessionListener(
+			ServletContext servletContext) {
+		final ServletListenerRegistrationBean<EventListener> servletListenerRegistrationBean = new ServletListenerRegistrationBean<EventListener>(
+				new SessionListener());
+		if (servletContext.getFilterRegistration("javamelody") != null) {
+			// if webapp deployed as war in a container with MonitoringFilter and SessionListener already added by web-fragment.xml,
+			// do not add again
+			servletListenerRegistrationBean.setEnabled(false);
+		}
+		return servletListenerRegistrationBean;
 	}
 
 	/**
 	 * Registers the JavaMelody monitoring filter. The filter can be overridden completely by creating a custom
 	 * {@link FilterRegistrationBean} with the name "javamelody-registration" in the application context.
 	 * @param properties JavaMelodyConfigurationProperties
+	 * @param servletContext ServletContext
 	 * @return FilterRegistrationBean
 	 */
 	@Bean(name = REGISTRATION_BEAN_NAME)
 	@ConditionalOnMissingBean(name = REGISTRATION_BEAN_NAME)
-	public FilterRegistrationBean monitoringFilter(JavaMelodyConfigurationProperties properties) {
+	public FilterRegistrationBean monitoringFilter(JavaMelodyConfigurationProperties properties,
+			ServletContext servletContext) {
 		final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 
 		// Create the monitoring filter and set its configuration parameters.
@@ -105,6 +121,18 @@ public class JavaMelodyAutoConfiguration {
 
 		// Set the URL patterns to activate the monitoring filter for.
 		registrationBean.addUrlPatterns("/*");
+
+		final FilterRegistration filterRegistration = servletContext
+				.getFilterRegistration("javamelody");
+		if (filterRegistration != null) {
+			// if webapp deployed as war in a container with MonitoringFilter already added by web-fragment.xml,
+			// do not try to add it again
+			registrationBean.setEnabled(false);
+			for (final Map.Entry<String, String> entry : registrationBean.getInitParameters()
+					.entrySet()) {
+				filterRegistration.setInitParameter(entry.getKey(), entry.getValue());
+			}
+		}
 		return registrationBean;
 	}
 
