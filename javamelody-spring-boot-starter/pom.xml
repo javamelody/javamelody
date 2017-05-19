@@ -131,6 +131,9 @@
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.4</version>
+				<configuration>
+					<additionalparam>${javadoc.doclint.none}</additionalparam>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -142,5 +145,16 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>java8-disable-strict-javadoc</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
