@@ -17,8 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
@@ -88,7 +86,7 @@ public class CollectorServlet extends HttpServlet {
 				return;
 			}
 			if (!collectorServer.isApplicationDataAvailable(application)
-					&& req.getParameter(ACTION_PARAMETER) == null) {
+					&& HttpParameter.ACTION.getParameterFrom(req) == null) {
 				CollectorController.writeDataUnavailableForApplication(application, resp);
 				return;
 			}

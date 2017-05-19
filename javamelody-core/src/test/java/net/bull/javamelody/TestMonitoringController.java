@@ -93,7 +93,7 @@ public class TestMonitoringController {
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
 		final HttpSession httpSession = createNiceMock(HttpSession.class);
 		final String token = "dummy token";
-		expect(httpRequest.getParameter(HttpParameters.TOKEN_PARAMETER)).andReturn(token);
+		expect(HttpParameter.TOKEN.getParameterFrom(httpRequest)).andReturn(token);
 		expect(httpRequest.getSession(false)).andReturn(httpSession);
 		expect(httpSession.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME)).andReturn(token);
 		replay(httpRequest);

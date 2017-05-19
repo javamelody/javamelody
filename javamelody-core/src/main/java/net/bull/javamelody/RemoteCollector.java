@@ -17,9 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -66,8 +63,8 @@ class RemoteCollector {
 	String collectDataIncludingCurrentRequests() throws IOException {
 		final List<URL> urlsWithCurrentRequests = new ArrayList<URL>();
 		for (final URL url : urls) {
-			urlsWithCurrentRequests.add(new URL(url.toString() + '&' + PART_PARAMETER + '='
-					+ DEFAULT_WITH_CURRENT_REQUESTS_PART));
+			urlsWithCurrentRequests.add(new URL(url.toString() + '&' + HttpParameter.PART + '='
+					+ HttpPart.DEFAULT_WITH_CURRENT_REQUESTS));
 		}
 		return collectDataWithUrls(urlsWithCurrentRequests);
 	}

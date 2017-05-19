@@ -17,7 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -77,19 +76,19 @@ public class TestReportServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoGet() throws ServletException, IOException {
-		doGet(Collections.<String, String> emptyMap(), true);
+		doGet(Collections.<HttpParameter, String> emptyMap(), true);
 
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
-			doGet(Collections.<String, String> emptyMap(), false);
+			doGet(Collections.<HttpParameter, String> emptyMap(), false);
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
-			doGet(Collections.<String, String> emptyMap(), false);
+			doGet(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
 	}
 
-	private void doGet(Map<String, String> parameters, boolean checkResultContent)
+	private void doGet(Map<HttpParameter, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
 		final ServletContext parametersContext = createNiceMock(ServletContext.class);
 		expect(parametersContext.getMajorVersion()).andReturn(2).anyTimes();
@@ -126,11 +125,13 @@ public class TestReportServlet {
 		expect(request.getRequestURL()).andReturn(new StringBuffer("/test/monitoring")).anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(request.getRemoteAddr()).andReturn("here").anyTimes();
-		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-			if (REQUEST_PARAMETER.equals(entry.getKey())) {
-				expect(request.getHeader(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
+			if (HttpParameter.REQUEST == entry.getKey()) {
+				expect(request.getHeader(entry.getKey().getName())).andReturn(entry.getValue())
+						.anyTimes();
 			} else {
-				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+				expect(request.getParameter(entry.getKey().getName())).andReturn(entry.getValue())
+						.anyTimes();
 			}
 		}
 		expect(request.getHeaders("Accept-Encoding"))

@@ -17,31 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.JVM_PART;
-import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.WEBAPP_VERSIONS_PART;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -88,7 +63,7 @@ class RemoteCall {
 	// utilisée dans scripts Jenkins par exemple
 	// see https://github.com/javamelody/javamelody/wiki/ScriptsAndAlerts
 	JavaInformations collectJavaInformations() throws IOException {
-		final URL jvmUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + JVM_PART);
+		final URL jvmUrl = new URL(url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.JVM);
 		final List<JavaInformations> list = collectForUrl(jvmUrl);
 		return list.get(0);
 	}
@@ -96,14 +71,14 @@ class RemoteCall {
 	// utilisée dans scripts Jenkins par exemple
 	String collectMBeanAttribute(String jmxValueParameter) throws IOException {
 		final URL mbeanAttributeUrl = new URL(
-				url.toString() + '&' + JMX_VALUE + '=' + jmxValueParameter);
+				url.toString() + '&' + HttpParameter.JMX_VALUE + '=' + jmxValueParameter);
 		return collectForUrl(mbeanAttributeUrl);
 	}
 
 	// utilisée dans scripts Jenkins par exemple
 	double collectGraphLastValue(String graph) throws IOException {
-		final URL lastValueUrl = new URL(url.toString() + '&' + PART_PARAMETER + '='
-				+ LAST_VALUE_PART + '&' + GRAPH_PARAMETER + '=' + graph);
+		final URL lastValueUrl = new URL(url.toString() + '&' + HttpParameter.PART + '='
+				+ HttpPart.LAST_VALUE + '&' + HttpParameter.GRAPH + '=' + graph);
 		return collectForUrl(lastValueUrl);
 	}
 
@@ -148,11 +123,11 @@ class RemoteCall {
 		if (sessionId == null) {
 			// récupération à la demande des sessions
 			final URL sessionsUrl = new URL(
-					url.toString() + '&' + PART_PARAMETER + '=' + SESSIONS_PART);
+					url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.SESSIONS);
 			return collectForUrl(sessionsUrl);
 		}
-		final URL sessionsUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + SESSIONS_PART
-				+ '&' + SESSION_ID_PARAMETER + '=' + sessionId);
+		final URL sessionsUrl = new URL(url.toString() + '&' + HttpParameter.PART + '='
+				+ HttpPart.SESSIONS + '&' + HttpParameter.SESSION_ID + '=' + sessionId);
 		final SessionInformations session = collectForUrl(sessionsUrl);
 		if (session != null) {
 			return Collections.singletonList(session);
@@ -164,20 +139,20 @@ class RemoteCall {
 	List<SampledMethod> collectHotspots() throws IOException {
 		// récupération à la demande des hotspots
 		final URL hotspotsUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + HOTSPOTS_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.HOTSPOTS);
 		return collectForUrl(hotspotsUrl);
 	}
 
 	HeapHistogram collectHeapHistogram() throws IOException {
 		// récupération à la demande de HeapHistogram
 		final URL heapHistoUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + HEAP_HISTO_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.HEAP_HISTO);
 		return collectForUrl(heapHistoUrl);
 	}
 
 	DatabaseInformations collectDatabaseInformations(int requestIndex) throws IOException {
-		final URL databaseUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + DATABASE_PART
-				+ '&' + REQUEST_PARAMETER + '=' + requestIndex);
+		final URL databaseUrl = new URL(url.toString() + '&' + HttpParameter.PART + '='
+				+ HttpPart.DATABASE + '&' + HttpParameter.REQUEST + '=' + requestIndex);
 		return collectForUrl(databaseUrl);
 	}
 
@@ -186,7 +161,7 @@ class RemoteCall {
 		// récupération à la demande des connections
 		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
 		final URL connectionsUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + CONNECTIONS_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.CONNECTIONS);
 		final Object result = collectForUrl(connectionsUrl);
 		if (result instanceof List && !((List<?>) result).isEmpty()
 				&& ((List<?>) result).get(0) instanceof List) {
@@ -206,7 +181,7 @@ class RemoteCall {
 		final String title = I18N.getString("Processus");
 		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
 		final URL processUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + PROCESSES_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.PROCESSES);
 		final Object result = collectForUrl(processUrl);
 		if (result instanceof Map) {
 			// pour le serveur de collecte et pour les nodes dans Jenkins
@@ -232,8 +207,8 @@ class RemoteCall {
 		// récupération à la demande des bindings JNDI,
 		// contrairement aux requêtes en cours ou aux processus, un serveur de l'application suffira
 		// car l'arbre JNDI est en général identique dans tout l'éventuel cluster
-		final URL jndiUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + JNDI_PART
-				+ (path != null ? '&' + PATH_PARAMETER + '=' + path : ""));
+		final URL jndiUrl = new URL(url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.JNDI
+				+ (path != null ? '&' + HttpParameter.PATH.toString() + '=' + path : ""));
 		return collectForUrl(jndiUrl);
 	}
 
@@ -242,7 +217,8 @@ class RemoteCall {
 		// récupération à la demande des MBeans
 		final String title = I18N.getString("MBeans");
 		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<String, List<MBeanNode>>();
-		final URL mbeansUrl = new URL(url.toString() + '&' + PART_PARAMETER + '=' + MBEANS_PART);
+		final URL mbeansUrl = new URL(
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.MBEANS);
 		final Object result = collectForUrl(mbeansUrl);
 		if (result instanceof Map) {
 			// pour le serveur de collecte et les nodes dans Jenkins
@@ -266,49 +242,49 @@ class RemoteCall {
 	Map<String, MavenArtifact> collectWebappDependencies() throws IOException {
 		// récupération à la demande des dépendances
 		final URL dependenciesUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + DEPENDENCIES_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.DEPENDENCIES);
 		return collectForUrl(dependenciesUrl);
 	}
 
 	Map<String, Date> collectWebappVersions() throws IOException {
 		final URL webappVersionsUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + WEBAPP_VERSIONS_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.WEBAPP_VERSIONS);
 		return collectForUrl(webappVersionsUrl);
 	}
 
 	Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests() throws IOException {
 		// récupération à la demande des requêtes en cours
 		final URL currentRequestsUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + CURRENT_REQUESTS_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.CURRENT_REQUESTS);
 		return collectForUrl(currentRequestsUrl);
 	}
 
 	Map<String, byte[]> collectJRobins(int width, int height) throws IOException {
-		final URL jrobinNamesUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + JROBINS_PART + '&' + WIDTH_PARAMETER
-						+ '=' + width + '&' + HEIGHT_PARAMETER + '=' + height);
+		final URL jrobinNamesUrl = new URL(url.toString() + '&' + HttpParameter.PART + '='
+				+ HttpPart.JROBINS + '&' + HttpParameter.WIDTH + '=' + width + '&'
+				+ HttpParameter.HEIGHT + '=' + height);
 		return collectForUrl(jrobinNamesUrl);
 	}
 
 	Map<String, byte[]> collectOtherJRobins(int width, int height) throws IOException {
-		final URL otherJRobinNamesUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + OTHER_JROBINS_PART + '&'
-						+ WIDTH_PARAMETER + '=' + width + '&' + HEIGHT_PARAMETER + '=' + height);
+		final URL otherJRobinNamesUrl = new URL(url.toString() + '&' + HttpParameter.PART + '='
+				+ HttpPart.OTHER_JROBINS + '&' + HttpParameter.WIDTH + '=' + width + '&'
+				+ HttpParameter.HEIGHT + '=' + height);
 		return collectForUrl(otherJRobinNamesUrl);
 	}
 
 	byte[] collectJRobin(String graphName, int width, int height) throws IOException {
-		final URL jrobinUrl = new URL(url.toString() + '&' + GRAPH_PARAMETER + '=' + graphName + '&'
-				+ PART_PARAMETER + '=' + JROBINS_PART + '&' + WIDTH_PARAMETER + '=' + width + '&'
-				+ HEIGHT_PARAMETER + '=' + height);
+		final URL jrobinUrl = new URL(url.toString() + '&' + HttpParameter.GRAPH + '=' + graphName
+				+ '&' + HttpParameter.PART + '=' + HttpPart.JROBINS + '&' + HttpParameter.WIDTH
+				+ '=' + width + '&' + HttpParameter.HEIGHT + '=' + height);
 		return collectForUrl(jrobinUrl);
 	}
 
 	String collectSqlRequestExplainPlan(String sqlRequest) throws IOException {
 		final URL explainPlanUrl = new URL(
-				url.toString() + '&' + PART_PARAMETER + '=' + EXPLAIN_PLAN_PART);
+				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.EXPLAIN_PLAN);
 		final Map<String, String> headers = new HashMap<String, String>();
-		headers.put(REQUEST_PARAMETER, sqlRequest);
+		headers.put(HttpParameter.REQUEST.getName(), sqlRequest);
 		if (cookies != null) {
 			headers.put("Cookie", cookies);
 		}

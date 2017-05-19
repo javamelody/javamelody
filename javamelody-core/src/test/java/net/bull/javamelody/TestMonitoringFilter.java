@@ -17,50 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
-import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
-import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PART;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.JNLP_PART;
-import static net.bull.javamelody.HttpParameters.JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.JVM_PART;
-import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
-import static net.bull.javamelody.HttpParameters.POM_XML_PART;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REPORT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
-import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SOURCE_PART;
-import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
-import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
-import static net.bull.javamelody.HttpParameters.THREADS_PART;
-import static net.bull.javamelody.HttpParameters.USAGES_PART;
-import static net.bull.javamelody.HttpParameters.WEBAPP_VERSIONS_PART;
-import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -82,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -122,7 +79,6 @@ public class TestMonitoringFilter {
 	private static final String PERIOD_COOKIE_NAME = "javamelody.period";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 	private static final String CONTEXT_PATH = "/test";
-	private static final String GRAPH = "graph";
 	private static final String TRUE = "true";
 	private MonitoringFilter monitoringFilter;
 
@@ -522,13 +478,14 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoring() throws ServletException, IOException {
-		monitoring(Collections.<String, String> emptyMap());
-		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "html"));
-		monitoring(Collections.<String, String> singletonMap(FORMAT_PARAMETER, "htmlbody"));
+		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.FORMAT, "html"));
+		monitoring(
+				Collections.<HttpParameter, String> singletonMap(HttpParameter.FORMAT, "htmlbody"));
 		setProperty(Parameter.DISABLED, Boolean.TRUE.toString());
 		try {
 			setUp();
-			monitoring(Collections.<String, String> emptyMap(), false);
+			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
 			monitoringFilter.destroy();
 			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
@@ -536,41 +493,41 @@ public class TestMonitoringFilter {
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		try {
 			setUp();
-			monitoring(Collections.<String, String> emptyMap());
+			monitoring(Collections.<HttpParameter, String> emptyMap());
 		} finally {
 			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
 			setUp();
-			monitoring(Collections.<String, String> emptyMap(), false);
+			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
 			setUp();
-			monitoring(Collections.<String, String> emptyMap(), false);
+			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
 		setProperty(Parameter.AUTHORIZED_USERS, "admin:password, ");
 		try {
 			setUp();
-			monitoring(Collections.<String, String> emptyMap(), false);
+			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 			setProperty(Parameter.AUTHORIZED_USERS, "");
 			setUp();
-			monitoring(Collections.<String, String> emptyMap(), false);
+			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
 			setProperty(Parameter.AUTHORIZED_USERS, null);
 		}
 		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
 		try {
 			setUp();
-			monitoring(Collections.<String, String> emptyMap(), false);
+			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
 			setProperty(Parameter.MONITORING_PATH, "/monitoring");
 		}
 		try {
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, Boolean.TRUE.toString());
 			setUp();
-			monitoring(Collections.<String, String> emptyMap());
+			monitoring(Collections.<HttpParameter, String> emptyMap());
 		} finally {
 			monitoringFilter.destroy();
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
@@ -578,11 +535,11 @@ public class TestMonitoringFilter {
 		try {
 			setProperty(Parameter.RUM_ENABLED, Boolean.TRUE.toString());
 			setUp();
-			monitoring(Collections.<String, String> emptyMap());
-			monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER,
+			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.RESOURCE,
 					"boomerang.min.js"));
-			monitoring(Collections.<String, String> singletonMap(PART_PARAMETER,
-					HttpParameters.RUM_PART), false);
+			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PART,
+					HttpPart.RUM.getName()), false);
 		} finally {
 			monitoringFilter.destroy();
 			setProperty(Parameter.RUM_ENABLED, null);
@@ -597,10 +554,10 @@ public class TestMonitoringFilter {
 		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
 		setUp();
-		monitoring(Collections.<String, String> emptyMap());
+		monitoring(Collections.<HttpParameter, String> emptyMap());
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		setUp();
-		monitoring(Collections.<String, String> emptyMap());
+		monitoring(Collections.<HttpParameter, String> emptyMap());
 		setProperty(Parameter.MAIL_SESSION, null);
 		setProperty(Parameter.ADMIN_EMAILS, null);
 	}
@@ -610,8 +567,8 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(
-				Collections.<String, String> singletonMap(PERIOD_PARAMETER, Period.JOUR.getCode()));
+		monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PERIOD,
+				Period.JOUR.getCode()));
 	}
 
 	/** Test.
@@ -619,8 +576,10 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithResource() throws ServletException, IOException {
-		monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER, "monitoring.css"));
-		monitoring(Collections.<String, String> singletonMap(RESOURCE_PARAMETER, "beans.png"));
+		monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.RESOURCE,
+				"monitoring.css"));
+		monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.RESOURCE,
+				"beans.png"));
 	}
 
 	/** Test.
@@ -628,12 +587,12 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithGraph() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(GRAPH, "usedMemory");
-		parameters.put("width", "800");
-		parameters.put("height", "600");
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.GRAPH, "usedMemory");
+		parameters.put(HttpParameter.WIDTH, "800");
+		parameters.put(HttpParameter.HEIGHT, "600");
 		monitoring(parameters);
-		parameters.put(GRAPH, "unknown");
+		parameters.put(HttpParameter.GRAPH, "unknown");
 		monitoring(parameters, false);
 	}
 
@@ -642,37 +601,37 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithParts() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
 
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, THREADS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, THREADS_DUMP_PART);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS_DUMP.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, CACHE_KEYS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CACHE_KEYS.getName());
 		final String cacheName = getClass().getName();
 		CacheManager.getInstance().addCache(cacheName);
-		parameters.put(CACHE_ID_PARAMETER, cacheName);
+		parameters.put(HttpParameter.CACHE_ID, cacheName);
 		monitoring(parameters);
 		CacheManager.getInstance().getCache(cacheName).put(new Element("1", "value"));
 		monitoring(parameters);
-		parameters.put(FORMAT_PARAMETER, "htmlbody");
+		parameters.put(HttpParameter.FORMAT, "htmlbody");
 		monitoring(parameters);
 		CacheManager.getInstance().removeCache(cacheName);
-		parameters.remove(CACHE_ID_PARAMETER);
-		parameters.remove(FORMAT_PARAMETER);
+		parameters.remove(HttpParameter.CACHE_ID);
+		parameters.remove(HttpParameter.FORMAT);
 
-		parameters.put(PART_PARAMETER, JNLP_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JNLP.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, "services");
+		parameters.put(HttpParameter.PART, HttpPart.COUNTER_SUMMARY_PER_CLASS.getName());
+		parameters.put(HttpParameter.COUNTER, "services");
 		monitoring(parameters);
-		parameters.put(GRAPH, "unknown service");
+		parameters.put(HttpParameter.GRAPH, "unknown service");
 		monitoring(parameters);
-		parameters.remove(COUNTER_PARAMETER);
+		parameters.remove(HttpParameter.COUNTER);
 
 		doMonitoringWithGraphPart();
 
@@ -686,37 +645,36 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPartsForSystemActions() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
 		monitorJdbcParts(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		//		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		//		monitoring(parameters);
 		monitoringSessionsPart(parameters);
-		parameters.put(PART_PARAMETER, WEB_XML_PART);
+		parameters.put(HttpParameter.PART, HttpPart.WEB_XML.getName());
 		monitoring(parameters, false);
-		parameters.put(PART_PARAMETER, POM_XML_PART);
+		parameters.put(HttpParameter.PART, HttpPart.POM_XML.getName());
 		monitoring(parameters, false);
-		parameters.put(PART_PARAMETER, JNDI_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, MBEANS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
 		final ApplicationContext context = new ClassPathXmlApplicationContext(
 				new String[] { "net/bull/javamelody/monitoring-spring.xml", });
 		context.getBeanDefinitionNames();
-		parameters.put(PART_PARAMETER, SPRING_BEANS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SPRING_BEANS.getName());
 		monitoring(parameters);
 		setProperty(Parameter.SAMPLING_SECONDS, "60");
 		setUp();
-		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
 		monitoring(parameters);
-		parameters.remove(PART_PARAMETER);
-		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
+		parameters.remove(HttpParameter.PART);
+		parameters.put(HttpParameter.JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
 		monitoring(parameters);
-		parameters.remove(JMX_VALUE);
+		parameters.remove(HttpParameter.JMX_VALUE);
 	}
 
 	/**
@@ -724,20 +682,20 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithReportParameter() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(REPORT_PARAMETER, "customReport");
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.REPORT, "customReport");
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "");
 		monitoring(parameters, false);
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "test");
 		monitoring(parameters, false);
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "/test");
 		monitoring(parameters, false);
-		parameters.remove(REPORT_PARAMETER);
+		parameters.remove(HttpParameter.REPORT);
 	}
 
 	private void doMonitoringWithUnknownPart() throws IOException, ServletException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(PART_PARAMETER, "unknown part");
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.PART, "unknown part");
 		boolean exception = false;
 		try {
 			monitoring(parameters);
@@ -747,76 +705,74 @@ public class TestMonitoringFilter {
 		assertTrue("exception if unknown part", exception);
 	}
 
-	private void monitoringSessionsPart(final Map<String, String> parameters)
+	private void monitoringSessionsPart(final Map<HttpParameter, String> parameters)
 			throws IOException, ServletException {
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
-		parameters.put(SESSION_ID_PARAMETER, "expired session");
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
+		parameters.put(HttpParameter.SESSION_ID, "expired session");
 		monitoring(parameters);
-		parameters.remove(SESSION_ID_PARAMETER);
+		parameters.remove(HttpParameter.SESSION_ID);
 	}
 
 	private void doMonitoringWithGraphPart() throws IOException, ServletException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(PART_PARAMETER, GRAPH);
-		parameters.put(GRAPH, "usedMemory");
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.PART, HttpPart.GRAPH.getName());
+		parameters.put(HttpParameter.GRAPH, "usedMemory");
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, LAST_VALUE_PART);
-		parameters.put(GRAPH, "usedMemory,cpu,unknown");
+		parameters.put(HttpParameter.PART, HttpPart.LAST_VALUE.getName());
+		parameters.put(HttpParameter.GRAPH, "usedMemory,cpu,unknown");
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, USAGES_PART);
-		parameters.put(GRAPH, "unknown");
+		parameters.put(HttpParameter.PART, HttpPart.USAGES.getName());
+		parameters.put(HttpParameter.GRAPH, "unknown");
 		monitoring(parameters);
 	}
 
 	private void doMonitoringWithSourcePart() throws IOException, ServletException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(PART_PARAMETER, SOURCE_PART);
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.PART, HttpPart.SOURCE.getName());
 		// classe java du jdk
-		parameters.put(CLASS_PARAMETER, "java.lang.String");
+		parameters.put(HttpParameter.CLASS, "java.lang.String");
 		monitoring(parameters);
 		// classe interne dans le même fichier
-		parameters.put(CLASS_PARAMETER, "java.lang.Thread$State");
+		parameters.put(HttpParameter.CLASS, "java.lang.Thread$State");
 		monitoring(parameters);
 		// classe javax du jdk
-		parameters.put(CLASS_PARAMETER, "javax.naming.InitialContext");
+		parameters.put(HttpParameter.CLASS, "javax.naming.InitialContext");
 		monitoring(parameters);
 		// classe inexistante
-		parameters.put(CLASS_PARAMETER, "java.dummy");
+		parameters.put(HttpParameter.CLASS, "java.dummy");
 		monitoring(parameters);
 		// classe d'un jar construit par Maven
-		parameters.put(CLASS_PARAMETER, "org.jrobin.core.RrdDb");
+		parameters.put(HttpParameter.CLASS, "org.jrobin.core.RrdDb");
 		monitoring(parameters);
 		// classe d'un jar construit par Maven, sans sources
-		parameters.put(CLASS_PARAMETER, "org.apache.tomcat.dbcp.dbcp.BasicDataSource");
+		parameters.put(HttpParameter.CLASS, "org.apache.tomcat.dbcp.dbcp.BasicDataSource");
 		monitoring(parameters);
 		// classe d'un jar non construit par Maven
-		parameters.put(CLASS_PARAMETER, "com.lowagie.text.Document");
+		parameters.put(HttpParameter.CLASS, "com.lowagie.text.Document");
 		monitoring(parameters);
-		parameters.remove(CLASS_PARAMETER);
+		parameters.remove(HttpParameter.CLASS);
 	}
 
-	private void monitorJdbcParts(Map<String, String> parameters)
+	private void monitorJdbcParts(Map<HttpParameter, String> parameters)
 			throws IOException, ServletException {
 		final Connection connection = TestDatabaseInformations.initH2();
 		try {
-			parameters.put(PART_PARAMETER, DATABASE_PART);
+			parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 			monitoring(parameters);
-			parameters.put(PART_PARAMETER, DATABASE_PART);
-			parameters.put(REQUEST_PARAMETER, "0");
+			parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
+			parameters.put(HttpParameter.REQUEST, "0");
 			monitoring(parameters);
-			parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+			parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
 			monitoring(parameters);
-			parameters.put(PART_PARAMETER, CONNECTIONS_PART);
-			parameters.put(FORMAT_PARAMETER, "htmlbody");
+			parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
+			parameters.put(HttpParameter.FORMAT, "htmlbody");
 			monitoring(parameters);
-			parameters.remove(FORMAT_PARAMETER);
-			parameters.put(REQUEST_PARAMETER, "0");
+			parameters.remove(HttpParameter.FORMAT);
+			parameters.put(HttpParameter.REQUEST, "0");
 			monitoring(parameters);
-			parameters.remove(REQUEST_PARAMETER);
+			parameters.remove(HttpParameter.REQUEST);
 		} finally {
 			try {
 				connection.close();
@@ -831,29 +787,28 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithActions() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
-		parameters.put(ACTION_PARAMETER, Action.GC.toString());
+		parameters.put(HttpParameter.ACTION, Action.GC.toString());
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSIONS.toString());
+		parameters.put(HttpParameter.ACTION, Action.INVALIDATE_SESSIONS.toString());
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
-		parameters.put(SESSION_ID_PARAMETER, "123456789");
+		parameters.put(HttpParameter.ACTION, Action.INVALIDATE_SESSION.toString());
+		parameters.put(HttpParameter.SESSION_ID, "123456789");
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.CLEAR_CACHES.toString());
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_CACHES.toString());
 		monitoring(parameters);
 		if (CacheManager.getInstance().getCache("test clear") == null) {
 			CacheManager.getInstance().addCache("test clear");
 		}
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.PAUSE_JOB.toString());
-		parameters.put("jobId", "all");
+		parameters.put(HttpParameter.ACTION, Action.PAUSE_JOB.toString());
+		parameters.put(HttpParameter.JOB_ID, "all");
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.RESUME_JOB.toString());
+		parameters.put(HttpParameter.ACTION, Action.RESUME_JOB.toString());
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
-		parameters.put("counter", "all");
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_COUNTER.toString());
+		parameters.put(HttpParameter.COUNTER, "all");
 		monitoring(parameters);
 	}
 
@@ -862,52 +817,41 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(FORMAT_PARAMETER, "pdf");
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, "pdf");
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, RUNTIME_DEPENDENCIES_PART);
-		parameters.put(COUNTER_PARAMETER, "services");
+		parameters.put(HttpParameter.PART, HttpPart.RUNTIME_DEPENDENCIES.getName());
+		parameters.put(HttpParameter.COUNTER, "services");
 		monitoring(parameters);
-		parameters.remove(COUNTER_PARAMETER);
-
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		parameters.remove(HttpParameter.COUNTER);
+		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		monitoring(parameters);
-
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, MBEANS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, "guice");
+		parameters.put(HttpParameter.PART, HttpPart.COUNTER_SUMMARY_PER_CLASS.getName());
+		parameters.put(HttpParameter.COUNTER, "guice");
 		monitoring(parameters);
-		parameters.remove(COUNTER_PARAMETER);
-
+		parameters.remove(HttpParameter.COUNTER);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		monitoring(parameters);
-
 		setProperty(Parameter.SAMPLING_SECONDS, "60");
 		setUp();
-		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
 		monitoring(parameters);
-
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		//		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		//		monitoring(parameters);
-
-		parameters.put(PART_PARAMETER, GRAPH);
-		parameters.put(GRAPH, "usedMemory");
+		parameters.put(HttpParameter.PART, HttpPart.GRAPH.getName());
+		parameters.put(HttpParameter.GRAPH, "usedMemory");
 		monitoring(parameters);
-		parameters.remove(GRAPH);
-
-		parameters.put(PART_PARAMETER, "unknown part");
+		parameters.remove(HttpParameter.GRAPH);
+		parameters.put(HttpParameter.PART, "unknown part");
 		boolean exception = false;
 		try {
 			monitoring(parameters);
@@ -924,83 +868,80 @@ public class TestMonitoringFilter {
 	@Test
 	// CHECKSTYLE:ON
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, TransportFormat.SERIALIZED.getCode());
 		monitoring(parameters);
-
-		parameters.put(JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
+		parameters.put(HttpParameter.JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
 		monitoring(parameters);
-		parameters.remove(JMX_VALUE);
-
-		parameters.put(PART_PARAMETER, LAST_VALUE_PART);
-		parameters.put(GRAPH, "usedMemory,cpu,unknown");
+		parameters.remove(HttpParameter.JMX_VALUE);
+		parameters.put(HttpParameter.PART, HttpPart.LAST_VALUE.getName());
+		parameters.put(HttpParameter.GRAPH, "usedMemory,cpu,unknown");
 		monitoring(parameters);
-		parameters.remove(GRAPH);
-
+		parameters.remove(HttpParameter.GRAPH);
 		setProperty(Parameter.SAMPLING_SECONDS, "60");
 		setUp();
-		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, JVM_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JVM.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, THREADS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, DEFAULT_WITH_CURRENT_REQUESTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DEFAULT_WITH_CURRENT_REQUESTS.getName());
 		monitoring(parameters);
-		parameters.put(WIDTH_PARAMETER, "80");
-		parameters.put(HEIGHT_PARAMETER, "80");
-		parameters.put(PART_PARAMETER, JROBINS_PART);
+		parameters.put(HttpParameter.WIDTH, "80");
+		parameters.put(HttpParameter.HEIGHT, "80");
+		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
 		monitoring(parameters);
-		parameters.put(GRAPH_PARAMETER, "cpu");
-		parameters.put(PART_PARAMETER, JROBINS_PART);
+		parameters.put(HttpParameter.GRAPH, "cpu");
+		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, GRAPH_PART);
+		parameters.put(HttpParameter.PART, HttpPart.GRAPH.getName());
 		monitoring(parameters);
-		parameters.remove(GRAPH_PARAMETER);
-		parameters.put(PART_PARAMETER, OTHER_JROBINS_PART);
+		parameters.remove(HttpParameter.GRAPH);
+		parameters.put(HttpParameter.PART, HttpPart.OTHER_JROBINS.getName());
 		monitoring(parameters);
-		parameters.remove(WIDTH_PARAMETER);
-		parameters.remove(HEIGHT_PARAMETER);
+		parameters.remove(HttpParameter.WIDTH);
+		parameters.remove(HttpParameter.HEIGHT);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		monitoring(parameters);
 		monitoringSessionsPart(parameters);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, JNDI_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, MBEANS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		monitoring(parameters);
-		parameters.put(REQUEST_PARAMETER, "0");
+		parameters.put(HttpParameter.REQUEST, "0");
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
-		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
+		parameters.put(HttpParameter.PART, HttpPart.EXPLAIN_PLAN.getName());
+		parameters.put(HttpParameter.REQUEST, "select 1 from dual");
 		monitoring(parameters);
-		parameters.remove(REQUEST_PARAMETER);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		parameters.remove(HttpParameter.REQUEST);
+		parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, "guice");
+		parameters.put(HttpParameter.PART, HttpPart.COUNTER_SUMMARY_PER_CLASS.getName());
+		parameters.put(HttpParameter.COUNTER, "guice");
 		monitoring(parameters);
-		parameters.put(PERIOD_PARAMETER, "jour");
+		parameters.put(HttpParameter.PERIOD, "jour");
 		monitoring(parameters);
-		parameters.remove(COUNTER_PARAMETER);
-		parameters.remove(PERIOD_PARAMETER);
-		parameters.put(PART_PARAMETER, WEBAPP_VERSIONS_PART);
+		parameters.remove(HttpParameter.COUNTER);
+		parameters.remove(HttpParameter.PERIOD);
+		parameters.put(HttpParameter.PART, HttpPart.WEBAPP_VERSIONS.getName());
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		//		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		//		monitoring(parameters);
-		parameters.put(PART_PARAMETER, null);
-		parameters.put(COLLECTOR_PARAMETER, "stop");
+		parameters.put(HttpParameter.PART, null);
+		parameters.put(HttpParameter.COLLECTOR, "stop");
 		monitoring(parameters);
-		parameters.put(ACTION_PARAMETER, Action.GC.toString());
+		parameters.put(HttpParameter.ACTION, Action.GC.toString());
 		monitoring(parameters);
 	}
 
@@ -1009,21 +950,21 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(FORMAT_PARAMETER, TransportFormat.XML.getCode());
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, TransportFormat.XML.getCode());
 		monitoring(parameters);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		//		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		//		monitoring(parameters);
 	}
 
@@ -1032,31 +973,32 @@ public class TestMonitoringFilter {
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put(FORMAT_PARAMETER, TransportFormat.JSON.getCode());
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, TransportFormat.JSON.getCode());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, THREADS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
 		monitoring(parameters);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		monitoring(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
 		monitoring(parameters);
 		// il ne faut pas faire un heapHisto sans thread comme dans TestHtmlHeapHistogramReport
-		//		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		//		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		//		monitoring(parameters);
 	}
 
-	private void monitoring(Map<String, String> parameters) throws IOException, ServletException {
+	private void monitoring(Map<HttpParameter, String> parameters)
+			throws IOException, ServletException {
 		monitoring(parameters, true);
 	}
 
-	private void monitoring(Map<String, String> parameters, boolean checkResultContent)
+	private void monitoring(Map<HttpParameter, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
@@ -1072,14 +1014,24 @@ public class TestMonitoringFilter {
 			expect(request.getHeaders("Accept-Encoding"))
 					.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 		}
-		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-			if (REQUEST_PARAMETER.equals(entry.getKey())) {
-				expect(request.getHeader(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
+			if (HttpParameter.REQUEST == entry.getKey()) {
+				expect(request.getHeader(entry.getKey().getName())).andReturn(entry.getValue())
+						.anyTimes();
 			} else {
-				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+				expect(entry.getKey().getParameterFrom(request)).andReturn(entry.getValue())
+						.anyTimes();
 			}
 		}
-		if (parameters.isEmpty() || JNLP_PART.equals(parameters.get(PART_PARAMETER))) {
+		final Range range = Period.JOUR.getRange();
+		final List<JavaInformations> javaInformationsList = Collections
+				.singletonList(new JavaInformations(null, false));
+		// getAttribute("range") et getAttribute("javaInformationsList") pour PdfController
+		expect(request.getAttribute("range")).andReturn(range).anyTimes();
+		expect(request.getAttribute("javaInformationsList")).andReturn(javaInformationsList)
+				.anyTimes();
+		if (parameters.isEmpty()
+				|| HttpPart.JNLP.getName().equals(parameters.get(HttpParameter.PART))) {
 			// dans au moins un cas on met un cookie
 			final Cookie[] cookies = { new Cookie("dummy", "dummy"),
 					new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };

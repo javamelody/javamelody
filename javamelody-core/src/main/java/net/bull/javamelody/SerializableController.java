@@ -17,41 +17,9 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
-import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PART;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.JVM_PART;
-import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.THREADS_PART;
-import static net.bull.javamelody.HttpParameters.WEBAPP_VERSIONS_PART;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
-
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -61,16 +29,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.management.JMException;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.RequestToMethodMapper.RequestAttribute;
+import net.bull.javamelody.RequestToMethodMapper.RequestParameter;
+import net.bull.javamelody.RequestToMethodMapper.RequestPart;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
  * Contrôleur au sens MVC pour la partie des données sérialisées.
  * @author Emeric Vernat
  */
-class SerializableController { // NOPMD
+class SerializableController {
+	private static final String RANGE_KEY = "range";
+	private static final String JAVA_INFORMATIONS_LIST_KEY = "javaInformationsList";
+	private static final String MESSAGE_FOR_REPORT_KEY = "messageForReport";
+	private static final RequestToMethodMapper<SerializableController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<SerializableController>(
+			SerializableController.class);
 	private final Collector collector;
 
 	SerializableController(Collector collector) {
@@ -84,7 +62,7 @@ class SerializableController { // NOPMD
 		// l'appelant (un serveur d'agrégation par exemple) peut appeler
 		// la page monitoring avec un format "serialized" ou "xml" en paramètre
 		// pour avoir les données au format sérialisé java ou xml
-		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
+		final String format = HttpParameter.FORMAT.getParameterFrom(httpRequest);
 		final TransportFormat transportFormat = TransportFormat.valueOfIgnoreCase(format);
 		// checkDependencies avant setContentType pour afficher correctement les erreurs
 		transportFormat.checkDependencies();
@@ -93,145 +71,175 @@ class SerializableController { // NOPMD
 				+ '_' + I18N.getCurrentDate().replace('/', '_') + '.' + transportFormat.getCode();
 		final String contentDisposition = "inline;filename=" + fileName;
 		// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
-		httpResponse.addHeader(CONTENT_DISPOSITION,
+		httpResponse.addHeader("Content-Disposition",
 				contentDisposition.replace('\n', '_').replace('\r', '_'));
 
 		transportFormat.writeSerializableTo(serializable, httpResponse.getOutputStream());
 	}
 
-	// CHECKSTYLE:OFF
-	Serializable createSerializable(HttpServletRequest httpRequest, // NOPMD
-			List<JavaInformations> javaInformationsList, String messageForReport) throws Exception { // NOPMD
-		// CHECKSTYLE:ON
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (JVM_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<JavaInformations>(javaInformationsList);
-		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-			if (sessionId == null) {
-				return new ArrayList<SessionInformations>(
-						SessionListener.getAllSessionsInformations());
-			}
-			return SessionListener.getSessionInformationsBySessionId(sessionId);
-		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<SampledMethod>(collector.getHotspots());
-		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return VirtualMachine.createHeapHistogram();
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<ProcessInformations>(
-					ProcessInformations.buildProcessInformations());
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final String path = httpRequest.getParameter(PATH_PARAMETER);
-			return new ArrayList<JndiBinding>(JndiBinding.listBindings(path));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
-		} else if (DEPENDENCIES_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final Map<String, MavenArtifact> webappDependencies = MavenArtifact
-					.getWebappDependencies();
-			for (final MavenArtifact dependency : webappDependencies.values()) {
-				if (dependency != null) {
-					// preload licenses with parent of dependency when needed
-					dependency.getLicenseUrlsByName();
-				}
-			}
-			return new TreeMap<String, MavenArtifact>(webappDependencies);
-		} else if (httpRequest.getParameter(JMX_VALUE) != null) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final String jmxValue = httpRequest.getParameter(JMX_VALUE);
-			return MBeans.getConvertedAttributes(jmxValue);
-		} else if (LAST_VALUE_PART.equalsIgnoreCase(part)) {
-			final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
-			final JRobin jrobin = collector.getJRobin(graph);
-			final double lastValue;
-			if (jrobin == null) {
-				lastValue = -1;
-			} else {
-				lastValue = jrobin.getLastValue();
-			}
-			return lastValue;
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			final int requestIndex = DatabaseInformations
-					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
-			return new DatabaseInformations(requestIndex);
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-			// par sécurité
-			Action.checkSystemActionsEnabled();
-			return new ArrayList<ConnectionInformations>(
-					JdbcWrapper.getConnectionInformationsList());
-		} else if (WEBAPP_VERSIONS_PART.equalsIgnoreCase(part)) {
-			return new LinkedHashMap<String, Date>(collector.getDatesByWebappVersions());
-		}
-		return createOtherSerializable(httpRequest, javaInformationsList, messageForReport);
-	}
-
-	@SuppressWarnings("unchecked")
-	private Serializable createOtherSerializable(HttpServletRequest httpRequest,
+	Serializable createSerializable(HttpServletRequest httpRequest,
 			List<JavaInformations> javaInformationsList, String messageForReport)
 			throws IOException {
 		final Range range = getRangeForSerializable(httpRequest);
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (JROBINS_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing
-			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
-			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			return getJRobinsImages(range, width, height, graphName);
-		} else if (OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing
-			final int width = Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER));
-			final int height = Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER));
-			final Collection<JRobin> jrobins = collector.getDisplayedOtherJRobins();
-			return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
-		} else if (THREADS_PART.equalsIgnoreCase(part)) {
-			return new ArrayList<ThreadInformations>(
-					javaInformationsList.get(0).getThreadInformationsList());
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			final Counter counter = collector.getRangeCounter(range, counterName).clone();
-			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
-					.getRequestsAggregatedOrFilteredByClassName(requestId);
-			return new ArrayList<CounterRequest>(requestList);
-		} else if (GRAPH_PART.equalsIgnoreCase(part)) {
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			return getCounterRequestById(requestId, range);
-		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			final Map<JavaInformations, List<CounterRequestContext>> result = new HashMap<JavaInformations, List<CounterRequestContext>>();
-			result.put(javaInformationsList.get(0), getCurrentRequests());
-			return (Serializable) result;
-		} else if (DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			final List<Serializable> result = new ArrayList<Serializable>();
-			result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList,
-					range, messageForReport));
-			result.addAll(getCurrentRequests());
-			return (Serializable) result;
-		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
-			// pour UI Swing,
-			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
-			return explainPlanFor(sqlRequest);
+		if (HttpParameter.PART.getParameterFrom(httpRequest) != null) {
+			httpRequest.setAttribute(JAVA_INFORMATIONS_LIST_KEY, javaInformationsList);
+			httpRequest.setAttribute(RANGE_KEY, range);
+			httpRequest.setAttribute(MESSAGE_FOR_REPORT_KEY, messageForReport);
+
+			return (Serializable) REQUEST_TO_METHOD_MAPPER.invokeAndReturn(httpRequest, this);
+		} else if (HttpParameter.JMX_VALUE.getParameterFrom(httpRequest) != null) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final String jmxValue = HttpParameter.JMX_VALUE.getParameterFrom(httpRequest);
+			return MBeans.getConvertedAttributes(jmxValue);
 		}
 
 		return createDefaultSerializable(javaInformationsList, range, messageForReport);
 	}
 
-	private Serializable getCounterRequestById(String requestId, Range range) throws IOException {
+	@RequestPart(HttpPart.THREADS)
+	Serializable createThreadsSerializable(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
+		return new ArrayList<ThreadInformations>(
+				javaInformationsList.get(0).getThreadInformationsList());
+	}
+
+	@RequestPart(HttpPart.COUNTER_SUMMARY_PER_CLASS)
+	Serializable createCounterSummaryPerClassSerializable(@RequestAttribute(RANGE_KEY) Range range,
+			@RequestParameter(HttpParameter.COUNTER) String counterName,
+			@RequestParameter(HttpParameter.GRAPH) String requestId) throws IOException {
+		final Counter counter = collector.getRangeCounter(range, counterName).clone();
+		final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
+				.getRequestsAggregatedOrFilteredByClassName(requestId);
+		return new ArrayList<CounterRequest>(requestList);
+	}
+
+	@RequestPart(HttpPart.CURRENT_REQUESTS)
+	Serializable createCurrentRequestsSerializable(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
+		final Map<JavaInformations, List<CounterRequestContext>> result = new HashMap<JavaInformations, List<CounterRequestContext>>();
+		result.put(javaInformationsList.get(0), getCurrentRequests());
+		return (Serializable) result;
+	}
+
+	@RequestPart(HttpPart.DEFAULT_WITH_CURRENT_REQUESTS)
+	@SuppressWarnings("unchecked")
+	Serializable createDefaultWithCurrentRequestsSerializable(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList,
+			@RequestAttribute(MESSAGE_FOR_REPORT_KEY) String messageForReport,
+			@RequestAttribute(RANGE_KEY) Range range) throws IOException {
+		final List<Serializable> result = new ArrayList<Serializable>();
+		result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList, range,
+				messageForReport));
+		result.addAll(getCurrentRequests());
+		return (Serializable) result;
+	}
+
+	@RequestPart(HttpPart.JVM)
+	Serializable createJvmSerializable(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
+		return new ArrayList<JavaInformations>(javaInformationsList);
+	}
+
+	@RequestPart(HttpPart.SESSIONS)
+	Serializable createSessionsSerializable(
+			@RequestParameter(HttpParameter.SESSION_ID) String sessionId) {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		if (sessionId == null) {
+			return new ArrayList<SessionInformations>(SessionListener.getAllSessionsInformations());
+		}
+		return SessionListener.getSessionInformationsBySessionId(sessionId);
+	}
+
+	@RequestPart(HttpPart.HOTSPOTS)
+	Serializable createHotspotsSerializable() {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		return new ArrayList<SampledMethod>(collector.getHotspots());
+	}
+
+	@RequestPart(HttpPart.HEAP_HISTO)
+	Serializable createHeapHistoSerializable() throws Exception { // NOPMD
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		return VirtualMachine.createHeapHistogram();
+	}
+
+	@RequestPart(HttpPart.PROCESSES)
+	Serializable createProcessesSerializable() throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		return new ArrayList<ProcessInformations>(ProcessInformations.buildProcessInformations());
+	}
+
+	@RequestPart(HttpPart.JNDI)
+	Serializable createJndiSerializable(@RequestParameter(HttpParameter.PATH) String path)
+			throws NamingException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		return new ArrayList<JndiBinding>(JndiBinding.listBindings(path));
+	}
+
+	@RequestPart(HttpPart.MBEANS)
+	Serializable createMBeansSerializable() throws JMException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
+	}
+
+	@RequestPart(HttpPart.DEPENDENCIES)
+	Serializable createDependenciesSerializable() throws IOException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		final Map<String, MavenArtifact> webappDependencies = MavenArtifact.getWebappDependencies();
+		for (final MavenArtifact dependency : webappDependencies.values()) {
+			if (dependency != null) {
+				// preload licenses with parent of dependency when needed
+				dependency.getLicenseUrlsByName();
+			}
+		}
+		return new TreeMap<String, MavenArtifact>(webappDependencies);
+	}
+
+	@RequestPart(HttpPart.LAST_VALUE)
+	Serializable createLastValueSerializable(@RequestParameter(HttpParameter.GRAPH) String graph)
+			throws IOException {
+		final JRobin jrobin = collector.getJRobin(graph);
+		final double lastValue;
+		if (jrobin == null) {
+			lastValue = -1;
+		} else {
+			lastValue = jrobin.getLastValue();
+		}
+		return lastValue;
+	}
+
+	@RequestPart(HttpPart.DATABASE)
+	Serializable createDatabaseSerializable(
+			@RequestParameter(HttpParameter.REQUEST) String requestIndex)
+			throws SQLException, NamingException {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		final int index = DatabaseInformations.parseRequestIndex(requestIndex);
+		return new DatabaseInformations(index);
+	}
+
+	@RequestPart(HttpPart.CONNECTIONS)
+	Serializable createConnectionsSerializable() {
+		// par sécurité
+		Action.checkSystemActionsEnabled();
+		return new ArrayList<ConnectionInformations>(JdbcWrapper.getConnectionInformationsList());
+	}
+
+	@RequestPart(HttpPart.WEBAPP_VERSIONS)
+	Serializable createWebappVersionsSerializable() {
+		return new LinkedHashMap<String, Date>(collector.getDatesByWebappVersions());
+	}
+
+	@RequestPart(HttpPart.GRAPH)
+	Serializable getCounterRequestById(@RequestParameter(HttpParameter.GRAPH) String requestId,
+			@RequestAttribute(RANGE_KEY) Range range) throws IOException {
 		for (final Counter counter : collector.getCounters()) {
 			if (counter.isRequestIdFromThisCounter(requestId)) {
 				final Counter rangeCounter = collector.getRangeCounter(range, counter.getName())
@@ -247,20 +255,39 @@ class SerializableController { // NOPMD
 		return null;
 	}
 
-	private Serializable getJRobinsImages(Range range, int width, int height, String graphName)
-			throws IOException {
+	@RequestPart(HttpPart.JROBINS)
+	Serializable getJRobinsImages(@RequestAttribute(RANGE_KEY) Range range,
+			@RequestParameter(HttpParameter.WIDTH) String width,
+			@RequestParameter(HttpParameter.HEIGHT) String height,
+			@RequestParameter(HttpParameter.GRAPH) String graphName) throws IOException {
+		// pour UI Swing
+		final int myWidth = Integer.parseInt(width);
+		final int myHeight = Integer.parseInt(height);
 		if (graphName != null) {
 			final JRobin jrobin = collector.getJRobin(graphName);
 			if (jrobin != null) {
-				return jrobin.graph(range, width, height);
+				return jrobin.graph(range, myWidth, myHeight);
 			}
 			return null;
 		}
 		final Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
-		return (Serializable) convertJRobinsToImages(jrobins, range, width, height);
+		return (Serializable) convertJRobinsToImages(jrobins, range, myWidth, myHeight);
 	}
 
-	private Serializable explainPlanFor(String sqlRequest) {
+	@RequestPart(HttpPart.OTHER_JROBINS)
+	Serializable getOtherJRobinsImages(@RequestAttribute(RANGE_KEY) Range range,
+			@RequestParameter(HttpParameter.WIDTH) String width,
+			@RequestParameter(HttpParameter.HEIGHT) String height) throws IOException {
+		// pour UI Swing
+		final Collection<JRobin> jrobins = collector.getDisplayedOtherJRobins();
+		return (Serializable) convertJRobinsToImages(jrobins, range, Integer.parseInt(width),
+				Integer.parseInt(height));
+	}
+
+	@RequestPart(HttpPart.EXPLAIN_PLAN)
+	Serializable createExplainPlanSerializableFor(
+			@RequestParameter(HttpParameter.REQUEST) String sqlRequest) {
+		// pour UI Swing
 		assert sqlRequest != null;
 		try {
 			// retourne le plan d'exécution ou null si la base de données ne le permet pas (ie non Oracle)
@@ -311,11 +338,12 @@ class SerializableController { // NOPMD
 
 	Range getRangeForSerializable(HttpServletRequest httpRequest) {
 		final Range range;
-		if (httpRequest.getParameter(PERIOD_PARAMETER) == null) {
+		final String period = HttpParameter.PERIOD.getParameterFrom(httpRequest);
+		if (period == null) {
 			// période tout par défaut pour Serializable, notamment pour le serveur de collecte
 			range = Period.TOUT.getRange();
 		} else {
-			range = Range.parse(httpRequest.getParameter(PERIOD_PARAMETER));
+			range = Range.parse(period);
 		}
 		return range;
 	}

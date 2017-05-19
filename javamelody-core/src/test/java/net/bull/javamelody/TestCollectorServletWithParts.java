@@ -17,44 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
-import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
-import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
-import static net.bull.javamelody.HttpParameters.CACHE_KEY_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
-import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.JVM_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.POM_XML_PART;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SOURCE_PART;
-import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
-import static net.bull.javamelody.HttpParameters.THREADS_PART;
-import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -151,28 +113,28 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testDoPart() throws IOException, ServletException {
-		final Map<String, String> parameters = new LinkedHashMap<String, String>();
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
 		// partParameter null: monitoring principal
-		parameters.put(PART_PARAMETER, null);
+		parameters.put(HttpParameter.PART, null);
 		doPart(parameters);
-		parameters.put(FORMAT_PARAMETER, "pdf");
+		parameters.put(HttpParameter.FORMAT, "pdf");
 		doPart(parameters);
-		parameters.remove(FORMAT_PARAMETER);
-		parameters.put(PART_PARAMETER, POM_XML_PART);
+		parameters.remove(HttpParameter.FORMAT);
+		parameters.put(HttpParameter.PART, HttpPart.POM_XML.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		doPart(parameters);
-		parameters.put(FORMAT_PARAMETER, "pdf");
+		parameters.put(HttpParameter.FORMAT, "pdf");
 		doPart(parameters);
-		parameters.remove(FORMAT_PARAMETER);
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		parameters.remove(HttpParameter.FORMAT);
+		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, DEPENDENCIES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, CACHE_KEYS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CACHE_KEYS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, SOURCE_PART);
-		parameters.put(CLASS_PARAMETER, "java.lang.String");
+		parameters.put(HttpParameter.PART, HttpPart.SOURCE.getName());
+		parameters.put(HttpParameter.CLASS, "java.lang.String");
 		doPart(parameters);
 	}
 
@@ -181,39 +143,40 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testDoPartForSystemActions() throws IOException, ServletException {
-		final Map<String, String> parameters = new LinkedHashMap<String, String>();
-		parameters.put(PART_PARAMETER, WEB_XML_PART);
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.PART, HttpPart.WEB_XML.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, JNDI_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
 		doPart(parameters);
-		parameters.put(PATH_PARAMETER, "/");
+		parameters.put(HttpParameter.PATH, "/");
 		doPart(parameters);
-		parameters.remove(PATH_PARAMETER);
-		parameters.put(PART_PARAMETER, MBEANS_PART);
+		parameters.remove(HttpParameter.PATH);
+		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		doPart(parameters);
-		parameters.remove(PART_PARAMETER);
-		parameters.put(JMX_VALUE, "JMImplementation:type=MBeanServerDelegate.MBeanServerId");
+		parameters.remove(HttpParameter.PART);
+		parameters.put(HttpParameter.JMX_VALUE,
+				"JMImplementation:type=MBeanServerDelegate.MBeanServerId");
 		doPart(parameters);
-		parameters.remove(JMX_VALUE);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.remove(HttpParameter.JMX_VALUE);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		doPart(parameters);
-		parameters.put(FORMAT_PARAMETER, "pdf");
+		parameters.put(HttpParameter.FORMAT, "pdf");
 		doPart(parameters);
-		parameters.remove(FORMAT_PARAMETER);
+		parameters.remove(HttpParameter.FORMAT);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		doPart(parameters);
-		parameters.put(REQUEST_PARAMETER, "0");
+		parameters.put(HttpParameter.REQUEST, "0");
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, SPRING_BEANS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SPRING_BEANS.getName());
 		doPart(parameters);
 	}
 
@@ -222,38 +185,38 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testDoCompressedSerializable() throws IOException, ServletException {
-		final Map<String, String> parameters = new LinkedHashMap<String, String>();
-		parameters.put(FORMAT_PARAMETER, "xml");
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, "xml");
 		// partParameter null: monitoring principal
-		parameters.put(PART_PARAMETER, null);
+		parameters.put(HttpParameter.PART, null);
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, APPLICATIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.APPLICATIONS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, COUNTER_SUMMARY_PER_CLASS_PART);
-		parameters.put(COUNTER_PARAMETER, "services");
+		parameters.put(HttpParameter.PART, HttpPart.COUNTER_SUMMARY_PER_CLASS.getName());
+		parameters.put(HttpParameter.COUNTER, "services");
 		doPart(parameters);
-		parameters.remove(COUNTER_PARAMETER);
+		parameters.remove(HttpParameter.COUNTER);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, THREADS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, CURRENT_REQUESTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		doPart(parameters);
-		parameters.put(WIDTH_PARAMETER, "80");
-		parameters.put(HEIGHT_PARAMETER, "80");
-		parameters.put(PART_PARAMETER, JROBINS_PART);
+		parameters.put(HttpParameter.WIDTH, "80");
+		parameters.put(HttpParameter.HEIGHT, "80");
+		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
 		doPart(parameters);
-		parameters.put(GRAPH_PARAMETER, "cpu");
-		parameters.put(PART_PARAMETER, JROBINS_PART);
+		parameters.put(HttpParameter.GRAPH, "cpu");
+		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
 		doPart(parameters);
-		parameters.remove(GRAPH_PARAMETER);
-		parameters.put(PART_PARAMETER, OTHER_JROBINS_PART);
+		parameters.remove(HttpParameter.GRAPH);
+		parameters.put(HttpParameter.PART, HttpPart.OTHER_JROBINS.getName());
 		doPart(parameters);
-		parameters.remove(WIDTH_PARAMETER);
-		parameters.remove(HEIGHT_PARAMETER);
-		parameters.put(PART_PARAMETER, EXPLAIN_PLAN_PART);
-		parameters.put(REQUEST_PARAMETER, "select 1 from dual");
+		parameters.remove(HttpParameter.WIDTH);
+		parameters.remove(HttpParameter.HEIGHT);
+		parameters.put(HttpParameter.PART, HttpPart.EXPLAIN_PLAN.getName());
+		parameters.put(HttpParameter.REQUEST, "select 1 from dual");
 		doPart(parameters);
-		parameters.remove(REQUEST_PARAMETER);
+		parameters.remove(HttpParameter.REQUEST);
 	}
 
 	/** Test.
@@ -262,28 +225,28 @@ public class TestCollectorServletWithParts {
 	@Test
 	public void testDoCompressedSerializableForSystemActions()
 			throws IOException, ServletException {
-		final Map<String, String> parameters = new LinkedHashMap<String, String>();
-		parameters.put(FORMAT_PARAMETER, "xml");
-		parameters.put(PART_PARAMETER, PROCESSES_PART);
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, "xml");
+		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, JNDI_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, MBEANS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		doPart(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
-		parameters.put(PART_PARAMETER, DATABASE_PART);
+		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		doPart(parameters);
-		parameters.put(REQUEST_PARAMETER, "0");
+		parameters.put(HttpParameter.REQUEST, "0");
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, CONNECTIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.CONNECTIONS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, HEAP_HISTO_PART);
+		parameters.put(HttpParameter.PART, HttpPart.HEAP_HISTO.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, SESSIONS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, JVM_PART);
+		parameters.put(HttpParameter.PART, HttpPart.JVM.getName());
 		doPart(parameters);
-		parameters.put(PART_PARAMETER, HOTSPOTS_PART);
+		parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
 		doPart(parameters);
 	}
 
@@ -292,46 +255,47 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testAction() throws IOException, ServletException {
-		final Map<String, String> parameters = new LinkedHashMap<String, String>();
-		parameters.put("application", TEST);
-		parameters.put(ACTION_PARAMETER, Action.GC.toString());
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.APPLICATION, TEST);
+		parameters.put(HttpParameter.ACTION, Action.GC.toString());
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.CLEAR_COUNTER.toString());
-		parameters.put(COUNTER_PARAMETER, "all");
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_COUNTER.toString());
+		parameters.put(HttpParameter.COUNTER, "all");
 		doPart(parameters);
-		parameters.put(FORMAT_PARAMETER, TransportFormat.SERIALIZED.getCode());
+		parameters.put(HttpParameter.FORMAT, TransportFormat.SERIALIZED.getCode());
 		doPart(parameters);
-		parameters.remove(FORMAT_PARAMETER);
-		parameters.put(ACTION_PARAMETER, Action.MAIL_TEST.toString());
+		parameters.remove(HttpParameter.FORMAT);
+		parameters.put(HttpParameter.ACTION, Action.MAIL_TEST.toString());
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.PURGE_OBSOLETE_FILES.toString());
+		parameters.put(HttpParameter.ACTION, Action.PURGE_OBSOLETE_FILES.toString());
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.INVALIDATE_SESSION.toString());
-		parameters.put(SESSION_ID_PARAMETER, "aSessionId");
+		parameters.put(HttpParameter.ACTION, Action.INVALIDATE_SESSION.toString());
+		parameters.put(HttpParameter.SESSION_ID, "aSessionId");
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.KILL_THREAD.toString());
-		parameters.put(THREAD_ID_PARAMETER, "aThreadId");
+		parameters.put(HttpParameter.ACTION, Action.KILL_THREAD.toString());
+		parameters.put(HttpParameter.THREAD_ID, "aThreadId");
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.PAUSE_JOB.toString());
-		parameters.put(JOB_ID_PARAMETER, "all");
+		parameters.put(HttpParameter.ACTION, Action.PAUSE_JOB.toString());
+		parameters.put(HttpParameter.JOB_ID, "all");
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.CLEAR_CACHE.toString());
-		parameters.put(CACHE_ID_PARAMETER, "aCacheId");
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_CACHE.toString());
+		parameters.put(HttpParameter.CACHE_ID, "aCacheId");
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, Action.CLEAR_CACHE_KEY.toString());
-		parameters.put(CACHE_ID_PARAMETER, "aCacheId");
-		parameters.put(CACHE_KEY_PARAMETER, "aCacheKey");
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_CACHE_KEY.toString());
+		parameters.put(HttpParameter.CACHE_ID, "aCacheId");
+		parameters.put(HttpParameter.CACHE_KEY, "aCacheKey");
 		doPart(parameters);
-		parameters.put(ACTION_PARAMETER, "remove_application");
+		parameters.put(HttpParameter.ACTION, "remove_application");
 		doPart(parameters);
 	}
 
-	private void doPart(Map<String, String> parameters) throws IOException, ServletException {
+	private void doPart(Map<HttpParameter, String> parameters)
+			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
 		expect(servletContext.getServerInfo()).andReturn("Mock").anyTimes();
-		if (MBEANS_PART.equals(parameters.get(PART_PARAMETER))) {
+		if (HttpPart.MBEANS.getName().equals(parameters.get(HttpParameter.PART))) {
 			expect(request.getHeaders("Accept-Encoding"))
 					.andReturn(Collections.enumeration(Collections.singleton("application/gzip")))
 					.anyTimes();
@@ -347,8 +311,8 @@ public class TestCollectorServletWithParts {
 		// un cookie d'une application (qui existe)
 		final Cookie[] cookies = { new Cookie("javamelody.application", TEST) };
 		expect(request.getCookies()).andReturn(cookies).anyTimes();
-		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
-			expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
+			expect(entry.getKey().getParameterFrom(request)).andReturn(entry.getValue()).anyTimes();
 		}
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(

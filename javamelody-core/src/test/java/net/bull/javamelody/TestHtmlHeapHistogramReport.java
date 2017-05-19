@@ -17,7 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -108,10 +107,10 @@ public class TestHtmlHeapHistogramReport {
 		final Period period = Period.TOUT;
 		final HtmlReport htmlReport = new HtmlReport(collector, null, createJavaInformationsList(),
 				period, writer);
-		htmlReport.writeHeapHistogram(heapHistogram, "message", HEAP_HISTO_PART);
+		htmlReport.writeHeapHistogram(heapHistogram, "message", HttpPart.HEAP_HISTO.getName());
 		assertNotEmptyAndClear(writer);
 
-		htmlReport.writeHeapHistogram(heapHistogram, null, HEAP_HISTO_PART);
+		htmlReport.writeHeapHistogram(heapHistogram, null, HttpPart.HEAP_HISTO.getName());
 		assertNotEmptyAndClear(writer);
 
 		final ClassInfo classInfo = heapHistogram.getHeapHistogram().get(0);

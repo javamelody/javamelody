@@ -196,7 +196,7 @@ abstract class HtmlAbstractReport {
 				csrfToken = new String(Base64Coder.encode(bytes));
 				currentSession.setAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME, csrfToken);
 			}
-			return "&amp;" + HttpParameters.TOKEN_PARAMETER + '=' + csrfToken;
+			return "&amp;" + HttpParameter.TOKEN + '=' + csrfToken;
 		}
 		return "";
 	}

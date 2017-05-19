@@ -17,35 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_KEY_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HEIGHT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNLP_PART;
-import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.JVM_PART;
-import static net.bull.javamelody.HttpParameters.LAST_VALUE_PART;
-import static net.bull.javamelody.HttpParameters.MAX_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
-import static net.bull.javamelody.HttpParameters.POM_XML_PART;
-import static net.bull.javamelody.HttpParameters.REPORT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
-import static net.bull.javamelody.HttpParameters.THREADS_PART;
-import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.TOKEN_PARAMETER;
-import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
-import static net.bull.javamelody.HttpParameters.WIDTH_PARAMETER;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -107,7 +78,7 @@ class MonitoringController {
 
 	String executeActionIfNeeded(HttpServletRequest httpRequest) throws IOException {
 		assert httpRequest != null;
-		final String actionParameter = httpRequest.getParameter(ACTION_PARAMETER);
+		final String actionParameter = HttpParameter.ACTION.getParameterFrom(httpRequest);
 		if (actionParameter != null) {
 			if (CSRF_PROTECTION_ENABLED) {
 				checkCsrfToken(httpRequest);
@@ -121,12 +92,12 @@ class MonitoringController {
 					Action.checkSystemActionsEnabled();
 				}
 				final HttpSession currentSession = httpRequest.getSession(false);
-				final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-				final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
-				final String threadId = httpRequest.getParameter(THREAD_ID_PARAMETER);
-				final String jobId = httpRequest.getParameter(JOB_ID_PARAMETER);
-				final String cacheId = httpRequest.getParameter(CACHE_ID_PARAMETER);
-				final String cacheKey = httpRequest.getParameter(CACHE_KEY_PARAMETER);
+				final String counterName = HttpParameter.COUNTER.getParameterFrom(httpRequest);
+				final String sessionId = HttpParameter.SESSION_ID.getParameterFrom(httpRequest);
+				final String threadId = HttpParameter.THREAD_ID.getParameterFrom(httpRequest);
+				final String jobId = HttpParameter.JOB_ID.getParameterFrom(httpRequest);
+				final String cacheId = HttpParameter.CACHE_ID.getParameterFrom(httpRequest);
+				final String cacheKey = HttpParameter.CACHE_KEY.getParameterFrom(httpRequest);
 				messageForReport = action.execute(collector, collectorServer, currentSession,
 						counterName, sessionId, threadId, jobId, cacheId, cacheKey);
 				if (collector.getCounterByName(counterName) != null) {
@@ -144,7 +115,7 @@ class MonitoringController {
 	}
 
 	static void checkCsrfToken(HttpServletRequest httpRequest) {
-		final String token = httpRequest.getParameter(TOKEN_PARAMETER);
+		final String token = HttpParameter.TOKEN.getParameterFrom(httpRequest);
 		if (token == null) {
 			throw new IllegalArgumentException("csrf token missing");
 		}
@@ -177,7 +148,7 @@ class MonitoringController {
 		assert httpResponse != null;
 		assert javaInformationsList != null;
 
-		final String resource = httpRequest.getParameter(RESOURCE_PARAMETER);
+		final String resource = HttpParameter.RESOURCE.getParameterFrom(httpRequest);
 		if (resource != null) {
 			doResource(httpResponse, resource);
 			return;
@@ -193,16 +164,16 @@ class MonitoringController {
 			// session http s'il y en a une
 			SessionListener.bindSession(httpRequest.getSession(false));
 
-			final String part = httpRequest.getParameter(PART_PARAMETER);
-			final String graph = httpRequest.getParameter(GRAPH_PARAMETER);
+			final String part = HttpParameter.PART.getParameterFrom(httpRequest);
+			final String graph = HttpParameter.GRAPH.getParameterFrom(httpRequest);
 			if (part == null && graph != null) {
 				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 				doGraph(httpRequest, httpResponse, range, graph);
-			} else if (WEB_XML_PART.equalsIgnoreCase(part)) {
+			} else if (HttpPart.WEB_XML.isPart(httpRequest)) {
 				doWebXml(httpResponse);
-			} else if (POM_XML_PART.equalsIgnoreCase(part)) {
+			} else if (HttpPart.POM_XML.isPart(httpRequest)) {
 				doPomXml(httpResponse);
-			} else if (JNLP_PART.equalsIgnoreCase(part)) {
+			} else if (HttpPart.JNLP.isPart(httpRequest)) {
 				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 				doJnlp(httpRequest, httpResponse, range);
 			} else {
@@ -216,21 +187,21 @@ class MonitoringController {
 
 	private void doReportCore(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException, ServletException {
-		final String format = httpRequest.getParameter(FORMAT_PARAMETER);
-		if (LAST_VALUE_PART.equalsIgnoreCase(httpRequest.getParameter(PART_PARAMETER))
+		final String format = HttpParameter.FORMAT.getParameterFrom(httpRequest);
+		if (HttpPart.LAST_VALUE.isPart(httpRequest)
 				&& !TransportFormat.isATransportFormat(format)) {
-			doLastValue(httpResponse, httpRequest.getParameter(GRAPH_PARAMETER));
-		} else if (httpRequest.getParameter(JMX_VALUE) != null
+			doLastValue(httpResponse, HttpParameter.GRAPH.getParameterFrom(httpRequest));
+		} else if (HttpParameter.JMX_VALUE.getParameterFrom(httpRequest) != null
 				&& !TransportFormat.isATransportFormat(format)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			doJmxValue(httpResponse, httpRequest.getParameter(JMX_VALUE));
-		} else if (httpRequest.getParameter(REPORT_PARAMETER) != null) {
-			final String reportName = URLDecoder.decode(httpRequest.getParameter(REPORT_PARAMETER),
-					"UTF-8");
+			doJmxValue(httpResponse, HttpParameter.JMX_VALUE.getParameterFrom(httpRequest));
+		} else if (HttpParameter.REPORT.getParameterFrom(httpRequest) != null) {
+			final String reportName = URLDecoder
+					.decode(HttpParameter.REPORT.getParameterFrom(httpRequest), "UTF-8");
 			doCustomReport(httpRequest, httpResponse, reportName);
 		} else if (format == null || "html".equalsIgnoreCase(format)
-				|| "htmlbody".equalsIgnoreCase(format)) {
+				|| HtmlController.HTML_BODY_FORMAT.equalsIgnoreCase(format)) {
 			doCompressedHtml(httpRequest, httpResponse, javaInformationsList);
 		} else if ("pdf".equalsIgnoreCase(format)) {
 			final PdfController pdfController = new PdfController(collector, collectorServer);
@@ -298,9 +269,9 @@ class MonitoringController {
 	private void doCompressedSerializable(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, List<JavaInformations> javaInformationsList)
 			throws IOException {
-		final String part = httpRequest.getParameter(PART_PARAMETER);
+		final String part = HttpParameter.PART.getParameterFrom(httpRequest);
 		if (HtmlController.isLocalCollectNeeded(part)
-				&& httpRequest.getParameter(PERIOD_PARAMETER) != null) {
+				&& HttpParameter.PERIOD.getParameterFrom(httpRequest) != null) {
 			// pour l'ihm swing, on fait une collecte, pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes
 			collector.collectLocalContextWithoutErrors();
@@ -384,11 +355,11 @@ class MonitoringController {
 
 	private void doGraph(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			Range range, String graphName) throws IOException {
-		final int width = Math.min(Integer.parseInt(httpRequest.getParameter(WIDTH_PARAMETER)),
-				1600);
-		final int height = Math.min(Integer.parseInt(httpRequest.getParameter(HEIGHT_PARAMETER)),
-				1600);
-		final String max = httpRequest.getParameter(MAX_PARAMETER);
+		final int width = Math
+				.min(Integer.parseInt(HttpParameter.WIDTH.getParameterFrom(httpRequest)), 1600);
+		final int height = Math
+				.min(Integer.parseInt(HttpParameter.HEIGHT.getParameterFrom(httpRequest)), 1600);
+		final String max = HttpParameter.MAX.getParameterFrom(httpRequest);
 		final boolean maxHidden = max != null && !Boolean.parseBoolean(max);
 		final JRobin jrobin = collector.getJRobin(graphName);
 		if (jrobin != null) {
@@ -398,7 +369,7 @@ class MonitoringController {
 			httpResponse.setContentLength(img.length);
 			final String fileName = graphName + ".png";
 			// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
-			httpResponse.addHeader(CONTENT_DISPOSITION,
+			httpResponse.addHeader("Content-Disposition",
 					"inline;filename=" + fileName.replace('\n', '_').replace('\r', '_'));
 			httpResponse.getOutputStream().write(img);
 			httpResponse.flushBuffer();
@@ -441,7 +412,7 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		final OutputStream out = httpResponse.getOutputStream();
 		httpResponse.setContentType("application/xml");
-		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=web.xml");
+		httpResponse.addHeader("Content-Disposition", "inline;filename=web.xml");
 		final InputStream in = getWebXmlAsStream();
 		if (in != null) {
 			try {
@@ -457,7 +428,7 @@ class MonitoringController {
 		Action.checkSystemActionsEnabled();
 		final OutputStream out = httpResponse.getOutputStream();
 		httpResponse.setContentType("application/xml");
-		httpResponse.addHeader(CONTENT_DISPOSITION, "inline;filename=pom.xml");
+		httpResponse.addHeader("Content-Disposition", "inline;filename=pom.xml");
 		final InputStream in = MavenArtifact.getWebappPomXmlAsStream();
 		if (in != null) {
 			try {
@@ -515,13 +486,14 @@ class MonitoringController {
 	}
 
 	static boolean isJavaInformationsNeeded(HttpServletRequest httpRequest) {
-		if (httpRequest.getParameter(RESOURCE_PARAMETER) == null
-				&& httpRequest.getParameter(GRAPH_PARAMETER) == null) {
-			final String part = httpRequest.getParameter(PART_PARAMETER);
-			return part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part)
-					|| DEFAULT_WITH_CURRENT_REQUESTS_PART.equalsIgnoreCase(part)
-					|| JVM_PART.equalsIgnoreCase(part) || THREADS_PART.equalsIgnoreCase(part)
-					|| THREADS_DUMP_PART.equalsIgnoreCase(part);
+		if (HttpParameter.RESOURCE.getParameterFrom(httpRequest) == null
+				&& HttpParameter.GRAPH.getParameterFrom(httpRequest) == null) {
+			final String part = HttpParameter.PART.getParameterFrom(httpRequest);
+			return part == null || HttpPart.CURRENT_REQUESTS.getName().equals(part)
+					|| HttpPart.DEFAULT_WITH_CURRENT_REQUESTS.getName().equals(part)
+					|| HttpPart.JVM.getName().equals(part)
+					|| HttpPart.THREADS.getName().equals(part)
+					|| HttpPart.THREADS_DUMP.getName().equals(part);
 		}
 		return false;
 	}

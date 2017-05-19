@@ -362,9 +362,9 @@ class LabradorRetriever {
 	private <T> T createMockResultOfCall() throws IOException {
 		final Object result;
 		final String request = url.toString();
-		if (!request.contains(HttpParameters.PART_PARAMETER + '=')
-				&& !request.contains(HttpParameters.JMX_VALUE)
-				|| request.contains(HttpParameters.DEFAULT_WITH_CURRENT_REQUESTS_PART)) {
+		if (!request.contains(HttpParameter.PART.getName() + '=')
+				&& !request.contains(HttpParameter.JMX_VALUE.getName())
+				|| request.contains(HttpPart.DEFAULT_WITH_CURRENT_REQUESTS.getName())) {
 			final String message = request.contains("/test2") ? null
 					: "ceci est message pour le rapport";
 			result = Arrays.asList(new Counter(Counter.HTTP_COUNTER_NAME, null),
@@ -381,38 +381,38 @@ class LabradorRetriever {
 		static Object createMockResultOfPartCall(String request) throws IOException {
 			// CHECKSTYLE:ON
 			final Object result;
-			if (request.contains(HttpParameters.SESSIONS_PART)
-					&& request.contains(HttpParameters.SESSION_ID_PARAMETER)) {
+			if (request.contains(HttpPart.SESSIONS.getName())
+					&& request.contains(HttpParameter.SESSION_ID.getName())) {
 				result = null;
-			} else if (request.contains(HttpParameters.SESSIONS_PART)
-					|| request.contains(HttpParameters.PROCESSES_PART)
-					|| request.contains(HttpParameters.JNDI_PART)
-					|| request.contains(HttpParameters.CONNECTIONS_PART)
-					|| request.contains(HttpParameters.MBEANS_PART)
-					|| request.contains(HttpParameters.HOTSPOTS_PART)) {
+			} else if (request.contains(HttpPart.SESSIONS.getName())
+					|| request.contains(HttpPart.PROCESSES.getName())
+					|| request.contains(HttpPart.JNDI.getName())
+					|| request.contains(HttpPart.CONNECTIONS.getName())
+					|| request.contains(HttpPart.MBEANS.getName())
+					|| request.contains(HttpPart.HOTSPOTS.getName())) {
 				result = Collections.emptyList();
-			} else if (request.contains(HttpParameters.CURRENT_REQUESTS_PART)
-					|| request.contains(HttpParameters.WEBAPP_VERSIONS_PART)
-					|| request.contains(HttpParameters.DEPENDENCIES_PART)) {
+			} else if (request.contains(HttpPart.CURRENT_REQUESTS.getName())
+					|| request.contains(HttpPart.WEBAPP_VERSIONS.getName())
+					|| request.contains(HttpPart.DEPENDENCIES.getName())) {
 				result = Collections.emptyMap();
-			} else if (request.contains(HttpParameters.DATABASE_PART)) {
+			} else if (request.contains(HttpPart.DATABASE.getName())) {
 				try {
 					result = new DatabaseInformations(0);
 				} catch (final Exception e) {
 					throw new IllegalStateException(e);
 				}
-			} else if (request.contains(HttpParameters.HEAP_HISTO_PART)) {
+			} else if (request.contains(HttpPart.HEAP_HISTO.getName())) {
 				final InputStream input = LabradorMock.class.getResourceAsStream("/heaphisto.txt");
 				try {
 					result = new HeapHistogram(input, false);
 				} finally {
 					input.close();
 				}
-			} else if (request.contains(HttpParameters.LAST_VALUE_PART)) {
+			} else if (request.contains(HttpPart.LAST_VALUE.getName())) {
 				result = -1d;
-			} else if (request.contains(HttpParameters.JMX_VALUE)) {
+			} else if (request.contains(HttpParameter.JMX_VALUE.getName())) {
 				result = "-1";
-			} else if (request.contains(HttpParameters.JVM_PART)) {
+			} else if (request.contains(HttpPart.JVM.getName())) {
 				result = Collections
 						.singletonList(new JavaInformations(Parameters.getServletContext(), false));
 			} else {

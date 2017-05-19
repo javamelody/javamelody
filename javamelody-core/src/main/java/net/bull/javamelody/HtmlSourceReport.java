@@ -137,7 +137,7 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			if (index1 > index0 && index2 != -1 && index3 > index2) {
 				final String classNameEncoded = urlEncode(element.substring(index0 + 1, index1));
 				return htmlEncodeButNotSpace(element.substring(0, index2 + 1)) + "<a href='?part="
-						+ HttpParameters.SOURCE_PART + "&amp;class=" + classNameEncoded + '#'
+						+ HttpPart.SOURCE + "&amp;class=" + classNameEncoded + '#'
 						+ urlEncode(element.substring(index3 + 1, element.length() - 1))
 						+ "' class='lightwindow' type='external' title='" + classNameEncoded + "'>"
 						+ htmlEncode(element.substring(index2 + 1, element.length() - 1)) + "</a>)";
@@ -151,7 +151,7 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		if (cleanClassName.endsWith("[]")) {
 			cleanClassName = cleanClassName.substring(0, cleanClassName.length() - 2);
 		}
-		return "<a href='?part=" + HttpParameters.SOURCE_PART + "&amp;class=" + cleanClassName
+		return "<a href='?part=" + HttpPart.SOURCE + "&amp;class=" + cleanClassName
 				+ "' class='lightwindow' type='external' title='" + cleanClassName + "'>"
 				+ className + "</a>";
 	}

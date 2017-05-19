@@ -17,24 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.CONTENT_DISPOSITION;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PART;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.RUNTIME_DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +25,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.RequestToMethodMapper.RequestAttribute;
+import net.bull.javamelody.RequestToMethodMapper.RequestParameter;
+import net.bull.javamelody.RequestToMethodMapper.RequestPart;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
@@ -50,9 +35,14 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * @author Emeric Vernat
  */
 class PdfController {
+	private static final String RANGE_KEY = "range";
+	private static final String JAVA_INFORMATIONS_LIST_KEY = "javaInformationsList";
+	private static final RequestToMethodMapper<PdfController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<PdfController>(
+			PdfController.class);
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;
+	private PdfOtherReport pdfOtherReport;
 
 	PdfController(Collector collector, CollectorServer collectorServer) {
 		super();
@@ -65,7 +55,8 @@ class PdfController {
 			List<JavaInformations> javaInformationsList) throws IOException {
 		addPdfContentTypeAndDisposition(httpRequest, httpResponse);
 		try {
-			final String part = httpRequest.getParameter(PART_PARAMETER);
+			final String part = HttpParameter.PART.getParameterFrom(httpRequest);
+			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			if (part == null) {
 				if (!isFromCollectorServer() && !collector.isStopped()) {
 					// avant de faire l'affichage on fait une collecte,  pour que les courbes
@@ -75,84 +66,27 @@ class PdfController {
 					collector.collectLocalContextWithoutErrors();
 				}
 
-				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 				final PdfReport pdfReport = new PdfReport(collector, isFromCollectorServer(),
 						javaInformationsList, range, httpResponse.getOutputStream());
 				pdfReport.toPdf();
 			} else {
-				try {
-					doPdfPart(httpRequest, httpResponse, part, javaInformationsList);
-				} catch (final IOException e) { // NOPMD
-					throw e;
-				} catch (final Exception e) {
-					// ne devrait pas arriver puisque les pdf ne s'affichent normalement pas sans afficher auparavant le html
-					throw new IllegalStateException(e);
-				}
+				this.pdfOtherReport = new PdfOtherReport(getApplication(),
+						httpResponse.getOutputStream());
+				// range et javaInformationsList sont passés en attribut de la requête avec @RequestAttribute
+				// au lieu d'être en paramètre de new PdfOtherReport
+				httpRequest.setAttribute(RANGE_KEY, range);
+				httpRequest.setAttribute(JAVA_INFORMATIONS_LIST_KEY, javaInformationsList);
+				REQUEST_TO_METHOD_MAPPER.invoke(httpRequest, this);
 			}
 		} finally {
 			httpResponse.getOutputStream().flush();
 		}
 	}
 
-	private void doPdfPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			String part, List<JavaInformations> javaInformationsList) throws Exception { // NOPMD
-		final PdfOtherReport pdfOtherReport = new PdfOtherReport(getApplication(),
-				httpResponse.getOutputStream());
-		final boolean done = doPdfPartForSystemActions(httpRequest, part, pdfOtherReport);
-		if (done) {
-			return;
-		}
-		if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			doCurrentRequests(pdfOtherReport, javaInformationsList, range);
-		} else if (RUNTIME_DEPENDENCIES_PART.equalsIgnoreCase(part)) {
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final Counter counter = collector.getRangeCounter(range, counterName);
-			pdfOtherReport.writeRuntimeDependencies(counter, range);
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final Counter counter = collector.getRangeCounter(range, counterName);
-			pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
-		} else if (GRAPH_PART.equalsIgnoreCase(part)) {
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			pdfOtherReport.writeRequestAndGraphDetail(collector, collectorServer, range, requestId);
-		} else {
-			throw new IllegalArgumentException(part);
-		}
-	}
-
-	private boolean doPdfPartForSystemActions(HttpServletRequest httpRequest, String part,
-			PdfOtherReport pdfOtherReport) throws Exception { // NOPMD
-		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			doSessions(pdfOtherReport);
-		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
-			doHotspots(pdfOtherReport);
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			doProcesses(pdfOtherReport);
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			final int index = DatabaseInformations
-					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
-			doDatabase(pdfOtherReport, index);
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			doJndi(pdfOtherReport, httpRequest.getParameter(PATH_PARAMETER));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			doMBeans(pdfOtherReport);
-		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			doHeapHisto(pdfOtherReport);
-		} else {
-			// pas pour nous
-			return false;
-		}
-		// fait et ok
-		return true;
-	}
-
-	private void doCurrentRequests(PdfOtherReport pdfOtherReport,
-			List<JavaInformations> javaInformationsList, final Range range) throws IOException {
+	@RequestPart(HttpPart.CURRENT_REQUESTS)
+	void doCurrentRequests(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList,
+			@RequestAttribute(RANGE_KEY) Range range) throws IOException {
 		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(range);
 		final Map<JavaInformations, List<CounterRequestContext>> currentRequests;
 		if (!isFromCollectorServer()) {
@@ -171,7 +105,29 @@ class PdfController {
 				timeOfSnapshot);
 	}
 
-	private void doSessions(PdfOtherReport pdfOtherReport) throws IOException {
+	@RequestPart(HttpPart.RUNTIME_DEPENDENCIES)
+	void doRuntimeDependencies(@RequestAttribute(RANGE_KEY) Range range,
+			@RequestParameter(HttpParameter.COUNTER) String counterName) throws IOException {
+		final Counter counter = collector.getRangeCounter(range, counterName);
+		pdfOtherReport.writeRuntimeDependencies(counter, range);
+	}
+
+	@RequestPart(HttpPart.COUNTER_SUMMARY_PER_CLASS)
+	void doCounterSummaryPerClass(@RequestAttribute(RANGE_KEY) Range range,
+			@RequestParameter(HttpParameter.GRAPH) String requestId,
+			@RequestParameter(HttpParameter.COUNTER) String counterName) throws IOException {
+		final Counter counter = collector.getRangeCounter(range, counterName);
+		pdfOtherReport.writeCounterSummaryPerClass(collector, counter, requestId, range);
+	}
+
+	@RequestPart(HttpPart.GRAPH)
+	void doRequestAndGraphDetail(@RequestAttribute(RANGE_KEY) Range range,
+			@RequestParameter(HttpParameter.GRAPH) String requestId) throws IOException {
+		pdfOtherReport.writeRequestAndGraphDetail(collector, collectorServer, range, requestId);
+	}
+
+	@RequestPart(HttpPart.SESSIONS)
+	void doSessions() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final List<SessionInformations> sessionsInformations;
@@ -184,7 +140,8 @@ class PdfController {
 		pdfOtherReport.writeSessionInformations(sessionsInformations);
 	}
 
-	private void doHotspots(PdfOtherReport pdfOtherReport) throws IOException {
+	@RequestPart(HttpPart.HOTSPOTS)
+	void doHotspots() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		if (!isFromCollectorServer()) {
@@ -196,7 +153,8 @@ class PdfController {
 		}
 	}
 
-	private void doProcesses(PdfOtherReport pdfOtherReport) throws IOException {
+	@RequestPart(HttpPart.PROCESSES)
+	void doProcesses() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		if (!isFromCollectorServer()) {
@@ -210,9 +168,11 @@ class PdfController {
 		}
 	}
 
-	private void doDatabase(PdfOtherReport pdfOtherReport, final int index) throws Exception { // NOPMD
+	@RequestPart(HttpPart.DATABASE)
+	void doDatabase(@RequestParameter(HttpParameter.REQUEST) String requestIndex) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
+		final int index = DatabaseInformations.parseRequestIndex(requestIndex);
 		final DatabaseInformations databaseInformations;
 		if (!isFromCollectorServer()) {
 			databaseInformations = new DatabaseInformations(index);
@@ -223,7 +183,8 @@ class PdfController {
 		pdfOtherReport.writeDatabaseInformations(databaseInformations);
 	}
 
-	private void doJndi(PdfOtherReport pdfOtherReport, String path) throws Exception { // NOPMD
+	@RequestPart(HttpPart.JNDI)
+	void doJndi(@RequestParameter(HttpParameter.PATH) String path) throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final List<JndiBinding> jndiBindings;
@@ -235,7 +196,8 @@ class PdfController {
 		pdfOtherReport.writeJndi(jndiBindings, JndiBinding.normalizePath(path));
 	}
 
-	private void doMBeans(PdfOtherReport pdfOtherReport) throws Exception { // NOPMD
+	@RequestPart(HttpPart.MBEANS)
+	void doMBeans() throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		if (!isFromCollectorServer()) {
@@ -248,7 +210,8 @@ class PdfController {
 		}
 	}
 
-	private void doHeapHisto(PdfOtherReport pdfOtherReport) throws Exception { // NOPMD
+	@RequestPart(HttpPart.HEAP_HISTO)
+	void doHeapHisto() throws Exception { // NOPMD
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final HeapHistogram heapHistogram;
@@ -266,7 +229,7 @@ class PdfController {
 		final String contentDisposition = encodeFileNameToContentDisposition(httpRequest,
 				PdfReport.getFileName(getApplication()));
 		// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
-		httpResponse.addHeader(CONTENT_DISPOSITION,
+		httpResponse.addHeader("Content-Disposition",
 				contentDisposition.replace('\n', '_').replace('\r', '_'));
 	}
 

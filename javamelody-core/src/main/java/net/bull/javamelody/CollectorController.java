@@ -17,45 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.ACTION_PARAMETER;
-import static net.bull.javamelody.HttpParameters.APPLICATIONS_PART;
-import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
-import static net.bull.javamelody.HttpParameters.CACHE_KEY_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.EXPLAIN_PLAN_PART;
-import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
-import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
-import static net.bull.javamelody.HttpParameters.JMX_VALUE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.JOB_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.JVM_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.OTHER_JROBINS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.POM_XML_PART;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SOURCE_PART;
-import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
-import static net.bull.javamelody.HttpParameters.THREADS_PART;
-import static net.bull.javamelody.HttpParameters.THREAD_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.WEB_XML_PART;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -112,7 +73,7 @@ class CollectorController { // NOPMD
 	void doMonitoring(HttpServletRequest req, HttpServletResponse resp, String application)
 			throws IOException {
 		try {
-			final String actionParameter = req.getParameter(ACTION_PARAMETER);
+			final String actionParameter = HttpParameter.ACTION.getParameterFrom(req);
 			if (actionParameter != null) {
 				if (CSRF_PROTECTION_ENABLED) {
 					MonitoringController.checkCsrfToken(req);
@@ -140,7 +101,8 @@ class CollectorController { // NOPMD
 					messageForReport = monitoringController.executeActionIfNeeded(req);
 				}
 
-				if (TransportFormat.isATransportFormat(req.getParameter(FORMAT_PARAMETER))) {
+				if (TransportFormat
+						.isATransportFormat(HttpParameter.FORMAT.getParameterFrom(req))) {
 					final SerializableController serializableController = new SerializableController(
 							collector);
 					final Range range = serializableController.getRangeForSerializable(req);
@@ -171,10 +133,10 @@ class CollectorController { // NOPMD
 		final Collector collector = getCollectorByApplication(application);
 		final MonitoringController monitoringController = new MonitoringController(collector,
 				collectorServer);
-		final String partParameter = req.getParameter(PART_PARAMETER);
-		final String formatParameter = req.getParameter(FORMAT_PARAMETER);
-		if (req.getParameter(JMX_VALUE) != null) {
-			doJmxValue(req, resp, application, req.getParameter(JMX_VALUE));
+		final String partParameter = HttpParameter.PART.getParameterFrom(req);
+		final String formatParameter = HttpParameter.FORMAT.getParameterFrom(req);
+		if (HttpParameter.JMX_VALUE.getParameterFrom(req) != null) {
+			doJmxValue(req, resp, application, HttpParameter.JMX_VALUE.getParameterFrom(req));
 		} else if (TransportFormat.isATransportFormat(formatParameter)) {
 			doCompressedSerializable(req, resp, application, monitoringController);
 		} else if (partParameter == null || "pdf".equalsIgnoreCase(formatParameter)) {
@@ -184,12 +146,12 @@ class CollectorController { // NOPMD
 					application);
 			monitoringController.doReport(req, resp, javaInformationsList);
 		} else {
-			doCompressedPart(req, resp, application, monitoringController, partParameter);
+			doCompressedPart(req, resp, application, monitoringController);
 		}
 	}
 
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			String application, MonitoringController monitoringController, String partParameter)
+			String application, MonitoringController monitoringController)
 			throws IOException, ServletException {
 		if (MonitoringController.isCompressionSupported(httpRequest)) {
 			// comme la page html peut être volumineuse
@@ -199,38 +161,41 @@ class CollectorController { // NOPMD
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
-				doPart(httpRequest, wrappedResponse, application, monitoringController,
-						partParameter);
+				doPart(httpRequest, wrappedResponse, application, monitoringController);
 			} finally {
 				wrappedResponse.finishResponse();
 			}
 		} else {
-			doPart(httpRequest, httpResponse, application, monitoringController, partParameter);
+			doPart(httpRequest, httpResponse, application, monitoringController);
 		}
 	}
 
 	private void doPart(HttpServletRequest req, HttpServletResponse resp, String application,
-			MonitoringController monitoringController, String partParameter)
-			throws IOException, ServletException {
-		if (WEB_XML_PART.equalsIgnoreCase(partParameter)
-				|| POM_XML_PART.equalsIgnoreCase(partParameter)
-				|| DEPENDENCIES_PART.equalsIgnoreCase(partParameter)
-				|| SPRING_BEANS_PART.equalsIgnoreCase(partParameter)) {
+			MonitoringController monitoringController) throws IOException, ServletException {
+		if (HttpPart.WEB_XML.isPart(req) || HttpPart.POM_XML.isPart(req)
+				|| HttpPart.DEPENDENCIES.isPart(req) || HttpPart.SPRING_BEANS.isPart(req)) {
 			noCache(resp);
-			doProxy(req, resp, application, partParameter);
-		} else if (SOURCE_PART.equalsIgnoreCase(partParameter)) {
+			// récupération à la demande du contenu du web.xml de la webapp monitorée
+			// (et non celui du serveur de collecte),
+			// on prend la 1ère url puisque le contenu de web.xml est censé être le même
+			// dans tout l'éventuel cluster
+			final URL url = getUrlsByApplication(application).get(0);
+			// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
+			doProxy(req, resp, url, HttpParameter.PART.getParameterFrom(req));
+		} else if (HttpPart.SOURCE.isPart(req)) {
 			noCache(resp);
-			doProxy(req, resp, application, partParameter + '&' + CLASS_PARAMETER + '='
-					+ req.getParameter(CLASS_PARAMETER));
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(partParameter)) {
-			doMultiHtmlProxy(req, resp, application, CONNECTIONS_PART,
+			final URL url = getUrlsByApplication(application).get(0);
+			doProxy(req, resp, url, HttpParameter.PART.toString() + '&' + HttpParameter.CLASS + '='
+					+ HttpParameter.CLASS.getParameterFrom(req));
+		} else if (HttpPart.CONNECTIONS.isPart(req)) {
+			doMultiHtmlProxy(req, resp, application, HttpPart.CONNECTIONS.getName(),
 					I18N.getString("Connexions_jdbc_ouvertes"), I18N.getString("connexions_intro"),
 					"db.png");
-		} else if (CACHE_KEYS_PART.equalsIgnoreCase(partParameter)) {
+		} else if (HttpPart.CACHE_KEYS.isPart(req)) {
 			// note: cache keys may not be serializable, so we do not try to serialize them
-			final String cacheId = req.getParameter(CACHE_ID_PARAMETER);
+			final String cacheId = HttpParameter.CACHE_ID.getParameterFrom(req);
 			doMultiHtmlProxy(req, resp, application,
-					CACHE_KEYS_PART + '&' + CACHE_ID_PARAMETER + '=' + cacheId,
+					HttpPart.CACHE_KEYS.toString() + '&' + HttpParameter.CACHE_ID + '=' + cacheId,
 					I18N.getFormattedString("Keys_cache", cacheId), null, "caches.png");
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
@@ -253,25 +218,19 @@ class CollectorController { // NOPMD
 			}
 			final URL proxyUrl = new URL(
 					url.toString().replace(TransportFormat.SERIALIZED.getCode(), "")
-							.replace(TransportFormat.XML.getCode(), "") + '&' + JMX_VALUE + '='
-							+ jmxValueParameter);
+							.replace(TransportFormat.XML.getCode(), "") + '&'
+							+ HttpParameter.JMX_VALUE + '=' + jmxValueParameter);
 			new LabradorRetriever(proxyUrl).copyTo(req, resp);
 		}
 		resp.getOutputStream().close();
 	}
 
-	private void doProxy(HttpServletRequest req, HttpServletResponse resp, String application,
+	private void doProxy(HttpServletRequest req, HttpServletResponse resp, URL url,
 			String partParameter) throws IOException {
-		// récupération à la demande du contenu du web.xml de la webapp monitorée
-		// (et non celui du serveur de collecte),
-		// on prend la 1ère url puisque le contenu de web.xml est censé être le même
-		// dans tout l'éventuel cluster
-		final URL url = getUrlsByApplication(application).get(0);
-		// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
-		final URL proxyUrl = new URL(
-				url.toString().replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
-						.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT) + '&'
-						+ PART_PARAMETER + '=' + partParameter);
+		final URL proxyUrl = new URL(url.toString()
+				.replace(TransportFormat.SERIALIZED.getCode(), HtmlController.HTML_BODY_FORMAT)
+				.replace(TransportFormat.XML.getCode(), HtmlController.HTML_BODY_FORMAT) + '&'
+				+ HttpParameter.PART + '=' + partParameter);
 		new LabradorRetriever(proxyUrl).copyTo(req, resp);
 	}
 
@@ -301,11 +260,7 @@ class CollectorController { // NOPMD
 					+ I18N.htmlEncode(title, false) + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			final URL proxyUrl = new URL(
-					url.toString().replace(TransportFormat.SERIALIZED.getCode(), HTML_BODY_FORMAT)
-							.replace(TransportFormat.XML.getCode(), HTML_BODY_FORMAT) + '&'
-							+ PART_PARAMETER + '=' + partParameter);
-			new LabradorRetriever(proxyUrl).copyTo(req, resp);
+			doProxy(req, resp, url, partParameter);
 		}
 		htmlReport.writeHtmlFooter();
 		writer.close();
@@ -334,24 +289,23 @@ class CollectorController { // NOPMD
 		final Collector collector = getCollectorByApplication(application);
 		final SerializableController serializableController = new SerializableController(collector);
 		final Range range = serializableController.getRangeForSerializable(httpRequest);
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (THREADS_PART.equalsIgnoreCase(part)) {
+		if (HttpPart.THREADS.isPart(httpRequest)) {
 			return new ArrayList<List<ThreadInformations>>(
 					collectorServer.getThreadInformationsLists(application));
-		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.CURRENT_REQUESTS.isPart(httpRequest)) {
 			return new LinkedHashMap<JavaInformations, List<CounterRequestContext>>(
 					collectorServer.collectCurrentRequests(application));
-		} else if (EXPLAIN_PLAN_PART.equalsIgnoreCase(part)) {
-			final String sqlRequest = httpRequest.getHeader(REQUEST_PARAMETER);
+		} else if (HttpPart.EXPLAIN_PLAN.isPart(httpRequest)) {
+			final String sqlRequest = httpRequest.getHeader(HttpParameter.REQUEST.getName());
 			return collectorServer.collectSqlRequestExplainPlan(application, sqlRequest);
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
+		} else if (HttpPart.COUNTER_SUMMARY_PER_CLASS.isPart(httpRequest)) {
+			final String counterName = HttpParameter.COUNTER.getParameterFrom(httpRequest);
+			final String requestId = HttpParameter.GRAPH.getParameterFrom(httpRequest);
 			final Counter counter = collector.getRangeCounter(range, counterName);
 			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
 			return new ArrayList<CounterRequest>(requestList);
-		} else if (APPLICATIONS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.APPLICATIONS.isPart(httpRequest)) {
 			// list all applications, with last exceptions if not available,
 			// use ?part=applications&format=json for example
 			final Map<String, Throwable> applications = new HashMap<String, Throwable>();
@@ -360,8 +314,8 @@ class CollectorController { // NOPMD
 			}
 			applications.putAll(collectorServer.getLastCollectExceptionsByApplication());
 			return new HashMap<String, Throwable>(applications);
-		} else if (JROBINS_PART.equalsIgnoreCase(part)
-				|| OTHER_JROBINS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.JROBINS.isPart(httpRequest)
+				|| HttpPart.OTHER_JROBINS.isPart(httpRequest)) {
 			// pour UI Swing
 			return serializableController.createSerializable(httpRequest, null, null);
 		}
@@ -375,52 +329,51 @@ class CollectorController { // NOPMD
 	private Serializable createSerializableForSystemActions(HttpServletRequest httpRequest,
 			String application) throws IOException {
 		// CHECKSTYLE:ON
-		final String part = httpRequest.getParameter(PART_PARAMETER);
-		if (JVM_PART.equalsIgnoreCase(part)) {
+		if (HttpPart.JVM.isPart(httpRequest)) {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);
 			return new ArrayList<JavaInformations>(javaInformationsList);
-		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.HEAP_HISTO.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return collectorServer.collectHeapHistogram(application);
-		} else if (SESSIONS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.SESSIONS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			final String sessionId = httpRequest.getParameter(SESSION_ID_PARAMETER);
+			final String sessionId = HttpParameter.SESSION_ID.getParameterFrom(httpRequest);
 			final List<SessionInformations> sessionInformations = collectorServer
 					.collectSessionInformations(application, sessionId);
 			if (sessionId != null && !sessionInformations.isEmpty()) {
 				return sessionInformations.get(0);
 			}
 			return new ArrayList<SessionInformations>(sessionInformations);
-		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.HOTSPOTS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<SampledMethod>(collectorServer.collectHotspots(application));
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.PROCESSES.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return new LinkedHashMap<String, List<ProcessInformations>>(
 					collectorServer.collectProcessInformations(application));
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.JNDI.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			final String path = httpRequest.getParameter(PATH_PARAMETER);
+			final String path = HttpParameter.PATH.getParameterFrom(httpRequest);
 			return new ArrayList<JndiBinding>(
 					collectorServer.collectJndiBindings(application, path));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.MBEANS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return new LinkedHashMap<String, List<MBeanNode>>(
 					collectorServer.collectMBeans(application));
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.DATABASE.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			final int requestIndex = DatabaseInformations
-					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
+					.parseRequestIndex(HttpParameter.REQUEST.getParameterFrom(httpRequest));
 			return collectorServer.collectDatabaseInformations(application, requestIndex);
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
+		} else if (HttpPart.CONNECTIONS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<List<ConnectionInformations>>(
@@ -444,7 +397,6 @@ class CollectorController { // NOPMD
 
 	void writeMessage(HttpServletRequest req, HttpServletResponse resp, String application,
 			String message) throws IOException {
-		noCache(resp);
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 				application);
@@ -453,11 +405,12 @@ class CollectorController { // NOPMD
 		} else {
 			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partToRedirectTo;
-			if (req.getParameter(CACHE_ID_PARAMETER) == null) {
-				partToRedirectTo = req.getParameter(PART_PARAMETER);
+			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null) {
+				partToRedirectTo = HttpParameter.PART.getParameterFrom(req);
 			} else {
-				partToRedirectTo = req.getParameter(PART_PARAMETER) + '&' + CACHE_ID_PARAMETER + '='
-						+ req.getParameter(CACHE_ID_PARAMETER);
+				partToRedirectTo = HttpParameter.PART.getParameterFrom(req) + '&'
+						+ HttpParameter.CACHE_ID + '='
+						+ HttpParameter.CACHE_ID.getParameterFrom(req);
 			}
 			// la période n'a pas d'importance pour writeMessageIfNotNull
 			new HtmlReport(collector, collectorServer, javaInformationsList, Period.TOUT, writer)
@@ -469,13 +422,10 @@ class CollectorController { // NOPMD
 	private static PrintWriter createWriterFromOutputStream(HttpServletResponse httpResponse)
 			throws IOException {
 		noCache(httpResponse);
-		httpResponse.setContentType(HTML_CONTENT_TYPE);
 		return new PrintWriter(MonitoringController.getWriter(httpResponse));
 	}
 
 	static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
-		noCache(resp);
-		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
 				+ "'><head><title>Monitoring</title></head><body>");
@@ -486,8 +436,6 @@ class CollectorController { // NOPMD
 
 	static void writeDataUnavailableForApplication(String application, HttpServletResponse resp)
 			throws IOException {
-		noCache(resp);
-		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
 				+ "'><head><title>Monitoring</title></head><body>");
@@ -516,7 +464,6 @@ class CollectorController { // NOPMD
 
 	static void showAlertAndRedirectTo(HttpServletResponse resp, String message, String redirectTo)
 			throws IOException {
-		resp.setContentType(HTML_CONTENT_TYPE);
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<script type='text/javascript'>alert('");
 		writer.write(I18N.javascriptEncode(message));
@@ -532,12 +479,12 @@ class CollectorController { // NOPMD
 
 	private String forwardActionAndUpdateData(HttpServletRequest req, String application)
 			throws IOException {
-		final String actionParameter = req.getParameter(ACTION_PARAMETER);
-		final String sessionIdParameter = req.getParameter(SESSION_ID_PARAMETER);
-		final String threadIdParameter = req.getParameter(THREAD_ID_PARAMETER);
-		final String jobIdParameter = req.getParameter(JOB_ID_PARAMETER);
-		final String cacheIdParameter = req.getParameter(CACHE_ID_PARAMETER);
-		final String cacheKeyParameter = req.getParameter(CACHE_KEY_PARAMETER);
+		final String actionParameter = HttpParameter.ACTION.getParameterFrom(req);
+		final String sessionIdParameter = HttpParameter.SESSION_ID.getParameterFrom(req);
+		final String threadIdParameter = HttpParameter.THREAD_ID.getParameterFrom(req);
+		final String jobIdParameter = HttpParameter.JOB_ID.getParameterFrom(req);
+		final String cacheIdParameter = HttpParameter.CACHE_ID.getParameterFrom(req);
+		final String cacheKeyParameter = HttpParameter.CACHE_KEY.getParameterFrom(req);
 		final List<URL> urls = getUrlsByApplication(application);
 		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
 		for (final URL url : urls) {

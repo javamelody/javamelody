@@ -17,11 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.COLLECTOR_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.RESOURCE_PARAMETER;
-import static net.bull.javamelody.HttpParameters.RUM_PART;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -384,7 +379,7 @@ public class MonitoringFilter implements Filter {
 		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
 				filterConfig.getServletContext());
 
-		if ("stop".equalsIgnoreCase(httpRequest.getParameter(COLLECTOR_PARAMETER))) {
+		if ("stop".equalsIgnoreCase(HttpParameter.COLLECTOR.getParameterFrom(httpRequest))) {
 			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,
 			// le stockage et les courbes, donc on arrête le timer s'il est démarré
 			// et on vide les stats pour que le serveur de collecte ne récupère que les deltas
@@ -406,12 +401,12 @@ public class MonitoringFilter implements Filter {
 			HttpServletResponse httpResponse) throws IOException {
 		if (rumEnabled) {
 			// these 2 ifs must be before isAllowed verification
-			if (RumInjector.isRumResource(httpRequest.getParameter(RESOURCE_PARAMETER))) {
+			if (RumInjector.isRumResource(HttpParameter.RESOURCE.getParameterFrom(httpRequest))) {
 				// this is to give the boomerang.min.js content
 				MonitoringController.doResource(httpResponse,
-						httpRequest.getParameter(RESOURCE_PARAMETER));
+						HttpParameter.RESOURCE.getParameterFrom(httpRequest));
 				return true;
-			} else if (RUM_PART.equals(httpRequest.getParameter(PART_PARAMETER))) {
+			} else if (HttpPart.RUM.isPart(httpRequest)) {
 				// this is the call by the boomerang beacon to notify RUM data
 				MonitoringController.noCache(httpResponse);
 				httpResponse.setContentType("image/png");

@@ -17,7 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -280,10 +279,10 @@ public class TestHtmlReport {
 		htmlReport.writeSessionDetail("", null);
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
-				SESSIONS_PART);
+				HttpPart.SESSIONS.getName());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), null,
-				SESSIONS_PART);
+				HttpPart.SESSIONS.getName());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);

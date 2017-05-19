@@ -17,38 +17,6 @@
  */
 package net.bull.javamelody; // NOPMD
 
-import static net.bull.javamelody.HttpParameters.CACHE_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CACHE_KEYS_PART;
-import static net.bull.javamelody.HttpParameters.CLASS_PARAMETER;
-import static net.bull.javamelody.HttpParameters.CONNECTIONS_PART;
-import static net.bull.javamelody.HttpParameters.COUNTER_PARAMETER;
-import static net.bull.javamelody.HttpParameters.COUNTER_SUMMARY_PER_CLASS_PART;
-import static net.bull.javamelody.HttpParameters.CURRENT_REQUESTS_PART;
-import static net.bull.javamelody.HttpParameters.DATABASE_PART;
-import static net.bull.javamelody.HttpParameters.DEPENDENCIES_PART;
-import static net.bull.javamelody.HttpParameters.FORMAT_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.GRAPH_PART;
-import static net.bull.javamelody.HttpParameters.HEAP_HISTO_PART;
-import static net.bull.javamelody.HttpParameters.HOTSPOTS_PART;
-import static net.bull.javamelody.HttpParameters.HTML_BODY_FORMAT;
-import static net.bull.javamelody.HttpParameters.HTML_CHARSET;
-import static net.bull.javamelody.HttpParameters.HTML_CONTENT_TYPE;
-import static net.bull.javamelody.HttpParameters.JNDI_PART;
-import static net.bull.javamelody.HttpParameters.MBEANS_PART;
-import static net.bull.javamelody.HttpParameters.PART_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PATH_PARAMETER;
-import static net.bull.javamelody.HttpParameters.PROCESSES_PART;
-import static net.bull.javamelody.HttpParameters.REQUEST_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SESSIONS_PART;
-import static net.bull.javamelody.HttpParameters.SESSION_ID_PARAMETER;
-import static net.bull.javamelody.HttpParameters.SOURCE_PART;
-import static net.bull.javamelody.HttpParameters.SPRING_BEANS_PART;
-import static net.bull.javamelody.HttpParameters.TEXT_CONTENT_TYPE;
-import static net.bull.javamelody.HttpParameters.THREADS_DUMP_PART;
-import static net.bull.javamelody.HttpParameters.THREADS_PART;
-import static net.bull.javamelody.HttpParameters.USAGES_PART;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -61,6 +29,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.RequestToMethodMapper.RequestParameter;
+import net.bull.javamelody.RequestToMethodMapper.RequestPart;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
@@ -68,11 +38,15 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * @author Emeric Vernat
  */
 class HtmlController {
+	static final String HTML_BODY_FORMAT = "htmlbody";
+	private static final RequestToMethodMapper<HtmlController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<HtmlController>(
+			HtmlController.class);
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;
 	private final String messageForReport;
 	private final String anchorNameForRedirect;
+	private HtmlReport htmlReport;
 
 	HtmlController(Collector collector, CollectorServer collectorServer, String messageForReport,
 			String anchorNameForRedirect) {
@@ -86,7 +60,7 @@ class HtmlController {
 
 	void doHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			List<JavaInformations> javaInformationsList) throws IOException {
-		final String part = httpRequest.getParameter(PART_PARAMETER);
+		final String part = HttpParameter.PART.getParameterFrom(httpRequest);
 		if (!isFromCollectorServer() && isLocalCollectNeeded(part) && !collector.isStopped()) {
 			// avant de faire l'affichage on fait une collecte, pour que les courbes
 			// et les compteurs par jour soit à jour avec les dernières requêtes,
@@ -96,96 +70,76 @@ class HtmlController {
 		}
 
 		// simple appel de monitoring sans format
-		httpResponse.setContentType(HTML_CONTENT_TYPE);
 		final BufferedWriter writer = getWriter(httpResponse);
 		try {
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
-			final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
-					javaInformationsList, range, writer);
+			this.htmlReport = new HtmlReport(collector, collectorServer, javaInformationsList,
+					range, writer);
 			if (part == null) {
 				htmlReport.toHtml(messageForReport, anchorNameForRedirect);
-			} else if (THREADS_DUMP_PART.equalsIgnoreCase(part)) {
-				httpResponse.setContentType(TEXT_CONTENT_TYPE);
+			} else if (HttpPart.THREADS_DUMP.isPart(httpRequest)) {
+				httpResponse.setContentType("text/plain; charset=UTF-8");
 				htmlReport.writeThreadsDump();
 			} else {
-				doHtmlPart(httpRequest, part, htmlReport);
+				REQUEST_TO_METHOD_MAPPER.invoke(httpRequest, this);
 			}
 		} finally {
 			writer.close();
 		}
 	}
 
-	static boolean isLocalCollectNeeded(final String part) {
-		return part == null || CURRENT_REQUESTS_PART.equalsIgnoreCase(part)
-				|| GRAPH_PART.equalsIgnoreCase(part)
-				|| COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part);
+	static boolean isLocalCollectNeeded(String part) {
+		return part == null || HttpPart.CURRENT_REQUESTS.getName().equals(part)
+				|| HttpPart.GRAPH.getName().equals(part)
+				|| HttpPart.COUNTER_SUMMARY_PER_CLASS.getName().equals(part);
 	}
 
 	static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
-		return new BufferedWriter(
-				new OutputStreamWriter(httpResponse.getOutputStream(), HTML_CHARSET));
+		httpResponse.setContentType("text/html; charset=UTF-8");
+		return new BufferedWriter(new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8"));
 	}
 
-	private void doHtmlPart(HttpServletRequest httpRequest, String part, HtmlReport htmlReport)
+	@RequestPart(HttpPart.GRAPH)
+	void doRequestGraphAndDetail(@RequestParameter(HttpParameter.GRAPH) String graphName)
 			throws IOException {
-		if (GRAPH_PART.equalsIgnoreCase(part)) {
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			htmlReport.writeRequestAndGraphDetail(graphName);
-		} else if (USAGES_PART.equalsIgnoreCase(part)) {
-			final String graphName = httpRequest.getParameter(GRAPH_PARAMETER);
-			htmlReport.writeRequestUsages(graphName);
-		} else if (CURRENT_REQUESTS_PART.equalsIgnoreCase(part)) {
-			htmlReport.writeAllCurrentRequestsAsPart();
-		} else if (THREADS_PART.equalsIgnoreCase(part)) {
-			htmlReport.writeAllThreadsAsPart();
-		} else if (COUNTER_SUMMARY_PER_CLASS_PART.equalsIgnoreCase(part)) {
-			final String counterName = httpRequest.getParameter(COUNTER_PARAMETER);
-			final String requestId = httpRequest.getParameter(GRAPH_PARAMETER);
-			htmlReport.writeCounterSummaryPerClass(counterName, requestId);
-		} else if (SOURCE_PART.equalsIgnoreCase(part)) {
-			final String className = httpRequest.getParameter(CLASS_PARAMETER);
-			htmlReport.writeSource(className);
-		} else if (DEPENDENCIES_PART.equalsIgnoreCase(part)) {
-			htmlReport.writeDependencies();
-		} else if (CACHE_KEYS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT
-					.equalsIgnoreCase(httpRequest.getParameter(FORMAT_PARAMETER));
-			doCacheKeys(htmlReport, httpRequest.getParameter(CACHE_ID_PARAMETER), withoutHeaders);
-		} else {
-			doHtmlPartForSystemActions(httpRequest, part, htmlReport);
-		}
+		htmlReport.writeRequestAndGraphDetail(graphName);
 	}
 
-	private void doHtmlPartForSystemActions(HttpServletRequest httpRequest, String part,
-			HtmlReport htmlReport) throws IOException {
-		if (SESSIONS_PART.equalsIgnoreCase(part)) {
-			doSessions(htmlReport, httpRequest.getParameter(SESSION_ID_PARAMETER));
-		} else if (HOTSPOTS_PART.equalsIgnoreCase(part)) {
-			doHotspots(htmlReport);
-		} else if (HEAP_HISTO_PART.equalsIgnoreCase(part)) {
-			doHeapHisto(htmlReport);
-		} else if (PROCESSES_PART.equalsIgnoreCase(part)) {
-			doProcesses(htmlReport);
-		} else if (DATABASE_PART.equalsIgnoreCase(part)) {
-			final int requestIndex = DatabaseInformations
-					.parseRequestIndex(httpRequest.getParameter(REQUEST_PARAMETER));
-			doDatabase(htmlReport, requestIndex);
-		} else if (CONNECTIONS_PART.equalsIgnoreCase(part)) {
-			final boolean withoutHeaders = HTML_BODY_FORMAT
-					.equalsIgnoreCase(httpRequest.getParameter(FORMAT_PARAMETER));
-			doConnections(htmlReport, withoutHeaders);
-		} else if (JNDI_PART.equalsIgnoreCase(part)) {
-			doJndi(htmlReport, httpRequest.getParameter(PATH_PARAMETER));
-		} else if (MBEANS_PART.equalsIgnoreCase(part)) {
-			doMBeans(htmlReport);
-		} else if (SPRING_BEANS_PART.equalsIgnoreCase(part)) {
-			htmlReport.writeSpringContext();
-		} else {
-			throw new IllegalArgumentException(part);
-		}
+	@RequestPart(HttpPart.USAGES)
+	void doRequestUsages(@RequestParameter(HttpParameter.GRAPH) String graphName)
+			throws IOException {
+		htmlReport.writeRequestUsages(graphName);
 	}
 
-	private void doSessions(HtmlReport htmlReport, String sessionId) throws IOException {
+	@RequestPart(HttpPart.CURRENT_REQUESTS)
+	void doAllCurrentRequestsAsPart() throws IOException {
+		htmlReport.writeAllCurrentRequestsAsPart();
+	}
+
+	@RequestPart(HttpPart.THREADS)
+	void doAllThreadsAsPart() throws IOException {
+		htmlReport.writeAllThreadsAsPart();
+	}
+
+	@RequestPart(HttpPart.COUNTER_SUMMARY_PER_CLASS)
+	void doCounterSummaryPerClass(@RequestParameter(HttpParameter.COUNTER) String counterName,
+			@RequestParameter(HttpParameter.GRAPH) String requestId) throws IOException {
+		htmlReport.writeCounterSummaryPerClass(counterName, requestId);
+	}
+
+	@RequestPart(HttpPart.SOURCE)
+	void doSource(@RequestParameter(HttpParameter.CLASS) String className) throws IOException {
+		htmlReport.writeSource(className);
+	}
+
+	@RequestPart(HttpPart.DEPENDENCIES)
+	void doDependencies() throws IOException {
+		htmlReport.writeDependencies();
+	}
+
+	@RequestPart(HttpPart.SESSIONS)
+	void doSessions(@RequestParameter(HttpParameter.SESSION_ID) String sessionId)
+			throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final List<SessionInformations> sessionsInformations;
@@ -201,14 +155,16 @@ class HtmlController {
 					sessionId);
 		}
 		if (sessionId == null || sessionsInformations.isEmpty()) {
-			htmlReport.writeSessions(sessionsInformations, messageForReport, SESSIONS_PART);
+			htmlReport.writeSessions(sessionsInformations, messageForReport,
+					HttpPart.SESSIONS.getName());
 		} else {
 			final SessionInformations sessionInformation = sessionsInformations.get(0);
 			htmlReport.writeSessionDetail(sessionId, sessionInformation);
 		}
 	}
 
-	private void doHotspots(HtmlReport htmlReport) throws IOException {
+	@RequestPart(HttpPart.HOTSPOTS)
+	void doHotspots() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		if (!isFromCollectorServer()) {
@@ -220,7 +176,8 @@ class HtmlController {
 		}
 	}
 
-	private void doHeapHisto(HtmlReport htmlReport) throws IOException {
+	@RequestPart(HttpPart.HEAP_HISTO)
+	void doHeapHisto() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		final HeapHistogram heapHistogram;
@@ -235,10 +192,12 @@ class HtmlController {
 			htmlReport.writeMessageIfNotNull(String.valueOf(e.getMessage()), null);
 			return;
 		}
-		htmlReport.writeHeapHistogram(heapHistogram, messageForReport, HEAP_HISTO_PART);
+		htmlReport.writeHeapHistogram(heapHistogram, messageForReport,
+				HttpPart.HEAP_HISTO.getName());
 	}
 
-	private void doProcesses(HtmlReport htmlReport) throws IOException {
+	@RequestPart(HttpPart.PROCESSES)
+	void doProcesses() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
@@ -257,10 +216,13 @@ class HtmlController {
 		}
 	}
 
-	private void doDatabase(HtmlReport htmlReport, int index) throws IOException {
+	@RequestPart(HttpPart.DATABASE)
+	void doDatabase(@RequestParameter(HttpParameter.REQUEST) String requestIndex)
+			throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
+			final int index = DatabaseInformations.parseRequestIndex(requestIndex);
 			final DatabaseInformations databaseInformations;
 			if (!isFromCollectorServer()) {
 				databaseInformations = new DatabaseInformations(index);
@@ -275,14 +237,17 @@ class HtmlController {
 		}
 	}
 
-	private void doConnections(HtmlReport htmlReport, boolean withoutHeaders) throws IOException {
+	@RequestPart(HttpPart.CONNECTIONS)
+	void doConnections(@RequestParameter(HttpParameter.FORMAT) String format) throws IOException {
 		assert !isFromCollectorServer();
 		// par sécurité
 		Action.checkSystemActionsEnabled();
+		final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(format);
 		htmlReport.writeConnections(JdbcWrapper.getConnectionInformationsList(), withoutHeaders);
 	}
 
-	private void doJndi(HtmlReport htmlReport, String path) throws IOException {
+	@RequestPart(HttpPart.JNDI)
+	void doJndi(@RequestParameter(HttpParameter.PATH) String path) throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
@@ -299,7 +264,8 @@ class HtmlController {
 		}
 	}
 
-	private void doMBeans(HtmlReport htmlReport) throws IOException {
+	@RequestPart(HttpPart.MBEANS)
+	void doMBeans() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		try {
@@ -317,13 +283,21 @@ class HtmlController {
 		}
 	}
 
-	private void doCacheKeys(HtmlReport htmlReport, String cacheId, boolean withoutHeaders)
-			throws IOException {
+	@RequestPart(HttpPart.SPRING_BEANS)
+	void doSpringBeans() throws IOException {
+		htmlReport.writeSpringContext();
+	}
+
+	@RequestPart(HttpPart.CACHE_KEYS)
+	void doCacheKeys(@RequestParameter(HttpParameter.CACHE_ID) String cacheId,
+			@RequestParameter(HttpParameter.FORMAT) String format) throws IOException {
 		assert !isFromCollectorServer();
 		final CacheInformations cacheInfo = CacheInformations
 				.buildCacheInformationsWithKeys(cacheId);
-		htmlReport.writeCacheWithKeys(cacheId, cacheInfo, messageForReport,
-				CACHE_KEYS_PART + '&' + CACHE_ID_PARAMETER + '=' + I18N.urlEncode(cacheId),
+		final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(format);
+		final String cacheKeysPart = HttpPart.CACHE_KEYS.toString() + '&' + HttpParameter.CACHE_ID
+				+ '=' + I18N.urlEncode(cacheId);
+		htmlReport.writeCacheWithKeys(cacheId, cacheInfo, messageForReport, cacheKeysPart,
 				withoutHeaders);
 	}
 
@@ -339,9 +313,9 @@ class HtmlController {
 				final JavaInformations javaInformations = new JavaInformations(
 						Parameters.getServletContext(), true);
 				// on pourrait faire I18N.bindLocale(Locale.getDefault()), mais cela se fera tout seul
-				final HtmlReport htmlReport = new HtmlReport(collector, collectorServer,
+				final HtmlReport myHtmlReport = new HtmlReport(collector, collectorServer,
 						Collections.singletonList(javaInformations), Period.JOUR, writer);
-				htmlReport.writeLastShutdown();
+				myHtmlReport.writeLastShutdown();
 			} finally {
 				writer.close();
 			}

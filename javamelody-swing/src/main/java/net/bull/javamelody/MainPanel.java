@@ -17,8 +17,6 @@
  */
 package net.bull.javamelody;
 
-import static net.bull.javamelody.HttpParameters.PERIOD_PARAMETER;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -139,7 +137,7 @@ class MainPanel extends MelodyPanel {
 		final List<URL> newUrls = new ArrayList<>(initialURLs.size());
 		for (final URL url : initialURLs) {
 			final URL newUrl = new URL(
-					url.toString() + '&' + PERIOD_PARAMETER + '=' + selectedRange.getValue());
+					url.toString() + '&' + HttpParameter.PERIOD + '=' + selectedRange.getValue());
 			newUrls.add(newUrl);
 		}
 		getRemoteCollector().setURLs(newUrls);
