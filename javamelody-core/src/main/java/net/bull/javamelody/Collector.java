@@ -359,51 +359,50 @@ class Collector { // NOPMD
 		lastCollectDuration = Math.max(0, System.currentTimeMillis() - start);
 	}
 
-	private long collect(List<JavaInformations> javaInformationsList) throws IOException {
-		synchronized (this) {
-			// si pas d'informations, on ne met pas 0 : on ne met rien
-			if (!javaInformationsList.isEmpty()) {
-				collectJavaInformations(javaInformationsList);
-				collectOtherJavaInformations(javaInformationsList);
-				collectTomcatInformations(javaInformationsList);
-			}
-			long memorySize = 0;
-			for (final Counter counter : counters) {
-				// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
-				dayCountersByCounter.get(counter).setDisplayed(counter.isDisplayed());
-				// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
-				// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
-				// mais autant monitorer les vrais débits réseaux au niveau de l'OS
-				if (counter.isDisplayed()) {
-					// si le compteur n'est pas affiché (par ex ejb), pas de collecte
-					// et pas de persistance de fichiers jrobin ou du compteur
-					memorySize += collectCounterData(counter);
-				}
-			}
-
-			final Calendar calendar = Calendar.getInstance();
-			final int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-			calendar.setTime(lastDateOfDeletedObsoleteFiles);
-			if (calendar.get(Calendar.DAY_OF_YEAR) != currentDayOfYear) {
-				// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
-				// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
-				try {
-					deleteObsoleteFiles();
-				} finally {
-					lastDateOfDeletedObsoleteFiles = new Date();
-				}
-			}
-
-			if (!javaInformationsList.isEmpty()) {
-				final String webappVersion = javaInformationsList.get(0).getWebappVersion();
-				if (webappVersion != null && !datesByWebappVersions.containsKey(webappVersion)) {
-					addWebappVersion(webappVersion);
-					datesByWebappVersions.put(webappVersion, new Date());
-				}
-			}
-
-			return memorySize;
+	private synchronized long collect(List<JavaInformations> javaInformationsList)
+			throws IOException {
+		// si pas d'informations, on ne met pas 0 : on ne met rien
+		if (!javaInformationsList.isEmpty()) {
+			collectJavaInformations(javaInformationsList);
+			collectOtherJavaInformations(javaInformationsList);
+			collectTomcatInformations(javaInformationsList);
 		}
+		long memorySize = 0;
+		for (final Counter counter : counters) {
+			// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
+			dayCountersByCounter.get(counter).setDisplayed(counter.isDisplayed());
+			// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
+			// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
+			// mais autant monitorer les vrais débits réseaux au niveau de l'OS
+			if (counter.isDisplayed()) {
+				// si le compteur n'est pas affiché (par ex ejb), pas de collecte
+				// et pas de persistance de fichiers jrobin ou du compteur
+				memorySize += collectCounterData(counter);
+			}
+		}
+
+		final Calendar calendar = Calendar.getInstance();
+		final int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+		calendar.setTime(lastDateOfDeletedObsoleteFiles);
+		if (calendar.get(Calendar.DAY_OF_YEAR) != currentDayOfYear) {
+			// 1 fois par jour on supprime tous les fichiers .ser.gz obsolètes (modifiés il y a plus d'un an)
+			// et tous les fichiers .rrd obsolètes (modifiés il y a plus de 3 mois)
+			try {
+				deleteObsoleteFiles();
+			} finally {
+				lastDateOfDeletedObsoleteFiles = new Date();
+			}
+		}
+
+		if (!javaInformationsList.isEmpty()) {
+			final String webappVersion = javaInformationsList.get(0).getWebappVersion();
+			if (webappVersion != null && !datesByWebappVersions.containsKey(webappVersion)) {
+				addWebappVersion(webappVersion);
+				datesByWebappVersions.put(webappVersion, new Date());
+			}
+		}
+
+		return memorySize;
 	}
 
 	private void collectJavaInformations(List<JavaInformations> javaInformationsList)
