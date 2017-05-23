@@ -226,7 +226,8 @@ public class TestSamplingProfiler {
 		 * @param limit Number of digits
 		 */
 		public void calcPiDigits(int limit) {
-			BigInteger nn, nr;
+			BigInteger nn;
+			BigInteger nr;
 			boolean first = true;
 			int count = 0;
 			while (true) {

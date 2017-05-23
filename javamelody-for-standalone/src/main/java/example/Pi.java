@@ -23,7 +23,8 @@ public class Pi {
 	 * Start.
 	 */
 	public void calcPiDigits() {
-		BigInteger nn, nr;
+		BigInteger nn;
+		BigInteger nr;
 		boolean first = true;
 		while (true) {
 			if (FOUR.multiply(q).add(r).subtract(t).compareTo(n.multiply(t)) == -1) {

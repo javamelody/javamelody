@@ -50,14 +50,14 @@ import net.bull.javamelody.TestJavaMelodyAutoConfiguration.TestContextConfigurat
 		"javamelody.init-parameters.monitoring-path=/test/path",
 		"javamelody.excluded-datasources=ds1,ds2" })
 public class TestJavaMelodyAutoConfiguration {
+	@Autowired
+	private ApplicationContext context;
+
 	@Configuration
 	@EnableAutoConfiguration
 	static class TestContextConfiguration {
 		// nothing
 	}
-
-	@Autowired
-	private ApplicationContext context;
 
 	/**
 	 * test.

@@ -260,8 +260,7 @@ public class MPdfWriter extends MPrinter {
 		datatable.setWidth(100f);
 
 		// table header
-		final com.lowagie.text.Font font = FontFactory.getFont(FontFactory.HELVETICA, 12,
-				Font.BOLD);
+		final Font font = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD);
 		datatable.getDefaultCell().setBorderWidth(2);
 		datatable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 		// datatable.setDefaultCellGrayFill(0.75f);
