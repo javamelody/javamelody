@@ -338,7 +338,12 @@ public enum Parameter {
 	/**
 	 * If Real User Monitoring enabled by injecting Boomerang javascript into html page ("false" by default).
 	 */
-	RUM_ENABLED("rum-enabled");
+	RUM_ENABLED("rum-enabled"),
+
+	/**
+	 * Address of the Graphite (http://graphiteapp.org/) server to send metrics to, for example: 11.22.33.44:2003 (null by default).
+	 */
+	GRAPHITE_ADDRESS("graphite-address");
 
 	private final String code;
 

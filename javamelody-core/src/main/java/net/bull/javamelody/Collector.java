@@ -83,6 +83,7 @@ class Collector { // NOPMD
 	private Date lastDateOfDeletedObsoleteFiles = new Date();
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
+	private final Graphite graphite = Graphite.getInstance();
 	/**
 	 * Les versions de l'applications avec pour chacune la date de déploiement.
 	 */
@@ -361,23 +362,29 @@ class Collector { // NOPMD
 
 	private synchronized long collect(List<JavaInformations> javaInformationsList)
 			throws IOException {
-		// si pas d'informations, on ne met pas 0 : on ne met rien
-		if (!javaInformationsList.isEmpty()) {
-			collectJavaInformations(javaInformationsList);
-			collectOtherJavaInformations(javaInformationsList);
-			collectTomcatInformations(javaInformationsList);
-		}
 		long memorySize = 0;
-		for (final Counter counter : counters) {
-			// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
-			dayCountersByCounter.get(counter).setDisplayed(counter.isDisplayed());
-			// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
-			// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
-			// mais autant monitorer les vrais débits réseaux au niveau de l'OS
-			if (counter.isDisplayed()) {
-				// si le compteur n'est pas affiché (par ex ejb), pas de collecte
-				// et pas de persistance de fichiers jrobin ou du compteur
-				memorySize += collectCounterData(counter);
+		try {
+			// si pas d'informations, on ne met pas 0 : on ne met rien
+			if (!javaInformationsList.isEmpty()) {
+				collectJavaInformations(javaInformationsList);
+				collectOtherJavaInformations(javaInformationsList);
+				collectTomcatInformations(javaInformationsList);
+			}
+			for (final Counter counter : counters) {
+				// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
+				dayCountersByCounter.get(counter).setDisplayed(counter.isDisplayed());
+				// collecte pour chaque compteur (hits par minute, temps moyen, % d'erreurs système)
+				// Rq : il serait possible d'ajouter le débit total en Ko / minute (pour http)
+				// mais autant monitorer les vrais débits réseaux au niveau de l'OS
+				if (counter.isDisplayed()) {
+					// si le compteur n'est pas affiché (par ex ejb), pas de collecte
+					// et pas de persistance de fichiers jrobin ou du compteur
+					memorySize += collectCounterData(counter);
+				}
+			}
+		} finally {
+			if (graphite != null) {
+				graphite.send();
 			}
 		}
 
@@ -496,9 +503,9 @@ class Collector { // NOPMD
 				final int gcPercentage = Math
 						.min((int) ((garbageCollectionTimeMillis - this.gcTimeMillis) * 100
 								/ periodMillis / availableProcessors), 100);
-				getOtherJRobin("gc").addValue(gcPercentage);
+				addJRobinValue(getOtherJRobin("gc"), gcPercentage);
 			} else {
-				getOtherJRobin("gc").addValue(0d);
+				addJRobinValue(getOtherJRobin("gc"), 0d);
 			}
 			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
@@ -515,7 +522,7 @@ class Collector { // NOPMD
 		otherJRobinsValues.put("fileDescriptors", (double) unixOpenFileDescriptorCount);
 		for (final Map.Entry<String, Double> entry : otherJRobinsValues.entrySet()) {
 			if (entry.getValue() >= 0) {
-				getOtherJRobin(entry.getKey()).addValue(entry.getValue());
+				addJRobinValue(getOtherJRobin(entry.getKey()), entry.getValue());
 			}
 		}
 
@@ -525,16 +532,16 @@ class Collector { // NOPMD
 			// collecte du nombre de transactions base de données par minute
 			if (this.transactionCount != NOT_A_NUMBER) {
 				final double periodMinutes = periodMillis / 60000d;
-				getOtherJRobin("transactionsRate").addValue(
+				addJRobinValue(getOtherJRobin("transactionsRate"),
 						(databaseTransactionCount - this.transactionCount) / periodMinutes);
 			} else {
-				getOtherJRobin("transactionsRate").addValue(0d);
+				addJRobinValue(getOtherJRobin("transactionsRate"), 0d);
 			}
 			this.transactionCount = databaseTransactionCount;
 		}
 
 		if (freeDiskSpaceInTemp != Long.MAX_VALUE) {
-			getOtherJRobin("Free_disk_space").addValue(freeDiskSpaceInTemp);
+			addJRobinValue(getOtherJRobin("Free_disk_space"), freeDiskSpaceInTemp);
 		}
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
@@ -570,7 +577,7 @@ class Collector { // NOPMD
 			int availableProcessors, int sessionCount, int activeThreadCount,
 			int activeConnectionCount, int usedConnectionCount) throws IOException {
 		// collecte de la mémoire java
-		getCounterJRobin("usedMemory").addValue(usedMemory);
+		addJRobinValue(getCounterJRobin("usedMemory"), usedMemory);
 
 		// collecte du pourcentage d'utilisation cpu
 		if (processesCpuTimeMillis >= 0) {
@@ -587,9 +594,9 @@ class Collector { // NOPMD
 				final int cpuPercentage = Math
 						.min((int) ((processesCpuTimeMillis - this.cpuTimeMillis) * 100
 								/ periodMillis / availableProcessors), 100);
-				getCounterJRobin("cpu").addValue(cpuPercentage);
+				addJRobinValue(getCounterJRobin("cpu"), cpuPercentage);
 			} else {
-				getCounterJRobin("cpu").addValue(0d);
+				addJRobinValue(getCounterJRobin("cpu"), 0d);
 			}
 			this.cpuTimeMillis = processesCpuTimeMillis;
 		}
@@ -599,37 +606,37 @@ class Collector { // NOPMD
 		if (getCounterByName(Counter.HTTP_COUNTER_NAME) != null) {
 			// collecte du nombre de sessions http
 			if (sessionCount >= 0) {
-				getCounterJRobin("httpSessions").addValue(sessionCount);
+				addJRobinValue(getCounterJRobin("httpSessions"), sessionCount);
 			}
 			// collecte du nombre de threads actifs (requêtes http en cours)
-			getCounterJRobin("activeThreads").addValue(activeThreadCount);
+			addJRobinValue(getCounterJRobin("activeThreads"), activeThreadCount);
 		}
 		if (!noDatabase) {
 			// collecte du nombre de connexions jdbc actives et du nombre de connexions jdbc ouvertes
-			getCounterJRobin("activeConnections").addValue(activeConnectionCount);
-			getCounterJRobin("usedConnections").addValue(usedConnectionCount);
+			addJRobinValue(getCounterJRobin("activeConnections"), activeConnectionCount);
+			addJRobinValue(getCounterJRobin("usedConnections"), usedConnectionCount);
 		}
 
 		// si ce collector est celui des nodes Jenkins, on collecte le nombre de builds en cours
 		// pour le graphique
 		if (getCounterByName(Counter.BUILDS_COUNTER_NAME) != null) {
-			getCounterJRobin("runningBuilds").addValue(JdbcWrapper.getRunningBuildCount());
-			getCounterJRobin("buildQueueLength").addValue(JdbcWrapper.getBuildQueueLength());
+			addJRobinValue(getCounterJRobin("runningBuilds"), JdbcWrapper.getRunningBuildCount());
+			addJRobinValue(getCounterJRobin("buildQueueLength"), JdbcWrapper.getBuildQueueLength());
 		}
 	}
 
 	private void collectTomcatValues(int tomcatBusyThreads, long bytesReceived, long bytesSent)
 			throws IOException {
-		getOtherJRobin("tomcatBusyThreads").addValue(tomcatBusyThreads);
+		addJRobinValue(getOtherJRobin("tomcatBusyThreads"), tomcatBusyThreads);
 		if (this.tomcatBytesSent != NOT_A_NUMBER) {
 			final double periodMinutes = periodMillis / 60000d;
-			getOtherJRobin("tomcatBytesReceived")
-					.addValue((bytesReceived - this.tomcatBytesReceived) / periodMinutes);
-			getOtherJRobin("tomcatBytesSent")
-					.addValue((bytesSent - this.tomcatBytesSent) / periodMinutes);
+			addJRobinValue(getOtherJRobin("tomcatBytesReceived"),
+					(bytesReceived - this.tomcatBytesReceived) / periodMinutes);
+			addJRobinValue(getOtherJRobin("tomcatBytesSent"),
+					(bytesSent - this.tomcatBytesSent) / periodMinutes);
 		} else {
-			getOtherJRobin("tomcatBytesReceived").addValue(0d);
-			getOtherJRobin("tomcatBytesSent").addValue(0d);
+			addJRobinValue(getOtherJRobin("tomcatBytesReceived"), 0d);
+			addJRobinValue(getOtherJRobin("tomcatBytesSent"), 0d);
 		}
 		this.tomcatBytesReceived = bytesReceived;
 		this.tomcatBytesSent = bytesSent;
@@ -643,7 +650,14 @@ class Collector { // NOPMD
 			} else {
 				sessionAgeMeanInMinutes = -1;
 			}
-			getOtherJRobin("httpSessionsMeanAge").addValue(sessionAgeMeanInMinutes);
+			addJRobinValue(getOtherJRobin("httpSessionsMeanAge"), sessionAgeMeanInMinutes);
+		}
+	}
+
+	private void addJRobinValue(JRobin jRobin, double value) throws IOException {
+		jRobin.addValue(value);
+		if (graphite != null) {
+			graphite.addValue(jRobin.getName(), value);
 		}
 	}
 
@@ -725,11 +739,12 @@ class Collector { // NOPMD
 				final long hitsParMinute = hits * 60 * 1000 / periodMillis;
 
 				// on remplit le stockage avec les données
-				hitsJRobin.addValue(hitsParMinute);
+				addJRobinValue(hitsJRobin, hitsParMinute);
 				// s'il n'y a pas eu de hits, alors la moyenne vaut -1 : elle n'a pas de sens
 				if (hits > 0) {
-					meanTimesJRobin.addValue(lastPeriodGlobalRequest.getMean());
-					systemErrorsJRobin.addValue(lastPeriodGlobalRequest.getSystemErrorPercentage());
+					addJRobinValue(meanTimesJRobin, lastPeriodGlobalRequest.getMean());
+					addJRobinValue(systemErrorsJRobin,
+							lastPeriodGlobalRequest.getSystemErrorPercentage());
 
 					// s'il y a eu des requêtes, on persiste le compteur pour ne pas perdre les stats
 					// en cas de crash ou d'arrêt brutal (mais normalement ils seront aussi persistés
@@ -824,6 +839,7 @@ class Collector { // NOPMD
 						newRequest.getName());
 				// plus nécessaire: if (dayCounter.isErrorCounter()) requestJRobin.addValue(lastPeriodRequest.getHits());
 
+				// pas addJRobinValue ici, il y en aurait trop pour Graphite
 				requestJRobin.addValue(lastPeriodRequest.getMean());
 			}
 
