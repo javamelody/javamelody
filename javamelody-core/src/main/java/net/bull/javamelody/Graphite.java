@@ -66,9 +66,10 @@ class Graphite {
 		this.bufferWriter = new OutputStreamWriter(buffer, charset);
 	}
 
-	static Graphite getInstance() {
+	static Graphite getInstance(String application) {
 		final String graphiteAddress = Parameters.getParameter(Parameter.GRAPHITE_ADDRESS);
 		if (graphiteAddress != null) {
+			assert application != null;
 			final String address;
 			final int port;
 			final int index = graphiteAddress.indexOf(':');
@@ -80,9 +81,12 @@ class Graphite {
 				address = graphiteAddress;
 				port = DEFAULT_GRAPHITE_PORT;
 			}
+			// application est du genre "/testapp_www.host.com"
+			final String prefix = "javamelody." + application.replace("/", "").replace('.', '-')
+					.replace('_', '.').replace('-', '_').replace(SEPARATOR, '_') + '.';
 			try {
 				return new Graphite(SocketFactory.getDefault(), InetAddress.getByName(address),
-						port, Charset.forName("UTF-8"), getDefaultPrefix());
+						port, Charset.forName("UTF-8"), prefix);
 			} catch (final UnknownHostException e) {
 				throw new IllegalArgumentException("Invalid host: " + address, e);
 			}
@@ -96,7 +100,7 @@ class Graphite {
 			lastTimestamp = String.valueOf(timeInSeconds);
 			lastTime = timeInSeconds;
 		}
-		bufferWriter.append(prefix).append('.').append(metric).append(' ');
+		bufferWriter.append(prefix).append(metric).append(' ');
 		bufferWriter.append(decimalFormat.format(value)).append(' ');
 		bufferWriter.append(lastTimestamp).append('\n');
 	}
@@ -121,12 +125,5 @@ class Graphite {
 
 	private Socket createSocket() throws IOException {
 		return socketFactory.createSocket(address, port);
-	}
-
-	private static String getDefaultPrefix() {
-		final String defaultPrefix = "javamelody." + Parameters
-				.getContextPath(Parameters.getServletContext()).replace("/", "").replace('.', '_')
-				+ '.' + Parameters.getHostName().replace('.', '_');
-		return defaultPrefix.replace(SEPARATOR, '_');
 	}
 }

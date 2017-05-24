@@ -83,7 +83,7 @@ class Collector { // NOPMD
 	private Date lastDateOfDeletedObsoleteFiles = new Date();
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
-	private final Graphite graphite = Graphite.getInstance();
+	private final Graphite graphite;
 	/**
 	 * Les versions de l'applications avec pour chacune la date de déploiement.
 	 */
@@ -125,6 +125,7 @@ class Collector { // NOPMD
 		this.application = application;
 		this.counters = Collections.unmodifiableList(new ArrayList<Counter>(counters));
 		this.samplingProfiler = samplingProfiler;
+		this.graphite = Graphite.getInstance(application);
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
 		for (final Counter counter : counters) {
 			for (final Counter otherCounter : counters) {
