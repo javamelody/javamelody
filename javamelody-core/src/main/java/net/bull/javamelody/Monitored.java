@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import javax.interceptor.InterceptorBinding;
 
 /**
- * Annotation to mark classes and/or methods that should be monitored by MonitoringCdiInterceptor.
+ * Annotation to mark classes and/or methods that should be monitored by {@link MonitoringCdiInterceptor}.
  * <p/>
  * A method is monitored when it is annotated, or when it is in a class that is annotated.
  * <p/>

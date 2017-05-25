@@ -23,8 +23,8 @@ import javax.interceptor.Interceptor;
  * Intercepteur pour CDI & pour EJB 3.1 (Java EE 6+).
  * Il est destiné à un compteur pour les statistiques d'exécutions de méthodes @RequestScoped, @SessionScoped, @ApplicationScoped
  * ( ainsi que @Stateless, @Stateful ou @MessageDriven ).
- * Il peut être paramétré par l'annotation @Monitored dans les sources java des classes d'implémentations de beans CDI ou d'ejb.
- * (ou alors par l'annotation @javax.interceptor.Interceptors dans les mêmes classes).
+ * Il peut être paramétré par l'annotation @{@link Monitored} dans les sources java des classes d'implémentations de beans CDI ou d'ejb.
+ * (ou alors par l'annotation @{@link javax.interceptor.Interceptors} dans les mêmes classes).
  * @author Emeric Vernat
  */
 @Interceptor
