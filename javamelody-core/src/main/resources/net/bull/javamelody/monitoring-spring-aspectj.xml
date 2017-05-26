@@ -9,10 +9,14 @@
 
 	<aop:config proxy-target-class="true">
 		<aop:advisor advice-ref="monitoringAdvice" pointcut-ref="monitoringPointcut" />
+		<aop:advisor advice-ref="monitoringAdvice" pointcut-ref="monitoringAsyncAndScheduledPointcut" />
+		<aop:advisor advice-ref="monitoringAdvice" pointcut-ref="monitoringControllerAndServicePointcut" />
 	</aop:config>
 
 	<bean id="monitoringAdvice" class="net.bull.javamelody.MonitoringSpringInterceptor" />
 	<bean id="monitoringPointcut" class="net.bull.javamelody.MonitoredWithAnnotationPointcut" />
+	<bean id="monitoringAsyncAndScheduledPointcut" class="net.bull.javamelody.MonitoredSpringAsyncAndScheduledPointcut" />
+	<bean id="monitoringControllerAndServicePointcut" class="net.bull.javamelody.MonitoredSpringControllerAndServicePointcut" />
 
 	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
 		<!--

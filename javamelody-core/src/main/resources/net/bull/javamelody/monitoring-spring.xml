@@ -10,6 +10,16 @@
 			<bean class="net.bull.javamelody.MonitoredWithAnnotationPointcut"/>
 		</property>
 	</bean>
+	<bean id="monitoringAsyncAndScheduledAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredSpringAsyncAndScheduledPointcut"/>
+		</property>
+	</bean>
+	<bean id="monitoringControllerAndServiceAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredSpringControllerAndServicePointcut"/>
+		</property>
+	</bean>
 
 	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
