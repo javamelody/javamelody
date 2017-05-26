@@ -20,6 +20,7 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -85,6 +86,16 @@ public class TestMonitoringInterceptor {
 		public Map<String, Object> getContextData() {
 			return null;
 		}
+
+		@Override
+		public Object getTimer() {
+			return null;
+		}
+
+		@Override
+		public Constructor<?> getConstructor() {
+			return null;
+		}
 	}
 
 	/** Test. */
@@ -124,6 +135,32 @@ public class TestMonitoringInterceptor {
 		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
 		ejbCounter.clear();
 		final MonitoringTargetInterceptor interceptor = new MonitoringTargetInterceptor();
+
+		ejbCounter.setDisplayed(true);
+		interceptor.intercept(new InvokeContext(false));
+		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testMonitoringCdi() throws Exception {
+		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
+		ejbCounter.clear();
+		final MonitoringCdiInterceptor interceptor = new MonitoringCdiInterceptor();
+
+		ejbCounter.setDisplayed(true);
+		interceptor.intercept(new InvokeContext(false));
+		assertSame("requestsCount", 1, ejbCounter.getRequestsCount());
+	}
+
+	/** Test.
+	 * @throws Exception e */
+	@Test
+	public void testMonitoringAsynchronousCdi() throws Exception {
+		final Counter ejbCounter = MonitoringProxy.getEjbCounter();
+		ejbCounter.clear();
+		final MonitoringAsynchronousCdiInterceptor interceptor = new MonitoringAsynchronousCdiInterceptor();
 
 		ejbCounter.setDisplayed(true);
 		interceptor.intercept(new InvokeContext(false));
