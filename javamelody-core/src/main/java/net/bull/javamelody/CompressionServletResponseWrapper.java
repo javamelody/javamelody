@@ -23,7 +23,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implémentation de FilterServletResponseWrapper qui fonctionne avec le CompressionServletResponseStream.
+ * Implémentation de {@link FilterServletResponseWrapper} qui fonctionne avec le {@link CompressionResponseStream}.
  * @author Emeric Vernat
  */
 class CompressionServletResponseWrapper extends FilterServletResponseWrapper {

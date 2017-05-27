@@ -27,7 +27,7 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implémentation de ServletOutputStream qui fonctionne avec le CompressionServletResponseWrapper.
+ * Implémentation de ServletOutputStream qui fonctionne avec le {@link CompressionServletResponseWrapper}.
  * @author Emeric Vernat
  */
 class CompressionResponseStream extends ServletOutputStream {

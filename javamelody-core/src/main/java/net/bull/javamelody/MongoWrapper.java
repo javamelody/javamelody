@@ -24,7 +24,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 /**
- * Cette classe est utile pour construire des proxy pour MongoDB.
+ * Cette classe est utile pour construire des proxy pour <a href='https://www.mongodb.com/'>MongoDB</a>.
  * @author Emeric Vernat
  */
 public final class MongoWrapper {
@@ -39,7 +39,7 @@ public final class MongoWrapper {
 	}
 
 	/**
-	 * Create proxy of MongoDatabase.
+	 * Create proxy of {@link MongoDatabase}.
 	 * @param database MongoDatabase
 	 * @return MongoDatabase
 	 */

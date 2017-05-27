@@ -20,7 +20,7 @@ package net.bull.javamelody;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * JavaMelodyLogger pour Log4J.
+ * {@link JavaMelodyLogger} pour Log4J.
  * @author Emeric Vernat
  */
 class Log4JLogger implements JavaMelodyLogger {

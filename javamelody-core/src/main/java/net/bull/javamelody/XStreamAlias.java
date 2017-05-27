@@ -23,7 +23,7 @@ import java.util.Map;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
- * Liste des alias XStream pour les conversions XML et JSON.
+ * Liste des alias <a href='http://x-stream.github.io/'>XStream</a> pour les conversions XML et JSON.
  * @author Emeric Vernat
  */
 final class XStreamAlias {

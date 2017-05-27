@@ -116,7 +116,7 @@ public enum Parameter {
 
 	/**
 	 * Expression régulière (null par défaut) pour transformer la description d'une méthode de
-	 * façade autre que ejb3, spring ou guice (ie par MonitoringProxy).
+	 * façade autre que ejb3, spring ou guice (ie par {@link MonitoringProxy}).
 	 */
 	SERVICES_TRANSFORM_PATTERN("services-transform-pattern"),
 
@@ -309,9 +309,9 @@ public enum Parameter {
 
 	/**
 	 * Name of a class to use for JavaMelody logs (default: null for detection of Logback, Log4J or java.util.logging). <br/>
-	 * The class must implement the interface net.bull.javamelody.JavaMelodyLogger,
-	 * such as net.bull.javamelody.Log4JLogger, net.bull.javamelody.Log4J2Logger, net.bull.javamelody.JavaLogger
-	 * or net.bull.javamelody.LogbackLogger.
+	 * The class must implement the interface {@link net.bull.javamelody.JavaMelodyLogger},
+	 * such as {@link net.bull.javamelody.Log4JLogger}, {@link net.bull.javamelody.Log4J2Logger}, {@link net.bull.javamelody.JavaLogger}
+	 * or {@link net.bull.javamelody.LogbackLogger}.
 	 */
 	LOGGER_CLASS("logger-class"),
 
@@ -341,7 +341,8 @@ public enum Parameter {
 	RUM_ENABLED("rum-enabled"),
 
 	/**
-	 * Address of the Graphite (http://graphiteapp.org/) server to send metrics to, for example: 11.22.33.44:2003 (null by default).
+	 * Address of the <a href='http://graphiteapp.org/'>Graphite</a> server to send metrics to,
+	 * for example: 11.22.33.44:2003 (null by default).
 	 */
 	GRAPHITE_ADDRESS("graphite-address");
 

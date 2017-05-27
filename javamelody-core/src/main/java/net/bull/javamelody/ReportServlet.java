@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Alternative report servlet.<br/>
- * Note that this servlet is rarely needed, because the .../monitoring url of the MonitoringFilter is enough for the reports of most webapps.
+ * Note that this servlet is rarely needed, because the .../monitoring url of the {@link MonitoringFilter} is enough for the reports of most webapps.
  * @author petersky
  * @author Emeric Vernat
  */

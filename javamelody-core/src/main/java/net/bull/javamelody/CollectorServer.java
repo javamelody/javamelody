@@ -289,7 +289,7 @@ class CollectorServer {
 	}
 
 	/**
-	 * Retourne le collector pour une application à partir de son code.
+	 * Retourne le {@link Collector} pour une application à partir de son code.
 	 * @param application Code de l'application
 	 * @return Collector
 	 */

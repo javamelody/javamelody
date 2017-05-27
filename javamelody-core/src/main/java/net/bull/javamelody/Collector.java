@@ -170,7 +170,7 @@ class Collector { // NOPMD
 	}
 
 	/**
-	 * Retourne le SamplingProfiler.
+	 * Retourne le {@link SamplingProfiler}.
 	 * @return SamplingProfiler
 	 */
 	SamplingProfiler getSamplingProfiler() {
@@ -196,7 +196,7 @@ class Collector { // NOPMD
 	}
 
 	/**
-	 * @return La liste des counters de ce collector
+	 * @return La liste des {@link Counter}s de ce collector
 	 */
 	List<Counter> getCounters() {
 		return counters;

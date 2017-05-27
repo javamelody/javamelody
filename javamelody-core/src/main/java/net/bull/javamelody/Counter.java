@@ -714,7 +714,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	/**
-	 * Retourne l'objet CounterRequest correspondant au contexte de requête en cours en paramètre.
+	 * Retourne l'objet {@link CounterRequest} correspondant au contexte de requête en cours en paramètre.
 	 * @param context CounterRequestContext
 	 * @return CounterRequest
 	 */
@@ -723,7 +723,7 @@ class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	/**
-	 * Retourne l'objet CounterRequest correspondant au nom sans agrégation en paramètre.
+	 * Retourne l'objet {@link CounterRequest} correspondant au nom sans agrégation en paramètre.
 	 * @param requestName Nom de la requête sans agrégation par requestTransformPattern
 	 * @return CounterRequest
 	 */

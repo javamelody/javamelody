@@ -26,7 +26,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 
 /**
- * Rapport pdf (avec iText).
+ * Rapport pdf (avec iText v2.1.7).
  * @author Emeric Vernat
  */
 class PdfReport {

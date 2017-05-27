@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implémentation de ServletOutputStream qui fonctionne avec le CounterServletResponseWrapper.
+ * Implémentation de ServletOutputStream qui fonctionne avec le {@link CounterServletResponseWrapper}.
  * @author Emeric Vernat
  */
 class CounterResponseStream extends FilterServletOutputStream {

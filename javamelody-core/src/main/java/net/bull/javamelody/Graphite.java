@@ -33,7 +33,7 @@ import java.util.Locale;
 import javax.net.SocketFactory;
 
 /**
- * Publish chart data to Graphite, http://graphiteapp.org/.
+ * Publish chart data to <a href='http://graphiteapp.org/'>Graphite</a>.
  * @author Emeric Vernat
  */
 class Graphite {

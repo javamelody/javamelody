@@ -22,7 +22,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * MXBean which exposes CounterRequestAggregation data via JMX.
+ * MXBean which exposes {@link CounterRequestAggregation} data via JMX.
  * @see javax.management.MXBean
  * @see CounterRequestAggregation
  *

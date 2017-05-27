@@ -22,8 +22,8 @@ import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 /**
- * Interceptor Struts 2 pour avoir les temps moyens des actions Struts.
- * {@link StrutsInterceptor "http://struts.apache.org/2.1.6/docs/interceptors.html"}
+ * <a href='http://struts.apache.org/2.1.6/docs/interceptors.html'>Interceptor</a> Struts 2 
+ * pour avoir les temps moyens des actions Struts.
  * @author Emeric Vernat
  */
 public final class StrutsInterceptor extends AbstractInterceptor {

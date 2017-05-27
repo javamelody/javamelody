@@ -24,7 +24,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 /**
- * Output stream pour un filtre implémentant ServletOutputStream à partir d'un autre ServletOutputStream ou d'un OutputStream.
+ * Output stream pour un filtre implémentant {@link ServletOutputStream} à partir d'un autre ServletOutputStream ou d'un OutputStream.
  * @author Emeric Vernat
  */
 class FilterServletOutputStream extends ServletOutputStream {

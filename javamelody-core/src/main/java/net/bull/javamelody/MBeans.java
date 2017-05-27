@@ -43,7 +43,7 @@ import javax.management.openmbean.TabularData;
 import net.bull.javamelody.MBeanNode.MBeanAttribute;
 
 /**
- * Objet récupérant une instance de MBeanServer lors de sa construction
+ * Objet récupérant une instance de {@link MBeanServer} lors de sa construction
  * et permettant de récupérer différentes données sur les MBeans.
  * @author Emeric Vernat
  */
@@ -429,7 +429,7 @@ final class MBeans {
 	}
 
 	/**
-	 * Retourne la liste de tous les javax.management.MBeanServer.
+	 * Retourne la liste de tous les {@link javax.management.MBeanServer}.
 	 * @return List
 	 */
 	private static List<MBeanServer> getMBeanServers() {

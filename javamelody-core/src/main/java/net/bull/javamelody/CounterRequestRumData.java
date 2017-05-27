@@ -20,7 +20,7 @@ package net.bull.javamelody;
 import java.io.Serializable;
 
 /**
- * Données Real User Monitoring (RUM) d'une requête http.
+ * Données Real User Monitoring (<a href='https://en.wikipedia.org/wiki/Real_user_monitoring'>RUM</a>) d'une requête http.
  * @author Emeric Vernat
  */
 class CounterRequestRumData implements Serializable, Cloneable {

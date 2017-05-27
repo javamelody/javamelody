@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 
 /**
- * JavaMelodyLogger pour Logback.
+ * {@link JavaMelodyLogger} pour Logback.
  * @author Emeric Vernat
  */
 class LogbackLogger implements JavaMelodyLogger {

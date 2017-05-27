@@ -27,7 +27,7 @@ import org.quartz.JobListener;
 import org.quartz.SchedulerException;
 
 /**
- * Listener sur les exécutions de jobs quartz, configuré automatiquement par MonitoringFilter.
+ * Listener sur les exécutions de jobs quartz, configuré automatiquement par {@link MonitoringFilter}.
  * @author Emeric Vernat
  */
 final class JobGlobalListener implements JobListener {

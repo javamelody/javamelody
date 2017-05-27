@@ -23,7 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import net.bull.javamelody.HtmlInjectorResponseStream.HtmlToInject;
 
 /**
- * Injection du script Boomerang avant le tag <code>&lt;/body&gt;</code> pour le Real User Monitoring (RUM).
+ * Injection du script <a href='https://soasta.github.io/boomerang/doc/'>Boomerang</a> 
+ * avant le tag {@code </body>} pour le Real User Monitoring
+ * (<a href='https://en.wikipedia.org/wiki/Real_user_monitoring'>RUM</a>).
  * @author Emeric Vernat
  */
 final class RumInjector implements HtmlToInject {

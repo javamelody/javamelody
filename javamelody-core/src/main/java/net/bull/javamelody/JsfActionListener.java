@@ -22,7 +22,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
 /**
- * ActionListener JSF RI (Mojarra) pour avoir les temps moyens des actions JSF.
+ * {@link ActionListener} JSF RI (Mojarra) pour avoir les temps moyens des actions JSF.
  * @author Emeric Vernat
  */
 public class JsfActionListener implements ActionListener {

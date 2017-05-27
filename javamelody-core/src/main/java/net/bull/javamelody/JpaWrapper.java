@@ -42,7 +42,7 @@ public final class JpaWrapper {
 	}
 
 	/**
-	 * Create proxy of EntityManagerFactory.
+	 * Create proxy of {@link EntityManagerFactory}.
 	 * @param entityManagerFactory EntityManagerFactory
 	 * @return EntityManagerFactory
 	 */

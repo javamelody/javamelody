@@ -41,7 +41,7 @@ import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 /**
- * Cette classe est utile pour construire des proxy de DataSources ou de Connections jdbc.<br>
+ * Cette classe est utile pour construire des proxy de {@link DataSource}s ou de {@link Connection}s jdbc.<br>
  * Et notamment elle rebinde dans l'annuaire JNDI la dataSource jdbc en la remplaçant
  * par un proxy de monitoring.
  * @author Emeric Vernat
@@ -84,7 +84,7 @@ public final class JdbcWrapper {
 	}
 
 	/**
-	 * Handler de proxy d'un statement jdbc.
+	 * Handler de proxy d'un {@link Statement} jdbc.
 	 */
 	private class StatementInvocationHandler implements InvocationHandler {
 		// Rq : dans les proxy de DataSource, Connection et Statement,
@@ -154,7 +154,7 @@ public final class JdbcWrapper {
 	}
 
 	/**
-	 * Handler de proxy d'une connexion jdbc.
+	 * Handler de proxy d'une {@link Connection} jdbc.
 	 */
 	private class ConnectionInvocationHandler implements InvocationHandler {
 		private final Connection connection;
@@ -371,7 +371,7 @@ public final class JdbcWrapper {
 	}
 
 	/**
-	 * Enregistre une DataSource ne venant pas de JNDI.
+	 * Enregistre une {@link DataSource} ne venant pas de JNDI.
 	 * @param name String
 	 * @param dataSource DataSource
 	 */
@@ -751,7 +751,7 @@ public final class JdbcWrapper {
 	}
 
 	/**
-	 * Crée un proxy d'une dataSource jdbc.
+	 * Crée un proxy d'une {@link DataSource} jdbc.
 	 * @param dataSource DataSource
 	 * @return DataSource
 	 */
@@ -760,7 +760,7 @@ public final class JdbcWrapper {
 	}
 
 	/**
-	 * Crée un proxy d'une dataSource jdbc.
+	 * Crée un proxy d'une {@link DataSource} jdbc.
 	 * @param name String
 	 * @param dataSource DataSource
 	 * @return DataSource
@@ -795,7 +795,7 @@ public final class JdbcWrapper {
 	}
 
 	/**
-	 * Crée un proxy d'une connexion jdbc.
+	 * Crée un proxy d'une {@link Connection} jdbc.
 	 * @param connection Connection
 	 * @return Connection
 	 */

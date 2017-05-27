@@ -34,7 +34,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Classe chargée de l'enregistrement et de la lecture d'un counter.
+ * Classe chargée de l'enregistrement et de la lecture d'un {@link Counter}.
  * @author Emeric Vernat
  */
 class CounterStorage {

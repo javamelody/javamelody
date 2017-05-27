@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * Implémentation de HttpServletResponseWrapper permettant d'encapsuler l'outputStream,
+ * Implémentation de {@link HttpServletResponseWrapper} permettant d'encapsuler l'outputStream,
  * par exemple pour calculer la taille du flux ou pour le compresser.
  * @author Emeric Vernat
  */

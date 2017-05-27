@@ -23,7 +23,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implémentation de FilterServletResponseWrapper qui fonctionne avec le CounterResponseStream,
+ * Implémentation de {@link FilterServletResponseWrapper} qui fonctionne avec le {@link CounterResponseStream},
  * pour calculer la taille du flux de réponse.
  * @author Emeric Vernat
  */

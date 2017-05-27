@@ -33,7 +33,7 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
 /**
- * Classe permettant de fournir une API adaptée aux différentes versions de Quartz.<br/>
+ * Classe permettant de fournir une API adaptée aux différentes versions de <a href='http://www.quartz-scheduler.org/'>Quartz</a>.<br/>
  * L'implémentation par défaut est adaptée à Quartz avant la version 2.<br/>
  * Une autre implémentation avec la même API sera fournie et sera adaptée à la version 2 et aux suivantes.
  * @author Emeric Vernat

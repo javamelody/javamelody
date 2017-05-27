@@ -31,7 +31,8 @@ import java.util.Map;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
- * Collecteur de données pour une application sur un ou plusieurs serveur(s) distant(s) : utilisé par serveur de collecte et par IHM Swing.
+ * Collecteur de données pour une application sur un ou plusieurs serveur(s) distant(s) :
+ * utilisé par serveur de collecte et par IHM Swing.
  * @author Emeric Vernat
  */
 class RemoteCollector {

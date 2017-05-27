@@ -26,8 +26,8 @@ import java.lang.reflect.Method;
  * Proxy de monitoring pour tout façade ayant une interface.
  * Il est destiné à un compteur pour les statistiques d'exécutions de méthodes sur les "façades métiers"
  * qui ne sont ni EJB 3 ni Spring.
- * Il s'utilise comme ceci:
- * 		facade = MonitoringProxy.createProxy(facade);
+ * Il s'utilise comme ceci :
+ * 		{@code facade = MonitoringProxy.createProxy(facade);}
  * @author Emeric Vernat
  */
 public class MonitoringProxy implements InvocationHandler, Serializable {

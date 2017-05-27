@@ -31,7 +31,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * Servlet de collecte utilisée uniquement pour serveur de collecte séparé de l'application monitorée.
+ * Servlet de collecte utilisée uniquement pour le serveur de collecte ({@link CollectorServer}) séparé de l'application monitorée.
  * @author Emeric Vernat
  */
 public class CollectorServlet extends HttpServlet {

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Abstract Filter of monitoring JavaMelody for Jenkins/JIRA/Bamboo/Confluence with emulated session listener.
+ * Abstract Filter of monitoring JavaMelody for Jenkins/JIRA/Bamboo/Confluence with emulated {@link SessionListener}.
  * @author Emeric Vernat
  */
 public abstract class PluginMonitoringFilter extends MonitoringFilter {

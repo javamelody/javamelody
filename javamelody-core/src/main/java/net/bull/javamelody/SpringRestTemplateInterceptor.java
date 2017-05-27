@@ -23,9 +23,10 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.RestTemplate;
 
 /**
- * Interceptor for Spring RestTemplate.
+ * Interceptor for Spring {@link RestTemplate}.
  * @author Emeric Vernat
  */
 public class SpringRestTemplateInterceptor implements ClientHttpRequestInterceptor {

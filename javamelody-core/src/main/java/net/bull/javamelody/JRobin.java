@@ -48,8 +48,8 @@ import org.jrobin.graph.RrdGraphDef;
 
 /**
  * Stockage RRD et graphiques statistiques.
- * Cette classe utilise JRobin (http://www.jrobin.org/index.php/Main_Page)
- * qui est une librairie Java opensource (LGPL) similaire à RRDTool (http://oss.oetiker.ch/rrdtool/).
+ * Cette classe utilise <a href='http://www.jrobin.org/index.php/Main_Page'>JRobin</a>
+ * qui est une librairie Java opensource (LGPL) similaire à <a href='http://oss.oetiker.ch/rrdtool/'>RRDTool</a>.
  * L'API et le tutorial JRobin sont à http://oldwww.jrobin.org/api/index.html
  * @author Emeric Vernat
  */

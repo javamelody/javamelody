@@ -26,7 +26,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Post-processor Spring pour un éventuel Rest Template défini dans le fichier xml Spring.
+ * Post-processor Spring pour un éventuel {@link RestTemplate} défini dans le fichier xml Spring.
  * @author Emeric Vernat
  */
 public class SpringRestTemplateBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {

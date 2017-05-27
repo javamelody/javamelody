@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 import net.bull.javamelody.SamplingProfiler.SampledMethod;
 
 /**
- * Contrôleur au sens MVC de l'ihm de monitoring dans le serveur collecte.
+ * Contrôleur au sens MVC de l'ihm de monitoring dans le serveur de collecte ({@link CollectorServer}).
  * @author Emeric Vernat
  */
 class CollectorController { // NOPMD

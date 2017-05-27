@@ -44,7 +44,7 @@ import javax.sql.DataSource;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 /**
- * Classe utilitaire pour JdbcWrapper.
+ * Classe utilitaire pour {@link JdbcWrapper}.
  * @author Emeric Vernat
  */
 final class JdbcWrapperHelper {

@@ -28,7 +28,7 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
 /**
- * Post-processor Spring pour une éventuelle DataSource défini dans le fichier xml Spring.
+ * Post-processor Spring pour une éventuelle {@link DataSource} défini dans le fichier xml Spring.
  * @author Emeric Vernat
  */
 public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {

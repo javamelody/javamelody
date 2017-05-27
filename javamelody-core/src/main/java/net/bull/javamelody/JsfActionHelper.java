@@ -21,7 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionListener;
 
 /**
- * Helper pour l'ActionListener JSF RI (Mojarra).
+ * Helper pour l'{@link ActionListener} JSF RI (Mojarra).
  * @author Emeric Vernat
  */
 final class JsfActionHelper {

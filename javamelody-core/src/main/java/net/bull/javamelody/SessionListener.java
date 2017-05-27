@@ -36,10 +36,10 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
- * Listener de session http pour le monitoring.
+ * Listener de session http ({@link HttpSessionListener}) pour le monitoring.
  * C'est la classe de ce listener qui doit être déclarée dans le fichier web.xml de la webapp.
- * Ce listener fait également listener de contexte de servlet
- * et listener de passivation/activation de sessions.
+ * Ce listener fait également listener de contexte de servlet ({@link ServletContextListener})
+ * et listener de passivation/activation de sessions ({@link HttpSessionActivationListener}).
  * @author Emeric Vernat
  */
 public class SessionListener implements HttpSessionListener, HttpSessionActivationListener,

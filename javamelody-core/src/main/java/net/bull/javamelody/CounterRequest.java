@@ -26,10 +26,10 @@ import java.util.Map;
 
 /**
  * Données statistiques d'une requête identifiée, hors paramètres dynamiques comme un identifiant,
- * et sur la période considérée selon le pilotage du collector par l'intermédiaire counter.
+ * et sur la période considérée selon le pilotage du {@link Collector} par l'intermédiaire d'un {@link Counter}.
  *
  * Les méthodes d'une instance de cette classe ne sont pas thread-safe.
- * L'état d'une instance doit être accédé ou modifié par l'intermédiaire d'une instance de Counter,
+ * L'état d'une instance doit être accédé ou modifié par l'intermédiaire d'une instance de {@link Counter},
  * qui gérera les accès concurrents sur les instances de cette classe.
  * @author Emeric Vernat
  */

@@ -52,13 +52,13 @@ enum TransportFormat {
 	SERIALIZED(DataFlavor.javaSerializedObjectMimeType),
 
 	/**
-	 * XML (avec XStream/XPP).
+	 * XML (avec <a href='http://x-stream.github.io/'>XStream</a> / XPP).
 	 */
 	XML("text/xml; charset=utf-8"),
 
 	/**
-	 * JSON (écriture en JSON avec XStream).
-	 * Note : il serait possible aussi de le faire avec Jackson (http://jackson.codehaus.org/)
+	 * JSON (écriture en JSON avec <a href='http://x-stream.github.io/'>XStream</a>).
+	 * Note : il serait possible aussi de le faire avec <a href='https://github.com/FasterXML/jackson'>Jackson</a>
 	 */
 	JSON("application/json");
 
