@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
+import javax.sql.DataSource;
 
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.Pointcuts;
@@ -45,6 +46,7 @@ import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Spring Boot auto-configuration for JavaMelody.
@@ -78,7 +80,7 @@ public class JavaMelodyAutoConfiguration {
 	public static final String REGISTRATION_BEAN_NAME = "javamelody-registration";
 
 	/**
-	 * Registers the JavaMelody session listener.
+	 * Registers the JavaMelody {@link SessionListener}.
 	 * @param servletContext ServletContext
 	 * @return ServletListenerRegistrationBean
 	 */
@@ -96,7 +98,7 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
-	 * Registers the JavaMelody monitoring filter. The filter can be overridden completely by creating a custom
+	 * Registers the JavaMelody {@link MonitoringFilter}. The filter can be overridden completely by creating a custom
 	 * {@link FilterRegistrationBean} with the name "javamelody-registration" in the application context.
 	 * @param properties JavaMelodyConfigurationProperties
 	 * @param servletContext ServletContext
@@ -150,7 +152,7 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
-	 * Monitoring of JDBC Data Sources
+	 * Monitoring of JDBC {@link DataSource}s
 	 * @param excludedDatasources Comma separated list of excluded datasources
 	 * @return SpringDataSourceBeanPostProcessor
 	 */
@@ -232,7 +234,7 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
-	 * Monitoring of RestTemplate beans.
+	 * Monitoring of {@link RestTemplate} beans.
 	 * @return SpringRestTemplateBeanPostProcessor
 	 */
 	@Bean
