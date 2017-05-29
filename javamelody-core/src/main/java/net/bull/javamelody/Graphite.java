@@ -73,7 +73,7 @@ class Graphite {
 			final String address;
 			final int port;
 			final int index = graphiteAddress.indexOf(':');
-			if (index != -1 && index < graphiteAddress.length()) {
+			if (index != -1) {
 				address = graphiteAddress.substring(0, index);
 				port = Integer
 						.parseInt(graphiteAddress.substring(index + 1, graphiteAddress.length()));
