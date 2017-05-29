@@ -102,7 +102,7 @@ class RequestToMethodMapper<T> {
 			} else if (targetException instanceof Error) {
 				throw (Error) targetException;
 			}
-			throw new IOException(e);
+			throw new IOException(targetException);
 		}
 	}
 
