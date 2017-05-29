@@ -42,7 +42,7 @@ public class TestGraphite {
 	/** Test. 
 	 * @throws IOException e */
 	@Test
-	public void testIsAllowed() throws IOException {
+	public void test() throws IOException {
 		Graphite graphite = Graphite.getInstance("test");
 		assertNull("getInstance", graphite);
 		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost:2003");
@@ -58,6 +58,14 @@ public class TestGraphite {
 			exception = true;
 		}
 		assertTrue("no graphite server", exception);
+		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost");
+		try {
+			Graphite.getInstance("test").send();
+		} catch (final IOException e) {
+			exception = true;
+		}
+		assertTrue("no graphite server", exception);
+		setProperty(Parameter.GRAPHITE_ADDRESS, null);
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
