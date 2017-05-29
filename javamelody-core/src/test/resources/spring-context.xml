@@ -9,6 +9,10 @@
 	<bean name="annotatedTestClassSpring2" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestClass2" />
 	<bean name="annotatedTestOtherClassSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestOtherClass" />
 	<bean name="annotatedTestMethodSpring" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestMethod" />
+	<bean name="annotatedTestController" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestController" />
+	<bean name="annotatedTestService" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestService" />
+	<bean name="annotatedTestAsync" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestAsync" />
+	<bean name="annotatedTestScheduled" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestScheduled" />
 
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">

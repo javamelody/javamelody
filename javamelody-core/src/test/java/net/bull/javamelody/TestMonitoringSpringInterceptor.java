@@ -28,6 +28,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 /**
  * Test unitaire de la classe MonitoringSpringInterceptor.
@@ -42,6 +46,41 @@ public class TestMonitoringSpringInterceptor {
 	@Before
 	public void setUp() {
 		Utils.initialize();
+	}
+
+	/**
+	 * Test.
+	 */
+	public interface ITest {
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		Date myMethod();
+
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		Date myOtherMethod();
+	}
+
+	/**
+	 * Test.
+	 */
+	public interface ScheduledTest {
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		@Scheduled
+		Date myMethod();
+
+		/**
+		 * Test.
+		 * @return Date
+		 */
+		Date myOtherMethod();
 	}
 
 	/**
@@ -171,6 +210,93 @@ public class TestMonitoringSpringInterceptor {
 		}
 	}
 
+	/**
+	 * Test.
+	 */
+	@Controller
+	public static class AnnotatedTestController implements ITest {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myOtherMethod() {
+			return new Date();
+		}
+	}
+
+	/**
+	 * Test.
+	 */
+	@Service
+	public static class AnnotatedTestService implements ITest {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myOtherMethod() {
+			return new Date();
+		}
+	}
+
+	/**
+	 * Test.
+	 */
+	@Async
+	public static class AnnotatedTestAsync implements ITest {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myOtherMethod() {
+			return new Date();
+		}
+	}
+
+	/**
+	 * Test.
+	 */
+	public static class AnnotatedTestScheduled implements ScheduledTest {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myMethod() {
+			return new Date();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public Date myOtherMethod() {
+			return new Date();
+		}
+	}
+
 	/** Test. */
 	@Test
 	public void testNewInstance() {
@@ -256,6 +382,27 @@ public class TestMonitoringSpringInterceptor {
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myMethod());
 		assertNotNull("annotatedTestMethodSpring", annotatedTestMethodSpring.myOtherMethod());
 		assertSame(REQUESTS_COUNT, 7, springCounter.getRequestsCount());
+
+		final ITest annotatedTestController = (ITest) context.getBean("annotatedTestController");
+		assertNotNull("annotatedTestController", annotatedTestController.myMethod());
+		assertNotNull("annotatedTestController", annotatedTestController.myOtherMethod());
+		assertSame(REQUESTS_COUNT, 9, springCounter.getRequestsCount());
+
+		final ITest annotatedTestService = (ITest) context.getBean("annotatedTestService");
+		assertNotNull("annotatedTestService", annotatedTestService.myMethod());
+		assertNotNull("annotatedTestService", annotatedTestService.myOtherMethod());
+		assertSame(REQUESTS_COUNT, 11, springCounter.getRequestsCount());
+
+		final ITest annotatedTestAsync = (ITest) context.getBean("annotatedTestAsync");
+		assertNotNull("annotatedTestAsync", annotatedTestAsync.myMethod());
+		assertNotNull("annotatedTestAsync", annotatedTestAsync.myOtherMethod());
+		assertSame(REQUESTS_COUNT, 13, springCounter.getRequestsCount());
+
+		final ScheduledTest annotatedTestScheduled = (ScheduledTest) context
+				.getBean("annotatedTestScheduled");
+		assertNotNull("annotatedTestScheduled", annotatedTestScheduled.myMethod());
+		assertNotNull("annotatedTestScheduled", annotatedTestScheduled.myOtherMethod());
+		assertSame(REQUESTS_COUNT, 14, springCounter.getRequestsCount());
 	}
 
 	/** Test. */
