@@ -18,27 +18,17 @@
 package net.bull.javamelody;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.bull.javamelody.Counter.CounterRequestContextComparator;
@@ -49,10 +39,6 @@ import net.bull.javamelody.SamplingProfiler.SampledMethod;
  * @author Emeric Vernat
  */
 class Collector { // NOPMD
-	private static final Comparator<Map.Entry<String, Date>> WEBAPP_VERSIONS_VALUE_COMPARATOR = Collections
-			.reverseOrder(new MapValueComparator<String, Date>());
-	private static final String VERSIONS_FILENAME = "versions.properties";
-	private static final String VERSIONS_DATE_PATTERN = "yyyy/MM/dd";
 	private static final long NOT_A_NUMBER = Long.MIN_VALUE;
 
 	// période entre 2 collectes en milli-secondes
@@ -84,24 +70,7 @@ class Collector { // NOPMD
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final Graphite graphite;
-	/**
-	 * Les versions de l'applications avec pour chacune la date de déploiement.
-	 */
-	private final Map<String, Date> datesByWebappVersions;
-
-	private static class MapValueComparator<K, V extends Comparable<V>>
-			implements Comparator<Map.Entry<K, V>>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		MapValueComparator() {
-			super();
-		}
-
-		@Override
-		public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-			return o1.getValue().compareTo(o2.getValue());
-		}
-	}
+	private final WebappVersions webappVersions;
 
 	/**
 	 * Constructeur.
@@ -158,7 +127,7 @@ class Collector { // NOPMD
 					+ Parameters.getStorageDirectory(application), e);
 		}
 
-		datesByWebappVersions = readDatesByWebappVersions();
+		this.webappVersions = new WebappVersions(application);
 	}
 
 	/**
@@ -185,14 +154,7 @@ class Collector { // NOPMD
 	}
 
 	Map<String, Date> getDatesByWebappVersions() {
-		final List<Map.Entry<String, Date>> entries = new ArrayList<Map.Entry<String, Date>>(
-				datesByWebappVersions.entrySet());
-		Collections.sort(entries, WEBAPP_VERSIONS_VALUE_COMPARATOR);
-		final Map<String, Date> map = new LinkedHashMap<String, Date>();
-		for (final Map.Entry<String, Date> entry : entries) {
-			map.put(entry.getKey(), entry.getValue());
-		}
-		return Collections.unmodifiableMap(map);
+		return webappVersions.getDatesByVersions();
 	}
 
 	/**
@@ -404,10 +366,7 @@ class Collector { // NOPMD
 
 		if (!javaInformationsList.isEmpty()) {
 			final String webappVersion = javaInformationsList.get(0).getWebappVersion();
-			if (webappVersion != null && !datesByWebappVersions.containsKey(webappVersion)) {
-				addWebappVersion(webappVersion);
-				datesByWebappVersions.put(webappVersion, new Date());
-			}
+			webappVersions.addVersionIfNeeded(webappVersion);
 		}
 
 		return memorySize;
@@ -994,67 +953,6 @@ class Collector { // NOPMD
 			}
 		}
 		return Collections.unmodifiableCollection(displayedJRobins);
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map<String, Date> readDatesByWebappVersions() {
-		final Map<String, Date> result = new HashMap<String, Date>();
-		final File storageDirectory = Parameters.getStorageDirectory(application);
-		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
-		if (versionsFile.exists()) {
-			final Properties versionsProperties = new Properties();
-			try {
-				final InputStream input = new FileInputStream(versionsFile);
-				try {
-					versionsProperties.load(input);
-				} finally {
-					input.close();
-				}
-				final List<String> propertyNames = (List<String>) Collections
-						.list(versionsProperties.propertyNames());
-				final SimpleDateFormat dateFormat = new SimpleDateFormat(VERSIONS_DATE_PATTERN,
-						Locale.US);
-				for (final String version : propertyNames) {
-					try {
-						final Date date = dateFormat.parse(versionsProperties.getProperty(version));
-						result.put(version, date);
-					} catch (final ParseException e) {
-						continue;
-					}
-				}
-			} catch (final IOException e) {
-				// lecture échouée, tant pis
-				LOG.warn("exception while reading versions in " + versionsFile, e);
-			}
-		}
-		return result;
-	}
-
-	private void addWebappVersion(String webappVersion) throws IOException {
-		assert webappVersion != null && !webappVersion.isEmpty();
-		final File storageDirectory = Parameters.getStorageDirectory(application);
-		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
-		final Properties versionsProperties = new Properties();
-		if (versionsFile.exists()) {
-			final InputStream input = new FileInputStream(versionsFile);
-			try {
-				versionsProperties.load(input);
-			} finally {
-				input.close();
-			}
-		}
-		assert versionsProperties.getProperty(webappVersion) == null;
-
-		final SimpleDateFormat dateFormat = new SimpleDateFormat(VERSIONS_DATE_PATTERN, Locale.US);
-		versionsProperties.setProperty(webappVersion, dateFormat.format(new Date()));
-
-		final OutputStream output = new FileOutputStream(versionsFile);
-		try {
-			versionsProperties.store(output, "Application deployments with versions and dates");
-		} finally {
-			output.close();
-		}
-		LOG.debug("New application version added: " + webappVersion);
 	}
 
 	/**
