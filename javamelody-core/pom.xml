@@ -258,6 +258,13 @@
 			<version>3.3.0</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- Dépendance optionnelle AWS Java SDK -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-cloudwatch</artifactId>
+			<version>1.11.136</version>
+			<optional>true</optional>
+		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>
 			<groupId>junit</groupId>

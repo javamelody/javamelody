@@ -344,7 +344,13 @@ public enum Parameter {
 	 * Address of the <a href='http://graphiteapp.org/'>Graphite</a> server to send metrics to,
 	 * for example: 11.22.33.44:2003 (null by default).
 	 */
-	GRAPHITE_ADDRESS("graphite-address");
+	GRAPHITE_ADDRESS("graphite-address"),
+
+	/**
+	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
+	 * for example "MyCompany/MyAppDomain" (null by default).
+	 */
+	CLOUDWATCH_NAMESPACE("cloudwatch-namespace");
 
 	private final String code;
 

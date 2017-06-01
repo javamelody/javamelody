@@ -70,6 +70,7 @@ class Collector { // NOPMD
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private final Graphite graphite;
+	private final CloudWatch cloudWatch;
 	private final WebappVersions webappVersions;
 
 	/**
@@ -95,6 +96,7 @@ class Collector { // NOPMD
 		this.counters = Collections.unmodifiableList(new ArrayList<Counter>(counters));
 		this.samplingProfiler = samplingProfiler;
 		this.graphite = Graphite.getInstance(application);
+		this.cloudWatch = CloudWatch.getInstance();
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
 		for (final Counter counter : counters) {
 			for (final Counter otherCounter : counters) {
@@ -348,6 +350,9 @@ class Collector { // NOPMD
 		} finally {
 			if (graphite != null) {
 				graphite.send();
+			}
+			if (cloudWatch != null) {
+				cloudWatch.send();
 			}
 		}
 
@@ -618,6 +623,9 @@ class Collector { // NOPMD
 		jRobin.addValue(value);
 		if (graphite != null) {
 			graphite.addValue(jRobin.getName(), value);
+		}
+		if (cloudWatch != null) {
+			cloudWatch.addValue(jRobin.getName(), value);
 		}
 	}
 
@@ -984,8 +992,14 @@ class Collector { // NOPMD
 			// persistance échouée, tant pis
 			LOG.warn("exception while writing counters data to files", e);
 		} finally {
-			for (final Counter counter : counters) {
-				counter.clear();
+			try {
+				for (final Counter counter : counters) {
+					counter.clear();
+				}
+			} finally {
+				if (cloudWatch != null) {
+					cloudWatch.stop();
+				}
 			}
 			stopped = true;
 			// ici on ne fait pas de nettoyage de la liste counters car cette méthode
