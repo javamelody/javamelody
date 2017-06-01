@@ -111,7 +111,10 @@ class CloudWatch {
 						"CloudWatch namespaces starting with \"AWS/\" are reserved for use by AWS products.");
 			}
 			final String prefix = "javamelody.";
-			final String contextPath = Parameters.getContextPath(Parameters.getServletContext());
+			String contextPath = Parameters.getContextPath(Parameters.getServletContext());
+			if (contextPath.isEmpty()) {
+				contextPath = "/";
+			}
 			final String hostName = Parameters.getHostName();
 			return new CloudWatch(cloudWatchNamespace, prefix, contextPath, hostName);
 		}
