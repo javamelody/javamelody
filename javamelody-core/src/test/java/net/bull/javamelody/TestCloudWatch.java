@@ -62,7 +62,12 @@ public class TestCloudWatch {
 		assertNull("getInstance", cloudWatch);
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
 		System.setProperty("aws.region", "us-west-1");
-		cloudWatch = CloudWatch.getInstance();
+		try {
+			cloudWatch = CloudWatch.getInstance();
+		} catch (final NoClassDefFoundError e) {
+			// for ant tests
+			return;
+		}
 		assertNotNull("getInstance", cloudWatch);
 		cloudWatch.addValue("metric", 1);
 		cloudWatch.addValue("metric", 2);
