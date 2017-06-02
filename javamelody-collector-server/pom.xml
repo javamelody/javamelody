@@ -89,6 +89,12 @@
 			<artifactId>xstream</artifactId>
 			<version>1.4.9</version>
 		</dependency>
+		<!-- AWS CloudWatch dependencies to send metrics to CloudWatch (about 4.5 MB) -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-cloudwatch</artifactId>
+			<version>1.11.136</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

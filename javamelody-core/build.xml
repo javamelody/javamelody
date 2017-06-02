@@ -186,6 +186,7 @@
 				</section>
 			</manifest>
 		</jar>
+		<echo level="warning" message="Warning ! Maven build from javamelody-collector-server must be used to include AWS CloudWatch dependencies." />
 	</target>
 
 	<!-- Construction du jar javamelody-objectfactory pour GlassFish v3 -->
