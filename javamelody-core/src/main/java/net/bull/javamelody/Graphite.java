@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.ConnectException;
@@ -72,8 +73,9 @@ class Graphite {
 			assert application != null;
 			final String address;
 			final int port;
-			final int index = graphiteAddress.indexOf(':');
+			final int index = graphiteAddress.lastIndexOf(':');
 			if (index != -1) {
+				// we could use new URI("socket://" + graphiteAddress).getHost() and getPort() to parse the address
 				address = graphiteAddress.substring(0, index);
 				port = Integer
 						.parseInt(graphiteAddress.substring(index + 1, graphiteAddress.length()));
@@ -111,6 +113,7 @@ class Graphite {
 			final Socket socket = createSocket();
 			try {
 				buffer.writeTo(socket.getOutputStream());
+				checkNoReturnedData(socket);
 			} finally {
 				socket.close();
 			}
@@ -125,5 +128,31 @@ class Graphite {
 
 	private Socket createSocket() throws IOException {
 		return socketFactory.createSocket(address, port);
+	}
+
+	/**
+	 * The graphite protocol is a "one-way" streaming protocol and as such there is no easy way
+	 * to check that we are sending the output to the wrong place. We can aim the graphite writer
+	 * at any listening socket and it will never care if the data is being correctly handled. By
+	 * logging any returned bytes we can help make it obvious that it's talking to the wrong
+	 * server/socket. In particular if its aimed at the web port of a
+	 * graphite server this will make it print out the HTTP error message.
+	 * @param socket Socket
+	 * @throws IOException e
+	 */
+	private void checkNoReturnedData(Socket socket) throws IOException {
+		final InputStream input = socket.getInputStream();
+		if (input.available() > 0) {
+			final byte[] bytes = new byte[1000];
+			final int toRead = Math.min(input.available(), bytes.length);
+			final int read = input.read(bytes, 0, toRead);
+			if (read > 0) {
+				final String msg = "Data returned by graphite server when expecting no response! "
+						+ "Probably aimed at wrong socket or server. Make sure you "
+						+ "are publishing to the data port, not the dashboard port. First " + read
+						+ " bytes of response: " + new String(bytes, 0, read, "UTF-8");
+				LOG.warn(msg, new IOException(msg));
+			}
+		}
 	}
 }
