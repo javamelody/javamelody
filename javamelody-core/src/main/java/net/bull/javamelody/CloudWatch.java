@@ -33,7 +33,7 @@ import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
  * Publish chart data to <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a>.
  * @author Emeric Vernat
  */
-class CloudWatch {
+class CloudWatch extends MetricsPublisher {
 	private final String cloudWatchNamespace;
 	private final AmazonCloudWatch awsCloudWatch;
 	private final String prefix;
@@ -44,14 +44,14 @@ class CloudWatch {
 	private Date lastTimestamp;
 
 	CloudWatch(AmazonCloudWatch cloudWatch, String cloudWatchNamespace, String prefix,
-			String application, String hostname) {
+			String application, String hostName) {
 		super();
 		assert cloudWatch != null;
 		assert cloudWatchNamespace != null && !cloudWatchNamespace.startsWith("AWS/")
 				&& cloudWatchNamespace.length() > 0 && cloudWatchNamespace.length() <= 255;
 		assert prefix != null;
 		assert application == null || application.length() >= 1 && application.length() <= 255;
-		assert hostname == null || hostname.length() >= 1 && hostname.length() <= 255;
+		assert hostName == null || hostName.length() >= 1 && hostName.length() <= 255;
 
 		this.awsCloudWatch = cloudWatch;
 		this.cloudWatchNamespace = cloudWatchNamespace;
@@ -61,13 +61,14 @@ class CloudWatch {
 		if (application != null) {
 			dimensions.add(new Dimension().withName("application").withValue(application));
 		}
-		if (hostname != null) {
-			dimensions.add(new Dimension().withName("hostname").withValue(hostname));
+		if (hostName != null) {
+			dimensions.add(new Dimension().withName("hostname").withValue(hostName));
 		}
 		// note: to add other dimensions (max 10), we could call
 		// new URL("http://instance-data/latest/meta-data/instance-id").openStream(),
 		// or /ami-id, /placement/availability-zone, /instance-type, /local-hostname, /local-ipv4, /public-hostname, /public-ipv4
 		// see http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+		// except that it would not work from the collector server
 	}
 
 	/**
@@ -90,11 +91,11 @@ class CloudWatch {
 	 * 		(Namespace of Amazon EC2 is "AWS/EC2", but "AWS/*" is reserved for AWS products)
 	 * @param prefix Prefix such as "javamelody."
 	 * @param application Application such as /testapp
-	 * @param hostname Hostname such as www.host.com
+	 * @param hostName Hostname such as www.host.com@11.22.33.44
 	 */
-	CloudWatch(String cloudWatchNamespace, String prefix, String application, String hostname) {
+	CloudWatch(String cloudWatchNamespace, String prefix, String application, String hostName) {
 		this(AmazonCloudWatchClientBuilder.defaultClient(), cloudWatchNamespace, prefix,
-				application, hostname);
+				application, hostName);
 	}
 
 	// exemple en spécifiant credentials, region et endpoint
@@ -106,25 +107,29 @@ class CloudWatch {
 	//				.build(), ...);
 	//	}
 
-	static CloudWatch getInstance() {
+	static CloudWatch getInstance(String contextPath, String hostName) {
 		final String cloudWatchNamespace = Parameters.getParameter(Parameter.CLOUDWATCH_NAMESPACE);
 		if (cloudWatchNamespace != null) {
+			assert contextPath != null;
+			assert hostName != null;
 			if (cloudWatchNamespace.startsWith("AWS/")) {
 				// http://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_PutMetricData.html
 				throw new IllegalArgumentException(
 						"CloudWatch namespaces starting with \"AWS/\" are reserved for use by AWS products.");
 			}
 			final String prefix = "javamelody.";
-			String contextPath = Parameters.getContextPath(Parameters.getServletContext());
-			if (contextPath.isEmpty()) {
-				contextPath = "/";
+			// contextPath est du genre "/testapp"
+			// hostName est du genre "www.host.com"
+			String application = contextPath;
+			if (application.isEmpty()) {
+				application = "/";
 			}
-			final String hostName = Parameters.getHostName();
-			return new CloudWatch(cloudWatchNamespace, prefix, contextPath, hostName);
+			return new CloudWatch(cloudWatchNamespace, prefix, application, hostName);
 		}
 		return null;
 	}
 
+	@Override
 	void addValue(String metric, double value) {
 		assert metric != null;
 		final long timeInSeconds = System.currentTimeMillis() / 1000;
@@ -142,6 +147,7 @@ class CloudWatch {
 		}
 	}
 
+	@Override
 	void send() throws IOException {
 		final List<MetricDatum> datumList;
 		synchronized (buffer) {
@@ -159,6 +165,7 @@ class CloudWatch {
 		}
 	}
 
+	@Override
 	void stop() {
 		awsCloudWatch.shutdown();
 	}

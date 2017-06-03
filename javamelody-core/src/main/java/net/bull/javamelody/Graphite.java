@@ -37,7 +37,7 @@ import javax.net.SocketFactory;
  * Publish chart data to <a href='http://graphiteapp.org/'>Graphite</a>.
  * @author Emeric Vernat
  */
-class Graphite {
+class Graphite extends MetricsPublisher {
 	private static final int DEFAULT_GRAPHITE_PORT = 2003;
 	private static final char SEPARATOR = ' ';
 
@@ -67,10 +67,11 @@ class Graphite {
 		this.bufferWriter = new OutputStreamWriter(buffer, charset);
 	}
 
-	static Graphite getInstance(String application) {
+	static Graphite getInstance(String contextPath, String hostName) {
 		final String graphiteAddress = Parameters.getParameter(Parameter.GRAPHITE_ADDRESS);
 		if (graphiteAddress != null) {
-			assert application != null;
+			assert contextPath != null;
+			assert hostName != null;
 			final String address;
 			final int port;
 			final int index = graphiteAddress.lastIndexOf(':');
@@ -83,9 +84,10 @@ class Graphite {
 				address = graphiteAddress;
 				port = DEFAULT_GRAPHITE_PORT;
 			}
-			// application est du genre "/testapp_www.host.com"
-			final String prefix = "javamelody." + application.replace("/", "").replace('.', '-')
-					.replace('_', '.').replace('-', '_').replace(SEPARATOR, '_') + '.';
+			// contextPath est du genre "/testapp"
+			// hostName est du genre "www.host.com"
+			final String prefix = ("javamelody." + contextPath.replace("/", "") + '.'
+					+ hostName.replace('.', '_') + '.').replace(SEPARATOR, '_');
 			try {
 				return new Graphite(SocketFactory.getDefault(), InetAddress.getByName(address),
 						port, Charset.forName("UTF-8"), prefix);
@@ -96,6 +98,7 @@ class Graphite {
 		return null;
 	}
 
+	@Override
 	synchronized void addValue(String metric, double value) throws IOException {
 		final long timeInSeconds = System.currentTimeMillis() / 1000;
 		if (lastTime != timeInSeconds) {
@@ -107,6 +110,7 @@ class Graphite {
 		bufferWriter.append(lastTimestamp).append('\n');
 	}
 
+	@Override
 	synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();
@@ -154,5 +158,10 @@ class Graphite {
 				LOG.warn(msg, new IOException(msg));
 			}
 		}
+	}
+
+	@Override
+	void stop() {
+		// nothing
 	}
 }

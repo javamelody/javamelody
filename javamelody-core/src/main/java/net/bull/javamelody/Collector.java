@@ -69,8 +69,7 @@ class Collector { // NOPMD
 	private Date lastDateOfDeletedObsoleteFiles = new Date();
 	private boolean stopped;
 	private final boolean noDatabase = Parameters.isNoDatabase();
-	private final Graphite graphite;
-	private final CloudWatch cloudWatch;
+	private List<MetricsPublisher> metricsPublishers;
 	private final WebappVersions webappVersions;
 
 	/**
@@ -95,8 +94,6 @@ class Collector { // NOPMD
 		this.application = application;
 		this.counters = Collections.unmodifiableList(new ArrayList<Counter>(counters));
 		this.samplingProfiler = samplingProfiler;
-		this.graphite = Graphite.getInstance(application);
-		this.cloudWatch = CloudWatch.getInstance();
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
 		for (final Counter counter : counters) {
 			for (final Counter otherCounter : counters) {
@@ -331,6 +328,9 @@ class Collector { // NOPMD
 		try {
 			// si pas d'informations, on ne met pas 0 : on ne met rien
 			if (!javaInformationsList.isEmpty()) {
+				if (metricsPublishers == null) {
+					metricsPublishers = MetricsPublisher.getMetricsPublishers(javaInformationsList);
+				}
 				collectJavaInformations(javaInformationsList);
 				collectOtherJavaInformations(javaInformationsList);
 				collectTomcatInformations(javaInformationsList);
@@ -348,11 +348,10 @@ class Collector { // NOPMD
 				}
 			}
 		} finally {
-			if (graphite != null) {
-				graphite.send();
-			}
-			if (cloudWatch != null) {
-				cloudWatch.send();
+			if (metricsPublishers != null) {
+				for (final MetricsPublisher metricsPublisher : metricsPublishers) {
+					metricsPublisher.send();
+				}
 			}
 		}
 
@@ -621,11 +620,8 @@ class Collector { // NOPMD
 
 	private void addJRobinValue(JRobin jRobin, double value) throws IOException {
 		jRobin.addValue(value);
-		if (graphite != null) {
-			graphite.addValue(jRobin.getName(), value);
-		}
-		if (cloudWatch != null) {
-			cloudWatch.addValue(jRobin.getName(), value);
+		for (final MetricsPublisher metricsPublisher : metricsPublishers) {
+			metricsPublisher.addValue(jRobin.getName(), value);
 		}
 	}
 
@@ -997,8 +993,10 @@ class Collector { // NOPMD
 					counter.clear();
 				}
 			} finally {
-				if (cloudWatch != null) {
-					cloudWatch.stop();
+				if (metricsPublishers != null) {
+					for (final MetricsPublisher metricsPublisher : metricsPublishers) {
+						metricsPublisher.stop();
+					}
 				}
 			}
 			stopped = true;

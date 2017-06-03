@@ -17,17 +17,11 @@
  */
 package net.bull.javamelody;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-
-import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,20 +44,12 @@ public class TestCloudWatch {
 	/** Test. */
 	@Test
 	public void test() {
-		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
-		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
-		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
-		expect(context.getContextPath()).andReturn("/test").anyTimes();
-		replay(context);
-		Parameters.initialize(context);
-		CloudWatch cloudWatch = CloudWatch.getInstance();
+		CloudWatch cloudWatch = CloudWatch.getInstance("/test", "hostname");
 		assertNull("getInstance", cloudWatch);
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
 		System.setProperty("aws.region", "us-west-1");
 		try {
-			cloudWatch = CloudWatch.getInstance();
+			cloudWatch = CloudWatch.getInstance("/test", "hostname");
 		} catch (final NoClassDefFoundError e) {
 			// for ant tests
 			return;
@@ -81,7 +67,6 @@ public class TestCloudWatch {
 			exception = true;
 		}
 		assertTrue("no credentials provided", exception);
-		verify(context);
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, null);
 		System.getProperties().remove("aws.region");
 	}
