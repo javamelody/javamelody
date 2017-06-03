@@ -64,6 +64,10 @@ class CloudWatch {
 		if (hostname != null) {
 			dimensions.add(new Dimension().withName("hostname").withValue(hostname));
 		}
+		// note: to add other dimensions (max 10), we could call
+		// new URL("http://instance-data/latest/meta-data/instance-id").openStream(),
+		// or /ami-id, /placement/availability-zone, /instance-type, /local-hostname, /local-ipv4, /public-hostname, /public-ipv4
+		// see http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 	}
 
 	/**
