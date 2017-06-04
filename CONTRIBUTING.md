@@ -26,6 +26,7 @@ As long as the final result is BUILD SUCCESS, then the tests have passed.
 ```
 mvn -f javamelody-core test
   or
+ant -f javamelody-core/build.xml test
 ...
 BUILD SUCCESS
 ```
