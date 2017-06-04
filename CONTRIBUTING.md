@@ -37,7 +37,7 @@ git push origin
 ```
 * ~~Watch for the `cloudbees-pull-request-builder` to comment on the status of your pull request.~~
 
-When submitting code, please follow existing [conventions and style](DevGuide#development) in order to keep the code as readable as possible.
+When submitting code, please follow existing [conventions and style](../../DevGuide#development) in order to keep the code as readable as possible.
 
 ## License
 
