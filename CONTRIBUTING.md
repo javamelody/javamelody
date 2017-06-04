@@ -1,6 +1,7 @@
 ## Contributing
 
 If you would like to contribute code, then you can create a pull request as you wish and we will fix the code afterward.
+
 Or you may do so through the following canonical process:
 
 * Fork the repository on GitHub and clone your fork.
