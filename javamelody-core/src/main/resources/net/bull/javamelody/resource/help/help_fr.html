@@ -2,20 +2,21 @@
 <html><head><title>Aide en ligne du monitoring JavaMelody</title>
 <link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>
 <link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head><body>
 
 <h3 align='center'>Aide en ligne du monitoring 
 <a href='https://github.com/javamelody/javamelody/wiki' target='_blank'>JavaMelody</a></h3>
-Le monitoring JavaMelody est un outil de mesure et de statistiques sur le fonctionnement réel d'une application
+Le monitoring JavaMelody est un outil de mesure et de statistiques sur le fonctionnement rÃ©el d'une application
 selon l'usage qui en est fait par les utilisateurs.
 <br/>
-Le monitoring est en grande partie basé sur des statistiques de requêtes et sur des courbes d'évolution.
-Il permet ainsi d'améliorer les applications en recette et en production et d'aider à :<ul>
-<li>factualiser les temps de réponse moyens et les nombres d'exécutions</li>
-<li>prendre des décisions quand les tendances sont mauvaises</li>
-<li>optimiser sur la base des temps de réponse les plus pénalisants</li>
-<li>trouver les causes à l'origine des temps de réponse</li>
-<li>vérifier l'amélioration réelle après des optimisations</li>
+Le monitoring est en grande partie basÃ© sur des statistiques de requÃªtes et sur des courbes d'Ã©volution.
+Il permet ainsi d'amÃ©liorer les applications en recette et en production et d'aider Ã  :<ul>
+<li>factualiser les temps de rÃ©ponse moyens et les nombres d'exÃ©cutions</li>
+<li>prendre des dÃ©cisions quand les tendances sont mauvaises</li>
+<li>optimiser sur la base des temps de rÃ©ponse les plus pÃ©nalisants</li>
+<li>trouver les causes Ã  l'origine des temps de rÃ©ponse</li>
+<li>vÃ©rifier l'amÃ©lioration rÃ©elle aprÃ¨s des optimisations</li>
 </ul>
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Project'/>
@@ -41,157 +42,157 @@ Monitoring and Management for Java SE 8</a><br/>
 Java SE 6 Performance</a><br/>
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Stats'/>
-Synthèse</h3>
-Dans la page du monitoring, la synthèse présente des courbes d'évolution sur différentes valeurs de mesures.<br/>
-Ces mesures sont effectuées à un instant t, par exemple toutes les minutes.
-Chaque courbe suit l'évolution d'une valeur de mesure sur la période plus ou moins large choisie
-par l'intermédiaire des liens au-dessus de la synthèse :
+SynthÃ¨se</h3>
+Dans la page du monitoring, la synthÃ¨se prÃ©sente des courbes d'Ã©volution sur diffÃ©rentes valeurs de mesures.<br/>
+Ces mesures sont effectuÃ©es Ã  un instant t, par exemple toutes les minutes.
+Chaque courbe suit l'Ã©volution d'une valeur de mesure sur la pÃ©riode plus ou moins large choisie
+par l'intermÃ©diaire des liens au-dessus de la synthÃ¨se :
  <img width='16' height='16' src='?resource=calendar_view_day.png' alt='day'/> le jour,
  <img width='16' height='16' src='?resource=calendar_view_week.png' alt='week'/> la semaine,
  <img width='16' height='16' src='?resource=calendar_view_month.png' alt='month'/> le mois,
- <img width='16' height='16' src='?resource=calendar.png' alt='year'/> l'année ou
-  <img width='16' height='16' src='?resource=calendar.png' alt='custom'/> une période personnalisée.
-Dans chaque courbe sont suivies et indiquées en chiffres la valeur moyenne en vert et le maximum en bleu.
-Les unités dans les courbes sont choisies automatiquement selon les valeurs : "m" pour millièmes (1 / 1000), "k" pour kilo/milliers,
-"M" pour méga/millions, "G" pour giga/milliards et "u" pour micro (1 / 1000000).
-Les courbes sont persistées : un redémarrage du serveur d'application n'a pas d'influence sur elles hormis un trou dans les mesures.<br/>
-Chaque courbe peut être affichée en grand et redimensionnée en cliquant sur celle-ci dans la synthèse.<br/><br/>
+ <img width='16' height='16' src='?resource=calendar.png' alt='year'/> l'annÃ©e ou
+  <img width='16' height='16' src='?resource=calendar.png' alt='custom'/> une pÃ©riode personnalisÃ©e.
+Dans chaque courbe sont suivies et indiquÃ©es en chiffres la valeur moyenne en vert et le maximum en bleu.
+Les unitÃ©s dans les courbes sont choisies automatiquement selon les valeurs : "m" pour milliÃ¨mes (1 / 1000), "k" pour kilo/milliers,
+"M" pour mÃ©ga/millions, "G" pour giga/milliards et "u" pour micro (1 / 1000000).
+Les courbes sont persistÃ©es : un redÃ©marrage du serveur d'application n'a pas d'influence sur elles hormis un trou dans les mesures.<br/>
+Chaque courbe peut Ãªtre affichÃ©e en grand et redimensionnÃ©e en cliquant sur celle-ci dans la synthÃ¨se.<br/><br/>
 
-Les courbes présentées sont :<ul>
-<li>la mémoire java utilisée, entre 0 et le maximum paramétré par Xmx dans la configuration du serveur</li>
-<li>le pourcentage cpu utilisé par le processus java, entre 0 et 100 même s'il y a plusieurs coeurs ou plusieurs processeurs</li>
-<li>le nombre de sessions http (ou nombre d'utilisateurs connectés)</li>
-<li>le nombre de threads actifs (ou nombre de requêtes http en cours)</li>
-<li>le nombre de connexions jdbc actives (ou nombre de requêtes sql en cours)</li>
-<li>le nombre de connexions jdbc utilisées (ou nombre de transactions sql ouvertes);
-  dans le cas où il n'y a pas de datasource, c'est en fait le nombre de connexions jdbc ouvertes dans le pool de connexions</li>
-<li>pour chacun des compteurs de requêtes (http, sql et éventuellement ejb, spring, guice, interfaces, actions jsf, actions struts, pages jsp) :<ul>
-	<li>le nombre de hits par minute (ou nombre d'exécutions de requêtes par minute)</li>
+Les courbes prÃ©sentÃ©es sont :<ul>
+<li>la mÃ©moire java utilisÃ©e, entre 0 et le maximum paramÃ©trÃ© par Xmx dans la configuration du serveur</li>
+<li>le pourcentage cpu utilisÃ© par le processus java, entre 0 et 100 mÃªme s'il y a plusieurs coeurs ou plusieurs processeurs</li>
+<li>le nombre de sessions http (ou nombre d'utilisateurs connectÃ©s)</li>
+<li>le nombre de threads actifs (ou nombre de requÃªtes http en cours)</li>
+<li>le nombre de connexions jdbc actives (ou nombre de requÃªtes sql en cours)</li>
+<li>le nombre de connexions jdbc utilisÃ©es (ou nombre de transactions sql ouvertes);
+  dans le cas oÃ¹ il n'y a pas de datasource, c'est en fait le nombre de connexions jdbc ouvertes dans le pool de connexions</li>
+<li>pour chacun des compteurs de requÃªtes (http, sql et Ã©ventuellement ejb, spring, guice, interfaces, actions jsf, actions struts, pages jsp) :<ul>
+	<li>le nombre de hits par minute (ou nombre d'exÃ©cutions de requÃªtes par minute)</li>
 	<li>le temps moyen en millisecondes</li>
-	<li>le pourcentage d'erreurs systèmes
-	(ces valeurs pour un compteur représente une moyenne pour la dernière période de mesure)</li>
+	<li>le pourcentage d'erreurs systÃ¨mes
+	(ces valeurs pour un compteur reprÃ©sente une moyenne pour la derniÃ¨re pÃ©riode de mesure)</li>
 	</ul></li>
-<li>et aussi dans 'Autres courbes', des données qui sont globales pour la JVM ou pour l'OS :<ul>
-	<li>si Tomcat ou JBoss, le nombre de threads actifs dans tout le serveur, le nombre d'octets reçus
-	par minute et le nombre d'octets envoyés par minute par le serveur (le nombre d'octets reçus est
+<li>et aussi dans 'Autres courbes', des donnÃ©es qui sont globales pour la JVM ou pour l'OS :<ul>
+	<li>si Tomcat ou JBoss, le nombre de threads actifs dans tout le serveur, le nombre d'octets reÃ§us
+	par minute et le nombre d'octets envoyÃ©s par minute par le serveur (le nombre d'octets reÃ§us est
 	souvent 0 pour la plupart des webapps)</li>
 	<li>le pourcentage cpu du ramasse-miettes pour la JVM</li>
 	<li>le nombre de threads pour la JVM</li>
-	<li>le nombre de classes chargées pour la JVM</li>
-	<li>la mémoire buffered utilisée (<a href='http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html#allocateDirect%28int%29'>direct</a> buffers
+	<li>le nombre de classes chargÃ©es pour la JVM</li>
+	<li>la mÃ©moire buffered utilisÃ©e (<a href='http://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html#allocateDirect%28int%29'>direct</a> buffers
 	 et <a href='http://docs.oracle.com/javase/7/docs/api/java/nio/channels/FileChannel.html#map%28java.nio.channels.FileChannel.MapMode,%20long,%20long%29'>mapped</a> buffers)</li>
-	<li>la mémoire utilisée hors tas pour la JVM</li>
-	<li>la mémoire physique utilisée pour l'OS</li>
-	<li>l'espace swap utilisé pour l'OS</li>
+	<li>la mÃ©moire utilisÃ©e hors tas pour la JVM</li>
+	<li>la mÃ©moire physique utilisÃ©e pour l'OS</li>
+	<li>l'espace swap utilisÃ© pour l'OS</li>
 	<li>le pourcentage cpu pour tout l'OS</li>
 	<li>l'age moyen des sessions http actuellement valides en minutes</li>
-	<li>si linux : la charge système et le nombre de fichiers ouverts pour l'OS</li>
-	<li>les transactions par minute (plus précisément, le nombre de connexions jdbc ouvertes par minute)</li>
+	<li>si linux : la charge systÃ¨me et le nombre de fichiers ouverts pour l'OS</li>
+	<li>les transactions par minute (plus prÃ©cisÃ©ment, le nombre de connexions jdbc ouvertes par minute)</li>
 	</ul></li>
 </ul>
 
-Les heures dans les graphiques pour le jour dépendent de l'heure du serveur et du fuseau horaire du serveur
-(timezone, défini par l'OS ou spécifiquement pour le serveur d'application).<br/>
-Le lien '<img width='16' height='16' src='?resource=action_refresh.png' alt='Update'/> Actualiser' permet de rafraîchir la page et les courbes.
+Les heures dans les graphiques pour le jour dÃ©pendent de l'heure du serveur et du fuseau horaire du serveur
+(timezone, dÃ©fini par l'OS ou spÃ©cifiquement pour le serveur d'application).<br/>
+Le lien '<img width='16' height='16' src='?resource=action_refresh.png' alt='Update'/> Actualiser' permet de rafraÃ®chir la page et les courbes.
 Le lien '<img width='16' height='16' src='?resource=pdf.png' alt='PDF'/> PDF' affiche tout le rapport en format PDF pour Adobe Reader.<br/>
-Si un serveur de collecte est utilisé pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
-la courbe de mémoire est la somme des mémoires sur les différents serveurs,
+Si un serveur de collecte est utilisÃ© pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
+la courbe de mÃ©moire est la somme des mÃ©moires sur les diffÃ©rents serveurs,
 mais le pourcentage cpu est celui entre 0 et 100 pour tous les serveurs,
-et le nombre de sessions http est la somme des sessions sur les différents serveurs,
-de même que pour le nombre de threads actifs, le nombre de connexions jdbc actives ou utilisées,
+et le nombre de sessions http est la somme des sessions sur les diffÃ©rents serveurs,
+de mÃªme que pour le nombre de threads actifs, le nombre de connexions jdbc actives ou utilisÃ©es,
 et les hits par minute ou le temps moyen en millisecondes.
 
-<h4>Courbe mémoire : cas d'utilisation d'une application utilisée par intermittence (jour/nuit par exemple)</h4>
-<img src='?resource=help/usedMemory.png' alt='Mémoire' />
-<p>La courbe de la mémoire augmente rapidement quand l'application est utilisée,
-et elle augmente doucement mais augmente tout de même quand l'application n'est pas utilisée.
-Une courbe avec des pentes, comme dans l'exemple ci-dessus, est donc classique même si l'application n'est pas utilisée.<br/>
-Dans tous les cas et selon la nécessité, la mémoire est finalement libérée d'un coup par le ramasse-miette 
-(GC majeur) et revient à un niveau bas, avant de remonter plus ou moins vite.
-Si la résolution paramétrée est suffisamment fine, la courbe montre également les GC mineurs
+<h4>Courbe mÃ©moire : cas d'utilisation d'une application utilisÃ©e par intermittence (jour/nuit par exemple)</h4>
+<img src='?resource=help/usedMemory.png' alt='MÃ©moire' />
+<p>La courbe de la mÃ©moire augmente rapidement quand l'application est utilisÃ©e,
+et elle augmente doucement mais augmente tout de mÃªme quand l'application n'est pas utilisÃ©e.
+Une courbe avec des pentes, comme dans l'exemple ci-dessus, est donc classique mÃªme si l'application n'est pas utilisÃ©e.<br/>
+Dans tous les cas et selon la nÃ©cessitÃ©, la mÃ©moire est finalement libÃ©rÃ©e d'un coup par le ramasse-miette 
+(GC majeur) et revient Ã  un niveau bas, avant de remonter plus ou moins vite.
+Si la rÃ©solution paramÃ©trÃ©e est suffisamment fine, la courbe montre Ã©galement les GC mineurs
  en petites dents de scie entre les GC majeurs.
-Ces GC mineurs libèrent également la mémoire mais en moins grande quantité que les GC majeurs.
+Ces GC mineurs libÃ¨rent Ã©galement la mÃ©moire mais en moins grande quantitÃ© que les GC majeurs.
 Il est possible de forcer un GC majeur par l'action 
-'<img src='?resource=broom.png' width='16' height='16' alt='Exécuter le ramase-miette' /> Exécuter le ramasse-miette'
- dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='Informations systèmes'/> Informations systèmes'
+'<img src='?resource=broom.png' width='16' height='16' alt='ExÃ©cuter le ramase-miette' /> ExÃ©cuter le ramasse-miette'
+ dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='Informations systÃ¨mes'/> Informations systÃ¨mes'
 du rapport.</p>
 
-<h4>Courbe mémoire : cas d'utilisation d'une saturation mémoire</h4>
-Si la courbe mémoire augmente jusqu'au maximum et si l'application ne peut en libérer avec le ramasse-miette,
-le serveur provoque éventuellement des erreurs "OutOfMemoryError: Java heap space" pour interrompre le traitement et libérer si possible la mémoire.<br/>
-Tant que la mémoire est insuffisante, le cpu reste à 100% car le ramasse-miette s'exécute en permanence.
-Cela peut provoquer de très fortes lenteurs et un quasi-blocage du serveur d'application.<br/>
-Les solutions peuvent être d'augmenter la mémoire java maximum (paramètre Xmx au lancement du serveur, 64 Mo par défaut),
-et éventuellement la mémoire physique du serveur, ou bien d'optimiser si possible la consommation mémoire de l'application.
+<h4>Courbe mÃ©moire : cas d'utilisation d'une saturation mÃ©moire</h4>
+Si la courbe mÃ©moire augmente jusqu'au maximum et si l'application ne peut en libÃ©rer avec le ramasse-miette,
+le serveur provoque Ã©ventuellement des erreurs "OutOfMemoryError: Java heap space" pour interrompre le traitement et libÃ©rer si possible la mÃ©moire.<br/>
+Tant que la mÃ©moire est insuffisante, le cpu reste Ã  100% car le ramasse-miette s'exÃ©cute en permanence.
+Cela peut provoquer de trÃ¨s fortes lenteurs et un quasi-blocage du serveur d'application.<br/>
+Les solutions peuvent Ãªtre d'augmenter la mÃ©moire java maximum (paramÃ¨tre Xmx au lancement du serveur, 64 Mo par dÃ©faut),
+et Ã©ventuellement la mÃ©moire physique du serveur, ou bien d'optimiser si possible la consommation mÃ©moire de l'application.
 
-<h4>Mémoire Perm Gen: cas d'utilisation d'une saturation perm gen</h4>
-Si la valeur de la mémoire perm gen augmente jusqu'au maximum et si l'application ne peut en libérer,
-le serveur provoque éventuellement des erreurs "OutOfMemoryErrors: PermGen space" pour interrompre le traitement.
-Cela peut bloquer toutes les fonctionnalités dans l'application.<br/>
-Les solutions peuvent être d'augmenter la mémoire PermGen maximum (paramètre XX:MaxPermSize au lancement du serveur),
-et éventuellement la mémoire physique du serveur, ou bien d'optimiser si possible le nombre de classes chargées par l'application.
+<h4>MÃ©moire Perm Gen: cas d'utilisation d'une saturation perm gen</h4>
+Si la valeur de la mÃ©moire perm gen augmente jusqu'au maximum et si l'application ne peut en libÃ©rer,
+le serveur provoque Ã©ventuellement des erreurs "OutOfMemoryErrors: PermGen space" pour interrompre le traitement.
+Cela peut bloquer toutes les fonctionnalitÃ©s dans l'application.<br/>
+Les solutions peuvent Ãªtre d'augmenter la mÃ©moire PermGen maximum (paramÃ¨tre XX:MaxPermSize au lancement du serveur),
+et Ã©ventuellement la mÃ©moire physique du serveur, ou bien d'optimiser si possible le nombre de classes chargÃ©es par l'application.
 
-<h4>Courbes de threads actifs et connexions jdbc actives : cas d'utilisation d'un plateau (requêtes longues)</h4>
+<h4>Courbes de threads actifs et connexions jdbc actives : cas d'utilisation d'un plateau (requÃªtes longues)</h4>
 <a href='?resource=help/activeThreads.png' target='_blank'><img src='?resource=help/activeThreads.png' alt='Threads actifs' width='312' height='147' /></a>
-<p>Quand une application est peu ou pas utilisée, les courbes des threads actifs et connexions jdbc actives restent à 0.
-En effet, la plupart des requêtes sont heureusement courtes et la plupart des mesures (effectuées toutes les 2 minutes par exemple)
-sont prises sans requêtes en cours, sauf 1 ou 2 de temps en temps visibles sous forme d'un pic.</p>
+<p>Quand une application est peu ou pas utilisÃ©e, les courbes des threads actifs et connexions jdbc actives restent Ã  0.
+En effet, la plupart des requÃªtes sont heureusement courtes et la plupart des mesures (effectuÃ©es toutes les 2 minutes par exemple)
+sont prises sans requÃªtes en cours, sauf 1 ou 2 de temps en temps visibles sous forme d'un pic.</p>
 Par contre, quand il y a une forme de plateau dans la courbe des threads actifs comme dans l'exemple ci-dessus,
-cela veut dire qu'il y a une ou plusieurs requêtes qui sont longues (plusieurs minutes ou plusieurs heures)
-et qui potentiellement saturent le serveur d'application ou la base de données.<br/>
+cela veut dire qu'il y a une ou plusieurs requÃªtes qui sont longues (plusieurs minutes ou plusieurs heures)
+et qui potentiellement saturent le serveur d'application ou la base de donnÃ©es.<br/>
 Pour trouver la cause :<ul>
-<li>Si le plateau sur les threads actifs est reproduit à l'identique sur les connexions jdbc actives,
- cela indique que la cause est dans une ou plusieurs requête(s) sql et non dans l'exécution de code java.</li>
-<li>Si le(s) plateau(x) se poursuivent actuellement, vous pouvez trouvez les requêtes http (et sql) en cause
- dans la partie '<img width='16' height='16' src='?resource=hourglass.png' alt='Requêtes en cours'/> Requête en cours' du rapport.</li>
-<li>Si le(s) plateau(x) sont terminés, vous pouvez trouvez les statistiques des requêtes http (et sql) en cause,
- dans les tableaux détaillés de '<img width='16' height='16' src='?resource=dbweb.png' alt='http'/> Statistiques http' (et sql),
- sauf si le serveur d'application a été arrêté avant la fin des requêtes en cause.</li>
-<li>L'ouverture du "drill-down" dans le détail d'une requête http peut vous permettre de trouver les façades ou requêtes sql en cause.</li>
-<li>Si une base de données Oracle est utilisée, l'affichage du plan d'exécution dans le détail de la requête sql peut vous aider à trouver la cause du temps de cette requête
-<br/>(si l'affichage du plan d'exécution indique qu'une table "plan_table" doit être créée : 
+<li>Si le plateau sur les threads actifs est reproduit Ã  l'identique sur les connexions jdbc actives,
+ cela indique que la cause est dans une ou plusieurs requÃªte(s) sql et non dans l'exÃ©cution de code java.</li>
+<li>Si le(s) plateau(x) se poursuivent actuellement, vous pouvez trouvez les requÃªtes http (et sql) en cause
+ dans la partie '<img width='16' height='16' src='?resource=hourglass.png' alt='RequÃªtes en cours'/> RequÃªte en cours' du rapport.</li>
+<li>Si le(s) plateau(x) sont terminÃ©s, vous pouvez trouvez les statistiques des requÃªtes http (et sql) en cause,
+ dans les tableaux dÃ©taillÃ©s de '<img width='16' height='16' src='?resource=dbweb.png' alt='http'/> Statistiques http' (et sql),
+ sauf si le serveur d'application a Ã©tÃ© arrÃªtÃ© avant la fin des requÃªtes en cause.</li>
+<li>L'ouverture du "drill-down" dans le dÃ©tail d'une requÃªte http peut vous permettre de trouver les faÃ§ades ou requÃªtes sql en cause.</li>
+<li>Si une base de donnÃ©es Oracle est utilisÃ©e, l'affichage du plan d'exÃ©cution dans le dÃ©tail de la requÃªte sql peut vous aider Ã  trouver la cause du temps de cette requÃªte
+<br/>(si l'affichage du plan d'exÃ©cution indique qu'une table "plan_table" doit Ãªtre crÃ©Ã©e : 
 vous pouvez utiliser le script @$ORACLE_HOME/rdbms/admin/catplan.sql en tant qu'utilisateur SYS si v10g ou plus
 et sinon @$ORACLE_HOME/rdbms/admin/utlxplan.sql et "grant all on plan_table to public" si v9i ou moins).</li>
-<li>Il peut être utile de vérifier avec le monitoring l'état de la mémoire et de l'utilisation cpu du serveur d'application.
- Il peut être utile également de vérifier par vos propres moyens l'état de la mémoire, du cpu et des accès disques de la base de données.</li>
+<li>Il peut Ãªtre utile de vÃ©rifier avec le monitoring l'Ã©tat de la mÃ©moire et de l'utilisation cpu du serveur d'application.
+ Il peut Ãªtre utile Ã©galement de vÃ©rifier par vos propres moyens l'Ã©tat de la mÃ©moire, du cpu et des accÃ¨s disques de la base de donnÃ©es.</li>
 </ul>
 
-<h4>Courbes des connexions jdbc utilisées : cas d'utilisation d'une fuite de connexions jdbc</h4>
-Les connexions jdbc sont généralement mutualisées dans un pool de connexions par l'intermédiaire
-d'une datasource jdbc, ce qui permet en particulier de ne pas réouvrir les connexions vers la base
-de données en permanence et ce qui permet également de définir un nombre maximum de transactions
-pouvant s'exécuter simultanément par instance du serveur d'application.
+<h4>Courbes des connexions jdbc utilisÃ©es : cas d'utilisation d'une fuite de connexions jdbc</h4>
+Les connexions jdbc sont gÃ©nÃ©ralement mutualisÃ©es dans un pool de connexions par l'intermÃ©diaire
+d'une datasource jdbc, ce qui permet en particulier de ne pas rÃ©ouvrir les connexions vers la base
+de donnÃ©es en permanence et ce qui permet Ã©galement de dÃ©finir un nombre maximum de transactions
+pouvant s'exÃ©cuter simultanÃ©ment par instance du serveur d'application.
 <br/>
 Il est possible dans JavaMelody de visualiser les 2 courbes de connexions jdbc actives et de
-connexions jdbc utilisées.
-La courbe de connexions jdbc actives indique le nombre de connexions en cours d'exécution de requêtes sql.
-Et la courbe de connexion jdbc utilisées indique le nombre de connexions ouvertes et utilisées dans
-des transactions avec la base de données mais qui n'exécutent pas forcément de requêtes sql.
+connexions jdbc utilisÃ©es.
+La courbe de connexions jdbc actives indique le nombre de connexions en cours d'exÃ©cution de requÃªtes sql.
+Et la courbe de connexion jdbc utilisÃ©es indique le nombre de connexions ouvertes et utilisÃ©es dans
+des transactions avec la base de donnÃ©es mais qui n'exÃ©cutent pas forcÃ©ment de requÃªtes sql.
 <br/>
-Si jamais l'application monitorée contient une fuite de connexions jdbc se manifestant dans certaines
-conditions, alors des connexions sont inutilement utilisées et restent indisponibles en dehors du
-pool de connexions. La courbe de connexions utilisées montrera éventuellement que leur nombre augmente
-sans redescendre au minimum tel que configuré dans le pool de connexions de la datasource et ce même
-si le serveur n'a aucune activité, la nuit par exemple. Une fois au maximum, des erreurs surviennent
+Si jamais l'application monitorÃ©e contient une fuite de connexions jdbc se manifestant dans certaines
+conditions, alors des connexions sont inutilement utilisÃ©es et restent indisponibles en dehors du
+pool de connexions. La courbe de connexions utilisÃ©es montrera Ã©ventuellement que leur nombre augmente
+sans redescendre au minimum tel que configurÃ© dans le pool de connexions de la datasource et ce mÃªme
+si le serveur n'a aucune activitÃ©, la nuit par exemple. Une fois au maximum, des erreurs surviennent
 dans le pool de connexions indiquant qu'il n'y a plus de connexion disponible.
 <br/>
-Si une fuite de connexions jdbc est suspectée, les heures et les stack traces indiquant où les
-connexions ont été ouvertes peuvent être affichées par le lien
+Si une fuite de connexions jdbc est suspectÃ©e, les heures et les stack traces indiquant oÃ¹ les
+connexions ont Ã©tÃ© ouvertes peuvent Ãªtre affichÃ©es par le lien
 '<img width='16' height='16' src='?resource=db.png' alt='Connexions'/> Connections jdbc ouvertes',
-dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='System informations'/> Informations systèmes' du rapport.
-(Ce lien est disponible à la condition que le paramètre 'system-actions-enabled' ait été positionné à 'true').
-Une lecture attentive du code correspondant à ces stack traces confirmera ou non la fuite de
+dans la partie '<img width='16' height='16' src='?resource=systeminfo.png' alt='System informations'/> Informations systÃ¨mes' du rapport.
+(Ce lien est disponible Ã  la condition que le paramÃ¨tre 'system-actions-enabled' ait Ã©tÃ© positionnÃ© Ã  'true').
+Une lecture attentive du code correspondant Ã  ces stack traces confirmera ou non la fuite de
 connexions jdbc.
 <br/><br/>
-La courbe de connexions jdbc utilisées et ces stack traces d'ouverture sont toutefois peu utiles
-si un pool de connexions est utilisé directement en passant par un driver jdbc sans qu'il y ait de
+La courbe de connexions jdbc utilisÃ©es et ces stack traces d'ouverture sont toutefois peu utiles
+si un pool de connexions est utilisÃ© directement en passant par un driver jdbc sans qu'il y ait de
 datasource, car dans ce cas on ne visualise dans cette courbe et ces stack traces que les ouvertures
-de connexions par le pool et non les utilisations réelles de ces connexions par l'application.
+de connexions par le pool et non les utilisations rÃ©elles de ces connexions par l'application.
 
 <h3><img width='24' height='24' src='?resource=dbweb.png' alt='Stats'/>
 Statistiques</h3>
-Les statistiques d'un compteur présentent les statistiques des requêtes exécutées sur le serveur d'application.<br/>
-Il existe 8 compteurs de requêtes aujourd'hui :<ul>
+Les statistiques d'un compteur prÃ©sentent les statistiques des requÃªtes exÃ©cutÃ©es sur le serveur d'application.<br/>
+Il existe 8 compteurs de requÃªtes aujourd'hui :<ul>
 <li><img width='24' height='24' src='?resource=dbweb.png' alt='http'/>
 Statistiques http</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='sql'/>
@@ -199,50 +200,50 @@ Statistiques sql (jdbc)</li>
 <li><img width='24' height='24' src='?resource=db.png' alt='jpa'/>
 Statistiques jpa</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='ejb'/>
-Statistiques ejb (si façades ejb3 de JavaEE 5+)</li>
+Statistiques ejb (si faÃ§ades ejb3 de JavaEE 5+)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='spring'/>
-Statistiques spring (si façades spring)</li>
+Statistiques spring (si faÃ§ades spring)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='guice'/>
-Statistiques guice (si façades guice)</li>
+Statistiques guice (si faÃ§ades guice)</li>
 <li><img width='24' height='24' src='?resource=beans.png' alt='interfaces'/>
-Statistiques d'interfaces façades (sans ejb3 ni spring ni guice)</li>
+Statistiques d'interfaces faÃ§ades (sans ejb3 ni spring ni guice)</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='jsf'/>
 Statistiques d'actions jsf</li>
 <li><img width='24' height='24' src='?resource=struts.png' alt='struts'/>
 Statistiques d'actions struts</li>
 <li><img width='24' height='24' src='?resource=jsp.png' alt='jsp'/>
-Statistiques des pages jsp (ou plus précisément, des exécutions de include ou forward sur httpServletRequest.getRequestDispatcher, c'est-à-dire les pages jsp en général)</li>
+Statistiques des pages jsp (ou plus prÃ©cisÃ©ment, des exÃ©cutions de include ou forward sur httpServletRequest.getRequestDispatcher, c'est-Ã -dire les pages jsp en gÃ©nÃ©ral)</li>
 </ul>
-Pour chaque compteur, une requête apparaît dans les statistiques quand elle est terminée;
-pour connaître les requêtes non terminées voir la partie 
-'<img width='16' height='16' src='?resource=hourglass.png' alt='Requêtes en cours'/> Requêtes en cours'.<br/>
-Comme pour les courbes, les statistiques des requêtes sont celles sur la période plus ou moins large
-choisie par l'intermédiaire des liens au-dessus des courbes : le jour (depuis 0h), la semaine,
-le mois ou l'année.
-Ainsi il est possible de voir les statistiques pour la seule journée en cours, ou par exemple pour
-une version de l'application déployée depuis un mois sans les statistiques des versions précédentes.<br/>
-Et pour chaque compteur, le rapport présente une synthèse des statistiques pour toutes les requêtes (global),
-des statistiques dépassant le seuil d'alerte de niveau 1 (warning)
-et de celles dépassant le seuil d'alerte de niveau 2 (severe).
-Les détails des statistiques pour chaque requête peuvent être affichés en cliquant le lien '+ Détails'.<br/><br/>
-Chaque statistique de requête indique :<ul>
-<li>le contenu de la requête</li>
-<li>une courbe d'évolution des temps moyens de cette requête en tooltip selon la même période que les statistiques;
-cette courbe peut être agrandie en cliquant sur le contenu de la requête</li>
-<li>le pourcentage de temps cumulé (temps moyen * nb de hits) par rapport aux autres requêtes</li>
-<li>le nombre de hits (ou nombre d'exécutions)</li>
+Pour chaque compteur, une requÃªte apparaÃ®t dans les statistiques quand elle est terminÃ©e;
+pour connaÃ®tre les requÃªtes non terminÃ©es voir la partie 
+'<img width='16' height='16' src='?resource=hourglass.png' alt='RequÃªtes en cours'/> RequÃªtes en cours'.<br/>
+Comme pour les courbes, les statistiques des requÃªtes sont celles sur la pÃ©riode plus ou moins large
+choisie par l'intermÃ©diaire des liens au-dessus des courbes : le jour (depuis 0h), la semaine,
+le mois ou l'annÃ©e.
+Ainsi il est possible de voir les statistiques pour la seule journÃ©e en cours, ou par exemple pour
+une version de l'application dÃ©ployÃ©e depuis un mois sans les statistiques des versions prÃ©cÃ©dentes.<br/>
+Et pour chaque compteur, le rapport prÃ©sente une synthÃ¨se des statistiques pour toutes les requÃªtes (global),
+des statistiques dÃ©passant le seuil d'alerte de niveau 1 (warning)
+et de celles dÃ©passant le seuil d'alerte de niveau 2 (severe).
+Les dÃ©tails des statistiques pour chaque requÃªte peuvent Ãªtre affichÃ©s en cliquant le lien '+ DÃ©tails'.<br/><br/>
+Chaque statistique de requÃªte indique :<ul>
+<li>le contenu de la requÃªte</li>
+<li>une courbe d'Ã©volution des temps moyens de cette requÃªte en tooltip selon la mÃªme pÃ©riode que les statistiques;
+cette courbe peut Ãªtre agrandie en cliquant sur le contenu de la requÃªte</li>
+<li>le pourcentage de temps cumulÃ© (temps moyen * nb de hits) par rapport aux autres requÃªtes</li>
+<li>le nombre de hits (ou nombre d'exÃ©cutions)</li>
 <li>le temps moyen en millisecondes</li>
 <li>le temps maximum en millisecondes</li>
-<li>l'écart-type (ou déviation standard) entre les temps d'exécution :
-s'il est élevé, les temps sont très variés, s'il est faible les temps sont rapprochés entre eux</li>
-<li>le pourcentage de temps cpu cumulé (temps cpu moyen * nb de hits) par rapport aux autres requêtes</li>
+<li>l'Ã©cart-type (ou dÃ©viation standard) entre les temps d'exÃ©cution :
+s'il est Ã©levÃ©, les temps sont trÃ¨s variÃ©s, s'il est faible les temps sont rapprochÃ©s entre eux</li>
+<li>le pourcentage de temps cpu cumulÃ© (temps cpu moyen * nb de hits) par rapport aux autres requÃªtes</li>
 <li>le temps cpu moyen en millisecondes</li>
-<li>le pourcentage d'erreurs systèmes</li>
+<li>le pourcentage d'erreurs systÃ¨mes</li>
 </ul>
 et si il s'agit des statistiques http, ejb, spring, guice, interfaces, actions jsf, actions struts ou jsp :<ul>
-<li>la taille moyenne en kilo-octets du flux de réponse (seulement pour http)</li>
-<li>le nombre moyen de hits sql, par exécution de requête http, ejb...</li>
-<li>le temps moyen passé à exécuter des requêtes sql, par exécution de requête http, ejb...</li>
+<li>la taille moyenne en kilo-octets du flux de rÃ©ponse (seulement pour http)</li>
+<li>le nombre moyen de hits sql, par exÃ©cution de requÃªte http, ejb...</li>
+<li>le temps moyen passÃ© Ã  exÃ©cuter des requÃªtes sql, par exÃ©cution de requÃªte http, ejb...</li>
 </ul>
 
 Les temps moyens, les temps maximums et les temps cpu moyens sont cumulatifs : par exemple, les temps http moyens
@@ -251,85 +252,85 @@ incluent les temps cpu moyens pour ejb et pour sql.
 Mais les temps d'attente comme 'sleep' ou attente pour I/O ne consomme pas de cpu, donc ils sont
 inclus dans les temps moyens mais pas dans les temps cpu moyens.
 <br/><br/>
-Comme tous les tableaux du rapport, les tableaux de statistiques sont triables par ordre ascendant ou descendant en cliquant sur les entêtes de colonnes.<br/>
-Les statistiques sont persistées pour chaque compteur : un redémarrage du serveur d'application n'a pas d'influence sur elles.<br/>
-Si un serveur de collecte est utilisé pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
+Comme tous les tableaux du rapport, les tableaux de statistiques sont triables par ordre ascendant ou descendant en cliquant sur les entÃªtes de colonnes.<br/>
+Les statistiques sont persistÃ©es pour chaque compteur : un redÃ©marrage du serveur d'application n'a pas d'influence sur elles.<br/>
+Si un serveur de collecte est utilisÃ© pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
 les statistiques des compteurs sont globales pour tous les serveurs.<br/>
 
-<h3><img width='24' height='24' src='?resource=error.png' alt='Erreurs systèmes http'/>
-Statistiques d'erreurs systèmes http</h3>
-Les statistiques d'erreurs systèmes http présentent les erreurs qui remontent jusqu'au filtre http
-du monitoring, soit sous forme d'exceptions lancées par l'application par l'intermédiaire d'une servlet,
+<h3><img width='24' height='24' src='?resource=error.png' alt='Erreurs systÃ¨mes http'/>
+Statistiques d'erreurs systÃ¨mes http</h3>
+Les statistiques d'erreurs systÃ¨mes http prÃ©sentent les erreurs qui remontent jusqu'au filtre http
+du monitoring, soit sous forme d'exceptions lancÃ©es par l'application par l'intermÃ©diaire d'une servlet,
 soit sous forme d'un code d'erreur http (404 "not found" ou 500 "internal server error" par exemple,
-<a href="http://fr.wikipedia.org/wiki/Liste_des_codes_HTTP" target="_blank">liste complète</a>).
-Ces statistiques indiquent la liste des 250 erreurs systèmes les plus fréquentes avec en particulier le nombre d'occurrences
-de chaque erreur sur la période choisie, ainsi que le temps moyen de la requête pour chaque erreur.
-Seule l'erreur la plus fréquente est affichée au départ, les autres erreurs étant affichées en cliquant le lien '+ Détails'.
-Les dates, heures, utilisateurs et requêtes http complètes des 100 dernières erreurs sont affichées en cliquant le lien '+ Dernières erreurs'.
+<a href="http://fr.wikipedia.org/wiki/Liste_des_codes_HTTP" target="_blank">liste complÃ¨te</a>).
+Ces statistiques indiquent la liste des 250 erreurs systÃ¨mes les plus frÃ©quentes avec en particulier le nombre d'occurrences
+de chaque erreur sur la pÃ©riode choisie, ainsi que le temps moyen de la requÃªte pour chaque erreur.
+Seule l'erreur la plus frÃ©quente est affichÃ©e au dÃ©part, les autres erreurs Ã©tant affichÃ©es en cliquant le lien '+ DÃ©tails'.
+Les dates, heures, utilisateurs et requÃªtes http complÃ¨tes des 100 derniÃ¨res erreurs sont affichÃ©es en cliquant le lien '+ DerniÃ¨res erreurs'.
 En cliquant sur le nom d'une erreur, il est possible de voir pour cette erreur la stack-trace java
 de l'erreur quand il s'agit d'une exception java.
-<br/>Ces statistiques d'erreurs permettent d'améliorer la fiabilité de l'application selon son utilisation réelle en production.
+<br/>Ces statistiques d'erreurs permettent d'amÃ©liorer la fiabilitÃ© de l'application selon son utilisation rÃ©elle en production.
 
-<h3><img width='24' height='24' src='?resource=log.png' alt="Logs d'erreurs systèmes"/>
-Statistiques de logs d'erreurs systèmes</h3>
-Les statistiques de logs d'erreurs systèmes présentent les logs 'warning' et 'error' inscrits par l'application
-(les librairies log4j d'apache, logback et java.util.logging du jdk sont toutes les trois supportées).
-Ces statistiques indiquent la liste des 500 logs d'erreurs systèmes les plus fréquentes avec
-le nombre d'occurrences de chaque erreur sur la période choisie.
-Seule le log d'erreur le plus fréquent est affiché au départ, les autres logs étant affichés en cliquant le lien '+ Détails'.
-Les dates, heures, utilisateurs et le cas échéant requêtes http complètes des 100 dernièrs logs d'erreurs sont affichées en cliquant le lien '+ Dernières erreurs'.
+<h3><img width='24' height='24' src='?resource=log.png' alt="Logs d'erreurs systÃ¨mes"/>
+Statistiques de logs d'erreurs systÃ¨mes</h3>
+Les statistiques de logs d'erreurs systÃ¨mes prÃ©sentent les logs 'warning' et 'error' inscrits par l'application
+(les librairies log4j d'apache, logback et java.util.logging du jdk sont toutes les trois supportÃ©es).
+Ces statistiques indiquent la liste des 500 logs d'erreurs systÃ¨mes les plus frÃ©quentes avec
+le nombre d'occurrences de chaque erreur sur la pÃ©riode choisie.
+Seule le log d'erreur le plus frÃ©quent est affichÃ© au dÃ©part, les autres logs Ã©tant affichÃ©s en cliquant le lien '+ DÃ©tails'.
+Les dates, heures, utilisateurs et le cas Ã©chÃ©ant requÃªtes http complÃ¨tes des 100 derniÃ¨rs logs d'erreurs sont affichÃ©es en cliquant le lien '+ DerniÃ¨res erreurs'.
 En cliquant sur le nom d'un log d'erreur, il est possible de voir pour ce log la stack-trace java
-de l'erreur quand une exception java a été inscrite avec le log.
-<br/>Ces statistiques de logs d'erreurs permettent également d'améliorer la fiabilité de l'application selon son utilisation réelle en production.
+de l'erreur quand une exception java a Ã©tÃ© inscrite avec le log.
+<br/>Ces statistiques de logs d'erreurs permettent Ã©galement d'amÃ©liorer la fiabilitÃ© de l'application selon son utilisation rÃ©elle en production.
 
-<h3><img width='24' height='24' src='?resource=hourglass.png' alt='Requêtes en cours'/>
-Requêtes en cours</h3>
-Les requêtes en cours présentent à l'instant de génération du rapport les exécutions de requêtes non terminées.<br/>
-L'arbre des requêtes http, éventuellement ejb, spring et/ou sql est indiqué avec pour chacune des requêtes
- le temps déjà écoulé, le temps cpu écoulé, le nombre de requêtes sql déjà exécutées et le temps sql de ces requêtes.<br/>
-Les statistiques des requêtes sont rappelées avec les requêtes en cours :
+<h3><img width='24' height='24' src='?resource=hourglass.png' alt='RequÃªtes en cours'/>
+RequÃªtes en cours</h3>
+Les requÃªtes en cours prÃ©sentent Ã  l'instant de gÃ©nÃ©ration du rapport les exÃ©cutions de requÃªtes non terminÃ©es.<br/>
+L'arbre des requÃªtes http, Ã©ventuellement ejb, spring et/ou sql est indiquÃ© avec pour chacune des requÃªtes
+ le temps dÃ©jÃ  Ã©coulÃ©, le temps cpu Ã©coulÃ©, le nombre de requÃªtes sql dÃ©jÃ  exÃ©cutÃ©es et le temps sql de ces requÃªtes.<br/>
+Les statistiques des requÃªtes sont rappelÃ©es avec les requÃªtes en cours :
  temps moyen, temps cpu moyen, hits sql moyens et temps sql moyen.
-Cela permet de comparer les requêtes en cours avec les statistiques moyennes.<br/>
-La stack-trace java courante est indiquée par un tooltip sur le thread.<br/>
-Seule la requête la plus longue est affichée au départ, les autres sont affichées en cliquant sur le lien '+ Détails'.<br/>
+Cela permet de comparer les requÃªtes en cours avec les statistiques moyennes.<br/>
+La stack-trace java courante est indiquÃ©e par un tooltip sur le thread.<br/>
+Seule la requÃªte la plus longue est affichÃ©e au dÃ©part, les autres sont affichÃ©es en cliquant sur le lien '+ DÃ©tails'.<br/>
 
-<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='Informations systèmes'/>
-Informations système</h3>
-Les informations système indiquent à l'instant de génération du rapport des informations sur le serveur java,
-son état et sur le système d'exploitation du serveur.<br/>
-Les principales informations sont affichées au départ :
- mémoire java utilisée, nombre de sessions http, nombre de threads actifs, nombre de connexions jdbc actives
- et nombre de connexions jdbc utilisées.
-Ce sont d'ailleurs des valeurs qui seront mesurées et utilisées pour les courbes.<br/>
-Les autres informations, comme la version du serveur, du système d'exploitation ou de la base de données
- ou la mémoire du système d'exploitation, sont affichées en cliquant sur le lien '+ Détails'.<br/>
+<h3><img width='24' height='24' src='?resource=systeminfo.png' alt='Informations systÃ¨mes'/>
+Informations systÃ¨me</h3>
+Les informations systÃ¨me indiquent Ã  l'instant de gÃ©nÃ©ration du rapport des informations sur le serveur java,
+son Ã©tat et sur le systÃ¨me d'exploitation du serveur.<br/>
+Les principales informations sont affichÃ©es au dÃ©part :
+ mÃ©moire java utilisÃ©e, nombre de sessions http, nombre de threads actifs, nombre de connexions jdbc actives
+ et nombre de connexions jdbc utilisÃ©es.
+Ce sont d'ailleurs des valeurs qui seront mesurÃ©es et utilisÃ©es pour les courbes.<br/>
+Les autres informations, comme la version du serveur, du systÃ¨me d'exploitation ou de la base de donnÃ©es
+ ou la mÃ©moire du systÃ¨me d'exploitation, sont affichÃ©es en cliquant sur le lien '+ DÃ©tails'.<br/>
 <br/>
-Dans cette partie des informations systèmes, des liens donnent accès aux actions systèmes :<ul>
+Dans cette partie des informations systÃ¨mes, des liens donnent accÃ¨s aux actions systÃ¨mes :<ul>
 <li><img src='?resource=broom.png' width='20' height='20' alt='Ramasse-miette' />
-'Exécuter le ramasse-miette', pour forcer une libération de mémoire</li>
+'ExÃ©cuter le ramasse-miette', pour forcer une libÃ©ration de mÃ©moire</li>
 <li><img src='?resource=heapdump.png' width='20' height='20' alt='Heap dump' />
-'Générer un heap dump',
- pour exporter tout le contenu de la mémoire dans un fichier du répertoire temporaire sur le serveur,
+'GÃ©nÃ©rer un heap dump',
+ pour exporter tout le contenu de la mÃ©moire dans un fichier du rÃ©pertoire temporaire sur le serveur,
  que vous pouvez ouvrir ensuite avec <a href="http://visualvm.java.net" target="_blank">VisualVM</a> du JDK
  ou avec <a href="http://www.eclipse.org/mat/" target="_blank">Eclipse MAT</a></li>
-<li><img src='?resource=memory.png' width='20' height='20' alt='Histogramme mémoire' />
-'Voir l'histogramme mémoire', pour afficher le nombre d'instances en mémoire pour chaque classe java</li>
+<li><img src='?resource=memory.png' width='20' height='20' alt='Histogramme mÃ©moire' />
+'Voir l'histogramme mÃ©moire', pour afficher le nombre d'instances en mÃ©moire pour chaque classe java</li>
 <li><img src='?resource=user-trash.png' width='18' height='18' alt='Invalider les sessions' />
-'Invalider les sessions http', pour forcer la déconnexion de tous les utilisateurs</li>
+'Invalider les sessions http', pour forcer la dÃ©connexion de tous les utilisateurs</li>
 <li><img src='?resource=system-users.png' width='20' height='20' alt='Sessions' />
-'Voir les sessions http', pour voir les attributs, les tailles sérialisées
- (généralement supérieure aux tailles en mémoire), la provenance et éventuellement l'utilisateur de chaque session
+'Voir les sessions http', pour voir les attributs, les tailles sÃ©rialisÃ©es
+ (gÃ©nÃ©ralement supÃ©rieure aux tailles en mÃ©moire), la provenance et Ã©ventuellement l'utilisateur de chaque session
  (si authentification par JavaEE)</li>
 <li><img src='?resource=xml.png' width='20' height='20' alt='web.xml' />
-'Voir le descripteur de déploiement' : fichier web.xml de l'application</li>
+'Voir le descripteur de dÃ©ploiement' : fichier web.xml de l'application</li>
 <li><img src='?resource=mbeans.png' width='20' height='20' alt='mbeans' />
 'MBeans': management beans comme dans jconsole ou jvisualvm,
-avec la configuration et des données techniques sur le serveur d'application et sur la JVM.
-Les valeurs sont consultables mais pas modifiables et les opérations ne peut être exécutées.</li>
+avec la configuration et des donnÃ©es techniques sur le serveur d'application et sur la JVM.
+Les valeurs sont consultables mais pas modifiables et les opÃ©rations ne peut Ãªtre exÃ©cutÃ©es.</li>
 <li><img src='?resource=processes.png' width='20' height='20' alt='Processus' />
-'Voir les processus de l'OS' : liste des processus du système d'exploitation (linux avec
+'Voir les processus de l'OS' : liste des processus du systÃ¨me d'exploitation (linux avec
 <a href='http://fr.wikipedia.org/wiki/Ps_(Unix)' target='_blank'>ps</a> ou windows avec tasklist) avec pour chaque
-processus : utilisateur, mémoire et cpu</li>
+processus : utilisateur, mÃ©moire et cpu</li>
 <li><img src='?resource=jndi.png' width='20' height='20' alt='Arbre JNDI' />
 'Arbre JNDI' : Parcours du contexte JNDI, par exemple pour trouver le chemin et le nom d'une datasource JDBC.
 </li>
@@ -337,77 +338,77 @@ processus : utilisateur, mémoire et cpu</li>
 'Beans Spring' : Liste des beans Spring.
 </li>
 <li><img src='?resource=db.png' width='20' height='20' alt='Connexions jdbc ouvertes' />
-Pour aider à diagnostiquer une éventuelle fuite de connexions jdbc, les 'connexions jdbc ouvertes'
-donnent la liste des stack traces où ces connexions ont été ouvertes.
+Pour aider Ã  diagnostiquer une Ã©ventuelle fuite de connexions jdbc, les 'connexions jdbc ouvertes'
+donnent la liste des stack traces oÃ¹ ces connexions ont Ã©tÃ© ouvertes.
 </li>
-<li><img src='?resource=db.png' width='20' height='20' alt='Base de données' />
-'Base de données' : Informations et statistiques sur la base de données (si PostgreSQL, MySQL, Oracle, DB2, Sybase ou H2),
-comme par exemple les requêtes sql en cours ou si oracle, les requêtes les plus longues en temps cumulé
-avec indication du temps cpu et du coût élémentaire (en buffer gets).
-Cette fonction affichera une erreur si l'utilisateur configuré dans l'application pour accéder à la
-base de données n'a pas les droits nécessaires. Sous oracle, la requête suivante accorde ce droit:
+<li><img src='?resource=db.png' width='20' height='20' alt='Base de donnÃ©es' />
+'Base de donnÃ©es' : Informations et statistiques sur la base de donnÃ©es (si PostgreSQL, MySQL, Oracle, DB2, Sybase ou H2),
+comme par exemple les requÃªtes sql en cours ou si oracle, les requÃªtes les plus longues en temps cumulÃ©
+avec indication du temps cpu et du coÃ»t Ã©lÃ©mentaire (en buffer gets).
+Cette fonction affichera une erreur si l'utilisateur configurÃ© dans l'application pour accÃ©der Ã  la
+base de donnÃ©es n'a pas les droits nÃ©cessaires. Sous oracle, la requÃªte suivante accorde ce droit:
 "grant select any dictionary to monutilisateur".</li>
 </ul> 
-Si un serveur de collecte est utilisé pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
-les informations systèmes de chaque serveur sont affichées (agrégées pour ce qui est de la liste des sessions
- et de l'histogramme mémoire) et les actions s'exécutent successivement sur chacun des serveurs.
+Si un serveur de collecte est utilisÃ© pour afficher le monitoring de plusieurs serveurs en ferme ou en cluster,
+les informations systÃ¨mes de chaque serveur sont affichÃ©es (agrÃ©gÃ©es pour ce qui est de la liste des sessions
+ et de l'histogramme mÃ©moire) et les actions s'exÃ©cutent successivement sur chacun des serveurs.
 
 <h3><img width='24' height='24' src='?resource=threads.png' alt='Threads'/>
 Threads</h3>
 Ce tableau affiche simplement la liste de tous les threads dans le serveur,
-avec pour chacun la priorité, l'état et la stack-trace en tooltip, entre autres.
+avec pour chacun la prioritÃ©, l'Ã©tat et la stack-trace en tooltip, entre autres.
 
-<h3><img width='24' height='24' src='?resource=caches.png' alt='Caches de données'/>
-Caches de données</h3>
-Les caches de données affichent la liste des caches dans l'application java à condition que la librairie
-<a href="http://ehcache.org/" target="_blank">ehcache</a> soit utilisée pour ceux-ci.<br/>
-Pour chacun des caches, des statistiques sont indiquées :
-le nombre d'objets en mémoire et sur disque à cet instant, l'efficacité du cache mémoire 
-(pourcentage depuis le démarrage du serveur des demandes satisfaites par le cache en mémoire par rapport à celles satisfaites par le cache sur disque),
-l'efficacité du cache au global (pourcentage des demandes satisfaites par le cache en mémoire ou sur disque par rapport
-à toutes les demandes y compris celles non satisfaites pour les données non présentes en cache) selon la version d'ehcache.
-La configuration de chaque cache est également rappelée.
-<br/>Depuis ehcache v2.1, les statistisques d'ehcache ne sont pas activées par défaut.
-Il est donc nécessaire de les activer en ajoutant statistics="true" dans toutes les configurations des caches, pour afficher les valeurs d'efficacité des caches.
+<h3><img width='24' height='24' src='?resource=caches.png' alt='Caches de donnÃ©es'/>
+Caches de donnÃ©es</h3>
+Les caches de donnÃ©es affichent la liste des caches dans l'application java Ã  condition que la librairie
+<a href="http://ehcache.org/" target="_blank">ehcache</a> soit utilisÃ©e pour ceux-ci.<br/>
+Pour chacun des caches, des statistiques sont indiquÃ©es :
+le nombre d'objets en mÃ©moire et sur disque Ã  cet instant, l'efficacitÃ© du cache mÃ©moire 
+(pourcentage depuis le dÃ©marrage du serveur des demandes satisfaites par le cache en mÃ©moire par rapport Ã  celles satisfaites par le cache sur disque),
+l'efficacitÃ© du cache au global (pourcentage des demandes satisfaites par le cache en mÃ©moire ou sur disque par rapport
+Ã  toutes les demandes y compris celles non satisfaites pour les donnÃ©es non prÃ©sentes en cache) selon la version d'ehcache.
+La configuration de chaque cache est Ã©galement rappelÃ©e.
+<br/>Depuis ehcache v2.1, les statistisques d'ehcache ne sont pas activÃ©es par dÃ©faut.
+Il est donc nÃ©cessaire de les activer en ajoutant statistics="true" dans toutes les configurations des caches, pour afficher les valeurs d'efficacitÃ© des caches.
 <br/>Un bouton permet de purger tous les caches.
 
 <h3><img width='24' height='24' src='?resource=jobs.png' alt='Jobs'/>
 Jobs</h3>
-Les jobs affichent la liste des tâches (ou batchs) dans l'application java à condition que la librairie
-<a href="http://www.quartz-scheduler.org/" target="_blank">quartz</a> soit utilisée pour ceux-ci.<br/>
-Pour chacun des jobs, le temps moyen, la dernière erreur avec stack-trace pour la période sélectionnée,
-ainsi que l'heure de la dernière exécution et de la prochaine exécution sont indiqués.
-Comme pour les requêtes http, les statistiques pour les jobs sont affichées avec temps moyen,
-temps cpu moyens, hits sql et temps sql pour la période sélectionnée.
-<br/>Des boutons permettent de mettre en pause ou de redémarrer chacun des jobs ou tous les jobs.
-<br/>Si vous avez des jobs quartz ordonnancés avec Spring mais qu'aucun job n'apparaît dans le rapport,
-avez-vous ajouté la propriété "exposeSchedulerInRepository" comme indiqué dans le guide utilisateur ?
+Les jobs affichent la liste des tÃ¢ches (ou batchs) dans l'application java Ã  condition que la librairie
+<a href="http://www.quartz-scheduler.org/" target="_blank">quartz</a> soit utilisÃ©e pour ceux-ci.<br/>
+Pour chacun des jobs, le temps moyen, la derniÃ¨re erreur avec stack-trace pour la pÃ©riode sÃ©lectionnÃ©e,
+ainsi que l'heure de la derniÃ¨re exÃ©cution et de la prochaine exÃ©cution sont indiquÃ©s.
+Comme pour les requÃªtes http, les statistiques pour les jobs sont affichÃ©es avec temps moyen,
+temps cpu moyens, hits sql et temps sql pour la pÃ©riode sÃ©lectionnÃ©e.
+<br/>Des boutons permettent de mettre en pause ou de redÃ©marrer chacun des jobs ou tous les jobs.
+<br/>Si vous avez des jobs quartz ordonnancÃ©s avec Spring mais qu'aucun job n'apparaÃ®t dans le rapport,
+avez-vous ajoutÃ© la propriÃ©tÃ© "exposeSchedulerInRepository" comme indiquÃ© dans le guide utilisateur ?
 
 <h3>Langue</h3>
-Le monitoring est affiché en français ou en anglais selon la langue préférée de votre navigateur web.
-Si le monitoring est en langue anglaise au lieu d'être en langue française, il faut corriger la langue préférée.
+Le monitoring est affichÃ© en franÃ§ais ou en anglais selon la langue prÃ©fÃ©rÃ©e de votre navigateur web.
+Si le monitoring est en langue anglaise au lieu d'Ãªtre en langue franÃ§aise, il faut corriger la langue prÃ©fÃ©rÃ©e.
 Par exemple, dans <a href="http://www.mozilla-europe.org/fr/firefox/" target="_blank">Firefox</a>,
-ouvrir le menu et la boîte de dialogue "Outils, Options, Contenu, Langue ... Choisir"
-et placer "Français [fr]" en premier comme ceci :
+ouvrir le menu et la boÃ®te de dialogue "Outils, Options, Contenu, Langue ... Choisir"
+et placer "FranÃ§ais [fr]" en premier comme ceci :
 <br/><br/>
 <div align='center'><a href='?resource=help/language.png' target='_blank'>
 <img src='?resource=help/language.png' alt='langue' width='25%' height='25%' /></a></div>
 
 <h3>External API</h3>
-L'External API donne accès à certaines données, en XML ou JSON par exemple. Essayez dans la <a href='?resource=help/api.html'>page api</a>.
+L'External API donne accÃ¨s Ã  certaines donnÃ©es, en XML ou JSON par exemple. Essayez dans la <a href='?resource=help/api.html'>page api</a>.
 
 <h3><img width='24' height='24' src='?resource=systemmonitor.png' alt='Desktop'/>
 Desktop</h3>
-Les rapports du monitoring peuvent être affichés dans une application "Desktop".
+Les rapports du monitoring peuvent Ãªtre affichÃ©s dans une application "Desktop".
 Cette application se lance en un clique sur le lien "Desktop", en haut de la page du monitoring, en utilisant JavaWebStart et le JRE local.
-<br/>Mais l'application étant auto-signée, il faut l'autoriser auparavant en ajoutant le site de téléchargement dans les exceptions de JavaWebStart.
-Pour cela, cliquez : "Menu démarrer, Java, Configurer Java, Sécurité, Modifier la liste des sites, puis copiez et collez 
+<br/>Mais l'application Ã©tant auto-signÃ©e, il faut l'autoriser auparavant en ajoutant le site de tÃ©lÃ©chargement dans les exceptions de JavaWebStart.
+Pour cela, cliquez : "Menu dÃ©marrer, Java, Configurer Java, SÃ©curitÃ©, Modifier la liste des sites, puis copiez et collez 
 <a href='https://github.com/javamelody/javamelody/'>https://github.com/javamelody/javamelody</a> et enfin OK".
 Plus d'information : <a href='https://www.java.com/en/download/faq/exception_sitelist.xml'>documentation d'Oracle</a>.
 
 <br/><br/>
 
-<h3>Crédits icônes</h3>
+<h3>CrÃ©dits icÃ´nes</h3>
 <a href='http://www.famfamfam.com/'>Silk, mini and flag icons (Creative Commons)</a>
 <br/><br/>
 <a href='http://tango.freedesktop.org/Tango_Icon_Library'>Tango icons (GPL)</a> 
