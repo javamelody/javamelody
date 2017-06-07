@@ -217,7 +217,7 @@ class CacheInformations implements Serializable {
 				}
 			}
 			// ce Class.forName est nécessaire sur le serveur de collecte
-			Class.forName("net.sf.ehcache.statistics.StatisticsGateway");
+			Class.forName("net.sf.ehcache.config.TerracottaConfiguration");
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
