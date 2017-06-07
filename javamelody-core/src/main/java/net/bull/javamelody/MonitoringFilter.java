@@ -222,7 +222,7 @@ public class MonitoringFilter implements Filter {
 			// on binde la requête http (utilisateur courant et requête complète) pour les derniers logs d'erreurs
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);
-			chain.doFilter(wrappedRequest, wrappedResponse);
+			chain.doFilter(httpRequest, httpResponse);
 			if (servletApi2 || !httpRequest.isAsyncStarted()) {
 				wrappedResponse.flushBuffer();
 			}
