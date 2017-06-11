@@ -25,7 +25,7 @@ import javax.persistence.Query;
 /**
  * @author Christoph Linder
  */
-public enum JpaMethod {
+enum JpaMethod {
 	/**
 	 * The OTHER enum value is for future compatibility: do not fail even if we don't know the exact method signature...
 	 * but do not monitor, either.
