@@ -24,7 +24,6 @@ import java.util.List;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClientBuilder;
-import com.amazonaws.services.cloudwatch.model.AmazonCloudWatchException;
 import com.amazonaws.services.cloudwatch.model.Dimension;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
@@ -162,7 +161,8 @@ class CloudWatch extends MetricsPublisher {
 				.withNamespace(cloudWatchNamespace).withMetricData(datumList);
 		try {
 			awsCloudWatch.putMetricData(request);
-		} catch (final AmazonCloudWatchException e) {
+		} catch (final Exception e) {
+			// pas catch (AmazonCloudWatchException) sinon ClassNotFoundException dans Jenkins par ex
 			throw new IOException("Error connecting to AWS CloudWatch", e);
 		}
 	}
