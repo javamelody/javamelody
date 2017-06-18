@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.model; // NOPMD
 
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
