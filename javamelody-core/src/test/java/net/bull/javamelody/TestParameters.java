@@ -39,6 +39,10 @@ import javax.servlet.ServletContext;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Period;
+import net.bull.javamelody.internal.model.TransportFormat;
+
 /**
  * Test unitaire de la classe Parameters.
  * @author Emeric Vernat
@@ -170,8 +174,8 @@ public class TestParameters {
 
 	/** Test. */
 	@Test
-	public void testGetParameter() {
-		assertNull("getParameter", Parameters.getParameter(Parameter.DATASOURCES));
+	public void testGetParameterValue() {
+		assertNull("getParameter", Parameter.DATASOURCES.getValue());
 	}
 
 	/** Test. */

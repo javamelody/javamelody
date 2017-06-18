@@ -26,6 +26,7 @@ import org.junit.Test;
 import net.bull.javamelody.CounterRequestMXBean.CounterRequestAggregationData;
 import net.bull.javamelody.CounterRequestMXBean.CounterRequestData;
 import net.bull.javamelody.CounterRequestMXBean.CounterRequestMXBeanImpl;
+import net.bull.javamelody.internal.model.Counter;
 
 /**
  * Test unitaire des classes internes de CounterRequestMXBean.

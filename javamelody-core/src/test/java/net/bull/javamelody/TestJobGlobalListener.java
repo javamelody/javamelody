@@ -32,6 +32,8 @@ import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire de la classe JobGlobalListener.
  * @author Emeric Vernat

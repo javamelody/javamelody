@@ -64,6 +64,18 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.common.HttpPart;
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.Period;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.TestDatabaseInformations;
+import net.bull.javamelody.internal.model.TransportFormat;
+import net.bull.javamelody.internal.web.CounterServletResponseWrapper;
+import net.bull.javamelody.internal.web.FilterServletOutputStream;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
@@ -312,11 +324,11 @@ public class TestMonitoringFilter {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpSession session = createNiceMock(HttpSession.class);
 		expect(request.getSession(false)).andReturn(session);
-		expect(session.getAttribute(SessionInformations.SESSION_COUNTRY_KEY))
+		expect(session.getAttribute(SessionListener.SESSION_COUNTRY_KEY))
 				.andReturn(Locale.FRANCE.getCountry()).anyTimes();
-		expect(session.getAttribute(SessionInformations.SESSION_REMOTE_ADDR)).andReturn("somewhere")
+		expect(session.getAttribute(SessionListener.SESSION_REMOTE_ADDR)).andReturn("somewhere")
 				.anyTimes();
-		expect(session.getAttribute(SessionInformations.SESSION_REMOTE_USER)).andReturn("me")
+		expect(session.getAttribute(SessionListener.SESSION_REMOTE_USER)).andReturn("me")
 				.anyTimes();
 		replay(session);
 		doFilter(request);

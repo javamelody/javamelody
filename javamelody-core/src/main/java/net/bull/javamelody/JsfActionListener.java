@@ -21,6 +21,10 @@ import javax.faces.component.ActionSource2;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * {@link ActionListener} JSF RI (Mojarra) pour avoir les temps moyens des actions JSF.
  * @author Emeric Vernat
@@ -28,8 +32,7 @@ import javax.faces.event.ActionListener;
 public class JsfActionListener implements ActionListener {
 	private static final Counter JSF_COUNTER = MonitoringProxy.getJsfCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(JSF_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 	private final ActionListener delegateActionListener;
 
 	/**

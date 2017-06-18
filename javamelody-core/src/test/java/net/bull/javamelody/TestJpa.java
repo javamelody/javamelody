@@ -40,6 +40,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire pour JpaPersistence et JpaWrapper.
  * @author Emeric Vernat

@@ -41,7 +41,7 @@ public class SpringContext implements ApplicationContextAware {
 		initSingleton(this);
 	}
 
-	static SpringContext getSingleton() {
+	public static SpringContext getSingleton() {
 		return singleton;
 	}
 
@@ -58,7 +58,7 @@ public class SpringContext implements ApplicationContextAware {
 	/**
 	 * @return List des noms de beans Spring.
 	 */
-	List<String> getBeanDefinitionNames() {
+	public List<String> getBeanDefinitionNames() {
 		return Arrays.asList(context.getBeanDefinitionNames());
 	}
 
@@ -66,7 +66,7 @@ public class SpringContext implements ApplicationContextAware {
 	 * @param name Nom du bean
 	 * @return Instance du bean
 	 */
-	Object getBean(String name) {
+	public Object getBean(String name) {
 		return context.getBean(name);
 	}
 }

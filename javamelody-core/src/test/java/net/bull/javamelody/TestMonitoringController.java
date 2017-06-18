@@ -32,6 +32,12 @@ import javax.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.web.MonitoringController;
+
 /**
  * Test unitaire de la classe MonitoringController.
  * @author Emeric Vernat

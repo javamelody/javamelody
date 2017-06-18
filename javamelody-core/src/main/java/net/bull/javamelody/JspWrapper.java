@@ -27,6 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Wrapping de l'interface javax.servlet.RequestDispatcher pour avoir les temps moyens de rendu
  * des pages JSP.
@@ -36,8 +39,7 @@ final class JspWrapper implements InvocationHandler {
 	private static final Counter JSP_COUNTER = new Counter(Counter.JSP_COUNTER_NAME, "jsp.png",
 			JdbcWrapper.SINGLETON.getSqlCounter());
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(JSP_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 
 	private final String path;
 	private final RequestDispatcher requestDispatcher;

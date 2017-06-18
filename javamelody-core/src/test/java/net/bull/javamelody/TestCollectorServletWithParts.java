@@ -40,6 +40,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.common.HttpPart;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.TestDatabaseInformations;
+import net.bull.javamelody.internal.model.TransportFormat;
+import net.bull.javamelody.internal.web.FilterServletOutputStream;
+
 /**
  * Test unitaire de la classe CollectorServlet.
  * @author Emeric Vernat

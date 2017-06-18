@@ -29,11 +29,15 @@ import org.jrobin.core.RrdException;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.JRobin;
+import net.bull.javamelody.internal.model.RrdNioBackendFactory;
+
 /**
  * Classe utilitaire pour les tests unitaires.
  * @author Emeric Vernat
  */
-final class Utils {
+public final class Utils {
 	private static final String SYSTEM_ACTIONS_PROPERTY_NAME = Parameters.PARAMETER_SYSTEM_PREFIX
 			+ Parameter.SYSTEM_ACTIONS_ENABLED.getCode();
 
@@ -41,11 +45,11 @@ final class Utils {
 		super();
 	}
 
-	static void setProperty(Parameter parameter, String value) {
+	public static void setProperty(Parameter parameter, String value) {
 		setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + parameter.getCode(), value);
 	}
 
-	static void setProperty(String string, String value) {
+	public static void setProperty(String string, String value) {
 		if (value == null) {
 			System.getProperties().remove(string);
 		} else {
@@ -53,7 +57,7 @@ final class Utils {
 		}
 	}
 
-	static void initialize() {
+	public static void initialize() {
 		for (final Object systemProperty : new HashSet<Object>(System.getProperties().keySet())) {
 			if (systemProperty.toString().startsWith(Parameters.PARAMETER_SYSTEM_PREFIX)) {
 				System.getProperties().remove(systemProperty.toString());
@@ -87,7 +91,7 @@ final class Utils {
 				RrdBackendFactory.registerAndSetAsDefaultFactory(new RrdNioBackendFactory());
 			}
 		} catch (final RrdException e) {
-			throw new RuntimeException(e);
+			throw new IllegalStateException(e);
 		}
 	}
 

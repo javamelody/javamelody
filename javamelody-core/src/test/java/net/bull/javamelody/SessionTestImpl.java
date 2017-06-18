@@ -35,14 +35,14 @@ public class SessionTestImpl implements HttpSession {
 	private String id = "id session";
 	private long lastAccess = System.currentTimeMillis() - 3;
 
-	SessionTestImpl(boolean serializable) {
+	public SessionTestImpl(boolean serializable) {
 		super();
 		attributes = new LinkedHashMap<String, Object>();
 		if (serializable) {
-			attributes.put(SessionInformations.SESSION_COUNTRY_KEY, "fr");
-			attributes.put(SessionInformations.SESSION_REMOTE_ADDR, "localhost");
-			attributes.put(SessionInformations.SESSION_REMOTE_USER, "admin");
-			attributes.put(SessionInformations.SESSION_USER_AGENT,
+			attributes.put(SessionListener.SESSION_COUNTRY_KEY, "fr");
+			attributes.put(SessionListener.SESSION_REMOTE_ADDR, "localhost");
+			attributes.put(SessionListener.SESSION_REMOTE_USER, "admin");
+			attributes.put(SessionListener.SESSION_USER_AGENT,
 					"Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko");
 			attributes.put("test", null);
 		} else {
@@ -58,18 +58,18 @@ public class SessionTestImpl implements HttpSession {
 		}
 	}
 
-	SessionTestImpl(String id, boolean serializable, long lastAccess) {
+	public SessionTestImpl(String id, boolean serializable, long lastAccess) {
 		this(serializable);
 		this.id = id;
 		this.lastAccess = lastAccess;
 	}
 
-	void setCountry(String country) {
-		attributes.put(SessionInformations.SESSION_COUNTRY_KEY, country);
+	public void setCountry(String country) {
+		attributes.put(SessionListener.SESSION_COUNTRY_KEY, country);
 	}
 
-	void setUserAgent(String userAgent) {
-		attributes.put(SessionInformations.SESSION_USER_AGENT, userAgent);
+	public void setUserAgent(String userAgent) {
+		attributes.put(SessionListener.SESSION_USER_AGENT, userAgent);
 	}
 
 	boolean isInvalidated() {

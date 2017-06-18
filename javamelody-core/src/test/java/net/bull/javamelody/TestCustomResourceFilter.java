@@ -41,6 +41,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.common.Parameters;
+
 /**
  * Test unitaire de la classe CustomResourceFilter.
  * @author Emeric Vernat

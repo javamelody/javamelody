@@ -22,6 +22,8 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
+import net.bull.javamelody.internal.common.LOG;
+
 /**
  * Spring {@link FactoryBean} for wrapping datasources with monitoring proxy.
  *

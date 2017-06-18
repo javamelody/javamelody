@@ -23,6 +23,9 @@ import java.lang.reflect.Method;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Cette classe est utile pour construire des proxy pour <a href='https://www.mongodb.com/'>MongoDB</a>.
  * @author Emeric Vernat
@@ -31,8 +34,7 @@ public final class MongoWrapper {
 	private static final Counter SERVICES_COUNTER = MonitoringProxy.getServicesCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters
 			.isCounterHidden(SERVICES_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 
 	private MongoWrapper() {
 		super();

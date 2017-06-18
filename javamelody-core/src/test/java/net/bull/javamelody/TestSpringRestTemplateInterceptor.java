@@ -26,6 +26,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire de la classe SpringRestTemplateInterceptor.
  * @author Emeric Vernat

@@ -26,6 +26,10 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
 import org.quartz.SchedulerException;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.QuartzAdapter;
+
 /**
  * Listener sur les exécutions de jobs quartz, configuré automatiquement par {@link MonitoringFilter}.
  * @author Emeric Vernat
@@ -52,7 +56,7 @@ final class JobGlobalListener implements JobListener {
 
 	static void destroyJobGlobalListener() {
 		try {
-			QuartzAdapter.getSingleton().removeGlobalJobListener();
+			QuartzAdapter.getSingleton().removeGlobalJobListener(JobGlobalListener.class);
 		} catch (final SchedulerException e) {
 			throw new IllegalStateException(e);
 		}

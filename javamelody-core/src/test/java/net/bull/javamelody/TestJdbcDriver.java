@@ -30,6 +30,8 @@ import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.common.Parameters;
+
 /**
  * Test unitaire de la classe JdbcDriver.
  * @author Emeric Vernat
@@ -58,7 +60,7 @@ public class TestJdbcDriver {
 		assertNull("getLastConnectInfo", Parameters.getLastConnectInfo());
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws SQLException e */
 	@Test
 	public void testConnect() throws SQLException {

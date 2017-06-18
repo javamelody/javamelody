@@ -52,12 +52,14 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.model.ConnectionInformations;
+
 /**
  * Test unitaire de la classe JdbcWrapper.
  * @author Emeric Vernat
  */
 public class TestJdbcWrapper {
-	static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test;AUTO_SERVER=TRUE";
+	public static final String H2_DATABASE_URL = "jdbc:h2:~/.h2/test;AUTO_SERVER=TRUE";
 	private static final String EQUALS = "equals";
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;

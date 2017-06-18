@@ -25,6 +25,8 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Interceptor for Spring {@link RestTemplate}.
  * @author Emeric Vernat

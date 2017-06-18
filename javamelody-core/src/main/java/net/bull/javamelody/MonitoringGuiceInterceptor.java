@@ -22,6 +22,10 @@ import java.io.Serializable;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Method interceptor that measures the duration of the intercepted call using Google Guice.
  *
@@ -33,8 +37,7 @@ public class MonitoringGuiceInterceptor implements MethodInterceptor, Serializab
 	private static final Counter GUICE_COUNTER = MonitoringProxy.getGuiceCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters
 			.isCounterHidden(GUICE_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 
 	/**
 	 * Constructeur.

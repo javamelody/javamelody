@@ -31,6 +31,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.internal.web.MonitoringController;
+
 /**
  * Servlet filter to customize resources in html reports, such as css file.<br/>
  * For example, add the following, before the monitoring filter, in the web.xml file of your webapp,

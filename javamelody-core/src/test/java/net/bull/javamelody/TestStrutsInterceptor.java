@@ -30,6 +30,8 @@ import org.junit.Test;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.mock.MockActionProxy;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire de la classe StrutsInterceptor.
  * @author Emeric Vernat

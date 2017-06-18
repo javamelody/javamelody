@@ -24,6 +24,8 @@ import static org.junit.Assert.assertSame;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire de la classe MonitoringProxy.
  * @author Emeric Vernat

@@ -35,6 +35,21 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.JRobin;
+import net.bull.javamelody.internal.model.JobInformations;
+import net.bull.javamelody.internal.model.MBeans;
+import net.bull.javamelody.internal.model.MavenArtifact;
+import net.bull.javamelody.internal.model.Period;
+import net.bull.javamelody.internal.model.SamplingProfiler;
+import net.bull.javamelody.internal.model.UpdateChecker;
+import net.bull.javamelody.internal.web.HttpCookieManager;
+import net.bull.javamelody.internal.web.MailReport;
+import net.bull.javamelody.internal.web.MonitoringController;
+
 /**
  * Contexte du filtre http pour initialisation et destruction.
  * @author Emeric Vernat
@@ -79,7 +94,7 @@ class FilterContext {
 
 			initLogs();
 
-			if (Boolean.parseBoolean(Parameters.getParameter(Parameter.CONTEXT_FACTORY_ENABLED))) {
+			if (Parameter.CONTEXT_FACTORY_ENABLED.getValueAsBoolean()) {
 				MonitoringInitialContextFactory.init();
 			}
 
@@ -115,7 +130,7 @@ class FilterContext {
 
 			initCollect();
 
-			if (Boolean.parseBoolean(Parameters.getParameter(Parameter.JMX_EXPOSE_ENABLED))) {
+			if (Parameter.JMX_EXPOSE_ENABLED.getValueAsBoolean()) {
 				initJmxExpose();
 			}
 
@@ -161,7 +176,7 @@ class FilterContext {
 		}
 
 		setRequestTransformPatterns(counters);
-		final String displayedCounters = Parameters.getParameter(Parameter.DISPLAYED_COUNTERS);
+		final String displayedCounters = Parameter.DISPLAYED_COUNTERS.getValue();
 		if (displayedCounters == null) {
 			// par défaut, les compteurs http, sql, error et log (et ceux qui sont utilisés) sont affichés
 			httpCounter.setDisplayed(true);
@@ -188,8 +203,8 @@ class FilterContext {
 			// le paramètre pour ce nom de compteur doit exister
 			final Parameter parameter = Parameter
 					.valueOfIgnoreCase(counter.getName() + "_TRANSFORM_PATTERN");
-			if (Parameters.getParameter(parameter) != null) {
-				final Pattern pattern = Pattern.compile(Parameters.getParameter(parameter),
+			if (parameter.getValue() != null) {
+				final Pattern pattern = Pattern.compile(parameter.getValue(),
 						Pattern.MULTILINE | Pattern.DOTALL);
 				counter.setRequestTransformPattern(pattern);
 			}
@@ -253,21 +268,20 @@ class FilterContext {
 		collector.collectLocalContextWithoutErrors();
 		LOG.debug("first collect of data done");
 
-		if (Parameters.getParameter(Parameter.MAIL_SESSION) != null
-				&& Parameters.getParameter(Parameter.ADMIN_EMAILS) != null) {
+		if (Parameter.MAIL_SESSION.getValue() != null
+				&& Parameter.ADMIN_EMAILS.getValue() != null) {
 			MailReport.scheduleReportMailForLocalServer(collector, timer);
-			LOG.debug("mail reports scheduled for "
-					+ Parameters.getParameter(Parameter.ADMIN_EMAILS));
+			LOG.debug("mail reports scheduled for " + Parameter.ADMIN_EMAILS.getValue());
 		}
 	}
 
 	private SamplingProfiler initSamplingProfiler() {
-		if (Parameters.getParameter(Parameter.SAMPLING_SECONDS) != null) {
+		if (Parameter.SAMPLING_SECONDS.getValue() != null) {
 			final SamplingProfiler sampler;
-			final String excludedPackagesParameter = Parameters
-					.getParameter(Parameter.SAMPLING_EXCLUDED_PACKAGES);
-			final String includedPackagesParameter = Parameters
-					.getParameter(Parameter.SAMPLING_INCLUDED_PACKAGES);
+			final String excludedPackagesParameter = Parameter.SAMPLING_EXCLUDED_PACKAGES
+					.getValue();
+			final String includedPackagesParameter = Parameter.SAMPLING_INCLUDED_PACKAGES
+					.getValue();
 			if (excludedPackagesParameter == null && includedPackagesParameter == null) {
 				sampler = new SamplingProfiler();
 			} else {
@@ -280,8 +294,8 @@ class FilterContext {
 					sampler.update();
 				}
 			};
-			final long periodInMillis = Math.round(
-					Double.parseDouble(Parameters.getParameter(Parameter.SAMPLING_SECONDS)) * 1000);
+			final long periodInMillis = Math
+					.round(Double.parseDouble(Parameter.SAMPLING_SECONDS.getValue()) * 1000);
 			this.timer.schedule(samplingTimerTask, 10000, periodInMillis);
 			LOG.debug("hotspots sampling initialized");
 
@@ -338,7 +352,7 @@ class FilterContext {
 		LOG.debug("Application version: " + MavenArtifact.getWebappVersion());
 		LOG.debug("Host: " + Parameters.getHostName() + '@' + Parameters.getHostAddress());
 		for (final Parameter parameter : Parameter.values()) {
-			final String value = Parameters.getParameter(parameter);
+			final String value = parameter.getValue();
 			if (value != null && parameter != Parameter.ANALYTICS_ID) {
 				LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
 			}

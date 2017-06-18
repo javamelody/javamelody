@@ -23,6 +23,10 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Method interceptor that measures the duration of the intercepted call.
  *
@@ -34,8 +38,7 @@ public class MonitoringSpringInterceptor implements MethodInterceptor, Serializa
 	private static final Counter SPRING_COUNTER = MonitoringProxy.getSpringCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters
 			.isCounterHidden(SPRING_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 
 	/**
 	 * Constructeur.

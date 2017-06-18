@@ -30,6 +30,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire des classes Log4JAppender, LogbackAppender et LoggingHandler.
  * @author Emeric Vernat

@@ -29,6 +29,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+
 /**
  * Abstract Filter of monitoring JavaMelody for Jenkins/JIRA/Bamboo/Confluence with emulated {@link SessionListener}.
  * @author Emeric Vernat
@@ -103,5 +106,9 @@ public abstract class PluginMonitoringFilter extends MonitoringFilter {
 
 	void unregisterInvalidatedSessions() {
 		emulatedSessionListener.unregisterInvalidatedSessions();
+	}
+
+	public static void logForDebug(String msg) {
+		LOG.debug(msg);
 	}
 }

@@ -25,6 +25,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.web.HttpAuth;
+import net.bull.javamelody.internal.web.MonitoringController;
+
 /**
  * Alternative report servlet.<br/>
  * Note that this servlet is rarely needed, because the .../monitoring url of the {@link MonitoringFilter} is enough for the reports of most webapps.

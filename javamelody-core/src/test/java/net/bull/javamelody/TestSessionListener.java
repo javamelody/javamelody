@@ -37,6 +37,8 @@ import javax.servlet.http.HttpSessionEvent;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.model.SessionInformations;
+
 /**
  * Test unitaire de la classe SessionListener.
  * @author Emeric Vernat

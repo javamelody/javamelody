@@ -34,6 +34,7 @@ import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTest;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestClass;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestMethod;
 import net.bull.javamelody.TestMonitoringSpringInterceptor.AnnotatedTestOtherClass;
+import net.bull.javamelody.internal.model.Counter;
 
 /**
  * Test unitaire de la classe MonitoringGuiceInterceptor.

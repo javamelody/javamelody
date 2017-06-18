@@ -27,6 +27,9 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.jndi.JndiObjectFactoryBean;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+
 /**
  * Post-processor Spring pour une éventuelle {@link DataSource} défini dans le fichier xml Spring.
  * @author Emeric Vernat

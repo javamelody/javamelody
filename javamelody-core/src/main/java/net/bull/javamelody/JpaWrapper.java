@@ -24,13 +24,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Cette classe est utile pour construire des proxy pour JPA.
  * @author Emeric Vernat
  */
 public final class JpaWrapper {
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 	private static final Counter JPA_COUNTER = MonitoringProxy.getJpaCounter();
 
 	private JpaWrapper() {

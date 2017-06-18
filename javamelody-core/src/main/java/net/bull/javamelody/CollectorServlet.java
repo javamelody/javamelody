@@ -30,6 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.CollectorServer;
+import net.bull.javamelody.internal.web.CollectorController;
+import net.bull.javamelody.internal.web.HttpAuth;
+
 /**
  * Servlet de collecte utilisée uniquement pour le serveur de collecte ({@link CollectorServer}) séparé de l'application monitorée.
  * @author Emeric Vernat
@@ -51,7 +59,7 @@ public class CollectorServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		Parameters.initialize(config.getServletContext());
-		if (!Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG))) {
+		if (!Parameter.LOG.getValueAsBoolean()) {
 			// si log désactivé dans serveur de collecte,
 			// alors pas de log, comme dans webapp
 			LOGGER.setLevel(Level.WARN);

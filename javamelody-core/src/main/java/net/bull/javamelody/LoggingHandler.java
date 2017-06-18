@@ -28,6 +28,8 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Handler pour les logs de java.util.logging, configuré automatiquement par {@link MonitoringFilter}.
  * @author Emeric Vernat

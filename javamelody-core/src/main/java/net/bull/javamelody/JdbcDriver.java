@@ -27,6 +27,9 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+
 /**
  * Driver jdbc "proxy" pour le monitoring.
  * C'est la classe de ce driver qui doit être déclarée si un driver jdbc et non une dataSource est utilisé.

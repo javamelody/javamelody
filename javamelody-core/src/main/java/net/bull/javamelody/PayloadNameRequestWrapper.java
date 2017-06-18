@@ -35,6 +35,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import net.bull.javamelody.internal.common.LOG;
+
 //20091201 dhartford GWTRequestWrapper
 //20100519 dhartford adjustments for UTF-8, however did not have an impact so removed.
 //20100520 dhartford adjustments for reader/inputstream.

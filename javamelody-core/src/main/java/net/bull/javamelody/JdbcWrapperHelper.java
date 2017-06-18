@@ -151,7 +151,7 @@ final class JdbcWrapperHelper {
 
 	static Map<String, DataSource> getJndiDataSources() throws NamingException {
 		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(2);
-		final String datasourcesParameter = Parameters.getParameter(Parameter.DATASOURCES);
+		final String datasourcesParameter = Parameter.DATASOURCES.getValue();
 		if (datasourcesParameter == null) {
 			dataSources.putAll(getJndiDataSourcesAt("java:comp/env/jdbc"));
 			// pour jboss sans jboss-env.xml ou sans resource-ref dans web.xml :

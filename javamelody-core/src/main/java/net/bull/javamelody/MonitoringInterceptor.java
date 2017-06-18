@@ -26,6 +26,10 @@ import javax.ejb.Stateless;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Intercepteur pour EJB 3 (Java EE 5+).
  * Il est destiné à un compteur pour les statistiques d'exécutions de méthodes sur les "façades métiers"
@@ -39,8 +43,7 @@ public class MonitoringInterceptor implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Counter EJB_COUNTER = MonitoringProxy.getEjbCounter();
 	private static final boolean COUNTER_HIDDEN = Parameters.isCounterHidden(EJB_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 
 	/**
 	 * Constructeur.

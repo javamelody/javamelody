@@ -33,6 +33,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire de la classe MonitoringSpringInterceptor.
  * @author Emeric Vernat

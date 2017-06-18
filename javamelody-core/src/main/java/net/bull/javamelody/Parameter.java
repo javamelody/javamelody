@@ -19,6 +19,8 @@ package net.bull.javamelody;
 
 import java.util.Locale;
 
+import net.bull.javamelody.internal.common.Parameters;
+
 /**
  * Liste des paramètres, tous optionnels.
  * @author Emeric Vernat
@@ -310,8 +312,8 @@ public enum Parameter {
 	/**
 	 * Name of a class to use for JavaMelody logs (default: null for detection of Logback, Log4J or java.util.logging). <br/>
 	 * The class must implement the interface {@link net.bull.javamelody.JavaMelodyLogger},
-	 * such as {@link net.bull.javamelody.Log4JLogger}, {@link net.bull.javamelody.Log4J2Logger}, {@link net.bull.javamelody.JavaLogger}
-	 * or {@link net.bull.javamelody.LogbackLogger}.
+	 * such as net.bull.javamelody.internal.common.Log4JLogger, net.bull.javamelody.internal.common.Log4J2Logger,
+	 * net.bull.javamelody.internal.common.JavaLogger or net.bull.javamelody.internal.common.LogbackLogger.
 	 */
 	LOGGER_CLASS("logger-class"),
 
@@ -363,6 +365,29 @@ public enum Parameter {
 	 */
 	public String getCode() {
 		return code;
+	}
+
+	/**
+	 * @return valeur du paramètre
+	 */
+	public String getValue() {
+		return Parameters.getParameterValue(this);
+	}
+
+	/**
+	 * @return valeur du paramètre
+	 */
+	public boolean getValueAsBoolean() { // NOPMD
+		return Boolean.parseBoolean(getValue());
+	}
+
+	/**
+	 * Définit la valeur d'un paramètre en tant que propriété système.
+	 * @param value Valeur
+	 */
+	public void setValue(String value) {
+		assert value != null;
+		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + getCode(), value);
 	}
 
 	static Parameter valueOfIgnoreCase(String parameter) {

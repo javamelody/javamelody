@@ -13,6 +13,8 @@ import org.hibernate.jdbc.Batcher;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Test unitaire de la classe HibernateBatcherFactory.
  * @author Emeric Vernat

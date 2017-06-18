@@ -20,6 +20,8 @@ package net.bull.javamelody;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionListener;
 
+import net.bull.javamelody.internal.common.LOG;
+
 /**
  * Helper pour l'{@link ActionListener} JSF RI (Mojarra).
  * @author Emeric Vernat

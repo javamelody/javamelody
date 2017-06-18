@@ -35,6 +35,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.common.HttpPart;
+import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterError;
+import net.bull.javamelody.internal.model.ThreadInformations;
+import net.bull.javamelody.internal.web.CounterServletResponseWrapper;
+import net.bull.javamelody.internal.web.HttpAuth;
+import net.bull.javamelody.internal.web.MonitoringController;
+import net.bull.javamelody.internal.web.RumInjector;
+
 /**
  * Filtre de servlet pour le monitoring.
  * C'est la classe de ce filtre qui doit être déclarée dans le fichier web.xml de la webapp.
@@ -119,7 +132,7 @@ public class MonitoringFilter implements Filter {
 		this.filterConfig = config;
 		this.servletApi2 = config.getServletContext().getMajorVersion() < 3;
 		Parameters.initialize(config);
-		monitoringDisabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+		monitoringDisabled = Parameter.DISABLED.getValueAsBoolean();
 		if (monitoringDisabled) {
 			return;
 		}
@@ -133,12 +146,11 @@ public class MonitoringFilter implements Filter {
 		this.httpCounter = collector.getCounterByName(Counter.HTTP_COUNTER_NAME);
 		this.errorCounter = collector.getCounterByName(Counter.ERROR_COUNTER_NAME);
 
-		logEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.LOG));
-		rumEnabled = Boolean.parseBoolean(Parameters.getParameter(Parameter.RUM_ENABLED));
-		if (Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN) != null) {
+		logEnabled = Parameter.LOG.getValueAsBoolean();
+		rumEnabled = Parameter.RUM_ENABLED.getValueAsBoolean();
+		if (Parameter.URL_EXCLUDE_PATTERN.getValue() != null) {
 			// lance une PatternSyntaxException si la syntaxe du pattern est invalide
-			urlExcludePattern = Pattern
-					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
+			urlExcludePattern = Pattern.compile(Parameter.URL_EXCLUDE_PATTERN.getValue());
 		}
 
 		final long duration = System.currentTimeMillis() - start;
@@ -331,16 +343,16 @@ public class MonitoringFilter implements Filter {
 		// donc l'adresse ip est celle de la première requête créant une session,
 		// et si l'adresse ip change ensuite c'est très étrange
 		// mais elle n'est pas mise à jour dans la session
-		if (session.getAttribute(SessionInformations.SESSION_COUNTRY_KEY) == null) {
+		if (session.getAttribute(SessionListener.SESSION_COUNTRY_KEY) == null) {
 			// langue préférée du navigateur, getLocale ne peut être null
 			final Locale locale = httpRequest.getLocale();
 			if (!locale.getCountry().isEmpty()) {
-				session.setAttribute(SessionInformations.SESSION_COUNTRY_KEY, locale.getCountry());
+				session.setAttribute(SessionListener.SESSION_COUNTRY_KEY, locale.getCountry());
 			} else {
-				session.setAttribute(SessionInformations.SESSION_COUNTRY_KEY, locale.getLanguage());
+				session.setAttribute(SessionListener.SESSION_COUNTRY_KEY, locale.getLanguage());
 			}
 		}
-		if (session.getAttribute(SessionInformations.SESSION_REMOTE_ADDR) == null) {
+		if (session.getAttribute(SessionListener.SESSION_REMOTE_ADDR) == null) {
 			// adresse ip
 			final String forwardedFor = httpRequest.getHeader("X-Forwarded-For");
 			final String remoteAddr;
@@ -349,18 +361,18 @@ public class MonitoringFilter implements Filter {
 			} else {
 				remoteAddr = httpRequest.getRemoteAddr() + " forwarded for " + forwardedFor;
 			}
-			session.setAttribute(SessionInformations.SESSION_REMOTE_ADDR, remoteAddr);
+			session.setAttribute(SessionListener.SESSION_REMOTE_ADDR, remoteAddr);
 		}
-		if (session.getAttribute(SessionInformations.SESSION_REMOTE_USER) == null) {
+		if (session.getAttribute(SessionListener.SESSION_REMOTE_USER) == null) {
 			// login utilisateur, peut être null
 			final String remoteUser = httpRequest.getRemoteUser();
 			if (remoteUser != null) {
-				session.setAttribute(SessionInformations.SESSION_REMOTE_USER, remoteUser);
+				session.setAttribute(SessionListener.SESSION_REMOTE_USER, remoteUser);
 			}
 		}
-		if (session.getAttribute(SessionInformations.SESSION_USER_AGENT) == null) {
+		if (session.getAttribute(SessionListener.SESSION_USER_AGENT) == null) {
 			final String userAgent = httpRequest.getHeader("User-Agent");
-			session.setAttribute(SessionInformations.SESSION_USER_AGENT, userAgent);
+			session.setAttribute(SessionListener.SESSION_USER_AGENT, userAgent);
 		}
 	}
 

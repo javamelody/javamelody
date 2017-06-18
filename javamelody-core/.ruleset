@@ -61,7 +61,9 @@
    <rule ref="rulesets/java/controversial.xml/UnnecessaryConstructor"/>
    <rule ref="rulesets/java/controversial.xml/UnnecessaryParentheses"/>
    <rule ref="rulesets/java/coupling.xml/CouplingBetweenObjects"/>
+   <!--
    <rule ref="rulesets/java/coupling.xml/ExcessiveImports"/>
+   -->
    <rule ref="rulesets/java/coupling.xml/LooseCoupling"/>
    <rule ref="rulesets/java/design.xml/AbstractClassWithoutAbstractMethod"/>
    <rule ref="rulesets/java/design.xml/AccessorClassGeneration"/>

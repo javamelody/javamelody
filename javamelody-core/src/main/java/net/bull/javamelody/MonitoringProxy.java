@@ -22,6 +22,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Counter;
+
 /**
  * Proxy de monitoring pour tout façade ayant une interface.
  * Il est destiné à un compteur pour les statistiques d'exécutions de méthodes sur les "façades métiers"
@@ -65,8 +68,7 @@ public class MonitoringProxy implements InvocationHandler, Serializable {
 
 	private static final boolean COUNTER_HIDDEN = Parameters
 			.isCounterHidden(SERVICES_COUNTER.getName());
-	private static final boolean DISABLED = Boolean
-			.parseBoolean(Parameters.getParameter(Parameter.DISABLED));
+	private static final boolean DISABLED = Parameter.DISABLED.getValueAsBoolean();
 	@SuppressWarnings("all")
 	private final Object facade;
 	private final String name;

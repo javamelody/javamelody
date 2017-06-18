@@ -13,6 +13,8 @@ import org.hibernate.jdbc.BatchingBatcher;
 import org.hibernate.jdbc.ConnectionManager;
 import org.hibernate.jdbc.NonBatchingBatcher;
 
+import net.bull.javamelody.internal.common.LOG;
+
 /**
  * Alternative pour monitorer les requêtes sql.
  * Cette classe se configure avec la propriété hibernate "hibernate.jdbc.factory_class"
