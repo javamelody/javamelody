@@ -33,6 +33,10 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import org.apache.log4j.Logger;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.JnlpPage;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 import net.bull.javamelody.swing.util.ShadowPopupFactory;
 

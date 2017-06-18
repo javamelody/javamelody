@@ -33,6 +33,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.internal.model.ProcessInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.html.HtmlProcessInformationsReport;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.Utilities;

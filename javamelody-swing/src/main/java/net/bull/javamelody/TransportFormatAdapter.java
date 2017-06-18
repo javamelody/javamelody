@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import net.bull.javamelody.internal.model.TransportFormat;
+
 /**
  * Adapter pour appeler TransportFormat qui est non public.
  * @author Emeric Vernat

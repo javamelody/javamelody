@@ -33,6 +33,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.CounterRequestRumData;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.MButton;
 
 /**

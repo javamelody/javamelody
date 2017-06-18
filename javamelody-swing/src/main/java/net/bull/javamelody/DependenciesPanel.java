@@ -37,6 +37,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 
+import net.bull.javamelody.internal.model.MavenArtifact;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;

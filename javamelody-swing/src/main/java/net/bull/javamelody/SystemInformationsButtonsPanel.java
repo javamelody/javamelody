@@ -31,6 +31,10 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.MButton;
 
 /**

@@ -31,6 +31,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.CounterRequestAggregation;
+import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.CounterRequestContextData;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 

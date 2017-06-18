@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody;
 
+import net.bull.javamelody.internal.common.I18N;
+
 /**
  * Adapter pour appeler I18N qui est non public.
  * @author Emeric Vernat

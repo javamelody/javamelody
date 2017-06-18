@@ -34,6 +34,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.model.CounterStorage;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**

@@ -37,6 +37,17 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.CacheInformations;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.JobInformations;
+import net.bull.javamelody.internal.model.Period;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 

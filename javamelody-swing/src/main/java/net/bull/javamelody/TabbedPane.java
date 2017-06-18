@@ -27,6 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
+import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.swing.MButtonTabComponent;
 import net.bull.javamelody.swing.MTabbedPane;
 

@@ -27,6 +27,9 @@ import java.util.Date;
 
 import javax.swing.JLabel;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MDateField;
 

@@ -36,6 +36,11 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.ConnectionInformations;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDateTableCellRenderer;

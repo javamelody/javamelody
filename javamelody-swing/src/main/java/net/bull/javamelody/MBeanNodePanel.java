@@ -34,7 +34,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
-import net.bull.javamelody.MBeanNode.MBeanAttribute;
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.MBeanNode;
+import net.bull.javamelody.internal.model.MBeanNode.MBeanAttribute;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;

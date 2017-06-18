@@ -28,6 +28,9 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
 import net.bull.javamelody.swing.table.MDoubleTableCellRenderer;

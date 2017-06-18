@@ -26,6 +26,11 @@ import java.io.IOException;
 
 import javax.swing.JPanel;
 
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 

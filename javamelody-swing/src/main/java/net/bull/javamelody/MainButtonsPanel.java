@@ -40,7 +40,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import net.bull.javamelody.Counter.CounterRequestContextComparator;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter.CounterRequestContextComparator;
+import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.Period;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.pdf.PdfCoreReport;
+import net.bull.javamelody.internal.web.pdf.PdfReport;
 import net.bull.javamelody.swing.MButton;
 
 /**

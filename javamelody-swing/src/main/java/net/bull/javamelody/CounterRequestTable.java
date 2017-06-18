@@ -32,6 +32,9 @@ import javax.swing.JToolTip;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalToolTipUI;
 
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.swing.table.MTable;
 
 /**

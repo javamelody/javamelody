@@ -33,6 +33,18 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.CounterRequestContextData;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.ThreadInformations;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MTableScrollPane;

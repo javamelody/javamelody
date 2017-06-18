@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody;
+package net.bull.javamelody.internal.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.bull.javamelody.Counter.CounterRequestContextComparator;
+import net.bull.javamelody.internal.model.Counter.CounterRequestContextComparator;
 
 /**
  * Données pour le tableau des requêtes courantes.
  * @author Emeric Vernat
  */
-class CounterRequestContextData {
+public class CounterRequestContextData {
 	private final List<Counter> counters;
 
 	private final JavaInformations javaInformations;
@@ -50,8 +50,8 @@ class CounterRequestContextData {
 
 	private final boolean remoteUserDisplayed;
 
-	CounterRequestContextData(List<Counter> counters, List<CounterRequestContext> currentRequests,
-			JavaInformations javaInformations) {
+	public CounterRequestContextData(List<Counter> counters,
+			List<CounterRequestContext> currentRequests, JavaInformations javaInformations) {
 		super();
 		this.counters = counters;
 		this.javaInformations = javaInformations;
@@ -113,7 +113,7 @@ class CounterRequestContextData {
 		return result;
 	}
 
-	CounterRequestAggregation getAggregationForCounter(Counter counter) {
+	public CounterRequestAggregation getAggregationForCounter(Counter counter) {
 		CounterRequestAggregation aggregation = aggregationsByCounter.get(counter);
 		if (aggregation == null) {
 			aggregation = new CounterRequestAggregation(counter);
@@ -122,7 +122,7 @@ class CounterRequestContextData {
 		return aggregation;
 	}
 
-	ThreadInformations getThreadInformationsByCounterRequestContext(
+	public ThreadInformations getThreadInformationsByCounterRequestContext(
 			CounterRequestContext counterRequestContext) {
 		if (counterRequestContext.getParentContext() == null) {
 			// on affiche le thread que pour le contexte parent
@@ -131,27 +131,27 @@ class CounterRequestContextData {
 		return null;
 	}
 
-	boolean isStackTraceEnabled() {
+	public boolean isStackTraceEnabled() {
 		return stackTraceEnabled;
 	}
 
-	boolean isChildHitsDisplayed() {
+	public boolean isChildHitsDisplayed() {
 		return childHitsDisplayed;
 	}
 
-	boolean isRemoteUserDisplayed() {
+	public boolean isRemoteUserDisplayed() {
 		return remoteUserDisplayed;
 	}
 
-	List<CounterRequestContext> getRootContexts() {
+	public final List<CounterRequestContext> getRootContexts() {
 		return contexts;
 	}
 
-	List<CounterRequestContext> getAllContexts() {
+	public List<CounterRequestContext> getAllContexts() {
 		return allContexts;
 	}
 
-	List<CounterRequest> getAllRequests() {
+	public List<CounterRequest> getAllRequests() {
 		return allRequests;
 	}
 

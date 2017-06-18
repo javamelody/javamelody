@@ -38,9 +38,9 @@
       <property name="severity" value="ignore"/>
       <property name="separated" value="true"/>
     </module>
-    <module name="JavadocMethod">
+<!--     <module name="JavadocMethod">
       <property name="scope" value="public"/>
-    </module>
+    </module> -->
     <module name="JavadocStyle">
       <property name="scope" value="public"/>
       <property name="checkHtml" value="false"/>

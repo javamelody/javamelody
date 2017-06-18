@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
 
+import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.swing.util.MSwingUtilities;
 
 /**

@@ -37,7 +37,14 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.bull.javamelody.SessionInformations.SessionAttribute;
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.SessionInformations;
+import net.bull.javamelody.internal.model.SessionInformations.SessionAttribute;
+import net.bull.javamelody.internal.web.html.HtmlSessionInformationsReport;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDateTableCellRenderer;

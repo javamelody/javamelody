@@ -36,6 +36,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Range;
+import net.bull.javamelody.internal.model.RemoteCollector;
+
 /**
  * Panel des choix de la période par version.
  * @author Emeric Vernat

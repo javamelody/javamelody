@@ -31,6 +31,11 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.CacheInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.html.HtmlCacheInformationsReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.Utilities;

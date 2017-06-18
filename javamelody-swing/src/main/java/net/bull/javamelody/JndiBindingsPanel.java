@@ -38,6 +38,9 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.bull.javamelody.internal.model.JndiBinding;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
@@ -92,7 +95,7 @@ class JndiBindingsPanel extends MelodyPanel {
 	JndiBindingsPanel(RemoteCollector remoteCollector) throws IOException {
 		super(remoteCollector);
 
-		refresh();
+		refresh(); // NOPMD
 	}
 
 	final void refresh() throws IOException {

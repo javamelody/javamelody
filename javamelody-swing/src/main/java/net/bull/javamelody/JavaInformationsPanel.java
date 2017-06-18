@@ -36,7 +36,14 @@ import javax.swing.SwingConstants;
 
 import com.lowagie.text.Font;
 
-import net.bull.javamelody.PdfJavaInformationsReport.Bar;
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MemoryInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.TomcatInformations;
+import net.bull.javamelody.internal.web.html.HtmlJavaInformationsReport;
+import net.bull.javamelody.internal.web.pdf.Bar;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MHyperLink;
 import net.bull.javamelody.swing.util.SpringUtilities;
@@ -392,12 +399,13 @@ class JavaInformationsPanel extends MelodyPanel {
 			} catch (final IOException e) {
 				throw new IllegalStateException(e);
 			}
-			String toolTipText = label.getToolTipText();
-			toolTipText = "<html>" + toolTipText + "<br/>" + getString("High_usage");
+			final StringBuilder toolTipText = new StringBuilder();
+			toolTipText.append("<html>").append(label.getToolTipText()).append("<br/>")
+					.append(getString("High_usage"));
 			if (configurationDetail != null) {
-				toolTipText += " (" + configurationDetail + ')';
+				toolTipText.append(" (").append(configurationDetail).append(')');
 			}
-			label.setToolTipText(toolTipText);
+			label.setToolTipText(toolTipText.toString());
 		}
 		return label;
 	}

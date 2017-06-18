@@ -30,6 +30,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.model.ThreadInformations;
+import net.bull.javamelody.internal.web.html.HtmlThreadInformationsReport;
 import net.bull.javamelody.swing.MButton;
 
 /**

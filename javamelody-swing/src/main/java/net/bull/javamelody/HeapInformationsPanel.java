@@ -33,7 +33,12 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
-import net.bull.javamelody.HeapHistogram.ClassInfo;
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.HeapHistogram;
+import net.bull.javamelody.internal.model.HeapHistogram.ClassInfo;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.MTabbedPane;
 import net.bull.javamelody.swing.Utilities;

@@ -31,6 +31,11 @@ import javax.swing.SwingUtilities;
 
 import com.lowagie.text.Font;
 
+import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterError;
+import net.bull.javamelody.internal.model.RemoteCollector;
+import net.bull.javamelody.internal.web.html.HtmlCounterErrorReport;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDateTableCellRenderer;
 import net.bull.javamelody.swing.table.MMultiLineTableCellRenderer;
