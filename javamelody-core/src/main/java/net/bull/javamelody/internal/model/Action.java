@@ -492,11 +492,11 @@ public enum Action {
 
 	private boolean pauseJobById(int myJobId) {
 		try {
+			final QuartzAdapter quartzAdapter = QuartzAdapter.getSingleton();
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail)
-							.hashCode() == myJobId) {
-						QuartzAdapter.getSingleton().pauseJob(jobDetail, scheduler);
+				for (final JobDetail jobDetail : quartzAdapter.getAllJobsOfScheduler(scheduler)) {
+					if (quartzAdapter.getJobFullName(jobDetail).hashCode() == myJobId) {
+						quartzAdapter.pauseJob(jobDetail, scheduler);
 						return true;
 					}
 				}
@@ -540,11 +540,11 @@ public enum Action {
 
 	private boolean resumeJobById(int myJobId) {
 		try {
+			final QuartzAdapter quartzAdapter = QuartzAdapter.getSingleton();
 			for (final Scheduler scheduler : JobInformations.getAllSchedulers()) {
-				for (final JobDetail jobDetail : JobInformations.getAllJobsOfScheduler(scheduler)) {
-					if (QuartzAdapter.getSingleton().getJobFullName(jobDetail)
-							.hashCode() == myJobId) {
-						QuartzAdapter.getSingleton().resumeJob(jobDetail, scheduler);
+				for (final JobDetail jobDetail : quartzAdapter.getAllJobsOfScheduler(scheduler)) {
+					if (quartzAdapter.getJobFullName(jobDetail).hashCode() == myJobId) {
+						quartzAdapter.resumeJob(jobDetail, scheduler);
 						return true;
 					}
 				}

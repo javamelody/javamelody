@@ -49,6 +49,10 @@ public class CacheInformations implements Serializable {
 	private static final boolean EHCACHE_1_6 = isEhcache16();
 	private static final boolean EHCACHE_1_2 = isEhcache12();
 	private static final boolean EHCACHE_1_2_X = isEhcache12x();
+
+	// cache must not be serialized and neither typed,
+	// otherwise serialization would not work in the collector server or in jenkins scripts
+	private final transient Object cache;
 	private final String name;
 	private final long inMemoryObjectCount;
 	private final int inMemoryPercentUsed;
@@ -62,6 +66,7 @@ public class CacheInformations implements Serializable {
 	CacheInformations(Ehcache cache, boolean includeKeys) {
 		super();
 		assert cache != null;
+		this.cache = cache;
 		this.name = cache.getName();
 
 		if (includeKeys) {
@@ -81,8 +86,8 @@ public class CacheInformations implements Serializable {
 			this.cacheMisses = statistics.getCacheMisses(); // ou devrait être cache.getStatistics().cacheMissCount() en v2.7.0
 			// en raison du bug https://jira.terracotta.org/jira/browse/EHC-1010
 			// la valeur de l'efficacité du cache (hits/accesses) est fausse si ehcache 2.7.0
-			this.inMemoryPercentUsed = getMemoryPercentUsed(cache);
-			this.configuration = buildConfiguration(cache);
+			this.inMemoryPercentUsed = computeMemoryPercentUsed();
+			this.configuration = buildConfiguration();
 			return;
 		}
 
@@ -120,8 +125,8 @@ public class CacheInformations implements Serializable {
 			this.inMemoryHits = statistics.getInMemoryHits();
 			this.cacheHits = statistics.getCacheHits();
 			this.cacheMisses = statistics.getCacheMisses();
-			this.inMemoryPercentUsed = getMemoryPercentUsed(cache);
-			this.configuration = buildConfiguration(cache);
+			this.inMemoryPercentUsed = computeMemoryPercentUsed();
+			this.configuration = buildConfiguration();
 		}
 	}
 
@@ -266,8 +271,9 @@ public class CacheInformations implements Serializable {
 		}
 	}
 
-	private int getMemoryPercentUsed(Ehcache cache) {
-		final int maxElementsInMemory = cache.getCacheConfiguration().getMaxElementsInMemory();
+	private int computeMemoryPercentUsed() {
+		final int maxElementsInMemory = ((Ehcache) cache).getCacheConfiguration()
+				.getMaxElementsInMemory();
 		if (maxElementsInMemory == 0) {
 			// maxElementsInMemory peut être 0 (sans limite), cf issue 73
 			return -1;
@@ -275,10 +281,10 @@ public class CacheInformations implements Serializable {
 		return (int) (100 * inMemoryObjectCount / maxElementsInMemory);
 	}
 
-	private static String buildConfiguration(Ehcache cache) {
+	private String buildConfiguration() {
 		final StringBuilder sb = new StringBuilder();
 		// getCacheConfiguration() et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
-		final CacheConfiguration config = cache.getCacheConfiguration();
+		final CacheConfiguration config = ((Ehcache) cache).getCacheConfiguration();
 		sb.append("ehcache [maxElementsInMemory = ").append(config.getMaxElementsInMemory());
 		final boolean overflowToDisk = config.isOverflowToDisk();
 		sb.append(", overflowToDisk = ").append(overflowToDisk);

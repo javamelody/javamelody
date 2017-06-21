@@ -94,12 +94,22 @@ public class QuartzAdapter {
 		return jobDetail.getJobClass();
 	}
 
-	Date getTriggerPreviousFireTime(Trigger trigger) {
-		return trigger.getPreviousFireTime();
-	}
-
-	Date getTriggerNextFireTime(Trigger trigger) {
-		return trigger.getNextFireTime();
+	List<Date> getPreviousAndNextFireTime(List<Trigger> triggers) {
+		Date previousFireTime = null;
+		Date nextFireTime = null;
+		for (final Trigger trigger : triggers) {
+			final Date triggerPreviousFireTime = trigger.getPreviousFireTime();
+			final Date triggerNextFireTime = trigger.getNextFireTime();
+			if (previousFireTime == null || triggerPreviousFireTime != null
+					&& previousFireTime.before(triggerPreviousFireTime)) {
+				previousFireTime = triggerPreviousFireTime;
+			}
+			if (nextFireTime == null
+					|| triggerNextFireTime != null && nextFireTime.after(triggerNextFireTime)) {
+				nextFireTime = triggerNextFireTime;
+			}
+		}
+		return Arrays.asList(previousFireTime, nextFireTime);
 	}
 
 	String getCronTriggerExpression(CronTrigger trigger) {

@@ -80,15 +80,10 @@ class Quartz2Adapter extends QuartzAdapter {
 	}
 
 	@Override
-	Date getTriggerPreviousFireTime(Trigger trigger) {
-		return trigger.getPreviousFireTime();
+	List<Date> getPreviousAndNextFireTime(List<Trigger> triggers) { // NOPMD
+		return super.getPreviousAndNextFireTime(triggers);
 	}
-
-	@Override
-	Date getTriggerNextFireTime(Trigger trigger) {
-		return trigger.getNextFireTime();
-	}
-
+	
 	@Override
 	String getCronTriggerExpression(CronTrigger trigger) {
 		// getCronExpression gives a PMD false+
