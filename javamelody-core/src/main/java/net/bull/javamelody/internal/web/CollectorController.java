@@ -432,7 +432,8 @@ public class CollectorController { // NOPMD
 		} else {
 			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partToRedirectTo;
-			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null) {
+			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null
+					|| HttpParameter.PART.getParameterFrom(req) == null) {
 				partToRedirectTo = HttpParameter.PART.getParameterFrom(req);
 			} else {
 				partToRedirectTo = HttpParameter.PART.getParameterFrom(req) + '&'
