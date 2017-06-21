@@ -278,22 +278,22 @@ public class CacheInformations implements Serializable {
 	private static String buildConfiguration(Ehcache cache) {
 		final StringBuilder sb = new StringBuilder();
 		// getCacheConfiguration() et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
-		final CacheConfiguration configuration = cache.getCacheConfiguration();
-		sb.append("ehcache [maxElementsInMemory = ").append(configuration.getMaxElementsInMemory());
-		final boolean overflowToDisk = configuration.isOverflowToDisk();
+		final CacheConfiguration config = cache.getCacheConfiguration();
+		sb.append("ehcache [maxElementsInMemory = ").append(config.getMaxElementsInMemory());
+		final boolean overflowToDisk = config.isOverflowToDisk();
 		sb.append(", overflowToDisk = ").append(overflowToDisk);
 		if (overflowToDisk) {
-			sb.append(", maxElementsOnDisk = ").append(configuration.getMaxElementsOnDisk());
+			sb.append(", maxElementsOnDisk = ").append(config.getMaxElementsOnDisk());
 		}
-		final boolean eternal = configuration.isEternal();
+		final boolean eternal = config.isEternal();
 		sb.append(", eternal = ").append(eternal);
 		if (!eternal) {
-			sb.append(", timeToLiveSeconds = ").append(configuration.getTimeToLiveSeconds());
-			sb.append(", timeToIdleSeconds = ").append(configuration.getTimeToIdleSeconds());
+			sb.append(", timeToLiveSeconds = ").append(config.getTimeToLiveSeconds());
+			sb.append(", timeToIdleSeconds = ").append(config.getTimeToIdleSeconds());
 			sb.append(", memoryStoreEvictionPolicy = ")
-					.append(configuration.getMemoryStoreEvictionPolicy());
+					.append(config.getMemoryStoreEvictionPolicy());
 		}
-		sb.append(", diskPersistent = ").append(configuration.isDiskPersistent());
+		sb.append(", diskPersistent = ").append(config.isDiskPersistent());
 		sb.append(']');
 		return sb.toString();
 	}
