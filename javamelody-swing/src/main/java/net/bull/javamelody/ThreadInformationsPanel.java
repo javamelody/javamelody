@@ -188,35 +188,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 		openButton.setEnabled(false);
 
 		if (Parameters.isSystemActionsEnabled()) {
-			final MButton killThreadButton = new MButton(getString("Tuer"),
-					ImageIconCache.getImageIcon("stop.png"));
-			getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-				@Override
-				public void valueChanged(ListSelectionEvent e) {
-					final ThreadInformations threadInformations = getTable().getSelectedObject();
-					killThreadButton.setEnabled(threadInformations != null);
-					if (threadInformations != null) {
-						killThreadButton.setToolTipText(
-								getFormattedString("kill_thread", threadInformations.getName()));
-					} else {
-						killThreadButton.setToolTipText(null);
-					}
-				}
-			});
-			killThreadButton.setEnabled(getTable().getSelectedObject() != null);
-			killThreadButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					final ThreadInformations threadInformations = getTable().getSelectedObject();
-					if (threadInformations != null
-							&& confirm(getFormattedString("confirm_kill_thread",
-									threadInformations.getName()))) {
-						actionKillThread(threadInformations);
-					}
-				}
-			});
-
-			buttonsPanel.add(killThreadButton);
+			addInterruptAndKillThreadButtons(buttonsPanel);
 		}
 
 		if (stackTraceEnabled) {
@@ -232,6 +204,68 @@ class ThreadInformationsPanel extends MelodyPanel {
 		}
 
 		return buttonsPanel;
+	}
+
+	private void addInterruptAndKillThreadButtons(JPanel buttonsPanel) {
+		final MButton sendThreadInterruptButton = new MButton(getString("Interrupt"),
+				ImageIconCache.getImageIcon("action_interrupt.png"));
+		final MButton killThreadButton = new MButton(getString("Tuer"),
+				ImageIconCache.getImageIcon("stop.png"));
+		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				sendThreadInterruptButton.setEnabled(threadInformations != null);
+				killThreadButton.setEnabled(threadInformations != null);
+				if (threadInformations != null) {
+					sendThreadInterruptButton.setToolTipText(getFormattedString(
+							"send_thread_interrupt", threadInformations.getName()));
+					killThreadButton.setToolTipText(
+							getFormattedString("kill_thread", threadInformations.getName()));
+				} else {
+					sendThreadInterruptButton.setToolTipText(null);
+					killThreadButton.setToolTipText(null);
+				}
+			}
+		});
+		sendThreadInterruptButton.setEnabled(getTable().getSelectedObject() != null);
+		killThreadButton.setEnabled(getTable().getSelectedObject() != null);
+		sendThreadInterruptButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				if (threadInformations != null
+						&& confirm(getFormattedString("confirm_send_thread_interrupt",
+								threadInformations.getName()))) {
+					actionSendThreadInterrupt(threadInformations);
+				}
+			}
+		});
+		killThreadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				if (threadInformations != null && confirm(
+						getFormattedString("confirm_kill_thread", threadInformations.getName()))) {
+					actionKillThread(threadInformations);
+				}
+			}
+		});
+
+		buttonsPanel.add(sendThreadInterruptButton);
+		buttonsPanel.add(killThreadButton);
+	}
+
+	final void actionSendThreadInterrupt(ThreadInformations threadInformations) {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.SEND_THREAD_INTERRUPT, null, null,
+					threadInformations.getGlobalThreadId(), null, null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 
 	final void actionKillThread(ThreadInformations threadInformations) {

@@ -84,6 +84,9 @@ public enum Action {
 	/** Tue un thread java. */
 	KILL_THREAD("threads"),
 
+	/** Envoi un signal interrupt à un thread java. */
+	SEND_THREAD_INTERRUPT("threads"),
+
 	/** Met un job quartz en pause. */
 	PAUSE_JOB("jobs"),
 
@@ -247,6 +250,10 @@ public enum Action {
 		case KILL_THREAD:
 			assert threadId != null;
 			messageForReport = killThread(threadId);
+			break;
+		case SEND_THREAD_INTERRUPT:
+			assert threadId != null;
+			messageForReport = sendThreadInterrupt(threadId);
 			break;
 		case PAUSE_JOB:
 			assert jobId != null;
@@ -466,6 +473,28 @@ public enum Action {
 	private void stopThread(Thread thread) {
 		// I know that it is unsafe and the user has been warned
 		thread.stop();
+	}
+
+	private String sendThreadInterrupt(String threadId) {
+		final String[] values = threadId.split("_");
+		if (values.length != 3) {
+			throw new IllegalArgumentException(threadId);
+		}
+		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
+		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
+			final long myThreadId = Long.parseLong(values[2]);
+			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
+			for (final Thread thread : threads) {
+				if (thread.getId() == myThreadId) {
+					thread.interrupt();
+					return I18N.getFormattedString("thread_interrupt_sent", thread.getName());
+				}
+			}
+			return I18N.getString("Thread_non_trouve");
+		}
+
+		// cette action ne concernait pas cette JVM, donc on ne fait rien
+		return null;
 	}
 
 	private String pauseJob(String jobId) {
