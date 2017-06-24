@@ -125,6 +125,13 @@ class PdfController {
 				timeOfSnapshot);
 	}
 
+	@RequestPart(HttpPart.THREADS)
+	void doThreads(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList)
+			throws IOException {
+		pdfOtherReport.writeThreads(javaInformationsList);
+	}
+
 	@RequestPart(HttpPart.RUNTIME_DEPENDENCIES)
 	void doRuntimeDependencies(@RequestAttribute(RANGE_KEY) Range range,
 			@RequestParameter(HttpParameter.COUNTER) String counterName) throws IOException {
