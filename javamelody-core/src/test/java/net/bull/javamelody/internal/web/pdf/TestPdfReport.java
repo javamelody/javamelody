@@ -377,6 +377,7 @@ public class TestPdfReport {
 		final PdfThreadInformationsReport report = new PdfThreadInformationsReport(
 				JavaInformations.buildThreadInformationsList(), stackTraceEnabled,
 				pdfDocumentFactory, document);
+		report.writeIntro(new JavaInformations(null, true));
 		report.toPdf();
 		document.close();
 		assertNotEmptyAndClear(output);
