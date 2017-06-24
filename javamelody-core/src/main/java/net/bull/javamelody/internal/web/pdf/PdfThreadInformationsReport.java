@@ -34,6 +34,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 
 import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.web.html.HtmlThreadInformationsReport;
 
@@ -87,6 +88,16 @@ class PdfThreadInformationsReport extends PdfAbstractTableReport {
 		//				writeln(stackTraceElement.toString());
 		//			}
 		//		}
+	}
+
+	void writeIntro(JavaInformations javaInformations) throws DocumentException {
+		final Font boldFont = PdfFonts.BOLD.getFont();
+		final Font normalFont = PdfFonts.NORMAL.getFont();
+		addToDocument(new Phrase(
+				getFormattedString("Threads_sur", javaInformations.getHost()) + ": ", boldFont));
+		addToDocument(new Phrase(getFormattedString("thread_count",
+				javaInformations.getThreadCount(), javaInformations.getPeakThreadCount(),
+				javaInformations.getTotalStartedThreadCount()), normalFont));
 	}
 
 	void writeDeadlocks() throws DocumentException {
