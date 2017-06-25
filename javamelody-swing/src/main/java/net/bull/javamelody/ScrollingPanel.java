@@ -47,7 +47,6 @@ import net.bull.javamelody.internal.model.JobInformations;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.Range;
 import net.bull.javamelody.internal.model.RemoteCollector;
-import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 
@@ -249,11 +248,7 @@ class ScrollingPanel extends MelodyPanel {
 			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
 					getRemoteCollector(), javaInformations);
 			threadInformationsPanel.setVisible(false);
-			final JLabel summaryLabel = new JLabel("<html><b>"
-					+ getFormattedString("Threads_sur", javaInformations.getHost()) + ": </b>"
-					+ getFormattedString("thread_count", javaInformations.getThreadCount(),
-							javaInformations.getPeakThreadCount(),
-							javaInformations.getTotalStartedThreadCount()));
+			final JLabel summaryLabel = threadInformationsPanel.createSummaryLabel();
 			final MButton detailsButton = new MButton(getString(DETAILS_KEY), PLUS_ICON);
 			detailsButton.addActionListener(new ActionListener() {
 				@Override
@@ -271,13 +266,10 @@ class ScrollingPanel extends MelodyPanel {
 
 			add(flowPanel);
 
-			for (final ThreadInformations thread : javaInformations.getThreadInformationsList()) {
-				if (thread.isDeadlocked()) {
-					// au moins un thread est en deadlock
-					final JLabel label = threadInformationsPanel.createThreadDeadlocksLabel();
-					add(label);
-					break;
-				}
+			final JLabel deadlockLabel = threadInformationsPanel.createThreadDeadlocksLabel();
+			if (deadlockLabel != null) {
+				// au moins un thread est en deadlock
+				add(deadlockLabel);
 			}
 
 			add(threadInformationsPanel);

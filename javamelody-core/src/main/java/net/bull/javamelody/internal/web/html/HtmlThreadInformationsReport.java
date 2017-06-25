@@ -62,6 +62,7 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			write("<th class='sorttable_numeric'>#Temps_cpu#</th><th class='sorttable_numeric'>#Temps_user#</th>");
 		}
 		if (systemActionsEnabled) {
+			writeln("<th class='noPrint'>#Interrupt#</th>");
 			writeln("<th class='noPrint'>#Tuer#</th>");
 		}
 		for (final ThreadInformations threadInformations : threadInformationsList) {
@@ -163,6 +164,7 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			write("</td> <td align='right'>");
 			write(integerFormat.format(threadInformations.getUserTimeMillis()));
 		}
+		writeSendThreadInterrupt(threadInformations);
 		writeKillThread(threadInformations);
 		write("</td>");
 	}
@@ -226,6 +228,25 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 					.htmlEncodeStackTraceElement(threadInformations.getExecutedMethod()));
 		} else {
 			writeDirectly("&nbsp;");
+		}
+	}
+
+	void writeSendThreadInterrupt(ThreadInformations threadInformations) throws IOException {
+		if (systemActionsEnabled) {
+			write("</td> <td align='center' class='noPrint'>");
+			write("<a href='?action=send_thread_interrupt&amp;threadId=");
+			write(threadInformations.getGlobalThreadId());
+			write(getCsrfTokenUrlPart());
+			final String confirmSendThreadInterrupt = javascriptEncode(getFormattedString(
+					"confirm_send_thread_interrupt", threadInformations.getName()));
+			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+			writeDirectly("' onclick=\"javascript:return confirm('" + confirmSendThreadInterrupt
+					+ "');\">");
+			final String title = javascriptEncode(
+					getFormattedString("send_thread_interrupt", threadInformations.getName()));
+			writeDirectly("<img width='16' height='16' src='?resource=action_interrupt.png' alt='"
+					+ title + "' title='" + title + "' />");
+			write("</a>");
 		}
 	}
 

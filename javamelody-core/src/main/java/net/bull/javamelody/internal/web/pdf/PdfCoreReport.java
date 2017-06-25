@@ -354,16 +354,11 @@ public class PdfCoreReport extends PdfAbstractReport {
 	private void writeThreads(boolean includeDetails) throws DocumentException, IOException {
 		String eol = "";
 		for (final JavaInformations javaInformations : javaInformationsList) {
-			addToDocument(new Phrase(
-					eol + getFormattedString("Threads_sur", javaInformations.getHost()) + ": ",
-					boldFont));
-			addToDocument(new Phrase(getFormattedString("thread_count",
-					javaInformations.getThreadCount(), javaInformations.getPeakThreadCount(),
-					javaInformations.getTotalStartedThreadCount()), normalFont));
-
+			addToDocument(new Phrase(eol, normalFont));
 			final PdfThreadInformationsReport pdfThreadInformationsReport = new PdfThreadInformationsReport(
 					javaInformations.getThreadInformationsList(),
 					javaInformations.isStackTraceEnabled(), pdfDocumentFactory, getDocument());
+			pdfThreadInformationsReport.writeIntro(javaInformations);
 			pdfThreadInformationsReport.writeDeadlocks();
 
 			if (includeDetails) {

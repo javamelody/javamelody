@@ -173,7 +173,8 @@ public enum TransportFormat {
 				i += 2;
 			}
 			if (name.indexOf("java.lang.", i) == i || name.indexOf("java.util.", i) == i
-					|| name.indexOf(PACKAGE_NAME, i) == i || name.length() <= 2) {
+					|| name.indexOf("java.io.", i) == i || name.indexOf(PACKAGE_NAME, i) == i
+					|| name.length() <= 2) {
 				// if name.length() == 2, primitive type or array (such as [B in javamelody-swing)
 				return super.resolveClass(desc);
 			} else if (name.indexOf("net.bull.javamelody", i) == i) {

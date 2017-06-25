@@ -586,6 +586,11 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln(separator);
 		writeln("<a href='?part=threads'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
+		if (isPdfEnabled()) {
+			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			write("<a href='?part=threads&amp;format=pdf' title='#afficher_PDF#'>");
+			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
+		}
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (javaInformations.isStackTraceEnabled()) {
 				writeln(separator);

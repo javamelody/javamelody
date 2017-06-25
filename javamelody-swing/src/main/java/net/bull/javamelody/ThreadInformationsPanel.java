@@ -20,15 +20,22 @@ package net.bull.javamelody;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -41,6 +48,7 @@ import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.web.html.HtmlThreadInformationsReport;
+import net.bull.javamelody.internal.web.pdf.PdfOtherReport;
 import net.bull.javamelody.swing.MButton;
 import net.bull.javamelody.swing.Utilities;
 import net.bull.javamelody.swing.table.MDefaultTableCellRenderer;
@@ -130,7 +138,11 @@ class ThreadInformationsPanel extends MelodyPanel {
 		add(scrollPane, BorderLayout.NORTH);
 
 		final JLabel label = new JLabel(' ' + getString("Temps_threads"));
-		add(label, BorderLayout.WEST);
+		// panel to align vertically the label in the threads as new tab
+		final JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		labelPanel.setOpaque(false);
+		labelPanel.add(label);
+		add(labelPanel, BorderLayout.WEST);
 
 		final JPanel buttonsPanel = createButtonsPanel();
 		add(buttonsPanel, BorderLayout.EAST);
@@ -188,35 +200,7 @@ class ThreadInformationsPanel extends MelodyPanel {
 		openButton.setEnabled(false);
 
 		if (Parameters.isSystemActionsEnabled()) {
-			final MButton killThreadButton = new MButton(getString("Tuer"),
-					ImageIconCache.getImageIcon("stop.png"));
-			getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-				@Override
-				public void valueChanged(ListSelectionEvent e) {
-					final ThreadInformations threadInformations = getTable().getSelectedObject();
-					killThreadButton.setEnabled(threadInformations != null);
-					if (threadInformations != null) {
-						killThreadButton.setToolTipText(
-								getFormattedString("kill_thread", threadInformations.getName()));
-					} else {
-						killThreadButton.setToolTipText(null);
-					}
-				}
-			});
-			killThreadButton.setEnabled(getTable().getSelectedObject() != null);
-			killThreadButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					final ThreadInformations threadInformations = getTable().getSelectedObject();
-					if (threadInformations != null
-							&& confirm(getFormattedString("confirm_kill_thread",
-									threadInformations.getName()))) {
-						actionKillThread(threadInformations);
-					}
-				}
-			});
-
-			buttonsPanel.add(killThreadButton);
+			addInterruptAndKillThreadButtons(buttonsPanel);
 		}
 
 		if (stackTraceEnabled) {
@@ -230,8 +214,80 @@ class ThreadInformationsPanel extends MelodyPanel {
 			});
 			buttonsPanel.add(dumpThreadsButton);
 		}
+		final MButton openInNewTabButton = new MButton(getString("Voir_dans_une_nouvelle_page"),
+				ImageIconCache.getScaledImageIcon("threads.png", 16, 16));
+		openInNewTabButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final JPanel panel = createPanelForNewTab();
+				MainPanel.addOngletFromChild(ThreadInformationsPanel.this, panel);
+			}
+		});
+		buttonsPanel.add(openInNewTabButton);
 
 		return buttonsPanel;
+	}
+
+	private void addInterruptAndKillThreadButtons(JPanel buttonsPanel) {
+		final MButton sendThreadInterruptButton = new MButton(getString("Interrupt"),
+				ImageIconCache.getImageIcon("action_interrupt.png"));
+		final MButton killThreadButton = new MButton(getString("Tuer"),
+				ImageIconCache.getImageIcon("stop.png"));
+		getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				sendThreadInterruptButton.setEnabled(threadInformations != null);
+				killThreadButton.setEnabled(threadInformations != null);
+				if (threadInformations != null) {
+					sendThreadInterruptButton.setToolTipText(getFormattedString(
+							"send_thread_interrupt", threadInformations.getName()));
+					killThreadButton.setToolTipText(
+							getFormattedString("kill_thread", threadInformations.getName()));
+				} else {
+					sendThreadInterruptButton.setToolTipText(null);
+					killThreadButton.setToolTipText(null);
+				}
+			}
+		});
+		sendThreadInterruptButton.setEnabled(getTable().getSelectedObject() != null);
+		killThreadButton.setEnabled(getTable().getSelectedObject() != null);
+		sendThreadInterruptButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				if (threadInformations != null
+						&& confirm(getFormattedString("confirm_send_thread_interrupt",
+								threadInformations.getName()))) {
+					actionSendThreadInterrupt(threadInformations);
+				}
+			}
+		});
+		killThreadButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final ThreadInformations threadInformations = getTable().getSelectedObject();
+				if (threadInformations != null && confirm(
+						getFormattedString("confirm_kill_thread", threadInformations.getName()))) {
+					actionKillThread(threadInformations);
+				}
+			}
+		});
+
+		buttonsPanel.add(sendThreadInterruptButton);
+		buttonsPanel.add(killThreadButton);
+	}
+
+	final void actionSendThreadInterrupt(ThreadInformations threadInformations) {
+		try {
+			final String message = getRemoteCollector().executeActionAndCollectData(
+					Action.SEND_THREAD_INTERRUPT, null, null,
+					threadInformations.getGlobalThreadId(), null, null);
+			showMessage(message);
+			MainPanel.refreshMainTabFromChild(this);
+		} catch (final IOException ex) {
+			showException(ex);
+		}
 	}
 
 	final void actionKillThread(ThreadInformations threadInformations) {
@@ -254,6 +310,77 @@ class ThreadInformationsPanel extends MelodyPanel {
 		} catch (final IOException ex) {
 			showException(ex);
 		}
+	}
+
+	JPanel createPanelForNewTab() {
+		final JPanel panel = new JPanel();
+		panel.setName(getString("Threads"));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		final MButton refreshButton = createRefreshButton();
+		refreshButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					getRemoteCollector().collectDataIncludingCurrentRequests();
+					panel.removeAll();
+					final JPanel newPanel = createPanelForNewTab();
+					newPanel.setOpaque(false);
+					panel.add(newPanel);
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		final MButton pdfButton = createPdfButton();
+		pdfButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					actionPdf();
+				} catch (final IOException ex) {
+					showException(ex);
+				}
+			}
+		});
+		final Serializable serializable;
+		if (getJavaInformationsList().size() == 1) {
+			serializable = new ArrayList<>(
+					getJavaInformationsList().get(0).getThreadInformationsList());
+		} else {
+			final List<List<ThreadInformations>> list = new ArrayList<>();
+			for (final JavaInformations javaInfos : getJavaInformationsList()) {
+				list.add(new ArrayList<>(javaInfos.getThreadInformationsList()));
+			}
+			serializable = (Serializable) list;
+		}
+		final MButton xmlJsonButton = createXmlJsonButton(serializable);
+		final JPanel mainButtonsPanel = Utilities.createButtonsPanel(refreshButton, pdfButton,
+				xmlJsonButton);
+		mainButtonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+		panel.add(mainButtonsPanel);
+		panel.add(Utilities.createParagraphTitle(getString("Threads"), "threads.png"));
+		for (final JavaInformations javaInfos : getJavaInformationsList()) {
+			final ThreadInformationsPanel threadInformationsPanel = new ThreadInformationsPanel(
+					getRemoteCollector(), javaInfos);
+			panel.add(threadInformationsPanel.createThreadsAsPartPanel());
+		}
+		for (final Component component : panel.getComponents()) {
+			((JComponent) component).setAlignmentX(Component.LEFT_ALIGNMENT);
+		}
+		return panel;
+	}
+
+	final void actionPdf() throws IOException {
+		final File tempFile = createTempFileForPdf();
+		final PdfOtherReport pdfOtherReport = createPdfOtherReport(tempFile);
+		try {
+			pdfOtherReport.writeThreads(getJavaInformationsList());
+		} finally {
+			pdfOtherReport.close();
+		}
+		Desktop.getDesktop().open(tempFile);
 	}
 
 	final void showStackTraceInPopup(ThreadInformations threadInformations) {
@@ -289,24 +416,54 @@ class ThreadInformationsPanel extends MelodyPanel {
 		return null;
 	}
 
+	JLabel createSummaryLabel() {
+		return new JLabel("<html><b>"
+				+ getFormattedString("Threads_sur", javaInformations.getHost()) + ": </b>"
+				+ getFormattedString("thread_count", javaInformations.getThreadCount(),
+						javaInformations.getPeakThreadCount(),
+						javaInformations.getTotalStartedThreadCount()));
+	}
+
 	JLabel createThreadDeadlocksLabel() {
+		boolean deadlockFound = false;
 		final StringBuilder sb = new StringBuilder();
 		sb.append("  ");
 		sb.append(getString("Threads_deadlocks"));
 		String separator = " ";
 		for (final ThreadInformations thread : threadInformationsList) {
 			if (thread.isDeadlocked()) {
+				deadlockFound = true;
 				sb.append(separator);
 				sb.append(thread.getName());
 				separator = ", ";
 			}
 		}
-		final JLabel label = new JLabel(sb.toString());
-		label.setForeground(Color.RED);
-		label.setFont(label.getFont().deriveFont(Font.BOLD));
-		// séparateur avec composants au-dessus
-		label.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-		return label;
+		if (deadlockFound) {
+			final JLabel label = new JLabel(sb.toString());
+			label.setForeground(Color.RED);
+			label.setFont(label.getFont().deriveFont(Font.BOLD));
+			// séparateur avec composants au-dessus
+			label.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+			return label;
+		}
+		return null;
+	}
+
+	JPanel createThreadsAsPartPanel() {
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setOpaque(false);
+		panel.add(createSummaryLabel());
+		panel.add(this);
+		final JLabel deadlockLabel = createThreadDeadlocksLabel();
+		if (deadlockLabel != null) {
+			// au moins un thread est en deadlock
+			panel.add(deadlockLabel);
+		}
+		for (final Component component : panel.getComponents()) {
+			((JComponent) component).setAlignmentX(Component.LEFT_ALIGNMENT);
+		}
+		return panel;
 	}
 
 	MTable<ThreadInformations> getTable() {

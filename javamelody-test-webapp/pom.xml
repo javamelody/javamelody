@@ -46,8 +46,14 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.ejb</groupId>
-			<artifactId>ejb-api</artifactId>
-			<version>3.0</version>
+			<artifactId>javax.ejb-api</artifactId>
+			<version>3.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.interceptor</groupId>
+			<artifactId>javax.interceptor-api</artifactId>
+			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -173,13 +179,19 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>2.5.6</version>
+			<version>3.1.0.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>2.5.6</version>
+			<version>3.1.0.RELEASE</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>3.1.0.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle google guice (aop) -->
@@ -208,6 +220,13 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
 			<version>3.3.0</version>
+			<optional>true</optional>
+		</dependency>
+		<!-- Dépendance optionnelle AWS Java SDK -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-cloudwatch</artifactId>
+			<version>1.11.136</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->

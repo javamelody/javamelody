@@ -60,7 +60,11 @@ class RemoteCall {
 	RemoteCall(String url) throws MalformedURLException {
 		super();
 		assert url != null;
-		this.url = new URL(url + "?format=serialized");
+		if (url.indexOf('?') == -1) {
+			this.url = new URL(url + "?format=serialized");
+		} else {
+			this.url = new URL(url + "&format=serialized");
+		}
 	}
 
 	// utilisée dans scripts Jenkins par exemple

@@ -80,15 +80,10 @@ class Quartz2Adapter extends QuartzAdapter {
 	}
 
 	@Override
-	Date getTriggerPreviousFireTime(Trigger trigger) {
-		return trigger.getPreviousFireTime();
+	List<Date> getPreviousAndNextFireTime(List<Trigger> triggers) { // NOPMD
+		return super.getPreviousAndNextFireTime(triggers);
 	}
-
-	@Override
-	Date getTriggerNextFireTime(Trigger trigger) {
-		return trigger.getNextFireTime();
-	}
-
+	
 	@Override
 	String getCronTriggerExpression(CronTrigger trigger) {
 		// getCronExpression gives a PMD false+
@@ -115,8 +110,7 @@ class Quartz2Adapter extends QuartzAdapter {
 		final Scheduler defaultScheduler;
 		final List<Matcher<JobKey>> allJobs = new ArrayList<Matcher<JobKey>>();
 		allJobs.add(EverythingMatcher.allJobs());
-		if (Boolean.parseBoolean(Parameters
-				.getParameter(Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED))) {
+		if (Parameter.QUARTZ_DEFAULT_LISTENER_DISABLED.getValueAsBoolean()) {
 			defaultScheduler = null;
 			LOG.debug("Initialization of Quartz default listener has been disabled");
 		} else {

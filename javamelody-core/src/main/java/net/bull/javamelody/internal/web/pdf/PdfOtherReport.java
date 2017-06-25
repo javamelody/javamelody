@@ -278,6 +278,30 @@ public class PdfOtherReport {
 		document.close();
 	}
 
+	public void writeThreads(List<JavaInformations> javaInformationsList) throws IOException {
+		try {
+			document.open();
+			addParagraph(getString("Threads"), "threads.png");
+			String eol = "";
+			final Font normalFont = PdfFonts.NORMAL.getFont();
+			for (final JavaInformations javaInformations : javaInformationsList) {
+				addToDocument(new Phrase(eol, normalFont));
+
+				final PdfThreadInformationsReport pdfThreadInformationsReport = new PdfThreadInformationsReport(
+						javaInformations.getThreadInformationsList(),
+						javaInformations.isStackTraceEnabled(), pdfDocumentFactory, document);
+				pdfThreadInformationsReport.writeIntro(javaInformations);
+				pdfThreadInformationsReport.writeDeadlocks();
+
+				pdfThreadInformationsReport.toPdf();
+				eol = "\n";
+			}
+		} catch (final DocumentException e) {
+			throw createIOException(e);
+		}
+		document.close();
+	}
+
 	private static IOException createIOException(Exception e) {
 		// Rq: le constructeur de IOException avec message et cause n'existe qu'en jdk 1.6
 		return new IOException(e.getMessage(), e);
