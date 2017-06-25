@@ -520,7 +520,7 @@
 							<version>3.0.3</version>
 							<configuration>
 								<xmlOutput>true</xmlOutput>
-								<omitVisitors>DefaultEncodingDetector</omitVisitors>
+								<omitVisitors>DefaultEncodingDetector,FindReturnRef,CloneIdiom</omitVisitors>
 							</configuration>
 						</plugin>
 						<plugin>
