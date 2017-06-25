@@ -447,17 +447,12 @@ public enum Action {
 		}
 	}
 
-	private String killThread(String threadId) {
-		final String[] values = threadId.split("_");
-		if (values.length != 3) {
-			throw new IllegalArgumentException(threadId);
-		}
-		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
-		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
-			final long myThreadId = Long.parseLong(values[2]);
+	private String killThread(String globalThreadId) {
+		final Long threadId = getThreadIdFromGlobalThreadIdIfSameJvm(globalThreadId);
+		if (threadId != null) {
 			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
 			for (final Thread thread : threads) {
-				if (thread.getId() == myThreadId) {
+				if (thread.getId() == threadId.longValue()) {
 					stopThread(thread);
 					return I18N.getFormattedString("Thread_tue", thread.getName());
 				}
@@ -475,17 +470,12 @@ public enum Action {
 		thread.stop();
 	}
 
-	private String sendThreadInterrupt(String threadId) {
-		final String[] values = threadId.split("_");
-		if (values.length != 3) {
-			throw new IllegalArgumentException(threadId);
-		}
-		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
-		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
-			final long myThreadId = Long.parseLong(values[2]);
+	private String sendThreadInterrupt(String globalThreadId) {
+		final Long threadId = getThreadIdFromGlobalThreadIdIfSameJvm(globalThreadId);
+		if (threadId != null) {
 			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
 			for (final Thread thread : threads) {
-				if (thread.getId() == myThreadId) {
+				if (thread.getId() == threadId.longValue()) {
 					thread.interrupt();
 					return I18N.getFormattedString("thread_interrupt_sent", thread.getName());
 				}
@@ -494,6 +484,18 @@ public enum Action {
 		}
 
 		// cette action ne concernait pas cette JVM, donc on ne fait rien
+		return null;
+	}
+
+	private Long getThreadIdFromGlobalThreadIdIfSameJvm(String globalThreadId) {
+		final String[] values = globalThreadId.split("_");
+		if (values.length != 3) {
+			throw new IllegalArgumentException(globalThreadId);
+		}
+		// rq : la syntaxe vérifiée ici doit être conforme à ThreadInformations.buildGlobalThreadId
+		if (values[0].equals(PID.getPID()) && values[1].equals(Parameters.getHostAddress())) {
+			return Long.valueOf(values[2]);
+		}
 		return null;
 	}
 
