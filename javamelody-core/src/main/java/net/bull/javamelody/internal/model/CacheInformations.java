@@ -235,6 +235,8 @@ public class CacheInformations implements Serializable {
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
+		} catch (final NoClassDefFoundError e) {
+			return false;
 		} catch (final NoSuchMethodException e) {
 			return false;
 		}
@@ -263,6 +265,8 @@ public class CacheInformations implements Serializable {
 			Class.forName("net.sf.ehcache.Statistics");
 			return isEhcache12();
 		} catch (final ClassNotFoundException e) {
+			return false;
+		} catch (final NoClassDefFoundError e) {
 			return false;
 		}
 	}
