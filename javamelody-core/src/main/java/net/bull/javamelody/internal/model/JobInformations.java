@@ -112,8 +112,6 @@ public class JobInformations implements Serializable {
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
-		} catch (final NoClassDefFoundError e) {
-			return false;
 		}
 	}
 
