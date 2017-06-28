@@ -162,9 +162,8 @@ public class MemoryInformations implements Serializable {
 					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
 							"getCommittedVirtualMemorySize") / 1024 / 1024)
 					+ MO + ",\nFree physical memory = "
-					+ integerFormat.format(
-							getLongFromOperatingSystem(operatingSystem, "getFreePhysicalMemorySize")
-									/ 1024 / 1024)
+					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
+							"getFreePhysicalMemorySize") / 1024 / 1024)
 					+ MO + ",\nTotal physical memory = "
 					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
 							"getTotalPhysicalMemorySize") / 1024 / 1024)

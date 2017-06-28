@@ -38,9 +38,11 @@ enum JpaMethod {
 	/** CREATE_NATIVE_QUERY. */
 	CREATE_NATIVE_QUERY(true, true, new ReturnQueryMethodMatcher("createNativeQuery")),
 	/** CREATE_STORED_PROCEDURE_QUERY. */
-	CREATE_STORED_PROCEDURE_QUERY(true, true, new ReturnQueryMethodMatcher("createStoredProcedureQuery")),
+	CREATE_STORED_PROCEDURE_QUERY(true, true,
+			new ReturnQueryMethodMatcher("createStoredProcedureQuery")),
 	/** CREATE_NAMED_STORED_PROCEDURE_QUERY. */
-	CREATE_NAMED_STORED_PROCEDURE_QUERY(true, true, new ReturnQueryMethodMatcher("createNamedStoredProcedureQuery")),
+	CREATE_NAMED_STORED_PROCEDURE_QUERY(true, true,
+			new ReturnQueryMethodMatcher("createNamedStoredProcedureQuery")),
 	/** FIND. */
 	FIND(true, false, new MethodWithArgsMethodMatcher("find")),
 	/** MERGE. */
