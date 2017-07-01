@@ -354,7 +354,11 @@ class FilterContext {
 		for (final Parameter parameter : Parameter.values()) {
 			final String value = parameter.getValue();
 			if (value != null && parameter != Parameter.ANALYTICS_ID) {
-				LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
+				if (parameter == Parameter.AUTHORIZED_USERS) {
+					LOG.debug("parameter defined: " + parameter.getCode() + "=*****");
+				} else {
+					LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
+				}
 			}
 		}
 	}
