@@ -60,14 +60,14 @@ public class TestJavaMelodyAutoConfiguration {
 	}
 
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated_thenItShouldCreateASessionListener() {
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateASessionListener() {
 		ServletListenerRegistrationBean<EventListener> sessionListenerRegistrationBean = context
 				.getBean(ServletListenerRegistrationBean.class);
 		assertThat(sessionListenerRegistrationBean).isNotNull();
 	}
 
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated_thenItShouldCreateAFilterRegistrationBean() {
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateAFilterRegistrationBean() {
 		// It should create a registration bean named "javamelody-registration".
 		Object registrationBean = context
 				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
@@ -89,7 +89,7 @@ public class TestJavaMelodyAutoConfiguration {
 	}
 
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated_thenItShouldRegisterJavamelodyFilter() {
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldRegisterJavamelodyFilter() {
 		Object registrationBean = context
 				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
 		assertThat(registrationBean).isNotNull();
@@ -97,7 +97,7 @@ public class TestJavaMelodyAutoConfiguration {
 	}
 
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated_thenItShouldCreateDataSourcePostProcessor() {
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateDataSourcePostProcessor() {
 		SpringDataSourceBeanPostProcessor dataSourcePostProcessor = context
 				.getBean(SpringDataSourceBeanPostProcessor.class);
 		assertThat(dataSourcePostProcessor).isNotNull();
@@ -122,7 +122,7 @@ public class TestJavaMelodyAutoConfiguration {
 	}
 
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated_thenItShouldCreateDataRestTemplatePostProcessor() {
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateDataRestTemplatePostProcessor() {
 		SpringRestTemplateBeanPostProcessor restTemplatePostProcessor = context
 				.getBean(SpringRestTemplateBeanPostProcessor.class);
 		assertThat(restTemplatePostProcessor).isNotNull();
