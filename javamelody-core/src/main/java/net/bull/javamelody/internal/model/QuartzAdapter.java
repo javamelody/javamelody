@@ -65,8 +65,9 @@ public class QuartzAdapter {
 	private static QuartzAdapter createSingleton() {
 		if (QUARTZ_2) {
 			try {
-				return (QuartzAdapter) Class.forName("net.bull.javamelody.Quartz2Adapter")
-						.newInstance();
+				final Class<?> clazz = Class
+						.forName("net.bull.javamelody.internal.model.Quartz2Adapter");
+				return (QuartzAdapter) clazz.newInstance();
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
 			}
