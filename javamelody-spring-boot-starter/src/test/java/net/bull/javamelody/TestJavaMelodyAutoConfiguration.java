@@ -104,7 +104,7 @@ public class TestJavaMelodyAutoConfiguration {
 	}
 
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated_thenItShouldCreateDataSpringPostProcessor() {
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateDataSpringPostProcessor() {
 		final Map<String, MonitoringSpringAdvisor> springAdvisors = context
 				.getBeansOfType(MonitoringSpringAdvisor.class);
 		boolean monitoredWithAdvisorFound = false;
