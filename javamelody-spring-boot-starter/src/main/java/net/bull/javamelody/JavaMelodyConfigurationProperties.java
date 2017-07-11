@@ -39,6 +39,7 @@ public class JavaMelodyConfigurationProperties {
 	private boolean enabled = true;
 	private String excludedDatasources;
 	private Map<String, String> initParameters = new HashMap<String, String>();
+	private boolean springMonitoringEnabled = true;
 
 	/**
 	 * Returns if JavaMelody should be enabled within the application.
@@ -94,10 +95,29 @@ public class JavaMelodyConfigurationProperties {
 		this.initParameters = initParameters;
 	}
 
+	/**
+	 * Return if JavaMelody should monitor spring beans
+	 * 
+	 * @return <code>true</code> if JavaMelody should monitor spring beans, otherwise <code>false</code>. Default: <code>true</code>
+	 */
+	public boolean isSpringMonitoringEnabled() {
+		return springMonitoringEnabled;
+	}
+
+	/**
+	 * Sets whether JavaMelody should monitor spring beans.
+	 * 
+	 * @param springMonitoringEnabled <code>true</code> if JavaMelody should monitor spring beans, otherwise <code>false</code>.
+	 */
+	public void setSpringMonitoringEnabled(boolean springMonitoringEnabled) {
+		this.springMonitoringEnabled = springMonitoringEnabled;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "JavaMelodyConfigurationProperties [enabled=" + enabled + ", excludedDatasources="
-				+ excludedDatasources + ", initParameters=" + initParameters + "]";
+				+ excludedDatasources + ", initParameters=" + initParameters
+				+ ", springMonitoringEnabled=" + springMonitoringEnabled + "]";
 	}
 }

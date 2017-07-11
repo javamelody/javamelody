@@ -28,7 +28,6 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Value;
@@ -140,15 +139,6 @@ public class JavaMelodyAutoConfiguration {
 			}
 		}
 		return registrationBean;
-	}
-
-	/**
-	 * @return DefaultAdvisorAutoProxyCreator
-	 */
-	@Bean
-	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
-	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-		return new DefaultAdvisorAutoProxyCreator();
 	}
 
 	/**

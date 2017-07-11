@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -49,6 +48,7 @@ import net.bull.javamelody.TestJavaMelodyAutoConfiguration.TestContextConfigurat
 @TestPropertySource(properties = { "javamelody.init-parameters.log=true",
 		"javamelody.init-parameters.monitoring-path=/test/path",
 		"javamelody.excluded-datasources=ds1,ds2" })
+@SuppressWarnings("unchecked")
 public class TestJavaMelodyAutoConfiguration {
 	@Autowired
 	private ApplicationContext context;
@@ -59,25 +59,23 @@ public class TestJavaMelodyAutoConfiguration {
 		// nothing
 	}
 
-	/**
-	 * test.
-	 */
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testJavaMelodyAutoConfigurationIsCreated() {
-		// It should create a session listener.
-		final ServletListenerRegistrationBean<EventListener> sessionListenerRegistrationBean = context
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateASessionListener() {
+		ServletListenerRegistrationBean<EventListener> sessionListenerRegistrationBean = context
 				.getBean(ServletListenerRegistrationBean.class);
 		assertThat(sessionListenerRegistrationBean).isNotNull();
+	}
 
+	@Test
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateAFilterRegistrationBean() {
 		// It should create a registration bean named "javamelody-registration".
-		final Object registrationBean = context
+		Object registrationBean = context
 				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
 		assertThat(registrationBean).isNotNull();
 		assertThat(registrationBean).isInstanceOf(FilterRegistrationBean.class);
 
 		// It should create a filter registration bean with the appropriately configured monitoring filter.
-		final FilterRegistrationBean filterRegistrationBean = (FilterRegistrationBean) registrationBean;
+		FilterRegistrationBean filterRegistrationBean = (FilterRegistrationBean) registrationBean;
 		assertThat(filterRegistrationBean.getFilter()).isNotNull();
 		assertThat(filterRegistrationBean.getFilter()).isInstanceOf(MonitoringFilter.class);
 		assertThat(filterRegistrationBean.getInitParameters()).containsEntry("log", "true");
@@ -86,22 +84,27 @@ public class TestJavaMelodyAutoConfiguration {
 		assertThat(filterRegistrationBean.getUrlPatterns()).containsExactly("/*");
 
 		// It should create the monitoring filter with the application type "Spring Boot".
-		final MonitoringFilter monitoringFilter = (MonitoringFilter) filterRegistrationBean
-				.getFilter();
+		MonitoringFilter monitoringFilter = (MonitoringFilter) filterRegistrationBean.getFilter();
 		assertThat(monitoringFilter.getApplicationType()).isEqualTo("Spring Boot");
+	}
 
-		// It should create an auto-proxy creator.
-		final DefaultAdvisorAutoProxyCreator autoProxyCreator = context
-				.getBean(DefaultAdvisorAutoProxyCreator.class);
-		assertThat(autoProxyCreator).isNotNull();
+	@Test
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldRegisterJavamelodyFilter() {
+		Object registrationBean = context
+				.getBean(JavaMelodyAutoConfiguration.REGISTRATION_BEAN_NAME);
+		assertThat(registrationBean).isNotNull();
+		assertThat(registrationBean).isInstanceOf(FilterRegistrationBean.class);
+	}
 
-		// It should create a bean post-processor for data sources.
-		final SpringDataSourceBeanPostProcessor dataSourcePostProcessor = context
+	@Test
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateDataSourcePostProcessor() {
+		SpringDataSourceBeanPostProcessor dataSourcePostProcessor = context
 				.getBean(SpringDataSourceBeanPostProcessor.class);
 		assertThat(dataSourcePostProcessor).isNotNull();
-		// Cannot test excluded data sources since there is no public accessor for that.
+	}
 
-		// It should create interceptors to monitor Spring services and controllers.
+	@Test
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateDataSpringPostProcessor() {
 		final Map<String, MonitoringSpringAdvisor> springAdvisors = context
 				.getBeansOfType(MonitoringSpringAdvisor.class);
 		boolean monitoredWithAdvisorFound = false;
@@ -116,10 +119,13 @@ public class TestJavaMelodyAutoConfiguration {
 		}
 		assertThat(monitoredWithAdvisorFound).isTrue();
 		assertThat(stereotypeAdvisorsCount).isEqualTo(3);
+	}
 
-		// It should create a bean post-processor for rest templates.
-		final SpringRestTemplateBeanPostProcessor restTemplatePostProcessor = context
+	@Test
+	public void testJavaMelodyAutoConfigurationIsCreatedThenItShouldCreateDataRestTemplatePostProcessor() {
+		SpringRestTemplateBeanPostProcessor restTemplatePostProcessor = context
 				.getBean(SpringRestTemplateBeanPostProcessor.class);
 		assertThat(restTemplatePostProcessor).isNotNull();
 	}
+
 }
