@@ -59,7 +59,8 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>javamelody-core</artifactId>
-			<version>${project.version}</version>
+			<version>1.68.1</version>
+			<!-- <version>${project.version}</version> -->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
