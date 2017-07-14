@@ -147,6 +147,7 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "advisor-auto-proxy-creator-enabled", matchIfMissing = true)
 	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
 		return new DefaultAdvisorAutoProxyCreator();
 	}
@@ -222,11 +223,12 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
-	 * Monitoring of beans methods having the {@link Scheduled} or {@link Schedules} annotations.
+	 * Monitoring of beans methods having the {@link Scheduled} or {@link Schedules} annotations,
+	 * only if <code>scheduled-monitoring-enabled: true</code> is added in application.yml.
 	 * @return MonitoringSpringAdvisor
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "scheduled-monitoring-enabled", matchIfMissing = false)
 	public MonitoringSpringAdvisor monitoringSpringScheduledAdvisor() {
 		return new MonitoringSpringAdvisor(
 				Pointcuts.union(new AnnotationMatchingPointcut(null, Scheduled.class),
