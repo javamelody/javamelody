@@ -40,6 +40,13 @@
 
 		<!--  Note: if you have auto-proxy issues, you can add the following dependency:
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		
+		or
+		
+		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
 		</dependency> 
