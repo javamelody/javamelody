@@ -80,10 +80,8 @@ public class JobInformations implements Serializable {
 					- quartzAdapter.getContextFireTime(jobExecutionContext).getTime();
 		}
 		final List<Trigger> triggers = quartzAdapter.getTriggersOfJob(jobDetail, scheduler);
-		final List<Date> previousAndNextFireTime = quartzAdapter
-				.getPreviousAndNextFireTime(triggers);
-		this.nextFireTime = previousAndNextFireTime.get(1);
-		this.previousFireTime = previousAndNextFireTime.get(0);
+		this.previousFireTime = getPreviousFireTime(triggers);
+		this.nextFireTime = getNextFireTime(triggers);
 
 		String cronTriggerExpression = null;
 		long simpleTriggerRepeatInterval = -1;
@@ -103,6 +101,34 @@ public class JobInformations implements Serializable {
 		this.paused = jobPaused;
 		this.globalJobId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
 				+ quartzAdapter.getJobFullName(jobDetail).hashCode();
+	}
+
+	private Date getNextFireTime(List<Trigger> triggers) {
+		final QuartzAdapter quartzAdapter = QuartzAdapter.getSingleton();
+		Date myNextFireTime = null;
+		for (final Trigger trigger : triggers) {
+			// beware of #648 for getTriggerNextFireTime
+			final Date triggerNextFireTime = quartzAdapter.getTriggerNextFireTime(trigger);
+			if (myNextFireTime == null
+					|| triggerNextFireTime != null && myNextFireTime.after(triggerNextFireTime)) {
+				myNextFireTime = triggerNextFireTime;
+			}
+		}
+		return myNextFireTime;
+	}
+
+	private Date getPreviousFireTime(List<Trigger> triggers) {
+		final QuartzAdapter quartzAdapter = QuartzAdapter.getSingleton();
+		Date myPreviousFireTime = null;
+		for (final Trigger trigger : triggers) {
+			// beware of #648 for getTriggerPreviousFireTime
+			final Date triggerPreviousFireTime = quartzAdapter.getTriggerPreviousFireTime(trigger);
+			if (myPreviousFireTime == null || triggerPreviousFireTime != null
+					&& myPreviousFireTime.before(triggerPreviousFireTime)) {
+				myPreviousFireTime = triggerPreviousFireTime;
+			}
+		}
+		return myPreviousFireTime;
 	}
 
 	private static boolean isQuartzAvailable() {

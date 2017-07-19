@@ -18,6 +18,7 @@
 package net.bull.javamelody.internal.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -80,8 +81,13 @@ class Quartz2Adapter extends QuartzAdapter {
 	}
 
 	@Override
-	List<Date> getPreviousAndNextFireTime(List<Trigger> triggers) { // NOPMD
-		return super.getPreviousAndNextFireTime(triggers);
+	Date getTriggerPreviousFireTime(Trigger trigger) {
+		return trigger.getPreviousFireTime();
+	}
+
+	@Override
+	Date getTriggerNextFireTime(Trigger trigger) {
+		return trigger.getNextFireTime();
 	}
 	
 	@Override
