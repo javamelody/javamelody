@@ -230,6 +230,8 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "scheduled-monitoring-enabled", matchIfMissing = false)
 	public MonitoringSpringAdvisor monitoringSpringScheduledAdvisor() {
+		// only if scheduled-monitoring-enabled because of #643,
+		// but https://jira.spring.io/browse/SPR-15562 may change that
 		return new MonitoringSpringAdvisor(
 				Pointcuts.union(new AnnotationMatchingPointcut(null, Scheduled.class),
 						new AnnotationMatchingPointcut(null, Schedules.class)));
