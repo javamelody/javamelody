@@ -97,8 +97,7 @@ public class MonitoredSpringAsyncAndScheduledPointcut implements Pointcut {
 
 		/** {@inheritDoc} */
 		@Override
-		@SuppressWarnings("rawtypes")
-		public boolean matches(Method method, Class targetClass, Object[] args) {
+		public boolean matches(Method method, Class<?> targetClass, Object... args) {
 			throw new UnsupportedOperationException("This is not a runtime method matcher");
 		}
 	}
