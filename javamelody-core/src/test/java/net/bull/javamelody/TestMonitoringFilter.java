@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import ch.qos.logback.classic.Level;
@@ -674,19 +674,24 @@ public class TestMonitoringFilter {
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
-		final ApplicationContext context = new ClassPathXmlApplicationContext(
+		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
 				new String[] { "net/bull/javamelody/monitoring-spring.xml", });
-		context.getBeanDefinitionNames();
-		parameters.put(HttpParameter.PART, HttpPart.SPRING_BEANS.getName());
-		monitoring(parameters);
-		setProperty(Parameter.SAMPLING_SECONDS, "60");
-		setUp();
-		parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
-		monitoring(parameters);
-		parameters.remove(HttpParameter.PART);
-		parameters.put(HttpParameter.JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
-		monitoring(parameters);
-		parameters.remove(HttpParameter.JMX_VALUE);
+		try {
+			context.getBeanDefinitionNames();
+			parameters.put(HttpParameter.PART, HttpPart.SPRING_BEANS.getName());
+			monitoring(parameters);
+			setProperty(Parameter.SAMPLING_SECONDS, "60");
+			setUp();
+			parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
+			monitoring(parameters);
+			parameters.remove(HttpParameter.PART);
+			parameters.put(HttpParameter.JMX_VALUE,
+					"java.lang:type=OperatingSystem.ProcessCpuTime");
+			monitoring(parameters);
+			parameters.remove(HttpParameter.JMX_VALUE);
+		} finally {
+			context.close();
+		}
 	}
 
 	/**

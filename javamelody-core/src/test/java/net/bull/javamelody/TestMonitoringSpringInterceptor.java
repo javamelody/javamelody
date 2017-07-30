@@ -24,9 +24,10 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -44,10 +45,19 @@ public class TestMonitoringSpringInterceptor {
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
 	private static final String REQUESTS_COUNT = "requestsCount";
 
+	private ConfigurableApplicationContext context;
+
 	/** Check. */
 	@Before
 	public void setUp() {
 		Utils.initialize();
+		this.context = new ClassPathXmlApplicationContext(
+				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+	}
+
+	@After
+	public void destroy() {
+		this.context.close();
 	}
 
 	/**
@@ -345,8 +355,6 @@ public class TestMonitoringSpringInterceptor {
 	public void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
-		final ApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		final SpringTestFacade springTestFacade = (SpringTestFacade) context
 				.getBean("springTestFacade");
 
@@ -410,22 +418,17 @@ public class TestMonitoringSpringInterceptor {
 	/** Test. */
 	@Test
 	public void testSpringDataSourceBeanPostProcessor() {
-		final ApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
 		context.getBean("dataSource2");
 
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
-		assertNotNull("no database context", new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, }));
+		assertNotNull("no database context", context);
 	}
 
 	/** Test. */
 	@Test
 	public void testSpringDataSourceFactoryBean() {
-		final ApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
 		// utilisation de l'InvocationHandler dans SpringDataSourceFactoryBean
 		context.getType("wrappedDataSource");
 		context.getBean("wrappedDataSource");

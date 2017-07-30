@@ -38,13 +38,12 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
  * @author Emeric Vernat
  */
 public class Log4J2Appender extends AbstractAppender {
-	private static final long serialVersionUID = 1L;
 	private static final String MESSAGE_PATTERN = "%-5p [%c] %m%n";
 	private static final Level THRESHOLD = Level.WARN;
 
 	private static final String APPENDER_NAME = Log4J2Appender.class.getName();
-	private static final PatternLayout LAYOUT = PatternLayout.createLayout(MESSAGE_PATTERN, null,
-			null, null, null, true, true, null, null);
+	private static final PatternLayout LAYOUT = PatternLayout.newBuilder()
+			.withPattern(MESSAGE_PATTERN).withNoConsoleNoAnsi(true).build();
 	private static final ThresholdFilter FILTER = ThresholdFilter.createFilter(THRESHOLD, null,
 			null);
 
