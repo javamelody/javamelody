@@ -232,19 +232,6 @@
 			<version>2.1.0</version>
 			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle hibernate -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>3.6.9.Final</version>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<artifactId>hibernate-jpa-2.0-api</artifactId>
-					<groupId>org.hibernate.javax.persistence</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
