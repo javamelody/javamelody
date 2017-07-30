@@ -76,7 +76,7 @@
 					<include name="slf4j-api-1.5.11.jar" />
 					<include name="logback-classic-1.2.3.jar" />
 					<include name="logback-core-1.2.3.jar" />
-					<include name="ehcache-1.6.0.jar" />
+					<include name="ehcache-1.6.2.jar" />
 					<include name="quartz-1.5.2.jar" />
 					<include name="commons-dbcp-1.2.2.jar" />
 				</fileset>
