@@ -156,7 +156,6 @@ public class CacheInformations implements Serializable {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	static List<CacheInformations> buildCacheInformationsList() {
 		if (!EHCACHE_AVAILABLE) {
 			return Collections.emptyList();
@@ -185,7 +184,6 @@ public class CacheInformations implements Serializable {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static CacheInformations buildCacheInformationsWithKeys(String cacheId) {
 		assert EHCACHE_AVAILABLE;
 		assert cacheId != null;

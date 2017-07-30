@@ -408,7 +408,6 @@ public enum Action {
 		return (before - after) / 1024;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void clearCaches() {
 		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
 		for (final CacheManager cacheManager : allCacheManagers) {
@@ -416,7 +415,6 @@ public enum Action {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void clearCache(String cacheId) {
 		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
 		for (final CacheManager cacheManager : allCacheManagers) {
@@ -427,7 +425,6 @@ public enum Action {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void clearCacheKey(String cacheId, String cacheKey) {
 		final List<CacheManager> allCacheManagers = CacheManager.ALL_CACHE_MANAGERS;
 		for (final CacheManager cacheManager : allCacheManagers) {
