@@ -443,12 +443,12 @@
 					<additionalparam>${javadoc.doclint.none}</additionalparam>
 					<offlineLinks>
 						<offlineLink>
-							<url>http://docs.oracle.com/javase/7/docs/api/</url>
-							<location>${project.basedir}/j2se/</location>
+							<url>http://docs.oracle.com/javase/8/docs/api/</url>
+							<location>${project.basedir}/javase/</location>
 						</offlineLink>
 						<offlineLink>
-							<url>http://docs.oracle.com/javaee/7/api/</url>
-							<location>${project.basedir}/j2ee/</location>
+							<url>https://docs.oracle.com/javaee/7/api/</url>
+							<location>${project.basedir}/javaee/</location>
 						</offlineLink>
 					</offlineLinks>
 				</configuration>
