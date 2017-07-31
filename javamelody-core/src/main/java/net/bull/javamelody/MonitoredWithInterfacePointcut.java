@@ -31,8 +31,7 @@ public class MonitoredWithInterfacePointcut implements Pointcut {
 	private final ClassFilter classFilter = new ClassFilter() {
 		/** {@inheritDoc} */
 		@Override
-		@SuppressWarnings("rawtypes")
-		public boolean matches(Class clazz) {
+		public boolean matches(Class<?> clazz) {
 			return interfaceClass.isAssignableFrom(clazz);
 		}
 	};

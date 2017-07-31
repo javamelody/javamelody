@@ -72,13 +72,11 @@ public class MonitoredSpringAsyncAndScheduledPointcut implements Pointcut {
 
 		/** {@inheritDoc} */
 		@Override
-		@SuppressWarnings("rawtypes")
-		public boolean matches(Method method, Class targetClass) {
+		public boolean matches(Method method, Class<?> targetClass) {
 			return matchesAsync(method, targetClass) || matchesScheduled(method);
 		}
 
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		private boolean matchesAsync(Method method, Class targetClass) {
+		private boolean matchesAsync(Method method, Class<?> targetClass) {
 			return ASYNC_CLASS != null && (targetClass.isAnnotationPresent(ASYNC_CLASS)
 					|| method.getDeclaringClass().isAnnotationPresent(ASYNC_CLASS)
 					|| method.isAnnotationPresent(ASYNC_CLASS));

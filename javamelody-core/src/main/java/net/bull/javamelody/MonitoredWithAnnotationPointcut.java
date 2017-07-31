@@ -52,8 +52,7 @@ public class MonitoredWithAnnotationPointcut implements Pointcut {
 
 		/** {@inheritDoc} */
 		@Override
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public boolean matches(Method method, Class targetClass) {
+		public boolean matches(Method method, Class<?> targetClass) {
 			return targetClass.isAnnotationPresent(MonitoredWithSpring.class)
 					|| method.getDeclaringClass().isAnnotationPresent(MonitoredWithSpring.class)
 					|| method.isAnnotationPresent(MonitoredWithSpring.class);
