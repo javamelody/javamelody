@@ -447,7 +447,7 @@
 							<location>${project.basedir}/javase/</location>
 						</offlineLink>
 						<offlineLink>
-							<url>https://docs.oracle.com/javaee/7/api/</url>
+							<url>http://docs.oracle.com/javaee/7/api/</url>
 							<location>${project.basedir}/javaee/</location>
 						</offlineLink>
 					</offlineLinks>
