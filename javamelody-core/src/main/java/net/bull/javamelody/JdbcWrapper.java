@@ -442,9 +442,9 @@ public final class JdbcWrapper {
 		// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
 		try {
 			final boolean rewrapDataSources = Parameter.REWRAP_DATASOURCES.getValueAsBoolean();
-			if (rewrapDataSources) {
+			if (rewrapDataSources || Parameter.DATASOURCES.getValue() != null) {
 				// on annule le rebinding éventuellement fait avant par SessionListener
-				// si rewrap-datasources est défini dans le filter
+				// si datasources ou rewrap-datasources est défini dans le filter
 				JdbcWrapperHelper.rebindInitialDataSources(servletContext);
 			}
 			final Map<String, DataSource> jndiDataSources = JdbcWrapperHelper.getJndiDataSources();
