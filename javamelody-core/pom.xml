@@ -464,6 +464,19 @@
 						<plugin>
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<version>2.10.4</version>
+							<configuration>
+								<additionalparam>${javadoc.doclint.none}</additionalparam>
+								<offlineLinks>
+									<offlineLink>
+										<url>http://docs.oracle.com/javase/8/docs/api/</url>
+										<location>${project.basedir}/javase/</location>
+									</offlineLink>
+									<offlineLink>
+										<url>http://docs.oracle.com/javaee/7/api/</url>
+										<location>${project.basedir}/javaee/</location>
+									</offlineLink>
+								</offlineLinks>
+							</configuration>
 						</plugin>
 						<!-- Références croisées -->
 						<plugin>
