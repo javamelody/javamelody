@@ -273,7 +273,6 @@
 					<include name="h2-1.3.170.jar" />
 					<include name="easymock-3.1.jar" />
 					<include name="tomcat-juli-7.0.27.jar" />
-					<include name="jta-1.0.1B.jar" />
 				</fileset>
 				<fileset dir="src/test/test-webapp/WEB-INF/lib">
 					<include name="commons-logging-1.1.1.jar" />
