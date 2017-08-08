@@ -54,7 +54,6 @@
    <rule ref="rulesets/java/controversial.xml/AvoidUsingNativeCode"/>
    <rule ref="rulesets/java/controversial.xml/AvoidUsingShortType"/>
    <rule ref="rulesets/java/controversial.xml/AvoidUsingVolatile"/>
-   <rule ref="rulesets/java/controversial.xml/BooleanInversion"/>
    <rule ref="rulesets/java/controversial.xml/CallSuperInConstructor"/>
    <rule ref="rulesets/java/controversial.xml/DontImportSun"/>
    <rule ref="rulesets/java/controversial.xml/SuspiciousOctalEscape"/>
@@ -68,7 +67,7 @@
    <rule ref="rulesets/java/design.xml/AbstractClassWithoutAbstractMethod"/>
    <rule ref="rulesets/java/design.xml/AccessorClassGeneration"/>
    <rule ref="rulesets/java/design.xml/AssignmentToNonFinalStatic"/>
-   <rule ref="rulesets/java/design.xml/AvoidConstantsInterface"/>
+   <rule ref="rulesets/java/design.xml/ConstantsInInterface"/>
    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts"/>
    <rule ref="rulesets/java/design.xml/AvoidInstanceofChecksInCatchClause"/>
    <rule ref="rulesets/java/design.xml/AvoidProtectedFieldInFinalClass"/>
@@ -239,9 +238,9 @@
    <rule ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable"/>
    <rule ref="rulesets/java/unnecessary.xml/UselessOverridingMethod"/>
    <rule ref="rulesets/java/unnecessary.xml/UselessParentheses"/>
+   <rule ref="rulesets/java/unusedcode.xml/UnusedModifier"/>
    <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter"/>
    <rule ref="rulesets/java/unusedcode.xml/UnusedLocalVariable"/>
-   <rule ref="rulesets/java/unusedcode.xml/UnusedModifier"/>
    <rule ref="rulesets/java/unusedcode.xml/UnusedPrivateField"/>
    <rule ref="rulesets/java/unusedcode.xml/UnusedPrivateMethod"/>
 </ruleset>

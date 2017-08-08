@@ -499,7 +499,7 @@
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>findbugs-maven-plugin</artifactId>
-							<version>3.0.3</version>
+							<version>3.0.4</version>
 							<configuration>
 								<xmlOutput>true</xmlOutput>
 								<omitVisitors>DefaultEncodingDetector,FindReturnRef,CloneIdiom</omitVisitors>
@@ -507,7 +507,7 @@
 						</plugin>
 						<plugin>
 							<artifactId>maven-pmd-plugin</artifactId>
-							<version>3.6</version>
+							<version>3.7</version>
 							<configuration>
 								<enableRulesSummary>false</enableRulesSummary>
 								<source>1.6</source>
