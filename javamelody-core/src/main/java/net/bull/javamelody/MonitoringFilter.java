@@ -213,13 +213,8 @@ public class MonitoringFilter implements Filter {
 			HttpServletResponse httpResponse) throws IOException, ServletException {
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
-		HttpServletResponse httpResponse2 = httpResponse;
-		if (rumEnabled) {
-			httpResponse2 = RumInjector.createRumResponseWrapper(httpRequest, httpResponse,
-					getRequestName(httpRequest));
-		}
-		final CounterServletResponseWrapper wrappedResponse = new CounterServletResponseWrapper(
-				httpResponse2);
+		final CounterServletResponseWrapper wrappedResponse = createResponseWrapper(httpRequest,
+				httpResponse);
 		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest,
 				wrappedResponse);
 		boolean systemError = false;
@@ -307,6 +302,16 @@ public class MonitoringFilter implements Filter {
 				CounterError.unbindRequest();
 			}
 		}
+	}
+
+	protected CounterServletResponseWrapper createResponseWrapper(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		HttpServletResponse httpResponse2 = httpResponse;
+		if (rumEnabled) {
+			httpResponse2 = RumInjector.createRumResponseWrapper(httpRequest, httpResponse,
+					getRequestName(httpRequest));
+		}
+		return new CounterServletResponseWrapper(httpResponse2);
 	}
 
 	protected HttpServletRequest createRequestWrapper(HttpServletRequest request,
