@@ -443,9 +443,9 @@ public final class JdbcWrapper {
 		try {
 			final boolean rewrapDataSources = Parameter.REWRAP_DATASOURCES.getValueAsBoolean();
 			if (rewrapDataSources || Parameter.DATASOURCES.getValue() != null) {
-				// on annule le rebinding éventuellement fait avant par SessionListener
+				// on annule le rebinding ou rewrapping éventuellement faits avant par SessionListener
 				// si datasources ou rewrap-datasources est défini dans le filter
-				JdbcWrapperHelper.rebindInitialDataSources(servletContext);
+				stop();
 			}
 			final Map<String, DataSource> jndiDataSources = JdbcWrapperHelper.getJndiDataSources();
 			LOG.debug("datasources found in JNDI: " + jndiDataSources.keySet());
@@ -455,6 +455,7 @@ public final class JdbcWrapper {
 				try {
 					if (rewrapDataSources || isServerNeedsRewrap(jndiName)) {
 						rewrapDataSource(jndiName, dataSource);
+						JdbcWrapperHelper.registerRewrappedDataSource(jndiName, dataSource);
 					} else if (!isProxyAlready(dataSource)) {
 						// si dataSource est déjà un proxy, il ne faut pas faire un proxy d'un proxy ni un rebinding
 						final DataSource dataSourceProxy = createDataSourceProxy(jndiName,
@@ -617,15 +618,14 @@ public final class JdbcWrapper {
 			JdbcWrapperHelper.rebindInitialDataSources(servletContext);
 
 			// si jboss, glassfish ou weblogic avec datasource, on désencapsule aussi les objets wrappés
-			final Map<String, DataSource> jndiDataSources = JdbcWrapperHelper.getJndiDataSources();
-			final boolean rewrapDataSources = Parameter.REWRAP_DATASOURCES.getValueAsBoolean();
-			for (final Map.Entry<String, DataSource> entry : jndiDataSources.entrySet()) {
+			final Map<String, DataSource> rewrappedDataSources = JdbcWrapperHelper
+					.getRewrappedDataSources();
+			for (final Map.Entry<String, DataSource> entry : rewrappedDataSources.entrySet()) {
 				final String jndiName = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				if (rewrapDataSources || isServerNeedsRewrap(jndiName)) {
-					unwrapDataSource(jndiName, dataSource);
-				}
+				unwrapDataSource(jndiName, dataSource);
 			}
+			rewrappedDataSources.clear();
 
 			JdbcWrapperHelper.clearProxyCache();
 

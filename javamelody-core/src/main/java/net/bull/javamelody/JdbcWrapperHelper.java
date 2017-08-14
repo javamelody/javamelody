@@ -51,6 +51,7 @@ final class JdbcWrapperHelper {
 	private static final String MAX_ACTIVE_PROPERTY_NAME = "maxActive";
 	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<String, DataSource>();
 	private static final Map<String, DataSource> JNDI_DATASOURCES_BACKUP = new LinkedHashMap<String, DataSource>();
+	private static final Map<String, DataSource> REWRAPPED_DATASOURCES_BACKUP = new LinkedHashMap<String, DataSource>();
 	private static final BasicDataSourcesProperties TOMCAT_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties TOMCAT_JDBC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
@@ -110,6 +111,14 @@ final class JdbcWrapperHelper {
 
 	static void registerSpringDataSource(String name, DataSource dataSource) {
 		SPRING_DATASOURCES.put(name, dataSource);
+	}
+
+	static void registerRewrappedDataSource(String name, DataSource dataSource) {
+		REWRAPPED_DATASOURCES_BACKUP.put(name, dataSource);
+	}
+
+	static Map<String, DataSource> getRewrappedDataSources() {
+		return REWRAPPED_DATASOURCES_BACKUP;
 	}
 
 	static void rebindDataSource(ServletContext servletContext, String jndiName,
