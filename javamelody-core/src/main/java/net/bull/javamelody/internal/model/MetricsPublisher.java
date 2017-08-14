@@ -42,11 +42,15 @@ abstract class MetricsPublisher {
 		final String hosts = sb.toString();
 		final Graphite graphite = Graphite.getInstance(contextPath, hosts);
 		final CloudWatch cloudWatch = CloudWatch.getInstance(contextPath, hosts);
+		final InfluxDB influxDb = InfluxDB.getInstance(contextPath, hosts);
 		if (graphite != null) {
 			metricsPublishers.add(graphite);
 		}
 		if (cloudWatch != null) {
 			metricsPublishers.add(cloudWatch);
+		}
+		if (influxDb != null) {
+			metricsPublishers.add(influxDb);
 		}
 		if (metricsPublishers.isEmpty()) {
 			return Collections.emptyList();

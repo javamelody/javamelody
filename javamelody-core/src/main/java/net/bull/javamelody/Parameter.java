@@ -352,7 +352,13 @@ public enum Parameter {
 	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
 	 * for example "MyCompany/MyAppDomain" (null by default).
 	 */
-	CLOUDWATCH_NAMESPACE("cloudwatch-namespace");
+	CLOUDWATCH_NAMESPACE("cloudwatch-namespace"),
+
+	/**
+	 * URL of the <a href='https://www.influxdata.com/time-series-platform/'>InfluxDB</a> server to send metrics to,
+	 * for example: http://11.22.33.44:8086/write?db=mydb (null by default).
+	 */
+	INFLUXDB_URL("influxdb-url");
 
 	private final String code;
 
