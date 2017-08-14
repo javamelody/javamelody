@@ -108,8 +108,8 @@ class Graphite extends MetricsPublisher {
 			lastTimestamp = String.valueOf(timeInSeconds);
 			lastTime = timeInSeconds;
 		}
-		bufferWriter.append(prefix).append(metric).append(' ');
-		bufferWriter.append(decimalFormat.format(value)).append(' ');
+		bufferWriter.append(prefix).append(metric).append(SEPARATOR);
+		bufferWriter.append(decimalFormat.format(value)).append(SEPARATOR);
 		bufferWriter.append(lastTimestamp).append('\n');
 	}
 
