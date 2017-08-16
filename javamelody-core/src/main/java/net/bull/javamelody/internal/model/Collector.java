@@ -624,8 +624,11 @@ public class Collector { // NOPMD
 
 	private void addJRobinValue(JRobin jRobin, double value) throws IOException {
 		jRobin.addValue(value);
-		for (final MetricsPublisher metricsPublisher : metricsPublishers) {
-			metricsPublisher.addValue(jRobin.getName(), value);
+		// if value == -1, then do not publish that metric
+		if (value >= 0) {
+			for (final MetricsPublisher metricsPublisher : metricsPublishers) {
+				metricsPublisher.addValue(jRobin.getName(), value);
+			}
 		}
 	}
 
