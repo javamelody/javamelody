@@ -43,6 +43,7 @@ abstract class MetricsPublisher {
 		final Graphite graphite = Graphite.getInstance(contextPath, hosts);
 		final CloudWatch cloudWatch = CloudWatch.getInstance(contextPath, hosts);
 		final InfluxDB influxDb = InfluxDB.getInstance(contextPath, hosts);
+		final Datadog datadog = Datadog.getInstance(contextPath, hosts);
 		if (graphite != null) {
 			metricsPublishers.add(graphite);
 		}
@@ -51,6 +52,9 @@ abstract class MetricsPublisher {
 		}
 		if (influxDb != null) {
 			metricsPublishers.add(influxDb);
+		}
+		if (datadog != null) {
+			metricsPublishers.add(datadog);
 		}
 		if (metricsPublishers.isEmpty()) {
 			return Collections.emptyList();

@@ -358,7 +358,13 @@ public enum Parameter {
 	 * URL of the <a href='https://www.influxdata.com/time-series-platform/'>InfluxDB</a> server to send metrics to,
 	 * for example: http://11.22.33.44:8086/write?db=mydb (null by default).
 	 */
-	INFLUXDB_URL("influxdb-url");
+	INFLUXDB_URL("influxdb-url"),
+
+	/**
+	 * API key of the <a href='https://www.datadoghq.com/'>Datadog</a> to send metrics,
+	 * for example: 9775a026f1ca7d1c6c5af9d94d9595a4 (null by default).
+	 */
+	DATADOG_API_KEY("datadog-api-key");
 
 	private final String code;
 
