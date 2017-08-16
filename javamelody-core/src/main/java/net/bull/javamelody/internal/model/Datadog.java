@@ -84,6 +84,7 @@ class Datadog extends MetricsPublisher {
 				// tag value must not be empty
 				application = "/";
 			}
+			// see https://help.datadoghq.com/hc/en-us/articles/203764705-What-are-valid-metric-names-
 			final String hostAndTags = "\"host\":\"" + hostName + "\",\"tags\":[\"application\":\""
 					+ application + "\"]";
 			return new Datadog(datadogApiKey, prefix, hostAndTags);
