@@ -135,7 +135,7 @@ class Datadog extends MetricsPublisher {
 				LOG.warn(msg, new IOException(msg));
 			}
 			connection.disconnect();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.warn(e.toString(), e);
 		} finally {
 			// finally to be sure to not keep too much data in buffer
