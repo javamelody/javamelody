@@ -20,8 +20,6 @@ package net.bull.javamelody;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
-import java.net.URL;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -177,9 +175,8 @@ public class CollectorServlet extends HttpServlet {
 
 	// addCollectorApplication and removeCollectorApplication added for spring-boot-admin
 	// see https://github.com/codecentric/spring-boot-admin/pull/450
-	public static void addCollectorApplication(String application, List<URL> urls)
-			throws IOException {
-		Parameters.addCollectorApplication(application, urls);
+	public static void addCollectorApplication(String application, String urls) throws IOException {
+		Parameters.addCollectorApplication(application, Parameters.parseUrl(urls));
 	}
 
 	public static void removeCollectorApplication(String application) throws IOException {
