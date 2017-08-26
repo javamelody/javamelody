@@ -117,11 +117,7 @@ class CloudWatch extends MetricsPublisher {
 			final String prefix = "javamelody.";
 			// contextPath est du genre "/testapp"
 			// hostName est du genre "www.host.com"
-			String application = contextPath;
-			if (application.isEmpty()) {
-				application = "/";
-			}
-			return new CloudWatch(cloudWatchNamespace, prefix, application, hostName);
+			return new CloudWatch(cloudWatchNamespace, prefix, contextPath, hostName);
 		}
 		return null;
 	}

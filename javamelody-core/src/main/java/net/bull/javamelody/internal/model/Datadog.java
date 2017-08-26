@@ -79,14 +79,9 @@ class Datadog extends MetricsPublisher {
 			// hostName est du genre "www.host.com"
 
 			final String prefix = "javamelody.";
-			String application = contextPath;
-			if (application.isEmpty()) {
-				// tag value must not be empty
-				application = "/";
-			}
 			// see https://help.datadoghq.com/hc/en-us/articles/203764705-What-are-valid-metric-names-
 			final String hostAndTags = "\"host\":\"" + hostName + "\",\"tags\":[\"application\":\""
-					+ application + "\"]";
+					+ contextPath + "\"]";
 			return new Datadog(datadogApiKey, prefix, hostAndTags);
 		}
 		return null;

@@ -70,14 +70,9 @@ class InfluxDB extends MetricsPublisher {
 			// hostName est du genre "www.host.com"
 
 			final String prefix = "javamelody.";
-			String application = contextPath;
-			if (application.isEmpty()) {
-				// tag value must not be empty
-				application = "/";
-			}
 			// if needed, we could also replace "," and "=" in tags
 			// see https://docs.influxdata.com/influxdb/v1.3/write_protocols/line_protocol_reference/#special-characters
-			final String tags = (",application=" + application + ",host=" + hostName)
+			final String tags = (",application=" + contextPath + ",host=" + hostName)
 					.replace(SEPARATOR, '_');
 			try {
 				// timestamps will be written with a precision of a second
