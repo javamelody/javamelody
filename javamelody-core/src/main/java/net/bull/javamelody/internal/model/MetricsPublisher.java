@@ -38,7 +38,11 @@ abstract class MetricsPublisher {
 			}
 			sb.append(javaInformations.getHost().replaceFirst("@.*", ""));
 		}
-		final String contextPath = javaInformationsList.get(0).getContextPath();
+		String contextPath = javaInformationsList.get(0).getContextPath();
+		if (contextPath == null) {
+			// for NodesCollector in Jenkins, contextPath is null
+			contextPath = "NA";
+		}
 		final String hosts = sb.toString();
 		final Graphite graphite = Graphite.getInstance(contextPath, hosts);
 		final CloudWatch cloudWatch = CloudWatch.getInstance(contextPath, hosts);
