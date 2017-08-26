@@ -51,20 +51,16 @@ class CloudWatch extends MetricsPublisher {
 		assert cloudWatchNamespace != null && !cloudWatchNamespace.startsWith("AWS/")
 				&& cloudWatchNamespace.length() > 0 && cloudWatchNamespace.length() <= 255;
 		assert prefix != null;
-		assert application == null || application.length() >= 1 && application.length() <= 255;
-		assert hostName == null || hostName.length() >= 1 && hostName.length() <= 255;
+		assert application.length() >= 1 && application.length() <= 255;
+		assert hostName.length() >= 1 && hostName.length() <= 255;
 
 		this.awsCloudWatch = cloudWatch;
 		this.cloudWatchNamespace = cloudWatchNamespace;
 		this.prefix = prefix;
 		// A dimension is like a tag which can be used to filter metrics in the CloudWatch UI.
 		// Name and value of dimensions have min length 1 and max length 255.
-		if (application != null) {
-			dimensions.add(new Dimension().withName("application").withValue(application));
-		}
-		if (hostName != null) {
-			dimensions.add(new Dimension().withName("hostname").withValue(hostName));
-		}
+		dimensions.add(new Dimension().withName("application").withValue(application));
+		dimensions.add(new Dimension().withName("hostname").withValue(hostName));
 		// note: to add other dimensions (max 10), we could call
 		// new URL("http://instance-data/latest/meta-data/instance-id").openStream(),
 		// or /ami-id, /placement/availability-zone, /instance-type, /local-hostname, /local-ipv4, /public-hostname, /public-ipv4
