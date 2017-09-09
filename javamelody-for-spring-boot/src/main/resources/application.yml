@@ -1,4 +1,8 @@
 javamelody:
+  # if you have auto-proxy issues, you can add the following property 
+  # (and the spring-boot-starter-aop dependency in pom.xml):
+  #advisor-auto-proxy-creator-enabled: false
+
   # Initialization parameters for JavaMelody
   # See: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
   init-parameters:

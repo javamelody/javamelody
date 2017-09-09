@@ -38,7 +38,8 @@
 			<version>${javamelody.version}</version>
 		</dependency>
 
-		<!--  Note: if you have auto-proxy issues, you can add the following dependency:
+		<!--  Note: if you have auto-proxy issues, you can add the following dependency
+		and also javamelody: advisor-auto-proxy-creator-enabled: false in application.yml
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
