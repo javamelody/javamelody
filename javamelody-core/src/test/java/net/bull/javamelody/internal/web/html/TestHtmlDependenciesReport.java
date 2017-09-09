@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,8 +70,13 @@ public class TestHtmlDependenciesReport {
 				.andReturn(Collections.singleton(javamelodyDir)).anyTimes();
 		expect(context.getResourcePaths(javamelodyDir)).andReturn(Collections.singleton(webapp))
 				.anyTimes();
-		expect(context.getResourceAsStream(webapp + "pom.xml"))
-				.andReturn(getClass().getResourceAsStream("/pom.xml")).anyTimes();
+		final IAnswer<InputStream> answer = new IAnswer<InputStream>() {
+			@Override
+			public InputStream answer() throws Throwable {
+				return getClass().getResourceAsStream("/pom.xml");
+			}
+		};
+		expect(context.getResourceAsStream(webapp + "pom.xml")).andAnswer(answer).anyTimes();
 		final Set<String> dependencies = new LinkedHashSet<String>(
 				Arrays.asList("/WEB-INF/lib/jrobin-1.5.9.jar",
 						"/WEB-INF/lib/javamelody-core-1.65.0.jar", "/WEB-INF/lib/nothing.jar"));
