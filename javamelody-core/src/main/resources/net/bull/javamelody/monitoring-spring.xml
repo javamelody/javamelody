@@ -10,11 +10,15 @@
 			<bean class="net.bull.javamelody.MonitoredWithAnnotationPointcut"/>
 		</property>
 	</bean>
+	<!-- to monitor methods annotated by @Async or @Scheduled,
+	add net/bull/javamelody/monitoring-spring-scheduled.xml in Spring's context,
+	but https://jira.spring.io/browse/SPR-15562 may change that
 	<bean id="monitoringAsyncAndScheduledAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
 			<bean class="net.bull.javamelody.MonitoredSpringAsyncAndScheduledPointcut"/>
 		</property>
 	</bean>
+	-->
 	<bean id="monitoringControllerAndServiceAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
 		<property name="pointcut">
 			<bean class="net.bull.javamelody.MonitoredSpringControllerAndServicePointcut"/>
