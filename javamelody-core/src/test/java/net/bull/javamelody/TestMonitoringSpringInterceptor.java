@@ -43,6 +43,7 @@ import net.bull.javamelody.internal.model.Counter;
 public class TestMonitoringSpringInterceptor {
 	private static final String TEST_CONTEXT_FILENAME = "spring-context.xml";
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
+	private static final String MONITORING_CONTEXT_FILENAME2 = "net/bull/javamelody/monitoring-spring-scheduled.xml";
 	private static final String REQUESTS_COUNT = "requestsCount";
 
 	private ConfigurableApplicationContext context;
@@ -52,7 +53,8 @@ public class TestMonitoringSpringInterceptor {
 	public void setUp() {
 		Utils.initialize();
 		this.context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+				new String[] { MONITORING_CONTEXT_FILENAME, MONITORING_CONTEXT_FILENAME2,
+						TEST_CONTEXT_FILENAME, });
 	}
 
 	@After
