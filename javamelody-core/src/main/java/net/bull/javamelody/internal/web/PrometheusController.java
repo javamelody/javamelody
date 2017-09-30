@@ -34,7 +34,7 @@ import net.bull.javamelody.internal.model.TomcatInformations;
 
 /**
  * Produces a report of the data in {@link JavaInformations} in the Prometheus text format
- * to enable collection by a Prometheus server.  https://prometheus.io/
+ * to enable collection by a <a href='https://prometheus.io/>Prometheus</a> server.
  *
  * Metric names have been adjusted to match Prometheus recommendations.
  *
