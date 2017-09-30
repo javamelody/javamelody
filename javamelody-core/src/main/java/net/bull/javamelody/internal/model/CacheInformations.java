@@ -318,6 +318,12 @@ public class CacheInformations implements Serializable {
 		return onDiskObjectCount;
 	}
 
+	public long getInMemoryHits(){ return inMemoryHits; }
+
+	public long getCacheHits(){ return cacheHits; }
+
+	public long getCacheMisses(){ return cacheMisses; }
+
 	// efficacité en pourcentage du cache mémoire par rapport au cache disque
 	public int getInMemoryHitsRatio() {
 		if (cacheHits == 0) {
