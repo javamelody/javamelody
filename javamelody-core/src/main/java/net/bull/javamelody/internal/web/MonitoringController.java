@@ -224,8 +224,10 @@ public class MonitoringController {
 		} else if ("pdf".equalsIgnoreCase(format)) {
 			final PdfController pdfController = new PdfController(collector, collectorServer);
 			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
-		} else if ("prometheus".equalsIgnoreCase(format)){
-			PrometheusController.report(javaInformationsList, collector, httpResponse.getWriter());
+		} else if ("prometheus".equalsIgnoreCase(format)) {
+			final PrometheusController prometheusController = new PrometheusController(
+					javaInformationsList, collector, httpResponse.getWriter());
+			prometheusController.report();
 		} else {
 			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
