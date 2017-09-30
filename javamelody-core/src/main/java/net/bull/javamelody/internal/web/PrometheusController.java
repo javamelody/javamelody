@@ -409,7 +409,7 @@ class PrometheusController {
 			String description, long value) {
 		printHeader(out, metricType, name, description);
 		out.print(name);
-		out.print(" ");
+		out.print(' ');
 		out.println(value);
 	}
 
@@ -425,7 +425,7 @@ class PrometheusController {
 			String description, double value) {
 		printHeader(out, metricType, name, description);
 		out.print(name);
-		out.print(" ");
+		out.print(' ');
 		out.println(DECIMAL_FORMAT.format(value));
 	}
 
@@ -440,12 +440,12 @@ class PrometheusController {
 			String description) {
 		out.print("# HELP ");
 		out.print(name);
-		out.print(" ");
+		out.print(' ');
 		out.println(description);
 
 		out.print("# TYPE ");
 		out.print(name);
-		out.print(" ");
+		out.print(' ');
 		out.println(metricType.getCode());
 	}
 }
