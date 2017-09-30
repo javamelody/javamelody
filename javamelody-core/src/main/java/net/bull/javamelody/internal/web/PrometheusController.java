@@ -194,9 +194,8 @@ class PrometheusController {
 	 *
 	 * @param collector
 	 * @param out
-	 * @throws IOException e
 	 */
-	public static void reportOnCollector(Collector collector, PrintWriter out) throws IOException {
+	private static void reportOnCollector(Collector collector, PrintWriter out) {
 		for (final Counter counter : collector.getCounters()) {
 			final List<CounterRequest> requests = counter.getRequests();
 			long hits = 0;
@@ -235,7 +234,8 @@ class PrometheusController {
 	 * @param out
 	 * @throws IOException e
 	 */
-	public static void reportOnLastValues(Collector collector, PrintWriter out) throws IOException {
+	private static void reportOnLastValues(Collector collector, PrintWriter out)
+			throws IOException {
 		Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
 		for (final JRobin jrobin : jrobins) {
 			printDouble(out, MetricType.GAUGE,
@@ -257,10 +257,9 @@ class PrometheusController {
 	 *
 	 * @param javaInformations
 	 * @param out
-	 * @throws IOException e
 	 */
-	public static void reportOnJavaInformations(JavaInformations javaInformations, PrintWriter out)
-			throws IOException {
+	private static void reportOnJavaInformations(JavaInformations javaInformations,
+			PrintWriter out) {
 		// memory
 		printLong(out, MetricType.GAUGE, "javamelody_memory_used_bytes", "used memory in bytes",
 				javaInformations.getMemoryInformations().getUsedMemory());
