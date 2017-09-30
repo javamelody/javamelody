@@ -20,8 +20,10 @@ package net.bull.javamelody.internal.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.model.CacheInformations;
@@ -155,6 +157,7 @@ class PrometheusController {
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
 
 	static {
+		DECIMAL_FORMAT.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 		DECIMAL_FORMAT.setGroupingUsed(false);
 		DECIMAL_FORMAT.setMinimumIntegerDigits(1);
 		DECIMAL_FORMAT.setMaximumFractionDigits(15);
