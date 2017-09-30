@@ -165,7 +165,7 @@ class PrometheusController {
 	 * @param javaInformations
 	 * @param collector
 	 * @param out
-	 * @throws IOException
+	 * @throws IOException e
 	 */
 	public static void report(List<JavaInformations> javaInformations, Collector collector,
 			PrintWriter out) throws IOException {
@@ -194,7 +194,7 @@ class PrometheusController {
 	 *
 	 * @param collector
 	 * @param out
-	 * @throws IOException
+	 * @throws IOException e
 	 */
 	public static void reportOnCollector(Collector collector, PrintWriter out) throws IOException {
 		for (final Counter counter : collector.getCounters()) {
@@ -233,7 +233,7 @@ class PrometheusController {
 	 *
 	 * @param collector
 	 * @param out
-	 * @throws IOException
+	 * @throws IOException e
 	 */
 	public static void reportOnLastValues(Collector collector, PrintWriter out) throws IOException {
 		Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
@@ -257,7 +257,7 @@ class PrometheusController {
 	 *
 	 * @param javaInformations
 	 * @param out
-	 * @throws IOException
+	 * @throws IOException e
 	 */
 	public static void reportOnJavaInformations(JavaInformations javaInformations, PrintWriter out)
 			throws IOException {
