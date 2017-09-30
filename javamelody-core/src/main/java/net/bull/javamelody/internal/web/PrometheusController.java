@@ -17,14 +17,20 @@
  */
 package net.bull.javamelody.internal.web;
 
-import net.bull.javamelody.Parameter;
-import net.bull.javamelody.internal.model.*;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
+
+import net.bull.javamelody.Parameter;
+import net.bull.javamelody.internal.model.CacheInformations;
+import net.bull.javamelody.internal.model.Collector;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.JRobin;
+import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.TomcatInformations;
 
 /**
  * Produces a report of the data in {@link JavaInformations} in the Prometheus text format
@@ -128,13 +134,14 @@ import java.util.List;
  *
  *  The `lastValue` metrics are DISABLED by default
  *
+ * @author https://github.com/slynn1324
  */
-public class PrometheusController {
+class PrometheusController {
 
-    public enum MetricType {
+    private enum MetricType {
         GAUGE("gauge"), COUNTER("counter");
 
-        private String code;
+        private final String code;
 
         MetricType(String code){
             this.code = code;
@@ -191,15 +198,15 @@ public class PrometheusController {
      */
     public static void reportOnCollector(Collector collector, PrintWriter out) throws IOException{
 
-        for ( Counter counter : collector.getCounters() ){
+        for ( final Counter counter : collector.getCounters() ){
 
-            List<CounterRequest> requests = counter.getRequests();
+            final List<CounterRequest> requests = counter.getRequests();
 
             long hits = 0;
             long duration = 0;
             long errors = 0;
 
-            for ( CounterRequest cr : requests ){
+            for ( final CounterRequest cr : requests ){
                 hits += cr.getHits();
                 duration += cr.getDurationsSum();
                 errors += cr.getSystemErrors();
@@ -229,12 +236,12 @@ public class PrometheusController {
      */
     public static void reportOnLastValues(Collector collector, PrintWriter out) throws IOException{
         Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
-        for ( JRobin jrobin : jrobins ){
+        for ( final JRobin jrobin : jrobins ){
             printDouble(out, MetricType.GAUGE, "javamelody_last_result_" + camelToSnake(jrobin.getName()), "javamelody value per minute", jrobin.getLastValue());
         }
 
         jrobins = collector.getDisplayedOtherJRobins();
-        for ( JRobin jrobin : jrobins ){
+        for ( final JRobin jrobin : jrobins ){
             printDouble(out, MetricType.GAUGE, "javamelody_last_result_" + camelToSnake(jrobin.getName()), "javamelody value per minute", jrobin.getLastValue());
         }
     }
@@ -292,8 +299,8 @@ public class PrometheusController {
 
         // tomcat
         if ( javaInformations.getTomcatInformationsList() != null ){
-            for ( TomcatInformations tcInfo : javaInformations.getTomcatInformationsList() ){
-                String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
+            for ( final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList() ){
+                final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
                 printLong(out, MetricType.GAUGE, "javamelody_tomcat_threads_max" + fields, "tomcat max threads", tcInfo.getMaxThreads());
                 printLong(out, MetricType.GAUGE, "javamelody_tomcat_thread_busy_count" + fields, "tomcat busy threads", tcInfo.getCurrentThreadsBusy());
                 printLong(out, MetricType.COUNTER, "javamelody_tomcat_received_bytes" + fields, "tomcat received bytes", tcInfo.getBytesReceived());
@@ -307,13 +314,13 @@ public class PrometheusController {
 
         // caches
         if ( javaInformations.getCacheInformationsList() != null ) {
-            for (CacheInformations cacheInfo : javaInformations.getCacheInformationsList() ){
-                String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
+            for (final CacheInformations cacheInfo : javaInformations.getCacheInformationsList() ){
+                final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
                 printLong(out, MetricType.GAUGE, "javamelody_cache_in_memory_count" + fields, "cache in memory count", cacheInfo.getInMemoryObjectCount());
-                printDouble(out, MetricType.GAUGE, "javamelody_cache_in_memory_used_pct" + fields, "in memory used percent", ((double) cacheInfo.getInMemoryPercentUsed()) / 100);
-                printDouble(out, MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct" + fields, "cache in memory hit percent", ((double) cacheInfo.getInMemoryHitsRatio()) / 100);
+                printDouble(out, MetricType.GAUGE, "javamelody_cache_in_memory_used_pct" + fields, "in memory used percent", (double) cacheInfo.getInMemoryPercentUsed() / 100);
+                printDouble(out, MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct" + fields, "cache in memory hit percent", (double) cacheInfo.getInMemoryHitsRatio() / 100);
                 printLong(out, MetricType.GAUGE, "javamelody_cache_on_disk_count" + fields, "cache on disk count", cacheInfo.getOnDiskObjectCount());
-                printDouble(out, MetricType.GAUGE, "javamelody_cache_hits_pct" + fields, "cache hits percent", ((double) cacheInfo.getHitsRatio()) / 100);
+                printDouble(out, MetricType.GAUGE, "javamelody_cache_hits_pct" + fields, "cache hits percent", (double) cacheInfo.getHitsRatio() / 100);
                 printLong(out, MetricType.COUNTER, "javamelody_cache_in_memory_hits_count" + fields, "cache in memory hit count", cacheInfo.getInMemoryHits());
                 printLong(out, MetricType.COUNTER, "javamelody_cache_hits_count" + fields, "cache  hit count", cacheInfo.getCacheHits());
                 printLong(out, MetricType.COUNTER, "javamelody_cache_misses_count" + fields, "cache misses count", cacheInfo.getCacheMisses());
