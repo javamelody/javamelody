@@ -207,14 +207,12 @@ class PrometheusController {
 				errors += cr.getSystemErrors();
 			}
 
-			printLong(out, MetricType.COUNTER,
-					"javamelody_" + sanitizeName(counter.getName()) + "_hits_count",
+			final String sanitizedName = sanitizeName(counter.getName());
+			printLong(out, MetricType.COUNTER, "javamelody_" + sanitizedName + "_hits_count",
 					"javamelody counter", hits);
-			printLong(out, MetricType.COUNTER,
-					"javamelody_" + sanitizeName(counter.getName()) + "_errors_count",
+			printLong(out, MetricType.COUNTER, "javamelody_" + sanitizedName + "_errors_count",
 					"javamelody counter", errors);
-			printLong(out, MetricType.COUNTER,
-					"javamelody_" + sanitizeName(counter.getName()) + "_duration_millis",
+			printLong(out, MetricType.COUNTER, "javamelody_" + sanitizedName + "_duration_millis",
 					"javamelody counter", duration);
 		}
 	}
