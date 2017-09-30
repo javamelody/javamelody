@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.PrometheusController;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
@@ -224,6 +225,8 @@ public class MonitoringController {
 		} else if ("pdf".equalsIgnoreCase(format)) {
 			final PdfController pdfController = new PdfController(collector, collectorServer);
 			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
+		} else if ("prometheus".equalsIgnoreCase(format)){
+			PrometheusController.report(javaInformationsList, collector, httpResponse.getWriter());
 		} else {
 			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}

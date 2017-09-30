@@ -364,7 +364,9 @@ public enum Parameter {
 	 * API key of the <a href='https://www.datadoghq.com/'>Datadog</a> to send metrics,
 	 * for example: 9775a026f1ca7d1c6c5af9d94d9595a4 (null by default).
 	 */
-	DATADOG_API_KEY("datadog-api-key");
+	DATADOG_API_KEY("datadog-api-key"),
+
+	PROMETHEUS_INCLUDE_LAST_VALUE("prometheus-include-last-value");
 
 	private final String code;
 

@@ -113,6 +113,11 @@ public class CounterRequest implements Cloneable, Serializable {
 	}
 
 	/**
+	 * @return Number of system errors
+	 */
+	public long getSystemErrors(){ return systemErrors; }
+
+	/**
 	 * @return Somme des temps d'exécution de cette requête
 	 */
 	public long getDurationsSum() {
