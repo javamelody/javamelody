@@ -257,19 +257,7 @@ class PrometheusController {
 	 */
 	private void reportOnJavaInformations() {
 		// memory
-		final MemoryInformations memoryInformations = javaInformations.getMemoryInformations();
-		printLong(MetricType.GAUGE, "javamelody_memory_used_bytes", "used memory in bytes",
-				memoryInformations.getUsedMemory());
-		printLong(MetricType.GAUGE, "javamelody_memory_max_bytes", "max memory in bytes",
-				memoryInformations.getMaxMemory());
-		printDouble(MetricType.GAUGE, "javamelody_memory_used_pct", "memory used percentage",
-				memoryInformations.getUsedMemoryPercentage());
-		printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_used_bytes",
-				"used perm gen memory in bytes", memoryInformations.getUsedPermGen());
-		printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_max_bytes",
-				"max perm gen memory in bytes", memoryInformations.getMaxPermGen());
-		printDouble(MetricType.GAUGE, "javamelody_memory_perm_gen_used_pct",
-				"used perm gen memory percentage", memoryInformations.getUsedPermGenPercentage());
+		reportOnMemoryInformations(javaInformations.getMemoryInformations());
 
 		// sessions
 		printLong(MetricType.GAUGE, "javamelody_sessions_active_count", "active session count",
@@ -326,50 +314,71 @@ class PrometheusController {
 		// tomcat
 		if (javaInformations.getTomcatInformationsList() != null) {
 			for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
-				final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
-				printLong(MetricType.GAUGE, "javamelody_tomcat_threads_max" + fields,
-						"tomcat max threads", tcInfo.getMaxThreads());
-				printLong(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count" + fields,
-						"tomcat busy threads", tcInfo.getCurrentThreadsBusy());
-				printLong(MetricType.COUNTER, "javamelody_tomcat_received_bytes" + fields,
-						"tomcat received bytes", tcInfo.getBytesReceived());
-				printLong(MetricType.COUNTER, "javamelody_tomcat_sent_bytes" + fields,
-						"tomcat sent bytes", tcInfo.getBytesSent());
-				printLong(MetricType.COUNTER, "javamelody_tomcat_request_count" + fields,
-						"tomcat request count", tcInfo.getRequestCount());
-				printLong(MetricType.COUNTER, "javamelody_tomcat_error_count" + fields,
-						"tomcat error count", tcInfo.getErrorCount());
-				printLong(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis" + fields,
-						"tomcat processing time", tcInfo.getProcessingTime());
-				printLong(MetricType.GAUGE, "javamelody_tomcat_max_time_millis" + fields,
-						"tomcat max time", tcInfo.getMaxTime());
+				reportOnTomcatInformations(tcInfo);
 			}
 		}
 
 		// caches
 		if (javaInformations.getCacheInformationsList() != null) {
 			for (final CacheInformations cacheInfo : javaInformations.getCacheInformationsList()) {
-				final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
-				printLong(MetricType.GAUGE, "javamelody_cache_in_memory_count" + fields,
-						"cache in memory count", cacheInfo.getInMemoryObjectCount());
-				printDouble(MetricType.GAUGE, "javamelody_cache_in_memory_used_pct" + fields,
-						"in memory used percent",
-						(double) cacheInfo.getInMemoryPercentUsed() / 100);
-				printDouble(MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct" + fields,
-						"cache in memory hit percent",
-						(double) cacheInfo.getInMemoryHitsRatio() / 100);
-				printLong(MetricType.GAUGE, "javamelody_cache_on_disk_count" + fields,
-						"cache on disk count", cacheInfo.getOnDiskObjectCount());
-				printDouble(MetricType.GAUGE, "javamelody_cache_hits_pct" + fields,
-						"cache hits percent", (double) cacheInfo.getHitsRatio() / 100);
-				printLong(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count" + fields,
-						"cache in memory hit count", cacheInfo.getInMemoryHits());
-				printLong(MetricType.COUNTER, "javamelody_cache_hits_count" + fields,
-						"cache  hit count", cacheInfo.getCacheHits());
-				printLong(MetricType.COUNTER, "javamelody_cache_misses_count" + fields,
-						"cache misses count", cacheInfo.getCacheMisses());
+				reportOnCacheInformations(cacheInfo);
 			}
 		}
+	}
+
+	private void reportOnMemoryInformations(MemoryInformations memoryInformations) {
+		printLong(MetricType.GAUGE, "javamelody_memory_used_bytes", "used memory in bytes",
+				memoryInformations.getUsedMemory());
+		printLong(MetricType.GAUGE, "javamelody_memory_max_bytes", "max memory in bytes",
+				memoryInformations.getMaxMemory());
+		printDouble(MetricType.GAUGE, "javamelody_memory_used_pct", "memory used percentage",
+				memoryInformations.getUsedMemoryPercentage());
+		printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_used_bytes",
+				"used perm gen memory in bytes", memoryInformations.getUsedPermGen());
+		printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_max_bytes",
+				"max perm gen memory in bytes", memoryInformations.getMaxPermGen());
+		printDouble(MetricType.GAUGE, "javamelody_memory_perm_gen_used_pct",
+				"used perm gen memory percentage", memoryInformations.getUsedPermGenPercentage());
+	}
+
+	private void reportOnTomcatInformations(TomcatInformations tcInfo) {
+		final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
+		printLong(MetricType.GAUGE, "javamelody_tomcat_threads_max" + fields, "tomcat max threads",
+				tcInfo.getMaxThreads());
+		printLong(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count" + fields,
+				"tomcat busy threads", tcInfo.getCurrentThreadsBusy());
+		printLong(MetricType.COUNTER, "javamelody_tomcat_received_bytes" + fields,
+				"tomcat received bytes", tcInfo.getBytesReceived());
+		printLong(MetricType.COUNTER, "javamelody_tomcat_sent_bytes" + fields, "tomcat sent bytes",
+				tcInfo.getBytesSent());
+		printLong(MetricType.COUNTER, "javamelody_tomcat_request_count" + fields,
+				"tomcat request count", tcInfo.getRequestCount());
+		printLong(MetricType.COUNTER, "javamelody_tomcat_error_count" + fields,
+				"tomcat error count", tcInfo.getErrorCount());
+		printLong(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis" + fields,
+				"tomcat processing time", tcInfo.getProcessingTime());
+		printLong(MetricType.GAUGE, "javamelody_tomcat_max_time_millis" + fields, "tomcat max time",
+				tcInfo.getMaxTime());
+	}
+
+	private void reportOnCacheInformations(CacheInformations cacheInfo) {
+		final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
+		printLong(MetricType.GAUGE, "javamelody_cache_in_memory_count" + fields,
+				"cache in memory count", cacheInfo.getInMemoryObjectCount());
+		printDouble(MetricType.GAUGE, "javamelody_cache_in_memory_used_pct" + fields,
+				"in memory used percent", (double) cacheInfo.getInMemoryPercentUsed() / 100);
+		printDouble(MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct" + fields,
+				"cache in memory hit percent", (double) cacheInfo.getInMemoryHitsRatio() / 100);
+		printLong(MetricType.GAUGE, "javamelody_cache_on_disk_count" + fields,
+				"cache on disk count", cacheInfo.getOnDiskObjectCount());
+		printDouble(MetricType.GAUGE, "javamelody_cache_hits_pct" + fields, "cache hits percent",
+				(double) cacheInfo.getHitsRatio() / 100);
+		printLong(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count" + fields,
+				"cache in memory hit count", cacheInfo.getInMemoryHits());
+		printLong(MetricType.COUNTER, "javamelody_cache_hits_count" + fields, "cache  hit count",
+				cacheInfo.getCacheHits());
+		printLong(MetricType.COUNTER, "javamelody_cache_misses_count" + fields,
+				"cache misses count", cacheInfo.getCacheMisses());
 	}
 
 	/**
