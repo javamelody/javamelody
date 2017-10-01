@@ -238,15 +238,13 @@ class PrometheusController {
 	private void reportOnLastValues() throws IOException {
 		Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
 		for (final JRobin jrobin : jrobins) {
-			printDouble(MetricType.GAUGE,
-					"javamelody_last_value_" + camelToSnake(jrobin.getName()),
+			printDouble(MetricType.GAUGE, "javamelody_last_value_" + camelToSnake(jrobin.getName()),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 
 		jrobins = collector.getDisplayedOtherJRobins();
 		for (final JRobin jrobin : jrobins) {
-			printDouble(MetricType.GAUGE,
-					"javamelody_last_value_" + camelToSnake(jrobin.getName()),
+			printDouble(MetricType.GAUGE, "javamelody_last_value_" + camelToSnake(jrobin.getName()),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 	}
@@ -343,22 +341,22 @@ class PrometheusController {
 
 	private void reportOnTomcatInformations(TomcatInformations tcInfo) {
 		final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_threads_max", fields, "tomcat max threads",
-				tcInfo.getMaxThreads());
+		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_threads_max", fields,
+				"tomcat max threads", tcInfo.getMaxThreads());
 		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count", fields,
 				"tomcat busy threads", tcInfo.getCurrentThreadsBusy());
 		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_received_bytes", fields,
 				"tomcat received bytes", tcInfo.getBytesReceived());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_sent_bytes", fields, "tomcat sent bytes",
-				tcInfo.getBytesSent());
+		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_sent_bytes", fields,
+				"tomcat sent bytes", tcInfo.getBytesSent());
 		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_request_count", fields,
 				"tomcat request count", tcInfo.getRequestCount());
 		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_error_count", fields,
 				"tomcat error count", tcInfo.getErrorCount());
 		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis", fields,
 				"tomcat processing time", tcInfo.getProcessingTime());
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_max_time_millis", fields, "tomcat max time",
-				tcInfo.getMaxTime());
+		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_max_time_millis", fields,
+				"tomcat max time", tcInfo.getMaxTime());
 	}
 
 	private void reportOnCacheInformations(CacheInformations cacheInfo) {
@@ -371,12 +369,12 @@ class PrometheusController {
 				"cache in memory hit percent", (double) cacheInfo.getInMemoryHitsRatio() / 100);
 		printLongWithFields(MetricType.GAUGE, "javamelody_cache_on_disk_count", fields,
 				"cache on disk count", cacheInfo.getOnDiskObjectCount());
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_hits_pct", fields, "cache hits percent",
-				(double) cacheInfo.getHitsRatio() / 100);
+		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_hits_pct", fields,
+				"cache hits percent", (double) cacheInfo.getHitsRatio() / 100);
 		printLongWithFields(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count", fields,
 				"cache in memory hit count", cacheInfo.getInMemoryHits());
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_hits_count", fields, "cache  hit count",
-				cacheInfo.getCacheHits());
+		printLongWithFields(MetricType.COUNTER, "javamelody_cache_hits_count", fields,
+				"cache  hit count", cacheInfo.getCacheHits());
 		printLongWithFields(MetricType.COUNTER, "javamelody_cache_misses_count", fields,
 				"cache misses count", cacheInfo.getCacheMisses());
 	}
@@ -405,15 +403,16 @@ class PrometheusController {
 	}
 
 	// prints a double metric value, including HELP and TYPE rows
-	private void printDouble(MetricType metricType, String name, String description, double value){
+	private void printDouble(MetricType metricType, String name, String description, double value) {
 		printDoubleWithFields(metricType, name, null, description, value);
 	}
 
 	// prints a long metric value with optional fields, including HELP and TYPE rows
-	private void printLongWithFields(MetricType metricType, String name, String fields, String description, long value) {
+	private void printLongWithFields(MetricType metricType, String name, String fields,
+			String description, long value) {
 		printHeader(metricType, name, description);
 		out.print(name);
-		if ( fields != null ){
+		if (fields != null) {
 			out.print(fields);
 		}
 		out.print(' ');
@@ -421,10 +420,11 @@ class PrometheusController {
 	}
 
 	// prints a double metric value with optional fields, including HELP and TYPE rows
-	private void printDoubleWithFields(MetricType metricType, String name, String fields, String description, double value) {
+	private void printDoubleWithFields(MetricType metricType, String name, String fields,
+			String description, double value) {
 		printHeader(metricType, name, description);
 		out.print(name);
-		if ( fields != null ){
+		if (fields != null) {
 			out.print(fields);
 		}
 		out.print(' ');
