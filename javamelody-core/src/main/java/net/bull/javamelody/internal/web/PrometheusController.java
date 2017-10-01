@@ -239,14 +239,14 @@ class PrometheusController {
 		Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
 		for (final JRobin jrobin : jrobins) {
 			printDouble(MetricType.GAUGE,
-					"javamelody_last_result_" + camelToSnake(jrobin.getName()),
+					"javamelody_last_value_" + camelToSnake(jrobin.getName()),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 
 		jrobins = collector.getDisplayedOtherJRobins();
 		for (final JRobin jrobin : jrobins) {
 			printDouble(MetricType.GAUGE,
-					"javamelody_last_result_" + camelToSnake(jrobin.getName()),
+					"javamelody_last_value_" + camelToSnake(jrobin.getName()),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 	}
@@ -343,41 +343,41 @@ class PrometheusController {
 
 	private void reportOnTomcatInformations(TomcatInformations tcInfo) {
 		final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
-		printLong(MetricType.GAUGE, "javamelody_tomcat_threads_max" + fields, "tomcat max threads",
+		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_threads_max", fields, "tomcat max threads",
 				tcInfo.getMaxThreads());
-		printLong(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count" + fields,
+		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count", fields,
 				"tomcat busy threads", tcInfo.getCurrentThreadsBusy());
-		printLong(MetricType.COUNTER, "javamelody_tomcat_received_bytes" + fields,
+		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_received_bytes", fields,
 				"tomcat received bytes", tcInfo.getBytesReceived());
-		printLong(MetricType.COUNTER, "javamelody_tomcat_sent_bytes" + fields, "tomcat sent bytes",
+		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_sent_bytes", fields, "tomcat sent bytes",
 				tcInfo.getBytesSent());
-		printLong(MetricType.COUNTER, "javamelody_tomcat_request_count" + fields,
+		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_request_count", fields,
 				"tomcat request count", tcInfo.getRequestCount());
-		printLong(MetricType.COUNTER, "javamelody_tomcat_error_count" + fields,
+		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_error_count", fields,
 				"tomcat error count", tcInfo.getErrorCount());
-		printLong(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis" + fields,
+		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis", fields,
 				"tomcat processing time", tcInfo.getProcessingTime());
-		printLong(MetricType.GAUGE, "javamelody_tomcat_max_time_millis" + fields, "tomcat max time",
+		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_max_time_millis", fields, "tomcat max time",
 				tcInfo.getMaxTime());
 	}
 
 	private void reportOnCacheInformations(CacheInformations cacheInfo) {
 		final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
-		printLong(MetricType.GAUGE, "javamelody_cache_in_memory_count" + fields,
+		printLongWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_count", fields,
 				"cache in memory count", cacheInfo.getInMemoryObjectCount());
-		printDouble(MetricType.GAUGE, "javamelody_cache_in_memory_used_pct" + fields,
+		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_used_pct", fields,
 				"in memory used percent", (double) cacheInfo.getInMemoryPercentUsed() / 100);
-		printDouble(MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct" + fields,
+		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct", fields,
 				"cache in memory hit percent", (double) cacheInfo.getInMemoryHitsRatio() / 100);
-		printLong(MetricType.GAUGE, "javamelody_cache_on_disk_count" + fields,
+		printLongWithFields(MetricType.GAUGE, "javamelody_cache_on_disk_count", fields,
 				"cache on disk count", cacheInfo.getOnDiskObjectCount());
-		printDouble(MetricType.GAUGE, "javamelody_cache_hits_pct" + fields, "cache hits percent",
+		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_hits_pct", fields, "cache hits percent",
 				(double) cacheInfo.getHitsRatio() / 100);
-		printLong(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count" + fields,
+		printLongWithFields(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count", fields,
 				"cache in memory hit count", cacheInfo.getInMemoryHits());
-		printLong(MetricType.COUNTER, "javamelody_cache_hits_count" + fields, "cache  hit count",
+		printLongWithFields(MetricType.COUNTER, "javamelody_cache_hits_count", fields, "cache  hit count",
 				cacheInfo.getCacheHits());
-		printLong(MetricType.COUNTER, "javamelody_cache_misses_count" + fields,
+		printLongWithFields(MetricType.COUNTER, "javamelody_cache_misses_count", fields,
 				"cache misses count", cacheInfo.getCacheMisses());
 	}
 
@@ -401,16 +401,32 @@ class PrometheusController {
 
 	// prints a long metric value, including HELP and TYPE rows
 	private void printLong(MetricType metricType, String name, String description, long value) {
+		printLongWithFields(metricType, name, null, description, value);
+	}
+
+	// prints a double metric value, including HELP and TYPE rows
+	private void printDouble(MetricType metricType, String name, String description, double value){
+		printDoubleWithFields(metricType, name, null, description, value);
+	}
+
+	// prints a long metric value with optional fields, including HELP and TYPE rows
+	private void printLongWithFields(MetricType metricType, String name, String fields, String description, long value) {
 		printHeader(metricType, name, description);
 		out.print(name);
+		if ( fields != null ){
+			out.print(fields);
+		}
 		out.print(' ');
 		out.println(value);
 	}
 
-	// prints a double metric value, including HELP and TYPE rows
-	private void printDouble(MetricType metricType, String name, String description, double value) {
+	// prints a double metric value with optional fields, including HELP and TYPE rows
+	private void printDoubleWithFields(MetricType metricType, String name, String fields, String description, double value) {
 		printHeader(metricType, name, description);
 		out.print(name);
+		if ( fields != null ){
+			out.print(fields);
+		}
 		out.print(' ');
 		out.println(decimalFormat.format(value));
 	}
