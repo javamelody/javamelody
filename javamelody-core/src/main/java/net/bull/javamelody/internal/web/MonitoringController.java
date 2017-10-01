@@ -225,6 +225,7 @@ public class MonitoringController {
 			final PdfController pdfController = new PdfController(collector, collectorServer);
 			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else if ("prometheus".equalsIgnoreCase(format)) {
+			httpResponse.setContentType("text/plain; version=0.0.4;charset=UTF-8");
 			final PrometheusController prometheusController = new PrometheusController(
 					javaInformationsList, collector, httpResponse.getWriter());
 			prometheusController.report();
