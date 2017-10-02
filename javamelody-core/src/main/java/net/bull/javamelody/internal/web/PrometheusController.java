@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.CacheInformations;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
@@ -187,8 +188,30 @@ class PrometheusController {
 	 * @throws IOException e
 	 */
 	void report() throws IOException {
+		// memory
+		reportOnMemoryInformations(javaInformations.getMemoryInformations());
+
+		// jvm & system
 		reportOnJavaInformations();
+
+		// tomcat
+		if (javaInformations.getTomcatInformationsList() != null) {
+			for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
+				if (tcInfo.getRequestCount() > 0) {
+					reportOnTomcatInformations(tcInfo);
+				}
+			}
+		}
+
+		// caches
+		if (javaInformations.isCacheEnabled()) {
+			for (final CacheInformations cacheInfo : javaInformations.getCacheInformationsList()) {
+				reportOnCacheInformations(cacheInfo);
+			}
+		}
+
 		reportOnCollector();
+
 		if (Parameter.PROMETHEUS_INCLUDE_LAST_VALUE.getValueAsBoolean()) {
 			reportOnLastValues();
 		}
@@ -250,50 +273,65 @@ class PrometheusController {
 	}
 
 	/**
-	 * Reports on information vailable in the {@link JavaInformations} class, including the {@link CacheInformations} and
-	 * {@link TomcatInformations} sub collections.
+	 * Reports on information vailable in the {@link JavaInformations} class.
 	 */
 	private void reportOnJavaInformations() {
-		// memory
-		reportOnMemoryInformations(javaInformations.getMemoryInformations());
-
 		// sessions
-		printLong(MetricType.GAUGE, "javamelody_sessions_active_count", "active session count",
-				javaInformations.getSessionCount());
-		printLong(MetricType.GAUGE, "javamelody_sessions_age_avg_minutes",
-				"session avg age in minutes", javaInformations.getSessionMeanAgeInMinutes());
+		if (javaInformations.getSessionCount() >= 0) {
+			printLong(MetricType.GAUGE, "javamelody_sessions_active_count", "active session count",
+					javaInformations.getSessionCount());
+			printLong(MetricType.GAUGE, "javamelody_sessions_age_avg_minutes",
+					"session avg age in minutes", javaInformations.getSessionMeanAgeInMinutes());
+		}
 
 		// connections
-		printLong(MetricType.GAUGE, "javamelody_connections_used_count", "used connections count",
-				javaInformations.getActiveConnectionCount());
-		printLong(MetricType.GAUGE, "javamelody_connections_max_count", "max connections",
-				javaInformations.getMaxConnectionCount());
-		printLong(MetricType.GAUGE, "javamelody_connections_active_count", "active connections",
-				javaInformations.getActiveConnectionCount());
-		printDouble(MetricType.GAUGE, "javamelody_connections_used_pct",
-				"used connections percentage", javaInformations.getUsedConnectionPercentage());
+		if (!Parameters.isNoDatabase()) {
+			printLong(MetricType.COUNTER, "javamelody_transactions_count", "transactions count",
+					javaInformations.getTransactionCount());
+			printLong(MetricType.GAUGE, "javamelody_connections_used_count",
+					"used connections count", javaInformations.getActiveConnectionCount());
+			printLong(MetricType.GAUGE, "javamelody_connections_active_count", "active connections",
+					javaInformations.getActiveConnectionCount());
+			if (javaInformations.getMaxConnectionCount() > 0) {
+				printLong(MetricType.GAUGE, "javamelody_connections_max_count", "max connections",
+						javaInformations.getMaxConnectionCount());
+				printDouble(MetricType.GAUGE, "javamelody_connections_used_pct",
+						"used connections percentage",
+						javaInformations.getUsedConnectionPercentage());
+			}
+		}
 
 		// system
-		printDouble(MetricType.GAUGE, "javamelody_system_load_avg", "system load average",
-				javaInformations.getSystemLoadAverage());
-		printDouble(MetricType.GAUGE, "javamelody_system_cpu_load_pct", "system cpu load",
-				javaInformations.getSystemCpuLoad());
-		printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_open_count",
-				"unix open file descriptors count",
-				javaInformations.getUnixOpenFileDescriptorCount());
-		printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_max",
-				"unix file descriptors max", javaInformations.getUnixMaxFileDescriptorCount());
-		printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_open_pct",
-				"unix open file descriptors percentage",
-				javaInformations.getUnixOpenFileDescriptorPercentage());
-		printLong(MetricType.GAUGE, "javamelody_system_processors_count", "processors available",
-				javaInformations.getAvailableProcessors());
-		printLong(MetricType.GAUGE, "javamelody_system_tmp_space_free_bytes", "tmp space available",
-				javaInformations.getFreeDiskSpaceInTemp());
+		if (javaInformations.getSystemLoadAverage() >= 0) {
+			printDouble(MetricType.GAUGE, "javamelody_system_load_avg", "system load average",
+					javaInformations.getSystemLoadAverage());
+		}
+		if (javaInformations.getSystemCpuLoad() >= 0) {
+			printDouble(MetricType.GAUGE, "javamelody_system_cpu_load_pct", "system cpu load",
+					javaInformations.getSystemCpuLoad());
+		}
+		if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
+			printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_open_count",
+					"unix open file descriptors count",
+					javaInformations.getUnixOpenFileDescriptorCount());
+			printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_max",
+					"unix file descriptors max", javaInformations.getUnixMaxFileDescriptorCount());
+			printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_open_pct",
+					"unix open file descriptors percentage",
+					javaInformations.getUnixOpenFileDescriptorPercentage());
+		}
+		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
+			printLong(MetricType.GAUGE, "javamelody_system_tmp_space_free_bytes",
+					"tmp space available", javaInformations.getFreeDiskSpaceInTemp());
+		}
 
 		// jvm
 		printLong(MetricType.GAUGE, "javamelody_jvm_start_time", "jvm start time",
 				javaInformations.getStartDate().getTime());
+		printLong(MetricType.COUNTER, "javamelody_jvm_cpu_millis", "jvm cpu millis",
+				javaInformations.getProcessCpuTimeMillis());
+		printLong(MetricType.GAUGE, "javamelody_system_processors_count", "processors available",
+				javaInformations.getAvailableProcessors());
 
 		// threads
 		printLong(MetricType.GAUGE, "javamelody_threads_count", "threads count",
@@ -306,21 +344,9 @@ class PrometheusController {
 				javaInformations.getActiveThreadCount());
 
 		// jobs
-		printLong(MetricType.GAUGE, "javamelody_job_executing_count", "executing job count",
-				javaInformations.getCurrentlyExecutingJobCount());
-
-		// tomcat
-		if (javaInformations.getTomcatInformationsList() != null) {
-			for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
-				reportOnTomcatInformations(tcInfo);
-			}
-		}
-
-		// caches
-		if (javaInformations.getCacheInformationsList() != null) {
-			for (final CacheInformations cacheInfo : javaInformations.getCacheInformationsList()) {
-				reportOnCacheInformations(cacheInfo);
-			}
+		if (javaInformations.isJobEnabled()) {
+			printLong(MetricType.GAUGE, "javamelody_job_executing_count", "executing job count",
+					javaInformations.getCurrentlyExecutingJobCount());
 		}
 	}
 
@@ -331,12 +357,20 @@ class PrometheusController {
 				memoryInformations.getMaxMemory());
 		printDouble(MetricType.GAUGE, "javamelody_memory_used_pct", "memory used percentage",
 				memoryInformations.getUsedMemoryPercentage());
-		printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_used_bytes",
-				"used perm gen memory in bytes", memoryInformations.getUsedPermGen());
-		printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_max_bytes",
-				"max perm gen memory in bytes", memoryInformations.getMaxPermGen());
-		printDouble(MetricType.GAUGE, "javamelody_memory_perm_gen_used_pct",
-				"used perm gen memory percentage", memoryInformations.getUsedPermGenPercentage());
+		if (memoryInformations.getUsedPermGen() > 0) {
+			printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_used_bytes",
+					"used perm gen memory in bytes", memoryInformations.getUsedPermGen());
+			if (memoryInformations.getMaxPermGen() > 0) {
+				printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_max_bytes",
+						"max perm gen memory in bytes", memoryInformations.getMaxPermGen());
+				printDouble(MetricType.GAUGE, "javamelody_memory_perm_gen_used_pct",
+						"used perm gen memory percentage",
+						memoryInformations.getUsedPermGenPercentage());
+			}
+		}
+
+		printDouble(MetricType.COUNTER, "javamelody_memory_gc_millis", "gc time millis",
+				memoryInformations.getGarbageCollectionTimeMillis());
 	}
 
 	private void reportOnTomcatInformations(TomcatInformations tcInfo) {

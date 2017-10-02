@@ -524,7 +524,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		return maxConnectionCount;
 	}
 
-	long getTransactionCount() {
+	public long getTransactionCount() {
 		return transactionCount;
 	}
 
@@ -535,7 +535,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		return -1d;
 	}
 
-	long getProcessCpuTimeMillis() {
+	public long getProcessCpuTimeMillis() {
 		return processCpuTimeMillis;
 	}
 

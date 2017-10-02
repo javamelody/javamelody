@@ -265,7 +265,7 @@ public class MemoryInformations implements Serializable {
 		return loadedClassesCount;
 	}
 
-	long getGarbageCollectionTimeMillis() {
+	public long getGarbageCollectionTimeMillis() {
 		return garbageCollectionTimeMillis;
 	}
 
