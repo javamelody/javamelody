@@ -38,8 +38,8 @@ import net.bull.javamelody.internal.model.TomcatInformations;
 
 /**
  * Produces a report of the data in {@link JavaInformations} in the Prometheus text format
- * to enable collection by a <a href='https://prometheus.io/>Prometheus</a> server.
- *
+ * to enable collection by a <a href='https://prometheus.io/'>Prometheus</a> server.
+ *<br/><br/>
  * Metric names have been adjusted to match Prometheus recommendations.
  *
  * The {@link JavaInformations} fields to Prometheus metric mappings are done statically
@@ -51,17 +51,20 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *
  * This implementation directly outputs the Prometheus text format avoiding dependence on any
  * additional libraries.
- *
- * Exposed Metrics:
- * (From {@link JavaInformations}
+ *<br/><br/>
+ * Exposed Metrics: <br/>
+ * (From {@link JavaInformations})
+ * <pre>
  *  javamelody_memory_used_bytes
  *  javamelody_memory_max_bytes
  *  javamelody_memory_used_pct
  *  javamelody_memory_perm_gen_used_bytes
  *  javamelody_memory_perm_gen_max_bytes
  *  javamelody_memory_perm_gen_used_pct
+ *  javamelody_memory_gc_millis
  *  javamelody_sessions_active_count
  *  javamelody_sessions_age_avg_minutes
+ *  javamelody_transactions_count
  *  javamelody_connections_used_count
  *  javamelody_connections_max_count
  *  javamelody_connections_active_count
@@ -74,6 +77,7 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *  javamelody_system_processors_count
  *  javamelody_system_tmp_space_free_bytes
  *  javamelody_jvm_start_time
+ *  javamelody_jvm_cpu_millis
  *  javamelody_threads_count
  *  javamelody_threads_max_count
  *  javamelody_threads_started_count
@@ -92,8 +96,9 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *  javamelody_cache_in_memory_hits_pct{cache_name="__name__"}
  *  javamelody_cache_on_disk_count{cache_name="__name__"}
  *  javamelody_cache_hits_pct{cache_name="__name__"}
- *
+ *  </pre>
  *  (from {@link Collector} counters)
+ *  <pre>
  *  javamelody_http_hits_count
  *  javamelody_http_errors_count
  *  javamelody_http_duration_millis
@@ -130,12 +135,12 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *  javamelody_log_hits_count
  *  javamelody_log_errors_count
  *  javamelody_log_duration_millis
- *
- *  Additionally, the `lastValue` metrics can also be exported by setting the property PROMETHEUS_INCLUDE_LAST_VALUE='true'.
- *  Note - the `lastValue` metrics are already aggregated over time, where Prometheus prefers the raw counters and gauges.
+ *  </pre>
+ *  Additionally, the `lastValue` metrics can also be exported by setting the parameter PROMETHEUS_INCLUDE_LAST_VALUE=true.
+ *  Note: the `lastValue` metrics are already aggregated over time, where Prometheus prefers the raw counters and gauges.
  *  Also, obtaining the `lastValue` metrics appears to have a 5-10ms overhead.
  *
- *  The `lastValue` metrics are DISABLED by default
+ *  The `lastValue` metrics are DISABLED by default.
  *
  * @author https://github.com/slynn1324
  */
