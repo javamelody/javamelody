@@ -52,11 +52,15 @@ abstract class MetricsPublisher {
 	private static List<MetricsPublisher> getMetricsPublishers(String contextPath, String hosts) {
 		final List<MetricsPublisher> metricsPublishers = new ArrayList<MetricsPublisher>();
 		final Graphite graphite = Graphite.getInstance(contextPath, hosts);
+		final Statsd statsd = Statsd.getInstance(contextPath, hosts);
 		final CloudWatch cloudWatch = CloudWatch.getInstance(contextPath, hosts);
 		final InfluxDB influxDb = InfluxDB.getInstance(contextPath, hosts);
 		final Datadog datadog = Datadog.getInstance(contextPath, hosts);
 		if (graphite != null) {
 			metricsPublishers.add(graphite);
+		}
+		if (statsd != null) {
+			metricsPublishers.add(statsd);
 		}
 		if (cloudWatch != null) {
 			metricsPublishers.add(cloudWatch);

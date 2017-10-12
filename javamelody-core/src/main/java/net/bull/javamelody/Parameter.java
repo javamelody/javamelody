@@ -349,6 +349,12 @@ public enum Parameter {
 	GRAPHITE_ADDRESS("graphite-address"),
 
 	/**
+	 * Address of the <a href='https://github.com/etsy/statsd'>StatsD</a> server to send metrics to,
+	 * for example: 11.22.33.44:8125 (null by default).
+	 */
+	STATSD_ADDRESS("statsd-address"),
+
+	/**
 	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
 	 * for example "MyCompany/MyAppDomain" (null by default).
 	 */
