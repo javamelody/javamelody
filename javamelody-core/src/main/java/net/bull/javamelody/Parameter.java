@@ -372,6 +372,9 @@ public enum Parameter {
 	 */
 	DATADOG_API_KEY("datadog-api-key"),
 
+	/**
+	 * Includes last values of graphs when sending metrics to <a href='https://prometheus.io/'>Prometheus</a> (false by default).
+	 */
 	PROMETHEUS_INCLUDE_LAST_VALUE("prometheus-include-last-value");
 
 	private final String code;
