@@ -333,7 +333,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_MAP_BY_ID.clear();
 		SESSION_COUNT.set(0);
 
-		// issue 655: in WildFly 10.1.0, the MonitoringFilter may never be initialized neither destroyed.
+		// issue 665: in WildFly 10.1.0, the MonitoringFilter may never be initialized neither destroyed.
 		// For this case, it is needed to stop here the JdbcWrapper initialized in contextInitialized
 		JdbcWrapper.SINGLETON.stop();
 
