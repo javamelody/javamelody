@@ -326,9 +326,17 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	/** {@inheritDoc} */
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		if (!instanceEnabled) {
+			return;
+		}
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		SESSION_MAP_BY_ID.clear();
 		SESSION_COUNT.set(0);
+
+		// issue 655: in WildFly 10.1.0, the MonitoringFilter may never be initialized neither destroyed.
+		// For this case, it is needed to stop here the JdbcWrapper initialized in contextInitialized
+		JdbcWrapper.SINGLETON.stop();
+
 		LOG.debug("JavaMelody listener destroy done");
 	}
 
