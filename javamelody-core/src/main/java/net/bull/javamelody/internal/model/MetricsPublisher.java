@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.bull.javamelody.Parameter;
+
 /**
  * Publish metrics to Graphite and AWS CloudWatch.
  * @author Emeric Vernat
@@ -37,7 +39,10 @@ abstract class MetricsPublisher {
 			}
 			sb.append(javaInformations.getHost().replaceFirst("@.*", ""));
 		}
-		String contextPath = javaInformationsList.get(0).getContextPath();
+		String contextPath = Parameter.APPLICATION_NAME.getValue();
+		if (contextPath == null) {
+			contextPath = javaInformationsList.get(0).getContextPath();
+		}
 		if (contextPath == null) {
 			// for NodesCollector in Jenkins, contextPath is null
 			contextPath = "NA";
