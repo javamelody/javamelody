@@ -40,6 +40,10 @@ class StorageLock {
 	StorageLock(String application) {
 		super();
 		final File storageDir = Parameters.getStorageDirectory(application);
+		if (!storageDir.mkdirs() && !storageDir.exists()) {
+			throw new IllegalStateException(
+					"JavaMelody directory can't be created: " + storageDir.getPath());
+		}
 		final File lockFile = new File(storageDir, LOCK_FILENAME);
 		try {
 			this.input = new RandomAccessFile(lockFile, "rw");
