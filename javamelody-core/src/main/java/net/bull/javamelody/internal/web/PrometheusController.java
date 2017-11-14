@@ -433,7 +433,7 @@ class PrometheusController {
 	 * @return String
 	 */
 	private static String sanitizeName(String name) {
-		return name.toLowerCase().replaceAll("[- :]", "_").replaceAll("[^a-z0-9_]", "");
+		return name.toLowerCase(Locale.US).replaceAll("[- :]", "_").replaceAll("[^a-z0-9_]", "");
 	}
 
 	// prints a long metric value, including HELP and TYPE rows

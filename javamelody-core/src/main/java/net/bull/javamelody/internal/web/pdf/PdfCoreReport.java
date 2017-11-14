@@ -218,7 +218,6 @@ public class PdfCoreReport extends PdfAbstractReport {
 				FontFactory.getFont(FontFactory.HELVETICA, 9f, Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
-		int i = 0;
 		final Collection<byte[]> graphs;
 		if (mySmallGraphs != null) {
 			// si les graphiques ont été préinitialisés (en Swing) alors on les utilise
@@ -232,6 +231,7 @@ public class PdfCoreReport extends PdfAbstractReport {
 				graphs.add(jrobin.graph(range, SMALL_GRAPH_WIDTH, SMALL_GRAPH_HEIGHT));
 			}
 		}
+		int i = 0;
 		for (final byte[] graph : graphs) {
 			if (i % 3 == 0 && i != 0) {
 				// un retour après httpSessions et avant activeThreads pour l'alignement
