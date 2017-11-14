@@ -213,35 +213,29 @@ public class PdfCoreReport extends PdfAbstractReport {
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
 		jrobinParagraph.add(new Phrase("\n\n\n\n"));
 		int i = 0;
+		final Collection<byte[]> graphs;
 		if (mySmallGraphs != null) {
 			// si les graphiques ont été préinitialisés (en Swing) alors on les utilise
-			for (final byte[] imageData : mySmallGraphs.values()) {
-				if (i % 3 == 0 && i != 0) {
-					// un retour après httpSessions et avant activeThreads pour l'alignement
-					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
-				}
-				final Image image = Image.getInstance(imageData);
-				image.scalePercent(50);
-				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
-				jrobinParagraph.add(new Phrase(" "));
-				i++;
-			}
+			graphs = mySmallGraphs.values();
 		} else {
 			if (jrobins.isEmpty()) {
 				return;
 			}
+			graphs = new ArrayList<byte[]>(jrobins.size());
 			for (final JRobin jrobin : jrobins) {
-				if (i % 3 == 0 && i != 0) {
-					// un retour après httpSessions et avant activeThreads pour l'alignement
-					jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
-				}
-				final Image image = Image
-						.getInstance(jrobin.graph(range, SMALL_GRAPH_WIDTH, SMALL_GRAPH_HEIGHT));
-				image.scalePercent(50);
-				jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
-				jrobinParagraph.add(new Phrase(" "));
-				i++;
+				graphs.add(jrobin.graph(range, SMALL_GRAPH_WIDTH, SMALL_GRAPH_HEIGHT));
 			}
+		}
+		for (final byte[] graph : graphs) {
+			if (i % 3 == 0 && i != 0) {
+				// un retour après httpSessions et avant activeThreads pour l'alignement
+				jrobinParagraph.add(new Phrase("\n\n\n\n\n"));
+			}
+			final Image image = Image.getInstance(graph);
+			image.scalePercent(50);
+			jrobinParagraph.add(new Phrase(new Chunk(image, 0, 0)));
+			jrobinParagraph.add(new Phrase(" "));
+			i++;
 		}
 		jrobinParagraph.add(new Phrase("\n"));
 		addToDocument(jrobinParagraph);
