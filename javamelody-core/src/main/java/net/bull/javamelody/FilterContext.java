@@ -35,6 +35,7 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Collector;
@@ -250,6 +251,10 @@ class FilterContext {
 			HttpCookieManager.setDefaultRange(Period.TOUT.getRange());
 			// si pas de jar jrobin, alors pas de collecte et période "Tout" par défaut
 			return;
+		}
+
+		if (collector.isStorageUsedByMultipleInstances()) {
+			LOG.info(I18N.getString("storage_used_by_multiple_instances"));
 		}
 
 		try {

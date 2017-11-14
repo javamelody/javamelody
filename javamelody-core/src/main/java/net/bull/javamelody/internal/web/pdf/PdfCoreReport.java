@@ -208,6 +208,12 @@ public class PdfCoreReport extends PdfAbstractReport {
 			addToDocument(jrobinParagraph);
 			return;
 		}
+		if (collector.isStorageUsedByMultipleInstances()) {
+			final String message = getString("storage_used_by_multiple_instances") + "\n\n";
+			final Paragraph jrobinParagraph = new Paragraph(message, PdfFonts.BOLD.getFont());
+			jrobinParagraph.setAlignment(Element.ALIGN_CENTER);
+			addToDocument(jrobinParagraph);
+		}
 		final Paragraph jrobinParagraph = new Paragraph("",
 				FontFactory.getFont(FontFactory.HELVETICA, 9f, Font.NORMAL));
 		jrobinParagraph.setAlignment(Element.ALIGN_CENTER);

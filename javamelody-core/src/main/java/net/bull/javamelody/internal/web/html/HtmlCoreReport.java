@@ -499,6 +499,11 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("</div>");
 			return;
 		}
+		if (collector.isStorageUsedByMultipleInstances()) {
+			writeln("<div align='center' class='severe'><br/><br/>");
+			writeln("#storage_used_by_multiple_instances#");
+			writeln("</div><br/>");
+		}
 
 		writeGraphs(collector.getDisplayedCounterJRobins());
 		final Collection<JRobin> otherJRobins = collector.getDisplayedOtherJRobins();

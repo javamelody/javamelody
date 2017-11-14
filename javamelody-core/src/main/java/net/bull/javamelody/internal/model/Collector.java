@@ -74,6 +74,7 @@ public class Collector { // NOPMD
 	private final boolean noDatabase = Parameters.isNoDatabase();
 	private List<MetricsPublisher> metricsPublishers;
 	private final WebappVersions webappVersions;
+	private final StorageLock storageLock;
 
 	/**
 	 * Constructeur.
@@ -129,6 +130,9 @@ public class Collector { // NOPMD
 			LOG.warn("exception while reading counters data from files in "
 					+ Parameters.getStorageDirectory(application), e);
 		}
+
+		// puis pose le lock
+		this.storageLock = new StorageLock(application);
 
 		this.webappVersions = new WebappVersions(application);
 	}
@@ -985,11 +989,19 @@ public class Collector { // NOPMD
 		}
 	}
 
+	public boolean isStorageUsedByMultipleInstances() {
+		return !storageLock.isAcquired();
+	}
+
 	public void stop() {
 		try {
-			// on persiste les compteurs pour les relire à l'initialisation et ne pas perdre les stats
-			for (final Counter counter : counters) {
-				counter.writeToFile();
+			try {
+				// on persiste les compteurs pour les relire à l'initialisation et ne pas perdre les stats
+				for (final Counter counter : counters) {
+					counter.writeToFile();
+				}
+			} finally {
+				storageLock.release();
 			}
 		} catch (final IOException e) {
 			// persistance échouée, tant pis
