@@ -18,7 +18,6 @@
 package net.bull.javamelody.internal.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -33,24 +32,15 @@ import net.bull.javamelody.internal.common.Parameters;
  */
 class StorageLock {
 	private static final String LOCK_FILENAME = "javamelody.lock";
-	private final RandomAccessFile input;
-	private final FileChannel fileChannel;
+	private final File lockFile;
+	private RandomAccessFile input;
+	private FileChannel fileChannel;
 	private FileLock fileLock;
 
 	StorageLock(String application) {
 		super();
 		final File storageDir = Parameters.getStorageDirectory(application);
-		if (!storageDir.mkdirs() && !storageDir.exists()) {
-			throw new IllegalStateException(
-					"JavaMelody directory can't be created: " + storageDir.getPath());
-		}
-		final File lockFile = new File(storageDir, LOCK_FILENAME);
-		try {
-			this.input = new RandomAccessFile(lockFile, "rw");
-			this.fileChannel = input.getChannel();
-		} catch (final FileNotFoundException e) {
-			throw new IllegalArgumentException(e);
-		}
+		this.lockFile = new File(storageDir, LOCK_FILENAME);
 		// initialize the lock
 		getFileLock();
 	}
@@ -62,9 +52,13 @@ class StorageLock {
 			}
 		} finally {
 			try {
-				fileChannel.close();
+				if (fileChannel != null) {
+					fileChannel.close();
+				}
 			} finally {
-				input.close();
+				if (input != null) {
+					input.close();
+				}
 			}
 		}
 	}
@@ -72,6 +66,11 @@ class StorageLock {
 	private FileLock getFileLock() {
 		if (fileLock == null) {
 			try {
+				if (input == null || fileChannel == null) {
+					lockFile.getParentFile().mkdirs();
+					input = new RandomAccessFile(lockFile, "rw");
+					fileChannel = input.getChannel();
+				}
 				fileLock = fileChannel.tryLock();
 			} catch (final IOException e) {
 				return null;
