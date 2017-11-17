@@ -66,11 +66,11 @@ class StorageLock {
 	private FileLock getFileLock() {
 		if (fileLock == null) {
 			try {
+				final File storageDir = lockFile.getParentFile();
+				if (!storageDir.mkdirs() && !storageDir.exists()) {
+					return null;
+				}
 				if (input == null || fileChannel == null) {
-					final File storageDir = lockFile.getParentFile();
-					if (!storageDir.mkdirs() && !storageDir.exists()) {
-						return null;
-					}
 					input = new RandomAccessFile(lockFile, "rw");
 					fileChannel = input.getChannel();
 				}

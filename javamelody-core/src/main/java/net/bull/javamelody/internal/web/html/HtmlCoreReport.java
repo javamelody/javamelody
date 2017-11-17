@@ -20,8 +20,6 @@ package net.bull.javamelody.internal.web.html;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,183 +57,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private static final int MAX_THREADS_DISPLAYED_IN_MAIN_REPORT = 500;
 	private static final String SEPARATOR = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	private static final String END_DIV = "</div>";
-	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
-	private static final String SCRIPT_END = "</script>";
-
 	private final Collector collector;
 	private final List<JavaInformations> javaInformationsList;
 	private final Range range;
 	private final CollectorServer collectorServer;
 	private final long start = System.currentTimeMillis();
 	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
-
-	private static class HtmlForms extends HtmlAbstractReport {
-		HtmlForms(Writer writer) {
-			super(writer);
-		}
-
-		void writeCustomPeriodLinks(Map<String, Date> datesByWebappVersions, Range currentRange,
-				String graphName, String part) throws IOException {
-			writeln("<a href=\"javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();\" ");
-			writeln("title='" + getFormattedString("Choisir_periode", getString("personnalisee"))
-					+ "'>");
-			writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> #personnalisee#</a>");
-
-			if (!datesByWebappVersions.isEmpty()) {
-				writeln("&nbsp;<a href=\"javascript:showHide('deploymentPeriod');\" ");
-				writeln("title='"
-						+ getFormattedString("Choisir_periode", getString("par_deploiement"))
-						+ "'>");
-				writeln("<img src='?resource=calendar.png' alt='#par_deploiement#' /> #par_deploiement#</a>");
-			}
-
-			writeCustomPeriodDiv(currentRange, graphName, part);
-			if (!datesByWebappVersions.isEmpty()) {
-				writeDeploymentPeriodDiv(datesByWebappVersions, currentRange, graphName, part);
-			}
-		}
-
-		private void writeCustomPeriodDiv(Range currentRange, String graphName, String part)
-				throws IOException {
-			writeln("<div id='customPeriod' style='display: none;'>");
-			writeln(SCRIPT_BEGIN);
-			writeln("function validateCustomPeriodForm() {");
-			writeln("   periodForm = document.customPeriodForm;");
-			writelnCheckMandatory("periodForm.startDate", "dates_mandatory");
-			writelnCheckMandatory("periodForm.endDate", "dates_mandatory");
-			writeln("   periodForm.period.value=periodForm.startDate.value + '"
-					+ Range.CUSTOM_PERIOD_SEPARATOR + "' + periodForm.endDate.value;");
-			writeln("   return true;");
-			writeln("}");
-			writeln(SCRIPT_END);
-			writeln("<br/>");
-			final DateFormat dateFormat = I18N.createDateFormat();
-			final String dateFormatPattern;
-			if (getString("dateFormatPattern").isEmpty()) {
-				final String pattern = ((SimpleDateFormat) dateFormat).toPattern();
-				dateFormatPattern = pattern.toLowerCase(I18N.getCurrentLocale());
-			} else {
-				dateFormatPattern = getString("dateFormatPattern");
-			}
-			writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
-			writeln("<br/><b>#startDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='startDate' ");
-			if (currentRange.getStartDate() != null) {
-				writeln("value='" + dateFormat.format(currentRange.getStartDate()) + '\'');
-			}
-			writeln("/>&nbsp;&nbsp;<b>#endDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='endDate' ");
-			if (currentRange.getEndDate() != null) {
-				writeln("value='" + dateFormat.format(currentRange.getEndDate()) + '\'');
-			}
-			writeln("/>&nbsp;&nbsp;");
-			writeDirectly('(' + dateFormatPattern + ')');
-			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' value='#ok#'/><br/><br/>");
-			writeln("<input type='hidden' name='period' value=''/>");
-			if (graphName != null) {
-				writeln("<input type='hidden' name='part' value='" + part + "'/>");
-				writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
-			}
-			writeln("</form><br/>");
-			writeln(END_DIV);
-		}
-
-		private void writeDeploymentPeriodDiv(Map<String, Date> datesByWebappVersions,
-				Range currentRange, String graphName, String part) throws IOException {
-			writeln("<div id='deploymentPeriod' style='display: none;'>");
-			writeln("<br/>");
-			final DateFormat dateFormat = I18N.createDateFormat();
-			final String currentRangeValue = currentRange.getValue();
-			final String startDateLabel = I18N.getString("startDate")
-					.toLowerCase(I18N.getCurrentLocale());
-			final String endDateLabel = I18N.getString("endDate");
-			writeln("<form name='deploymentPeriodForm' method='get' action=''>");
-			writeln("<br/><b>#Version#</b>&nbsp;&nbsp;");
-			writeln("<select name='period' onchange='document.deploymentPeriodForm.submit();'>");
-			writeDirectly("<option>&nbsp;</option>");
-			// on doit retrier les versions ici, notamment s'il y en a une ajoutée à la fin
-			String previousDate = null;
-			for (final Map.Entry<String, Date> entry : datesByWebappVersions.entrySet()) {
-				final String version = entry.getKey();
-				final String date = dateFormat.format(entry.getValue());
-				final String label;
-				if (previousDate == null) {
-					previousDate = dateFormat.format(new Date());
-					label = version + ' ' + startDateLabel + ' ' + date;
-				} else {
-					label = version + ' ' + startDateLabel + ' ' + date + ' ' + endDateLabel + ' '
-							+ previousDate;
-				}
-				final String rangeValue = date + Range.CUSTOM_PERIOD_SEPARATOR + previousDate;
-				writeDirectly("<option value='" + rangeValue + "'");
-				if (rangeValue.equals(currentRangeValue)) {
-					writeDirectly(" selected='selected'");
-				}
-				writeDirectly(">");
-				writeDirectly(htmlEncodeButNotSpace(label));
-				writeDirectly("</option>");
-				previousDate = date;
-			}
-			writeln("</select><br/><br/>");
-			if (graphName != null) {
-				writeln("<input type='hidden' name='part' value='" + part + "'/>");
-				writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
-			}
-			writeln("</form><br/>");
-			writeln(END_DIV);
-		}
-
-		void writeAddAndRemoveApplicationLinks(String currentApplication) throws IOException {
-			if (currentApplication == null) {
-				writeln("<div align='center'><h3>#add_application#</h3>");
-				writeln("#collect_server_intro#");
-			} else {
-				final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				writeln(separator);
-				writeln("<a href=\"javascript:showHide('addApplication');document.appForm.appName.focus();\"");
-				writeln(" class='noPrint'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
-				writeln(separator);
-				writeln("<a href='?action=remove_application&amp;application=" + currentApplication
-						+ getCsrfTokenUrlPart() + "' class='noPrint' ");
-				final String messageConfirmation = getFormattedString("confirm_remove_application",
-						currentApplication);
-				writeln("onclick=\"javascript:return confirm('"
-						+ javascriptEncode(messageConfirmation) + "');\">");
-				final String removeApplicationLabel = getFormattedString("remove_application",
-						currentApplication);
-				writeln("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
-						+ "\"/> " + removeApplicationLabel + "</a>");
-				writeln("<div id='addApplication' style='display: none;'>");
-			}
-			writeln(SCRIPT_BEGIN);
-			writeln("function validateAppForm() {");
-			writelnCheckMandatory("document.appForm.appName", "app_name_mandatory");
-			writelnCheckMandatory("document.appForm.appUrls", "app_urls_mandatory");
-			writeln("   return true;");
-			writeln("}");
-			writeln(SCRIPT_END);
-			writeln("<br/> <br/>");
-			writeln("<form name='appForm' method='post' action='' onsubmit='return validateAppForm();'>");
-			writeln("<br/><b>#app_name_to_monitor# :</b>&nbsp;&nbsp;<input type='text' size='15' name='appName'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writeln("<b>#app_urls# :</b>&nbsp;&nbsp;<input type='text' size='50' name='appUrls'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writeln("<input type='submit' value='#add#'/><br/>");
-			writeln("#urls_sample# : <i>http://myhost/myapp/</i> #or# <i>http://host1/myapp/,http://host2/myapp/</i>");
-			writeln("<br/> <br/>");
-			writeln("</form>");
-			writeln("</div>\n");
-		}
-
-		private void writelnCheckMandatory(String fieldFullName, String msgKey) throws IOException {
-			writeln("   if (" + fieldFullName + ".value.length == 0) {");
-			writeln("      alert('" + getStringForJavascript(msgKey) + "');");
-			writeln("      " + fieldFullName + ".focus();");
-			writeln("      return false;");
-			writeln("   }");
-		}
-
-		@Override
-		void toHtml() {
-			throw new UnsupportedOperationException();
-		}
-	}
 
 	HtmlCoreReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, Writer writer) {
@@ -372,7 +199,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeMenu() throws IOException {
-		writeln(SCRIPT_BEGIN);
+		writeln("<script type='text/javascript'>");
 		writeln("function toggle(id) {");
 		writeln("var el = document.getElementById(id);");
 		writeln("if (el.getAttribute('class') == 'menuHide') {");
@@ -380,7 +207,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("} else {");
 		writeln("  el.setAttribute('class', 'menuHide');");
 		writeln("} }");
-		writeln(SCRIPT_END);
+		writeln("</script>");
 
 		writeln("<div class='noPrint'> ");
 		writeln("<div id='menuBox' class='menuHide'>");
@@ -466,7 +293,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeMessageIfNotNull(String message, String partToRedirectTo,
 			String anchorNameForRedirect) throws IOException {
 		if (message != null) {
-			writeln(SCRIPT_BEGIN);
+			writeln("<script type='text/javascript'>");
 			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
 			writeDirectly("alert(\"" + htmlEncodeButNotSpace(javascriptEncode(message)) + "\");");
 			writeln("");
@@ -486,7 +313,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			} else {
 				writeln("location.href = '?part=" + partToRedirectTo + '\'');
 			}
-			writeln(SCRIPT_END);
+			writeln("</script>");
 		}
 	}
 
