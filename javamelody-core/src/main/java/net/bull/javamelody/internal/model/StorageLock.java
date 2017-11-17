@@ -67,7 +67,10 @@ class StorageLock {
 		if (fileLock == null) {
 			try {
 				if (input == null || fileChannel == null) {
-					lockFile.getParentFile().mkdirs();
+					final File storageDir = lockFile.getParentFile();
+					if (!storageDir.mkdirs() && !storageDir.exists()) {
+						return null;
+					}
 					input = new RandomAccessFile(lockFile, "rw");
 					fileChannel = input.getChannel();
 				}
