@@ -47,7 +47,7 @@ class StorageLock {
 
 	void release() throws IOException {
 		try {
-			if (fileLock != null) {
+			if (fileLock != null && fileLock.isValid()) {
 				fileLock.release();
 			}
 		} finally {
