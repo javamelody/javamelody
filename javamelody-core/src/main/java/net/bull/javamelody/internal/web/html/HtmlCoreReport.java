@@ -892,18 +892,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				.keySet();
 		if (applications.size() > 1
 				|| !collectorServer.getLastCollectExceptionsByApplication().isEmpty()) {
-			if (applications.size() > 10) {
+			final boolean tabularList = applications.size() > 10;
+			if (tabularList) {
 				writeln("<table summary='applications'><tr><td>");
 				writeShowHideLink("chooseApplication", "#Choix_application#");
 				if (Parameters.getCollectorApplicationsFile().canWrite()) {
 					writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
 				}
 				writeln("<div id='chooseApplication' style='display: none;'><div>&nbsp;&nbsp;&nbsp;");
-				writeApplicationsLinks(applications, "<br />&nbsp;&nbsp;&nbsp;");
+				writeApplicationsLinks(applications, tabularList);
 				writeln("</div></div></td></tr></table>");
 			} else {
 				writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
-				writeApplicationsLinks(applications, "&nbsp;&nbsp;&nbsp;");
+				writeApplicationsLinks(applications, tabularList);
 				if (Parameters.getCollectorApplicationsFile().canWrite()) {
 					writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
 				}
@@ -914,10 +915,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln(END_DIV);
 	}
 
-	private void writeApplicationsLinks(Collection<String> applications, String separator)
+	private void writeApplicationsLinks(Collection<String> applications, boolean tabularList)
 			throws IOException {
 		final Map<String, Throwable> lastCollectExceptionsByApplication = collectorServer
 				.getLastCollectExceptionsByApplication();
+		if (tabularList) {
+			writeln("<table><tr><td>");
+		}
+		final int nbColumns = 5;
+		int i = 0;
 		for (final String application : applications) {
 			final Throwable lastCollectException = lastCollectExceptionsByApplication
 					.get(application);
@@ -941,7 +947,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("</em>");
 			}
 			writeln(application + "</a>");
-			writeln(separator);
+			i++;
+			if (tabularList) {
+				if (i % nbColumns == 0) {
+					writeln("</td></tr><tr><td>");
+				} else {
+					writeln("</td><td>");
+				}
+			} else {
+				writeln("&nbsp;&nbsp;&nbsp;");
+			}
+		}
+		if (tabularList) {
+			writeln("</td></tr></table>");
 		}
 	}
 
