@@ -69,6 +69,7 @@ public class TestGraphite {
 		}
 		assertTrue("no graphite server", exception);
 		setProperty(Parameter.GRAPHITE_ADDRESS, null);
+		graphite.stop();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

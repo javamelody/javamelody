@@ -85,6 +85,6 @@ class StorageLock {
 	}
 
 	boolean isAcquired() {
-		return getFileLock() != null;
+		return getFileLock() != null && getFileLock().isValid();
 	}
 }
