@@ -38,9 +38,12 @@ class StorageLock {
 	private FileLock fileLock;
 
 	StorageLock(String application) {
+		this(new File(Parameters.getStorageDirectory(application), LOCK_FILENAME));
+	}
+
+	StorageLock(File lockFile) {
 		super();
-		final File storageDir = Parameters.getStorageDirectory(application);
-		this.lockFile = new File(storageDir, LOCK_FILENAME);
+		this.lockFile = lockFile;
 		// initialize the lock
 		getFileLock();
 	}

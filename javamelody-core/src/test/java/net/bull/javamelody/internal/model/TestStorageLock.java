@@ -17,22 +17,41 @@
  */
 package net.bull.javamelody.internal.model;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import net.bull.javamelody.Utils;
+import net.bull.javamelody.internal.common.Parameters;
 
 /**
  * Test unitaire de la classe StorageLock.
  * @author Emeric Vernat
  */
 public class TestStorageLock {
+	/**
+	 * Initialisation.
+	 */
+	@Before
+	public void setUp() {
+		Utils.initialize();
+	}
+
 	/** Test. 
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {
+		final ServletContext context = createNiceMock(ServletContext.class);
+		replay(context);
+		Parameters.initialize(context);
 		final StorageLock storageLock = new StorageLock("testStorageLock");
 		assertTrue("isAcquired", storageLock.isAcquired());
 		storageLock.release();
