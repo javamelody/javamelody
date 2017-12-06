@@ -278,6 +278,7 @@ public class LabradorRetriever {
 			final String authorization = Base64Coder.encodeString(url.getUserInfo());
 			connection.setRequestProperty("Authorization", "Basic " + authorization);
 		}
+		// Rq: on ne gère pas ici les éventuels cookie de session http,
 		// puisque le filtre de monitoring n'est pas censé créer des sessions
 		//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
 
