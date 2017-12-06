@@ -141,22 +141,11 @@ public class LabradorRetriever {
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;
 		try {
-			final URLConnection connection = openConnection(url, headers);
+			final URLConnection connection = openConnection();
 			// pour traductions (si on vient de CollectorServlet.forwardActionAndUpdateData,
 			// cela permet d'avoir les messages dans la bonne langue)
 			connection.setRequestProperty("Accept-Language", I18N.getCurrentLocale().getLanguage());
-			if (url.getUserInfo() != null) {
-				final String authorization = Base64Coder.encodeString(url.getUserInfo());
-				connection.setRequestProperty("Authorization", "Basic " + authorization);
-			}
-			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
-			// puisque le filtre de monitoring n'est pas censé créer des sessions
-			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
-
-			connection.connect();
-
-			//		final String setCookie = connection.getHeaderField("Set-Cookie");
-			//		if (setCookie != null) { cookie = setCookie; }
+			connect(connection);
 			final CounterInputStream counterInputStream = new CounterInputStream(
 					connection.getInputStream());
 
@@ -206,19 +195,11 @@ public class LabradorRetriever {
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;
 		try {
-			final URLConnection connection = openConnection(url, headers);
+			final URLConnection connection = openConnection();
 			// pour traductions
 			connection.setRequestProperty("Accept-Language",
 					httpRequest.getHeader("Accept-Language"));
-			if (url.getUserInfo() != null) {
-				final String authorization = Base64Coder.encodeString(url.getUserInfo());
-				connection.setRequestProperty("Authorization", "Basic " + authorization);
-			}
-			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
-			// puisque le filtre de monitoring n'est pas censé créer des sessions
-			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
-
-			connection.connect();
+			connect(connection);
 			httpResponse.setContentType(connection.getContentType());
 			final OutputStream output = httpResponse.getOutputStream();
 			dataLength = pump(output, connection);
@@ -236,16 +217,8 @@ public class LabradorRetriever {
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;
 		try {
-			final URLConnection connection = openConnection(url, headers);
-			if (url.getUserInfo() != null) {
-				final String authorization = Base64Coder.encodeString(url.getUserInfo());
-				connection.setRequestProperty("Authorization", "Basic " + authorization);
-			}
-			// Rq: on ne gère pas pour l'instant les éventuels cookie de session http,
-			// puisque le filtre de monitoring n'est pas censé créer des sessions
-			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
-
-			connection.connect();
+			final URLConnection connection = openConnection();
+			connect(connection);
 
 			dataLength = pump(output, connection);
 		} finally {
@@ -277,13 +250,10 @@ public class LabradorRetriever {
 
 	/**
 	 * Ouvre la connection http.
-	 * @param url URL
-	 * @param headers Entêtes http
 	 * @return Object
 	 * @throws IOException   Exception de communication
 	 */
-	private static URLConnection openConnection(URL url, Map<String, String> headers)
-			throws IOException {
+	private URLConnection openConnection() throws IOException {
 		final URLConnection connection = url.openConnection();
 		connection.setUseCaches(false);
 		if (CONNECTION_TIMEOUT > 0) {
@@ -301,6 +271,20 @@ public class LabradorRetriever {
 			}
 		}
 		return connection;
+	}
+
+	private void connect(URLConnection connection) throws IOException {
+		if (url.getUserInfo() != null) {
+			final String authorization = Base64Coder.encodeString(url.getUserInfo());
+			connection.setRequestProperty("Authorization", "Basic " + authorization);
+		}
+		// puisque le filtre de monitoring n'est pas censé créer des sessions
+		//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
+
+		connection.connect();
+
+		//		final String setCookie = connection.getHeaderField("Set-Cookie");
+		//		if (setCookie != null) { cookie = setCookie; }
 	}
 
 	/**
