@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody.internal.model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -126,7 +127,7 @@ public class LabradorRetriever {
 		this(url, null);
 	}
 
-	LabradorRetriever(URL url, Map<String, String> headers) {
+	public LabradorRetriever(URL url, Map<String, String> headers) {
 		super();
 		assert url != null;
 		this.url = url;
@@ -255,6 +256,28 @@ public class LabradorRetriever {
 			}
 		}
 		return dataLength;
+	}
+
+	public void post(ByteArrayOutputStream payload) throws IOException {
+		final HttpURLConnection connection = (HttpURLConnection) openConnection();
+		connection.setRequestMethod("POST");
+		connection.setDoOutput(true);
+
+		if (payload != null) {
+			final OutputStream outputStream = connection.getOutputStream();
+			payload.writeTo(outputStream);
+			outputStream.flush();
+		}
+
+		final int status = connection.getResponseCode();
+		if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
+			final ByteArrayOutputStream errorOutputStream = new ByteArrayOutputStream();
+			TransportFormat.pump(connection.getErrorStream(), errorOutputStream);
+			final String msg = "Error connecting to " + url + '(' + status + "): "
+					+ errorOutputStream.toString("UTF-8");
+			throw new IOException(msg);
+		}
+		connection.disconnect();
 	}
 
 	/**

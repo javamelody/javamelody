@@ -19,16 +19,16 @@ package net.bull.javamelody.internal.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
@@ -44,6 +44,8 @@ class InfluxDB extends MetricsPublisher {
 	private final String prefix;
 	private final String tags;
 
+	private final Map<String, String> httpHeaders = Collections.singletonMap("Content-Type",
+			"plain/text");
 	private final DecimalFormat decimalFormat = new DecimalFormat("0.00",
 			DecimalFormatSymbols.getInstance(Locale.US));
 	private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -102,30 +104,8 @@ class InfluxDB extends MetricsPublisher {
 	synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();
-			final HttpURLConnection connection = (HttpURLConnection) influxDbUrl.openConnection();
-			connection.setConnectTimeout(20000);
-			connection.setReadTimeout(60000);
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "plain/text");
-			connection.setDoOutput(true);
-			if (influxDbUrl.getUserInfo() != null) {
-				final String authorization = Base64Coder.encodeString(influxDbUrl.getUserInfo());
-				connection.setRequestProperty("Authorization", "Basic " + authorization);
-			}
-			final OutputStream outputStream = connection.getOutputStream();
 			// the stream could be compressed in gzip, with Content-Encoding=gzip
-			buffer.writeTo(outputStream);
-			outputStream.flush();
-
-			final int status = connection.getResponseCode();
-			if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
-				final ByteArrayOutputStream errorOutputStream = new ByteArrayOutputStream();
-				TransportFormat.pump(connection.getErrorStream(), errorOutputStream);
-				final String msg = "Error connecting to InfluxDB (" + status + "): "
-						+ errorOutputStream.toString("UTF-8");
-				LOG.warn(msg, new IOException(msg));
-			}
-			connection.disconnect();
+			new LabradorRetriever(influxDbUrl, httpHeaders).post(buffer);
 		} catch (final Exception e) {
 			LOG.warn(e.toString(), e);
 		} finally {
