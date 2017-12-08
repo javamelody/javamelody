@@ -43,7 +43,6 @@ class Datadog extends MetricsPublisher {
 	private final URL datadogUrl;
 	private final String prefix;
 	private final String hostAndTags;
-	private boolean isBeginSeries = true;
 
 	private final Map<String, String> httpHeaders = Collections.singletonMap("Content-Type",
 			"application/json");
@@ -51,6 +50,9 @@ class Datadog extends MetricsPublisher {
 			DecimalFormatSymbols.getInstance(Locale.US));
 	private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 	private final Writer bufferWriter = new OutputStreamWriter(buffer, Charset.forName("UTF-8"));
+	private long lastTime;
+	private String lastTimestamp;
+	private boolean beginSeries;
 
 	Datadog(String datadogApiKey, String prefix, String hostAndTags) {
 		super();
@@ -67,7 +69,7 @@ class Datadog extends MetricsPublisher {
 		this.hostAndTags = hostAndTags;
 		try {
 			bufferWriter.append(BEGIN_SERIES);
-			isBeginSeries = true;
+			beginSeries = true;
 		} catch (final IOException e) {
 			// can not happen
 			throw new IllegalStateException(e);
@@ -98,23 +100,28 @@ class Datadog extends MetricsPublisher {
 		json example for timestamp now, host and tags are optional.
 		"{ \"series\" :
 		        [{\"metric\":\"page.views\",
-		          \"points\":1000,
+		          \"points\":[[$currenttime, 1000]],
 		          \"host\":\"myhost.example.com\",
 		          \"tags\":[\"version:1\"]}
 		        ]
 		}"
 		*/
 
-		if (!isBeginSeries) {
-			bufferWriter.append(",");
+		final long timeInSeconds = System.currentTimeMillis() / 1000;
+		if (lastTime != timeInSeconds) {
+			lastTimestamp = String.valueOf(timeInSeconds);
+			lastTime = timeInSeconds;
 		}
-		isBeginSeries = false;
+		if (beginSeries) {
+			beginSeries = false;
+		} else {
+			bufferWriter.append(',');
+		}
 		bufferWriter.append("\n{\"metric\":\"").append(prefix).append(metric).append("\",");
-		bufferWriter.append("\"points\":[[")
-				.append(String.valueOf(System.currentTimeMillis() / 1000)).append(",")
+		bufferWriter.append("\"points\":[[").append(lastTimestamp).append(',')
 				.append(decimalFormat.format(value)).append("]],");
 		bufferWriter.append(hostAndTags);
-		bufferWriter.append("}");
+		bufferWriter.append('}');
 	}
 
 	@Override
@@ -130,7 +137,7 @@ class Datadog extends MetricsPublisher {
 			// including when the http url can't connect
 			buffer.reset();
 			bufferWriter.append(BEGIN_SERIES);
-			isBeginSeries = true;
+			beginSeries = true;
 		}
 	}
 
