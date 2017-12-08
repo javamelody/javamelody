@@ -43,6 +43,7 @@ class Datadog extends MetricsPublisher {
 	private final URL datadogUrl;
 	private final String prefix;
 	private final String hostAndTags;
+	private boolean isBeginSeries = true;
 
 	private final Map<String, String> httpHeaders = Collections.singletonMap("Content-Type",
 			"application/json");
@@ -66,6 +67,7 @@ class Datadog extends MetricsPublisher {
 		this.hostAndTags = hostAndTags;
 		try {
 			bufferWriter.append(BEGIN_SERIES);
+			isBeginSeries = true;
 		} catch (final IOException e) {
 			// can not happen
 			throw new IllegalStateException(e);
@@ -82,7 +84,7 @@ class Datadog extends MetricsPublisher {
 
 			final String prefix = "javamelody.";
 			// see https://help.datadoghq.com/hc/en-us/articles/203764705-What-are-valid-metric-names-
-			final String hostAndTags = "\"host\":\"" + hostName + "\",\"tags\":[\"application\":\""
+			final String hostAndTags = "\"host\":\"" + hostName + "\",\"tags\":[\"application:"
 					+ contextPath + "\"]";
 			return new Datadog(datadogApiKey, prefix, hostAndTags);
 		}
@@ -102,8 +104,15 @@ class Datadog extends MetricsPublisher {
 		        ]
 		}"
 		*/
+
+		if (!isBeginSeries) {
+			bufferWriter.append(",");
+		}
+		isBeginSeries = false;
 		bufferWriter.append("\n{\"metric\":\"").append(prefix).append(metric).append("\",");
-		bufferWriter.append("\"points\":").append(decimalFormat.format(value)).append(",");
+		bufferWriter.append("\"points\":[[")
+				.append(String.valueOf(System.currentTimeMillis() / 1000)).append(",")
+				.append(decimalFormat.format(value)).append("]],");
 		bufferWriter.append(hostAndTags);
 		bufferWriter.append("}");
 	}
@@ -121,6 +130,7 @@ class Datadog extends MetricsPublisher {
 			// including when the http url can't connect
 			buffer.reset();
 			bufferWriter.append(BEGIN_SERIES);
+			isBeginSeries = true;
 		}
 	}
 
