@@ -125,28 +125,26 @@ public class CollectorServlet extends HttpServlet {
 		I18N.bindLocale(req.getLocale());
 		final CollectorController collectorController = new CollectorController(collectorServer);
 		try {
-			if (appName == null || appUrls == null) {
-				writeMessage(req, resp, collectorController, I18N.getString("donnees_manquantes"));
-				return;
+			try {
+				if (appName == null || appUrls == null) {
+					throw new IllegalArgumentException(I18N.getString("donnees_manquantes"));
+				}
+				if (!appUrls.startsWith("http://") && !appUrls.startsWith("https://")) {
+					throw new IllegalArgumentException(I18N.getString("urls_format"));
+				}
+				collectorController.addCollectorApplication(appName, appUrls);
+				LOGGER.info("monitored application added: " + appName);
+				LOGGER.info("urls of the monitored application: " + appUrls);
+				CollectorController.showAlertAndRedirectTo(resp,
+						I18N.getFormattedString("application_ajoutee", appName),
+						"?application=" + appName);
+			} catch (final FileNotFoundException e) {
+				final String message = I18N.getString("monitoring_configure");
+				throw new IllegalStateException(message + '\n' + e.toString(), e);
+			} catch (final StreamCorruptedException e) {
+				final String message = I18N.getFormattedString("reponse_non_comprise", appUrls);
+				throw new IllegalStateException(message + '\n' + e.toString(), e);
 			}
-			if (!appUrls.startsWith("http://") && !appUrls.startsWith("https://")) {
-				writeMessage(req, resp, collectorController, I18N.getString("urls_format"));
-				return;
-			}
-			collectorController.addCollectorApplication(appName, appUrls);
-			LOGGER.info("monitored application added: " + appName);
-			LOGGER.info("urls of the monitored application: " + appUrls);
-			CollectorController.showAlertAndRedirectTo(resp,
-					I18N.getFormattedString("application_ajoutee", appName),
-					"?application=" + appName);
-		} catch (final FileNotFoundException e) {
-			final String message = I18N.getString("monitoring_configure");
-			LOGGER.warn(message, e);
-			writeMessage(req, resp, collectorController, message + '\n' + e.toString());
-		} catch (final StreamCorruptedException e) {
-			final String message = I18N.getFormattedString("reponse_non_comprise", appUrls);
-			LOGGER.warn(message, e);
-			writeMessage(req, resp, collectorController, message + '\n' + e.toString());
 		} catch (final Exception e) {
 			LOGGER.warn(e.toString(), e);
 			writeMessage(req, resp, collectorController, e.toString());
