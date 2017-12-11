@@ -127,7 +127,7 @@ public class LabradorRetriever {
 		this(url, null);
 	}
 
-	public LabradorRetriever(URL url, Map<String, String> headers) {
+	LabradorRetriever(URL url, Map<String, String> headers) {
 		super();
 		assert url != null;
 		this.url = url;
