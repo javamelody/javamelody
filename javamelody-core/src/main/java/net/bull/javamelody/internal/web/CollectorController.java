@@ -97,6 +97,12 @@ public class CollectorController { // NOPMD
 		collectorServer.addCollectorApplication(appName, urls);
 	}
 
+	public void removeCollectorApplicationNodes(String appName, String nodeUrls)
+			throws IOException {
+		final List<URL> urls = Parameters.parseUrl(nodeUrls);
+		collectorServer.removeCollectorApplicationNodes(appName, urls);
+	}
+
 	public void doMonitoring(HttpServletRequest req, HttpServletResponse resp, String application)
 			throws IOException {
 		try {

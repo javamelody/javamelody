@@ -125,10 +125,15 @@ public class CollectorServlet extends HttpServlet {
 			addCollectorApplication(req, resp);
 		} catch (final Exception e) {
 			LOGGER.warn(e.toString(), e);
-			final CollectorController collectorController = new CollectorController(
-					collectorServer);
-			final String application = collectorController.getApplication(req, resp);
-			collectorController.writeMessage(req, resp, application, e.toString());
+			final String userAgent = req.getHeader("User-Agent");
+			if (userAgent != null && userAgent.startsWith("Java")) {
+				resp.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.toString());
+			} else {
+				final CollectorController collectorController = new CollectorController(
+						collectorServer);
+				final String application = collectorController.getApplication(req, resp);
+				collectorController.writeMessage(req, resp, application, e.toString());
+			}
 		} finally {
 			I18N.unbindLocale();
 		}
@@ -138,6 +143,7 @@ public class CollectorServlet extends HttpServlet {
 			throws IOException {
 		final String appName = req.getParameter("appName");
 		final String appUrls = req.getParameter("appUrls");
+		final String action = req.getParameter("action");
 		try {
 			if (appName == null || appUrls == null) {
 				throw new IllegalArgumentException(I18N.getString("donnees_manquantes"));
@@ -147,12 +153,17 @@ public class CollectorServlet extends HttpServlet {
 			}
 			final CollectorController collectorController = new CollectorController(
 					collectorServer);
-			collectorController.addCollectorApplication(appName, appUrls);
-			LOGGER.info("monitored application added: " + appName);
-			LOGGER.info("urls of the monitored application: " + appUrls);
-			CollectorController.showAlertAndRedirectTo(resp,
-					I18N.getFormattedString("application_ajoutee", appName),
-					"?application=" + appName);
+			if ("unregisterNode".equals(action)) {
+				collectorController.removeCollectorApplicationNodes(appName, appUrls);
+				LOGGER.info("monitored application node removed: " + appName + ", url: " + appUrls);
+			} else {
+				collectorController.addCollectorApplication(appName, appUrls);
+				LOGGER.info("monitored application added: " + appName);
+				LOGGER.info("urls of the monitored application: " + appUrls);
+				CollectorController.showAlertAndRedirectTo(resp,
+						I18N.getFormattedString("application_ajoutee", appName),
+						"?application=" + appName);
+			}
 		} catch (final FileNotFoundException e) {
 			final String message = I18N.getString("monitoring_configure");
 			throw new IllegalStateException(message + '\n' + e.toString(), e);

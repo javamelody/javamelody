@@ -20,6 +20,8 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +44,7 @@ import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterError;
+import net.bull.javamelody.internal.model.LabradorRetriever;
 import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.web.CounterServletResponseWrapper;
 import net.bull.javamelody.internal.web.HttpAuth;
@@ -58,6 +61,8 @@ public class MonitoringFilter implements Filter {
 	private static boolean instanceCreated;
 
 	private static final List<String> CONTEXT_PATHS = new ArrayList<String>();
+
+	private static URL unregisterApplicationNodeInCollectServerUrl;
 
 	private boolean instanceEnabled;
 
@@ -512,5 +517,74 @@ public class MonitoringFilter implements Filter {
 
 	FilterContext getFilterContext() {
 		return filterContext;
+	}
+
+	/**
+	 * Asynchronously calls the optional collect server to register this application's node to be monitored.
+	 * @param applicationName Name of the application in the collect server:<br/>
+	 *     if it already exists the node will be added with the other nodes, if null name will be "contextPath_hostname".
+	 * @param collectServerUrl Url of the collect server,
+	 *     for example http://11.22.33.44:8080
+	 * @param applicationNodeUrl Url of this application node to be called by the collect server,
+	 *     for example http://55.66.77.88:8080/mywebapp
+	 */
+	public static void registerApplicationNodeInCollectServer(String applicationName,
+			URL collectServerUrl, URL applicationNodeUrl) {
+		if (collectServerUrl == null || applicationNodeUrl == null) {
+			throw new IllegalArgumentException(
+					"collectServerUrl and applicationNodeUrl must not be null");
+		}
+		final String appName;
+		if (applicationName == null) {
+			appName = Parameters.getCurrentApplication();
+		} else {
+			appName = applicationName;
+		}
+		final URL registerUrl;
+		try {
+			registerUrl = new URL(collectServerUrl.toExternalForm() + "?appName="
+					+ URLEncoder.encode(appName, "UTF-8") + "&appUrls="
+					// "UTF-8" as said in javadoc
+					+ URLEncoder.encode(applicationNodeUrl.toExternalForm(), "UTF-8")
+					+ "&action=registerNode");
+			unregisterApplicationNodeInCollectServerUrl = new URL(
+					registerUrl.toExternalForm().replace("registerNode", "unregisterNode"));
+		} catch (final IOException e) {
+			// can't happen if urls are ok
+			throw new IllegalArgumentException(e);
+		}
+
+		// this is an asynchronous call because if this method is called when the webapp is starting,
+		// the webapp can not respond to the collect server for the first collect of data
+		final Thread thread = new Thread("javamelody registerApplicationNodeInCollectServer") {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					throw new IllegalStateException(e);
+				}
+				try {
+					new LabradorRetriever(registerUrl).post(null);
+					LOG.info("application node added to the collect server");
+				} catch (final IOException e) {
+					LOG.warn("Unable to register application's node in the collect server ( " + e
+							+ ')', e);
+				}
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	/**
+	 * Call the optional collect server to unregister this application's node.
+	 * @throws IOException e
+	 */
+	public static void unregisterApplicationNodeInCollectServer() throws IOException {
+		if (unregisterApplicationNodeInCollectServerUrl != null) {
+			new LabradorRetriever(unregisterApplicationNodeInCollectServerUrl).post(null);
+			LOG.info("application node removed from the collect server");
+		}
 	}
 }

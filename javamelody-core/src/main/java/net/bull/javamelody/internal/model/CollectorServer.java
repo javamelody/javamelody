@@ -19,6 +19,7 @@ package net.bull.javamelody.internal.model;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -287,8 +288,17 @@ public class CollectorServer {
 				}
 			}
 		}
-		collectForApplication(application, urls);
-		Parameters.addCollectorApplication(application, urls);
+		final List<URL> currentUrls = getUrlsByApplication(application);
+		final List<URL> nodesUrls;
+		if (currentUrls != null) {
+			nodesUrls = new ArrayList<URL>(currentUrls);
+			nodesUrls.addAll(urls);
+			removeCollectorApplication(application);
+		} else {
+			nodesUrls = urls;
+		}
+		collectForApplication(application, nodesUrls);
+		Parameters.addCollectorApplication(application, nodesUrls);
 	}
 
 	public void removeCollectorApplication(String application) throws IOException {
@@ -296,6 +306,19 @@ public class CollectorServer {
 		final RemoteCollector remoteCollector = remoteCollectorsByApplication.remove(application);
 		if (remoteCollector != null && remoteCollector.getCollector() != null) {
 			remoteCollector.getCollector().stop();
+		}
+	}
+
+	public void removeCollectorApplicationNodes(String appName, List<URL> nodeUrls)
+			throws IOException {
+		final List<URL> currentUrls = getUrlsByApplication(appName);
+		if (currentUrls != null) {
+			final List<URL> newUrls = new ArrayList<URL>(currentUrls);
+			newUrls.removeAll(nodeUrls);
+			removeCollectorApplication(appName);
+			if (!newUrls.isEmpty()) {
+				addCollectorApplication(appName, newUrls);
+			}
 		}
 	}
 
