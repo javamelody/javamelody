@@ -293,7 +293,10 @@ public class CollectorServer {
 
 	public void removeCollectorApplication(String application) throws IOException {
 		Parameters.removeCollectorApplication(application);
-		remoteCollectorsByApplication.remove(application);
+		final RemoteCollector remoteCollector = remoteCollectorsByApplication.remove(application);
+		if (remoteCollector != null && remoteCollector.getCollector() != null) {
+			remoteCollector.getCollector().stop();
+		}
 	}
 
 	/**
