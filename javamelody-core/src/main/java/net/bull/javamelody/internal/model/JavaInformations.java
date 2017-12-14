@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
@@ -302,13 +303,25 @@ public class JavaInformations implements Serializable { // NOPMD
 
 	private static String buildJvmArguments() {
 		final StringBuilder jvmArgs = new StringBuilder();
+		final Pattern jvmHidePropertyValuesRegexp = Parameters.getJvmHidePropertyValuesRegexp();
 		for (final String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
-			jvmArgs.append(jvmArg).append('\n');
+			if(jvmHidePropertyValuesRegexp != null && jvmHidePropertyValuesRegexp.matcher(jvmArg).matches()){
+				jvmArgs.append(hideJvmPropertyValue(jvmArg)).append('\n');
+			}else {
+				jvmArgs.append(jvmArg).append('\n');
+			}
 		}
 		if (jvmArgs.length() > 0) {
 			jvmArgs.deleteCharAt(jvmArgs.length() - 1);
 		}
 		return jvmArgs.toString();
+	}
+
+	private static String hideJvmPropertyValue(final String jvmArg){
+		if(jvmArg.contains("=")){
+			return jvmArg.substring(0,jvmArg.indexOf("=") +1 ) +"**********";
+		}
+		return jvmArg;
 	}
 
 	public static List<ThreadInformations> buildThreadInformationsList() {

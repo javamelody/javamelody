@@ -48,6 +48,7 @@ import net.bull.javamelody.internal.model.TransportFormat;
  * @author Emeric Vernat
  */
 public class TestParameters {
+
 	private static void setProperty(Parameter parameter, String value) {
 		Utils.setProperty(parameter, value);
 	}
@@ -242,5 +243,14 @@ public class TestParameters {
 		assertFalse("isCounterHidden", Parameters.isCounterHidden("http"));
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		assertTrue("isCounterHidden", Parameters.isCounterHidden("http"));
+	}
+
+
+	@Test
+	public void getJvmHidePropertyValuesRegexp(){
+		setProperty(Parameter.JVM_HIDE_PROPERTY_VALUE_REGEXP, null);
+		assertNull("jvmHidePropertyValues", Parameters.getJvmHidePropertyValuesRegexp());
+		setProperty(Parameter.JVM_HIDE_PROPERTY_VALUE_REGEXP, ".*pass.*");
+		assertNotNull("jvmHidePropertyValue regexp not found", Parameters.getJvmHidePropertyValuesRegexp());
 	}
 }

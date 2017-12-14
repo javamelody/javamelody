@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -330,6 +331,15 @@ public final class Parameters {
 	public static boolean isSystemActionsEnabled() {
 		final String parameter = Parameter.SYSTEM_ACTIONS_ENABLED.getValue();
 		return parameter == null || Boolean.parseBoolean(parameter);
+	}
+
+	/**
+	 * Pattern for JVM-Property value shadowing
+	 * @return Pattern or null
+	 */
+	public static Pattern getJvmHidePropertyValuesRegexp() {
+		final String parameter = Parameter.JVM_HIDE_PROPERTY_VALUE_REGEXP.getValue();
+		return parameter == null ? null :Pattern.compile(parameter);
 	}
 
 	public static boolean isPdfEnabled() {
