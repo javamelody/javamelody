@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.publish;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -91,7 +91,7 @@ class Statsd extends MetricsPublisher {
 	}
 
 	@Override
-	synchronized void addValue(String metric, double value) throws IOException {
+	public synchronized void addValue(String metric, double value) throws IOException {
 		// String.format(Locale.ENGLISH, "%s:%d|ms", key, value) for a timing value
 		// String.format(Locale.ENGLISH, "%s:%s|c", key, magnitude) to increment a counter
 		// String.format(Locale.ENGLISH, "%s:%s|g", key, value) for a gauge value
@@ -100,7 +100,7 @@ class Statsd extends MetricsPublisher {
 	}
 
 	@Override
-	synchronized void send() throws IOException {
+	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();
 			final byte[] bytes = buffer.toByteArray();
@@ -137,7 +137,7 @@ class Statsd extends MetricsPublisher {
 	}
 
 	@Override
-	void stop() {
+	public void stop() {
 		// nothing
 	}
 }

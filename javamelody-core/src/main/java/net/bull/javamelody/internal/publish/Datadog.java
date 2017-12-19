@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.publish;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.model.LabradorRetriever;
 
 /**
  * Publish chart data to <a href='https://www.datadoghq.com/'>Datadog</a>.
@@ -94,7 +95,7 @@ class Datadog extends MetricsPublisher {
 	}
 
 	@Override
-	synchronized void addValue(String metric, double value) throws IOException {
+	public synchronized void addValue(String metric, double value) throws IOException {
 		/*
 		https://docs.datadoghq.com/api/
 		json example for timestamp now, host and tags are optional.
@@ -125,7 +126,7 @@ class Datadog extends MetricsPublisher {
 	}
 
 	@Override
-	synchronized void send() throws IOException {
+	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.append(END_SERIES);
 			bufferWriter.flush();
@@ -142,7 +143,7 @@ class Datadog extends MetricsPublisher {
 	}
 
 	@Override
-	void stop() {
+	public void stop() {
 		// nothing
 	}
 }

@@ -36,6 +36,7 @@ import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter.CounterRequestContextComparator;
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
+import net.bull.javamelody.internal.publish.MetricsPublisher;
 
 /**
  * Collecteur de données sur les compteurs, avec son propre thread, pour remplir les courbes.

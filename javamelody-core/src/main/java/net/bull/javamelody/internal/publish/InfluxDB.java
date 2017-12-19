@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.publish;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
+import net.bull.javamelody.internal.model.LabradorRetriever;
 
 /**
  * Publish chart data to <a href='https://www.influxdata.com/time-series-platform/'>InfluxDB</a>.
@@ -87,7 +88,7 @@ class InfluxDB extends MetricsPublisher {
 	}
 
 	@Override
-	synchronized void addValue(String metric, double value) throws IOException {
+	public synchronized void addValue(String metric, double value) throws IOException {
 		// ex curl -i -XPOST 'http://localhost:8086/write?db=mydb&precision=s' --data-binary
 		// 'cpu_load_short,direction=in,host=server01,region=us-west value=2.0 1422568543702'
 		final long timeInSeconds = System.currentTimeMillis() / 1000;
@@ -101,7 +102,7 @@ class InfluxDB extends MetricsPublisher {
 	}
 
 	@Override
-	synchronized void send() throws IOException {
+	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();
 			// the stream could be compressed in gzip, with Content-Encoding=gzip
@@ -116,7 +117,7 @@ class InfluxDB extends MetricsPublisher {
 	}
 
 	@Override
-	void stop() {
+	public void stop() {
 		// nothing
 	}
 }

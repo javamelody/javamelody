@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.publish;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,7 +32,7 @@ import net.bull.javamelody.Utils;
  * Test unitaire de la classe StatsD.
  * @author Emeric Vernat
  */
-public class TestStatsD {
+public class TestDatadog {
 	/**
 	 * Initialisation.
 	 */
@@ -45,16 +45,17 @@ public class TestStatsD {
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {
-		Statsd statsd = Statsd.getInstance("/test", "hostname");
-		assertNull("getInstance", statsd);
-		setProperty(Parameter.STATSD_ADDRESS, "localhost:8125");
-		statsd = Statsd.getInstance("/test", "hostname");
-		assertNotNull("getInstance", statsd);
-		statsd.addValue("metric", 1);
-		statsd.addValue("metric", 2);
-		statsd.addValue("metric", 3);
-		statsd.send();
-		statsd.stop();
+		Datadog datadog = Datadog.getInstance("/test", "hostname");
+		assertNull("getInstance", datadog);
+		setProperty(Parameter.DATADOG_API_KEY, "9775a026f1ca7d1c6c5af9d94d9595a4");
+		datadog = Datadog.getInstance("/test", "hostname");
+		assertNotNull("getInstance", datadog);
+		datadog.addValue("metric", 1);
+		datadog.addValue("metric", 2);
+		datadog.addValue("metric", 3);
+		// n'appelons pas le serveur datadog
+		// datadog.send();
+		datadog.stop();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

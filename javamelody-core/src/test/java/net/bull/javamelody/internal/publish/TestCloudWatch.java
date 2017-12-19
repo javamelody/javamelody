@@ -15,24 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.publish;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.amazonaws.SdkClientException;
+
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 
 /**
- * Test unitaire de la classe InfluxDB.
+ * Test unitaire de la classe CloudWatch.
  * @author Emeric Vernat
  */
-public class TestInfluxDB {
+public class TestCloudWatch {
 	/**
 	 * Initialisation.
 	 */
@@ -41,20 +44,35 @@ public class TestInfluxDB {
 		Utils.initialize();
 	}
 
-	/** Test. 
-	 * @throws IOException e */
+	/** Test. */
 	@Test
-	public void test() throws IOException {
-		InfluxDB influxdb = InfluxDB.getInstance("/test", "hostname");
-		assertNull("getInstance", influxdb);
-		setProperty(Parameter.INFLUXDB_URL, "http://localhost:8086/write?db=mydb");
-		influxdb = InfluxDB.getInstance("/test", "hostname");
-		assertNotNull("getInstance", influxdb);
-		influxdb.addValue("metric", 1);
-		influxdb.addValue("metric", 2);
-		influxdb.addValue("metric", 3);
-		influxdb.send();
-		influxdb.stop();
+	public void test() {
+		CloudWatch cloudWatch = CloudWatch.getInstance("/test", "hostname");
+		assertNull("getInstance", cloudWatch);
+		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
+		System.setProperty("aws.region", "us-west-1");
+		try {
+			cloudWatch = CloudWatch.getInstance("/test", "hostname");
+		} catch (final NoClassDefFoundError e) {
+			// for ant tests
+			return;
+		}
+		assertNotNull("getInstance", cloudWatch);
+		cloudWatch.addValue("metric", 1);
+		cloudWatch.addValue("metric", 2);
+		cloudWatch.addValue("metric", 3);
+		boolean exception = false;
+		try {
+			cloudWatch.send();
+		} catch (final SdkClientException e) {
+			exception = true;
+		} catch (final IOException e) {
+			exception = true;
+		}
+		assertTrue("no credentials provided", exception);
+		setProperty(Parameter.CLOUDWATCH_NAMESPACE, null);
+		System.getProperties().remove("aws.region");
+		cloudWatch.stop();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.bull.javamelody.internal.model;
+package net.bull.javamelody.internal.publish;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -29,10 +29,10 @@ import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 
 /**
- * Test unitaire de la classe StatsD.
+ * Test unitaire de la classe InfluxDB.
  * @author Emeric Vernat
  */
-public class TestDatadog {
+public class TestInfluxDB {
 	/**
 	 * Initialisation.
 	 */
@@ -45,17 +45,16 @@ public class TestDatadog {
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {
-		Datadog datadog = Datadog.getInstance("/test", "hostname");
-		assertNull("getInstance", datadog);
-		setProperty(Parameter.DATADOG_API_KEY, "9775a026f1ca7d1c6c5af9d94d9595a4");
-		datadog = Datadog.getInstance("/test", "hostname");
-		assertNotNull("getInstance", datadog);
-		datadog.addValue("metric", 1);
-		datadog.addValue("metric", 2);
-		datadog.addValue("metric", 3);
-		// n'appelons pas le serveur datadog
-		// datadog.send();
-		datadog.stop();
+		InfluxDB influxdb = InfluxDB.getInstance("/test", "hostname");
+		assertNull("getInstance", influxdb);
+		setProperty(Parameter.INFLUXDB_URL, "http://localhost:8086/write?db=mydb");
+		influxdb = InfluxDB.getInstance("/test", "hostname");
+		assertNotNull("getInstance", influxdb);
+		influxdb.addValue("metric", 1);
+		influxdb.addValue("metric", 2);
+		influxdb.addValue("metric", 3);
+		influxdb.send();
+		influxdb.stop();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {
