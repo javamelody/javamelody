@@ -24,6 +24,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.Parameters;
@@ -146,6 +147,14 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  */
 class PrometheusController {
 
+	// Pre-Compiled Patterns. Pattern is thread-safe. Matcher is not.
+	private static final Pattern CAMEL_TO_SNAKE_PATTERN = Pattern.compile("([a-z])([A-Z]+)");
+	private static final Pattern SANITIZE_TO_UNDERSCORE_PATTERN = Pattern.compile("[- :]");
+	private static final Pattern SANITIZE_REMOVE_PATTERN = Pattern.compile("[^a-z0-9_]");
+
+	private static final String EMPTY_STRING = "";
+	private static final String UNDERSCORE = "_";
+
 	private enum MetricType {
 		GAUGE("gauge"), COUNTER("counter");
 
@@ -201,18 +210,11 @@ class PrometheusController {
 
 		// tomcat
 		if (javaInformations.getTomcatInformationsList() != null) {
-			for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
-				if (tcInfo.getRequestCount() > 0) {
-					reportOnTomcatInformations(tcInfo);
-				}
-			}
+			reportOnTomcatConnectors();
 		}
 
-		// caches
 		if (javaInformations.isCacheEnabled()) {
-			for (final CacheInformations cacheInfo : javaInformations.getCacheInformationsList()) {
-				reportOnCacheInformations(cacheInfo);
-			}
+			reportOnCaches();
 		}
 
 		reportOnCollector();
@@ -220,6 +222,205 @@ class PrometheusController {
 		if (Parameter.PROMETHEUS_INCLUDE_LAST_VALUE.getValueAsBoolean()) {
 			reportOnLastValues();
 		}
+	}
+
+	private void reportOnTomcatConnectors() {
+
+		// TODO - Is filtering by tcInfo.getRequestCount() > 0 necessary?
+		final List<TomcatInformations> connectors = javaInformations.getTomcatInformationsList();
+		final int numberOfConnectors = connectors.size();
+
+		final TomcatConnectorDataPrinter printer = new TomcatConnectorDataPrinter(numberOfConnectors);
+
+		for (int i = 0; i < numberOfConnectors; i++) {
+			 final TomcatInformations connector = connectors.get(i);
+
+			 printer.registerConnector(i, connector);
+		}
+
+		printer.printAllTomcatInformationMetrics();
+	}
+
+	private class LabeledDataPrinter {
+
+		final int numberOfLabels;
+		final String[] labels;
+
+		private LabeledDataPrinter(final int numberOfLabels) {
+			this.numberOfLabels = numberOfLabels;
+			this.labels = new String[numberOfLabels];
+		}
+
+		void registerLabel(final int number, final String label) {
+			labels[number] = label;
+		}
+
+		void printFormattedValuesWithLabels(final MetricType metricType,
+											final String metricName,
+											final String metricDescription,
+											final String[] metricValues) {
+			printHeader(metricType, metricName, metricDescription);
+
+			for (int i = 0; i < numberOfLabels; i++) {
+				out.print(metricName);
+				out.print(labels[i]);
+				out.print(' ');
+				out.println(metricValues[i]);
+			}
+		}
+
+	}
+
+	private class TomcatConnectorDataPrinter extends LabeledDataPrinter {
+
+		private final String[] threadsMax;
+		private final String[] currentThreadsBusy;
+		private final String[] bytesReceived;
+		private final String[] bytesSent;
+		private final String[] requestCount;
+		private final String[] errorCount;
+		private final String[] processingTime;
+		private final String[] maxTime;
+
+		private TomcatConnectorDataPrinter(final int numberOfLabels) {
+			super(numberOfLabels);
+			threadsMax = new String[numberOfLabels];
+			currentThreadsBusy = new String[numberOfLabels];
+			bytesReceived = new String[numberOfLabels];
+			bytesSent = new String[numberOfLabels];
+			requestCount = new String[numberOfLabels];
+			errorCount = new String[numberOfLabels];
+			processingTime = new String[numberOfLabels];
+			maxTime = new String[numberOfLabels];
+		}
+
+		void registerConnector(final int number, final TomcatInformations tcInfo) {
+			registerLabel(number, "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}");
+
+			threadsMax[number] = Integer.toString(tcInfo.getMaxThreads());
+			currentThreadsBusy[number] = Integer.toString(tcInfo.getCurrentThreadsBusy());
+			bytesReceived[number] = Long.toString(tcInfo.getBytesReceived());
+			bytesSent[number] = Long.toString(tcInfo.getBytesSent());
+			requestCount[number] = Integer.toString(tcInfo.getRequestCount());
+			errorCount[number] = Integer.toString(tcInfo.getErrorCount());
+			processingTime[number] = Long.toString(tcInfo.getProcessingTime());
+			maxTime[number] = Long.toString(tcInfo.getMaxTime());
+		}
+
+		private void printAllTomcatInformationMetrics() {
+			printFormattedValuesWithLabels(MetricType.GAUGE, "javamelody_tomcat_threads_max",
+				"tomcat max threads", threadsMax);
+
+			printFormattedValuesWithLabels(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count",
+				"tomcat currently busy threads", currentThreadsBusy);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER, "javamelody_tomcat_received_bytes",
+				"tomcat total received bytes", bytesReceived);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER, "javamelody_tomcat_sent_bytes",
+				"tomcat total sent bytes", bytesSent);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER, "javamelody_tomcat_request_count",
+				"tomcat total request count", requestCount);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER, "javamelody_tomcat_error_count",
+				"tomcat total error count", errorCount);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis",
+				"tomcat total processing time", processingTime);
+
+			printFormattedValuesWithLabels(MetricType.GAUGE, "javamelody_tomcat_max_time_millis",
+				"tomcat max time for single request", maxTime);
+		}
+
+	}
+
+	private class CacheReportDataPrinter extends LabeledDataPrinter {
+
+		private final String[] inMemoryObjectCount;
+		private final String[] inMemoryUsedPct;
+		private final String[] inMemoryHitsPct;
+		private final String[] onDiskObjectCount;
+		private final String[] cacheHitsPct;
+		private final String[] inMemoryHits;
+		private final String[] cacheHits;
+		private final String[] cacheMisses;
+
+		private CacheReportDataPrinter(final int size) {
+			super(size);
+			inMemoryObjectCount = new String[numberOfLabels];
+			inMemoryUsedPct = new String[numberOfLabels];
+			inMemoryHitsPct = new String[numberOfLabels];
+			onDiskObjectCount = new String[numberOfLabels];
+			cacheHitsPct = new String[numberOfLabels];
+			inMemoryHits = new String[numberOfLabels];
+			cacheHits = new String[numberOfLabels];
+			cacheMisses = new String[numberOfLabels];
+		}
+
+		void registerCache(final int number, final CacheInformations cacheInfo) {
+
+			registerLabel(number, "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}");
+
+			inMemoryObjectCount[number] = Long.toString(cacheInfo.getInMemoryObjectCount());
+			inMemoryUsedPct[number] = decimalFormat.format((double) cacheInfo.getInMemoryPercentUsed() / 100);
+			inMemoryHitsPct[number] = decimalFormat.format((double) cacheInfo.getInMemoryHitsRatio() / 100);
+			onDiskObjectCount[number] = Long.toString(cacheInfo.getOnDiskObjectCount());
+			cacheHitsPct[number] = decimalFormat.format((double) cacheInfo.getHitsRatio() / 100);
+			inMemoryHits[number] = Long.toString(cacheInfo.getInMemoryHits());
+			cacheHits[number] = Long.toString(cacheInfo.getCacheHits());
+			cacheMisses[number] = Long.toString(cacheInfo.getCacheMisses());
+		}
+
+		private void printAllCacheMetrics() {
+			printFormattedValuesWithLabels(MetricType.GAUGE,
+				"javamelody_cache_in_memory_count", "cache in memory count",
+				inMemoryObjectCount);
+
+			printFormattedValuesWithLabels(MetricType.GAUGE,
+				"javamelody_cache_in_memory_used_pct", "in memory used percent",
+				inMemoryUsedPct);
+
+			printFormattedValuesWithLabels(MetricType.GAUGE,
+				"javamelody_cache_in_memory_hits_pct", "cache in memory hit percent",
+				inMemoryHitsPct);
+
+			printFormattedValuesWithLabels(MetricType.GAUGE,
+				"javamelody_cache_on_disk_count", "cache on disk count",
+				onDiskObjectCount);
+
+			printFormattedValuesWithLabels(MetricType.GAUGE,
+				"javamelody_cache_hits_pct", "cache hits percent",
+				cacheHitsPct);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER,
+				"javamelody_cache_in_memory_hits_count", "total cache in memory hit count",
+				inMemoryHits);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER,
+				"javamelody_cache_hits_count", "total cache hit count",
+				cacheHits);
+
+			printFormattedValuesWithLabels(MetricType.COUNTER,
+				"javamelody_cache_misses_count", "cache misses count",
+				cacheMisses);
+		}
+
+	}
+
+
+	private void reportOnCaches() {
+		final List<CacheInformations> cacheInformations = javaInformations.getCacheInformationsList();
+
+		final int numberOfCaches = cacheInformations.size();
+		final CacheReportDataPrinter printer = new CacheReportDataPrinter(numberOfCaches);
+
+		for (int i = 0; i < numberOfCaches; i++) {
+			final CacheInformations cacheInfo = cacheInformations.get(i);
+			printer.registerCache(i, cacheInfo);
+		}
+
+		printer.printAllCacheMetrics();
 	}
 
 	/**
@@ -378,53 +579,13 @@ class PrometheusController {
 				memoryInformations.getGarbageCollectionTimeMillis());
 	}
 
-	private void reportOnTomcatInformations(TomcatInformations tcInfo) {
-		final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_threads_max", fields,
-				"tomcat max threads", tcInfo.getMaxThreads());
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count", fields,
-				"tomcat busy threads", tcInfo.getCurrentThreadsBusy());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_received_bytes", fields,
-				"tomcat received bytes", tcInfo.getBytesReceived());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_sent_bytes", fields,
-				"tomcat sent bytes", tcInfo.getBytesSent());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_request_count", fields,
-				"tomcat request count", tcInfo.getRequestCount());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_error_count", fields,
-				"tomcat error count", tcInfo.getErrorCount());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis", fields,
-				"tomcat processing time", tcInfo.getProcessingTime());
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_max_time_millis", fields,
-				"tomcat max time", tcInfo.getMaxTime());
-	}
-
-	private void reportOnCacheInformations(CacheInformations cacheInfo) {
-		final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
-		printLongWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_count", fields,
-				"cache in memory count", cacheInfo.getInMemoryObjectCount());
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_used_pct", fields,
-				"in memory used percent", (double) cacheInfo.getInMemoryPercentUsed() / 100);
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct", fields,
-				"cache in memory hit percent", (double) cacheInfo.getInMemoryHitsRatio() / 100);
-		printLongWithFields(MetricType.GAUGE, "javamelody_cache_on_disk_count", fields,
-				"cache on disk count", cacheInfo.getOnDiskObjectCount());
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_hits_pct", fields,
-				"cache hits percent", (double) cacheInfo.getHitsRatio() / 100);
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count", fields,
-				"cache in memory hit count", cacheInfo.getInMemoryHits());
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_hits_count", fields,
-				"cache  hit count", cacheInfo.getCacheHits());
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_misses_count", fields,
-				"cache misses count", cacheInfo.getCacheMisses());
-	}
-
 	/**
 	 * Converts a camelCase or CamelCase string to camel_case
 	 * @param camel String
 	 * @return String
 	 */
-	private static String camelToSnake(String camel) {
-		return camel.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
+	private static String camelToSnake(final String camel) {
+		return CAMEL_TO_SNAKE_PATTERN.matcher(camel).replaceAll("$1_$2").toLowerCase(Locale.US);
 	}
 
 	/**
@@ -432,40 +593,25 @@ class PrometheusController {
 	 * @param name String
 	 * @return String
 	 */
-	private static String sanitizeName(String name) {
-		return name.toLowerCase(Locale.US).replaceAll("[- :]", "_").replaceAll("[^a-z0-9_]", "");
+	private static String sanitizeName(final String name) {
+		final String lowerCaseName = name.toLowerCase(Locale.US);
+		final String separatorReplacedName = SANITIZE_TO_UNDERSCORE_PATTERN.matcher(lowerCaseName).replaceAll(UNDERSCORE);
+
+		return SANITIZE_REMOVE_PATTERN.matcher(separatorReplacedName).replaceAll(EMPTY_STRING);
 	}
 
 	// prints a long metric value, including HELP and TYPE rows
 	private void printLong(MetricType metricType, String name, String description, long value) {
-		printLongWithFields(metricType, name, null, description, value);
-	}
-
-	// prints a double metric value, including HELP and TYPE rows
-	private void printDouble(MetricType metricType, String name, String description, double value) {
-		printDoubleWithFields(metricType, name, null, description, value);
-	}
-
-	// prints a long metric value with optional fields, including HELP and TYPE rows
-	private void printLongWithFields(MetricType metricType, String name, String fields,
-			String description, long value) {
 		printHeader(metricType, name, description);
 		out.print(name);
-		if (fields != null) {
-			out.print(fields);
-		}
 		out.print(' ');
 		out.println(value);
 	}
 
-	// prints a double metric value with optional fields, including HELP and TYPE rows
-	private void printDoubleWithFields(MetricType metricType, String name, String fields,
-			String description, double value) {
+	// prints a double metric value, including HELP and TYPE rows
+	private void printDouble(MetricType metricType, String name, String description, double value) {
 		printHeader(metricType, name, description);
 		out.print(name);
-		if (fields != null) {
-			out.print(fields);
-		}
 		out.print(' ');
 		out.println(decimalFormat.format(value));
 	}
