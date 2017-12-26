@@ -22,8 +22,11 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.Parameters;
@@ -142,9 +145,18 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *
  *  The `lastValue` metrics are DISABLED by default.
  *
- * @author https://github.com/slynn1324
+ * @author https://github.com/slynn1324, Stefan Penndorf, Emeric Vernat
  */
 class PrometheusController {
+
+	private static final String METRIC_PREFIX = "javamelody_";
+	// Pre-Compiled Patterns. Pattern is thread-safe. Matcher is not.
+	private static final Pattern CAMEL_TO_SNAKE_PATTERN = Pattern.compile("([a-z])([A-Z]+)");
+	private static final Pattern SANITIZE_TO_UNDERSCORE_PATTERN = Pattern.compile("[- :]");
+	private static final Pattern SANITIZE_REMOVE_PATTERN = Pattern.compile("[^a-z0-9_]");
+
+	private static final String EMPTY_STRING = "";
+	private static final String UNDERSCORE = "_";
 
 	private enum MetricType {
 		GAUGE("gauge"), COUNTER("counter");
@@ -193,6 +205,7 @@ class PrometheusController {
 	 * @throws IOException e
 	 */
 	void report() throws IOException {
+		// see https://prometheus.io/docs/instrumenting/exposition_formats/ for text format
 		// memory
 		reportOnMemoryInformations(javaInformations.getMemoryInformations());
 
@@ -201,24 +214,129 @@ class PrometheusController {
 
 		// tomcat
 		if (javaInformations.getTomcatInformationsList() != null) {
-			for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
-				if (tcInfo.getRequestCount() > 0) {
-					reportOnTomcatInformations(tcInfo);
-				}
-			}
+			reportOnTomcatInformations();
 		}
 
 		// caches
 		if (javaInformations.isCacheEnabled()) {
-			for (final CacheInformations cacheInfo : javaInformations.getCacheInformationsList()) {
-				reportOnCacheInformations(cacheInfo);
-			}
+			reportOnCacheInformations();
 		}
 
 		reportOnCollector();
 
 		if (Parameter.PROMETHEUS_INCLUDE_LAST_VALUE.getValueAsBoolean()) {
 			reportOnLastValues();
+		}
+	}
+
+	// CHECKSTYLE:OFF
+	private void reportOnCacheInformations() {
+		// CHECKSTYLE:ON
+		final List<CacheInformations> cacheInformationsList = javaInformations
+				.getCacheInformationsList();
+		final Map<String, CacheInformations> cacheInfos = new LinkedHashMap<String, CacheInformations>(
+				cacheInformationsList.size());
+		for (final CacheInformations cacheInfo : cacheInformationsList) {
+			final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
+			cacheInfos.put(fields, cacheInfo);
+		}
+		printHeader(MetricType.GAUGE, "cache_in_memory_count", "cache in memory count");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("cache_in_memory_count", entry.getKey(),
+					entry.getValue().getInMemoryObjectCount());
+		}
+		printHeader(MetricType.GAUGE, "cache_in_memory_used_pct", "in memory used percent");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printDoubleWithFields("cache_in_memory_used_pct", entry.getKey(),
+					(double) entry.getValue().getInMemoryPercentUsed() / 100);
+		}
+		printHeader(MetricType.GAUGE, "cache_in_memory_hits_pct", "cache in memory hit percent");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printDoubleWithFields("cache_in_memory_hits_pct", entry.getKey(),
+					(double) entry.getValue().getInMemoryHitsRatio() / 100);
+		}
+		printHeader(MetricType.GAUGE, "cache_on_disk_count", "cache on disk count");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("cache_on_disk_count", entry.getKey(),
+					entry.getValue().getOnDiskObjectCount());
+		}
+		printHeader(MetricType.GAUGE, "cache_hits_pct", "cache hits percent");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printDoubleWithFields("cache_hits_pct", entry.getKey(),
+					(double) entry.getValue().getHitsRatio() / 100);
+		}
+		printHeader(MetricType.COUNTER, "cache_in_memory_hits_count",
+				"total cache in memory hit count");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("cache_in_memory_hits_count", entry.getKey(),
+					entry.getValue().getInMemoryHits());
+		}
+		printHeader(MetricType.COUNTER, "cache_hits_count", "total cache hit count");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("cache_hits_count", entry.getKey(),
+					entry.getValue().getCacheHits());
+		}
+		printHeader(MetricType.COUNTER, "cache_misses_count", "total cache misses count");
+		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("cache_misses_count", entry.getKey(),
+					entry.getValue().getCacheMisses());
+		}
+	}
+
+	// CHECKSTYLE:OFF
+	private void reportOnTomcatInformations() {
+		// CHECKSTYLE:ON
+		final Map<String, TomcatInformations> tcInfos = new LinkedHashMap<String, TomcatInformations>();
+		for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
+			if (tcInfo.getRequestCount() > 0) {
+				final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
+				tcInfos.put(fields, tcInfo);
+			}
+		}
+		if (tcInfos.isEmpty()) {
+			return;
+		}
+		printHeader(MetricType.GAUGE, "tomcat_threads_max", "tomcat max threads");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_threads_max", entry.getKey(),
+					entry.getValue().getMaxThreads());
+		}
+		printHeader(MetricType.GAUGE, "tomcat_thread_busy_count", "tomcat currently busy threads");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_thread_busy_count", entry.getKey(),
+					entry.getValue().getCurrentThreadsBusy());
+		}
+		printHeader(MetricType.COUNTER, "tomcat_received_bytes", "tomcat total received bytes");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_received_bytes", entry.getKey(),
+					entry.getValue().getBytesReceived());
+		}
+		printHeader(MetricType.COUNTER, "tomcat_sent_bytes", "tomcat total sent bytes");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_sent_bytes", entry.getKey(),
+					entry.getValue().getBytesSent());
+		}
+		printHeader(MetricType.COUNTER, "tomcat_request_count", "tomcat total request count");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_request_count", entry.getKey(),
+					entry.getValue().getRequestCount());
+		}
+		printHeader(MetricType.COUNTER, "tomcat_error_count", "tomcat total error count");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_error_count", entry.getKey(),
+					entry.getValue().getErrorCount());
+		}
+		printHeader(MetricType.COUNTER, "tomcat_processing_time_millis",
+				"tomcat total processing time");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_processing_time_millis", entry.getKey(),
+					entry.getValue().getProcessingTime());
+		}
+		printHeader(MetricType.GAUGE, "tomcat_max_time_millis",
+				"tomcat max time for single request");
+		for (final Map.Entry<String, TomcatInformations> entry : tcInfos.entrySet()) {
+			printLongWithFields("tomcat_max_time_millis", entry.getKey(),
+					entry.getValue().getMaxTime());
 		}
 	}
 
@@ -241,12 +359,12 @@ class PrometheusController {
 			}
 
 			final String sanitizedName = sanitizeName(counter.getName());
-			printLong(MetricType.COUNTER, "javamelody_" + sanitizedName + "_hits_count",
-					"javamelody counter", hits);
-			printLong(MetricType.COUNTER, "javamelody_" + sanitizedName + "_errors_count",
-					"javamelody counter", errors);
-			printLong(MetricType.COUNTER, "javamelody_" + sanitizedName + "_duration_millis",
-					"javamelody counter", duration);
+			printLong(MetricType.COUNTER, sanitizedName + "_hits_count", "javamelody counter",
+					hits);
+			printLong(MetricType.COUNTER, sanitizedName + "_errors_count", "javamelody counter",
+					errors);
+			printLong(MetricType.COUNTER, sanitizedName + "_duration_millis", "javamelody counter",
+					duration);
 		}
 	}
 
@@ -266,13 +384,13 @@ class PrometheusController {
 	private void reportOnLastValues() throws IOException {
 		Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
 		for (final JRobin jrobin : jrobins) {
-			printDouble(MetricType.GAUGE, "javamelody_last_value_" + camelToSnake(jrobin.getName()),
+			printDouble(MetricType.GAUGE, "last_value_" + camelToSnake(jrobin.getName()),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 
 		jrobins = collector.getDisplayedOtherJRobins();
 		for (final JRobin jrobin : jrobins) {
-			printDouble(MetricType.GAUGE, "javamelody_last_value_" + camelToSnake(jrobin.getName()),
+			printDouble(MetricType.GAUGE, "last_value_" + camelToSnake(jrobin.getName()),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 	}
@@ -283,139 +401,98 @@ class PrometheusController {
 	private void reportOnJavaInformations() {
 		// sessions
 		if (javaInformations.getSessionCount() >= 0) {
-			printLong(MetricType.GAUGE, "javamelody_sessions_active_count", "active session count",
+			printLong(MetricType.GAUGE, "sessions_active_count", "active session count",
 					javaInformations.getSessionCount());
-			printLong(MetricType.GAUGE, "javamelody_sessions_age_avg_minutes",
-					"session avg age in minutes", javaInformations.getSessionMeanAgeInMinutes());
+			printLong(MetricType.GAUGE, "sessions_age_avg_minutes", "session avg age in minutes",
+					javaInformations.getSessionMeanAgeInMinutes());
 		}
 
 		// connections
 		if (!Parameters.isNoDatabase()) {
-			printLong(MetricType.COUNTER, "javamelody_transactions_count", "transactions count",
+			printLong(MetricType.COUNTER, "transactions_count", "transactions count",
 					javaInformations.getTransactionCount());
-			printLong(MetricType.GAUGE, "javamelody_connections_used_count",
-					"used connections count", javaInformations.getActiveConnectionCount());
-			printLong(MetricType.GAUGE, "javamelody_connections_active_count", "active connections",
+			printLong(MetricType.GAUGE, "connections_used_count", "used connections count",
+					javaInformations.getActiveConnectionCount());
+			printLong(MetricType.GAUGE, "connections_active_count", "active connections",
 					javaInformations.getActiveConnectionCount());
 			if (javaInformations.getMaxConnectionCount() > 0) {
-				printLong(MetricType.GAUGE, "javamelody_connections_max_count", "max connections",
+				printLong(MetricType.GAUGE, "connections_max_count", "max connections",
 						javaInformations.getMaxConnectionCount());
-				printDouble(MetricType.GAUGE, "javamelody_connections_used_pct",
-						"used connections percentage",
+				printDouble(MetricType.GAUGE, "connections_used_pct", "used connections percentage",
 						javaInformations.getUsedConnectionPercentage());
 			}
 		}
 
 		// system
 		if (javaInformations.getSystemLoadAverage() >= 0) {
-			printDouble(MetricType.GAUGE, "javamelody_system_load_avg", "system load average",
+			printDouble(MetricType.GAUGE, "system_load_avg", "system load average",
 					javaInformations.getSystemLoadAverage());
 		}
 		if (javaInformations.getSystemCpuLoad() >= 0) {
-			printDouble(MetricType.GAUGE, "javamelody_system_cpu_load_pct", "system cpu load",
+			printDouble(MetricType.GAUGE, "system_cpu_load_pct", "system cpu load",
 					javaInformations.getSystemCpuLoad());
 		}
 		if (javaInformations.getUnixOpenFileDescriptorCount() >= 0) {
-			printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_open_count",
+			printDouble(MetricType.GAUGE, "system_unix_file_descriptors_open_count",
 					"unix open file descriptors count",
 					javaInformations.getUnixOpenFileDescriptorCount());
-			printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_max",
+			printDouble(MetricType.GAUGE, "system_unix_file_descriptors_max",
 					"unix file descriptors max", javaInformations.getUnixMaxFileDescriptorCount());
-			printDouble(MetricType.GAUGE, "javamelody_system_unix_file_descriptors_open_pct",
+			printDouble(MetricType.GAUGE, "system_unix_file_descriptors_open_pct",
 					"unix open file descriptors percentage",
 					javaInformations.getUnixOpenFileDescriptorPercentage());
 		}
 		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
-			printLong(MetricType.GAUGE, "javamelody_system_tmp_space_free_bytes",
-					"tmp space available", javaInformations.getFreeDiskSpaceInTemp());
+			printLong(MetricType.GAUGE, "system_tmp_space_free_bytes", "tmp space available",
+					javaInformations.getFreeDiskSpaceInTemp());
 		}
 
 		// jvm
-		printLong(MetricType.GAUGE, "javamelody_jvm_start_time", "jvm start time",
+		printLong(MetricType.GAUGE, "jvm_start_time", "jvm start time",
 				javaInformations.getStartDate().getTime());
-		printLong(MetricType.COUNTER, "javamelody_jvm_cpu_millis", "jvm cpu millis",
+		printLong(MetricType.COUNTER, "jvm_cpu_millis", "jvm cpu millis",
 				javaInformations.getProcessCpuTimeMillis());
-		printLong(MetricType.GAUGE, "javamelody_system_processors_count", "processors available",
+		printLong(MetricType.GAUGE, "system_processors_count", "processors available",
 				javaInformations.getAvailableProcessors());
 
 		// threads
-		printLong(MetricType.GAUGE, "javamelody_threads_count", "threads count",
+		printLong(MetricType.GAUGE, "threads_count", "threads count",
 				javaInformations.getThreadCount());
-		printLong(MetricType.GAUGE, "javamelody_threads_max_count", "threads peak count",
+		printLong(MetricType.GAUGE, "threads_max_count", "threads peak count",
 				javaInformations.getPeakThreadCount());
-		printLong(MetricType.COUNTER, "javamelody_threads_started_count", "total threads started",
+		printLong(MetricType.COUNTER, "threads_started_count", "total threads started",
 				javaInformations.getTotalStartedThreadCount());
-		printLong(MetricType.GAUGE, "javamelody_threads_active_count", "active thread count",
+		printLong(MetricType.GAUGE, "threads_active_count", "active thread count",
 				javaInformations.getActiveThreadCount());
 
 		// jobs
 		if (javaInformations.isJobEnabled()) {
-			printLong(MetricType.GAUGE, "javamelody_job_executing_count", "executing job count",
+			printLong(MetricType.GAUGE, "job_executing_count", "executing job count",
 					javaInformations.getCurrentlyExecutingJobCount());
 		}
 	}
 
 	private void reportOnMemoryInformations(MemoryInformations memoryInformations) {
-		printLong(MetricType.GAUGE, "javamelody_memory_used_bytes", "used memory in bytes",
+		printLong(MetricType.GAUGE, "memory_used_bytes", "used memory in bytes",
 				memoryInformations.getUsedMemory());
-		printLong(MetricType.GAUGE, "javamelody_memory_max_bytes", "max memory in bytes",
+		printLong(MetricType.GAUGE, "memory_max_bytes", "max memory in bytes",
 				memoryInformations.getMaxMemory());
-		printDouble(MetricType.GAUGE, "javamelody_memory_used_pct", "memory used percentage",
+		printDouble(MetricType.GAUGE, "memory_used_pct", "memory used percentage",
 				memoryInformations.getUsedMemoryPercentage());
 		if (memoryInformations.getUsedPermGen() > 0) {
-			printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_used_bytes",
+			printLong(MetricType.GAUGE, "memory_perm_gen_used_bytes",
 					"used perm gen memory in bytes", memoryInformations.getUsedPermGen());
 			if (memoryInformations.getMaxPermGen() > 0) {
-				printLong(MetricType.GAUGE, "javamelody_memory_perm_gen_max_bytes",
+				printLong(MetricType.GAUGE, "memory_perm_gen_max_bytes",
 						"max perm gen memory in bytes", memoryInformations.getMaxPermGen());
-				printDouble(MetricType.GAUGE, "javamelody_memory_perm_gen_used_pct",
+				printDouble(MetricType.GAUGE, "memory_perm_gen_used_pct",
 						"used perm gen memory percentage",
 						memoryInformations.getUsedPermGenPercentage());
 			}
 		}
 
-		printDouble(MetricType.COUNTER, "javamelody_memory_gc_millis", "gc time millis",
+		printDouble(MetricType.COUNTER, "memory_gc_millis", "gc time millis",
 				memoryInformations.getGarbageCollectionTimeMillis());
-	}
-
-	private void reportOnTomcatInformations(TomcatInformations tcInfo) {
-		final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_threads_max", fields,
-				"tomcat max threads", tcInfo.getMaxThreads());
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_thread_busy_count", fields,
-				"tomcat busy threads", tcInfo.getCurrentThreadsBusy());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_received_bytes", fields,
-				"tomcat received bytes", tcInfo.getBytesReceived());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_sent_bytes", fields,
-				"tomcat sent bytes", tcInfo.getBytesSent());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_request_count", fields,
-				"tomcat request count", tcInfo.getRequestCount());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_error_count", fields,
-				"tomcat error count", tcInfo.getErrorCount());
-		printLongWithFields(MetricType.COUNTER, "javamelody_tomcat_processing_time_millis", fields,
-				"tomcat processing time", tcInfo.getProcessingTime());
-		printLongWithFields(MetricType.GAUGE, "javamelody_tomcat_max_time_millis", fields,
-				"tomcat max time", tcInfo.getMaxTime());
-	}
-
-	private void reportOnCacheInformations(CacheInformations cacheInfo) {
-		final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
-		printLongWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_count", fields,
-				"cache in memory count", cacheInfo.getInMemoryObjectCount());
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_used_pct", fields,
-				"in memory used percent", (double) cacheInfo.getInMemoryPercentUsed() / 100);
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_in_memory_hits_pct", fields,
-				"cache in memory hit percent", (double) cacheInfo.getInMemoryHitsRatio() / 100);
-		printLongWithFields(MetricType.GAUGE, "javamelody_cache_on_disk_count", fields,
-				"cache on disk count", cacheInfo.getOnDiskObjectCount());
-		printDoubleWithFields(MetricType.GAUGE, "javamelody_cache_hits_pct", fields,
-				"cache hits percent", (double) cacheInfo.getHitsRatio() / 100);
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_in_memory_hits_count", fields,
-				"cache in memory hit count", cacheInfo.getInMemoryHits());
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_hits_count", fields,
-				"cache  hit count", cacheInfo.getCacheHits());
-		printLongWithFields(MetricType.COUNTER, "javamelody_cache_misses_count", fields,
-				"cache misses count", cacheInfo.getCacheMisses());
 	}
 
 	/**
@@ -424,7 +501,7 @@ class PrometheusController {
 	 * @return String
 	 */
 	private static String camelToSnake(String camel) {
-		return camel.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
+		return CAMEL_TO_SNAKE_PATTERN.matcher(camel).replaceAll("$1_$2").toLowerCase(Locale.US);
 	}
 
 	/**
@@ -433,23 +510,27 @@ class PrometheusController {
 	 * @return String
 	 */
 	private static String sanitizeName(String name) {
-		return name.toLowerCase(Locale.US).replaceAll("[- :]", "_").replaceAll("[^a-z0-9_]", "");
+		final String lowerCaseName = name.toLowerCase(Locale.US);
+		final String separatorReplacedName = SANITIZE_TO_UNDERSCORE_PATTERN.matcher(lowerCaseName)
+				.replaceAll(UNDERSCORE);
+		return SANITIZE_REMOVE_PATTERN.matcher(separatorReplacedName).replaceAll(EMPTY_STRING);
 	}
 
 	// prints a long metric value, including HELP and TYPE rows
 	private void printLong(MetricType metricType, String name, String description, long value) {
-		printLongWithFields(metricType, name, null, description, value);
+		printHeader(metricType, name, description);
+		printLongWithFields(name, null, value);
 	}
 
 	// prints a double metric value, including HELP and TYPE rows
 	private void printDouble(MetricType metricType, String name, String description, double value) {
-		printDoubleWithFields(metricType, name, null, description, value);
+		printHeader(metricType, name, description);
+		printDoubleWithFields(name, null, value);
 	}
 
-	// prints a long metric value with optional fields, including HELP and TYPE rows
-	private void printLongWithFields(MetricType metricType, String name, String fields,
-			String description, long value) {
-		printHeader(metricType, name, description);
+	// prints a long metric value with optional fields
+	private void printLongWithFields(String name, String fields, long value) {
+		out.print(METRIC_PREFIX);
 		out.print(name);
 		if (fields != null) {
 			out.print(fields);
@@ -458,10 +539,9 @@ class PrometheusController {
 		out.println(value);
 	}
 
-	// prints a double metric value with optional fields, including HELP and TYPE rows
-	private void printDoubleWithFields(MetricType metricType, String name, String fields,
-			String description, double value) {
-		printHeader(metricType, name, description);
+	// prints a double metric value with optional fields
+	private void printDoubleWithFields(String name, String fields, double value) {
+		out.print(METRIC_PREFIX);
 		out.print(name);
 		if (fields != null) {
 			out.print(fields);
@@ -473,11 +553,13 @@ class PrometheusController {
 	// prints the HELP and TYPE rows
 	private void printHeader(MetricType metricType, String name, String description) {
 		out.print("# HELP ");
+		out.print(METRIC_PREFIX);
 		out.print(name);
 		out.print(' ');
 		out.println(description);
 
 		out.print("# TYPE ");
+		out.print(METRIC_PREFIX);
 		out.print(name);
 		out.print(' ');
 		out.println(metricType.getCode());
