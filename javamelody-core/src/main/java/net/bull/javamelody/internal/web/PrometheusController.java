@@ -230,7 +230,7 @@ class PrometheusController {
 	}
 
 	// CHECKSTYLE:OFF
-	private void reportOnCacheInformations() {
+	private void reportOnCacheInformations() { // NOPMD
 		// CHECKSTYLE:ON
 		final List<CacheInformations> cacheInformationsList = javaInformations
 				.getCacheInformationsList();
@@ -284,7 +284,7 @@ class PrometheusController {
 	}
 
 	// CHECKSTYLE:OFF
-	private void reportOnTomcatInformations() {
+	private void reportOnTomcatInformations() { // NOPMD
 		// CHECKSTYLE:ON
 		final Map<String, TomcatInformations> tcInfos = new LinkedHashMap<String, TomcatInformations>();
 		for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
