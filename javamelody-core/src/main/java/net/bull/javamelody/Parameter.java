@@ -197,6 +197,16 @@ public enum Parameter {
 	SYSTEM_ACTIONS_ENABLED("system-actions-enabled"),
 
 	/**
+	 * Hide passwords in JVM Property values ( default not set).
+	 * With a given a JVM_HIDE_PROPERTY_VALUE_REGEXP like ".*pass.*"
+	 * this converts JVM-Properties from
+	 * -Dsaml.password=secret
+	 * to
+	 * -Dsaml.password=**********
+	 */
+	JVM_HIDE_PROPERTY_VALUE_REGEXP("jvm-hide-property-value-regexp"),
+
+	/**
 	 * Active la protection contre CSRF (false par défaut).
 	 */
 	CSRF_PROTECTION_ENABLED("csrf-protection-enabled"),
