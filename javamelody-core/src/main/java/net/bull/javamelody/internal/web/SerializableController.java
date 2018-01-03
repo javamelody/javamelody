@@ -231,14 +231,22 @@ public class SerializableController {
 	@RequestPart(HttpPart.LAST_VALUE)
 	Serializable createLastValueSerializable(@RequestParameter(HttpParameter.GRAPH) String graph)
 			throws IOException {
-		final JRobin jrobin = collector.getJRobin(graph);
-		final double lastValue;
-		if (jrobin == null) {
-			lastValue = -1;
-		} else {
-			lastValue = jrobin.getLastValue();
+		if (graph != null) {
+			final JRobin jrobin = collector.getJRobin(graph);
+			final double lastValue;
+			if (jrobin == null) {
+				lastValue = -1;
+			} else {
+				lastValue = jrobin.getLastValue();
+			}
+			return lastValue;
 		}
-		return lastValue;
+		final Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
+		final Map<String, Double> lastValues = new LinkedHashMap<String, Double>(jrobins.size());
+		for (final JRobin jrobin : jrobins) {
+			lastValues.put(jrobin.getName(), jrobin.getLastValue());
+		}
+		return (Serializable) lastValues;
 	}
 
 	@RequestPart(HttpPart.DATABASE)
