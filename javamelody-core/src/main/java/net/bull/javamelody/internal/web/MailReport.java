@@ -155,15 +155,17 @@ public class MailReport {
 				output.close();
 			}
 
-			String subject = null;			
-			final String subjectPrefixParameter = Parameters.getParameterValue(Parameter.MAIL_SUBJECT_PREFIX);
-			if (subjectPrefixParameter != null) {
-				subject = MessageFormat.format(subjectPrefixParameter, collector.getApplication());
+			String subject;
+			final String subjectPrefix = Parameter.MAIL_SUBJECT_PREFIX.getValue();
+			if (subjectPrefix != null) {
+				// échappement des quotes qui sont des caractères spéciaux pour MessageFormat
+				subject = MessageFormat.format(subjectPrefix.replace("'", "''"),
+						collector.getApplication());
 			} else {
 				subject = I18N.getFormattedString("Monitoring_sur", collector.getApplication());
-			}			
-			subject +=" - " + period.getLabel();
-			
+			}
+			subject += " - " + period.getLabel();
+
 			final Mailer mailer = new Mailer(Parameter.MAIL_SESSION.getValue());
 			final String adminEmails = Parameter.ADMIN_EMAILS.getValue();
 			mailer.send(adminEmails, subject, "", Collections.singletonList(tmpFile), false);
