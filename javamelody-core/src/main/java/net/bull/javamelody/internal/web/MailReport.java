@@ -21,6 +21,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -154,8 +155,15 @@ public class MailReport {
 				output.close();
 			}
 
-			final String subject = I18N.getFormattedString("Monitoring_sur",
-					collector.getApplication()) + " - " + period.getLabel();
+			String subject = null;			
+			final String subjectPrefixParameter = Parameters.getParameterValue(Parameter.MAIL_SUBJECT_PREFIX);
+			if (subjectPrefixParameter != null) {
+				subject = MessageFormat.format(subjectPrefixParameter, collector.getApplication());
+			} else {
+				subject = I18N.getFormattedString("Monitoring_sur", collector.getApplication());
+			}			
+			subject +=" - " + period.getLabel();
+			
 			final Mailer mailer = new Mailer(Parameter.MAIL_SESSION.getValue());
 			final String adminEmails = Parameter.ADMIN_EMAILS.getValue();
 			mailer.send(adminEmails, subject, "", Collections.singletonList(tmpFile), false);
