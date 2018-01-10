@@ -619,7 +619,10 @@ public final class MavenArtifact implements Serializable {
 		if (value != null && value.startsWith("${") && value.endsWith("}")) {
 			final String propertyName = value.substring("${".length(),
 					value.length() - "}".length());
-			return properties.get(propertyName);
+			final String propertyValue = properties.get(propertyName);
+			if (propertyValue != null) {
+				return propertyValue;
+			}
 		}
 		return value;
 	}
