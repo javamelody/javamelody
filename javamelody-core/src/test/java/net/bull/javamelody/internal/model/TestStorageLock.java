@@ -45,7 +45,7 @@ public class TestStorageLock {
 		Utils.initialize();
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {

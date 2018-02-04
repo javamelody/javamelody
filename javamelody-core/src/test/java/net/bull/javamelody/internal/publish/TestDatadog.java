@@ -41,7 +41,7 @@ public class TestDatadog {
 		Utils.initialize();
 	}
 
-	/** Test. 
+	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void test() throws IOException {
