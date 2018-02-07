@@ -69,6 +69,17 @@ public final class Range implements Serializable {
 		if (normalizedStartDate.getTime() > System.currentTimeMillis()) {
 			// pour raison de performance, on limite à aujourd'hui (et non 2000 ans)
 			normalizedStartDate = new Date();
+
+			// mais ici la date de début est à 0h
+			// (et le formatage de cette date reste donc au même jour)
+			// for issue 668 when using custom period with both dates in the future to display a graph
+			// (RrdException: Invalid timestamps specified: 1504686302, 1504686302)
+			final Calendar calendar = Calendar.getInstance();
+			calendar.setTime(normalizedStartDate);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			normalizedStartDate = calendar.getTime();
 		}
 
 		if (normalizedEndDate.getTime() > System.currentTimeMillis()) {
