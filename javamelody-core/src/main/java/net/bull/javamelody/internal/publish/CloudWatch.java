@@ -147,16 +147,27 @@ class CloudWatch extends MetricsPublisher {
 			datumList = new ArrayList<MetricDatum>(buffer);
 			buffer.clear();
 		}
-
 		// note: Each PutMetricData request is limited to 40 KB in size for HTTP POST requests.
-		final PutMetricDataRequest request = new PutMetricDataRequest()
-				.withNamespace(cloudWatchNamespace).withMetricData(datumList);
-		try {
-			awsCloudWatch.putMetricData(request);
-		} catch (final Exception e) {
-			// pas catch (AmazonCloudWatchException) sinon ClassNotFoundException dans Jenkins par ex
-			throw new IOException("Error connecting to AWS CloudWatch", e);
+		// And the collection MetricData must not have a size greater than 20.
+		final List<List<MetricDatum>> parts = partition(datumList, 20);
+		for (final List<MetricDatum> part : parts) {
+			final PutMetricDataRequest request = new PutMetricDataRequest()
+					.withNamespace(cloudWatchNamespace).withMetricData(part);
+			try {
+				awsCloudWatch.putMetricData(request);
+			} catch (final Exception e) {
+				// pas catch (AmazonCloudWatchException) sinon ClassNotFoundException dans Jenkins par ex
+				throw new IOException("Error connecting to AWS CloudWatch", e);
+			}
 		}
+	}
+
+	private static <T> List<List<T>> partition(List<T> list, int partitionSize) {
+		final List<List<T>> partitions = new ArrayList<List<T>>();
+		for (int i = 0; i < list.size(); i += partitionSize) {
+			partitions.add(list.subList(i, Math.min(i + partitionSize, list.size())));
+		}
+		return partitions;
 	}
 
 	@Override
