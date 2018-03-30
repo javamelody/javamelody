@@ -629,8 +629,9 @@ public class Collector { // NOPMD
 
 	private void addJRobinValue(JRobin jRobin, double value) throws IOException {
 		jRobin.addValue(value);
-		// if value == -1, then do not publish that metric
-		if (value >= 0) {
+		// if value == -1, then do not publish that metric,
+		// and metricsPublishers may be null (#735)
+		if (value >= 0 && metricsPublishers != null) {
 			for (final MetricsPublisher metricsPublisher : metricsPublishers) {
 				metricsPublisher.addValue(jRobin.getName(), value);
 			}
