@@ -96,7 +96,7 @@ class Statsd extends MetricsPublisher {
 		// String.format(Locale.ENGLISH, "%s:%s|c", key, magnitude) to increment a counter
 		// String.format(Locale.ENGLISH, "%s:%s|g", key, value) for a gauge value
 		bufferWriter.append(prefix).append(metric).append(':');
-		bufferWriter.append(decimalFormat.format(value)).append('\n');
+		bufferWriter.append(decimalFormat.format(value)).append("|g\n");
 	}
 
 	@Override
