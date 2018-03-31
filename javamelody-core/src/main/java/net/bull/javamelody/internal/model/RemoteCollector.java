@@ -75,16 +75,27 @@ public class RemoteCollector {
 		final List<JavaInformations> javaInfosList = new ArrayList<JavaInformations>();
 		final Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations = new HashMap<JavaInformations, List<CounterRequestContext>>();
 		final StringBuilder sb = new StringBuilder();
+		IOException exception = null;
 		for (final URL url : urlsForCollect) {
-			final List<Counter> counters = new ArrayList<Counter>();
-			final List<Serializable> serialized = createRemoteCall(url).collectData();
-			dispatchSerializables(serialized, counters, javaInfosList,
-					counterRequestContextsByJavaInformations, sb);
-			if (this.collector == null || aggregationDisabled) {
-				this.collector = new Collector(application, counters);
-			} else {
-				addRequestsAndErrors(counters);
+			try {
+				final List<Counter> counters = new ArrayList<Counter>();
+				final List<Serializable> serialized = createRemoteCall(url).collectData();
+				dispatchSerializables(serialized, counters, javaInfosList,
+						counterRequestContextsByJavaInformations, sb);
+				if (this.collector == null || aggregationDisabled) {
+					this.collector = new Collector(application, counters);
+				} else {
+					addRequestsAndErrors(counters);
+				}
+			} catch (final IOException e) {
+				exception = e;
+				// if a node of the application is no longer reachable, collect data for the others
+				continue;
 			}
+		}
+		if (exception != null && javaInfosList.isEmpty()) {
+			// but if there is no node reachable, throw the exception to say that the application is not available
+			throw exception;
 		}
 		this.javaInformationsList = javaInfosList;
 		this.currentRequests = counterRequestContextsByJavaInformations;
