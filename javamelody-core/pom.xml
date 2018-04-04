@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.72.0-SNAPSHOT</version>
+	<version>1.72.0</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - Core</name>
 	<description>Monitoring of JavaEE applications</description>
@@ -30,7 +30,7 @@
 		<connection>scm:git:git@github.com:javamelody/javamelody.git</connection>
 		<developerConnection>scm:git:git@github.com:javamelody/javamelody.git</developerConnection>
 		<url>https://github.com/javamelody/javamelody</url>
-		<tag>HEAD</tag>
+		<tag>javamelody-core-1.72.0</tag>
 	</scm>
 	<ciManagement>
 		<system>Jenkins</system>
