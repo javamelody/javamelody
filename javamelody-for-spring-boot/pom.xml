@@ -34,7 +34,7 @@
 		<!-- JavaMelody Spring Boot Starter -->
 		<dependency>
 			<groupId>net.bull.javamelody</groupId>
-			<artifactId>javamelody-spring-boot-starter</artifactId>
+			<artifactId>javamelody-core</artifactId>
 			<version>${javamelody.version}</version>
 		</dependency>
 
