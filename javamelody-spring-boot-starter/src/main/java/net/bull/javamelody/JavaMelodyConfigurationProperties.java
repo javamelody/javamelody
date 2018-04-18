@@ -36,8 +36,18 @@ public class JavaMelodyConfigurationProperties {
 	 */
 	public static final String PREFIX = "javamelody";
 
+	/**
+	 * If JavaMelody should be enabled within the application. Default: <code>true</code>
+	 */
 	private boolean enabled = true;
+	/**
+	 * Comma-separated list of data source names which should be excluded from monitoring.
+	 */
 	private String excludedDatasources;
+	/**
+	 * Map of initialization parameters to be passed to the JavaMelody monitoring filter.
+	 * The available parameters are listed here: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
+	 */
 	private Map<String, String> initParameters = new HashMap<String, String>();
 
 	/**
@@ -78,7 +88,8 @@ public class JavaMelodyConfigurationProperties {
 
 	/**
 	 * Returns a map of initialization parameters to be passed to the JavaMelody monitoring filter.
-	 *
+	 * The available parameters are listed here: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
+	 * 
 	 * @return Initialization parameters for the JavaMelody monitoring filter.
 	 */
 	public Map<String, String> getInitParameters() {
@@ -87,7 +98,8 @@ public class JavaMelodyConfigurationProperties {
 
 	/**
 	 * Sets a map of initialization parameters to be passed to the JavaMelody monitoring filter.
-	 *
+	 * The available parameters are listed here: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
+	 * 
 	 * @param initParameters Initialization parameters for the JavaMelody monitoring filter.
 	 */
 	public void setInitParameters(Map<String, String> initParameters) {
