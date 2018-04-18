@@ -106,9 +106,9 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean(name = REGISTRATION_BEAN_NAME)
 	@ConditionalOnMissingBean(name = REGISTRATION_BEAN_NAME)
-	public FilterRegistrationBean monitoringFilter(JavaMelodyConfigurationProperties properties,
-			ServletContext servletContext) {
-		final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+	public FilterRegistrationBean<MonitoringFilter> monitoringFilter(
+			JavaMelodyConfigurationProperties properties, ServletContext servletContext) {
+		final FilterRegistrationBean<MonitoringFilter> registrationBean = new FilterRegistrationBean<MonitoringFilter>();
 
 		// Create the monitoring filter and set its configuration parameters.
 		final MonitoringFilter filter = new MonitoringFilter();
