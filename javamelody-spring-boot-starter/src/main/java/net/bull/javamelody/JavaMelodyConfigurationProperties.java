@@ -48,7 +48,7 @@ public class JavaMelodyConfigurationProperties {
 	 * Map of initialization parameters to be passed to the JavaMelody monitoring filter.
 	 * The available parameters are listed here: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
 	 */
-	private Map<String, String> initParameters = new HashMap<String, String>();
+	private Map<String, String> initParameters = new HashMap<>();
 
 	/**
 	 * Returns if JavaMelody should be enabled within the application.

@@ -87,7 +87,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	public ServletListenerRegistrationBean<EventListener> monitoringSessionListener(
 			ServletContext servletContext) {
-		final ServletListenerRegistrationBean<EventListener> servletListenerRegistrationBean = new ServletListenerRegistrationBean<EventListener>(
+		final ServletListenerRegistrationBean<EventListener> servletListenerRegistrationBean = new ServletListenerRegistrationBean<>(
 				new SessionListener());
 		if (servletContext.getFilterRegistration("javamelody") != null) {
 			// if webapp deployed as war in a container with MonitoringFilter and SessionListener already added by web-fragment.xml,
@@ -108,7 +108,7 @@ public class JavaMelodyAutoConfiguration {
 	@ConditionalOnMissingBean(name = REGISTRATION_BEAN_NAME)
 	public FilterRegistrationBean<MonitoringFilter> monitoringFilter(
 			JavaMelodyConfigurationProperties properties, ServletContext servletContext) {
-		final FilterRegistrationBean<MonitoringFilter> registrationBean = new FilterRegistrationBean<MonitoringFilter>();
+		final FilterRegistrationBean<MonitoringFilter> registrationBean = new FilterRegistrationBean<>();
 
 		// Create the monitoring filter and set its configuration parameters.
 		final MonitoringFilter filter = new MonitoringFilter();
@@ -165,7 +165,7 @@ public class JavaMelodyAutoConfiguration {
 		final SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
 		if (excludedDatasources != null && excludedDatasources.trim().length() > 0) {
 			processor.setExcludedDatasources(
-					new HashSet<String>(Arrays.asList(excludedDatasources.split(","))));
+					new HashSet<>(Arrays.asList(excludedDatasources.split(","))));
 		}
 		return processor;
 	}
