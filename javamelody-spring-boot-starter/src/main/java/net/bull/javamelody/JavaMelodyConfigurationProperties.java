@@ -37,7 +37,7 @@ public class JavaMelodyConfigurationProperties {
 	public static final String PREFIX = "javamelody";
 
 	/**
-	 * If JavaMelody should be enabled within the application. Default: <code>true</code>
+	 * If JavaMelody should be enabled within the application.
 	 */
 	private boolean enabled = true;
 	/**
