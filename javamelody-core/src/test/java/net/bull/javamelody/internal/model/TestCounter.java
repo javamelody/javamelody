@@ -505,4 +505,22 @@ public class TestCounter {
 			fail("toString vide");
 		}
 	}
+
+	/** Test. */
+	@Test
+	public void testAggregateMultipleGroups() {
+		final String nonMatchingSubGroup = "(?:/[^/]+)"; // matches / followed by non / characters until next /
+		final String matchingSubGroup = "([^/]+)";
+		final String regex = "^" + nonMatchingSubGroup + "{2}/" + matchingSubGroup + ".*$";
+		Pattern transformPattern = Pattern.compile(regex);
+		counter.setRequestTransformPattern(transformPattern);
+		counter.addRequest("/some/url/randomString12345/relevant", 100, 50, false, 1000);
+		List <CounterRequest> requests = counter.getRequests();
+		assert requests.size() == 1;
+		for (CounterRequest request : requests) {
+			System.out.println(request.getName());
+			assert request.getName().equals("/some/url/$/relevant");
+		}
+
+	}
 }

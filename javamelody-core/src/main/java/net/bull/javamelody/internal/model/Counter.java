@@ -612,21 +612,44 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	private String getAggregateRequestName(String requestName) {
-		final String aggregateRequestName;
+		String aggregateRequestName;
 		if (requestTransformPattern == null) {
 			aggregateRequestName = requestName;
 		} else {
+
 			// ce pattern optionnel permet de transformer la description de la requête
 			// pour supprimer des parties variables (identifiant d'objet par exemple)
 			// et pour permettre l'agrégation sur cette requête
-			final Matcher matcher = requestTransformPattern.matcher(requestName);
-			try {
-				aggregateRequestName = matcher.replaceAll(TRANSFORM_REPLACEMENT);
-			} catch (final StackOverflowError e) {
-				// regexp can throw StackOverflowError for (A|B)*
-				// see https://github.com/javamelody/javamelody/issues/480
-				LOG.warn(e.toString(), e);
-				return requestName;
+			Matcher matcher = requestTransformPattern.matcher(requestName);
+			// need to .matches() to access group matches with match.group()
+			matcher.matches();
+			int groupSize = matcher.groupCount();
+			if (groupSize < 1) {
+				try {
+					aggregateRequestName = matcher.replaceAll(TRANSFORM_REPLACEMENT);
+				} catch (final StackOverflowError e) {
+					// regexp can throw StackOverflowError for (A|B)*
+					// see https://github.com/javamelody/javamelody/issues/480
+					LOG.warn(e.toString(), e);
+					return requestName;
+				}
+			}
+			else {
+				try {
+					aggregateRequestName = requestName;
+					// ignore group 0 and replace each matched group with TRANSFORM_REPLACEMENT
+					for (int i = 1; i<=groupSize; i++) {
+						String group = matcher.group(i);
+						Pattern groupRegex = Pattern.compile(group);
+						Matcher groupMatcher = groupRegex.matcher(aggregateRequestName);
+						aggregateRequestName = groupMatcher.replaceAll(TRANSFORM_REPLACEMENT);
+					}
+				} catch (final StackOverflowError e) {
+					// regexp can throw StackOverflowError for (A|B)*
+					// see https://github.com/javamelody/javamelody/issues/480
+					LOG.warn(e.toString(), e);
+					return requestName;
+				}
 			}
 		}
 		return aggregateRequestName;
@@ -942,3 +965,4 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 				+ ']';
 	}
 }
+
