@@ -218,7 +218,7 @@ public enum Action {
 				// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
 				final File heapDump = heapDump();
 				final File zipFile = zip(heapDump);
-				heapDump.delete();
+				deleteFile(heapDump);
 				final String path = zipFile.getPath();
 				messageForReport = I18N.getFormattedString("heap_dump_genere",
 						path.replace('\\', '/'));
@@ -291,6 +291,10 @@ public enum Action {
 					+ messageForReport.replace('\n', ' '));
 		}
 		return messageForReport;
+	}
+
+	private static boolean deleteFile(File heapDump) {
+		return heapDump.delete();
 	}
 
 	private String clearCounter(Collector collector, String counterName) {
