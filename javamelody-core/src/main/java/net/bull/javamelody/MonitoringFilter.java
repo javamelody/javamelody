@@ -44,6 +44,7 @@ import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterError;
+import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.LabradorRetriever;
 import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.web.CounterServletResponseWrapper;
@@ -229,8 +230,8 @@ public class MonitoringFilter implements Filter {
 		try {
 			JdbcWrapper.ACTIVE_THREAD_COUNT.incrementAndGet();
 			// on binde le contexte de la requête http pour les requêtes sql
-			httpCounter.bindContext(requestName, completeRequestName, httpRequest.getRemoteUser(),
-					startCpuTime);
+			httpCounter.bindContext(requestName, completeRequestName, httpRequest,
+					httpRequest.getRemoteUser(), startCpuTime);
 			// on binde la requête http (utilisateur courant et requête complète) pour les derniers logs d'erreurs
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);
@@ -282,6 +283,9 @@ public class MonitoringFilter implements Filter {
 							"Error" + wrappedResponse.getCurrentStatus(), duration, cpuUsedMillis,
 							null);
 				}
+
+				// prise en compte de Spring bestMatchingPattern s'il y a
+				requestName = CounterRequestContext.getHttpRequestName(httpRequest, requestName);
 
 				// taille du flux sortant
 				final int responseSize = wrappedResponse.getDataLength();

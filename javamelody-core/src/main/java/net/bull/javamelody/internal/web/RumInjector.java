@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.web.HtmlInjectorResponseStream.HtmlToInject;
 
 /**
@@ -34,20 +35,19 @@ public final class RumInjector implements HtmlToInject {
 	private static final String BOOMERANG_FILENAME = "boomerang.min.js";
 
 	private final long start = System.currentTimeMillis();
-	private final String rumUrl;
+	private final HttpServletRequest httpRequest;
 	private final String requestName;
 
-	private RumInjector(String rumUrl, String requestName) {
+	private RumInjector(HttpServletRequest httpRequest, String requestName) {
 		super();
-		this.rumUrl = rumUrl;
+		this.httpRequest = httpRequest;
 		this.requestName = requestName;
 	}
 
 	public static HttpServletResponse createRumResponseWrapper(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, String requestName) {
 		if (HtmlInjectorServletResponseWrapper.acceptsRequest(httpRequest)) {
-			final String rumUrl = getRumUrlForBrowser(requestName);
-			final HtmlToInject htmlToInject = new RumInjector(rumUrl, requestName);
+			final HtmlToInject htmlToInject = new RumInjector(httpRequest, requestName);
 			return new HtmlInjectorServletResponseWrapper(httpRequest, httpResponse, htmlToInject);
 		}
 		return httpResponse;
@@ -85,12 +85,18 @@ public final class RumInjector implements HtmlToInject {
 
 	@Override
 	public String getContent() {
+		final String httpRequestName = getHttpRequestName();
+		final String rumUrl = getRumUrlForBrowser(httpRequestName);
 		// approximation of server duration (may not be the real server duration, but not far in general)
 		final long serverTime = System.currentTimeMillis() - start;
 		return "\n<script src='" + rumUrl + "?resource=" + BOOMERANG_FILENAME
 				+ "'></script>\n<script>BOOMR.init({beacon_url: '" + rumUrl
-				+ "?part=rum', log: null});\nBOOMR.addVar('requestName', \"" + requestName
+				+ "?part=rum', log: null});\nBOOMR.addVar('requestName', \"" + httpRequestName
 				+ "\");\n" + "BOOMR.addVar('serverTime', " + serverTime + ");\n</script>\n";
+	}
+
+	private String getHttpRequestName() {
+		return CounterRequestContext.getHttpRequestName(httpRequest, requestName);
 	}
 
 	@Override

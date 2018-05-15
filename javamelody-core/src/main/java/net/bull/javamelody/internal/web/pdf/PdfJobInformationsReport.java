@@ -183,7 +183,7 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 		final String jobFullName = jobInformations.getGroup() + '.' + jobInformations.getName();
 		// rq: la méthode getCounterRequestByName prend en compte l'éventuelle utilisation du paramètre
 		// job-transform-pattern qui peut faire que jobFullName != counterRequest.getName()
-		final CounterRequest result = jobCounter.getCounterRequestByName(jobFullName);
+		final CounterRequest result = jobCounter.getCounterRequestByName(jobFullName, true);
 		// getCounterRequestByName ne peut pas retourner null actuellement
 		assert result != null;
 		return result;

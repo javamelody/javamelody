@@ -407,7 +407,7 @@ public final class JdbcWrapper {
 
 			// note perf: selon un paramètre current-sql(/requests)-disabled,
 			// on pourrait ici ne pas binder un nouveau contexte à chaque requête sql
-			sqlCounter.bindContext(requestName, requestName, null, -1);
+			sqlCounter.bindContext(requestName, requestName, null, null, -1);
 
 			final Object result = method.invoke(statement, args);
 			systemError = false;

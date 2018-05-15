@@ -25,6 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.bull.javamelody.internal.model.CounterRequest.ICounterRequestContext;
 
 /**
@@ -36,12 +38,14 @@ import net.bull.javamelody.internal.model.CounterRequest.ICounterRequestContext;
 public class CounterRequestContext implements ICounterRequestContext, Cloneable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Long ONE = 1L;
+	private static final String SPRING_BEST_MATCHING_PATTERN_ATTRIBUTE = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 	// attention de ne pas sérialiser le counter d'origine vers le serveur de collecte, le vrai ayant été cloné
 	private Counter parentCounter;
 	private final CounterRequestContext parentContext;
 	private CounterRequestContext currentChildContext;
 	private final String requestName;
 	private final String completeRequestName;
+	private final transient HttpServletRequest httpRequest;
 	private final String remoteUser;
 	private final long threadId;
 	// attention, si sérialisation vers serveur de collecte, la durée peut être impactée s'il y a désynchronisation d'horloge
@@ -54,9 +58,11 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	private Map<String, Long> childRequestsExecutionsByRequestId;
 
 	public CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext,
-			String requestName, String completeRequestName, String remoteUser, long startCpuTime) {
-		this(parentCounter, parentContext, requestName, completeRequestName, remoteUser,
-				Thread.currentThread().getId(), System.currentTimeMillis(), startCpuTime);
+			String requestName, String completeRequestName, HttpServletRequest httpRequest,
+			String remoteUser, long startCpuTime) {
+		this(parentCounter, parentContext, requestName, completeRequestName, httpRequest,
+				remoteUser, Thread.currentThread().getId(), System.currentTimeMillis(),
+				startCpuTime);
 		if (parentContext != null) {
 			parentContext.setCurrentChildContext(this);
 		}
@@ -65,8 +71,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	// constructeur privé pour la méthode clone
 	// CHECKSTYLE:OFF
 	private CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext,
-			String requestName, String completeRequestName, String remoteUser, long threadId,
-			long startTime, long startCpuTime) {
+			String requestName, String completeRequestName, HttpServletRequest httpRequest,
+			String remoteUser, long threadId, long startTime, long startCpuTime) {
 		// CHECKSTYLE:ON
 		super();
 		assert parentCounter != null;
@@ -78,6 +84,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		this.parentContext = parentContext;
 		this.requestName = requestName;
 		this.completeRequestName = completeRequestName;
+		this.httpRequest = httpRequest;
 		this.remoteUser = remoteUser;
 		this.threadId = threadId;
 		this.startTime = startTime;
@@ -124,8 +131,19 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		return parentContext;
 	}
 
-	public String getRequestName() {
+	public static String getHttpRequestName(HttpServletRequest httpRequest, String requestName) {
+		if (httpRequest != null) {
+			final String bestMatchingPattern = (String) httpRequest
+					.getAttribute(SPRING_BEST_MATCHING_PATTERN_ATTRIBUTE);
+			if (bestMatchingPattern != null) {
+				return bestMatchingPattern;
+			}
+		}
 		return requestName;
+	}
+
+	public String getRequestName() {
+		return getHttpRequestName(httpRequest, requestName);
 	}
 
 	public String getCompleteRequestName() {
@@ -291,8 +309,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		//		final Counter parentCounterClone = new Counter(counter.getName(), counter.getStorageName(),
 		//				counter.getIconName(), counter.getChildCounterName(), null);
 		final CounterRequestContext clone = new CounterRequestContext(counter, parentContextClone,
-				getRequestName(), getCompleteRequestName(), getRemoteUser(), getThreadId(),
-				startTime, startCpuTime);
+				getRequestName(), getCompleteRequestName(), httpRequest, getRemoteUser(),
+				getThreadId(), startTime, startCpuTime);
 		clone.childHits = getChildHits();
 		clone.childDurationsSum = getChildDurationsSum();
 		final CounterRequestContext childContext = getCurrentChildContext();

@@ -30,6 +30,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.bull.javamelody.internal.common.LOG;
 
 /**
@@ -412,17 +414,18 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	public void bindContextIncludingCpu(String requestName) {
-		bindContext(requestName, requestName, null, ThreadInformations.getCurrentThreadCpuTime());
+		bindContext(requestName, requestName, null, null,
+				ThreadInformations.getCurrentThreadCpuTime());
 	}
 
-	public void bindContext(String requestName, String completeRequestName, String remoteUser,
-			long startCpuTime) {
+	public void bindContext(String requestName, String completeRequestName,
+			HttpServletRequest httpRequest, String remoteUser, long startCpuTime) {
 		// requestName est la même chose que ce qui sera utilisée dans addRequest,
 		// completeRequestName est la même chose éventuellement complétée
 		// pour cette requête à destination de l'affichage dans les requêtes courantes
 		// (sinon mettre 2 fois la même chose)
 		final CounterRequestContext context = new CounterRequestContext(this,
-				contextThreadLocal.get(), requestName, completeRequestName, remoteUser,
+				contextThreadLocal.get(), requestName, completeRequestName, httpRequest, remoteUser,
 				startCpuTime);
 		contextThreadLocal.set(context);
 		if (context.getParentContext() == null) {
@@ -722,34 +725,43 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	 * @return CounterRequest
 	 */
 	public CounterRequest getCounterRequest(CounterRequestContext context) {
-		return getCounterRequestByName(context.getRequestName());
+		return getCounterRequestByName(context.getRequestName(), false);
 	}
 
 	/**
 	 * Retourne l'objet {@link CounterRequest} correspondant au nom sans agrégation en paramètre.
 	 * @param requestName Nom de la requête sans agrégation par requestTransformPattern
+	 * @param saveRequestIfAbsent true except for current requests because the requestName may not be yet bestMatchingPattern
 	 * @return CounterRequest
 	 */
-	public CounterRequest getCounterRequestByName(String requestName) {
+	public CounterRequest getCounterRequestByName(String requestName, boolean saveRequestIfAbsent) {
 		// l'instance de CounterRequest retournée est clonée
 		// (nécessaire pour protéger la synchronisation interne du counter),
 		// son état peut donc être lu sans synchronisation
 		// mais toute modification de cet état ne sera pas conservée
 		final String aggregateRequestName = getAggregateRequestName(requestName);
-		final CounterRequest request = getCounterRequestInternal(aggregateRequestName);
+		final CounterRequest request = getCounterRequestInternal(aggregateRequestName,
+				saveRequestIfAbsent);
 		synchronized (request) {
 			return request.clone();
 		}
 	}
 
 	private CounterRequest getCounterRequestInternal(String requestName) {
+		return getCounterRequestInternal(requestName, true);
+	}
+
+	private CounterRequest getCounterRequestInternal(String requestName,
+			boolean saveRequestIfAbsent) {
 		CounterRequest request = requests.get(requestName);
 		if (request == null) {
 			request = new CounterRequest(requestName, getName());
-			// putIfAbsent a l'avantage d'être garanti atomique, même si ce n'est pas indispensable
-			final CounterRequest precedentRequest = requests.putIfAbsent(requestName, request);
-			if (precedentRequest != null) {
-				request = precedentRequest;
+			if (saveRequestIfAbsent) {
+				// putIfAbsent a l'avantage d'être garanti atomique, même si ce n'est pas indispensable
+				final CounterRequest precedentRequest = requests.putIfAbsent(requestName, request);
+				if (precedentRequest != null) {
+					request = precedentRequest;
+				}
 			}
 		}
 		return request;
