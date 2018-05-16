@@ -136,6 +136,11 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 			final String bestMatchingPattern = (String) httpRequest
 					.getAttribute(SPRING_BEST_MATCHING_PATTERN_ATTRIBUTE);
 			if (bestMatchingPattern != null) {
+				final int indexOfSpace = requestName.indexOf(' ');
+				if (indexOfSpace != -1) {
+					// ajoute GET ou POST ou POST ajax ou autre après bestMatchingPattern
+					return bestMatchingPattern + requestName.substring(indexOfSpace);
+				}
 				return bestMatchingPattern;
 			}
 		}
