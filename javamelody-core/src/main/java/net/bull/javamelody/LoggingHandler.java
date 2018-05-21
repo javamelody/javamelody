@@ -76,7 +76,9 @@ public class LoggingHandler extends Handler {
 	}
 
 	static void addErrorLogToCounter(String message, String throwableStackTrace) {
-		LOG_COUNTER.addRequestForSystemError(message, -1, -1, throwableStackTrace);
+		if (LOG_COUNTER.isDisplayed()) {
+			LOG_COUNTER.addRequestForSystemError(message, -1, -1, throwableStackTrace);
+		}
 	}
 
 	void register() {
