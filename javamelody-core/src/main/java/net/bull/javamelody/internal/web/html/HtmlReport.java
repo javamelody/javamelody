@@ -17,10 +17,10 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +29,7 @@ import java.util.Map;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SpringContext;
 import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.CacheInformations;
 import net.bull.javamelody.internal.model.Collector;
@@ -48,7 +49,6 @@ import net.bull.javamelody.internal.model.ProcessInformations;
 import net.bull.javamelody.internal.model.Range;
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
 import net.bull.javamelody.internal.model.SessionInformations;
-import net.bull.javamelody.internal.model.TransportFormat;
 import net.bull.javamelody.internal.web.html.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
 /**
@@ -183,13 +183,12 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("<style type='text/css'>");
 			final InputStream in = getClass()
 					.getResourceAsStream(Parameters.getResourcePath("monitoring.css"));
-			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
-				TransportFormat.pump(in, out);
+				final String monitoringCss = InputOutput.pumpToString(in, Charset.forName("UTF-8"));
+				writeDirectly(monitoringCss);
 			} finally {
 				in.close();
 			}
-			writeDirectly(out.toString());
 			writeln("</style>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");

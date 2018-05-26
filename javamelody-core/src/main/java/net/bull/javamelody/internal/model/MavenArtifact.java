@@ -19,7 +19,6 @@ package net.bull.javamelody.internal.model; // NOPMD
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,6 +51,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 
@@ -558,7 +558,7 @@ public final class MavenArtifact implements Serializable {
 					break;
 				} catch (final IOException e) {
 					output.close();
-					delete(file);
+					InputOutput.deleteFile(file);
 					// si non trouvé, on continue avec le repo suivant s'il y en a un
 				} finally {
 					output.close();
@@ -577,10 +577,6 @@ public final class MavenArtifact implements Serializable {
 		}
 	}
 
-	private static boolean delete(File file) {
-		return file.delete();
-	}
-
 	private static byte[] readMavenFileFromJarFile(URL jarFileLocation, String pomFileName)
 			throws IOException {
 		final ZipInputStream zipInputStream = new ZipInputStream(
@@ -590,9 +586,7 @@ public final class MavenArtifact implements Serializable {
 			while (entry != null) {
 				if (entry.getName().startsWith("META-INF/maven/")
 						&& entry.getName().endsWith("/" + pomFileName)) {
-					final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					TransportFormat.pump(zipInputStream, byteArrayOutputStream);
-					return byteArrayOutputStream.toByteArray();
+					return InputOutput.pumpToByteArray(zipInputStream);
 				}
 				zipInputStream.closeEntry();
 				entry = zipInputStream.getNextEntry();

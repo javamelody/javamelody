@@ -211,15 +211,6 @@ public enum TransportFormat {
 		return false;
 	}
 
-	public static void pump(InputStream input, OutputStream output) throws IOException {
-		final byte[] bytes = new byte[4 * 1024];
-		int length = input.read(bytes);
-		while (length != -1) {
-			output.write(bytes, 0, length);
-			length = input.read(bytes);
-		}
-	}
-
 	public String getCode() {
 		return code;
 	}

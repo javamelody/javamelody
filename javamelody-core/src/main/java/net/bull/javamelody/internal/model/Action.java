@@ -18,8 +18,6 @@
 package net.bull.javamelody.internal.model;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
@@ -28,8 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -43,6 +39,7 @@ import org.quartz.Scheduler;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.web.MailReport;
@@ -217,8 +214,10 @@ public enum Action {
 				// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
 				// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
 				final File heapDump = heapDump();
-				final File zipFile = zip(heapDump);
-				deleteFile(heapDump);
+				final File zipFile = new File(heapDump.getParentFile(),
+						heapDump.getName() + ".zip");
+				InputOutput.zipFile(heapDump, zipFile);
+				InputOutput.deleteFile(heapDump);
 				final String path = zipFile.getPath();
 				messageForReport = I18N.getFormattedString("heap_dump_genere",
 						path.replace('\\', '/'));
@@ -291,10 +290,6 @@ public enum Action {
 					+ messageForReport.replace('\n', ' '));
 		}
 		return messageForReport;
-	}
-
-	private static boolean deleteFile(File heapDump) {
-		return heapDump.delete();
 	}
 
 	private String clearCounter(Collector collector, String counterName) {
@@ -396,26 +391,6 @@ public enum Action {
 		} catch (final JMException e) {
 			throw new IllegalStateException(e);
 		}
-	}
-
-	private static File zip(File source) throws IOException {
-		final File target = new File(source.getParentFile(), source.getName() + ".zip");
-		final FileOutputStream fos = new FileOutputStream(target);
-		final ZipOutputStream zos = new ZipOutputStream(fos);
-		try {
-			final ZipEntry ze = new ZipEntry(source.getName());
-			zos.putNextEntry(ze);
-			final FileInputStream in = new FileInputStream(source);
-			try {
-				TransportFormat.pump(in, zos);
-			} finally {
-				in.close();
-			}
-			zos.closeEntry();
-		} finally {
-			zos.close();
-		}
-		return target;
 	}
 
 	private void ibmHeapDump() {

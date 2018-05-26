@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.bull.javamelody.Utils;
+import net.bull.javamelody.internal.common.InputOutput;
 
 /**
  * Test unitaire de la classe TransportFormat.
@@ -158,7 +159,7 @@ public class TestTransportFormat {
 		final byte[] byteArray = output.toByteArray();
 		final ByteArrayInputStream input = new ByteArrayInputStream(byteArray);
 		output.reset();
-		TransportFormat.pump(input, output);
+		InputOutput.pump(input, output);
 		assertArrayEquals("array equals", byteArray, output.toByteArray());
 	}
 

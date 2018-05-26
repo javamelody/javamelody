@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.web; // NOPMD
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +39,7 @@ import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Action;
@@ -358,12 +358,7 @@ public class MonitoringController {
 			addHeadersForResource(httpResponse, localResource);
 
 			final OutputStream out = httpResponse.getOutputStream();
-			final InputStream in = new BufferedInputStream(resourceAsStream);
-			try {
-				TransportFormat.pump(in, out);
-			} finally {
-				in.close();
-			}
+			InputOutput.pump(resourceAsStream, out);
 		} finally {
 			resourceAsStream.close();
 		}
@@ -447,7 +442,7 @@ public class MonitoringController {
 		final InputStream in = getWebXmlAsStream();
 		if (in != null) {
 			try {
-				TransportFormat.pump(in, out);
+				InputOutput.pump(in, out);
 			} finally {
 				in.close();
 			}
@@ -463,7 +458,7 @@ public class MonitoringController {
 		final InputStream in = MavenArtifact.getWebappPomXmlAsStream();
 		if (in != null) {
 			try {
-				TransportFormat.pump(in, out);
+				InputOutput.pump(in, out);
 			} finally {
 				in.close();
 			}
@@ -500,12 +495,7 @@ public class MonitoringController {
 					// attachment et non inline pour proposer le téléchargement et non l'affichage direct dans le navigateur
 					httpResponse.addHeader("Content-Disposition",
 							"attachment;filename=" + file.getName());
-					final InputStream in = new FileInputStream(file);
-					try {
-						TransportFormat.pump(in, out);
-					} finally {
-						in.close();
-					}
+					InputOutput.pumpFromFile(file, out);
 					return;
 				}
 			}

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.apache.log4j.Logger;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
+import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.Parameters;
 
 /**
@@ -251,7 +253,7 @@ public class LabradorRetriever {
 			if ("gzip".equals(connection.getContentEncoding())) {
 				input = new GZIPInputStream(input);
 			}
-			TransportFormat.pump(input, output);
+			InputOutput.pump(input, output);
 		} finally {
 			try {
 				input.close();
@@ -276,10 +278,9 @@ public class LabradorRetriever {
 
 		final int status = connection.getResponseCode();
 		if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
-			final ByteArrayOutputStream errorOutputStream = new ByteArrayOutputStream();
-			TransportFormat.pump(connection.getErrorStream(), errorOutputStream);
-			final String msg = "Error connecting to " + url + '(' + status + "): "
-					+ errorOutputStream.toString("UTF-8");
+			final String error = InputOutput.pumpToString(connection.getErrorStream(),
+					Charset.forName("UTF-8"));
+			final String msg = "Error connecting to " + url + '(' + status + "): " + error;
 			throw new IOException(msg);
 		}
 		connection.disconnect();

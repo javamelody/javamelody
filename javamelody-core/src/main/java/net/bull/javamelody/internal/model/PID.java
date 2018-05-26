@@ -1,15 +1,15 @@
 package net.bull.javamelody.internal.model;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.StringTokenizer;
+
+import net.bull.javamelody.internal.common.InputOutput;
 
 /**
  * PID du process java.
@@ -67,10 +67,9 @@ public final class PID {
 					cmd = new String[] { tempFile.getAbsolutePath() };
 				}
 				process = Runtime.getRuntime().exec(cmd);
-				final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-				TransportFormat.pump(process.getInputStream(), bout);
-
-				final StringTokenizer stok = new StringTokenizer(bout.toString());
+				final String processOutput = InputOutput.pumpToString(process.getInputStream(),
+						Charset.defaultCharset());
+				final StringTokenizer stok = new StringTokenizer(processOutput);
 				stok.nextToken(); // this is pid of the process we spanned
 				pid = stok.nextToken();
 
@@ -98,17 +97,12 @@ public final class PID {
 	}
 
 	private static void extractGetPid(File tempFile) throws IOException {
-		final OutputStream output = new FileOutputStream(tempFile);
+		final InputStream input = PID.class
+				.getResourceAsStream("/net/bull/javamelody/resource/getpids.exe");
 		try {
-			final InputStream input = PID.class
-					.getResourceAsStream("/net/bull/javamelody/resource/getpids.exe");
-			try {
-				TransportFormat.pump(input, output);
-			} finally {
-				input.close();
-			}
+			InputOutput.pumpToFile(input, tempFile);
 		} finally {
-			output.close();
+			input.close();
 		}
 	}
 }

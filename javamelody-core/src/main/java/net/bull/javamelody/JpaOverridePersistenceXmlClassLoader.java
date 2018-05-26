@@ -17,17 +17,19 @@
 package net.bull.javamelody;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedList;
+
+import net.bull.javamelody.internal.common.InputOutput;
 
 /**
  * ClassLoader pour redéfinir le contenu de persistence.xml.
@@ -101,14 +103,7 @@ class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 		try {
 			final InputStream is = url.openStream();
 			try {
-				final ByteArrayOutputStream out = new ByteArrayOutputStream();
-				final byte[] buffer = new byte[1024];
-				int length = is.read(buffer);
-				while (length != -1) {
-					out.write(buffer, 0, length);
-					length = is.read(buffer);
-				}
-				return new String(out.toByteArray());
+				return InputOutput.pumpToString(is, Charset.defaultCharset());
 			} finally {
 				is.close();
 			}
