@@ -218,7 +218,7 @@ public class CollectorController { // NOPMD
 		} else if (HttpPart.SOURCE.isPart(req)) {
 			noCache(resp);
 			final URL url = getUrlsByApplication(application).get(0);
-			doProxy(req, resp, url, HttpParameter.PART.toString() + '&' + HttpParameter.CLASS + '='
+			doProxy(req, resp, url, HttpPart.SOURCE.getName() + '&' + HttpParameter.CLASS + '='
 					+ HttpParameter.CLASS.getParameterFrom(req));
 		} else if (HttpPart.CONNECTIONS.isPart(req)) {
 			doMultiHtmlProxy(req, resp, application, HttpPart.CONNECTIONS.getName(),
