@@ -39,6 +39,7 @@ import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JobInformations;
@@ -577,6 +578,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		return false;
 	}
 
+	List<HsErrPid> getHsErrPidList() {
+		return HsErrPid.getHsErrPidList(javaInformationsList);
+	}
+
 	private void writeCaches() throws IOException {
 		int i = 0;
 		for (final JavaInformations javaInformations : javaInformationsList) {
@@ -707,6 +712,14 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(separator);
 			write("<a href='?part=database'>");
 			writeln("<img src='?resource=db.png' width='20' height='20' alt=\"#database#\" /> #database#</a>");
+		}
+
+		final int hsErrPidCount = getHsErrPidList().size();
+		if (hsErrPidCount > 0) {
+			writeln(separator);
+			write("<a href='?part=crashes'>");
+			write("<img src='?resource=alert.png' width='20' height='20' alt=\"#Crashes# ("
+					+ hsErrPidCount + ")\" /> #Crashes# (" + hsErrPidCount + ")</a>");
 		}
 
 		writeln("<br/></div>");

@@ -49,6 +49,7 @@ import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.CounterRequestAggregation;
 import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.DatabaseInformations;
+import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
 import net.bull.javamelody.internal.model.LabradorRetriever;
@@ -220,6 +221,10 @@ public class CollectorController { // NOPMD
 			final URL url = getUrlsByApplication(application).get(0);
 			doProxy(req, resp, url, HttpPart.SOURCE.getName() + '&' + HttpParameter.CLASS + '='
 					+ HttpParameter.CLASS.getParameterFrom(req));
+		} else if (HttpPart.CRASHES.isPart(req)
+				&& HttpParameter.PATH.getParameterFrom(req) != null) {
+			noCache(resp);
+			doCrashDownload(req, resp, application);
 		} else if (HttpPart.CONNECTIONS.isPart(req)) {
 			doMultiHtmlProxy(req, resp, application, HttpPart.CONNECTIONS.getName(),
 					I18N.getString("Connexions_jdbc_ouvertes"), I18N.getString("connexions_intro"),
@@ -234,6 +239,25 @@ public class CollectorController { // NOPMD
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);
 			monitoringController.doReport(req, resp, javaInformationsList);
+		}
+	}
+
+	private void doCrashDownload(HttpServletRequest req, HttpServletResponse resp,
+			String application) throws IOException {
+		final String partParameter = HttpPart.CRASHES.getName() + '&' + HttpParameter.PATH + '='
+				+ HttpParameter.PATH.getParameterFrom(req);
+		boolean found = false;
+		for (final URL url : getUrlsByApplication(application)) {
+			try {
+				doProxy(req, resp, url, partParameter);
+				found = true;
+				break;
+			} catch (final IOException e) {
+				continue;
+			}
+		}
+		if (!found) {
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 
@@ -411,6 +435,12 @@ public class CollectorController { // NOPMD
 			Action.checkSystemActionsEnabled();
 			return new ArrayList<List<ConnectionInformations>>(
 					collectorServer.collectConnectionInformations(application));
+		} else if (HttpPart.CRASHES.isPart(httpRequest)) {
+			// par sécurité
+			Action.checkSystemActionsEnabled();
+			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
+					application);
+			return new ArrayList<HsErrPid>(HsErrPid.getHsErrPidList(javaInformationsList));
 		}
 		return null;
 	}

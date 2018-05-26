@@ -39,6 +39,7 @@ import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.HeapHistogram;
+import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
 import net.bull.javamelody.internal.model.MBeanNode;
@@ -415,5 +416,14 @@ public class HtmlReport extends HtmlAbstractReport {
 				writeMessageIfNotNull(message, cacheKeyPart);
 			}
 		}
+	}
+
+	public void writeCrashes() throws IOException {
+		writeHtmlHeader();
+		final List<HsErrPid> hsErrPidList = htmlCoreReport.getHsErrPidList();
+		final HtmlHsErrPidReport htmlHsErrPidReport = new HtmlHsErrPidReport(hsErrPidList,
+				getWriter());
+		htmlHsErrPidReport.toHtml();
+		writeHtmlFooter();
 	}
 }

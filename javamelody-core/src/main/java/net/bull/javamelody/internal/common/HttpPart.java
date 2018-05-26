@@ -41,6 +41,7 @@ public enum HttpPart {
 	USAGES("usages"),
 	JNDI("jndi"),
 	MBEANS("mbeans"),
+	CRASHES("crashes"),
 	THREADS("threads"),
 	THREADS_DUMP("threadsDump"),
 	COUNTER_SUMMARY_PER_CLASS("counterSummaryPerClass"),

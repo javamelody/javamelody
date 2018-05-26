@@ -306,6 +306,12 @@ public class HtmlController {
 		}
 	}
 
+	@RequestPart(HttpPart.CRASHES)
+	void doCrashes() throws IOException {
+		Action.checkSystemActionsEnabled();
+		htmlReport.writeCrashes();
+	}
+
 	@RequestPart(HttpPart.SPRING_BEANS)
 	void doSpringBeans() throws IOException {
 		htmlReport.writeSpringContext();

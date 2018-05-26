@@ -211,6 +211,11 @@ public class LabradorRetriever {
 					httpRequest.getHeader("Accept-Language"));
 			connection.connect();
 			httpResponse.setContentType(connection.getContentType());
+			// Content-Disposition pour téléchargement hs_err_pid par exemple
+			final String contentDisposition = connection.getHeaderField("Content-Disposition");
+			if (contentDisposition != null) {
+				httpResponse.setHeader("Content-Disposition", contentDisposition);
+			}
 			final OutputStream output = httpResponse.getOutputStream();
 			dataLength = pump(output, connection);
 		} finally {

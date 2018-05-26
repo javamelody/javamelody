@@ -19,6 +19,8 @@ package net.bull.javamelody.internal.web; // NOPMD
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,6 +45,7 @@ import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Action;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
+import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.MBeans;
@@ -194,6 +197,10 @@ public class MonitoringController {
 			} else if (HttpPart.JNLP.isPart(httpRequest)) {
 				final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 				doJnlp(httpRequest, httpResponse, range);
+			} else if (HttpPart.CRASHES.isPart(httpRequest)
+					&& HttpParameter.PATH.getParameterFrom(httpRequest) != null) {
+				final String path = HttpParameter.PATH.getParameterFrom(httpRequest);
+				doHsErrPid(httpResponse, javaInformationsList, path);
 			} else if (HttpParameter.REPORT.getParameterFrom(httpRequest) != null) {
 				final String reportName = URLDecoder
 						.decode(HttpParameter.REPORT.getParameterFrom(httpRequest), "UTF-8");
@@ -482,6 +489,32 @@ public class MonitoringController {
 				.toJnlp();
 	}
 
+	private void doHsErrPid(HttpServletResponse httpResponse,
+			List<JavaInformations> javaInformationsList, String path) throws IOException {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			for (final HsErrPid hsErrPid : javaInformations.getHsErrPidList()) {
+				if (hsErrPid.getFile().replace('\\', '/').equals(path) && new File(path).exists()) {
+					final File file = new File(path);
+					final OutputStream out = httpResponse.getOutputStream();
+					httpResponse.setContentType("text/plain");
+					// attachment et non inline pour proposer le téléchargement et non l'affichage direct dans le navigateur
+					httpResponse.addHeader("Content-Disposition",
+							"attachment;filename=" + file.getName());
+					final InputStream in = new FileInputStream(file);
+					try {
+						TransportFormat.pump(in, out);
+					} finally {
+						in.close();
+					}
+					return;
+				}
+			}
+		}
+		// si le fichier demandé n'est pas dans la liste des fichiers hs_err_pid*.log,
+		// alors il n'existe plus ou alors le fichier demandé est une invention malveillante
+		httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+	}
+
 	private static void doCustomReport(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, String reportName)
 			throws ServletException, IOException {
@@ -517,7 +550,8 @@ public class MonitoringController {
 					|| HttpPart.DEFAULT_WITH_CURRENT_REQUESTS.getName().equals(part)
 					|| HttpPart.JVM.getName().equals(part)
 					|| HttpPart.THREADS.getName().equals(part)
-					|| HttpPart.THREADS_DUMP.getName().equals(part);
+					|| HttpPart.THREADS_DUMP.getName().equals(part)
+					|| HttpPart.CRASHES.getName().equals(part);
 		}
 		return false;
 	}

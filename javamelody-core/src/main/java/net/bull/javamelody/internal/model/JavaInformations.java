@@ -41,6 +41,7 @@ import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.SpringContext;
 import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.HsErrPid.HsErrPidComparator;
 
 /**
  * Informations systèmes sur le serveur, sans code html de présentation.
@@ -98,6 +99,8 @@ public class JavaInformations implements Serializable { // NOPMD
 	private final List<CacheInformations> cacheInformationsList;
 	@SuppressWarnings("all")
 	private final List<JobInformations> jobInformationsList;
+	@SuppressWarnings("all")
+	private final List<HsErrPid> hsErrPidList;
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
 	private final boolean springBeanExists;
@@ -186,6 +189,7 @@ public class JavaInformations implements Serializable { // NOPMD
 			threadInformationsList = buildThreadInformationsList();
 			cacheInformationsList = CacheInformations.buildCacheInformationsList();
 			jobInformationsList = JobInformations.buildJobInformationsList();
+			hsErrPidList = HsErrPid.buildHsErrPidList();
 			pid = PID.getPID();
 		} else {
 			dataBaseVersion = null;
@@ -193,6 +197,7 @@ public class JavaInformations implements Serializable { // NOPMD
 			threadInformationsList = null;
 			cacheInformationsList = null;
 			jobInformationsList = null;
+			hsErrPidList = null;
 			pid = null;
 		}
 	}
@@ -665,6 +670,16 @@ public class JavaInformations implements Serializable { // NOPMD
 			}
 		}
 		return result;
+	}
+
+	public List<HsErrPid> getHsErrPidList() {
+		if (hsErrPidList != null) {
+			// on trie sur demande (si affichage)
+			final List<HsErrPid> result = new ArrayList<HsErrPid>(hsErrPidList);
+			Collections.sort(result, new HsErrPidComparator());
+			return Collections.unmodifiableList(result);
+		}
+		return null;
 	}
 
 	public boolean isStackTraceEnabled() {

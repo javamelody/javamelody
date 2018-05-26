@@ -47,6 +47,7 @@ import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.CounterRequestAggregation;
 import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.DatabaseInformations;
+import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
@@ -342,6 +343,12 @@ public class SerializableController {
 
 		// note: ces contextes ont été clonés dans getRootCurrentContexts(newCounters) par getOrderedRootCurrentContexts()
 		return collector.getRootCurrentContexts(newCounters);
+	}
+
+	@RequestPart(HttpPart.CRASHES)
+	Serializable createCrashesSerializable(
+			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
+		return new ArrayList<HsErrPid>(HsErrPid.getHsErrPidList(javaInformationsList));
 	}
 
 	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
