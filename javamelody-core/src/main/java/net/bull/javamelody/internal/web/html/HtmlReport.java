@@ -17,7 +17,6 @@
  */
 package net.bull.javamelody.internal.web.html;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -182,8 +181,8 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeln("");
 		if (includeCssInline) {
 			writeln("<style type='text/css'>");
-			final InputStream in = new BufferedInputStream(
-					getClass().getResourceAsStream(Parameters.getResourcePath("monitoring.css")));
+			final InputStream in = getClass()
+					.getResourceAsStream(Parameters.getResourcePath("monitoring.css"));
 			final ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
 				TransportFormat.pump(in, out);
