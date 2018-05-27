@@ -32,19 +32,6 @@ import java.util.List;
  * @author Emeric Vernat
  */
 public final class HsErrPid implements Serializable {
-	/**
-	 * Comparateur de HsErrPid par date.
-	 */
-	static final class HsErrPidComparator implements Comparator<HsErrPid>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(HsErrPid hsErrPid1, HsErrPid hsErrPid2) {
-			return hsErrPid2.getDate().compareTo(hsErrPid1.getDate());
-		}
-	}
-
 	private static final String XX_ERROR_FILE = "-XX:ErrorFile=";
 
 	private static final long serialVersionUID = 1L;
@@ -59,6 +46,19 @@ public final class HsErrPid implements Serializable {
 	private final String file;
 
 	private final Date date;
+
+	/**
+	 * Comparateur de HsErrPid par date.
+	 */
+	static final class HsErrPidComparator implements Comparator<HsErrPid>, Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(HsErrPid hsErrPid1, HsErrPid hsErrPid2) {
+			return hsErrPid2.getDate().compareTo(hsErrPid1.getDate());
+		}
+	}
 
 	private HsErrPid(String file, Date date) {
 		super();
