@@ -414,6 +414,24 @@ public final class JRobin {
 			resetFile();
 			addValue(value);
 			throw createIOException(e);
+		} catch (final ArithmeticException e) {
+			// catch ArithmeticException for issue 139 / JENKINS-51590:
+			//		java.lang.ArithmeticException : / by zero
+			//		at org.jrobin.core.Archive.archive(Archive.java:129)
+			//		at org.jrobin.core.RrdDb.archive(RrdDb.java:720)
+			//		at org.jrobin.core.Datasource.process(Datasource.java:201)
+			//		at org.jrobin.core.RrdDb.store(RrdDb.java:593)
+			//		at org.jrobin.core.Sample.update(Sample.java:228)
+			//		at net.bull.javamelody.internal.model.JRobin.addValue(JRobin.java:374)
+
+			// le fichier RRD a probablement été corrompu, par exemple en tuant le process java au milieu
+			// d'un write, donc on efface le fichier corrompu et on le recrée pour corriger
+			// le problème
+			LOG.debug("A JRobin file was found corrupted and was reset: "
+					+ new File(rrdFileName).getPath());
+			resetFile();
+			addValue(value);
+			throw createIOException(e);
 		}
 	}
 
