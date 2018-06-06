@@ -336,7 +336,7 @@ public final class JRobin {
 		//graphDef.gprint(average, ConsolFuns.CF_MIN, "Minimum: %9.0f %S\\r");
 		if (!maxHidden) {
 			final String max = "max";
-			graphDef.datasource(max, rrdFileName, dataSourceName, "MAX");
+			graphDef.datasource(max, rrdFileName, dataSourceName, ConsolFuns.CF_MAX);
 			final String maximumLabel = I18N.getString("Maximum");
 			graphDef.line(max, Color.BLUE, maximumLabel);
 			graphDef.gprint(max, ConsolFuns.CF_MAX, maximumLabel + ": %9.0f %S\\r");
@@ -450,24 +450,32 @@ public final class JRobin {
 		}
 	}
 
-	double getMeanValue(final Range range) throws IOException {
+	double getMeanValue(Range range) throws IOException {
 		assert range.getPeriod() == null;
-		final String dataSourceName = getDataSourceName();
-		final long endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
-		final long startTime = range.getStartDate().getTime() / 1000;
-		//		if (range.getPeriod() != null) {
-		//			endTime = Util.getTime();
-		//			startTime = endTime - range.getPeriod().getDurationSeconds();
-		//		}
 		try {
-			final DataProcessor dproc = new DataProcessor(startTime, endTime);
-			dproc.addDatasource("average", rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
-			dproc.setPoolUsed(true);
-			dproc.processData();
+			final DataProcessor dproc = processData(range);
 			return dproc.getAggregate("average", ConsolFuns.CF_AVERAGE);
 		} catch (final RrdException e) {
 			throw createIOException(e);
 		}
+	}
+
+	private DataProcessor processData(Range range) throws IOException, RrdException {
+		final String dataSourceName = getDataSourceName();
+		final long endTime;
+		final long startTime;
+		if (range.getPeriod() == null) {
+			endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
+			startTime = range.getStartDate().getTime() / 1000;
+		} else {
+			endTime = Util.getTime();
+			startTime = endTime - range.getPeriod().getDurationSeconds();
+		}
+		final DataProcessor dproc = new DataProcessor(startTime, endTime);
+		dproc.addDatasource("average", rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
+		dproc.setPoolUsed(true);
+		dproc.processData();
+		return dproc;
 	}
 
 	boolean deleteFile() {
