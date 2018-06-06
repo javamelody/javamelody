@@ -43,6 +43,7 @@ import org.jrobin.core.RrdException;
 import org.jrobin.core.Sample;
 import org.jrobin.core.Util;
 import org.jrobin.data.DataProcessor;
+import org.jrobin.data.Plottable;
 import org.jrobin.graph.RrdGraph;
 import org.jrobin.graph.RrdGraphDef;
 
@@ -60,6 +61,7 @@ import net.bull.javamelody.internal.common.Parameters;
  */
 public final class JRobin {
 	public static final int SMALL_HEIGHT = 50;
+	private static final Color PERCENTILE_COLOR = new Color(200, 50, 50);
 	private static final Color LIGHT_RED = Color.RED.brighter().brighter();
 	private static final Paint SMALL_GRADIENT = new GradientPaint(0, 0, LIGHT_RED, 0, SMALL_HEIGHT,
 			Color.GREEN, false);
@@ -247,7 +249,7 @@ public final class JRobin {
 				graphDef.setLargeFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
 			}
 
-			initGraphSource(graphDef, height, maxHidden);
+			initGraphSource(graphDef, height, maxHidden, range);
 
 			initGraphPeriodAndSize(range, width, height, graphDef);
 
@@ -325,7 +327,8 @@ public final class JRobin {
 		//				RrdGraphConstants.DEFAULT_BACK_COLOR));
 	}
 
-	private void initGraphSource(RrdGraphDef graphDef, int height, boolean maxHidden) {
+	private void initGraphSource(RrdGraphDef graphDef, int height, boolean maxHidden, Range range)
+			throws IOException {
 		final String dataSourceName = getDataSourceName();
 		final String average = "average";
 		graphDef.datasource(average, rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
@@ -340,6 +343,20 @@ public final class JRobin {
 			final String maximumLabel = I18N.getString("Maximum");
 			graphDef.line(max, Color.BLUE, maximumLabel);
 			graphDef.gprint(max, ConsolFuns.CF_MAX, maximumLabel + ": %9.0f %S\\r");
+		}
+		if (height > 200) {
+			final double percentileValue = get95PercentileValue(range);
+			final Plottable constantDataSource = new Plottable() {
+				@Override
+				public double getValue(long timestamp) {
+					return percentileValue;
+				}
+			};
+			final String percentile = "percentile";
+			graphDef.datasource(percentile, constantDataSource);
+			final String percentileLabel = I18N.getString("95percentile");
+			graphDef.line(percentile, PERCENTILE_COLOR, percentileLabel);
+			graphDef.gprint(percentile, ConsolFuns.CF_MAX, ":%9.0f %S\\r");
 		}
 		// graphDef.comment("JRobin :: RRDTool Choice for the Java World");
 	}
@@ -455,6 +472,16 @@ public final class JRobin {
 		try {
 			final DataProcessor dproc = processData(range);
 			return dproc.getAggregate("average", ConsolFuns.CF_AVERAGE);
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+	}
+
+	private double get95PercentileValue(Range range) throws IOException {
+		try {
+			final DataProcessor dproc = processData(range);
+			// 95th percentile et non un autre percentile par choix
+			return dproc.get95Percentile("average");
 		} catch (final RrdException e) {
 			throw createIOException(e);
 		}
