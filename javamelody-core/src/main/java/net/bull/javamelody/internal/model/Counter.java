@@ -445,7 +445,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		final CounterRequestContext context = contextThreadLocal.get();
 		if (context != null) {
 			final long duration = context.getDuration(System.currentTimeMillis());
-			final long cpuUsedMillis = context.getCpuTime();
+			final int cpuUsedMillis = context.getCpuTime();
 			addRequest(context.getRequestName(), duration, cpuUsedMillis, systemError, -1);
 		}
 	}
@@ -456,18 +456,18 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		// context peut être null (depuis JobGlobalListener, cf issue 34)
 		if (context != null) {
 			final long duration = context.getDuration(System.currentTimeMillis());
-			final long cpuUsedMillis = context.getCpuTime();
+			final int cpuUsedMillis = context.getCpuTime();
 			addRequest(context.getRequestName(), duration, cpuUsedMillis,
 					systemErrorStackTrace != null, systemErrorStackTrace, -1);
 		}
 	}
 
-	public void addRequest(String requestName, long duration, long cpuTime, boolean systemError,
+	public void addRequest(String requestName, long duration, int cpuTime, boolean systemError,
 			int responseSize) {
 		addRequest(requestName, duration, cpuTime, systemError, null, responseSize);
 	}
 
-	private void addRequest(String requestName, long duration, long cpuTime, boolean systemError,
+	private void addRequest(String requestName, long duration, int cpuTime, boolean systemError,
 			String systemErrorStackTrace, int responseSize) {
 		// la méthode addRequest n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet
@@ -532,7 +532,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		}
 	}
 
-	public void addRequestForSystemError(String requestName, long duration, long cpuTime,
+	public void addRequestForSystemError(String requestName, long duration, int cpuTime,
 			String stackTrace) {
 		// comme la méthode addRequest, cette méthode n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet

@@ -284,7 +284,7 @@ public class CounterRequest implements Cloneable, Serializable {
 		return rumData;
 	}
 
-	void addHit(long duration, long cpuTime, boolean systemError, String systemErrorStackTrace,
+	void addHit(long duration, int cpuTime, boolean systemError, String systemErrorStackTrace,
 			int responseSize) {
 		hits++;
 		durationsSum += duration;

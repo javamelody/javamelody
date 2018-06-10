@@ -261,8 +261,8 @@ public class MonitoringFilter implements Filter {
 				// voir aussi http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6440250)
 				// et car des millisecondes suffisent pour une requête http
 				final long duration = Math.max(System.currentTimeMillis() - start, 0);
-				final long cpuUsedMillis = (ThreadInformations.getCurrentThreadCpuTime()
-						- startCpuTime) / 1000000;
+				final int cpuUsedMillis = (int) ((ThreadInformations.getCurrentThreadCpuTime()
+						- startCpuTime) / 1000000L);
 
 				JdbcWrapper.ACTIVE_THREAD_COUNT.decrementAndGet();
 
