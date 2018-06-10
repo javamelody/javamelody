@@ -155,18 +155,18 @@ public class TestHtmlReport {
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, "500");
 		setProperty(Parameter.SEVERE_THRESHOLD_MILLIS, "1500");
 		setProperty(Parameter.ANALYTICS_ID, "123456789");
-		counter.addRequest("test1", 0, 0, false, 1000);
-		counter.addRequest("test2", 1000, 500, false, 1000);
-		counter.addRequest("test3", 100000, 50000, true, 10000);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
+		counter.addRequest("test2", 1000, 500, 500, false, 1000);
+		counter.addRequest("test3", 100000, 50000, 50000, true, 10000);
 		// requête pour businessFacadeCounter
-		servicesCounter.addRequest("testServices", 100, 50, false, -1);
+		servicesCounter.addRequest("testServices", 100, 50, 50, false, -1);
 		final StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < 5010; i++) {
 			// HtmlCounterReport.MAX_REQUEST_LENGTH = 5000
 			sb.append(i % 10);
 		}
 		final String longRequestName = sb.toString();
-		counter.addRequest(longRequestName, 0, 0, false, 5000);
+		counter.addRequest(longRequestName, 0, 0, 0, false, 5000);
 		collector.collectWithoutErrors(javaInformationsList);
 
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
@@ -200,8 +200,8 @@ public class TestHtmlReport {
 	@Test
 	public void testErrorCounter() throws IOException {
 		// errorCounter
-		errorCounter.addRequestForSystemError("error", -1, -1, null);
-		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
+		errorCounter.addRequestForSystemError("error", -1, -1, -1, null);
+		errorCounter.addRequestForSystemError("error2", -1, -1, -1, "ma stack-trace");
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
@@ -221,11 +221,11 @@ public class TestHtmlReport {
 		// counter avec période non TOUT et des requêtes
 		collector.collectWithoutErrors(javaInformationsList);
 		final String requestName = "test 1";
-		counter.bindContext(requestName, "complete test 1", null, null, -1);
-		sqlCounter.addRequest("sql1", 10, 10, false, -1);
-		counter.addRequest(requestName, 0, 0, false, 1000);
-		counter.addRequest("test2", 1000, 500, false, 1000);
-		counter.addRequest("test3", 10000, 500, true, 10000);
+		counter.bindContext(requestName, "complete test 1", null, null, -1, -1);
+		sqlCounter.addRequest("sql1", 10, 10, 10, false, -1);
+		counter.addRequest(requestName, 0, 0, 0, false, 1000);
+		counter.addRequest("test2", 1000, 500, 500, false, 1000);
+		counter.addRequest("test3", 10000, 500, 500, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.SEMAINE, writer);
@@ -254,18 +254,18 @@ public class TestHtmlReport {
 		// il ne sera pas utilisé dans writeRequestAndGraphDetail
 		sqlCounter.setDisplayed(true);
 		final String requestName = "test 1";
-		counter.bindContext(requestName, "complete test 1", null, null, -1);
+		counter.bindContext(requestName, "complete test 1", null, null, -1, -1);
 		servicesCounter.clear();
-		servicesCounter.bindContext("myservices.service1", "service1", null, null, -1);
-		sqlCounter.bindContext("sql1", "complete sql1", null, null, -1);
-		sqlCounter.addRequest("sql1", 5, -1, false, -1);
-		servicesCounter.addRequest("myservices.service1", 10, 10, false, -1);
-		servicesCounter.bindContext("myservices.service2", "service2", null, null, -1);
-		servicesCounter.addRequest("myservices.service2", 10, 10, false, -1);
-		servicesCounter.addRequest("otherservices.service3", 10, 10, false, -1);
-		servicesCounter.addRequest("otherservices", 10, 10, false, -1);
-		jspCounter.addRequest("jsp1", 10, 10, false, -1);
-		counter.addRequest(requestName, 0, 0, false, 1000);
+		servicesCounter.bindContext("myservices.service1", "service1", null, null, -1, -1);
+		sqlCounter.bindContext("sql1", "complete sql1", null, null, -1, -1);
+		sqlCounter.addRequest("sql1", 5, -1, -1, false, -1);
+		servicesCounter.addRequest("myservices.service1", 10, 10, 10, false, -1);
+		servicesCounter.bindContext("myservices.service2", "service2", null, null, -1, -1);
+		servicesCounter.addRequest("myservices.service2", 10, 10, 10, false, -1);
+		servicesCounter.addRequest("otherservices.service3", 10, 10, 10, false, -1);
+		servicesCounter.addRequest("otherservices", 10, 10, 10, false, -1);
+		jspCounter.addRequest("jsp1", 10, 10, 10, false, -1);
+		counter.addRequest(requestName, 0, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
 		final HtmlReport toutHtmlReport = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
@@ -384,16 +384,16 @@ public class TestHtmlReport {
 	public void testRootContexts() throws IOException {
 		HtmlReport htmlReport;
 		// addRequest pour que CounterRequestContext.getCpuTime() soit appelée
-		counter.addRequest("first request", 100, 100, false, 1000);
+		counter.addRequest("first request", 100, 100, 100, false, 1000);
 		TestCounter.bindRootContexts("first request", counter, 3);
-		sqlCounter.bindContext("sql", "sql", null, null, -1);
+		sqlCounter.bindContext("sql", "sql", null, null, -1, -1);
 		htmlReport = new HtmlReport(collector, null, javaInformationsList, Period.TOUT, writer);
 		htmlReport.toHtml("message a", null);
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
-		myCounter.bindContext("my context", "my context", null, null, -1);
+		myCounter.bindContext("my context", "my context", null, null, -1, -1);
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b", null);
 		assertNotEmptyAndClear(writer);
@@ -589,7 +589,7 @@ public class TestHtmlReport {
 
 		// cas où nb requêtes en cours > maxContextDisplayed
 		final List<CounterRequestContext> counterRequestContexts = Collections.singletonList(
-				new CounterRequestContext(sqlCounter, null, "Test", "Test", null, null, -1));
+				new CounterRequestContext(sqlCounter, null, "Test", "Test", null, null, -1, -1));
 		final HtmlCounterRequestContextReport report2 = new HtmlCounterRequestContextReport(
 				counterRequestContexts, null, Collections.<ThreadInformations> emptyList(), true, 0,
 				writer);
@@ -619,9 +619,9 @@ public class TestHtmlReport {
 			assertEquals("locale en", Locale.US, I18N.getCurrentLocale());
 
 			// counter avec 3 requêtes
-			counter.addRequest("test1", 0, 0, false, 1000);
-			counter.addRequest("test2", 1000, 500, false, 1000);
-			counter.addRequest("test3", 10000, 5000, true, 10000);
+			counter.addRequest("test1", 0, 0, 0, false, 1000);
+			counter.addRequest("test2", 1000, 500, 500, false, 1000);
+			counter.addRequest("test3", 10000, 5000, 5000, true, 10000);
 			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
 					Period.TOUT, writer);
 			htmlReport.toHtml("message", null);

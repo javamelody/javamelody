@@ -170,13 +170,7 @@ class PdfCounterReport extends PdfAbstractTableReport {
 
 	private List<String> createHeaders(String childCounterName) {
 		final List<String> headers = new ArrayList<String>();
-		if (isJobCounter()) {
-			headers.add(getString("Job"));
-		} else if (isErrorCounter()) {
-			headers.add(getString("Erreur"));
-		} else {
-			headers.add(getString("Requete"));
-		}
+		headers.add(getRequestHeader());
 		if (includeGraph) {
 			headers.add(getString("Evolution"));
 		}
@@ -193,6 +187,9 @@ class PdfCounterReport extends PdfAbstractTableReport {
 			headers.add(getString("temps_cpu_cumule"));
 			headers.add(getString("Temps_cpu_moyen"));
 		}
+		if (counterRequestAggregation.isAllocatedKBytesDisplayed()) {
+			headers.add(getString("Ko_alloues_moyens"));
+		}
 		if (!isErrorAndNotJobCounter()) {
 			headers.add(getString("erreur_systeme"));
 		}
@@ -204,6 +201,16 @@ class PdfCounterReport extends PdfAbstractTableReport {
 			headers.add(getFormattedString("temps_fils_moyen", childCounterName));
 		}
 		return headers;
+	}
+
+	private String getRequestHeader() {
+		if (isJobCounter()) {
+			return getString("Job");
+		} else if (isErrorCounter()) {
+			return getString("Erreur");
+		} else {
+			return getString("Requete");
+		}
 	}
 
 	private void writeFooter() throws DocumentException {
@@ -230,13 +237,7 @@ class PdfCounterReport extends PdfAbstractTableReport {
 
 	private void writeRequest(CounterRequest request) throws BadElementException, IOException {
 		getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-		final String name = request.getName();
-		if (name.length() > 1000) {
-			// si la requête fait plus de 1000 caractères, on la coupe pour y voir quelque chose
-			addCell(name.substring(0, 1000) + "...");
-		} else {
-			addCell(name);
-		}
+		addCell(getShortRequestName(request));
 		if (includeGraph) {
 			writeRequestGraph(request);
 		}
@@ -257,6 +258,10 @@ class PdfCounterReport extends PdfAbstractTableReport {
 			final int cpuTimeMean = request.getCpuTimeMean();
 			addCell(new Phrase(integerFormat.format(cpuTimeMean), getSlaFont(cpuTimeMean)));
 		}
+		if (counterRequestAggregation.isAllocatedKBytesDisplayed()) {
+			final long allocatedKBytesMean = request.getAllocatedKBytesMean();
+			addCell(integerFormat.format(allocatedKBytesMean));
+		}
 		if (!isErrorAndNotJobCounter()) {
 			addCell(systemErrorFormat.format(request.getSystemErrorPercentage()));
 		}
@@ -267,6 +272,15 @@ class PdfCounterReport extends PdfAbstractTableReport {
 			addCell(integerFormat.format(request.getChildHitsMean()));
 			addCell(integerFormat.format(request.getChildDurationsMean()));
 		}
+	}
+
+	private String getShortRequestName(CounterRequest request) {
+		final String name = request.getName();
+		if (name.length() > 1000) {
+			// si la requête fait plus de 1000 caractères, on la coupe pour y voir quelque chose
+			return name.substring(0, 1000) + "...";
+		}
+		return name;
 	}
 
 	private void writeRequestGraph(CounterRequest request) throws BadElementException, IOException {

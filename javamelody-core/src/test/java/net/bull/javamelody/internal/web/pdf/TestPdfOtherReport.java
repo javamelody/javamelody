@@ -337,11 +337,11 @@ public class TestPdfOtherReport {
 		final Collector collector = new Collector("test", counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 
-		httpCounter.bindContext("test 1", "complete test 1", null, null, -1);
-		sqlCounter.bindContext("sql1", "sql 1", null, null, -1);
-		sqlCounter.addRequest("sql1", 100, 100, false, -1);
-		httpCounter.addRequest("test 1", 0, 0, false, 1000);
-		errorCounter.addRequestForSystemError("test error", 0, 0, " a stack-trace");
+		httpCounter.bindContext("test 1", "complete test 1", null, null, -1, -1);
+		sqlCounter.bindContext("sql1", "sql 1", null, null, -1, -1);
+		sqlCounter.addRequest("sql1", 100, 100, 100, false, -1);
+		httpCounter.addRequest("test 1", 0, 0, 0, false, 1000);
+		errorCounter.addRequestForSystemError("test error", 0, 0, 0, " a stack-trace");
 		collector.collectWithoutErrors(Arrays.asList(javaInformations));
 		final String requestId = httpCounter.getRequests().get(0).getId();
 		final String requestId2 = errorCounter.getRequests().get(0).getId();

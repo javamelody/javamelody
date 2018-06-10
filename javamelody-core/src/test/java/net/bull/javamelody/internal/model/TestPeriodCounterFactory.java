@@ -40,7 +40,7 @@ public class TestPeriodCounterFactory {
 		Utils.initialize();
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		sqlCounter.setApplication("test");
-		sqlCounter.addRequest("test", 1, 1, false, -1);
+		sqlCounter.addRequest("test", 1, 1, 1, false, -1);
 		periodCounterFactory = new PeriodCounterFactory(sqlCounter);
 	}
 

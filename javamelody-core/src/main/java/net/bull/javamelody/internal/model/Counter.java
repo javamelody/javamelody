@@ -415,18 +415,20 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 
 	public void bindContextIncludingCpu(String requestName) {
 		bindContext(requestName, requestName, null, null,
-				ThreadInformations.getCurrentThreadCpuTime());
+				ThreadInformations.getCurrentThreadCpuTime(),
+				ThreadInformations.getCurrentThreadAllocatedBytes());
 	}
 
 	public void bindContext(String requestName, String completeRequestName,
-			HttpServletRequest httpRequest, String remoteUser, long startCpuTime) {
+			HttpServletRequest httpRequest, String remoteUser, long startCpuTime,
+			long startAllocatedBytes) {
 		// requestName est la même chose que ce qui sera utilisée dans addRequest,
 		// completeRequestName est la même chose éventuellement complétée
 		// pour cette requête à destination de l'affichage dans les requêtes courantes
 		// (sinon mettre 2 fois la même chose)
 		final CounterRequestContext context = new CounterRequestContext(this,
 				contextThreadLocal.get(), requestName, completeRequestName, httpRequest, remoteUser,
-				startCpuTime);
+				startCpuTime, startAllocatedBytes);
 		contextThreadLocal.set(context);
 		if (context.getParentContext() == null) {
 			rootCurrentContextsByThreadId.put(context.getThreadId(), context);
@@ -446,7 +448,9 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		if (context != null) {
 			final long duration = context.getDuration(System.currentTimeMillis());
 			final int cpuUsedMillis = context.getCpuTime();
-			addRequest(context.getRequestName(), duration, cpuUsedMillis, systemError, -1);
+			final int allocatedKBytes = context.getAllocatedKBytes();
+			addRequest(context.getRequestName(), duration, cpuUsedMillis, allocatedKBytes,
+					systemError, -1);
 		}
 	}
 
@@ -457,18 +461,20 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		if (context != null) {
 			final long duration = context.getDuration(System.currentTimeMillis());
 			final int cpuUsedMillis = context.getCpuTime();
-			addRequest(context.getRequestName(), duration, cpuUsedMillis,
+			final int allocatedKBytes = context.getAllocatedKBytes();
+			addRequest(context.getRequestName(), duration, cpuUsedMillis, allocatedKBytes,
 					systemErrorStackTrace != null, systemErrorStackTrace, -1);
 		}
 	}
 
-	public void addRequest(String requestName, long duration, int cpuTime, boolean systemError,
-			int responseSize) {
-		addRequest(requestName, duration, cpuTime, systemError, null, responseSize);
+	public void addRequest(String requestName, long duration, int cpuTime, int allocatedKBytes,
+			boolean systemError, int responseSize) {
+		addRequest(requestName, duration, cpuTime, allocatedKBytes, systemError, null,
+				responseSize);
 	}
 
-	private void addRequest(String requestName, long duration, int cpuTime, boolean systemError,
-			String systemErrorStackTrace, int responseSize) {
+	private void addRequest(String requestName, long duration, int cpuTime, int allocatedKBytes,
+			boolean systemError, String systemErrorStackTrace, int responseSize) {
 		// la méthode addRequest n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet
 		// ce qui pourrait faire une contention et des ralentissements,
@@ -477,6 +483,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		assert requestName != null;
 		assert duration >= 0;
 		assert cpuTime >= -1; // -1 pour requêtes sql
+		assert allocatedKBytes >= -1; // -1 pour requêtes sql
 		assert responseSize >= -1; // -1 pour requêtes sql
 
 		final String aggregateRequestName = getAggregateRequestName(requestName);
@@ -488,7 +495,8 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 			// concurrents entre plusieurs threads pour le même type de requête.
 			// Rq : on pourrait remplacer ce bloc synchronized par un synchronized
 			// sur les méthodes addHit et addChildHits dans la classe CounterRequest.
-			request.addHit(duration, cpuTime, systemError, systemErrorStackTrace, responseSize);
+			request.addHit(duration, cpuTime, allocatedKBytes, systemError, systemErrorStackTrace,
+					responseSize);
 
 			if (context != null) {
 				// on ajoute dans la requête parente toutes les requêtes filles du contexte
@@ -533,7 +541,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	public void addRequestForSystemError(String requestName, long duration, int cpuTime,
-			String stackTrace) {
+			int allocatedKBytes, String stackTrace) {
 		// comme la méthode addRequest, cette méthode n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet
 		// ce qui pourrait faire une contention et des ralentissements,
@@ -550,7 +558,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		final String aggregateRequestName = getAggregateRequestName(requestName);
 		final CounterRequest request = getCounterRequestInternal(aggregateRequestName);
 		synchronized (request) {
-			request.addHit(duration, cpuTime, true, stackTrace, -1);
+			request.addHit(duration, cpuTime, allocatedKBytes, true, stackTrace, -1);
 		}
 		synchronized (errors) {
 			errors.addLast(new CounterError(requestName, stackTrace));

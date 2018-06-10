@@ -49,9 +49,9 @@ public class TestTransportFormat {
 
 	private Counter createCounter() {
 		final Counter counter = new Counter("test transport format", null);
-		counter.addRequest("test1", 0, 0, false, 1000);
-		counter.addRequest("test2", 1000, 500, false, 1000);
-		counter.addRequest("test3", 10000, 500, true, 10000);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
+		counter.addRequest("test2", 1000, 500, 500, false, 1000);
+		counter.addRequest("test3", 10000, 500, 500, true, 10000);
 		return counter;
 	}
 

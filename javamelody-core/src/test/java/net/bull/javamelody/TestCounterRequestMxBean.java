@@ -44,7 +44,7 @@ public class TestCounterRequestMxBean {
 	@Test
 	public void test() {
 		final Counter counter = new Counter("http", "db.png");
-		counter.addRequest("test 1", 10, 10, false, 100);
+		counter.addRequest("test 1", 10, 10, 10, false, 100);
 		final CounterRequestMXBeanImpl counterRequestMXBeanImpl = new CounterRequestMXBeanImpl(
 				counter);
 		final CounterRequestAggregationData counterRequestAggregation = counterRequestMXBeanImpl
@@ -63,6 +63,7 @@ public class TestCounterRequestMxBean {
 			assertEquals("getMaximum", 10, counterRequestData.getMaximum());
 			assertEquals("getStandardDeviation", 0, counterRequestData.getStandardDeviation());
 			assertEquals("getCpuTimeMean", 10, counterRequestData.getCpuTimeMean());
+			assertEquals("getAllocatedKBytesMean", 10, counterRequestData.getAllocatedKBytesMean());
 			assertEquals("getSystemErrorPercentage", 0,
 					counterRequestData.getSystemErrorPercentage(), 0);
 			assertEquals("getResponseSizeMean", 100, counterRequestData.getResponseSizeMean());

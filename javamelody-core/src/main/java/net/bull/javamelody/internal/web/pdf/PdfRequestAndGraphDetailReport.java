@@ -186,6 +186,9 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 		headers.add(getString("Temps_max"));
 		headers.add(getString("Ecart_type"));
 		headers.add(getString("Temps_cpu_moyen"));
+		if (isAllocatedKBytesDisplayed()) {
+			headers.add(getString("Ko_alloues_moyens"));
+		}
 		headers.add(getString("erreur_systeme"));
 		final Counter parentCounter = getCounterByRequestId(request);
 		final boolean allChildHitsDisplayed = parentCounter != null
@@ -269,6 +272,13 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 		} else {
 			addCell("");
 		}
+		if (isAllocatedKBytesDisplayed()) {
+			if (aRequest.getAllocatedKBytesMean() >= 0) {
+				addCell(integerFormat.format(aRequest.getAllocatedKBytesMean()));
+			} else {
+				addCell("");
+			}
+		}
 		addCell(systemErrorFormat.format(aRequest.getSystemErrorPercentage()));
 		if (allChildHitsDisplayed) {
 			final boolean childHitsDisplayed = aRequest.hasChildHits();
@@ -283,6 +293,10 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 				addCell("");
 			}
 		}
+	}
+
+	private boolean isAllocatedKBytesDisplayed() {
+		return request.getAllocatedKBytesMean() >= 0;
 	}
 
 	private void writeGraph() throws IOException, DocumentException {

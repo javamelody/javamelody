@@ -224,6 +224,9 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 			write("<th class='sorttable_numeric'>#temps_cpu_cumule#</th>");
 			write("<th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
 		}
+		if (counterRequestAggregation.isAllocatedKBytesDisplayed()) {
+			write("<th class='sorttable_numeric'>#Ko_alloues_moyens#</th>");
+		}
 		if (!isErrorAndNotJobCounter()) {
 			write("<th class='sorttable_numeric'>#erreur_systeme#</th>");
 		}
@@ -275,6 +278,11 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 			write("'>");
 			write(integerFormat.format(cpuTimeMean));
 			write("</span>");
+		}
+		if (counterRequestAggregation.isAllocatedKBytesDisplayed()) {
+			write(nextColumn);
+			final int allocatedKBytesMean = request.getAllocatedKBytesMean();
+			write(integerFormat.format(allocatedKBytesMean));
 		}
 		if (!isErrorAndNotJobCounter()) {
 			write(nextColumn);

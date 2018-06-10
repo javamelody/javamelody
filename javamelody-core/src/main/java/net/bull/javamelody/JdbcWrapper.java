@@ -407,7 +407,7 @@ public final class JdbcWrapper {
 
 			// note perf: selon un paramètre current-sql(/requests)-disabled,
 			// on pourrait ici ne pas binder un nouveau contexte à chaque requête sql
-			sqlCounter.bindContext(requestName, requestName, null, null, -1);
+			sqlCounter.bindContext(requestName, requestName, null, null, -1, -1);
 
 			final Object result = method.invoke(statement, args);
 			systemError = false;
@@ -432,7 +432,7 @@ public final class JdbcWrapper {
 			// Rq : pas de temps cpu pour les requêtes sql car c'est 0 ou quasiment 0
 			ACTIVE_CONNECTION_COUNT.decrementAndGet();
 			final long duration = Math.max(System.currentTimeMillis() - start, 0);
-			sqlCounter.addRequest(requestName, duration, -1, systemError, -1);
+			sqlCounter.addRequest(requestName, duration, -1, -1, systemError, -1);
 		}
 	}
 

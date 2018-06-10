@@ -124,6 +124,10 @@ public interface CounterRequestMXBean {
 			return request.getCpuTimeMean();
 		}
 
+		public int getAllocatedKBytesMean() {
+			return request.getAllocatedKBytesMean();
+		}
+
 		public float getSystemErrorPercentage() {
 			return request.getSystemErrorPercentage();
 		}

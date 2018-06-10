@@ -20,6 +20,8 @@ package net.bull.javamelody.internal.model;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class ThreadInformations implements Serializable {
 	private static final ThreadMXBean THREAD_BEAN = ManagementFactory.getThreadMXBean();
 	private static final boolean CPU_TIME_ENABLED = THREAD_BEAN.isThreadCpuTimeSupported()
 			&& THREAD_BEAN.isThreadCpuTimeEnabled();
+	private static final Method THREAD_ALLOCATED_BYTES_METHOD = getThreadAllocatedBytesMethod();
 	private final String name;
 	private final long id;
 	private final int priority;
@@ -78,6 +81,43 @@ public class ThreadInformations implements Serializable {
 			return THREAD_BEAN.getThreadCpuTime(threadId);
 		}
 		return 0;
+	}
+
+	public static long getCurrentThreadAllocatedBytes() {
+		return getThreadAllocatedBytes(Thread.currentThread().getId());
+	}
+
+	static long getThreadAllocatedBytes(long threadId) {
+		if (THREAD_ALLOCATED_BYTES_METHOD != null) {
+			try {
+				return (Long) THREAD_ALLOCATED_BYTES_METHOD.invoke(THREAD_BEAN, threadId);
+			} catch (final IllegalAccessException e) {
+				throw new IllegalArgumentException(e);
+			} catch (final InvocationTargetException e) {
+				throw new IllegalArgumentException(e);
+			}
+		}
+		return -1;
+	}
+
+	private static Method getThreadAllocatedBytesMethod() {
+		// en général, THREAD_BEAN instanceof com.sun.management.ThreadMXBean, sauf sur JVM tierces
+		try {
+			final Method method = THREAD_BEAN.getClass().getMethod("getThreadAllocatedBytes",
+					long.class);
+			if (method != null) {
+				method.setAccessible(true);
+				// on teste pour vérifier que la fonction est supportée et activée
+				final Long bytes = (Long) method.invoke(THREAD_BEAN,
+						Thread.currentThread().getId());
+				if (bytes.longValue() != -1) {
+					return method;
+				}
+			}
+			return null;
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	public String getName() {

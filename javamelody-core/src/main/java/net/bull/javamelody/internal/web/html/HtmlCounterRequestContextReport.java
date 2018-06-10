@@ -74,6 +74,8 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			final int[] durationMeans = new int[contextsSize];
 			final int[] cpuTimes = new int[contextsSize];
 			final int[] cpuTimesMeans = new int[contextsSize];
+			//			final int[] allocatedKBytes = new int[contextsSize];
+			//			final int[] allocatedKBytesMean = new int[contextsSize];
 			int i = 0;
 			for (final CounterRequestContext context : contexts) {
 				final CounterRequest counterRequest = getCounterRequest(context);
@@ -84,11 +86,19 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				} else {
 					cpuTimes[i] = -1;
 				}
+				//				allocatedKBytesMean[i] = counterRequest.getAllocatedKBytesMean();
+				//				if (allocatedKBytesMean[i] >= 0) {
+				//					allocatedKBytes[i] = context.getAllocatedKBytes();
+				//				} else {
+				//					allocatedKBytes[i] = -1;
+				//				}
 				i++;
 			}
 			result.add(durationMeans);
 			result.add(cpuTimes);
 			result.add(cpuTimesMeans);
+			//			result.add(allocatedKBytes);
+			//			result.add(allocatedKBytesMean);
 			if (childHitsDisplayed) {
 				final int[] totalChildHits = new int[contextsSize];
 				final int[] childHitsMeans = new int[contextsSize];
@@ -245,6 +255,8 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		write("<th>#Requete#</th>");
 		write("<th class='sorttable_numeric'>#Duree_ecoulee#</th><th class='sorttable_numeric'>#Temps_moyen#</th>");
 		write("<th class='sorttable_numeric'>#Temps_cpu#</th><th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
+		// pas la peine de surcharger avec les Ko alloués
+		//		write("<th class='sorttable_numeric'>#Ko_alloues#</th><th class='sorttable_numeric'>#Ko_alloues_moyens#</th>");
 		// rq : tous ces contextes viennent du même compteur donc peu importe lequel des parentCounter
 		if (childHitsDisplayed) {
 			final String childCounterName = contexts.get(0).getParentCounter()

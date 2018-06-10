@@ -48,6 +48,7 @@ public class CounterRequest implements Cloneable, Serializable {
 	private long durationsSquareSum;
 	private long maximum;
 	private long cpuTimeSum;
+	private long allocatedKBytesSum;
 	private long systemErrors;
 	private long responseSizesSum;
 	private long childHits;
@@ -203,6 +204,16 @@ public class CounterRequest implements Cloneable, Serializable {
 	}
 
 	/**
+	 * @return Moyenne des Ko alloués pour l'exécution de cette requête
+	 */
+	public int getAllocatedKBytesMean() {
+		if (hits > 0 && allocatedKBytesSum >= 0) {
+			return (int) (allocatedKBytesSum / hits);
+		}
+		return -1;
+	}
+
+	/**
 	 * @return Pourcentage des erreurs systèmes dans l'exécution de cette requête
 	 */
 	public float getSystemErrorPercentage() {
@@ -284,8 +295,8 @@ public class CounterRequest implements Cloneable, Serializable {
 		return rumData;
 	}
 
-	void addHit(long duration, int cpuTime, boolean systemError, String systemErrorStackTrace,
-			int responseSize) {
+	void addHit(long duration, int cpuTime, int allocatedKBytes, boolean systemError,
+			String systemErrorStackTrace, int responseSize) {
 		hits++;
 		durationsSum += duration;
 		durationsSquareSum += duration * duration;
@@ -293,6 +304,7 @@ public class CounterRequest implements Cloneable, Serializable {
 			maximum = duration;
 		}
 		cpuTimeSum += cpuTime;
+		allocatedKBytesSum += allocatedKBytes;
 		if (systemError) {
 			systemErrors++;
 		}
@@ -344,6 +356,7 @@ public class CounterRequest implements Cloneable, Serializable {
 				maximum = request.maximum;
 			}
 			cpuTimeSum += request.cpuTimeSum;
+			allocatedKBytesSum += request.allocatedKBytesSum;
 			systemErrors += request.systemErrors;
 			responseSizesSum += request.responseSizesSum;
 			childHits += request.childHits;
@@ -378,6 +391,7 @@ public class CounterRequest implements Cloneable, Serializable {
 				}
 			}
 			cpuTimeSum -= request.cpuTimeSum;
+			allocatedKBytesSum -= request.allocatedKBytesSum;
 			systemErrors -= request.systemErrors;
 			responseSizesSum -= request.responseSizesSum;
 			childHits -= request.childHits;

@@ -56,7 +56,7 @@ public class TestCounter {
 	public void setUp() {
 		Utils.initialize();
 		counter = new Counter("test", null);
-		counter.bindContext("bind context", "bind my context", null, null, -1);
+		counter.bindContext("bind context", "bind my context", null, null, -1, -1);
 	}
 
 	/** Finalisation. */
@@ -67,7 +67,7 @@ public class TestCounter {
 
 	private CounterRequest createCounterRequest() {
 		final CounterRequest request = new CounterRequest("test Counter", counter.getName());
-		request.addHit(100, 50, false, null, 1000);
+		request.addHit(100, 50, 50, false, null, 1000);
 		return request;
 	}
 
@@ -77,15 +77,15 @@ public class TestCounter {
 		final CounterRequest request = createCounterRequest();
 		// ce bindContext pour tester le cas où une requête est ajoutée avec un contexte et un contexte parent
 		// puis une requête ajoutée avec un contexte sans contexte parent
-		counter.bindContext(request.getName(), request.getName(), null, null, -1);
+		counter.bindContext(request.getName(), request.getName(), null, null, -1, -1);
 
-		counter.addRequest(request.getName(), request.getMean(), 0, false,
+		counter.addRequest(request.getName(), request.getMean(), 0, 0, false,
 				request.getResponseSizeMean());
 		final List<CounterRequest> before = counter.getOrderedRequests();
-		counter.addRequest(request.getName(), request.getMean(), 0, false,
+		counter.addRequest(request.getName(), request.getMean(), 0, 0, false,
 				request.getResponseSizeMean());
 		counter.setRequestTransformPattern(Pattern.compile("aaaaa"));
-		counter.addRequest(request.getName(), request.getMean(), 0, false,
+		counter.addRequest(request.getName(), request.getMean(), 0, 0, false,
 				request.getResponseSizeMean());
 		final List<CounterRequest> after = counter.getOrderedRequests();
 		after.get(0).removeHits(request);
@@ -96,12 +96,12 @@ public class TestCounter {
 		// test addChildRequest dans addRequest
 		final Counter sqlCounter = new Counter("sql", null);
 		final Counter httpCounter = new Counter("http", null, sqlCounter);
-		httpCounter.bindContext("http request", "http request", null, null, -1);
+		httpCounter.bindContext("http request", "http request", null, null, -1, -1);
 		final String sqlRequest = "sql request";
-		sqlCounter.bindContext(sqlRequest, sqlRequest, null, null, -1);
-		sqlCounter.addRequest(sqlRequest, 0, 0, false, -1); // ici context.addChildRequest
-		sqlCounter.addRequest(sqlRequest, 0, 0, false, -1); // 2ème pour passer dans le else de addChildRequestForDrillDown
-		httpCounter.addRequest("http request", 10, 2, false, 100);
+		sqlCounter.bindContext(sqlRequest, sqlRequest, null, null, -1, -1);
+		sqlCounter.addRequest(sqlRequest, 0, 0, 0, false, -1); // ici context.addChildRequest
+		sqlCounter.addRequest(sqlRequest, 0, 0, 0, false, -1); // 2ème pour passer dans le else de addChildRequestForDrillDown
+		httpCounter.addRequest("http request", 10, 2, 2, false, 100);
 	}
 
 	/** Test. */
@@ -110,9 +110,9 @@ public class TestCounter {
 		final CounterRequest request = createCounterRequest();
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		errorCounter.setMaxRequestsCount(200);
-		errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0, null);
+		errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0, 0, null);
 		final List<CounterRequest> before = errorCounter.getOrderedRequests();
-		errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0,
+		errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0, 0,
 				"stacktrace");
 		final List<CounterRequest> after = errorCounter.getOrderedRequests();
 		after.get(0).removeHits(request);
@@ -120,10 +120,10 @@ public class TestCounter {
 		assertEquals("error requests", before.toString(), after.toString());
 		int i = 0;
 		while (errorCounter.getRequestsCount() < Counter.MAX_ERRORS_COUNT) {
-			errorCounter.addRequestForSystemError("request a" + i, 1, 0, null);
+			errorCounter.addRequestForSystemError("request a" + i, 1, 0, 0, null);
 			i++;
 		}
-		errorCounter.addRequestForSystemError("request a" + i, 1, 0, null);
+		errorCounter.addRequestForSystemError("request a" + i, 1, 0, 0, null);
 		errorCounter.clear();
 		i = 0;
 		while (errorCounter.getRequestsCount() < Counter.MAX_ERRORS_COUNT) {
@@ -164,7 +164,7 @@ public class TestCounter {
 		final CounterRequest counterRequest2 = createCounterRequest();
 		// test de CounterRequest.removeHits (avec counterRequest2.hits == 0)
 		counterRequest.removeHits(counterRequest2);
-		counterRequest2.addHit(0, 0, false, null, -1);
+		counterRequest2.addHit(0, 0, 0, false, null, -1);
 		// test de CounterRequest.removeHits (counterRequest2.hits doit être != 0)
 		counterRequest.removeHits(counterRequest2);
 		final String childId1 = "test";
@@ -187,7 +187,7 @@ public class TestCounter {
 	@Test
 	public void testRemoveRequest() {
 		final int count = counter.getRequestsCount();
-		counter.addRequest("remove request", 100, 50, false, 1000);
+		counter.addRequest("remove request", 100, 50, 50, false, 1000);
 		counter.removeRequest("remove request");
 		assertEquals("requests count", count, counter.getRequestsCount());
 	}
@@ -197,7 +197,7 @@ public class TestCounter {
 	public void testAddRequests() {
 		final CounterRequest counterRequest = createCounterRequest();
 		counter.addHits(counterRequest);
-		counter.bindContext("context", "context", null, null, -1);
+		counter.bindContext("context", "context", null, null, -1, -1);
 		final CounterRequest counterRequestWithoutHits = counter
 				.getCounterRequest(counter.getOrderedRootCurrentContexts().get(0));
 		counter.addHits(counterRequestWithoutHits);
@@ -211,15 +211,15 @@ public class TestCounter {
 
 		// test de la limitation à maxRequestsCount dans l'ajout de requêtes
 		final Counter counter2 = new Counter(counter.getName(), null);
-		counter2.addRequest("request 2", 100, 50, false, 100);
+		counter2.addRequest("request 2", 100, 50, 50, false, 100);
 		for (int i = 0; i < 20; i++) {
-			counter2.addRequest("request 3", 100, 50, false, 100);
+			counter2.addRequest("request 3", 100, 50, 50, false, 100);
 		}
 		counter.setMaxRequestsCount(1);
 		counter.addRequestsAndErrors(counter2);
 		assertEquals("count", 1, counter.getRequestsCount());
 		for (int i = 0; i < 20; i++) {
-			counter2.addRequest("request 4", 100, 50, false, 100);
+			counter2.addRequest("request 4", 100, 50, 50, false, 100);
 		}
 		counter.addRequestsAndErrors(counter2);
 		assertEquals("count", 2, counter.getRequestsCount());
@@ -272,7 +272,7 @@ public class TestCounter {
 	/** Test. */
 	@Test
 	public void testClear() {
-		counter.addRequest("test clear", 100, 50, false, 1000);
+		counter.addRequest("test clear", 100, 50, 50, false, 1000);
 		counter.clear();
 		assertEquals("requests count", 0, counter.getRequestsCount());
 	}
@@ -282,7 +282,7 @@ public class TestCounter {
 	public void testGetCounterRequest() {
 		counter.unbindContext();
 		final String requestName = "get counter request";
-		counter.bindContext(requestName, "my context", null, null, -1);
+		counter.bindContext(requestName, "my context", null, null, -1, -1);
 		final CounterRequest counterRequest = counter
 				.getCounterRequest(counter.getOrderedRootCurrentContexts().get(0));
 		assertEquals("request name", requestName, counterRequest.getName());
@@ -292,10 +292,10 @@ public class TestCounter {
 	@Test
 	public void testGetOrderedRequests() {
 		counter.clear();
-		counter.addRequest("test a", 0, 0, false, 1000);
-		counter.addRequest("test b", 1000, 500, false, 1000); // supérieur
-		counter.addRequest("test c", 1000, 500, false, 1000); // égal
-		counter.addRequest("test d", 100, 50, false, 1000); // inférieur
+		counter.addRequest("test a", 0, 0, 0, false, 1000);
+		counter.addRequest("test b", 1000, 500, 500, false, 1000); // supérieur
+		counter.addRequest("test c", 1000, 500, 500, false, 1000); // égal
+		counter.addRequest("test d", 100, 50, 50, false, 1000); // inférieur
 		final List<CounterRequest> requests = counter.getOrderedRequests();
 		assertEquals("requests size", 4, requests.size());
 	}
@@ -304,13 +304,13 @@ public class TestCounter {
 	@Test
 	public void testGetOrderedByHitsRequests() {
 		counter.clear();
-		counter.addRequest("test 1", 0, 0, false, 1000);
-		counter.addRequest("test 2", 1000, 500, false, 1000); // supérieur en hits
-		counter.addRequest("test 2", 1000, 500, false, 1000);
-		counter.addRequest("test 2", 1000, 500, false, 1000);
-		counter.addRequest("test 3", 100, 50, false, 1000); // égal
-		counter.addRequest("test 4", 100, 50, false, 1000); // inférieur
-		counter.addRequest("test 4", 100, 50, false, 1000);
+		counter.addRequest("test 1", 0, 0, 0, false, 1000);
+		counter.addRequest("test 2", 1000, 500, 500, false, 1000); // supérieur en hits
+		counter.addRequest("test 2", 1000, 500, 500, false, 1000);
+		counter.addRequest("test 2", 1000, 500, 500, false, 1000);
+		counter.addRequest("test 3", 100, 50, 50, false, 1000); // égal
+		counter.addRequest("test 4", 100, 50, 50, false, 1000); // inférieur
+		counter.addRequest("test 4", 100, 50, 50, false, 1000);
 		final List<CounterRequest> requests = counter.getOrderedByHitsRequests();
 		assertEquals("requests size", 4, requests.size());
 	}
@@ -324,7 +324,7 @@ public class TestCounter {
 		final int nbRootContexts = 100; // 100 pour couvrir tous les cas du compartor de tri
 		bindRootContexts(requestName, counter, nbRootContexts);
 		// addRequest pour rentrer dans le if de la map dans CounterRequestContext.clone
-		counter.addRequest(requestName, 100, 100, false, 1000);
+		counter.addRequest(requestName, 100, 100, 100, false, 1000);
 
 		final List<CounterRequestContext> rootContexts = counter.getOrderedRootCurrentContexts();
 		assertEquals("contexts size", nbRootContexts + 1, rootContexts.size());
@@ -337,8 +337,8 @@ public class TestCounter {
 
 	public static void bindRootContexts(String firstRequestName, Counter myCounter,
 			int nbRootContexts) {
-		myCounter.bindContext(firstRequestName, "my context", null, null, -1);
-		myCounter.bindContext("child context", "my child context", null, null, -1);
+		myCounter.bindContext(firstRequestName, "my context", null, null, -1, -1);
+		myCounter.bindContext("child context", "my child context", null, null, -1, -1);
 		// on crée d'autres racines de contexte
 		try {
 			Thread.sleep(100);
@@ -355,7 +355,7 @@ public class TestCounter {
 			@Override
 			public void run() {
 				// bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
-				myCounter.bindContext("second root context", "my context", null, "me", -1);
+				myCounter.bindContext("second root context", "my context", null, "me", -1, -1);
 			}
 		});
 		thread.setDaemon(true);
@@ -377,7 +377,7 @@ public class TestCounter {
 	/** Test. */
 	@Test
 	public void testGetRequestsCount() {
-		counter.addRequest("test requests count", 100, 50, false, 1000);
+		counter.addRequest("test requests count", 100, 50, 50, false, 1000);
 		assertEquals("requests count", counter.getRequests().size(), counter.getRequestsCount());
 	}
 
@@ -485,7 +485,7 @@ public class TestCounter {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		errorCounter.addErrors(Collections.singletonList(new CounterError("erreur", null)));
 		errorCounter.writeToFile();
-		counter.addRequest("test writeToFile", 100, 50, false, 1000);
+		counter.addRequest("test writeToFile", 100, 50, 50, false, 1000);
 		final String before = counter.toString();
 		counter.writeToFile();
 		assertEquals("counter", before, counter.toString());
@@ -494,7 +494,7 @@ public class TestCounter {
 	/** Test. */
 	@Test
 	public void testToString() {
-		counter.addRequest("test toString", 100, 50, false, 1000);
+		counter.addRequest("test toString", 100, 50, 50, false, 1000);
 		final String string = counter.toString();
 		assertNotNull("toString not null", string);
 		assertFalse("toString not empty", string.isEmpty());

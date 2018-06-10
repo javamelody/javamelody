@@ -321,6 +321,10 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 		}
 		writeln("<th class='sorttable_numeric'>#Temps_moyen#</th><th class='sorttable_numeric'>#Temps_max#</th>");
 		writeln("<th class='sorttable_numeric'>#Ecart_type#</th><th class='sorttable_numeric'>#Temps_cpu_moyen#</th>");
+		final boolean allocatedKBytesDisplayed = request.getAllocatedKBytesMean() >= 0;
+		if (allocatedKBytesDisplayed) {
+			writeln("<th class='sorttable_numeric'>#Ko_alloues_moyens#</th>");
+		}
 		writeln("<th class='sorttable_numeric'>#erreur_systeme#</th>");
 		final Counter parentCounter = getCounterByRequestId(request);
 		final boolean allChildHitsDisplayed = parentCounter != null
@@ -339,11 +343,12 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 		if (hasChildren) {
 			writeln("</td><td>&nbsp;");
 		}
-		writeRequestValues(request, allChildHitsDisplayed);
+		writeRequestValues(request, allChildHitsDisplayed, allocatedKBytesDisplayed);
 		writeln("</td> ");
 
 		if (hasChildren) {
-			writeChildRequests(request, childRequests, allChildHitsDisplayed, table);
+			writeChildRequests(request, childRequests, allChildHitsDisplayed,
+					allocatedKBytesDisplayed, table);
 		}
 		table.endTable();
 		if (doesRequestDisplayUsages(request)) {
@@ -363,32 +368,34 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	}
 
 	private void writeChildRequests(CounterRequest request, Map<String, Long> childRequests,
-			boolean allChildHitsDisplayed, HtmlTable table) throws IOException {
+			boolean allChildHitsDisplayed, boolean allocatedKBytesDisplayed, HtmlTable table)
+			throws IOException {
 		for (final Map.Entry<String, Long> entry : childRequests.entrySet()) {
 			final CounterRequest childRequest = requestsById.get(entry.getKey());
 			if (childRequest != null) {
 				table.nextRow();
 				final Long nbExecutions = entry.getValue();
 				final float executionsByRequest = (float) nbExecutions / request.getHits();
-				writeChildRequest(childRequest, executionsByRequest, allChildHitsDisplayed);
+				writeChildRequest(childRequest, executionsByRequest, allChildHitsDisplayed,
+						allocatedKBytesDisplayed);
 			}
 		}
 	}
 
 	private void writeChildRequest(CounterRequest childRequest, float executionsByRequest,
-			boolean allChildHitsDisplayed) throws IOException {
+			boolean allChildHitsDisplayed, boolean allocatedKBytesDisplayed) throws IOException {
 		writeln("<td>");
 		writeln("<div style='margin-left: 10px;' class='wrappedText'>");
 		writeCounterIcon(childRequest);
 		writeRequestGraph(childRequest.getId(), childRequest.getName());
 		writeln("</div></td><td align='right'>");
 		write(nbExecutionsFormat.format(executionsByRequest));
-		writeRequestValues(childRequest, allChildHitsDisplayed);
+		writeRequestValues(childRequest, allChildHitsDisplayed, allocatedKBytesDisplayed);
 		writeln("</td>");
 	}
 
-	private void writeRequestValues(CounterRequest request, boolean allChildHitsDisplayed)
-			throws IOException {
+	private void writeRequestValues(CounterRequest request, boolean allChildHitsDisplayed,
+			boolean allocatedKBytesDisplayed) throws IOException {
 		final String nextColumn = "</td><td align='right'>";
 		writeln(nextColumn);
 		writeln(integerFormat.format(request.getMean()));
@@ -402,6 +409,14 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln(integerFormat.format(request.getCpuTimeMean()));
 		} else {
 			writeln(nbsp);
+		}
+		if (allocatedKBytesDisplayed) {
+			writeln(nextColumn);
+			if (request.getAllocatedKBytesMean() >= 0) {
+				writeln(integerFormat.format(request.getAllocatedKBytesMean()));
+			} else {
+				writeln(nbsp);
+			}
 		}
 		writeln(nextColumn);
 		writeln(systemErrorFormat.format(request.getSystemErrorPercentage()));

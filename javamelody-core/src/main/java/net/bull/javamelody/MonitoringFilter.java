@@ -219,6 +219,7 @@ public class MonitoringFilter implements Filter {
 			HttpServletResponse httpResponse) throws IOException, ServletException {
 		final long start = System.currentTimeMillis();
 		final long startCpuTime = ThreadInformations.getCurrentThreadCpuTime();
+		final long startAllocatedBytes = ThreadInformations.getCurrentThreadAllocatedBytes();
 		final CounterServletResponseWrapper wrappedResponse = createResponseWrapper(httpRequest,
 				httpResponse);
 		final HttpServletRequest wrappedRequest = createRequestWrapper(httpRequest,
@@ -231,7 +232,7 @@ public class MonitoringFilter implements Filter {
 			JdbcWrapper.ACTIVE_THREAD_COUNT.incrementAndGet();
 			// on binde le contexte de la requête http pour les requêtes sql
 			httpCounter.bindContext(requestName, completeRequestName, httpRequest,
-					httpRequest.getRemoteUser(), startCpuTime);
+					httpRequest.getRemoteUser(), startCpuTime, startAllocatedBytes);
 			// on binde la requête http (utilisateur courant et requête complète) pour les derniers logs d'erreurs
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);
@@ -263,6 +264,13 @@ public class MonitoringFilter implements Filter {
 				final long duration = Math.max(System.currentTimeMillis() - start, 0);
 				final int cpuUsedMillis = (int) ((ThreadInformations.getCurrentThreadCpuTime()
 						- startCpuTime) / 1000000L);
+				final int allocatedKBytes;
+				if (startAllocatedBytes >= 0) {
+					allocatedKBytes = (int) ((ThreadInformations.getCurrentThreadAllocatedBytes()
+							- startAllocatedBytes) / 1024L);
+				} else {
+					allocatedKBytes = -1;
+				}
 
 				JdbcWrapper.ACTIVE_THREAD_COUNT.decrementAndGet();
 
@@ -273,7 +281,7 @@ public class MonitoringFilter implements Filter {
 					final StringWriter stackTrace = new StringWriter(200);
 					systemException.printStackTrace(new PrintWriter(stackTrace));
 					errorCounter.addRequestForSystemError(systemException.toString(), duration,
-							cpuUsedMillis, stackTrace.toString());
+							cpuUsedMillis, allocatedKBytes, stackTrace.toString());
 				} else if (wrappedResponse.getCurrentStatus() >= HttpServletResponse.SC_BAD_REQUEST
 						&& wrappedResponse
 								.getCurrentStatus() != HttpServletResponse.SC_UNAUTHORIZED) {
@@ -281,7 +289,7 @@ public class MonitoringFilter implements Filter {
 					systemError = true;
 					errorCounter.addRequestForSystemError(
 							"Error" + wrappedResponse.getCurrentStatus(), duration, cpuUsedMillis,
-							null);
+							allocatedKBytes, null);
 				}
 
 				// prise en compte de Spring bestMatchingPattern s'il y a
@@ -297,8 +305,8 @@ public class MonitoringFilter implements Filter {
 				}
 
 				// on enregistre la requête dans les statistiques
-				httpCounter.addRequest(requestName, duration, cpuUsedMillis, systemError,
-						responseSize);
+				httpCounter.addRequest(requestName, duration, cpuUsedMillis, allocatedKBytes,
+						systemError, responseSize);
 				// on log sur Log4J ou java.util.logging dans la catégorie correspond au nom du filtre dans web.xml
 				log(httpRequest, requestName, duration, systemError, responseSize);
 			} finally {

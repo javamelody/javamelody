@@ -40,6 +40,7 @@ public class CounterRequestAggregation {
 	private final boolean childHitsDisplayed;
 	private final boolean timesDisplayed;
 	private final boolean cpuTimesDisplayed;
+	private final boolean allocatedKBytesDisplayed;
 	private final CounterRequest warningRequest;
 	private final CounterRequest severeRequest;
 
@@ -67,6 +68,7 @@ public class CounterRequestAggregation {
 		this.childHitsDisplayed = globalRequest.hasChildHits();
 		this.timesDisplayed = globalRequest.getMean() >= 0;
 		this.cpuTimesDisplayed = globalRequest.getCpuTimeMean() >= 0;
+		this.allocatedKBytesDisplayed = globalRequest.getAllocatedKBytesMean() >= 0;
 
 		// globalMean et globalStandardDeviation sont utilisées pour déterminer
 		// les seuils des couleurs des moyennes dans le tableau quand les paramètres
@@ -145,6 +147,10 @@ public class CounterRequestAggregation {
 
 	public boolean isCpuTimesDisplayed() {
 		return cpuTimesDisplayed;
+	}
+
+	public boolean isAllocatedKBytesDisplayed() {
+		return allocatedKBytesDisplayed;
 	}
 
 	public List<CounterRequest> getRequestsAggregatedOrFilteredByClassName(String requestId) {

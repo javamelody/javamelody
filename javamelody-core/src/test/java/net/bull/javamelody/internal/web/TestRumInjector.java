@@ -134,7 +134,7 @@ public class TestRumInjector {
 		addRumHit(httpCounter, requestName, "100", "200", "300", "400");
 
 		// test with existing request and creating rumData
-		httpCounter.addRequest(requestName, 100, 10, false, 1);
+		httpCounter.addRequest(requestName, 100, 10, 10, false, 1);
 		addRumHit(httpCounter, requestName, "100", "200", "300", "400");
 
 		// test with existing request and rumData

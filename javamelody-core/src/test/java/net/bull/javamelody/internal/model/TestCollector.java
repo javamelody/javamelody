@@ -138,7 +138,7 @@ public class TestCollector {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector",
 				Collections.singletonList(counter));
-		counter.addRequest("test clear", 0, 0, false, 1000);
+		counter.addRequest("test clear", 0, 0, 0, false, 1000);
 		collector.clearCounter(counter.getName());
 		if (counter.getRequestsCount() != 0) {
 			fail("counter vide");
@@ -170,17 +170,17 @@ public class TestCollector {
 		if (collector.getCounters().size() == 0) {
 			fail("getCounters");
 		}
-		counter.addRequest("test1", 0, 0, false, 1000);
-		counter.addRequest("test5", 10000, 200, true, 10000);
-		jspCounter.addRequest("test2", 0, 0, false, 0);
-		strutsCounter.addRequest("test3", 0, 0, false, 0);
-		jobCounter.addRequest("test4", 0, 0, false, 0);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
+		counter.addRequest("test5", 10000, 200, 200, true, 10000);
+		jspCounter.addRequest("test2", 0, 0, 0, false, 0);
+		strutsCounter.addRequest("test3", 0, 0, 0, false, 0);
+		jobCounter.addRequest("test4", 0, 0, 0, false, 0);
 		collector.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
-		counter.addRequest("test2", 0, 0, false, 1000);
-		counter.addRequest("test3", 1000, 500, false, 1000);
-		counter.addRequest("test4", 10000, 200, true, 10000);
-		counter.addRequest("test5", 10000, 200, true, 10000);
-		counter.addRequest("test5", 10000, 200, true, 10000);
+		counter.addRequest("test2", 0, 0, 0, false, 1000);
+		counter.addRequest("test3", 1000, 500, 500, false, 1000);
+		counter.addRequest("test4", 10000, 200, 200, true, 10000);
+		counter.addRequest("test5", 10000, 200, 200, true, 10000);
+		counter.addRequest("test5", 10000, 200, 200, true, 10000);
 		collector
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
 		final Counter buildsCounter = new Counter(Counter.BUILDS_COUNTER_NAME, null);
@@ -267,29 +267,29 @@ public class TestCollector {
 		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
 
 		// test removeRequest dans collectCounterData
-		counter.addRequest("test 1", 0, 0, false, 1000);
-		counter.addRequest("test 2", 0, 0, false, 1000);
+		counter.addRequest("test 1", 0, 0, 0, false, 1000);
+		counter.addRequest("test 2", 0, 0, 0, false, 1000);
 		for (int i = 0; i < 50; i++) {
-			counter.addRequest("test 3", 0, 0, false, 1000);
+			counter.addRequest("test 3", 0, 0, 0, false, 1000);
 		}
 		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
 		if (counter.getRequestsCount() > 1) {
 			fail("removeRequest");
 		}
-		counter.addRequest("test 1", 0, 0, false, 1000);
-		counter.addRequest("test 2", 0, 0, false, 1000);
+		counter.addRequest("test 1", 0, 0, 0, false, 1000);
+		counter.addRequest("test 2", 0, 0, 0, false, 1000);
 		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
 		if (counter.getRequestsCount() > 1) {
 			fail("removeRequest");
 		}
 		for (int i = 0; i < counter.getMaxRequestsCount() * 2; i++) {
-			counter.addRequest("test 1", 0, 0, false, 1000);
+			counter.addRequest("test 1", 0, 0, 0, false, 1000);
 		}
 		for (int i = 0; i <= 10; i++) {
-			counter.addRequest("test 2", 0, 0, false, 1000);
+			counter.addRequest("test 2", 0, 0, 0, false, 1000);
 		}
-		counter.addRequest("test 3", 0, 0, false, 1000);
-		counter.addRequest("test 4", 0, 0, false, 1000);
+		counter.addRequest("test 3", 0, 0, 0, false, 1000);
+		counter.addRequest("test 4", 0, 0, 0, false, 1000);
 		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
 		if (counter.getRequestsCount() > 1) {
 			fail("removeRequest");
@@ -313,7 +313,7 @@ public class TestCollector {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector3",
 				Collections.singletonList(counter));
-		counter.addRequest("test request", 0, 0, false, 1000);
+		counter.addRequest("test request", 0, 0, 0, false, 1000);
 		final CounterRequest request = counter.getRequests().get(0);
 		assertEquals("getCounterByRequestId", counter, collector.getCounterByRequestId(request));
 		assertNull("getCounterByRequestId",
@@ -332,9 +332,9 @@ public class TestCollector {
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(javaInformations);
-		counter.addRequest("test1", 0, 0, false, 1000);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
-		counter.addRequest("test1", 0, 0, false, 1000);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
 		collector.collectWithoutErrors(javaInformationsList);
 
@@ -392,7 +392,7 @@ public class TestCollector {
 		setProperty(Parameter.STORAGE_DIRECTORY, "/???");
 		final Counter counter = createCounter();
 		final Collector collector2 = new Collector("test stop", Collections.singletonList(counter));
-		counter.addRequest("test stop", 0, 0, false, 1000);
+		counter.addRequest("test stop", 0, 0, 0, false, 1000);
 		collector2
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
 		collector2.stop();

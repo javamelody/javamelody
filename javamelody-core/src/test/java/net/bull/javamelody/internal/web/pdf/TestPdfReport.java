@@ -113,14 +113,14 @@ public class TestPdfReport {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = TestHtmlReport.getJobCounter();
 		final List<Counter> counters = Arrays.asList(counter, sqlCounter, errorCounter, jobCounter);
-		counter.addRequest("test1", 0, 0, false, 1000);
-		counter.addRequest("test2", 1000, 500, false, 1000);
-		counter.addRequest("test3", 10000, 500, true, 10000);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
+		counter.addRequest("test2", 1000, 500, 500, false, 1000);
+		counter.addRequest("test3", 10000, 500, 500, true, 10000);
 		final Collector collector = new Collector("test", counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(javaInformations);
-		counter.addRequest("test1", 0, 0, false, 1000);
+		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		collector.collectWithoutErrors(javaInformationsList);
 		counter.clear();
 		collector.collectWithoutErrors(javaInformationsList);
@@ -139,20 +139,20 @@ public class TestPdfReport {
 		// pour les PDFs suivants, inutile de regénérer toutes les images,
 		// ce qui prendrait beaucoup de temps, donc on utilise preInitGraphs
 		final Map<String, byte[]> emptyGraphs = Collections.emptyMap();
-		counter.bindContext("test 1", "complete test 1", null, null, -1);
-		sqlCounter.bindContext("sql1", "sql 1", null, null, -1);
-		sqlCounter.addRequest("sql1", 100, 100, false, -1);
-		counter.addRequest("test 1", 0, 0, false, 1000);
-		counter.addRequest("test2", 1000, 500, false, 1000);
-		counter.addRequest(buildLongRequestName(), 10000, 5000, true, 10000);
+		counter.bindContext("test 1", "complete test 1", null, null, -1, -1);
+		sqlCounter.bindContext("sql1", "sql 1", null, null, -1, -1);
+		sqlCounter.addRequest("sql1", 100, 100, 100, false, -1);
+		counter.addRequest("test 1", 0, 0, 0, false, 1000);
+		counter.addRequest("test2", 1000, 500, 500, false, 1000);
+		counter.addRequest(buildLongRequestName(), 10000, 5000, 5000, true, 10000);
 		collector.collectWithoutErrors(javaInformationsList);
 		toPdf(collector, true, javaInformationsList, emptyGraphs);
 
 		toPdf(collector, false, javaInformationsList, emptyGraphs);
 
 		// errorCounter
-		errorCounter.addRequestForSystemError("error", -1, -1, null);
-		errorCounter.addRequestForSystemError("error2", -1, -1, "ma stack-trace");
+		errorCounter.addRequestForSystemError("error", -1, -1, -1, null);
+		errorCounter.addRequestForSystemError("error2", -1, -1, -1, "ma stack-trace");
 		toPdf(collector, false, javaInformationsList, emptyGraphs);
 
 		rootContexts(counter, collector, javaInformations);
@@ -279,7 +279,7 @@ public class TestPdfReport {
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
-		myCounter.bindContext("my context", "my context", null, null, -1);
+		myCounter.bindContext("my context", "my context", null, null, -1, -1);
 		toPdf(collector2, false, Collections.singletonList(javaInformations), graphs);
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -324,11 +324,11 @@ public class TestPdfReport {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(javaInformations);
-		counter.addRequest("test include graph", 1, 1, false, 1000);
-		errorCounter.addRequestForSystemError("error", 1, 1, null);
+		counter.addRequest("test include graph", 1, 1, 1, false, 1000);
+		errorCounter.addRequestForSystemError("error", 1, 1, 1, null);
 		collector.collectWithoutErrors(javaInformationsList);
-		counter.addRequest("test include graph", 1, 1, false, 1000);
-		errorCounter.addRequestForSystemError("error", 1, 1, null);
+		counter.addRequest("test include graph", 1, 1, 1, false, 1000);
+		errorCounter.addRequestForSystemError("error", 1, 1, 1, null);
 		collector.collectWithoutErrors(javaInformationsList);
 		final Document document = new PdfDocumentFactory(TEST_APP, null, output).createDocument();
 		document.open();

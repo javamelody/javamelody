@@ -51,18 +51,21 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	// attention, si sérialisation vers serveur de collecte, la durée peut être impactée s'il y a désynchronisation d'horloge
 	private final long startTime;
 	private final long startCpuTime;
+	private final long startAllocatedBytes;
 	// ces 2 champs sont initialisés à 0
 	private int childHits;
 	private int childDurationsSum;
 	@SuppressWarnings("all")
 	private Map<String, Long> childRequestsExecutionsByRequestId;
 
+	// CHECKSTYLE:OFF
 	public CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext,
 			String requestName, String completeRequestName, HttpServletRequest httpRequest,
-			String remoteUser, long startCpuTime) {
+			String remoteUser, long startCpuTime, long startAllocatedBytes) {
+		// CHECKSTYLE:ON
 		this(parentCounter, parentContext, requestName, completeRequestName, httpRequest,
 				remoteUser, Thread.currentThread().getId(), System.currentTimeMillis(),
-				startCpuTime);
+				startCpuTime, startAllocatedBytes);
 		if (parentContext != null) {
 			parentContext.setCurrentChildContext(this);
 		}
@@ -72,7 +75,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	// CHECKSTYLE:OFF
 	private CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext,
 			String requestName, String completeRequestName, HttpServletRequest httpRequest,
-			String remoteUser, long threadId, long startTime, long startCpuTime) {
+			String remoteUser, long threadId, long startTime, long startCpuTime,
+			long startAllocatedBytes) {
 		// CHECKSTYLE:ON
 		super();
 		assert parentCounter != null;
@@ -89,6 +93,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		this.threadId = threadId;
 		this.startTime = startTime;
 		this.startCpuTime = startCpuTime;
+		this.startAllocatedBytes = startAllocatedBytes;
 	}
 
 	public Counter getParentCounter() {
@@ -177,6 +182,15 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 				- startCpuTime) / 1000000L);
 		// pas de négatif ici sinon on peut avoir une assertion si elles sont activées
 		return Math.max(cpuTime, 0);
+	}
+
+	public int getAllocatedKBytes() {
+		if (startAllocatedBytes < 0) {
+			return -1;
+		}
+		final int allocatedKBytes = (int) ((ThreadInformations
+				.getThreadAllocatedBytes(getThreadId()) - startAllocatedBytes) / 1024L);
+		return Math.max(allocatedKBytes, 0);
 	}
 
 	/** {@inheritDoc} */
@@ -316,7 +330,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		//				counter.getIconName(), counter.getChildCounterName(), null);
 		final CounterRequestContext clone = new CounterRequestContext(counter, parentContextClone,
 				getRequestName(), getCompleteRequestName(), httpRequest, getRemoteUser(),
-				getThreadId(), startTime, startCpuTime);
+				getThreadId(), startTime, startCpuTime, startAllocatedBytes);
 		clone.childHits = getChildHits();
 		clone.childDurationsSum = getChildDurationsSum();
 		final CounterRequestContext childContext = getCurrentChildContext();
