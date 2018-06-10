@@ -49,7 +49,6 @@ import net.bull.javamelody.internal.model.ProcessInformations;
 import net.bull.javamelody.internal.model.Range;
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
 import net.bull.javamelody.internal.model.SessionInformations;
-import net.bull.javamelody.internal.web.html.HtmlCounterReport.HtmlCounterRequestGraphReport;
 
 /**
  * Rapport html.
