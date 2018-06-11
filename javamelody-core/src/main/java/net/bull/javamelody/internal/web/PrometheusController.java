@@ -28,7 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.CacheInformations;
 import net.bull.javamelody.internal.model.Collector;
@@ -202,9 +201,10 @@ class PrometheusController {
 
 	/**
 	 * Produce the full report.
+	 * @param includeLastValue boolean
 	 * @throws IOException e
 	 */
-	void report() throws IOException {
+	void report(boolean includeLastValue) throws IOException {
 		// see https://prometheus.io/docs/instrumenting/exposition_formats/ for text format
 		// memory
 		reportOnMemoryInformations(javaInformations.getMemoryInformations());
@@ -224,7 +224,7 @@ class PrometheusController {
 
 		reportOnCollector();
 
-		if (Parameter.PROMETHEUS_INCLUDE_LAST_VALUE.getValueAsBoolean()) {
+		if (includeLastValue) {
 			reportOnLastValues();
 		}
 	}

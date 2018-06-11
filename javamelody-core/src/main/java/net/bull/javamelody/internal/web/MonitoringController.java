@@ -233,9 +233,11 @@ public class MonitoringController {
 			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else if ("prometheus".equalsIgnoreCase(format)) {
 			httpResponse.setContentType("text/plain; version=0.0.4;charset=UTF-8");
+			final boolean includeLastValue = Boolean
+					.parseBoolean(httpRequest.getParameter("includeLastValue"));
 			final PrometheusController prometheusController = new PrometheusController(
 					javaInformationsList, collector, httpResponse.getWriter());
-			prometheusController.report();
+			prometheusController.report(includeLastValue);
 		} else {
 			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
