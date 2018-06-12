@@ -73,7 +73,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 
 	// constructeur privé pour la méthode clone
 	// CHECKSTYLE:OFF
-	private CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext,
+	private CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext, // NOPMD
 			String requestName, String completeRequestName, HttpServletRequest httpRequest,
 			String remoteUser, long threadId, long startTime, long startCpuTime,
 			long startAllocatedBytes) {

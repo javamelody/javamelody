@@ -103,8 +103,8 @@ public class ThreadInformations implements Serializable {
 	private static Method getThreadAllocatedBytesMethod() {
 		// en général, THREAD_BEAN instanceof com.sun.management.ThreadMXBean, sauf sur JVM tierces
 		try {
-			final Method method = THREAD_BEAN.getClass().getMethod("getThreadAllocatedBytes",
-					long.class);
+			final Class<? extends ThreadMXBean> clazz = THREAD_BEAN.getClass();
+			final Method method = clazz.getMethod("getThreadAllocatedBytes", long.class);
 			if (method != null) {
 				method.setAccessible(true);
 				// on teste pour vérifier que la fonction est supportée et activée

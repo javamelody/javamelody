@@ -65,7 +65,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	}
 
 	void writeRequestGraph(String requestId, String requestName) throws IOException {
-		uniqueByPageAndGraphSequence++;
+		incrementUniqueByPageAndGraphSequence();
 		// la classe tooltip est configurée dans la css de HtmlReport
 		write("<a class='tooltip' href='?part=graph&amp;graph=");
 		write(requestId);
@@ -102,6 +102,10 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeDirectly(htmlEncodeRequestName(requestId, requestName));
 			writeln("</div> ");
 		}
+	}
+
+	private static void incrementUniqueByPageAndGraphSequence() {
+		uniqueByPageAndGraphSequence++;
 	}
 
 	private static String htmlEncodeRequestName(String requestId, String requestName) {

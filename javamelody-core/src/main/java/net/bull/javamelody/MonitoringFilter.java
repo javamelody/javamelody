@@ -254,7 +254,6 @@ public class MonitoringFilter implements Filter {
 			try {
 				// Si la durée est négative (arrive bien que rarement en cas de synchronisation d'horloge système),
 				// alors on considère que la durée est 0.
-
 				// Rq : sous Windows XP, currentTimeMillis a une résolution de 16ms environ
 				// (discrètisation de la durée en 0, 16 ou 32 ms, etc ...)
 				// et sous linux ou Windows Vista la résolution est bien meilleure.
@@ -273,9 +272,7 @@ public class MonitoringFilter implements Filter {
 				}
 
 				JdbcWrapper.ACTIVE_THREAD_COUNT.decrementAndGet();
-
 				putUserInfoInSession(httpRequest);
-
 				if (systemException != null) {
 					systemError = true;
 					final StringWriter stackTrace = new StringWriter(200);
@@ -291,10 +288,8 @@ public class MonitoringFilter implements Filter {
 							"Error" + wrappedResponse.getCurrentStatus(), duration, cpuUsedMillis,
 							allocatedKBytes, null);
 				}
-
 				// prise en compte de Spring bestMatchingPattern s'il y a
 				requestName = CounterRequestContext.getHttpRequestName(httpRequest, requestName);
-
 				// taille du flux sortant
 				final int responseSize = wrappedResponse.getDataLength();
 				// nom identifiant la requête
