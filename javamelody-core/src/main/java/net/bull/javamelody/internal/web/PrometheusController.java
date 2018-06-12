@@ -536,7 +536,11 @@ class PrometheusController {
 			out.print(fields);
 		}
 		out.print(' ');
-		out.println(value);
+		out.print(value);
+		// out.println() prints "\r\n" on Windows and Prometheus does not recognize "\r\n" as EOL
+		// (in Prometheus: "no token found" and in promtool check metrics:
+		// error while linting: text format parsing error in line 2: unknown metric type "gauge\r")
+		out.print('\n');
 	}
 
 	// prints a double metric value with optional fields
