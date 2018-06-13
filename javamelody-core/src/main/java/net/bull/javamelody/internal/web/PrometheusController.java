@@ -530,42 +530,54 @@ class PrometheusController {
 
 	// prints a long metric value with optional fields
 	private void printLongWithFields(String name, String fields, long value) {
-		out.print(METRIC_PREFIX);
-		out.print(name);
+		print(METRIC_PREFIX);
+		print(name);
 		if (fields != null) {
-			out.print(fields);
+			print(fields);
 		}
-		out.print(' ');
-		out.print(value);
-		// out.println() prints "\r\n" on Windows and Prometheus does not recognize "\r\n" as EOL
-		// (in Prometheus: "no token found" and in promtool check metrics:
-		// error while linting: text format parsing error in line 2: unknown metric type "gauge\r")
-		out.print('\n');
+		print(' ');
+		println(String.valueOf(value));
 	}
 
 	// prints a double metric value with optional fields
 	private void printDoubleWithFields(String name, String fields, double value) {
-		out.print(METRIC_PREFIX);
-		out.print(name);
+		print(METRIC_PREFIX);
+		print(name);
 		if (fields != null) {
-			out.print(fields);
+			print(fields);
 		}
-		out.print(' ');
-		out.println(decimalFormat.format(value));
+		print(' ');
+		println(decimalFormat.format(value));
 	}
 
 	// prints the HELP and TYPE rows
 	private void printHeader(MetricType metricType, String name, String description) {
-		out.print("# HELP ");
-		out.print(METRIC_PREFIX);
-		out.print(name);
-		out.print(' ');
-		out.println(description);
+		print("# HELP ");
+		print(METRIC_PREFIX);
+		print(name);
+		print(' ');
+		println(description);
 
-		out.print("# TYPE ");
-		out.print(METRIC_PREFIX);
-		out.print(name);
-		out.print(' ');
-		out.println(metricType.getCode());
+		print("# TYPE ");
+		print(METRIC_PREFIX);
+		print(name);
+		print(' ');
+		println(metricType.getCode());
+	}
+
+	private void print(String s) {
+		out.print(s);
+	}
+
+	private void print(char c) {
+		out.print(c);
+	}
+
+	private void println(String s) {
+		out.print(s);
+		// out.println() prints "\r\n" on Windows and Prometheus does not recognize "\r\n" as EOL
+		// (in Prometheus: "no token found" and in promtool check metrics:
+		// error while linting: text format parsing error in line 2: unknown metric type "gauge\r")
+		out.print('\n');
 	}
 }
