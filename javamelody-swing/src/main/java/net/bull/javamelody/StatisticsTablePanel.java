@@ -170,6 +170,9 @@ class StatisticsTablePanel extends MelodyPanel {
 			table.setColumnCellRenderer("cpuTimeSum", new CpuPercentageTableCellRenderer());
 			table.setColumnCellRenderer("cpuTimeMean", meanCellRenderer);
 		}
+		if (counterRequestAggregation.isAllocatedKBytesDisplayed()) {
+			table.addColumn("allocatedKBytesMean", getString("Ko_alloues_moyens"));
+		}
 		if (!isErrorAndNotJobCounter()) {
 			table.addColumn("systemErrorPercentage", getString("erreur_systeme"));
 		}
