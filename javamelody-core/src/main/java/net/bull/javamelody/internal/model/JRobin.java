@@ -268,16 +268,8 @@ public final class JRobin {
 	private void initGraphPeriodAndSize(Range range, int width, int height, RrdGraphDef graphDef) {
 		// ending timestamp is the (current) timestamp in seconds
 		// starting timestamp will be adjusted for each graph
-		final long endTime;
-		final long startTime;
-		if (range.getPeriod() == null) {
-			// si endDate à la date du jour, alors on ne dépasse pas l'heure courante
-			endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
-			startTime = range.getStartDate().getTime() / 1000;
-		} else {
-			endTime = Util.getTime();
-			startTime = endTime - range.getPeriod().getDurationSeconds();
-		}
+		final long endTime = range.getJRobinEndTime();
+		final long startTime = range.getJRobinStartTime();
 		final String label = getLabel();
 		final String titleStart;
 		if (label.length() > 31 && width <= 200) {
@@ -489,15 +481,8 @@ public final class JRobin {
 
 	private DataProcessor processData(Range range) throws IOException, RrdException {
 		final String dataSourceName = getDataSourceName();
-		final long endTime;
-		final long startTime;
-		if (range.getPeriod() == null) {
-			endTime = Math.min(range.getEndDate().getTime() / 1000, Util.getTime());
-			startTime = range.getStartDate().getTime() / 1000;
-		} else {
-			endTime = Util.getTime();
-			startTime = endTime - range.getPeriod().getDurationSeconds();
-		}
+		final long endTime = range.getJRobinEndTime();
+		final long startTime = range.getJRobinStartTime();
 		final DataProcessor dproc = new DataProcessor(startTime, endTime);
 		dproc.addDatasource("average", rrdFileName, dataSourceName, ConsolFuns.CF_AVERAGE);
 		dproc.setPoolUsed(true);

@@ -23,6 +23,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.jrobin.core.Util;
+
 import net.bull.javamelody.internal.common.I18N;
 
 /**
@@ -145,6 +147,21 @@ public final class Range implements Serializable {
 
 	public Date getEndDate() {
 		return endDate;
+	}
+
+	long getJRobinStartTime() {
+		if (period == null) {
+			return startDate.getTime() / 1000;
+		}
+		return Util.getTime() - period.getDurationSeconds();
+	}
+
+	long getJRobinEndTime() {
+		if (period == null) {
+			// si endDate à la date du jour, alors on ne dépasse pas l'heure courante
+			return Math.min(endDate.getTime() / 1000, Util.getTime());
+		}
+		return Util.getTime();
 	}
 
 	public String getValue() {
