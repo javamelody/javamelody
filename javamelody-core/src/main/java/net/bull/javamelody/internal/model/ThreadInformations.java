@@ -123,6 +123,11 @@ public class ThreadInformations implements Serializable {
 			return null;
 		} catch (final SecurityException e) {
 			return null;
+		} catch (final Exception e) {
+			// pour java 9 car java.lang.reflect.InaccessibleObjectException:
+			// Unable to make public long com.sun.management.internal.HotSpotThreadImpl.getThreadAllocatedBytes(long) accessible:
+			// module jdk.management does not "exports com.sun.management.internal" to unnamed module  
+			return null;
 		}
 	}
 
