@@ -115,7 +115,13 @@ public class ThreadInformations implements Serializable {
 				}
 			}
 			return null;
-		} catch (final Exception e) {
+		} catch (final IllegalAccessException e) {
+			return null;
+		} catch (final InvocationTargetException e) {
+			return null;
+		} catch (final NoSuchMethodException e) {
+			return null;
+		} catch (final SecurityException e) {
 			return null;
 		}
 	}
