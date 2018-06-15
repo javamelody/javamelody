@@ -456,6 +456,9 @@ public enum Action {
 			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
 			for (final Thread thread : threads) {
 				if (thread.getId() == threadId.longValue()) {
+					if (thread.getName().startsWith("javamelody")) {
+						return "I will not kill myself";
+					}
 					stopThread(thread);
 					return I18N.getFormattedString("Thread_tue", thread.getName());
 				}
@@ -479,6 +482,9 @@ public enum Action {
 			final List<Thread> threads = JavaInformations.getThreadsFromThreadGroups();
 			for (final Thread thread : threads) {
 				if (thread.getId() == threadId.longValue()) {
+					if (thread.getName().startsWith("javamelody")) {
+						return "I will not interrupt myself";
+					}
 					thread.interrupt();
 					return I18N.getFormattedString("thread_interrupt_sent", thread.getName());
 				}
