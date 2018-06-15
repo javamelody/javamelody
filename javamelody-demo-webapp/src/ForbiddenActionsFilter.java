@@ -7,6 +7,9 @@ public class ForbiddenActionsFilter implements Filter {
 		if ("kill_thread".equalsIgnoreCase(request.getParameter("action"))) {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Kill thread forbidden in the demo");
 			return;
+		} else if ("send_thread_interrupt".equalsIgnoreCase(request.getParameter("action"))) {
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Thread interrupt forbidden in the demo");
+			return;
 		} else if ("heap_dump".equalsIgnoreCase(request.getParameter("action"))) {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Heap dump forbidden in the demo");
 			return;
