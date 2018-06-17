@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.openmbean.CompositeData;
 import javax.servlet.http.HttpSession;
 
 import org.quartz.JobDetail;
@@ -337,19 +336,17 @@ public enum Action {
 	}
 
 	private File heapDump() throws IOException {
-		final boolean gcBeforeHeapDump = true;
 		try {
-			final MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-			final ObjectInstance instance = platformMBeanServer
-					.getObjectInstance(new ObjectName("com.sun.management:type=HotSpotDiagnostic"));
-			final Object mxBean = platformMBeanServer.instantiate(instance.getClassName());
-			final Object vmOption = ((com.sun.management.HotSpotDiagnosticMXBean) mxBean)
-					.getVMOption("HeapDumpPath");
+			final ObjectName objectName = new ObjectName(
+					"com.sun.management:type=HotSpotDiagnostic");
+			final MBeans mbeans = new MBeans();
+			final CompositeData vmOption = (CompositeData) mbeans.invoke(objectName, "getVMOption",
+					new Object[] { "HeapDumpPath" }, new Class[] { String.class });
 			final String heapDumpPath;
 			if (vmOption == null) {
 				heapDumpPath = null;
 			} else {
-				heapDumpPath = ((com.sun.management.VMOption) vmOption).getValue();
+				heapDumpPath = (String) vmOption.get("value");
 			}
 			final String path;
 			if (heapDumpPath == null || heapDumpPath.isEmpty()) {
@@ -385,8 +382,10 @@ public enum Action {
 				}
 				return heapDump();
 			}
-			((com.sun.management.HotSpotDiagnosticMXBean) mxBean).dumpHeap(heapDumpFile.getPath(),
-					gcBeforeHeapDump);
+			final boolean gcBeforeHeapDump = true;
+			mbeans.invoke(objectName, "dumpHeap",
+					new Object[] { heapDumpFile.getPath(), gcBeforeHeapDump },
+					new Class[] { String.class, boolean.class });
 			return heapDumpFile;
 		} catch (final JMException e) {
 			throw new IllegalStateException(e);

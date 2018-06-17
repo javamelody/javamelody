@@ -413,6 +413,19 @@ public final class MBeans {
 		return null;
 	}
 
+	public Object invoke(ObjectName name, String operationName, Object[] params, Class<?>[] classes)
+			throws JMException {
+		assert name != null;
+		assert operationName != null;
+		assert params != null;
+		assert classes != null;
+		final String[] signature = new String[classes.length];
+		for (int i = 0; i < signature.length; i++) {
+			signature[i] = classes[i].getName();
+		}
+		return mbeanServer.invoke(name, operationName, params, signature);
+	}
+
 	/**
 	 * Retourne le javax.management.MBeanServer de la plateforme.
 	 * @return MBeanServer

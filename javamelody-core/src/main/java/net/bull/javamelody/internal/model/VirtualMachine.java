@@ -172,6 +172,9 @@ public final class VirtualMachine {
 			// on le signale à l'administrateur car il peut simplement installer un JDK et changer JAVA_HOME,
 			throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
 		} catch (final Exception e) {
+			if ("Can not attach to current VM".equals(e.getMessage())) {
+				throw new IllegalStateException(I18N.getString("allowAttachSelf"), e);
+			}
 			// si on obtient com.sun.tools.attach.AttachNotSupportedException: no providers installed
 			// alors c'est idem (javaws dans Jenkins nodes par exemple)
 			if ("com.sun.tools.attach.AttachNotSupportedException".equals(e.getClass().getName())) {

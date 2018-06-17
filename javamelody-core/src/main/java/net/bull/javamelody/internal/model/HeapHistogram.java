@@ -181,8 +181,11 @@ public class HeapHistogram implements Serializable {
 	}
 
 	private void skipHeader(Scanner sc, boolean jrockit) {
-		sc.nextLine();
-		sc.nextLine();
+		final String nextLine = sc.nextLine();
+		// avant jdk 9, il y a une ligne blanche puis le header, mais en jdk 9 il y a juste le header
+		if (nextLine.isEmpty()) {
+			sc.nextLine();
+		}
 		if (!jrockit) {
 			sc.skip("-+");
 			sc.nextLine();
@@ -249,6 +252,10 @@ public class HeapHistogram implements Serializable {
 			permGen = jvmName.charAt(0) == '<';
 			name = convertJVMName();
 			source = findSource();
+			if (sc.hasNext("\\([a-zA-Z.@0-9]*\\)")) {
+				// in jdk 9: (module)
+				sc.next();
+			}
 		}
 
 		void add(ClassInfo classInfo) {
