@@ -339,9 +339,8 @@ public enum Action {
 		try {
 			final ObjectName objectName = new ObjectName(
 					"com.sun.management:type=HotSpotDiagnostic");
-			final MBeans mbeans = new MBeans();
-			final CompositeData vmOption = (CompositeData) mbeans.invoke(objectName, "getVMOption",
-					new Object[] { "HeapDumpPath" }, new Class[] { String.class });
+			final CompositeData vmOption = (CompositeData) MBeansAccessor.invoke(objectName,
+					"getVMOption", new Object[] { "HeapDumpPath" }, new Class[] { String.class });
 			final String heapDumpPath;
 			if (vmOption == null) {
 				heapDumpPath = null;
@@ -383,7 +382,7 @@ public enum Action {
 				return heapDump();
 			}
 			final boolean gcBeforeHeapDump = true;
-			mbeans.invoke(objectName, "dumpHeap",
+			MBeansAccessor.invoke(objectName, "dumpHeap",
 					new Object[] { heapDumpFile.getPath(), gcBeforeHeapDump },
 					new Class[] { String.class, boolean.class });
 			return heapDumpFile;

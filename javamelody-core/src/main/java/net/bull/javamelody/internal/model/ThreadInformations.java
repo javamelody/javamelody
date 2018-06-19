@@ -88,6 +88,8 @@ public class ThreadInformations implements Serializable {
 	}
 
 	static long getThreadAllocatedBytes(long threadId) {
+		// quand disponible (pas en jdk 9+), l'appel par réflexion est de l'ordre de 0,10 microseconde
+		// au lieu de 0,45 microseconde pour l'appel par MBeans
 		if (THREAD_ALLOCATED_BYTES_METHOD != null) {
 			try {
 				return (Long) THREAD_ALLOCATED_BYTES_METHOD.invoke(THREAD_BEAN, threadId);
@@ -97,7 +99,7 @@ public class ThreadInformations implements Serializable {
 				throw new IllegalArgumentException(e);
 			}
 		}
-		return -1;
+		return MBeansAccessor.getThreadAllocatedBytes(threadId);
 	}
 
 	private static Method getThreadAllocatedBytesMethod() {

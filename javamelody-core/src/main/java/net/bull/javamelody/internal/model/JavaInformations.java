@@ -55,8 +55,6 @@ public class JavaInformations implements Serializable { // NOPMD
 	public static final double HIGH_USAGE_THRESHOLD_IN_PERCENTS = 95d;
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final Date START_DATE = new Date();
-	private static final boolean SYSTEM_CPU_LOAD_ENABLED = "1.7"
-			.compareTo(Parameters.JAVA_VERSION) < 0;
 	private static final boolean SPRING_AVAILABLE = isSpringAvailable();
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
@@ -239,41 +237,30 @@ public class JavaInformations implements Serializable { // NOPMD
 	}
 
 	private static long buildProcessCpuTimeMillis() {
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem)) {
-			// nano-secondes converties en milli-secondes
-			return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
-					"getProcessCpuTime") / 1000000;
+		// nano-secondes converties en milli-secondes
+		final long processCpuTime = MBeansAccessor.getLongFromOperatingSystem("ProcessCpuTime");
+		if (processCpuTime >= 0L) {
+			return processCpuTime / 1000000;
 		}
 		return -1;
 	}
 
 	private static long buildOpenFileDescriptorCount() {
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem) && isSunUnixMBean(operatingSystem)) {
-			try {
-				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
-						"getOpenFileDescriptorCount");
-			} catch (final Error e) {
-				// pour issue 16 (using jsvc on ubuntu or debian)
-				return -1;
-			}
+		try {
+			return MBeansAccessor.getLongFromOperatingSystem("OpenFileDescriptorCount");
+		} catch (final Error e) {
+			// pour issue 16 (using jsvc on ubuntu or debian)
+			return -1;
 		}
-		return -1;
 	}
 
 	private static long buildMaxFileDescriptorCount() {
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem) && isSunUnixMBean(operatingSystem)) {
-			try {
-				return MemoryInformations.getLongFromOperatingSystem(operatingSystem,
-						"getMaxFileDescriptorCount");
-			} catch (final Error e) {
-				// pour issue 16 (using jsvc on ubuntu or debian)
-				return -1;
-			}
+		try {
+			return MBeansAccessor.getLongFromOperatingSystem("MaxFileDescriptorCount");
+		} catch (final Error e) {
+			// pour issue 16 (using jsvc on ubuntu or debian)
+			return -1;
 		}
-		return -1;
 	}
 
 	private static double buildSystemCpuLoad() {
@@ -282,12 +269,12 @@ public class JavaInformations implements Serializable { // NOPMD
 		// This value is a double in the [0.0,1.0] interval.
 		// A value of 0.0 means that all CPUs were idle during the recent period of time observed,
 		// while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed.
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (SYSTEM_CPU_LOAD_ENABLED && isSunOsMBean(operatingSystem)) {
-			// systemCpuLoad n'existe qu'à partir du jdk 1.7
-			return MemoryInformations.getDoubleFromOperatingSystem(operatingSystem,
-					"getSystemCpuLoad") * 100;
+
+		final double systemCpu = MBeansAccessor.getDoubleFromOperatingSystem("SystemCpuLoad");
+		if (systemCpu >= 0D) {
+			return systemCpu * 100;
 		}
+		// systemCpuLoad n'existe qu'à partir du jdk 1.7
 		return -1;
 	}
 
@@ -469,25 +456,6 @@ public class JavaInformations implements Serializable { // NOPMD
 			return null;
 		}
 		return sb.toString();
-	}
-
-	private static boolean isSunOsMBean(OperatingSystemMXBean operatingSystem) {
-		// on ne teste pas operatingSystem instanceof com.sun.management.OperatingSystemMXBean
-		// car le package com.sun n'existe à priori pas sur une jvm tierce
-		final String className = operatingSystem.getClass().getName();
-		return "com.sun.management.OperatingSystem".equals(className)
-				|| "com.sun.management.UnixOperatingSystem".equals(className)
-				// sun.management.OperatingSystemImpl pour java 8
-				|| "sun.management.OperatingSystemImpl".equals(className);
-	}
-
-	private static boolean isSunUnixMBean(OperatingSystemMXBean operatingSystem) {
-		for (final Class<?> inter : operatingSystem.getClass().getInterfaces()) {
-			if ("com.sun.management.UnixOperatingSystemMXBean".equals(inter.getName())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public MemoryInformations getMemoryInformations() {

@@ -75,7 +75,7 @@ public class TestMBeans {
 	 * @throws JMException e */
 	@Test
 	public void testGetTomcatThreadPools() throws JMException {
-		assertNotNull("getTomcatThreadPools", mbeans.getTomcatThreadPools());
+		assertNotNull("getTomcatThreadPools", MBeansAccessor.getTomcatThreadPools());
 	}
 
 	/** Test.
@@ -83,7 +83,7 @@ public class TestMBeans {
 	@Test
 	public void testGetTomcatGlobalRequestProcessors() throws JMException {
 		assertNotNull("getTomcatGlobalRequestProcessors",
-				mbeans.getTomcatGlobalRequestProcessors());
+				MBeansAccessor.getTomcatGlobalRequestProcessors());
 	}
 
 	/** Test.

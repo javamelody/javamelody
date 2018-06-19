@@ -35,7 +35,6 @@ import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
@@ -76,18 +75,6 @@ public final class MBeans {
 	private MBeans(MBeanServer mbeanServer) {
 		super();
 		this.mbeanServer = mbeanServer;
-	}
-
-	Set<ObjectName> getTomcatThreadPools() throws MalformedObjectNameException {
-		return mbeanServer.queryNames(new ObjectName("*:type=ThreadPool,*"), null);
-	}
-
-	Set<ObjectName> getTomcatGlobalRequestProcessors() throws MalformedObjectNameException {
-		return mbeanServer.queryNames(new ObjectName("*:type=GlobalRequestProcessor,*"), null);
-	}
-
-	Set<ObjectName> getNioBufferPools() throws MalformedObjectNameException {
-		return mbeanServer.queryNames(new ObjectName("java.nio:type=BufferPool,*"), null);
 	}
 
 	Object getAttribute(ObjectName name, String attribute) throws JMException {
@@ -411,19 +398,6 @@ public final class MBeans {
 			}
 		}
 		return null;
-	}
-
-	public Object invoke(ObjectName name, String operationName, Object[] params, Class<?>[] classes)
-			throws JMException {
-		assert name != null;
-		assert operationName != null;
-		assert params != null;
-		assert classes != null;
-		final String[] signature = new String[classes.length];
-		for (int i = 0; i < signature.length; i++) {
-			signature[i] = classes[i].getName();
-		}
-		return mbeanServer.invoke(name, operationName, params, signature);
 	}
 
 	/**

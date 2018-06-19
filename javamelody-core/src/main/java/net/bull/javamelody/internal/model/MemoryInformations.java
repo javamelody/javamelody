@@ -22,19 +22,9 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.management.JMException;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
 
 import net.bull.javamelody.internal.common.I18N;
-import net.bull.javamelody.internal.common.LOG;
 
 /**
  * Informations systèmes sur la mémoire du serveur, sans code html de présentation.
@@ -48,15 +38,6 @@ public class MemoryInformations implements Serializable {
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final String NEXT = ",\n";
 	private static final String MO = " Mo";
-	private static final Set<ObjectName> NIO_BUFFER_POOLS = new HashSet<ObjectName>();
-
-	static {
-		try {
-			NIO_BUFFER_POOLS.addAll(new MBeans().getNioBufferPools());
-		} catch (final MalformedObjectNameException e) {
-			LOG.debug(e.toString());
-		}
-	}
 
 	// usedMemory est la mémoire utilisée du heap (voir aussi non heap dans gestion mémoire)
 	private final long usedMemory;
@@ -88,21 +69,15 @@ public class MemoryInformations implements Serializable {
 			maxPermGen = -1;
 		}
 		usedNonHeapMemory = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
-		usedBufferedMemory = getUsedBufferMemory();
+		usedBufferedMemory = MBeansAccessor.getUsedBufferMemory();
 		loadedClassesCount = ManagementFactory.getClassLoadingMXBean().getLoadedClassCount();
 		garbageCollectionTimeMillis = buildGarbageCollectionTimeMillis();
 
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
-		if (isSunOsMBean(operatingSystem)) {
-			usedPhysicalMemorySize = getLongFromOperatingSystem(operatingSystem,
-					"getTotalPhysicalMemorySize")
-					- getLongFromOperatingSystem(operatingSystem, "getFreePhysicalMemorySize");
-			usedSwapSpaceSize = getLongFromOperatingSystem(operatingSystem, "getTotalSwapSpaceSize")
-					- getLongFromOperatingSystem(operatingSystem, "getFreeSwapSpaceSize");
-		} else {
-			usedPhysicalMemorySize = -1;
-			usedSwapSpaceSize = -1;
-		}
+		usedPhysicalMemorySize = MBeansAccessor
+				.getLongFromOperatingSystem("TotalPhysicalMemorySize")
+				- MBeansAccessor.getLongFromOperatingSystem("FreePhysicalMemorySize");
+		usedSwapSpaceSize = MBeansAccessor.getLongFromOperatingSystem("TotalSwapSpaceSize")
+				- MBeansAccessor.getLongFromOperatingSystem("FreeSwapSpaceSize");
 
 		memoryDetails = buildMemoryDetails();
 	}
@@ -115,24 +90,6 @@ public class MemoryInformations implements Serializable {
 			}
 		}
 		return null;
-	}
-
-	private static long getUsedBufferMemory() {
-		if (NIO_BUFFER_POOLS.isEmpty()) {
-			return -1;
-		}
-		long result = 0;
-		final MBeans mBeans = new MBeans();
-		try {
-			for (final ObjectName objectName : NIO_BUFFER_POOLS) {
-				// adds direct and mapped buffers
-				result += (Long) mBeans.getAttribute(objectName, "MemoryUsed");
-			}
-		} catch (final JMException e) {
-			// n'est pas censé arriver
-			throw new IllegalStateException(e);
-		}
-		return result;
 	}
 
 	private static long buildGarbageCollectionTimeMillis() {
@@ -153,27 +110,30 @@ public class MemoryInformations implements Serializable {
 		final String classLoading = "Loaded classes = " + integerFormat.format(loadedClassesCount);
 		final String gc = "Garbage collection time = "
 				+ integerFormat.format(garbageCollectionTimeMillis) + " ms";
-		final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 		String osInfo = "";
-		if (isSunOsMBean(operatingSystem)) {
-			osInfo = "Process cpu time = " + integerFormat.format(
-					getLongFromOperatingSystem(operatingSystem, "getProcessCpuTime") / 1000000)
-					+ " ms,\nCommitted virtual memory = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getCommittedVirtualMemorySize") / 1024 / 1024)
-					+ MO + ",\nFree physical memory = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getFreePhysicalMemorySize") / 1024 / 1024)
-					+ MO + ",\nTotal physical memory = "
-					+ integerFormat.format(getLongFromOperatingSystem(operatingSystem,
-							"getTotalPhysicalMemorySize") / 1024 / 1024)
-					+ MO + ",\nFree swap space = "
+		final long totalPhysicalMemorySize = MBeansAccessor
+				.getLongFromOperatingSystem("TotalPhysicalMemorySize");
+		if (totalPhysicalMemorySize >= 0) {
+			osInfo = "Process cpu time = "
 					+ integerFormat.format(
-							getLongFromOperatingSystem(operatingSystem, "getFreeSwapSpaceSize")
+							MBeansAccessor.getLongFromOperatingSystem("ProcessCpuTime") / 1000000)
+					+ " ms,\nCommitted virtual memory = "
+					+ integerFormat.format(
+							MBeansAccessor.getLongFromOperatingSystem("CommittedVirtualMemorySize")
+									/ 1024 / 1024)
+					+ MO + ",\nFree physical memory = "
+					+ integerFormat.format(
+							MBeansAccessor.getLongFromOperatingSystem("FreePhysicalMemorySize")
+									/ 1024 / 1024)
+					+ MO + ",\nTotal physical memory = "
+					+ integerFormat.format(totalPhysicalMemorySize / 1024 / 1024) + MO
+					+ ",\nFree swap space = "
+					+ integerFormat
+							.format(MBeansAccessor.getLongFromOperatingSystem("FreeSwapSpaceSize")
 									/ 1024 / 1024)
 					+ MO + ",\nTotal swap space = "
-					+ integerFormat.format(
-							getLongFromOperatingSystem(operatingSystem, "getTotalSwapSpaceSize")
+					+ integerFormat
+							.format(MBeansAccessor.getLongFromOperatingSystem("TotalSwapSpaceSize")
 									/ 1024 / 1024)
 					+ MO;
 		}
@@ -184,46 +144,6 @@ public class MemoryInformations implements Serializable {
 				+ integerFormat.format(usedBufferedMemory / 1024 / 1024) + MO;
 		return nonHeapMemory + NEXT + bufferedMemory + NEXT + classLoading + NEXT + gc + NEXT
 				+ osInfo;
-	}
-
-	private static boolean isSunOsMBean(OperatingSystemMXBean operatingSystem) {
-		// on ne teste pas operatingSystem instanceof com.sun.management.OperatingSystemMXBean
-		// car le package com.sun n'existe à priori pas sur une jvm tierce
-		final String className = operatingSystem.getClass().getName();
-		return "com.sun.management.OperatingSystem".equals(className)
-				|| "com.sun.management.UnixOperatingSystem".equals(className)
-				// sun.management.OperatingSystemImpl pour java 8
-				|| "sun.management.OperatingSystemImpl".equals(className);
-	}
-
-	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem,
-			String methodName) {
-		return (Long) getFromOperatingSystem(operatingSystem, methodName);
-	}
-
-	static double getDoubleFromOperatingSystem(OperatingSystemMXBean operatingSystem,
-			String methodName) {
-		return (Double) getFromOperatingSystem(operatingSystem, methodName);
-	}
-
-	static Object getFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
-		try {
-			final Method method = operatingSystem.getClass().getMethod(methodName,
-					(Class<?>[]) null);
-			method.setAccessible(true);
-			return method.invoke(operatingSystem, (Object[]) null);
-		} catch (final InvocationTargetException e) {
-			if (e.getCause() instanceof Error) {
-				throw (Error) e.getCause();
-			} else if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			}
-			throw new IllegalStateException(e.getCause());
-		} catch (final NoSuchMethodException e) {
-			throw new IllegalArgumentException(e);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 	public long getUsedMemory() {
