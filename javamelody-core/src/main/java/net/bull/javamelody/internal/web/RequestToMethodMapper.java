@@ -43,7 +43,7 @@ class RequestToMethodMapper<T> {
 
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
-	static @interface RequestPart {
+	@interface RequestPart {
 		/**
 		 * @return String
 		 */
@@ -52,7 +52,7 @@ class RequestToMethodMapper<T> {
 
 	@Target(ElementType.PARAMETER)
 	@Retention(RetentionPolicy.RUNTIME)
-	static @interface RequestParameter {
+	@interface RequestParameter {
 		/**
 		 * @return String
 		 */
@@ -61,7 +61,7 @@ class RequestToMethodMapper<T> {
 
 	@Target(ElementType.PARAMETER)
 	@Retention(RetentionPolicy.RUNTIME)
-	static @interface RequestAttribute {
+	@interface RequestAttribute {
 		/**
 		 * @return String
 		 */

@@ -95,8 +95,6 @@ public class MonitoringInterceptor implements Serializable {
 	 */
 	protected String getRequestName(InvocationContext context) {
 		final Method method = context.getMethod();
-		final String requestName = method.getDeclaringClass().getSimpleName() + '.'
-				+ method.getName();
-		return requestName;
+		return method.getDeclaringClass().getSimpleName() + '.' + method.getName();
 	}
 }

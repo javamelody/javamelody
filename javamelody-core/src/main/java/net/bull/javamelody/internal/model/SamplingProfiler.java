@@ -176,7 +176,7 @@ public class SamplingProfiler {
 		if (packageNames == null) {
 			return null;
 		}
-		final String[] packages = packageNames.toArray(new String[packageNames.size()]);
+		final String[] packages = packageNames.toArray(new String[0]);
 		for (int i = 0; i < packages.length; i++) {
 			packages[i] = packages[i].trim(); // NOPMD
 			if (packages[i].isEmpty()) {

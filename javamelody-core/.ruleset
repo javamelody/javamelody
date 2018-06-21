@@ -57,7 +57,9 @@
    <rule ref="rulesets/java/controversial.xml/CallSuperInConstructor"/>
    <rule ref="rulesets/java/controversial.xml/DontImportSun"/>
    <rule ref="rulesets/java/controversial.xml/SuspiciousOctalEscape"/>
+   <!--
    <rule ref="rulesets/java/controversial.xml/UnnecessaryConstructor"/>
+   -->
    <rule ref="rulesets/java/controversial.xml/UnnecessaryParentheses"/>
    <rule ref="rulesets/java/coupling.xml/CouplingBetweenObjects"/>
    <!--
@@ -178,7 +180,11 @@
    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingMethodName"/>
    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingTypeName"/>
    <rule ref="rulesets/java/naming.xml/BooleanGetMethodName"/>
-   <rule ref="rulesets/java/naming.xml/ClassNamingConventions"/>
+   <rule ref="rulesets/java/naming.xml/ClassNamingConventions">
+    <properties>
+        <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+" />
+    </properties>
+   </rule>
    <rule ref="rulesets/java/naming.xml/MethodNamingConventions"/>
    <rule ref="rulesets/java/naming.xml/MethodWithSameNameAsEnclosingClass"/>
    <rule ref="rulesets/java/naming.xml/MisleadingVariableName"/>
@@ -217,8 +223,8 @@
    <rule ref="rulesets/java/strings.xml/AvoidStringBufferField"/>
    <!--
    <rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends"/>
-   -->
    <rule ref="rulesets/java/strings.xml/InefficientEmptyStringCheck"/>
+   -->
    <rule ref="rulesets/java/strings.xml/InefficientStringBuffering"/>
    <!--
    <rule ref="rulesets/java/strings.xml/InsufficientStringBufferDeclaration"/>

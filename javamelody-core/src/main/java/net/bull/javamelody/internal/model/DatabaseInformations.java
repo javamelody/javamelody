@@ -293,7 +293,7 @@ public class DatabaseInformations implements Serializable {
 				}
 				list.add(values);
 			}
-			return list.toArray(new String[list.size()][]);
+			return list.toArray(new String[0][]);
 		} finally {
 			resultSet.close();
 		}
@@ -315,11 +315,10 @@ public class DatabaseInformations implements Serializable {
 				.values();
 		for (final DataSource dataSource : dataSources) {
 			try {
-				final Connection connection = dataSource.getConnection();
+				return dataSource.getConnection();
 				// on ne doit pas changer autoCommit pour la connection d'une DataSource
 				// (ou alors il faudrait remettre l'autoCommit après, issue 189)
 				// connection.setAutoCommit(false);
-				return connection;
 			} catch (final Exception e) {
 				// si cette dataSource ne fonctionne pas, on suppose que la bonne dataSource est une des suivantes
 				// (par exemple, sur GlassFish il y a des dataSources par défaut qui ne fonctionne pas forcément)

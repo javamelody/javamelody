@@ -605,6 +605,6 @@ final class JdbcWrapperHelper {
 		} else {
 			myInterfaces = interfaces;
 		}
-		return myInterfaces.toArray(new Class<?>[myInterfaces.size()]);
+		return myInterfaces.toArray(new Class<?>[0]);
 	}
 }

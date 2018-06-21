@@ -206,8 +206,7 @@ public final class MBeans {
 				attributeNames.add(attribute.getName());
 			}
 		}
-		final String[] attributeNamesArray = attributeNames
-				.toArray(new String[attributeNames.size()]);
+		final String[] attributeNamesArray = attributeNames.toArray(new String[0]);
 		final List<MBeanAttribute> result = new ArrayList<MBeanAttribute>();
 		try {
 			// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
