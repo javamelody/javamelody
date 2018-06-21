@@ -42,6 +42,7 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	FilterServletResponseWrapper(HttpServletResponse response) {
 		super(response);
 		assert response != null;
+		setCharacterEncoding(response.getCharacterEncoding());
 	}
 
 	HttpServletResponse getHttpServletResponse() {
