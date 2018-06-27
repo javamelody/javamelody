@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.security.CodeSource;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -44,11 +45,19 @@ class HtmlSourceReport extends HtmlAbstractReport {
 
 	HtmlSourceReport(String className, Writer writer) throws IOException {
 		super(writer);
-		if (className.indexOf('$') == -1) {
-			this.source = getSource(className);
-		} else {
-			this.source = getSource(className.substring(0, className.indexOf('$')));
+		this.source = getSource(normalizeClassName(className));
+	}
+
+	private static String normalizeClassName(String className) {
+		String temp = className;
+		if (temp.lastIndexOf('$') != -1) {
+			temp = temp.substring(0, temp.lastIndexOf('$'));
 		}
+		if (temp.lastIndexOf('/') != -1) {
+			// for JDK 9+
+			temp = temp.substring(temp.lastIndexOf('/') + 1, temp.length());
+		}
+		return temp;
 	}
 
 	private String getSource(String className) throws IOException {
@@ -79,7 +88,12 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		if ("jre".equalsIgnoreCase(file.getName())) {
 			file = file.getParentFile();
 		}
-		final File srcZipFile = new File(file, "src.zip");
+		File srcZipFile = new File(file, "src.zip");
+		if (srcZipFile.exists()) {
+			return srcZipFile;
+		}
+		// for JDK 9 +
+		srcZipFile = new File(file, "lib/src.zip");
 		if (srcZipFile.exists()) {
 			return srcZipFile;
 		}
@@ -90,9 +104,20 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			throws ZipException, IOException {
 		final ZipFile zipFile = new ZipFile(srcJarFile);
 		try {
-			final ZipEntry entry = zipFile.getEntry(clazz.getName().replace('.', '/') + ".java");
+			final String entryName = clazz.getName().replace('.', '/') + ".java";
+			ZipEntry entry = zipFile.getEntry(entryName);
 			if (entry == null) {
-				return null;
+				// for JDK 9 + and maybe some others
+				final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+				while (entries.hasMoreElements()) {
+					entry = entries.nextElement();
+					if (entry.getName().endsWith(entryName)) {
+						break;
+					}
+				}
+				if (!entry.getName().endsWith(entryName)) {
+					return null;
+				}
 			}
 			final StringWriter writer = new StringWriter();
 			final InputStream inputStream = zipFile.getInputStream(entry);
