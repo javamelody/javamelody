@@ -17,12 +17,15 @@
  */
 package net.bull.javamelody.internal.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import javax.management.ObjectName;
 
 import net.bull.javamelody.internal.common.I18N;
 
@@ -161,26 +164,37 @@ public final class VirtualMachine {
 		}
 
 		try {
-			final Class<?> virtualMachineClass = getJvmVirtualMachine().getClass();
-			final Method heapHistoMethod = virtualMachineClass.getMethod("heapHisto",
-					Object[].class);
-			return (InputStream) invoke(heapHistoMethod, getJvmVirtualMachine(),
-					new Object[] { new Object[] { "-all" } });
-		} catch (final ClassNotFoundException e) {
-			// si on obtient ClassNotFoundException alors que heap histo est "supporté"
-			// alors c'est que la jvm est un JRE et non un JDK (certainement avec tomcat) :
-			// on le signale à l'administrateur car il peut simplement installer un JDK et changer JAVA_HOME,
-			throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
-		} catch (final Exception e) {
-			if ("Can not attach to current VM".equals(e.getMessage())) {
-				throw new IllegalStateException(I18N.getString("allowAttachSelf"), e);
-			}
-			// si on obtient com.sun.tools.attach.AttachNotSupportedException: no providers installed
-			// alors c'est idem (javaws dans Jenkins nodes par exemple)
-			if ("com.sun.tools.attach.AttachNotSupportedException".equals(e.getClass().getName())) {
+			final ObjectName objectName = new ObjectName(
+					"com.sun.management:type=DiagnosticCommand");
+			final String gcClassHistogram = (String) MBeansAccessor.invoke(objectName,
+					"gcClassHistogram", new Object[] { null }, new Class[] { String[].class });
+			return new ByteArrayInputStream(gcClassHistogram.getBytes("UTF-8"));
+		} catch (final Exception e1) {
+			// MBean "DiagnosticCommand" not found (with JDK 7 for example),
+			// continue with VM attach method
+			try {
+				final Class<?> virtualMachineClass = getJvmVirtualMachine().getClass();
+				final Method heapHistoMethod = virtualMachineClass.getMethod("heapHisto",
+						Object[].class);
+				return (InputStream) invoke(heapHistoMethod, getJvmVirtualMachine(),
+						new Object[] { new Object[] { "-all" } });
+			} catch (final ClassNotFoundException e) {
+				// si on obtient ClassNotFoundException alors que heap histo est "supporté"
+				// alors c'est que la jvm est un JRE et non un JDK (certainement avec tomcat) :
+				// on le signale à l'administrateur car il peut simplement installer un JDK et changer JAVA_HOME,
 				throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
+			} catch (final Exception e) {
+				if ("Can not attach to current VM".equals(e.getMessage())) {
+					throw new IllegalStateException(I18N.getString("allowAttachSelf"), e);
+				}
+				// si on obtient com.sun.tools.attach.AttachNotSupportedException: no providers installed
+				// alors c'est idem (javaws dans Jenkins nodes par exemple)
+				if ("com.sun.tools.attach.AttachNotSupportedException"
+						.equals(e.getClass().getName())) {
+					throw new IllegalStateException(I18N.getString("heap_histo_jre"), e);
+				}
+				throw e;
 			}
-			throw e;
 		}
 	}
 
