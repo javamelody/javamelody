@@ -23,6 +23,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -112,7 +113,8 @@ public final class Main {
 		final boolean collectorServer = Boolean
 				.parseBoolean(System.getProperty("javamelody.collectorServer"));
 		final List<URL> urls = Arrays.asList(new URL(url));
-		final Range selectedRange = Range.parse(range);
+		final DateFormat dateFormat = I18N.createDateFormat();
+		final Range selectedRange = Range.parse(range, dateFormat);
 		log("Monitoring of " + application + " on " + url);
 		log("creating frame");
 		final RemoteCollector remoteCollector = new RemoteCollector(application, urls);

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -86,29 +87,33 @@ public class TestRange {
 	public void testParse() {
 		I18N.bindLocale(Locale.FRENCH);
 		try {
+			final DateFormat dateFormat = I18N.createDateFormat();
 			assertEquals("parse1", periodRange.getPeriod(),
-					Range.parse(periodRange.getValue()).getPeriod());
+					Range.parse(periodRange.getValue(), dateFormat).getPeriod());
 			assertTrue("parse2", isSameDay(customRange.getStartDate(),
-					Range.parse(customRange.getValue()).getStartDate()));
+					Range.parse(customRange.getValue(), dateFormat).getStartDate()));
 			assertTrue("parse3", isSameDay(customRange.getEndDate(),
-					Range.parse(customRange.getValue()).getEndDate()));
+					Range.parse(customRange.getValue(), dateFormat).getEndDate()));
 
 			// on teste le résultat en cas d'erreur de format
-			assertNotNull("parse4",
-					Range.parse("xxxxxx" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2010"));
-			assertNotNull("parse5",
-					Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR + "xxxxxx"));
-			assertNotNull("parse6", Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR));
-			assertNotNull("parse6b", Range.parse("01/01/2011"));
+			assertNotNull("parse4", Range
+					.parse("xxxxxx" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2010", dateFormat));
+			assertNotNull("parse5", Range
+					.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR + "xxxxxx", dateFormat));
+			assertNotNull("parse6",
+					Range.parse("01/01/2010" + Range.CUSTOM_PERIOD_SEPARATOR, dateFormat));
+			assertNotNull("parse6b", Range.parse("01/01/2011", dateFormat));
 			// on teste les bornes min et max
 			final Calendar calendar = Calendar.getInstance();
 			final int currentYear = calendar.get(Calendar.YEAR);
-			Range range = Range.parse("01/01/2000" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030");
+			Range range = Range.parse("01/01/2000" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030",
+					dateFormat);
 			calendar.setTime(range.getStartDate());
 			assertTrue("parse7", calendar.get(Calendar.YEAR) >= currentYear - 2);
 			calendar.setTime(range.getEndDate());
 			assertTrue("parse7", calendar.get(Calendar.YEAR) <= currentYear);
-			range = Range.parse("01/01/2030" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030");
+			range = Range.parse("01/01/2030" + Range.CUSTOM_PERIOD_SEPARATOR + "01/01/2030",
+					dateFormat);
 			calendar.setTime(range.getStartDate());
 			assertTrue("parse8", calendar.get(Calendar.YEAR) <= currentYear);
 		} finally {

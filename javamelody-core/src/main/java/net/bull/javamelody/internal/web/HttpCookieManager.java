@@ -17,11 +17,15 @@
  */
 package net.bull.javamelody.internal.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.bull.javamelody.internal.common.HttpParameter;
+import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.Range;
 
@@ -36,6 +40,13 @@ public class HttpCookieManager {
 	private static Range defaultRange = Period.JOUR.getRange();
 
 	public Range getRange(HttpServletRequest req, HttpServletResponse resp) {
+		final DateFormat dateFormat;
+		final String pattern = HttpParameter.PATTERN.getParameterFrom(req);
+		if (pattern == null || pattern.isEmpty()) {
+			dateFormat = I18N.createDateFormat();
+		} else {
+			dateFormat = new SimpleDateFormat(pattern);
+		}
 		final Range range;
 		if (HttpParameter.PERIOD.getParameterFrom(req) == null) {
 			// pas de paramètre period dans la requête, on cherche le cookie
@@ -44,10 +55,10 @@ public class HttpCookieManager {
 				// pas de cookie, période par défaut
 				range = defaultRange;
 			} else {
-				range = Range.parse(cookie.getValue());
+				range = Range.parse(cookie.getValue(), dateFormat);
 			}
 		} else {
-			range = Range.parse(HttpParameter.PERIOD.getParameterFrom(req));
+			range = Range.parse(HttpParameter.PERIOD.getParameterFrom(req), dateFormat);
 			// un paramètre period est présent dans la requête :
 			// l'utilisateur a choisi une période, donc on fixe le cookie
 			addCookie(req, resp, PERIOD_COOKIE_NAME, range.getValue());

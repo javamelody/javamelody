@@ -20,6 +20,8 @@ package net.bull.javamelody.internal.web; // NOPMD
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -384,7 +386,14 @@ public class SerializableController {
 			// période tout par défaut pour Serializable, notamment pour le serveur de collecte
 			range = Period.TOUT.getRange();
 		} else {
-			range = Range.parse(period);
+			final DateFormat dateFormat;
+			final String pattern = HttpParameter.PATTERN.getParameterFrom(httpRequest);
+			if (pattern == null) {
+				dateFormat = I18N.createDateFormat();
+			} else {
+				dateFormat = new SimpleDateFormat(pattern);
+			}
+			range = Range.parse(period, dateFormat);
 		}
 		return range;
 	}

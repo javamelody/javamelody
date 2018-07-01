@@ -43,6 +43,7 @@ public enum HttpParameter {
 	WIDTH("width"),
 	HEIGHT("height"),
 	MAX("max"),
+	PATTERN("pattern"),
 	REPORT("report"),
 	TOKEN("token"),
 	CLASS("class"),

@@ -104,7 +104,7 @@ public final class Range implements Serializable {
 		return new Range(null, normalizedStartDate, normalizedEndDate);
 	}
 
-	public static Range parse(String value) {
+	public static Range parse(String value, DateFormat dateFormat) {
 		final int index = value.indexOf(CUSTOM_PERIOD_SEPARATOR);
 		if (index == -1) {
 			try {
@@ -115,7 +115,6 @@ public final class Range implements Serializable {
 		}
 		// rq: on pourrait essayer aussi des dateFormat alternatifs,
 		// par exemple même pattern mais sans les slashs ou juste avec jour et mois
-		final DateFormat dateFormat = I18N.createDateFormat();
 		Date startDate;
 		try {
 			startDate = dateFormat.parse(value.substring(0, index));

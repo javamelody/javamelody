@@ -59,7 +59,61 @@ class HtmlForms extends HtmlAbstractReport {
 	private void writeCustomPeriodDiv(Range currentRange, String graphName, String part)
 			throws IOException {
 		writeln("<div id='customPeriod' style='display: none;'>");
+		writeln("<br/>");
+		// yyyy-MM-dd is always the pattern of the input type=date
+		final String pattern = "yyyy-MM-dd";
+		final DateFormat dateFormat = new SimpleDateFormat(pattern);
+		final String max = dateFormat.format(new Date());
+		writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
+		writeln("<br/><b><label for='customPeriodStartDate'>#startDate#</label></b>&nbsp;&nbsp;");
+		writeln("<input type='date' id='customPeriodStartDate' name='startDate' size='10' required max='"
+				+ max + "' ");
+		if (currentRange.getStartDate() != null) {
+			writeln("value='" + dateFormat.format(currentRange.getStartDate()) + '\'');
+		}
+		writeln("/>&nbsp;&nbsp;<b><label for='customPeriodEndDate'>#endDate#</label></b>&nbsp;&nbsp;");
+		writeln("<input type='date' id='customPeriodEndDate' name='endDate' size='10' required max='"
+				+ max + "' ");
+		if (currentRange.getEndDate() != null) {
+			writeln("value='" + dateFormat.format(currentRange.getEndDate()) + '\'');
+		}
+		writeln("/>&nbsp;&nbsp;");
+		final DateFormat localeDateFormat = I18N.createDateFormat();
+		final String localeDateFormatPattern;
+		if (getString("dateFormatPattern").isEmpty()) {
+			localeDateFormatPattern = ((SimpleDateFormat) localeDateFormat).toPattern()
+					.toLowerCase(I18N.getCurrentLocale());
+		} else {
+			localeDateFormatPattern = getString("dateFormatPattern");
+		}
+		// ce customPeriodPattern ne sera pas affiché si html5
+		writeDirectly("<span id='customPeriodPattern' style='display: none;'>("
+				+ localeDateFormatPattern + ")</span>");
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' value='#ok#'/><br/><br/>");
+		writeln("<input type='hidden' name='period' value=''/>");
+		writeln("<input type='hidden' name='pattern' value='" + pattern + "'/>");
+		if (graphName != null) {
+			writeln("<input type='hidden' name='part' value='" + part + "'/>");
+			writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
+		}
 		writeln("<script type='text/javascript'>");
+		// On teste si l'élément <input type='date'> se transforme en <input type='text'
+		writeln("var test = document.createElement('input'); test.type = 'date';");
+		// Si c'est le cas, cela signifie que l'élément (html5) n'est pas pris en charge
+		writeln("if(test.type === 'text') {");
+		// si pas html5, on vide le champ pattern car il n'est pas au bon format
+		// et on affiche le format en langue du navigateur
+		writeln("  document.customPeriodForm.pattern.value = '';");
+		writeln("  document.getElementById('customPeriodPattern').style.display='inline';");
+		if (currentRange.getStartDate() != null) {
+			writeln("  document.customPeriodForm.startDate.value = '"
+					+ localeDateFormat.format(currentRange.getStartDate()) + "';");
+		}
+		if (currentRange.getEndDate() != null) {
+			writeln("  document.customPeriodForm.endDate.value = '"
+					+ localeDateFormat.format(currentRange.getEndDate()) + "';");
+		}
+		writeln("}");
 		writeln("function validateCustomPeriodForm() {");
 		writeln("   periodForm = document.customPeriodForm;");
 		writelnCheckMandatory("periodForm.startDate", "dates_mandatory");
@@ -69,32 +123,6 @@ class HtmlForms extends HtmlAbstractReport {
 		writeln("   return true;");
 		writeln("}");
 		writeln("</script>");
-		writeln("<br/>");
-		final DateFormat dateFormat = I18N.createDateFormat();
-		final String dateFormatPattern;
-		if (getString("dateFormatPattern").isEmpty()) {
-			final String pattern = ((SimpleDateFormat) dateFormat).toPattern();
-			dateFormatPattern = pattern.toLowerCase(I18N.getCurrentLocale());
-		} else {
-			dateFormatPattern = getString("dateFormatPattern");
-		}
-		writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
-		writeln("<br/><b>#startDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='startDate' ");
-		if (currentRange.getStartDate() != null) {
-			writeln("value='" + dateFormat.format(currentRange.getStartDate()) + '\'');
-		}
-		writeln("/>&nbsp;&nbsp;<b>#endDate#</b>&nbsp;&nbsp;<input type='text' size='10' name='endDate' ");
-		if (currentRange.getEndDate() != null) {
-			writeln("value='" + dateFormat.format(currentRange.getEndDate()) + '\'');
-		}
-		writeln("/>&nbsp;&nbsp;");
-		writeDirectly('(' + dateFormatPattern + ')');
-		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' value='#ok#'/><br/><br/>");
-		writeln("<input type='hidden' name='period' value=''/>");
-		if (graphName != null) {
-			writeln("<input type='hidden' name='part' value='" + part + "'/>");
-			writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
-		}
 		writeln("</form><br/>");
 		writeln("</div>");
 	}
@@ -175,8 +203,8 @@ class HtmlForms extends HtmlAbstractReport {
 		writeln("</script>");
 		writeln("<br/> <br/>");
 		writeln("<form name='appForm' method='post' action='' onsubmit='return validateAppForm();'>");
-		writeln("<br/><b>#app_name_to_monitor# :</b>&nbsp;&nbsp;<input type='text' size='15' name='appName'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<b>#app_urls# :</b>&nbsp;&nbsp;<input type='text' size='50' name='appUrls'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<br/><b><label for='appName'>#app_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<b><label for='appUrls'>#app_urls#</label> :</b>&nbsp;&nbsp;<input type='text' size='50' id='appUrls' name='appUrls' required/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<input type='submit' value='#add#'/><br/>");
 		writeln("#urls_sample# : <i>http://myhost/myapp/</i> #or# <i>http://host1/myapp/,http://host2/myapp/</i>");
 		writeln("<br/> <br/>");
