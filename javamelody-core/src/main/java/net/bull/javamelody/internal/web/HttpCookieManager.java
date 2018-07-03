@@ -19,6 +19,7 @@ package net.bull.javamelody.internal.web;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +46,7 @@ public class HttpCookieManager {
 		if (pattern == null || pattern.isEmpty()) {
 			dateFormat = I18N.createDateFormat();
 		} else {
-			dateFormat = new SimpleDateFormat(pattern);
+			dateFormat = new SimpleDateFormat(pattern, Locale.US);
 		}
 		final Range range;
 		if (HttpParameter.PERIOD.getParameterFrom(req) == null) {

@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import javax.management.JMException;
 import javax.management.ObjectName;
 
 import net.bull.javamelody.internal.common.I18N;
@@ -169,7 +170,7 @@ public final class VirtualMachine {
 			final String gcClassHistogram = (String) MBeansAccessor.invoke(objectName,
 					"gcClassHistogram", new Object[] { null }, new Class[] { String[].class });
 			return new ByteArrayInputStream(gcClassHistogram.getBytes("UTF-8"));
-		} catch (final Exception e1) {
+		} catch (final JMException e1) {
 			// MBean "DiagnosticCommand" not found (with JDK 7 for example),
 			// continue with VM attach method
 			try {

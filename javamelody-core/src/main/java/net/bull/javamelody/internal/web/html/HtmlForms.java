@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import net.bull.javamelody.internal.common.I18N;
@@ -62,7 +63,7 @@ class HtmlForms extends HtmlAbstractReport {
 		writeln("<br/>");
 		// yyyy-MM-dd is always the pattern of the input type=date
 		final String pattern = "yyyy-MM-dd";
-		final DateFormat dateFormat = new SimpleDateFormat(pattern);
+		final DateFormat dateFormat = new SimpleDateFormat(pattern, Locale.US);
 		final String max = dateFormat.format(new Date());
 		writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
 		writeln("<br/><b><label for='customPeriodStartDate'>#startDate#</label></b>&nbsp;&nbsp;");

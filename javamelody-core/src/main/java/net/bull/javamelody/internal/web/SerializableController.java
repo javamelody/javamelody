@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -391,7 +392,7 @@ public class SerializableController {
 			if (pattern == null) {
 				dateFormat = I18N.createDateFormat();
 			} else {
-				dateFormat = new SimpleDateFormat(pattern);
+				dateFormat = new SimpleDateFormat(pattern, Locale.US);
 			}
 			range = Range.parse(period, dateFormat);
 		}
