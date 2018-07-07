@@ -81,8 +81,8 @@ final class MBeansAccessor {
 	// on ne peut plus appeler par réflexion des getters d'OperatingSystemMXBean "Sun" :
 	// https://docs.oracle.com/javase/9/docs/api/com/sun/management/OperatingSystemMXBean.html
 	// (ManagementFactory.getOperatingSystemMXBean() instanceof com.sun.management.internal.OperatingSystemImpl en jdk 9)
-	// car java.lang.reflect.InaccessibleObjectException: 
-	// Unable to make public long com.sun.management.internal.OperatingSystemImpl...... accessible: 
+	// car java.lang.reflect.InaccessibleObjectException:
+	// Unable to make public long com.sun.management.internal.OperatingSystemImpl...... accessible:
 	//	module jdk.management does not "opens com.sun.management.internal" to unnamed module ....
 	// sauf si par chance, --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED en ligne de commande
 	// donc on appelle les attributs des MBeans équivalents qui sont visibles dans tous les cas
@@ -122,7 +122,7 @@ final class MBeansAccessor {
 		try {
 			return (Long) MBEAN_SERVER.invoke(THREADING, "getThreadAllocatedBytes",
 					new Object[] { threadId }, THREAD_ALLOCATED_BYTES_SIGNATURE);
-		} catch (JMException e) {
+		} catch (final JMException e) {
 			throw new IllegalStateException(e);
 		}
 	}
