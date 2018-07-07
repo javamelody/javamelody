@@ -89,7 +89,7 @@ public class JavaMelodyConfigurationProperties {
 	/**
 	 * Returns a map of initialization parameters to be passed to the JavaMelody monitoring filter.
 	 * The available parameters are listed here: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
-	 * 
+	 *
 	 * @return Initialization parameters for the JavaMelody monitoring filter.
 	 */
 	public Map<String, String> getInitParameters() {
@@ -99,7 +99,7 @@ public class JavaMelodyConfigurationProperties {
 	/**
 	 * Sets a map of initialization parameters to be passed to the JavaMelody monitoring filter.
 	 * The available parameters are listed here: https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
-	 * 
+	 *
 	 * @param initParameters Initialization parameters for the JavaMelody monitoring filter.
 	 */
 	public void setInitParameters(Map<String, String> initParameters) {
