@@ -89,8 +89,7 @@ class DeploymentPeriodPanel extends MelodyPanel {
 		final List<String> versions = new ArrayList<>();
 		versions.add(" ");
 		versions.addAll(webappVersions.keySet());
-		versionComboBox.setModel(
-				new DefaultComboBoxModel<>(versions.toArray(new String[versions.size()])));
+		versionComboBox.setModel(new DefaultComboBoxModel<>(versions.toArray(new String[0])));
 		versionComboBox.setFont(versionComboBox.getFont().deriveFont(Font.BOLD));
 		if (selectedVersion != null) {
 			versionComboBox.setSelectedItem(selectedVersion);

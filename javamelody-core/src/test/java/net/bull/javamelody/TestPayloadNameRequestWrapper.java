@@ -160,7 +160,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 				values.addAll(Arrays.asList(bodyValues));
 
-				parameterMap.put(key, values.toArray(new String[values.size()]));
+				parameterMap.put(key, values.toArray(new String[0]));
 			}
 		} //end if form-encoded params in request body
 

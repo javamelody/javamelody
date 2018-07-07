@@ -117,6 +117,7 @@ org.eclipse.jdt.core.compiler.problem.unusedPrivateMember=warning
 org.eclipse.jdt.core.compiler.problem.unusedTypeParameter=ignore
 org.eclipse.jdt.core.compiler.problem.unusedWarningToken=warning
 org.eclipse.jdt.core.compiler.problem.varargsArgumentNeedCast=warning
+org.eclipse.jdt.core.compiler.release=disabled
 org.eclipse.jdt.core.compiler.source=1.8
 org.eclipse.jdt.core.formatter.align_fields_grouping_blank_lines=2147483647
 org.eclipse.jdt.core.formatter.align_type_members_on_columns=false

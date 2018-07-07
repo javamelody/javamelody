@@ -59,10 +59,6 @@ class DependenciesPanel extends MelodyPanel {
 	class NameTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
 
-		NameTableCellRenderer() {
-			super();
-		}
-
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
@@ -86,10 +82,6 @@ class DependenciesPanel extends MelodyPanel {
 	class MavenIdTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
 
-		MavenIdTableCellRenderer() {
-			super();
-		}
-
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column) {
@@ -109,10 +101,6 @@ class DependenciesPanel extends MelodyPanel {
 
 	class LicenseTableCellRenderer extends MDefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
-
-		LicenseTableCellRenderer() {
-			super();
-		}
 
 		@Override
 		public Component getTableCellRendererComponent(JTable jtable, Object value,

@@ -73,7 +73,7 @@ public class TestUpdateChecker {
 		final Collector collector = new Collector("test",
 				Arrays.asList(new Counter("http", null), new Counter("sql", null)));
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
-		assertNotNull(new SessionListener());
+		assertNotNull("SessionListener", new SessionListener());
 		TestDatabaseInformations.initJdbcDriverParameters();
 		collector.collectWithoutErrors(Arrays.asList(new JavaInformations(null, true)));
 		final String serverUrl = "http://dummy";
@@ -83,7 +83,7 @@ public class TestUpdateChecker {
 			updateCheckerCollectorServer.checkForUpdate();
 		} catch (final UnknownHostException e) {
 			// UnknownHostException is ok for url http://dummy
-			assertNotNull(updateCheckerCollectorServer);
+			assertNotNull("updateCheckerCollectorServer", updateCheckerCollectorServer);
 		}
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
 		Utils.setProperty(Parameter.LOG, "true");
@@ -96,7 +96,7 @@ public class TestUpdateChecker {
 			updateChecker.checkForUpdate();
 		} catch (final UnknownHostException e) {
 			// UnknownHostException is ok for url http://dummy
-			assertNotNull(updateChecker);
+			assertNotNull("updateChecker", updateChecker);
 		}
 		CacheManager.getInstance().removeCache("test");
 	}

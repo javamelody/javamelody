@@ -385,7 +385,7 @@ public class TestCounter {
 	@Test
 	public void testApplication() {
 		final String value = "app";
-		assertNotSame(value, counter.getApplication());
+		assertNotSame("application", value, counter.getApplication());
 		counter.setApplication(value);
 		assertSame("application", value, counter.getApplication());
 	}
@@ -394,7 +394,7 @@ public class TestCounter {
 	@Test
 	public void testRequestTransformPattern() {
 		final Pattern value = Pattern.compile("a*");
-		assertNotSame(value, counter.getRequestTransformPattern());
+		assertNotSame("request transform pattern", value, counter.getRequestTransformPattern());
 		counter.setRequestTransformPattern(value);
 		assertSame("request transform pattern", value, counter.getRequestTransformPattern());
 	}
@@ -403,7 +403,7 @@ public class TestCounter {
 	@Test
 	public void testStartDate() {
 		final Date value = new Date(System.currentTimeMillis() + 1000);
-		assertNotSame(value, counter.getStartDate());
+		assertNotSame("start date", value, counter.getStartDate());
 		counter.setStartDate(value);
 		assertSame("start date", value, counter.getStartDate());
 	}
@@ -412,7 +412,7 @@ public class TestCounter {
 	@Test
 	public void testDisplayed() {
 		final boolean value = false;
-		assertNotSame(value, counter.isDisplayed());
+		assertNotSame("displayed", value, counter.isDisplayed());
 		counter.setDisplayed(value);
 		assertSame("displayed", value, counter.isDisplayed());
 	}

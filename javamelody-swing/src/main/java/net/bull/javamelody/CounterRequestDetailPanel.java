@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -103,7 +104,7 @@ class CounterRequestDetailPanel extends MelodyPanel {
 		}
 
 		if (JdbcWrapper.SINGLETON.getSqlCounter().isRequestIdFromThisCounter(graphName)
-				&& !request.getName().toLowerCase().startsWith("alter ")) {
+				&& !request.getName().toLowerCase(Locale.US).startsWith("alter ")) {
 			// inutile d'essayer d'avoir le plan d'exécution des requêtes sql
 			// telles que "alter session set ..." (cf issue 152)
 			final String sqlRequestExplainPlan = remoteCollector

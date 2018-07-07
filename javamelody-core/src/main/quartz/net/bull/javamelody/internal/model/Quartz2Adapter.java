@@ -23,7 +23,6 @@ import java.util.List;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
-import net.bull.javamelody.internal.common.Parameters;
 
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;

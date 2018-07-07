@@ -195,7 +195,7 @@ public class MExtensionFileFilter extends FileFilter {
 			final String fileName = file.getName();
 			final int i = fileName.lastIndexOf('.');
 			if (i > 0 && i < fileName.length() - 1) {
-				return fileName.substring(i + 1).toLowerCase();
+				return fileName.substring(i + 1).toLowerCase(Locale.getDefault());
 			}
 		}
 		return null;

@@ -27,8 +27,8 @@ public class CounterErrorTest {
 		final String message = "aaaaaaaaaa";
 		final String stackTrace = "bbbbbbbb";
 		final CounterError counterError = new CounterError(message, stackTrace);
-		assertEquals(message, counterError.getMessage());
-		assertEquals(stackTrace, counterError.getStackTrace());
+		assertEquals("message", message, counterError.getMessage());
+		assertEquals("stackTrace", stackTrace, counterError.getStackTrace());
 	}
 
 	/**

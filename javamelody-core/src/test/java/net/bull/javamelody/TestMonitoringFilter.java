@@ -84,7 +84,7 @@ import net.sf.ehcache.Element;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestMonitoringFilter {
+public class TestMonitoringFilter { // NOPMD
 	// CHECKSTYLE:ON
 	private static final String FILTER_NAME = "monitoring";
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
@@ -397,7 +397,7 @@ public class TestMonitoringFilter {
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
 				string.getBytes());
 		// CHECKSTYLE:OFF
-		final ServletInputStream inputStream = new ServletInputStream() {
+		return new ServletInputStream() {
 			// CHECKSTYLE:ON
 			@Override
 			public int read() throws IOException {
@@ -419,7 +419,6 @@ public class TestMonitoringFilter {
 				// nothing
 			}
 		};
-		return inputStream;
 	}
 
 	private void doFilter(HttpServletRequest request) throws ServletException, IOException {

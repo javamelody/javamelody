@@ -66,8 +66,8 @@ public class TestBase64Coder {
 			assertEquals("test2", e2, e1);
 			final byte[] b1 = Base64Coder.decode(e1);
 			final byte[] b2 = sunDecoder.decodeBuffer(e2);
-			assertArrayEquals(b0, b1);
-			assertArrayEquals(b0, b2);
+			assertArrayEquals("test2", b0, b1);
+			assertArrayEquals("test2", b0, b2);
 		}
 	}
 
@@ -92,8 +92,8 @@ public class TestBase64Coder {
 			assertEquals("test3", e2, e1);
 			final byte[] b1 = Base64Coder.decodeLines(e1);
 			final byte[] b2 = sunDecoder.decodeBuffer(e2);
-			assertArrayEquals(b0, b1);
-			assertArrayEquals(b0, b2);
+			assertArrayEquals("test3", b0, b1);
+			assertArrayEquals("test3", b0, b2);
 		}
 	}
 

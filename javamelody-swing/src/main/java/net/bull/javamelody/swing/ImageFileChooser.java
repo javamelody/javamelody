@@ -28,6 +28,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -98,7 +99,7 @@ public class ImageFileChooser extends JFileChooser {
 	 * @return File
 	 */
 	private File checkFile(File file) {
-		final String extension = getExtension(file.getName()).toLowerCase();
+		final String extension = getExtension(file.getName()).toLowerCase(Locale.getDefault());
 		if (!Arrays.asList(extensions).contains(extension)) {
 			// En lecture, vérifie le format du fichier sélectionné.
 			//			if (openOrSave) {

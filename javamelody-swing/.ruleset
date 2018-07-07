@@ -179,7 +179,6 @@
    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingMethodName"/>
    <rule ref="rulesets/java/naming.xml/AvoidFieldNameMatchingTypeName"/>
    <rule ref="rulesets/java/naming.xml/BooleanGetMethodName"/>
-   <rule ref="rulesets/java/naming.xml/ClassNamingConventions"/>
    <rule ref="rulesets/java/naming.xml/MethodNamingConventions"/>
    <rule ref="rulesets/java/naming.xml/MethodWithSameNameAsEnclosingClass"/>
    <rule ref="rulesets/java/naming.xml/MisleadingVariableName"/>
