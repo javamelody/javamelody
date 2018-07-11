@@ -446,9 +446,32 @@ final class JdbcWrapperHelper {
 		// cette méthode ne peut pas être utilisée avec un simple JdbcDriver
 		assert servletContext != null;
 		final String serverInfo = servletContext.getServerInfo();
-		if (serverInfo.contains("Tomcat") || serverInfo.contains("vFabric")
-				|| serverInfo.contains("SpringSource tc Runtime")) {
-			// on n'exécute cela que si c'est tomcat
+		if (serverInfo.contains("jetty")) {
+			// on n'exécute cela que si c'est jetty
+			final Context jdbcContext = (Context) new InitialContext().lookup("java:comp");
+			final Field field = getAccessibleField(jdbcContext, "_env");
+			@SuppressWarnings("unchecked")
+			final Hashtable<Object, Object> env = (Hashtable<Object, Object>) field
+					.get(jdbcContext);
+			if (lock == null) {
+				// on rend le contexte writable
+				Object result = env.remove("org.mortbay.jndi.lock");
+				if (result == null) {
+					result = env.remove("org.eclipse.jndi.lock");
+				}
+				return result;
+			}
+			// on remet le contexte not writable comme avant
+			env.put("org.mortbay.jndi.lock", lock);
+			env.put("org.eclipse.jndi.lock", lock);
+
+			return null;
+		}
+		// si on arrive là (pas rewrap et pas jetty),
+		// alors on suppose que cela pourrait être Tomcat
+		// (serverInfo.contains("Tomcat") || serverInfo.contains("vFabric") || serverInfo.contains("SpringSource tc Runtime"))
+		// même si serverInfo a été modifié dans ServerInfo.properties
+		try {
 			final Field field = Class.forName("org.apache.naming.ContextAccessController")
 					.getDeclaredField("readOnlyContexts");
 			setFieldAccessible(field);
@@ -474,28 +497,10 @@ final class JdbcWrapperHelper {
 			readOnlyContexts.putAll(myLock);
 
 			return null;
-		} else if (serverInfo.contains("jetty")) {
-			// on n'exécute cela que si c'est jetty
-			final Context jdbcContext = (Context) new InitialContext().lookup("java:comp");
-			final Field field = getAccessibleField(jdbcContext, "_env");
-			@SuppressWarnings("unchecked")
-			final Hashtable<Object, Object> env = (Hashtable<Object, Object>) field
-					.get(jdbcContext);
-			if (lock == null) {
-				// on rend le contexte writable
-				Object result = env.remove("org.mortbay.jndi.lock");
-				if (result == null) {
-					result = env.remove("org.eclipse.jndi.lock");
-				}
-				return result;
-			}
-			// on remet le contexte not writable comme avant
-			env.put("org.mortbay.jndi.lock", lock);
-			env.put("org.eclipse.jndi.lock", lock);
-
+		} catch (final Exception e) {
+			// tant pis pour le lock jndi, ce n'était pas Tomcat finalement
 			return null;
 		}
-		return null;
 	}
 
 	static Object getFieldValue(Object object, String fieldName) throws IllegalAccessException {
