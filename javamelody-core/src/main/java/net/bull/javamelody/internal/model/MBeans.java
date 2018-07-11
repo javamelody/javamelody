@@ -153,8 +153,13 @@ public final class MBeans {
 				firstPropertyNode = new MBeanNode(firstPropertyValue);
 				domainNode.getChildren().add(firstPropertyNode);
 			}
-			final MBeanNode mbean = getMBeanNode(name);
-			firstPropertyNode.getChildren().add(mbean);
+			try {
+				final MBeanNode mbean = getMBeanNode(name);
+				firstPropertyNode.getChildren().add(mbean);
+			} catch (final IllegalStateException e) {
+				// for JBoss EAP 6 (#757)
+				continue;
+			}
 		}
 		sortMBeanNodes(result);
 		return result;
