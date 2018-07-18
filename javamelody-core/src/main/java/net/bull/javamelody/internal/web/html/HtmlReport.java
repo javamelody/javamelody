@@ -20,6 +20,7 @@ package net.bull.javamelody.internal.web.html;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +58,10 @@ import net.bull.javamelody.internal.model.SessionInformations;
 public class HtmlReport extends HtmlAbstractReport {
 	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
 	private static final String SCRIPT_END = "</script>";
+	private static final URL THEMED_MONITORING_CSS = HtmlReport.class
+			.getResource("/net/bull/javamelody/resource/themedMonitoring.css");
+	private static final URL THEMED_MONITORING_JS = HtmlReport.class
+			.getResource("/net/bull/javamelody/resource/themedMonitoring.js");
 
 	private final Collector collector;
 	private final CollectorServer collectorServer;
@@ -191,6 +196,9 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("</style>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+			if (THEMED_MONITORING_CSS != null) {
+				writeln("<link rel='stylesheet' href='?resource=themedMonitoring.css' type='text/css'/>");
+			}
 			writeln("<link rel='stylesheet' href='?resource=customizableMonitoring.css' type='text/css'/>");
 		}
 		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
@@ -204,6 +212,9 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeln("<script type='text/javascript' src='?resource=lightwindow.js'></script>");
 		if (includeSlider) {
 			writeln("<script type='text/javascript' src='?resource=slider.js'></script>");
+		}
+		if (THEMED_MONITORING_JS != null) {
+			writeln("<script type='text/javascript' src='?resource=themedMonitoring.js'></script>");
 		}
 		writeln("<script type='text/javascript' src='?resource=customizableMonitoring.js'></script>");
 		writeJavaScript();
