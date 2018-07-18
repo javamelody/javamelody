@@ -17,7 +17,7 @@ a {
 	color: #0000BB;
 }
 
-a:hover {
+a:hover, a:visited:hover {
 	text-decoration: underline;
 	color: #0000BB;
 }
