@@ -34,12 +34,11 @@ import java.util.zip.GZIPInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.common.InputOutput;
+import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 
 /**
@@ -48,9 +47,6 @@ import net.bull.javamelody.internal.common.Parameters;
  * @author Emeric Vernat
  */
 public class LabradorRetriever {
-	@SuppressWarnings("all")
-	private static final Logger LOGGER = Logger.getLogger("javamelody");
-
 	/** Timeout des connections serveur en millisecondes (0 : pas de timeout). */
 	private static final int CONNECTION_TIMEOUT = 20000;
 
@@ -170,9 +166,7 @@ public class LabradorRetriever {
 				counterInputStream.close();
 				dataLength = counterInputStream.getDataLength();
 			}
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("read on " + url + " : " + result);
-			}
+			LOG.debug("read on " + url + " : " + result);
 
 			if (result instanceof RuntimeException) {
 				throw (RuntimeException) result;
@@ -187,7 +181,7 @@ public class LabradorRetriever {
 		} catch (final ClassNotFoundException e) {
 			throw createIOException(e);
 		} finally {
-			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
+			LOG.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
 					+ dataLength / 1024 + " KB read for " + url);
 		}
 	}
@@ -221,7 +215,7 @@ public class LabradorRetriever {
 			final OutputStream output = httpResponse.getOutputStream();
 			dataLength = pump(output, connection);
 		} finally {
-			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
+			LOG.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
 					+ dataLength / 1024 + " KB read for " + url);
 		}
 	}
@@ -239,7 +233,7 @@ public class LabradorRetriever {
 
 			dataLength = pump(output, connection);
 		} finally {
-			LOGGER.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
+			LOG.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
 					+ dataLength / 1024 + " KB read for " + url);
 		}
 	}

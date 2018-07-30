@@ -48,11 +48,15 @@
 	<!-- ================ -->
 	<!-- Limit categories -->
 	<!-- ================ -->
-	
+
 	<category name="javamelody">
 		<priority value="debug" />
-	</category>		
-	
+	</category>
+
+	<category name="net.bull.javamelody">
+		<priority value="debug" />
+	</category>
+
 	<!-- ======================= -->
 	<!-- Setup the Root category -->
 	<!-- ======================= -->
