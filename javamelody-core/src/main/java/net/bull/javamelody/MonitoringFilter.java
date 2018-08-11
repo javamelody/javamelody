@@ -202,7 +202,7 @@ public class MonitoringFilter implements Filter {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
+		if (httpRequest.getRequestURI().endsWith(getMonitoringUrl(httpRequest))) {
 			doMonitoring(httpRequest, httpResponse);
 			return;
 		}
