@@ -232,6 +232,10 @@ public final class Parameters {
 		return parameterValue;
 	}
 
+	public static String getMonitoringPathAuthenticated() {
+		return Parameter.MONITORING_PATH_AUTHENTICATED.getValue();
+	}
+
 	/**
 	 * @return nom réseau de la machine
 	 */

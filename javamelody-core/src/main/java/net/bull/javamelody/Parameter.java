@@ -291,6 +291,11 @@ public enum Parameter {
 	MONITORING_PATH("monitoring-path"),
 
 	/**
+	 * URL du rapport de monitoring alternative (null par défaut).
+	 */
+	MONITORING_PATH_AUTHENTICATED("monitoring-path-authenticated"),
+
+	/**
 	 * Identifiant de suivi google analytics s'il y a lieu (désactivé par défaut).
 	 */
 	ANALYTICS_ID("analytics-id"),
