@@ -202,7 +202,9 @@ public class MonitoringFilter implements Filter {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
+		if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))
+		    || (Parameters.getMonitoringPathAuthenticated() != null
+			&& httpRequest.getRequestURI().equals(getMonitoringPathAuthenticated(httpRequest)))) {
 			doMonitoring(httpRequest, httpResponse);
 			return;
 		}
@@ -347,6 +349,13 @@ public class MonitoringFilter implements Filter {
 			monitoringUrl = httpRequest.getContextPath() + Parameters.getMonitoringPath();
 		}
 		return monitoringUrl;
+	}
+
+	protected final String getMonitoringPathAuthenticated(HttpServletRequest httpRequest) {
+	        if (Parameters.getMonitoringPathAuthenticated() == null) {
+		    return null;
+	        }
+		return httpRequest.getContextPath() + Parameters.getMonitoringPathAuthenticated();
 	}
 
 	private void putUserInfoInSession(HttpServletRequest httpRequest) {
