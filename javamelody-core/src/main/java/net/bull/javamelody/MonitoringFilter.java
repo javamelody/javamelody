@@ -342,7 +342,7 @@ public class MonitoringFilter implements Filter {
 		return getCompleteRequestName(request, false);
 	}
 
-	protected final String getMonitoringUrl(HttpServletRequest httpRequest) {
+	protected String getMonitoringUrl(HttpServletRequest httpRequest) {
 		if (monitoringUrl == null) {
 			monitoringUrl = httpRequest.getContextPath() + Parameters.getMonitoringPath();
 		}
