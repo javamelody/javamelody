@@ -235,6 +235,8 @@ public class PayloadNameRequestWrapper extends HttpServletRequestWrapper {
 		try {
 			// newInstance() et pas newFactory() pour java 1.5 (issue 367)
 			final XMLInputFactory factory = XMLInputFactory.newInstance();
+			factory.setProperty(XMLInputFactory.SUPPORT_DTD, false); // disable DTDs entirely for that factory
+			factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false); // disable external entities
 			final XMLStreamReader xmlReader;
 			if (charEncoding != null) {
 				xmlReader = factory.createXMLStreamReader(stream, charEncoding);
