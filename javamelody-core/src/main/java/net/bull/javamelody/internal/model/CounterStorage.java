@@ -114,6 +114,10 @@ public class CounterStorage {
 		if (!directory.mkdirs() && !directory.exists()) {
 			throw new IOException("JavaMelody directory can't be created: " + directory.getPath());
 		}
+		return writeToFile(counter, file);
+	}
+
+	static int writeToFile(Counter counter, File file) throws IOException {
 		final FileOutputStream out = new FileOutputStream(file);
 		try {
 			final CounterOutputStream counterOutput = new CounterOutputStream(
@@ -144,25 +148,29 @@ public class CounterStorage {
 		}
 		final File file = getFile();
 		if (file.exists()) {
-			final FileInputStream in = new FileInputStream(file);
-			try {
-				final ObjectInputStream input = TransportFormat
-						.createObjectInputStream(new GZIPInputStream(new BufferedInputStream(in)));
-				try {
-					// on retourne l'instance du counter lue
-					return (Counter) input.readObject();
-				} finally {
-					// ce close libère les ressources du ObjectInputStream et du GZIPInputStream
-					input.close();
-				}
-			} catch (final ClassNotFoundException e) {
-				throw new IOException(e.getMessage(), e);
-			} finally {
-				in.close();
-			}
+			return readFromFile(file);
 		}
 		// ou on retourne null si le fichier n'existe pas
 		return null;
+	}
+
+	static Counter readFromFile(File file) throws IOException {
+		final FileInputStream in = new FileInputStream(file);
+		try {
+			final ObjectInputStream input = TransportFormat
+					.createObjectInputStream(new GZIPInputStream(new BufferedInputStream(in)));
+			try {
+				// on retourne l'instance du counter lue
+				return (Counter) input.readObject();
+			} finally {
+				// ce close libère les ressources du ObjectInputStream et du GZIPInputStream
+				input.close();
+			}
+		} catch (final ClassNotFoundException e) {
+			throw new IOException(e.getMessage(), e);
+		} finally {
+			in.close();
+		}
 	}
 
 	private File getFile() {
