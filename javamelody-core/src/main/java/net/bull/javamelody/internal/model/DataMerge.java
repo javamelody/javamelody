@@ -147,7 +147,7 @@ public final class DataMerge {
 					Files.copy(source.toPath(), target.toPath());
 					mergedRrdDb = new RrdDb(target.getPath());
 				} else {
-					if (percentageValues && source == lastSource) {
+					if (percentageValues && source.equals(lastSource)) {
 						// cpu and gc should be in percentage between 0 and 100,
 						// so we use a coeff to compute 'sum of values / nb of values' for the last RRD when we have the sum
 						coeff = 1d / sources.size();
