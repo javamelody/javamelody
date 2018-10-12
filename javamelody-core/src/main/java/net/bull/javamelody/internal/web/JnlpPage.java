@@ -115,7 +115,7 @@ public class JnlpPage {
 			//					+ Parameters.JAVAMELODY_VERSION + ".jar";
 		} else {
 			// TODO publish newer javamelody-swing files on github and review code above
-			jarFileUrl = "https://github.com/javamelody/javamelody/releases/download/javamelody-core-1.49.0/javamelody-swing-1.73.0.jar";
+			jarFileUrl = "https://github.com/javamelody/javamelody/releases/download/javamelody-core-1.49.0/javamelody-swing-1.74.0.jar";
 		}
 		return jarFileUrl;
 	}
