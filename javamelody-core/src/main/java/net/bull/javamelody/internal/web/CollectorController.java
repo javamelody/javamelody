@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -574,7 +577,8 @@ public class CollectorController { // NOPMD
 		return collectorServer.collectForApplicationForAction(application, actionUrls);
 	}
 
-	public String getApplication(HttpServletRequest req, HttpServletResponse resp) {
+	public String getApplication(HttpServletRequest req, HttpServletResponse resp)
+			throws UnsupportedEncodingException {
 		// on utilise un cookie client pour stocker l'application
 		// car la page html est faite pour une seule application sans passer son nom en paramètre des requêtes
 		// et pour ne pas perdre l'application choisie entre les reconnexions
@@ -583,7 +587,7 @@ public class CollectorController { // NOPMD
 			// pas de paramètre application dans la requête, on cherche le cookie
 			final Cookie cookie = httpCookieManager.getCookieByName(req, COOKIE_NAME);
 			if (cookie != null) {
-				application = cookie.getValue();
+				application = URLDecoder.decode(cookie.getValue(), "UTF-8");
 				if (!collectorServer.isApplicationDataAvailable(application)) {
 					cookie.setMaxAge(-1);
 					resp.addCookie(cookie);
@@ -596,8 +600,11 @@ public class CollectorController { // NOPMD
 			}
 		} else if (collectorServer.isApplicationDataAvailable(application)) {
 			// un paramètre application est présent dans la requête: l'utilisateur a choisi une application,
-			// donc on fixe le cookie
-			httpCookieManager.addCookie(req, resp, COOKIE_NAME, String.valueOf(application));
+			// donc on fixe le cookie.
+			// En Tomcat, le cookie doit être conforme à la RFC 6265 (pas d'espace, ...)
+			// see org.apache.tomcat.util.http.Rfc6265CookieProcessor
+			httpCookieManager.addCookie(req, resp, COOKIE_NAME,
+					URLEncoder.encode(String.valueOf(application), "UTF-8"));
 		}
 		return application;
 	}
