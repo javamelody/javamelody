@@ -11,3 +11,4 @@ License [ASL](http://www.apache.org/licenses/LICENSE-2.0)
 [![Build Status](https://javamelody.ci.cloudbees.com/buildStatus/icon?job=javamelody)](https://javamelody.ci.cloudbees.com/job/javamelody/) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.bull.javamelody/javamelody-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.bull.javamelody/javamelody-core)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/javamelody/javamelody.svg)](http://isitmaintained.com/project/javamelody/javamelody "Percentage of issues still open")
+
