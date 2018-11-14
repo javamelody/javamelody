@@ -49,8 +49,7 @@ public final class DataMerge {
 			throw new IllegalArgumentException(storageDirectory + " is not a directory");
 		}
 
-		mergingDirectory.mkdirs();
-		if (!mergingDirectory.exists()) {
+		if (!mergingDirectory.mkdirs() && !mergingDirectory.exists()) {
 			throw new IllegalArgumentException(mergingDirectory + " can't be created");
 		}
 		if (!mergingDirectory.isDirectory()) {
@@ -164,8 +163,12 @@ public final class DataMerge {
 			mergedRrdDb.close();
 		} catch (final RrdException e) {
 			log(e.toString());
-			target.delete();
+			deleteFile(target);
 		}
+	}
+
+	private boolean deleteFile(final File target) {
+		return target.delete();
 	}
 
 	private void mergeRrdDbs(final RrdDb sourceRrdDb, final RrdDb mergedRrdDb, Double coeff)
