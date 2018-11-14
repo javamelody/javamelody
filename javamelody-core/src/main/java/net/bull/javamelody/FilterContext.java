@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.CodeSource;
 import java.sql.Driver;
@@ -136,6 +137,15 @@ class FilterContext {
 			}
 
 			UpdateChecker.init(timer, collector, applicationType);
+
+			if (Parameters.getServletContext().getServerInfo().contains("Google App Engine")) {
+				// https://issuetracker.google.com/issues/72216727
+				final String fontConfig = System.getProperty("java.home")
+						+ "/lib/fontconfig.Prodimage.properties";
+				if (new File(fontConfig).exists()) {
+					System.setProperty("sun.awt.fontconfig", fontConfig);
+				}
+			}
 
 			initOk = true;
 		} finally {

@@ -76,10 +76,20 @@ public class MemoryInformations implements Serializable {
 		usedPhysicalMemorySize = MBeansAccessor
 				.getLongFromOperatingSystem("TotalPhysicalMemorySize")
 				- MBeansAccessor.getLongFromOperatingSystem("FreePhysicalMemorySize");
-		usedSwapSpaceSize = MBeansAccessor.getLongFromOperatingSystem("TotalSwapSpaceSize")
-				- MBeansAccessor.getLongFromOperatingSystem("FreeSwapSpaceSize");
+		usedSwapSpaceSize = buildUsedSwapSpaceSize();
 
 		memoryDetails = buildMemoryDetails();
+	}
+
+	private long buildUsedSwapSpaceSize() {
+		try {
+			return MBeansAccessor.getLongFromOperatingSystem("TotalSwapSpaceSize")
+					- MBeansAccessor.getLongFromOperatingSystem("FreeSwapSpaceSize");
+		} catch (final Throwable e) { // NOPMD
+			// pour issues 794, dans google appengine
+			// javax.management.RuntimeErrorException: java.lang.InternalError: errno: 38 error: sysinfo failed to get swap size
+			return -1;
+		}
 	}
 
 	private static MemoryPoolMXBean getPermGenMemoryPool() {
@@ -111,6 +121,7 @@ public class MemoryInformations implements Serializable {
 		final String gc = "Garbage collection time = "
 				+ integerFormat.format(garbageCollectionTimeMillis) + " ms";
 		String osInfo = "";
+		String osInfo2 = "";
 		final long totalPhysicalMemorySize = MBeansAccessor
 				.getLongFromOperatingSystem("TotalPhysicalMemorySize");
 		if (totalPhysicalMemorySize >= 0) {
@@ -126,19 +137,24 @@ public class MemoryInformations implements Serializable {
 							MBeansAccessor.getLongFromOperatingSystem("FreePhysicalMemorySize")
 									/ 1024 / 1024)
 					+ MO + ",\nTotal physical memory = "
-					+ integerFormat.format(totalPhysicalMemorySize / 1024 / 1024) + MO
-					+ ",\nFree swap space = "
-					+ integerFormat
-							.format(MBeansAccessor.getLongFromOperatingSystem("FreeSwapSpaceSize")
-									/ 1024 / 1024)
-					+ MO + ",\nTotal swap space = "
-					+ integerFormat
-							.format(MBeansAccessor.getLongFromOperatingSystem("TotalSwapSpaceSize")
-									/ 1024 / 1024)
-					+ MO;
+					+ integerFormat.format(totalPhysicalMemorySize / 1024 / 1024) + MO;
+			try {
+				osInfo2 = ",\nFree swap space = "
+						+ integerFormat.format(
+								MBeansAccessor.getLongFromOperatingSystem("FreeSwapSpaceSize")
+										/ 1024 / 1024)
+						+ MO + ",\nTotal swap space = "
+						+ integerFormat.format(
+								MBeansAccessor.getLongFromOperatingSystem("TotalSwapSpaceSize")
+										/ 1024 / 1024)
+						+ MO;
+			} catch (final Throwable e) { // NOPMD
+				// pour issues 794, dans google appengine
+				// javax.management.RuntimeErrorException: java.lang.InternalError: errno: 38 error: sysinfo failed to get swap size
+			}
 		}
 		if (usedBufferedMemory < 0) {
-			return nonHeapMemory + NEXT + classLoading + NEXT + gc + NEXT + osInfo;
+			return nonHeapMemory + NEXT + classLoading + NEXT + gc + NEXT + osInfo + osInfo2;
 		}
 		final String bufferedMemory = "Buffered memory = "
 				+ integerFormat.format(usedBufferedMemory / 1024 / 1024) + MO;
