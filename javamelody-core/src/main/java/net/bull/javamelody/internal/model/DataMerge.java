@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
 
 import org.jrobin.core.Archive;
 import org.jrobin.core.Robin;
@@ -72,19 +73,26 @@ public final class DataMerge {
 	}
 
 	private void mergeData() throws IOException {
-		final List<File> directories = new ArrayList<File>(listFiles(storageDirectory));
-		for (final Iterator<File> it = directories.iterator(); it.hasNext();) {
-			if (!it.next().isDirectory()) {
-				it.remove();
+		final Timer timer = new Timer("javamelody-datamerge", true);
+		try {
+			JRobin.initBackendFactory(timer);
+			final List<File> directories = new ArrayList<File>(listFiles(storageDirectory));
+			for (final Iterator<File> it = directories.iterator(); it.hasNext();) {
+				if (!it.next().isDirectory()) {
+					it.remove();
+				}
 			}
+			if (directories.isEmpty()) {
+				throw new IllegalArgumentException(
+						"No subdirectories found in " + storageDirectory);
+			} else if (directories.size() == 1) {
+				throw new IllegalArgumentException("A single subdirectory found in "
+						+ storageDirectory + ", nothing to merge it with");
+			}
+			mergeDirectories(directories);
+		} finally {
+			timer.cancel();
 		}
-		if (directories.isEmpty()) {
-			throw new IllegalArgumentException("No subdirectories found in " + storageDirectory);
-		} else if (directories.size() == 1) {
-			throw new IllegalArgumentException("A single subdirectory found in " + storageDirectory
-					+ ", nothing to merge it with");
-		}
-		mergeDirectories(directories);
 	}
 
 	private void mergeDirectories(final List<File> directories) throws IOException {
