@@ -45,6 +45,8 @@ public class EmbeddedServer {
 		context.addFilter(filterHolder, "/*",
 				EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
 
+		context.addEventListener(new SessionListener());
+
 		final RequestLogHandler requestLogHandler = new RequestLogHandler();
 		contexts.addHandler(requestLogHandler);
 
