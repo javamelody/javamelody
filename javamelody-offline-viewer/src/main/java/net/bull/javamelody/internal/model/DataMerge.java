@@ -32,6 +32,11 @@ import org.jrobin.core.Robin;
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdException;
 
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.CounterStorage;
+import net.bull.javamelody.internal.model.JRobin;
+
 /**
  * Command-line tool to merge files of several data directories into one directory.
  * @author Emeric Vernat
