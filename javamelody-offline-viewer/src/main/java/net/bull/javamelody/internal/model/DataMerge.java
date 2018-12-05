@@ -32,11 +32,6 @@ import org.jrobin.core.Robin;
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdException;
 
-import net.bull.javamelody.internal.model.Counter;
-import net.bull.javamelody.internal.model.CounterRequest;
-import net.bull.javamelody.internal.model.CounterStorage;
-import net.bull.javamelody.internal.model.JRobin;
-
 /**
  * Command-line tool to merge files of several data directories into one directory.
  * @author Emeric Vernat
@@ -66,6 +61,11 @@ public final class DataMerge {
 		}
 	}
 
+	/**
+	 * main.
+	 * @param args String[]
+	 * @throws IOException e
+	 */
 	public static void main(final String[] args) throws IOException {
 		if (args == null || args.length != 2) {
 			throw new IllegalArgumentException(
@@ -81,7 +81,7 @@ public final class DataMerge {
 		final Timer timer = new Timer("javamelody-datamerge", true);
 		try {
 			JRobin.initBackendFactory(timer);
-			final List<File> directories = new ArrayList<File>(listFiles(storageDirectory));
+			final List<File> directories = new ArrayList<>(listFiles(storageDirectory));
 			for (final Iterator<File> it = directories.iterator(); it.hasNext();) {
 				if (!it.next().isDirectory()) {
 					it.remove();
@@ -104,14 +104,14 @@ public final class DataMerge {
 		final long start = System.currentTimeMillis();
 		log("Merging " + directories.size() + " subdirectories from " + storageDirectory + " to "
 				+ mergingDirectory);
-		final List<String> mergedFileNames = new ArrayList<String>();
+		final List<String> mergedFileNames = new ArrayList<>();
 		for (final File directory : directories) {
 			final List<File> files = listFiles(directory);
 			for (final File file : files) {
 				final String fileName = file.getName();
 				if (!mergedFileNames.contains(fileName)) {
 					mergedFileNames.add(fileName);
-					final List<File> filesToMerge = new ArrayList<File>();
+					final List<File> filesToMerge = new ArrayList<>();
 					for (final File directoryToMerge : directories) {
 						final File fileToMerge = new File(directoryToMerge, fileName);
 						if (fileToMerge.exists()) {
