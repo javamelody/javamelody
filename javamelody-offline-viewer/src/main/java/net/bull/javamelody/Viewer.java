@@ -31,7 +31,6 @@ public class Viewer {
 		final String tmpApplication = "tmpjavamelody" + new Random().nextInt();
 		final String mergedDirectory = System.getProperty("java.io.tmpdir"); //Parameters.getStorageDirectory(tmpApplication).getPath();
 
-		// TODO DataMerge not ok for a single app
 		DataMerge.main(new String[] { storageDirectory, mergedDirectory + '/' + tmpApplication });
 		addShutdownHook(new File(mergedDirectory + '/' + tmpApplication));
 

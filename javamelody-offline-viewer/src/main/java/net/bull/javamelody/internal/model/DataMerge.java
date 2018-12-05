@@ -90,9 +90,6 @@ public final class DataMerge {
 			if (directories.isEmpty()) {
 				throw new IllegalArgumentException(
 						"No subdirectories found in " + storageDirectory);
-			} else if (directories.size() == 1) {
-				throw new IllegalArgumentException("A single subdirectory found in "
-						+ storageDirectory + ", nothing to merge it with");
 			}
 			mergeDirectories(directories);
 		} finally {
