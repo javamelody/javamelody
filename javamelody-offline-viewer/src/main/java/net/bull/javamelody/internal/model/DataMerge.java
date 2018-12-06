@@ -148,8 +148,9 @@ public final class DataMerge {
 		try {
 			RrdDb mergedRrdDb = null;
 			Double coeff = null;
-			final boolean percentageValues = target.getName().equals("cpu.rrd")
-					|| target.getName().equals("gc.rrd");
+			final String name = target.getName();
+			final boolean percentageValues = name.equals("cpu.rrd") || name.equals("gc.rrd")
+					|| name.equals("systemCpuLoad.rrd") || name.endsWith("SystemErrors.rrd");
 			final File lastSource = sources.get(sources.size() - 1);
 			for (final File source : sources) {
 				if (mergedRrdDb == null) {
