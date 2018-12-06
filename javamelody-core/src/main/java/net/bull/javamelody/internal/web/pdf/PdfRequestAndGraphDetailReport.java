@@ -256,7 +256,10 @@ public class PdfRequestAndGraphDetailReport extends PdfAbstractTableReport {
 		if (executionsByRequest != -1) {
 			addCell(nbExecutionsFormat.format(executionsByRequest));
 		} else {
-			addCell("");
+			final boolean hasChildren = !request.getChildRequestsExecutionsByRequestId().isEmpty();
+			if (hasChildren) {
+				addCell("");
+			}
 		}
 		writeRequestValues(childRequest, allChildHitsDisplayed);
 	}
