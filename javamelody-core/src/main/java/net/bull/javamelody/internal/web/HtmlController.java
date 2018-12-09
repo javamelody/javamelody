@@ -119,6 +119,7 @@ public class HtmlController {
 
 	public static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
 		httpResponse.setContentType("text/html; charset=UTF-8");
+		httpResponse.setHeader("X-Frame-Options", "SAMEORIGIN");
 		return new BufferedWriter(new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8"));
 	}
 
