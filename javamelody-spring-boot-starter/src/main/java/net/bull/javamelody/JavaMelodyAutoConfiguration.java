@@ -251,6 +251,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnClass(name = "org.springframework.cloud.openfeign.FeignClient")
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	// we check that the DefaultAdvisorAutoProxyCreator above is not enabled, because if it's enabled then feign calls are counted twice
 	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
 	public MonitoringSpringAdvisor monitoringFeignClientAdvisor() throws ClassNotFoundException {
 		final Class<? extends Annotation> feignClientClass = (Class<? extends Annotation>) Class
