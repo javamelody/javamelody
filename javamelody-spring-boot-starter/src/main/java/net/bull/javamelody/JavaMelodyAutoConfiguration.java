@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.EventListener;
 import java.util.HashSet;
@@ -28,10 +30,12 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -45,6 +49,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -235,6 +240,55 @@ public class JavaMelodyAutoConfiguration {
 		return new MonitoringSpringAdvisor(
 				Pointcuts.union(new AnnotationMatchingPointcut(null, Scheduled.class),
 						new AnnotationMatchingPointcut(null, Schedules.class)));
+	}
+
+	/**
+	 * Monitoring of Feign clients.
+	 * @return MonitoringSpringAdvisor
+	 * @throws ClassNotFoundException should not happen
+	 */
+	@SuppressWarnings("unchecked")
+	@Bean
+	@ConditionalOnClass(name = "org.springframework.cloud.openfeign.FeignClient")
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
+	public MonitoringSpringAdvisor monitoringFeignClientAdvisor() throws ClassNotFoundException {
+		final Class<? extends Annotation> feignClientClass = (Class<? extends Annotation>) Class
+				.forName("org.springframework.cloud.openfeign.FeignClient");
+		final MonitoringSpringAdvisor advisor = new MonitoringSpringAdvisor(
+				new AnnotationMatchingPointcut(feignClientClass, true));
+		advisor.setAdvice(new MonitoringSpringInterceptor() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected String getRequestName(MethodInvocation invocation) {
+				final StringBuilder sb = new StringBuilder();
+				final Method method = invocation.getMethod();
+				final RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+				if (requestMapping != null) {
+					String[] path = requestMapping.value();
+					if (path.length == 0) {
+						path = requestMapping.path();
+					}
+					if (path.length > 0) {
+						sb.append(path[0]);
+						sb.append(' ');
+						if (requestMapping.method().length > 0) {
+							sb.append(requestMapping.method()[0].name());
+						} else {
+							sb.append("GET");
+						}
+						sb.append('\n');
+					}
+				}
+				final Class<?> declaringClass = method.getDeclaringClass();
+				final String classPart = declaringClass.getSimpleName();
+				final String methodPart = method.getName();
+				sb.append(classPart).append('.').append(methodPart);
+				return sb.toString();
+			}
+		});
+		return advisor;
 	}
 
 	/**
