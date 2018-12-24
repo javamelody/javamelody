@@ -4,6 +4,6 @@
 	bean-discovery-mode="annotated">
 	<interceptors>
 		<class>net.bull.javamelody.MonitoringCdiInterceptor</class>
-		<class>net.bull.javamelody.MonitoringAsynchronousCdiInterceptor</class>
+		<!-- removed for issue #802: <class>net.bull.javamelody.MonitoringAsynchronousCdiInterceptor</class> -->
 	</interceptors>
 </beans>
