@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -28,6 +29,8 @@ import java.util.Map.Entry;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.aopalliance.intercept.MethodInvocation;
@@ -71,7 +74,7 @@ import org.springframework.web.client.RestTemplate;
  * setting the application configuration "javamelody.enabled" to the value "false".
  * </p>
  *
- * @author Georg Wittberger
+ * @author Georg Wittberger, Emeric Vernat
  * @since 1.64.0
  */
 @Configuration
@@ -116,7 +119,20 @@ public class JavaMelodyAutoConfiguration {
 		final FilterRegistrationBean<MonitoringFilter> registrationBean = new FilterRegistrationBean<>();
 
 		// Create the monitoring filter and set its configuration parameters.
-		final MonitoringFilter filter = new MonitoringFilter();
+		final MonitoringFilter filter;
+		if (properties.isManagementEndpointEnabled()) {
+			// if the management endpoint is enabled, disable the /monitoring reports on the application port
+			filter = new MonitoringFilter() {
+				@Override
+				protected boolean isAllowed(HttpServletRequest request,
+						HttpServletResponse response) throws IOException {
+					response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
+					return false;
+				}
+			};
+		} else {
+			filter = new MonitoringFilter();
+		}
 		filter.setApplicationType("Spring Boot");
 
 		// Wrap the monitoring filter in the registration bean.
@@ -145,6 +161,17 @@ public class JavaMelodyAutoConfiguration {
 			}
 		}
 		return registrationBean;
+	}
+
+	/**
+	 * When enabled, management endpoint for /monitoring reports on the management http port instead of the application http port.
+	 * @param servletContext ServletContext
+	 * @return MonitoringEndpoint
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "management-endpoint-enabled", matchIfMissing = false)
+	public MonitoringEndpoint monitoringEndpoint(final ServletContext servletContext) {
+		return new MonitoringEndpoint(servletContext);
 	}
 
 	/**
