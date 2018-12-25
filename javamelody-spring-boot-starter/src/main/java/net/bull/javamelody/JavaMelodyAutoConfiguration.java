@@ -120,7 +120,7 @@ public class JavaMelodyAutoConfiguration {
 
 		// Create the monitoring filter and set its configuration parameters.
 		final MonitoringFilter filter;
-		if (properties.isManagementEndpointEnabled()) {
+		if (properties.isManagementEndpointMonitoringEnabled()) {
 			// if the management endpoint is enabled, disable the /monitoring reports on the application port
 			filter = new MonitoringFilter() {
 				@Override
@@ -169,7 +169,7 @@ public class JavaMelodyAutoConfiguration {
 	 * @return MonitoringEndpoint
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "management-endpoint-enabled", matchIfMissing = false)
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "management-endpoint-monitoring-enabled", matchIfMissing = false)
 	public MonitoringEndpoint monitoringEndpoint(final ServletContext servletContext) {
 		return new MonitoringEndpoint(servletContext);
 	}
