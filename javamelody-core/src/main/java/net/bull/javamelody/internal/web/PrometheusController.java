@@ -361,10 +361,16 @@ class PrometheusController {
 			final String sanitizedName = sanitizeName(counter.getName());
 			printLong(MetricType.COUNTER, sanitizedName + "_hits_count", "javamelody counter",
 					hits);
-			printLong(MetricType.COUNTER, sanitizedName + "_errors_count", "javamelody counter",
-					errors);
-			printLong(MetricType.COUNTER, sanitizedName + "_duration_millis", "javamelody counter",
-					duration);
+			if (!counter.isErrorCounter() || counter.isJobCounter()) {
+				// errors has no sense for the error and log counters
+				printLong(MetricType.COUNTER, sanitizedName + "_errors_count", "javamelody counter",
+						errors);
+			}
+			if (duration >= 0) {
+				// duration is negative and has no sense for the log counter
+				printLong(MetricType.COUNTER, sanitizedName + "_duration_millis",
+						"javamelody counter", duration);
+			}
 		}
 	}
 
