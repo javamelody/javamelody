@@ -348,6 +348,9 @@ class PrometheusController {
 	 */
 	private void reportOnCollector() {
 		for (final Counter counter : collector.getCounters()) {
+			if (!counter.isDisplayed()) {
+				continue;
+			}
 			final List<CounterRequest> requests = counter.getRequests();
 			long hits = 0;
 			long duration = 0;
