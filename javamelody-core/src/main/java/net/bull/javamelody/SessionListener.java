@@ -356,8 +356,13 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		// Since tomcat 6.0.21, because of https://issues.apache.org/bugzilla/show_bug.cgi?id=45255
 		// when tomcat authentication is used, sessionCreated is called twice for 1 session
 		// and each time with different ids, then sessionDestroyed is called once.
-		// So we do not count the 2nd sessionCreated event and we remove the id of the first event
-		if (session.getAttribute(SESSION_ACTIVATION_KEY) == this) {
+		// So we do not count the 2nd sessionCreated event and we remove the id of the first event.
+
+		// And (issue #795), in Tomcat's cluster after one instance restart
+		// sessions are synced with sessionDidActivate+sessionCreated
+		// so do not increment count for sessionCreated when session.getAttribute(SESSION_ACTIVATION_KEY) != null
+		// (but not == this because of deserialization)
+		if (session.getAttribute(SESSION_ACTIVATION_KEY) != null) {
 			// si la map des sessions selon leurs id contient une session dont la clé
 			// n'est plus égale à son id courant, alors on l'enlève de la map
 			// (et elle sera remise dans la map avec son nouvel id ci-dessous)
