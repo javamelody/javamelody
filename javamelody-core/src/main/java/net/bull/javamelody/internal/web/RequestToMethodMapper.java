@@ -68,6 +68,15 @@ class RequestToMethodMapper<T> {
 		String value();
 	}
 
+	@Target(ElementType.PARAMETER)
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface RequestHeader {
+		/**
+		 * @return String
+		 */
+		String value();
+	}
+
 	RequestToMethodMapper(Class<T> clazz) {
 		super();
 		for (final Method method : clazz.getDeclaredMethods()) {
@@ -125,6 +134,11 @@ class RequestToMethodMapper<T> {
 				} else if (annotation.annotationType() == RequestAttribute.class) {
 					final String requestAttribute = ((RequestAttribute) annotation).value();
 					values[i] = request.getAttribute(requestAttribute);
+					found = true;
+					break;
+				} else if (annotation.annotationType() == RequestHeader.class) {
+					final String requestHeader = ((RequestHeader) annotation).value();
+					values[i] = request.getHeader(requestHeader);
 					found = true;
 					break;
 				}

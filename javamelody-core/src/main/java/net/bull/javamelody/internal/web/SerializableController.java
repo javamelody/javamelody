@@ -66,6 +66,7 @@ import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.model.TransportFormat;
 import net.bull.javamelody.internal.model.VirtualMachine;
 import net.bull.javamelody.internal.web.RequestToMethodMapper.RequestAttribute;
+import net.bull.javamelody.internal.web.RequestToMethodMapper.RequestHeader;
 import net.bull.javamelody.internal.web.RequestToMethodMapper.RequestParameter;
 import net.bull.javamelody.internal.web.RequestToMethodMapper.RequestPart;
 
@@ -323,8 +324,7 @@ public class SerializableController {
 	}
 
 	@RequestPart(HttpPart.EXPLAIN_PLAN)
-	Serializable createExplainPlanSerializableFor(
-			@RequestParameter(HttpParameter.REQUEST) String sqlRequest) {
+	Serializable createExplainPlanSerializableFor(@RequestHeader("request") String sqlRequest) {
 		// pour UI Swing
 		assert sqlRequest != null;
 		try {
