@@ -138,7 +138,7 @@ import net.bull.javamelody.internal.model.TomcatInformations;
  *  javamelody_log_errors_count
  *  javamelody_log_duration_millis
  *  </pre>
- *  Additionally, the `lastValue` metrics can also be exported by setting the parameter PROMETHEUS_INCLUDE_LAST_VALUE=true.
+ *  Additionally, the `lastValue` metrics can also be exported by adding the http parameter includeLastValue=true.
  *  Note: the `lastValue` metrics are already aggregated over time, where Prometheus prefers the raw counters and gauges.
  *  Also, obtaining the `lastValue` metrics appears to have a 5-10ms overhead.
  *
