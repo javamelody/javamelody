@@ -193,7 +193,11 @@ class PrometheusController {
 		this.out = out;
 
 		decimalFormat = new DecimalFormat();
-		decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+		final DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols
+				.getInstance(Locale.US);
+		// setNaN for #806: on Java 8 and before, decimalFormat prints \uFFFD ('<?>') instead of NaN
+		decimalFormatSymbols.setNaN("NaN");
+		decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
 		decimalFormat.setGroupingUsed(false);
 		decimalFormat.setMinimumIntegerDigits(1);
 		decimalFormat.setMaximumFractionDigits(15);
