@@ -17,14 +17,13 @@
  */
 package net.bull.javamelody;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * Cette classe est utile pour construire des proxy pour <a href='https://www.mongodb.com/'>MongoDB</a>.
@@ -92,7 +91,11 @@ public final class MongoWrapper {
 			Object result = method.invoke(database, args);
 			if (result instanceof MongoCollection && args != null && args.length > 0
 					&& args[0] instanceof String) {
-				result = createCollectionProxy((MongoCollection<?>) result, (String) args[0]);
+				MongoCollection<?> collection = (MongoCollection<?>) result;
+				String name = (String) args[0];
+				if(collection.getNamespace()!=null)
+					name = collection.getNamespace().getFullName();
+				result = createCollectionProxy(collection, name);
 			} else if (result instanceof MongoDatabase) {
 				// il faut monitorer la nouvelle instance de MongoDatabase en retour
 				result = createDatabaseProxy((MongoDatabase) result);
@@ -121,7 +124,10 @@ public final class MongoWrapper {
 				// inutile de monitorer withDocumentClass(...), etc
 				// mais il faut monitorer la nouvelle instance de MongoCollection en retour
 				MongoCollection<?> result = (MongoCollection<?>) method.invoke(collection, args);
-				result = createCollectionProxy(collection, methodName);
+				String name = methodName;
+				if(collection.getNamespace()!=null)
+					name = collection.getNamespace().getFullName();
+				result = createCollectionProxy(result, name);
 				return result;
 			} else if (methodName.startsWith("get")) {
 				// inutile de monitorer getDocumentClass(), getNamespace(), etc

@@ -17,21 +17,17 @@
  */
 package net.bull.javamelody;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test unitaire de la classe MongoWrapper.
