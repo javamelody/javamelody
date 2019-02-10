@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.bull.javamelody.JdbcWrapper;
+import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
@@ -62,6 +63,7 @@ import net.bull.javamelody.internal.web.html.HtmlReport;
  */
 public class HtmlController {
 	static final String HTML_BODY_FORMAT = "htmlbody";
+	private static final String X_FRAME_OPTIONS = Parameter.X_FRAME_OPTIONS.getValue();
 	private static final RequestToMethodMapper<HtmlController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<HtmlController>(
 			HtmlController.class);
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
@@ -119,7 +121,12 @@ public class HtmlController {
 
 	public static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
 		httpResponse.setContentType("text/html; charset=UTF-8");
-		httpResponse.setHeader("X-Frame-Options", "SAMEORIGIN");
+		if (X_FRAME_OPTIONS == null) {
+			// default value of X-Frame-Options is SAMEORIGIN
+			httpResponse.setHeader("X-Frame-Options", "SAMEORIGIN");
+		} else if (!"ALLOWALL".equals(X_FRAME_OPTIONS)) {
+			httpResponse.setHeader("X-Frame-Options", X_FRAME_OPTIONS);
+		}
 		return new BufferedWriter(new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8"));
 	}
 
