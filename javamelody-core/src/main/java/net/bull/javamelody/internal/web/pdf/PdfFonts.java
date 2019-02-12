@@ -54,6 +54,7 @@ enum PdfFonts {
 		SEVERE_CELL.font.setColor(Color.RED);
 	}
 
+	private static BaseFont chineseBaseFont;
 	private final transient Font font;
 	private transient Font chineseFont;
 
@@ -75,25 +76,31 @@ enum PdfFonts {
 
 	private Font getChineseFont() {
 		if (chineseFont == null) {
+			final BaseFont bfChinese = getChineseBaseFont();
+			chineseFont = new Font(bfChinese, font.getSize(), font.getStyle());
+		}
+		return chineseFont;
+	}
+
+	private static synchronized BaseFont getChineseBaseFont() {
+		if (chineseBaseFont == null) {
 			try {
-				BaseFont bfChinese;
 				try {
-					bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
+					chineseBaseFont = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
 							BaseFont.NOT_EMBEDDED);
 				} catch (final DocumentException e) {
 					// now CJKFont.propertiesLoaded==true, load properties renamed (cf issue 258)
 					loadCJKFonts();
-					bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
+					chineseBaseFont = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
 							BaseFont.NOT_EMBEDDED);
 				}
-				chineseFont = new Font(bfChinese, font.getSize(), font.getStyle());
 			} catch (final DocumentException e) {
 				throw new IllegalStateException(e);
 			} catch (final IOException e) {
 				throw new IllegalStateException(e);
 			}
 		}
-		return chineseFont;
+		return chineseBaseFont;
 	}
 
 	/**
