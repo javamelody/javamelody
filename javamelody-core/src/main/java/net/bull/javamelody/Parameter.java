@@ -202,6 +202,11 @@ public enum Parameter {
 	CSRF_PROTECTION_ENABLED("csrf-protection-enabled"),
 
 	/**
+	 * Valeur de l'entête http X-Frame-Options, par exemple, DENY, SAMEORIGIN, ALLOW-FROM http://example.com, ALLOWALL (SAMEORIGIN par défaut).
+	 */
+	X_FRAME_OPTIONS("x-frame-options"),
+
+	/**
 	 * Expression régulière (null par défaut) pour restreindre l'accès au monitoring à certaines adresses IP.
 	 */
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),
