@@ -20,6 +20,7 @@ package net.bull.javamelody.internal.web; // NOPMD
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
+import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.Action;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
@@ -77,6 +79,9 @@ class PdfController {
 		try {
 			final String part = HttpParameter.PART.getParameterFrom(httpRequest);
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
+			if (PdfReport.shouldUseEnglishInsteadOfUkrainian()) {
+				I18N.bindLocale(Locale.ENGLISH);
+			}
 			if (part == null) {
 				if (!isFromCollectorServer() && !collector.isStopped()) {
 					// avant de faire l'affichage on fait une collecte,  pour que les courbes

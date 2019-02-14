@@ -75,6 +75,10 @@ public class PdfReport {
 				+ I18N.getCurrentDate().replace('/', '_') + ".pdf";
 	}
 
+	public static boolean shouldUseEnglishInsteadOfUkrainian() {
+		return PdfFonts.shouldUseEnglishInsteadOfUkrainian();
+	}
+
 	public void toPdf() throws IOException {
 		try {
 			document.open();
