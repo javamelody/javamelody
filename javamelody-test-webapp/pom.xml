@@ -229,6 +229,11 @@
 			<version>1.11.136</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-s3</artifactId>
+		    <version>1.11.136</version>
+		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
