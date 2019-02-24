@@ -236,14 +236,9 @@
 		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-core</artifactId>
+			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.11.136</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
-		<dependency>
-		    <groupId>com.amazonaws</groupId>
-		    <artifactId>aws-java-sdk-s3</artifactId>
-		    <version>1.11.136</version>
+			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->
 		<dependency>

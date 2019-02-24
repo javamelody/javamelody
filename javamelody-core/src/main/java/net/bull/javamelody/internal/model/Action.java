@@ -37,7 +37,6 @@ import org.quartz.Scheduler;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
-import net.bull.javamelody.internal.aws.s3.util.S3Util;
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.common.InputOutput;
 import net.bull.javamelody.internal.common.LOG;
@@ -213,22 +212,22 @@ public enum Action {
 				// heap dump à générer dans le répertoire temporaire sur le serveur
 				// avec un suffixe contenant le host, la date et l'heure et avec une extension hprof
 				// (utiliser jvisualvm du jdk ou MAT d'eclipse en standalone ou en plugin)
-				String message = "";
 				final File heapDump = heapDump();
 				final File zipFile = new File(heapDump.getParentFile(),
 						heapDump.getName() + ".zip");
 				InputOutput.zipFile(heapDump, zipFile);
 				InputOutput.deleteFile(heapDump);
-				final String path = zipFile.getPath();
-				if (Boolean.valueOf(System.getProperty("enable.s3.heapDump"))) {
+				String message = "";
+				if (Parameter.HEAP_DUMP_S3_BUCKETNAME.getValue() != null) {
 					try {
-						S3Util.upload(zipFile);
-						message = "heap dump " + zipFile.getName()
-								+ " uploaded successfully to s3.";
-					} catch (Exception e) {
-						message = "Failed to upload heap to s3 - " + e.getMessage() + "\n";
+						S3.upload(zipFile, Parameter.HEAP_DUMP_S3_BUCKETNAME.getValue());
+						message = "Heap dump " + zipFile.getName()
+								+ " uploaded successfully to S3.";
+					} catch (final IOException e) {
+						message = "Failed to upload heap to S3 - " + e.getMessage() + '\n';
 					}
 				}
+				final String path = zipFile.getPath();
 				messageForReport = message
 						+ I18N.getFormattedString("heap_dump_genere", path.replace('\\', '/'));
 			}

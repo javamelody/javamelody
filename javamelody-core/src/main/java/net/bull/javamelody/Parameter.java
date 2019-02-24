@@ -373,6 +373,11 @@ public enum Parameter {
 	CLOUDWATCH_NAMESPACE("cloudwatch-namespace"),
 
 	/**
+	 * Bucket name to use <a href='https://aws.amazon.com/s3/'>AWS S3</a> to send heap dump files (null by default).
+	 */
+	HEAP_DUMP_S3_BUCKETNAME("heap-dump-s3-bucketname"),
+
+	/**
 	 * URL of the <a href='https://www.influxdata.com/time-series-platform/'>InfluxDB</a> server to send metrics to,
 	 * for example: http://11.22.33.44:8086/write?db=mydb (null by default).
 	 */
