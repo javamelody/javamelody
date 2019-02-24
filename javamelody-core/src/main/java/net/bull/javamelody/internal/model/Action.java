@@ -221,10 +221,10 @@ public enum Action {
 				if (Parameter.HEAP_DUMP_S3_BUCKETNAME.getValue() != null) {
 					try {
 						S3.upload(zipFile, Parameter.HEAP_DUMP_S3_BUCKETNAME.getValue());
-						message = "Heap dump " + zipFile.getName()
-								+ " uploaded successfully to S3.";
+						message = I18N.getFormattedString("heap_dump_uploaded_to_s3",
+								zipFile.getName());
 					} catch (final IOException e) {
-						message = "Failed to upload heap to S3 - " + e.getMessage() + '\n';
+						message = "Failed to upload heap dump to S3 - " + e.getMessage() + '\n';
 					}
 				}
 				final String path = zipFile.getPath();
