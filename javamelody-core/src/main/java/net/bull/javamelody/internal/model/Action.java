@@ -222,7 +222,7 @@ public enum Action {
 					try {
 						S3.upload(zipFile, Parameter.HEAP_DUMP_S3_BUCKETNAME.getValue());
 						message = I18N.getFormattedString("heap_dump_uploaded_to_s3",
-								zipFile.getName());
+								zipFile.getName()) + ' ';
 					} catch (final IOException e) {
 						message = "Failed to upload heap dump to S3 - " + e.getMessage() + '\n';
 					}
