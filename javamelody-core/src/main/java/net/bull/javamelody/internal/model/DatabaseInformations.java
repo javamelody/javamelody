@@ -55,6 +55,7 @@ public class DatabaseInformations implements Serializable {
 		POSTGRESQL("PostgreSQL"),
 		MYSQL("MySQL"),
 		MYSQL4("MySQL"),
+		MARIADB("MariaDB"),
 		ORACLE("Oracle"),
 		DB2("DB2 UDB for AS/400", "DB2/"),
 		H2("H2"),
@@ -87,6 +88,7 @@ public class DatabaseInformations implements Serializable {
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
+			case MARIADB:			
 				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
 						"innodb_status", "unusedIndexes", "longRunning", "tableStats",
 						"eventsWaits", "tableIoWaits", "indexIoWaits", "tableLockWaits",
