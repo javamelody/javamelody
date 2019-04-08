@@ -869,7 +869,7 @@ public final class JdbcWrapper {
 		return JdbcWrapperHelper.createProxy(object, ih, interfaces);
 	}
 
-	private static boolean isProxyAlready(Object object) {
+	static boolean isProxyAlready(Object object) {
 		return Proxy.isProxyClass(object.getClass()) && Proxy.getInvocationHandler(object)
 				.getClass().getName().equals(DelegatingInvocationHandler.class.getName());
 		// utilisation de Proxy.getInvocationHandler(object).getClass().getName().equals(DelegatingInvocationHandler.class.getName())

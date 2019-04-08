@@ -206,6 +206,12 @@
 			<version>4.3.10.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>4.3.10.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- Dépendance optionnelle google guice (aop) -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
