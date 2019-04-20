@@ -200,6 +200,8 @@ public abstract class HtmlAbstractReport {
 				final byte[] bytes = new byte[16];
 				new SecureRandom().nextBytes(bytes);
 				csrfToken = new String(Base64Coder.encode(bytes));
+				// '+' would break in the url parameters
+				csrfToken = csrfToken.replace('+', '0').replace('/', '1');
 				currentSession.setAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME, csrfToken);
 			}
 			return "&amp;" + HttpParameter.TOKEN + '=' + csrfToken;
