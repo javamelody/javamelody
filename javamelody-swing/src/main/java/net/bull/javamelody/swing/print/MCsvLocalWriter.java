@@ -100,7 +100,7 @@ public class MCsvLocalWriter extends MCsvWriter {
 				} else {
 					text = getTextAt(table, k, i);
 					text = formatCsv(text, csvSeparator);
-					if (value instanceof Number && text != null) {
+					if (value instanceof Number) {
 						// en France, le caractère de séparation des milliers est pour Java un espace insécable (0xA0)
 						// et non un espace standard (0x20), mais Excel XP reconnaît l'espace standard dans les nombres
 						// mais ne reconnaît pas l'espace insécable et interprète alors les nombres comme du texte
