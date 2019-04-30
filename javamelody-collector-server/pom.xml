@@ -105,17 +105,6 @@
 							</includes>
 						</overlay>
 					</overlays>
-					<webResources>
-						<resource>
-							<directory>../javamelody-core/src/main/collector-webapp</directory>
-						</resource>
-						<resource>
-							<directory>../javamelody-core/src/main/lib</directory>
-							<includes>
-								<include>winstone-jenkins.jar</include>
-							</includes>
-						</resource>
-					</webResources>
 					<archive>
 						<manifestEntries>
 							<Implementation-Title>${project.name}</Implementation-Title>
