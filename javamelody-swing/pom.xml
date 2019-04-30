@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -110,29 +110,11 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
-		<!-- "mvn release:prepare release:perform" veut -SNAPSHOT et cherche svn, 
-			mais si tout est ok et sans -SNAPSHOT alors "mvn clean deploy" suffit, https://maven2-repository.dev.java.net/ 
-			http://wiki.jenkins-ci.org/display/JENKINS/Hosting+Plugins -->
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>maven.jenkins-ci.org</id>
-			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<!-- prevent accidental deployment of SNAPSHOTS to repository -->
-			<id>snapshot</id>
-			<url>file:.</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
-		<!-- /!\ Maven >= 3.0 : http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding 
-			<sourceEncoding>UTF-8</sourceEncoding> -->
 		<plugins>
 			<!-- Configuration compilation -->
 			<plugin>
@@ -145,19 +127,71 @@
 					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
-			<plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.1.1</version>
+					<executions>
+						<execution>
+							<id>copy-dependencies</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}/dependency</outputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+      			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.8</version>
 				<executions>
 					<execution>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<configuration>
 							<target>
-								<!-- appel de Ant et copie du résultat dans le site -->
-								<ant antfile="build.xml" target="zip" />
-								<copy file="javamelody-swing.zip" tofile="target/site/javamelody-swing.zip" />
-								<copy file="javamelody-swing.jar" tofile="target/site/javamelody-swing.jar" />
-								<ant antfile="build.xml" target="clean" />
+								<echo message="Construction du jar" level="info" />
+								<tstamp>
+									<format property="TODAY_FR" pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
+								</tstamp>
+								<delete file="target/javamelody-swing-${project.version}.jar" />
+								<jar destfile="target/javamelody-swing-${project.version}.jar">
+									<zipfileset dir="target/classes" excludes="**/Thumbs.db" />
+									<zipfileset file="LICENSE" />
+									<zipfileset src="${project.build.directory}/dependency/javamelody-core-${project.version}.jar" 
+										excludes="net/bull/javamelody/Main.class,com/lowagie/text/pdf/fonts/cmap_info.txt" />
+									<zipgroupfileset dir="${project.build.directory}/dependency">
+										<include name="itext-2.1.7.jar" />
+										<include name="log4j-*.jar" />
+										<include name="xstream-*.jar" />
+										<include name="xmlpull-*.jar" />
+										<include name="ehcache-*.jar" />
+										<include name="quartz-*.jar" />
+										<include name="javax.servlet-api-*.jar" />
+										<include name="itext-rtf-*.jar" />
+									</zipgroupfileset>
+									<manifest>
+										<attribute name="Built-By" value="${user.name}" />
+										<attribute name="Built-Date" value="${TODAY_FR}" />
+										<attribute name="Build-Jdk" value="${java.version}" />
+										<section name="javamelody-swing">
+											<attribute name="Implementation-Title" value="Java Melody Swing" />
+											<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+										</section>
+										<!-- attributes related to Java Web Start -->
+										<!-- see http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/security/manifest.html -->
+										<attribute name="Permissions" value="all-permissions" />
+										<attribute name="Codebase" value="*" />
+										<attribute name="Application-Name" value="JavaMelody Desktop" />
+										<attribute name="Trusted-Library" value="true" />
+									</manifest>
+								</jar>
+
+								<echo message="Signature du jar" level="info" />
+								<signjar jar="target/javamelody-swing-${project.version}.jar" alias="javamelody" 
+									keystore="src/main/key/javamelodykeystore" storetype="JKS" storepass="javamelody" />
 							</target>
 						</configuration>
 						<goals>
@@ -176,123 +210,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-
-			<!-- Site -->
-			<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.6</version>
-				<configuration>
-					<reportPlugins>
-						<!-- Javadoc -->
-						<plugin>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.10.3</version>
-							<configuration>
-								<additionalparam>${javadoc.doclint.none}</additionalparam>
-								<links>
-									<link>http://java.sun.com/javase/6/docs/api/</link>
-									<link>http://java.sun.com/javaee/5/docs/api/</link>
-								</links>
-							</configuration>
-						</plugin>
-						<!-- Références croisées -->
-						<plugin>
-							<artifactId>maven-jxr-plugin</artifactId>
-							<version>2.5</version>
-							<configuration>
-								<linkJavadoc>false</linkJavadoc>
-							</configuration>
-						</plugin>
-						<!-- Vérification des règles de codage -->
-						<plugin>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.17</version>
-							<configuration>
-								<enableRSS>false</enableRSS>
-								<configLocation>${basedir}/.checkstyle.xml</configLocation>
-								<linkXRef>true</linkXRef>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>findbugs-maven-plugin</artifactId>
-							<version>3.0.3</version>
-							<configuration>
-								<xmlOutput>true</xmlOutput>
-							</configuration>
-						</plugin>
-						<plugin>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<version>3.6</version>
-							<configuration>
-								<enableRulesSummary>false</enableRulesSummary>
-								<source>1.7</source>
-								<targetJdk>1.7</targetJdk>
-								<linkXref>true</linkXref>
-								<minimumPriority>4</minimumPriority>
-								<minimumTokens>100</minimumTokens>
-								<rulesets>
-									<ruleset>${basedir}/.ruleset</ruleset>
-								</rulesets>
-							</configuration>
-						</plugin>
-						<!-- Métriques -->
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>javancss-maven-plugin</artifactId>
-							<version>2.1</version>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>jdepend-maven-plugin</artifactId>
-							<version>2.0</version>
-						</plugin>
-						<!-- Information sur le projet -->
-						<plugin>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.8.1</version>
-							<reportSets>
-								<reportSet>
-									<reports>
-										<report>summary</report>
-										<report>license</report>
-										<report>mailing-list</report>
-										<report>issue-tracking</report>
-										<report>scm</report>
-										<report>cim</report>
-										<report>plugin-management</report>
-										<report>plugins</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-	<reporting>
-		<plugins>
-			<!-- Références croisées -->
-			<!-- section reporting Temporaire : https://jira.codehaus.org/browse/MCHECKSTYLE-150 et autres -->
-			<plugin>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<linkJavadoc>false</linkJavadoc>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
-	<profiles>
-		<profile>
-			<id>java8-disable-strict-javadoc</id>
-			<activation>
-				<jdk>[1.8,)</jdk>
-			</activation>
-			<properties>
-				<javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
-			</properties>
-		</profile>
-	</profiles>
 </project>
