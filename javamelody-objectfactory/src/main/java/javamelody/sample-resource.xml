@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+
+	<!-- Sample custom resource to be added in GlassFish,
+	with name "jdbc/MyDataSource" and referencing "jdbc/MyDataSource_uncached" -->
+	<custom-resource
+		res-type="javax.naming.spi.ObjectFactory"
+		factory-class="javamelody.CachedObjectFactory"
+		jndi-name="jdbc/MyDataSource"
+	>
+		<property name="jndi-ref" value="jdbc/MyDataSource_uncached" />
+	</custom-resource>
+
+</resources>
