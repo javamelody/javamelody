@@ -2,7 +2,7 @@
     <wb-module deploy-name="JavaMelody">
         <wb-resource deploy-path="/" source-path="/src/main/java" tag="defaultRootSource"/>
         <wb-resource deploy-path="/" source-path="/src/main/resources"/>
-        <wb-resource deploy-path="/" source-path="/src/site/apt"/>
+        <wb-resource deploy-path="/" source-path="/src/main/resources-filtered"/>
         <wb-resource deploy-path="/" source-path="/src/test/java"/>
         <wb-resource deploy-path="/" source-path="/src/test/resources"/>
     </wb-module>

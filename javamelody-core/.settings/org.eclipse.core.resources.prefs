@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
+encoding//src/main/resources-filtered=UTF-8
 encoding//src/main/resources/net/bull/javamelody/resource/help/help.html=UTF-8
 encoding//src/main/resources/net/bull/javamelody/resource/help/help_fr.html=UTF-8
 encoding//src/main/resources/net/bull/javamelody/resource/help/help_pt.html=UTF-8
