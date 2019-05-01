@@ -88,7 +88,7 @@ public class DatabaseInformations implements Serializable {
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
-			case MARIADB:			
+			case MARIADB:
 				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
 						"innodb_status", "unusedIndexes", "longRunning", "tableStats",
 						"eventsWaits", "tableIoWaits", "indexIoWaits", "tableLockWaits",
