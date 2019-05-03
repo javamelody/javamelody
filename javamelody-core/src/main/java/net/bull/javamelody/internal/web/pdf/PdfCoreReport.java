@@ -40,6 +40,7 @@ import net.bull.javamelody.internal.model.CacheInformations;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.JCacheInformations;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JobInformations;
@@ -138,10 +139,11 @@ public class PdfCoreReport extends PdfAbstractReport {
 			pdfJobCounterReport = writeCounter(rangeJobCounter);
 		}
 
-		if (isCacheEnabled()) {
+		if (isCacheEnabled() || isJCacheEnabled()) {
 			addToDocument(new Phrase("\n", normalFont));
 			addParagraph(getString("Caches"), "caches.png");
 			writeCaches(false);
+			writeJCaches(false);
 		}
 
 		newPage();
@@ -171,10 +173,11 @@ public class PdfCoreReport extends PdfAbstractReport {
 			writeCounterDetails(pdfJobCounterReport);
 		}
 
-		if (isCacheEnabled()) {
+		if (isCacheEnabled() || isJCacheEnabled()) {
 			addToDocument(new Phrase("\n", normalFont));
 			addParagraph(getString("Caches_detailles"), "caches.png");
 			writeCaches(true);
+			writeJCaches(true);
 		}
 
 		writeDurationAndOverhead();
@@ -390,6 +393,34 @@ public class PdfCoreReport extends PdfAbstractReport {
 	private boolean isCacheEnabled() {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (javaInformations.isCacheEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void writeJCaches(boolean includeDetails) throws DocumentException {
+		String eol = "";
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (!javaInformations.isJCacheEnabled()) {
+				continue;
+			}
+			final List<JCacheInformations> jcacheInformationsList = javaInformations
+					.getJCacheInformationsList();
+			final String msg = getFormattedString("caches_sur", jcacheInformationsList.size(),
+					javaInformations.getHost());
+			addToDocument(new Phrase(eol + msg, boldFont));
+
+			if (includeDetails) {
+				new PdfJCacheInformationsReport(jcacheInformationsList, getDocument()).toPdf();
+			}
+			eol = "\n";
+		}
+	}
+
+	private boolean isJCacheEnabled() {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isJCacheEnabled()) {
 				return true;
 			}
 		}
