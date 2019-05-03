@@ -40,6 +40,7 @@ import net.bull.javamelody.internal.model.CollectorServer;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.HsErrPid;
+import net.bull.javamelody.internal.model.JCacheInformations;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JobInformations;
@@ -146,6 +147,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeAnchor("caches", I18N.getString("Caches"));
 			writeln("#Caches#</h3>");
 			writeCaches();
+		}
+		if (isJCacheEnabled()) {
+			writeln("<h3 class='chapterTitle'><img src='?resource=caches.png' alt='#Caches#'/>");
+			writeAnchor("caches", I18N.getString("Caches"));
+			writeln("#Caches#</h3>");
+			writeJCaches();
 		}
 		//		else if (JavaInformations.STACK_TRACES_ENABLED) {
 		//			// pour que les tooltips des stack traces s'affichent dans le scroll
@@ -569,6 +576,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		return false;
 	}
 
+	private boolean isJCacheEnabled() {
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (javaInformations.isJCacheEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean isJobEnabled() {
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (javaInformations.isJobEnabled()) {
@@ -599,6 +615,28 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeShowHideLink(id, "#Details#");
 			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
 			new HtmlCacheInformationsReport(cacheInformationsList, getWriter()).toHtml();
+			writeln("</div></div><br/>");
+			i++;
+		}
+	}
+
+	private void writeJCaches() throws IOException {
+		int i = 0;
+		for (final JavaInformations javaInformations : javaInformationsList) {
+			if (!javaInformations.isJCacheEnabled()) {
+				continue;
+			}
+			final List<JCacheInformations> jcacheInformationsList = javaInformations
+					.getJCacheInformationsList();
+			writeln("<b>");
+			writeln(getFormattedString("caches_sur", jcacheInformationsList.size(),
+					javaInformations.getHost()));
+			writeln("</b>");
+			writeln(SEPARATOR);
+			final String id = "jcaches_" + i;
+			writeShowHideLink(id, "#Details#");
+			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
+			new HtmlJCacheInformationsReport(jcacheInformationsList, getWriter()).toHtml();
 			writeln("</div></div><br/>");
 			i++;
 		}

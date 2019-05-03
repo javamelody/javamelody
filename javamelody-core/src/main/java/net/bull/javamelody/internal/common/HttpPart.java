@@ -55,7 +55,8 @@ public enum HttpPart {
 	SPRING_BEANS("springBeans"),
 	RUM("rum"),
 	WEBAPP_VERSIONS("webappVersions"),
-	CACHE_KEYS("cacheKeys");
+	CACHE_KEYS("cacheKeys"),
+	JCACHE_KEYS("jcacheKeys");
 
 	private final String name;
 

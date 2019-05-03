@@ -238,6 +238,12 @@ public class CollectorController { // NOPMD
 			doMultiHtmlProxy(req, resp, application,
 					HttpPart.CACHE_KEYS.toString() + '&' + HttpParameter.CACHE_ID + '=' + cacheId,
 					I18N.getFormattedString("Keys_cache", cacheId), null, "caches.png");
+		} else if (HttpPart.JCACHE_KEYS.isPart(req)) {
+			// note: cache keys may not be serializable, so we do not try to serialize them
+			final String cacheId = HttpParameter.CACHE_ID.getParameterFrom(req);
+			doMultiHtmlProxy(req, resp, application,
+					HttpPart.JCACHE_KEYS.toString() + '&' + HttpParameter.CACHE_ID + '=' + cacheId,
+					I18N.getFormattedString("Keys_cache", cacheId), null, "caches.png");
 		} else {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);

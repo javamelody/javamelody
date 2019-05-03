@@ -43,6 +43,7 @@ import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
 import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.HeapHistogram;
+import net.bull.javamelody.internal.model.JCacheInformations;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
 import net.bull.javamelody.internal.model.MBeanNode;
@@ -335,6 +336,19 @@ public class HtmlController {
 		final String cacheKeysPart = HttpPart.CACHE_KEYS.toString() + '&' + HttpParameter.CACHE_ID
 				+ '=' + I18N.urlEncode(cacheId);
 		htmlReport.writeCacheWithKeys(cacheId, cacheInfo, messageForReport, cacheKeysPart,
+				withoutHeaders);
+	}
+
+	@RequestPart(HttpPart.JCACHE_KEYS)
+	void doJCacheKeys(@RequestParameter(HttpParameter.CACHE_ID) String cacheId,
+			@RequestParameter(HttpParameter.FORMAT) String format) throws IOException {
+		assert !isFromCollectorServer();
+		final JCacheInformations cacheInfo = JCacheInformations
+				.buildJCacheInformationsWithKeys(cacheId);
+		final boolean withoutHeaders = HTML_BODY_FORMAT.equalsIgnoreCase(format);
+		final String jcacheKeysPart = HttpPart.JCACHE_KEYS.toString() + '&' + HttpParameter.CACHE_ID
+				+ '=' + I18N.urlEncode(cacheId);
+		htmlReport.writeJCacheWithKeys(cacheId, cacheInfo, messageForReport, jcacheKeysPart,
 				withoutHeaders);
 	}
 

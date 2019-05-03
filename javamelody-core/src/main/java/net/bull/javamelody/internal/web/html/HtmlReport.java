@@ -41,6 +41,7 @@ import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.HeapHistogram;
 import net.bull.javamelody.internal.model.HsErrPid;
+import net.bull.javamelody.internal.model.JCacheInformations;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
 import net.bull.javamelody.internal.model.MBeanNode;
@@ -420,6 +421,23 @@ public class HtmlReport extends HtmlAbstractReport {
 			} else {
 				writeHtmlHeader();
 				htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
+				writeHtmlFooter();
+				writeMessageIfNotNull(message, cacheKeyPart);
+			}
+		}
+	}
+
+	public void writeJCacheWithKeys(String cacheId, JCacheInformations jcacheInformations,
+			String message, String cacheKeyPart, boolean withoutHeaders) throws IOException {
+		assert cacheId != null;
+		if (jcacheInformations != null) {
+			final HtmlJCacheInformationsReport htmlJCacheInformationsReport = new HtmlJCacheInformationsReport(
+					Collections.singletonList(jcacheInformations), getWriter());
+			if (withoutHeaders) {
+				htmlJCacheInformationsReport.writeJCacheWithKeys(cacheId, withoutHeaders);
+			} else {
+				writeHtmlHeader();
+				htmlJCacheInformationsReport.writeJCacheWithKeys(cacheId, withoutHeaders);
 				writeHtmlFooter();
 				writeMessageIfNotNull(message, cacheKeyPart);
 			}

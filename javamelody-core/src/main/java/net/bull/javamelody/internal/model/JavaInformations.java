@@ -96,6 +96,8 @@ public class JavaInformations implements Serializable { // NOPMD
 	@SuppressWarnings("all")
 	private final List<CacheInformations> cacheInformationsList;
 	@SuppressWarnings("all")
+	private final List<JCacheInformations> jcacheInformationsList;
+	@SuppressWarnings("all")
 	private final List<JobInformations> jobInformationsList;
 	@SuppressWarnings("all")
 	private final List<HsErrPid> hsErrPidList;
@@ -121,6 +123,17 @@ public class JavaInformations implements Serializable { // NOPMD
 		/** {@inheritDoc} */
 		@Override
 		public int compare(CacheInformations cache1, CacheInformations cache2) {
+			return cache1.getName().compareToIgnoreCase(cache2.getName());
+		}
+	}
+
+	static final class JCacheInformationsComparator
+			implements Comparator<JCacheInformations>, Serializable {
+		private static final long serialVersionUID = 1L;
+
+		/** {@inheritDoc} */
+		@Override
+		public int compare(JCacheInformations cache1, JCacheInformations cache2) {
 			return cache1.getName().compareToIgnoreCase(cache2.getName());
 		}
 	}
@@ -186,6 +199,7 @@ public class JavaInformations implements Serializable { // NOPMD
 			dataSourceDetails = buildDataSourceDetails();
 			threadInformationsList = buildThreadInformationsList();
 			cacheInformationsList = CacheInformations.buildCacheInformationsList();
+			jcacheInformationsList = JCacheInformations.buildJCacheInformationsList();
 			jobInformationsList = JobInformations.buildJobInformationsList();
 			hsErrPidList = HsErrPid.buildHsErrPidList();
 			pid = PID.getPID();
@@ -194,6 +208,7 @@ public class JavaInformations implements Serializable { // NOPMD
 			dataSourceDetails = null;
 			threadInformationsList = null;
 			cacheInformationsList = null;
+			jcacheInformationsList = null;
 			jobInformationsList = null;
 			hsErrPidList = null;
 			pid = null;
@@ -625,6 +640,14 @@ public class JavaInformations implements Serializable { // NOPMD
 		return Collections.unmodifiableList(result);
 	}
 
+	public List<JCacheInformations> getJCacheInformationsList() {
+		// on trie sur demande (si affichage)
+		final List<JCacheInformations> result = new ArrayList<JCacheInformations>(
+				jcacheInformationsList);
+		Collections.sort(result, new JCacheInformationsComparator());
+		return Collections.unmodifiableList(result);
+	}
+
 	public List<JobInformations> getJobInformationsList() {
 		// on trie sur demande (si affichage)
 		final List<JobInformations> result = new ArrayList<JobInformations>(jobInformationsList);
@@ -664,6 +687,10 @@ public class JavaInformations implements Serializable { // NOPMD
 
 	public boolean isCacheEnabled() {
 		return cacheInformationsList != null && !cacheInformationsList.isEmpty();
+	}
+
+	public boolean isJCacheEnabled() {
+		return jcacheInformationsList != null && !jcacheInformationsList.isEmpty();
 	}
 
 	public boolean isJobEnabled() {
