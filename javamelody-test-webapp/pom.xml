@@ -18,20 +18,17 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Dépendance H2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.3.170</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- Dépendance Mysql -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.0.5</version>
 		</dependency>
-		<!-- Presque les mêmes dépendances que javamelody-core -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -77,26 +74,22 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-			<optional>true</optional>
+			<version>1.2.17</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.5</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>0.9.19</version>
-			<optional>true</optional>
+			<version>1.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
 			<version>2.1.7</version>
-			<optional>true</optional>
 			<exclusions>
 				<exclusion>
 					<artifactId>bcmail-jdk14</artifactId>
@@ -116,20 +109,29 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 			<version>1.6.2</version>
-			<optional>true</optional>
+		</dependency>
+<!--
+ 		<dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.7.1</version>
 		</dependency>
 		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+ -->
+ 		<dependency>
 			<groupId>quartz</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.5.2</version>
-			<optional>true</optional>
 		</dependency>
 		<!--
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>2.1.2</version>
-			<optional>true</optional>
 			<exclusions>
 				<exclusion>
 					<artifactId>c3p0</artifactId>
@@ -142,7 +144,6 @@
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<version>1.4.10</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
@@ -160,100 +161,82 @@
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.2.2</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-dbcp2</artifactId>
 			<version>2.1.1</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
 			<version>7.0.27</version>
-			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle spring aop (qui inclus spring core, spring 
+		<!-- Dépendance spring aop (qui inclus spring core, spring 
 			beans, aop alliance et commons-logging) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>3.1.0.RELEASE</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>3.1.0.RELEASE</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>3.1.0.RELEASE</version>
-			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle google guice (aop) -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<version>2.0</version>
-			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle xwork pour interceptor struts 2 -->
+		<!-- Dépendance xwork pour interceptor struts 2 -->
 		<dependency>
 			<groupId>com.opensymphony</groupId>
 			<artifactId>xwork</artifactId>
 			<version>2.1.0</version>
-			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>3.6.9.Final</version>
-			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle mongodb-driver -->
+		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+			<version>2.2.2</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
 			<version>3.3.0</version>
-			<optional>true</optional>
 		</dependency>
-		<!-- Dépendance optionnelle AWS Java SDK -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-cloudwatch</artifactId>
 			<version>1.11.136</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 		    <groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk-s3</artifactId>
 		    <version>1.11.136</version>
 		</dependency>
-		<!-- Dépendance JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
-		<!-- Dépendance EasyMock -->
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<version>3.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Dépendance OpenJpa -->
-		<dependency>
-			<groupId>org.apache.openjpa</groupId>
-			<artifactId>openjpa</artifactId>
-			<version>2.2.2</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -280,8 +263,6 @@
 							<directory>../javamelody-core/src/test/test-webapp</directory>
 							<excludes>
 								<exclude>WEB-INF/classes/**</exclude>
-								<!-- JRobin is already included with the javamelody dependency -->
-								<exclude>WEB-INF/lib/jrobin*.*</exclude>
 							</excludes>
 						</resource>
 					</webResources>
