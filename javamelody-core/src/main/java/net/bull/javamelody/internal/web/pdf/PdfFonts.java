@@ -51,6 +51,7 @@ enum PdfFonts {
 	TABLE_HEADER(getFont(5.5f, Font.BOLD));
 
 	private static final String UKRAINIAN_LANGUAGE = "uk";
+	private static final String CZECH_LANGUAGE = "cs";
 
 	static {
 		BLUE.font.setColor(Color.BLUE);
@@ -73,7 +74,7 @@ enum PdfFonts {
 		final String language = I18N.getResourceBundle().getLocale().getLanguage();
 		if (Locale.CHINESE.getLanguage().equals(language)) {
 			return getChineseFont();
-		} else if (UKRAINIAN_LANGUAGE.equals(language)) {
+		} else if (UKRAINIAN_LANGUAGE.equals(language) || CZECH_LANGUAGE.equals(language)) {
 			return getDejaVuSansFont();
 		}
 		return font;
