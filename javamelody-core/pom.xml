@@ -347,40 +347,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<phase>prepare-package</phase>
-						<configuration>
-							<target>
-								<!-- écrit la version du pom dans JAVAMELODY-VERSION.properties -->
-								<echo message="# Version of JavaMelody${line.separator}" file="JAVAMELODY-VERSION.properties" />
-								<echo message="version=${project.version}" append="true" file="JAVAMELODY-VERSION.properties" />
-								<!-- avec antrun 1.7, CR ne peut être écrit en même temps que LF -->
-								<echo message="&#xD;" append="true" file="JAVAMELODY-VERSION.properties" />
-								<echo message="&#xA;" append="true" file="JAVAMELODY-VERSION.properties" />
-								<copy file="JAVAMELODY-VERSION.properties" tofile="target/classes/JAVAMELODY-VERSION.properties" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<!-- nécessaire car maven définit java_home avec le jre pour ant ! -->
-						<groupId>sun.jdk</groupId>
-						<artifactId>tools</artifactId>
-						<version>1.6.0</version>
-						<scope>system</scope>
-						<systemPath>${java.home}/../lib/tools.jar</systemPath>
-					</dependency>
-				</dependencies>
-			</plugin>
-
 			<!-- Configuration exécution des tests unitaires -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
