@@ -20,6 +20,7 @@ package net.bull.javamelody.internal.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,14 @@ public class JCacheInformations implements Serializable {
 		// size and keys can only be read by javax.cache.Cache.iterator()
 	}
 
+	JCacheInformations(String cacheName) {
+		super();
+		assert cacheName != null;
+		this.name = cacheName;
+		this.cacheHits = -1;
+		this.cacheMisses = 1;
+	}
+
 	private static Long getValue(ObjectName cache, String attribute) {
 		try {
 			return (Long) MBEAN_SERVER.getAttribute(cache, attribute);
@@ -77,9 +86,22 @@ public class JCacheInformations implements Serializable {
 		}
 
 		final List<JCacheInformations> result = new ArrayList<JCacheInformations>();
+		final Set<String> cacheNames = new HashSet<String>();
 		final Set<ObjectName> cacheStatistics = getJsr107CacheStatistics();
 		for (final ObjectName cache : cacheStatistics) {
-			result.add(new JCacheInformations(cache));
+			final JCacheInformations jcacheInformations = new JCacheInformations(cache);
+			result.add(jcacheInformations);
+			cacheNames.add(jcacheInformations.getName());
+		}
+		for (final CachingProvider cachingProvider : Caching.getCachingProviders()) {
+			final CacheManager cacheManager = cachingProvider.getCacheManager();
+			for (final String cacheName : cacheManager.getCacheNames()) {
+				if (!cacheNames.contains(cacheName)) {
+					final JCacheInformations jcacheInformations = new JCacheInformations(cacheName);
+					result.add(jcacheInformations);
+					cacheNames.add(jcacheInformations.getName());
+				}
+			}
 		}
 		return result;
 	}

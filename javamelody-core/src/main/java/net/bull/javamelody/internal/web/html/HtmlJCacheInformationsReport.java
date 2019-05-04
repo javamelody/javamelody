@@ -33,6 +33,7 @@ import net.bull.javamelody.internal.model.JCacheInformations;
 public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 	private final List<JCacheInformations> jcacheInformationsList;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
+	private final boolean hitsRatioEnabled;
 	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlJCacheInformationsReport(List<JCacheInformations> jcacheInformationsList, Writer writer) {
@@ -40,12 +41,16 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		assert jcacheInformationsList != null;
 
 		this.jcacheInformationsList = jcacheInformationsList;
+		this.hitsRatioEnabled = isHitsRatioEnabled(jcacheInformationsList);
 	}
 
 	@Override
 	void toHtml() throws IOException {
 		writeJCaches(jcacheInformationsList);
 		write("<div align='right' class='noPrint'>");
+		if (!hitsRatioEnabled) {
+			writeln("#jcaches_statistics_enable#<br/>");
+		}
 		if (systemActionsEnabled) {
 			writeln("<a href='?action=clear_jcaches" + getCsrfTokenUrlPart()
 					+ "' onclick=\"javascript:return confirm('"
@@ -53,15 +58,18 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
+		writeln("</div>");
 	}
 
 	private void writeJCaches(List<JCacheInformations> jcacheInformations) throws IOException {
 		final HtmlTable table = new HtmlTable();
 		table.beginTable(getString("Caches"));
 		write("<th>#Cache#</th>");
-		write("<th class='sorttable_numeric'>");
-		write(getString("Efficacite_cache").replaceAll("\n", "<br/>"));
-		write("</th>");
+		if (hitsRatioEnabled) {
+			write("<th class='sorttable_numeric'>");
+			write(getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+			write("</th>");
+		}
 		if (systemActionsEnabled) {
 			write("<th class='noPrint'>#Purger#</th>");
 		}
@@ -84,8 +92,10 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		}
 		writeln("</a>");
 		final String nextColumnAlignRight = "</td> <td align='right'>";
-		write(nextColumnAlignRight);
-		write(integerFormat.format(jcacheInformations.getHitsRatio()));
+		if (hitsRatioEnabled) {
+			write(nextColumnAlignRight);
+			write(integerFormat.format(jcacheInformations.getHitsRatio()));
+		}
 
 		write("</td>");
 
@@ -103,6 +113,15 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 					+ "' title='" + title + "' /></a>");
 			write("</td>");
 		}
+	}
+
+	public static boolean isHitsRatioEnabled(List<JCacheInformations> jcacheInformationsList) {
+		for (final JCacheInformations jcacheInformations : jcacheInformationsList) {
+			if (jcacheInformations.getHitsRatio() >= 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	void writeJCacheWithKeys(String cacheId, boolean withoutHeaders) throws IOException {

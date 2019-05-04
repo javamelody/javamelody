@@ -25,10 +25,13 @@ import java.util.List;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.JCacheInformations;
+import net.bull.javamelody.internal.web.html.HtmlJCacheInformationsReport;
 
 /**
  * Partie du rapport pdf pour les caches de données (JCache).
@@ -37,12 +40,16 @@ import net.bull.javamelody.internal.model.JCacheInformations;
 class PdfJCacheInformationsReport extends PdfAbstractTableReport {
 	private final List<JCacheInformations> jcacheInformationsList;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
+	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
+	private final boolean hitsRatioEnabled;
 
 	PdfJCacheInformationsReport(List<JCacheInformations> jcacheInformationsList,
 			Document document) {
 		super(document);
 		assert jcacheInformationsList != null;
 		this.jcacheInformationsList = jcacheInformationsList;
+		this.hitsRatioEnabled = HtmlJCacheInformationsReport
+				.isHitsRatioEnabled(jcacheInformationsList);
 	}
 
 	@Override
@@ -53,6 +60,12 @@ class PdfJCacheInformationsReport extends PdfAbstractTableReport {
 			writeCacheInformations(jcacheInformations);
 		}
 		addTableToDocument();
+		if (!hitsRatioEnabled) {
+			final Paragraph statisticsEnabledParagraph = new Paragraph(
+					getString("jcaches_statistics_enable"), cellFont);
+			statisticsEnabledParagraph.setAlignment(Element.ALIGN_RIGHT);
+			addToDocument(statisticsEnabledParagraph);
+		}
 	}
 
 	private void writeHeader() throws DocumentException {
@@ -66,7 +79,9 @@ class PdfJCacheInformationsReport extends PdfAbstractTableReport {
 	private List<String> createHeaders() {
 		final List<String> headers = new ArrayList<String>();
 		headers.add(getString("Cache"));
-		headers.add(getString("Efficacite_cache"));
+		if (hitsRatioEnabled) {
+			headers.add(getString("Efficacite_cache"));
+		}
 		return headers;
 	}
 
@@ -74,7 +89,9 @@ class PdfJCacheInformationsReport extends PdfAbstractTableReport {
 		final PdfPCell defaultCell = getDefaultCell();
 		defaultCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 		addCell(jcacheInformations.getName());
-		defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		addCell(integerFormat.format(jcacheInformations.getHitsRatio()));
+		if (hitsRatioEnabled) {
+			defaultCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			addCell(integerFormat.format(jcacheInformations.getHitsRatio()));
+		}
 	}
 }
