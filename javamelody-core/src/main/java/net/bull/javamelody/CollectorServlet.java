@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.internal.common.MonitoredApplicationHeader;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -144,6 +145,7 @@ public class CollectorServlet extends HttpServlet {
 		final String appName = req.getParameter("appName");
 		final String appUrls = req.getParameter("appUrls");
 		final String action = req.getParameter("action");
+		final String appHeaders = req.getParameter("appHeaders");
 		try {
 			if (appName == null || appUrls == null) {
 				throw new IllegalArgumentException(I18N.getString("donnees_manquantes"));
@@ -151,13 +153,18 @@ public class CollectorServlet extends HttpServlet {
 			if (!appUrls.startsWith("http://") && !appUrls.startsWith("https://")) {
 				throw new IllegalArgumentException(I18N.getString("urls_format"));
 			}
+			MonitoredApplicationHeader header = null;
+			if (appHeaders != null) {
+				header = new MonitoredApplicationHeader(appHeaders);
+			}
+
 			final CollectorController collectorController = new CollectorController(
 					collectorServer);
 			if ("unregisterNode".equals(action)) {
 				collectorController.removeCollectorApplicationNodes(appName, appUrls);
 				LOGGER.info("monitored application node removed: " + appName + ", url: " + appUrls);
 			} else {
-				collectorController.addCollectorApplication(appName, appUrls);
+				collectorController.addCollectorApplication(appName, appUrls, header);
 				LOGGER.info("monitored application added: " + appName);
 				LOGGER.info("urls of the monitored application: " + appUrls);
 				CollectorController.showAlertAndRedirectTo(resp,
@@ -188,7 +195,7 @@ public class CollectorServlet extends HttpServlet {
 	// addCollectorApplication and removeCollectorApplication added for spring-boot-admin
 	// see https://github.com/codecentric/spring-boot-admin/pull/450
 	public static void addCollectorApplication(String application, String urls) throws IOException {
-		Parameters.addCollectorApplication(application, Parameters.parseUrl(urls));
+		Parameters.addCollectorApplication(application, Parameters.parseUrl(urls), null);
 	}
 
 	public static void removeCollectorApplication(String application) throws IOException {

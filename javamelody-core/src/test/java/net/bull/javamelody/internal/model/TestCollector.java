@@ -465,7 +465,7 @@ public class TestCollector {
 			// pour être sûr qu'il y a une application
 			final List<URL> urls = Parameters
 					.parseUrl("http://localhost/test1,http://localhost:8090/test1");
-			Parameters.addCollectorApplication(application, urls);
+			Parameters.addCollectorApplication(application, urls, null);
 
 			collectorServer.collectWithoutErrors();
 			Parameters.removeCollectorApplication(application);
@@ -488,7 +488,7 @@ public class TestCollector {
 			collectorServer.getFirstApplication();
 			collectorServer.scheduleReportMailForCollectorServer(application);
 			collectorServer.removeCollectorApplication(application);
-			Parameters.addCollectorApplication(application, urls);
+			Parameters.addCollectorApplication(application, urls, null);
 		} finally {
 			collectorServer.stop();
 			Parameters.removeCollectorApplication(application);

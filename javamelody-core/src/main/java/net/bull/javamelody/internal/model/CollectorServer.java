@@ -19,17 +19,12 @@ package net.bull.javamelody.internal.model;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.bull.javamelody.internal.common.MonitoredApplicationHeader;
 import org.apache.log4j.Logger;
 
 import net.bull.javamelody.Parameter;
@@ -105,9 +100,11 @@ public class CollectorServer {
 	public void collectWithoutErrors() {
 		// clone pour éviter ConcurrentModificationException
 		final Map<String, List<URL>> clone;
+		final Map<String, String> urlHeaders;
 		try {
 			clone = new LinkedHashMap<String, List<URL>>(
 					Parameters.getCollectorUrlsByApplications());
+			urlHeaders = Parameters.getCollectorHeadersByApplications();
 		} catch (final IOException e) {
 			LOGGER.warn(e.getMessage(), e);
 			return;
@@ -115,23 +112,38 @@ public class CollectorServer {
 		for (final Map.Entry<String, List<URL>> entry : clone.entrySet()) {
 			final String application = entry.getKey();
 			final List<URL> urls = entry.getValue();
-			executorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					collectForApplicationWithoutErrors(application, urls);
-				}
-			});
+			final String urlHeaderForApplication = urlHeaders.get(application);
+			if (urlHeaderForApplication == null) {
+				executorService.submit(new Runnable() {
+					@Override
+					public void run() {
+						collectForApplicationWithoutErrors(application, urls, null);
+					}
+				});
+			} else {
+				executorService.submit(new Runnable() {
+					@Override
+					public void run() {
+						collectForApplicationWithoutErrors(application, urls,
+								new MonitoredApplicationHeader(urlHeaderForApplication));
+					}
+				});
+			}
 		}
 	}
 
 	public String collectForApplicationForAction(String application, List<URL> urls)
 			throws IOException {
-		return collectForApplication(new RemoteCollector(application, urls));
+		final MonitoredApplicationHeader appHeader = getHeadersByApplication(application);
+		final RemoteCollector remoteCollector =
+				appHeader == null ? new RemoteCollector(application, urls) :
+						new RemoteCollector(application, urls, appHeader.toMap());
+		return collectForApplication(remoteCollector);
 	}
 
-	void collectForApplicationWithoutErrors(String application, List<URL> urls) {
+	void collectForApplicationWithoutErrors(String application, List<URL> urls, MonitoredApplicationHeader monitoredApplicationHeader) {
 		try {
-			collectForApplication(application, urls);
+			collectForApplication(application, urls, monitoredApplicationHeader);
 			final boolean becameAvailable = lastCollectExceptionsByApplication
 					.containsKey(application);
 			lastCollectExceptionsByApplication.remove(application);
@@ -165,10 +177,15 @@ public class CollectorServer {
 	}
 
 	String collectForApplication(String application, List<URL> urls) throws IOException {
+		return collectForApplication(application, urls, null);
+	}
+
+	String collectForApplication(String application, List<URL> urls, MonitoredApplicationHeader appHeader) throws IOException {
 		final boolean remoteCollectorAvailable = isApplicationDataAvailable(application);
 		final RemoteCollector remoteCollector;
 		if (!remoteCollectorAvailable) {
-			remoteCollector = new RemoteCollector(application, urls);
+			remoteCollector = new RemoteCollector(application, urls,
+					appHeader == null ? new HashMap<String, String>() : appHeader.toMap());
 		} else {
 			remoteCollector = getRemoteCollectorByApplication(application);
 		}
@@ -271,6 +288,10 @@ public class CollectorServer {
 	}
 
 	public void addCollectorApplication(String application, List<URL> urls) throws IOException {
+		addCollectorApplication(application, urls, null);
+	}
+
+	public void addCollectorApplication(String application, List<URL> urls, MonitoredApplicationHeader appHeader) throws IOException {
 		final Map<String, List<URL>> collectorUrlsByApplications = Parameters
 				.getCollectorUrlsByApplications();
 		for (final URL addedUrl : urls) {
@@ -297,8 +318,8 @@ public class CollectorServer {
 		} else {
 			nodesUrls = urls;
 		}
-		collectForApplication(application, nodesUrls);
-		Parameters.addCollectorApplication(application, nodesUrls);
+		collectForApplication(application, nodesUrls, appHeader);
+		Parameters.addCollectorApplication(application, nodesUrls, appHeader);
 	}
 
 	public void removeCollectorApplication(String application) throws IOException {
@@ -312,12 +333,13 @@ public class CollectorServer {
 	public void removeCollectorApplicationNodes(String appName, List<URL> nodeUrls)
 			throws IOException {
 		final List<URL> currentUrls = getUrlsByApplication(appName);
+		final MonitoredApplicationHeader appHeader = getHeadersByApplication(appName);
 		if (currentUrls != null) {
 			final List<URL> newUrls = new ArrayList<URL>(currentUrls);
 			newUrls.removeAll(nodeUrls);
 			removeCollectorApplication(appName);
 			if (!newUrls.isEmpty()) {
-				addCollectorApplication(appName, newUrls);
+				addCollectorApplication(appName, newUrls, appHeader);
 			}
 		}
 	}
@@ -461,4 +483,11 @@ public class CollectorServer {
 		assert application != null;
 		return Parameters.getCollectorUrlsByApplications().get(application);
 	}
+
+	public static MonitoredApplicationHeader getHeadersByApplication(String application) throws IOException {
+		assert application != null;
+		String appHeaderAsString = Parameters.getCollectorHeadersByApplications().get(application);
+		return appHeaderAsString != null ? new MonitoredApplicationHeader(appHeaderAsString) : null;
+	}
+
 }

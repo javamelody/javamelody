@@ -38,6 +38,7 @@ import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
  */
 public class RemoteCollector {
 	private final String application;
+	private final Map<String, String> headers;
 	private List<URL> urls;
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
@@ -51,11 +52,16 @@ public class RemoteCollector {
 	 * @param urls URLs
 	 */
 	public RemoteCollector(String application, List<URL> urls) {
+		this(application, urls, null);
+	}
+
+	public RemoteCollector(String application, List<URL> urls, Map<String, String> headersMap) {
 		super();
 		assert application != null;
 		assert urls != null;
 		this.application = application;
 		this.urls = urls;
+		this.headers = headersMap;
 	}
 
 	String collectData() throws IOException {
@@ -321,7 +327,7 @@ public class RemoteCollector {
 	}
 
 	private RemoteCall createRemoteCall(URL url) {
-		final RemoteCall remoteCall = new RemoteCall(url);
+		final RemoteCall remoteCall = new RemoteCall(url, this.headers);
 		remoteCall.setCookies(cookies);
 		return remoteCall;
 	}

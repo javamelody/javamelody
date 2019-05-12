@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -37,10 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.bull.javamelody.internal.common.HttpParameter;
-import net.bull.javamelody.internal.common.HttpPart;
-import net.bull.javamelody.internal.common.LOG;
-import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.common.*;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterError;
@@ -536,7 +534,25 @@ public class MonitoringFilter implements Filter {
 	 *     for example http://55.66.77.88:8080/mywebapp
 	 */
 	public static void registerApplicationNodeInCollectServer(String applicationName,
-			URL collectServerUrl, URL applicationNodeUrl) {
+		  	URL collectServerUrl, URL applicationNodeUrl) {
+
+		registerApplicationNodeInCollectServer(applicationName, collectServerUrl, applicationNodeUrl, null);
+	}
+
+	/**
+	 * Asynchronously calls the optional collect server to register this application's node to be monitored.
+	 * @param applicationName Name of the application in the collect server:<br/>
+	 *     if it already exists the node will be added with the other nodes, if null name will be "contextPath_hostname".
+	 * @param collectServerUrl Url of the collect server,
+	 *     for example http://11.22.33.44:8080
+	 * @param applicationNodeUrl Url of this application node to be called by the collect server,
+	 *     for example http://55.66.77.88:8080/mywebapp
+	 * @param applicationNodeUrlHeaders headers to be used when being called by collect server
+	 */
+	public static void registerApplicationNodeInCollectServer(String applicationName,
+		  	URL collectServerUrl, final URL applicationNodeUrl,
+		  	final Map<String, String> applicationNodeUrlHeaders) {
+
 		if (collectServerUrl == null || applicationNodeUrl == null) {
 			throw new IllegalArgumentException(
 					"collectServerUrl and applicationNodeUrl must not be null");
@@ -548,12 +564,21 @@ public class MonitoringFilter implements Filter {
 			appName = applicationName;
 		}
 		final URL registerUrl;
+		String headerAsString;
 		try {
-			registerUrl = new URL(collectServerUrl.toExternalForm() + "?appName="
-					+ URLEncoder.encode(appName, "UTF-8") + "&appUrls="
-					// "UTF-8" as said in javadoc
-					+ URLEncoder.encode(applicationNodeUrl.toExternalForm(), "UTF-8")
-					+ "&action=registerNode");
+			StringBuilder urlBuilder = new StringBuilder(collectServerUrl.toExternalForm());
+			urlBuilder.append("?appName=")
+					.append(URLEncoder.encode(appName, "UTF-8"))
+					.append("&appUrls=")
+					.append(URLEncoder.encode(applicationNodeUrl.toExternalForm(), "UTF-8"));
+
+			if (applicationNodeUrlHeaders != null) {
+				headerAsString = MonitoredApplicationHeader.toWritableString(applicationNodeUrlHeaders);
+				urlBuilder.append("&appHeaders=")
+						.append(URLEncoder.encode(headerAsString, "UTF-8"));
+			}
+			urlBuilder.append("&action=registerNode");
+			registerUrl = new URL(urlBuilder.toString());
 			unregisterApplicationNodeInCollectServerUrl = new URL(
 					registerUrl.toExternalForm().replace("registerNode", "unregisterNode"));
 		} catch (final IOException e) {

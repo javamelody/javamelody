@@ -39,6 +39,7 @@ import javax.servlet.ServletContext;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.bull.javamelody.internal.common.MonitoredApplicationHeader;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.TransportFormat;
@@ -193,17 +194,23 @@ public class TestParameters {
 		final String application = "testapp";
 		Parameters.removeCollectorApplication(application);
 		final int size = Parameters.getCollectorUrlsByApplications().size();
+		final int headerSize = Parameters.getCollectorHeadersByApplications().size();
 		try {
 			Parameters.addCollectorApplication(application,
-					Parameters.parseUrl("http://localhost:8090/test"));
+					Parameters.parseUrl("http://localhost:8090/test"),
+					new MonitoredApplicationHeader("key=value;key1=value1;key2=value2"));
 			assertEquals("addCollectorApplication", size + 1,
 					Parameters.getCollectorUrlsByApplications().size());
+			assertEquals("addCollectorApplicationHeader", headerSize + 1,
+					Parameters.getCollectorHeadersByApplications().size());
 			Parameters.removeCollectorApplication(application);
 			assertEquals("removeCollectorApplication", size,
 					Parameters.getCollectorUrlsByApplications().size());
+			assertEquals("removeCollectorApplicationHeader", headerSize,
+					Parameters.getCollectorHeadersByApplications().size());
 			// pour que le test ait une application à lire la prochaine fois
 			Parameters.addCollectorApplication(application,
-					Parameters.parseUrl("http://localhost:8090/test"));
+					Parameters.parseUrl("http://localhost:8090/test"), null);
 		} finally {
 			Parameters.removeCollectorApplication(application);
 		}

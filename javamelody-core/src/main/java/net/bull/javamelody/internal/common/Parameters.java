@@ -58,6 +58,7 @@ public final class Parameters {
 	private static final String COLLECTOR_APPLICATIONS_FILENAME = "applications.properties";
 	private static final boolean PDF_ENABLED = computePdfEnabled();
 	private static Map<String, List<URL>> urlsByApplications;
+	private static Map<String, String> headersByApplications;
 
 	private static FilterConfig filterConfig;
 	private static ServletContext servletContext;
@@ -119,24 +120,40 @@ public final class Parameters {
 		return Collections.unmodifiableMap(urlsByApplications);
 	}
 
-	public static void addCollectorApplication(String application, List<URL> urls)
+	public static Map<String, String> getCollectorHeadersByApplications() throws IOException{
+		if (headersByApplications == null) {
+			headersByApplications = MonitoredApplicationHeader.readCollectorApplicationsHeaders();
+		}
+		return Collections.unmodifiableMap(headersByApplications);
+	}
+
+	public static void addCollectorApplication(String application, List<URL> urls,
+											   MonitoredApplicationHeader appHeader)
 			throws IOException {
 		assert application != null;
 		assert urls != null && !urls.isEmpty();
 		// initialisation si besoin
 		getCollectorUrlsByApplications();
+		getCollectorHeadersByApplications();
 
 		urlsByApplications.put(application, urls);
 		writeCollectorApplications();
+		if (appHeader != null) {
+			headersByApplications.put(application, appHeader.getAsString());
+			MonitoredApplicationHeader.writeCollectorApplicationsHeaders(headersByApplications);
+		}
 	}
 
 	public static void removeCollectorApplication(String application) throws IOException {
 		assert application != null;
 		// initialisation si besoin
 		getCollectorUrlsByApplications();
+		getCollectorHeadersByApplications();
 
 		urlsByApplications.remove(application);
+		headersByApplications.remove(application);
 		writeCollectorApplications();
+		MonitoredApplicationHeader.writeCollectorApplicationsHeaders(headersByApplications);
 	}
 
 	private static void writeCollectorApplications() throws IOException {

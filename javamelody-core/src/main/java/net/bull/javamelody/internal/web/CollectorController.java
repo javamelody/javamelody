@@ -36,13 +36,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.internal.common.*;
 import org.apache.log4j.Logger;
 
 import net.bull.javamelody.Parameter;
-import net.bull.javamelody.internal.common.HttpParameter;
-import net.bull.javamelody.internal.common.HttpPart;
-import net.bull.javamelody.internal.common.I18N;
-import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Action;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
@@ -90,7 +87,7 @@ public class CollectorController { // NOPMD
 		this.collectorServer = collectorServer;
 	}
 
-	public void addCollectorApplication(String appName, String appUrls) throws IOException {
+	public void addCollectorApplication(String appName, String appUrls, MonitoredApplicationHeader appHeader) throws IOException {
 		final File file = Parameters.getCollectorApplicationsFile();
 		if (file.exists() && !file.canWrite()) {
 			throw new IllegalStateException(
@@ -98,7 +95,7 @@ public class CollectorController { // NOPMD
 							+ file);
 		}
 		final List<URL> urls = Parameters.parseUrl(appUrls);
-		collectorServer.addCollectorApplication(appName, urls);
+		collectorServer.addCollectorApplication(appName, urls, appHeader);
 	}
 
 	public void removeCollectorApplicationNodes(String appName, String nodeUrls)
@@ -218,11 +215,11 @@ public class CollectorController { // NOPMD
 			// dans tout l'éventuel cluster
 			final URL url = getUrlsByApplication(application).get(0);
 			// on récupère le contenu du web.xml sur la webapp et on transfert ce contenu
-			doProxy(req, resp, url, HttpParameter.PART.getParameterFrom(req));
+			doProxy(req, resp, url, getHeadersByApplication(application), HttpParameter.PART.getParameterFrom(req));
 		} else if (HttpPart.SOURCE.isPart(req)) {
 			noCache(resp);
 			final URL url = getUrlsByApplication(application).get(0);
-			doProxy(req, resp, url, HttpPart.SOURCE.getName() + '&' + HttpParameter.CLASS + '='
+			doProxy(req, resp, url, getHeadersByApplication(application),HttpPart.SOURCE.getName() + '&' + HttpParameter.CLASS + '='
 					+ HttpParameter.CLASS.getParameterFrom(req));
 		} else if (HttpPart.CRASHES.isPart(req)
 				&& HttpParameter.PATH.getParameterFrom(req) != null) {
@@ -256,9 +253,10 @@ public class CollectorController { // NOPMD
 		final String partParameter = HttpPart.CRASHES.getName() + '&' + HttpParameter.PATH + '='
 				+ HttpParameter.PATH.getParameterFrom(req);
 		boolean found = false;
+		final MonitoredApplicationHeader headersByApplication = getHeadersByApplication(application);
 		for (final URL url : getUrlsByApplication(application)) {
 			try {
-				doProxy(req, resp, url, partParameter);
+				doProxy(req, resp, url, headersByApplication, partParameter);
 				found = true;
 				break;
 			} catch (final IOException e) {
@@ -275,6 +273,7 @@ public class CollectorController { // NOPMD
 		noCache(resp);
 		resp.setContentType("text/plain");
 		boolean first = true;
+		MonitoredApplicationHeader appHeader = getHeadersByApplication(application);
 		for (final URL url : getUrlsByApplication(application)) {
 			if (first) {
 				first = false;
@@ -286,18 +285,30 @@ public class CollectorController { // NOPMD
 					url.toString().replace(TransportFormat.SERIALIZED.getCode(), "")
 							.replace(TransportFormat.XML.getCode(), "") + '&'
 							+ HttpParameter.JMX_VALUE + '=' + jmxValueParameter);
-			new LabradorRetriever(proxyUrl).copyTo(req, resp);
+			LabradorRetriever retriever;
+			if (appHeader != null) {
+				retriever = new LabradorRetriever(proxyUrl, appHeader.toMap());
+			} else {
+				retriever = new LabradorRetriever(proxyUrl);
+			}
+			retriever.copyTo(req, resp);
 		}
 		resp.getOutputStream().close();
 	}
 
 	private void doProxy(HttpServletRequest req, HttpServletResponse resp, URL url,
-			String partParameter) throws IOException {
+						 MonitoredApplicationHeader appHeader, String partParameter) throws IOException {
 		final URL proxyUrl = new URL(url.toString()
 				.replace(TransportFormat.SERIALIZED.getCode(), HtmlController.HTML_BODY_FORMAT)
 				.replace(TransportFormat.XML.getCode(), HtmlController.HTML_BODY_FORMAT) + '&'
 				+ HttpParameter.PART + '=' + partParameter);
-		new LabradorRetriever(proxyUrl).copyTo(req, resp);
+		LabradorRetriever retriever;
+		if (appHeader != null) {
+			retriever = new LabradorRetriever(proxyUrl, appHeader.toMap());
+		} else {
+			retriever = new LabradorRetriever(proxyUrl);
+		}
+		retriever.copyTo(req, resp);
 	}
 
 	private void doMultiHtmlProxy(HttpServletRequest req, HttpServletResponse resp,
@@ -320,13 +331,14 @@ public class CollectorController { // NOPMD
 			writer.write("<br/>");
 			writer.write(I18N.htmlEncode(introduction, false));
 		}
+		final MonitoredApplicationHeader headersByApplication = getHeadersByApplication(application);
 		for (final URL url : getUrlsByApplication(application)) {
 			final String htmlTitle = "<h3 class='chapterTitle'><img src='?resource=" + iconName
 					+ "' alt='" + I18N.urlEncode(title) + "'/>&nbsp;"
 					+ I18N.htmlEncode(title, false) + " (" + getHostAndPort(url) + ")</h3>";
 			writer.write(htmlTitle);
 			writer.flush(); // flush du buffer de writer, sinon le copyTo passera avant dans l'outputStream
-			doProxy(req, resp, url, partParameter);
+			doProxy(req, resp, url, headersByApplication, partParameter);
 		}
 		htmlReport.writeHtmlFooter();
 		writer.close();
@@ -625,5 +637,9 @@ public class CollectorController { // NOPMD
 
 	private static List<URL> getUrlsByApplication(String application) throws IOException {
 		return CollectorServer.getUrlsByApplication(application);
+	}
+
+	private static MonitoredApplicationHeader getHeadersByApplication(String application) throws IOException {
+		return CollectorServer.getHeadersByApplication(application);
 	}
 }
