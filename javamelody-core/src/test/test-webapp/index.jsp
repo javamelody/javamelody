@@ -20,6 +20,7 @@
 <a href="jsp/log.jsp">statistics log</a><br/>
 <a href="jsp/needsSession.jsp">session init</a><br/>
 <a href="jsp/cache.jsp">cache</a><br/>
+<a href="jsp/cache.jsp">jcache</a><br/>
 <a href="jsp/job.jsp">job</a><br/>
 <br/>
 <b>Reports</b><br/>
