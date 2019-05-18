@@ -42,7 +42,8 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
+			<!-- 3.0.1 for compatibility with Java 7 -->
+			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
