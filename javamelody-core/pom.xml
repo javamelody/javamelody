@@ -51,45 +51,48 @@
 		<maven>3.0.4</maven>
 	</prerequisites>
 	<dependencies>
+		<!-- jrobin transitive dependency for graphs -->
 		<dependency>
 			<groupId>org.jrobin</groupId>
 			<artifactId>jrobin</artifactId>
 			<version>1.5.9</version>
 		</dependency>
+		
+		<!-- following dependencies are not transitive: they are provided, test or optional -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.1</version>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.6.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.ejb</groupId>
 			<artifactId>javax.ejb-api</artifactId>
-			<version>3.2</version>
+			<version>3.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.interceptor</groupId>
 			<artifactId>javax.interceptor-api</artifactId>
-			<version>1.2</version>
+			<version>1.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>javax.el-api</artifactId>
-			<version>2.2.1</version>
+			<version>3.0.1-b06</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
+			<groupId>javax.persistence</groupId>
+			<artifactId>javax.persistence-api</artifactId>
+			<version>2.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -101,13 +104,13 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
+			<version>1.2.17</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.8.2</version>
+			<version>2.11.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -145,7 +148,7 @@
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -171,72 +174,78 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.10</version>
+			<version>1.4.11.1</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>dbcp</artifactId>
-			<version>6.0.18</version>
+			<version>6.0.53</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>8.0.24</version>
+			<version>9.0.19</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.2</version>
+			<version>1.4</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-dbcp2</artifactId>
-			<version>2.1.1</version>
+			<version>2.6.0</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>7.0.27</version>
+			<version>9.0.19</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle spring web (qui inclus spring core, spring 
-			beans, spring aop, spring context et commons-logging) -->
+			beans, spring aop) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.3.10.RELEASE</version>
+			<version>5.1.7.RELEASE</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.1.7.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>4.3.10.RELEASE</version>
+			<version>5.1.7.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Dépendance optionnelle google guice (aop) -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>2.0</version>
+			<version>4.2.2</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle xwork pour interceptor struts 2 -->
 		<dependency>
-			<groupId>com.opensymphony</groupId>
-			<artifactId>xwork</artifactId>
-			<version>2.1.3</version>
+			<groupId>org.apache.struts.xwork</groupId>
+			<artifactId>xwork-core</artifactId>
+			<version>2.3.37</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle mongodb-driver -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
-			<version>3.3.0</version>
+			<version>3.10.2</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle AWS Java SDK -->
@@ -264,7 +273,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.3.170</version>
+			<version>1.4.199</version>
 			<!-- Utilisée uniquement pour l'exécution des tests unitaires -->
 			<scope>test</scope>
 		</dependency>
@@ -280,7 +289,7 @@
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa</artifactId>
-			<version>2.2.2</version>
+			<version>3.1.0</version>
 			<!-- Utilisée uniquement pour l'exécution des tests unitaires -->
 			<scope>test</scope>
 		</dependency>
