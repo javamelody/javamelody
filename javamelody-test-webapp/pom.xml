@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.3.170</version>
+			<version>1.4.199</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -44,13 +44,13 @@
 		<dependency>
 			<groupId>javax.ejb</groupId>
 			<artifactId>javax.ejb-api</artifactId>
-			<version>3.2</version>
+			<version>3.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.interceptor</groupId>
 			<artifactId>javax.interceptor-api</artifactId>
-			<version>1.2</version>
+			<version>1.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>javax.el-api</artifactId>
-			<version>2.2.1</version>
+			<version>3.0.1-b06</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.5</version>
+			<version>2.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -110,7 +110,6 @@
 			<artifactId>ehcache</artifactId>
 			<version>1.6.2</version>
 		</dependency>
-<!--
  		<dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
@@ -119,9 +118,8 @@
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 		</dependency>
- -->
  		<dependency>
 			<groupId>quartz</groupId>
 			<artifactId>quartz</artifactId>
@@ -143,78 +141,73 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.10</version>
+			<version>1.4.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>dbcp</artifactId>
-			<version>6.0.18</version>
+			<version>6.0.53</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>8.0.24</version>
+			<version>9.0.19</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<version>1.2.2</version>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-dbcp2</artifactId>
-			<version>2.1.1</version>
+			<version>2.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>7.0.27</version>
+			<version>9.0.19</version>
 		</dependency>
 		<!-- Dépendance spring aop (qui inclus spring core, spring 
 			beans, aop alliance et commons-logging) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>3.1.0.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>5.1.7.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>3.1.0.RELEASE</version>
+			<version>5.1.7.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>2.0</version>
+			<version>4.2.2</version>
 		</dependency>
 		<!-- Dépendance xwork pour interceptor struts 2 -->
 		<dependency>
-			<groupId>com.opensymphony</groupId>
-			<artifactId>xwork</artifactId>
-			<version>2.1.0</version>
+			<groupId>org.apache.struts.xwork</groupId>
+			<artifactId>xwork-core</artifactId>
+			<version>2.3.37</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.6.9.Final</version>
+			<version>5.4.2.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa</artifactId>
-			<version>2.2.2</version>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
-			<version>3.3.0</version>
+			<version>3.10.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
@@ -229,14 +222,14 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
+			<version>4.12</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<version>3.1</version>
-			<scope>test</scope>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
