@@ -42,6 +42,7 @@ import net.bull.javamelody.internal.model.Action;
 import net.bull.javamelody.internal.model.CacheInformations;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
+import net.bull.javamelody.internal.model.JCacheInformations;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JobInformations;
 import net.bull.javamelody.internal.model.Period;
@@ -104,6 +105,10 @@ class ScrollingPanel extends MelodyPanel {
 		if (isCacheEnabled()) {
 			addParagraphTitle("Caches", "caches.png");
 			addCaches();
+		}
+		if (isJCacheEnabled()) {
+			addParagraphTitle("Caches", "caches.png");
+			addJCaches();
 		}
 
 		add(new JLabel(" "));
@@ -308,6 +313,38 @@ class ScrollingPanel extends MelodyPanel {
 		}
 	}
 
+	private void addJCaches() {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
+			if (!javaInformations.isJCacheEnabled()) {
+				continue;
+			}
+			final List<JCacheInformations> jcacheInformationsList = javaInformations
+					.getJCacheInformationsList();
+			final JCacheInformationsPanel jcacheInformationsPanel = new JCacheInformationsPanel(
+					getRemoteCollector(), jcacheInformationsList);
+			jcacheInformationsPanel.setVisible(false);
+			final JLabel summaryLabel = new JLabel("<html><b>" + getFormattedString("caches_sur",
+					jcacheInformationsList.size(), javaInformations.getHost()) + "</b>");
+			final MButton detailsButton = new MButton(getString(DETAILS_KEY), PLUS_ICON);
+			detailsButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					jcacheInformationsPanel.setVisible(!jcacheInformationsPanel.isVisible());
+					validate();
+					changePlusMinusIcon(detailsButton);
+				}
+			});
+
+			final JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+			flowPanel.setOpaque(false);
+			flowPanel.add(summaryLabel);
+			flowPanel.add(detailsButton);
+
+			add(flowPanel);
+			add(jcacheInformationsPanel);
+		}
+	}
+
 	private void addJobs(Counter rangeJobCounter) {
 		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			if (!javaInformations.isJobEnabled()) {
@@ -404,6 +441,15 @@ class ScrollingPanel extends MelodyPanel {
 	private boolean isCacheEnabled() {
 		for (final JavaInformations javaInformations : getJavaInformationsList()) {
 			if (javaInformations.isCacheEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isJCacheEnabled() {
+		for (final JavaInformations javaInformations : getJavaInformationsList()) {
+			if (javaInformations.isJCacheEnabled()) {
 				return true;
 			}
 		}
