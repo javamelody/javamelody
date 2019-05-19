@@ -85,9 +85,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	void toHtml(String message, String anchorNameForRedirect) throws IOException {
-		if (UpdateChecker.getNewJavamelodyVersion() != null) {
-			writeVersionAlert();
-		}
+		writeVersionAlert();
 		if (collectorServer != null) {
 			writeApplicationsLinks();
 		}
@@ -166,11 +164,13 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeVersionAlert() throws IOException {
-		writeln("<div align='center' style='font-weight: bold;'>");
-		writeln("<img src='?resource=alert.png' alt='alert'/>");
-		writeDirectly(I18N.getFormattedString("version_alert",
-				UpdateChecker.getNewJavamelodyVersion(), Parameters.JAVAMELODY_VERSION));
-		writeln("</div>");
+		if (UpdateChecker.getNewJavamelodyVersion() != null) {
+			writeln("<div align='center' style='font-weight: bold;'>");
+			writeln("<img src='?resource=alert.png' alt='alert'/>");
+			writeDirectly(I18N.getFormattedString("version_alert",
+					UpdateChecker.getNewJavamelodyVersion(), Parameters.JAVAMELODY_VERSION));
+			writeln("</div>");
+		}
 	}
 
 	private void writeSummary() throws IOException {
