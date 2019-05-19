@@ -156,6 +156,9 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 			writer.flush();
 		} else if (stream != null) {
 			stream.flush();
+		} else {
+			// writes status code and headers when no content (issue #836)
+			super.flushBuffer();
 		}
 	}
 
