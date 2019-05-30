@@ -33,6 +33,7 @@ import net.bull.javamelody.internal.model.CacheInformations;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequest;
+import net.bull.javamelody.internal.model.JCacheInformations;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.MemoryInformations;
@@ -225,6 +226,9 @@ class PrometheusController {
 		if (javaInformations.isCacheEnabled()) {
 			reportOnCacheInformations();
 		}
+		if (javaInformations.isJCacheEnabled()) {
+			reportOnJCacheInformations();
+		}
 
 		reportOnCollector();
 
@@ -283,6 +287,32 @@ class PrometheusController {
 		printHeader(MetricType.COUNTER, "cache_misses_count", "total cache misses count");
 		for (final Map.Entry<String, CacheInformations> entry : cacheInfos.entrySet()) {
 			printLongWithFields("cache_misses_count", entry.getKey(),
+					entry.getValue().getCacheMisses());
+		}
+	}
+
+	private void reportOnJCacheInformations() { // NOPMD
+		final List<JCacheInformations> jcacheInformationsList = javaInformations
+				.getJCacheInformationsList();
+		final Map<String, JCacheInformations> cacheInfos = new LinkedHashMap<String, JCacheInformations>(
+				jcacheInformationsList.size());
+		for (final JCacheInformations cacheInfo : jcacheInformationsList) {
+			final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
+			cacheInfos.put(fields, cacheInfo);
+		}
+		printHeader(MetricType.GAUGE, "jcache_hits_pct", "cache hits percent");
+		for (final Map.Entry<String, JCacheInformations> entry : cacheInfos.entrySet()) {
+			printDoubleWithFields("jcache_hits_pct", entry.getKey(),
+					(double) entry.getValue().getHitsRatio() / 100);
+		}
+		printHeader(MetricType.COUNTER, "jcache_hits_count", "total cache hit count");
+		for (final Map.Entry<String, JCacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("jcache_hits_count", entry.getKey(),
+					entry.getValue().getCacheHits());
+		}
+		printHeader(MetricType.COUNTER, "jcache_misses_count", "total cache misses count");
+		for (final Map.Entry<String, JCacheInformations> entry : cacheInfos.entrySet()) {
+			printLongWithFields("jcache_misses_count", entry.getKey(),
 					entry.getValue().getCacheMisses());
 		}
 	}
