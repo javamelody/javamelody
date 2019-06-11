@@ -18,6 +18,8 @@
 package net.bull.javamelody.internal.web.html;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -85,7 +87,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	void toHtml(String message, String anchorNameForRedirect) throws IOException {
-		writeVersionAlert();
+		writeAlerts();
 		if (collectorServer != null) {
 			writeApplicationsLinks();
 		}
@@ -163,7 +165,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeDurationAndOverhead();
 	}
 
-	private void writeVersionAlert() throws IOException {
+	private void writeAlerts() throws IOException {
 		final String newJavamelodyVersion = UpdateChecker.getNewJavamelodyVersion();
 		if (newJavamelodyVersion != null) {
 			writeln("<div align='center' style='font-weight: bold;'>");
@@ -171,6 +173,26 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeDirectly(I18N.getFormattedString("version_alert", newJavamelodyVersion,
 					Parameters.JAVAMELODY_VERSION));
 			writeln("</div>");
+		}
+		final Throwable lastCollectorException = collector.getLastCollectorException();
+		if (lastCollectorException != null) {
+			writeln("<div style='font-weight: bold;'>");
+			writeln("<img src='?resource=alert.png' alt='alert'/>");
+			writeDirectly(htmlEncodeButNotSpace(lastCollectorException.toString()));
+			writeln("</div>");
+			writeShowHideLink("detailsLastCollectorException", "#Details#");
+			writeln("<div id='detailsLastCollectorException' style='display: none;'><div>");
+			final StringWriter stackTraceWriter = new StringWriter(200);
+			lastCollectorException.printStackTrace(new PrintWriter(stackTraceWriter));
+			for (final String stackTraceElement : stackTraceWriter.toString().split("\n|\r")) {
+				if (!stackTraceElement.isEmpty()) {
+					// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
+					writeDirectly(
+							HtmlSourceReport.htmlEncodeStackTraceElementAndTabs(stackTraceElement));
+					writeDirectly("<br/>\n");
+				}
+			}
+			writeln("</div></div>");
 		}
 	}
 

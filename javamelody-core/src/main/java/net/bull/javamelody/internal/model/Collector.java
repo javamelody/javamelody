@@ -68,6 +68,7 @@ public class Collector { // NOPMD
 	private long tomcatBytesReceived = NOT_A_NUMBER;
 	private long tomcatBytesSent = NOT_A_NUMBER;
 	private long lastCollectDuration;
+	private Throwable lastCollectorException;
 	private long estimatedMemorySize;
 	private long diskUsage;
 	private Date lastDateOfDeletedObsoleteFiles = new Date();
@@ -217,6 +218,10 @@ public class Collector { // NOPMD
 		return lastCollectDuration;
 	}
 
+	public Throwable getLastCollectorException() {
+		return lastCollectorException;
+	}
+
 	public long getEstimatedMemorySize() {
 		return estimatedMemorySize;
 	}
@@ -322,7 +327,9 @@ public class Collector { // NOPMD
 		final long start = System.currentTimeMillis();
 		try {
 			estimatedMemorySize = collect(javaInformationsList);
+			lastCollectorException = null;
 		} catch (final Throwable t) { // NOPMD
+			lastCollectorException = t;
 			// include cause in message for debugging logs in the report
 			LOG.warn("exception while collecting data: " + t.toString(), t);
 		}
