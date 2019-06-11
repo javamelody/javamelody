@@ -121,8 +121,7 @@ public class HtmlCounterErrorReport extends HtmlAbstractReport {
 		for (final String element : error.getStackTrace().split("\n|\r")) {
 			if (!element.isEmpty()) {
 				// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
-				writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElement(element).replaceAll("\t",
-						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+				writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElementAndTabs(element));
 				writeDirectly("<br/>\n");
 			}
 		}

@@ -174,6 +174,11 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		return htmlEncodeButNotSpace(element);
 	}
 
+	static String htmlEncodeStackTraceElementAndTabs(String element) {
+		return htmlEncodeStackTraceElement(element).replaceAll("\t",
+				"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+	}
+
 	static String addLinkToClassName(String className) {
 		String cleanClassName = className;
 		if (cleanClassName.endsWith("[]")) {
