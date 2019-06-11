@@ -164,11 +164,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeVersionAlert() throws IOException {
-		if (UpdateChecker.getNewJavamelodyVersion() != null) {
+		final String newJavamelodyVersion = UpdateChecker.getNewJavamelodyVersion();
+		if (newJavamelodyVersion != null) {
 			writeln("<div align='center' style='font-weight: bold;'>");
 			writeln("<img src='?resource=alert.png' alt='alert'/>");
-			writeDirectly(I18N.getFormattedString("version_alert",
-					UpdateChecker.getNewJavamelodyVersion(), Parameters.JAVAMELODY_VERSION));
+			writeDirectly(I18N.getFormattedString("version_alert", newJavamelodyVersion,
+					Parameters.JAVAMELODY_VERSION));
 			writeln("</div>");
 		}
 	}
