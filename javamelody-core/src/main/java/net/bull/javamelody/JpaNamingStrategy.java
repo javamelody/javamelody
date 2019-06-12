@@ -102,15 +102,11 @@ class JpaNamingStrategy {
 	}
 
 	protected String getMethodWithClassArgRequestName(Method javaMethod, Object[] args) {
-		final String requestName = javaMethod.getName() + '(' + ((Class<?>) args[0]).getSimpleName()
-				+ ')';
-		return requestName;
+		return javaMethod.getName() + '(' + ((Class<?>) args[0]).getSimpleName() + ')';
 	}
 
 	protected String getMethodWithEntityArgRequestName(Method javaMethod, Object[] args) {
-		final String requestName = javaMethod.getName() + '(' + args[0].getClass().getSimpleName()
-				+ ')';
-		return requestName;
+		return javaMethod.getName() + '(' + args[0].getClass().getSimpleName() + ')';
 	}
 
 	protected String getNoArgsRequestName(Method javaMethod) {

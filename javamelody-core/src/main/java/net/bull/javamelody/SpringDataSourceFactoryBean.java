@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
@@ -61,7 +62,9 @@ public class SpringDataSourceFactoryBean extends AbstractFactoryBean<DataSource>
 		if (targetName == null) {
 			throw new IllegalStateException("targetName must not be null");
 		}
-		final DataSource dataSource = getBeanFactory().getBean(targetName, DataSource.class);
+		final BeanFactory beanFactory = getBeanFactory();
+		assert beanFactory != null;
+		final DataSource dataSource = beanFactory.getBean(targetName, DataSource.class);
 		JdbcWrapper.registerSpringDataSource(targetName, dataSource);
 		final DataSource result = JdbcWrapper.SINGLETON.createDataSourceProxy(targetName,
 				dataSource);
