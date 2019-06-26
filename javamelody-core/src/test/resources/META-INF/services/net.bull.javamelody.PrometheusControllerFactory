@@ -1,0 +1,3 @@
+# these service factories will be loaded and included in the prometheus reports
+net.bull.javamelody.internal.web.CustomPrometheusControllerFactory1
+net.bull.javamelody.internal.web.CustomPrometheusControllerFactory2

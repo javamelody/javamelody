@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URLDecoder;
 import java.util.Collections;
@@ -232,12 +233,7 @@ public class MonitoringController {
 			final PdfController pdfController = new PdfController(collector, collectorServer);
 			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else if ("prometheus".equalsIgnoreCase(format)) {
-			httpResponse.setContentType("text/plain; version=0.0.4;charset=UTF-8");
-			final boolean includeLastValue = Boolean
-					.parseBoolean(httpRequest.getParameter("includeLastValue"));
-			final PrometheusController prometheusController = new PrometheusController(
-					javaInformationsList, collector, httpResponse.getWriter());
-			prometheusController.report(includeLastValue);
+			doPrometheus(httpRequest, httpResponse, javaInformationsList);
 		} else {
 			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
@@ -254,6 +250,23 @@ public class MonitoringController {
 		// méthode utilisée dans le monitoring Jenkins
 		new PdfController(collector, collectorServer).addPdfContentTypeAndDisposition(httpRequest,
 				httpResponse);
+	}
+
+	private void doPrometheus(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			List<JavaInformations> javaInformationsList) throws IOException {
+		httpResponse.setContentType("text/plain; version=0.0.4;charset=UTF-8");
+		final PrintWriter out = httpResponse.getWriter();
+
+		new DefaultPrometheusController(javaInformationsList, collector, out).report();
+
+		final boolean includeLastValue = Boolean
+				.parseBoolean(httpRequest.getParameter("includeLastValue"));
+		if (includeLastValue) {
+			new LastValuePrometheusController(collector, out).report();
+		}
+
+		PrometheusControllerService.report(out);
+
 	}
 
 	private void doCompressedHtml(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
