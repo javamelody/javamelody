@@ -133,8 +133,8 @@ public class DatabaseInformations implements Serializable {
 						"config");
 				break;
 			case SQLITE:
-					tmp = Arrays.asList("version", "database_list");
-					break;
+				tmp = Arrays.asList("version", "database_list");
+				break;
 			default:
 				throw new IllegalStateException();
 			}
