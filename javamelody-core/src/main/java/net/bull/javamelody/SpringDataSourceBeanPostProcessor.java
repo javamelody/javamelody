@@ -197,7 +197,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, Pri
 	private static Class<?> getDelegatingDataSourceClass() {
 		try {
 			return Class.forName("org.springframework.jdbc.datasource.DelegatingDataSource");
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			return null;
 		}
 	}

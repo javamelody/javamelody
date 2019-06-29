@@ -21,11 +21,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.cache.Cache;
+import javax.cache.Cache.Entry;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.spi.CachingProvider;
@@ -75,7 +75,7 @@ public class JCacheInformations implements Serializable {
 	private static Long getValue(ObjectName cache, String attribute) {
 		try {
 			return (Long) MBEAN_SERVER.getAttribute(cache, attribute);
-		} catch (JMException e) {
+		} catch (final JMException e) {
 			return -1L;
 		}
 	}
@@ -116,9 +116,8 @@ public class JCacheInformations implements Serializable {
 					// getCache may never return null
 					final Cache<Object, Object> cache = cacheManager.getCache(cacheId);
 					final List<Object> cacheKeys = new ArrayList<Object>();
-					for (final Iterator<Cache.Entry<Object, Object>> it = cache.iterator(); it
-							.hasNext();) {
-						cacheKeys.add(it.next().getKey());
+					for (final Entry<Object, Object> entry : cache) {
+						cacheKeys.add(entry.getKey());
 					}
 					for (final JCacheInformations cacheInformations : buildJCacheInformationsList()) {
 						if (cacheInformations.getName().equals(cacheId)) {
@@ -136,7 +135,7 @@ public class JCacheInformations implements Serializable {
 		try {
 			final ObjectName objectName = new ObjectName("javax.cache:type=CacheStatistics,*");
 			return MBEAN_SERVER.queryNames(objectName, null);
-		} catch (MalformedObjectNameException e) {
+		} catch (final MalformedObjectNameException e) {
 			throw new IllegalStateException(e);
 		}
 	}
