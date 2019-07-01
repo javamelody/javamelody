@@ -4,10 +4,10 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="javamelody-spring-boot-starter-1.78.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-spring-boot-starter/javamelody-spring-boot-starter">
+        <dependent-module archiveName="javamelody-spring-boot-starter-1.79.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-spring-boot-starter/javamelody-spring-boot-starter">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="javamelody-core-1.78.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
+        <dependent-module archiveName="javamelody-core-1.79.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="javamelody-for-spring-boot"/>
