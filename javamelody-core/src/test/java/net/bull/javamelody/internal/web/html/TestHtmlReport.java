@@ -41,6 +41,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.CronTrigger;
@@ -441,6 +444,44 @@ public class TestHtmlReport {
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, null);
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache(cacheName2);
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testJCache() throws IOException {
+		final String cacheName = "test 1";
+		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
+				.getCacheManager();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		jcacheManager.createCache(cacheName, conf);
+		// test empty cache name in the cache keys link:
+		jcacheManager.createCache("", conf);
+		final String cacheName2 = "test 2";
+		try {
+			final javax.cache.Cache<Object, Object> cache = jcacheManager.getCache(cacheName);
+			cache.put(1, Math.random());
+			cache.get(1);
+			cache.get(0);
+			jcacheManager.createCache(cacheName2, conf);
+
+			// JavaInformations doit être réinstancié pour récupérer les caches
+			final List<JavaInformations> javaInformationsList2 = Collections
+					.singletonList(new JavaInformations(null, true));
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
+					Period.TOUT, writer);
+			htmlReport.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+			htmlReport.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
+		} finally {
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, null);
+			jcacheManager.destroyCache(cacheName);
+			jcacheManager.destroyCache(cacheName2);
 		}
 	}
 

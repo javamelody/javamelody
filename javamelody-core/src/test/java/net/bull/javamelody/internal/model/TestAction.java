@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
@@ -112,27 +114,7 @@ public class TestAction {
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, null,
 				ALL, sessionId, threadId, jobId, cacheId));
 
-		if (CacheManager.getInstance().getCache(cacheId) == null) {
-			CacheManager.getInstance().addCache(cacheId);
-		}
-		assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, "inconnu"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
-		CacheManager.getInstance().getCache(cacheId).put(new Element("1", "value"));
-		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
-		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "1"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "3"));
-		CacheManager.getInstance().removeCache(cacheId);
+		caches(collector, counterName, sessionId, threadId, jobId, cacheId);
 
 		assertNotNull("message CLEAR_HOTSPOTS", Action.CLEAR_HOTSPOTS.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId));
@@ -167,6 +149,58 @@ public class TestAction {
 		mailTest(collector);
 
 		verify(session);
+	}
+
+	private void caches(final Collector collector, final String counterName, final String sessionId,
+			final String threadId, final String jobId, final String cacheId) throws IOException {
+		if (CacheManager.getInstance().getCache(cacheId) == null) {
+			CacheManager.getInstance().addCache(cacheId);
+		}
+		assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element("1", "value"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "1"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "3"));
+		CacheManager.getInstance().removeCache(cacheId);
+
+		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
+				.getCacheManager();
+		if (jcacheManager.getCache(cacheId) == null) {
+			final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+			conf.setManagementEnabled(true);
+			conf.setStatisticsEnabled(true);
+			jcacheManager.createCache(cacheId, conf);
+		}
+		assertNotNull("message CLEAR_CACHES", Action.CLEAR_JCACHES.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		jcacheManager.getCache(cacheId).put("1", "value");
+		jcacheManager.getCache(cacheId).put("2", "value");
+		jcacheManager.getCache(cacheId).put(Integer.valueOf(3), "value");
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "1"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "3"));
+		jcacheManager.destroyCache(cacheId);
 	}
 
 	private void invalidateSessions(Collector collector, String counterName, String sessionId,

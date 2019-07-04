@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -190,6 +193,27 @@ public class TestPdfReport {
 		} finally {
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache("testcache2");
+		}
+
+		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
+				.getCacheManager();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		jcacheManager.createCache(cacheName, conf);
+		try {
+			jcacheManager.getCache(cacheName).put(1, Math.random());
+			jcacheManager.getCache(cacheName).get(1);
+			jcacheManager.getCache(cacheName).get(0);
+			jcacheManager.createCache("testcache2", conf);
+			// JavaInformations doit être réinstancié pour récupérer les caches
+			final List<JavaInformations> javaInformationsList = Collections
+					.singletonList(new JavaInformations(null, true));
+			final Map<String, byte[]> graphs = Collections.emptyMap();
+			toPdf(collector, false, javaInformationsList, graphs);
+		} finally {
+			jcacheManager.destroyCache(cacheName);
+			jcacheManager.destroyCache("testcache2");
 		}
 	}
 

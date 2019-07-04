@@ -151,6 +151,12 @@
 			<version>1.6.2</version>
 			<optional>true</optional>
 		</dependency>
+ 		<dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.7.1</version>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
