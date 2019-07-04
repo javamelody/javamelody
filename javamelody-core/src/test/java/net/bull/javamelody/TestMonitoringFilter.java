@@ -57,6 +57,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -108,6 +109,7 @@ public class TestMonitoringFilter { // NOPMD
 	 */
 	@Before
 	public void setUp() throws ServletException {
+		tearDown();
 		try {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
@@ -145,6 +147,14 @@ public class TestMonitoringFilter { // NOPMD
 		monitoringFilter.init(config);
 		verify(config);
 		verify(context);
+	}
+
+	@After
+	public void tearDown() {
+		if (monitoringFilter != null) {
+			monitoringFilter.destroy();
+			monitoringFilter = null;
+		}
 	}
 
 	/** Test.
@@ -498,7 +508,6 @@ public class TestMonitoringFilter { // NOPMD
 			setUp();
 			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
-			monitoringFilter.destroy();
 			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
@@ -540,7 +549,6 @@ public class TestMonitoringFilter { // NOPMD
 			setUp();
 			monitoring(Collections.<HttpParameter, String> emptyMap());
 		} finally {
-			monitoringFilter.destroy();
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
 		}
 		try {
@@ -552,7 +560,6 @@ public class TestMonitoringFilter { // NOPMD
 			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PART,
 					HttpPart.RUM.getName()), false);
 		} finally {
-			monitoringFilter.destroy();
 			setProperty(Parameter.RUM_ENABLED, null);
 		}
 	}
