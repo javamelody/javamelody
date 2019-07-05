@@ -1023,6 +1023,16 @@ public class TestMonitoringFilter { // NOPMD
 		//		monitoring(parameters);
 	}
 
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoMonitoringWithFormatPrometheus() throws ServletException, IOException {
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.FORMAT, "prometheus");
+		monitoring(parameters);
+	}
+
 	private void monitoring(Map<HttpParameter, String> parameters)
 			throws IOException, ServletException {
 		monitoring(parameters, true);
