@@ -629,6 +629,8 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.THREADS_DUMP.getName());
 		monitoring(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.CACHE_KEYS.getName());
 		final String cacheName = getClass().getName();
 		CacheManager.getInstance().addCache(cacheName);
