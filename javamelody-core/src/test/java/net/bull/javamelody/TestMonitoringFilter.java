@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ReadListener;
@@ -636,9 +638,30 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.FORMAT, "htmlbody");
 		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+		monitoring(parameters);
 		CacheManager.getInstance().removeCache(cacheName);
 		parameters.remove(HttpParameter.CACHE_ID);
 		parameters.remove(HttpParameter.FORMAT);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
+
+		parameters.put(HttpParameter.PART, HttpPart.JCACHE_KEYS.getName());
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		Caching.getCachingProvider().getCacheManager().createCache(cacheName, conf);
+		parameters.put(HttpParameter.CACHE_ID, cacheName);
+		monitoring(parameters);
+		Caching.getCachingProvider().getCacheManager().getCache(cacheName).put("1", "value");
+		monitoring(parameters);
+		parameters.put(HttpParameter.FORMAT, "htmlbody");
+		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+		monitoring(parameters);
+		Caching.getCachingProvider().getCacheManager().destroyCache(cacheName);
+		parameters.remove(HttpParameter.CACHE_ID);
+		parameters.remove(HttpParameter.FORMAT);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 
 		parameters.put(HttpParameter.PART, HttpPart.JNLP.getName());
 		monitoring(parameters);
