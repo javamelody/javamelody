@@ -17,22 +17,23 @@
  */
 package net.bull.javamelody.internal.publish;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
+import net.bull.javamelody.internal.model.JavaInformations;
 
 /**
  * Test unitaire de la classe StatsD.
  * @author Emeric Vernat
  */
-public class TestStatsD {
+public class TestMetricsPublisher {
 	/**
 	 * Initialisation.
 	 */
@@ -41,24 +42,22 @@ public class TestStatsD {
 		Utils.initialize();
 	}
 
-	/** Test.
-	 * @throws IOException e */
+	/** Test. */
 	@Test
-	public void test() throws IOException {
-		Statsd statsd = Statsd.getInstance("/test", "hostname");
-		assertNull("getInstance", statsd);
+	public void test() {
+		final List<JavaInformations> javaInformationsList = new ArrayList<JavaInformations>();
+		javaInformationsList.add(new JavaInformations(null, false));
+		javaInformationsList.add(new JavaInformations(null, false));
+		assertEquals("getMetricsPublishers", 0,
+				MetricsPublisher.getMetricsPublishers(javaInformationsList).size());
+		setProperty(Parameter.GRAPHITE_ADDRESS, "localhost:2003");
 		setProperty(Parameter.STATSD_ADDRESS, "localhost:8125");
-		statsd = Statsd.getInstance("/test", "hostname");
-		assertNotNull("getInstance", statsd);
-		statsd.addValue("metric", 1);
-		statsd.addValue("metric", 2);
-		statsd.addValue("metric", 3);
-		statsd.send();
-		statsd.stop();
-		setProperty(Parameter.STATSD_ADDRESS, "localhost");
-		statsd = Statsd.getInstance("/test", "hostname");
-		assertNotNull("getInstance", statsd);
-		statsd.stop();
+		setProperty(Parameter.CLOUDWATCH_NAMESPACE, "MyCompany/MyAppDomain");
+		System.setProperty("aws.region", "us-west-1");
+		setProperty(Parameter.INFLUXDB_URL, "http://localhost:8086/write?db=mydb");
+		setProperty(Parameter.DATADOG_API_KEY, "9775a026f1ca7d1c6c5af9d94d9595a4");
+		assertEquals("getMetricsPublishers", 5,
+				MetricsPublisher.getMetricsPublishers(javaInformationsList).size());
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

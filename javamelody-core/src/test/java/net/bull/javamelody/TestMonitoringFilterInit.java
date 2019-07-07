@@ -104,6 +104,9 @@ public class TestMonitoringFilterInit {
 	public void testInit() throws ServletException, IOException {
 		init();
 		setUp();
+		expect(context
+				.getAttribute(Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode()))
+						.andReturn("false").anyTimes();
 		expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode()))
 				.andReturn("http,sql").anyTimes();
 		expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode()))
