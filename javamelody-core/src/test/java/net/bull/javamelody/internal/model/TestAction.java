@@ -21,6 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -143,6 +144,8 @@ public class TestAction {
 		invalidateSessions(collector, counterName, sessionId, threadId, jobId, cacheId, session);
 
 		killThread(collector, counterName, sessionId, threadId, jobId, cacheId);
+
+		sendThreadInterrupt(collector, counterName, sessionId, threadId, jobId, cacheId);
 
 		jobs(collector, counterName, sessionId, threadId, jobId, cacheId);
 
@@ -346,6 +349,78 @@ public class TestAction {
 		globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
 		assertNotNull("message KILL_THREAD 5", Action.KILL_THREAD.execute(collector, null, null,
 				counterName, sessionId, globalThreadId, jobId, cacheId));
+
+		final Thread myThread2 = new Thread(new Runnable() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					assertNotNull(e.toString(), e);
+				}
+			}
+		});
+		myThread2.setName("javamelody test 2");
+		myThread2.start();
+		final String globalThreadId2 = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ myThread2.getId();
+		assertEquals("message KILL_THREAD 6", "I will not kill myself", Action.KILL_THREAD.execute(
+				collector, null, null, counterName, sessionId, globalThreadId2, jobId, cacheId));
+	}
+
+	private void sendThreadInterrupt(Collector collector, String counterName, String sessionId,
+			String threadId, String jobId, String cacheId) throws IOException {
+		try {
+			assertNull("message SEND_THREAD_INTERRUPT 1", Action.SEND_THREAD_INTERRUPT.execute(
+					collector, null, null, counterName, sessionId, threadId, jobId, cacheId));
+		} catch (final IllegalArgumentException e) {
+			assertNotNull(e.toString(), e);
+		}
+		assertNull("message SEND_THREAD_INTERRUPT 2", Action.SEND_THREAD_INTERRUPT.execute(
+				collector, null, null, counterName, sessionId, "nopid_noip_id", jobId, cacheId));
+		assertNull("message SEND_THREAD_INTERRUPT 3",
+				Action.SEND_THREAD_INTERRUPT.execute(collector, null, null, counterName, sessionId,
+						PID.getPID() + "_noip_id", jobId, cacheId));
+		final Thread myThread = new Thread(new Runnable() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					assertNotNull(e.toString(), e);
+				}
+			}
+		});
+		myThread.setName("thread test 2");
+		myThread.start();
+		String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ myThread.getId();
+		assertNotNull("message SEND_THREAD_INTERRUPT 4", Action.SEND_THREAD_INTERRUPT.execute(
+				collector, null, null, counterName, sessionId, globalThreadId, jobId, cacheId));
+		globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
+		assertNotNull("message SEND_THREAD_INTERRUPT 5", Action.SEND_THREAD_INTERRUPT.execute(
+				collector, null, null, counterName, sessionId, globalThreadId, jobId, cacheId));
+
+		final Thread myThread2 = new Thread(new Runnable() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					assertNotNull(e.toString(), e);
+				}
+			}
+		});
+		myThread2.setName("javamelody test 2");
+		myThread2.start();
+		final String globalThreadId2 = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ myThread2.getId();
+		assertEquals("message SEND_THREAD_INTERRUPT 6", "I will not interrupt myself",
+				Action.SEND_THREAD_INTERRUPT.execute(collector, null, null, counterName, sessionId,
+						globalThreadId2, jobId, cacheId));
 	}
 
 	/** Test. */
