@@ -72,6 +72,8 @@ import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.Range;
@@ -87,12 +89,13 @@ import net.sf.ehcache.Element;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestMonitoringFilter { // NOPMD
+public class TestMonitoringFilter {// NOPMD
 	// CHECKSTYLE:ON
 	private static final String FILTER_NAME = "monitoring";
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
 	private static final String PERIOD_COOKIE_NAME = "javamelody.period";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
+	private static final String TEST_REQUEST = "/request";
 	private static final String CONTEXT_PATH = "/test";
 	private static final String TRUE = "true";
 	private MonitoringFilter monitoringFilter;
@@ -165,7 +168,7 @@ public class TestMonitoringFilter { // NOPMD
 	public void testLog() throws ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
-		expect(request.getRequestURI()).andReturn("/test/request");
+		expect(request.getRequestURI()).andReturn(CONTEXT_PATH + TEST_REQUEST);
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH);
 		expect(request.getQueryString()).andReturn("param1=1");
 		expect(request.getMethod()).andReturn("GET");
@@ -279,19 +282,6 @@ public class TestMonitoringFilter { // NOPMD
 			//			doFilter(createNiceMock(HttpServletRequest.class), new Exception(test));
 		} finally {
 			setProperty(Parameter.LOG, null);
-		}
-
-		setProperty(Parameter.RUM_ENABLED, TRUE);
-		try {
-			setUp();
-			final HttpServletRequest requestForRum = createNiceMock(HttpServletRequest.class);
-			expect(requestForRum.getHeader("accept")).andReturn("text/html");
-			expect(requestForRum.getInputStream())
-					.andReturn(createInputStreamForString("<html><body>test</body></html>"))
-					.anyTimes();
-			doFilter(requestForRum);
-		} finally {
-			setProperty(Parameter.RUM_ENABLED, null);
 		}
 	}
 
@@ -440,7 +430,7 @@ public class TestMonitoringFilter { // NOPMD
 	private void doFilter(HttpServletRequest request, Throwable exceptionInDoFilter)
 			throws ServletException, IOException {
 		final FilterChain chain = createNiceMock(FilterChain.class);
-		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+		expect(request.getRequestURI()).andReturn(CONTEXT_PATH + TEST_REQUEST).anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(request.getMethod()).andReturn("GET").anyTimes();
 		if (exceptionInDoFilter != null) {
@@ -553,14 +543,53 @@ public class TestMonitoringFilter { // NOPMD
 		} finally {
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
 		}
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void doMonitoringWithRum() throws ServletException, IOException {
 		try {
 			setProperty(Parameter.RUM_ENABLED, Boolean.TRUE.toString());
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+
+			// simulate html page with RUM
+			final HttpServletRequest requestForRum = createNiceMock(HttpServletRequest.class);
+			expect(requestForRum.getHeader("accept")).andReturn("text/html");
+			expect(requestForRum.getInputStream())
+					.andReturn(createInputStreamForString("<html><body>test</body></html>"))
+					.anyTimes();
+			doFilter(requestForRum);
+
+			// simulate call to monitoring?resource=boomerang.min.js
 			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.RESOURCE,
 					"boomerang.min.js"));
+			monitoring(Collections.<HttpParameter, String> emptyMap());
 			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PART,
 					HttpPart.RUM.getName()), false);
+
+			// simulate call to monitoring?part=rum to register RUM data
+			final Map<String, String> rumMap = new HashMap<String, String>();
+			rumMap.put(HttpParameter.PART.getName(), HttpPart.RUM.getName());
+			rumMap.put("requestName", TEST_REQUEST + " GET");
+			rumMap.put("serverTime", "100");
+			rumMap.put("timeToFirstByte", "100");
+			rumMap.put("domProcessing", "50");
+			rumMap.put("pageRendering", "50");
+			monitoring0(rumMap, false);
+
+			// simultate call to monitoring for details of request with RUM data in html
+			final Map<HttpParameter, String> graphMap = new HashMap<HttpParameter, String>();
+			graphMap.put(HttpParameter.PART, HttpPart.GRAPH.getName());
+			final String requestId = new CounterRequest(TEST_REQUEST + " GET",
+					Counter.HTTP_COUNTER_NAME).getId();
+			graphMap.put(HttpParameter.GRAPH, requestId);
+			monitoring(graphMap, false);
+
+			// simultate call to monitoring for details of request with RUM data in pdf
+			graphMap.put(HttpParameter.FORMAT, "pdf");
+			monitoring(graphMap, false);
 		} finally {
 			setProperty(Parameter.RUM_ENABLED, null);
 		}
@@ -652,6 +681,7 @@ public class TestMonitoringFilter { // NOPMD
 		conf.setManagementEnabled(true);
 		conf.setStatisticsEnabled(true);
 		Caching.getCachingProvider().getCacheManager().createCache(cacheName, conf);
+		Caching.getCachingProvider().getCacheManager().createCache(cacheName + "2", conf);
 		parameters.put(HttpParameter.CACHE_ID, cacheName);
 		monitoring(parameters);
 		Caching.getCachingProvider().getCacheManager().getCache(cacheName).put("1", "value");
@@ -1065,6 +1095,15 @@ public class TestMonitoringFilter { // NOPMD
 
 	private void monitoring(Map<HttpParameter, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
+		final Map<String, String> params = new HashMap<String, String>();
+		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
+			params.put(entry.getKey().getName(), entry.getValue());
+		}
+		monitoring0(params, checkResultContent);
+	}
+
+	private void monitoring0(Map<String, String> parameters, boolean checkResultContent)
+			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
 		expect(request.getRequestURL()).andReturn(new StringBuffer("/test/monitoring")).anyTimes();
@@ -1079,13 +1118,11 @@ public class TestMonitoringFilter { // NOPMD
 			expect(request.getHeaders("Accept-Encoding"))
 					.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 		}
-		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
-			if (HttpParameter.REQUEST == entry.getKey()) {
-				expect(request.getHeader(entry.getKey().getName())).andReturn(entry.getValue())
-						.anyTimes();
+		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+			if (HttpParameter.REQUEST.getName().equals(entry.getKey())) {
+				expect(request.getHeader(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			} else {
-				expect(entry.getKey().getParameterFrom(request)).andReturn(entry.getValue())
-						.anyTimes();
+				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			}
 		}
 		final Range range = Period.JOUR.getRange();
@@ -1096,7 +1133,7 @@ public class TestMonitoringFilter { // NOPMD
 		expect(request.getAttribute("javaInformationsList")).andReturn(javaInformationsList)
 				.anyTimes();
 		if (parameters.isEmpty()
-				|| HttpPart.JNLP.getName().equals(parameters.get(HttpParameter.PART))) {
+				|| HttpPart.JNLP.getName().equals(parameters.get(HttpParameter.PART.getName()))) {
 			// dans au moins un cas on met un cookie
 			final Cookie[] cookies = { new Cookie("dummy", "dummy"),
 					new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };

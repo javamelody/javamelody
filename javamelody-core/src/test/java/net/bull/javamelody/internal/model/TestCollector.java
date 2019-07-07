@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -119,6 +121,15 @@ public class TestCollector {
 					CacheManager.getInstance().getEhcache("testToString"), false));
 		} finally {
 			CacheManager.getInstance().shutdown();
+		}
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		Caching.getCachingProvider().getCacheManager().createCache("cache", conf);
+		try {
+			assertToStringNotEmpty("cache", new JCacheInformations("cache"));
+		} finally {
+			Caching.getCachingProvider().getCacheManager().close();
 		}
 		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 		final JobDetail job = new JobDetail("job", null, JobTestImpl.class);

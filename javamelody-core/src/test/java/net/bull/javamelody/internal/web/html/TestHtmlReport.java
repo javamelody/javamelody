@@ -466,7 +466,10 @@ public class TestHtmlReport {
 			cache.put(1, Math.random());
 			cache.get(1);
 			cache.get(0);
-			jcacheManager.createCache(cacheName2, conf);
+			final MutableConfiguration<Object, Object> conf2 = new MutableConfiguration<Object, Object>();
+			conf2.setManagementEnabled(false);
+			conf2.setStatisticsEnabled(false);
+			jcacheManager.createCache(cacheName2, conf2);
 
 			// JavaInformations doit être réinstancié pour récupérer les caches
 			final List<JavaInformations> javaInformationsList2 = Collections
