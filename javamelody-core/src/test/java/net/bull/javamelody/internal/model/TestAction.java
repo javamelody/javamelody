@@ -171,6 +171,8 @@ public class TestAction {
 		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
 		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu", "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "1"));
@@ -192,6 +194,8 @@ public class TestAction {
 				counterName, sessionId, threadId, jobId, cacheId));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu", "inconnue"));
 		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
 		jcacheManager.getCache(cacheId).put("1", "value");
@@ -312,6 +316,11 @@ public class TestAction {
 					counterName, sessionId, threadId, globalJobId, cacheId));
 			assertNotNull("message RESUME_JOB 6", Action.RESUME_JOB.execute(collector, null, null,
 					counterName, sessionId, threadId, globalJobId, cacheId));
+
+			assertNotNull("message PAUSE_JOB 7", Action.PAUSE_JOB.execute(collector, null, null,
+					counterName, sessionId, threadId, ALL, cacheId));
+			assertNotNull("message RESUME_JOB 7", Action.RESUME_JOB.execute(collector, null, null,
+					counterName, sessionId, threadId, ALL, cacheId));
 		} finally {
 			scheduler.shutdown();
 		}
