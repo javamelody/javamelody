@@ -332,6 +332,16 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
+	 * Monitoring of MongoDbFactory beans.
+	 * @return SpringMongoDbFactoryBeanPostProcessor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public SpringMongoDbFactoryBeanPostProcessor monitoringMongoDbFactoryBeanPostProcessor() {
+		return new SpringMongoDbFactoryBeanPostProcessor();
+	}
+
+	/**
 	 * @return Enregistrement du context Spring.
 	 */
 	@Bean

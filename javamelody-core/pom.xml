@@ -224,20 +224,26 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>5.1.7.RELEASE</version>
+			<version>5.1.8.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>5.1.7.RELEASE</version>
+			<version>5.1.8.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>5.1.7.RELEASE</version>
+			<version>5.1.8.RELEASE</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>2.1.9.RELEASE</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<!-- for Spring RestTemplate in unit tests -->
@@ -258,13 +264,6 @@
 			<groupId>org.apache.struts.xwork</groupId>
 			<artifactId>xwork-core</artifactId>
 			<version>2.3.37</version>
-			<optional>true</optional>
-		</dependency>
-		<!-- Dépendance optionnelle mongodb-driver -->
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver</artifactId>
-			<version>3.10.2</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle AWS Java SDK -->
