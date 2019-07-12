@@ -50,7 +50,12 @@ final class MBeansAccessor {
 	}
 
 	static Set<ObjectName> getTomcatThreadPools() {
-		return MBEAN_SERVER.queryNames(createObjectName("*:type=ThreadPool,*"), null);
+		final Set<ObjectName> result = new HashSet<ObjectName>(
+				MBEAN_SERVER.queryNames(createObjectName("*:type=ThreadPool,*"), null));
+		// #843 Tomcat info is not available anymore
+		result.removeAll(MBEAN_SERVER.queryNames(
+				createObjectName("*:type=ThreadPool,*,subType=SocketProperties"), null));
+		return result;
 	}
 
 	static Set<ObjectName> getTomcatGlobalRequestProcessors() {
