@@ -26,8 +26,6 @@ git rebase master
 As long as the final result is BUILD SUCCESS, then the tests have passed.
 ```
 mvn -f javamelody-core test
-  or
-ant -f javamelody-core/build.xml test
 ...
 BUILD SUCCESS
 ```
@@ -35,7 +33,6 @@ BUILD SUCCESS
 ```
 git push origin
 ```
-* ~~Watch for the `cloudbees-pull-request-builder` to comment on the status of your pull request.~~
 
 When submitting code, please follow existing [conventions and style](../../wiki/DevGuide#development) in order to keep the code as readable as possible.
 
@@ -49,7 +46,7 @@ If you are adding a new file it should have a header like this:
 
 ```
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
