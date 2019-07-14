@@ -36,8 +36,11 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 
 import org.easymock.IAnswer;
+import org.jrobin.graph.RrdGraph;
 import org.junit.Test;
 
+import net.bull.javamelody.Parameter;
+import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
 
 /**
@@ -55,6 +58,8 @@ public class TestMavenArtifact {
 	public void testGetSourceJarFile() throws ClassNotFoundException, IOException {
 		final Class<?> clazz = Class.forName("org.apache.commons.dbcp2.BasicDataSource");
 		final URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
+		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		Utils.setProperty(Parameter.MAVEN_REPOSITORIES, "http://repo1.maven.org/maven2");
 		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
 	}
 
@@ -81,6 +86,9 @@ public class TestMavenArtifact {
 		final Set<String> dependencies = new LinkedHashSet<String>(Arrays.asList(
 				"/WEB-INF/lib/jrobin-1.5.9.jar", "/WEB-INF/lib/javamelody-core-1.65.0.jar"));
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
+		final URL jrobinJar = RrdGraph.class.getProtectionDomain().getCodeSource().getLocation();
+		expect(context.getResource("/WEB-INF/lib/jrobin-1.5.9.jar")).andReturn(jrobinJar)
+				.anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		replay(context);
@@ -97,6 +105,7 @@ public class TestMavenArtifact {
 				assertNotNull("url", dependency.getUrl());
 				assertNotNull("licenseUrlsByName", dependency.getLicenseUrlsByName());
 				assertNotNull("allDependencies", dependency.getAllDependencies());
+				assertNotNull("toString", dependency.toString());
 			}
 		}
 	}

@@ -25,6 +25,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -151,48 +154,56 @@ public class TestCollectorServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoPost() throws ServletException, IOException {
-		doPost(null, null, false);
-		doPost(null, null, true);
-		doPost(TEST, null, true);
-		doPost(TEST, "http://localhost:8090/test", true);
-		doPost(TEST, "https://localhost:8090/test", true);
-		doPost(TEST, "ftp://localhost:8090/test", true);
-		doPost(TEST, "http://une url,pas une url", true);
+		final List<String> empty = Collections.emptyList();
+		doPost(null, empty, false);
+		doPost(null, empty, true);
+		doPost(TEST, empty, true);
+		doPost(TEST, Arrays.asList("http://localhost:8090/test", "http://localhost:8090/test"),
+				true);
+		doPost(TEST, Arrays.asList("https://localhost:8090/test", "http://localhost:8090/test"),
+				true);
+		doPost(TEST, Arrays.asList("ftp://localhost:8090/test"), true);
+		doPost(TEST, Arrays.asList("http://une url,pas une url"), true);
 	}
 
-	private void doPost(String appName, String appUrls, boolean allowed)
+	private void doPost(String appName, List<String> appUrlsList, boolean allowed)
 			throws IOException, ServletException {
 		setUp();
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
-		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
-		// un cookie d'une application (qui n'existe pas)
-		final Cookie[] cookies = { new Cookie("javamelody.application", "anothertest") };
-		expect(request.getCookies()).andReturn(cookies).anyTimes();
-		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
-		final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
-				new ByteArrayOutputStream());
-		expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
 		if (appName != null) {
 			Parameters.removeCollectorApplication(appName);
 		}
-		expect(request.getParameter("appName")).andReturn(appName).anyTimes();
-		expect(request.getParameter("appUrls")).andReturn(appUrls).anyTimes();
 		if (!allowed) {
 			expect(context.getInitParameter(
 					Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.ALLOWED_ADDR_PATTERN.getCode()))
 							.andReturn("none").anyTimes();
-			expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR).anyTimes();
 		}
 		replay(config);
 		replay(context);
-		replay(request);
-		replay(response);
 		collectorServlet.init(config);
-		collectorServlet.doPost(request, response);
 		verify(config);
 		verify(context);
-		verify(request);
-		verify(response);
+
+		for (final String appUrls : appUrlsList) {
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+			// un cookie d'une application (qui n'existe pas)
+			final Cookie[] cookies = { new Cookie("javamelody.application", "anothertest") };
+			expect(request.getCookies()).andReturn(cookies).anyTimes();
+			final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+			final FilterServletOutputStream servletOutputStream = new FilterServletOutputStream(
+					new ByteArrayOutputStream());
+			expect(response.getOutputStream()).andReturn(servletOutputStream).anyTimes();
+			expect(request.getParameter("appName")).andReturn(appName).anyTimes();
+			if (!allowed) {
+				expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR).anyTimes();
+			}
+			expect(request.getParameter("appUrls")).andReturn(appUrls).anyTimes();
+			replay(request);
+			replay(response);
+			collectorServlet.doPost(request, response);
+			verify(request);
+			verify(response);
+		}
 	}
 
 	/** Test. */

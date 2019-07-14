@@ -22,6 +22,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -63,7 +64,9 @@ public class TestRemoteCall {
 		remoteCall.collectJavaInformations();
 		remoteCall.collectGraphLastValue("cpu");
 		remoteCall.collectMBeanAttribute("java.lang:type=OperatingSystem.ProcessCpuTime");
+		remoteCall.executeActionAndCollectData(Action.GC, null, null, null, null, null);
 		assertEquals("getURL", new RemoteCall(new URL(url)).getURL().toString(), url);
 		verify(context);
+		assertNotNull("", new RemoteCall("http://dummy?p=1"));
 	}
 }
