@@ -437,6 +437,13 @@ public class TestCollector {
 		final Collector collector = new Collector("test", counters, samplingProfiler);
 		assertNotNull("getSamplingProfiler", collector.getSamplingProfiler());
 		assertNotNull("getHotspots", collector.getHotspots());
+		final Collector collector2 = new Collector("test", counters);
+		assertNull("getSamplingProfiler", collector2.getSamplingProfiler());
+		try {
+			assertNull("getHotspots", collector2.getHotspots());
+		} catch (final IllegalStateException e) {
+			assertNotNull("e", e);
+		}
 	}
 
 	/** Test.

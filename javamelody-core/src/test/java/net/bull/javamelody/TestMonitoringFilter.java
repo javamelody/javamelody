@@ -32,6 +32,8 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -1158,6 +1160,31 @@ public class TestMonitoringFilter {// NOPMD
 		if (checkResultContent) {
 			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
+	}
+
+	@Test
+	public void testRegisterApplicationNodeInCollectServer() throws MalformedURLException {
+		MonitoringFilter.registerApplicationNodeInCollectServer(null,
+				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
+		MonitoringFilter.registerApplicationNodeInCollectServer("test",
+				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
+		try {
+			MonitoringFilter.registerApplicationNodeInCollectServer(null, null,
+					new URL("http://localhost:8081"));
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("e", e);
+		}
+		try {
+			MonitoringFilter.registerApplicationNodeInCollectServer(null,
+					new URL("http://localhost:8080"), null);
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("e", e);
+		}
+	}
+
+	@Test
+	public void testUnregisterApplicationNodeInCollectServer() throws IOException {
+		MonitoringFilter.unregisterApplicationNodeInCollectServer();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

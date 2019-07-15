@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody.internal.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -82,6 +83,14 @@ public class TestMBeans {
 	public void testGetTomcatGlobalRequestProcessors() {
 		assertNotNull("getTomcatGlobalRequestProcessors",
 				MBeansAccessor.getTomcatGlobalRequestProcessors());
+	}
+
+	@Test
+	public void testGetThreadAllocatedBytes() {
+		assertEquals("getThreadAllocatedBytes",
+				ThreadInformations.getCurrentThreadAllocatedBytes() / 100L,
+				(MBeansAccessor.getThreadAllocatedBytes(Thread.currentThread().getId()) - 432L)
+						/ 100L);
 	}
 
 	/** Test.
