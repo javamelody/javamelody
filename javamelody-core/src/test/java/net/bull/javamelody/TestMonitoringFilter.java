@@ -1002,6 +1002,8 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		monitoring(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		monitoring(parameters);
@@ -1018,6 +1020,10 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PERIOD, "jour");
 		monitoring(parameters);
+		parameters.put(HttpParameter.PATTERN, "dd/MM/yyyy");
+		parameters.put(HttpParameter.PERIOD, "1/1/2000|1/1/2001");
+		monitoring(parameters);
+		parameters.remove(HttpParameter.PATTERN);
 		parameters.remove(HttpParameter.COUNTER);
 		parameters.remove(HttpParameter.PERIOD);
 		parameters.put(HttpParameter.PART, HttpPart.WEBAPP_VERSIONS.getName());

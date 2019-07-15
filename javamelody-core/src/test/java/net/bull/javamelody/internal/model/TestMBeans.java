@@ -88,9 +88,9 @@ public class TestMBeans {
 	@Test
 	public void testGetThreadAllocatedBytes() {
 		assertEquals("getThreadAllocatedBytes",
-				ThreadInformations.getCurrentThreadAllocatedBytes() / 100L,
-				(MBeansAccessor.getThreadAllocatedBytes(Thread.currentThread().getId()) - 432L)
-						/ 100L);
+				Math.round(ThreadInformations.getCurrentThreadAllocatedBytes() / 1000d),
+				Math.round((MBeansAccessor.getThreadAllocatedBytes(Thread.currentThread().getId())
+						- 432L) / 1000d));
 	}
 
 	/** Test.

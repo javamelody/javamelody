@@ -256,6 +256,8 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.HOTSPOTS.getName());
 		doPart(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+		doPart(parameters);
 	}
 
 	/** Test.
