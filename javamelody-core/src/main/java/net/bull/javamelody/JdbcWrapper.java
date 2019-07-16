@@ -124,7 +124,8 @@ public final class JdbcWrapper {
 					// executeUpdate(String, ...) ou execute(String sql),
 					// alors la requête sql est le premier argument (et pas query)
 					requestName = (String) args[0];
-				} else if ("executeBatch".equals(methodName)
+				} else if (("executeBatch".equals(methodName)
+						|| "executeLargeBatch".equals(methodName))
 						&& !requestName.startsWith("/* BATCH */ ")) {
 					// if executeBatch, add a prefix in the request name to explain that
 					// 1 batch "hit" is equivalent to several exec of the request in the db
