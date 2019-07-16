@@ -272,6 +272,13 @@ public class TestMonitoringFilter {// NOPMD
 		expect(request.getHeader("X-Requested-With")).andReturn("XMLHttpRequest");
 		doFilter(request);
 
+		// spring mvc with @RequestMapping (read in CounterRequestContext.getHttpRequestName())
+		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
+		expect(request2
+				.getAttribute("org.springframework.web.servlet.HandlerMapping.bestMatchingPattern"))
+						.andReturn("/testspringmvc").anyTimes();
+		doFilter(request2);
+
 		// erreur système http, avec log
 		setProperty(Parameter.LOG, TRUE);
 		try {
@@ -581,7 +588,7 @@ public class TestMonitoringFilter {// NOPMD
 			rumMap.put("pageRendering", "50");
 			monitoring0(rumMap, false);
 
-			// simultate call to monitoring for details of request with RUM data in html
+			// simulate call to monitoring for details of request with RUM data in html
 			final Map<HttpParameter, String> graphMap = new HashMap<HttpParameter, String>();
 			graphMap.put(HttpParameter.PART, HttpPart.GRAPH.getName());
 			final String requestId = new CounterRequest(TEST_REQUEST + " GET",
@@ -589,7 +596,7 @@ public class TestMonitoringFilter {// NOPMD
 			graphMap.put(HttpParameter.GRAPH, requestId);
 			monitoring(graphMap, false);
 
-			// simultate call to monitoring for details of request with RUM data in pdf
+			// simulate call to monitoring for details of request with RUM data in pdf
 			graphMap.put(HttpParameter.FORMAT, "pdf");
 			monitoring(graphMap, false);
 		} finally {

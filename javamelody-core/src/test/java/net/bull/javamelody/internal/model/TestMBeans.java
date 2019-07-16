@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.management.JMException;
@@ -33,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.bull.javamelody.Utils;
+import net.bull.javamelody.internal.model.MBeanNode.MBeanAttribute;
 import net.bull.javamelody.internal.model.TestTomcatInformations.GlobalRequestProcessor;
 import net.bull.javamelody.internal.model.TestTomcatInformations.ThreadPool;
 
@@ -104,7 +106,25 @@ public class TestMBeans {
 	 * @throws JMException e */
 	@Test
 	public void testGetAllMBeanNodes() throws JMException {
-		assertNotNull("getAllMBeanNodes", MBeans.getAllMBeanNodes());
+		final List<MBeanNode> allMBeanNodes = MBeans.getAllMBeanNodes();
+		assertNotNull("getAllMBeanNodes", allMBeanNodes);
+		for (final MBeanNode mbeanNode : allMBeanNodes) {
+			assertNotNull("mbeanNode", mbeanNode);
+			assertNotNull("toString", mbeanNode.toString());
+		}
+	}
+
+	@Test
+	public void testToString() {
+		final MBeanNode mBeanNode = new MBeanNode("name", "description",
+				Arrays.asList(new MBeanAttribute("name", "description", "formattedValue")));
+		assertNotNull("mbeanNode", mBeanNode);
+		assertNotNull("toString", mBeanNode.toString());
+		assertNotNull("getAttributes", mBeanNode.getAttributes());
+		for (final MBeanAttribute attribute : mBeanNode.getAttributes()) {
+			assertNotNull("attribute", attribute);
+			assertNotNull("toString", attribute.toString());
+		}
 	}
 
 	/** Test. */
