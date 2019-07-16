@@ -413,34 +413,32 @@ public class HtmlReport extends HtmlAbstractReport {
 	public void writeCacheWithKeys(String cacheId, CacheInformations cacheInformations,
 			String message, String cacheKeyPart, boolean withoutHeaders) throws IOException {
 		assert cacheId != null;
-		if (cacheInformations != null) {
-			final HtmlCacheInformationsReport htmlCacheInformationsReport = new HtmlCacheInformationsReport(
-					Collections.singletonList(cacheInformations), getWriter());
-			if (withoutHeaders) {
-				htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
-			} else {
-				writeHtmlHeader();
-				htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
-				writeHtmlFooter();
-				writeMessageIfNotNull(message, cacheKeyPart);
-			}
+		assert cacheInformations != null;
+		final HtmlCacheInformationsReport htmlCacheInformationsReport = new HtmlCacheInformationsReport(
+				Collections.singletonList(cacheInformations), getWriter());
+		if (withoutHeaders) {
+			htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
+		} else {
+			writeHtmlHeader();
+			htmlCacheInformationsReport.writeCacheWithKeys(cacheId, withoutHeaders);
+			writeHtmlFooter();
+			writeMessageIfNotNull(message, cacheKeyPart);
 		}
 	}
 
 	public void writeJCacheWithKeys(String cacheId, JCacheInformations jcacheInformations,
 			String message, String cacheKeyPart, boolean withoutHeaders) throws IOException {
 		assert cacheId != null;
-		if (jcacheInformations != null) {
-			final HtmlJCacheInformationsReport htmlJCacheInformationsReport = new HtmlJCacheInformationsReport(
-					Collections.singletonList(jcacheInformations), getWriter());
-			if (withoutHeaders) {
-				htmlJCacheInformationsReport.writeJCacheWithKeys(cacheId, withoutHeaders);
-			} else {
-				writeHtmlHeader();
-				htmlJCacheInformationsReport.writeJCacheWithKeys(cacheId, withoutHeaders);
-				writeHtmlFooter();
-				writeMessageIfNotNull(message, cacheKeyPart);
-			}
+		assert jcacheInformations != null;
+		final HtmlJCacheInformationsReport htmlJCacheInformationsReport = new HtmlJCacheInformationsReport(
+				Collections.singletonList(jcacheInformations), getWriter());
+		if (withoutHeaders) {
+			htmlJCacheInformationsReport.writeJCacheWithKeys(cacheId, withoutHeaders);
+		} else {
+			writeHtmlHeader();
+			htmlJCacheInformationsReport.writeJCacheWithKeys(cacheId, withoutHeaders);
+			writeHtmlFooter();
+			writeMessageIfNotNull(message, cacheKeyPart);
 		}
 	}
 

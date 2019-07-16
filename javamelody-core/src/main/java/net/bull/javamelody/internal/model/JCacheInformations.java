@@ -128,7 +128,7 @@ public class JCacheInformations implements Serializable {
 				}
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("Cache not found");
 	}
 
 	private static Set<ObjectName> getJsr107CacheStatistics() {

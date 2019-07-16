@@ -195,7 +195,7 @@ public class CacheInformations implements Serializable {
 				return new CacheInformations(ehcache, true);
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("Cache not found");
 	}
 
 	private static boolean isEhcache27() {
