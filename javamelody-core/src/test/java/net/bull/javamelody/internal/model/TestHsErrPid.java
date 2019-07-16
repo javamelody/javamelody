@@ -38,12 +38,14 @@ public class TestHsErrPid {
 	public void testBuildHsErrPidList() throws IOException {
 		final List<HsErrPid> hsErrPidList = HsErrPid.buildHsErrPidList();
 		final File file = new File("./hs_err_pid12345.log");
-		final File file2 = new File("./hs_err_pid12345.notlog");
+		final File file2 = new File("./hs_err_pid67890.log");
+		final File file3 = new File("./hs_err_pid12345.notlog");
 		try {
 			file.createNewFile();
 			file2.createNewFile();
+			file3.createNewFile();
 			final List<HsErrPid> hsErrPidList2 = HsErrPid.buildHsErrPidList();
-			assertEquals("buildHsErrPidList", hsErrPidList.size() + 1, hsErrPidList2.size());
+			assertEquals("buildHsErrPidList", hsErrPidList.size() + 2, hsErrPidList2.size());
 			for (final HsErrPid hsErrPid : hsErrPidList2) {
 				assertNotNull("getDate", hsErrPid.getDate());
 				assertNotNull("getFile", hsErrPid.getFile());
@@ -52,10 +54,11 @@ public class TestHsErrPid {
 			final JavaInformations javaInformations2 = new JavaInformations(null, false);
 			final List<HsErrPid> hsErrPidList3 = HsErrPid
 					.getHsErrPidList(Arrays.asList(javaInformations, javaInformations2));
-			assertEquals("buildHsErrPidList", hsErrPidList.size() + 1, hsErrPidList3.size());
+			assertEquals("buildHsErrPidList", hsErrPidList.size() + 2, hsErrPidList3.size());
 		} finally {
 			file.delete();
 			file2.delete();
+			file3.delete();
 		}
 	}
 }
