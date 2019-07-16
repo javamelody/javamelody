@@ -20,6 +20,7 @@ package net.bull.javamelody;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -36,6 +37,7 @@ import javax.persistence.spi.PersistenceProviderResolverHolder;
 import javax.persistence.spi.ProviderUtil;
 
 import org.apache.log4j.Logger;
+import org.apache.openjpa.persistence.PersistenceUnitInfoImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -204,5 +206,31 @@ public class TestJpa {
 			}
 		}
 		throw new IllegalStateException("JpaPersistence not found in PersistenceProviders");
+	}
+
+	@Test
+	public void testCreateContainerEntityManagerFactory() {
+		final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
+		persistenceUnitInfoImpl
+				.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
+		getJpaPersistence().createContainerEntityManagerFactory(persistenceUnitInfoImpl,
+				Collections.emptyMap());
+	}
+
+	@Test
+	public void testGenerateSchema() {
+		try {
+			final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
+			persistenceUnitInfoImpl
+					.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
+			getJpaPersistence().generateSchema(persistenceUnitInfoImpl, Collections.emptyMap());
+		} catch (final Exception e) {
+			assertNotNull("e", e);
+		}
+		try {
+			getJpaPersistence().generateSchema("test-jse", Collections.emptyMap());
+		} catch (final Exception e) {
+			assertNotNull("e", e);
+		}
 	}
 }
