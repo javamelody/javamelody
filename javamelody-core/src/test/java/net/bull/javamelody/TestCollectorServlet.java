@@ -239,4 +239,10 @@ public class TestCollectorServlet {
 			assertNotNull("ok", e);
 		}
 	}
+
+	@Test
+	public void testAddCollectorApplication() throws IOException {
+		CollectorServlet.addCollectorApplication("test", "http://localhost:8090/test");
+		CollectorServlet.removeCollectorApplication("test");
+	}
 }
