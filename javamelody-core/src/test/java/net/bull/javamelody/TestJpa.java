@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -213,8 +214,22 @@ public class TestJpa {
 		final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
 		persistenceUnitInfoImpl
 				.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
-		getJpaPersistence().createContainerEntityManagerFactory(persistenceUnitInfoImpl,
-				Collections.emptyMap());
+		final EntityManagerFactory entityManagerFactory = getJpaPersistence()
+				.createContainerEntityManagerFactory(persistenceUnitInfoImpl,
+						Collections.emptyMap());
+		assertTrue("proxy", JdbcWrapper.isProxyAlready(entityManagerFactory));
+		JpaWrapper.getJpaCounter().setDisplayed(false);
+		JpaWrapper.createEntityManagerFactoryProxy(entityManagerFactory);
+		JpaWrapper.getJpaCounter().setDisplayed(true);
+	}
+
+	@Test
+	public void testCreateEntityManager() {
+		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
+		emf.createEntityManager();
+		JpaWrapper.getJpaCounter().setDisplayed(false);
+		emf.createEntityManager();
+		JpaWrapper.getJpaCounter().setDisplayed(true);
 	}
 
 	@Test

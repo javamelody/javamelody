@@ -58,6 +58,11 @@ public class TestJspWrapper {
 	 */
 	@Test
 	public void testJspWrapper() throws ServletException, IOException {
+		test(2);
+		test(3);
+	}
+
+	private void test(int servletApiMajorVersion) throws ServletException, IOException {
 		assertNotNull("getJspCounter", JspWrapper.getJspCounter());
 
 		final ServletContext servletContext = createNiceMock(ServletContext.class);
@@ -72,6 +77,7 @@ public class TestJspWrapper {
 		final String url2 = "test.jsp?param=test2";
 		final String url3 = "test.jsp?param=test3";
 		final String url4 = null;
+		expect(servletContext.getMajorVersion()).andReturn(servletApiMajorVersion).anyTimes();
 		expect(request.getRequestDispatcher(url1)).andReturn(requestDispatcher);
 		expect(request.getRequestDispatcher(url2)).andReturn(requestDispatcherWithError);
 		requestDispatcherWithError.forward(request, response);
