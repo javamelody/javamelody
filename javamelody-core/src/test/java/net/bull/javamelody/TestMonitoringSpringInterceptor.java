@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -29,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -417,6 +419,13 @@ public class TestMonitoringSpringInterceptor {
 		// utilisation de l'InvocationHandler dans SpringDataSourceBeanPostProcessor
 		context.getType("dataSource2");
 		context.getBean("dataSource2");
+
+		final SpringDataSourceBeanPostProcessor springDataSourceBeanPostProcessor = (SpringDataSourceBeanPostProcessor) context
+				.getBean("springDataSourceBeanPostProcessor");
+		assertEquals("getOrder", Ordered.LOWEST_PRECEDENCE,
+				springDataSourceBeanPostProcessor.getOrder());
+		springDataSourceBeanPostProcessor.setOrder(1);
+		assertEquals("getOrder", 1, springDataSourceBeanPostProcessor.getOrder());
 
 		Utils.setProperty(Parameter.NO_DATABASE, "true");
 		assertNotNull("no database context", context);

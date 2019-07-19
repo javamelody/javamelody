@@ -17,12 +17,14 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.data.mongodb.MongoDbFactory;
 
 import net.bull.javamelody.internal.model.Counter;
@@ -52,6 +54,13 @@ public class TestSpringMongoDbFactoryBeanPostProcessor {
 			final MongoDbFactory mongoDbFactory = context.getBean(MongoDbFactory.class);
 			assertNotNull("toString", mongoDbFactory.toString());
 			assertNotNull("getDb", mongoDbFactory.getDb());
+
+			final SpringMongoDbFactoryBeanPostProcessor springMongoDbFactoryBeanPostProcessor = context
+					.getBean(SpringMongoDbFactoryBeanPostProcessor.class);
+			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
+					springMongoDbFactoryBeanPostProcessor.getOrder());
+			springMongoDbFactoryBeanPostProcessor.setOrder(1);
+			assertEquals("order", 1, springMongoDbFactoryBeanPostProcessor.getOrder());
 		} finally {
 			context.close();
 		}

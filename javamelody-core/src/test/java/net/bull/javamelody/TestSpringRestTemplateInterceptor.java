@@ -17,12 +17,14 @@
  */
 package net.bull.javamelody;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -70,6 +72,13 @@ public class TestSpringRestTemplateInterceptor {
 			} catch (final RestClientException e) {
 				assertSame("requestsCount", 1, springCounter.getRequestsCount());
 			}
+
+			final SpringRestTemplateBeanPostProcessor springRestTemplateBeanPostProcessor = context
+					.getBean(SpringRestTemplateBeanPostProcessor.class);
+			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
+					springRestTemplateBeanPostProcessor.getOrder());
+			springRestTemplateBeanPostProcessor.setOrder(1);
+			assertEquals("order", 1, springRestTemplateBeanPostProcessor.getOrder());
 		} finally {
 			context.close();
 		}

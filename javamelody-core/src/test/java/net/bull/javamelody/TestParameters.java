@@ -174,19 +174,6 @@ public class TestParameters {
 
 	/** Test. */
 	@Test
-	public void testGetParameterValue() {
-		assertNull("getParameter", Parameter.DATASOURCES.getValue());
-	}
-
-	/** Test. */
-	@Test
-	public void testParameterValueOfIgnoreCase() {
-		assertNotNull("Parameter.valueOfIgnoreCase",
-				Parameter.valueOfIgnoreCase(Parameter.DISABLED.toString()));
-	}
-
-	/** Test. */
-	@Test
 	public void testPeriodValueOfIgnoreCase() {
 		assertNotNull("Period.valueOfIgnoreCase", Period.valueOfIgnoreCase(Period.TOUT.toString()));
 	}
