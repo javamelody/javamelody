@@ -141,9 +141,17 @@ public class TestCollectorServletWithParts {
 		doPart(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.CACHE_KEYS.getName());
 		doPart(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.JCACHE_KEYS.getName());
+		doPart(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.SOURCE.getName());
 		parameters.put(HttpParameter.CLASS, "java.lang.String");
 		doPart(parameters);
+		parameters.remove(HttpParameter.CLASS);
+		parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+		doPart(parameters);
+		parameters.put(HttpParameter.PATH, "unknown");
+		doPart(parameters);
+		parameters.remove(HttpParameter.PATH);
 	}
 
 	/** Test.

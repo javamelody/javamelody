@@ -19,6 +19,7 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -37,7 +38,15 @@ public class TestStopwatch {
 		assertFalse("isClosed", stopwatch.isClosed());
 		stopwatch.close();
 		assertTrue("isClosed", stopwatch.isClosed());
+		final long duration = stopwatch.getDuration();
+		Thread.sleep(10);
+		assertEquals("getDuration", duration, stopwatch.getDuration());
 		assertEquals("requestsCount", requestsCount + 1,
 				MonitoringProxy.getServicesCounter().getRequestsCount());
+		try {
+			stopwatch.close();
+		} catch (final IllegalStateException e) {
+			assertNotNull("e", e);
+		}
 	}
 }

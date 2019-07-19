@@ -49,6 +49,11 @@ import net.bull.javamelody.internal.common.Parameters;
  * @author Emeric Vernat
  */
 public class TestMavenArtifact {
+	private static final String MAVEN_CENTRAL = "http://repo1.maven.org/maven2";
+
+	private static final File LOCAL_REPO = new File(
+			System.getProperty("user.home") + "/.m2/repository");
+
 	private static void rmdir(final File file) {
 		final File[] files = file.listFiles();
 		if (files != null) {
@@ -73,7 +78,7 @@ public class TestMavenArtifact {
 		final Class<?> clazz = Class.forName("org.apache.commons.dbcp2.BasicDataSource");
 		final URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
 		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
-		Utils.setProperty(Parameter.MAVEN_REPOSITORIES, "http://repo1.maven.org/maven2");
+		Utils.setProperty(Parameter.MAVEN_REPOSITORIES, LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
 		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
 	}
 

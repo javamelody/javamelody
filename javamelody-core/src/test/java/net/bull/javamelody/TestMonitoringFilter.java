@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -667,8 +668,18 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.THREADS_DUMP.getName());
 		monitoring(parameters);
-		parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
-		monitoring(parameters);
+		final File hsErrPidFile = new File("./hs_err_pid12345.log");
+		try {
+			hsErrPidFile.createNewFile();
+			parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+			parameters.put(HttpParameter.PATH, hsErrPidFile.getAbsolutePath().replace('\\', '/'));
+			monitoring(parameters, false);
+			parameters.put(HttpParameter.PATH, "unknown");
+			monitoring(parameters, false);
+			parameters.remove(HttpParameter.PATH);
+		} finally {
+			hsErrPidFile.delete();
+		}
 		parameters.put(HttpParameter.PART, HttpPart.CACHE_KEYS.getName());
 		final String cacheName = getClass().getName();
 		CacheManager.getInstance().addCache(cacheName);
@@ -895,6 +906,9 @@ public class TestMonitoringFilter {// NOPMD
 		parameters.put(HttpParameter.ACTION, Action.RESUME_JOB.toString());
 		monitoring(parameters);
 		parameters.put(HttpParameter.ACTION, Action.CLEAR_COUNTER.toString());
+		parameters.put(HttpParameter.COUNTER, "services");
+		monitoring(parameters);
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_COUNTER.toString());
 		parameters.put(HttpParameter.COUNTER, "all");
 		monitoring(parameters);
 	}
@@ -1095,12 +1109,15 @@ public class TestMonitoringFilter {// NOPMD
 
 	/** Test.
 	 * @throws ServletException e
-	 * @throws IOException e */
+	 * @throws IOException e
+	 */
 	@Test
 	public void testDoMonitoringWithFormatPrometheus() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
-		parameters.put(HttpParameter.FORMAT, "prometheus");
-		monitoring(parameters);
+		final Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("format", "prometheus");
+		monitoring0(parameters, true);
+		parameters.put("includeLastValue", "true");
+		monitoring0(parameters, true);
 	}
 
 	private void monitoring(Map<HttpParameter, String> parameters)
