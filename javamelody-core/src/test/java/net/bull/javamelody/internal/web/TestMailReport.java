@@ -83,6 +83,12 @@ public class TestMailReport {
 		} catch (final NoInitialContextException e) {
 			assertNotNull("ok", e);
 		}
+		setProperty(Parameter.MAIL_SUBJECT_PREFIX, "[javamelody] ");
+		try {
+			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
+		} catch (final NoInitialContextException e) {
+			assertNotNull("ok", e);
+		}
 
 		// sendReportMailForLocalServer
 		final String path = "path";

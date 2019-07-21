@@ -801,6 +801,13 @@ public class TestMonitoringFilter {// NOPMD
 			exception = true;
 		}
 		assertTrue("exception if unknown part", exception);
+		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
+		try {
+			monitoring(parameters);
+		} catch (final IllegalArgumentException e) {
+			exception = true;
+		}
+		assertTrue("exception if unknown part", exception);
 	}
 
 	private void monitoringSessionsPart(final Map<HttpParameter, String> parameters)
@@ -927,6 +934,8 @@ public class TestMonitoringFilter {// NOPMD
 		parameters.remove(HttpParameter.COUNTER);
 		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		monitoring(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
+		monitoring(parameters);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
 		monitoring(parameters);
@@ -983,6 +992,7 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.remove(HttpParameter.JMX_VALUE);
 		parameters.put(HttpParameter.PART, HttpPart.LAST_VALUE.getName());
+		monitoring(parameters);
 		parameters.put(HttpParameter.GRAPH, "usedMemory,cpu,unknown");
 		monitoring(parameters);
 		parameters.remove(HttpParameter.GRAPH);
@@ -1158,8 +1168,9 @@ public class TestMonitoringFilter {// NOPMD
 			}
 		}
 		final Range range = Period.JOUR.getRange();
+		final boolean includeDetails = "threads".equals(parameters.get("part"));
 		final List<JavaInformations> javaInformationsList = Collections
-				.singletonList(new JavaInformations(null, false));
+				.singletonList(new JavaInformations(null, includeDetails));
 		// getAttribute("range") et getAttribute("javaInformationsList") pour PdfController
 		expect(request.getAttribute("range")).andReturn(range).anyTimes();
 		expect(request.getAttribute("javaInformationsList")).andReturn(javaInformationsList)
