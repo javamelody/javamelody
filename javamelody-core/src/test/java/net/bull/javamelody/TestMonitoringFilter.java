@@ -84,6 +84,7 @@ import net.bull.javamelody.internal.model.TestDatabaseInformations;
 import net.bull.javamelody.internal.model.TransportFormat;
 import net.bull.javamelody.internal.web.CounterServletResponseWrapper;
 import net.bull.javamelody.internal.web.FilterServletOutputStream;
+import net.bull.javamelody.internal.web.HttpCookieManager;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
@@ -589,12 +590,16 @@ public class TestMonitoringFilter {// NOPMD
 			rumMap.put("pageRendering", "50");
 			monitoring0(rumMap, false);
 
-			// simulate call to monitoring for details of request with RUM data in html
+			// simulate call to monitoring for details of request with RUM data in html (period=jour : rumHits=0)
 			final Map<HttpParameter, String> graphMap = new HashMap<HttpParameter, String>();
 			graphMap.put(HttpParameter.PART, HttpPart.GRAPH.getName());
 			final String requestId = new CounterRequest(TEST_REQUEST + " GET",
 					Counter.HTTP_COUNTER_NAME).getId();
 			graphMap.put(HttpParameter.GRAPH, requestId);
+			monitoring(graphMap, false);
+
+			// simulate call to monitoring for details of request with RUM data in html (period=tout  : rumHits>0)
+			graphMap.put(HttpParameter.PERIOD, Period.TOUT.getCode());
 			monitoring(graphMap, false);
 
 			// simulate call to monitoring for details of request with RUM data in pdf
@@ -626,8 +631,15 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PERIOD,
-				Period.JOUR.getCode()));
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.PERIOD, Period.JOUR.getCode());
+		monitoring(parameters);
+		parameters.put(HttpParameter.PATTERN, "dd/MM/yyyy");
+		parameters.put(HttpParameter.PERIOD, "1/1/2000|1/1/2001");
+		monitoring(parameters);
+
+		HttpCookieManager.setDefaultRange(Period.TOUT.getRange());
+		HttpCookieManager.setDefaultRange(Period.JOUR.getRange());
 	}
 
 	/** Test.
@@ -716,6 +728,8 @@ public class TestMonitoringFilter {// NOPMD
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 
 		parameters.put(HttpParameter.PART, HttpPart.JNLP.getName());
+		monitoring(parameters);
+		setProperty(Parameter.JAVAMELODY_SWING_URL, "http://dummy");
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		monitoring(parameters);

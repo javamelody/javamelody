@@ -17,10 +17,14 @@
  */
 package net.bull.javamelody.internal.web.html; // NOPMD
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -43,6 +47,7 @@ import java.util.concurrent.Future;
 
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
+import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +63,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.JobTestImpl;
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
@@ -123,6 +129,39 @@ public class TestHtmlReport {
 				Period.TOUT, writer);
 		htmlReport.toHtml();
 		assertNotEmptyAndClear(writer);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testToHtmlWithSession() throws IOException {
+		final HttpSession session = createNiceMock(HttpSession.class);
+		replay(session);
+		try {
+			SessionListener.bindSession(session);
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+					Period.TOUT, writer);
+			htmlReport.toHtml();
+			assertNotEmptyAndClear(writer);
+		} finally {
+			SessionListener.unbindSession();
+		}
+		verify(session);
+	}
+
+	@Test
+	public void testToHtmlWithHsErrPid() throws IOException {
+		final File hsErrPidFile = new File("./hs_err_pid12345.log");
+		try {
+			hsErrPidFile.createNewFile();
+			setUp();
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+					Period.TOUT, writer);
+			htmlReport.toHtml();
+			assertNotEmptyAndClear(writer);
+		} finally {
+			hsErrPidFile.delete();
+		}
 	}
 
 	/** Test.
