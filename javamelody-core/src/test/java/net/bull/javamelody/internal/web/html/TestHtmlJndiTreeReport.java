@@ -94,7 +94,6 @@ public class TestHtmlJndiTreeReport {
 	private void doToHtml(String contextPath) throws NamingException, IOException {
 		final StringWriter writer = new StringWriter();
 		final Context context = createNiceMock(Context.class);
-		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
 		if (contextPath == null) {
 			expect(context.listBindings(JNDI_PREFIX)).andReturn(enumeration).anyTimes();

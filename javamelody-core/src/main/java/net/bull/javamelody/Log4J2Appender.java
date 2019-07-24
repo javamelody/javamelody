@@ -62,6 +62,7 @@ public class Log4J2Appender extends AbstractAppender {
 	 * @param filter Filter
 	 * @param layout Layout
 	 */
+	@SuppressWarnings("deprecation")
 	public Log4J2Appender(final String name, final Filter filter,
 			final Layout<? extends Serializable> layout) {
 		super(name, filter, layout, true);

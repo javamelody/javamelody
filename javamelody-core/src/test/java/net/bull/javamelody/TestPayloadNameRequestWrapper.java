@@ -94,7 +94,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 		//headers
 		headers = new HashMap<String, String>();
-		final Capture<String> headerName = new Capture<String>();
+		final Capture<String> headerName = Capture.newInstance();
 		expect(request.getHeader(EasyMock.capture(headerName))).andAnswer(new IAnswer<String>() {
 			@Override
 			public String answer() throws Throwable {

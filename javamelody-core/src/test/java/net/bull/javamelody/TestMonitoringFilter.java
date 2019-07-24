@@ -223,14 +223,17 @@ public class TestMonitoringFilter {// NOPMD
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		try {
 			setUp();
-			doFilter(createNiceMock(HttpServletRequest.class));
+			HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 			setProperty(Parameter.DISPLAYED_COUNTERS, "");
 			setUp();
-			doFilter(createNiceMock(HttpServletRequest.class));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 			setProperty(Parameter.DISPLAYED_COUNTERS, "unknown");
 			try {
 				setUp();
-				doFilter(createNiceMock(HttpServletRequest.class));
+				request = createNiceMock(HttpServletRequest.class);
+				doFilter(request);
 			} catch (final IllegalArgumentException e) {
 				assertNotNull("ok", e);
 			}
@@ -242,26 +245,30 @@ public class TestMonitoringFilter {// NOPMD
 		setProperty(Parameter.URL_EXCLUDE_PATTERN, ".*");
 		try {
 			setUp();
-			doFilter(createNiceMock(HttpServletRequest.class));
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 		} finally {
 			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
 		}
 
 		// standard
 		setUp();
-		doFilter(createNiceMock(HttpServletRequest.class));
+		HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		doFilter(request);
 
 		// log
 		setUp();
 		setProperty(Parameter.LOG, TRUE);
 		try {
 			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.WARN);
-			doFilter(createNiceMock(HttpServletRequest.class));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 
 			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.DEBUG);
-			doFilter(createNiceMock(HttpServletRequest.class));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			request = createNiceMock(HttpServletRequest.class);
 			expect(request.getHeader("X-Forwarded-For")).andReturn("me").anyTimes();
 			expect(request.getQueryString()).andReturn("param1=1").anyTimes();
 			doFilter(request);
@@ -270,23 +277,25 @@ public class TestMonitoringFilter {// NOPMD
 		}
 
 		// ajax
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		request = createNiceMock(HttpServletRequest.class);
 		expect(request.getHeader("X-Requested-With")).andReturn("XMLHttpRequest");
 		doFilter(request);
 
 		// spring mvc with @RequestMapping (read in CounterRequestContext.getHttpRequestName())
-		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
-		expect(request2
+		request = createNiceMock(HttpServletRequest.class);
+		expect(request
 				.getAttribute("org.springframework.web.servlet.HandlerMapping.bestMatchingPattern"))
 						.andReturn("/testspringmvc").anyTimes();
-		doFilter(request2);
+		doFilter(request);
 
 		// erreur système http, avec log
 		setProperty(Parameter.LOG, TRUE);
 		try {
 			final String test = "test";
-			doFilter(createNiceMock(HttpServletRequest.class), new UnknownError(test));
-			doFilter(createNiceMock(HttpServletRequest.class), new IllegalStateException(test));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request, new UnknownError(test));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request, new IllegalStateException(test));
 			// pas possibles:
 			//			doFilter(createNiceMock(HttpServletRequest.class), new IOException(test));
 			//			doFilter(createNiceMock(HttpServletRequest.class), new ServletException(test));

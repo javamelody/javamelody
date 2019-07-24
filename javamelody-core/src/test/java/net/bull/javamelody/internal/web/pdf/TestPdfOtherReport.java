@@ -228,7 +228,6 @@ public class TestPdfOtherReport {
 	public void testWriteJndi() throws NamingException, IOException {
 		final String contextPath = "comp/env/";
 		final Context context = createNiceMock(Context.class);
-		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
 		expect(context.listBindings("java:" + contextPath)).andReturn(enumeration).anyTimes();
 		expect(enumeration.hasMore()).andReturn(true).times(6);

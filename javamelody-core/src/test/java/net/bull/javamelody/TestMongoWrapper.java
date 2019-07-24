@@ -45,7 +45,6 @@ public class TestMongoWrapper {
 	}
 
 	/** Test. */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreateDatabaseProxy() {
 		try {

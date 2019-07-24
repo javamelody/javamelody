@@ -124,8 +124,10 @@ public class TestMonitoringFilterInit {
 		// pour ce MonitoringFilter, instanceEnabled sera false
 		final MonitoringFilter monitoringFilter2 = new MonitoringFilter();
 		monitoringFilter2.init(config);
-		monitoringFilter2.doFilter(createNiceMock(HttpServletRequest.class),
-				createNiceMock(HttpServletResponse.class), createNiceMock(FilterChain.class));
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		final FilterChain filterChain = createNiceMock(FilterChain.class);
+		monitoringFilter2.doFilter(request, response, filterChain);
 		monitoringFilter2.destroy();
 	}
 
