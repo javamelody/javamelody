@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody.internal.web.pdf; // NOPMD
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -51,6 +52,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
 
 import net.bull.javamelody.JobTestImpl;
 import net.bull.javamelody.Parameter;
@@ -382,6 +384,7 @@ public class TestPdfReport {
 				Collections.<PdfCounterReport> emptyList(),
 				Collections.<ThreadInformations> emptyList(), true, pdfDocumentFactory, document);
 		report.toPdf();
+		report.setTimeOfSnapshot(System.currentTimeMillis());
 		report.writeContextDetails();
 		// on ne peut fermer le document car on n'a rien écrit normalement
 		assertNotNull("PdfCounterRequestContextReport", report);
@@ -447,5 +450,38 @@ public class TestPdfReport {
 	@Test
 	public void testGetFileName() {
 		assertNotNull("filename", PdfReport.getFileName("test"));
+	}
+
+	@Test
+	public void testSetters() throws Exception {
+		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+		final List<Counter> counters = Arrays.asList(errorCounter);
+		final Collector collector = new Collector("test", counters);
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final List<JavaInformations> javaInformationsList = Collections
+				.singletonList(javaInformations);
+		final Period period = Period.TOUT;
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final List<CounterRequestContext> currentRequests = Collections.emptyList();
+
+		final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList, period,
+				output);
+		pdfReport.setCounterRange(Period.TOUT.getRange());
+		pdfReport.setCurrentRequests(currentRequests);
+		pdfReport.toPdf();
+	}
+
+	@Test
+	public void testUsPageSize() throws DocumentException, IOException {
+		I18N.bindLocale(Locale.US);
+		try {
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
+					output);
+			final Document document = pdfDocumentFactory.createDocument();
+			assertEquals("pageSize", document.getPageSize(), PageSize.LETTER);
+		} finally {
+			I18N.unbindLocale();
+		}
 	}
 }

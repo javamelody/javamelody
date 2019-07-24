@@ -560,7 +560,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws ServletException e
 	 * @throws IOException e */
 	@Test
-	public void doMonitoringWithRum() throws ServletException, IOException {
+	public void testDoMonitoringWithRum() throws ServletException, IOException {
 		try {
 			setProperty(Parameter.RUM_ENABLED, Boolean.TRUE.toString());
 			setUp();
@@ -596,15 +596,14 @@ public class TestMonitoringFilter {// NOPMD
 			final String requestId = new CounterRequest(TEST_REQUEST + " GET",
 					Counter.HTTP_COUNTER_NAME).getId();
 			graphMap.put(HttpParameter.GRAPH, requestId);
-			monitoring(graphMap, false);
+			monitoring(graphMap);
 
 			// simulate call to monitoring for details of request with RUM data in html (period=tout  : rumHits>0)
 			graphMap.put(HttpParameter.PERIOD, Period.TOUT.getCode());
-			monitoring(graphMap, false);
-
+			monitoring(graphMap);
 			// simulate call to monitoring for details of request with RUM data in pdf
 			graphMap.put(HttpParameter.FORMAT, "pdf");
-			monitoring(graphMap, false);
+			monitoring(graphMap);
 		} finally {
 			setProperty(Parameter.RUM_ENABLED, null);
 		}
@@ -684,6 +683,7 @@ public class TestMonitoringFilter {// NOPMD
 		try {
 			hsErrPidFile.createNewFile();
 			parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+			monitoring(parameters, false);
 			parameters.put(HttpParameter.PATH, hsErrPidFile.getAbsolutePath().replace('\\', '/'));
 			monitoring(parameters, false);
 			parameters.put(HttpParameter.PATH, "unknown");
@@ -1181,7 +1181,7 @@ public class TestMonitoringFilter {// NOPMD
 				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			}
 		}
-		final Range range = Period.JOUR.getRange();
+		final Range range = Period.TOUT.getRange();
 		final boolean includeDetails = "threads".equals(parameters.get("part"));
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(new JavaInformations(null, includeDetails));

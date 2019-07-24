@@ -59,6 +59,16 @@ public class TestHtmlDependenciesReport {
 		writer.getBuffer().setLength(0);
 	}
 
+	@Test
+	public void testEmptyDependencies() throws IOException {
+		final Map<String, MavenArtifact> webappDependencies = Collections.emptyMap();
+		final StringWriter writer = new StringWriter();
+		final HtmlDependenciesReport htmlDependenciesReport = new HtmlDependenciesReport(
+				webappDependencies, writer);
+		htmlDependenciesReport.toHtml();
+		assertNotEmptyAndClear(writer);
+	}
+
 	/** Test.
 	 * @throws IOException e */
 	@Test
