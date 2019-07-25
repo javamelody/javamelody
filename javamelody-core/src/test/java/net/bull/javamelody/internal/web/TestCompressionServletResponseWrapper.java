@@ -265,6 +265,7 @@ public class TestCompressionServletResponseWrapper {
 				wrapper.getCurrentStatus());
 		assertNotNull("outputStream", wrapper.createOutputStream());
 		assertNotNull("writer", wrapper.getWriter());
+		wrapper.flushStream();
 		wrapper.flushBuffer();
 		wrapper.close();
 		wrapper.setContentLength(0);
