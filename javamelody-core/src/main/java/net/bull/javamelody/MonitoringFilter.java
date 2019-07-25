@@ -291,7 +291,7 @@ public class MonitoringFilter implements Filter {
 				// prise en compte de Spring bestMatchingPattern s'il y a
 				requestName = CounterRequestContext.getHttpRequestName(httpRequest, requestName);
 				// taille du flux sortant
-				final int responseSize = wrappedResponse.getDataLength();
+				final long responseSize = wrappedResponse.getDataLength();
 				// nom identifiant la requête
 				if (wrappedResponse.getCurrentStatus() == HttpServletResponse.SC_NOT_FOUND) {
 					// Sécurité : si status http est 404, alors requestName est Error404
@@ -497,7 +497,7 @@ public class MonitoringFilter implements Filter {
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
 	protected void log(HttpServletRequest httpRequest, String requestName, long duration,
-			boolean systemError, int responseSize) {
+			boolean systemError, long responseSize) {
 		if (!logEnabled) {
 			return;
 		}

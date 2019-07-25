@@ -39,9 +39,9 @@ public class CounterServletResponseWrapper extends FilterServletResponseWrapper 
 
 	/**
 	 * Retourne la taille en octets du flux écrit dans la réponse.
-	 * @return int
+	 * @return long
 	 */
-	public int getDataLength() {
+	public long getDataLength() {
 		return getCounterResponseStream() == null ? 0 : getCounterResponseStream().getDataLength();
 	}
 

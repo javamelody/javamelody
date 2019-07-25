@@ -132,7 +132,7 @@ public interface CounterRequestMXBean {
 			return request.getSystemErrorPercentage();
 		}
 
-		public int getResponseSizeMean() {
+		public long getResponseSizeMean() {
 			return request.getResponseSizeMean();
 		}
 	}

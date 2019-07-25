@@ -468,13 +468,13 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	public void addRequest(String requestName, long duration, int cpuTime, int allocatedKBytes,
-			boolean systemError, int responseSize) {
+			boolean systemError, long responseSize) {
 		addRequest(requestName, duration, cpuTime, allocatedKBytes, systemError, null,
 				responseSize);
 	}
 
 	private void addRequest(String requestName, long duration, int cpuTime, int allocatedKBytes,
-			boolean systemError, String systemErrorStackTrace, int responseSize) {
+			boolean systemError, String systemErrorStackTrace, long responseSize) {
 		// la méthode addRequest n'est pas synchronisée pour ne pas avoir
 		// de synchronisation globale à l'application sur cette instance d'objet
 		// ce qui pourrait faire une contention et des ralentissements,
@@ -484,7 +484,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		assert duration >= 0;
 		assert cpuTime >= -1; // -1 pour requêtes sql
 		assert allocatedKBytes >= -1; // -1 pour requêtes sql
-		assert responseSize >= -1; // -1 pour requêtes sql
+		assert responseSize >= -1L; // -1 pour requêtes sql
 
 		final String aggregateRequestName = getAggregateRequestName(requestName);
 
