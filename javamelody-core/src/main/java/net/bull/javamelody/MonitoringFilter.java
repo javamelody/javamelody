@@ -238,7 +238,7 @@ public class MonitoringFilter implements Filter {
 			CounterError.bindRequest(httpRequest);
 			chain.doFilter(wrappedRequest, wrappedResponse);
 			if (servletApi2 || !httpRequest.isAsyncStarted()) {
-				wrappedResponse.flushBuffer();
+				wrappedResponse.flushStream();
 			}
 		} catch (final Throwable t) { // NOPMD
 			// on catche Throwable pour avoir tous les cas d'erreur système

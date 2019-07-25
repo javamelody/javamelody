@@ -162,6 +162,14 @@ abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 		}
 	}
 
+	public void flushStream() throws IOException {
+		if (writer != null) {
+			writer.flush();
+		} else if (stream != null) {
+			stream.flush();
+		}
+	}
+
 	/**
 	 * Ferme le flux.
 	 * @throws IOException e
