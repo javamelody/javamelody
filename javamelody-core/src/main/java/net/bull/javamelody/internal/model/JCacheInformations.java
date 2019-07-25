@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +50,7 @@ public class JCacheInformations implements Serializable {
 	private final String name;
 	private final long cacheHits;
 	private final long cacheMisses;
+	private boolean availableByApi;
 	private List<?> cacheKeys;
 
 	JCacheInformations(ObjectName cache) {
@@ -86,20 +86,26 @@ public class JCacheInformations implements Serializable {
 		}
 
 		final List<JCacheInformations> result = new ArrayList<JCacheInformations>();
-		final Set<String> cacheNames = new HashSet<String>();
 		final Set<ObjectName> cacheStatistics = getJsr107CacheStatistics();
 		for (final ObjectName cache : cacheStatistics) {
 			final JCacheInformations jcacheInformations = new JCacheInformations(cache);
 			result.add(jcacheInformations);
-			cacheNames.add(jcacheInformations.getName());
 		}
 		for (final CachingProvider cachingProvider : Caching.getCachingProviders()) {
 			final CacheManager cacheManager = cachingProvider.getCacheManager();
 			for (final String cacheName : cacheManager.getCacheNames()) {
-				if (!cacheNames.contains(cacheName)) {
+				boolean found = false;
+				for (final JCacheInformations jcacheInformations : result) {
+					if (cacheName != null && cacheName.equals(jcacheInformations.getName())) {
+						jcacheInformations.availableByApi = true;
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
 					final JCacheInformations jcacheInformations = new JCacheInformations(cacheName);
+					jcacheInformations.availableByApi = true;
 					result.add(jcacheInformations);
-					cacheNames.add(jcacheInformations.getName());
 				}
 			}
 		}
@@ -168,6 +174,10 @@ public class JCacheInformations implements Serializable {
 			return -1;
 		}
 		return (int) (100 * cacheHits / accessCount);
+	}
+
+	public boolean isAvailableByApi() {
+		return availableByApi;
 	}
 
 	public List<?> getCacheKeys() {

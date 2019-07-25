@@ -34,6 +34,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 	private final List<JCacheInformations> jcacheInformationsList;
 	private final DecimalFormat integerFormat = I18N.createIntegerFormat();
 	private final boolean hitsRatioEnabled;
+	private final boolean clearEnabled;
 	private final boolean systemActionsEnabled = Parameters.isSystemActionsEnabled();
 
 	HtmlJCacheInformationsReport(List<JCacheInformations> jcacheInformationsList, Writer writer) {
@@ -42,6 +43,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 
 		this.jcacheInformationsList = jcacheInformationsList;
 		this.hitsRatioEnabled = isHitsRatioEnabled(jcacheInformationsList);
+		this.clearEnabled = isClearEnabled(jcacheInformationsList);
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		if (!hitsRatioEnabled) {
 			writeln("#jcaches_statistics_enable#<br/>");
 		}
-		if (systemActionsEnabled) {
+		if (clearEnabled && systemActionsEnabled) {
 			writeln("<a href='?action=clear_jcaches" + getCsrfTokenUrlPart()
 					+ "' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_purge_caches") + "');\">");
@@ -70,7 +72,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 			write(getString("Efficacite_cache").replaceAll("\n", "<br/>"));
 			write("</th>");
 		}
-		if (systemActionsEnabled) {
+		if (clearEnabled && systemActionsEnabled) {
 			write("<th class='noPrint'>#Purger#</th>");
 		}
 		for (final JCacheInformations jcacheInfos : jcacheInformations) {
@@ -82,15 +84,19 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 
 	private void writeJCacheInformations(JCacheInformations jcacheInformations) throws IOException {
 		write("<td>");
-		writeDirectly("<a href='?part=jcacheKeys&amp;cacheId="
-				+ urlEncode(jcacheInformations.getName()) + "'>");
+		if (jcacheInformations.isAvailableByApi()) {
+			writeDirectly("<a href='?part=jcacheKeys&amp;cacheId="
+					+ urlEncode(jcacheInformations.getName()) + "'>");
+		}
 		if (jcacheInformations.getName().isEmpty()) {
 			// cache name may be empty
 			write("--");
 		} else {
 			writeDirectly(htmlEncodeButNotSpace(jcacheInformations.getName()));
 		}
-		writeln("</a>");
+		if (jcacheInformations.isAvailableByApi()) {
+			writeln("</a>");
+		}
 		final String nextColumnAlignRight = "</td> <td align='right'>";
 		if (hitsRatioEnabled) {
 			write(nextColumnAlignRight);
@@ -99,18 +105,22 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 
 		write("</td>");
 
-		if (systemActionsEnabled) {
+		if (clearEnabled && systemActionsEnabled) {
 			write("<td align='center' class='noPrint'>");
-			final String confirmClearCache = javascriptEncode(
-					getFormattedString("confirm_purge_cache", jcacheInformations.getName()));
-			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly("<a href='?action=clear_jcache&amp;cacheId="
-					+ urlEncode(jcacheInformations.getName()) + getCsrfTokenUrlPart()
-					+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
-			final String title = htmlEncode(
-					getFormattedString("Purge_cache", jcacheInformations.getName()));
-			writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='" + title
-					+ "' title='" + title + "' /></a>");
+			if (jcacheInformations.isAvailableByApi()) {
+				final String confirmClearCache = javascriptEncode(
+						getFormattedString("confirm_purge_cache", jcacheInformations.getName()));
+				// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
+				writeDirectly("<a href='?action=clear_jcache&amp;cacheId="
+						+ urlEncode(jcacheInformations.getName()) + getCsrfTokenUrlPart()
+						+ "' onclick=\"javascript:return confirm('" + confirmClearCache + "');\">");
+				final String title = htmlEncode(
+						getFormattedString("Purge_cache", jcacheInformations.getName()));
+				writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='"
+						+ title + "' title='" + title + "' /></a>");
+			} else {
+				writeln("&nbsp;");
+			}
 			write("</td>");
 		}
 	}
@@ -118,6 +128,15 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 	public static boolean isHitsRatioEnabled(List<JCacheInformations> jcacheInformationsList) {
 		for (final JCacheInformations jcacheInformations : jcacheInformationsList) {
 			if (jcacheInformations.getHitsRatio() >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isClearEnabled(List<JCacheInformations> jcacheInformationsList) {
+		for (final JCacheInformations jcacheInformations : jcacheInformationsList) {
+			if (jcacheInformations.isAvailableByApi()) {
 				return true;
 			}
 		}
