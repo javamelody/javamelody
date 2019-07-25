@@ -10,10 +10,10 @@ if (Caching.getCachingProvider().getCacheManager().getCache("test") == null) {
 	Caching.getCachingProvider().getCacheManager().createCache("test", conf);
 }
 Caching.getCachingProvider().getCacheManager().getCache("test").put(key, new Random().nextInt());
-Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache.xml"), Caching.getDefaultClassLoader()).getCache("foo").put(key, new Random().nextInt());
+Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache3.xml"), Caching.getDefaultClassLoader()).getCache("foo").put(key, new Random().nextInt());
 // pour afficher les % d'efficacité
 Caching.getCachingProvider().getCacheManager().getCache("test").get(key);
-Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache.xml"), Caching.getDefaultClassLoader()).getCache("foo").get(key);
+Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache3.xml"), Caching.getDefaultClassLoader()).getCache("foo").get(key);
 %>
 
 Cache initialized
