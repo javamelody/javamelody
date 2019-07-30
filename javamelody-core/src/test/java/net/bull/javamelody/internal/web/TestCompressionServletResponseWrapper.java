@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -265,6 +265,7 @@ public class TestCompressionServletResponseWrapper {
 				wrapper.getCurrentStatus());
 		assertNotNull("outputStream", wrapper.createOutputStream());
 		assertNotNull("writer", wrapper.getWriter());
+		wrapper.flushStream();
 		wrapper.flushBuffer();
 		wrapper.close();
 		wrapper.setContentLength(0);

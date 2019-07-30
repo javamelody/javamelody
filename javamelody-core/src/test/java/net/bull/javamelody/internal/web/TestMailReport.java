@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -78,6 +78,12 @@ public class TestMailReport {
 				.singletonList(new JavaInformations(null, true));
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		setProperty(Parameter.MAIL_SESSION, "mail/Session");
+		try {
+			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
+		} catch (final NoInitialContextException e) {
+			assertNotNull("ok", e);
+		}
+		setProperty(Parameter.MAIL_SUBJECT_PREFIX, "[javamelody] ");
 		try {
 			new MailReport().sendReportMail(collector, false, javaInformationslist, Period.SEMAINE);
 		} catch (final NoInitialContextException e) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -266,7 +266,7 @@ class PdfCounterReport extends PdfAbstractTableReport {
 			addCell(systemErrorFormat.format(request.getSystemErrorPercentage()));
 		}
 		if (counterRequestAggregation.isResponseSizeDisplayed()) {
-			addCell(integerFormat.format(request.getResponseSizeMean() / 1024));
+			addCell(integerFormat.format(request.getResponseSizeMean() / 1024L));
 		}
 		if (counterRequestAggregation.isChildHitsDisplayed()) {
 			addCell(integerFormat.format(request.getChildHitsMean()));

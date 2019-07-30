@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -21,6 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 
@@ -96,16 +97,41 @@ public class TestMonitoringController {
 	/** Test. */
 	@Test
 	public void testCheckCsrfToken() {
-		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
-		final HttpSession httpSession = createNiceMock(HttpSession.class);
+		final HttpServletRequest httpRequest0 = createNiceMock(HttpServletRequest.class);
+		replay(httpRequest0);
+		try {
+			MonitoringController.checkCsrfToken(httpRequest0);
+		} catch (final Exception e) {
+			assertNotNull("e", e);
+		}
+		verify(httpRequest0);
+
+		final HttpServletRequest httpRequest1 = createNiceMock(HttpServletRequest.class);
+		final HttpSession httpSession1 = createNiceMock(HttpSession.class);
 		final String token = "dummy token";
-		expect(HttpParameter.TOKEN.getParameterFrom(httpRequest)).andReturn(token);
-		expect(httpRequest.getSession(false)).andReturn(httpSession);
-		expect(httpSession.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME)).andReturn(token);
-		replay(httpRequest);
-		replay(httpSession);
-		MonitoringController.checkCsrfToken(httpRequest);
-		verify(httpRequest);
-		verify(httpSession);
+		expect(HttpParameter.TOKEN.getParameterFrom(httpRequest1)).andReturn(token);
+		expect(httpRequest1.getSession(false)).andReturn(httpSession1);
+		expect(httpSession1.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME)).andReturn(token);
+		replay(httpRequest1);
+		replay(httpSession1);
+		MonitoringController.checkCsrfToken(httpRequest1);
+		verify(httpRequest1);
+		verify(httpSession1);
+
+		final HttpServletRequest httpRequest2 = createNiceMock(HttpServletRequest.class);
+		final HttpSession httpSession2 = createNiceMock(HttpSession.class);
+		expect(HttpParameter.TOKEN.getParameterFrom(httpRequest2)).andReturn(token);
+		expect(httpRequest2.getSession(false)).andReturn(httpSession2);
+		expect(httpSession2.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME))
+				.andReturn("unknown");
+		replay(httpRequest2);
+		replay(httpSession2);
+		try {
+			MonitoringController.checkCsrfToken(httpRequest2);
+		} catch (final Exception e) {
+			assertNotNull("e", e);
+		}
+		verify(httpRequest2);
+		verify(httpSession2);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -349,11 +349,15 @@ public final class MavenArtifact implements Serializable {
 
 	private boolean isContained(List<MavenArtifact> artifacts) {
 		for (final MavenArtifact artifact : artifacts) {
-			if (groupId.equals(artifact.groupId) && artifactId.equals(artifact.artifactId)) {
+			if (isSame(artifact)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean isSame(MavenArtifact artifact) {
+		return groupId.equals(artifact.groupId) && artifactId.equals(artifact.artifactId);
 	}
 
 	private String getPath(String extension) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -32,7 +32,7 @@ class Log4J2Logger implements JavaMelodyLogger {
 	/** {@inheritDoc} */
 	@Override
 	public void logHttpRequest(HttpServletRequest httpRequest, String requestName, long duration,
-			boolean systemError, int responseSize, String loggerName) {
+			boolean systemError, long responseSize, String loggerName) {
 		final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager
 				.getLogger(loggerName);
 		if (logger.isInfoEnabled()) {

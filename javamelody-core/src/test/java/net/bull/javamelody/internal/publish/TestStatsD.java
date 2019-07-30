@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -54,6 +54,10 @@ public class TestStatsD {
 		statsd.addValue("metric", 2);
 		statsd.addValue("metric", 3);
 		statsd.send();
+		statsd.stop();
+		setProperty(Parameter.STATSD_ADDRESS, "localhost");
+		statsd = Statsd.getInstance("/test", "hostname");
+		assertNotNull("getInstance", statsd);
 		statsd.stop();
 	}
 

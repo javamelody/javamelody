@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -515,9 +514,7 @@ public enum Action {
 					final boolean removed = cache.remove(cacheKey);
 					if (!removed) {
 						// if keys are not Strings, we have to find the initial key
-						for (final Iterator<Entry<Object, Object>> it = cache.iterator(); it
-								.hasNext();) {
-							final Entry<Object, Object> entry = it.next();
+						for (final Entry<Object, Object> entry : cache) {
 							final Object key = entry.getKey();
 							if (key != null && key.toString().equals(cacheKey)) {
 								cache.remove(key);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -32,6 +32,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,6 +61,7 @@ public class TestMonitoringFilterInit {
 	 */
 	@Before
 	public void setUp() {
+		tearDown();
 		// rq: pas setUpFirst ici car setUp est rappelée dans les méthodes
 		try {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
@@ -87,9 +89,11 @@ public class TestMonitoringFilterInit {
 		monitoringFilter = new MonitoringFilter();
 	}
 
-	private void destroy() {
+	@After
+	public void tearDown() {
 		if (monitoringFilter != null) {
 			monitoringFilter.destroy();
+			monitoringFilter = null;
 		}
 	}
 
@@ -98,32 +102,33 @@ public class TestMonitoringFilterInit {
 	 * @throws IOException e */
 	@Test
 	public void testInit() throws ServletException, IOException {
-		try {
-			init();
-			setUp();
-			expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode()))
-					.andReturn("http,sql").anyTimes();
-			expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode()))
-					.andReturn("[0-9]").anyTimes();
-			init();
-			setUp();
-			expect(config.getInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode()))
-					.andReturn("/static/*").anyTimes();
-			init();
-			setUp();
-			expect(config.getInitParameter(Parameter.ALLOWED_ADDR_PATTERN.getCode()))
-					.andReturn("127\\.0\\.0\\.1").anyTimes();
-			init();
+		init();
+		setUp();
+		expect(context
+				.getAttribute(Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode()))
+						.andReturn("false").anyTimes();
+		expect(config.getInitParameter(Parameter.DISPLAYED_COUNTERS.getCode()))
+				.andReturn("http,sql").anyTimes();
+		expect(config.getInitParameter(Parameter.HTTP_TRANSFORM_PATTERN.getCode()))
+				.andReturn("[0-9]").anyTimes();
+		init();
+		setUp();
+		expect(config.getInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode()))
+				.andReturn("/static/*").anyTimes();
+		init();
+		setUp();
+		expect(config.getInitParameter(Parameter.ALLOWED_ADDR_PATTERN.getCode()))
+				.andReturn("127\\.0\\.0\\.1").anyTimes();
+		init();
 
-			// pour ce MonitoringFilter, instanceEnabled sera false
-			final MonitoringFilter monitoringFilter2 = new MonitoringFilter();
-			monitoringFilter2.init(config);
-			monitoringFilter2.doFilter(createNiceMock(HttpServletRequest.class),
-					createNiceMock(HttpServletResponse.class), createNiceMock(FilterChain.class));
-			monitoringFilter2.destroy();
-		} finally {
-			destroy();
-		}
+		// pour ce MonitoringFilter, instanceEnabled sera false
+		final MonitoringFilter monitoringFilter2 = new MonitoringFilter();
+		monitoringFilter2.init(config);
+		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
+		final FilterChain filterChain = createNiceMock(FilterChain.class);
+		monitoringFilter2.doFilter(request, response, filterChain);
+		monitoringFilter2.destroy();
 	}
 
 	private void init() throws ServletException {

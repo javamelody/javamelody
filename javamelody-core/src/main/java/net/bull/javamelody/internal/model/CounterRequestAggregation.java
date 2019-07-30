@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -64,7 +64,7 @@ public class CounterRequestAggregation {
 
 		// on n'affiche pas la colonne "Taille de réponse" si elle est négative car non défini
 		// (pour les requêtes sql par exemple)
-		this.responseSizeDisplayed = globalRequest.getResponseSizeMean() >= 0;
+		this.responseSizeDisplayed = globalRequest.getResponseSizeMean() >= 0L;
 		this.childHitsDisplayed = globalRequest.hasChildHits();
 		this.timesDisplayed = globalRequest.getMean() >= 0;
 		this.cpuTimesDisplayed = globalRequest.getCpuTimeMean() >= 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Emeric Vernat
  */
 public class CounterResponseStream extends FilterServletOutputStream {
-	private int dataLength;
+	private long dataLength;
 
 	/**
 	 * Construit un servlet output stream associé avec la réponse spécifiée.
@@ -48,9 +48,9 @@ public class CounterResponseStream extends FilterServletOutputStream {
 
 	/**
 	 * Retourne la valeur de la propriété dataLength.
-	 * @return int
+	 * @return long
 	 */
-	public int getDataLength() {
+	public long getDataLength() {
 		return dataLength;
 	}
 

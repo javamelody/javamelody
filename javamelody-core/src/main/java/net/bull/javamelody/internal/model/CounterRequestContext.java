@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -274,7 +274,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 
 	@SuppressWarnings("unused")
 	void addChildRequest(Counter childCounter, String request, String requestId, long duration,
-			boolean systemError, int responseSize) {
+			boolean systemError, long responseSize) {
 		// si je suis le counter fils du counter du contexte parent
 		// comme sql pour http alors on ajoute la requête fille
 		if (parentContext != null && parentCounter.getName()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -21,6 +21,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -33,6 +34,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
@@ -112,27 +115,7 @@ public class TestAction {
 		assertNotNull("message CLEAR_COUNTER", Action.CLEAR_COUNTER.execute(collector, null, null,
 				ALL, sessionId, threadId, jobId, cacheId));
 
-		if (CacheManager.getInstance().getCache(cacheId) == null) {
-			CacheManager.getInstance().addCache(cacheId);
-		}
-		assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, "inconnu"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
-		CacheManager.getInstance().getCache(cacheId).put(new Element("1", "value"));
-		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
-		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "1"));
-		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
-				counterName, sessionId, threadId, jobId, cacheId, "3"));
-		CacheManager.getInstance().removeCache(cacheId);
+		caches(collector, counterName, sessionId, threadId, jobId, cacheId);
 
 		assertNotNull("message CLEAR_HOTSPOTS", Action.CLEAR_HOTSPOTS.execute(collector, null, null,
 				counterName, sessionId, threadId, jobId, cacheId));
@@ -162,11 +145,69 @@ public class TestAction {
 
 		killThread(collector, counterName, sessionId, threadId, jobId, cacheId);
 
+		sendThreadInterrupt(collector, counterName, sessionId, threadId, jobId, cacheId);
+
 		jobs(collector, counterName, sessionId, threadId, jobId, cacheId);
 
 		mailTest(collector);
 
 		verify(session);
+	}
+
+	private void caches(final Collector collector, final String counterName, final String sessionId,
+			final String threadId, final String jobId, final String cacheId) throws IOException {
+		if (CacheManager.getInstance().getCache(cacheId) == null) {
+			CacheManager.getInstance().addCache(cacheId);
+		}
+		assertNotNull("message CLEAR_CACHES", Action.CLEAR_CACHES.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element("1", "value"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element("2", "value"));
+		CacheManager.getInstance().getCache(cacheId).put(new Element(Integer.valueOf(3), "value"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu", "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "1"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_CACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "3"));
+		CacheManager.getInstance().removeCache(cacheId);
+
+		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
+				.getCacheManager();
+		if (jcacheManager.getCache(cacheId) == null) {
+			final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+			conf.setManagementEnabled(true);
+			conf.setStatisticsEnabled(true);
+			jcacheManager.createCache(cacheId, conf);
+		}
+		assertNotNull("message CLEAR_CACHES", Action.CLEAR_JCACHES.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, "inconnu", "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		jcacheManager.getCache(cacheId).put("1", "value");
+		jcacheManager.getCache(cacheId).put("2", "value");
+		jcacheManager.getCache(cacheId).put(Integer.valueOf(3), "value");
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "inconnue"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "1"));
+		assertNotNull("message CLEAR_CACHE", Action.CLEAR_JCACHE_KEY.execute(collector, null, null,
+				counterName, sessionId, threadId, jobId, cacheId, "3"));
+		jcacheManager.destroyCache(cacheId);
 	}
 
 	private void invalidateSessions(Collector collector, String counterName, String sessionId,
@@ -275,6 +316,11 @@ public class TestAction {
 					counterName, sessionId, threadId, globalJobId, cacheId));
 			assertNotNull("message RESUME_JOB 6", Action.RESUME_JOB.execute(collector, null, null,
 					counterName, sessionId, threadId, globalJobId, cacheId));
+
+			assertNotNull("message PAUSE_JOB 7", Action.PAUSE_JOB.execute(collector, null, null,
+					counterName, sessionId, threadId, ALL, cacheId));
+			assertNotNull("message RESUME_JOB 7", Action.RESUME_JOB.execute(collector, null, null,
+					counterName, sessionId, threadId, ALL, cacheId));
 		} finally {
 			scheduler.shutdown();
 		}
@@ -312,6 +358,78 @@ public class TestAction {
 		globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
 		assertNotNull("message KILL_THREAD 5", Action.KILL_THREAD.execute(collector, null, null,
 				counterName, sessionId, globalThreadId, jobId, cacheId));
+
+		final Thread myThread2 = new Thread(new Runnable() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					assertNotNull(e.toString(), e);
+				}
+			}
+		});
+		myThread2.setName("javamelody test 2");
+		myThread2.start();
+		final String globalThreadId2 = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ myThread2.getId();
+		assertEquals("message KILL_THREAD 6", "I will not kill myself", Action.KILL_THREAD.execute(
+				collector, null, null, counterName, sessionId, globalThreadId2, jobId, cacheId));
+	}
+
+	private void sendThreadInterrupt(Collector collector, String counterName, String sessionId,
+			String threadId, String jobId, String cacheId) throws IOException {
+		try {
+			assertNull("message SEND_THREAD_INTERRUPT 1", Action.SEND_THREAD_INTERRUPT.execute(
+					collector, null, null, counterName, sessionId, threadId, jobId, cacheId));
+		} catch (final IllegalArgumentException e) {
+			assertNotNull(e.toString(), e);
+		}
+		assertNull("message SEND_THREAD_INTERRUPT 2", Action.SEND_THREAD_INTERRUPT.execute(
+				collector, null, null, counterName, sessionId, "nopid_noip_id", jobId, cacheId));
+		assertNull("message SEND_THREAD_INTERRUPT 3",
+				Action.SEND_THREAD_INTERRUPT.execute(collector, null, null, counterName, sessionId,
+						PID.getPID() + "_noip_id", jobId, cacheId));
+		final Thread myThread = new Thread(new Runnable() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					assertNotNull(e.toString(), e);
+				}
+			}
+		});
+		myThread.setName("thread test 2");
+		myThread.start();
+		String globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ myThread.getId();
+		assertNotNull("message SEND_THREAD_INTERRUPT 4", Action.SEND_THREAD_INTERRUPT.execute(
+				collector, null, null, counterName, sessionId, globalThreadId, jobId, cacheId));
+		globalThreadId = PID.getPID() + '_' + Parameters.getHostAddress() + '_' + 10000;
+		assertNotNull("message SEND_THREAD_INTERRUPT 5", Action.SEND_THREAD_INTERRUPT.execute(
+				collector, null, null, counterName, sessionId, globalThreadId, jobId, cacheId));
+
+		final Thread myThread2 = new Thread(new Runnable() {
+			/** {@inheritDoc} */
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (final InterruptedException e) {
+					assertNotNull(e.toString(), e);
+				}
+			}
+		});
+		myThread2.setName("javamelody test 2");
+		myThread2.start();
+		final String globalThreadId2 = PID.getPID() + '_' + Parameters.getHostAddress() + '_'
+				+ myThread2.getId();
+		assertEquals("message SEND_THREAD_INTERRUPT 6", "I will not interrupt myself",
+				Action.SEND_THREAD_INTERRUPT.execute(collector, null, null, counterName, sessionId,
+						globalThreadId2, jobId, cacheId));
 	}
 
 	/** Test. */

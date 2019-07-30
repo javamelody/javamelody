@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -195,7 +195,7 @@ public class CacheInformations implements Serializable {
 				return new CacheInformations(ehcache, true);
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("Cache not found");
 	}
 
 	private static boolean isEhcache27() {

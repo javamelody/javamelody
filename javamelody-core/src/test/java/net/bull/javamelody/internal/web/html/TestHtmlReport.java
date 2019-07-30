@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -17,10 +17,14 @@
  */
 package net.bull.javamelody.internal.web.html; // NOPMD
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -41,6 +45,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+import javax.servlet.http.HttpSession;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.CronTrigger;
@@ -55,6 +63,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.JobTestImpl;
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
@@ -120,6 +129,39 @@ public class TestHtmlReport {
 				Period.TOUT, writer);
 		htmlReport.toHtml();
 		assertNotEmptyAndClear(writer);
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testToHtmlWithSession() throws IOException {
+		final HttpSession session = createNiceMock(HttpSession.class);
+		replay(session);
+		try {
+			SessionListener.bindSession(session);
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+					Period.TOUT, writer);
+			htmlReport.toHtml();
+			assertNotEmptyAndClear(writer);
+		} finally {
+			SessionListener.unbindSession();
+		}
+		verify(session);
+	}
+
+	@Test
+	public void testToHtmlWithHsErrPid() throws IOException {
+		final File hsErrPidFile = new File("./hs_err_pid12345.log");
+		try {
+			hsErrPidFile.createNewFile();
+			setUp();
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList,
+					Period.TOUT, writer);
+			htmlReport.toHtml();
+			assertNotEmptyAndClear(writer);
+		} finally {
+			hsErrPidFile.delete();
+		}
 	}
 
 	/** Test.
@@ -441,6 +483,47 @@ public class TestHtmlReport {
 			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, null);
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache(cacheName2);
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
+	public void testJCache() throws IOException {
+		final String cacheName = "test 1";
+		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
+				.getCacheManager();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		jcacheManager.createCache(cacheName, conf);
+		// test empty cache name in the cache keys link:
+		jcacheManager.createCache("", conf);
+		final String cacheName2 = "test 2";
+		try {
+			final javax.cache.Cache<Object, Object> cache = jcacheManager.getCache(cacheName);
+			cache.put(1, Math.random());
+			cache.get(1);
+			cache.get(0);
+			final MutableConfiguration<Object, Object> conf2 = new MutableConfiguration<Object, Object>();
+			conf2.setManagementEnabled(false);
+			conf2.setStatisticsEnabled(false);
+			jcacheManager.createCache(cacheName2, conf2);
+
+			// JavaInformations doit être réinstancié pour récupérer les caches
+			final List<JavaInformations> javaInformationsList2 = Collections
+					.singletonList(new JavaInformations(null, true));
+			final HtmlReport htmlReport = new HtmlReport(collector, null, javaInformationsList2,
+					Period.TOUT, writer);
+			htmlReport.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+			htmlReport.toHtml(null, null);
+			assertNotEmptyAndClear(writer);
+		} finally {
+			setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, null);
+			jcacheManager.destroyCache(cacheName);
+			jcacheManager.destroyCache(cacheName2);
 		}
 	}
 

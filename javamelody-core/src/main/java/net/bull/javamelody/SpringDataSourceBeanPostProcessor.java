@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -197,7 +197,7 @@ public class SpringDataSourceBeanPostProcessor implements BeanPostProcessor, Pri
 	private static Class<?> getDelegatingDataSourceClass() {
 		try {
 			return Class.forName("org.springframework.jdbc.datasource.DelegatingDataSource");
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			return null;
 		}
 	}

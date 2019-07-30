@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -19,7 +19,9 @@ package net.bull.javamelody;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -36,6 +38,7 @@ import javax.persistence.spi.PersistenceProviderResolverHolder;
 import javax.persistence.spi.ProviderUtil;
 
 import org.apache.log4j.Logger;
+import org.apache.openjpa.persistence.PersistenceUnitInfoImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -204,5 +207,45 @@ public class TestJpa {
 			}
 		}
 		throw new IllegalStateException("JpaPersistence not found in PersistenceProviders");
+	}
+
+	@Test
+	public void testCreateContainerEntityManagerFactory() {
+		final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
+		persistenceUnitInfoImpl
+				.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
+		final EntityManagerFactory entityManagerFactory = getJpaPersistence()
+				.createContainerEntityManagerFactory(persistenceUnitInfoImpl,
+						Collections.emptyMap());
+		assertTrue("proxy", JdbcWrapper.isProxyAlready(entityManagerFactory));
+		JpaWrapper.getJpaCounter().setDisplayed(false);
+		JpaWrapper.createEntityManagerFactoryProxy(entityManagerFactory);
+		JpaWrapper.getJpaCounter().setDisplayed(true);
+	}
+
+	@Test
+	public void testCreateEntityManager() {
+		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
+		emf.createEntityManager();
+		JpaWrapper.getJpaCounter().setDisplayed(false);
+		emf.createEntityManager();
+		JpaWrapper.getJpaCounter().setDisplayed(true);
+	}
+
+	@Test
+	public void testGenerateSchema() {
+		try {
+			final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
+			persistenceUnitInfoImpl
+					.setPersistenceXmlFileUrl(getClass().getResource("/META-INF/persistence.xml"));
+			getJpaPersistence().generateSchema(persistenceUnitInfoImpl, Collections.emptyMap());
+		} catch (final Exception e) {
+			assertNotNull("e", e);
+		}
+		try {
+			getJpaPersistence().generateSchema("test-jse", Collections.emptyMap());
+		} catch (final Exception e) {
+			assertNotNull("e", e);
+		}
 	}
 }

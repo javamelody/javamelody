@@ -15,11 +15,11 @@
 	<bean name="annotatedTestScheduled" class="net.bull.javamelody.TestMonitoringSpringInterceptor$AnnotatedTestScheduled" />
 
 	<bean id="facadeMonitoringAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
-		<property name="pointcut">
+		<constructor-arg>
 			<bean class="net.bull.javamelody.MonitoredWithInterfacePointcut">
 				<property name="interfaceName" value="net.bull.javamelody.SpringTestFacade" />
 			</bean>
-		</property>
+		</constructor-arg>
 	</bean>
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
     <!--
@@ -61,4 +61,11 @@
 	</bean>
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+
+	<bean id="mongoClient" class="com.mongodb.MongoClient" />
+
+	<bean id="mongoDbFactory" class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+		<constructor-arg ref="mongoClient"/>
+		<constructor-arg value="testdatabase"/>
+	</bean>
 </beans>

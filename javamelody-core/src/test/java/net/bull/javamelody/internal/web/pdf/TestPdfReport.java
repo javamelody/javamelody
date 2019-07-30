@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody.internal.web.pdf; // NOPMD
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -35,6 +36,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +52,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
 
 import net.bull.javamelody.JobTestImpl;
 import net.bull.javamelody.Parameter;
@@ -190,6 +195,27 @@ public class TestPdfReport {
 		} finally {
 			cacheManager.removeCache(cacheName);
 			cacheManager.removeCache("testcache2");
+		}
+
+		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
+				.getCacheManager();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		jcacheManager.createCache(cacheName, conf);
+		try {
+			jcacheManager.getCache(cacheName).put(1, Math.random());
+			jcacheManager.getCache(cacheName).get(1);
+			jcacheManager.getCache(cacheName).get(0);
+			jcacheManager.createCache("testcache2", conf);
+			// JavaInformations doit être réinstancié pour récupérer les caches
+			final List<JavaInformations> javaInformationsList = Collections
+					.singletonList(new JavaInformations(null, true));
+			final Map<String, byte[]> graphs = Collections.emptyMap();
+			toPdf(collector, false, javaInformationsList, graphs);
+		} finally {
+			jcacheManager.destroyCache(cacheName);
+			jcacheManager.destroyCache("testcache2");
 		}
 	}
 
@@ -358,6 +384,7 @@ public class TestPdfReport {
 				Collections.<PdfCounterReport> emptyList(),
 				Collections.<ThreadInformations> emptyList(), true, pdfDocumentFactory, document);
 		report.toPdf();
+		report.setTimeOfSnapshot(System.currentTimeMillis());
 		report.writeContextDetails();
 		// on ne peut fermer le document car on n'a rien écrit normalement
 		assertNotNull("PdfCounterRequestContextReport", report);
@@ -423,5 +450,38 @@ public class TestPdfReport {
 	@Test
 	public void testGetFileName() {
 		assertNotNull("filename", PdfReport.getFileName("test"));
+	}
+
+	@Test
+	public void testSetters() throws Exception {
+		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+		final List<Counter> counters = Arrays.asList(errorCounter);
+		final Collector collector = new Collector("test", counters);
+		final JavaInformations javaInformations = new JavaInformations(null, true);
+		final List<JavaInformations> javaInformationsList = Collections
+				.singletonList(javaInformations);
+		final Period period = Period.TOUT;
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		final List<CounterRequestContext> currentRequests = Collections.emptyList();
+
+		final PdfReport pdfReport = new PdfReport(collector, false, javaInformationsList, period,
+				output);
+		pdfReport.setCounterRange(Period.TOUT.getRange());
+		pdfReport.setCurrentRequests(currentRequests);
+		pdfReport.toPdf();
+	}
+
+	@Test
+	public void testUsPageSize() throws DocumentException, IOException {
+		I18N.bindLocale(Locale.US);
+		try {
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
+					output);
+			final Document document = pdfDocumentFactory.createDocument();
+			assertEquals("pageSize", document.getPageSize(), PageSize.LETTER);
+		} finally {
+			I18N.unbindLocale();
+		}
 	}
 }

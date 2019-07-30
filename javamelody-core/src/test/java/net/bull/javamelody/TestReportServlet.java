@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -115,8 +115,9 @@ public class TestReportServlet {
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
-		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY))
-				.andReturn(new FilterContext("Classic")).anyTimes();
+		final FilterContext filterContext = new FilterContext("Classic");
+		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY)).andReturn(filterContext)
+				.anyTimes();
 		final ReportServlet reportServlet = new ReportServlet();
 		replay(config);
 		replay(context);
@@ -156,6 +157,7 @@ public class TestReportServlet {
 		if (checkResultContent) {
 			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
+		filterContext.destroy();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -229,11 +229,11 @@ public class CounterRequest implements Cloneable, Serializable {
 	/**
 	 * @return Moyenne des tailles des réponses (http en particulier)
 	 */
-	public int getResponseSizeMean() {
+	public long getResponseSizeMean() {
 		if (hits > 0) {
-			return (int) (responseSizesSum / hits);
+			return responseSizesSum / hits;
 		}
-		return -1;
+		return -1L;
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class CounterRequest implements Cloneable, Serializable {
 	}
 
 	void addHit(long duration, int cpuTime, int allocatedKBytes, boolean systemError,
-			String systemErrorStackTrace, int responseSize) {
+			String systemErrorStackTrace, long responseSize) {
 		hits++;
 		durationsSum += duration;
 		durationsSquareSum += duration * duration;

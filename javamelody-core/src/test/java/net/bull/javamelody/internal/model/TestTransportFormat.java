@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -27,9 +27,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Locale;
 
+import org.ehcache.Status;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,16 +98,31 @@ public class TestTransportFormat {
 	@Test
 	public void testReadSerializable() throws IOException, ClassNotFoundException {
 		final Counter counter = createCounter();
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		TransportFormat.SERIALIZED.writeSerializableTo(counter, output);
-		final ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-		final Counter after = (Counter) TransportFormat.SERIALIZED.readSerializableFrom(input);
+		final Counter after = (Counter) serialize(counter);
 		assertEquals("counter", counter.toString(), after.toString());
 
-		final ByteArrayOutputStream output2 = new ByteArrayOutputStream();
-		TransportFormat.SERIALIZED.writeSerializableTo(null, output2);
-		final ByteArrayInputStream input2 = new ByteArrayInputStream(output2.toByteArray());
-		assertNull("null", TransportFormat.SERIALIZED.readSerializableFrom(input2));
+		assertNull("null", serialize(null));
+
+		final String[][] array = new String[][] {};
+		assertArrayEquals("array", array, (String[][]) serialize(array));
+		final boolean[] barray = new boolean[] {};
+		assertArrayEquals("boolean", barray, (boolean[]) serialize(barray));
+		final File file = new File("test");
+		assertEquals("file", file, serialize(file));
+		try {
+			// objects from not white-listed packages should not be deserialized
+			assertNull("should not return a result", serialize(Status.UNINITIALIZED));
+		} catch (final ClassNotFoundException e) {
+			assertNotNull("e", e);
+		}
+	}
+
+	private static Serializable serialize(Serializable serializable)
+			throws IOException, ClassNotFoundException {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		TransportFormat.SERIALIZED.writeSerializableTo(serializable, output);
+		final ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+		return TransportFormat.SERIALIZED.readSerializableFrom(input);
 	}
 
 	/** Test.

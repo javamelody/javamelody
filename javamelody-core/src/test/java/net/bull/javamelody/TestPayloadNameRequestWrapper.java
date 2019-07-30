@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -20,6 +20,8 @@ package net.bull.javamelody;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -58,6 +60,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 	HttpServletRequest request;
 
+	String httpMethod;
 	String contentType;
 	Map<String, String> headers;
 	String queryString;
@@ -72,7 +75,13 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		request = createNiceMock(HttpServletRequest.class);
 
 		//method
-		expect(request.getMethod()).andReturn("POST").anyTimes();
+		httpMethod = "POST";
+		expect(request.getMethod()).andAnswer(new IAnswer<String>() {
+			@Override
+			public String answer() throws Throwable {
+				return httpMethod;
+			}
+		}).anyTimes();
 
 		//content type
 		contentType = "text/html";
@@ -85,7 +94,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 		//headers
 		headers = new HashMap<String, String>();
-		final Capture<String> headerName = new Capture<String>();
+		final Capture<String> headerName = Capture.newInstance();
 		expect(request.getHeader(EasyMock.capture(headerName))).andAnswer(new IAnswer<String>() {
 			@Override
 			public String answer() throws Throwable {
@@ -211,11 +220,28 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	 */
 	@Test
 	public void testHttpGet() throws IOException {
+		httpMethod = "GET";
 		contentType = "text/html";
 		body = "";
 		queryString = "key=value1&key=value2";
 
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
+
+		assertEquals("Should not have found name for HTTP GET", null,
+				wrapper.getPayloadRequestName());
+
+		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+	}
+
+	@Test
+	public void testNoContentType() throws IOException {
+		contentType = null;
+		body = "";
+		queryString = "key=value1&key=value2";
+
+		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
 
 		assertEquals("Should not have found name for HTTP GET", null,
 				wrapper.getPayloadRequestName());
@@ -269,6 +295,37 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		assertEquals("Could not parse SOAP 1.1 request", ".GetLastTradePrice",
 				wrapper.getPayloadRequestName());
 		assertEquals("SOAP request type unrecognized", "SOAP", wrapper.getPayloadRequestType());
+
+		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+
+		assertNotNull("getReader", wrapper.getReader());
+	}
+
+	/**
+	 * Test parsing of SOAP 1.1 request.
+	 * @throws IOException on error
+	 */
+	@Test
+	public void testSoap11WithoutSOAPAction() throws IOException {
+		//example request from SOAP spec
+		//http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383490
+		contentType = CONTENT_TYPE_TEXT_XML;
+		headers.put("notSOAPAction", "Some-URI");
+		body = "<SOAP-ENV:Envelope                                                        \n"
+				+ "  xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"         \n"
+				+ "  SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\">\n"
+				+ "   <SOAP-ENV:Body>                                                     \n"
+				+ "       <m:GetLastTradePrice xmlns:m=\"Some-URI\">                      \n"
+				+ "           <symbol>DIS</symbol>                                        \n"
+				+ "       </m:GetLastTradePrice>                                          \n"
+				+ "   </SOAP-ENV:Body>                                                    \n"
+				+ "</SOAP-ENV:Envelope>                                                    ";
+
+		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
+		wrapper.initialize();
+
+		assertNull("Could not parse SOAP 1.1 request", wrapper.getPayloadRequestName());
+		assertNull("SOAP request type unrecognized", wrapper.getPayloadRequestType());
 
 		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
 	}
@@ -388,6 +445,8 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		assertEquals("SOAP request type unrecognized", "SOAP", wrapper.getPayloadRequestType());
 
 		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
+
+		assertNotNull("getReader", wrapper.getReader());
 	}
 
 	/**

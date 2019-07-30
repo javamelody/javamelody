@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>net.bull.javamelody</groupId>
 		<artifactId>javamelody-parent</artifactId>
-		<version>1.78.0-SNAPSHOT</version>
+		<version>1.80.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>javamelody-test-webapp</artifactId>
 	<packaging>war</packaging>
@@ -54,22 +54,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-			<version>2.1.5</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>javax.el-api</artifactId>
-			<version>3.0.1-b06</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.faces</groupId>
-			<artifactId>javax.faces-api</artifactId>
-			<version>2.1</version>
-			<scope>provided</scope>
+			<groupId>org.glassfish</groupId>
+			<artifactId>javax.faces</artifactId>
+			<version>2.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -79,7 +66,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.11.1</version>
+			<version>2.12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -113,7 +100,7 @@
  		<dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>3.7.1</version>
+            <version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.cache</groupId>
@@ -152,7 +139,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>9.0.19</version>
+			<version>9.0.22</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -168,19 +155,24 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>9.0.19</version>
+			<version>9.0.22</version>
 		</dependency>
 		<!-- Dépendance spring aop (qui inclus spring core, spring 
 			beans, aop alliance et commons-logging) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>5.1.7.RELEASE</version>
+			<version>5.1.8.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>5.1.7.RELEASE</version>
+			<version>5.1.8.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>2.1.9.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -205,11 +197,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver</artifactId>
-			<version>3.10.2</version>
-		</dependency>
-		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-cloudwatch</artifactId>
 			<version>1.11.136</version>
@@ -228,7 +215,7 @@
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>3.1</version>
+			<version>4.0.2</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

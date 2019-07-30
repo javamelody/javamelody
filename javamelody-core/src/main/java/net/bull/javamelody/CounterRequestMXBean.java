@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -132,7 +132,7 @@ public interface CounterRequestMXBean {
 			return request.getSystemErrorPercentage();
 		}
 
-		public int getResponseSizeMean() {
+		public long getResponseSizeMean() {
 			return request.getResponseSizeMean();
 		}
 	}

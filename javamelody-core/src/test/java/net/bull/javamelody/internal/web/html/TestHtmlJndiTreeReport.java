@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -94,7 +94,6 @@ public class TestHtmlJndiTreeReport {
 	private void doToHtml(String contextPath) throws NamingException, IOException {
 		final StringWriter writer = new StringWriter();
 		final Context context = createNiceMock(Context.class);
-		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
 		if (contextPath == null) {
 			expect(context.listBindings(JNDI_PREFIX)).andReturn(enumeration).anyTimes();

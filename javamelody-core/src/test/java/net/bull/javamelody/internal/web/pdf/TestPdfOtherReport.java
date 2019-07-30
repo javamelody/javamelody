@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -228,7 +228,6 @@ public class TestPdfOtherReport {
 	public void testWriteJndi() throws NamingException, IOException {
 		final String contextPath = "comp/env/";
 		final Context context = createNiceMock(Context.class);
-		@SuppressWarnings("unchecked")
 		final NamingEnumeration<Binding> enumeration = createNiceMock(NamingEnumeration.class);
 		expect(context.listBindings("java:" + contextPath)).andReturn(enumeration).anyTimes();
 		expect(enumeration.hasMore()).andReturn(true).times(6);

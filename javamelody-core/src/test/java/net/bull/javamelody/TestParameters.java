@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -170,19 +170,6 @@ public class TestParameters {
 		setProperty(Parameter.APPLICATION_NAME, "test application");
 		assertEquals("getCurrentApplication", "test application",
 				Parameters.getCurrentApplication());
-	}
-
-	/** Test. */
-	@Test
-	public void testGetParameterValue() {
-		assertNull("getParameter", Parameter.DATASOURCES.getValue());
-	}
-
-	/** Test. */
-	@Test
-	public void testParameterValueOfIgnoreCase() {
-		assertNotNull("Parameter.valueOfIgnoreCase",
-				Parameter.valueOfIgnoreCase(Parameter.DISABLED.toString()));
 	}
 
 	/** Test. */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -396,7 +396,13 @@ public class TestJdbcWrapper {
 
 				statement.executeQuery("select 1").close();
 				statement.execute("select 2");
-				statement.addBatch("select 3");
+				statement.execute("CREATE TABLE IF NOT EXISTS test (name VARCHAR(50) NOT NULL)");
+				statement.addBatch("insert into test (name) values ('test')");
+				statement.executeBatch();
+				statement.addBatch("/* BATCH */ insert into test (name) values ('test')");
+				statement.executeBatch();
+				statement.addBatch("insert into test (name) values ('test')");
+				statement.executeLargeBatch();
 				jdbcWrapper.getSqlCounter().setDisplayed(false);
 				statement.execute("select 4");
 				jdbcWrapper.getSqlCounter().setDisplayed(true);

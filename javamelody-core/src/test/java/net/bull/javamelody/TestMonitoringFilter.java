@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -27,11 +27,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -44,6 +47,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ReadListener;
@@ -57,6 +62,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -69,6 +75,8 @@ import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Action;
+import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.Range;
@@ -76,6 +84,7 @@ import net.bull.javamelody.internal.model.TestDatabaseInformations;
 import net.bull.javamelody.internal.model.TransportFormat;
 import net.bull.javamelody.internal.web.CounterServletResponseWrapper;
 import net.bull.javamelody.internal.web.FilterServletOutputStream;
+import net.bull.javamelody.internal.web.HttpCookieManager;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
@@ -84,12 +93,13 @@ import net.sf.ehcache.Element;
  * @author Emeric Vernat
  */
 // CHECKSTYLE:OFF
-public class TestMonitoringFilter { // NOPMD
+public class TestMonitoringFilter {// NOPMD
 	// CHECKSTYLE:ON
 	private static final String FILTER_NAME = "monitoring";
 	// identique à HttpCookieManager.PERIOD_COOKIE_NAME
 	private static final String PERIOD_COOKIE_NAME = "javamelody.period";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
+	private static final String TEST_REQUEST = "/request";
 	private static final String CONTEXT_PATH = "/test";
 	private static final String TRUE = "true";
 	private MonitoringFilter monitoringFilter;
@@ -108,6 +118,7 @@ public class TestMonitoringFilter { // NOPMD
 	 */
 	@Before
 	public void setUp() throws ServletException {
+		tearDown();
 		try {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
@@ -147,13 +158,21 @@ public class TestMonitoringFilter { // NOPMD
 		verify(context);
 	}
 
+	@After
+	public void tearDown() {
+		if (monitoringFilter != null) {
+			monitoringFilter.destroy();
+			monitoringFilter = null;
+		}
+	}
+
 	/** Test.
 	 * @throws ServletException e */
 	@Test
 	public void testLog() throws ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRemoteAddr()).andReturn(REMOTE_ADDR);
-		expect(request.getRequestURI()).andReturn("/test/request");
+		expect(request.getRequestURI()).andReturn(CONTEXT_PATH + TEST_REQUEST);
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH);
 		expect(request.getQueryString()).andReturn("param1=1");
 		expect(request.getMethod()).andReturn("GET");
@@ -204,14 +223,17 @@ public class TestMonitoringFilter { // NOPMD
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		try {
 			setUp();
-			doFilter(createNiceMock(HttpServletRequest.class));
+			HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 			setProperty(Parameter.DISPLAYED_COUNTERS, "");
 			setUp();
-			doFilter(createNiceMock(HttpServletRequest.class));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 			setProperty(Parameter.DISPLAYED_COUNTERS, "unknown");
 			try {
 				setUp();
-				doFilter(createNiceMock(HttpServletRequest.class));
+				request = createNiceMock(HttpServletRequest.class);
+				doFilter(request);
 			} catch (final IllegalArgumentException e) {
 				assertNotNull("ok", e);
 			}
@@ -223,26 +245,30 @@ public class TestMonitoringFilter { // NOPMD
 		setProperty(Parameter.URL_EXCLUDE_PATTERN, ".*");
 		try {
 			setUp();
-			doFilter(createNiceMock(HttpServletRequest.class));
+			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 		} finally {
 			setProperty(Parameter.URL_EXCLUDE_PATTERN, "");
 		}
 
 		// standard
 		setUp();
-		doFilter(createNiceMock(HttpServletRequest.class));
+		HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		doFilter(request);
 
 		// log
 		setUp();
 		setProperty(Parameter.LOG, TRUE);
 		try {
 			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.WARN);
-			doFilter(createNiceMock(HttpServletRequest.class));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 
 			((Logger) org.slf4j.LoggerFactory.getLogger(FILTER_NAME)).setLevel(Level.DEBUG);
-			doFilter(createNiceMock(HttpServletRequest.class));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request);
 
-			final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+			request = createNiceMock(HttpServletRequest.class);
 			expect(request.getHeader("X-Forwarded-For")).andReturn("me").anyTimes();
 			expect(request.getQueryString()).andReturn("param1=1").anyTimes();
 			doFilter(request);
@@ -251,35 +277,31 @@ public class TestMonitoringFilter { // NOPMD
 		}
 
 		// ajax
-		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
+		request = createNiceMock(HttpServletRequest.class);
 		expect(request.getHeader("X-Requested-With")).andReturn("XMLHttpRequest");
+		doFilter(request);
+
+		// spring mvc with @RequestMapping (read in CounterRequestContext.getHttpRequestName())
+		request = createNiceMock(HttpServletRequest.class);
+		expect(request
+				.getAttribute("org.springframework.web.servlet.HandlerMapping.bestMatchingPattern"))
+						.andReturn("/testspringmvc").anyTimes();
 		doFilter(request);
 
 		// erreur système http, avec log
 		setProperty(Parameter.LOG, TRUE);
 		try {
 			final String test = "test";
-			doFilter(createNiceMock(HttpServletRequest.class), new UnknownError(test));
-			doFilter(createNiceMock(HttpServletRequest.class), new IllegalStateException(test));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request, new UnknownError(test));
+			request = createNiceMock(HttpServletRequest.class);
+			doFilter(request, new IllegalStateException(test));
 			// pas possibles:
 			//			doFilter(createNiceMock(HttpServletRequest.class), new IOException(test));
 			//			doFilter(createNiceMock(HttpServletRequest.class), new ServletException(test));
 			//			doFilter(createNiceMock(HttpServletRequest.class), new Exception(test));
 		} finally {
 			setProperty(Parameter.LOG, null);
-		}
-
-		setProperty(Parameter.RUM_ENABLED, TRUE);
-		try {
-			setUp();
-			final HttpServletRequest requestForRum = createNiceMock(HttpServletRequest.class);
-			expect(requestForRum.getHeader("accept")).andReturn("text/html");
-			expect(requestForRum.getInputStream())
-					.andReturn(createInputStreamForString("<html><body>test</body></html>"))
-					.anyTimes();
-			doFilter(requestForRum);
-		} finally {
-			setProperty(Parameter.RUM_ENABLED, null);
 		}
 	}
 
@@ -428,7 +450,7 @@ public class TestMonitoringFilter { // NOPMD
 	private void doFilter(HttpServletRequest request, Throwable exceptionInDoFilter)
 			throws ServletException, IOException {
 		final FilterChain chain = createNiceMock(FilterChain.class);
-		expect(request.getRequestURI()).andReturn("/test/request").anyTimes();
+		expect(request.getRequestURI()).andReturn(CONTEXT_PATH + TEST_REQUEST).anyTimes();
 		expect(request.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(request.getMethod()).andReturn("GET").anyTimes();
 		if (exceptionInDoFilter != null) {
@@ -498,7 +520,6 @@ public class TestMonitoringFilter { // NOPMD
 			setUp();
 			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
 		} finally {
-			monitoringFilter.destroy();
 			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
@@ -540,19 +561,59 @@ public class TestMonitoringFilter { // NOPMD
 			setUp();
 			monitoring(Collections.<HttpParameter, String> emptyMap());
 		} finally {
-			monitoringFilter.destroy();
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
 		}
+	}
+
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e */
+	@Test
+	public void testDoMonitoringWithRum() throws ServletException, IOException {
 		try {
 			setProperty(Parameter.RUM_ENABLED, Boolean.TRUE.toString());
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+
+			// simulate html page with RUM
+			final HttpServletRequest requestForRum = createNiceMock(HttpServletRequest.class);
+			expect(requestForRum.getHeader("accept")).andReturn("text/html");
+			expect(requestForRum.getInputStream())
+					.andReturn(createInputStreamForString("<html><body>test</body></html>"))
+					.anyTimes();
+			doFilter(requestForRum);
+
+			// simulate call to monitoring?resource=boomerang.min.js
 			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.RESOURCE,
 					"boomerang.min.js"));
+			monitoring(Collections.<HttpParameter, String> emptyMap());
 			monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PART,
 					HttpPart.RUM.getName()), false);
+
+			// simulate call to monitoring?part=rum to register RUM data
+			final Map<String, String> rumMap = new HashMap<String, String>();
+			rumMap.put(HttpParameter.PART.getName(), HttpPart.RUM.getName());
+			rumMap.put("requestName", TEST_REQUEST + " GET");
+			rumMap.put("serverTime", "100");
+			rumMap.put("timeToFirstByte", "100");
+			rumMap.put("domProcessing", "50");
+			rumMap.put("pageRendering", "50");
+			monitoring0(rumMap, false);
+
+			// simulate call to monitoring for details of request with RUM data in html (period=jour : rumHits=0)
+			final Map<HttpParameter, String> graphMap = new HashMap<HttpParameter, String>();
+			graphMap.put(HttpParameter.PART, HttpPart.GRAPH.getName());
+			final String requestId = new CounterRequest(TEST_REQUEST + " GET",
+					Counter.HTTP_COUNTER_NAME).getId();
+			graphMap.put(HttpParameter.GRAPH, requestId);
+			monitoring(graphMap);
+
+			// simulate call to monitoring for details of request with RUM data in html (period=tout  : rumHits>0)
+			graphMap.put(HttpParameter.PERIOD, Period.TOUT.getCode());
+			monitoring(graphMap);
+			// simulate call to monitoring for details of request with RUM data in pdf
+			graphMap.put(HttpParameter.FORMAT, "pdf");
+			monitoring(graphMap);
 		} finally {
-			monitoringFilter.destroy();
 			setProperty(Parameter.RUM_ENABLED, null);
 		}
 	}
@@ -578,8 +639,15 @@ public class TestMonitoringFilter { // NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		monitoring(Collections.<HttpParameter, String> singletonMap(HttpParameter.PERIOD,
-				Period.JOUR.getCode()));
+		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		parameters.put(HttpParameter.PERIOD, Period.JOUR.getCode());
+		monitoring(parameters);
+		parameters.put(HttpParameter.PATTERN, "dd/MM/yyyy");
+		parameters.put(HttpParameter.PERIOD, "1/1/2000|1/1/2001");
+		monitoring(parameters);
+
+		HttpCookieManager.setDefaultRange(Period.TOUT.getRange());
+		HttpCookieManager.setDefaultRange(Period.JOUR.getRange());
 	}
 
 	/** Test.
@@ -620,6 +688,19 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.THREADS_DUMP.getName());
 		monitoring(parameters);
+		final File hsErrPidFile = new File("./hs_err_pid12345.log");
+		try {
+			hsErrPidFile.createNewFile();
+			parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+			monitoring(parameters, false);
+			parameters.put(HttpParameter.PATH, hsErrPidFile.getAbsolutePath().replace('\\', '/'));
+			monitoring(parameters, false);
+			parameters.put(HttpParameter.PATH, "unknown");
+			monitoring(parameters, false);
+			parameters.remove(HttpParameter.PATH);
+		} finally {
+			hsErrPidFile.delete();
+		}
 		parameters.put(HttpParameter.PART, HttpPart.CACHE_KEYS.getName());
 		final String cacheName = getClass().getName();
 		CacheManager.getInstance().addCache(cacheName);
@@ -629,11 +710,35 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.FORMAT, "htmlbody");
 		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+		monitoring(parameters);
 		CacheManager.getInstance().removeCache(cacheName);
 		parameters.remove(HttpParameter.CACHE_ID);
 		parameters.remove(HttpParameter.FORMAT);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
+
+		parameters.put(HttpParameter.PART, HttpPart.JCACHE_KEYS.getName());
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		Caching.getCachingProvider().getCacheManager().createCache(cacheName, conf);
+		Caching.getCachingProvider().getCacheManager().createCache(cacheName + "2", conf);
+		parameters.put(HttpParameter.CACHE_ID, cacheName);
+		monitoring(parameters);
+		Caching.getCachingProvider().getCacheManager().getCache(cacheName).put("1", "value");
+		monitoring(parameters);
+		parameters.put(HttpParameter.FORMAT, "htmlbody");
+		monitoring(parameters);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, "false");
+		monitoring(parameters);
+		Caching.getCachingProvider().getCacheManager().destroyCache(cacheName);
+		parameters.remove(HttpParameter.CACHE_ID);
+		parameters.remove(HttpParameter.FORMAT);
+		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 
 		parameters.put(HttpParameter.PART, HttpPart.JNLP.getName());
+		monitoring(parameters);
+		setProperty(Parameter.JAVAMELODY_SWING_URL, "http://dummy");
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		monitoring(parameters);
@@ -713,6 +818,13 @@ public class TestMonitoringFilter { // NOPMD
 		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
 		parameters.put(HttpParameter.PART, "unknown part");
 		boolean exception = false;
+		try {
+			monitoring(parameters);
+		} catch (final IllegalArgumentException e) {
+			exception = true;
+		}
+		assertTrue("exception if unknown part", exception);
+		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
 		try {
 			monitoring(parameters);
 		} catch (final IllegalArgumentException e) {
@@ -824,6 +936,9 @@ public class TestMonitoringFilter { // NOPMD
 		parameters.put(HttpParameter.ACTION, Action.RESUME_JOB.toString());
 		monitoring(parameters);
 		parameters.put(HttpParameter.ACTION, Action.CLEAR_COUNTER.toString());
+		parameters.put(HttpParameter.COUNTER, "services");
+		monitoring(parameters);
+		parameters.put(HttpParameter.ACTION, Action.CLEAR_COUNTER.toString());
 		parameters.put(HttpParameter.COUNTER, "all");
 		monitoring(parameters);
 	}
@@ -841,6 +956,8 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.remove(HttpParameter.COUNTER);
 		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
+		monitoring(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
 		monitoring(parameters);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(HttpParameter.PART, HttpPart.SESSIONS.getName());
@@ -898,6 +1015,7 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.remove(HttpParameter.JMX_VALUE);
 		parameters.put(HttpParameter.PART, HttpPart.LAST_VALUE.getName());
+		monitoring(parameters);
 		parameters.put(HttpParameter.GRAPH, "usedMemory,cpu,unknown");
 		monitoring(parameters);
 		parameters.remove(HttpParameter.GRAPH);
@@ -938,6 +1056,8 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.DEPENDENCIES.getName());
 		monitoring(parameters);
+		parameters.put(HttpParameter.PART, HttpPart.CRASHES.getName());
+		monitoring(parameters);
 		TestDatabaseInformations.initJdbcDriverParameters();
 		parameters.put(HttpParameter.PART, HttpPart.DATABASE.getName());
 		monitoring(parameters);
@@ -954,6 +1074,10 @@ public class TestMonitoringFilter { // NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PERIOD, "jour");
 		monitoring(parameters);
+		parameters.put(HttpParameter.PATTERN, "dd/MM/yyyy");
+		parameters.put(HttpParameter.PERIOD, "1/1/2000|1/1/2001");
+		monitoring(parameters);
+		parameters.remove(HttpParameter.PATTERN);
 		parameters.remove(HttpParameter.COUNTER);
 		parameters.remove(HttpParameter.PERIOD);
 		parameters.put(HttpParameter.PART, HttpPart.WEBAPP_VERSIONS.getName());
@@ -1016,12 +1140,34 @@ public class TestMonitoringFilter { // NOPMD
 		//		monitoring(parameters);
 	}
 
+	/** Test.
+	 * @throws ServletException e
+	 * @throws IOException e
+	 */
+	@Test
+	public void testDoMonitoringWithFormatPrometheus() throws ServletException, IOException {
+		final Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("format", "prometheus");
+		monitoring0(parameters, true);
+		parameters.put("includeLastValue", "true");
+		monitoring0(parameters, true);
+	}
+
 	private void monitoring(Map<HttpParameter, String> parameters)
 			throws IOException, ServletException {
 		monitoring(parameters, true);
 	}
 
 	private void monitoring(Map<HttpParameter, String> parameters, boolean checkResultContent)
+			throws IOException, ServletException {
+		final Map<String, String> params = new HashMap<String, String>();
+		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
+			params.put(entry.getKey().getName(), entry.getValue());
+		}
+		monitoring0(params, checkResultContent);
+	}
+
+	private void monitoring0(Map<String, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		expect(request.getRequestURI()).andReturn("/test/monitoring").anyTimes();
@@ -1037,24 +1183,23 @@ public class TestMonitoringFilter { // NOPMD
 			expect(request.getHeaders("Accept-Encoding"))
 					.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
 		}
-		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
-			if (HttpParameter.REQUEST == entry.getKey()) {
-				expect(request.getHeader(entry.getKey().getName())).andReturn(entry.getValue())
-						.anyTimes();
+		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
+			if (HttpParameter.REQUEST.getName().equals(entry.getKey())) {
+				expect(request.getHeader(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			} else {
-				expect(entry.getKey().getParameterFrom(request)).andReturn(entry.getValue())
-						.anyTimes();
+				expect(request.getParameter(entry.getKey())).andReturn(entry.getValue()).anyTimes();
 			}
 		}
-		final Range range = Period.JOUR.getRange();
+		final Range range = Period.TOUT.getRange();
+		final boolean includeDetails = "threads".equals(parameters.get("part"));
 		final List<JavaInformations> javaInformationsList = Collections
-				.singletonList(new JavaInformations(null, false));
+				.singletonList(new JavaInformations(null, includeDetails));
 		// getAttribute("range") et getAttribute("javaInformationsList") pour PdfController
 		expect(request.getAttribute("range")).andReturn(range).anyTimes();
 		expect(request.getAttribute("javaInformationsList")).andReturn(javaInformationsList)
 				.anyTimes();
 		if (parameters.isEmpty()
-				|| HttpPart.JNLP.getName().equals(parameters.get(HttpParameter.PART))) {
+				|| HttpPart.JNLP.getName().equals(parameters.get(HttpParameter.PART.getName()))) {
 			// dans au moins un cas on met un cookie
 			final Cookie[] cookies = { new Cookie("dummy", "dummy"),
 					new Cookie(PERIOD_COOKIE_NAME, Period.SEMAINE.getCode()), };
@@ -1079,6 +1224,31 @@ public class TestMonitoringFilter { // NOPMD
 		if (checkResultContent) {
 			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
+	}
+
+	@Test
+	public void testRegisterApplicationNodeInCollectServer() throws MalformedURLException {
+		MonitoringFilter.registerApplicationNodeInCollectServer(null,
+				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
+		MonitoringFilter.registerApplicationNodeInCollectServer("test",
+				new URL("http://localhost:8080"), new URL("http://localhost:8081"));
+		try {
+			MonitoringFilter.registerApplicationNodeInCollectServer(null, null,
+					new URL("http://localhost:8081"));
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("e", e);
+		}
+		try {
+			MonitoringFilter.registerApplicationNodeInCollectServer(null,
+					new URL("http://localhost:8080"), null);
+		} catch (final IllegalArgumentException e) {
+			assertNotNull("e", e);
+		}
+	}
+
+	@Test
+	public void testUnregisterApplicationNodeInCollectServer() throws IOException {
+		MonitoringFilter.unregisterApplicationNodeInCollectServer();
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

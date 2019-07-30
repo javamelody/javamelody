@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -57,6 +57,16 @@ public class TestHtmlDependenciesReport {
 	private static void assertNotEmptyAndClear(StringWriter writer) {
 		assertTrue("rapport vide", writer.getBuffer().length() > 0);
 		writer.getBuffer().setLength(0);
+	}
+
+	@Test
+	public void testEmptyDependencies() throws IOException {
+		final Map<String, MavenArtifact> webappDependencies = Collections.emptyMap();
+		final StringWriter writer = new StringWriter();
+		final HtmlDependenciesReport htmlDependenciesReport = new HtmlDependenciesReport(
+				webappDependencies, writer);
+		htmlDependenciesReport.toHtml();
+		assertNotEmptyAndClear(writer);
 	}
 
 	/** Test.

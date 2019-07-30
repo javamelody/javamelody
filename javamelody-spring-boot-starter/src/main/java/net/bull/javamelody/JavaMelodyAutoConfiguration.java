@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -329,6 +329,16 @@ public class JavaMelodyAutoConfiguration {
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public SpringRestTemplateBeanPostProcessor monitoringRestTemplateBeanPostProcessor() {
 		return new SpringRestTemplateBeanPostProcessor();
+	}
+
+	/**
+	 * Monitoring of MongoDbFactory beans.
+	 * @return SpringMongoDbFactoryBeanPostProcessor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public SpringMongoDbFactoryBeanPostProcessor monitoringMongoDbFactoryBeanPostProcessor() {
+		return new SpringMongoDbFactoryBeanPostProcessor();
 	}
 
 	/**

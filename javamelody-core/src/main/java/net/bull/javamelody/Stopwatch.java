@@ -10,6 +10,11 @@ import net.bull.javamelody.internal.model.Counter;
 public class Stopwatch implements AutoCloseable {
 	private static final Counter SERVICES_COUNTER = MonitoringProxy.getServicesCounter();
 
+	private final String name;
+	private final long startTime;
+	private long duration;
+	private boolean closed;
+
 	/**
 	 * Starts a stopwatch (must always be used in try-with-resource):
 	 * <pre>
@@ -22,13 +27,44 @@ public class Stopwatch implements AutoCloseable {
 	public Stopwatch(String stopwatchName) {
 		super();
 		SERVICES_COUNTER.bindContextIncludingCpu(stopwatchName);
+		this.startTime = System.currentTimeMillis();
+		this.name = stopwatchName;
+	}
+
+	/**
+	 * @return name of the stopwatch.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return duration until now or until stop of the stopwatch.
+	 */
+	public long getDuration() {
+		if (closed) {
+			return duration;
+		}
+		return System.currentTimeMillis() - startTime;
+	}
+
+	/**
+	 * @return already stopped ?
+	 */
+	public boolean isClosed() {
+		return closed;
 	}
 
 	/**
 	 * Stops the stopwatch.
 	 */
 	@Override
-	public void close() throws Exception {
+	public void close() {
+		if (closed) {
+			throw new IllegalStateException("Stopwatch already closed");
+		}
 		SERVICES_COUNTER.addRequestForCurrentContext(false);
+		duration = getDuration();
+		closed = true;
 	}
 }

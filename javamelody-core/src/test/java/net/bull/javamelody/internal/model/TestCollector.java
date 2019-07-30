@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -119,6 +121,15 @@ public class TestCollector {
 					CacheManager.getInstance().getEhcache("testToString"), false));
 		} finally {
 			CacheManager.getInstance().shutdown();
+		}
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		conf.setManagementEnabled(true);
+		conf.setStatisticsEnabled(true);
+		Caching.getCachingProvider().getCacheManager().createCache("cache", conf);
+		try {
+			assertToStringNotEmpty("cache", new JCacheInformations("cache"));
+		} finally {
+			Caching.getCachingProvider().getCacheManager().close();
 		}
 		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 		final JobDetail job = new JobDetail("job", null, JobTestImpl.class);
@@ -426,6 +437,13 @@ public class TestCollector {
 		final Collector collector = new Collector("test", counters, samplingProfiler);
 		assertNotNull("getSamplingProfiler", collector.getSamplingProfiler());
 		assertNotNull("getHotspots", collector.getHotspots());
+		final Collector collector2 = new Collector("test", counters);
+		assertNull("getSamplingProfiler", collector2.getSamplingProfiler());
+		try {
+			assertNull("getHotspots", collector2.getHotspots());
+		} catch (final IllegalStateException e) {
+			assertNotNull("e", e);
+		}
 	}
 
 	/** Test.

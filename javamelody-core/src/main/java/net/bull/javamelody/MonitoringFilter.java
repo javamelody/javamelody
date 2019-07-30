@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -238,7 +238,7 @@ public class MonitoringFilter implements Filter {
 			CounterError.bindRequest(httpRequest);
 			chain.doFilter(wrappedRequest, wrappedResponse);
 			if (servletApi2 || !httpRequest.isAsyncStarted()) {
-				wrappedResponse.flushBuffer();
+				wrappedResponse.flushStream();
 			}
 		} catch (final Throwable t) { // NOPMD
 			// on catche Throwable pour avoir tous les cas d'erreur système
@@ -291,7 +291,7 @@ public class MonitoringFilter implements Filter {
 				// prise en compte de Spring bestMatchingPattern s'il y a
 				requestName = CounterRequestContext.getHttpRequestName(httpRequest, requestName);
 				// taille du flux sortant
-				final int responseSize = wrappedResponse.getDataLength();
+				final long responseSize = wrappedResponse.getDataLength();
 				// nom identifiant la requête
 				if (wrappedResponse.getCurrentStatus() == HttpServletResponse.SC_NOT_FOUND) {
 					// Sécurité : si status http est 404, alors requestName est Error404
@@ -497,7 +497,7 @@ public class MonitoringFilter implements Filter {
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
 	protected void log(HttpServletRequest httpRequest, String requestName, long duration,
-			boolean systemError, int responseSize) {
+			boolean systemError, long responseSize) {
 		if (!logEnabled) {
 			return;
 		}

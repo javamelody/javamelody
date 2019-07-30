@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2017 by Emeric Vernat
+ * Copyright 2008-2019 by Emeric Vernat
  *
  *     This file is part of Java Melody.
  *
@@ -82,5 +82,17 @@ public class TestJavaMelodyLogger {
 		replay(request);
 		logger.logHttpRequest(request, "test", 1000, false, 10000, "javamelody");
 		verify(request);
+
+		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
+		expect(request2.getRemoteAddr()).andReturn("remote addr").anyTimes();
+		expect(request2.getRequestURI()).andReturn("/test/request").anyTimes();
+		expect(request2.getContextPath()).andReturn("/test").anyTimes();
+		expect(request2.getQueryString()).andReturn(null).anyTimes();
+		expect(request2.getMethod()).andReturn("GET").anyTimes();
+		expect(request2.getHeader("X-Forwarded-For")).andReturn(null).anyTimes();
+
+		replay(request2);
+		logger.logHttpRequest(request2, "test", 1000, true, 10000, "javamelody");
+		verify(request2);
 	}
 }
