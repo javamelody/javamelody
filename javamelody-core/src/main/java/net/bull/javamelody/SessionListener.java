@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
@@ -336,6 +337,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		// issue 665: in WildFly 10.1.0, the MonitoringFilter may never be initialized neither destroyed.
 		// For this case, it is needed to stop here the JdbcWrapper initialized in contextInitialized
 		JdbcWrapper.SINGLETON.stop();
+
+		// issue 848: NPE after SpringBoot hot restart
+		Parameters.initialize((ServletContext) null);
 
 		LOG.debug("JavaMelody listener destroy done");
 	}
