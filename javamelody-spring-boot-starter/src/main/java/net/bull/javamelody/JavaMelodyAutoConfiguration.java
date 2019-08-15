@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
@@ -86,6 +87,16 @@ public class JavaMelodyAutoConfiguration {
 	 * Name of the FilterRegistrationBean.
 	 */
 	public static final String REGISTRATION_BEAN_NAME = "javamelody-registration";
+
+	private final MonitoredWithAnnotationPointcut monitoredWithSpringAnnotationPointcut = new MonitoredWithAnnotationPointcut();
+
+	private final Pointcut asyncAnnotationPointcut = Pointcuts.union(
+			new AnnotationMatchingPointcut(Async.class),
+			new AnnotationMatchingPointcut(null, Async.class));
+
+	private final Pointcut scheduledAnnotationPointcut = Pointcuts.union(
+			new AnnotationMatchingPointcut(null, Scheduled.class),
+			new AnnotationMatchingPointcut(null, Schedules.class));
 
 	/**
 	 * Registers the JavaMelody {@link SessionListener}.
@@ -210,7 +221,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringAdvisor() {
-		return new MonitoringSpringAdvisor(new MonitoredWithAnnotationPointcut());
+		return new MonitoringSpringAdvisor(monitoredWithSpringAnnotationPointcut);
 	}
 
 	/**
@@ -220,7 +231,10 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
-		return new MonitoringSpringAdvisor(new AnnotationMatchingPointcut(Service.class));
+		return createMonitoringSpringAdvisorWithExclusions(
+				new AnnotationMatchingPointcut(Service.class),
+				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut,
+				scheduledAnnotationPointcut);
 	}
 
 	/**
@@ -230,7 +244,10 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
-		return new MonitoringSpringAdvisor(new AnnotationMatchingPointcut(Controller.class));
+		return createMonitoringSpringAdvisorWithExclusions(
+				new AnnotationMatchingPointcut(Controller.class),
+				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut,
+				scheduledAnnotationPointcut);
 	}
 
 	/**
@@ -240,7 +257,10 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
-		return new MonitoringSpringAdvisor(new AnnotationMatchingPointcut(RestController.class));
+		return createMonitoringSpringAdvisorWithExclusions(
+				new AnnotationMatchingPointcut(RestController.class),
+				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut,
+				scheduledAnnotationPointcut);
 	}
 
 	/**
@@ -250,9 +270,8 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public MonitoringSpringAdvisor monitoringSpringAsyncAdvisor() {
-		return new MonitoringSpringAdvisor(
-				Pointcuts.union(new AnnotationMatchingPointcut(Async.class),
-						new AnnotationMatchingPointcut(null, Async.class)));
+		return createMonitoringSpringAdvisorWithExclusions(asyncAnnotationPointcut,
+				monitoredWithSpringAnnotationPointcut, scheduledAnnotationPointcut);
 	}
 
 	/**
@@ -263,12 +282,25 @@ public class JavaMelodyAutoConfiguration {
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "scheduled-monitoring-enabled", matchIfMissing = true)
 	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
 	public MonitoringSpringAdvisor monitoringSpringScheduledAdvisor() {
-		// scheduled-monitoring-enabled was false by default because of #643,
-		// pending https://jira.spring.io/browse/SPR-15562,
-		// but true by default since 1.76 after adding dependency spring-boot-starter-aop
-		return new MonitoringSpringAdvisor(
-				Pointcuts.union(new AnnotationMatchingPointcut(null, Scheduled.class),
-						new AnnotationMatchingPointcut(null, Schedules.class)));
+		return createMonitoringSpringAdvisorWithExclusions(scheduledAnnotationPointcut,
+				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut);
+	}
+
+	private MonitoringSpringAdvisor createMonitoringSpringAdvisorWithExclusions(Pointcut pointcut,
+			Pointcut... excludedPointcuts) {
+		final Pointcut myPointcut;
+		if (excludedPointcuts.length == 0) {
+			myPointcut = pointcut;
+		} else {
+			Pointcut excludedPointcut = excludedPointcuts[0];
+			if (excludedPointcuts.length > 1) {
+				for (int i = 1; i < excludedPointcuts.length; i++) {
+					excludedPointcut = Pointcuts.union(excludedPointcut, excludedPointcuts[i]);
+				}
+			}
+			myPointcut = new ExcludingPointcut(pointcut).exclude(excludedPointcut);
+		}
+		return new MonitoringSpringAdvisor(myPointcut);
 	}
 
 	/**
