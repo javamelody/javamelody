@@ -22,6 +22,7 @@
 <a href="jsp/cache.jsp">cache</a><br/>
 <a href="jsp/jcache.jsp">jcache</a><br/>
 <a href="jsp/job.jsp">job</a><br/>
+<a href="jsp/prometheusTags.jsp">prometheus tags</a><br/>
 <br/>
 <b>Reports</b><br/>
 <a href="monitoring">javamelody</a><br/>

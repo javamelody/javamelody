@@ -776,6 +776,22 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	/**
+	 * Retourne l'objet {@link CounterRequest} correspondant à l'id en paramètre ou null sinon.
+	 * @param requestId Id de la requête
+	 * @return CounterRequest
+	 */
+	public CounterRequest getCounterRequestById(String requestId) {
+		if (isRequestIdFromThisCounter(requestId)) {
+			for (final CounterRequest request : requests.values()) {
+				if (request.getId().equals(requestId)) {
+					return request;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Retourne le nombre de requêtes dans ce counter.
 	 * @return int
 	 */

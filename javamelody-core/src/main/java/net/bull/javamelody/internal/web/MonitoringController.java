@@ -232,15 +232,21 @@ public class MonitoringController {
 			final PdfController pdfController = new PdfController(collector, collectorServer);
 			pdfController.doPdf(httpRequest, httpResponse, javaInformationsList);
 		} else if ("prometheus".equalsIgnoreCase(format)) {
-			httpResponse.setContentType("text/plain; version=0.0.4;charset=UTF-8");
 			final boolean includeLastValue = Boolean
 					.parseBoolean(httpRequest.getParameter("includeLastValue"));
-			final PrometheusController prometheusController = new PrometheusController(
-					javaInformationsList, collector, httpResponse.getWriter());
-			prometheusController.report(includeLastValue);
+			doPrometheus(httpResponse, javaInformationsList, includeLastValue);
 		} else {
 			doCompressedSerializable(httpRequest, httpResponse, javaInformationsList);
 		}
+	}
+
+	public void doPrometheus(HttpServletResponse httpResponse,
+			List<JavaInformations> javaInformationsList, final boolean includeLastValue)
+			throws IOException {
+		httpResponse.setContentType("text/plain; version=0.0.4;charset=UTF-8");
+		final PrometheusController prometheusController = new PrometheusController(
+				javaInformationsList, collector, httpResponse.getWriter());
+		prometheusController.report(includeLastValue);
 	}
 
 	public static void noCache(HttpServletResponse httpResponse) {
