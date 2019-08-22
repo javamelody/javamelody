@@ -38,6 +38,7 @@ import javax.servlet.ServletContext;
 
 import org.easymock.IAnswer;
 import org.jrobin.graph.RrdGraph;
+import org.junit.Before;
 import org.junit.Test;
 
 import net.bull.javamelody.Parameter;
@@ -61,6 +62,12 @@ public class TestMavenArtifact {
 				f.delete();
 			}
 		}
+	}
+
+	/** Check. */
+	@Before
+	public void setUp() {
+		Utils.initialize();
 	}
 
 	/**
