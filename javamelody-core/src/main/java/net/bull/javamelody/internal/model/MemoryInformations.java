@@ -189,15 +189,15 @@ public class MemoryInformations implements Serializable {
 		return -1d;
 	}
 
-	long getUsedNonHeapMemory() {
+	public long getUsedNonHeapMemory() {
 		return usedNonHeapMemory;
 	}
 
-	long getUsedBufferedMemory() {
+	public long getUsedBufferedMemory() {
 		return usedBufferedMemory;
 	}
 
-	int getLoadedClassesCount() {
+	public int getLoadedClassesCount() {
 		return loadedClassesCount;
 	}
 
@@ -205,11 +205,11 @@ public class MemoryInformations implements Serializable {
 		return garbageCollectionTimeMillis;
 	}
 
-	long getUsedPhysicalMemorySize() {
+	public long getUsedPhysicalMemorySize() {
 		return usedPhysicalMemorySize;
 	}
 
-	long getUsedSwapSpaceSize() {
+	public long getUsedSwapSpaceSize() {
 		return usedSwapSpaceSize;
 	}
 

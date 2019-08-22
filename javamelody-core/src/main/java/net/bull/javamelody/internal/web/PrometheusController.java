@@ -536,6 +536,25 @@ class PrometheusController {
 
 		printDouble(MetricType.COUNTER, "memory_gc_millis", "gc time millis",
 				memoryInformations.getGarbageCollectionTimeMillis());
+
+		if (memoryInformations.getUsedBufferedMemory() >= 0) {
+			printLong(MetricType.GAUGE, "memory_used_buffered_bytes",
+					"used buffered memory in bytes", memoryInformations.getUsedBufferedMemory());
+		}
+		printLong(MetricType.GAUGE, "memory_used_non_heap_bytes", "used non-heap memory in bytes",
+				memoryInformations.getUsedNonHeapMemory());
+		if (memoryInformations.getUsedSwapSpaceSize() >= 0) {
+			printLong(MetricType.GAUGE, "memory_used_swap_space_bytes",
+					"used memory in the OS swap space in bytes",
+					memoryInformations.getUsedSwapSpaceSize());
+		}
+		if (memoryInformations.getUsedPhysicalMemorySize() > 0) {
+			printLong(MetricType.GAUGE, "memory_used_physical_bytes",
+					"used memory in the OS in bytes",
+					memoryInformations.getUsedPhysicalMemorySize());
+		}
+		printLong(MetricType.GAUGE, "loaded_classes_count", "loaded classes count",
+				memoryInformations.getLoadedClassesCount());
 	}
 
 	/**
