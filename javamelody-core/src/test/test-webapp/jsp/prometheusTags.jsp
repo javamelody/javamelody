@@ -6,4 +6,4 @@
 	<%= Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() %>
 </prometheus:custom>
 <prometheus:request requestId="http9b051a0212745888c373b46ee5f27d9d6d905d45" />
-<prometheus:standard/>
+<prometheus:standard includeLastValue="false"/>
