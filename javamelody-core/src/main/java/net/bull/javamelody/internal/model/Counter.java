@@ -784,7 +784,9 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		if (isRequestIdFromThisCounter(requestId)) {
 			for (final CounterRequest request : requests.values()) {
 				if (request.getId().equals(requestId)) {
-					return request;
+					synchronized (request) {
+						return request.clone();
+					}
 				}
 			}
 		}
