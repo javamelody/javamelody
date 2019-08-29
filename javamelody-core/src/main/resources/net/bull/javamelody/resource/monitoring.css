@@ -378,6 +378,16 @@ input[type=checkbox] {
 	.noPrint {
 		display: none;
 	}
+	body {
+		zoom: 80%; /* for graphs layout in print, except in firefox: https://bugzilla.mozilla.org/show_bug.cgi?id=390936 */
+	}
+	a, a:visited {
+		color: #000000;
+	}
+	.tooltip {
+		/* pour que <div class=tooltip> soit comme <a> */
+		color: #000000;
+	}
 }
 
 /* JavaHTMLizer */

@@ -205,7 +205,7 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 
-		writeln("<tr><td valign='top'>#Dependencies#: </td><td>");
+		writeln("<tr><td valign='top'><div class='noPrint'>#Dependencies#: </div></td><td>");
 		writeDependencies(javaInformations);
 		writeln(columnEnd);
 
