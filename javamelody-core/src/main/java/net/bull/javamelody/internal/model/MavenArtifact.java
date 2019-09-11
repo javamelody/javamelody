@@ -78,7 +78,9 @@ public final class MavenArtifact implements Serializable {
 	private String version;
 	private MavenArtifact parent;
 	private final Map<String, String> licenseUrlsByName = new LinkedHashMap<String, String>();
+	private Map<String, String> properties;
 	private final List<MavenArtifact> dependencies = new ArrayList<MavenArtifact>();
+	private final List<MavenArtifact> managedDependencies = new ArrayList<MavenArtifact>();
 	private boolean updated;
 
 	private MavenArtifact() {
@@ -102,10 +104,26 @@ public final class MavenArtifact implements Serializable {
 			final Document doc = dBuilder.parse(pomXml);
 			final Node projectNode = doc.getElementsByTagName("project").item(0);
 			final NodeList childNodes = projectNode.getChildNodes();
+			properties = new HashMap<String, String>();
 			for (int i = 0; i < childNodes.getLength(); i++) {
 				final Node node = childNodes.item(i);
 				parseNode(node);
 			}
+			properties.put("project.groupId", groupId);
+			properties.put("pom.groupId", groupId);
+			properties.put("groupId", groupId);
+			properties.put("project.version", version);
+			properties.put("pom.version", version);
+			properties.put("version", version);
+			for (final MavenArtifact dependency : dependencies) {
+				dependency.groupId = replaceProperty(dependency.groupId, properties);
+				dependency.version = replaceProperty(dependency.version, properties);
+			}
+			for (final MavenArtifact dependency : managedDependencies) {
+				dependency.groupId = replaceProperty(dependency.groupId, properties);
+				dependency.version = replaceProperty(dependency.version, properties);
+			}
+			properties = null;
 		} catch (final ParserConfigurationException e) {
 			throw new IOException(e.getMessage(), e);
 		} catch (final SAXException e) {
@@ -117,7 +135,6 @@ public final class MavenArtifact implements Serializable {
 	// CHECKSTYLE:OFF
 	private void parseNode(Node node) {
 		// CHECKSTYLE:ON
-		final Map<String, String> properties = new HashMap<String, String>();
 		final String nodeName = node.getNodeName();
 		if ("name".equals(nodeName)) {
 			this.name = node.getTextContent();
@@ -138,18 +155,15 @@ public final class MavenArtifact implements Serializable {
 		} else if ("licenses".equals(nodeName)) {
 			parseLicensesNode(node);
 		} else if ("dependencies".equals(nodeName)) {
-			parseDependenciesNode(node);
-			// note: dependencyManagement is currently ignored
-		}
-		properties.put("project.groupId", groupId);
-		properties.put("pom.groupId", groupId);
-		properties.put("groupId", groupId);
-		properties.put("project.version", version);
-		properties.put("pom.version", version);
-		properties.put("version", version);
-		for (final MavenArtifact dependency : dependencies) {
-			dependency.groupId = replaceProperty(dependency.groupId, properties);
-			dependency.version = replaceProperty(dependency.version, properties);
+			this.dependencies.addAll(parseDependenciesNode(node));
+		} else if ("dependencyManagement".equals(nodeName)) {
+			final NodeList childNodes = node.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); i++) {
+				final Node childNode = childNodes.item(i);
+				if ("dependencies".equals(childNode.getNodeName())) {
+					this.managedDependencies.addAll(parseDependenciesNode(childNode));
+				}
+			}
 		}
 	}
 
@@ -182,16 +196,16 @@ public final class MavenArtifact implements Serializable {
 	}
 
 	private Map<String, String> parsePropertiesNode(Node propertiesNode) {
-		final Map<String, String> properties = new HashMap<String, String>();
+		final Map<String, String> props = new HashMap<String, String>();
 		final NodeList propertiesNodes = propertiesNode.getChildNodes();
 		for (int j = 0; j < propertiesNodes.getLength(); j++) {
 			final Node propertyNode = propertiesNodes.item(j);
 			final String nodeName = propertyNode.getNodeName();
 			if (nodeName != null) {
-				properties.put(nodeName, propertyNode.getTextContent());
+				props.put(nodeName, propertyNode.getTextContent());
 			}
 		}
-		return properties;
+		return props;
 	}
 
 	private void parseLicensesNode(Node licensesNode) {
@@ -225,8 +239,9 @@ public final class MavenArtifact implements Serializable {
 	}
 
 	// CHECKSTYLE:OFF
-	private void parseDependenciesNode(Node dependenciesNode) {
+	private List<MavenArtifact> parseDependenciesNode(Node dependenciesNode) {
 		// CHECKSTYLE:ON
+		final List<MavenArtifact> deps = new ArrayList<MavenArtifact>();
 		final NodeList dependencyNodes = dependenciesNode.getChildNodes();
 		for (int j = 0; j < dependencyNodes.getLength(); j++) {
 			final Node dependencyNode = dependencyNodes.item(j);
@@ -252,10 +267,11 @@ public final class MavenArtifact implements Serializable {
 				}
 				if ((scope == null || "compile".equals(scope))
 						&& (optional == null || !"true".equals(optional))) {
-					dependencies.add(dependency);
+					deps.add(dependency);
 				}
 			}
 		}
+		return deps;
 	}
 
 	private void update() throws IOException {
@@ -318,6 +334,20 @@ public final class MavenArtifact implements Serializable {
 	//	List<MavenArtifact> getDependencies() {
 	//		return dependencies;
 	//	}
+	//
+	//	List<MavenArtifact> getManagedDependencies() {
+	//		return managedDependencies;
+	//	}
+
+	private List<MavenArtifact> getAllManagedDependencies() throws IOException {
+		update();
+		final List<MavenArtifact> allManagedDependencies = new ArrayList<MavenArtifact>();
+		allManagedDependencies.addAll(managedDependencies);
+		if (parent != null) {
+			allManagedDependencies.addAll(parent.getAllManagedDependencies());
+		}
+		return allManagedDependencies;
+	}
 
 	List<MavenArtifact> getAllDependencies() throws IOException {
 		return getAllDependencies(1);
@@ -331,7 +361,16 @@ public final class MavenArtifact implements Serializable {
 		// update dependencies if needed
 		update();
 		final List<MavenArtifact> transitiveDependencies = new ArrayList<MavenArtifact>();
+		final List<MavenArtifact> allManagedDependencies = getAllManagedDependencies();
 		for (final MavenArtifact dependency : dependencies) {
+			if (dependency.version == null) {
+				for (final MavenArtifact managedDependency : allManagedDependencies) {
+					if (dependency.isSame(managedDependency)) {
+						dependency.version = managedDependency.version;
+						break;
+					}
+				}
+			}
 			transitiveDependencies.addAll(dependency.getAllDependencies(level + 1));
 		}
 		if (parent != null) {
