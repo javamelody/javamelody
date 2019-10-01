@@ -370,7 +370,14 @@ public class JavaInformations implements Serializable { // NOPMD
 		}
 		final Thread[] threadsArray = new Thread[group.activeCount()];
 		group.enumerate(threadsArray, true);
-		return Arrays.asList(threadsArray);
+		final List<Thread> threads = new ArrayList<Thread>(threadsArray.length);
+		for (final Thread thread : threadsArray) {
+			// threadsArray may contain null if a thread has just died between activeCount and enumerate
+			if (thread != null) {
+				threads.add(thread);
+			}
+		}
+		return threads;
 	}
 
 	private static long[] getDeadlockedThreads(ThreadMXBean threadBean) {
