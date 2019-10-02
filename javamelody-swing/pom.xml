@@ -51,25 +51,12 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-		<!-- Dépendance iText pour exports PDF -->
+		<!-- Dépendance OpenPDF pour exports PDF -->
 		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.1.7</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>bcmail-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>bcprov-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>bctsp-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
-				</exclusion>
-			</exclusions>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.3.11</version>
+			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance iText-RTF pour exports RTF -->
 		<dependency>
@@ -164,7 +151,7 @@
 									<zipfileset src="${project.build.directory}/dependency/javamelody-core-${project.version}.jar" 
 										excludes="net/bull/javamelody/Main.class,com/lowagie/text/pdf/fonts/cmap_info.txt" />
 									<zipgroupfileset dir="${project.build.directory}/dependency">
-										<include name="itext-2.1.7.jar" />
+										<include name="openpdf-*.jar" />
 										<include name="log4j-*.jar" />
 										<include name="xstream-*.jar" />
 										<include name="xmlpull-*.jar" />
