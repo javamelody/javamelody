@@ -43,13 +43,16 @@ public class TestWebappVersions {
 	}
 
 	/** Test.
-	 * @throws IOException e */
+	 * @throws IOException e
+	 * @throws InterruptedException e */
 	@Test
-	public void test() throws IOException {
+	public void test() throws IOException, InterruptedException {
 		final String application = "unittest";
 		final File storageDirectory = Parameters.getStorageDirectory(application);
 		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
 		versionsFile.delete();
+		// wait to be sure that the file does not exist any more
+		Thread.sleep(10);
 		WebappVersions webappVersions = new WebappVersions(application);
 		assertEquals("0", 0, webappVersions.getDatesByVersions().size());
 		final Random random = new Random();
