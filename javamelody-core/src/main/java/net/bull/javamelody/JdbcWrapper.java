@@ -126,9 +126,12 @@ public final class JdbcWrapper {
 					requestName = (String) args[0];
 				} else if (("executeBatch".equals(methodName)
 						|| "executeLargeBatch".equals(methodName))
-						&& !requestName.startsWith("/* BATCH */ ")) {
+						&& requestName != null && !requestName.startsWith("/* BATCH */ ")) {
 					// if executeBatch, add a prefix in the request name to explain that
-					// 1 batch "hit" is equivalent to several exec of the request in the db
+					// 1 batch "hit" is equivalent to several exec of the request in the db.
+
+					// requestName may be null if executeBatch()
+					// without prepareStatement(String) or addBatch(String)
 					requestName = "/* BATCH */ " + requestName;
 				}
 
