@@ -140,6 +140,10 @@ class WebappVersions {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat(VERSIONS_DATE_PATTERN, Locale.US);
 		versionsProperties.setProperty(webappVersion, dateFormat.format(new Date()));
 
+		final File directory = versionsFile.getParentFile();
+		if (!directory.mkdirs() && !directory.exists()) {
+			throw new IOException("JavaMelody directory can't be created: " + directory.getPath());
+		}
 		final OutputStream output = new FileOutputStream(versionsFile);
 		try {
 			versionsProperties.store(output, "Application deployments with versions and dates");
