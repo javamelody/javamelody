@@ -87,8 +87,7 @@ class PdfJndiReport extends PdfAbstractTableReport {
 			final Image image = getFolderImage();
 			final Phrase phrase = new Phrase("", cellFont);
 			phrase.add(new Chunk(image, 0, 0));
-			phrase.add(" ");
-			phrase.add(name);
+			phrase.add(new Chunk(" " + name));
 			addCell(phrase);
 		} else {
 			addCell(name);

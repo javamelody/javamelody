@@ -152,7 +152,7 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 			final Image memoryImage = Image
 					.getInstance(Bar.toBar(100d * elapsedTime / counterRequest.getMean()), null);
 			memoryImage.scalePercent(47);
-			elapsedTimePhrase.add("\n");
+			elapsedTimePhrase.add(new Chunk("\n"));
 			elapsedTimePhrase.add(new Chunk(memoryImage, 0, 0));
 			addCell(elapsedTimePhrase);
 		} else {

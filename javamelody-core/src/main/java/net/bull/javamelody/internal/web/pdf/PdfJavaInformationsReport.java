@@ -161,17 +161,17 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			final Image osImage = PdfDocumentFactory.getImage("servers/" + osIconName);
 			osImage.scalePercent(40);
 			osPhrase.add(new Chunk(osImage, 0, 0));
-			osPhrase.add(separator);
+			osPhrase.add(new Chunk(separator));
 		}
-		osPhrase.add(javaInformations.getOS() + " (" + javaInformations.getAvailableProcessors()
-				+ ' ' + getString("coeurs") + ')');
+		osPhrase.add(new Chunk(javaInformations.getOS() + " ("
+				+ javaInformations.getAvailableProcessors() + ' ' + getString("coeurs") + ')'));
 		currentTable.addCell(osPhrase);
 		addCell(getString("Java") + ':');
 		addCell(javaInformations.getJavaVersion());
 		addCell(getString("JVM") + ':');
 		final Phrase jvmVersionPhrase = new Phrase(javaInformations.getJvmVersion(), cellFont);
 		if (javaInformations.getJvmVersion().contains("Client")) {
-			jvmVersionPhrase.add(separator);
+			jvmVersionPhrase.add(new Chunk(separator));
 			final Image alertImage = PdfDocumentFactory.getImage("alert.png");
 			alertImage.scalePercent(50);
 			jvmVersionPhrase.add(new Chunk(alertImage, 0, -2));
@@ -220,9 +220,9 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 					.getImage("servers/" + applicationServerIconName);
 			applicationServerImage.scalePercent(40);
 			serverInfoPhrase.add(new Chunk(applicationServerImage, 0, 0));
-			serverInfoPhrase.add("   ");
+			serverInfoPhrase.add(new Chunk("   "));
 		}
-		serverInfoPhrase.add(serverInfo);
+		serverInfoPhrase.add(new Chunk(serverInfo));
 		currentTable.addCell(serverInfoPhrase);
 	}
 
