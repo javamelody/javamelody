@@ -43,10 +43,9 @@ public class TestWebappVersions {
 	}
 
 	/** Test.
-	 * @throws IOException e
-	 * @throws InterruptedException e */
+	 * @throws IOException e */
 	@Test
-	public void test() throws IOException, InterruptedException {
+	public void test() throws IOException {
 		final String application = "unittest";
 		final File storageDirectory = Parameters.getStorageDirectory(application);
 		final File versionsFile = new File(storageDirectory, VERSIONS_FILENAME);
