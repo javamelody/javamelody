@@ -40,6 +40,7 @@ import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
  */
 class RemoteCall {
 	private final URL url;
+	private final Map<String, String> headers;
 	private String cookies;
 
 	/**
@@ -47,9 +48,18 @@ class RemoteCall {
 	 * @param url URL
 	 */
 	RemoteCall(URL url) {
+		this(url, null);
+	}
+
+	/**
+	 * Constructeur.
+	 * @param url URL
+	 */
+	RemoteCall(URL url, Map<String, String> headers) {
 		super();
 		assert url != null;
 		this.url = url;
+		this.headers = headers;
 	}
 
 	/**
@@ -65,6 +75,7 @@ class RemoteCall {
 		} else {
 			this.url = new URL(url + "&format=serialized");
 		}
+		this.headers = null;
 	}
 
 	// utilisée dans scripts Jenkins par exemple
@@ -290,23 +301,30 @@ class RemoteCall {
 	String collectSqlRequestExplainPlan(String sqlRequest) throws IOException {
 		final URL explainPlanUrl = new URL(
 				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.EXPLAIN_PLAN);
-		final Map<String, String> headers = new HashMap<String, String>();
-		headers.put(HttpParameter.REQUEST.getName(), sqlRequest);
-		if (cookies != null) {
-			headers.put("Cookie", cookies);
-		}
-		final LabradorRetriever labradorRetriever = new LabradorRetriever(explainPlanUrl, headers);
-		return labradorRetriever.call();
+		final Map<String, String> additionalHeader = new HashMap<String, String>();
+		additionalHeader.put(HttpParameter.REQUEST.getName(), sqlRequest);
+		return callLabradorRetriever(explainPlanUrl, additionalHeader);
 	}
 
 	private <T> T collectForUrl(URL myUrl) throws IOException {
 		final LabradorRetriever labradorRetriever;
+		return callLabradorRetriever(myUrl, null);
+	}
+
+	private <T> T callLabradorRetriever(URL myUrl, Map<String, String> additionalHeaders) throws IOException {
+		LabradorRetriever labradorRetriever;
+		final Map<String, String> mergedHeader = new HashMap<String, String>();
+
 		if (cookies != null) {
-			final Map<String, String> headers = Collections.singletonMap("Cookie", cookies);
-			labradorRetriever = new LabradorRetriever(myUrl, headers);
-		} else {
-			labradorRetriever = new LabradorRetriever(myUrl);
+			mergedHeader.put("Cookie", cookies);
 		}
+		if (this.headers != null) {
+			mergedHeader.putAll(this.headers);
+		}
+		if (additionalHeaders != null) {
+			mergedHeader.putAll(additionalHeaders);
+		}
+		labradorRetriever = new LabradorRetriever(myUrl, mergedHeader);
 		return labradorRetriever.call();
 	}
 
