@@ -602,6 +602,8 @@ public class Collector { // NOPMD
 		if (getCounterByName(Counter.BUILDS_COUNTER_NAME) != null) {
 			addJRobinValue(getCounterJRobin("runningBuilds"), JdbcWrapper.getRunningBuildCount());
 			addJRobinValue(getCounterJRobin("buildQueueLength"), JdbcWrapper.getBuildQueueLength());
+			addJRobinValue(getCounterJRobin("buildQueueWaiting"),
+					JdbcWrapper.getBuildQueueWaitingDurationsSum() / 1000d);
 		}
 	}
 
