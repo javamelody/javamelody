@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,16 +104,18 @@ public class CollectorServer {
 	}
 
 	public void collectWithoutErrors() {
-		// clone pour éviter ConcurrentModificationException
-		final Map<String, List<URL>> clone;
+		final Map<String, List<URL>> urlsByApplication;
 		try {
-			clone = new LinkedHashMap<String, List<URL>>(
+			urlsByApplication = new LinkedHashMap<String, List<URL>>(
 					Parameters.getCollectorUrlsByApplications());
 		} catch (final IOException e) {
 			LOGGER.warn(e.getMessage(), e);
 			return;
+		} catch (final ConcurrentModificationException e) {
+			LOGGER.warn(e.getMessage(), e);
+			return;
 		}
-		for (final Map.Entry<String, List<URL>> entry : clone.entrySet()) {
+		for (final Map.Entry<String, List<URL>> entry : urlsByApplication.entrySet()) {
 			final String application = entry.getKey();
 			final List<URL> urls = entry.getValue();
 			executorService.submit(new Runnable() {
