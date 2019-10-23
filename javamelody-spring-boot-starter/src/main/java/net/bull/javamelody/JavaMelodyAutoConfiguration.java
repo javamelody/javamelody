@@ -374,6 +374,16 @@ public class JavaMelodyAutoConfiguration {
 	}
 
 	/**
+	 * Monitoring of ElasticsearchOperations beans.
+	 * @return SpringElasticsearchOperationsBeanPostProcessor
+	 */
+	@Bean
+	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	public SpringElasticsearchOperationsBeanPostProcessor monitoringElasticsearchOperationsBeanPostProcessor() {
+		return new SpringElasticsearchOperationsBeanPostProcessor();
+	}
+
+	/**
 	 * @return Enregistrement du context Spring.
 	 */
 	@Bean
