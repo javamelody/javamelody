@@ -32,10 +32,6 @@
 		<url>https://github.com/javamelody/javamelody</url>
 		<tag>HEAD</tag>
 	</scm>
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>https://javamelody.ci.cloudbees.com/job/javamelody/</url>
-	</ciManagement>
 	<mailingLists>
 		<mailingList>
 			<name>User List</name>
