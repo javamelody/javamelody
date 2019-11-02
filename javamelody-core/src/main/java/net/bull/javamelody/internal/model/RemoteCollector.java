@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.bull.javamelody.SessionListener;
+import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
 
 /**
@@ -42,6 +43,10 @@ public class RemoteCollector {
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
 	private Map<JavaInformations, List<CounterRequestContext>> currentRequests;
+	private final List<Counter> newCounters = new ArrayList<Counter>();
+	private List<RemoteCollector> remoteCollectors;
+	private final boolean aggregatedApplication;
+	private final boolean aggregationApplication;
 	private String cookies;
 	private boolean aggregationDisabled;
 
@@ -49,13 +54,16 @@ public class RemoteCollector {
 	 * Constructeur.
 	 * @param application Nom de l'application
 	 * @param urls URLs
+	 * @throws IOException e
 	 */
-	public RemoteCollector(String application, List<URL> urls) {
+	public RemoteCollector(String application, List<URL> urls) throws IOException {
 		super();
 		assert application != null;
 		assert urls != null;
 		this.application = application;
 		this.urls = urls;
+		this.aggregatedApplication = isAggregatedApplication();
+		this.aggregationApplication = isAggregationApplication();
 	}
 
 	String collectData() throws IOException {
@@ -76,17 +84,40 @@ public class RemoteCollector {
 		final Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations = new HashMap<JavaInformations, List<CounterRequestContext>>();
 		final StringBuilder sb = new StringBuilder();
 		IOException exception = null;
-		for (final URL url : urlsForCollect) {
-			try {
-				final List<Counter> counters = new ArrayList<Counter>();
-				final List<Serializable> serialized = createRemoteCall(url).collectData();
-				dispatchSerializables(serialized, counters, javaInfosList,
-						counterRequestContextsByJavaInformations, sb);
+		if (!aggregationApplication) {
+			for (final URL url : urlsForCollect) {
+				try {
+					final List<Counter> counters = new ArrayList<Counter>();
+					final List<Serializable> serialized = createRemoteCall(url).collectData();
+					dispatchSerializables(serialized, counters, javaInfosList,
+							counterRequestContextsByJavaInformations, sb);
+					addRequestsAndErrors(counters);
+					if (aggregatedApplication) {
+						newCounters.addAll(counters);
+					}
+				} catch (final IOException e) {
+					exception = e;
+					// if a node of the application is no longer reachable, collect data for the others
+					continue;
+				}
+			}
+		} else {
+			assert remoteCollectors != null;
+			for (final RemoteCollector remoteCollector : remoteCollectors) {
+				javaInfosList.addAll(remoteCollector.getJavaInformationsList());
+				counterRequestContextsByJavaInformations
+						.putAll(remoteCollector.getCurrentRequests());
+				final List<Counter> counters = remoteCollector.getNewCounters();
+				if (counters.isEmpty()) {
+					// lors de la première collecte, il faut récupérer les counters et pas seulement les deltas
+					counters.addAll(remoteCollector.getCollector().getCounters());
+				}
 				addRequestsAndErrors(counters);
-			} catch (final IOException e) {
-				exception = e;
-				// if a node of the application is no longer reachable, collect data for the others
-				continue;
+				if (aggregatedApplication) {
+					newCounters.addAll(counters);
+				}
+				// les nouveaux counters ont été aggrégés dans cette application, on peut les oublier
+				counters.clear();
 			}
 		}
 		if (exception != null && javaInfosList.isEmpty()) {
@@ -130,6 +161,20 @@ public class RemoteCollector {
 			counterRequestContextsByJavaInformations.put(latestJavaInformations,
 					counterRequestContextsList);
 		}
+	}
+
+	private boolean isAggregatedApplication() throws IOException {
+		for (final List<String> applications : Parameters.getApplicationsByAggregationApplication()
+				.values()) {
+			if (applications.contains(application)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	final boolean isAggregationApplication() throws IOException {
+		return Parameters.getApplicationsByAggregationApplication().containsKey(application);
 	}
 
 	public String executeActionAndCollectData(Action action, String counterName, String sessionId,
@@ -339,6 +384,13 @@ public class RemoteCollector {
 	}
 
 	public List<URL> getURLs() {
+		if (aggregationApplication) {
+			final List<URL> result = new ArrayList<URL>();
+			for (final RemoteCollector remoteCollector : remoteCollectors) {
+				result.addAll(remoteCollector.getURLs());
+			}
+			return result;
+		}
 		return urls;
 	}
 
@@ -352,6 +404,14 @@ public class RemoteCollector {
 
 	public Map<JavaInformations, List<CounterRequestContext>> getCurrentRequests() {
 		return currentRequests;
+	}
+
+	List<Counter> getNewCounters() {
+		return newCounters;
+	}
+
+	void setRemoteCollectors(List<RemoteCollector> remoteCollectors) {
+		this.remoteCollectors = remoteCollectors;
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing

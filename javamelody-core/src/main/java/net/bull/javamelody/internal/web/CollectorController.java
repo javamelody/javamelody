@@ -26,6 +26,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,6 +101,18 @@ public class CollectorController { // NOPMD
 		}
 		final List<URL> urls = Parameters.parseUrl(appUrls);
 		collectorServer.addCollectorApplication(appName, urls);
+	}
+
+	public void addCollectorAggregationApplication(String aggregationApplication,
+			List<String> aggregatedApplications) throws IOException {
+		final File file = Parameters.getCollectorApplicationsFile();
+		if (file.exists() && !file.canWrite()) {
+			throw new IllegalStateException(
+					"applications should be added or removed in the applications.properties file, because the user is not allowed to write: "
+							+ file);
+		}
+		collectorServer.addCollectorAggregationApplication(aggregationApplication,
+				aggregatedApplications);
 	}
 
 	public void removeCollectorApplicationNodes(String appName, String nodeUrls)
@@ -502,7 +516,8 @@ public class CollectorController { // NOPMD
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
 				+ "'><head><title>Monitoring</title></head><body>");
-		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
+		final Collection<String> applications = Collections.emptyList();
+		HtmlReport.writeAddAndRemoveApplicationLinks(null, applications, writer);
 		writer.write("</body></html>");
 		writer.close();
 	}

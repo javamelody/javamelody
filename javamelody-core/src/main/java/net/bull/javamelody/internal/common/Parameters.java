@@ -27,7 +27,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -58,6 +60,7 @@ public final class Parameters {
 	private static final String COLLECTOR_APPLICATIONS_FILENAME = "applications.properties";
 	private static final boolean PDF_ENABLED = computePdfEnabled();
 	private static Map<String, List<URL>> urlsByApplications;
+	private static Map<String, List<String>> applicationsByAggregationApplications;
 
 	private static FilterConfig filterConfig;
 	private static ServletContext servletContext;
@@ -119,6 +122,14 @@ public final class Parameters {
 		return Collections.unmodifiableMap(urlsByApplications);
 	}
 
+	public static Map<String, List<String>> getApplicationsByAggregationApplication()
+			throws IOException {
+		if (applicationsByAggregationApplications == null) {
+			readCollectorApplications();
+		}
+		return Collections.unmodifiableMap(applicationsByAggregationApplications);
+	}
+
 	public static void addCollectorApplication(String application, List<URL> urls)
 			throws IOException {
 		assert application != null;
@@ -130,12 +141,28 @@ public final class Parameters {
 		writeCollectorApplications();
 	}
 
+	public static void addCollectorAggregationApplication(String aggregationApplication,
+			List<String> aggregatedApplications) throws IOException {
+		assert aggregationApplication != null;
+		assert aggregatedApplications != null && !aggregatedApplications.isEmpty();
+		// initialisation si besoin
+		getCollectorUrlsByApplications();
+
+		applicationsByAggregationApplications.put(aggregationApplication, aggregatedApplications);
+		writeCollectorApplications();
+	}
+
 	public static void removeCollectorApplication(String application) throws IOException {
 		assert application != null;
 		// initialisation si besoin
 		getCollectorUrlsByApplications();
 
-		urlsByApplications.remove(application);
+		if (urlsByApplications.containsKey(application)) {
+			urlsByApplications.remove(application);
+		} else {
+			applicationsByAggregationApplications.remove(application);
+		}
+		synchronizeAggregationApplications();
 		writeCollectorApplications();
 	}
 
@@ -151,7 +178,23 @@ public final class Parameters {
 				// on enlève le suffixe ajouté précédemment dans parseUrl
 				final String webappUrl = urlString.substring(0,
 						urlString.lastIndexOf(monitoringPath));
+				if (webappUrl.indexOf(',') != -1) {
+					throw new IOException("The URL should not contain a comma.");
+				}
 				sb.append(webappUrl).append(',');
+			}
+			sb.delete(sb.length() - 1, sb.length());
+			properties.put(entry.getKey(), sb.toString());
+		}
+		for (final Map.Entry<String, List<String>> entry : applicationsByAggregationApplications
+				.entrySet()) {
+			final List<String> applications = entry.getValue();
+			final StringBuilder sb = new StringBuilder();
+			for (final String application : applications) {
+				if (application.indexOf(',') != -1) {
+					throw new IOException("The application name should not contain a comma.");
+				}
+				sb.append(application).append(',');
 			}
 			sb.delete(sb.length() - 1, sb.length());
 			properties.put(entry.getKey(), sb.toString());
@@ -172,10 +215,13 @@ public final class Parameters {
 	private static void readCollectorApplications() throws IOException {
 		// le fichier applications.properties contient les noms et les urls des applications à monitorer
 		// par ex.: recette=http://recette1:8080/myapp
+		// ou recette2=http://recette2:8080/myapp
 		// ou production=http://prod1:8080/myapp,http://prod2:8080/myapp
+		// ou aggregation=recette,recette2
 		// Dans une instance de Properties, les propriétés ne sont pas ordonnées,
 		// mais elles seront ordonnées lorsqu'elles seront mises dans cette TreeMap
-		final Map<String, List<URL>> result = new TreeMap<String, List<URL>>();
+		final Map<String, List<URL>> applications = new TreeMap<String, List<URL>>();
+		final Map<String, List<String>> aggregationApplications = new TreeMap<String, List<String>>();
 		final File file = getCollectorApplicationsFile();
 		if (file.exists()) {
 			final Properties properties = new Properties();
@@ -189,10 +235,39 @@ public final class Parameters {
 			final List<String> propertyNames = (List<String>) Collections
 					.list(properties.propertyNames());
 			for (final String property : propertyNames) {
-				result.put(property, parseUrl(String.valueOf(properties.get(property))));
+				final String value = String.valueOf(properties.get(property));
+				if (value.startsWith("http")) {
+					applications.put(property, parseUrl(value));
+				} else {
+					aggregationApplications.put(property,
+							new ArrayList<String>(Arrays.asList(value.split(","))));
+				}
 			}
 		}
-		urlsByApplications = result;
+		urlsByApplications = applications;
+		applicationsByAggregationApplications = aggregationApplications;
+
+		synchronizeAggregationApplications();
+	}
+
+	private static void synchronizeAggregationApplications() {
+		for (final Iterator<List<String>> it1 = applicationsByAggregationApplications.values()
+				.iterator(); it1.hasNext();) {
+			final List<String> aggregatedApplications = it1.next();
+			for (final Iterator<String> it2 = aggregatedApplications.iterator(); it2.hasNext();) {
+				final String aggregatedApplication = it2.next();
+				if (!urlsByApplications.containsKey(aggregatedApplication)
+						&& !applicationsByAggregationApplications
+								.containsKey(aggregatedApplication)) {
+					// application aggrégée inconnue, on la supprime
+					it2.remove();
+				}
+			}
+			if (aggregatedApplications.isEmpty()) {
+				// application d'aggrégation vide, on la supprime
+				it1.remove();
+			}
+		}
 	}
 
 	public static File getCollectorApplicationsFile() {

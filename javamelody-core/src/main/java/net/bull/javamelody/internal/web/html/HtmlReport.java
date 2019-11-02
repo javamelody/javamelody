@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -109,9 +110,9 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeHtmlFooter();
 	}
 
-	public static void writeAddAndRemoveApplicationLinks(String currentApplication, Writer writer)
-			throws IOException {
-		HtmlCoreReport.writeAddAndRemoveApplicationLinks(currentApplication, writer);
+	public static void writeAddAndRemoveApplicationLinks(String currentApplication,
+			Collection<String> applications, Writer writer) throws IOException {
+		HtmlCoreReport.writeAddAndRemoveApplicationLinks(currentApplication, applications, writer);
 	}
 
 	public void writeAllCurrentRequestsAsPart() throws IOException {

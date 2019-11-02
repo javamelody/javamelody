@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.model;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -39,9 +38,9 @@ public class TestRemoteCollector {
 	private RemoteCollector remoteCollector;
 
 	/** Check.
-	 * @throws MalformedURLException e */
+	 * @throws IOException e */
 	@Before
-	public void setUp() throws MalformedURLException {
+	public void setUp() throws IOException {
 		Utils.initialize();
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 		final List<URL> urls = Collections.singletonList(new URL("http://localhost:8090/test"));

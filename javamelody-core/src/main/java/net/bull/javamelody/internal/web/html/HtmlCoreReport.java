@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -316,9 +317,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln(" - " + range.getLabel() + "</h3>");
 	}
 
-	static void writeAddAndRemoveApplicationLinks(String currentApplication, Writer writer)
-			throws IOException {
-		new HtmlForms(writer).writeAddAndRemoveApplicationLinks(currentApplication);
+	static void writeAddAndRemoveApplicationLinks(String currentApplication,
+			Collection<String> applications, Writer writer) throws IOException {
+		new HtmlForms(writer).writeAddAndRemoveApplicationLinks(currentApplication, applications);
 	}
 
 	void writeMessageIfNotNull(String message, String partToRedirectTo,
@@ -789,8 +790,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
 		writeln("<div align='center'>");
-		final Collection<String> applications = Parameters.getCollectorUrlsByApplications()
-				.keySet();
+		final Collection<String> applications = new ArrayList<String>();
+		applications.addAll(Parameters.getCollectorUrlsByApplications().keySet());
+		applications.addAll(Parameters.getApplicationsByAggregationApplication().keySet());
 		if (applications.size() > 1
 				|| !collectorServer.getLastCollectExceptionsByApplication().isEmpty()) {
 			final boolean tabularList = applications.size() > 10;
@@ -798,7 +800,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("<table summary='applications'><tr><td>");
 				writeShowHideLink("chooseApplication", "#Choix_application#");
 				if (Parameters.getCollectorApplicationsFile().canWrite()) {
-					writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
+					writeAddAndRemoveApplicationLinks(collector.getApplication(), applications,
+							getWriter());
 				}
 				writeln("<div id='chooseApplication' style='display: none;'><div>&nbsp;&nbsp;&nbsp;");
 				writeApplicationsLinks(applications, tabularList);
@@ -807,11 +810,13 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("&nbsp;&nbsp;&nbsp;#Choix_application# :&nbsp;&nbsp;&nbsp;");
 				writeApplicationsLinks(applications, tabularList);
 				if (Parameters.getCollectorApplicationsFile().canWrite()) {
-					writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
+					writeAddAndRemoveApplicationLinks(collector.getApplication(), applications,
+							getWriter());
 				}
 			}
 		} else if (Parameters.getCollectorApplicationsFile().canWrite()) {
-			writeAddAndRemoveApplicationLinks(collector.getApplication(), getWriter());
+			writeAddAndRemoveApplicationLinks(collector.getApplication(), applications,
+					getWriter());
 		}
 		writeln(END_DIV);
 	}

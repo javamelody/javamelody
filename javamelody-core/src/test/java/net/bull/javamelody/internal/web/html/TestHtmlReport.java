@@ -358,9 +358,9 @@ public class TestHtmlReport {
 		htmlReport.writeProcesses(ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false));
 		assertNotEmptyAndClear(writer);
-		HtmlReport.writeAddAndRemoveApplicationLinks(null, writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks(null, new ArrayList<String>(), writer);
 		assertNotEmptyAndClear(writer);
-		HtmlReport.writeAddAndRemoveApplicationLinks("test", writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks("test", new ArrayList<String>(), writer);
 		assertNotEmptyAndClear(writer);
 		final Connection connection = TestDatabaseInformations.initH2();
 		try {

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -173,7 +174,8 @@ class HtmlForms extends HtmlAbstractReport {
 		writeln("</div>");
 	}
 
-	void writeAddAndRemoveApplicationLinks(String currentApplication) throws IOException {
+	void writeAddAndRemoveApplicationLinks(String currentApplication,
+			Collection<String> applications) throws IOException {
 		if (currentApplication == null) {
 			writeln("<div align='center'><h3>#add_application#</h3>");
 			writeln("#collect_server_intro#");
@@ -183,6 +185,11 @@ class HtmlForms extends HtmlAbstractReport {
 			writeln("<a href=\"javascript:showHide('addApplication');document.appForm.appName.focus();\"");
 			writeln(" class='noPrint'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
 			writeln(separator);
+			if (applications.size() > 1) {
+				writeln("<a href=\"javascript:showHide('addAggregation');document.aggregationForm.appName.focus();\"");
+				writeln(" class='noPrint'><img src='?resource=action_add.png' alt='#add_aggregation#'/> #add_aggregation#</a>");
+				writeln(separator);
+			}
 			writeln("<a href='?action=remove_application&amp;application=" + currentApplication
 					+ getCsrfTokenUrlPart() + "' class='noPrint' ");
 			final String messageConfirmation = getFormattedString("confirm_remove_application",
@@ -211,6 +218,33 @@ class HtmlForms extends HtmlAbstractReport {
 		writeln("<br/> <br/>");
 		writeln("</form>");
 		writeln("</div>\n");
+
+		if (applications.size() > 1) {
+			writeln("<div id='addAggregation' style='display: none;'>");
+			writeln("<script type='text/javascript'>");
+			writeln("function validateAggregationForm() {");
+			writelnCheckMandatory("document.aggregationForm.appName", "app_name_mandatory");
+			writeln("   return true;");
+			writeln("}");
+			writeln("</script>");
+			writeln("<br/> <br/>");
+			writeln("<form name='aggregationForm' method='post' action='' onsubmit='return validateAggregationForm();'>");
+			writeln("<br/><b><label for='appName'>#aggregation_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writeln("<br/><b>#aggregated_apps# :</b>");
+			writeln("<table summary=''>");
+			for (final String application : applications) {
+				writeln("<tr><td>");
+				writeln("<input type='checkbox' name='aggregatedApps' value='" + application
+						+ "' /> <label for='aggregatedApps'>" + application + "</label>");
+				writeln("</td></tr>");
+			}
+			writeln("</table>");
+			writeln("<br/>");
+			writeln("<input type='submit' value='#add#'/><br/>");
+			writeln("<br/>");
+			writeln("</form>\n");
+			writeln("</div>\n");
+		}
 	}
 
 	private void writelnCheckMandatory(String fieldFullName, String msgKey) throws IOException {
