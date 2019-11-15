@@ -144,8 +144,8 @@ public class TestPdfReport {
 		// pour les PDFs suivants, inutile de regénérer toutes les images,
 		// ce qui prendrait beaucoup de temps, donc on utilise preInitGraphs
 		final Map<String, byte[]> emptyGraphs = Collections.emptyMap();
-		counter.bindContext("test 1", "complete test 1", null, null, -1, -1);
-		sqlCounter.bindContext("sql1", "sql 1", null, null, -1, -1);
+		counter.bindContext("test 1", "complete test 1", null, -1, -1);
+		sqlCounter.bindContext("sql1", "sql 1", null, -1, -1);
 		sqlCounter.addRequest("sql1", 100, 100, 100, false, -1);
 		counter.addRequest("test 1", 0, 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, 500, false, 1000);
@@ -305,7 +305,7 @@ public class TestPdfReport {
 
 		final Counter myCounter = new Counter("http", null);
 		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
-		myCounter.bindContext("my context", "my context", null, null, -1, -1);
+		myCounter.bindContext("my context", "my context", null, -1, -1);
 		toPdf(collector2, false, Collections.singletonList(javaInformations), graphs);
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();

@@ -31,7 +31,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.LOG;
 
 /**
@@ -414,25 +416,59 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	public void bindContextIncludingCpu(String requestName) {
-		bindContext(requestName, requestName, null, null,
+		bindContext(requestName, requestName, null,
 				ThreadInformations.getCurrentThreadCpuTime(),
 				ThreadInformations.getCurrentThreadAllocatedBytes());
 	}
 
 	public void bindContext(String requestName, String completeRequestName,
-			HttpServletRequest httpRequest, String remoteUser, long startCpuTime,
-			long startAllocatedBytes) {
+							HttpServletRequest httpRequest, long startCpuTime,
+							long startAllocatedBytes) {
+		final String remoteUser = getRemoteUserFrom(httpRequest);
+		final String sessionId = getSessionIdFrom(httpRequest);
 		// requestName est la même chose que ce qui sera utilisée dans addRequest,
 		// completeRequestName est la même chose éventuellement complétée
 		// pour cette requête à destination de l'affichage dans les requêtes courantes
 		// (sinon mettre 2 fois la même chose)
 		final CounterRequestContext context = new CounterRequestContext(this,
 				contextThreadLocal.get(), requestName, completeRequestName, httpRequest, remoteUser,
-				startCpuTime, startAllocatedBytes);
+				startCpuTime, startAllocatedBytes, sessionId);
 		contextThreadLocal.set(context);
 		if (context.getParentContext() == null) {
 			rootCurrentContextsByThreadId.put(context.getThreadId(), context);
 		}
+	}
+
+	private String getRemoteUserFrom(HttpServletRequest httpRequest) {
+		String remoteUser = null;
+		if (httpRequest != null) {
+			remoteUser = httpRequest.getRemoteUser();
+			if (remoteUser == null) {
+				HttpSession session = httpRequest.getSession(false);
+				remoteUser = getRemoteUserFrom(session);
+			}
+		}
+		return remoteUser;
+	}
+
+	private String getRemoteUserFrom(HttpSession session) {
+		if (session != null) {
+			Object userAttribute = session.getAttribute(SessionListener.SESSION_REMOTE_USER);
+			if (userAttribute instanceof String) {
+				return (String) userAttribute;
+			}
+		}
+		return null;
+	}
+
+	private String getSessionIdFrom(HttpServletRequest httpRequest) {
+		if (httpRequest != null) {
+			HttpSession session = httpRequest.getSession(false);
+			if (session != null) {
+				return session.getId();
+			}
+		}
+		return null;
 	}
 
 	public void unbindContext() {
