@@ -671,8 +671,9 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		// cas où nb requêtes en cours > maxContextDisplayed
-		final List<CounterRequestContext> counterRequestContexts = Collections.singletonList(
-				new CounterRequestContext(sqlCounter, null, "Test", "Test", null, null, -1, -1, "sessionId"));
+		final List<CounterRequestContext> counterRequestContexts = Collections
+				.singletonList(new CounterRequestContext(sqlCounter, null, "Test", "Test", null,
+						null, -1, -1, "sessionId"));
 		final HtmlCounterRequestContextReport report2 = new HtmlCounterRequestContextReport(
 				counterRequestContexts, null, Collections.<ThreadInformations> emptyList(), true, 0,
 				writer);

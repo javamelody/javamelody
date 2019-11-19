@@ -231,8 +231,8 @@ public class MonitoringFilter implements Filter {
 		try {
 			JdbcWrapper.ACTIVE_THREAD_COUNT.incrementAndGet();
 			// on binde le contexte de la requête http pour les requêtes sql
-			httpCounter.bindContext(requestName, completeRequestName, httpRequest,
-					startCpuTime, startAllocatedBytes);
+			httpCounter.bindContext(requestName, completeRequestName, httpRequest, startCpuTime,
+					startAllocatedBytes);
 			// on binde la requête http (utilisateur courant et requête complète) pour les derniers logs d'erreurs
 			httpRequest.setAttribute(CounterError.REQUEST_KEY, completeRequestName);
 			CounterError.bindRequest(httpRequest);

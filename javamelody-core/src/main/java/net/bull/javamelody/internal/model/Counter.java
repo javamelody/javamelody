@@ -416,8 +416,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	public void bindContextIncludingCpu(String requestName) {
-		bindContext(requestName, requestName, null,
-				ThreadInformations.getCurrentThreadCpuTime(),
+		bindContext(requestName, requestName, null, ThreadInformations.getCurrentThreadCpuTime(),
 				ThreadInformations.getCurrentThreadAllocatedBytes());
 	}
 
