@@ -422,10 +422,23 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	public void bindContext(String requestName, String completeRequestName,
-							HttpServletRequest httpRequest, long startCpuTime,
-							long startAllocatedBytes) {
-		final String remoteUser = getRemoteUserFrom(httpRequest);
-		final String sessionId = getSessionIdFrom(httpRequest);
+			HttpServletRequest httpRequest, long startCpuTime, long startAllocatedBytes) {
+		String remoteUser = null;
+		String sessionId = null;
+		if (httpRequest != null) {
+			remoteUser = httpRequest.getRemoteUser();
+			final HttpSession session = httpRequest.getSession(false);
+			if (session != null) {
+				sessionId = session.getId();
+				if (remoteUser == null) {
+					final Object userAttribute = session
+							.getAttribute(SessionListener.SESSION_REMOTE_USER);
+					if (userAttribute instanceof String) {
+						remoteUser = (String) userAttribute;
+					}
+				}
+			}
+		}
 		// requestName est la même chose que ce qui sera utilisée dans addRequest,
 		// completeRequestName est la même chose éventuellement complétée
 		// pour cette requête à destination de l'affichage dans les requêtes courantes
@@ -437,38 +450,6 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		if (context.getParentContext() == null) {
 			rootCurrentContextsByThreadId.put(context.getThreadId(), context);
 		}
-	}
-
-	private String getRemoteUserFrom(HttpServletRequest httpRequest) {
-		String remoteUser = null;
-		if (httpRequest != null) {
-			remoteUser = httpRequest.getRemoteUser();
-			if (remoteUser == null) {
-				HttpSession session = httpRequest.getSession(false);
-				remoteUser = getRemoteUserFrom(session);
-			}
-		}
-		return remoteUser;
-	}
-
-	private String getRemoteUserFrom(HttpSession session) {
-		if (session != null) {
-			Object userAttribute = session.getAttribute(SessionListener.SESSION_REMOTE_USER);
-			if (userAttribute instanceof String) {
-				return (String) userAttribute;
-			}
-		}
-		return null;
-	}
-
-	private String getSessionIdFrom(HttpServletRequest httpRequest) {
-		if (httpRequest != null) {
-			HttpSession session = httpRequest.getSession(false);
-			if (session != null) {
-				return session.getId();
-			}
-		}
-		return null;
 	}
 
 	public void unbindContext() {
