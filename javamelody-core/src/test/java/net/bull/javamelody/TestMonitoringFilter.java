@@ -312,7 +312,7 @@ public class TestMonitoringFilter {// NOPMD
 	public void testDoFilterWithSession() throws ServletException, IOException {
 		final HttpServletRequest request = createNiceMock(HttpServletRequest.class);
 		final HttpSession session = createNiceMock(HttpSession.class);
-		expect(request.getSession(false)).andReturn(session);
+		expect(request.getSession(false)).andReturn(session).anyTimes();
 		expect(request.getLocale()).andReturn(Locale.FRANCE);
 		replay(session);
 		doFilter(request);
