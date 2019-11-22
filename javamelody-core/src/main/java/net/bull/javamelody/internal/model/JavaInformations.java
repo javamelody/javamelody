@@ -86,6 +86,7 @@ public class JavaInformations implements Serializable { // NOPMD
 	private final Date startDate;
 	private final String jvmArguments;
 	private final long freeDiskSpaceInTemp;
+	private final long usableDiskSpaceInTemp;
 	private final int threadCount;
 	private final int peakThreadCount;
 	private final long totalStartedThreadCount;
@@ -192,6 +193,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		peakThreadCount = threadBean.getPeakThreadCount();
 		totalStartedThreadCount = threadBean.getTotalStartedThreadCount();
 		freeDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getFreeSpace();
+		usableDiskSpaceInTemp = Parameters.TEMPORARY_DIRECTORY.getUsableSpace();
 		springBeanExists = SPRING_AVAILABLE && SpringContext.getSingleton() != null;
 
 		if (includeDetails) {
@@ -609,6 +611,10 @@ public class JavaInformations implements Serializable { // NOPMD
 
 	public long getFreeDiskSpaceInTemp() {
 		return freeDiskSpaceInTemp;
+	}
+
+	public long getUsableDiskSpaceInTemp() {
+		return usableDiskSpaceInTemp;
 	}
 
 	public int getThreadCount() {

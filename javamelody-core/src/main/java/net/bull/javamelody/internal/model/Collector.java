@@ -441,6 +441,7 @@ public class Collector { // NOPMD
 		double systemLoadAverage = 0;
 		long unixOpenFileDescriptorCount = 0;
 		long freeDiskSpaceInTemp = Long.MAX_VALUE;
+		long usableDiskSpaceInTemp = Long.MAX_VALUE;
 		double systemCpuLoad = 0;
 
 		for (final JavaInformations javaInformations : javaInformationsList) {
@@ -468,11 +469,11 @@ public class Collector { // NOPMD
 			// que sur linx ou unix
 			unixOpenFileDescriptorCount = add(javaInformations.getUnixOpenFileDescriptorCount(),
 					unixOpenFileDescriptorCount);
-			if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
-				// la valeur retenue est le minimum entre les serveurs
-				freeDiskSpaceInTemp = Math.min(javaInformations.getFreeDiskSpaceInTemp(),
-						freeDiskSpaceInTemp);
-			}
+			// la valeur retenue est le minimum entre les serveurs
+			freeDiskSpaceInTemp = Math.min(javaInformations.getFreeDiskSpaceInTemp(),
+					freeDiskSpaceInTemp);
+			usableDiskSpaceInTemp = Math.min(javaInformations.getUsableDiskSpaceInTemp(),
+					usableDiskSpaceInTemp);
 			systemCpuLoad = add(javaInformations.getSystemCpuLoad(), systemCpuLoad);
 		}
 
@@ -522,6 +523,9 @@ public class Collector { // NOPMD
 
 		if (freeDiskSpaceInTemp != Long.MAX_VALUE) {
 			addJRobinValue(getOtherJRobin("Free_disk_space"), freeDiskSpaceInTemp);
+		}
+		if (usableDiskSpaceInTemp != Long.MAX_VALUE) {
+			addJRobinValue(getOtherJRobin("Usable_disk_space"), usableDiskSpaceInTemp);
 		}
 
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne

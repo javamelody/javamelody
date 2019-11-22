@@ -196,12 +196,13 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 		writeMemoryInformations(javaInformations.getMemoryInformations());
 
-		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
-			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
-			writeln("<tr><td>#Free_disk_space#: </td><td>"
-					+ integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
-					+ " #Mo# " + columnEnd);
-		}
+		// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
+		writeln("<tr><td>#Free_disk_space#: </td><td>"
+				+ integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
+				+ " #Mo# " + columnEnd);
+		writeln("<tr><td>#Usable_disk_space#: </td><td>"
+				+ integerFormat.format(javaInformations.getUsableDiskSpaceInTemp() / 1024 / 1024)
+				+ " #Mo# " + columnEnd);
 
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 

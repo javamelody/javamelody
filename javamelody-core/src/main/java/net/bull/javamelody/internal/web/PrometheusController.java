@@ -485,10 +485,10 @@ class PrometheusController {
 					"unix open file descriptors percentage",
 					javaInformations.getUnixOpenFileDescriptorPercentage());
 		}
-		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
-			printLong(MetricType.GAUGE, "system_tmp_space_free_bytes", "tmp space available",
-					javaInformations.getFreeDiskSpaceInTemp());
-		}
+		printLong(MetricType.GAUGE, "system_tmp_space_free_bytes", "tmp space available",
+				javaInformations.getFreeDiskSpaceInTemp());
+		printLong(MetricType.GAUGE, "system_tmp_space_usable_bytes", "tmp space usable",
+				javaInformations.getUsableDiskSpaceInTemp());
 
 		// jvm
 		printLong(MetricType.GAUGE, "jvm_start_time", "jvm start time",

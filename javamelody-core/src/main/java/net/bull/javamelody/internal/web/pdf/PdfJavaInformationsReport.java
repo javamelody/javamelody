@@ -199,12 +199,13 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 		addCell(getString("Gestion_memoire") + ':');
 		writeMemoryInformations(javaInformations.getMemoryInformations());
-		if (javaInformations.getFreeDiskSpaceInTemp() >= 0) {
-			// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
-			addCell(getString("Free_disk_space") + ':');
-			addCell(integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024)
-					+ ' ' + getString("Mo"));
-		}
+		// on considère que l'espace libre sur le disque dur est celui sur la partition du répertoire temporaire
+		addCell(getString("Free_disk_space") + ':');
+		addCell(integerFormat.format(javaInformations.getFreeDiskSpaceInTemp() / 1024 / 1024) + ' '
+				+ getString("Mo"));
+		addCell(getString("Usable_disk_space") + ':');
+		addCell(integerFormat.format(javaInformations.getUsableDiskSpaceInTemp() / 1024 / 1024)
+				+ ' ' + getString("Mo"));
 		writeDatabaseVersionAndDataSourceDetails(javaInformations);
 		addCell("");
 		addCell("");
