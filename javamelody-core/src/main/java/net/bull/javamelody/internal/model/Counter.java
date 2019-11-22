@@ -908,12 +908,12 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	}
 
 	/**
-	 * Purge les requêtes, requêtes en cours et erreurs puis positionne la date et heure de début
-	 * à l'heure courante.
+	 * Purge les requêtes et erreurs puis positionne la date et heure de début à l'heure courante,
+	 * mais sans toucher aux requêtes en cours pour qu'elles restent affichées,
+	 * par exemple dans le serveur de collecte (#871).
 	 */
 	public void clear() {
 		requests.clear();
-		rootCurrentContextsByThreadId.clear();
 		if (errors != null) {
 			synchronized (errors) {
 				errors.clear();
