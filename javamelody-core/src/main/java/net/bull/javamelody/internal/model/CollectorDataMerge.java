@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jrobin.core.Archive;
@@ -38,6 +39,14 @@ import net.bull.javamelody.internal.common.InputOutput;
 abstract class CollectorDataMerge {
 	private final List<File> sourceDirectories;
 	private final File targetDirectory;
+
+	// tri par dates décroissantes de fichiers
+	private static final Comparator<File> FILES_COMPARATOR = new Comparator<File>() {
+		@Override
+		public int compare(File o1, File o2) {
+			return (int) (o2.lastModified() - o1.lastModified());
+		}
+	};
 
 	CollectorDataMerge(List<File> sourceDirectories, File targetDirectory) {
 		super();
@@ -73,6 +82,7 @@ abstract class CollectorDataMerge {
 								InputOutput.copyFile(filesToMerge.get(0),
 										new File(targetDirectory, fileName));
 							} else {
+								Collections.sort(filesToMerge, FILES_COMPARATOR);
 								mergeGraphs(filesToMerge, target);
 							}
 						} else if (fileName.endsWith(".ser.gz")) {
@@ -81,10 +91,14 @@ abstract class CollectorDataMerge {
 								InputOutput.copyFile(filesToMerge.get(0),
 										new File(targetDirectory, fileName));
 							} else {
+								Collections.sort(filesToMerge, FILES_COMPARATOR);
 								mergeStatistics(filesToMerge, target);
 							}
 						} else {
 							log("Ignoring " + fileName);
+						}
+						if (target.exists()) {
+							target.setLastModified(filesToMerge.get(0).lastModified());
 						}
 					}
 				}
@@ -136,7 +150,7 @@ abstract class CollectorDataMerge {
 	private void mergeRrdDbs(final RrdDb sourceRrdDb, final RrdDb mergedRrdDb, Double coeff)
 			throws IOException, RrdException {
 		// On suppose que les RRD à merger entre eux ont la même structure
-		// (headers, datasources, ordres des archives, heures de dernière mise à jour, etc)
+		// (headers, datasources, ordres des archives, etc)
 		// puisque normalement ils ont été créés toujours de la même façon.
 		// Donc pour l'instant, on se contente de copier les valeurs brutes directement
 		assert sourceRrdDb.getArcCount() == mergedRrdDb.getArcCount();
@@ -152,15 +166,38 @@ abstract class CollectorDataMerge {
 				final double[] sourceValues = sourceRobin.getValues();
 				final double[] mergedValues = mergedRobin.getValues();
 				assert sourceValues.length == mergedValues.length;
-				for (int k = 0; k < mergedValues.length; k++) {
-					mergedValues[k] += sourceValues[k];
-					if (coeff != null) {
-						mergedValues[k] *= coeff;
+				final int deltaSteps = (int) ((mergedArchive.getEndTime()
+						- sourceArchive.getEndTime()) / mergedArchive.getArcStep());
+				// les fichiers à merger sont triés par dates descendantes
+				// donc deltaSteps >= 0 en général et les valeurs sources sont plus vieilles
+				// càd que les valeurs à la fin de mergedValues sont plus récentes que les valeurs à la fin de sourceValues
+				if (deltaSteps >= 0) {
+					for (int k = 0; k < mergedValues.length - deltaSteps; k++) {
+						mergedValues[k] = addDoubles(mergedValues[k], sourceValues[k + deltaSteps]);
+						if (coeff != null) {
+							mergedValues[k] *= coeff;
+						}
+					}
+				} else {
+					for (int k = -deltaSteps; k < mergedValues.length; k++) {
+						mergedValues[k] = addDoubles(mergedValues[k], sourceValues[k + deltaSteps]);
+						if (coeff != null) {
+							mergedValues[k] *= coeff;
+						}
 					}
 				}
 				mergedRobin.setValues(mergedValues);
 			}
 		}
+	}
+
+	private double addDoubles(double d1, double d2) {
+		if (Double.isNaN(d1)) {
+			return d2;
+		} else if (Double.isNaN(d2)) {
+			return d1;
+		}
+		return d1 + d2;
 	}
 
 	private void mergeStatistics(final List<File> sources, final File target) throws IOException {
