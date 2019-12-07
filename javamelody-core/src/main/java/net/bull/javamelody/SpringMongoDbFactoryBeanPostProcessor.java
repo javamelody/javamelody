@@ -26,6 +26,8 @@ import org.springframework.data.mongodb.MongoDbFactory;
 
 import com.mongodb.client.MongoDatabase;
 
+import net.bull.javamelody.internal.common.LOG;
+
 /**
  * Post-processor Spring pour une éventuelle {@link MongoDbFactory} définie dans le fichier xml Spring.
  * @author Emeric Vernat
@@ -73,7 +75,10 @@ public class SpringMongoDbFactoryBeanPostProcessor implements BeanPostProcessor,
 					return result;
 				}
 			};
-			return JdbcWrapper.createProxy(mongoDbFactory, invocationHandler);
+			final MongoDbFactory factory = JdbcWrapper.createProxy(mongoDbFactory,
+					invocationHandler);
+			LOG.debug("mongodb monitoring initialized");
+			return factory;
 		}
 
 		return bean;

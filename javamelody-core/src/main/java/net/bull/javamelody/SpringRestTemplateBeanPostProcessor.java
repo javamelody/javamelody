@@ -25,6 +25,8 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
+import net.bull.javamelody.internal.common.LOG;
+
 /**
  * Post-processor Spring pour un éventuel {@link RestTemplate} défini dans le fichier xml Spring.
  * @author Emeric Vernat
@@ -71,6 +73,7 @@ public class SpringRestTemplateBeanPostProcessor implements BeanPostProcessor, P
 			}
 			interceptors.add(SpringRestTemplateInterceptor.SINGLETON);
 			restTemplate.setInterceptors(interceptors);
+			LOG.debug("rest template interceptor initialized");
 		}
 
 		return bean;
