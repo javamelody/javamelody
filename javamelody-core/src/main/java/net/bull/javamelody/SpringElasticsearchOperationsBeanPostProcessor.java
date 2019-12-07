@@ -24,6 +24,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
+import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;
 
@@ -101,7 +102,10 @@ public class SpringElasticsearchOperationsBeanPostProcessor
 					return doInvoke(elasticsearchOperations, method, args, requestName.toString());
 				}
 			};
-			return JdbcWrapper.createProxy(elasticsearchOperations, invocationHandler);
+			final ElasticsearchOperations ops = JdbcWrapper.createProxy(elasticsearchOperations,
+					invocationHandler);
+			LOG.debug("elasticsearch operations monitoring initialized");
+			return ops;
 		}
 
 		return bean;
