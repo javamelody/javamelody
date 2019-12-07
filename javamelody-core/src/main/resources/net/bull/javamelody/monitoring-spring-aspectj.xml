@@ -38,5 +38,7 @@
 
 	<bean id="springMongoDbFactoryBeanPostProcessor" class="net.bull.javamelody.SpringMongoDbFactoryBeanPostProcessor" />
 
+	<bean id="springElasticsearchOperationsBeanPostProcessor" class="net.bull.javamelody.SpringElasticsearchOperationsBeanPostProcessor" />
+
 	<bean id="javamelodySpringContext" class="net.bull.javamelody.SpringContext" />
 </beans>
