@@ -58,6 +58,7 @@ import net.bull.javamelody.internal.web.MonitoringController;
  */
 class FilterContext {
 	private static final boolean MOJARRA_AVAILABLE = isMojarraAvailable();
+	private static final boolean JPA2_AVAILABLE = isJpa2Available();
 
 	private final String applicationType;
 	private final Collector collector;
@@ -121,6 +122,9 @@ class FilterContext {
 
 			if (MOJARRA_AVAILABLE) {
 				JsfActionHelper.initJsfActionListener();
+			}
+			if (JPA2_AVAILABLE) {
+				JpaPersistence.initPersistenceProviderResolver();
 			}
 
 			this.samplingProfiler = initSamplingProfiler();
@@ -343,6 +347,15 @@ class FilterContext {
 	private static boolean isMojarraAvailable() {
 		try {
 			Class.forName("com.sun.faces.application.ActionListenerImpl");
+			return true;
+		} catch (final Throwable e) { // NOPMD
+			return false;
+		}
+	}
+
+	private static boolean isJpa2Available() {
+		try {
+			Class.forName("javax.persistence.spi.PersistenceProviderResolverHolder");
 			return true;
 		} catch (final Throwable e) { // NOPMD
 			return false;
