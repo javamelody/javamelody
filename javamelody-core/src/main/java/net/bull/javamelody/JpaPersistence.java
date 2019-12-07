@@ -130,6 +130,7 @@ public class JpaPersistence implements PersistenceProvider {
 			if (!(resolver instanceof JavaMelodyPersistenceProviderResolver)) {
 				resolver = new JavaMelodyPersistenceProviderResolver(resolver);
 				PersistenceProviderResolverHolder.setPersistenceProviderResolver(resolver);
+				LOG.debug("JPA persistence provider resolver initialized");
 			}
 		} catch (final Throwable t) { // NOPMD
 			LOG.info("initialization of jpa persistence provider resolver failed, skipping");
