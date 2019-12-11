@@ -1,5 +1,6 @@
 package net.bull.javamelody;
 
+import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;
 
 /**
@@ -9,6 +10,8 @@ import net.bull.javamelody.internal.model.Counter;
  */
 public class Stopwatch implements AutoCloseable {
 	private static final Counter SERVICES_COUNTER = MonitoringProxy.getServicesCounter();
+	private static final boolean COUNTER_HIDDEN = Parameters
+			.isCounterHidden(SERVICES_COUNTER.getName());
 
 	private final String name;
 	private final long startTime;
@@ -26,6 +29,8 @@ public class Stopwatch implements AutoCloseable {
 	 */
 	public Stopwatch(String stopwatchName) {
 		super();
+		SERVICES_COUNTER.setDisplayed(!COUNTER_HIDDEN);
+		SERVICES_COUNTER.setUsed(true);
 		SERVICES_COUNTER.bindContextIncludingCpu(stopwatchName);
 		this.startTime = System.currentTimeMillis();
 		this.name = stopwatchName;
