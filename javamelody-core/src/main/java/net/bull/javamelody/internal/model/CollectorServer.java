@@ -50,6 +50,8 @@ import net.bull.javamelody.internal.web.MailReport;
 public class CollectorServer {
 	static final Logger LOGGER = Logger.getLogger("javamelody");
 
+	private static final String JENKINS_NODES_SUFFIX = " (Jenkins nodes)";
+
 	private static final int NB_COLLECT_THREADS = 10;
 
 	private final Map<String, Throwable> lastCollectExceptionsByApplication = new ConcurrentHashMap<String, Throwable>();
@@ -211,7 +213,18 @@ public class CollectorServer {
 		final boolean remoteCollectorAvailable = isApplicationDataAvailable(application);
 		final RemoteCollector remoteCollector;
 		if (!remoteCollectorAvailable) {
-			remoteCollector = new RemoteCollector(application, urls);
+			if (application.endsWith(JENKINS_NODES_SUFFIX)) {
+				// nécessaire ici après redémarrage du serveur de collecte
+				final String monitoringPath = Parameters.getMonitoringPath();
+				final List<URL> monitoringNodesUrls = new ArrayList<URL>(urls.size());
+				for (final URL url : urls) {
+					monitoringNodesUrls.add(new URL(
+							url.toString().replace(monitoringPath, monitoringPath + "/nodes")));
+				}
+				remoteCollector = new RemoteCollector(application, monitoringNodesUrls);
+			} else {
+				remoteCollector = new RemoteCollector(application, urls);
+			}
 		} else {
 			remoteCollector = getRemoteCollectorByApplication(application);
 		}
@@ -236,6 +249,26 @@ public class CollectorServer {
 				scheduleReportMailForCollectorServer(application);
 				LOGGER.info("Periodic report scheduled for the application " + application + " to "
 						+ Parameter.ADMIN_EMAILS.getValue());
+			}
+
+			if (!remoteCollector.isAggregationApplication()) {
+				// Si l'ajout de l'application monitoré est un serveur Jenkins (master)
+				// et si le monitoring des nodes Jenkins (slaves et/ou master) n'a pas encore été ajouté,
+				// alors on ajoute le monitoring des nodes en même temps que le monitoring du master,
+				// (Si il n'y a pas de slaves pour ce master, alors le monitoring des nodes
+				// contient le master et les builds)
+				final String contextDisplayName = remoteCollector.getJavaInformationsList().get(0)
+						.getContextDisplayName();
+				final String jenkinsNodesApplication = application + JENKINS_NODES_SUFFIX;
+				if (contextDisplayName != null && contextDisplayName.startsWith("Jenkins")
+						&& !application.endsWith(JENKINS_NODES_SUFFIX)
+						&& !Parameters.getCollectorUrlsByApplications()
+								.containsKey(jenkinsNodesApplication)) {
+					// version réduite de addCollectorApplication (sans vérifier doublon d'url)
+					// avec une url /monitoring qui sera remplacée par /monitoring/nodes ci-dessus
+					Parameters.addCollectorApplication(jenkinsNodesApplication, urls);
+					collectForApplication(jenkinsNodesApplication, urls);
+				}
 			}
 		}
 		return messageForReport;
