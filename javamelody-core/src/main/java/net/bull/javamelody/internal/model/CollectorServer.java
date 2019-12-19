@@ -342,7 +342,7 @@ public class CollectorServer {
 				}
 			}
 		}
-		final List<URL> currentUrls = getUrlsByApplication(application);
+		final List<URL> currentUrls = Parameters.getCollectorUrlsByApplications().get(application);
 		final List<URL> nodesUrls;
 		if (currentUrls != null) {
 			nodesUrls = new ArrayList<URL>(currentUrls);
