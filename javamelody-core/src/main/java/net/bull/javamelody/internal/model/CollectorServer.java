@@ -365,7 +365,7 @@ public class CollectorServer {
 
 	public void removeCollectorApplicationNodes(String appName, List<URL> nodeUrls)
 			throws IOException {
-		final List<URL> currentUrls = getUrlsByApplication(appName);
+		final List<URL> currentUrls = Parameters.getCollectorUrlsByApplications().get(appName);
 		if (currentUrls != null) {
 			final List<URL> newUrls = new ArrayList<URL>(currentUrls);
 			newUrls.removeAll(nodeUrls);
