@@ -198,7 +198,7 @@ public class CollectorServlet extends HttpServlet {
 	// addCollectorApplication and removeCollectorApplication added for spring-boot-admin
 	// see https://github.com/codecentric/spring-boot-admin/pull/450
 	public static void addCollectorApplication(String application, String urls) throws IOException {
-		Parameters.addCollectorApplication(application, Parameters.parseUrl(urls));
+		Parameters.addCollectorApplication(application, Parameters.parseUrls(urls));
 	}
 
 	public static void removeCollectorApplication(String application) throws IOException {

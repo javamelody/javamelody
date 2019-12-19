@@ -99,7 +99,7 @@ public class CollectorController { // NOPMD
 					"applications should be added or removed in the applications.properties file, because the user is not allowed to write: "
 							+ file);
 		}
-		final List<URL> urls = Parameters.parseUrl(appUrls);
+		final List<URL> urls = Parameters.parseUrls(appUrls);
 		collectorServer.addCollectorApplication(appName, urls);
 	}
 
@@ -117,7 +117,7 @@ public class CollectorController { // NOPMD
 
 	public void removeCollectorApplicationNodes(String appName, String nodeUrls)
 			throws IOException {
-		final List<URL> urls = Parameters.parseUrl(nodeUrls);
+		final List<URL> urls = Parameters.parseUrls(nodeUrls);
 		collectorServer.removeCollectorApplicationNodes(appName, urls);
 	}
 
@@ -638,7 +638,7 @@ public class CollectorController { // NOPMD
 		return collectorServer.getJavaInformationsByApplication(application);
 	}
 
-	private static List<URL> getUrlsByApplication(String application) throws IOException {
-		return CollectorServer.getUrlsByApplication(application);
+	private List<URL> getUrlsByApplication(String application) {
+		return collectorServer.getUrlsByApplication(application);
 	}
 }

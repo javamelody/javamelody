@@ -457,6 +457,11 @@ public class CollectorServer {
 		return remoteCollector.getJavaInformationsList();
 	}
 
+	public List<URL> getUrlsByApplication(String application) {
+		assert application != null;
+		return getRemoteCollectorByApplication(application).getURLs();
+	}
+
 	private RemoteCollector getRemoteCollectorByApplication(String application) {
 		assert application != null;
 		final RemoteCollector remoteCollector = remoteCollectorsByApplication.get(application);
@@ -568,10 +573,5 @@ public class CollectorServer {
 
 		// nettoyage avant le retrait de la webapp au cas où celui-ci ne suffise pas
 		remoteCollectorsByApplication.clear();
-	}
-
-	public static List<URL> getUrlsByApplication(String application) throws IOException {
-		assert application != null;
-		return Parameters.getCollectorUrlsByApplications().get(application);
 	}
 }

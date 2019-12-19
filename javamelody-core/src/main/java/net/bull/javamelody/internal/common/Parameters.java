@@ -237,7 +237,7 @@ public final class Parameters {
 			for (final String property : propertyNames) {
 				final String value = String.valueOf(properties.get(property));
 				if (value.startsWith("http")) {
-					applications.put(property, parseUrl(value));
+					applications.put(property, parseUrls(value));
 				} else {
 					aggregationApplications.put(property,
 							new ArrayList<String>(Arrays.asList(value.split(","))));
@@ -274,7 +274,7 @@ public final class Parameters {
 		return new File(getStorageDirectory(""), COLLECTOR_APPLICATIONS_FILENAME);
 	}
 
-	public static List<URL> parseUrl(String value) throws MalformedURLException {
+	public static List<URL> parseUrls(String value) throws MalformedURLException {
 		// pour un cluster, le paramètre vaut "url1,url2"
 		final TransportFormat transportFormat;
 		if (Parameter.TRANSPORT_FORMAT.getValue() == null) {

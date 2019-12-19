@@ -195,7 +195,7 @@ public class TestParameters {
 		final int size = Parameters.getCollectorUrlsByApplications().size();
 		try {
 			Parameters.addCollectorApplication(application,
-					Parameters.parseUrl("http://localhost:8090/test"));
+					Parameters.parseUrls("http://localhost:8090/test"));
 			assertEquals("addCollectorApplication", size + 1,
 					Parameters.getCollectorUrlsByApplications().size());
 			Parameters.removeCollectorApplication(application);
@@ -203,7 +203,7 @@ public class TestParameters {
 					Parameters.getCollectorUrlsByApplications().size());
 			// pour que le test ait une application à lire la prochaine fois
 			Parameters.addCollectorApplication(application,
-					Parameters.parseUrl("http://localhost:8090/test"));
+					Parameters.parseUrls("http://localhost:8090/test"));
 		} finally {
 			Parameters.removeCollectorApplication(application);
 		}
@@ -214,10 +214,10 @@ public class TestParameters {
 	@Test
 	public void testParseUrl() throws MalformedURLException {
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.XML.getCode());
-		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost,http://localhost"));
-		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost/"));
+		assertNotNull("parseUrl", Parameters.parseUrls("http://localhost,http://localhost"));
+		assertNotNull("parseUrl", Parameters.parseUrls("http://localhost/"));
 		setProperty(Parameter.TRANSPORT_FORMAT, TransportFormat.SERIALIZED.getCode());
-		assertNotNull("parseUrl", Parameters.parseUrl("http://localhost,http://localhost"));
+		assertNotNull("parseUrl", Parameters.parseUrls("http://localhost,http://localhost"));
 	}
 
 	/** Test. */
