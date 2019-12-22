@@ -55,8 +55,8 @@ public class TestMonitoringSpringInterceptor {
 	public void setUp() {
 		Utils.initialize();
 		this.context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, MONITORING_CONTEXT_FILENAME2,
-						TEST_CONTEXT_FILENAME, });
+				MONITORING_CONTEXT_FILENAME, MONITORING_CONTEXT_FILENAME2,
+				TEST_CONTEXT_FILENAME);
 	}
 
 	@After

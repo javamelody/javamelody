@@ -71,7 +71,7 @@ public class DatabaseInformations implements Serializable {
 		private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters
 				.getResourcePath("databaseInformations").replace('/', '.').substring(1);
 
-		private List<String> databaseNames;
+		private final List<String> databaseNames;
 
 		Database(String... databaseNames) {
 			this.databaseNames = Arrays.asList(databaseNames);

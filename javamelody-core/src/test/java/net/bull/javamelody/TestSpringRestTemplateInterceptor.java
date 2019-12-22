@@ -50,7 +50,7 @@ public class TestSpringRestTemplateInterceptor {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
 		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME);
 		try {
 			final RestTemplate restTemplate = context.getBean(RestTemplate.class);
 			final String url = "https://gturnquist-quoters.cfapps.io/api/random";

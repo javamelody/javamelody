@@ -154,7 +154,7 @@ public class MonitoringController {
 		// javaInformations doit être réinstanciée et doit être après executeActionIfNeeded
 		// pour avoir des informations à jour
 		final JavaInformations javaInformations;
-		if (MonitoringController.isJavaInformationsNeeded(httpRequest)) {
+		if (isJavaInformationsNeeded(httpRequest)) {
 			javaInformations = new JavaInformations(servletContext, true);
 		} else {
 			javaInformations = null;

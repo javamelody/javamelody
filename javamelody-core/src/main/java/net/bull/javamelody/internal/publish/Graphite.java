@@ -81,8 +81,7 @@ class Graphite extends MetricsPublisher {
 			if (index != -1) {
 				// we could use new URI("socket://" + graphiteAddress).getHost() and getPort() to parse the address
 				address = graphiteAddress.substring(0, index);
-				port = Integer
-						.parseInt(graphiteAddress.substring(index + 1, graphiteAddress.length()));
+				port = Integer.parseInt(graphiteAddress.substring(index + 1));
 			} else {
 				address = graphiteAddress;
 				port = DEFAULT_GRAPHITE_PORT;

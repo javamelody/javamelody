@@ -74,7 +74,7 @@ public class RemoteCollector {
 		final List<URL> urlsWithCurrentRequests = new ArrayList<URL>();
 		for (final URL url : getURLs()) {
 			urlsWithCurrentRequests
-					.add(new URL(url.toString() + "&part=defaultWithCurrentRequests"));
+					.add(new URL(url + "&part=defaultWithCurrentRequests"));
 		}
 		return collectDataWithUrls(urlsWithCurrentRequests);
 	}

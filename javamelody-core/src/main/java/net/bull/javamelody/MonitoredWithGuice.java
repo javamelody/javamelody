@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  * Inspired by Erik van Oosten (Java Simon, Licence LGPL)
  * @author Emeric Vernat
  */
-@Retention(value = RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface MonitoredWithGuice {
 	/**

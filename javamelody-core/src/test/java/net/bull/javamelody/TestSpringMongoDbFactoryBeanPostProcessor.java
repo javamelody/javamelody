@@ -49,7 +49,7 @@ public class TestSpringMongoDbFactoryBeanPostProcessor {
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		servicesCounter.clear();
 		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME, });
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME);
 		try {
 			final MongoDbFactory mongoDbFactory = context.getBean(MongoDbFactory.class);
 			assertNotNull("toString", mongoDbFactory.toString());

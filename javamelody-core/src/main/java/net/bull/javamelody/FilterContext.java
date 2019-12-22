@@ -383,7 +383,7 @@ class FilterContext {
 			final String value = parameter.getValue();
 			if (value != null && parameter != Parameter.ANALYTICS_ID) {
 				if (parameter == Parameter.AUTHORIZED_USERS) {
-					LOG.debug("parameter defined: " + parameter.getCode() + "=*****");
+					LOG.debug("parameter defined: " + Parameter.AUTHORIZED_USERS.getCode() + "=*****");
 				} else {
 					LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
 				}
@@ -417,7 +417,7 @@ class FilterContext {
 				getClass().getName().length() - getClass().getSimpleName().length() - 1);
 		String webapp = Parameters.getContextPath(Parameters.getServletContext());
 		if (webapp.length() >= 1 && webapp.charAt(0) == '/') {
-			webapp = webapp.substring(1, webapp.length());
+			webapp = webapp.substring(1);
 		}
 		final List<Counter> counters = collector.getCounters();
 		final MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();

@@ -216,18 +216,18 @@ public class HeapHistogram implements Serializable {
 	 */
 	public static class ClassInfo implements Serializable {
 		private static final long serialVersionUID = 6283636454450216347L;
-		private static Map<Character, String> arrayTypes = new HashMap<Character, String>();
+		private static final Map<Character, String> ARRAY_TYPES = new HashMap<Character, String>();
 
 		static {
-			arrayTypes.put('Z', "boolean");
-			arrayTypes.put('C', "char");
-			arrayTypes.put('B', "byte");
-			arrayTypes.put('S', "short");
-			arrayTypes.put('I', "int");
-			arrayTypes.put('J', "long");
-			arrayTypes.put('F', "float");
-			arrayTypes.put('D', "double");
-			arrayTypes.put('L', "object");
+			ARRAY_TYPES.put('Z', "boolean");
+			ARRAY_TYPES.put('C', "char");
+			ARRAY_TYPES.put('B', "byte");
+			ARRAY_TYPES.put('S', "short");
+			ARRAY_TYPES.put('I', "int");
+			ARRAY_TYPES.put('J', "long");
+			ARRAY_TYPES.put('F', "float");
+			ARRAY_TYPES.put('D', "double");
+			ARRAY_TYPES.put('L', "object");
 		}
 
 		private long instances;
@@ -333,7 +333,7 @@ public class HeapHistogram implements Serializable {
 				if (code == 'L') {
 					result = jvmName.substring(index + 2, jvmName.length() - 1);
 				} else {
-					result = arrayTypes.get(code);
+					result = ARRAY_TYPES.get(code);
 					if (result == null) {
 						result = jvmName;
 					}

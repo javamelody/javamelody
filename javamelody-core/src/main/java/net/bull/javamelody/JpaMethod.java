@@ -76,7 +76,7 @@ enum JpaMethod {
 				return type;
 			}
 		}
-		return JpaMethod.OTHER;
+		return OTHER;
 	}
 
 	boolean isMonitored() {

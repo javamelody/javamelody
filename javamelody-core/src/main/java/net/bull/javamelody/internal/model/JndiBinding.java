@@ -163,7 +163,7 @@ public class JndiBinding implements Serializable {
 					} else {
 						sb.append(",\n");
 					}
-					sb.append(String.valueOf(aItem));
+					sb.append(aItem);
 				}
 				sb.append(']');
 				value = sb.toString();

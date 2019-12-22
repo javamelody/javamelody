@@ -42,8 +42,7 @@ final class MBeansAccessor {
 	private static final ObjectName THREADING = createObjectName("java.lang:type=Threading");
 	private static final boolean MBEAN_ALLOCATED_BYTES_ENABLED = getAttributesNames(THREADING)
 			.contains("ThreadAllocatedMemoryEnabled");
-	private static final String[] THREAD_ALLOCATED_BYTES_SIGNATURE = new String[] {
-			long.class.getName(), };
+	private static final String[] THREAD_ALLOCATED_BYTES_SIGNATURE = { long.class.getName(), };
 
 	private MBeansAccessor() {
 		super();

@@ -101,11 +101,11 @@ public class MBeanNode implements Serializable {
 	}
 
 	public List<MBeanNode> getChildren() {
-		return children != null ? children : null;
+		return children;
 	}
 
 	public List<MBeanAttribute> getAttributes() {
-		return attributes != null ? attributes : null;
+		return attributes;
 	}
 
 	/** {@inheritDoc} */

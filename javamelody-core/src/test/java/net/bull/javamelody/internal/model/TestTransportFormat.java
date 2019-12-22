@@ -103,9 +103,9 @@ public class TestTransportFormat {
 
 		assertNull("null", serialize(null));
 
-		final String[][] array = new String[][] {};
+		final String[][] array = {};
 		assertArrayEquals("array", array, (String[][]) serialize(array));
-		final boolean[] barray = new boolean[] {};
+		final boolean[] barray = {};
 		assertArrayEquals("boolean", barray, (boolean[]) serialize(barray));
 		final File file = new File("test");
 		assertEquals("file", file, serialize(file));

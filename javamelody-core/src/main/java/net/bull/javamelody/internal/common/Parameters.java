@@ -91,8 +91,8 @@ public final class Parameters {
 	}
 
 	public static void initJdbcDriverParameters(String connectUrl, Properties connectInfo) {
-		Parameters.lastConnectUrl = connectUrl;
-		Parameters.lastConnectInfo = connectInfo;
+		lastConnectUrl = connectUrl;
+		lastConnectInfo = connectInfo;
 	}
 
 	/**
@@ -549,10 +549,7 @@ public final class Parameters {
 			}
 		}
 		if (filterConfig != null) {
-			result = filterConfig.getInitParameter(parameterName);
-			if (result != null) {
-				return result;
-			}
+			return filterConfig.getInitParameter(parameterName);
 		}
 		return null;
 	}

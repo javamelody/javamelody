@@ -34,7 +34,7 @@ public class SamplingProfiler {
 	/**
 	 * Excluded packages by default : those of the jvm, of tomcat...
 	 */
-	private static final String[] DEFAULT_EXCLUDED_PACKAGES = new String[] { "java.", "sun.",
+	private static final String[] DEFAULT_EXCLUDED_PACKAGES = { "java.", "sun.",
 			"com.sun.", "javax.", "org.apache.", "org.hibernate.", "oracle.", "org.postgresql.",
 			"org.eclipse.", };
 

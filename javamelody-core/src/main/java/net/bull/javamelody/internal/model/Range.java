@@ -133,7 +133,7 @@ public final class Range implements Serializable {
 			endDate = new Date();
 		}
 
-		return Range.createCustomRange(startDate, endDate);
+		return createCustomRange(startDate, endDate);
 	}
 
 	public Period getPeriod() {

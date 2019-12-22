@@ -274,7 +274,7 @@ public final class UpdateChecker {
 				result.append(getDatabaseInfo(connection));
 			}
 		} catch (final Exception e) {
-			result.append(e.toString());
+			result.append(e);
 		}
 		return result.toString();
 	}

@@ -437,7 +437,7 @@ public class JavaInformations implements Serializable { // NOPMD
 				}
 			}
 		} catch (final Exception e) {
-			result.append(e.toString());
+			result.append(e);
 		}
 		if (result.length() > 0) {
 			return result.toString();

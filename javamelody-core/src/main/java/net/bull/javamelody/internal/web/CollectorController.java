@@ -625,7 +625,7 @@ public class CollectorController { // NOPMD
 			// En Tomcat, le cookie doit être conforme à la RFC 6265 (pas d'espace, ...)
 			// see org.apache.tomcat.util.http.Rfc6265CookieProcessor
 			httpCookieManager.addCookie(req, resp, COOKIE_NAME,
-					URLEncoder.encode(String.valueOf(application), "UTF-8"));
+					URLEncoder.encode(application, "UTF-8"));
 		}
 		return application;
 	}

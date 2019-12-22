@@ -63,9 +63,9 @@ public class TestJsf {
 		replay(servletContext);
 		final InitFacesContext facesContext = new InitFacesContext(servletContext);
 		final Method setter = FacesContext.class.getDeclaredMethod("setCurrentInstance",
-				new Class[] { FacesContext.class });
+				FacesContext.class);
 		setter.setAccessible(true);
-		setter.invoke(null, new Object[] { facesContext });
+		setter.invoke(null, facesContext);
 		FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, AppFactory.class.getName());
 		verify(servletContext);
 

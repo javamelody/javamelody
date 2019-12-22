@@ -118,11 +118,7 @@ final class JavaHTMLizer {
 	}
 
 	private static String escapeChar(final char c) {
-		final String escaped = ESCAPE_MAPS.get(Character.valueOf(c));
-		if (escaped != null) {
-			return escaped;
-		}
-		return null;
+		return ESCAPE_MAPS.get(Character.valueOf(c));
 	}
 
 	private static String htmlEscape(final String text) {

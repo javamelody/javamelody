@@ -176,10 +176,10 @@ public class CollectorServlet extends HttpServlet {
 					"?application=" + appName);
 		} catch (final FileNotFoundException e) {
 			final String message = I18N.getString("monitoring_configure");
-			throw new IllegalStateException(message + '\n' + e.toString(), e);
+			throw new IllegalStateException(message + '\n' + e, e);
 		} catch (final StreamCorruptedException e) {
 			final String message = I18N.getFormattedString("reponse_non_comprise", appUrls);
-			throw new IllegalStateException(message + '\n' + e.toString(), e);
+			throw new IllegalStateException(message + '\n' + e, e);
 		}
 	}
 

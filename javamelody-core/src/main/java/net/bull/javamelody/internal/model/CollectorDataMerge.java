@@ -207,7 +207,7 @@ abstract class CollectorDataMerge {
 			try {
 				counter = CounterStorage.readFromFile(source);
 			} catch (final IOException e) {
-				log(e.toString() + " for " + source);
+				log(e + " for " + source);
 				continue;
 			}
 			if (mergedCounter == null) {

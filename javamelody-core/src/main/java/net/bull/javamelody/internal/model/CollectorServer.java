@@ -199,7 +199,7 @@ public class CollectorServer {
 				if (becameUnavailable) {
 					final String subject = "The application " + application
 							+ " is unavailable for the monitoring server";
-					final String message = subject + "\n\nCause:\n" + e.toString();
+					final String message = subject + "\n\nCause:\n" + e;
 					notifyAdmins(subject, message);
 				}
 			} catch (final Throwable e2) { // NOPMD

@@ -247,7 +247,7 @@ public final class MBeans {
 					} else {
 						sb.append(",\n");
 					}
-					sb.append(String.valueOf(value));
+					sb.append(value);
 				}
 				sb.append(']');
 				return sb.toString();
