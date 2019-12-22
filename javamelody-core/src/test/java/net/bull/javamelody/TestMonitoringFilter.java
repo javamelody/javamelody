@@ -513,8 +513,7 @@ public class TestMonitoringFilter {// NOPMD
 	public void testDoMonitoring() throws ServletException, IOException {
 		monitoring(Collections.<HttpParameter, String> emptyMap());
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "html"));
-		monitoring(
-				Collections.singletonMap(HttpParameter.FORMAT, "htmlbody"));
+		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "htmlbody"));
 		setProperty(Parameter.DISABLED, Boolean.TRUE.toString());
 		try {
 			setUp();
@@ -583,11 +582,9 @@ public class TestMonitoringFilter {// NOPMD
 			doFilter(requestForRum);
 
 			// simulate call to monitoring?resource=boomerang.min.js
-			monitoring(Collections.singletonMap(HttpParameter.RESOURCE,
-					"boomerang.min.js"));
+			monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "boomerang.min.js"));
 			monitoring(Collections.<HttpParameter, String> emptyMap());
-			monitoring(Collections.singletonMap(HttpParameter.PART,
-					HttpPart.RUM.getName()), false);
+			monitoring(Collections.singletonMap(HttpParameter.PART, HttpPart.RUM.getName()), false);
 
 			// simulate call to monitoring?part=rum to register RUM data
 			final Map<String, String> rumMap = new HashMap<String, String>();
@@ -655,10 +652,8 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithResource() throws ServletException, IOException {
-		monitoring(Collections.singletonMap(HttpParameter.RESOURCE,
-				"monitoring.css"));
-		monitoring(Collections.singletonMap(HttpParameter.RESOURCE,
-				"beans.png"));
+		monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "monitoring.css"));
+		monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "beans.png"));
 	}
 
 	/** Test.

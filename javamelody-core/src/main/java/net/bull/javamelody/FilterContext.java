@@ -383,7 +383,8 @@ class FilterContext {
 			final String value = parameter.getValue();
 			if (value != null && parameter != Parameter.ANALYTICS_ID) {
 				if (parameter == Parameter.AUTHORIZED_USERS) {
-					LOG.debug("parameter defined: " + Parameter.AUTHORIZED_USERS.getCode() + "=*****");
+					LOG.debug("parameter defined: " + Parameter.AUTHORIZED_USERS.getCode()
+							+ "=*****");
 				} else {
 					LOG.debug("parameter defined: " + parameter.getCode() + '=' + value);
 				}

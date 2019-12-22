@@ -73,8 +73,7 @@ public class RemoteCollector {
 	public String collectDataIncludingCurrentRequests() throws IOException {
 		final List<URL> urlsWithCurrentRequests = new ArrayList<URL>();
 		for (final URL url : getURLs()) {
-			urlsWithCurrentRequests
-					.add(new URL(url + "&part=defaultWithCurrentRequests"));
+			urlsWithCurrentRequests.add(new URL(url + "&part=defaultWithCurrentRequests"));
 		}
 		return collectDataWithUrls(urlsWithCurrentRequests);
 	}
