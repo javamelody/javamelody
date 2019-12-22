@@ -276,8 +276,8 @@ public final class ShadowPopupFactory extends PopupFactory {
 				parent.setOpaque(oldOpaque);
 				oldBorder = null;
 				if (heavyWeightContainer != null) {
-					parent.putClientProperty(ShadowPopupFactory.PROP_HORIZONTAL_BACKGROUND, null);
-					parent.putClientProperty(ShadowPopupFactory.PROP_VERTICAL_BACKGROUND, null);
+					parent.putClientProperty(PROP_HORIZONTAL_BACKGROUND, null);
+					parent.putClientProperty(PROP_VERTICAL_BACKGROUND, null);
 					heavyWeightContainer = null;
 				}
 			}
@@ -382,8 +382,8 @@ public final class ShadowPopupFactory extends PopupFactory {
 				final BufferedImage vShadowBg = robot.createScreenCapture(RECT);
 
 				final JComponent parent = (JComponent) contents.getParent();
-				parent.putClientProperty(ShadowPopupFactory.PROP_HORIZONTAL_BACKGROUND, hShadowBg);
-				parent.putClientProperty(ShadowPopupFactory.PROP_VERTICAL_BACKGROUND, vShadowBg);
+				parent.putClientProperty(PROP_HORIZONTAL_BACKGROUND, hShadowBg);
+				parent.putClientProperty(PROP_VERTICAL_BACKGROUND, vShadowBg);
 
 				final Container layeredPane = getLayeredPane();
 				if (layeredPane == null) {
@@ -545,12 +545,12 @@ public final class ShadowPopupFactory extends PopupFactory {
 			// fake drop shadow effect in case of heavy weight popups
 			final JComponent popup = (JComponent) c;
 			final Image hShadowBg = (Image) popup
-					.getClientProperty(ShadowPopupFactory.PROP_HORIZONTAL_BACKGROUND);
+					.getClientProperty(PROP_HORIZONTAL_BACKGROUND);
 			if (hShadowBg != null) {
 				g.drawImage(hShadowBg, x, y + height - 5, c);
 			}
 			final Image vShadowBg = (Image) popup
-					.getClientProperty(ShadowPopupFactory.PROP_VERTICAL_BACKGROUND);
+					.getClientProperty(PROP_VERTICAL_BACKGROUND);
 			if (vShadowBg != null) {
 				g.drawImage(vShadowBg, x + width - 5, y, c);
 			}

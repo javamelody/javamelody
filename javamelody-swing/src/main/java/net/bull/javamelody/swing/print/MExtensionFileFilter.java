@@ -116,9 +116,7 @@ public class MExtensionFileFilter extends FileFilter {
 			}
 
 			final String extension = getExtension(file);
-			if (extension != null && filters.containsKey(extension)) {
-				return true;
-			}
+            return extension != null && filters.containsKey(extension);
 		}
 		return false;
 	}

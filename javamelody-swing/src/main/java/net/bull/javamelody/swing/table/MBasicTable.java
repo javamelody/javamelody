@@ -284,8 +284,7 @@ public class MBasicTable extends JTable {
 				text = ((JTextComponent) rendererComponent).getText();
 				text = getToolTipTextIfNoText(text, rendererComponent);
 			} else if (rendererComponent instanceof JCheckBox) {
-				text = String
-						.valueOf(((JCheckBox) rendererComponent).isSelected() ? "vrai" : "faux");
+				text = ((JCheckBox) rendererComponent).isSelected() ? "vrai" : "faux";
 			} else {
 				text = value.toString();
 			}
