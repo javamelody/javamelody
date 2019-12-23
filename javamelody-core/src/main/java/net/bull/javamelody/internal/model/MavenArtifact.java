@@ -265,8 +265,7 @@ public final class MavenArtifact implements Serializable {
 						optional = childDependencyNode.getTextContent();
 					}
 				}
-				if ((scope == null || "compile".equals(scope))
-						&& (optional == null || !"true".equals(optional))) {
+				if ((scope == null || "compile".equals(scope)) && !"true".equals(optional)) {
 					deps.add(dependency);
 				}
 			}
@@ -341,8 +340,8 @@ public final class MavenArtifact implements Serializable {
 
 	private List<MavenArtifact> getAllManagedDependencies() throws IOException {
 		update();
-		final List<MavenArtifact> allManagedDependencies = new ArrayList<MavenArtifact>();
-		allManagedDependencies.addAll(managedDependencies);
+		final List<MavenArtifact> allManagedDependencies = new ArrayList<MavenArtifact>(
+				managedDependencies);
 		if (parent != null) {
 			allManagedDependencies.addAll(parent.getAllManagedDependencies());
 		}

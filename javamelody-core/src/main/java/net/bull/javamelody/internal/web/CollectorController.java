@@ -157,11 +157,11 @@ public class CollectorController { // NOPMD
 					final SerializableController serializableController = new SerializableController(
 							collector);
 					final Range range = serializableController.getRangeForSerializable(req);
-					final List<Object> serializable = new ArrayList<Object>();
 					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 							application);
-					serializable.addAll((List<?>) serializableController.createDefaultSerializable(
-							javaInformationsList, range, messageForReport));
+					final List<Object> serializable = new ArrayList<Object>(
+							(List<?>) serializableController.createDefaultSerializable(
+									javaInformationsList, range, messageForReport));
 					monitoringController.doCompressedSerializable(req, resp,
 							(Serializable) serializable);
 				} else {

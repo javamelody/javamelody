@@ -207,8 +207,6 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		return childDurationsSum;
 	}
 
-	/** {@inheritDoc} */
-	@Override
 	public Map<String, Long> getChildRequestsExecutionsByRequestId() {
 		if (childRequestsExecutionsByRequestId == null) {
 			return Collections.emptyMap();

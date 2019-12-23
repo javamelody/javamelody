@@ -42,10 +42,10 @@ final class JavaHTMLizer {
 
 	private static final Map<Character, String> ESCAPE_MAPS = createEscapeMaps();
 
-	private static final Pattern MULTILINE_COMMENT_PATTERN = Pattern.compile("\\/\\*(.*?)\\*\\/",
+	private static final Pattern MULTILINE_COMMENT_PATTERN = Pattern.compile("/\\*(.*?)\\*/",
 			Pattern.DOTALL);
 
-	private static final Pattern SINGLELINE_COMMENT_PATTERN = Pattern.compile("\\/\\/(.*?)<br \\/>",
+	private static final Pattern SINGLELINE_COMMENT_PATTERN = Pattern.compile("//(.*?)<br />",
 			Pattern.DOTALL);
 
 	private static final Pattern STRING_PATTERN = Pattern.compile("&quot;(.*?)&quot;");
@@ -118,7 +118,7 @@ final class JavaHTMLizer {
 	}
 
 	private static String escapeChar(final char c) {
-		return ESCAPE_MAPS.get(Character.valueOf(c));
+		return ESCAPE_MAPS.get(c);
 	}
 
 	private static String htmlEscape(final String text) {

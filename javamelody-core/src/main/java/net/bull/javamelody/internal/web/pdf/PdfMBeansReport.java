@@ -98,10 +98,8 @@ class PdfMBeansReport extends PdfAbstractReport {
 			mbeanName = mbeanName.substring(indexOfComma + 1);
 			addText(mbeanName);
 			margin += 13;
-			writeAttributes(mbean);
-		} else {
-			writeAttributes(mbean);
 		}
+		writeAttributes(mbean);
 	}
 
 	private void writeAttributes(MBeanNode mbean) throws DocumentException {

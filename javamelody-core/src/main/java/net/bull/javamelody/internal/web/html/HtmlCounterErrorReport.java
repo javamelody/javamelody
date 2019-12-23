@@ -118,7 +118,7 @@ public class HtmlCounterErrorReport extends HtmlAbstractReport {
 	}
 
 	private void writeStackTrace(CounterError error) throws IOException {
-		for (final String element : error.getStackTrace().split("\n|\r")) {
+		for (final String element : error.getStackTrace().split("[\n\r]")) {
 			if (!element.isEmpty()) {
 				// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
 				writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElementAndTabs(element));

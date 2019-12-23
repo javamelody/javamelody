@@ -16,6 +16,8 @@
 
 package net.bull.javamelody.internal.model;
 
+import java.util.Arrays;
+
 /**
  * A Base64 encoder/decoder.
  *
@@ -55,9 +57,7 @@ public final class Base64Coder {
 	private static final byte[] MAP2 = new byte[128];
 
 	static {
-		for (int i = 0; i < MAP2.length; i++) {
-			MAP2[i] = -1;
-		}
+		Arrays.fill(MAP2, (byte) -1);
 		for (int i = 0; i < 64; i++) {
 			MAP2[MAP1[i]] = (byte) i;
 		}
@@ -125,13 +125,13 @@ public final class Base64Coder {
 		return encode(in, 0, in.length);
 	}
 
-	/**
-	* Encodes a byte array into Base64 format.
-	* No blanks or line breaks are inserted in the output.
-	* @param in    An array containing the data bytes to be encoded.
-	* @param iLen  Number of bytes to process in <code>in</code>.
-	* @return      A character array containing the Base64 encoded data.
-	*/
+	//	/**
+	//	* Encodes a byte array into Base64 format.
+	//	* No blanks or line breaks are inserted in the output.
+	//	* @param in    An array containing the data bytes to be encoded.
+	//	* @param iLen  Number of bytes to process in <code>in</code>.
+	//	* @return      A character array containing the Base64 encoded data.
+	//	*/
 	//	public static char[] encode(byte[] in, int iLen) {
 	//		return encode(in, 0, iLen);
 	//	}

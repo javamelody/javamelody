@@ -185,7 +185,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<div id='detailsLastCollectorException' style='display: none;'><div>");
 			final StringWriter stackTraceWriter = new StringWriter(200);
 			lastCollectorException.printStackTrace(new PrintWriter(stackTraceWriter));
-			for (final String stackTraceElement : stackTraceWriter.toString().split("\n|\r")) {
+			for (final String stackTraceElement : stackTraceWriter.toString().split("[\n\r]")) {
 				if (!stackTraceElement.isEmpty()) {
 					// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
 					writeDirectly(
@@ -701,14 +701,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			write("<a href='?action=gc" + getCsrfTokenUrlPart()
 					+ "' onclick=\"javascript:return confirm('"
 					+ getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
-			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
-			writeln(separator);
 		} else {
 			write("<a href='?action=gc" + getCsrfTokenUrlPart() + "' onclick=\"javascript:alert('"
 					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
-			write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
-			writeln(separator);
 		}
+		write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
+		writeln(separator);
 		write("<a href='?action=heap_dump" + getCsrfTokenUrlPart()
 				+ "' onclick=\"javascript:return confirm('"
 				+ getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);

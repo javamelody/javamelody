@@ -72,11 +72,6 @@ public class CounterRequest implements Cloneable, Serializable {
 		 * @return Temps total du compteur fils pour ce contexte.
 		 */
 		int getChildDurationsSum();
-
-		/**
-		 * @return Nombres d'exécutions par requêtes filles
-		 */
-		Map<String, Long> getChildRequestsExecutionsByRequestId();
 	}
 
 	/**

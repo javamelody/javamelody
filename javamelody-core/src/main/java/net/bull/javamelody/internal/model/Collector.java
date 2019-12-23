@@ -793,7 +793,6 @@ public class Collector { // NOPMD
 				// différentes en éliminant celles ayant moins de 10 hits.
 				removeRequest(counter, request);
 				result.remove(request);
-				continue;
 			}
 		}
 		while (result.size() > maxRequestsCount && !result.isEmpty()) {

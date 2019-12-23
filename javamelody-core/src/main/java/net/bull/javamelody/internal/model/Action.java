@@ -369,7 +369,7 @@ public enum Action {
 		return "Mail sent with pdf report for the day to admins";
 	}
 
-	private File heapDump() throws IOException {
+	private File heapDump() {
 		try {
 			final ObjectName objectName = new ObjectName(
 					"com.sun.management:type=HotSpotDiagnostic");

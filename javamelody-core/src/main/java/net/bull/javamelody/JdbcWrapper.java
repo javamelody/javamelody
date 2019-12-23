@@ -253,7 +253,8 @@ public final class JdbcWrapper {
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			final Object result = method.invoke(getProxiedObject(), args);
 			if (result instanceof Connection) {
-				SINGLETON.createConnectionProxyOrRewrapIfJBossOrGlassfish((Connection) result);
+				return SINGLETON
+						.createConnectionProxyOrRewrapIfJBossOrGlassfish((Connection) result);
 			}
 			return result;
 		}

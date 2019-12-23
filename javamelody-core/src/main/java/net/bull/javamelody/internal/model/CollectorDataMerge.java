@@ -203,7 +203,7 @@ abstract class CollectorDataMerge {
 	private void mergeStatistics(final List<File> sources, final File target) throws IOException {
 		Counter mergedCounter = null;
 		for (final File source : sources) {
-			Counter counter = null;
+			Counter counter;
 			try {
 				counter = CounterStorage.readFromFile(source);
 			} catch (final IOException e) {

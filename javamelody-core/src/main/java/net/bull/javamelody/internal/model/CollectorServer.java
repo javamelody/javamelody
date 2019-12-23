@@ -209,7 +209,7 @@ public class CollectorServer {
 		}
 	}
 
-	String collectForApplication(String application, List<URL> urls) throws IOException {
+	private void collectForApplication(String application, List<URL> urls) throws IOException {
 		final boolean remoteCollectorAvailable = isApplicationDataAvailable(application);
 		final RemoteCollector remoteCollector;
 		if (!remoteCollectorAvailable) {
@@ -236,7 +236,7 @@ public class CollectorServer {
 			remoteCollector.setRemoteCollectors(remoteCollectors);
 		}
 
-		final String messageForReport = collectForApplication(remoteCollector);
+		collectForApplication(remoteCollector);
 
 		if (!remoteCollectorAvailable) {
 			// on initialise les remoteCollectors au fur et à mesure
@@ -271,7 +271,6 @@ public class CollectorServer {
 				}
 			}
 		}
-		return messageForReport;
 	}
 
 	private String collectForApplication(RemoteCollector remoteCollector) throws IOException {
@@ -444,6 +443,7 @@ public class CollectorServer {
 		for (final String aggregatedApplication : aggregatedApplications) {
 			sourceDirectories.add(Parameters.getStorageDirectory(aggregatedApplication));
 		}
+		final long start = System.currentTimeMillis();
 		LOGGER.info("merging data from the aggregated applications " + aggregatedApplications
 				+ " for aggregation application " + aggregationApplication);
 		final CollectorDataMerge collectorDataMerge = new CollectorDataMerge(sourceDirectories,
@@ -453,7 +453,12 @@ public class CollectorServer {
 				LOGGER.info(msg);
 			}
 		};
-		collectorDataMerge.mergeDirectories();
+		final int mergedFiles = collectorDataMerge.mergeDirectories();
+
+		final long durationInSeconds = Math.round((System.currentTimeMillis() - start) / 1000D);
+		LOGGER.info(mergedFiles + " files merged from the aggregated applications "
+				+ aggregatedApplications + " for aggregation application " + aggregationApplication
+				+ " in " + durationInSeconds + " s");
 	}
 
 	/**

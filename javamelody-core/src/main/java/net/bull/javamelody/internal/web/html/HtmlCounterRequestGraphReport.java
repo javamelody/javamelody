@@ -164,7 +164,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	}
 
 	private void writeStackTrace(CounterRequest request) throws IOException {
-		for (final String element : request.getStackTrace().split("\n|\r")) {
+		for (final String element : request.getStackTrace().split("[\n\r]")) {
 			if (!element.isEmpty()) {
 				// writeDirectly pour ne pas gérer de traductions car les liens contiennent '#'
 				writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElementAndTabs(element));
