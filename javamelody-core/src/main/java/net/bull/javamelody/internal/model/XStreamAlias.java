@@ -44,7 +44,7 @@ final class XStreamAlias {
 		result.put("connectionInformations", ConnectionInformations.class);
 		result.put("classInfo", HeapHistogram.ClassInfo.class);
 		result.put("sessionInformations", SessionInformations.class);
-		result.put("attribute", SessionInformations.SessionAttribute.class);
+		result.put("sessionAttribute", SessionInformations.SessionAttribute.class);
 		result.put("cacheInformations", CacheInformations.class);
 		result.put("jobInformations", JobInformations.class);
 		result.put("counterError", CounterError.class);
