@@ -29,9 +29,16 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -60,7 +67,13 @@ public enum TransportFormat {
 	 * JSON (écriture en JSON avec <a href='http://x-stream.github.io/'>XStream</a>).
 	 * Note : il serait possible aussi de le faire avec <a href='https://github.com/FasterXML/jackson'>Jackson</a>
 	 */
-	JSON("application/json");
+	JSON("application/json"),
+
+	/**
+	 * GSON (écriture et lecture en JSON avec <a href='https://github.com/google/gson'>Google Gson</a>).
+	 * Note : il serait possible aussi de le faire avec <a href='https://github.com/FasterXML/jackson'>Jackson</a>
+	 */
+	GSON("application/json");
 
 	private static final String NULL_VALUE = "null";
 
@@ -71,6 +84,7 @@ public enum TransportFormat {
 				TransportFormat.class.getName().length()
 						- TransportFormat.class.getSimpleName().length() - 1);
 		private static final String XML_CHARSET_NAME = "utf-8";
+		private static final String GSON_CHARSET_NAME = "UTF-8";
 
 		private XmlIO() {
 			super();
@@ -145,6 +159,28 @@ public enum TransportFormat {
 			xstream.registerLocalConverter(Counter.class, "rootCurrentContextsByThreadId",
 					mapConverter);
 			return xstream;
+		}
+
+		static void writeToGson(Serializable serializable, BufferedOutputStream bufferedOutput)
+				throws IOException {
+			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer = new JsonSerializer<StackTraceElement>() {
+				@Override
+				public JsonElement serialize(StackTraceElement src, Type typeOfSrc,
+						JsonSerializationContext context) {
+					return new JsonPrimitive(src.toString());
+				}
+			};
+			final Gson gson = new GsonBuilder()
+					// .setPrettyPrinting() : prettyPrinting pas nécessaire avec un viewer de json
+					.registerTypeAdapter(StackTraceElement.class, stackTraceElementJsonSerializer)
+					.create();
+			final OutputStreamWriter writer = new OutputStreamWriter(bufferedOutput,
+					GSON_CHARSET_NAME);
+			try {
+				gson.toJson(serializable, writer);
+			} finally {
+				writer.close();
+			}
 		}
 	}
 
@@ -238,6 +274,16 @@ public enum TransportFormat {
 						e);
 			}
 		}
+		if (this == GSON) {
+			try {
+				Class.forName("com.google.gson.Gson");
+			} catch (final ClassNotFoundException e) {
+				throw new IOException(
+						"Classes of the Gson library not found. Add the Gson dependency in your webapp for the GSON format.",
+						e);
+			}
+
+		}
 	}
 
 	public void writeSerializableTo(Serializable serializable, OutputStream output)
@@ -266,6 +312,9 @@ public enum TransportFormat {
 		case JSON:
 			XmlIO.writeToJson(nonNullSerializable, bufferedOutput);
 			break;
+		case GSON:
+			XmlIO.writeToGson(nonNullSerializable, bufferedOutput);
+			break;
 		default:
 			throw new IllegalStateException(toString());
 		}
@@ -290,6 +339,8 @@ public enum TransportFormat {
 		case JSON:
 			// pas possible avec JsonHierarchicalStreamDriver
 			// (http://x-stream.github.io/json-tutorial.html)
+			throw new UnsupportedOperationException();
+		case GSON:
 			throw new UnsupportedOperationException();
 		default:
 			throw new IllegalStateException(toString());
