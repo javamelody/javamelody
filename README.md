@@ -12,3 +12,4 @@ License [ASL](http://www.apache.org/licenses/LICENSE-2.0)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/javamelody/javamelody.svg)](http://isitmaintained.com/project/javamelody/javamelody "Percentage of issues still open")
 ![GitHub stars](https://img.shields.io/github/stars/javamelody/javamelody?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/java_melody?label=Follow&style=social)
+
