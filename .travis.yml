@@ -1,0 +1,26 @@
+language: java
+dist: trusty
+
+before_script: "curl -s https://raw.githubusercontent.com/report-ci/scripts/master/annotate.py > annotate.py"
+
+matrix:
+  include:
+    - jdk: openjdk8
+      script:
+        - mvn clean package && mvn clean test --log-file maven.log
+before_cache:
+  # Don't cache the artifacts we just generated, for multiple reasons: (1) we
+  # shouldn't need them next time around and (2) if we do, that indicates a
+  # dependency issue which might otherwise go unnoticed until next time we bump
+  # the project's version (i.e., when tagging).
+  - find "${HOME}/.m2/repository" -depth -name '*-SNAPSHOT' -exec rm -r '{}' \;
+cache:
+  directories:
+    # The local Maven repository in which third party dependencies are stored.
+    - ${HOME}/.m2/repository
+
+after_failure:
+  - curl -s https://raw.githubusercontent.com/report-ci/scripts/master/annotate.py | python - --tool java --input maven.log
+
+after_script:
+  - python <(curl -s https://raw.githubusercontent.com/report-ci/scripts/master/upload.py)
