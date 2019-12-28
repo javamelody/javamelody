@@ -139,7 +139,7 @@ public enum TransportFormat {
 			if (json) {
 				// format json
 				xstream = new XStream(new JsonHierarchicalStreamDriver());
-				xstream.setMode(XStream.NO_REFERENCES);
+				// #884 removed xstream.setMode(XStream.NO_REFERENCES);
 			} else {
 				// sinon format xml, utilise la dépendance XPP3 par défaut
 				xstream = new XStream();
