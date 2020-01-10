@@ -270,7 +270,6 @@ public class MonitoringFilter implements Filter {
 				} else {
 					allocatedKBytes = -1;
 				}
-
 				JdbcWrapper.ACTIVE_THREAD_COUNT.decrementAndGet();
 				putUserInfoInSession(httpRequest);
 				if (systemException != null) {
@@ -303,7 +302,8 @@ public class MonitoringFilter implements Filter {
 				httpCounter.addRequest(requestName, duration, cpuUsedMillis, allocatedKBytes,
 						systemError, responseSize);
 				// on log sur Log4J ou java.util.logging dans la catégorie correspond au nom du filtre dans web.xml
-				log(httpRequest, requestName, duration, systemError, responseSize);
+				log(httpRequest, requestName, duration, systemError,
+						wrappedResponse.getCurrentStatus(), responseSize);
 			} finally {
 				// normalement le unbind du contexte a été fait dans httpCounter.addRequest
 				// mais pour être sûr au cas où il y ait une exception comme OutOfMemoryError
@@ -497,13 +497,13 @@ public class MonitoringFilter implements Filter {
 
 	// cette méthode est protected pour pouvoir être surchargée dans une classe définie par l'application
 	protected void log(HttpServletRequest httpRequest, String requestName, long duration,
-			boolean systemError, long responseSize) {
+			boolean systemError, int responseStatus, long responseSize) {
 		if (!logEnabled) {
 			return;
 		}
 		final String filterName = filterConfig.getFilterName();
-		LOG.logHttpRequest(httpRequest, requestName, duration, systemError, responseSize,
-				filterName);
+		LOG.logHttpRequest(httpRequest, requestName, duration, systemError, responseStatus,
+				responseSize, filterName);
 	}
 
 	private static void throwException(Throwable t) throws IOException, ServletException {

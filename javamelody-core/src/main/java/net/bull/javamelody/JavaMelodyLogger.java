@@ -68,9 +68,10 @@ public interface JavaMelodyLogger {
 	 * @param requestName Nom de la requête
 	 * @param duration Durée
 	 * @param systemError Si erreur systême
+	 * @param responseStatus Status de la réponse
 	 * @param responseSize Taille de la réponse
 	 * @param loggerName Nom du logger à utiliser
 	 */
 	void logHttpRequest(HttpServletRequest httpRequest, String requestName, long duration,
-			boolean systemError, long responseSize, String loggerName);
+			boolean systemError, int responseStatus, long responseSize, String loggerName);
 }

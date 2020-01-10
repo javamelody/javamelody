@@ -48,15 +48,16 @@ public final class LOG {
 	}
 
 	public static void logHttpRequest(HttpServletRequest httpRequest, String requestName,
-			long duration, boolean systemError, long responseSize, String filterName) {
+			long duration, boolean systemError, int responseStatus, long responseSize,
+			String filterName) {
 		// dans les 3 implémentations, on ne construit le message de log
 		// que si le logger est configuré pour écrire le niveau INFO
 		JAVA_MELODY_LOGGER.logHttpRequest(httpRequest, requestName, duration, systemError,
-				responseSize, filterName);
+				responseStatus, responseSize, filterName);
 	}
 
 	public static String buildLogMessage(HttpServletRequest httpRequest, long duration,
-			boolean systemError, long responseSize) {
+			boolean systemError, int responseStatus, long responseSize) {
 		final StringBuilder msg = new StringBuilder();
 		msg.append("remoteAddr = ").append(httpRequest.getRemoteAddr());
 		final String forwardedFor = httpRequest.getHeader("X-Forwarded-For");
@@ -71,7 +72,7 @@ public final class LOG {
 		msg.append(' ').append(httpRequest.getMethod());
 		msg.append(": ").append(duration).append(" ms");
 		if (systemError) {
-			msg.append(", error");
+			msg.append(", error ").append(responseStatus);
 		}
 		msg.append(", ").append(responseSize / 1024L).append(" Kb");
 		return msg.toString();
