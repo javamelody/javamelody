@@ -182,7 +182,7 @@ public class TestMonitoringFilter {// NOPMD
 		setUp();
 
 		replay(request);
-		monitoringFilter.log(request, "test", 1000, false, 10000);
+		monitoringFilter.log(request, "test", 1000, false, 200, 10000);
 		verify(request);
 	}
 
