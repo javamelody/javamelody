@@ -336,8 +336,11 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		// For this case, it is needed to stop here the JdbcWrapper initialized in contextInitialized
 		JdbcWrapper.SINGLETON.stop();
 
-		// issue 848: NPE after SpringBoot hot restart
-		Parameters.initialize((ServletContext) null);
+		// issue 878: NPE at net.bull.javamelody.JspWrapper.createHttpRequestWrapper
+		if (event.getServletContext().getClass().getName().startsWith("io.undertow")) {
+			// issue 848: NPE after SpringBoot hot restart
+			Parameters.initialize((ServletContext) null);
+		}
 
 		LOG.debug("JavaMelody listener destroy done");
 	}
