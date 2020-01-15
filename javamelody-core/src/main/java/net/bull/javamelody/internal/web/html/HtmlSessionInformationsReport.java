@@ -40,7 +40,7 @@ import net.bull.javamelody.internal.model.SessionInformations.SessionAttribute;
 public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 	private static final String[] OS = { "linux", "windows", "mac", "solaris", "hp", "ibm",
 			"android", };
-	private static final String[] BROWSERS = { "chrome", "crios", "edge", "firefox", "msie",
+	private static final String[] BROWSERS = { "chrome", "crios", "edge", "edg", "firefox", "msie",
 			"opera", "safari", };
 	private static final String A_HREF_PART_SESSIONS = "<a href='?part=sessions";
 	private final List<SessionInformations> sessionsInformations;
