@@ -30,9 +30,6 @@
 		<developerConnection>scm:svn:https://javamelody.googlecode.com/svn/trunk/</developerConnection>
 		<url>http://javamelody.googlecode.com/svn/trunk/</url>
 	</scm>
-	<prerequisites>
-		<maven>3.0.4</maven>
-	</prerequisites>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

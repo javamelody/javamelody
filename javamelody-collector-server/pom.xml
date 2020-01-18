@@ -28,9 +28,6 @@
 		<url>https://github.com/javamelody/javamelody</url>
 		<tag>HEAD</tag>
 	</scm>
-	<prerequisites>
-		<maven>3.0.4</maven>
-	</prerequisites>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

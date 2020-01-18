@@ -10,9 +10,6 @@
 	<description>Example of embedding javamelody in standalone app</description>
 	<url>https://github.com/javamelody/javamelody/wiki</url>
 
-	<prerequisites>
-		<maven>3.0.4</maven>
-	</prerequisites>
 	<properties>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
 		<!-- (9.2.21 is the last version supporting Java 7) -->

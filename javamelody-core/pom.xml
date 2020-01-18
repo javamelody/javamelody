@@ -43,9 +43,6 @@
 	<organization>
 		<name>Emeric Vernat</name>
 	</organization>
-	<prerequisites>
-		<maven>3.0.4</maven>
-	</prerequisites>
 	<dependencies>
 		<!-- jrobin transitive dependency for graphs -->
 		<dependency>
