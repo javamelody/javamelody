@@ -91,7 +91,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.2.3</version>
 				<configuration>
 					<overlays>
 						<overlay>
