@@ -84,7 +84,6 @@ public enum TransportFormat {
 				TransportFormat.class.getName().length()
 						- TransportFormat.class.getSimpleName().length() - 1);
 		private static final String XML_CHARSET_NAME = "utf-8";
-		private static final String GSON_CHARSET_NAME = "UTF-8";
 
 		private XmlIO() {
 			super();
@@ -160,6 +159,13 @@ public enum TransportFormat {
 					mapConverter);
 			return xstream;
 		}
+	}
+
+	// classe interne pour qu'elle ne soit pas chargée avec la classe TransportFormat
+	// et qu'ainsi on ne dépende pas de GSON si on ne se sert pas du format gson
+	// ni de XStream si on ne se sert pas du format json
+	private static final class GsonIO {
+		private static final String GSON_CHARSET_NAME = "UTF-8";
 
 		static void writeToGson(Serializable serializable, BufferedOutputStream bufferedOutput)
 				throws IOException {
@@ -313,7 +319,7 @@ public enum TransportFormat {
 			XmlIO.writeToJson(nonNullSerializable, bufferedOutput);
 			break;
 		case GSON:
-			XmlIO.writeToGson(nonNullSerializable, bufferedOutput);
+			GsonIO.writeToGson(nonNullSerializable, bufferedOutput);
 			break;
 		default:
 			throw new IllegalStateException(toString());
