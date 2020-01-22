@@ -167,6 +167,10 @@ public enum TransportFormat {
 	private static final class GsonIO {
 		private static final String GSON_CHARSET_NAME = "UTF-8";
 
+		private GsonIO() {
+			super();
+		}
+
 		static void writeToGson(Serializable serializable, BufferedOutputStream bufferedOutput)
 				throws IOException {
 			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer = new JsonSerializer<StackTraceElement>() {
