@@ -364,26 +364,43 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("</div><br/>");
 		}
 
-		writeGraphs(collector.getDisplayedCounterJRobins());
+		writeGraphs(collector.getDisplayedCounterJRobins(), false);
 		final Collection<JRobin> otherJRobins = collector.getDisplayedOtherJRobins();
 		if (!otherJRobins.isEmpty()) {
 			writeln("<div align='right'>");
 			writeShowHideLink("detailsGraphs", "#Autres_courbes#");
+			writeln("<script type='text/javascript'>");
+			writeln("function loadImages(elementId) {");
+			writeln("  var descendents = document.getElementById(elementId).getElementsByTagName('*');");
+			writeln("  for (var i = 0; i < descendents.length; i++) {");
+			writeln("    var element = descendents[i];");
+			writeln("    if (element instanceof HTMLImageElement && element.src == '') {");
+			writeln("      element.src = element.dataset.src;");
+			writeln("    }");
+			writeln("  }");
+			writeln("}");
+			writeln("document.getElementById('detailsGraphsA').href=\"javascript:loadImages('detailsGraphs');showHide('detailsGraphs');\";");
+			writeln("</script>");
 			writeln(END_DIV);
 			writeln("<div id='detailsGraphs' style='display: none;'><div>");
-			writeGraphs(otherJRobins);
+			writeGraphs(otherJRobins, true);
 			writeln("</div></div>");
 		}
 	}
 
-	private void writeGraphs(Collection<JRobin> jrobins) throws IOException {
+	private void writeGraphs(Collection<JRobin> jrobins, boolean lazyGraphs) throws IOException {
 		int i = 0;
 		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
-			writeln("<a href='?part=graph&amp;graph=" + jrobinName
-					+ "'><img class='synthese' src='?width=200&amp;height=" + JRobin.SMALL_HEIGHT
-					+ "&amp;graph=" + jrobinName + "' alt=\"" + jrobin.getLabel() + "\" title=\""
-					+ jrobin.getLabel() + "\"/></a>");
+			write("<a href='?part=graph&amp;graph=" + jrobinName + "'><img class='synthese' ");
+			if (lazyGraphs) {
+				write("data-src");
+			} else {
+				write("src");
+			}
+			writeln("='?width=200&amp;height=" + JRobin.SMALL_HEIGHT + "&amp;graph=" + jrobinName
+					+ "' alt=\"" + jrobin.getLabel() + "\" title=\"" + jrobin.getLabel()
+					+ "\"/></a>");
 			i++;
 			if (i % 3 == 0) {
 				// un <br/> après httpSessions et avant activeThreads pour l'alignement
