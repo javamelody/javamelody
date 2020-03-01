@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="autoProxyCreator" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+		<property name="proxyTargetClass" value="true"/>
+	</bean>
+
+	<bean id="monitoringPointcutAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredWithAnnotationPointcut" />
+		</property>
+	</bean>
+
+	<bean id="monitoringAsyncAndScheduledAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredSpringAsyncAndScheduledPointcut" />
+		</property>
+	</bean>
+
+	<bean id="monitoringControllerAndServiceAdvisor" class="net.bull.javamelody.MonitoringSpringAdvisor">
+		<property name="pointcut">
+			<bean class="net.bull.javamelody.MonitoredSpringControllerAndServicePointcut" />
+		</property>
+	</bean>
+
+
+
+	<bean id="springDataSourceBeanPostProcessor" class="net.bull.javamelody.SpringDataSourceBeanPostProcessor">
+		<!--
+		<property name="excludedDatasources">
+			<set>
+				<value>excludedDataSourceName</value>
+			</set>
+		</property>
+		-->
+ 	</bean>
+
+	<!--
+ 	<bean id="wrappedDataSource" class="net.bull.javamelody.SpringDataSourceFactoryBean">
+		<property name="targetName" value="targetDataSource" />
+	</bean>
+	-->
+
+	<bean id="springRestTemplateBeanPostProcessor" class="net.bull.javamelody.SpringRestTemplateBeanPostProcessor" />
+
+ 	<bean id="springMongoDbFactoryBeanPostProcessor" class="net.bull.javamelody.SpringMongoDbFactoryBeanPostProcessor" />
+
+	<bean id="springElasticsearchOperationsBeanPostProcessor" class="net.bull.javamelody.SpringElasticsearchOperationsBeanPostProcessor" />
+
+	<bean id="javamelodySpringContext" class="net.bull.javamelody.SpringContext" />
+</beans>
