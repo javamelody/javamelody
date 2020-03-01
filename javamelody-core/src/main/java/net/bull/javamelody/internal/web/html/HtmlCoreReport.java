@@ -314,7 +314,11 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				I18N.getString("Stats") + ' ' + counter.getName().toLowerCase(Locale.ENGLISH));
 		final String counterLabel = getString(counter.getName() + "Label");
 		write(getFormattedString("Statistiques_compteur", counterLabel));
-		writeln(" - " + range.getLabel() + "</h3>");
+		write(" - " + range.getLabel());
+		if (range.getPeriod() != Period.TOUT) {
+			write(" #depuis_minuit#");
+		}
+		writeln("</h3>");
 	}
 
 	static void writeAddAndRemoveApplicationLinks(String currentApplication,
