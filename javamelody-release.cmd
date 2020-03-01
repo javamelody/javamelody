@@ -55,6 +55,8 @@ cd javamelody-core
 call mvn clean || exit /B
 if /I NOT "%dryRun%" == "true" (
 call mvn release:prepare release:perform -Dtag=javamelody-core-%releaseVersion% -DreleaseVersion=%releaseVersion% -DdevelopmentVersion=%developmentVersion% || exit /B
+call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+call mvn source:jar javadoc:jar -DskipTests || exit /B
 ) else (
 call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
 call mvn install source:jar javadoc:jar -DskipTests || exit /B
