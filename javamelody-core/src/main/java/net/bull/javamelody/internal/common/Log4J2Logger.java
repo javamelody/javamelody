@@ -32,11 +32,12 @@ class Log4J2Logger implements JavaMelodyLogger {
 	/** {@inheritDoc} */
 	@Override
 	public void logHttpRequest(HttpServletRequest httpRequest, String requestName, long duration,
-			boolean systemError, long responseSize, String loggerName) {
+			boolean systemError, int responseStatus, long responseSize, String loggerName) {
 		final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager
 				.getLogger(loggerName);
 		if (logger.isInfoEnabled()) {
-			logger.info(LOG.buildLogMessage(httpRequest, duration, systemError, responseSize));
+			logger.info(LOG.buildLogMessage(httpRequest, duration, systemError, responseStatus,
+					responseSize));
 		}
 	}
 

@@ -80,7 +80,7 @@ public class TestJavaMelodyLogger {
 		expect(request.getHeader("X-Forwarded-For")).andReturn("w.x.y.z").anyTimes();
 
 		replay(request);
-		logger.logHttpRequest(request, "test", 1000, false, 10000, "javamelody");
+		logger.logHttpRequest(request, "test", 1000, false, 200, 10000, "javamelody");
 		verify(request);
 
 		final HttpServletRequest request2 = createNiceMock(HttpServletRequest.class);
@@ -92,7 +92,7 @@ public class TestJavaMelodyLogger {
 		expect(request2.getHeader("X-Forwarded-For")).andReturn(null).anyTimes();
 
 		replay(request2);
-		logger.logHttpRequest(request2, "test", 1000, true, 10000, "javamelody");
+		logger.logHttpRequest(request2, "test", 1000, true, 500, 10000, "javamelody");
 		verify(request2);
 	}
 }
