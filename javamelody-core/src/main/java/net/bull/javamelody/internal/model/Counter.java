@@ -692,10 +692,10 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		// Mais inutile de le faire dans d'autres méthodes de Counter
 		// car ce serait mauvais pour les perfs, cela ne laisserait aucune chance
 		// à une nouvelle requête et car cela sera fait par la classe collector
-		int initHits = 10, size;
+		int minRemoveHits = 10, size;
 		while ((size = requests.size()) > maxRequests) {
 			for (final CounterRequest request : requests.values()) {
-				if (request.getHits() < initHits) {
+				if (request.getHits() < minRemoveHits) {
 					removeRequest(request.getName());
 					size--;
 					if (size <= maxRequests) {
@@ -703,7 +703,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 					}
 				}
 			}
-			initHits <<= 1;
+			minRemoveHits <<= 1;
 		}
 	}
 
