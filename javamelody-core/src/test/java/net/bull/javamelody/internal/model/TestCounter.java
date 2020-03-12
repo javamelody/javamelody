@@ -505,4 +505,16 @@ public class TestCounter {
 			fail("toString vide");
 		}
 	}
+
+	/** Test. Vm options with -Xmx30m */
+	@Test
+	public void testAddRequestForSystemErrorOom() {
+		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
+		int count = 0;
+		while (count++ < Counter.MAX_REQUESTS_COUNT * 20) {
+			final CounterRequest request = new CounterRequest("test Counter" + count, counter.getName());
+			errorCounter.addRequestForSystemError(request.getName(), request.getMean(), 0, 0, null);
+		}
+	}
+
 }

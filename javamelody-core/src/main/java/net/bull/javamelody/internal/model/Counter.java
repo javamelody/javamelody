@@ -677,18 +677,25 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 			}
 		}
 
-		int size = requests.size();
+		if (isErrorCounter()) {
+			addErrors(newCounter.getErrors());
+		}
+	}
+
+	private void ctlMaxRequestsCount() {
 		final int maxRequests = getMaxRequestsCount();
-		if (size > maxRequests) {
-			// Si le nombre de requêtes est supérieur à 10000 (sql non bindé par ex.),
-			// on essaye ici d'éviter de saturer la mémoire (et le disque dur)
-			// avec toutes ces requêtes différentes en éliminant celles ayant moins de 10 hits.
-			// (utile pour une agrégation par année dans PeriodCounterFactory par ex.)
-			// Mais inutile de le faire dans d'autres méthodes de Counter
-			// car ce serait mauvais pour les perfs, cela ne laisserait aucune chance
-			// à une nouvelle requête et car cela sera fait par la classe collector
+
+		// Si le nombre de requêtes est supérieur à 10000 (sql non bindé par ex.),
+		// on essaye ici d'éviter de saturer la mémoire (et le disque dur)
+		// avec toutes ces requêtes différentes en éliminant celles ayant moins de 10 hits.
+		// (utile pour une agrégation par année dans PeriodCounterFactory par ex.)
+		// Mais inutile de le faire dans d'autres méthodes de Counter
+		// car ce serait mauvais pour les perfs, cela ne laisserait aucune chance
+		// à une nouvelle requête et car cela sera fait par la classe collector
+		int initHits = 10, size;
+		while ((size = requests.size()) > maxRequests) {
 			for (final CounterRequest request : requests.values()) {
-				if (request.getHits() < 10) {
+				if (request.getHits() < initHits) {
 					removeRequest(request.getName());
 					size--;
 					if (size <= maxRequests) {
@@ -696,10 +703,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 					}
 				}
 			}
-		}
-
-		if (isErrorCounter()) {
-			addErrors(newCounter.getErrors());
+			initHits <<= 1;
 		}
 	}
 
@@ -777,6 +781,8 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 
 	private CounterRequest getCounterRequestInternal(String requestName,
 			boolean saveRequestIfAbsent) {
+		ctlMaxRequestsCount();
+
 		CounterRequest request = requests.get(requestName);
 		if (request == null) {
 			request = new CounterRequest(requestName, getName());
