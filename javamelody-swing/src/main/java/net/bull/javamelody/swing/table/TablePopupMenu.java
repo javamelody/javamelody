@@ -84,7 +84,7 @@ class TablePopupMenu extends JPopupMenu {
 			printers.add(new MPdfWriter());
 		} catch (final ClassNotFoundException e) {
 			// l'export PDF ne sera pas disponible dans cette application
-			Logger.getLogger(TablePopupMenu.class).debug("Export PDF non disponible sans iText");
+			Logger.getLogger(TablePopupMenu.class).debug("Export PDF non disponible sans OpenPDF");
 		}
 		try {
 			Class.forName("com.lowagie.text.rtf.RtfWriter2");
