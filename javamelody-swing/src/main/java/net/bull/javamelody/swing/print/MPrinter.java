@@ -240,7 +240,8 @@ public abstract class MPrinter {
 	public void print(final MBasicTable table) throws IOException {
 		final File file = getFile(table);
 		if (file != null) {
-			try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+			try (final OutputStream outputStream = new BufferedOutputStream(
+					new FileOutputStream(file))) {
 				print(table, outputStream);
 			}
 

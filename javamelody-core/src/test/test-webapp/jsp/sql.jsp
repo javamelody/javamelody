@@ -1,4 +1,4 @@
-<%@ page session="false" %>
+<%@ page session="false"%>
 <%	
 	final javax.sql.DataSource ds = (javax.sql.DataSource) new javax.naming.InitialContext()
 			.lookup("java:comp/env/jdbc/TestDB");
@@ -19,5 +19,5 @@
 
 Waited 5s in sql
 
-<br/>
+<br />
 <a href="../index.jsp">back</a>

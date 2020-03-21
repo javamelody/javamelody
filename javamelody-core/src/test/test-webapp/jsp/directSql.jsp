@@ -1,4 +1,4 @@
-<%@ page session="false" %>
+<%@ page session="false"%>
 <%	
 	final java.util.Properties properties = new java.util.Properties();
 	final String query = "DROP ALIAS if exists SLEEP; CREATE ALIAS SLEEP FOR \"java.lang.Thread.sleep(long)\"; call sleep(.1)";
@@ -32,5 +32,5 @@
 
 direct sql done
 
-<br/>
+<br />
 <a href="../index.jsp">back</a>

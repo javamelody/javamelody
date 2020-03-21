@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
@@ -34,8 +35,9 @@
 			<artifactId>javamelody-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- mêmes dépendances que dans build.xml, même si le war produit par le packaging maven
-		n'est pas exactement le même que le vrai war produit par build.xml -->
+		<!-- mêmes dépendances que dans build.xml, même si le war produit par le 
+			packaging maven n'est pas exactement le même que le vrai war produit par 
+			build.xml -->
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
@@ -75,7 +77,8 @@
 			<artifactId>gson</artifactId>
 			<version>2.8.6</version>
 		</dependency>
-		<!-- AWS CloudWatch dependencies to send metrics to CloudWatch (about 4.5 MB) -->
+		<!-- AWS CloudWatch dependencies to send metrics to CloudWatch (about 4.5 
+			MB) -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-cloudwatch</artifactId>
@@ -102,7 +105,8 @@
 							<includes>
 								<include>LICENSE</include>
 								<include>JAVAMELODY-VERSION.properties</include>
-								<!-- Main-Class to launch as "java -jar javamelody-xxx.war" with Winstone -->
+								<!-- Main-Class to launch as "java -jar javamelody-xxx.war" with 
+									Winstone -->
 								<include>net/bull/javamelody/Main.class</include>
 							</includes>
 						</overlay>
@@ -128,7 +132,8 @@
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<connectors>
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+						<connector
+							implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 							<port>8080</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>

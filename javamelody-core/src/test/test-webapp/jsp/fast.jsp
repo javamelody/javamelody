@@ -1,5 +1,5 @@
-<%@ page session="false" %>
+<%@ page session="false"%>
 No wait
-<br/>
+<br />
 <a href="../index.jsp">back</a>
-<br/>
+<br />

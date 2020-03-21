@@ -9,13 +9,16 @@
 	<uri>javamelody-prometheus</uri>
 
 	<tag>
-		<description>Standard JavaMelody metrics like in .../monitoring?format=prometheus</description>
+		<description>Standard JavaMelody metrics like in
+			.../monitoring?format=prometheus</description>
 		<name>standard</name>
 		<tag-class>net.bull.javamelody.PrometheusStandardTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
-			<description>true if the "last value" metrics from graphics should be included. 
-			(They are aggregated over 60 seconds and would better be computed in Prometheus from the other raw metrics.)</description>
+			<description>true if the "last value" metrics from graphics should be
+				included.
+				(They are aggregated over 60 seconds and would better be computed in
+				Prometheus from the other raw metrics.)</description>
 			<name>includeLastValue</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -29,28 +32,33 @@
 		<tag-class>net.bull.javamelody.PrometheusMBeanTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
-			<description>Name of a JMX value like in the link at the left of an attribute in the javamelody MBeans page (java.lang:type=OperatingSystem.ProcessCpuTime for example)</description>
+			<description>Name of a JMX value like in the link at the left of an
+				attribute in the javamelody MBeans page
+				(java.lang:type=OperatingSystem.ProcessCpuTime for example)</description>
 			<name>jmxValue</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>Metric name for Prometheus (process_cpu_nanos_total for example, snake_case is recommended)</description>
+			<description>Metric name for Prometheus (process_cpu_nanos_total for
+				example, snake_case is recommended)</description>
 			<name>metricName</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>Metric type for Prometheus (counter, gauge, histogram or summary)</description>
+			<description>Metric type for Prometheus (counter, gauge, histogram or
+				summary)</description>
 			<name>metricType</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>net.bull.javamelody.PrometheusMBeanTag.MetricType</type>
 		</attribute>
 		<attribute>
-			<description>Metric help for Prometheus (not mandatory, "MBean " + jmxValue by default)</description>
+			<description>Metric help for Prometheus (not mandatory, "MBean " +
+				jmxValue by default)</description>
 			<name>metricHelp</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -64,14 +72,16 @@
 		<tag-class>net.bull.javamelody.PrometheusCustomTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
-			<description>Metric name for Prometheus (process_cpu_nanos_total for example, snake_case is recommended)</description>
+			<description>Metric name for Prometheus (process_cpu_nanos_total for
+				example, snake_case is recommended)</description>
 			<name>metricName</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>Metric type for Prometheus (counter, gauge, histogram or summary)</description>
+			<description>Metric type for Prometheus (counter, gauge, histogram or
+				summary)</description>
 			<name>metricType</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -87,12 +97,14 @@
 	</tag>
 
 	<tag>
-		<description>Metrics based on http or other request statistic (hits count, errors count, durations sums)</description>
+		<description>Metrics based on http or other request statistic (hits
+			count, errors count, durations sums)</description>
 		<name>request</name>
 		<tag-class>net.bull.javamelody.PrometheusCounterRequestTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
-			<description>Request id from JavaMelody (http9b051a0212745888c373b46ee5f27d9d6d905d45 for example)</description>
+			<description>Request id from JavaMelody
+				(http9b051a0212745888c373b46ee5f27d9d6d905d45 for example)</description>
 			<name>requestId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>

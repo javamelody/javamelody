@@ -1,4 +1,4 @@
-<%@ page session="true" %>
+<%@ page session="true"%>
 <%= "Session " + (request.getSession().isNew() ? "créée" : "déjà existante") %>
-<br/>
+<br />
 <a href="../index.jsp">back</a>

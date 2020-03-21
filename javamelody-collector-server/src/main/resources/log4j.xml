@@ -2,18 +2,16 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <!-- ===================================================================== -->
-<!--                                                                       -->
-<!--  Log4j Configuration                                                  -->
-<!--                                                                       -->
+<!-- -->
+<!-- Log4j Configuration -->
+<!-- -->
 <!-- ===================================================================== -->
 
-<!--
-	| For more configuration information and examples see the Jakarta Log4j
-	| website: http://jakarta.apache.org/log4j
--->
+<!-- | For more configuration information and examples see the Jakarta Log4j 
+	| website: http://jakarta.apache.org/log4j -->
 
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
-	debug="false">
+<log4j:configuration
+	xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
 
 	<!-- ================================= -->
 	<!-- Preserve messages in a local file -->
@@ -35,7 +33,8 @@
 	<!-- Append messages to the console -->
 	<!-- ============================== -->
 
-	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+	<appender name="CONSOLE"
+		class="org.apache.log4j.ConsoleAppender">
 		<param name="Threshold" value="DEBUG" />
 
 		<layout class="org.apache.log4j.PatternLayout">

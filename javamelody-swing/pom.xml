@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -125,24 +126,24 @@
 					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>3.1.1</version>
-					<executions>
-						<execution>
-							<id>copy-dependencies</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${project.build.directory}/dependency</outputDirectory>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-      			<plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/dependency</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.8</version>
 				<executions>
@@ -152,15 +153,21 @@
 							<target>
 								<echo message="Construction du jar" level="info" />
 								<tstamp>
-									<format property="TODAY_FR" pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
+									<format property="TODAY_FR"
+										pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
 								</tstamp>
-								<delete file="target/javamelody-swing-${project.version}.jar" />
-								<jar destfile="target/javamelody-swing-${project.version}.jar">
-									<zipfileset dir="target/classes" excludes="**/Thumbs.db" />
+								<delete
+									file="target/javamelody-swing-${project.version}.jar" />
+								<jar
+									destfile="target/javamelody-swing-${project.version}.jar">
+									<zipfileset dir="target/classes"
+										excludes="**/Thumbs.db" />
 									<zipfileset file="LICENSE" />
-									<zipfileset src="${project.build.directory}/dependency/javamelody-core-${project.version}.jar" 
+									<zipfileset
+										src="${project.build.directory}/dependency/javamelody-core-${project.version}.jar"
 										excludes="net/bull/javamelody/Main.class,com/lowagie/text/pdf/fonts/cmap_info.txt" />
-									<zipgroupfileset dir="${project.build.directory}/dependency">
+									<zipgroupfileset
+										dir="${project.build.directory}/dependency">
 										<include name="itext-2.1.7.jar" />
 										<include name="log4j-*.jar" />
 										<include name="xstream-*.jar" />
@@ -175,21 +182,27 @@
 										<attribute name="Built-Date" value="${TODAY_FR}" />
 										<attribute name="Build-Jdk" value="${java.version}" />
 										<section name="javamelody-swing">
-											<attribute name="Implementation-Title" value="Java Melody Swing" />
-											<attribute name="Implementation-Vendor" value="Emeric Vernat" />
+											<attribute name="Implementation-Title"
+												value="Java Melody Swing" />
+											<attribute name="Implementation-Vendor"
+												value="Emeric Vernat" />
 										</section>
 										<!-- attributes related to Java Web Start -->
 										<!-- see http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/security/manifest.html -->
-										<attribute name="Permissions" value="all-permissions" />
+										<attribute name="Permissions"
+											value="all-permissions" />
 										<attribute name="Codebase" value="*" />
-										<attribute name="Application-Name" value="JavaMelody Desktop" />
+										<attribute name="Application-Name"
+											value="JavaMelody Desktop" />
 										<attribute name="Trusted-Library" value="true" />
 									</manifest>
 								</jar>
 
 								<echo message="Signature du jar" level="info" />
-								<signjar jar="target/javamelody-swing-${project.version}.jar" alias="javamelody" 
-									keystore="src/main/key/javamelodykeystore" storetype="JKS" storepass="javamelody" />
+								<signjar
+									jar="target/javamelody-swing-${project.version}.jar"
+									alias="javamelody" keystore="src/main/key/javamelodykeystore"
+									storetype="JKS" storepass="javamelody" />
 							</target>
 						</configuration>
 						<goals>

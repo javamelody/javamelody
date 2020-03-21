@@ -544,13 +544,11 @@ public final class ShadowPopupFactory extends PopupFactory {
 		public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
 			// fake drop shadow effect in case of heavy weight popups
 			final JComponent popup = (JComponent) c;
-			final Image hShadowBg = (Image) popup
-					.getClientProperty(PROP_HORIZONTAL_BACKGROUND);
+			final Image hShadowBg = (Image) popup.getClientProperty(PROP_HORIZONTAL_BACKGROUND);
 			if (hShadowBg != null) {
 				g.drawImage(hShadowBg, x, y + height - 5, c);
 			}
-			final Image vShadowBg = (Image) popup
-					.getClientProperty(PROP_VERTICAL_BACKGROUND);
+			final Image vShadowBg = (Image) popup.getClientProperty(PROP_VERTICAL_BACKGROUND);
 			if (vShadowBg != null) {
 				g.drawImage(vShadowBg, x + width - 5, y, c);
 			}

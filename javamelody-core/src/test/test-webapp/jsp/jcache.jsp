@@ -1,5 +1,5 @@
 <%@page import="java.net.URI"%>
-<%@ page session="false" %>
+<%@ page session="false"%>
 <%@page import="java.util.Random"%>
 <%@page import="javax.cache.Caching"%>
 <%@page import="javax.cache.configuration.MutableConfiguration"%>
@@ -17,5 +17,5 @@ Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache3.xml"), 
 %>
 
 Cache initialized
-<br/>
+<br />
 <a href="../index.jsp">back</a>

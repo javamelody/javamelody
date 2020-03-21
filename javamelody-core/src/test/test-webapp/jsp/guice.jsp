@@ -1,10 +1,10 @@
-<%@page session="false" %>
+<%@page session="false"%>
 <%@page import="com.google.inject.AbstractModule"%>
 <%@page import="com.google.inject.Guice"%>
 <%@page import="com.google.inject.Injector"%>
 <%@page import="com.google.inject.Module"%>
 <%@page import="net.bull.javamelody.MonitoringGuiceModule"%>
-<%@page import="net.bull.javamelody.SpringTestFacade" %>
+<%@page import="net.bull.javamelody.SpringTestFacade"%>
 <%@page import="net.bull.javamelody.SpringTestFacadeImpl"%>
 
 <%
@@ -22,7 +22,8 @@ final Injector injector = Guice.createInjector(testModule);
 final SpringTestFacade springTestFacade = injector.getInstance(SpringTestFacade.class);
 %>
 
-Guice said it is <%= springTestFacade.nowWithSql() %>
-<br/>
+Guice said it is
+<%= springTestFacade.nowWithSql() %>
+<br />
 
 <a href="../index.jsp">back</a>

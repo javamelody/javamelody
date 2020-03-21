@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
@@ -9,7 +10,7 @@
 	<name>JavaMelody - offline viewer</name>
 	<description>View reports on data offline without access to online reports</description>
 	<url>https://github.com/javamelody/javamelody/wiki</url>
-	
+
 	<properties>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
 		<!-- (9.2.21 is the last version supporting Java 7) -->
@@ -57,13 +58,14 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Use "mvn package" then "java -Djavamelody.storage-directory=... -jar target/javamelody-viewer.jar" -->
+				<!-- Use "mvn package" then "java -Djavamelody.storage-directory=... 
+					-jar target/javamelody-viewer.jar" -->
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
 					<finalName>javamelody-offline-viewer</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
-  					<archive>
+					<archive>
 						<manifest>
 							<mainClass>net.bull.javamelody.Viewer</mainClass>
 						</manifest>

@@ -1,4 +1,4 @@
-<%@ page session="false" %>
+<%@ page session="false"%>
 <%@page import="java.util.Random"%>
 <%@page import="java.util.Date"%>
 <%@page import="org.quartz.*"%>
@@ -35,5 +35,5 @@ scheduler.scheduleJob(job2, trigger3);
 
 Jobs initialized
 
-<br/>
+<br />
 <a href="../index.jsp">back</a>

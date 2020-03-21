@@ -1,4 +1,4 @@
-<%@ page session="false" %>
+<%@ page session="false"%>
 <%@page import="net.sf.ehcache.Element"%>
 <%@page import="java.util.Random"%>
 <%@page import="net.sf.ehcache.CacheManager"%>
@@ -13,5 +13,5 @@ CacheManager.getInstance().getCache("test").get(key);
 %>
 
 Cache initialized
-<br/>
+<br />
 <a href="../index.jsp">back</a>

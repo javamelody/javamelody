@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -97,34 +98,24 @@
 			<artifactId>ehcache</artifactId>
 			<version>1.6.2</version>
 		</dependency>
- 		<dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.8.1</version>
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
 			<version>1.1.1</version>
 		</dependency>
- 		<dependency>
+		<dependency>
 			<groupId>quartz</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.5.2</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz</artifactId>
-			<version>2.1.2</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>c3p0</artifactId>
-					<groupId>c3p0</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.quartz-scheduler</groupId> <artifactId>quartz</artifactId> 
+			<version>2.1.2</version> <exclusions> <exclusion> <artifactId>c3p0</artifactId> 
+			<groupId>c3p0</groupId> </exclusion> </exclusions> </dependency> -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
@@ -162,8 +153,8 @@
 			<artifactId>tomcat-jdbc</artifactId>
 			<version>9.0.30</version>
 		</dependency>
-		<!-- Dépendance spring aop (qui inclus spring core, spring 
-			beans, aop alliance et commons-logging) -->
+		<!-- Dépendance spring aop (qui inclus spring core, spring beans, aop alliance 
+			et commons-logging) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -218,9 +209,9 @@
 			<version>1.11.136</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.amazonaws</groupId>
-		    <artifactId>aws-java-sdk-s3</artifactId>
-		    <version>1.11.136</version>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.11.136</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -273,7 +264,8 @@
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<jettyConfig>src/main/config/jetty-jmx.xml</jettyConfig>
 					<connectors>
-						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+						<connector
+							implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
 							<port>8080</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
@@ -290,7 +282,7 @@
 					<port>8080</port>
 					<path>/</path>
 					<contextFile>${basedir}/src/main/config/tomcat-context.xml</contextFile>
- 					<useTestClasspath>true</useTestClasspath>
+					<useTestClasspath>true</useTestClasspath>
 				</configuration>
 			</plugin>
 		</plugins>
