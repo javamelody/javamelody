@@ -195,8 +195,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			}
 			writeln("</div></div>");
 		}
-		if (collectorServer != null && javaInformationsList.size() < collectorServer
-				.getUrlsByApplication(collector.getApplication()).size()) {
+		if (collectorServer != null
+				&& collectorServer.isApplicationDataAvailable(collector.getApplication())
+				&& javaInformationsList.size() < collectorServer
+						.getUrlsByApplication(collector.getApplication()).size()) {
 			writeln("<div style='font-weight: bold;'>");
 			writeln("<img src='?resource=alert.png' alt='alert'/> #some_node_unavailable#");
 			writeln("</div><br/>");
