@@ -451,4 +451,12 @@ public class HtmlReport extends HtmlAbstractReport {
 		htmlHsErrPidReport.toHtml();
 		writeHtmlFooter();
 	}
+
+	public void writeHashPassword(String algorithm, String password) throws IOException {
+		writeHtmlHeader();
+		final HtmlHashPasswordReport htmlHashPasswordReport = new HtmlHashPasswordReport(
+				getWriter());
+		htmlHashPasswordReport.writeHashPassword(algorithm, password);
+		writeHtmlFooter();
+	}
 }

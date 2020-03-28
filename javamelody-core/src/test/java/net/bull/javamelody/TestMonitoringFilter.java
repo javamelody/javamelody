@@ -788,6 +788,13 @@ public class TestMonitoringFilter {// NOPMD
 					"java.lang:type=OperatingSystem.ProcessCpuTime");
 			monitoring(parameters);
 			parameters.remove(HttpParameter.JMX_VALUE);
+			parameters.put(HttpParameter.PART, HttpPart.HASH_PASSWORD.getName());
+			monitoring(parameters);
+			parameters.put(HttpParameter.ALGORITHM, "SHA-256");
+			parameters.put(HttpParameter.REQUEST, "password");
+			monitoring(parameters);
+			parameters.remove(HttpParameter.ALGORITHM);
+			parameters.remove(HttpParameter.REQUEST);
 		} finally {
 			context.close();
 		}

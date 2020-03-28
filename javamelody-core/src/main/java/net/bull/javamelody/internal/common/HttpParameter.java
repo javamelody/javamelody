@@ -47,7 +47,8 @@ public enum HttpParameter {
 	REPORT("report"),
 	TOKEN("token"),
 	CLASS("class"),
-	APPLICATION("application");
+	APPLICATION("application"),
+	ALGORITHM("algorithm");
 
 	private final String name;
 

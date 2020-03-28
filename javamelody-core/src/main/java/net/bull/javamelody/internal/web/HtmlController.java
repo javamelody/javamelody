@@ -358,6 +358,12 @@ public class HtmlController {
 				withoutHeaders);
 	}
 
+	@RequestPart(HttpPart.HASH_PASSWORD)
+	void doHashPassword(@RequestParameter(HttpParameter.ALGORITHM) String algorithm,
+			@RequestParameter(HttpParameter.REQUEST) String password) throws IOException {
+		htmlReport.writeHashPassword(algorithm, password);
+	}
+
 	void writeHtmlToLastShutdownFile() {
 		try {
 			final File dir = Parameters.getStorageDirectory(getApplication());

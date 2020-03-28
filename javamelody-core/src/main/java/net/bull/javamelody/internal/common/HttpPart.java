@@ -56,7 +56,8 @@ public enum HttpPart {
 	RUM("rum"),
 	WEBAPP_VERSIONS("webappVersions"),
 	CACHE_KEYS("cacheKeys"),
-	JCACHE_KEYS("jcacheKeys");
+	JCACHE_KEYS("jcacheKeys"),
+	HASH_PASSWORD("hashPassword");
 
 	private final String name;
 
