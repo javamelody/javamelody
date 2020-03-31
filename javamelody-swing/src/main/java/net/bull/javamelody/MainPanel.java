@@ -140,8 +140,10 @@ class MainPanel extends MelodyPanel {
 		this.selectedRange = selectedRange;
 		final List<URL> newUrls = new ArrayList<>(initialURLs.size());
 		for (final URL url : initialURLs) {
-			final URL newUrl = new URL(
-					url.toString() + '&' + HttpParameter.PERIOD + '=' + selectedRange.getValue());
+			// %7C for "Invalid character found in the request target. The valid characters are defined in RFC 7230 and RFC 3986"
+			// with recent Tomcat versions
+			final URL newUrl = new URL(url.toString() + '&' + HttpParameter.PERIOD + '='
+					+ selectedRange.getValue().replace("|", "%7C"));
 			newUrls.add(newUrl);
 		}
 		getRemoteCollector().setURLs(newUrls);
