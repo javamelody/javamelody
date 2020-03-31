@@ -60,7 +60,7 @@ class StatisticsTablePanel extends MelodyPanel {
 
 		@Override
 		public void setValue(final Object value) {
-			super.setValue((Integer) value / 1024);
+			super.setValue((Long) value / 1024);
 		}
 	}
 
