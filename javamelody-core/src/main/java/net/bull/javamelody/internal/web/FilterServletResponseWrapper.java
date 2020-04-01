@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 abstract class FilterServletResponseWrapper extends HttpServletResponseWrapper {
 	private ServletOutputStream stream;
 	private PrintWriter writer;
-	private int status;
+	private int status = HttpServletResponse.SC_OK;
 
 	/**
 	 * Constructeur.
