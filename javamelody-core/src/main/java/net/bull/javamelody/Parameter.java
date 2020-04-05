@@ -45,6 +45,11 @@ public enum Parameter {
 	OBSOLETE_STATS_DAYS("obsolete-stats-days"),
 
 	/**
+	 * Maximum of disk usage by rrd files (20 MB by default).
+	 */
+	MAX_RRD_DISK_USAGE_MB("max-rrd-disk-usage-mb"),
+
+	/**
 	 * Période en secondes du sampling pour trouver les hotspots (null par défaut : pas de sampling).
 	 * Une valeur de 10 est recommandée (c'est-à-dire 10 secondes) pour ne pas entraîner d'overhead,
 	 * ce qui nécessitera plusieurs heures pour avoir des résultats significatifs.

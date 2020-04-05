@@ -884,7 +884,7 @@ public class Collector { // NOPMD
 		return dayCounter;
 	}
 
-	void deleteObsoleteFiles() throws IOException {
+	void deleteObsoleteFiles() {
 		final long rrdDiskUsage = CounterStorage.deleteObsoleteCounterFiles(getApplication());
 		final long serGzDiskUsage = JRobin.deleteObsoleteJRobinFiles(getApplication());
 		diskUsage = rrdDiskUsage + serGzDiskUsage;

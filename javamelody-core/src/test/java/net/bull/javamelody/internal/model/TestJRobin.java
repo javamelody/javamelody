@@ -134,10 +134,9 @@ public class TestJRobin {
 		jrobin.addValue(1);
 	}
 
-	/** Test.
-	 * @throws IOException e */
+	/** Test. */
 	@Test
-	public void testDeleteObsoleteJRobinFiles() throws IOException {
+	public void testDeleteObsoleteJRobinFiles() {
 		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);
 		Utils.setProperty(Parameter.OBSOLETE_GRAPHS_DAYS, "1");
 		JRobin.deleteObsoleteJRobinFiles(TEST_APPLICATION);

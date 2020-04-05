@@ -25,11 +25,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 
 import javax.imageio.ImageIO;
@@ -68,6 +72,7 @@ public final class JRobin {
 	private static final int HOUR = 60 * 60;
 	private static final int DAY = 24 * HOUR;
 	private static final int DEFAULT_OBSOLETE_GRAPHS_DAYS = 90;
+	private static final int DEFAULT_MAX_RRD_DISK_USAGE_MB = 20;
 
 	// pool of open RRD files
 	private final RrdDbPool rrdPool = getRrdDbPool();
@@ -526,41 +531,92 @@ public final class JRobin {
 		return new IOException(e.getMessage(), e);
 	}
 
-	static long deleteObsoleteJRobinFiles(String application) throws IOException {
+	static long deleteObsoleteJRobinFiles(String application) {
 		final Calendar nowMinusThreeMonthsAndADay = Calendar.getInstance();
 		nowMinusThreeMonthsAndADay.add(Calendar.DAY_OF_YEAR, -getObsoleteGraphsDays());
 		nowMinusThreeMonthsAndADay.add(Calendar.DAY_OF_YEAR, -1);
 		final long timestamp = Util.getTimestamp(nowMinusThreeMonthsAndADay);
-		final RrdDbPool rrdPool = getRrdDbPool();
 		final int counterRequestIdLength = new CounterRequest("", "").getId().length();
 		long diskUsage = 0;
-		for (final File file : listRrdFiles(application)) {
+		final Map<String, Long> lastUpdateTimesByPath = new HashMap<String, Long>();
+		final List<File> rrdFiles = new ArrayList<File>(listRrdFiles(application));
+		for (final File file : rrdFiles) {
 			// on ne supprime que les fichiers rrd de requêtes (les autres sont peu nombreux)
 			if (file.getName().length() > counterRequestIdLength
 					&& file.lastModified() < nowMinusThreeMonthsAndADay.getTimeInMillis()) {
-				try {
-					final RrdDb rrdDb = rrdPool.requestRrdDb(file.getPath());
-					final boolean obsolete = rrdDb.getLastUpdateTime() < timestamp;
-					rrdPool.release(rrdDb);
-					boolean deleted = false;
-					if (obsolete) {
-						deleted = file.delete();
-					}
-					if (!deleted) {
-						diskUsage += file.length();
-					}
-				} catch (final IOException e) {
-					continue;
-				} catch (final RrdException e) {
-					continue;
+				final long lastUpdateTime = getLastUpdateTime(file);
+				lastUpdateTimesByPath.put(file.getPath(), lastUpdateTime);
+				final boolean obsolete = lastUpdateTime < timestamp;
+				boolean deleted = false;
+				if (obsolete) {
+					deleted = file.delete();
+				}
+				if (!deleted) {
+					diskUsage += file.length();
 				}
 			} else {
 				diskUsage += file.length();
 			}
 		}
+		final long maxRrdDiskUsage = getMaxRrdDiskUsageMb() * 1024L * 1024L;
+		if (diskUsage > maxRrdDiskUsage) {
+			// sort rrd files from least to most recently used
+			for (final File file : rrdFiles) {
+				if (lastUpdateTimesByPath.get(file.getPath()) == null) {
+					lastUpdateTimesByPath.put(file.getPath(), getLastUpdateTime(file));
+				}
+			}
+			final Comparator<File> comparatorByLastUpdateTime = new Comparator<File>() {
+				@Override
+				public int compare(File o1, File o2) {
+					return lastUpdateTimesByPath.get(o1.getPath())
+							.compareTo(lastUpdateTimesByPath.get(o2.getPath()));
+				}
+			};
+			Collections.sort(rrdFiles, comparatorByLastUpdateTime);
+			// delete least recently used rrd files until rrd disk usage < 20 MB
+			for (final File file : rrdFiles) {
+				if (diskUsage < maxRrdDiskUsage) {
+					break;
+				}
+				if (file.getName().length() > counterRequestIdLength) {
+					final long length = file.length();
+					if (file.delete()) {
+						diskUsage -= length;
+					}
+				}
+			}
+		}
 
-		// on retourne true si tous les fichiers .rrd obsolètes ont été supprimés, false sinon
 		return diskUsage;
+	}
+
+	private static long getLastUpdateTime(File file) {
+		try {
+			final RrdDbPool rrdPool = getRrdDbPool();
+			final RrdDb rrdDb = rrdPool.requestRrdDb(file.getPath());
+			final long lastUpdateTime = rrdDb.getLastUpdateTime();
+			rrdPool.release(rrdDb);
+			return lastUpdateTime;
+		} catch (final IOException e) {
+			return file.lastModified() / 1000L;
+		} catch (final RrdException e) {
+			return file.lastModified() / 1000L;
+		}
+	}
+
+	private static long getMaxRrdDiskUsageMb() {
+		final String param = Parameters.getParameterValue(Parameter.MAX_RRD_DISK_USAGE_MB);
+		if (param != null) {
+			// lance une NumberFormatException si ce n'est pas un nombre
+			final int result = Integer.parseInt(param);
+			if (result <= 0) {
+				throw new IllegalStateException(
+						"The parameter max-rrd-disk-usage-mb should be > 0 (20 recommended)");
+			}
+			return result;
+		}
+		return DEFAULT_MAX_RRD_DISK_USAGE_MB;
 	}
 
 	/**

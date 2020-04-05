@@ -380,10 +380,9 @@ public class TestCollector {
 		return collector.getRangeCountersToBeDisplayed(period.getRange()).size();
 	}
 
-	/** Test.
-	 * @throws IOException e */
+	/** Test. */
 	@Test
-	public void testDeleteObsoleteFiles() throws IOException {
+	public void testDeleteObsoleteFiles() {
 		final Collector collector = createCollectorWithOneCounter();
 		collector.deleteObsoleteFiles();
 	}
