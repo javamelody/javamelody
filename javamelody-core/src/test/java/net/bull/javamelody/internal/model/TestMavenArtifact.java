@@ -50,7 +50,7 @@ import net.bull.javamelody.internal.common.Parameters;
  * @author Emeric Vernat
  */
 public class TestMavenArtifact {
-	private static final String MAVEN_CENTRAL = "http://repo1.maven.org/maven2";
+	private static final String MAVEN_CENTRAL = "https://repo1.maven.org/maven2";
 
 	private static final File LOCAL_REPO = new File(
 			System.getProperty("user.home") + "/.m2/repository");
@@ -127,6 +127,7 @@ public class TestMavenArtifact {
 				assertNotNull("groupId", dependency.getGroupId());
 				assertNotNull("artifactId", dependency.getArtifactId());
 				assertNotNull("version", dependency.getVersion());
+				System.out.println(dependency + " : " + dependency.getName());
 				assertNotNull("name", dependency.getName());
 				assertNotNull("url", dependency.getUrl());
 				assertNotNull("licenseUrlsByName", dependency.getLicenseUrlsByName());
