@@ -44,7 +44,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 	void writeHashPassword(String algorithm, String password) throws IOException {
 		writeln("<h1>Hash a password for the authorized-users parameter</h1>");
 		if (algorithm != null && password != null) {
-			write("Hash : ");
+			write("<label for='hash'>Hash:</label> ");
 			final String hash = encodePassword(algorithm, password);
 			writeln("<input type='text' id='hash' value='" + hash + "' size='80' />");
 			writeln("<button onclick='copyHash()'>Copy</button>");
