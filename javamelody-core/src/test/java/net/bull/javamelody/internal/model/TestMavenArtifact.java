@@ -89,6 +89,7 @@ public class TestMavenArtifact {
 		final Class<?> clazz = Class.forName("org.apache.commons.dbcp2.BasicDataSource");
 		final URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
 		if (output.size() > 0) {
+			System.out.println(output.toString("UTF-8"));
 			assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
 			Utils.setProperty(Parameter.MAVEN_REPOSITORIES,
 					LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
