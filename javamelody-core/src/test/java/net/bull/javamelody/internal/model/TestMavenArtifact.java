@@ -23,7 +23,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,11 +84,21 @@ public class TestMavenArtifact {
 		rmdir(new File(storageDirectory, "poms"));
 		rmdir(new File(storageDirectory, "sources"));
 
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		new LabradorRetriever(new URL(MAVEN_CENTRAL)).downloadTo(output);
 		final Class<?> clazz = Class.forName("org.apache.commons.dbcp2.BasicDataSource");
 		final URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
-		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
-		Utils.setProperty(Parameter.MAVEN_REPOSITORIES, LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
-		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		if (output.size() > 0) {
+			assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+			Utils.setProperty(Parameter.MAVEN_REPOSITORIES,
+					LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
+			assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		} else {
+			assertNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+			Utils.setProperty(Parameter.MAVEN_REPOSITORIES,
+					LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
+			assertNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		}
 	}
 
 	/**
@@ -127,12 +139,13 @@ public class TestMavenArtifact {
 				assertNotNull("groupId", dependency.getGroupId());
 				assertNotNull("artifactId", dependency.getArtifactId());
 				assertNotNull("version", dependency.getVersion());
-				System.out.println(dependency + " : " + dependency.getName());
-				assertNotNull("name", dependency.getName());
-				assertNotNull("url", dependency.getUrl());
-				assertNotNull("licenseUrlsByName", dependency.getLicenseUrlsByName());
-				assertNotNull("allDependencies", dependency.getAllDependencies());
-				assertNotNull("toString", dependency.toString());
+				if ("jrobin".equals(dependency.getArtifactId())) {
+					assertNotNull("name", dependency.getName());
+					assertNotNull("url", dependency.getUrl());
+					assertNotNull("licenseUrlsByName", dependency.getLicenseUrlsByName());
+					assertNotNull("allDependencies", dependency.getAllDependencies());
+					assertNotNull("toString", dependency.toString());
+				}
 			}
 		}
 	}
