@@ -23,9 +23,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,22 +82,11 @@ public class TestMavenArtifact {
 		rmdir(new File(storageDirectory, "poms"));
 		rmdir(new File(storageDirectory, "sources"));
 
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		new LabradorRetriever(new URL(MAVEN_CENTRAL)).downloadTo(output);
 		final Class<?> clazz = Class.forName("org.apache.commons.dbcp2.BasicDataSource");
 		final URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
-		if (output.size() > 0) {
-			System.out.println(output.toString("UTF-8"));
-			assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
-			Utils.setProperty(Parameter.MAVEN_REPOSITORIES,
-					LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
-			assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
-		} else {
-			assertNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
-			Utils.setProperty(Parameter.MAVEN_REPOSITORIES,
-					LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
-			assertNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
-		}
+		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
+		Utils.setProperty(Parameter.MAVEN_REPOSITORIES, LOCAL_REPO.getPath() + ',' + MAVEN_CENTRAL);
+		assertNotNull("getSourceJarFile", MavenArtifact.getSourceJarFile(location));
 	}
 
 	/**
