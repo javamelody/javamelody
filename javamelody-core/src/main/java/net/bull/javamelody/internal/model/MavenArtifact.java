@@ -62,7 +62,7 @@ import net.bull.javamelody.internal.common.Parameters;
 public final class MavenArtifact implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static final String MAVEN_CENTRAL = "http://repo1.maven.org/maven2";
+	private static final String MAVEN_CENTRAL = "https://repo1.maven.org/maven2";
 
 	private static final File LOCAL_REPO = new File(
 			System.getProperty("user.home") + "/.m2/repository");
