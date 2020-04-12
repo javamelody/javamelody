@@ -55,7 +55,7 @@ enum PdfFonts {
 
 	static {
 		BLUE.font.setColor(Color.BLUE);
-		INFO_CELL.font.setColor(Color.GREEN);
+		INFO_CELL.font.setColor(Color.GREEN.darker());
 		WARNING_CELL.font.setColor(Color.ORANGE);
 		SEVERE_CELL.font.setColor(Color.RED);
 	}
