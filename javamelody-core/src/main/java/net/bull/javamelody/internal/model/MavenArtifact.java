@@ -572,6 +572,11 @@ public final class MavenArtifact implements Serializable {
 	}
 
 	private static File getMavenArtifact(String filePath) throws IOException {
+		if (filePath.contains("${")) {
+			// si le chemin contient des variables non résolues telles que ${project.version},
+			// ce n'est pas la peine de chercher
+			return null;
+		}
 		final File storageDirectory = Parameters
 				.getStorageDirectory(Parameters.getCurrentApplication());
 		final String subDirectory;
