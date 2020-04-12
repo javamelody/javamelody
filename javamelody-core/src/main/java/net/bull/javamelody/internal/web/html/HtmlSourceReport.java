@@ -68,15 +68,16 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		}
 
 		final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+		final String sourceFilePath = clazz.getName().replace('.', '/') + ".java";
 		if (clazz.getName().startsWith("java.")
 				|| clazz.getName().startsWith("javax.") && codeSource == null) {
 			if (JDK_SRC_FILE != null) {
-				return getSourceFromJar(clazz, JDK_SRC_FILE);
+				return getSourceFromZip(sourceFilePath, JDK_SRC_FILE);
 			}
 		} else if (codeSource != null) {
 			final File sourceJarFile = MavenArtifact.getSourceJarFile(codeSource.getLocation());
 			if (sourceJarFile != null) {
-				return getSourceFromJar(clazz, sourceJarFile);
+				return getSourceFromZip(sourceFilePath, sourceJarFile);
 			}
 		}
 		return null;
@@ -99,10 +100,9 @@ class HtmlSourceReport extends HtmlAbstractReport {
 		return null;
 	}
 
-	private String getSourceFromJar(Class<?> clazz, File srcJarFile) throws IOException {
+	private String getSourceFromZip(String entryName, File srcJarFile) throws IOException {
 		final ZipFile zipFile = new ZipFile(srcJarFile);
 		try {
-			final String entryName = clazz.getName().replace('.', '/') + ".java";
 			ZipEntry entry = zipFile.getEntry(entryName);
 			if (entry == null) {
 				// for JDK 9 + and maybe some others
