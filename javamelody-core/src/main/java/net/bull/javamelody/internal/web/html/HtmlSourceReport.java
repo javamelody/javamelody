@@ -26,7 +26,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.security.CodeSource;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -39,6 +42,9 @@ import net.bull.javamelody.internal.model.MavenArtifact;
  */
 class HtmlSourceReport extends HtmlAbstractReport {
 	private static final File JDK_SRC_FILE = getJdkSrcFile();
+	private static final List<String> TOMCAT_PACKAGES = Collections.unmodifiableList(
+			Arrays.asList("org.apache.tomcat", "org.apache.catalina", "org.apache.coyote",
+					"org.apache.jasper", "org.apache.el", "org.apache.juli", "org.apache.naming"));
 
 	private final String source;
 
@@ -78,6 +84,19 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			final File sourceJarFile = MavenArtifact.getSourceJarFile(codeSource.getLocation());
 			if (sourceJarFile != null) {
 				return getSourceFromZip(sourceFilePath, sourceJarFile);
+			} else if (clazz.getName().startsWith("org.apache.")) {
+				for (final String tomcatPackage : TOMCAT_PACKAGES) {
+					if (clazz.getName().startsWith(tomcatPackage + '.')) {
+						final File tomcatSrcFile = MavenArtifact.getTomcatSrcZipFile();
+						if (tomcatSrcFile != null) {
+							assert tomcatSrcFile.getName().endsWith(".zip");
+							final String entryName = tomcatSrcFile.getName().substring(0,
+									tomcatSrcFile.getName().length() - ".zip".length()) + "/java/"
+									+ sourceFilePath;
+							return getSourceFromZip(entryName, tomcatSrcFile);
+						}
+					}
+				}
 			}
 		}
 		return null;

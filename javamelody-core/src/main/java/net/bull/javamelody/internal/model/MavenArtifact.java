@@ -67,6 +67,8 @@ public final class MavenArtifact implements Serializable {
 	private static final File LOCAL_REPO = new File(
 			System.getProperty("user.home") + "/.m2/repository");
 
+	private static final String TOMCAT_ARCHIVES = "https://archive.apache.org/dist/tomcat/";
+
 	private static Map<String, String> sourceFilePathsByJarFileNames;
 
 	private static String webappVersion;
@@ -610,6 +612,41 @@ public final class MavenArtifact implements Serializable {
 				} finally {
 					output.close();
 				}
+			}
+		}
+		if (file.exists()) {
+			return file;
+		}
+		return null;
+	}
+
+	public static File getTomcatSrcZipFile() throws IOException {
+		final String serverInfo = Parameters.getServletContext().getServerInfo();
+		if (!serverInfo.matches("Apache Tomcat/\\d+\\.\\d+\\.\\d+")) {
+			// si pas Tomcat ou si Tomcat version 0.0.0.Mx, tant pis
+			return null;
+		}
+		final String version = serverInfo.substring(serverInfo.lastIndexOf('/') + 1);
+		final String fileName = "apache-tomcat-" + version + "-src.zip";
+		final File storageDirectory = Parameters
+				.getStorageDirectory(Parameters.getCurrentApplication());
+		final String subDirectory = "sources";
+		final File file = new File(storageDirectory, subDirectory + '/' + fileName);
+		if (!file.exists() || file.length() == 0) {
+			final String majorVersion = version.substring(0, version.indexOf('.'));
+			final String url = TOMCAT_ARCHIVES + "tomcat-" + majorVersion + "/v" + version + "/src/"
+					+ fileName;
+			mkdirs(file.getParentFile());
+			final OutputStream output = new FileOutputStream(file);
+			try {
+				final LabradorRetriever labradorRetriever = new LabradorRetriever(new URL(url));
+				labradorRetriever.downloadTo(output);
+			} catch (final IOException e) {
+				output.close();
+				InputOutput.deleteFile(file);
+				// si non trouvé, on continue avec le repo suivant s'il y en a un
+			} finally {
+				output.close();
 			}
 		}
 		if (file.exists()) {
