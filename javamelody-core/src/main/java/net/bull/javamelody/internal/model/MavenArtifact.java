@@ -623,7 +623,7 @@ public final class MavenArtifact implements Serializable {
 	public static File getTomcatSrcZipFile() throws IOException {
 		final String serverInfo = Parameters.getServletContext().getServerInfo();
 		if (!serverInfo.matches("Apache Tomcat/\\d+\\.\\d+\\.\\d+")) {
-			// si pas Tomcat ou si Tomcat version 0.0.0.Mx, tant pis
+			// si pas Tomcat ou si Tomcat version x.0.0.My, tant pis
 			return null;
 		}
 		final String version = serverInfo.substring(serverInfo.lastIndexOf('/') + 1);
@@ -644,7 +644,6 @@ public final class MavenArtifact implements Serializable {
 			} catch (final IOException e) {
 				output.close();
 				InputOutput.deleteFile(file);
-				// si non trouvé, on continue avec le repo suivant s'il y en a un
 			} finally {
 				output.close();
 			}
