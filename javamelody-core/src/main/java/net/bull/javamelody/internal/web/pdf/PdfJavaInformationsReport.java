@@ -254,8 +254,7 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			addCell("");
 			final Anchor anchor = new Anchor("DataSource reference", PdfFonts.BLUE.getFont());
 			anchor.setName("DataSource reference");
-			anchor.setReference(
-					"http://commons.apache.org/dbcp/apidocs/org/apache/commons/dbcp/BasicDataSource.html");
+			anchor.setReference("http://commons.apache.org/proper/commons-dbcp/configuration.html");
 			currentTable.addCell(anchor);
 		}
 	}
