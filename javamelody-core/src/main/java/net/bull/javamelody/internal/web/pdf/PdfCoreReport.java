@@ -401,6 +401,10 @@ public class PdfCoreReport extends PdfAbstractReport {
 
 	private void writeJCaches(boolean includeDetails) throws DocumentException {
 		String eol = "";
+		if (isCacheEnabled()) {
+			// new line in case there are both cache and jcache
+			eol = "\n";
+		}
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			if (!javaInformations.isJCacheEnabled()) {
 				continue;
