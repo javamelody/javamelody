@@ -91,7 +91,7 @@ class HtmlJobInformationsReport extends HtmlAbstractReport {
 		}
 
 		// writeDirectly pour éviter traduction car # dans l'url
-		writeDirectly("<a href='http://www.quartz-scheduler.org/docs/index.html'");
+		writeDirectly("<a href='http://www.quartz-scheduler.org/documentation/'");
 		writeln("target='_blank'>Configuration reference</a>");
 
 		writeln("</div>");

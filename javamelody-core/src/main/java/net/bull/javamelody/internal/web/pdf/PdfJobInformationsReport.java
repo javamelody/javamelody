@@ -78,7 +78,7 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 	private void addConfigurationReference() throws DocumentException {
 		final Anchor quartzAnchor = new Anchor("Configuration reference", PdfFonts.BLUE.getFont());
 		quartzAnchor.setName("Quartz configuration reference");
-		quartzAnchor.setReference("http://www.quartz-scheduler.org/docs/index.html");
+		quartzAnchor.setReference("http://www.quartz-scheduler.org/documentation/");
 		quartzAnchor.setFont(PdfFonts.BLUE.getFont());
 		final Paragraph quartzParagraph = new Paragraph();
 		quartzParagraph.add(quartzAnchor);
