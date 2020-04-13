@@ -4,13 +4,13 @@
 <%@page import="javax.cache.Caching"%>
 <%@page import="javax.cache.configuration.MutableConfiguration"%>
 <%
-Integer key = new Random().nextInt();
+String key = String.valueOf(new Random().nextInt());
 if (Caching.getCachingProvider().getCacheManager().getCache("test") == null) {
 	MutableConfiguration conf = new MutableConfiguration();
 	Caching.getCachingProvider().getCacheManager().createCache("test", conf);
 }
-Caching.getCachingProvider().getCacheManager().getCache("test").put(key, new Random().nextInt());
-Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache3.xml"), Caching.getDefaultClassLoader()).getCache("foo").put(key, new Random().nextInt());
+Caching.getCachingProvider().getCacheManager().getCache("test").put(key, String.valueOf(new Random().nextInt()));
+Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache3.xml"), Caching.getDefaultClassLoader()).getCache("foo").put(key, String.valueOf(new Random().nextInt()));
 // pour afficher les % d'efficacité
 Caching.getCachingProvider().getCacheManager().getCache("test").get(key);
 Caching.getCachingProvider().getCacheManager(new URI("classpath:ehcache3.xml"), Caching.getDefaultClassLoader()).getCache("foo").get(key);
