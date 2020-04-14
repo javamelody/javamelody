@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -75,6 +77,21 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	private static boolean instanceCreated;
 
 	private boolean instanceEnabled;
+
+	private static SessionProvider sessionProvider;
+
+	public interface SessionProvider {
+		Session getSessionById(String sessionId);
+	}
+
+	public interface Session {
+		Object getAttribute(String attributeName);
+		Set<String> getAttributeNames();
+	}
+
+	public static void setSessionProvider(SessionProvider sessionProvider) {
+		SessionListener.sessionProvider = sessionProvider;
+	}
 
 	static final class SessionInformationsComparator
 			implements Comparator<SessionInformations>, Serializable {
@@ -229,6 +246,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>(
 				sessions.size());
 		for (final HttpSession session : sessions) {
+			updateSessionAttributes(session);
 			try {
 				sessionsInformations.add(new SessionInformations(session, false));
 			} catch (final Exception e) {
@@ -238,6 +256,31 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		}
 		sortSessions(sessionsInformations);
 		return Collections.unmodifiableList(sessionsInformations);
+	}
+
+	private static void updateSessionAttributes(HttpSession session) {
+		if (sessionProvider == null) {
+			return;
+		}
+		Session sessionById = sessionProvider.getSessionById(session.getId());
+		if (sessionById != null) {
+			removeAllAttributes(session);
+			copyAllAttributes(session, sessionById);
+		}
+	}
+
+	private static void copyAllAttributes(HttpSession session, Session sessionById) {
+		Set<String> attributeNames = sessionById.getAttributeNames();
+		for (String attributeName : attributeNames) {
+			session.setAttribute(attributeName, sessionById.getAttribute(attributeName));
+		}
+	}
+
+	private static void removeAllAttributes(HttpSession session) {
+		Enumeration<String> attributeNames = session.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			session.removeAttribute(attributeNames.nextElement());
+		}
 	}
 
 	public static void sortSessions(List<SessionInformations> sessionsInformations) {
@@ -252,6 +295,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		if (session == null) {
 			return null;
 		}
+		updateSessionAttributes(session);
 		// dans Jenkins notamment, une session invalidée peut rester un peu dans cette map
 		try {
 			return new SessionInformations(session, true);
