@@ -475,6 +475,17 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		SESSION_COUNT.set(SESSION_MAP_BY_ID.size());
 	}
 
+	// https://github.com/javamelody/javamelody/issues/906
+	static void updateSession(HttpSession session) {
+		if (session != null) {
+			synchronized (session) {
+				if (SESSION_MAP_BY_ID.containsKey(session.getId())) {
+					SESSION_MAP_BY_ID.put(session.getId(), session);
+				}
+			}
+		}
+	}
+
 	void removeAllActivationListeners() {
 		for (final HttpSession session : SESSION_MAP_BY_ID.values()) {
 			try {
