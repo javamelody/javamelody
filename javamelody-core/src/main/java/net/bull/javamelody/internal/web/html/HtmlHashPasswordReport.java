@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.bull.javamelody.internal.common.HttpParameter;
@@ -82,7 +83,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 				+ ".jar net.bull.javamelody.internal.common.MessageDigestPasswordEncoder passwordToHash</code>");
 	}
 
-	private TreeSet<String> getSortedAlgorithms() {
+	private SortedSet<String> getSortedAlgorithms() {
 		return new TreeSet<String>(Security.getAlgorithms("MessageDigest"));
 	}
 

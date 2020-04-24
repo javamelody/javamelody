@@ -68,7 +68,7 @@ public class MessageDigestPasswordEncoder {
 	}
 
 	private static void print(String msg) {
-		System.out.print(msg);
+		System.out.print(msg); // NOPMD
 	}
 
 	/**
