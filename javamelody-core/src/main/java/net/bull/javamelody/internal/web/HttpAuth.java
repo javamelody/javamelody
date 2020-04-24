@@ -128,39 +128,49 @@ public class HttpAuth {
 		if (!auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC ")) {
 			return false; // we only do BASIC
 		}
-		// Get encoded "user:password", comes after "BASIC "
-		final String userpassEncoded = auth.substring("BASIC ".length());
+		// Get base64 encoded "user:password", comes after "BASIC "
+		final String userpassBase64 = auth.substring("BASIC ".length());
 		// Decode it
-		final String userpassDecoded = Base64Coder.decodeString(userpassEncoded);
+		final String userpass = Base64Coder.decodeString(userpassBase64);
 
 		boolean authOk = false;
 		for (final String authorizedUser : authorizedUsers) {
-			final int indexOfStart = authorizedUser.indexOf(":{");
-			if (indexOfStart != -1) {
-				final int indexOfEnd = authorizedUser.indexOf('}', indexOfStart);
-				if (indexOfEnd != -1) {
-					final String algorithm = authorizedUser.substring(indexOfStart + 2, indexOfEnd);
-					final int indexOfColon = userpassDecoded.indexOf(':');
-					if (indexOfColon != -1) {
-						// case of hashed password like authorized-users=user:{SHA-256}c33d66fe65ffcca1f2260e6982dbf0c614b6ea3ddfdb37d6142fbec0feca5245
-						final String pass = userpassDecoded.substring(indexOfColon + 1);
-						final String userpass = userpassDecoded.substring(0, indexOfColon + 1)
-								+ encodePassword(algorithm, pass);
-						if (authorizedUser.equals(userpass)) {
-							authOk = true;
-							break;
-						}
-						continue;
-					}
+			// Hash password in userpass, if password is hashed in authorizedUser
+			final String userpassEncoded = getUserPasswordEncoded(userpass, authorizedUser);
+			if (userpassEncoded != null) {
+				// case of hashed password like authorized-users=user:{SHA-256}c33d66fe65ffcca1f2260e6982dbf0c614b6ea3ddfdb37d6142fbec0feca5245
+				if (authorizedUser.equals(userpassEncoded)) {
+					authOk = true;
+					break;
 				}
+				continue;
 			}
 			// case of clear test password like authorized-users=user:password
-			if (authorizedUser.equals(userpassDecoded)) {
+			if (authorizedUser.equals(userpass)) {
 				authOk = true;
 				break;
 			}
 		}
 		return checkLockAgainstBruteForceAttack(authOk);
+	}
+
+	private String getUserPasswordEncoded(String userpassDecoded, String authorizedUser)
+			throws IOException {
+		final int indexOfStart = authorizedUser.indexOf(":{");
+		if (indexOfStart != -1) {
+			final int indexOfEnd = authorizedUser.indexOf('}', indexOfStart);
+			if (indexOfEnd != -1) {
+				final String algorithm = authorizedUser.substring(indexOfStart + 2, indexOfEnd);
+				final int indexOfColon = userpassDecoded.indexOf(':');
+				if (indexOfColon != -1) {
+					// case of hashed password like authorized-users=user:{SHA-256}c33d66fe65ffcca1f2260e6982dbf0c614b6ea3ddfdb37d6142fbec0feca5245
+					final String pass = userpassDecoded.substring(indexOfColon + 1);
+					return userpassDecoded.substring(0, indexOfColon + 1)
+							+ encodePassword(algorithm, pass);
+				}
+			}
+		}
+		return null;
 	}
 
 	private String encodePassword(String algorithm, String password) throws IOException {
