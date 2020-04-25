@@ -84,17 +84,18 @@ class HtmlSourceReport extends HtmlAbstractReport {
 			final File sourceJarFile = MavenArtifact.getSourceJarFile(codeSource.getLocation());
 			if (sourceJarFile != null) {
 				return getSourceFromZip(sourceFilePath, sourceJarFile);
-			} else if (clazz.getName().startsWith("org.apache.")) {
-				for (final String tomcatPackage : TOMCAT_PACKAGES) {
-					if (clazz.getName().startsWith(tomcatPackage + '.')) {
-						final File tomcatSrcFile = MavenArtifact.getTomcatSrcZipFile();
-						if (tomcatSrcFile != null) {
-							assert tomcatSrcFile.getName().endsWith(".zip");
-							final String entryName = tomcatSrcFile.getName().substring(0,
-									tomcatSrcFile.getName().length() - ".zip".length()) + "/java/"
-									+ sourceFilePath;
-							return getSourceFromZip(entryName, tomcatSrcFile);
-						}
+			}
+		}
+		if (clazz.getName().startsWith("org.apache.")) {
+			for (final String tomcatPackage : TOMCAT_PACKAGES) {
+				if (clazz.getName().startsWith(tomcatPackage + '.')) {
+					final File tomcatSrcFile = MavenArtifact.getTomcatSrcZipFile();
+					if (tomcatSrcFile != null) {
+						assert tomcatSrcFile.getName().endsWith(".zip");
+						final String entryName = tomcatSrcFile.getName().substring(0,
+								tomcatSrcFile.getName().length() - ".zip".length()) + "/java/"
+								+ sourceFilePath;
+						return getSourceFromZip(entryName, tomcatSrcFile);
 					}
 				}
 			}
