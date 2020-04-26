@@ -292,12 +292,16 @@ public class PdfCoreReport extends PdfAbstractReport {
 
 	private PdfCounterReport writeCounter(Counter counter) throws DocumentException, IOException {
 		final String counterLabel = getString(counter.getName() + "Label");
-		addParagraph(getFormattedString("Statistiques_compteur", counterLabel) + " - "
-				+ range.getLabel(), counter.getIconName());
+		addParagraph(addRangeLabel(getFormattedString("Statistiques_compteur", counterLabel)),
+				counter.getIconName());
 		final PdfCounterReport pdfCounterReport = new PdfCounterReport(collector, counter, range,
 				false, getDocument());
 		pdfCounterReport.toPdf();
 		return pdfCounterReport;
+	}
+
+	private String addRangeLabel(String s) {
+		return s + " - " + range.getLabel() + ' ' + getString("depuis_minuit");
 	}
 
 	private void writeCountersDetails(List<PdfCounterReport> pdfCounterReports)
@@ -310,12 +314,13 @@ public class PdfCoreReport extends PdfAbstractReport {
 	private void writeCounterDetails(PdfCounterReport pdfCounterReport)
 			throws DocumentException, IOException {
 		final String counterLabel = getString(pdfCounterReport.getCounterName() + "Label");
-		addParagraph(getFormattedString("Statistiques_compteur_detaillees", counterLabel) + " - "
-				+ range.getLabel(), pdfCounterReport.getCounterIconName());
+		addParagraph(
+				addRangeLabel(getFormattedString("Statistiques_compteur_detaillees", counterLabel)),
+				pdfCounterReport.getCounterIconName());
 		pdfCounterReport.writeRequestDetails();
 		if (pdfCounterReport.isErrorCounter()) {
-			addParagraph(getString(pdfCounterReport.getCounterName() + "ErrorLabel") + " - "
-					+ range.getLabel(), pdfCounterReport.getCounterIconName());
+			addParagraph(addRangeLabel(getString(pdfCounterReport.getCounterName() + "ErrorLabel")),
+					pdfCounterReport.getCounterIconName());
 			pdfCounterReport.writeErrorDetails();
 		}
 	}

@@ -169,14 +169,18 @@ class ScrollingPanel extends MelodyPanel {
 
 	private void addCounter(Counter counter) {
 		final String counterLabel = getString(counter.getName() + "Label");
-		addParagraphTitle(getFormattedString("Statistiques_compteur", counterLabel) + " - "
-				+ range.getLabel(), counter.getIconName());
+		addParagraphTitle(addRangeLabel(getFormattedString("Statistiques_compteur", counterLabel)),
+				counter.getIconName());
 		// pas de graphique dans les statistiques globales
 		final boolean includeGraph = false;
 		final StatisticsPanel statisticsPanel = new StatisticsPanel(getRemoteCollector(), counter,
 				range, includeGraph);
 		statisticsPanel.showGlobalRequests();
 		add(statisticsPanel);
+	}
+
+	private String addRangeLabel(String s) {
+		return s + " - " + range.getLabel() + ' ' + getString("depuis_minuit");
 	}
 
 	private void addCurrentRequests() {
