@@ -389,14 +389,14 @@ public class MonitoringController {
 
 	private void doGraph(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			Range range, String graphName) throws IOException {
-		final int width = Math
-				.min(Integer.parseInt(HttpParameter.WIDTH.getParameterFrom(httpRequest)), 1600);
-		final int height = Math
-				.min(Integer.parseInt(HttpParameter.HEIGHT.getParameterFrom(httpRequest)), 1600);
-		final String max = HttpParameter.MAX.getParameterFrom(httpRequest);
-		final boolean maxHidden = max != null && !Boolean.parseBoolean(max);
 		final JRobin jrobin = collector.getJRobin(graphName);
 		if (jrobin != null) {
+			final int width = Math
+					.min(Integer.parseInt(HttpParameter.WIDTH.getParameterFrom(httpRequest)), 1600);
+			final int height = Math.min(
+					Integer.parseInt(HttpParameter.HEIGHT.getParameterFrom(httpRequest)), 1600);
+			final String max = HttpParameter.MAX.getParameterFrom(httpRequest);
+			final boolean maxHidden = max != null && !Boolean.parseBoolean(max);
 			final byte[] img = jrobin.graph(range, width, height, maxHidden);
 			// png comme indiqué dans la classe jrobin
 			httpResponse.setContentType("image/png");
