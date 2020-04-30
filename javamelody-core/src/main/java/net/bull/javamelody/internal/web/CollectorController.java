@@ -204,7 +204,7 @@ public class CollectorController { // NOPMD
 	private void doCompressedPart(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			String application, MonitoringController monitoringController)
 			throws IOException, ServletException {
-		if (MonitoringController.isCompressionSupported(httpRequest)) {
+		if (MonitoringController.isCompressionSupported(httpRequest, httpResponse)) {
 			// comme la page html peut être volumineuse
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
 			// (à moins que la compression http ne soit pas supportée

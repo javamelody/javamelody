@@ -269,20 +269,11 @@ public class MonitoringController {
 		}
 		final HtmlController htmlController = new HtmlController(collector, collectorServer,
 				messageForReport, anchorNameForRedirect);
-		// on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
-		// par CollectorServlet.doCompressedPart
-		if (isCompressionSupported(httpRequest)
-				&& !(httpResponse instanceof CompressionServletResponseWrapper)
-				// this checks if it is the Jenkins plugin
-				// (another filter may already compress the stream, in which case we must not compress a second time,
-				// in particular for org.kohsuke.stapler.compression.CompressionFilter
-				// from https://github.com/stapler/stapler in Jenkins v1.470+ (issue JENKINS-14050)
-				&& !GZIP_COMPRESSION_DISABLED) {
+		if (isCompressionSupported(httpRequest, httpResponse)) {
 			// comme la page html peut être volumineuse avec toutes les requêtes sql et http
 			// on compresse le flux de réponse en gzip à partir de 4 Ko
 			// (à moins que la compression http ne soit pas supportée
 			// comme par ex s'il y a un proxy squid qui ne supporte que http 1.0)
-
 			final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
 					httpResponse, 4096);
 			try {
@@ -330,12 +321,8 @@ public class MonitoringController {
 			HttpServletResponse httpResponse, Serializable serializable) throws IOException {
 		// note: normalement la compression est supportée ici car s'il s'agit du serveur de collecte,
 		// LabradorRetriever appelle connection.setRequestProperty("Accept-Encoding", "gzip");
-		// et on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
-		// par CollectorServlet.doCompressedPart
 		final SerializableController serializableController = new SerializableController(collector);
-		if (isCompressionSupported(httpRequest)
-				&& !(httpResponse instanceof CompressionServletResponseWrapper)
-				&& !GZIP_COMPRESSION_DISABLED) {
+		if (isCompressionSupported(httpRequest, httpResponse)) {
 			// comme les données peuvent être volumineuses avec toutes les requêtes sql et http
 			// et les threads on compresse le flux de réponse en gzip à partir de 50 Ko
 			// (à moins que la compression http ne soit pas supportée
@@ -526,7 +513,18 @@ public class MonitoringController {
 		}
 	}
 
-	static boolean isCompressionSupported(HttpServletRequest httpRequest) {
+	static boolean isCompressionSupported(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		// GZIP_COMPRESSION_DISABLED checks if it is the Jenkins plugin
+		// (another filter may already compress the stream, in which case we must not compress a second time,
+		// in particular for org.kohsuke.stapler.compression.CompressionFilter
+		// from https://github.com/stapler/stapler in Jenkins v1.470+ (issue JENKINS-14050)
+		// et on teste CompressionServletResponseWrapper car il peut déjà être mis dans le serveur de collecte
+		// par CollectorController.doCompressedPart
+		if (GZIP_COMPRESSION_DISABLED
+				|| httpResponse instanceof CompressionServletResponseWrapper) {
+			return false;
+		}
 		// est-ce que le navigateur déclare accepter la compression gzip ?
 		boolean supportCompression = false;
 		final List<String> acceptEncodings = Collections
