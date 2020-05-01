@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -39,6 +40,7 @@ import java.util.Timer;
 import javax.imageio.ImageIO;
 
 import org.jrobin.core.ConsolFuns;
+import org.jrobin.core.FetchRequest;
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdDb;
 import org.jrobin.core.RrdDbPool;
@@ -455,6 +457,50 @@ public final class JRobin {
 			final RrdDb rrdDb = rrdPool.requestRrdDb(rrdFileName);
 			try {
 				return rrdDb.getLastDatasourceValue(getDataSourceName());
+			} finally {
+				// release RRD database reference
+				rrdPool.release(rrdDb);
+			}
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+	}
+
+	public void dumpXml(OutputStream output, Range range) throws IOException {
+		try {
+			// request RRD database reference from the pool
+			final RrdDb rrdDb = rrdPool.requestRrdDb(rrdFileName);
+			try {
+				if (range.getPeriod() == Period.TOUT) {
+					rrdDb.exportXml(output);
+				} else {
+					final FetchRequest fetchRequest = rrdDb.createFetchRequest(
+							ConsolFuns.CF_AVERAGE, range.getJRobinStartTime(),
+							range.getJRobinEndTime());
+					final String xml = fetchRequest.fetchData().exportXml()
+							.replaceFirst("<file>.*</file>", "");
+					output.write(xml.getBytes("UTF-8"));
+				}
+			} finally {
+				// release RRD database reference
+				rrdPool.release(rrdDb);
+			}
+		} catch (final RrdException e) {
+			throw createIOException(e);
+		}
+	}
+
+	public String dumpTxt(Range range) throws IOException {
+		try {
+			// request RRD database reference from the pool
+			final RrdDb rrdDb = rrdPool.requestRrdDb(rrdFileName);
+			try {
+				if (range.getPeriod() == Period.TOUT) {
+					return rrdDb.dump();
+				}
+				final FetchRequest fetchRequest = rrdDb.createFetchRequest(ConsolFuns.CF_AVERAGE,
+						range.getJRobinStartTime(), range.getJRobinEndTime());
+				return fetchRequest.fetchData().dump();
 			} finally {
 				// release RRD database reference
 				rrdPool.release(rrdDb);

@@ -378,22 +378,45 @@ public class MonitoringController {
 			Range range, String graphName) throws IOException {
 		final JRobin jrobin = collector.getJRobin(graphName);
 		if (jrobin != null) {
-			final int width = Math
-					.min(Integer.parseInt(HttpParameter.WIDTH.getParameterFrom(httpRequest)), 1600);
-			final int height = Math.min(
-					Integer.parseInt(HttpParameter.HEIGHT.getParameterFrom(httpRequest)), 1600);
-			final String max = HttpParameter.MAX.getParameterFrom(httpRequest);
-			final boolean maxHidden = max != null && !Boolean.parseBoolean(max);
-			final byte[] img = jrobin.graph(range, width, height, maxHidden);
-			// png comme indiqué dans la classe jrobin
-			httpResponse.setContentType("image/png");
-			httpResponse.setContentLength(img.length);
-			final String fileName = graphName + ".png";
-			// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
-			httpResponse.addHeader("Content-Disposition",
-					"inline;filename=" + fileName.replace('\n', '_').replace('\r', '_'));
-			httpResponse.getOutputStream().write(img);
-			httpResponse.flushBuffer();
+			final String format = HttpParameter.FORMAT.getParameterFrom(httpRequest);
+			if ("xml".equals(format)) {
+				// any charset is ok
+				httpResponse.setContentType("text/xml; charset=UTF-8");
+				if (isCompressionSupported(httpRequest, httpResponse)) {
+					final CompressionServletResponseWrapper wrappedResponse = new CompressionServletResponseWrapper(
+							httpResponse, 4096);
+					try {
+						jrobin.dumpXml(wrappedResponse.getOutputStream(), range);
+					} finally {
+						wrappedResponse.finishResponse();
+					}
+				} else {
+					jrobin.dumpXml(httpResponse.getOutputStream(), range);
+				}
+			} else if ("txt".equals(format)) {
+				// any charset is ok
+				httpResponse.setContentType("text/plain; charset=UTF-8");
+				final String txt = jrobin.dumpTxt(range);
+				httpResponse.setContentLength(txt.length());
+				httpResponse.getWriter().write(txt);
+			} else {
+				final int width = Math.min(
+						Integer.parseInt(HttpParameter.WIDTH.getParameterFrom(httpRequest)), 1600);
+				final int height = Math.min(
+						Integer.parseInt(HttpParameter.HEIGHT.getParameterFrom(httpRequest)), 1600);
+				final String max = HttpParameter.MAX.getParameterFrom(httpRequest);
+				final boolean maxHidden = max != null && !Boolean.parseBoolean(max);
+				final byte[] img = jrobin.graph(range, width, height, maxHidden);
+				// png comme indiqué dans la classe jrobin
+				httpResponse.setContentType("image/png");
+				httpResponse.setContentLength(img.length);
+				final String fileName = graphName + ".png";
+				// encoding des CRLF pour http://en.wikipedia.org/wiki/HTTP_response_splitting
+				httpResponse.addHeader("Content-Disposition",
+						"inline;filename=" + fileName.replace('\n', '_').replace('\r', '_'));
+				httpResponse.getOutputStream().write(img);
+				httpResponse.flushBuffer();
+			}
 		}
 	}
 
