@@ -145,14 +145,22 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 
 			writeln("<div align='center'>");
 			writeln("<table summary=''><tr><td>");
+			final String graphNameEncoded = urlEncode(graphName);
 			writeln("<img class='synthèse' id='img' src='" + "?width=960&amp;height=400&amp;graph="
-					+ urlEncode(graphName) + "' alt='zoom'/>");
+					+ graphNameEncoded + "' alt='zoom'/>");
 			writeDirectly("<br/><div align='right' style='color: #808080;'>");
 			writeln("#graph_units#");
+			writeln("</div><div align='right'>");
+			writeln("<a href='?part=lastValue&amp;graph=" + graphNameEncoded
+					+ "' title='#Lien_derniere_valeur#'>#derniere_valeur#</a>");
+			writeln("&nbsp;&nbsp;&nbsp;<a href='?format=xml&amp;period="
+					+ range.getValue().replace("|", "%7C") + "&amp;graph=" + graphNameEncoded
+					+ "' title='Dump XML'>XML</a>");
+			writeln("&nbsp;&nbsp;&nbsp;<a href='?format=txt&amp;period="
+					+ range.getValue().replace("|", "%7C") + "&amp;graph=" + graphNameEncoded
+					+ "' title='Dump TXT'>TXT</a>");
 			writeln("</div></td></tr></table>");
 			writeln("</div>");
-			writeln("<div align='right'><a href='?part=lastValue&amp;graph=" + urlEncode(graphName)
-					+ "' title=\"#Lien_derniere_valeur#\">_</a></div>");
 
 			writeGraphDetailScript(graphName);
 		}
