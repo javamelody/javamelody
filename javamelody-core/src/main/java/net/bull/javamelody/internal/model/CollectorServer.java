@@ -352,7 +352,8 @@ public class CollectorServer {
 		return getRemoteCollectorByApplication(application).getThreadInformationsLists();
 	}
 
-	public void addCollectorApplication(String application, List<URL> urls) throws IOException {
+	public synchronized void addCollectorApplication(String application, List<URL> urls)
+			throws IOException {
 		if (Parameters.getApplicationsByAggregationApplication().containsKey(application)) {
 			throw new IOException("An aggregation " + application
 					+ " has already been added. Choose another name.");
@@ -387,7 +388,7 @@ public class CollectorServer {
 		Parameters.addCollectorApplication(application, nodesUrls);
 	}
 
-	public void removeCollectorApplication(String application) throws IOException {
+	public synchronized void removeCollectorApplication(String application) throws IOException {
 		Parameters.removeCollectorApplication(application);
 		final RemoteCollector remoteCollector = remoteCollectorsByApplication.remove(application);
 		if (remoteCollector != null && remoteCollector.getCollector() != null) {
@@ -395,7 +396,7 @@ public class CollectorServer {
 		}
 	}
 
-	public void removeCollectorApplicationNodes(String appName, List<URL> nodeUrls)
+	public synchronized void removeCollectorApplicationNodes(String appName, List<URL> nodeUrls)
 			throws IOException {
 		final List<URL> currentUrls = Parameters.getCollectorUrlsByApplications().get(appName);
 		if (currentUrls != null) {
@@ -408,7 +409,7 @@ public class CollectorServer {
 		}
 	}
 
-	public void addCollectorAggregationApplication(String aggregationApplication,
+	public synchronized void addCollectorAggregationApplication(String aggregationApplication,
 			List<String> aggregatedApplications) throws IOException {
 		if (Parameters.getApplicationsByAggregationApplication()
 				.containsKey(aggregationApplication)) {
