@@ -21,8 +21,7 @@ import javax.ejb.Asynchronous;
 import javax.interceptor.Interceptor;
 
 /**
- * Intercepteur pour CDI & pour EJB 3.1 (Java EE 6+),
- * configuré automatiquement pour les beans et méthodes ayant l'annotation @{@link Asynchronous}.
+ * Intercepteur pour CDI & pour EJB 3.1 (Java EE 6+), non activé par défaut.
  * @author Emeric Vernat
  */
 @Interceptor
@@ -30,6 +29,6 @@ import javax.interceptor.Interceptor;
 public class MonitoringAsynchronousCdiInterceptor extends MonitoringInterceptor {
 	private static final long serialVersionUID = 1L;
 
-	// note: it would be cool to automatically monitor methods having @Schedule or @Schedules like @Asynchronous,
+	// note: it would be cool to monitor methods having @Schedule or @Schedules like @Asynchronous,
 	// without having to add @Monitored on the method, but we can't
 }
