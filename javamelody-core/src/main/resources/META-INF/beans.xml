@@ -7,4 +7,7 @@
 		<class>net.bull.javamelody.MonitoringCdiInterceptor</class>
 		<!-- removed for issue #802: <class>net.bull.javamelody.MonitoringAsynchronousCdiInterceptor</class> -->
 	</interceptors>
+    <scan>
+        <exclude name="net.bull.javamelody.MonitoringAsynchronousCdiInterceptor" />
+    </scan>
 </beans>
