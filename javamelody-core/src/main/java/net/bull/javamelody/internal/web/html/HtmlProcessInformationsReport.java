@@ -106,7 +106,7 @@ public class HtmlProcessInformationsReport extends HtmlAbstractReport {
 		}
 		write(newColumnRight);
 		write(htmlEncode(processInformations.getCpuTime()));
-		write(newColumn);
+		write("</td><td class='wrappedText'>");
 		writeDirectly(htmlEncode(processInformations.getCommand()));
 		write("</td>");
 	}
