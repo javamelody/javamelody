@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-core</artifactId>
-	<version>1.83.0-SNAPSHOT</version>
+	<version>1.83.0</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - Core</name>
 	<description>Monitoring of JavaEE applications</description>
@@ -32,7 +30,7 @@
 		<connection>scm:git:git@github.com:javamelody/javamelody.git</connection>
 		<developerConnection>scm:git:git@github.com:javamelody/javamelody.git</developerConnection>
 		<url>https://github.com/javamelody/javamelody</url>
-		<tag>HEAD</tag>
+		<tag>javamelody-core-1.83.0</tag>
 	</scm>
 	<mailingLists>
 		<mailingList>
