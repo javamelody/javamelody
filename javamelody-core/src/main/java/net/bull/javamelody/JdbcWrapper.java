@@ -574,15 +574,21 @@ public final class JdbcWrapper {
 	}
 
 	private void rewrapWebLogicDataSource(DataSource dataSource) throws IllegalAccessException {
-		Object jdbcCtx = JdbcWrapperHelper.getFieldValue(dataSource, "jdbcCtx");
-		if (jdbcCtx != null) {
-			jdbcCtx = createContextProxy((Context) jdbcCtx);
-			JdbcWrapperHelper.setFieldValue(dataSource, "jdbcCtx", jdbcCtx);
-		}
-		Object driverInstance = JdbcWrapperHelper.getFieldValue(dataSource, "driverInstance");
-		if (driverInstance != null) {
-			driverInstance = createDriverProxy((Driver) driverInstance);
-			JdbcWrapperHelper.setFieldValue(dataSource, "driverInstance", driverInstance);
+		if (JdbcWrapperHelper.hasField(dataSource, "delegate")) {
+			// issue #916, for weblogic 12.2.1.4.0
+			final Object delegate = JdbcWrapperHelper.getFieldValue(dataSource, "delegate");
+			rewrapWebLogicDataSource((DataSource) delegate);
+		} else {
+			Object jdbcCtx = JdbcWrapperHelper.getFieldValue(dataSource, "jdbcCtx");
+			if (jdbcCtx != null) {
+				jdbcCtx = createContextProxy((Context) jdbcCtx);
+				JdbcWrapperHelper.setFieldValue(dataSource, "jdbcCtx", jdbcCtx);
+			}
+			Object driverInstance = JdbcWrapperHelper.getFieldValue(dataSource, "driverInstance");
+			if (driverInstance != null) {
+				driverInstance = createDriverProxy((Driver) driverInstance);
+				JdbcWrapperHelper.setFieldValue(dataSource, "driverInstance", driverInstance);
+			}
 		}
 	}
 

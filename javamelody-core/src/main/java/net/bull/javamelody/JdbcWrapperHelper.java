@@ -512,7 +512,18 @@ final class JdbcWrapperHelper {
 		getAccessibleField(object, fieldName).set(object, value);
 	}
 
+	static boolean hasField(Object object, String fieldName) {
+		return getField(object, fieldName) != null;
+	}
+
 	private static Field getAccessibleField(Object object, String fieldName) {
+		final Field result = getField(object, fieldName);
+		assert result != null;
+		setFieldAccessible(result);
+		return result;
+	}
+
+	private static Field getField(Object object, String fieldName) {
 		assert fieldName != null;
 		Class<?> classe = object.getClass();
 		Field result = null;
@@ -525,9 +536,6 @@ final class JdbcWrapperHelper {
 			}
 			classe = classe.getSuperclass();
 		} while (result == null && classe != null);
-
-		assert result != null;
-		setFieldAccessible(result);
 		return result;
 	}
 
