@@ -128,7 +128,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 
 	private void writeClassInfoRow(ClassInfo classInfo, long totalInstances, long totalBytes,
 			boolean heap, boolean sourceDisplayed) throws IOException {
-		writeDirectly("<td>");
+		writeDirectly("<td class='wrappedText'>");
 		final String classInfoName = classInfo.getName();
 		if (heap) {
 			writeDirectly(HtmlSourceReport.addLinkToClassName(classInfoName));
