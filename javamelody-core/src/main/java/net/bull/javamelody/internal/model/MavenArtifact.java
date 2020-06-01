@@ -534,10 +534,16 @@ public final class MavenArtifact implements Serializable {
 	}
 
 	public static File getSourceJarFile(URL classesJarFileUrl) throws IOException {
+		final String file = classesJarFileUrl.getFile();
+		if (file.endsWith(".jar")) {
+			final File sources = new File(file.replace(".jar", "-sources.jar"));
+			if (sources.exists()) {
+				return sources;
+			}
+		}
 		final byte[] pomProperties = readMavenFileFromJarFile(classesJarFileUrl, "pom.properties");
 		if (pomProperties == null) {
 			final Map<String, String> sourceFilePaths = getSourceFilePathsByJarFileNames();
-			final String file = classesJarFileUrl.getFile();
 			final String sourceFilePath = sourceFilePaths
 					.get(file.substring(file.lastIndexOf('/') + 1));
 			if (sourceFilePath != null) {
