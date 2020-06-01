@@ -55,7 +55,8 @@ class HtmlSourceReport extends HtmlAbstractReport {
 
 	private static String normalizeClassName(String className) {
 		String temp = className;
-		if (temp.lastIndexOf('$') != -1) {
+		while (temp.lastIndexOf('$') != -1) {
+			// className may be like org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration$$EnhancerBySpringCGLIB$$e0b05818
 			temp = temp.substring(0, temp.lastIndexOf('$'));
 		}
 		if (temp.lastIndexOf('/') != -1) {
