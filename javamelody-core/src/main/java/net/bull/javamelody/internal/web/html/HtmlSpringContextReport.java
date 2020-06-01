@@ -72,11 +72,11 @@ public class HtmlSpringContextReport extends HtmlAbstractReport {
 
 	private void writeBean(String beanName, Class<?> beanClass, String beanToString)
 			throws IOException {
-		write("<td>");
+		write("<td class='wrappedText'>");
 		writeDirectly(htmlEncodeButNotSpace(beanName));
-		write("</td><td>");
+		write("</td><td class='wrappedText'>");
 		writeDirectly(HtmlSourceReport.addLinkToClassName(beanClass.getName()));
-		write("</td><td>");
+		write("</td><td class='wrappedText'>");
 		writeDirectly(htmlEncodeButNotSpace(beanToString));
 		write("</td>");
 	}
