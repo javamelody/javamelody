@@ -430,7 +430,8 @@ public final class MavenArtifact implements Serializable {
 			if (entry.getValue() == null) {
 				final String jarFileName = entry.getKey();
 				for (final MavenArtifact dependency : allDependencies) {
-					if (jarFileName.startsWith(dependency.getArtifactId() + '-')) {
+					if (jarFileName.startsWith(
+							dependency.getArtifactId() + '-' + dependency.getVersion())) {
 						entry.setValue(dependency);
 						break;
 					}
@@ -544,8 +545,13 @@ public final class MavenArtifact implements Serializable {
 		final byte[] pomProperties = readMavenFileFromJarFile(classesJarFileUrl, "pom.properties");
 		if (pomProperties == null) {
 			final Map<String, String> sourceFilePaths = getSourceFilePathsByJarFileNames();
-			final String sourceFilePath = sourceFilePaths
-					.get(file.substring(file.lastIndexOf('/') + 1));
+			String jarFileName = file;
+			if (jarFileName.endsWith("!/")) {
+				// remove "!/" at the end, for spring-boot launched with "java -jar"
+				jarFileName = jarFileName.substring(0, jarFileName.length() - "!/".length());
+			}
+			jarFileName = jarFileName.substring(jarFileName.lastIndexOf('/') + 1);
+			final String sourceFilePath = sourceFilePaths.get(jarFileName);
 			if (sourceFilePath != null) {
 				return getMavenArtifact(sourceFilePath);
 			}
