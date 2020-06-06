@@ -100,6 +100,19 @@ public class TestHtmlHeapHistogramReport {
 	/** Test.
 	 * @throws IOException e */
 	@Test
+	public void testHeapHistoJdkEa() throws IOException {
+		final InputStream input = getClass().getResourceAsStream("/heaphisto_jdk-ea.txt");
+		try {
+			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
+			report(heapHistogram);
+		} finally {
+			input.close();
+		}
+	}
+
+	/** Test.
+	 * @throws IOException e */
+	@Test
 	public void testHeapHistoBEA() throws IOException {
 		final InputStream input = getClass().getResourceAsStream("/heaphisto_jrockit.txt");
 		try {

@@ -252,7 +252,7 @@ public class HeapHistogram implements Serializable {
 			permGen = jvmName.charAt(0) == '<';
 			name = convertJVMName();
 			source = findSource();
-			if (sc.hasNext("\\([a-zA-Z.@0-9]*\\)")) {
+			if (sc.hasNext("\\([a-zA-Z.@0-9-ea]*\\)")) {
 				// in jdk 9: (module)
 				sc.next();
 			}
