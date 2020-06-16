@@ -406,6 +406,15 @@ public final class Parameters {
 		final String parameter = Parameter.SYSTEM_ACTIONS_ENABLED.getValue();
 		return parameter == null || Boolean.parseBoolean(parameter);
 	}
+	/**
+	 * Booléen selon que le paramètre include-sensitive-details vaut true.
+	 * (le retour par défaut est faux)
+	 * @return boolean
+	 */
+	public static boolean isSensitiveDetailsEnabled() {
+		final String parameter = Parameter.INCLUDE_SENSITIVE_DETAILS.getValue();
+		return parameter != null && Boolean.parseBoolean(parameter);
+	}
 
 	public static boolean isPdfEnabled() {
 		return PDF_ENABLED;

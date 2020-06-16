@@ -638,6 +638,9 @@ public class JavaInformations implements Serializable { // NOPMD
 	}
 
 	public List<ThreadInformations> getThreadInformationsList() {
+		if (null == threadInformationsList) {
+			return Collections.emptyList();
+		}
 		// on trie sur demande (si affichage)
 		final List<ThreadInformations> result = new ArrayList<ThreadInformations>(
 				threadInformationsList);
@@ -689,10 +692,12 @@ public class JavaInformations implements Serializable { // NOPMD
 	}
 
 	public boolean isStackTraceEnabled() {
-		for (final ThreadInformations threadInformations : threadInformationsList) {
-			final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
-			if (stackTrace != null && !stackTrace.isEmpty()) {
-				return true;
+		if (null != threadInformationsList) {
+			for (final ThreadInformations threadInformations : threadInformationsList) {
+				final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
+				if (stackTrace != null && !stackTrace.isEmpty()) {
+					return true;
+				}
 			}
 		}
 		return false;

@@ -392,7 +392,13 @@ public enum Parameter {
 	 * API key of the <a href='https://www.datadoghq.com/'>Datadog</a> to send metrics,
 	 * for example: 9775a026f1ca7d1c6c5af9d94d9595a4 (null by default).
 	 */
-	DATADOG_API_KEY("datadog-api-key");
+	DATADOG_API_KEY("datadog-api-key"),
+
+	/**
+	 * Inclure des détails sensibles tels que le mot de passe de la base de données,
+	 * les informations de thread et les informations de cache (null par défaut).
+	 */
+	INCLUDE_SENSITIVE_DETAILS("include-sensitive-details");
 
 	private final String code;
 

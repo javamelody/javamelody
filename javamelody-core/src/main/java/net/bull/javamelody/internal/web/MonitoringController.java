@@ -17,6 +17,8 @@
  */
 package net.bull.javamelody.internal.web; // NOPMD
 
+import static net.bull.javamelody.internal.common.Parameters.isSensitiveDetailsEnabled;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -155,7 +157,7 @@ public class MonitoringController {
 		// pour avoir des informations à jour
 		final JavaInformations javaInformations;
 		if (isJavaInformationsNeeded(httpRequest)) {
-			javaInformations = new JavaInformations(servletContext, true);
+			javaInformations = new JavaInformations(servletContext, isSensitiveDetailsEnabled());
 		} else {
 			javaInformations = null;
 		}
