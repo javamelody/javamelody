@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.Ordered;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoDbFactory;
 
 import net.bull.javamelody.internal.model.Counter;
@@ -33,6 +34,7 @@ import net.bull.javamelody.internal.model.Counter;
  * Test unitaire de la classe SpringMongoDbFactoryBeanPostProcessor.
  * @author Emeric Vernat
  */
+@SuppressWarnings("deprecation")
 public class TestSpringMongoDbFactoryBeanPostProcessor {
 	private static final String TEST_CONTEXT_FILENAME = "spring-context.xml";
 	private static final String MONITORING_CONTEXT_FILENAME = "net/bull/javamelody/monitoring-spring.xml";
@@ -54,6 +56,30 @@ public class TestSpringMongoDbFactoryBeanPostProcessor {
 			final MongoDbFactory mongoDbFactory = context.getBean(MongoDbFactory.class);
 			assertNotNull("toString", mongoDbFactory.toString());
 			assertNotNull("getDb", mongoDbFactory.getDb());
+
+			final SpringMongoDbFactoryBeanPostProcessor springMongoDbFactoryBeanPostProcessor = context
+					.getBean(SpringMongoDbFactoryBeanPostProcessor.class);
+			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
+					springMongoDbFactoryBeanPostProcessor.getOrder());
+			springMongoDbFactoryBeanPostProcessor.setOrder(1);
+			assertEquals("order", 1, springMongoDbFactoryBeanPostProcessor.getOrder());
+		} finally {
+			context.close();
+		}
+	}
+
+	/** Test. */
+	@Test
+	public void testSpringAOP2() {
+		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
+		servicesCounter.clear();
+		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME);
+		try {
+			final MongoDatabaseFactory mongoDatabaseFactory = context
+					.getBean(MongoDatabaseFactory.class);
+			assertNotNull("toString", mongoDatabaseFactory.toString());
+			assertNotNull("getDb", mongoDatabaseFactory.getMongoDatabase());
 
 			final SpringMongoDbFactoryBeanPostProcessor springMongoDbFactoryBeanPostProcessor = context
 					.getBean(SpringMongoDbFactoryBeanPostProcessor.class);
