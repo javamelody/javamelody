@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.PriorityOrdered;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoDbFactory;
 
 import com.mongodb.client.MongoDatabase;
@@ -32,8 +33,10 @@ import net.bull.javamelody.internal.common.LOG;
  * Post-processor Spring pour une éventuelle {@link MongoDbFactory} définie dans le fichier xml Spring.
  * @author Emeric Vernat
  */
+@SuppressWarnings({ "deprecation", "javadoc" })
 public class SpringMongoDbFactoryBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
 	private static final boolean MONGO_DB_FACTORY_AVAILABLE = isMongoDbFactoryAvailable();
+	private static final boolean MONGO_DATABASE_FACTORY_AVAILABLE = isMongoDatabaseFactoryAvailable();
 
 	// l'interface PriorityOrdered place la priorité assez haute dans le contexte Spring
 	// quelle que soit la valeur de order
@@ -79,6 +82,23 @@ public class SpringMongoDbFactoryBeanPostProcessor implements BeanPostProcessor,
 					invocationHandler);
 			LOG.debug("mongodb monitoring initialized");
 			return factory;
+		} else if (MONGO_DATABASE_FACTORY_AVAILABLE && bean instanceof MongoDatabaseFactory) {
+			final MongoDatabaseFactory mongoDatabaseFactory = (MongoDatabaseFactory) bean;
+			final InvocationHandler invocationHandler = new InvocationHandler() {
+				/** {@inheritDoc} */
+				@Override
+				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+					Object result = method.invoke(mongoDatabaseFactory, args);
+					if (result instanceof MongoDatabase) {
+						result = MongoWrapper.createDatabaseProxy((MongoDatabase) result);
+					}
+					return result;
+				}
+			};
+			final MongoDatabaseFactory factory = JdbcWrapper.createProxy(mongoDatabaseFactory,
+					invocationHandler);
+			LOG.debug("mongodb monitoring initialized");
+			return factory;
 		}
 
 		return bean;
@@ -87,6 +107,15 @@ public class SpringMongoDbFactoryBeanPostProcessor implements BeanPostProcessor,
 	private static boolean isMongoDbFactoryAvailable() {
 		try {
 			Class.forName("org.springframework.data.mongodb.MongoDbFactory");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	private static boolean isMongoDatabaseFactoryAvailable() {
+		try {
+			Class.forName("org.springframework.data.mongodb.MongoDatabaseFactory");
 			return true;
 		} catch (final ClassNotFoundException e) {
 			return false;
