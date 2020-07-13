@@ -449,7 +449,13 @@ public class JavaInformations implements Serializable { // NOPMD
 			throws SQLException {
 		final DatabaseMetaData metaData = connection.getMetaData();
 		// Sécurité: pour l'instant on n'indique pas metaData.getUserName()
-		result.append(metaData.getURL()).append('\n');
+		final String url = metaData.getURL();
+		if (url != null) {
+			// no application puts a password in clear text in a URL
+			// since all the docs show with separate properties and it would be a fault in itself,
+			// but just in case
+			result.append(url.replaceAll("(?<=password=).*", "\\$")).append('\n');
+		}
 		result.append(metaData.getDatabaseProductName()).append(", ")
 				.append(metaData.getDatabaseProductVersion()).append('\n');
 		result.append("Driver JDBC:\n").append(metaData.getDriverName()).append(", ")
