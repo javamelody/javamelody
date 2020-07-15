@@ -17,11 +17,11 @@
 	<Resource name="jdbc/TestDB" auth="Container"
 		type="javax.sql.DataSource" defaultAutoCommit="false" maxActive="100"
 		maxIdle="30" maxWait="10000" username="sa" password=""
-		driverClassName="org.h2.Driver" url="jdbc:h2:/Applis/h2/test-webapp" />
+		driverClassName="org.h2.Driver" url="jdbc:h2:c:/Applis/h2/test-webapp" />
 	<Resource name="jdbc/TestDB2" auth="Container"
 		type="javax.sql.DataSource" defaultAutoCommit="false" maxActive="100"
 		maxIdle="30" maxWait="10000" username="sa" password=""
-		driverClassName="org.h2.Driver" url="jdbc:h2:/Applis/h2/test-webapp2" />
+		driverClassName="org.h2.Driver" url="jdbc:h2:c:/Applis/h2/test-webapp2" />
 	<!-- <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" 
 		defaultAutoCommit="false" maxActive="200" maxIdle="30" maxWait="10000" username="root" 
 		password="root" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://127.0.0.1:3306/test?socketTimeout=5000&amp;connectTimeout=5000" 

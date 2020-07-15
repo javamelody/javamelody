@@ -74,10 +74,11 @@
 	<bean id="restTemplate"
 		class="org.springframework.web.client.RestTemplate" />
 
-	<bean id="mongoClient" class="com.mongodb.MongoClient" />
+	<bean id="mongoClient" class="com.mongodb.client.MongoClients" 
+		factory-method="create" />
 
 	<bean id="mongoDbFactory"
-		class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+		class="org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory">
 		<constructor-arg ref="mongoClient" />
 		<constructor-arg value="testdatabase" />
 	</bean>
