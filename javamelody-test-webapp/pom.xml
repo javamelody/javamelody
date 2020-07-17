@@ -262,12 +262,12 @@
 			</plugin>
 			<plugin>
 				<!-- Use "mvn jetty:run-exploded" -->
-				<groupId>org.mortbay.jetty</groupId>
+				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.4.30.v20200611</version>
 				<configuration>
 					<contextPath>/</contextPath>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<jettyConfig>src/main/config/jetty-jmx.xml</jettyConfig>
 					<connectors>
 						<connector
 							implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
