@@ -52,8 +52,11 @@ public final class VirtualMachine {
 	public static boolean isSupported() {
 		// pour nodes Jenkins, on réévalue sans utiliser de constante
 		final String javaVendor = System.getProperty("java.vendor");
+		final String javaVmName = System.getProperty("java.vm.name");
 		return javaVendor.contains("Sun") || javaVendor.contains("Oracle")
-				|| javaVendor.contains("Apple") || isJRockit();
+				|| javaVendor.contains("Apple") || isJRockit()
+				// #936 OpenJDK was not supported
+				|| javaVmName.contains("OpenJDK");
 	}
 
 	/**
