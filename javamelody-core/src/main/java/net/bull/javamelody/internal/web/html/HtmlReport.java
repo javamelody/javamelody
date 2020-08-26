@@ -58,8 +58,6 @@ import net.bull.javamelody.internal.model.SessionInformations;
  * @author Emeric Vernat
  */
 public class HtmlReport extends HtmlAbstractReport {
-	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
-	private static final String SCRIPT_END = "</script>";
 	private static final URL THEMED_MONITORING_CSS = HtmlReport.class
 			.getResource("/net/bull/javamelody/resource/themedMonitoring.css");
 	private static final URL THEMED_MONITORING_JS = HtmlReport.class
@@ -113,6 +111,14 @@ public class HtmlReport extends HtmlAbstractReport {
 	public static void writeAddAndRemoveApplicationLinks(String currentApplication,
 			Collection<String> applications, Writer writer) throws IOException {
 		HtmlCoreReport.writeAddAndRemoveApplicationLinks(currentApplication, applications, writer);
+	}
+
+	public static String createHtmlAttributeIfValuePresent(String attributeName,
+														   String value) {
+		if (value == null || value.length() == 0) {
+			return "";
+		}
+		return String.format(" %s=\"%s\" ", attributeName, value);
 	}
 
 	public void writeAllCurrentRequestsAsPart() throws IOException {
@@ -219,56 +225,17 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("<script type='text/javascript' src='?resource=themedMonitoring.js'></script>");
 		}
 		writeln("<script type='text/javascript' src='?resource=customizableMonitoring.js'></script>");
-		writeJavaScript();
+		writeln("<script type='text/javascript' src='?resource=htmlReport.js'></script>");
 		writeln("</head><body>");
 	}
 
 	public void writeHtmlFooter() throws IOException {
 		final String analyticsId = Parameter.ANALYTICS_ID.getValue();
 		if (analyticsId != null && !"disabled".equals(analyticsId)) {
-			writeDirectly(SCRIPT_BEGIN);
-			writeDirectly(
-					"var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
-			writeDirectly(
-					"document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
-			writeDirectly(SCRIPT_END);
-			writeDirectly(SCRIPT_BEGIN);
-			writeDirectly(" try{\n");
-			writeDirectly("var pageTracker = _gat._getTracker('" + analyticsId + "');\n");
-			writeDirectly("pageTracker._trackPageview();\n");
-			writeDirectly("} catch(err) {}\n");
-			writeDirectly(SCRIPT_END);
-			writeDirectly("\n");
+			final String analyticsIdAttribute = HtmlReport.createHtmlAttributeIfValuePresent("data-analytics-id", analyticsId);
+			writeln("<script type='text/javascript' src='?resource=htmlReportGoogleAnalytics.js' " + analyticsIdAttribute + "'></script>");
 		}
 		writeln("</body></html>");
-	}
-
-	private void writeJavaScript() throws IOException {
-		writeln(SCRIPT_BEGIN);
-		writeln("function showHide(id){");
-		writeln("  if (document.getElementById(id).style.display=='none') {");
-		writeln("    if (document.getElementById(id + 'Img') != null) {");
-		writeln("      document.getElementById(id + 'Img').src='?resource=bullets/minus.png';");
-		writeln("    }");
-		writeln("    try {");
-		writeln("      Effect.SlideDown(id, { duration: 0.5 });");
-		writeln("    } catch (e) {");
-		// si effects.js n'est pas chargé, par exemple dans last_shutdown.html
-		writeln("      document.getElementById(id).style.display='inline';");
-		writeln("    }");
-		writeln("  } else {");
-		writeln("    if (document.getElementById(id + 'Img') != null) {");
-		writeln("      document.getElementById(id + 'Img').src='?resource=bullets/plus.png';");
-		writeln("    }");
-		writeln("    try {");
-		writeln("      Effect.SlideUp(id, { duration: 0.5 });");
-		writeln("    } catch (e) {");
-		// si effects.js n'est pas chargé, par exemple dans last_shutdown.html
-		writeln("      document.getElementById(id).style.display='none';");
-		writeln("    }");
-		writeln("  }");
-		writeln("}");
-		writeln(SCRIPT_END);
 	}
 
 	public void writeMessageIfNotNull(String message, String partToRedirectTo) throws IOException {

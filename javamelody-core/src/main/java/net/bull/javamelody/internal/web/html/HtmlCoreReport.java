@@ -53,6 +53,8 @@ import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.model.UpdateChecker;
 import net.bull.javamelody.internal.model.VirtualMachine;
 
+import static net.bull.javamelody.internal.web.html.HtmlReport.createHtmlAttributeIfValuePresent;
+
 /**
  * Rapport html principal.
  * @author Emeric Vernat
@@ -88,6 +90,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	void toHtml(String message, String anchorNameForRedirect) throws IOException {
+		writeln("<script type='text/javascript' src='?resource=coreReport.js'></script>");
 		writeAlerts();
 		if (collectorServer != null) {
 			writeApplicationsLinks();
@@ -239,16 +242,6 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeMenu() throws IOException {
-		writeln("<script type='text/javascript'>");
-		writeln("function toggle(id) {");
-		writeln("var el = document.getElementById(id);");
-		writeln("if (el.getAttribute('class') == 'menuHide') {");
-		writeln("  el.setAttribute('class', 'menuShow');");
-		writeln("} else {");
-		writeln("  el.setAttribute('class', 'menuHide');");
-		writeln("} }");
-		writeln("</script>");
-
 		writeln("<div class='noPrint'> ");
 		writeln("<div id='menuBox' class='menuHide'>");
 		writeln("  <ul id='menuTab'><li><a href='javascript:toggle(\"menuBox\");'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
@@ -337,27 +330,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeMessageIfNotNull(String message, String partToRedirectTo,
 			String anchorNameForRedirect) throws IOException {
 		if (message != null) {
-			writeln("<script type='text/javascript'>");
-			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
-			writeDirectly("alert(\"" + htmlEncodeButNotSpace(javascriptEncode(message)) + "\");");
-			writeln("");
-			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
-			if (partToRedirectTo == null) {
-				if (anchorNameForRedirect == null) {
-					writeln("location.href = '?'");
-				} else {
-					writeln("if (location.href.indexOf('?') != -1) {");
-					writeDirectly(
-							"location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
-									+ anchorNameForRedirect + "';");
-					writeln("} else {");
-					writeDirectly("location.href = '#" + anchorNameForRedirect + "';");
-					writeln("}");
-				}
-			} else {
-				writeln("location.href = '?part=" + partToRedirectTo + '\'');
-			}
-			writeln("</script>");
+			final String messageAttribute = createHtmlAttributeIfValuePresent("data-message", htmlEncodeButNotSpace(javascriptEncode(message)));
+			final String redirectAttribute = createHtmlAttributeIfValuePresent("data-part-to-redirect-to", partToRedirectTo);
+			final String anchorAttribute = createHtmlAttributeIfValuePresent("data-anchor-name-for-redirect", anchorNameForRedirect);
+			writeln("<script type='text/javascript' src='?resource=showMessage.js' " + messageAttribute + "" + redirectAttribute + "" + anchorAttribute + "' ></script>");
 		}
 	}
 
@@ -381,18 +357,6 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (!otherJRobins.isEmpty()) {
 			writeln("<div align='right'>");
 			writeShowHideLink("detailsGraphs", "#Autres_courbes#");
-			writeln("<script type='text/javascript'>");
-			writeln("function loadImages(elementId) {");
-			writeln("  var descendents = document.getElementById(elementId).getElementsByTagName('*');");
-			writeln("  for (var i = 0; i < descendents.length; i++) {");
-			writeln("    var element = descendents[i];");
-			writeln("    if (element instanceof HTMLImageElement && element.src == '') {");
-			writeln("      element.src = element.dataset.src;");
-			writeln("    }");
-			writeln("  }");
-			writeln("}");
-			writeln("document.getElementById('detailsGraphsA').href=\"javascript:loadImages('detailsGraphs');showHide('detailsGraphs');\";");
-			writeln("</script>");
 			writeln(END_DIV);
 			writeln("<div id='detailsGraphs' style='display: none;'><div>");
 			writeGraphs(otherJRobins, true);

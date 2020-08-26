@@ -553,11 +553,11 @@ public class CollectorController { // NOPMD
 	public static void showAlertAndRedirectTo(HttpServletResponse resp, String message,
 			String redirectTo) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<script type='text/javascript'>alert('");
-		writer.write(I18N.javascriptEncode(message));
-		writer.write("');location.href='");
-		writer.write(redirectTo);
-		writer.write("';</script>");
+
+		final String msgAttribute = HtmlReport.createHtmlAttributeIfValuePresent("data-message", I18N.javascriptEncode(message));
+		final String redirectAttribute = HtmlReport.createHtmlAttributeIfValuePresent("data-redirect-to", redirectTo);
+
+		writer.write("<script type='text/javascript' src='?resource=showMessageAndRedirect.js' " + msgAttribute + " " + redirectAttribute + "' ></script>");
 		writer.close();
 	}
 

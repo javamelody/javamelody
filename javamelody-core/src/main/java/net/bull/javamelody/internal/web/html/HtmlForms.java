@@ -66,7 +66,9 @@ class HtmlForms extends HtmlAbstractReport {
 		final String pattern = "yyyy-MM-dd";
 		final DateFormat dateFormat = new SimpleDateFormat(pattern, Locale.US);
 		final String max = dateFormat.format(new Date());
-		writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return validateCustomPeriodForm();'>");
+
+		writeln("<form name='customPeriodForm' method='get' action='' onsubmit='return"
+						+ " validateCustomPeriodForm([\"customPeriodStartDate\", \"customPeriodEndDate\"],\""	+ getStringForJavascript("dates_mandatory") + "\");'>");
 		writeln("<br/><b><label for='customPeriodStartDate'>#startDate#</label></b>&nbsp;&nbsp;");
 		writeln("<input type='date' id='customPeriodStartDate' name='startDate' size='10' required max='"
 				+ max + "' ");
@@ -98,33 +100,13 @@ class HtmlForms extends HtmlAbstractReport {
 			writeln("<input type='hidden' name='part' value='" + part + "'/>");
 			writeln("<input type='hidden' name='graph' value='" + urlEncode(graphName) + "'/>");
 		}
-		writeln("<script type='text/javascript'>");
-		// On teste si l'élément <input type='date'> se transforme en <input type='text'
-		writeln("var test = document.createElement('input'); test.type = 'date';");
-		// Si c'est le cas, cela signifie que l'élément (html5) n'est pas pris en charge
-		writeln("if(test.type === 'text') {");
-		// si pas html5, on vide le champ pattern car il n'est pas au bon format
-		// et on affiche le format en langue du navigateur
-		writeln("  document.customPeriodForm.pattern.value = '';");
-		writeln("  document.getElementById('customPeriodPattern').style.display='inline';");
-		if (currentRange.getStartDate() != null) {
-			writeln("  document.customPeriodForm.startDate.value = '"
-					+ localeDateFormat.format(currentRange.getStartDate()) + "';");
-		}
-		if (currentRange.getEndDate() != null) {
-			writeln("  document.customPeriodForm.endDate.value = '"
-					+ localeDateFormat.format(currentRange.getEndDate()) + "';");
-		}
-		writeln("}");
-		writeln("function validateCustomPeriodForm() {");
-		writeln("   periodForm = document.customPeriodForm;");
-		writelnCheckMandatory("periodForm.startDate", "dates_mandatory");
-		writelnCheckMandatory("periodForm.endDate", "dates_mandatory");
-		writeln("   periodForm.period.value=periodForm.startDate.value + '"
-				+ Range.CUSTOM_PERIOD_SEPARATOR + "' + periodForm.endDate.value;");
-		writeln("   return true;");
-		writeln("}");
-		writeln("</script>");
+
+		String startDate = currentRange.getStartDate() == null ? "" : localeDateFormat.format(currentRange.getStartDate());
+		String endDate = currentRange.getEndDate() == null ? "" : localeDateFormat.format(currentRange.getEndDate());
+		final String startDateAttribute = HtmlReport.createHtmlAttributeIfValuePresent("data-start-date", startDate);
+		final String endDateAttribute = HtmlReport.createHtmlAttributeIfValuePresent("data-end-date", endDate);
+
+		writeln("<script type='text/javascript' src='?resource=customPeriod.js' " + startDateAttribute + " " + endDateAttribute + "'></script>");
 		writeln("</form><br/>");
 		writeln("</div>");
 	}
@@ -202,15 +184,12 @@ class HtmlForms extends HtmlAbstractReport {
 					+ "\"/> " + removeApplicationLabel + "</a>");
 			writeln("<div id='addApplication' style='display: none;'>");
 		}
-		writeln("<script type='text/javascript'>");
-		writeln("function validateAppForm() {");
-		writelnCheckMandatory("document.appForm.appName", "app_name_mandatory");
-		writelnCheckMandatory("document.appForm.appUrls", "app_urls_mandatory");
-		writeln("   return true;");
-		writeln("}");
-		writeln("</script>");
+		writeln("<script type='text/javascript' src='?resource=htmlForms.js'></script>");
+
 		writeln("<br/> <br/>");
-		writeln("<form name='appForm' method='post' action='' onsubmit='return validateAppForm();'>");
+		writeln("<form name='appForm' method='post' action='' onsubmit='return"
+						+ " validateElementNotEmpty(\"appName\", \"" + getStringForJavascript("app_name_mandatory")+ "\") &&"
+						+ " validateElementNotEmpty(\"appUrls\", \"" + getStringForJavascript("app_urls_mandatory") + "\");'>");
 		writeln("<br/><b><label for='appName'>#app_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<b><label for='appUrls'>#app_urls#</label> :</b>&nbsp;&nbsp;<input type='text' size='50' id='appUrls' name='appUrls' required/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<input type='submit' value='#add#'/><br/>");
@@ -221,14 +200,9 @@ class HtmlForms extends HtmlAbstractReport {
 
 		if (applications.size() > 1) {
 			writeln("<div id='addAggregation' style='display: none;'>");
-			writeln("<script type='text/javascript'>");
-			writeln("function validateAggregationForm() {");
-			writelnCheckMandatory("document.aggregationForm.appName", "app_name_mandatory");
-			writeln("   return true;");
-			writeln("}");
-			writeln("</script>");
 			writeln("<br/> <br/>");
-			writeln("<form name='aggregationForm' method='post' action='' onsubmit='return validateAggregationForm();'>");
+			writeln("<form name='aggregationForm' method='post' action='' onsubmit='return"
+							+ " validateElementNotEmpty(\"appName\", \"" + getStringForJavascript("app_name_mandatory")+"\");'>");
 			writeln("<br/><b><label for='appName'>#aggregation_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<br/><b>#aggregated_apps# :</b>");
 			writeln("<table summary=''>");
@@ -246,15 +220,6 @@ class HtmlForms extends HtmlAbstractReport {
 			writeln("</div>\n");
 		}
 	}
-
-	private void writelnCheckMandatory(String fieldFullName, String msgKey) throws IOException {
-		writeln("   if (" + fieldFullName + ".value.length == 0) {");
-		writeln("      alert('" + getStringForJavascript(msgKey) + "');");
-		writeln("      " + fieldFullName + ".focus();");
-		writeln("      return false;");
-		writeln("   }");
-	}
-
 	@Override
 	void toHtml() {
 		throw new UnsupportedOperationException();

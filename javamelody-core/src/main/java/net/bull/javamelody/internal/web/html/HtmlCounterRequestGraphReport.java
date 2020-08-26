@@ -43,8 +43,6 @@ import net.bull.javamelody.internal.model.Range;
  */
 class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	private static final int MAX_REQUEST_NAME_LENGTH = 5000;
-	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
-	private static final String SCRIPT_END = "</script>";
 	private static int uniqueByPageAndGraphSequence;
 	private final Range range;
 	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
@@ -162,7 +160,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln("</div></td></tr></table>");
 			writeln("</div>");
 
-			writeGraphDetailScript(graphName);
+			writeln("<script type='text/javascript' src='?resource=graphReport.js'></script>");
 		}
 		if (request != null && request.getStackTrace() != null) {
 			writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
@@ -454,59 +452,6 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln("<img src='?resource=" + parentCounter.getIconName() + "' alt='"
 					+ parentCounter.getName() + "' width='16' height='16' />&nbsp;");
 		}
-	}
-
-	private void writeGraphDetailScript(String graphName) throws IOException {
-		writeln(SCRIPT_BEGIN);
-		writeln("function handleHideMaximumClick(checkbox) {");
-		writeln("    var img = document.getElementById('img');");
-		writeln("    if (checkbox.checked) {");
-		writeln("        img.src = img.src + '\\u0026max=false\\u0026r=' + Math.random();");
-		writeln("    } else {");
-		writeln("        img.src = img.src.replace('\\u0026max=false','');");
-		writeln("    }");
-		writeln("}");
-		writeln("function scaleImage(v, min, max) {");
-		writeln("    var images = document.getElementsByClassName('synthèse');");
-		writeln("    w = (max - min) * v + min;");
-		writeln("    for (i = 0; i < images.length; i++) {");
-		writeln("        images[i].style.width = w + 'px';");
-		writeln("    }");
-		writeln("}");
-
-		// 'animate' our slider
-		writeln("var slider = new Control.Slider('handle', 'track', {axis:'horizontal', alignX: 0, increment: 2});");
-
-		// resize the image as the slider moves. The image quality would deteriorate, but it
-		// would not be final anyway. Once slider is released the image is re-requested from the server, where
-		// it is rebuilt from vector format
-		writeln("slider.options.onSlide = function(value) {");
-		writeln("  scaleImage(value, initialWidth, initialWidth / 2 * 3);");
-		writeln("}");
-
-		// this is where the slider is released and the image is reloaded
-		// we use current style settings to work the required image dimensions
-		writeln("slider.options.onChange = function(value) {");
-		// chop off "px" and round up float values
-		writeln("  width = Math.round(Element.getStyle('img','width').replace('px','')) - 80;");
-		writeln("  height = Math.round(width * initialHeight / initialWidth) - 48;");
-		// reload the images
-		// rq : on utilise des caractères unicode pour éviter des warnings
-		writeln("  document.getElementById('img').src = '?graph="
-				+ htmlEncodeButNotSpace(urlEncode(graphName))
-				+ "\\u0026width=' + width + '\\u0026height=' + height;");
-		writeln("  document.getElementById('img').style.width = '';");
-		writeln("}");
-		writeln("window.onload = function() {");
-		writeln("  if (navigator.appName == 'Microsoft Internet Explorer') {");
-		writeln("    initialWidth = document.getElementById('img').width;");
-		writeln("    initialHeight = document.getElementById('img').height;");
-		writeln("  } else {");
-		writeln("    initialWidth = Math.round(Element.getStyle('img','width').replace('px',''));");
-		writeln("    initialHeight = Math.round(Element.getStyle('img','height').replace('px',''));");
-		writeln("  }");
-		writeln("}");
-		writeln(SCRIPT_END);
 	}
 
 	private Map<String, CounterRequest> mapAllRequestsById() {
