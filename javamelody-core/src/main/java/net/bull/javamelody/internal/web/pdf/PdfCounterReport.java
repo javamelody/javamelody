@@ -169,7 +169,7 @@ class PdfCounterReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders(String childCounterName) {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getRequestHeader());
 		if (includeGraph) {
 			headers.add(getString("Evolution"));

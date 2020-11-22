@@ -42,7 +42,7 @@ public final class I18N {
 	// (Parameters.getResourcePath("translations") seul ne fonctionne pas si on est dans un jar/war)
 	private static final String RESOURCE_BUNDLE_BASE_NAME = Parameters
 			.getResourcePath("translations").replace('/', '.').substring(1);
-	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<Locale>();
+	private static final ThreadLocal<Locale> LOCALE_CONTEXT = new ThreadLocal<>();
 	// Locale.ROOT needs 1.6
 	private static final Locale ROOT_LOCALE = Locale.ROOT;
 

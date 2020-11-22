@@ -389,32 +389,29 @@ public class TestJdbcWrapper {
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
 		try {
 			connection = jdbcWrapper.createConnectionProxy(connection);
-			final Statement statement = connection.createStatement();
-			try {
-				assertFalse(EQUALS, statement.equals(statement));
-				statement.hashCode();
+            try (Statement statement = connection.createStatement()) {
+                assertFalse(EQUALS, statement.equals(statement));
+                statement.hashCode();
 
-				statement.executeQuery("select 1").close();
-				statement.execute("select 2");
-				statement.execute("CREATE TABLE IF NOT EXISTS test (name VARCHAR(50) NOT NULL)");
-				statement.addBatch("insert into test (name) values ('test')");
-				statement.executeBatch();
-				statement.addBatch("/* BATCH */ insert into test (name) values ('test')");
-				statement.executeBatch();
-				statement.addBatch("insert into test (name) values ('test')");
-				statement.executeLargeBatch();
-				jdbcWrapper.getSqlCounter().setDisplayed(false);
-				statement.execute("select 4");
-				jdbcWrapper.getSqlCounter().setDisplayed(true);
-				statement.execute("explain select 3");
-				try {
-					statement.execute("invalid sql");
-				} catch (final SQLException e) {
-					assertNotNull("ok", e);
-				}
-			} finally {
-				statement.close();
-			}
+                statement.executeQuery("select 1").close();
+                statement.execute("select 2");
+                statement.execute("CREATE TABLE IF NOT EXISTS test (name VARCHAR(50) NOT NULL)");
+                statement.addBatch("insert into test (name) values ('test')");
+                statement.executeBatch();
+                statement.addBatch("/* BATCH */ insert into test (name) values ('test')");
+                statement.executeBatch();
+                statement.addBatch("insert into test (name) values ('test')");
+                statement.executeLargeBatch();
+                jdbcWrapper.getSqlCounter().setDisplayed(false);
+                statement.execute("select 4");
+                jdbcWrapper.getSqlCounter().setDisplayed(true);
+                statement.execute("explain select 3");
+                try {
+                    statement.execute("invalid sql");
+                } catch (final SQLException e) {
+                    assertNotNull("ok", e);
+                }
+            }
 		} finally {
 			connection.close();
 		}

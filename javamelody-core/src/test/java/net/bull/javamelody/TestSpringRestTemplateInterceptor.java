@@ -49,38 +49,35 @@ public class TestSpringRestTemplateInterceptor {
 	public void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
-		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME);
-		try {
-			final RestTemplate restTemplate = context.getBean(RestTemplate.class);
-			final String url = "https://gturnquist-quoters.cfapps.io/api/random";
-			springCounter.setDisplayed(false);
-			try {
-				restTemplate.getForObject(url, Object.class);
-			} catch (final RestClientException e) {
-				assertSame("requestsCount", 0, springCounter.getRequestsCount());
-			}
+        try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
+                MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME)) {
+            final RestTemplate restTemplate = context.getBean(RestTemplate.class);
+            final String url = "https://gturnquist-quoters.cfapps.io/api/random";
+            springCounter.setDisplayed(false);
+            try {
+                restTemplate.getForObject(url, Object.class);
+            } catch (final RestClientException e) {
+                assertSame("requestsCount", 0, springCounter.getRequestsCount());
+            }
 
-			springCounter.setDisplayed(true);
-			try {
-				restTemplate.getForObject(url, Object.class);
-			} catch (final RestClientException e) {
-				assertSame("requestsCount", 1, springCounter.getRequestsCount());
-			}
-			try {
-				restTemplate.getForObject(url + "?var={0}", Object.class, "var value");
-			} catch (final RestClientException e) {
-				assertSame("requestsCount", 1, springCounter.getRequestsCount());
-			}
+            springCounter.setDisplayed(true);
+            try {
+                restTemplate.getForObject(url, Object.class);
+            } catch (final RestClientException e) {
+                assertSame("requestsCount", 1, springCounter.getRequestsCount());
+            }
+            try {
+                restTemplate.getForObject(url + "?var={0}", Object.class, "var value");
+            } catch (final RestClientException e) {
+                assertSame("requestsCount", 1, springCounter.getRequestsCount());
+            }
 
-			final SpringRestTemplateBeanPostProcessor springRestTemplateBeanPostProcessor = context
-					.getBean(SpringRestTemplateBeanPostProcessor.class);
-			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
-					springRestTemplateBeanPostProcessor.getOrder());
-			springRestTemplateBeanPostProcessor.setOrder(1);
-			assertEquals("order", 1, springRestTemplateBeanPostProcessor.getOrder());
-		} finally {
-			context.close();
-		}
+            final SpringRestTemplateBeanPostProcessor springRestTemplateBeanPostProcessor = context
+                    .getBean(SpringRestTemplateBeanPostProcessor.class);
+            assertEquals("order", Ordered.LOWEST_PRECEDENCE,
+                    springRestTemplateBeanPostProcessor.getOrder());
+            springRestTemplateBeanPostProcessor.setOrder(1);
+            assertEquals("order", 1, springRestTemplateBeanPostProcessor.getOrder());
+        }
 	}
 }

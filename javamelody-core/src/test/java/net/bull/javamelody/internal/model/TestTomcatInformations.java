@@ -255,7 +255,7 @@ public class TestTomcatInformations {
 		assertNotNull("buildTomcatInformationsList",
 				TomcatInformations.buildTomcatInformationsList());
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		final List<ObjectName> mBeans = new ArrayList<>();
 		mBeans.add(
 				mBeanServer
 						.registerMBean(new ThreadPool(),

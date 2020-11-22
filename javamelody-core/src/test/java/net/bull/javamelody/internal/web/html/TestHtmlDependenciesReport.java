@@ -87,9 +87,9 @@ public class TestHtmlDependenciesReport {
 			}
 		};
 		expect(context.getResourceAsStream(webapp + "pom.xml")).andAnswer(answer).anyTimes();
-		final Set<String> dependencies = new LinkedHashSet<String>(
-				Arrays.asList("/WEB-INF/lib/jrobin-1.5.9.jar",
-						"/WEB-INF/lib/javamelody-core-1.65.0.jar", "/WEB-INF/lib/nothing.jar"));
+		final Set<String> dependencies = new LinkedHashSet<>(
+                Arrays.asList("/WEB-INF/lib/jrobin-1.5.9.jar",
+                        "/WEB-INF/lib/javamelody-core-1.65.0.jar", "/WEB-INF/lib/nothing.jar"));
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		expect(context.getMajorVersion()).andReturn(2).anyTimes();
 		expect(context.getMinorVersion()).andReturn(5).anyTimes();

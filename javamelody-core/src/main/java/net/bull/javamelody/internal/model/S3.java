@@ -33,7 +33,7 @@ final class S3 {
 		final AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
 		if (file.length() > MINIMUM_SIZE_FOR_MULTIPART) {
 			// multipart upload
-			final List<PartETag> partETags = new ArrayList<PartETag>();
+			final List<PartETag> partETags = new ArrayList<>();
 			final InitiateMultipartUploadResult initResponse = s3Client.initiateMultipartUpload(
 					new InitiateMultipartUploadRequest(bucketName, file.getName()));
 			final String uploadId = initResponse.getUploadId();

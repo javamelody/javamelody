@@ -67,7 +67,7 @@ public final class HsErrPid implements Serializable {
 	}
 
 	public static List<HsErrPid> buildHsErrPidList() {
-		final List<File> directories = new ArrayList<File>();
+		final List<File> directories = new ArrayList<>();
 		// locations of fatal error log:
 		// http://www.oracle.com/technetwork/java/javase/felog-138657.html
 		directories.add(new File("./"));
@@ -89,7 +89,7 @@ public final class HsErrPid implements Serializable {
 			}
 		}
 
-		final List<HsErrPid> result = new ArrayList<HsErrPid>();
+		final List<HsErrPid> result = new ArrayList<>();
 		for (final File dir : directories) {
 			final File[] files = dir.listFiles(FILENAME_FILTER);
 			if (files != null) {
@@ -102,7 +102,7 @@ public final class HsErrPid implements Serializable {
 	}
 
 	public static List<HsErrPid> getHsErrPidList(List<JavaInformations> javaInformationsList) {
-		final List<HsErrPid> result = new ArrayList<HsErrPid>();
+		final List<HsErrPid> result = new ArrayList<>();
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			final List<HsErrPid> hsErrPidList = javaInformations.getHsErrPidList();
 			if (hsErrPidList != null) {

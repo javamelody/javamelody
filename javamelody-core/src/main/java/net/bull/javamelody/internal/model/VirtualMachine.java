@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 
 import javax.management.JMException;
 import javax.management.ObjectName;
@@ -172,7 +173,7 @@ public final class VirtualMachine {
 					"com.sun.management:type=DiagnosticCommand");
 			final String gcClassHistogram = (String) MBeansAccessor.invoke(objectName,
 					"gcClassHistogram", new Object[] { null }, new Class[] { String[].class });
-			return new ByteArrayInputStream(gcClassHistogram.getBytes("UTF-8"));
+			return new ByteArrayInputStream(gcClassHistogram.getBytes(StandardCharsets.UTF_8));
 		} catch (final JMException e1) {
 			// MBean "DiagnosticCommand" not found (with JDK 7 for example),
 			// continue with VM attach method
@@ -207,12 +208,9 @@ public final class VirtualMachine {
 	 * @throws Exception e
 	 */
 	public static HeapHistogram createHeapHistogram() throws Exception { // NOPMD
-		final InputStream input = heapHisto();
-		try {
-			return new HeapHistogram(input, isJRockit());
-		} finally {
-			input.close();
-		}
+        try (InputStream input = heapHisto()) {
+            return new HeapHistogram(input, isJRockit());
+        }
 	}
 
 	private static Object invoke(Method method, Object object, Object... args) throws Exception { // NOPMD

@@ -60,7 +60,7 @@ public class TestPdfJavaInformationsReport {
 		final PdfDocumentFactory pdfDocumentFactory = new PdfDocumentFactory(TEST_APP, null,
 				output);
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		final List<ObjectName> mBeans = new ArrayList<>();
 		try {
 			mBeans.add(mBeanServer
 					.registerMBean(new ThreadPool(),

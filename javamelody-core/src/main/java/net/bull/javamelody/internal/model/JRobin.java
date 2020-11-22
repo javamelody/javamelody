@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -413,7 +414,7 @@ public final class JRobin {
 				addValue(value);
 			}
 			throw createIOException(e);
-		} catch (final IllegalArgumentException e) {
+		} catch (final IllegalArgumentException | ArithmeticException e) {
 			// catch IllegalArgumentException for issue 533:
 			//			java.lang.IllegalArgumentException
 			//			at java.nio.Buffer.position(Buffer.java:244)
@@ -422,16 +423,7 @@ public final class JRobin {
 			//			at org.jrobin.core.RrdDbPool.requestRrdDb(RrdDbPool.java:103)
 			//			at net.bull.javamelody.JRobin.addValue(JRobin.java:334)
 
-			// le fichier RRD a été corrompu, par exemple en tuant le process java au milieu
-			// d'un write, donc on efface le fichier corrompu et on le recrée pour corriger
-			// le problème
-			LOG.debug("A JRobin file was found corrupted and was reset: "
-					+ new File(rrdFileName).getPath());
-			resetFile();
-			addValue(value);
-			throw createIOException(e);
-		} catch (final ArithmeticException e) {
-			// catch ArithmeticException for issue 139 / JENKINS-51590:
+			// ou catch ArithmeticException for issue 139 / JENKINS-51590:
 			//		java.lang.ArithmeticException : / by zero
 			//		at org.jrobin.core.Archive.archive(Archive.java:129)
 			//		at org.jrobin.core.RrdDb.archive(RrdDb.java:720)
@@ -440,7 +432,7 @@ public final class JRobin {
 			//		at org.jrobin.core.Sample.update(Sample.java:228)
 			//		at net.bull.javamelody.internal.model.JRobin.addValue(JRobin.java:374)
 
-			// le fichier RRD a probablement été corrompu, par exemple en tuant le process java au milieu
+			// le fichier RRD a été corrompu, par exemple en tuant le process java au milieu
 			// d'un write, donc on efface le fichier corrompu et on le recrée pour corriger
 			// le problème
 			LOG.debug("A JRobin file was found corrupted and was reset: "
@@ -479,7 +471,7 @@ public final class JRobin {
 							range.getJRobinEndTime());
 					final String xml = fetchRequest.fetchData().exportXml()
 							.replaceFirst("<file>.*</file>", "");
-					output.write(xml.getBytes("UTF-8"));
+					output.write(xml.getBytes(StandardCharsets.UTF_8));
 				}
 			} finally {
 				// release RRD database reference
@@ -584,8 +576,8 @@ public final class JRobin {
 		final long timestamp = Util.getTimestamp(nowMinusThreeMonthsAndADay);
 		final int counterRequestIdLength = new CounterRequest("", "").getId().length();
 		long diskUsage = 0;
-		final Map<String, Long> lastUpdateTimesByPath = new HashMap<String, Long>();
-		final List<File> rrdFiles = new ArrayList<File>(listRrdFiles(application));
+		final Map<String, Long> lastUpdateTimesByPath = new HashMap<>();
+		final List<File> rrdFiles = new ArrayList<>(listRrdFiles(application));
 		for (final File file : rrdFiles) {
 			// on ne supprime que les fichiers rrd de requêtes (les autres sont peu nombreux)
 			if (file.getName().length() > counterRequestIdLength
@@ -644,9 +636,7 @@ public final class JRobin {
 			final long lastUpdateTime = rrdDb.getLastUpdateTime();
 			rrdPool.release(rrdDb);
 			return lastUpdateTime;
-		} catch (final IOException e) {
-			return file.lastModified() / 1000L;
-		} catch (final RrdException e) {
+		} catch (final IOException | RrdException e) {
 			return file.lastModified() / 1000L;
 		}
 	}

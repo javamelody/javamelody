@@ -111,23 +111,21 @@ public final class TomcatInformations implements Serializable {
 					mbeansInitAttemps++;
 				}
 			}
-			final List<TomcatInformations> tomcatInformationsList = new ArrayList<TomcatInformations>(
-					THREAD_POOLS.size());
+			final List<TomcatInformations> tomcatInformationsList = new ArrayList<>(
+                    THREAD_POOLS.size());
 			// rq: le processor correspondant au threadPool peut se retrouver selon
 			// threadPool.getKeyProperty("name").equals(globalRequestProcessor.getKeyProperty("name"))
 			for (final ObjectName threadPool : THREAD_POOLS) {
 				tomcatInformationsList.add(new TomcatInformations(threadPool));
 			}
 			return tomcatInformationsList;
-		} catch (final InstanceNotFoundException e) {
+		} catch (final InstanceNotFoundException | AttributeNotFoundException e) {
 			// nécessaire pour JBoss 6.0 quand appelé depuis MonitoringFilter.destroy via
 			// writeHtmlToLastShutdownFile
 			return Collections.emptyList();
-		} catch (final AttributeNotFoundException e) {
-			// issue 220 and end of issue 133:
-			// AttributeNotFoundException: No attribute called maxThreads (in some JBossAS or JBossWeb)
-			return Collections.emptyList();
-		} catch (final JMException e) {
+		} // issue 220 and end of issue 133:
+		// AttributeNotFoundException: No attribute called maxThreads (in some JBossAS or JBossWeb)
+		catch (final JMException e) {
 			// n'est pas censé arriver
 			throw new IllegalStateException(e);
 		}

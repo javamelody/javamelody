@@ -112,15 +112,12 @@ public class TestJRobin {
 		JRobin.createInstance(application, jrobinName, "request");
 
 		assertTrue("delete", !rrdFile.exists() || rrdFile.delete());
-		final FileOutputStream out = new FileOutputStream(rrdFile);
-		try {
-			// il faut un minimum de quantité de données pour avoir RrdException "Invalid file header"
-			for (int i = 0; i < 100; i++) {
-				out.write("n'est pas un fichier rrd".getBytes());
-			}
-		} finally {
-			out.close();
-		}
+        try (FileOutputStream out = new FileOutputStream(rrdFile)) {
+            // il faut un minimum de quantité de données pour avoir RrdException "Invalid file header"
+            for (int i = 0; i < 100; i++) {
+                out.write("n'est pas un fichier rrd".getBytes());
+            }
+        }
 		final JRobin jrobin = JRobin.createInstance(application, jrobinName, "request");
 		// addValue devrait appeler resetFile car RrdException "Invalid file header"
 		// puis devrait relancer une IOException

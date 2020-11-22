@@ -54,8 +54,8 @@ public class CollectorServer {
 
 	private static final int NB_COLLECT_THREADS = 10;
 
-	private final Map<String, Throwable> lastCollectExceptionsByApplication = new ConcurrentHashMap<String, Throwable>();
-	private final Map<String, RemoteCollector> remoteCollectorsByApplication = new ConcurrentHashMap<String, RemoteCollector>();
+	private final Map<String, Throwable> lastCollectExceptionsByApplication = new ConcurrentHashMap<>();
+	private final Map<String, RemoteCollector> remoteCollectorsByApplication = new ConcurrentHashMap<>();
 
 	private final ExecutorService executorService = Executors
 			.newFixedThreadPool(NB_COLLECT_THREADS);
@@ -117,10 +117,10 @@ public class CollectorServer {
 
 	public void collectWithoutErrors() {
 		try {
-			final Map<String, List<URL>> urlsByApplication = new LinkedHashMap<String, List<URL>>(
-					Parameters.getCollectorUrlsByApplications());
-			final List<Future<?>> futures = new ArrayList<Future<?>>(
-					collectForApplicationsWithoutErrors(urlsByApplication));
+			final Map<String, List<URL>> urlsByApplication = new LinkedHashMap<>(
+                    Parameters.getCollectorUrlsByApplications());
+			final List<Future<?>> futures = new ArrayList<>(
+                    collectForApplicationsWithoutErrors(urlsByApplication));
 
 			final Map<String, List<String>> applicationsByAggregationApplication = Parameters
 					.getApplicationsByAggregationApplication();
@@ -141,20 +141,14 @@ public class CollectorServer {
 					future.get();
 				}
 			}
-		} catch (final IOException e) {
-			LOGGER.warn(e.getMessage(), e);
-		} catch (final ConcurrentModificationException e) {
-			LOGGER.warn(e.getMessage(), e);
-		} catch (final InterruptedException e) {
-			LOGGER.warn(e.getMessage(), e);
-		} catch (final ExecutionException e) {
+		} catch (final IOException | ExecutionException | InterruptedException | ConcurrentModificationException e) {
 			LOGGER.warn(e.getMessage(), e);
 		}
 	}
 
 	private List<Future<?>> collectForApplicationsWithoutErrors(
 			Map<String, List<URL>> urlsByApplication) {
-		final List<Future<?>> futures = new ArrayList<Future<?>>();
+		final List<Future<?>> futures = new ArrayList<>();
 		for (final Map.Entry<String, List<URL>> entry : urlsByApplication.entrySet()) {
 			final String application = entry.getKey();
 			final List<URL> urls = entry.getValue();
@@ -216,7 +210,7 @@ public class CollectorServer {
 			if (application.endsWith(JENKINS_NODES_SUFFIX)) {
 				// nécessaire ici après redémarrage du serveur de collecte
 				final String monitoringPath = Parameters.getMonitoringPath();
-				final List<URL> monitoringNodesUrls = new ArrayList<URL>(urls.size());
+				final List<URL> monitoringNodesUrls = new ArrayList<>(urls.size());
 				for (final URL url : urls) {
 					monitoringNodesUrls.add(new URL(
 							url.toString().replace(monitoringPath, monitoringPath + "/nodes")));
@@ -378,7 +372,7 @@ public class CollectorServer {
 		final List<URL> currentUrls = Parameters.getCollectorUrlsByApplications().get(application);
 		final List<URL> nodesUrls;
 		if (currentUrls != null) {
-			nodesUrls = new ArrayList<URL>(currentUrls);
+			nodesUrls = new ArrayList<>(currentUrls);
 			nodesUrls.addAll(urls);
 			removeCollectorApplication(application);
 		} else {
@@ -400,7 +394,7 @@ public class CollectorServer {
 			throws IOException {
 		final List<URL> currentUrls = Parameters.getCollectorUrlsByApplications().get(appName);
 		if (currentUrls != null) {
-			final List<URL> newUrls = new ArrayList<URL>(currentUrls);
+			final List<URL> newUrls = new ArrayList<>(currentUrls);
 			newUrls.removeAll(nodeUrls);
 			removeCollectorApplication(appName);
 			if (!newUrls.isEmpty()) {
@@ -440,7 +434,7 @@ public class CollectorServer {
 			// on n'écrase pas les données précédentes si elles existent déjà
 			return;
 		}
-		final List<File> sourceDirectories = new ArrayList<File>();
+		final List<File> sourceDirectories = new ArrayList<>();
 		for (final String aggregatedApplication : aggregatedApplications) {
 			sourceDirectories.add(Parameters.getStorageDirectory(aggregatedApplication));
 		}
@@ -510,7 +504,7 @@ public class CollectorServer {
 
 	private List<RemoteCollector> getAvailableRemoteCollectorsByApplications(
 			List<String> applications) {
-		final List<RemoteCollector> remoteCollectors = new ArrayList<RemoteCollector>();
+		final List<RemoteCollector> remoteCollectors = new ArrayList<>();
 		for (final String application : applications) {
 			final RemoteCollector remoteCollector = remoteCollectorsByApplication.get(application);
 			if (remoteCollector != null) {

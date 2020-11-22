@@ -110,8 +110,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 
 	public static void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
 			List<Counter> newParentCounters) {
-		final Map<String, Counter> newParentCountersByName = new HashMap<String, Counter>(
-				newParentCounters.size());
+		final Map<String, Counter> newParentCountersByName = new HashMap<>(
+                newParentCounters.size());
 		for (final Counter counter : newParentCounters) {
 			newParentCountersByName.put(counter.getName(), counter);
 		}
@@ -255,7 +255,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		if (childContext == null) {
 			childContexts = Collections.emptyList();
 		} else {
-			childContexts = new ArrayList<CounterRequestContext>(2);
+			childContexts = new ArrayList<>(2);
 		}
 		while (childContext != null) {
 			childContexts.add(childContext);
@@ -294,7 +294,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 
 	private void addChildRequestForDrillDown(String requestId) {
 		if (childRequestsExecutionsByRequestId == null) {
-			childRequestsExecutionsByRequestId = new LinkedHashMap<String, Long>();
+			childRequestsExecutionsByRequestId = new LinkedHashMap<>();
 		}
 		Long nbExecutions = childRequestsExecutionsByRequestId.get(requestId);
 		if (nbExecutions == null) {
@@ -338,8 +338,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 			clone.currentChildContext = childContext.clone(clone);
 		}
 		if (childRequestsExecutionsByRequestId != null) {
-			clone.childRequestsExecutionsByRequestId = new LinkedHashMap<String, Long>(
-					childRequestsExecutionsByRequestId);
+			clone.childRequestsExecutionsByRequestId = new LinkedHashMap<>(
+                    childRequestsExecutionsByRequestId);
 		}
 		return clone;
 	}

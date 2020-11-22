@@ -71,7 +71,7 @@ enum JpaMethod {
 	}
 
 	static JpaMethod forCall(Method method, Object[] args) {
-		for (final JpaMethod type : JpaMethod.values()) {
+		for (final JpaMethod type : values()) {
 			if (type.matcher.matches(type, method, args)) {
 				return type;
 			}

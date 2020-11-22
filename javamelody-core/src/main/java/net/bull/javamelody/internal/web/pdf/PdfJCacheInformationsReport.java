@@ -77,7 +77,7 @@ class PdfJCacheInformationsReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Cache"));
 		if (hitsRatioEnabled) {
 			headers.add(getString("Efficacite_cache"));

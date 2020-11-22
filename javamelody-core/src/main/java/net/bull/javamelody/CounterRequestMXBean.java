@@ -57,7 +57,7 @@ public interface CounterRequestMXBean {
 			this.warningThreshold = aggregation.getWarningThreshold();
 			this.severeThreshold = aggregation.getSevereThreshold();
 
-			this.requests = new TreeMap<String, CounterRequestData>();
+			this.requests = new TreeMap<>();
 			final List<CounterRequest> requestList = aggregation.getRequests();
 			for (final CounterRequest request : requestList) {
 				requests.put(request.getName(), new CounterRequestData(request));

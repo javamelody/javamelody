@@ -79,10 +79,10 @@ public final class MavenArtifact implements Serializable {
 	private String artifactId;
 	private String version;
 	private MavenArtifact parent;
-	private final Map<String, String> licenseUrlsByName = new LinkedHashMap<String, String>();
+	private final Map<String, String> licenseUrlsByName = new LinkedHashMap<>();
 	private Map<String, String> properties;
-	private final List<MavenArtifact> dependencies = new ArrayList<MavenArtifact>();
-	private final List<MavenArtifact> managedDependencies = new ArrayList<MavenArtifact>();
+	private final List<MavenArtifact> dependencies = new ArrayList<>();
+	private final List<MavenArtifact> managedDependencies = new ArrayList<>();
 	private boolean updated;
 
 	private MavenArtifact() {
@@ -106,7 +106,7 @@ public final class MavenArtifact implements Serializable {
 			final Document doc = dBuilder.parse(pomXml);
 			final Node projectNode = doc.getElementsByTagName("project").item(0);
 			final NodeList childNodes = projectNode.getChildNodes();
-			properties = new HashMap<String, String>();
+			properties = new HashMap<>();
 			for (int i = 0; i < childNodes.getLength(); i++) {
 				final Node node = childNodes.item(i);
 				parseNode(node);
@@ -126,9 +126,7 @@ public final class MavenArtifact implements Serializable {
 				dependency.version = replaceProperty(dependency.version, properties);
 			}
 			properties = null;
-		} catch (final ParserConfigurationException e) {
-			throw new IOException(e.getMessage(), e);
-		} catch (final SAXException e) {
+		} catch (final ParserConfigurationException | SAXException e) {
 			throw new IOException(e.getMessage(), e);
 		}
 		updated = true;
@@ -198,7 +196,7 @@ public final class MavenArtifact implements Serializable {
 	}
 
 	private Map<String, String> parsePropertiesNode(Node propertiesNode) {
-		final Map<String, String> props = new HashMap<String, String>();
+		final Map<String, String> props = new HashMap<>();
 		final NodeList propertiesNodes = propertiesNode.getChildNodes();
 		for (int j = 0; j < propertiesNodes.getLength(); j++) {
 			final Node propertyNode = propertiesNodes.item(j);
@@ -243,7 +241,7 @@ public final class MavenArtifact implements Serializable {
 	// CHECKSTYLE:OFF
 	private List<MavenArtifact> parseDependenciesNode(Node dependenciesNode) {
 		// CHECKSTYLE:ON
-		final List<MavenArtifact> deps = new ArrayList<MavenArtifact>();
+		final List<MavenArtifact> deps = new ArrayList<>();
 		final NodeList dependencyNodes = dependenciesNode.getChildNodes();
 		for (int j = 0; j < dependencyNodes.getLength(); j++) {
 			final Node dependencyNode = dependencyNodes.item(j);
@@ -281,11 +279,8 @@ public final class MavenArtifact implements Serializable {
 			final String filePath = getPath(".pom");
 			final File pomXml = getMavenArtifact(filePath);
 			if (pomXml != null) {
-				final InputStream input = new FileInputStream(pomXml);
-				try {
+				try (InputStream input = new FileInputStream(pomXml)) {
 					parsePomXml(input);
-				} finally {
-					input.close();
 				}
 			}
 		}
@@ -342,8 +337,8 @@ public final class MavenArtifact implements Serializable {
 
 	private List<MavenArtifact> getAllManagedDependencies() throws IOException {
 		update();
-		final List<MavenArtifact> allManagedDependencies = new ArrayList<MavenArtifact>(
-				managedDependencies);
+		final List<MavenArtifact> allManagedDependencies = new ArrayList<>(
+                managedDependencies);
 		if (parent != null) {
 			allManagedDependencies.addAll(parent.getAllManagedDependencies());
 		}
@@ -361,7 +356,7 @@ public final class MavenArtifact implements Serializable {
 		}
 		// update dependencies if needed
 		update();
-		final List<MavenArtifact> transitiveDependencies = new ArrayList<MavenArtifact>();
+		final List<MavenArtifact> transitiveDependencies = new ArrayList<>();
 		final List<MavenArtifact> allManagedDependencies = getAllManagedDependencies();
 		for (final MavenArtifact dependency : dependencies) {
 			if (dependency.version == null) {
@@ -378,7 +373,7 @@ public final class MavenArtifact implements Serializable {
 			transitiveDependencies.addAll(parent.getAllDependencies(level + 1));
 		}
 
-		final List<MavenArtifact> allDependencies = new ArrayList<MavenArtifact>(dependencies);
+		final List<MavenArtifact> allDependencies = new ArrayList<>(dependencies);
 		for (final MavenArtifact transitiveDependency : transitiveDependencies) {
 			if (!transitiveDependency.isContained(allDependencies)) {
 				allDependencies.add(transitiveDependency);
@@ -413,8 +408,8 @@ public final class MavenArtifact implements Serializable {
 		// when pom.xml not available in some jar files,
 		// list all dependencies in webapp's pom.xml if it exists or in the other dependencies' pom.xml,
 		// including transitive dependencies
-		final List<MavenArtifact> allDependencies = new ArrayList<MavenArtifact>(
-				getWebappDependenciesFromPomXml());
+		final List<MavenArtifact> allDependencies = new ArrayList<>(
+                getWebappDependenciesFromPomXml());
 		for (final MavenArtifact dependency : webappDependencies.values()) {
 			if (dependency != null && !dependency.isContained(allDependencies)) {
 				allDependencies.add(dependency);
@@ -467,7 +462,7 @@ public final class MavenArtifact implements Serializable {
 		if (dependencies == null || dependencies.isEmpty()) {
 			return Collections.emptyMap();
 		}
-		final Map<String, MavenArtifact> result = new TreeMap<String, MavenArtifact>();
+		final Map<String, MavenArtifact> result = new TreeMap<>();
 		for (final String dependency : dependencies) {
 			if (dependency.endsWith(".jar") || dependency.endsWith(".JAR")) {
 				final String fileName = dependency.substring(directory.length());
@@ -571,7 +566,7 @@ public final class MavenArtifact implements Serializable {
 			throws IOException {
 		if (sourceFilePathsByJarFileNames == null) {
 			final Map<String, MavenArtifact> webappDependencies = getWebappDependencies();
-			final Map<String, String> sourceFilePaths = new HashMap<String, String>();
+			final Map<String, String> sourceFilePaths = new HashMap<>();
 			for (final Map.Entry<String, MavenArtifact> entry : webappDependencies.entrySet()) {
 				final String jarFileName = entry.getKey();
 				final MavenArtifact dependency = entry.getValue();
@@ -674,9 +669,8 @@ public final class MavenArtifact implements Serializable {
 
 	private static byte[] readMavenFileFromJarFile(URL jarFileLocation, String pomFileName)
 			throws IOException {
-		final ZipInputStream zipInputStream = new ZipInputStream(
-				new BufferedInputStream(jarFileLocation.openStream(), 4096));
-		try {
+		try (ZipInputStream zipInputStream = new ZipInputStream(
+				new BufferedInputStream(jarFileLocation.openStream(), 4096))) {
 			ZipEntry entry = zipInputStream.getNextEntry();
 			while (entry != null) {
 				if (entry.getName().startsWith("META-INF/maven/")
@@ -686,8 +680,6 @@ public final class MavenArtifact implements Serializable {
 				zipInputStream.closeEntry();
 				entry = zipInputStream.getNextEntry();
 			}
-		} finally {
-			zipInputStream.close();
 		}
 		return null;
 	}
@@ -695,7 +687,7 @@ public final class MavenArtifact implements Serializable {
 	private static List<String> getMavenRepositories() {
 		final String parameter = Parameter.MAVEN_REPOSITORIES.getValue();
 		if (parameter != null) {
-			final List<String> result = new ArrayList<String>();
+			final List<String> result = new ArrayList<>();
 			for (final String repo : parameter.split(",")) {
 				result.add(repo.trim());
 			}

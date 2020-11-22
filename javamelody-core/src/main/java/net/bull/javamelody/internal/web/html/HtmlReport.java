@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -127,7 +127,7 @@ public class HtmlReport extends HtmlAbstractReport {
 			currentRequests = Collections.singletonMap(javaInformations, rootCurrentContexts);
 		} else {
 			currentRequests = collectorServer.collectCurrentRequests(collector.getApplication());
-			final List<CounterRequestContext> allCurrentRequests = new ArrayList<CounterRequestContext>();
+			final List<CounterRequestContext> allCurrentRequests = new ArrayList<>();
 			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
 				allCurrentRequests.addAll(rootCurrentContexts);
 			}
@@ -187,13 +187,10 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeln("");
 		if (includeCssInline) {
 			writeln("<style type='text/css'>");
-			final InputStream in = getClass()
-					.getResourceAsStream(Parameters.getResourcePath("monitoring.css"));
-			try {
-				final String monitoringCss = InputOutput.pumpToString(in, Charset.forName("UTF-8"));
+			try (InputStream in = getClass()
+					.getResourceAsStream(Parameters.getResourcePath("monitoring.css"))) {
+				final String monitoringCss = InputOutput.pumpToString(in, StandardCharsets.UTF_8);
 				writeDirectly(monitoringCss);
-			} finally {
-				in.close();
 			}
 			writeln("</style>");
 		} else {

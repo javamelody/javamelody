@@ -204,11 +204,8 @@ public final class Parameters {
 		if (!directory.mkdirs() && !directory.exists()) {
 			throw new IOException("JavaMelody directory can't be created: " + directory.getPath());
 		}
-		final FileOutputStream output = new FileOutputStream(collectorApplicationsFile);
-		try {
+		try (FileOutputStream output = new FileOutputStream(collectorApplicationsFile)) {
 			properties.store(output, "urls of the applications to monitor");
-		} finally {
-			output.close();
 		}
 	}
 
@@ -220,16 +217,13 @@ public final class Parameters {
 		// ou aggregation=recette,recette2
 		// Dans une instance de Properties, les propriétés ne sont pas ordonnées,
 		// mais elles seront ordonnées lorsqu'elles seront mises dans cette TreeMap
-		final Map<String, List<URL>> applications = new TreeMap<String, List<URL>>();
-		final Map<String, List<String>> aggregationApplications = new TreeMap<String, List<String>>();
+		final Map<String, List<URL>> applications = new TreeMap<>();
+		final Map<String, List<String>> aggregationApplications = new TreeMap<>();
 		final File file = getCollectorApplicationsFile();
 		if (file.exists()) {
 			final Properties properties = new Properties();
-			final FileInputStream input = new FileInputStream(file);
-			try {
+			try (FileInputStream input = new FileInputStream(file)) {
 				properties.load(input);
-			} finally {
-				input.close();
 			}
 			@SuppressWarnings("unchecked")
 			final List<String> propertyNames = (List<String>) Collections
@@ -240,7 +234,7 @@ public final class Parameters {
 					applications.put(property, parseUrls(value));
 				} else {
 					aggregationApplications.put(property,
-							new ArrayList<String>(Arrays.asList(value.split(","))));
+                            new ArrayList<>(Arrays.asList(value.split(","))));
 				}
 			}
 		}
@@ -287,7 +281,7 @@ public final class Parameters {
 				+ transportFormat.getCode();
 
 		final String[] urlsArray = value.split(",");
-		final List<URL> urls = new ArrayList<URL>(urlsArray.length);
+		final List<URL> urls = new ArrayList<>(urlsArray.length);
 		for (final String s : urlsArray) {
 			String s2 = s.trim();
 			while (s2.endsWith("/")) {

@@ -49,7 +49,7 @@ final class MBeansAccessor {
 	}
 
 	static Set<ObjectName> getTomcatThreadPools() {
-		final Set<ObjectName> result = new HashSet<ObjectName>(
+		final Set<ObjectName> result = new HashSet<>(
 				MBEAN_SERVER.queryNames(createObjectName("*:type=ThreadPool,*"), null));
 		// #843 Tomcat info is not available anymore
 		result.removeAll(MBEAN_SERVER.queryNames(
@@ -155,7 +155,7 @@ final class MBeansAccessor {
 
 	private static Set<String> getAttributesNames(ObjectName name) {
 		try {
-			final Set<String> result = new HashSet<String>();
+			final Set<String> result = new HashSet<>();
 			final MBeanInfo mBeanInfo = MBEAN_SERVER.getMBeanInfo(name);
 			final MBeanAttributeInfo[] attributes = mBeanInfo.getAttributes();
 			for (final MBeanAttributeInfo attribute : attributes) {

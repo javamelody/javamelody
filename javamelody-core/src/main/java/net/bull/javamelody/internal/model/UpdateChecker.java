@@ -118,11 +118,8 @@ public final class UpdateChecker {
 		connection.connect();
 
 		final Properties properties = new Properties();
-		final InputStream input = connection.getInputStream();
-		try {
+		try (InputStream input = connection.getInputStream()) {
 			properties.load(input);
-		} finally {
-			input.close();
 		}
 		final String javamelodyVersion = properties.getProperty("version");
 		if (javamelodyVersion != null && Parameters.JAVAMELODY_VERSION != null
@@ -229,7 +226,7 @@ public final class UpdateChecker {
 	}
 
 	private String getFeaturesUsed(JavaInformations javaInformations) {
-		final List<String> features = new ArrayList<String>();
+		final List<String> features = new ArrayList<>();
 		if (Parameters.isPdfEnabled()) {
 			features.add("pdf");
 		}

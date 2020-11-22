@@ -67,7 +67,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private final Range range;
 	private final CollectorServer collectorServer;
 	private final long start = System.currentTimeMillis();
-	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
+	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<>();
 
 	HtmlCoreReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, Writer writer) {
@@ -288,7 +288,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters)
 			throws IOException {
-		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
+		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<>();
 		for (final Counter counter : counters) {
 			final HtmlCounterReport htmlCounterReport = writeCounter(counter);
 			counterReportsByCounterName.put(counter.getName(), htmlCounterReport);
@@ -817,7 +817,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
 		writeln("<div align='center'>");
-		final Collection<String> applications = new ArrayList<String>();
+		final Collection<String> applications = new ArrayList<>();
 		applications.addAll(Parameters.getCollectorUrlsByApplications().keySet());
 		applications.addAll(Parameters.getApplicationsByAggregationApplication().keySet());
 		if (applications.size() > 1

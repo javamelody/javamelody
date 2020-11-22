@@ -54,7 +54,7 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 	private final DateFormat expiryFormat = I18N.createDateAndTimeFormat();
 	private final Font cellFont = PdfFonts.TABLE_CELL.getFont();
 	private final Font severeCellFont = PdfFonts.SEVERE_CELL.getFont();
-	private final Map<String, Image> imagesByFileName = new HashMap<String, Image>();
+	private final Map<String, Image> imagesByFileName = new HashMap<>();
 
 	PdfSessionInformationsReport(List<SessionInformations> sessionsInformations,
 			Document document) {
@@ -117,7 +117,7 @@ class PdfSessionInformationsReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Session_id"));
 		headers.add(getString("Dernier_acces"));
 		headers.add(getString("Age"));

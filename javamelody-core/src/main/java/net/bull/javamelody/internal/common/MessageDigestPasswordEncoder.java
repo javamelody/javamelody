@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody.internal.common;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -27,9 +27,7 @@ import java.security.NoSuchAlgorithmException;
  * @author Emeric Vernat
  */
 public class MessageDigestPasswordEncoder {
-	private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-
-	private static final byte[] SALT = "javamelody".getBytes(UTF8_CHARSET);
+	private static final byte[] SALT = "javamelody".getBytes(StandardCharsets.UTF_8);
 
 	private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
@@ -80,7 +78,7 @@ public class MessageDigestPasswordEncoder {
 	public String encodePassword(String password) throws NoSuchAlgorithmException {
 		// compute digest of the password
 		final MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
-		messageDigest.update(password.getBytes(UTF8_CHARSET));
+		messageDigest.update(password.getBytes(StandardCharsets.UTF_8));
 		// we need a SALT against rainbow tables
 		messageDigest.update(SALT);
 		final byte[] digest = messageDigest.digest();

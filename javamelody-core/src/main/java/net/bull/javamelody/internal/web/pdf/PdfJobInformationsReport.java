@@ -98,7 +98,7 @@ class PdfJobInformationsReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("JobGroup"));
 		headers.add(getString("JobName"));
 		headers.add(getString("JobClassName"));

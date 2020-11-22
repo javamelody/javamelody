@@ -102,7 +102,7 @@ public class JpaPersistence implements PersistenceProvider {
 			// on met notre JpaPersistence en premier pour qu'il soit toujours choisi
 			// et qu'il délègue au persistence provider final
 			final List<PersistenceProvider> providers = delegate.getPersistenceProviders();
-			final List<PersistenceProvider> result = new ArrayList<PersistenceProvider>();
+			final List<PersistenceProvider> result = new ArrayList<>();
 			for (final PersistenceProvider provider : providers) {
 				if (provider instanceof JpaPersistence) {
 					result.add(0, provider);

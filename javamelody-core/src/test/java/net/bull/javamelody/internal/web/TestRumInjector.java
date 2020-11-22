@@ -135,11 +135,11 @@ public class TestRumInjector {
 				requestName);
 		final ServletOutputStream outputStream = result6.getOutputStream();
 		outputStream.write(' ');
-		outputStream.write("<!-- begin test -->".getBytes("UTF-8"));
+		outputStream.write("<!-- begin test -->".getBytes(StandardCharsets.UTF_8));
 		final String htmlContent = "<html><body>test</body></html>";
-		outputStream.write(htmlContent.getBytes("UTF-8"));
+		outputStream.write(htmlContent.getBytes(StandardCharsets.UTF_8));
 		result6.setContentType("text/html");
-		outputStream.write("<!-- end test -->".getBytes("UTF-8"));
+		outputStream.write("<!-- end test -->".getBytes(StandardCharsets.UTF_8));
 		assertTrue("createRumResponseWrapper",
 				result6 instanceof HtmlInjectorServletResponseWrapper);
 		assertTrue("createRumResponseWrapper",
@@ -151,7 +151,7 @@ public class TestRumInjector {
 		expect(httpResponse7.getContentType()).andReturn("text/html").anyTimes();
 		final HttpServletResponse result7 = createRumResponseWrapper(httpRequest7, httpResponse7,
 				"//test/test GET");
-		result7.getOutputStream().write(htmlContent.getBytes("UTF-8"));
+		result7.getOutputStream().write(htmlContent.getBytes(StandardCharsets.UTF_8));
 		result7.setContentType("text/html");
 		assertTrue("createRumResponseWrapper",
 				result7 instanceof HtmlInjectorServletResponseWrapper);

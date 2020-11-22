@@ -45,7 +45,7 @@ import net.bull.javamelody.internal.model.TestTomcatInformations.ThreadPool;
 public class TestMBeans {
 	private MBeans mbeans;
 	private MBeanServer mBeanServer;
-	private final List<ObjectName> mbeansList = new ArrayList<ObjectName>();
+	private final List<ObjectName> mbeansList = new ArrayList<>();
 
 	/** Before.
 	 * @throws JMException e */

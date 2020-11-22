@@ -275,7 +275,7 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 
 	private void writeTomcatInformations(List<TomcatInformations> tomcatInformationsList)
 			throws IOException {
-		final List<TomcatInformations> list = new ArrayList<TomcatInformations>();
+		final List<TomcatInformations> list = new ArrayList<>();
 		for (final TomcatInformations tomcatInformations : tomcatInformationsList) {
 			if (tomcatInformations.getRequestCount() > 0) {
 				list.add(tomcatInformations);

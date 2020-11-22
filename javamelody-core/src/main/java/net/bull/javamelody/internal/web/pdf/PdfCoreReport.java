@@ -114,7 +114,7 @@ public class PdfCoreReport extends PdfAbstractReport {
 		final List<Counter> counters = collector.getRangeCountersToBeDisplayed(counterRange);
 		final List<PdfCounterReport> pdfCounterReports = writeCounters(counters);
 
-		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<PdfCounterRequestContextReport>();
+		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<>();
 		if (!collectorServer) {
 			addParagraph(getString("Requetes_en_cours"), "hourglass.png");
 			// si on n'est pas sur le serveur de collecte il n'y a qu'un javaInformations
@@ -229,7 +229,7 @@ public class PdfCoreReport extends PdfAbstractReport {
 			if (jrobins.isEmpty()) {
 				return;
 			}
-			graphs = new ArrayList<byte[]>(jrobins.size());
+			graphs = new ArrayList<>(jrobins.size());
 			for (final JRobin jrobin : jrobins) {
 				graphs.add(jrobin.graph(range, SMALL_GRAPH_WIDTH, SMALL_GRAPH_HEIGHT));
 			}
@@ -283,7 +283,7 @@ public class PdfCoreReport extends PdfAbstractReport {
 
 	private List<PdfCounterReport> writeCounters(List<Counter> counters)
 			throws IOException, DocumentException {
-		final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
+		final List<PdfCounterReport> pdfCounterReports = new ArrayList<>();
 		for (final Counter counter : counters) {
 			pdfCounterReports.add(writeCounter(counter));
 		}
@@ -328,7 +328,7 @@ public class PdfCoreReport extends PdfAbstractReport {
 	private List<PdfCounterRequestContextReport> writeCurrentRequests(
 			JavaInformations javaInformations, List<Counter> counters,
 			List<PdfCounterReport> pdfCounterReports) throws IOException, DocumentException {
-		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<PdfCounterRequestContextReport>();
+		final List<PdfCounterRequestContextReport> pdfCounterRequestContextReports = new ArrayList<>();
 		final List<CounterRequestContext> rootCurrentContexts;
 		if (currentRequests == null) {
 			rootCurrentContexts = collector.getRootCurrentContexts(counters);

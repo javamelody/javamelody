@@ -65,7 +65,7 @@ public class TestHtmlThreadInformationsReport {
 				writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
-		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
+		final List<ThreadInformations> threads = new ArrayList<>();
 		final Thread thread = Thread.currentThread();
 		final List<StackTraceElement> stackTrace = Arrays.asList(thread.getStackTrace());
 		final String hostAddress = Parameters.getHostAddress();

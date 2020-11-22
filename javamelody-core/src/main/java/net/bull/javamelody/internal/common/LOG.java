@@ -41,7 +41,7 @@ public final class LOG {
 
 	private static final JavaMelodyLogger JAVA_MELODY_LOGGER = getJavaMelodyLogger();
 
-	private static final LinkedList<String> DEBUGGING_LOGS = new LinkedList<String>(); // NOPMD
+	private static final LinkedList<String> DEBUGGING_LOGS = new LinkedList<>(); // NOPMD
 
 	private LOG() {
 		super();
@@ -110,7 +110,7 @@ public final class LOG {
 
 	public static List<String> getDebuggingLogs() {
 		synchronized (DEBUGGING_LOGS) {
-			return new ArrayList<String>(DEBUGGING_LOGS);
+			return new ArrayList<>(DEBUGGING_LOGS);
 		}
 	}
 

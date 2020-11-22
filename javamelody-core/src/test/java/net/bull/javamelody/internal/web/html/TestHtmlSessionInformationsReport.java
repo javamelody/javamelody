@@ -55,7 +55,7 @@ public class TestHtmlSessionInformationsReport {
 	 * @throws IOException e */
 	@Test
 	public void testSessionsInformations() throws IOException {
-		final List<SessionInformations> sessions = new ArrayList<SessionInformations>();
+		final List<SessionInformations> sessions = new ArrayList<>();
 		sessions.add(new SessionInformations(new SessionTestImpl(true), false));
 		sessions.add(new SessionInformations(new SessionTestImpl(false), false));
 		final SessionTestImpl serializableButNotSession = new SessionTestImpl(true);

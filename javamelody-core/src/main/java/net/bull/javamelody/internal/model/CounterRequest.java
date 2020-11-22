@@ -266,7 +266,7 @@ public class CounterRequest implements Cloneable, Serializable {
 			return Collections.emptyMap();
 		}
 		synchronized (this) {
-			return new LinkedHashMap<String, Long>(childRequestsExecutionsByRequestId);
+			return new LinkedHashMap<>(childRequestsExecutionsByRequestId);
 		}
 	}
 
@@ -317,7 +317,7 @@ public class CounterRequest implements Cloneable, Serializable {
 	void addChildRequests(Map<String, Long> childRequests) {
 		if (childRequests != null && !childRequests.isEmpty()) {
 			if (childRequestsExecutionsByRequestId == null) {
-				childRequestsExecutionsByRequestId = new LinkedHashMap<String, Long>(childRequests);
+				childRequestsExecutionsByRequestId = new LinkedHashMap<>(childRequests);
 			} else {
 				for (final Map.Entry<String, Long> entry : childRequests.entrySet()) {
 					final String requestId = entry.getKey();

@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -273,7 +273,7 @@ public class LabradorRetriever {
 		final int status = connection.getResponseCode();
 		if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
 			final String error = InputOutput.pumpToString(connection.getErrorStream(),
-					Charset.forName("UTF-8"));
+					StandardCharsets.UTF_8);
 			final String msg = "Error connecting to " + url + '(' + status + "): " + error;
 			throw new IOException(msg);
 		}
@@ -413,11 +413,8 @@ public class LabradorRetriever {
 					throw new IllegalStateException(e);
 				}
 			} else if (request.contains(HttpPart.HEAP_HISTO.getName())) {
-				final InputStream input = LabradorMock.class.getResourceAsStream("/heaphisto.txt");
-				try {
+				try (InputStream input = LabradorMock.class.getResourceAsStream("/heaphisto.txt")) {
 					result = new HeapHistogram(input, false);
-				} finally {
-					input.close();
 				}
 			} else if (request.contains(HttpPart.LAST_VALUE.getName())) {
 				result = -1d;

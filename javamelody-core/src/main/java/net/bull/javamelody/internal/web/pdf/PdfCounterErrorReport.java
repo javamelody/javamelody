@@ -94,7 +94,7 @@ class PdfCounterErrorReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders(boolean displayUser, boolean displayHttpRequest) {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Date"));
 		if (displayHttpRequest) {
 			headers.add(getString("Requete"));

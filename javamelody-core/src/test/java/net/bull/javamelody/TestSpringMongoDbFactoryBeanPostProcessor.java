@@ -48,22 +48,19 @@ public class TestSpringMongoDbFactoryBeanPostProcessor {
 	public void testSpringAOP() {
 		final Counter servicesCounter = MonitoringProxy.getServicesCounter();
 		servicesCounter.clear();
-		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME);
-		try {
-			final MongoDatabaseFactory mongoDatabaseFactory = context
-					.getBean(MongoDatabaseFactory.class);
-			assertNotNull("toString", mongoDatabaseFactory.toString());
-			assertNotNull("getDb", mongoDatabaseFactory.getMongoDatabase());
+        try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
+                MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME)) {
+            final MongoDatabaseFactory mongoDatabaseFactory = context
+                    .getBean(MongoDatabaseFactory.class);
+            assertNotNull("toString", mongoDatabaseFactory.toString());
+            assertNotNull("getDb", mongoDatabaseFactory.getMongoDatabase());
 
-			final SpringMongoDbFactoryBeanPostProcessor springMongoDbFactoryBeanPostProcessor = context
-					.getBean(SpringMongoDbFactoryBeanPostProcessor.class);
-			assertEquals("order", Ordered.LOWEST_PRECEDENCE,
-					springMongoDbFactoryBeanPostProcessor.getOrder());
-			springMongoDbFactoryBeanPostProcessor.setOrder(1);
-			assertEquals("order", 1, springMongoDbFactoryBeanPostProcessor.getOrder());
-		} finally {
-			context.close();
-		}
+            final SpringMongoDbFactoryBeanPostProcessor springMongoDbFactoryBeanPostProcessor = context
+                    .getBean(SpringMongoDbFactoryBeanPostProcessor.class);
+            assertEquals("order", Ordered.LOWEST_PRECEDENCE,
+                    springMongoDbFactoryBeanPostProcessor.getOrder());
+            springMongoDbFactoryBeanPostProcessor.setOrder(1);
+            assertEquals("order", 1, springMongoDbFactoryBeanPostProcessor.getOrder());
+        }
 	}
 }

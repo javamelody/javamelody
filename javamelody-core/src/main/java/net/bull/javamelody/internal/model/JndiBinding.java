@@ -94,7 +94,7 @@ public class JndiBinding implements Serializable {
 		} else {
 			jndiName = JNDI_PREFIX + normalizedPath;
 		}
-		final List<JndiBinding> result = new ArrayList<JndiBinding>();
+		final List<JndiBinding> result = new ArrayList<>();
 		final NamingEnumeration<Binding> enumeration = context.listBindings(jndiName);
 		try {
 			while (enumeration.hasMore()) {

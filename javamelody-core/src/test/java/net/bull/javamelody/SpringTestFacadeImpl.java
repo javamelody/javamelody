@@ -40,38 +40,32 @@ public class SpringTestFacadeImpl implements SpringTestFacade {
 	public Date nowWithSql() throws SQLException {
 		//		final javax.sql.DataSource dataSource = (javax.sql.DataSource) new javax.naming.InitialContext()
 		//				.lookup("java:comp/env/jdbc/TestDB");
-		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml");
-		try {
-			final javax.sql.DataSource dataSource = (javax.sql.DataSource) context
-					.getBean("dataSource");
-			final java.sql.Connection connection = dataSource.getConnection();
-			connection.setAutoCommit(false);
-			try {
-				// test pour explain plan en oracle
-				//			final PreparedStatement statement = connection
-				//					.prepareStatement("select * from v$session where user# = ?");
-				final Statement statement = connection.createStatement();
-				try {
-					//				statement.setInt(1, 36);
-					//				statement.executeQuery();
+        try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
+                "net/bull/javamelody/monitoring-spring.xml", "spring-context.xml")) {
+            final javax.sql.DataSource dataSource = (javax.sql.DataSource) context
+                    .getBean("dataSource");
+            final java.sql.Connection connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+            try {
+                // test pour explain plan en oracle
+                //			final PreparedStatement statement = connection
+                //					.prepareStatement("select * from v$session where user# = ?");
+                try (Statement statement = connection.createStatement()) {
+                    //				statement.setInt(1, 36);
+                    //				statement.executeQuery();
 
-					statement.execute(
-							"DROP ALIAS if exists SLEEP; CREATE ALIAS SLEEP FOR \"java.lang.Thread.sleep(long)\"");
-					statement.execute("call sleep(.01)");
-					for (int i = 0; i < 5; i++) {
-						statement.execute("call sleep(.02)");
-					}
-				} finally {
-					statement.close();
-				}
-			} finally {
-				connection.rollback();
-				connection.close();
-			}
-		} finally {
-			context.close();
-		}
+                    statement.execute(
+                            "DROP ALIAS if exists SLEEP; CREATE ALIAS SLEEP FOR \"java.lang.Thread.sleep(long)\"");
+                    statement.execute("call sleep(.01)");
+                    for (int i = 0; i < 5; i++) {
+                        statement.execute("call sleep(.02)");
+                    }
+                }
+            } finally {
+                connection.rollback();
+                connection.close();
+            }
+        }
 
 		return new Date();
 	}

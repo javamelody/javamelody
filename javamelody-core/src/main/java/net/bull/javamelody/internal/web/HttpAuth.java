@@ -70,7 +70,7 @@ public class HttpAuth {
 		// security based on user / password (BASIC auth)
 		final String authUsersInParam = Parameter.AUTHORIZED_USERS.getValue();
 		if (authUsersInParam != null && !authUsersInParam.trim().isEmpty()) {
-			final List<String> authorizedUsers = new ArrayList<String>();
+			final List<String> authorizedUsers = new ArrayList<>();
 			// we split on new line or on comma
 			for (final String authUser : authUsersInParam.split("[\n,]")) {
 				final String authUserTrim = authUser.trim();

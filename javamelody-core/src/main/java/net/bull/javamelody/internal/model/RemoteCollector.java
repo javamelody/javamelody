@@ -43,7 +43,7 @@ public class RemoteCollector {
 	private Collector collector;
 	private List<JavaInformations> javaInformationsList;
 	private Map<JavaInformations, List<CounterRequestContext>> currentRequests;
-	private final List<Counter> newCounters = new ArrayList<Counter>();
+	private final List<Counter> newCounters = new ArrayList<>();
 	private List<RemoteCollector> remoteCollectors;
 	private final boolean aggregatedApplication;
 	private final boolean aggregationApplication;
@@ -71,7 +71,7 @@ public class RemoteCollector {
 	}
 
 	public String collectDataIncludingCurrentRequests() throws IOException {
-		final List<URL> urlsWithCurrentRequests = new ArrayList<URL>();
+		final List<URL> urlsWithCurrentRequests = new ArrayList<>();
 		for (final URL url : getURLs()) {
 			urlsWithCurrentRequests.add(new URL(url + "&part=defaultWithCurrentRequests"));
 		}
@@ -79,14 +79,14 @@ public class RemoteCollector {
 	}
 
 	private String collectDataWithUrls(List<URL> urlsForCollect) throws IOException {
-		final List<JavaInformations> javaInfosList = new ArrayList<JavaInformations>();
-		final Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations = new HashMap<JavaInformations, List<CounterRequestContext>>();
+		final List<JavaInformations> javaInfosList = new ArrayList<>();
+		final Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations = new HashMap<>();
 		final StringBuilder sb = new StringBuilder();
 		IOException exception = null;
 		if (!aggregationApplication) {
 			for (final URL url : urlsForCollect) {
 				try {
-					final List<Counter> counters = new ArrayList<Counter>();
+					final List<Counter> counters = new ArrayList<>();
 					final List<Serializable> serialized = createRemoteCall(url).collectData();
 					dispatchSerializables(serialized, counters, javaInfosList,
 							counterRequestContextsByJavaInformations, sb);
@@ -139,7 +139,7 @@ public class RemoteCollector {
 			Map<JavaInformations, List<CounterRequestContext>> counterRequestContextsByJavaInformations,
 			StringBuilder sb) {
 		JavaInformations latestJavaInformations = null;
-		final List<CounterRequestContext> counterRequestContextsList = new ArrayList<CounterRequestContext>();
+		final List<CounterRequestContext> counterRequestContextsList = new ArrayList<>();
 		for (final Serializable serializable : serialized) {
 			if (serializable instanceof Counter) {
 				final Counter counter = (Counter) serializable;
@@ -179,7 +179,7 @@ public class RemoteCollector {
 	public String executeActionAndCollectData(Action action, String counterName, String sessionId,
 			String threadId, String jobId, String cacheId) throws IOException {
 		assert action != null;
-		final List<URL> actionUrls = new ArrayList<URL>(getURLs().size());
+		final List<URL> actionUrls = new ArrayList<>(getURLs().size());
 		for (final URL url : getURLs()) {
 			final URL actionUrl = createRemoteCall(url).getActionUrl(action, counterName, sessionId,
 					threadId, jobId, cacheId);
@@ -193,7 +193,7 @@ public class RemoteCollector {
 		// sessionId est null si on veut toutes les sessions
 		if (sessionId == null) {
 			// récupération à la demande des sessions
-			final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>();
+			final List<SessionInformations> sessionsInformations = new ArrayList<>();
 			for (final URL url : getURLs()) {
 				final List<SessionInformations> sessions = createRemoteCall(url)
 						.collectSessionInformations(null);
@@ -215,7 +215,7 @@ public class RemoteCollector {
 
 	public List<SampledMethod> collectHotspots() throws IOException {
 		// récupération à la demande des hotspots
-		final Map<SampledMethod, SampledMethod> map = new HashMap<SampledMethod, SampledMethod>();
+		final Map<SampledMethod, SampledMethod> map = new HashMap<>();
 		for (final URL url : getURLs()) {
 			final List<SampledMethod> hotspots = createRemoteCall(url).collectHotspots();
 			if (getURLs().size() == 1) {
@@ -232,7 +232,7 @@ public class RemoteCollector {
 				}
 			}
 		}
-		final List<SampledMethod> hotspots = new ArrayList<SampledMethod>(map.values());
+		final List<SampledMethod> hotspots = new ArrayList<>(map.values());
 		Collections.sort(hotspots);
 		return hotspots;
 	}
@@ -258,7 +258,7 @@ public class RemoteCollector {
 
 	public List<List<ConnectionInformations>> collectConnectionInformations() throws IOException {
 		// récupération à la demande des connections
-		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
+		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<>();
 		for (final URL url : getURLs()) {
 			final List<List<ConnectionInformations>> connections = createRemoteCall(url)
 					.collectConnectionInformations();
@@ -269,7 +269,7 @@ public class RemoteCollector {
 
 	public Map<String, List<ProcessInformations>> collectProcessInformations() throws IOException {
 		// récupération à la demande des processus
-		final Map<String, List<ProcessInformations>> result = new LinkedHashMap<String, List<ProcessInformations>>();
+		final Map<String, List<ProcessInformations>> result = new LinkedHashMap<>();
 		for (final URL url : getURLs()) {
 			final Map<String, List<ProcessInformations>> processesByTitle = createRemoteCall(url)
 					.collectProcessInformations();
@@ -288,7 +288,7 @@ public class RemoteCollector {
 
 	public Map<String, List<MBeanNode>> collectMBeans() throws IOException {
 		// récupération à la demande des MBeans
-		final Map<String, List<MBeanNode>> result = new LinkedHashMap<String, List<MBeanNode>>();
+		final Map<String, List<MBeanNode>> result = new LinkedHashMap<>();
 		for (final URL url : getURLs()) {
 			final Map<String, List<MBeanNode>> mbeansByTitle = createRemoteCall(url)
 					.collectMBeans();
@@ -313,7 +313,7 @@ public class RemoteCollector {
 	public Map<JavaInformations, List<CounterRequestContext>> collectCurrentRequests()
 			throws IOException {
 		// récupération à la demande des requêtes en cours
-		final Map<JavaInformations, List<CounterRequestContext>> result = new LinkedHashMap<JavaInformations, List<CounterRequestContext>>();
+		final Map<JavaInformations, List<CounterRequestContext>> result = new LinkedHashMap<>();
 		for (final URL url : getURLs()) {
 			final Map<JavaInformations, List<CounterRequestContext>> requests = createRemoteCall(
 					url).collectCurrentRequests();
@@ -323,10 +323,10 @@ public class RemoteCollector {
 	}
 
 	List<List<ThreadInformations>> getThreadInformationsLists() {
-		final List<List<ThreadInformations>> result = new ArrayList<List<ThreadInformations>>();
+		final List<List<ThreadInformations>> result = new ArrayList<>();
 		for (final JavaInformations javaInformations : this.javaInformationsList) {
-			result.add(new ArrayList<ThreadInformations>(
-					javaInformations.getThreadInformationsList()));
+			result.add(new ArrayList<>(
+                    javaInformations.getThreadInformationsList()));
 		}
 		return result;
 	}
@@ -384,7 +384,7 @@ public class RemoteCollector {
 
 	public List<URL> getURLs() {
 		if (aggregationApplication) {
-			final List<URL> result = new ArrayList<URL>();
+			final List<URL> result = new ArrayList<>();
 			for (final RemoteCollector remoteCollector : remoteCollectors) {
 				result.addAll(remoteCollector.getURLs());
 			}

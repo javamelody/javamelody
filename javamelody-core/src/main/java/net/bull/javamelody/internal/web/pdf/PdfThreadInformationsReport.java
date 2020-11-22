@@ -101,7 +101,7 @@ class PdfThreadInformationsReport extends PdfAbstractTableReport {
 	}
 
 	void writeDeadlocks() throws DocumentException {
-		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<>();
 		for (final ThreadInformations thread : threadInformationsList) {
 			if (thread.isDeadlocked()) {
 				deadlockedThreads.add(thread);
@@ -136,7 +136,7 @@ class PdfThreadInformationsReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Thread"));
 		headers.add(getString("Demon"));
 		headers.add(getString("Priorite"));

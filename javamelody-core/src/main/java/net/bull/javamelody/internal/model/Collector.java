@@ -50,18 +50,18 @@ public class Collector { // NOPMD
 	private final String application;
 	private final List<Counter> counters;
 	private final SamplingProfiler samplingProfiler;
-	private final Map<String, JRobin> requestJRobinsById = new ConcurrentHashMap<String, JRobin>();
+	private final Map<String, JRobin> requestJRobinsById = new ConcurrentHashMap<>();
 	// les instances jrobins des compteurs sont créées à l'initialisation
-	private final Map<String, JRobin> counterJRobins = new LinkedHashMap<String, JRobin>();
-	private final Map<String, JRobin> otherJRobins = new LinkedHashMap<String, JRobin>();
+	private final Map<String, JRobin> counterJRobins = new LinkedHashMap<>();
+	private final Map<String, JRobin> otherJRobins = new LinkedHashMap<>();
 	// globalRequestsByCounter, requestsById, dayCountersByCounter et cpuTimeMillis
 	// sont utilisés par un seul thread lors des collectes,
 	// (et la méthode centrale "collect" est synchronisée pour éviter un accès concurrent
 	// avec la mise à jour avant le rapport html)
-	private final Map<Counter, CounterRequest> globalRequestsByCounter = new HashMap<Counter, CounterRequest>();
-	private final Map<String, CounterRequest> requestsById = new HashMap<String, CounterRequest>();
-	private final Map<Counter, Counter> dayCountersByCounter = new LinkedHashMap<Counter, Counter>();
-	private final Map<Counter, Boolean> firstCollectDoneByCounter = new HashMap<Counter, Boolean>();
+	private final Map<Counter, CounterRequest> globalRequestsByCounter = new HashMap<>();
+	private final Map<String, CounterRequest> requestsById = new HashMap<>();
+	private final Map<Counter, Counter> dayCountersByCounter = new LinkedHashMap<>();
+	private final Map<Counter, Boolean> firstCollectDoneByCounter = new HashMap<>();
 	private long transactionCount = NOT_A_NUMBER;
 	private long cpuTimeMillis = NOT_A_NUMBER;
 	private long gcTimeMillis = NOT_A_NUMBER;
@@ -99,7 +99,7 @@ public class Collector { // NOPMD
 		assert application != null;
 		assert counters != null;
 		this.application = application;
-		this.counters = Collections.unmodifiableList(new ArrayList<Counter>(counters));
+		this.counters = Collections.unmodifiableList(new ArrayList<>(counters));
 		this.samplingProfiler = samplingProfiler;
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
 		for (final Counter counter : counters) {
@@ -197,7 +197,7 @@ public class Collector { // NOPMD
 	}
 
 	public List<CounterRequestContext> getRootCurrentContexts(List<Counter> newParentCounters) {
-		final List<CounterRequestContext> rootCurrentContexts = new ArrayList<CounterRequestContext>();
+		final List<CounterRequestContext> rootCurrentContexts = new ArrayList<>();
 		for (final Counter counter : counters) {
 			if (counter.isDisplayed()) {
 				// a priori, les contextes root courants sont dans le compteur http
@@ -246,10 +246,10 @@ public class Collector { // NOPMD
 
 	public List<Counter> getRangeCounters(Range range) throws IOException {
 		if (range.getPeriod() == Period.TOUT) {
-			return new ArrayList<Counter>(counters);
+			return new ArrayList<>(counters);
 		}
 		final Collection<Counter> currentDayCounters = dayCountersByCounter.values();
-		final List<Counter> result = new ArrayList<Counter>(currentDayCounters.size());
+		final List<Counter> result = new ArrayList<>(currentDayCounters.size());
 		for (final Counter dayCounter : currentDayCounters) {
 			final Counter counter = getRangeCounter(range, dayCounter);
 			result.add(counter);
@@ -286,7 +286,7 @@ public class Collector { // NOPMD
 	}
 
 	public List<Counter> getRangeCountersToBeDisplayed(Range range) throws IOException {
-		final List<Counter> result = new ArrayList<Counter>(getRangeCounters(range));
+		final List<Counter> result = new ArrayList<>(getRangeCounters(range));
 		final Iterator<Counter> it = result.iterator();
 		while (it.hasNext()) {
 			final Counter counter = it.next();
@@ -491,7 +491,7 @@ public class Collector { // NOPMD
 			this.gcTimeMillis = garbageCollectionTimeMillis;
 		}
 
-		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<String, Double>();
+		final Map<String, Double> otherJRobinsValues = new LinkedHashMap<>();
 		otherJRobinsValues.put("threadCount", (double) threadCount);
 		otherJRobinsValues.put("loadedClassesCount", (double) loadedClassesCount);
 		otherJRobinsValues.put("usedBufferedMemory", (double) usedBufferedMemory);
@@ -782,7 +782,7 @@ public class Collector { // NOPMD
 		if (requests.size() <= maxRequestsCount) {
 			return requests;
 		}
-		final List<CounterRequest> result = new ArrayList<CounterRequest>(requests);
+		final List<CounterRequest> result = new ArrayList<>(requests);
 		for (final CounterRequest request : requests) {
 			if (result.size() > maxRequestsCount && request.getHits() < 10) {
 				// Si le nombre de requêtes est supérieur à 10000
@@ -859,7 +859,7 @@ public class Collector { // NOPMD
 		} else {
 			lastErrorTime = dayErrors.get(dayErrors.size() - 1).getTime();
 		}
-		final List<CounterError> errorsOfDay = new ArrayList<CounterError>();
+		final List<CounterError> errorsOfDay = new ArrayList<>();
 		for (final CounterError error : errors) {
 			// il peut arriver de manquer une erreur dans l'affichage par jour
 			// si on récupère la liste et qu'il y a une nouvelle erreur dans la même ms
@@ -963,7 +963,7 @@ public class Collector { // NOPMD
 	}
 
 	private Collection<JRobin> getDisplayedJRobins(Collection<JRobin> jrobins) {
-		final List<JRobin> displayedJRobins = new ArrayList<JRobin>(jrobins.size());
+		final List<JRobin> displayedJRobins = new ArrayList<>(jrobins.size());
 		for (final JRobin jrobin : jrobins) {
 			final String jrobinName = jrobin.getName();
 			boolean displayed = true;

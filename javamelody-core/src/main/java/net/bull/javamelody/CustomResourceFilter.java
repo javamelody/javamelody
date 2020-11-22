@@ -62,7 +62,7 @@ import net.bull.javamelody.internal.web.MonitoringController;
  * @author Emeric Vernat
  */
 public class CustomResourceFilter implements Filter {
-	private final Map<String, String> customResources = new HashMap<String, String>();
+	private final Map<String, String> customResources = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override

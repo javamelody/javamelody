@@ -123,9 +123,7 @@ public class TestMonitoringFilter {// NOPMD
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
 			field.set(null, false);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		} catch (final NoSuchFieldException e) {
+		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
 		final FilterConfig config = createNiceMock(FilterConfig.class);
@@ -143,8 +141,8 @@ public class TestMonitoringFilter {// NOPMD
 		// mockJetty pour avoir un applicationServerIconName dans JavaInformations
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		// dependencies pour avoir des dépendances dans JavaInformations
-		final Set<String> dependencies = new LinkedHashSet<String>(
-				Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+		final Set<String> dependencies = new LinkedHashSet<>(
+                Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
 		// et flags pour considérer que les ressources pom.xml et web.xml existent
 		JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
@@ -587,7 +585,7 @@ public class TestMonitoringFilter {// NOPMD
 			monitoring(Collections.singletonMap(HttpParameter.PART, HttpPart.RUM.getName()), false);
 
 			// simulate call to monitoring?part=rum to register RUM data
-			final Map<String, String> rumMap = new HashMap<String, String>();
+			final Map<String, String> rumMap = new HashMap<>();
 			rumMap.put(HttpParameter.PART.getName(), HttpPart.RUM.getName());
 			rumMap.put("requestName", TEST_REQUEST + " GET");
 			rumMap.put("serverTime", "100");
@@ -597,7 +595,7 @@ public class TestMonitoringFilter {// NOPMD
 			monitoring0(rumMap, false);
 
 			// simulate call to monitoring for details of request with RUM data in html (period=jour : rumHits=0)
-			final Map<HttpParameter, String> graphMap = new HashMap<HttpParameter, String>();
+			final Map<HttpParameter, String> graphMap = new HashMap<>();
 			graphMap.put(HttpParameter.PART, HttpPart.GRAPH.getName());
 			final String requestId = new CounterRequest(TEST_REQUEST + " GET",
 					Counter.HTTP_COUNTER_NAME).getId();
@@ -636,7 +634,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPeriod() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PERIOD, Period.JOUR.getCode());
 		monitoring(parameters);
 		parameters.put(HttpParameter.PATTERN, "dd/MM/yyyy");
@@ -661,7 +659,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithGraph() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.GRAPH, "usedMemory");
 		parameters.put(HttpParameter.WIDTH, "800");
 		parameters.put(HttpParameter.HEIGHT, "600");
@@ -675,7 +673,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithParts() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 
 		parameters.put(HttpParameter.PART, HttpPart.CURRENT_REQUESTS.getName());
 		monitoring(parameters);
@@ -713,7 +711,7 @@ public class TestMonitoringFilter {// NOPMD
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 
 		parameters.put(HttpParameter.PART, HttpPart.JCACHE_KEYS.getName());
-		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<>();
 		conf.setManagementEnabled(true);
 		conf.setStatisticsEnabled(true);
 		Caching.getCachingProvider().getCacheManager().createCache(cacheName, conf);
@@ -756,7 +754,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithPartsForSystemActions() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
@@ -773,9 +771,8 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
-		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { "net/bull/javamelody/monitoring-spring.xml", });
-		try {
+		try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
+				new String[]{"net/bull/javamelody/monitoring-spring.xml",})) {
 			context.getBeanDefinitionNames();
 			parameters.put(HttpParameter.PART, HttpPart.SPRING_BEANS.getName());
 			monitoring(parameters);
@@ -795,8 +792,6 @@ public class TestMonitoringFilter {// NOPMD
 			monitoring(parameters);
 			parameters.remove(HttpParameter.ALGORITHM);
 			parameters.remove(HttpParameter.REQUEST);
-		} finally {
-			context.close();
 		}
 	}
 
@@ -805,7 +800,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithReportParameter() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.REPORT, "customReport");
 		System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "customReport", "");
 		monitoring(parameters, false);
@@ -817,7 +812,7 @@ public class TestMonitoringFilter {// NOPMD
 	}
 
 	private void doMonitoringWithUnknownPart() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PART, "unknown part");
 		boolean exception = false;
 		try {
@@ -846,7 +841,7 @@ public class TestMonitoringFilter {// NOPMD
 	}
 
 	private void doMonitoringWithGraphPart() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PART, HttpPart.GRAPH.getName());
 		parameters.put(HttpParameter.GRAPH, "usedMemory");
 		monitoring(parameters);
@@ -859,7 +854,7 @@ public class TestMonitoringFilter {// NOPMD
 	}
 
 	private void doMonitoringWithSourcePart() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PART, HttpPart.SOURCE.getName());
 		// classe java du jdk
 		parameters.put(HttpParameter.CLASS, "java.lang.String");
@@ -917,7 +912,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithActions() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
 		parameters.put(HttpParameter.ACTION, Action.GC.toString());
 		monitoring(parameters);
@@ -950,7 +945,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatPdf() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, "pdf");
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.RUNTIME_DEPENDENCIES.getName());
@@ -1010,7 +1005,7 @@ public class TestMonitoringFilter {// NOPMD
 	@Test
 	// CHECKSTYLE:ON
 	public void testDoMonitoringWithFormatSerialized() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, TransportFormat.SERIALIZED.getCode());
 		monitoring(parameters);
 		parameters.put(HttpParameter.JMX_VALUE, "java.lang:type=OperatingSystem.ProcessCpuTime");
@@ -1099,7 +1094,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatXml() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, TransportFormat.XML.getCode());
 		monitoring(parameters);
 		setProperty(Parameter.SYSTEM_ACTIONS_ENABLED, TRUE);
@@ -1122,7 +1117,7 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoringWithFormatJson() throws ServletException, IOException {
-		final Map<HttpParameter, String> parameters = new HashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.FORMAT, TransportFormat.JSON.getCode());
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.THREADS.getName());
@@ -1148,7 +1143,7 @@ public class TestMonitoringFilter {// NOPMD
 	 */
 	@Test
 	public void testDoMonitoringWithFormatPrometheus() throws ServletException, IOException {
-		final Map<String, String> parameters = new HashMap<String, String>();
+		final Map<String, String> parameters = new HashMap<>();
 		parameters.put("format", "prometheus");
 		monitoring0(parameters, true);
 		parameters.put("includeLastValue", "true");
@@ -1162,7 +1157,7 @@ public class TestMonitoringFilter {// NOPMD
 
 	private void monitoring(Map<HttpParameter, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
-		final Map<String, String> params = new HashMap<String, String>();
+		final Map<String, String> params = new HashMap<>();
 		for (final Map.Entry<HttpParameter, String> entry : parameters.entrySet()) {
 			params.put(entry.getKey().getName(), entry.getValue());
 		}

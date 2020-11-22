@@ -56,7 +56,7 @@ public abstract class MetricsPublisher {
 	}
 
 	private static List<MetricsPublisher> getMetricsPublishers(String contextPath, String hosts) {
-		final List<MetricsPublisher> metricsPublishers = new ArrayList<MetricsPublisher>();
+		final List<MetricsPublisher> metricsPublishers = new ArrayList<>();
 		final Graphite graphite = Graphite.getInstance(contextPath, hosts);
 		final Statsd statsd = Statsd.getInstance(contextPath, hosts);
 		final CloudWatch cloudWatch = CloudWatch.getInstance(contextPath, hosts);

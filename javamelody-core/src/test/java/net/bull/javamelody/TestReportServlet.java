@@ -62,12 +62,10 @@ public class TestReportServlet {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
 			field.set(null, false);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		} catch (final NoSuchFieldException e) {
+		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-	}
+    }
 
 	/** Test. */
 	@Test

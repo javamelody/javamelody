@@ -75,7 +75,7 @@ class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 	public Enumeration<URL> getResources(final String name) throws IOException {
 		final Enumeration<URL> urls = super.getResources(name);
 		if (PERSISTENCE_XML.equals(name)) {
-			final Collection<URL> overrided = new LinkedList<URL>();
+			final Collection<URL> overrided = new LinkedList<>();
 			while (urls.hasMoreElements()) {
 				final URL url = urls.nextElement();
 				overrided.add(newUrl(url, slurp(url)));
@@ -101,11 +101,8 @@ class JpaOverridePersistenceXmlClassLoader extends ClassLoader {
 
 	private static String slurp(final URL url) {
 		try {
-			final InputStream is = url.openStream();
-			try {
+			try (InputStream is = url.openStream()) {
 				return InputOutput.pumpToString(is, Charset.defaultCharset());
-			} finally {
-				is.close();
 			}
 		} catch (final IOException e) {
 			throw new IllegalStateException(e);

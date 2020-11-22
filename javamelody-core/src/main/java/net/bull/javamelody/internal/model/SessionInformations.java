@@ -53,7 +53,7 @@ public class SessionInformations implements Serializable {
 			// Android avant Linux. iPhone, iPad dans Mac OS. *bot et (yahoo) slurp ignorés
 			"Windows", "Android", "Linux", "Mac OS");
 
-	private static final Map<String, String> WINDOWS_CODE_TO_NAME_MAP = new LinkedHashMap<String, String>();
+	private static final Map<String, String> WINDOWS_CODE_TO_NAME_MAP = new LinkedHashMap<>();
 
 	static {
 		// see https://msdn.microsoft.com/en-us/library/ms537503%28v=vs.85%29.aspx
@@ -194,7 +194,7 @@ public class SessionInformations implements Serializable {
 		serializedSize = computeSerializedSize(session, attributeNames);
 
 		if (includeAttributes) {
-			attributes = new ArrayList<SessionAttribute>(attributeCount);
+			attributes = new ArrayList<>(attributeCount);
 			for (final String attributeName : attributeNames) {
 				attributes.add(new SessionAttribute(session, attributeName));
 			}
@@ -233,8 +233,8 @@ public class SessionInformations implements Serializable {
 		// car la sérialisation d'un objet est différente des octets occupés en mémoire
 		// et car les objets retenus par une session sont éventuellement référencés par ailleurs
 		// (la fin de la session ne réduirait alors pas l'occupation mémoire autant que la taille de la session)
-		final List<Serializable> serializableAttributes = new ArrayList<Serializable>(
-				attributeNames.size());
+		final List<Serializable> serializableAttributes = new ArrayList<>(
+                attributeNames.size());
 		for (final String attributeName : attributeNames) {
 			final Object attributeValue = session.getAttribute(attributeName);
 			serializableAttributes.add((Serializable) attributeValue);
@@ -355,11 +355,8 @@ public class SessionInformations implements Serializable {
 		synchronized (TEMP_OUTPUT) {
 			TEMP_OUTPUT.reset();
 			try {
-				final ObjectOutputStream out = new ObjectOutputStream(TEMP_OUTPUT);
-				try {
+				try (ObjectOutputStream out = new ObjectOutputStream(TEMP_OUTPUT)) {
 					out.writeObject(serializable);
-				} finally {
-					out.close();
 				}
 				return TEMP_OUTPUT.size();
 			} catch (final Throwable e) { // NOPMD

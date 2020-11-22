@@ -219,7 +219,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 		assert requestId != null;
 		counters = collector.getRangeCounters(range);
 		CounterRequest myRequest = null;
-		final List<CounterRequest> requests = new ArrayList<CounterRequest>();
+		final List<CounterRequest> requests = new ArrayList<>();
 		for (final Counter counter : counters) {
 			for (final CounterRequest request : counter.getOrderedRequests()) {
 				if (myRequest == null && request.getId().equals(requestId)) {
@@ -510,7 +510,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	}
 
 	private Map<String, CounterRequest> mapAllRequestsById() {
-		final Map<String, CounterRequest> result = new HashMap<String, CounterRequest>();
+		final Map<String, CounterRequest> result = new HashMap<>();
 		for (final Counter counter : counters) {
 			for (final CounterRequest request : counter.getRequests()) {
 				result.put(request.getId(), request);

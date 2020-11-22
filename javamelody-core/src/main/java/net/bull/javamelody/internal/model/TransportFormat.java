@@ -115,11 +115,9 @@ public enum TransportFormat {
 					new String[] { "java.lang.*", "java.util.*", "java.util.concurrent.*" });
 			// allow any type from the same package
 			xstream.allowTypesByWildcard(new String[] { PACKAGE_NAME + ".*" });
-			final InputStreamReader reader = new InputStreamReader(bufferedInput, XML_CHARSET_NAME);
-			try {
+			try (InputStreamReader reader = new InputStreamReader(bufferedInput,
+					XML_CHARSET_NAME)) {
 				return xstream.fromXML(reader);
-			} finally {
-				reader.close();
 			}
 		}
 
@@ -184,12 +182,9 @@ public enum TransportFormat {
 					// .setPrettyPrinting() : prettyPrinting pas nécessaire avec un viewer de json
 					.registerTypeAdapter(StackTraceElement.class, stackTraceElementJsonSerializer)
 					.create();
-			final OutputStreamWriter writer = new OutputStreamWriter(bufferedOutput,
-					GSON_CHARSET_NAME);
-			try {
+			try (OutputStreamWriter writer = new OutputStreamWriter(bufferedOutput,
+					GSON_CHARSET_NAME)) {
 				gson.toJson(serializable, writer);
-			} finally {
-				writer.close();
 			}
 		}
 	}
@@ -249,7 +244,7 @@ public enum TransportFormat {
 			return false;
 		}
 		final String upperCase = format.toUpperCase(Locale.ENGLISH).trim();
-		for (final TransportFormat transportFormat : TransportFormat.values()) {
+		for (final TransportFormat transportFormat : values()) {
 			if (transportFormat.toString().equals(upperCase)) {
 				return true;
 			}
@@ -307,11 +302,8 @@ public enum TransportFormat {
 		final BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);
 		switch (this) {
 		case SERIALIZED:
-			final ObjectOutputStream out = new ObjectOutputStream(bufferedOutput);
-			try {
+			try (ObjectOutputStream out = new ObjectOutputStream(bufferedOutput)) {
 				out.writeObject(nonNullSerializable);
-			} finally {
-				out.close();
 			}
 			break;
 		case XML:
@@ -336,11 +328,8 @@ public enum TransportFormat {
 		final Object result;
 		switch (this) {
 		case SERIALIZED:
-			final ObjectInputStream in = createObjectInputStream(bufferedInput);
-			try {
+			try (ObjectInputStream in = createObjectInputStream(bufferedInput)) {
 				result = in.readObject();
-			} finally {
-				in.close();
 			}
 			break;
 		case XML:

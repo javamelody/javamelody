@@ -109,8 +109,8 @@ public class TestMavenArtifact {
 			}
 		};
 		expect(context.getResourceAsStream(webapp + "pom.xml")).andAnswer(answer).anyTimes();
-		final Set<String> dependencies = new LinkedHashSet<String>(Arrays.asList(
-				"/WEB-INF/lib/jrobin-1.5.9.jar", "/WEB-INF/lib/javamelody-core-1.65.0.jar"));
+		final Set<String> dependencies = new LinkedHashSet<>(Arrays.asList(
+                "/WEB-INF/lib/jrobin-1.5.9.jar", "/WEB-INF/lib/javamelody-core-1.65.0.jar"));
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		final URL jrobinJar = RrdGraph.class.getProtectionDomain().getCodeSource().getLocation();
 		expect(context.getResource("/WEB-INF/lib/jrobin-1.5.9.jar")).andReturn(jrobinJar)

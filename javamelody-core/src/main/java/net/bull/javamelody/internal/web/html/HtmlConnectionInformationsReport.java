@@ -46,7 +46,7 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 		// rq: cette partie du rapport n'est pas exécutée sur le serveur de collecte
 		// donc les threads sont ok
 		this.stackTracesByThread = Thread.getAllStackTraces();
-		this.threadsById = new HashMap<Long, Thread>(stackTracesByThread.size());
+		this.threadsById = new HashMap<>(stackTracesByThread.size());
 		for (final Thread thread : stackTracesByThread.keySet()) {
 			this.threadsById.put(thread.getId(), thread);
 		}

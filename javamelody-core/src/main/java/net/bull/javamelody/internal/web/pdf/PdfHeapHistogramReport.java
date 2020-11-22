@@ -91,7 +91,7 @@ class PdfHeapHistogramReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders(boolean sourceDisplayed) {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Classe"));
 		headers.add(getString("Taille"));
 		headers.add(getString("pct_taille"));

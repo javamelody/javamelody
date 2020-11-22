@@ -78,12 +78,10 @@ class StorageLock {
 					fileChannel = input.getChannel();
 				}
 				fileLock = fileChannel.tryLock();
-			} catch (final IOException e) {
-				return null;
-			} catch (final OverlappingFileLockException e) {
+			} catch (final IOException | OverlappingFileLockException e) {
 				return null;
 			}
-		}
+        }
 		return fileLock;
 	}
 

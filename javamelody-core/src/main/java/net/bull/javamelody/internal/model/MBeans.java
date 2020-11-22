@@ -84,7 +84,7 @@ public final class MBeans {
 	public static List<MBeanNode> getAllMBeanNodes() throws JMException {
 		initJRockitMBeansIfNeeded();
 
-		final List<MBeanNode> result = new ArrayList<MBeanNode>();
+		final List<MBeanNode> result = new ArrayList<>();
 		final MBeanServer platformMBeanServer = getPlatformMBeanServer();
 		final MBeanNode platformNode = new MBeanNode("");
 		// MBeans pour la plateforme
@@ -124,7 +124,7 @@ public final class MBeans {
 	}
 
 	private List<MBeanNode> getMBeanNodes() throws JMException {
-		final List<MBeanNode> result = new ArrayList<MBeanNode>();
+		final List<MBeanNode> result = new ArrayList<>();
 		final Set<ObjectName> names = mbeanServer.queryNames(null, null);
 		for (final ObjectName name : names) {
 			final String domain = name.getDomain();
@@ -203,7 +203,7 @@ public final class MBeans {
 
 	private List<MBeanAttribute> getAttributes(ObjectName name,
 			MBeanAttributeInfo[] attributeInfos) {
-		final List<String> attributeNames = new ArrayList<String>(attributeInfos.length);
+		final List<String> attributeNames = new ArrayList<>(attributeInfos.length);
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
 			// (notamment, dans users tomcat ou dans datasources tomcat)
@@ -212,7 +212,7 @@ public final class MBeans {
 			}
 		}
 		final String[] attributeNamesArray = attributeNames.toArray(new String[0]);
-		final List<MBeanAttribute> result = new ArrayList<MBeanAttribute>();
+		final List<MBeanAttribute> result = new ArrayList<>();
 		try {
 			// issue 116: asList sur mbeanServer.getAttributes(name, attributeNamesArray) n'existe qu'en java 1.6
 			final List<Object> attributes = mbeanServer.getAttributes(name, attributeNamesArray);
@@ -279,13 +279,13 @@ public final class MBeans {
 	private Object convertValueIfNeeded(Object value) {
 		if (value instanceof CompositeData) {
 			final CompositeData data = (CompositeData) value;
-			final Map<String, Object> values = new TreeMap<String, Object>();
+			final Map<String, Object> values = new TreeMap<>();
 			for (final String key : data.getCompositeType().keySet()) {
 				values.put(key, convertValueIfNeeded(data.get(key)));
 			}
 			return values;
 		} else if (value instanceof CompositeData[]) {
-			final List<Object> list = new ArrayList<Object>();
+			final List<Object> list = new ArrayList<>();
 			for (final CompositeData data : (CompositeData[]) value) {
 				list.add(convertValueIfNeeded(data));
 			}
@@ -296,7 +296,7 @@ public final class MBeans {
 			final TabularData tabularData = (TabularData) value;
 			return convertValueIfNeeded(tabularData.values());
 		} else if (value instanceof Collection) {
-			final List<Object> list = new ArrayList<Object>();
+			final List<Object> list = new ArrayList<>();
 			for (final Object data : (Collection<?>) value) {
 				list.add(convertValueIfNeeded(data));
 			}
@@ -308,14 +308,14 @@ public final class MBeans {
 	private static Object convertJRockitValueIfNeeded(Object value) {
 		if (value instanceof double[]) {
 			// pour jrockit MBeans
-			final List<Double> list = new ArrayList<Double>();
+			final List<Double> list = new ArrayList<>();
 			for (final double data : (double[]) value) {
 				list.add(data);
 			}
 			return list;
 		} else if (value instanceof int[]) {
 			// pour jrockit MBeans
-			final List<Integer> list = new ArrayList<Integer>();
+			final List<Integer> list = new ArrayList<>();
 			for (final int data : (int[]) value) {
 				list.add(data);
 			}
@@ -327,7 +327,7 @@ public final class MBeans {
 	private static List<Object> getConvertedAttributes(List<String> mbeanAttributes) {
 		initJRockitMBeansIfNeeded();
 
-		final List<Object> result = new ArrayList<Object>();
+		final List<Object> result = new ArrayList<>();
 		final List<MBeanServer> mBeanServers = getMBeanServers();
 		for (final String mbeansAttribute : mbeanAttributes) {
 			final int lastIndexOfPoint = mbeansAttribute.lastIndexOf('.');

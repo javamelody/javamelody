@@ -67,12 +67,10 @@ public class TestMonitoringFilterInit {
 			final Field field = MonitoringFilter.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
 			field.set(null, false);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		} catch (final NoSuchFieldException e) {
+		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-		config = createNiceMock(FilterConfig.class);
+        config = createNiceMock(FilterConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		expect(config.getFilterName()).andReturn(FILTER_NAME).anyTimes();

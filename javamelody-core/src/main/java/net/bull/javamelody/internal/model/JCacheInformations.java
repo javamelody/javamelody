@@ -85,7 +85,7 @@ public class JCacheInformations implements Serializable {
 			return Collections.emptyList();
 		}
 
-		final List<JCacheInformations> result = new ArrayList<JCacheInformations>();
+		final List<JCacheInformations> result = new ArrayList<>();
 		final Set<ObjectName> cacheStatistics = getJsr107CacheStatistics();
 		for (final ObjectName cache : cacheStatistics) {
 			final JCacheInformations jcacheInformations = new JCacheInformations(cache);
@@ -121,7 +121,7 @@ public class JCacheInformations implements Serializable {
 				if (cacheName.equals(cacheId)) {
 					// getCache may never return null
 					final Cache<Object, Object> cache = cacheManager.getCache(cacheId);
-					final List<Object> cacheKeys = new ArrayList<Object>();
+					final List<Object> cacheKeys = new ArrayList<>();
 					for (final Entry<Object, Object> entry : cache) {
 						cacheKeys.add(entry.getKey());
 					}

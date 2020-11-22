@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,8 @@ import net.bull.javamelody.internal.web.html.HtmlReport;
 public class HtmlController {
 	static final String HTML_BODY_FORMAT = "htmlbody";
 	private static final String X_FRAME_OPTIONS = Parameter.X_FRAME_OPTIONS.getValue();
-	private static final RequestToMethodMapper<HtmlController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<HtmlController>(
-			HtmlController.class);
+	private static final RequestToMethodMapper<HtmlController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<>(
+            HtmlController.class);
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;
@@ -96,8 +97,7 @@ public class HtmlController {
 		}
 
 		// simple appel de monitoring sans format
-		final BufferedWriter writer = getWriter(httpResponse);
-		try {
+		try (BufferedWriter writer = getWriter(httpResponse)) {
 			final Range range = httpCookieManager.getRange(httpRequest, httpResponse);
 			this.htmlReport = new HtmlReport(collector, collectorServer, javaInformationsList,
 					range, writer);
@@ -109,8 +109,6 @@ public class HtmlController {
 			} else {
 				REQUEST_TO_METHOD_MAPPER.invoke(httpRequest, this);
 			}
-		} finally {
-			writer.close();
 		}
 	}
 
@@ -130,7 +128,7 @@ public class HtmlController {
 		}
 		try {
 			return new BufferedWriter(
-					new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8"));
+					new OutputStreamWriter(httpResponse.getOutputStream(), StandardCharsets.UTF_8));
 		} catch (final IllegalStateException e) {
 			// just in case, if httpResponse.getWriter() was already called (for an exception in PrometheusController for example)
 			return new BufferedWriter(httpResponse.getWriter());
@@ -371,16 +369,13 @@ public class HtmlController {
 				throw new IOException("JavaMelody directory can't be created: " + dir.getPath());
 			}
 			final File lastShutdownFile = new File(dir, "last_shutdown.html");
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(lastShutdownFile));
-			try {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(lastShutdownFile))) {
 				final JavaInformations javaInformations = new JavaInformations(
 						Parameters.getServletContext(), true);
 				// on pourrait faire I18N.bindLocale(Locale.getDefault()), mais cela se fera tout seul
 				final HtmlReport myHtmlReport = new HtmlReport(collector, collectorServer,
 						Collections.singletonList(javaInformations), Period.JOUR, writer);
 				myHtmlReport.writeLastShutdown();
-			} finally {
-				writer.close();
 			}
 		} catch (final IOException e) {
 			LOG.warn("exception while writing the last shutdown report", e);

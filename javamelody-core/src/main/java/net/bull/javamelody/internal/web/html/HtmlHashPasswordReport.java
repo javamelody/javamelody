@@ -84,7 +84,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 	}
 
 	private SortedSet<String> getSortedAlgorithms() {
-		return new TreeSet<String>(Security.getAlgorithms("MessageDigest"));
+		return new TreeSet<>(Security.getAlgorithms("MessageDigest"));
 	}
 
 	private String encodePassword(String algorithm, String password) throws IOException {

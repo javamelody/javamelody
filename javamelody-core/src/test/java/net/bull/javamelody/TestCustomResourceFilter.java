@@ -65,7 +65,7 @@ public class TestCustomResourceFilter {
 	private void init(boolean useForward) {
 		Utils.initialize();
 		config = createNiceMock(FilterConfig.class);
-		final List<String> initParameterNames = new ArrayList<String>();
+		final List<String> initParameterNames = new ArrayList<>();
 		initParameterNames.add(MONITORING_CSS);
 		if (useForward) {
 			initParameterNames.add("useForward");

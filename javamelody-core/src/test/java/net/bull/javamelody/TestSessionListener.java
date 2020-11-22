@@ -74,12 +74,10 @@ public class TestSessionListener {
 			final Field field = SessionListener.class.getDeclaredField("instanceCreated");
 			field.setAccessible(true);
 			field.set(null, false);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		} catch (final NoSuchFieldException e) {
+		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-		sessionListener = new SessionListener();
+        sessionListener = new SessionListener();
 		clearSessions();
 	}
 

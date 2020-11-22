@@ -24,7 +24,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,8 +122,7 @@ class HtmlSourceReport extends HtmlAbstractReport {
 	}
 
 	private String getSourceFromZip(String entryName, File srcJarFile) throws IOException {
-		final ZipFile zipFile = new ZipFile(srcJarFile);
-		try {
+		try (ZipFile zipFile = new ZipFile(srcJarFile)) {
 			ZipEntry entry = zipFile.getEntry(entryName);
 			if (entry == null) {
 				// for JDK 9 + and maybe some others
@@ -139,25 +138,17 @@ class HtmlSourceReport extends HtmlAbstractReport {
 				}
 			}
 			final StringWriter writer = new StringWriter();
-			final InputStream inputStream = zipFile.getInputStream(entry);
-			try {
-				final Reader reader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-				try {
+			try (InputStream inputStream = zipFile.getInputStream(entry)) {
+				try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 					final char[] chars = new char[1024];
 					int read = reader.read(chars);
 					while (read != -1) {
 						writer.write(chars, 0, read);
 						read = reader.read(chars);
 					}
-				} finally {
-					reader.close();
 				}
-			} finally {
-				inputStream.close();
 			}
 			return writer.toString();
-		} finally {
-			zipFile.close();
 		}
 	}
 

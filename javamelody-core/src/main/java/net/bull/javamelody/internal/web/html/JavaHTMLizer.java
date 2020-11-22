@@ -97,7 +97,7 @@ final class JavaHTMLizer {
 	}
 
 	private static List<Pattern> createReservedWordPatterns(final List<String> reservedWords) {
-		final List<Pattern> result = new ArrayList<Pattern>(reservedWords.size());
+		final List<Pattern> result = new ArrayList<>(reservedWords.size());
 		for (final String reservedWord : reservedWords) {
 			result.add(Pattern.compile("(\\W)(" + reservedWord + ")(\\W)"));
 		}
@@ -105,7 +105,7 @@ final class JavaHTMLizer {
 	}
 
 	private static Map<Character, String> createEscapeMaps() {
-		final Map<Character, String> escapeMaps = new LinkedHashMap<Character, String>();
+		final Map<Character, String> escapeMaps = new LinkedHashMap<>();
 		escapeMaps.put(' ', "&nbsp;");
 		escapeMaps.put('\t', "&nbsp;&nbsp;&nbsp;&nbsp;");
 		escapeMaps.put('<', "&lt;");
