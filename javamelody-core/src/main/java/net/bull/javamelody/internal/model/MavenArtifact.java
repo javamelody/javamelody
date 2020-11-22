@@ -337,8 +337,7 @@ public final class MavenArtifact implements Serializable {
 
 	private List<MavenArtifact> getAllManagedDependencies() throws IOException {
 		update();
-		final List<MavenArtifact> allManagedDependencies = new ArrayList<>(
-                managedDependencies);
+		final List<MavenArtifact> allManagedDependencies = new ArrayList<>(managedDependencies);
 		if (parent != null) {
 			allManagedDependencies.addAll(parent.getAllManagedDependencies());
 		}
@@ -409,7 +408,7 @@ public final class MavenArtifact implements Serializable {
 		// list all dependencies in webapp's pom.xml if it exists or in the other dependencies' pom.xml,
 		// including transitive dependencies
 		final List<MavenArtifact> allDependencies = new ArrayList<>(
-                getWebappDependenciesFromPomXml());
+				getWebappDependenciesFromPomXml());
 		for (final MavenArtifact dependency : webappDependencies.values()) {
 			if (dependency != null && !dependency.isContained(allDependencies)) {
 				allDependencies.add(dependency);

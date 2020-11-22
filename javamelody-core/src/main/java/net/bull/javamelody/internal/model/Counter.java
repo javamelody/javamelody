@@ -188,8 +188,8 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		/** {@inheritDoc} */
 		@Override
 		public int compare(CounterRequestContext context1, CounterRequestContext context2) {
-			return Integer.compare(context1.getDuration(timeOfSnapshot), context2
-					.getDuration(timeOfSnapshot));
+			return Integer.compare(context1.getDuration(timeOfSnapshot),
+					context2.getDuration(timeOfSnapshot));
 		}
 	}
 
@@ -851,7 +851,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	List<CounterRequestContext> getOrderedRootCurrentContexts() {
 		final List<CounterRequestContext> contextList = new ArrayList<>(
-                rootCurrentContextsByThreadId.size());
+				rootCurrentContextsByThreadId.size());
 		for (final CounterRequestContext rootCurrentContext : rootCurrentContextsByThreadId
 				.values()) {
 			contextList.add(rootCurrentContext.clone());

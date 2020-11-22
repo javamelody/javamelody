@@ -325,8 +325,7 @@ public class RemoteCollector {
 	List<List<ThreadInformations>> getThreadInformationsLists() {
 		final List<List<ThreadInformations>> result = new ArrayList<>();
 		for (final JavaInformations javaInformations : this.javaInformationsList) {
-			result.add(new ArrayList<>(
-                    javaInformations.getThreadInformationsList()));
+			result.add(new ArrayList<>(javaInformations.getThreadInformationsList()));
 		}
 		return result;
 	}

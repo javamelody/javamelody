@@ -117,10 +117,10 @@ class Graphite extends MetricsPublisher {
 	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();
-            try (Socket socket = createSocket()) {
-                buffer.writeTo(socket.getOutputStream());
-                checkNoReturnedData(socket);
-            }
+			try (Socket socket = createSocket()) {
+				buffer.writeTo(socket.getOutputStream());
+				checkNoReturnedData(socket);
+			}
 		} catch (final ConnectException e) {
 			throw new IOException("Error connecting to Graphite at " + address + ':' + port, e);
 		} finally {
@@ -154,7 +154,8 @@ class Graphite extends MetricsPublisher {
 				final String msg = "Data returned by graphite server when expecting no response! "
 						+ "Probably aimed at wrong socket or server. Make sure you "
 						+ "are publishing to the data port, not the dashboard port. First " + read
-						+ " bytes of response: " + new String(bytes, 0, read, StandardCharsets.UTF_8);
+						+ " bytes of response: "
+						+ new String(bytes, 0, read, StandardCharsets.UTF_8);
 				LOG.warn(msg, new IOException(msg));
 			}
 		}

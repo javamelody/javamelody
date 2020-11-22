@@ -65,7 +65,7 @@ public class SpringRestTemplateBeanPostProcessor implements BeanPostProcessor, P
 		if (REST_TEMPLATE_INTERCEPTOR_AVAILABLE && bean instanceof RestTemplate) {
 			final RestTemplate restTemplate = (RestTemplate) bean;
 			final List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>(
-                    restTemplate.getInterceptors());
+					restTemplate.getInterceptors());
 			for (final ClientHttpRequestInterceptor interceptor : interceptors) {
 				if (interceptor instanceof SpringRestTemplateInterceptor) {
 					return bean;

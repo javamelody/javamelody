@@ -208,9 +208,9 @@ public final class VirtualMachine {
 	 * @throws Exception e
 	 */
 	public static HeapHistogram createHeapHistogram() throws Exception { // NOPMD
-        try (InputStream input = heapHisto()) {
-            return new HeapHistogram(input, isJRockit());
-        }
+		try (InputStream input = heapHisto()) {
+			return new HeapHistogram(input, isJRockit());
+		}
 	}
 
 	private static Object invoke(Method method, Object object, Object... args) throws Exception { // NOPMD

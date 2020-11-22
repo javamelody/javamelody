@@ -233,8 +233,7 @@ public class SessionInformations implements Serializable {
 		// car la sérialisation d'un objet est différente des octets occupés en mémoire
 		// et car les objets retenus par une session sont éventuellement référencés par ailleurs
 		// (la fin de la session ne réduirait alors pas l'occupation mémoire autant que la taille de la session)
-		final List<Serializable> serializableAttributes = new ArrayList<>(
-                attributeNames.size());
+		final List<Serializable> serializableAttributes = new ArrayList<>(attributeNames.size());
 		for (final String attributeName : attributeNames) {
 			final Object attributeValue = session.getAttribute(attributeName);
 			serializableAttributes.add((Serializable) attributeValue);

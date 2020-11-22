@@ -59,25 +59,25 @@ public final class InputOutput {
 	}
 
 	public static void pumpToFile(InputStream input, File file) throws IOException {
-        try (OutputStream output = new FileOutputStream(file)) {
-            pump(input, output);
-        }
+		try (OutputStream output = new FileOutputStream(file)) {
+			pump(input, output);
+		}
 	}
 
 	public static void pumpFromFile(File file, OutputStream output) throws IOException {
-        try (FileInputStream in = new FileInputStream(file)) {
-            pump(in, output);
-        }
+		try (FileInputStream in = new FileInputStream(file)) {
+			pump(in, output);
+		}
 	}
 
 	public static void zipFile(File source, File target) throws IOException {
 		final FileOutputStream fos = new FileOutputStream(target);
-        try (ZipOutputStream zos = new ZipOutputStream(fos)) {
-            final ZipEntry ze = new ZipEntry(source.getName());
-            zos.putNextEntry(ze);
-            pumpFromFile(source, zos);
-            zos.closeEntry();
-        }
+		try (ZipOutputStream zos = new ZipOutputStream(fos)) {
+			final ZipEntry ze = new ZipEntry(source.getName());
+			zos.putNextEntry(ze);
+			pumpFromFile(source, zos);
+			zos.closeEntry();
+		}
 	}
 
 	public static boolean deleteFile(File file) {
@@ -85,8 +85,9 @@ public final class InputOutput {
 	}
 
 	public static void copyFile(File source, File target) throws IOException {
-        try (FileInputStream in = new FileInputStream(source); FileOutputStream out = new FileOutputStream(target)) {
-            pump(in, out);
-        }
+		try (FileInputStream in = new FileInputStream(source);
+				FileOutputStream out = new FileOutputStream(target)) {
+			pump(in, out);
+		}
 	}
 }

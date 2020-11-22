@@ -162,8 +162,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		} else {
 			this.counterReportsByCounterName = counterReportsByCounterName;
 		}
-		this.threadInformationsByThreadId = new HashMap<>(
-                threadInformationsList.size());
+		this.threadInformationsByThreadId = new HashMap<>(threadInformationsList.size());
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			this.threadInformationsByThreadId.put(threadInformations.getId(), threadInformations);
 		}

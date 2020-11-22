@@ -67,7 +67,7 @@ public class HtmlController {
 	static final String HTML_BODY_FORMAT = "htmlbody";
 	private static final String X_FRAME_OPTIONS = Parameter.X_FRAME_OPTIONS.getValue();
 	private static final RequestToMethodMapper<HtmlController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<>(
-            HtmlController.class);
+			HtmlController.class);
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;

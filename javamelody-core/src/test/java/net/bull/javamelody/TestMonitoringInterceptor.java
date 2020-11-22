@@ -80,7 +80,7 @@ public class TestMonitoringInterceptor {
 			} catch (final SecurityException | NoSuchMethodException e) {
 				throw new IllegalStateException(e);
 			}
-        }
+		}
 
 		@Override
 		public Map<String, Object> getContextData() {

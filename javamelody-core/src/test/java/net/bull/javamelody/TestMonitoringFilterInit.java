@@ -70,7 +70,7 @@ public class TestMonitoringFilterInit {
 		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-        config = createNiceMock(FilterConfig.class);
+		config = createNiceMock(FilterConfig.class);
 		context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		expect(config.getFilterName()).andReturn(FILTER_NAME).anyTimes();

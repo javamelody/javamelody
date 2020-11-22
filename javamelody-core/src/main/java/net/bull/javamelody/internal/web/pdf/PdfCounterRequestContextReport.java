@@ -70,13 +70,11 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		assert pdfDocumentFactory != null;
 
 		this.rootCurrentContexts = rootCurrentContexts;
-		this.counterReportsByCounterName = new HashMap<>(
-                pdfCounterReports.size());
+		this.counterReportsByCounterName = new HashMap<>(pdfCounterReports.size());
 		for (final PdfCounterReport counterReport : pdfCounterReports) {
 			counterReportsByCounterName.put(counterReport.getCounterName(), counterReport);
 		}
-		this.threadInformationsByThreadId = new HashMap<>(
-                threadInformationsList.size());
+		this.threadInformationsByThreadId = new HashMap<>(threadInformationsList.size());
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			this.threadInformationsByThreadId.put(threadInformations.getId(), threadInformations);
 		}

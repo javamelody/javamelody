@@ -77,7 +77,7 @@ public class TestSessionListener {
 		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-        sessionListener = new SessionListener();
+		sessionListener = new SessionListener();
 		clearSessions();
 	}
 

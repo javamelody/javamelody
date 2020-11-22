@@ -338,8 +338,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
 				&& threadBean.isThreadCpuTimeEnabled();
 		final long[] deadlockedThreads = getDeadlockedThreads(threadBean);
-		final List<ThreadInformations> threadInfosList = new ArrayList<>(
-                threads.size());
+		final List<ThreadInformations> threadInfosList = new ArrayList<>(threads.size());
 		// hostAddress récupéré ici car il peut y avoir plus de 20000 threads
 		final String hostAddress = Parameters.getHostAddress();
 		for (final Thread thread : threads) {
@@ -642,24 +641,21 @@ public class JavaInformations implements Serializable { // NOPMD
 
 	public List<ThreadInformations> getThreadInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<ThreadInformations> result = new ArrayList<>(
-                threadInformationsList);
+		final List<ThreadInformations> result = new ArrayList<>(threadInformationsList);
 		Collections.sort(result, new ThreadInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<CacheInformations> getCacheInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<CacheInformations> result = new ArrayList<>(
-                cacheInformationsList);
+		final List<CacheInformations> result = new ArrayList<>(cacheInformationsList);
 		Collections.sort(result, new CacheInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<JCacheInformations> getJCacheInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<JCacheInformations> result = new ArrayList<>(
-                jcacheInformationsList);
+		final List<JCacheInformations> result = new ArrayList<>(jcacheInformationsList);
 		Collections.sort(result, new JCacheInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}

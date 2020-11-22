@@ -70,7 +70,7 @@ public class ConnectionInformations implements Serializable {
 			return Collections.emptyList();
 		}
 		final List<StackTraceElement> stackTrace = new ArrayList<>(
-                Arrays.asList(openingStackTrace));
+				Arrays.asList(openingStackTrace));
 		// on enlève les premiers éléments qui sont forcément ceux de javamelody
 		// (Thread.getStackTrace(), constructeur ConnectionInformations,
 		// JdbcWrapper.createConnectionProxy, appelant de createConnectionProxy...)

@@ -67,7 +67,7 @@ public class TestCloudWatch {
 		} catch (final SdkClientException | IOException e) {
 			exception = true;
 		}
-        assertTrue("no credentials provided", exception);
+		assertTrue("no credentials provided", exception);
 		setProperty(Parameter.CLOUDWATCH_NAMESPACE, null);
 		System.getProperties().remove("aws.region");
 		cloudWatch.stop();

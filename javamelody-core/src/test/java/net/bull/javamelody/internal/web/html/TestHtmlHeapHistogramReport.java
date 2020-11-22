@@ -75,40 +75,40 @@ public class TestHtmlHeapHistogramReport {
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoSun() throws IOException {
-        try (InputStream input = getClass().getResourceAsStream("/heaphisto.txt")) {
-            final HeapHistogram heapHistogram = new HeapHistogram(input, false);
-            report(heapHistogram);
-        }
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto.txt")) {
+			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
+			report(heapHistogram);
+		}
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoJdk9() throws IOException {
-        try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk9.txt")) {
-            final HeapHistogram heapHistogram = new HeapHistogram(input, false);
-            report(heapHistogram);
-        }
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk9.txt")) {
+			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
+			report(heapHistogram);
+		}
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoJdkEa() throws IOException {
-        try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk-ea.txt")) {
-            final HeapHistogram heapHistogram = new HeapHistogram(input, false);
-            report(heapHistogram);
-        }
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk-ea.txt")) {
+			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
+			report(heapHistogram);
+		}
 	}
 
 	/** Test.
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoBEA() throws IOException {
-        try (InputStream input = getClass().getResourceAsStream("/heaphisto_jrockit.txt")) {
-            final HeapHistogram heapHistogram = new HeapHistogram(input, true);
-            report(heapHistogram);
-        }
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jrockit.txt")) {
+			final HeapHistogram heapHistogram = new HeapHistogram(input, true);
+			report(heapHistogram);
+		}
 	}
 
 	/** Test. */

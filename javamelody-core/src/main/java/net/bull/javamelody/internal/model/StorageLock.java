@@ -81,7 +81,7 @@ class StorageLock {
 			} catch (final IOException | OverlappingFileLockException e) {
 				return null;
 			}
-        }
+		}
 		return fileLock;
 	}
 

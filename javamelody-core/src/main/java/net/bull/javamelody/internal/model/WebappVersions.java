@@ -108,8 +108,7 @@ class WebappVersions {
 	}
 
 	Map<String, Date> getDatesByVersions() {
-		final List<Map.Entry<String, Date>> entries = new ArrayList<>(
-                datesByVersions.entrySet());
+		final List<Map.Entry<String, Date>> entries = new ArrayList<>(datesByVersions.entrySet());
 		Collections.sort(entries, WEBAPP_VERSIONS_VALUE_COMPARATOR);
 		final Map<String, Date> map = new LinkedHashMap<>();
 		for (final Map.Entry<String, Date> entry : entries) {

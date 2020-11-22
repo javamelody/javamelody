@@ -112,7 +112,8 @@ public class Mailer {
 		// Le paramètre jndiSession n'est pas indiqué de type Session car le cast ne marcherait pas.
 		final Method getPropertiesMethod;
 		try {
-			getPropertiesMethod = jndiSession.getClass().getMethod("getProperties", (Class<?>[]) null);
+			getPropertiesMethod = jndiSession.getClass().getMethod("getProperties",
+					(Class<?>[]) null);
 			return (Properties) getPropertiesMethod.invoke(jndiSession, (Object[]) null);
 		} catch (final NoSuchMethodException e) {
 			throw new IllegalArgumentException(e);

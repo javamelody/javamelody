@@ -234,7 +234,7 @@ public final class Parameters {
 					applications.put(property, parseUrls(value));
 				} else {
 					aggregationApplications.put(property,
-                            new ArrayList<>(Arrays.asList(value.split(","))));
+							new ArrayList<>(Arrays.asList(value.split(","))));
 				}
 			}
 		}

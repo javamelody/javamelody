@@ -65,7 +65,7 @@ public class TestReportServlet {
 		} catch (final IllegalAccessException | NoSuchFieldException e) {
 			throw new IllegalStateException(e);
 		}
-    }
+	}
 
 	/** Test. */
 	@Test

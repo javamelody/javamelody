@@ -142,7 +142,7 @@ public class TestMonitoringFilter {// NOPMD
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		// dependencies pour avoir des dépendances dans JavaInformations
 		final Set<String> dependencies = new LinkedHashSet<>(
-                Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+				Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
 		// et flags pour considérer que les ressources pom.xml et web.xml existent
 		JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
@@ -772,7 +772,7 @@ public class TestMonitoringFilter {// NOPMD
 		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
 		try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[]{"net/bull/javamelody/monitoring-spring.xml",})) {
+				new String[] { "net/bull/javamelody/monitoring-spring.xml", })) {
 			context.getBeanDefinitionNames();
 			parameters.put(HttpParameter.PART, HttpPart.SPRING_BEANS.getName());
 			monitoring(parameters);

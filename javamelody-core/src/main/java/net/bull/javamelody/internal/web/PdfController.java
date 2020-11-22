@@ -60,7 +60,7 @@ class PdfController {
 	private static final String RANGE_KEY = "range";
 	private static final String JAVA_INFORMATIONS_LIST_KEY = "javaInformationsList";
 	private static final RequestToMethodMapper<PdfController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<>(
-            PdfController.class);
+			PdfController.class);
 	private final HttpCookieManager httpCookieManager = new HttpCookieManager();
 	private final Collector collector;
 	private final CollectorServer collectorServer;

@@ -55,9 +55,9 @@ public class TestLabradorRetriever {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "false");
 		final File file = File.createTempFile("test", ".ser");
 		try {
-            try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(file))) {
-                output.writeObject(new Counter("http", null));
-            }
+			try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(file))) {
+				output.writeObject(new Counter("http", null));
+			}
 			final URL url = file.toURI().toURL();
 			final LabradorRetriever labradorRetriever = new LabradorRetriever(url);
 			labradorRetriever.call();

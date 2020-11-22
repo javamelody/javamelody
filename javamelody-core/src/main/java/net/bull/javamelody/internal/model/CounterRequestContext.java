@@ -111,7 +111,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	public static void replaceParentCounters(List<CounterRequestContext> rootCurrentContexts,
 			List<Counter> newParentCounters) {
 		final Map<String, Counter> newParentCountersByName = new HashMap<>(
-                newParentCounters.size());
+				newParentCounters.size());
 		for (final Counter counter : newParentCounters) {
 			newParentCountersByName.put(counter.getName(), counter);
 		}
@@ -339,7 +339,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		}
 		if (childRequestsExecutionsByRequestId != null) {
 			clone.childRequestsExecutionsByRequestId = new LinkedHashMap<>(
-                    childRequestsExecutionsByRequestId);
+					childRequestsExecutionsByRequestId);
 		}
 		return clone;
 	}

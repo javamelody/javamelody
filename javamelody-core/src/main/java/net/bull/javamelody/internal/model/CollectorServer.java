@@ -118,9 +118,9 @@ public class CollectorServer {
 	public void collectWithoutErrors() {
 		try {
 			final Map<String, List<URL>> urlsByApplication = new LinkedHashMap<>(
-                    Parameters.getCollectorUrlsByApplications());
+					Parameters.getCollectorUrlsByApplications());
 			final List<Future<?>> futures = new ArrayList<>(
-                    collectForApplicationsWithoutErrors(urlsByApplication));
+					collectForApplicationsWithoutErrors(urlsByApplication));
 
 			final Map<String, List<String>> applicationsByAggregationApplication = Parameters
 					.getApplicationsByAggregationApplication();
@@ -141,7 +141,8 @@ public class CollectorServer {
 					future.get();
 				}
 			}
-		} catch (final IOException | ExecutionException | InterruptedException | ConcurrentModificationException e) {
+		} catch (final IOException | ExecutionException | InterruptedException
+				| ConcurrentModificationException e) {
 			LOGGER.warn(e.getMessage(), e);
 		}
 	}

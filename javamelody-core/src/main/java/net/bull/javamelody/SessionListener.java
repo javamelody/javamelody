@@ -226,8 +226,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	public static List<SessionInformations> getAllSessionsInformations() {
 		final Collection<HttpSession> sessions = SESSION_MAP_BY_ID.values();
-		final List<SessionInformations> sessionsInformations = new ArrayList<>(
-                sessions.size());
+		final List<SessionInformations> sessionsInformations = new ArrayList<>(sessions.size());
 		for (final HttpSession session : sessions) {
 			try {
 				sessionsInformations.add(new SessionInformations(session, false));

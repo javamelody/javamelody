@@ -245,7 +245,7 @@ class PrometheusController {
 		final List<CacheInformations> cacheInformationsList = javaInformations
 				.getCacheInformationsList();
 		final Map<String, CacheInformations> cacheInfos = new LinkedHashMap<>(
-                cacheInformationsList.size());
+				cacheInformationsList.size());
 		for (final CacheInformations cacheInfo : cacheInformationsList) {
 			final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
 			cacheInfos.put(fields, cacheInfo);
@@ -297,7 +297,7 @@ class PrometheusController {
 		final List<JCacheInformations> jcacheInformationsList = javaInformations
 				.getJCacheInformationsList();
 		final Map<String, JCacheInformations> cacheInfos = new LinkedHashMap<>(
-                jcacheInformationsList.size());
+				jcacheInformationsList.size());
 		for (final JCacheInformations cacheInfo : jcacheInformationsList) {
 			final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
 			cacheInfos.put(fields, cacheInfo);
