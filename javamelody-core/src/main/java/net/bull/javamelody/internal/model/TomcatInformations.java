@@ -46,9 +46,9 @@ public final class TomcatInformations implements Serializable {
 	private static final long serialVersionUID = -6145865427461051370L;
 
 	@SuppressWarnings("all")
-	private static final List<ObjectName> THREAD_POOLS = new ArrayList<ObjectName>();
+	private static final List<ObjectName> THREAD_POOLS = new ArrayList<>();
 	@SuppressWarnings("all")
-	private static final List<ObjectName> GLOBAL_REQUEST_PROCESSORS = new ArrayList<ObjectName>();
+	private static final List<ObjectName> GLOBAL_REQUEST_PROCESSORS = new ArrayList<>();
 
 	private static int mbeansInitAttemps;
 

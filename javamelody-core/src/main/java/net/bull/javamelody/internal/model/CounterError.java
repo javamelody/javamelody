@@ -31,7 +31,7 @@ public class CounterError implements Serializable {
 	public static final String REQUEST_KEY = "javamelody.request";
 	private static final long serialVersionUID = 5690702786722045646L;
 	@SuppressWarnings("all")
-	private static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_CONTEXT = new ThreadLocal<HttpServletRequest>();
+	private static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_CONTEXT = new ThreadLocal<>();
 
 	/**
 	 * Max size of error message.

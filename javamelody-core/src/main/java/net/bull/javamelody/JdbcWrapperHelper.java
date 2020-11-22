@@ -486,7 +486,7 @@ final class JdbcWrapperHelper {
 			if (lock == null) {
 				// on utilise clear et non remove au cas où le host ne soit pas localhost dans server.xml
 				// (cf issue 105)
-				final Hashtable<String, Object> clone = new Hashtable<String, Object>(
+				final Hashtable<String, Object> clone = new Hashtable<>(
 						readOnlyContexts);
 				readOnlyContexts.clear();
 				return clone;

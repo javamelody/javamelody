@@ -64,11 +64,11 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	private static final AtomicInteger SESSION_COUNT = new AtomicInteger();
 
 	@SuppressWarnings("all")
-	private static final List<String> CONTEXT_PATHS = new ArrayList<String>();
+	private static final List<String> CONTEXT_PATHS = new ArrayList<>();
 
 	// attention : this est mis en session, cette map doit donc restée statique
 	@SuppressWarnings("all")
-	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<String, HttpSession>();
+	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<>();
 
 	private static final ThreadLocal<HttpSession> SESSION_CONTEXT = new ThreadLocal<>();
 

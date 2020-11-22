@@ -111,11 +111,11 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	// on conserve childCounterName et pas childCounter pour assurer la synchronisation/clone et la sérialisation
 	private final String childCounterName;
 	@SuppressWarnings("all")
-	private final ConcurrentMap<String, CounterRequest> requests = new ConcurrentHashMap<String, CounterRequest>();
+	private final ConcurrentMap<String, CounterRequest> requests = new ConcurrentHashMap<>();
 	// note : même si rootCurrentContextsByThreadId n'est pas transient la map est normalement vide avant sérialisation
 	// (on garde en non transient pour ne pas avoir null après désérialisation ce qui pourrait donner des NPE)
 	@SuppressWarnings("all")
-	private final ConcurrentMap<Long, CounterRequestContext> rootCurrentContextsByThreadId = new ConcurrentHashMap<Long, CounterRequestContext>();
+	private final ConcurrentMap<Long, CounterRequestContext> rootCurrentContextsByThreadId = new ConcurrentHashMap<>();
 	private final LinkedList<CounterError> errors; // NOPMD
 	private Date startDate = new Date();
 	private int maxRequestsCount = MAX_REQUESTS_COUNT;
