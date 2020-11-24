@@ -91,7 +91,7 @@ class HtmlJndiTreeReport extends HtmlAbstractReport {
 
 	private void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeDirectly("<a href='?#systeminfo'>");
 		writeln("<img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");

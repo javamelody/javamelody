@@ -151,16 +151,30 @@ public final class I18N {
 	 * Encode pour affichage en html.
 	 * @param text message à encoder
 	 * @param encodeSpace booléen selon que les espaces sont encodés en nbsp (insécables)
+	 * @param encodeNewLine booléen selon que les retours à la ligne sont encodés en br
 	 * @return String
 	 */
-	public static String htmlEncode(String text, boolean encodeSpace) {
+	public static String htmlEncode(String text, boolean encodeSpace, boolean encodeNewLine) {
 		// ces encodages html sont incomplets mais suffisants pour le monitoring
-		String result = text.replaceAll("[&]", "&amp;").replaceAll("[<]", "&lt;")
-				.replaceAll("[>]", "&gt;").replaceAll("[\n]", "<br/>");
+		String result = text.replaceAll("[&]", "&amp;").replaceAll("[<]", "&lt;").replaceAll("[>]",
+				"&gt;");
 		if (encodeSpace) {
 			result = result.replaceAll(" ", "&nbsp;");
 		}
+		if (encodeNewLine) {
+			result = result.replaceAll("[\n]", "<br/>");
+		}
 		return result;
+	}
+
+	/**
+	 * Encode pour affichage en html.
+	 * @param text message à encoder
+	 * @param encodeSpace booléen selon que les espaces sont encodés en nbsp (insécables)
+	 * @return String
+	 */
+	public static String htmlEncode(String text, boolean encodeSpace) {
+		return htmlEncode(text, encodeSpace, true);
 	}
 
 	/**

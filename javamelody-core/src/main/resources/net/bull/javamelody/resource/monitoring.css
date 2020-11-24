@@ -76,6 +76,10 @@ td {
 	padding: 2px;
 }
 
+td.containingIcon {
+	text-align: center;
+}
+
 table tr:last-child td:first-child {
 	border-bottom-left-radius: 5px
 }
@@ -653,4 +657,48 @@ code .comment .string {
 
 .github-fork-ribbon.left-top:before, .github-fork-ribbon.left-top:after, .github-fork-ribbon.right-bottom:before, .github-fork-ribbon.right-bottom:after {
   transform: rotate(-45deg);
+}
+
+.alert {
+	font-weight: bold;
+}
+
+.alertDialogAndRedirect {
+	display: none;
+}
+
+.displayNone {
+	display: none;
+}
+
+.donate img {
+	position: absolute; top: 15px; right: 10px; border: 0;
+}
+
+.newVersion {
+	font-weight: bold;
+}
+
+.mbeanNode {
+	margin-left: 20px;
+}
+
+form.hash {
+	padding: 10px;
+}
+
+.durationAndOverHead {
+	font-size: 11px;
+}
+
+.applicationStatus {
+	text-align: left; font-size: 11px;
+}
+
+.childRequest {
+	margin-left: 10px;
+}
+
+.gray {
+	color: #808080;
 }

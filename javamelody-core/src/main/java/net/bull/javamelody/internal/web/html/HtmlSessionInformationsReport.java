@@ -126,7 +126,7 @@ public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 
 	private void writeBackAndRefreshLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'>");
+		writeln("<a class='back' href=''>");
 		writeln("<img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "'>");
@@ -138,15 +138,15 @@ public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "&amp;action=invalidate_sessions" + getCsrfTokenUrlPart()
-				+ "' onclick=\"javascript:return confirm('"
-				+ getStringForJavascript("confirm_invalidate_sessions") + "');\">");
+				+ "' class='confirm' data-confirm=\""
+				+ I18N.htmlEncode(getString("confirm_invalidate_sessions"), false, false) + "\">");
 		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_sessions#' title='#invalidate_sessions#' /> #invalidate_sessions#</a>");
 		writeln("</div>");
 	}
 
 	private void writeBackAndRefreshLinksForSession(String sessionId) throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "&amp;sessionId=" + urlEncode(sessionId) + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln("</div>");
@@ -278,8 +278,8 @@ public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		write("&amp;action=invalidate_session&amp;sessionId=");
 		write(urlEncode(session.getId()));
 		write(getCsrfTokenUrlPart());
-		write("' onclick=\"javascript:return confirm('"
-				+ getStringForJavascript("confirm_invalidate_session") + "');\">");
+		write("' class='confirm' data-confirm=\""
+				+ I18N.htmlEncode(getString("confirm_invalidate_session"), false, false) + "\">");
 		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");
 		write("</a>");
 	}

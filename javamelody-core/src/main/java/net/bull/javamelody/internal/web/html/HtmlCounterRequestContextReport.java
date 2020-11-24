@@ -209,7 +209,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			writeln(separator);
 			writeln("</div> ");
 			writeln("<div id='contextDetails" + counterName + PID.getPID()
-					+ "' style='display: none;'>");
+					+ "' class='displayNone'>");
 			writeContexts(rootCurrentContexts);
 			writeln("</div>");
 		} else {
@@ -340,9 +340,9 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 			throws IOException {
 		int margin = 0;
 		for (final CounterRequestContext context : contexts) {
-			write("<div style='margin-left: ");
+			write("<div data-margin-left-px='");
 			write(Integer.toString(margin));
-			writeln("px;' class='wrappedText'>");
+			writeln("' class='wrappedText'>");
 			writeRequest(context, counterRequestContextReportHelper);
 			write("</div>");
 			margin += 10;
