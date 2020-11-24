@@ -109,19 +109,6 @@ public final class I18N {
 	}
 
 	/**
-	 * Retourne une traduction dans la locale courante et l'encode pour affichage en javascript.
-	 * @param key clé d'un libellé dans les fichiers de traduction
-	 * @return String
-	 */
-	public static String getStringForJavascript(String key) {
-		final String string = getString(key);
-		// ici, le résultat ne contient pas de valeur variable ni d'attaque puisque ce sont des messages internes et fixes,
-		// donc pas besoin d'encoder avec javascriptEncode, et on conserve les apostrophes lisibles dans les messages
-		return string.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\"").replace("'",
-				"\\'");
-	}
-
-	/**
 	 * Retourne une traduction dans la locale courante et insère les arguments aux positions {i}.
 	 * @param key clé d'un libellé dans les fichiers de traduction
 	 * @param arguments Valeur à inclure dans le résultat
@@ -133,18 +120,9 @@ public final class I18N {
 		return new MessageFormat(string, getCurrentLocale()).format(arguments);
 	}
 
-	/**
-	 * Encode pour affichage en javascript.
-	 * @param text message à encoder
-	 * @return String
-	 */
-	public static String javascriptEncode(String text) {
+	public static String urlEncode(String text) {
 		return text.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "%22").replace("'",
 				"%27");
-	}
-
-	public static String urlEncode(String text) {
-		return javascriptEncode(text);
 	}
 
 	/**
