@@ -141,15 +141,6 @@ public abstract class HtmlAbstractReport {
 	}
 
 	/**
-	 * Retourne une traduction dans la locale courante et l'encode pour affichage en javascript.
-	 * @param key clé d'un libellé dans les fichiers de traduction
-	 * @return String
-	 */
-	static String getStringForJavascript(String key) {
-		return I18N.getStringForJavascript(key);
-	}
-
-	/**
 	 * Retourne une traduction dans la locale courante et insère les arguments aux positions {i}.
 	 * @param key clé d'un libellé dans les fichiers de traduction
 	 * @param arguments Valeur à inclure dans le résultat
@@ -157,15 +148,6 @@ public abstract class HtmlAbstractReport {
 	 */
 	static String getFormattedString(String key, Object... arguments) {
 		return I18N.getFormattedString(key, arguments);
-	}
-
-	/**
-	 * Encode pour affichage en javascript.
-	 * @param text message à encoder
-	 * @return String
-	 */
-	static String javascriptEncode(String text) {
-		return I18N.javascriptEncode(text);
 	}
 
 	static String urlEncode(String text) {
