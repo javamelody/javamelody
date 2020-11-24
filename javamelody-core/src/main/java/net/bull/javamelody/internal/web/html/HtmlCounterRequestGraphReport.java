@@ -43,8 +43,6 @@ import net.bull.javamelody.internal.model.Range;
  */
 class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	private static final int MAX_REQUEST_NAME_LENGTH = 5000;
-	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
-	private static final String SCRIPT_END = "</script>";
 	private static int uniqueByPageAndGraphSequence;
 	private final Range range;
 	private final DecimalFormat systemErrorFormat = I18N.createPercentFormat();
@@ -69,19 +67,9 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 		// la classe tooltip est configurée dans la css de HtmlReport
 		write("<a class='tooltip' href='?part=graph&amp;graph=");
 		write(requestId);
-		write("'");
-		// ce onmouseover sert à charger les graphs par requête un par un et à la demande
-		// sans les charger tous au chargement de la page.
-		// le onmouseover se désactive après chargement pour ne pas recharger une image déjà chargée
-		write(" onmouseover=\"document.getElementById('");
-		final String id = "id" + uniqueByPageAndGraphSequence;
-		write(id);
-		write("').src='?graph=");
-		write(requestId);
-		write("&amp;width=100&amp;height=50'; this.onmouseover=null;\" >");
-		// avant mouseover on prend une image qui sera mise en cache
-		write("<em><img src='?resource=db.png' id='");
-		write(id);
+		write("'>");
+		write("<em><img src='?graph=" + requestId + "&width=100&height=50' id='");
+		write("id" + uniqueByPageAndGraphSequence);
 		write("' alt='graph'/></em>");
 		if (requestName.length() <= MAX_REQUEST_NAME_LENGTH) {
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
@@ -97,7 +85,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 
 			final String idToShow = "request-" + requestId;
 			writeShowHideLink(idToShow, "#Details#");
-			writeln("<div id='request-" + requestId + "' style='display: none;'>");
+			writeln("<div id='request-" + requestId + "' class='displayNone'>");
 			write("<br/> ");
 			writeDirectly(htmlEncodeRequestName(requestId, requestName));
 			writeln("</div> ");
@@ -137,18 +125,19 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
 			writeln("</div></div>");
 			writeln("</td><td>");
-			writeDirectly("<div class='noPrint' style='color: #808080;'>");
+			writeDirectly("<div class='noPrint gray'>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writeln("<label for='cb'><input id='cb' type='checkbox' onclick=\"handleHideMaximumClick(this);\"/>&nbsp;#hide_maximum#</label>");
+			writeln("<label for='cb'><input id='cb' type='checkbox' />&nbsp;#hide_maximum#</label>");
 			writeln("</div> ");
 			writeln("</td></tr></table>");
 
 			writeln("<div align='center'>");
 			writeln("<table summary=''><tr><td>");
 			final String graphNameEncoded = urlEncode(graphName);
-			writeln("<img class='synthèse' id='img' src='" + "?width=960&amp;height=400&amp;graph="
-					+ graphNameEncoded + "' alt='zoom'/>");
-			writeDirectly("<br/><div align='right' style='color: #808080;'>");
+			writeln("<img class='synthèse' id='img' data-graph-name=\""
+					+ htmlEncodeButNotSpace(graphName) + "\" src='"
+					+ "?width=960&amp;height=400&amp;graph=" + graphNameEncoded + "' alt='zoom'/>");
+			writeDirectly("<br/><div align='right' class='gray'>");
 			writeln("#graph_units#");
 			writeln("</div><div align='right'>");
 			writeln("<a href='?part=lastValue&amp;graph=" + graphNameEncoded
@@ -161,8 +150,6 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 					+ "' title='Dump TXT'>TXT</a>");
 			writeln("</div></td></tr></table>");
 			writeln("</div>");
-
-			writeGraphDetailScript(graphName);
 		}
 		if (request != null && request.getStackTrace() != null) {
 			writeln("<blockquote><blockquote><b>Stack-trace</b><br/><font size='-1'>");
@@ -299,21 +286,21 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 		final double domProcessingPercent = 100d * domProcessingMean / total;
 		final double pageRenderingPercent = 100d * pageRenderingMean / total;
 		writeln("<br/><table class='rumData' summary=''><tr>");
-		writeln("<td class='rumDataNetwork tooltip' style='width:"
-				+ percentUsFormat.format(networkPercent) + "%'><em>#Network#: "
+		writeln("<td class='rumDataNetwork tooltip' data-width-percent='"
+				+ percentUsFormat.format(networkPercent) + "'><em>#Network#: "
 				+ integerFormat.format(networkTimeMean) + " ms ("
-				+ percentLocaleFormat.format(networkPercent) + "%)</em>#Network#</td>");
-		writeln("<td class='rumDataServer tooltip' style='width:"
-				+ percentUsFormat.format(serverPercent) + "%'><em>#Server#: "
+				+ percentLocaleFormat.format(networkPercent) + ")</em>#Network#</td>");
+		writeln("<td class='rumDataServer tooltip' data-width-percent='"
+				+ percentUsFormat.format(serverPercent) + "'><em>#Server#: "
 				+ integerFormat.format(serverMean) + " ms ("
 				+ percentLocaleFormat.format(serverPercent) + "%)</em>#Server#</td>");
-		writeln("<td class='rumDataDomProcessing tooltip' style='width:"
-				+ percentUsFormat.format(domProcessingPercent) + "%'><em>#DOM_processing#:"
+		writeln("<td class='rumDataDomProcessing tooltip' data-width-percent='"
+				+ percentUsFormat.format(domProcessingPercent) + "'><em>#DOM_processing#:"
 				+ integerFormat.format(domProcessingMean) + " ms ("
 				+ percentLocaleFormat.format(domProcessingPercent)
 				+ "%)</em>#DOM_processing#</td>");
-		writeln("<td class='rumDataPageRendering tooltip' style='width:"
-				+ percentUsFormat.format(pageRenderingPercent) + "%'><em>#Page_rendering#:"
+		writeln("<td class='rumDataPageRendering tooltip' data-width-percent='"
+				+ percentUsFormat.format(pageRenderingPercent) + "'><em>#Page_rendering#:"
 				+ integerFormat.format(pageRenderingMean) + " ms ("
 				+ percentLocaleFormat.format(pageRenderingPercent)
 				+ "%)</em>#Page_rendering#</td>");
@@ -396,7 +383,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	private void writeChildRequest(CounterRequest childRequest, float executionsByRequest,
 			boolean allChildHitsDisplayed, boolean allocatedKBytesDisplayed) throws IOException {
 		writeln("<td>");
-		writeln("<div style='margin-left: 10px;' class='wrappedText'>");
+		writeln("<div class='wrappedText childRequest'>");
 		writeCounterIcon(childRequest);
 		writeRequestGraph(childRequest.getId(), childRequest.getName());
 		writeln("</div></td><td align='right'>");
@@ -454,59 +441,6 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln("<img src='?resource=" + parentCounter.getIconName() + "' alt='"
 					+ parentCounter.getName() + "' width='16' height='16' />&nbsp;");
 		}
-	}
-
-	private void writeGraphDetailScript(String graphName) throws IOException {
-		writeln(SCRIPT_BEGIN);
-		writeln("function handleHideMaximumClick(checkbox) {");
-		writeln("    var img = document.getElementById('img');");
-		writeln("    if (checkbox.checked) {");
-		writeln("        img.src = img.src + '\\u0026max=false\\u0026r=' + Math.random();");
-		writeln("    } else {");
-		writeln("        img.src = img.src.replace('\\u0026max=false','');");
-		writeln("    }");
-		writeln("}");
-		writeln("function scaleImage(v, min, max) {");
-		writeln("    var images = document.getElementsByClassName('synthèse');");
-		writeln("    w = (max - min) * v + min;");
-		writeln("    for (i = 0; i < images.length; i++) {");
-		writeln("        images[i].style.width = w + 'px';");
-		writeln("    }");
-		writeln("}");
-
-		// 'animate' our slider
-		writeln("var slider = new Control.Slider('handle', 'track', {axis:'horizontal', alignX: 0, increment: 2});");
-
-		// resize the image as the slider moves. The image quality would deteriorate, but it
-		// would not be final anyway. Once slider is released the image is re-requested from the server, where
-		// it is rebuilt from vector format
-		writeln("slider.options.onSlide = function(value) {");
-		writeln("  scaleImage(value, initialWidth, initialWidth / 2 * 3);");
-		writeln("}");
-
-		// this is where the slider is released and the image is reloaded
-		// we use current style settings to work the required image dimensions
-		writeln("slider.options.onChange = function(value) {");
-		// chop off "px" and round up float values
-		writeln("  width = Math.round(Element.getStyle('img','width').replace('px','')) - 80;");
-		writeln("  height = Math.round(width * initialHeight / initialWidth) - 48;");
-		// reload the images
-		// rq : on utilise des caractères unicode pour éviter des warnings
-		writeln("  document.getElementById('img').src = '?graph="
-				+ htmlEncodeButNotSpace(urlEncode(graphName))
-				+ "\\u0026width=' + width + '\\u0026height=' + height;");
-		writeln("  document.getElementById('img').style.width = '';");
-		writeln("}");
-		writeln("window.onload = function() {");
-		writeln("  if (navigator.appName == 'Microsoft Internet Explorer') {");
-		writeln("    initialWidth = document.getElementById('img').width;");
-		writeln("    initialHeight = document.getElementById('img').height;");
-		writeln("  } else {");
-		writeln("    initialWidth = Math.round(Element.getStyle('img','width').replace('px',''));");
-		writeln("    initialHeight = Math.round(Element.getStyle('img','height').replace('px',''));");
-		writeln("  }");
-		writeln("}");
-		writeln(SCRIPT_END);
 	}
 
 	private Map<String, CounterRequest> mapAllRequestsById() {

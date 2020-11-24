@@ -81,7 +81,7 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		writeShowHideLink("detailsJava", "#Details#");
 		writeln("<br/><br/><br/>");
 		// div interne pour showHideLink
-		writeln("<div id='detailsJava' style='display: none;'><div>");
+		writeln("<div id='detailsJava' class='displayNone'><div>");
 		final boolean repeatHost = javaInformationsList.size() > 1;
 		for (final JavaInformations javaInformations : javaInformationsList) {
 			writeDetails(javaInformations, repeatHost);
@@ -363,19 +363,9 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 		// la classe tooltip est configurée dans la css de HtmlReport
 		write("<a class='tooltip' href='?part=graph&amp;graph=");
 		write(graph);
-		write("'");
-		// ce onmouseover sert à charger les graphs par requête un par un et à la demande
-		// sans les charger tous au chargement de la page.
-		// le onmouseover se désactive après chargement pour ne pas recharger une image déjà chargée
-		write(" onmouseover=\"document.getElementById('");
-		final String id = "id" + graph;
-		write(id);
-		write("').src='?graph=");
-		write(graph);
-		write("&amp;width=100&amp;height=50'; this.onmouseover=null;\" >");
-		// avant mouseover on prend une image qui sera mise en cache
-		write("<em><img src='?resource=systeminfo.png' id='");
-		write(id);
+		write("'>");
+		write("<em><img src='?graph=" + graph + "&width=100&height=50' id='");
+		write("id" + graph);
 		write("' alt='graph'/></em>");
 		// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 		writeDirectly(value);

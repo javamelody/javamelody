@@ -312,7 +312,7 @@ public class CollectorController { // NOPMD
 		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(
-				"<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+				"<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 				writer);
 		writer.write("<a href='?part=");
 		writer.write(partParameter);
@@ -518,13 +518,13 @@ public class CollectorController { // NOPMD
 				+ I18N.getString("Retour") + "\"/> " + I18N.getString("Retour") + "</a>");
 		if (Parameters.getCollectorApplicationsFile().canWrite()) {
 			writer.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writer.write("<a href='?action=remove_application&amp;application="
+			writer.write("<a class='confirm' href='?action=remove_application&amp;application="
 					+ I18N.urlEncode(application) + HtmlAbstractReport.getCsrfTokenUrlPart()
 					+ "' ");
 			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
 					application);
-			writer.write("onclick=\"javascript:return confirm('"
-					+ I18N.javascriptEncode(messageConfirmation) + "');\">");
+			writer.write(
+					"data-confirm=\"" + I18N.htmlEncode(messageConfirmation, false, false) + "\">");
 			final String removeApplicationLabel = I18N.getFormattedString("remove_application",
 					application);
 			writer.write("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
@@ -537,11 +537,9 @@ public class CollectorController { // NOPMD
 	public static void showAlertAndRedirectTo(HttpServletResponse resp, String message,
 			String redirectTo) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<script type='text/javascript'>alert('");
-		writer.write(I18N.javascriptEncode(message));
-		writer.write("');location.href='");
-		writer.write(redirectTo);
-		writer.write("';</script>");
+		writer.write("<span class='alertAndRedirect' data-alert='"
+				+ I18N.htmlEncode(message, false, false) + "' data-href='" + redirectTo
+				+ "'></span>");
 		writer.close();
 	}
 

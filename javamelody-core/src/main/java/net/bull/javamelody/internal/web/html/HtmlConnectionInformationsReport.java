@@ -92,7 +92,7 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 
 	private void writeBackAndRefreshLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'>");
+		writeln("<a class='back' href=''>");
 		writeln("<img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=connections'>");
