@@ -150,13 +150,22 @@
   	// prepare table header to be draggable
   	// it runs during class creation
   	for (var i=0; i<dragColumns.length; i++) {
-  		dragColumns[i].innerHTML = "<div style='position:relative;height:100%;width:100%'>"+
-  			"<div style='"+
-  			"position:absolute;height:100%;width:5px;margin-right:-5px;"+
-  			"left:100%;top:0px;cursor:w-resize;z-index:10;'>"+
-  			"</div>"+
-  			dragColumns[i].innerHTML+
-  			"</div>";
+  		var div = document.createElement("div");
+  		div.style.position = "relative";
+  		div.style.height = "100%";
+  		div.style.width = "100%";
+  		var innerDiv = document.createElement("div");
+  		innerDiv.style.position = "absolute";
+  		innerDiv.style.height = "100%";
+  		innerDiv.style.width = "5px";
+  		innerDiv.style.marginRight = "-5px";
+  		innerDiv.style.left = "100%";
+  		innerDiv.style.top = "0px";
+  		innerDiv.style.cursor = "w-resize";
+  		innerDiv.style.zIndex = "10";
+  		div.appendChild(innerDiv);
+  		while (dragColumns[i].childNodes.length) { div.appendChild(dragColumns[i].firstChild); }
+  		dragColumns[i].appendChild(div);
   			// BUGBUG: calculate real border width instead of 5px!!!
   			tmp = dragColumns[i].firstChild.firstChild;
   			myAddEventListener(tmp, "mousedown", startColumnDrag);
