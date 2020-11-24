@@ -174,7 +174,7 @@ lightwindow.prototype = {
 									'<a href="#" id="lightwindow_next" >'+
 										'<span id="lightwindow_next_title"></span>'+
 									'</a>'+
-									'<iframe name="lightwindow_navigation_shim" id="lightwindow_navigation_shim" src="javascript:false;" frameBorder="0" scrolling="no"></iframe>'+
+									'<iframe name="lightwindow_navigation_shim" id="lightwindow_navigation_shim" src="about:blank" frameBorder="0" scrolling="no"></iframe>'+
 								'</div>'+								
 								'<div id="lightwindow_galleries">'+
 									'<div id="lightwindow_galleries_tab_container" >'+
@@ -206,7 +206,7 @@ lightwindow.prototype = {
 				loading : 	'<div id="lightwindow_loading" >'+
 								'<img src="?resource=ajax-loading.gif" alt="loading" />'+
 								//'<span>Loading or <a href="javascript: myLightWindow.deactivate();">Cancel</a></span>'+
-								'<iframe name="lightwindow_loading_shim" id="lightwindow_loading_shim" src="javascript:false;" frameBorder="0" scrolling="no"></iframe>'+
+								'<iframe name="lightwindow_loading_shim" id="lightwindow_loading_shim" src="about:blank" frameBorder="0" scrolling="no"></iframe>'+
 							'</div>',
 				iframe : 	'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'+
 							'<html xmlns="http://www.w3.org/1999/xhtml">'+
