@@ -63,6 +63,7 @@ class Statsd extends MetricsPublisher {
 
 	static Statsd getInstance(String contextPath, String hostName) {
 		final String statsdAddress = Parameter.STATSD_ADDRESS.getValue();
+		final boolean shortMetricName = Parameter.STATSD_SHORT_METRIC_NAME.getValueAsBoolean();
 		if (statsdAddress != null) {
 			assert contextPath != null;
 			assert hostName != null;
@@ -77,10 +78,13 @@ class Statsd extends MetricsPublisher {
 				address = statsdAddress;
 				port = DEFAULT_STATSD_PORT;
 			}
-			// contextPath est du genre "/testapp"
-			// hostName est du genre "www.host.com"
-			final String prefix = "javamelody." + contextPath.replace("/", "") + '.' + hostName
-					+ '.';
+
+			String prefix = "javamelody.";
+			if (!shortMetricName) {
+				// contextPath est du genre "/testapp"
+				// hostName est du genre "www.host.com"
+				prefix += contextPath.replace("/", "") + '.' + hostName + '.';
+			}
 			try {
 				return new Statsd(InetAddress.getByName(address), port, prefix);
 			} catch (final UnknownHostException e) {

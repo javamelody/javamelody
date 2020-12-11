@@ -372,6 +372,11 @@ public enum Parameter {
 	STATSD_ADDRESS("statsd-address"),
 
 	/**
+	 * Use `javamelody.metricName` instead of `javameloady.context.hostName.metricName`. False by default.
+	 */
+	STATSD_SHORT_METRIC_NAME("statsd-short-metric-name"),
+
+	/**
 	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
 	 * for example "MyCompany/MyAppDomain" (null by default).
 	 */
