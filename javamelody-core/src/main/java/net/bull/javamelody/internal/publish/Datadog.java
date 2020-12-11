@@ -60,9 +60,12 @@ class Datadog extends MetricsPublisher {
 		assert datadogApiKey != null;
 		assert prefix != null;
 		assert hostAndTags != null;
+		String datadogHost = Parameter.DATADOG_HOST.getValue();
+		if (datadogHost == null) {
+			datadogHost = "https://api.datadoghq.com";
+		}
 		try {
-			this.datadogUrl = new URL(
-					"https://app.datadoghq.com/api/v1/series?api_key=" + datadogApiKey);
+			this.datadogUrl = new URL(datadogHost + "/api/v1/series?api_key=" + datadogApiKey);
 		} catch (final MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
