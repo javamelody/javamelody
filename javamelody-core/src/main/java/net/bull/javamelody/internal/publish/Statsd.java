@@ -63,7 +63,6 @@ class Statsd extends MetricsPublisher {
 
 	static Statsd getInstance(String contextPath, String hostName) {
 		final String statsdAddress = Parameter.STATSD_ADDRESS.getValue();
-		final boolean shortMetricName = Parameter.STATSD_SHORT_METRIC_NAME.getValueAsBoolean();
 		if (statsdAddress != null) {
 			assert contextPath != null;
 			assert hostName != null;
@@ -79,14 +78,14 @@ class Statsd extends MetricsPublisher {
 				port = DEFAULT_STATSD_PORT;
 			}
 
-			String prefix = "javamelody.";
-			if (!shortMetricName) {
-				// contextPath est du genre "/testapp"
-				// hostName est du genre "www.host.com"
-				prefix += contextPath.replace("/", "") + '.' + hostName + '.';
-			}
+			String statsdPrefix = Parameter.STATSD_PREFIX.getValueOrDefault("javamelody.${context}.${host}.");
+			// contextPath est du genre "/testapp"
+			// hostName est du genre "www.host.com"
+			statsdPrefix = statsdPrefix.replace("${context}", contextPath.replace("/", "")).
+					replace("${host}", hostName);
+
 			try {
-				return new Statsd(InetAddress.getByName(address), port, prefix);
+				return new Statsd(InetAddress.getByName(address), port, statsdPrefix);
 			} catch (final UnknownHostException e) {
 				throw new IllegalArgumentException("Invalid host: " + address, e);
 			}
@@ -140,5 +139,9 @@ class Statsd extends MetricsPublisher {
 	@Override
 	public void stop() {
 		// nothing
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

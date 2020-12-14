@@ -19,6 +19,7 @@ package net.bull.javamelody.internal.publish;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
@@ -59,6 +60,23 @@ public class TestStatsD {
 		statsd = Statsd.getInstance("/test", "hostname");
 		assertNotNull("getInstance", statsd);
 		statsd.stop();
+	}
+
+	/** Test prefix.
+	 * @throws IOException e */
+	@Test
+	public void testPrefix() throws IOException {
+		setProperty(Parameter.STATSD_ADDRESS, "localhost:8125");
+		Statsd statsd = Statsd.getInstance("/test", "hostname");
+		assertEquals("default prefix", "javamelody.test.hostname.", statsd.getPrefix());
+
+		setProperty(Parameter.STATSD_PREFIX, "javamelody.");
+		statsd = Statsd.getInstance("/test", "hostname");
+		assertEquals("short prefix", "javamelody.", statsd.getPrefix());
+
+		setProperty(Parameter.STATSD_PREFIX, "javamelody.${host}.");
+		statsd = Statsd.getInstance("/test", "host");
+		assertEquals("hostname prefix", "javamelody.host.", statsd.getPrefix());
 	}
 
 	private static void setProperty(Parameter parameter, String value) {

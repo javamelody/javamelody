@@ -374,7 +374,7 @@ public enum Parameter {
 	/**
 	 * Use `javamelody.metricName` instead of `javameloady.context.hostName.metricName`. False by default.
 	 */
-	STATSD_SHORT_METRIC_NAME("statsd-short-metric-name"),
+	STATSD_PREFIX("statsd-prefix"),
 
 	/**
 	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
@@ -417,6 +417,19 @@ public enum Parameter {
 	 */
 	public String getValue() {
 		return Parameters.getParameterValue(this);
+	}
+
+	/**
+	 *
+	 * @param defaultValue
+	 * @return value of the parameter or the default value
+	 */
+	public String getValueOrDefault(String defaultValue) {
+		String value = getValue();
+		if (value != null) {
+			return value;
+		}
+		return defaultValue;
 	}
 
 	/**
