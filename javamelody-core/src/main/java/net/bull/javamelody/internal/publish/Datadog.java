@@ -55,17 +55,13 @@ class Datadog extends MetricsPublisher {
 	private String lastTimestamp;
 	private boolean beginSeries;
 
-	Datadog(String datadogApiKey, String prefix, String hostAndTags) {
+	Datadog(String datadogApiKey, String datadogApiHost, String prefix, String hostAndTags) {
 		super();
 		assert datadogApiKey != null;
 		assert prefix != null;
 		assert hostAndTags != null;
-		String datadogHost = Parameter.DATADOG_HOST.getValue();
-		if (datadogHost == null) {
-			datadogHost = "https://api.datadoghq.com";
-		}
 		try {
-			this.datadogUrl = new URL(datadogHost + "/api/v1/series?api_key=" + datadogApiKey);
+			this.datadogUrl = new URL("https://" + datadogApiHost + "/api/v1/series?api_key=" + datadogApiKey);
 		} catch (final MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -83,6 +79,11 @@ class Datadog extends MetricsPublisher {
 	static Datadog getInstance(String contextPath, String hostName) {
 		final String datadogApiKey = Parameter.DATADOG_API_KEY.getValue();
 		if (datadogApiKey != null) {
+			String datadogApiHost = Parameter.DATADOG_API_HOST.getValue();
+			if (datadogApiHost == null) {
+				datadogApiHost = "api.datadoghq.com";
+			}
+
 			assert contextPath != null;
 			assert hostName != null;
 			// contextPath est du genre "/testapp"
@@ -92,7 +93,7 @@ class Datadog extends MetricsPublisher {
 			// see https://help.datadoghq.com/hc/en-us/articles/203764705-What-are-valid-metric-names-
 			final String hostAndTags = "\"host\":\"" + hostName + "\",\"tags\":[\"application:"
 					+ contextPath + "\"]";
-			return new Datadog(datadogApiKey, prefix, hostAndTags);
+			return new Datadog(datadogApiKey, datadogApiHost, prefix, hostAndTags);
 		}
 		return null;
 	}

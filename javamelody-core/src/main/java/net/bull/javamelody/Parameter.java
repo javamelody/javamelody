@@ -395,9 +395,9 @@ public enum Parameter {
 	DATADOG_API_KEY("datadog-api-key"),
 
 	/**
-	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'https://api.datadoghq.com' is default.
+	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'api.datadoghq.com' is default.
 	 */
-	DATADOG_HOST("datadog-host");
+	DATADOG_API_HOST("datadog-api-host");
 
 	private final String code;
 
