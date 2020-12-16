@@ -392,7 +392,12 @@ public enum Parameter {
 	 * API key of the <a href='https://www.datadoghq.com/'>Datadog</a> to send metrics,
 	 * for example: 9775a026f1ca7d1c6c5af9d94d9595a4 (null by default).
 	 */
-	DATADOG_API_KEY("datadog-api-key");
+	DATADOG_API_KEY("datadog-api-key"),
+
+	/**
+	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'api.datadoghq.com' is default.
+	 */
+	DATADOG_API_HOST("datadog-api-host");
 
 	private final String code;
 
