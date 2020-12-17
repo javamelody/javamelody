@@ -372,7 +372,9 @@ public enum Parameter {
 	STATSD_ADDRESS("statsd-address"),
 
 	/**
-	 * Use `javamelody.metricName` instead of `javameloady.context.hostName.metricName`. False by default.
+	 * Prefix of metrics that are sent to the <a href='https://github.com/etsy/statsd'>StatsD</a> server.
+	 * Supports a few macros: ${context} is replaced by the application context, ${host} is replaced by the
+	 * host name. Default value is "javamelody.${context}.${host}."
 	 */
 	STATSD_PREFIX("statsd-prefix"),
 
