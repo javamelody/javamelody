@@ -373,8 +373,7 @@ public enum Parameter {
 
 	/**
 	 * Prefix of metrics that are sent to the <a href='https://github.com/etsy/statsd'>StatsD</a> server.
-	 * Supports a few macros: ${context} is replaced by the application context, ${host} is replaced by the
-	 * host name. Default value is "javamelody.${context}.${host}."
+	 * Default value is "javamelody.context.host." where context and host gets replaced by the actual values.
 	 */
 	STATSD_PREFIX("statsd-prefix"),
 
@@ -419,19 +418,6 @@ public enum Parameter {
 	 */
 	public String getValue() {
 		return Parameters.getParameterValue(this);
-	}
-
-	/**
-	 *
-	 * @param defaultValue
-	 * @return value of the parameter or the default value
-	 */
-	public String getValueOrDefault(String defaultValue) {
-		String value = getValue();
-		if (value != null) {
-			return value;
-		}
-		return defaultValue;
 	}
 
 	/**

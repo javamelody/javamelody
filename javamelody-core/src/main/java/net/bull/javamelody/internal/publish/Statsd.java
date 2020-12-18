@@ -78,11 +78,12 @@ class Statsd extends MetricsPublisher {
 				port = DEFAULT_STATSD_PORT;
 			}
 
-			String statsdPrefix = Parameter.STATSD_PREFIX.getValueOrDefault("javamelody.${context}.${host}.");
-			// contextPath est du genre "/testapp"
-			// hostName est du genre "www.host.com"
-			statsdPrefix = statsdPrefix.replace("${context}", contextPath.replace("/", "")).
-					replace("${host}", hostName);
+			String statsdPrefix = Parameter.STATSD_PREFIX.getValue();
+			if (statsdPrefix == null) {
+				// contextPath est du genre "/testapp"
+				// hostName est du genre "www.host.com"
+				statsdPrefix = "javamelody." + contextPath.replace("/", "") + "." + hostName + ".";
+			}
 
 			try {
 				return new Statsd(InetAddress.getByName(address), port, statsdPrefix);
@@ -139,9 +140,5 @@ class Statsd extends MetricsPublisher {
 	@Override
 	public void stop() {
 		// nothing
-	}
-
-	public String getPrefix() {
-		return prefix;
 	}
 }
