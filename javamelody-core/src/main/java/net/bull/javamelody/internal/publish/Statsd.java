@@ -82,7 +82,7 @@ class Statsd extends MetricsPublisher {
 			if (statsdPrefix == null) {
 				// contextPath est du genre "/testapp"
 				// hostName est du genre "www.host.com"
-				statsdPrefix = "javamelody." + contextPath.replace("/", "") + "." + hostName + ".";
+				statsdPrefix = "javamelody." + contextPath.replace("/", "") + '.' + hostName + '.';
 			}
 
 			try {
