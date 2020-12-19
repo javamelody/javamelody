@@ -372,6 +372,12 @@ public enum Parameter {
 	STATSD_ADDRESS("statsd-address"),
 
 	/**
+	 * Prefix of metrics that are sent to the <a href='https://github.com/etsy/statsd'>StatsD</a> server.
+	 * Default value is "javamelody.context.host." where context and host gets replaced by the actual values.
+	 */
+	STATSD_PREFIX("statsd-prefix"),
+
+	/**
 	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
 	 * for example "MyCompany/MyAppDomain" (null by default).
 	 */

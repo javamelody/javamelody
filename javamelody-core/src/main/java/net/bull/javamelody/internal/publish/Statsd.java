@@ -77,12 +77,16 @@ class Statsd extends MetricsPublisher {
 				address = statsdAddress;
 				port = DEFAULT_STATSD_PORT;
 			}
-			// contextPath est du genre "/testapp"
-			// hostName est du genre "www.host.com"
-			final String prefix = "javamelody." + contextPath.replace("/", "") + '.' + hostName
-					+ '.';
+
+			String statsdPrefix = Parameter.STATSD_PREFIX.getValue();
+			if (statsdPrefix == null) {
+				// contextPath est du genre "/testapp"
+				// hostName est du genre "www.host.com"
+				statsdPrefix = "javamelody." + contextPath.replace("/", "") + "." + hostName + ".";
+			}
+
 			try {
-				return new Statsd(InetAddress.getByName(address), port, prefix);
+				return new Statsd(InetAddress.getByName(address), port, statsdPrefix);
 			} catch (final UnknownHostException e) {
 				throw new IllegalArgumentException("Invalid host: " + address, e);
 			}
