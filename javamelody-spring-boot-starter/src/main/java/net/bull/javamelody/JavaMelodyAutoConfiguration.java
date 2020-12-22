@@ -394,6 +394,7 @@ public class JavaMelodyAutoConfiguration {
 			"org.springframework.scheduling.quartz.SchedulerFactoryBean",
 			"org.quartz.JobListener" })
 	@Bean
+	@ConditionalOnMissingBean
 	public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer() {
 		return new SchedulerFactoryBeanCustomizer() {
 			@Override
