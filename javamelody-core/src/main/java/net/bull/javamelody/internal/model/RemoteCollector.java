@@ -352,7 +352,12 @@ public class RemoteCollector {
 
 	private void addRequestsAndErrors(List<Counter> counters) {
 		if (this.collector == null || aggregationDisabled) {
-			this.collector = new Collector(application, counters);
+			final List<Counter> clonedCounters = new ArrayList<>();
+			for (final Counter counter : counters) {
+				// clone, otherwise hits are counted twice in aggregations and aggregated
+				clonedCounters.add(counter.clone());
+			}
+			this.collector = new Collector(application, clonedCounters);
 		} else {
 			for (final Counter newCounter : counters) {
 				final Counter counter = collector.getCounterByName(newCounter.getName());
