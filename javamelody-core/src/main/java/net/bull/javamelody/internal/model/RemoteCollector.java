@@ -45,7 +45,7 @@ public class RemoteCollector {
 	private Map<JavaInformations, List<CounterRequestContext>> currentRequests;
 	private final List<Counter> newCounters = new ArrayList<>();
 	private List<RemoteCollector> remoteCollectors;
-	private final boolean aggregatedApplication;
+	private boolean aggregatedApplication;
 	private final boolean aggregationApplication;
 	private String cookies;
 	private boolean aggregationDisabled;
@@ -110,6 +110,7 @@ public class RemoteCollector {
 				if (counters.isEmpty()) {
 					// lors de la première collecte, il faut récupérer les counters et pas seulement les deltas
 					counters.addAll(remoteCollector.getCollector().getCounters());
+					remoteCollector.aggregatedApplication = true;
 				}
 				addRequestsAndErrors(counters);
 				if (aggregatedApplication) {
