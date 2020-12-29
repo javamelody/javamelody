@@ -23,8 +23,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -39,6 +41,7 @@ import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
+import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.model.MBeanNode.MBeanAttribute;
 
@@ -247,10 +250,33 @@ public final class MBeans {
 					} else {
 						sb.append(",\n");
 					}
-					sb.append(value);
+					if (attributeValue instanceof Number) {
+						sb.append(I18N.createIntegerFormat().format(attributeValue));
+					} else {
+						sb.append(value);
+					}
 				}
 				sb.append(']');
 				return sb.toString();
+			}
+			if (attributeValue instanceof Map) {
+				@SuppressWarnings("unchecked")
+				Map<Object, Object> map = (Map<Object, Object>) attributeValue;
+
+				LinkedHashMap<Object, Object> mapToString = new LinkedHashMap<>();
+
+				for (Entry<Object, Object> e : map.entrySet()) {
+					Object v = e.getValue();
+					if (v instanceof Number) {
+						mapToString.put(e.getKey(), I18N.createIntegerFormat().format(v));
+					} else {
+						mapToString.put(e.getKey(), attributeValue);
+					}
+				}
+				return mapToString.toString();
+			}
+			if (attributeValue instanceof Number) {
+				return I18N.createIntegerFormat().format(attributeValue);
 			}
 			return String.valueOf(attributeValue);
 		} catch (final Exception e) {
