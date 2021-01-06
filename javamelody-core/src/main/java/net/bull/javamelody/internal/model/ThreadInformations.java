@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Informations sur un thread java, sans code html de présentation.
@@ -40,6 +41,7 @@ public class ThreadInformations implements Serializable {
 	private static final boolean CPU_TIME_ENABLED = THREAD_BEAN.isThreadCpuTimeSupported()
 			&& THREAD_BEAN.isThreadCpuTimeEnabled();
 	private static final Method THREAD_ALLOCATED_BYTES_METHOD = getThreadAllocatedBytesMethod();
+	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(5);
 	private final String name;
 	private final long id;
 	private final int priority;
@@ -91,10 +93,23 @@ public class ThreadInformations implements Serializable {
 		// quand disponible (pas en jdk 9+), l'appel par réflexion est de l'ordre de 0,10 microseconde
 		// au lieu de 0,45 microseconde pour l'appel par MBeans
 		if (THREAD_ALLOCATED_BYTES_METHOD != null) {
+			final long finalThreadId = threadId;
+			Future<Long> bytesResult = EXECUTOR.submit(new Callable<Long>() {
+				@Override
+				public Long call() throws Exception {
+					return (Long) THREAD_ALLOCATED_BYTES_METHOD.invoke(THREAD_BEAN, finalThreadId);
+				}
+			});
 			try {
-				return (Long) THREAD_ALLOCATED_BYTES_METHOD.invoke(THREAD_BEAN, threadId);
-			} catch (final IllegalAccessException | InvocationTargetException e) {
-				throw new IllegalArgumentException(e);
+				// getThreadAllocatedBytes may get stuck when the system load is very high. Set a timeout for thread memory invoke
+				return bytesResult.get(10, TimeUnit.SECONDS);
+			} catch (ExecutionException ex) {
+				Throwable cause = ex.getCause();
+				if (cause instanceof IllegalAccessException || cause instanceof InvocationTargetException) {
+					throw new IllegalArgumentException(cause);
+				}
+			} catch (TimeoutException | InterruptedException ex) {
+				throw new RejectedExecutionException(ex);
 			}
 		}
 		return MBeansAccessor.getThreadAllocatedBytes(threadId);
