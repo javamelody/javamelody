@@ -403,7 +403,17 @@ public enum Parameter {
 	/**
 	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'api.datadoghq.com' is default.
 	 */
-	DATADOG_API_HOST("datadog-api-host");
+	DATADOG_API_HOST("datadog-api-host"),
+
+	/**
+	 * The credentials for the collection server to fetch the monitoring data from applications.
+	 * Format : user:password <br/>
+	 * <pre>
+	 * user:pwd
+	 * </pre>
+	 *
+	 * */
+	COLLECTION_SERVER_USER("collection-server-user");
 
 	private final String code;
 

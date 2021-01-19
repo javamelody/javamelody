@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -34,6 +35,7 @@ import java.util.zip.GZIPInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
@@ -148,6 +150,10 @@ public class LabradorRetriever {
 			// Rq: on ne gère pas ici les éventuels cookie de session http,
 			// puisque le filtre de monitoring n'est pas censé créer des sessions
 			//		if (cookie != null) { connection.setRequestProperty("Cookie", cookie); }
+			if(!(Parameter.COLLECTION_SERVER_USER.getValue() == null)){
+				String[] collectionServerCredentials = Parameter.COLLECTION_SERVER_USER.getValue().split(":");
+				connection.setRequestProperty("Authorization", getBasicAuthHeader(collectionServerCredentials[0],collectionServerCredentials[1]));
+			}
 
 			connection.connect();
 
@@ -184,6 +190,10 @@ public class LabradorRetriever {
 			LOG.info("http call done in " + (System.currentTimeMillis() - start) + " ms with "
 					+ dataLength / 1024 + " KB read for " + url);
 		}
+	}
+
+	private String getBasicAuthHeader(String username, String password) {
+		return String.format("Basic %s", new String(Base64.getEncoder().encode(String.format("%s:%s", username, password).getBytes())));
 	}
 
 	private static IOException createIOException(Exception e) {
