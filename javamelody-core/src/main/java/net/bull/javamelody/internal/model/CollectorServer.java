@@ -23,9 +23,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -119,27 +121,51 @@ public class CollectorServer {
 		try {
 			final Map<String, List<URL>> urlsByApplication = new LinkedHashMap<>(
 					Parameters.getCollectorUrlsByApplications());
-			final List<Future<?>> futures = new ArrayList<>(
-					collectForApplicationsWithoutErrors(urlsByApplication));
+			final List<Future<?>> futures = collectForApplicationsWithoutErrors(urlsByApplication);
 
-			final Map<String, List<String>> applicationsByAggregationApplication = Parameters
-					.getApplicationsByAggregationApplication();
+			final Map<String, List<String>> applicationsByAggregationApplication = new LinkedHashMap<>(
+					Parameters.getApplicationsByAggregationApplication());
 			if (!applicationsByAggregationApplication.isEmpty()) {
 				// on attend la fin des collectes par application avant les collectes par aggrégation
 				for (final Future<?> future : futures) {
 					future.get();
 				}
-				futures.clear();
-				urlsByApplication.clear();
-				for (final String aggregationApplication : applicationsByAggregationApplication
-						.keySet()) {
-					// pas la peine de lister les URLs, elles seront recalculées dans RemoteCollector.getURLs()
-					urlsByApplication.put(aggregationApplication, new ArrayList<URL>());
+				while (!applicationsByAggregationApplication.isEmpty()) {
+					int initialSize = applicationsByAggregationApplication.size();
+					final Iterator<Entry<String, List<String>>> it = applicationsByAggregationApplication
+							.entrySet().iterator();
+					while (it.hasNext()) {
+						final Map.Entry<String, List<String>> entry = it.next();
+						final String aggregationApplication = entry.getKey();
+						final List<String> aggregatedApplications = entry.getValue();
+						// est-ce que cette agrégation dépend d'une autre agrégation pas encore collectée ?
+						boolean aggregationOfAggregationYetToBeDone = false;
+						for (String aggregatedApplication : aggregatedApplications) {
+							if (applicationsByAggregationApplication
+									.containsKey(aggregatedApplication)) {
+								aggregationOfAggregationYetToBeDone = true;
+								break;
+							}
+						}
+						// si oui, on ne fait pas la collecte de cette agrégation avant l'autre agrégation
+						if (!aggregationOfAggregationYetToBeDone) {
+							// si non, on fait la collecte de cette agrégation maintenant.
+							// Pas la peine de lister les URLs, elles seront recalculées dans RemoteCollector.getURLs()
+							final List<URL> urls = new ArrayList<>();
+							collectForApplicationWithoutErrors(aggregationApplication, urls);
+							it.remove();
+						}
+					}
+					if (applicationsByAggregationApplication.size() == initialSize) {
+						// il reste des agrégations à collecter, mais elles forment un cycle entre elles
+						// ce qui n'est pas censé arriver
+						throw new IOException("Cycle of aggregations detected");
+					}
 				}
-				futures.addAll(collectForApplicationsWithoutErrors(urlsByApplication));
-				for (final Future<?> future : futures) {
-					future.get();
-				}
+			}
+			// les nouveaux counters ont été aggrégés, on peut les oublier
+			for (RemoteCollector remoteCollector : remoteCollectorsByApplication.values()) {
+				remoteCollector.clearNewCounters();
 			}
 		} catch (final IOException | ExecutionException | InterruptedException
 				| ConcurrentModificationException e) {

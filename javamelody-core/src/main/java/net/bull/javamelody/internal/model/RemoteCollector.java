@@ -116,8 +116,6 @@ public class RemoteCollector {
 				if (aggregatedApplication) {
 					newCounters.addAll(counters);
 				}
-				// les nouveaux counters ont été aggrégés dans cette application, on peut les oublier
-				counters.clear();
 			}
 		}
 		if (exception != null && javaInfosList.isEmpty()) {
@@ -412,6 +410,10 @@ public class RemoteCollector {
 
 	List<Counter> getNewCounters() {
 		return newCounters;
+	}
+
+	void clearNewCounters() {
+		newCounters.clear();
 	}
 
 	void setRemoteCollectors(List<RemoteCollector> remoteCollectors) {
