@@ -258,15 +258,12 @@ public final class MBeans {
 				}
 				sb.append(']');
 				return sb.toString();
-			}
-			if (attributeValue instanceof Map) {
+			} else if (attributeValue instanceof Map) {
 				@SuppressWarnings("unchecked")
-				Map<Object, Object> map = (Map<Object, Object>) attributeValue;
-
-				LinkedHashMap<Object, Object> mapToString = new LinkedHashMap<>();
-
-				for (Entry<Object, Object> e : map.entrySet()) {
-					Object v = e.getValue();
+				final Map<Object, Object> map = (Map<Object, Object>) attributeValue;
+				final LinkedHashMap<Object, Object> mapToString = new LinkedHashMap<>();
+				for (final Entry<Object, Object> e : map.entrySet()) {
+					final Object v = e.getValue();
 					if (v instanceof Number) {
 						mapToString.put(e.getKey(), I18N.createIntegerFormat().format(v));
 					} else {
@@ -274,8 +271,7 @@ public final class MBeans {
 					}
 				}
 				return mapToString.toString();
-			}
-			if (attributeValue instanceof Number) {
+			} else if (attributeValue instanceof Number) {
 				return I18N.createIntegerFormat().format(attributeValue);
 			}
 			return String.valueOf(attributeValue);

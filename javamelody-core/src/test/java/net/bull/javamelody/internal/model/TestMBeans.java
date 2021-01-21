@@ -164,14 +164,14 @@ public class TestMBeans {
 
 	private String find(String name1, String name2, String name3, String attributeName)
 			throws JMException {
-		for (MBeanNode mBeanNode : MBeans.getAllMBeanNodes()) {
-			for (MBeanNode children : mBeanNode.getChildren()) {
+		for (final MBeanNode mBeanNode : MBeans.getAllMBeanNodes()) {
+			for (final MBeanNode children : mBeanNode.getChildren()) {
 				if (children.getName().equals(name1)) {
-					for (MBeanNode cc : children.getChildren()) {
+					for (final MBeanNode cc : children.getChildren()) {
 						if (cc.getName().equals(name2)) {
-							for (MBeanNode ccc : cc.getChildren()) {
+							for (final MBeanNode ccc : cc.getChildren()) {
 								if (ccc.getName().equals(name3)) {
-									for (MBeanAttribute aaa : ccc.getAttributes()) {
+									for (final MBeanAttribute aaa : ccc.getAttributes()) {
 										if (aaa.getName().equals(attributeName)) {
 											return aaa.getFormattedValue();
 										}

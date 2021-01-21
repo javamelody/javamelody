@@ -131,7 +131,7 @@ public class CollectorServer {
 					future.get();
 				}
 				while (!applicationsByAggregationApplication.isEmpty()) {
-					int initialSize = applicationsByAggregationApplication.size();
+					final int initialSize = applicationsByAggregationApplication.size();
 					final Iterator<Entry<String, List<String>>> it = applicationsByAggregationApplication
 							.entrySet().iterator();
 					while (it.hasNext()) {
@@ -140,7 +140,7 @@ public class CollectorServer {
 						final List<String> aggregatedApplications = entry.getValue();
 						// est-ce que cette agrégation dépend d'une autre agrégation pas encore collectée ?
 						boolean aggregationOfAggregationYetToBeDone = false;
-						for (String aggregatedApplication : aggregatedApplications) {
+						for (final String aggregatedApplication : aggregatedApplications) {
 							if (applicationsByAggregationApplication
 									.containsKey(aggregatedApplication)) {
 								aggregationOfAggregationYetToBeDone = true;
@@ -164,7 +164,7 @@ public class CollectorServer {
 				}
 			}
 			// les nouveaux counters ont été aggrégés, on peut les oublier
-			for (RemoteCollector remoteCollector : remoteCollectorsByApplication.values()) {
+			for (final RemoteCollector remoteCollector : remoteCollectorsByApplication.values()) {
 				remoteCollector.clearNewCounters();
 			}
 		} catch (final IOException | ExecutionException | InterruptedException
