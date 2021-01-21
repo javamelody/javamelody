@@ -61,7 +61,8 @@ class Datadog extends MetricsPublisher {
 		assert prefix != null;
 		assert hostAndTags != null;
 		try {
-			this.datadogUrl = new URL("https://" + datadogApiHost + "/api/v1/series?api_key=" + datadogApiKey);
+			this.datadogUrl = new URL(
+					"https://" + datadogApiHost + "/api/v1/series?api_key=" + datadogApiKey);
 		} catch (final MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
