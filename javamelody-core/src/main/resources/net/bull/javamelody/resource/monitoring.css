@@ -35,6 +35,10 @@ a:hover img {
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
+.chapterTitle {
+	clear: both;
+}
+
 .chapterTitle img {
 	width: 24px;
 	height: 24px;
