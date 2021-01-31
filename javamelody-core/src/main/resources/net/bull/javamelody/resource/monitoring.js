@@ -147,7 +147,6 @@ if(document.getElementById("ga-js")){
 
 	  $$('#detailsGraphsA').invoke("observe", "click", function(event){
 		loadImages('detailsGraphs');
-		showHide('detailsGraphs');
 	  	event.preventDefault();
 	  });
 
