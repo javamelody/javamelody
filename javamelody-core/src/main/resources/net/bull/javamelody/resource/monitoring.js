@@ -48,7 +48,7 @@ if(document.getElementById("ga-js")){
 	  });
 	
 	  $$('.selectDatabaseReport').invoke("observe", "change", function(){
-	  	window.location.href='?part=database&amp;request=' + this.selectedIndex;
+	  	window.location.href='?part=database&request=' + this.selectedIndex;
 	  });
 	
 	  $$('.selectDeploymentPeriod').invoke("observe", "change", function(){
