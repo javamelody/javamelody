@@ -129,8 +129,8 @@ table thead th:last-child {
 	position: absolute;
 	top: 12px;
 	left: 20px;
-	/* une width fixe est nécessaire pour MSIE 7,
-	mais cela gâcherait tout sur firefox, chrome ou MSIE8 qui n'en ont pas besoin
+	/* une width fixe est nï¿½cessaire pour MSIE 7,
+	mais cela gï¿½cherait tout sur firefox, chrome ou MSIE8 qui n'en ont pas besoin
 	width: 800px; */
 	border-radius: 6px;
 	padding: 5px;
@@ -705,4 +705,8 @@ form.hash {
 
 .gray {
 	color: #808080;
+}
+
+.mbeanAttributes {
+	padding: 3px;
 }
