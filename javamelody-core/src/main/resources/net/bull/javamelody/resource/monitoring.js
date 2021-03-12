@@ -179,8 +179,7 @@ if(document.getElementById("ga-js")){
 
 	  $$('.alertAndRedirect').each(function(element){
 	  	alert(element.getAttribute('data-alert'));
-	  	window.location.href = ent.getAttribute('data-href');
-	  	event.preventDefault();
+	  	window.location.href = element.getAttribute('data-href');
 	  });
 
 	  if(document.getElementById('handle')) {
