@@ -333,7 +333,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			} else {
 				href = "?part=" + partToRedirectTo;
 			}
-			writeDirectly("<span class='alertDialogAndRedirect' data-alert='"
+			writeDirectly("<span class='alertAndRedirect' data-alert='"
 					+ I18N.htmlEncode(message, false, false) + "' data-href='" + href
 					+ "'></span>");
 		}

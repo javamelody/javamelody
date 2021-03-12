@@ -667,10 +667,6 @@ code .comment .string {
 	font-weight: bold;
 }
 
-.alertDialogAndRedirect {
-	display: none;
-}
-
 .displayNone {
 	display: none;
 }
