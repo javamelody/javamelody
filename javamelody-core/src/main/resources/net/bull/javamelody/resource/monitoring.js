@@ -103,11 +103,6 @@ if(document.getElementById("ga-js")){
 	  	event.preventDefault();
 	  });
 
-	  $$('.alertDialogAndRedirect').invoke("observe", "click", function(event){
-	  	alert(this.getAttribute('data-alert'));
-	  	event.preventDefault();
-	  });
-
 	  $$('.confirm').invoke("observe", "click", function(event){
 	  	if(! confirm(this.getAttribute('data-confirm'))){
 	  		event.preventDefault();
