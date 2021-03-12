@@ -98,7 +98,7 @@ public class HtmlReport extends HtmlAbstractReport {
 
 	public void toHtml(String message, String anchorNameForRedirect) throws IOException {
 		writeHtmlHeader();
-		htmlCoreReport.toHtml();
+		htmlCoreReport.toHtml(message, anchorNameForRedirect);
 		writeHtmlFooter();
 	}
 
