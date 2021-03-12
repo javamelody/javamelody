@@ -329,7 +329,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (message != null) {
 			String href;
 			if (partToRedirectTo == null) {
-				href = (anchorNameForRedirect == null) ? "?" : ("#" + anchorNameForRedirect);
+				href = (anchorNameForRedirect == null) ? "?" : ("?#" + anchorNameForRedirect);
 			} else {
 				href = "?part=" + partToRedirectTo;
 			}
