@@ -40,6 +40,10 @@ if(document.getElementById("ga-js")){
 	}
 
 	document.observe('dom:loaded', function(){
+	  $$('a.replaceImage').invoke("observe", "mouseover", function(){
+	  	document.getElementById(this.getAttribute("data-img-id")).src=this.getAttribute("data-img-src");
+	  });
+
 	  // scriptaculous can't animate elements that use a CSS class that sets display: none
 	  // so remove that CSS class and set the style property
 	  $$('.displayNone').each(function(element){

@@ -65,11 +65,17 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	void writeRequestGraph(String requestId, String requestName) throws IOException {
 		incrementUniqueByPageAndGraphSequence();
 		// la classe tooltip est configurée dans la css de HtmlReport
-		write("<a class='tooltip' href='?part=graph&amp;graph=");
+		write("<a class='tooltip replaceImage' href='?part=graph&amp;graph=");
 		write(requestId);
-		write("'>");
-		write("<em><img src='?graph=" + requestId + "&width=100&height=50' id='");
-		write("id" + uniqueByPageAndGraphSequence);
+		write("'");
+		final String id = "id" + uniqueByPageAndGraphSequence;
+		write(" data-img-id='" + id + "'");
+		write(" data-img-src='?graph=");
+		write(requestId);
+		write("&amp;width=100&amp;height=50'>");
+		// avant mouseover on prend une image qui sera mise en cache
+		write("<em><img src='?resource=db.png' id='");
+		write(id);
 		write("' alt='graph'/></em>");
 		if (requestName.length() <= MAX_REQUEST_NAME_LENGTH) {
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
