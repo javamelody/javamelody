@@ -496,10 +496,19 @@ public class CollectorController { // NOPMD
 		return new PrintWriter(MonitoringController.getWriter(httpResponse));
 	}
 
+	private static void writeHtmlBegin(PrintWriter writer) {
+		writer.write(
+				"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage() + "'><head>"
+				+ "<title>Monitoring</title>"
+				+ "<script type='text/javascript' src='?resource=prototype.js'></script>"
+				+ "<script type='text/javascript' src='?resource=monitoring.js'></script>"
+				+ "</head><body>");
+	}
+
 	public static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
-				+ "'><head><title>Monitoring</title></head><body>");
+		writeHtmlBegin(writer);
 		final Collection<String> applications = Collections.emptyList();
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, applications, writer);
 		writer.write("</body></html>");
@@ -509,8 +518,7 @@ public class CollectorController { // NOPMD
 	public static void writeDataUnavailableForApplication(String application,
 			HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
-				+ "'><head><title>Monitoring</title></head><body>");
+		writeHtmlBegin(writer);
 		writer.write(
 				I18N.htmlEncode(I18N.getFormattedString("data_unavailable", application), false));
 		writer.write("<br/><br/>");
