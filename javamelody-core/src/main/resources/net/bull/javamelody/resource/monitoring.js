@@ -162,7 +162,7 @@ if(document.getElementById("ga-js")){
 	  $$('form').invoke("observe", "submit", function(event){
 		$$(this).select("[required][data-required-message]").each(function(element){
 		  if(element.value.length == 0){
-		    alert(element.getAttribute("data-required"));
+		    alert(element.getAttribute("data-required-message"));
 		    event.preventDefault();
 		  }
 		});
