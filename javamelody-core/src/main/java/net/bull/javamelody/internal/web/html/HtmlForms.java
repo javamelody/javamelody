@@ -175,9 +175,13 @@ class HtmlForms extends HtmlAbstractReport {
 			writeln("<div id='addApplication' class='displayNone'>");
 		}
 		writeln("<br/> <br/>");
-		writeln("<form name='appForm' method='post' action='''>");
-		writeln("<br/><b><label for='appName'>#app_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required data-required-message='\" + htmlEncodeButNotSpace(getString(\"app_name_mandatory\")) + \"'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<b><label for='appUrls'>#app_urls#</label> :</b>&nbsp;&nbsp;<input type='text' size='50' id='appUrls' name='appUrls' required data-required-message='\" + htmlEncodeButNotSpace(getString(\"app_urls_mandatory\")) + \"'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<form name='appForm' method='post' action=''>");
+		writeln("<br/><b><label for='appName'>#app_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required data-required-message='"
+				+ htmlEncodeButNotSpace(getString("app_name_mandatory"))
+				+ "'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<b><label for='appUrls'>#app_urls#</label> :</b>&nbsp;&nbsp;<input type='text' size='50' id='appUrls' name='appUrls' required data-required-message='"
+				+ htmlEncodeButNotSpace(getString("app_urls_mandatory"))
+				+ "'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<input type='submit' value='#add#'/><br/>");
 		writeln("#urls_sample# : <i>http://myhost/myapp/</i> #or# <i>http://host1/myapp/,http://host2/myapp/</i>");
 		writeln("<br/> <br/>");
