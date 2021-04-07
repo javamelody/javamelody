@@ -135,7 +135,7 @@ public final class I18N {
 	public static String htmlEncode(String text, boolean encodeSpace, boolean encodeNewLine) {
 		// ces encodages html sont incomplets mais suffisants pour le monitoring
 		String result = text.replaceAll("[&]", "&amp;").replaceAll("[<]", "&lt;")
-				.replaceAll("[>]", "&gt;").replaceAll("'", "&#39;").replaceAll("\"", "&#34;");
+				.replaceAll("[>]", "&gt;").replaceAll("'", "&apos;").replaceAll("\"", "&quot;");
 		if (encodeSpace) {
 			result = result.replaceAll(" ", "&nbsp;");
 		}
