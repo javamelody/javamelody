@@ -54,10 +54,6 @@ a:hover img {
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
-td.containingIcon {
-	text-align: center;
-}
-
 table {
 	border-color: gray;
 	border-spacing: 0;
@@ -82,6 +78,10 @@ table tr.highlight td {
 td {
 	font-size: 11px;
 	padding: 2px;
+}
+
+td.containingIcon {
+	text-align: center;
 }
 
 table tr:last-child td:first-child {
