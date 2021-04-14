@@ -137,7 +137,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln("<img src='?resource=scaler_slider.gif' alt=''/>");
 			writeln("</div></div>");
 			writeln("</td><td>");
-			writeDirectly("<div class='noPrint' style='color: #808080;'>");
+			writeDirectly("<div class='noPrint gray'>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<label for='cb'><input id='cb' type='checkbox' onclick=\"handleHideMaximumClick(this);\"/>&nbsp;#hide_maximum#</label>");
 			writeln("</div> ");
@@ -148,7 +148,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			final String graphNameEncoded = urlEncode(graphName);
 			writeln("<img class='synthèse' id='img' src='" + "?width=960&amp;height=400&amp;graph="
 					+ graphNameEncoded + "' alt='zoom'/>");
-			writeDirectly("<br/><div align='right' style='color: #808080;'>");
+			writeDirectly("<br/><div align='right' class='gray'>");
 			writeln("#graph_units#");
 			writeln("</div><div align='right'>");
 			writeln("<a href='?part=lastValue&amp;graph=" + graphNameEncoded
@@ -396,7 +396,7 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 	private void writeChildRequest(CounterRequest childRequest, float executionsByRequest,
 			boolean allChildHitsDisplayed, boolean allocatedKBytesDisplayed) throws IOException {
 		writeln("<td>");
-		writeln("<div style='margin-left: 10px;' class='wrappedText'>");
+		writeln("<div class='wrappedText childRequest'>");
 		writeCounterIcon(childRequest);
 		writeRequestGraph(childRequest.getId(), childRequest.getName());
 		writeln("</div></td><td align='right'>");

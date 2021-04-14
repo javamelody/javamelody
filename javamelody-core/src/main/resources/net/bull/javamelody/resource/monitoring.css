@@ -35,6 +35,10 @@ a:hover img {
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
+.chapterTitle {
+	clear: both;
+}
+
 .chapterTitle img {
 	width: 24px;
 	height: 24px;
@@ -48,6 +52,10 @@ a:hover img {
 .synthese:hover {
 	transform: scale(1.05);
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
+}
+
+td.containingIcon {
+	text-align: center;
 }
 
 table {
@@ -653,4 +661,40 @@ code .comment .string {
 
 .github-fork-ribbon.left-top:before, .github-fork-ribbon.left-top:after, .github-fork-ribbon.right-bottom:before, .github-fork-ribbon.right-bottom:after {
   transform: rotate(-45deg);
+}
+
+.donate img {
+	position: absolute; top: 15px; right: 10px; border: 0;
+}
+
+.newVersion {
+	font-weight: bold;
+}
+
+.alert {
+	font-weight: bold;
+}
+
+.durationAndOverHead {
+	font-size: 11px;
+}
+
+.applicationStatus {
+	text-align: left; font-size: 11px;
+}
+
+.childRequest {
+	margin-left: 10px;
+}
+
+.gray {
+	color: #808080;
+}
+
+.mbeanNode {
+	margin-left: 20px;
+}
+
+.mbeanAttributes {
+	padding: 3px;
 }

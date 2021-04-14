@@ -89,8 +89,8 @@ public final class RumInjector implements HtmlToInject {
 		final String rumUrl = getRumUrlForBrowser(httpRequestName);
 		// approximation of server duration (may not be the real server duration, but not far in general)
 		final long serverTime = System.currentTimeMillis() - start;
-		return "\n<script src='" + rumUrl + "?resource=" + BOOMERANG_FILENAME
-				+ "'></script>\n<script>BOOMR.init({beacon_url: '" + rumUrl
+		return "\n<script id='boomr' type='text/javascript' src='" + rumUrl + "?resource="
+				+ BOOMERANG_FILENAME + "'></script>\n<script>BOOMR.init({beacon_url: '" + rumUrl
 				+ "?part=rum', log: null});\nBOOMR.addVar('requestName', \"" + httpRequestName
 				+ "\");\n" + "BOOMR.addVar('serverTime', " + serverTime + ");\n</script>\n";
 	}
