@@ -54,10 +54,6 @@ a:hover img {
 	-webkit-filter: drop-shadow(2px 2px 1px grey) /* Safari and Chrome */
 }
 
-td.containingIcon {
-	text-align: center;
-}
-
 table {
 	border-color: gray;
 	border-spacing: 0;
