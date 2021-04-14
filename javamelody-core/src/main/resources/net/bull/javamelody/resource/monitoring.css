@@ -675,6 +675,10 @@ code .comment .string {
 	font-weight: bold;
 }
 
+form.hash {
+	padding: 10px;
+}
+
 .durationAndOverHead {
 	font-size: 11px;
 }

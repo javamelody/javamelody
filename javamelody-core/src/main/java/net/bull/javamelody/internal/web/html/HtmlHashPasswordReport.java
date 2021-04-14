@@ -58,7 +58,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 			writeln("</script>");
 			writeln("<br/><br/>");
 		}
-		writeln("<form action='' method='post' style='padding: 10px;'>");
+		writeln("<form class='hash' action='' method='post'>");
 		writeln("<label for='algorithm'>Algorithm:</label>");
 		writeln("<select name='" + HttpParameter.ALGORITHM.getName()
 				+ "' id='algorithm' required>");
