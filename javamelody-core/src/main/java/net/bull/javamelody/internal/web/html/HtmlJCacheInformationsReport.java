@@ -198,7 +198,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 				writeDirectly(htmlEncodeButNotSpace(myKey));
 				writeDirectly("</td>");
 				if (systemActionsEnabled) {
-					writeDirectly("<td class='noPrint containingIcon'");
+					writeDirectly("<td class='noPrint containingIcon'>");
 					writeDirectly(
 							"<a class='confirm' href='?part=jcacheKeys&amp;action=clear_jcache_key&amp;cacheId=");
 					writeDirectly(cacheNameEncoded);

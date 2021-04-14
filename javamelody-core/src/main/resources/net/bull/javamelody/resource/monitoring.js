@@ -28,7 +28,7 @@ if(document.getElementById("ga-js")){
 	    }
 	  }
 	}
-	
+
 	function loadImages(elementId) {
 	  var descendents = document.getElementById(elementId).getElementsByTagName('*');
 	  for (var i = 0; i < descendents.length; i++) {

@@ -177,13 +177,13 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeHtmlHeader(false, false);
 	}
 
-	private void writeHtmlHeader(boolean includeSlider, boolean includeCssInline)
+	private void writeHtmlHeader(boolean includeSlider, boolean includeCssAndJsInline)
 			throws IOException {
 		writeln("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 		writeDirectly("<html lang='" + I18N.getCurrentLocale().getLanguage() + "'><head><title>"
 				+ getFormattedString("Monitoring_sur", collector.getApplication()) + "</title>");
 		writeln("");
-		if (includeCssInline) {
+		if (includeCssAndJsInline) {
 			writeln("<style type='text/css'>");
 			try (InputStream in = getClass()
 					.getResourceAsStream(Parameters.getResourcePath("monitoring.css"))) {
@@ -191,8 +191,16 @@ public class HtmlReport extends HtmlAbstractReport {
 				writeDirectly(monitoringCss);
 			}
 			writeln("</style>");
+			writeln("<script type='text/javascript'>");
+			try (InputStream in = getClass()
+					.getResourceAsStream(Parameters.getResourcePath("monitoring.js"))) {
+				final String monitoringJs = InputOutput.pumpToString(in, StandardCharsets.UTF_8);
+				writeDirectly(monitoringJs);
+			}
+			writeln("</script>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+			writeln("<script type='text/javascript' src='?resource=monitoring.js'></script>");
 			if (THEMED_MONITORING_CSS != null) {
 				writeln("<link rel='stylesheet' href='?resource=themedMonitoring.css' type='text/css'/>");
 			}
