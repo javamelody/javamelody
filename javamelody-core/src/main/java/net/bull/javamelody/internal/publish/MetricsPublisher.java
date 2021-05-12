@@ -85,6 +85,8 @@ public abstract class MetricsPublisher {
 
 	public abstract void addValue(String metric, double value) throws IOException;
 
+	public abstract void addValue(String metric, String value) throws IOException;
+
 	public abstract void send() throws IOException;
 
 	public abstract void stop();

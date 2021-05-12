@@ -114,6 +114,18 @@ class Graphite extends MetricsPublisher {
 	}
 
 	@Override
+	public synchronized void addValue(String metric, String value) throws IOException {
+		final long timeInSeconds = System.currentTimeMillis() / 1000;
+		if (lastTime != timeInSeconds) {
+			lastTimestamp = String.valueOf(timeInSeconds);
+			lastTime = timeInSeconds;
+		}
+		bufferWriter.append(prefix).append(metric).append(SEPARATOR);
+		bufferWriter.append(value).append(SEPARATOR);
+		bufferWriter.append(lastTimestamp).append('\n');
+	}
+
+	@Override
 	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();

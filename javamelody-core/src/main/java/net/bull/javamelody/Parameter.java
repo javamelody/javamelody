@@ -403,7 +403,17 @@ public enum Parameter {
 	/**
 	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'api.datadoghq.com' is default.
 	 */
-	DATADOG_API_HOST("datadog-api-host");
+	DATADOG_API_HOST("datadog-api-host"),
+
+	/**
+	 * Integer value as minimum time collector for current requests
+	 */
+	CURRENT_REQUEST_MIN_DURATION_LOG("current-request-min-duration"),
+
+	/**
+	 * Integer value as minimum time collector for current requests
+	 */
+	CURRENT_REQUEST_STACKTRACE_SIZE("current-request-stacktrace-size");
 
 	private final String code;
 

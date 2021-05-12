@@ -102,6 +102,20 @@ class InfluxDB extends MetricsPublisher {
 	}
 
 	@Override
+	public synchronized void addValue(String metric, String value) throws IOException {
+		// ex curl -i -XPOST 'http://localhost:8086/write?db=mydb&precision=s' --data-binary
+		// 'cpu_load_short,direction=in,host=server01,region=us-west value=2.0 1422568543702'
+		final long timeInSeconds = System.currentTimeMillis() / 1000;
+		if (lastTime != timeInSeconds) {
+			lastTimestamp = String.valueOf(timeInSeconds);
+			lastTime = timeInSeconds;
+		}
+		bufferWriter.append(prefix).append(metric).append(tags).append(SEPARATOR);
+		bufferWriter.append("value=").append('"'+value+'"').append(SEPARATOR);
+		bufferWriter.append(lastTimestamp).append('\n');
+	}
+
+	@Override
 	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();

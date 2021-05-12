@@ -141,6 +141,9 @@ class CloudWatch extends MetricsPublisher {
 	}
 
 	@Override
+	public void addValue(String metric, String value) {}
+
+	@Override
 	public void send() throws IOException {
 		final List<MetricDatum> datumList;
 		synchronized (buffer) {

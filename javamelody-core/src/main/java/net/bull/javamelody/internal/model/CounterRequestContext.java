@@ -50,6 +50,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	private final long threadId;
 	// attention, si sérialisation vers serveur de collecte, la durée peut être impactée s'il y a désynchronisation d'horloge
 	private final long startTime;
+	private final long currentTime;
 	private final long startCpuTime;
 	private final long startAllocatedBytes;
 	private final String sessionId;
@@ -93,6 +94,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		this.remoteUser = remoteUser;
 		this.threadId = threadId;
 		this.startTime = startTime;
+		this.currentTime = System.currentTimeMillis() - startTime;
 		this.startCpuTime = startCpuTime;
 		this.startAllocatedBytes = startAllocatedBytes;
 		this.sessionId = sessionId;
@@ -170,6 +172,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	public long getThreadId() {
 		return threadId;
 	}
+
+	public long getCurrentTime() { return currentTime; }
 
 	public int getDuration(long timeOfSnapshot) {
 		// durée écoulée (non négative même si resynchro d'horloge)
@@ -349,7 +353,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	public String toString() {
 		return getClass().getSimpleName() + "[parentCounter=" + getParentCounter().getName()
 				+ ", completeRequestName=" + getCompleteRequestName() + ", threadId="
-				+ getThreadId() + ", startTime=" + startTime + ", childHits=" + getChildHits()
+				+ getThreadId() + ", startTime=" + startTime + ", currentTime=" + currentTime + ", childHits=" + getChildHits()
 				+ ", childDurationsSum=" + getChildDurationsSum() + ", childContexts="
 				+ getChildContexts() + ']';
 	}

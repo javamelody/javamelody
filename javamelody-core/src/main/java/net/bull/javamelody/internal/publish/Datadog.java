@@ -131,6 +131,38 @@ class Datadog extends MetricsPublisher {
 	}
 
 	@Override
+	public synchronized void addValue(String metric, String value) throws IOException {
+		/*
+		https://docs.datadoghq.com/api/
+		json example for timestamp now, host and tags are optional.
+		"{ \"series\" :
+		        [{\"metric\":\"page.views\",
+		          \"points\":[[$currenttime, 1000]],
+		          \"host\":\"myhost.example.com\",
+		          \"tags\":[\"version:1\"]}
+		        ]
+		}"
+		*/
+
+		final long timeInSeconds = System.currentTimeMillis() / 1000;
+		if (lastTime != timeInSeconds) {
+			lastTimestamp = String.valueOf(timeInSeconds);
+			lastTime = timeInSeconds;
+		}
+		if (beginSeries) {
+			beginSeries = false;
+		} else {
+			bufferWriter.append(',');
+		}
+		bufferWriter.append("\n{\"metric\":\"").append(prefix).append(metric).append("\",");
+		bufferWriter.append("\"points\":[[").append(lastTimestamp).append(',')
+				.append(value).append("]],");
+		bufferWriter.append(hostAndTags);
+		bufferWriter.append('}');
+	}
+
+
+	@Override
 	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.append(END_SERIES);

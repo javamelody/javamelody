@@ -104,6 +104,15 @@ class Statsd extends MetricsPublisher {
 	}
 
 	@Override
+	public synchronized void addValue(String metric, String value) throws IOException {
+		// String.format(Locale.ENGLISH, "%s:%d|ms", key, value) for a timing value
+		// String.format(Locale.ENGLISH, "%s:%s|c", key, magnitude) to increment a counter
+		// String.format(Locale.ENGLISH, "%s:%s|g", key, value) for a gauge value
+		bufferWriter.append(prefix).append(metric).append(':');
+		bufferWriter.append(value).append("|g\n");
+	}
+
+	@Override
 	public synchronized void send() throws IOException {
 		try {
 			bufferWriter.flush();

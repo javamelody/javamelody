@@ -30,13 +30,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import net.bull.javamelody.JdbcWrapper;
+import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter.CounterRequestContextComparator;
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
 import net.bull.javamelody.internal.publish.MetricsPublisher;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Collecteur de données sur les compteurs, avec son propre thread, pour remplir les courbes.
@@ -77,6 +80,10 @@ public class Collector { // NOPMD
 	private List<MetricsPublisher> metricsPublishers;
 	private final WebappVersions webappVersions;
 	private final StorageLock storageLock;
+	private String currRequestMinDurationLog = Parameter.CURRENT_REQUEST_MIN_DURATION_LOG.getValue();
+	private int stackTraceSize;
+	private boolean includeDetails = currRequestMinDurationLog != null ? true : false;
+
 
 	/**
 	 * Constructeur.
@@ -132,7 +139,12 @@ public class Collector { // NOPMD
 			LOG.warn("exception while reading counters data from files in "
 					+ Parameters.getStorageDirectory(application), e);
 		}
-
+		try {
+			String strackTraceSizeParameter = Parameter.CURRENT_REQUEST_STACKTRACE_SIZE.getValue();
+			stackTraceSize =  strackTraceSizeParameter != null ? Integer.parseInt(strackTraceSizeParameter) : 1;
+		} catch (Exception exception) {
+			LOG.warn("Invalid stackTraceSize parameter: ", exception);
+		}
 		// puis pose le lock
 		this.storageLock = new StorageLock(application);
 
@@ -313,7 +325,7 @@ public class Collector { // NOPMD
 		// car on n'en a pas besoin pour la collecte et cela économise des requêtes sql
 		try {
 			final JavaInformations javaInformations = new JavaInformations(
-					Parameters.getServletContext(), false);
+					Parameters.getServletContext(), includeDetails);
 
 			collectWithoutErrors(Collections.singletonList(javaInformations));
 		} catch (final Throwable t) { // NOPMD
@@ -350,6 +362,7 @@ public class Collector { // NOPMD
 				collectJavaInformations(javaInformationsList);
 				collectOtherJavaInformations(javaInformationsList);
 				collectTomcatInformations(javaInformationsList);
+				collectCurrentRequests(javaInformationsList);
 			}
 			for (final Counter counter : counters) {
 				// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
@@ -531,6 +544,35 @@ public class Collector { // NOPMD
 		// on pourrait collecter la valeur 100 dans jrobin pour qu'il fasse la moyenne
 		// du pourcentage de disponibilité, mais cela n'aurait pas de sens sans
 		// différenciation des indisponibilités prévues de celles non prévues
+	}
+
+	private void collectCurrentRequests(List<JavaInformations> javaInformationsList) {
+		if (currRequestMinDurationLog == null) return;
+		if (metricsPublishers == null) return;
+
+		List<ThreadInformations> threadInformationsList = javaInformationsList.get(0).getThreadInformationsList();
+		try {
+			List<CounterRequestContext> rootCurrentContextList = getRootCurrentContexts(counters);
+			for (final CounterRequestContext rootCurrentContext : rootCurrentContextList) {
+				if (rootCurrentContext.getDuration(System.currentTimeMillis()) < (Integer.parseInt(currRequestMinDurationLog) * 1000)) return;
+				List fullStackTrace = threadInformationsList.stream()
+						.filter(threadInformations -> threadInformations.getId() == rootCurrentContext.getThreadId())
+						.collect(Collectors.toList())
+						.get(0).getStackTrace();
+				String stackTrace = fullStackTrace.subList(0, stackTraceSize).toString();
+				ArrayList<String> responseList = new ArrayList<String>();
+				responseList.add(rootCurrentContext.getCompleteRequestName());
+				responseList.add("threadId=\"" + rootCurrentContext.getThreadId());
+				responseList.add("currentTime=\"" + rootCurrentContext.getCurrentTime());
+				responseList.add("currentClass=\"" + stackTrace);
+				String response = String.join("\",", responseList);
+				for (final MetricsPublisher metricsPublisher : metricsPublishers) {
+					metricsPublisher.addValue("currentRequests", response);
+				}
+			}
+		} catch (final IOException e) {
+			LOG.warn("Exception while getting currentRequests", e);
+		}
 	}
 
 	private void collectTomcatInformations(List<JavaInformations> javaInformationsList)
