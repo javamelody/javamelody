@@ -362,8 +362,7 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 		HtmlReport.writeAddAndRemoveApplicationLinks("test", new ArrayList<String>(), writer);
 		assertNotEmptyAndClear(writer);
-		final Connection connection = TestDatabaseInformations.initH2();
-		try {
+		try (Connection connection = TestDatabaseInformations.initH2()) {
 			htmlReport.writeDatabase(new DatabaseInformations(0)); // h2.memory
 			assertNotEmptyAndClear(writer);
 			htmlReport.writeDatabase(new DatabaseInformations(3)); // h2.settings avec nbColumns==2
@@ -381,8 +380,6 @@ public class TestHtmlReport {
 			System.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "custom", "custom.jsp");
 			htmlReport.toHtml(null, null); // writeMenu
 			assertNotEmptyAndClear(writer);
-		} finally {
-			connection.close();
 		}
 	}
 
@@ -493,7 +490,7 @@ public class TestHtmlReport {
 		final String cacheName = "test 1";
 		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
 				.getCacheManager();
-		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<>();
 		conf.setManagementEnabled(true);
 		conf.setStatisticsEnabled(true);
 		jcacheManager.createCache(cacheName, conf);
@@ -505,7 +502,7 @@ public class TestHtmlReport {
 			cache.put(1, Math.random());
 			cache.get(1);
 			cache.get(0);
-			final MutableConfiguration<Object, Object> conf2 = new MutableConfiguration<Object, Object>();
+			final MutableConfiguration<Object, Object> conf2 = new MutableConfiguration<>();
 			conf2.setManagementEnabled(false);
 			conf2.setStatisticsEnabled(false);
 			jcacheManager.createCache(cacheName2, conf2);
@@ -582,7 +579,7 @@ public class TestHtmlReport {
 
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
 			// (aléatoirement il y en a 2/10 qui font une erreur)
-			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<JobDetail, SimpleTrigger>();
+			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<>();
 			for (int i = 0; i < 10; i++) {
 				//Define a Trigger that will fire "now"
 				final JobDetail job = new JobDetail("job" + random.nextInt(), null,

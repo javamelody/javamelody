@@ -64,9 +64,7 @@ public class TestCloudWatch {
 		boolean exception = false;
 		try {
 			cloudWatch.send();
-		} catch (final SdkClientException e) {
-			exception = true;
-		} catch (final IOException e) {
+		} catch (final SdkClientException | IOException e) {
 			exception = true;
 		}
 		assertTrue("no credentials provided", exception);

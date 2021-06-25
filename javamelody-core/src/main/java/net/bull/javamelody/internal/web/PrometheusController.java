@@ -244,7 +244,7 @@ class PrometheusController {
 		// CHECKSTYLE:ON
 		final List<CacheInformations> cacheInformationsList = javaInformations
 				.getCacheInformationsList();
-		final Map<String, CacheInformations> cacheInfos = new LinkedHashMap<String, CacheInformations>(
+		final Map<String, CacheInformations> cacheInfos = new LinkedHashMap<>(
 				cacheInformationsList.size());
 		for (final CacheInformations cacheInfo : cacheInformationsList) {
 			final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
@@ -296,7 +296,7 @@ class PrometheusController {
 	private void reportOnJCacheInformations() { // NOPMD
 		final List<JCacheInformations> jcacheInformationsList = javaInformations
 				.getJCacheInformationsList();
-		final Map<String, JCacheInformations> cacheInfos = new LinkedHashMap<String, JCacheInformations>(
+		final Map<String, JCacheInformations> cacheInfos = new LinkedHashMap<>(
 				jcacheInformationsList.size());
 		for (final JCacheInformations cacheInfo : jcacheInformationsList) {
 			final String fields = "{cache_name=\"" + sanitizeName(cacheInfo.getName()) + "\"}";
@@ -322,7 +322,7 @@ class PrometheusController {
 	// CHECKSTYLE:OFF
 	private void reportOnTomcatInformations() { // NOPMD
 		// CHECKSTYLE:ON
-		final Map<String, TomcatInformations> tcInfos = new LinkedHashMap<String, TomcatInformations>();
+		final Map<String, TomcatInformations> tcInfos = new LinkedHashMap<>();
 		for (final TomcatInformations tcInfo : javaInformations.getTomcatInformationsList()) {
 			if (tcInfo.getRequestCount() > 0) {
 				final String fields = "{tomcat_name=\"" + sanitizeName(tcInfo.getName()) + "\"}";

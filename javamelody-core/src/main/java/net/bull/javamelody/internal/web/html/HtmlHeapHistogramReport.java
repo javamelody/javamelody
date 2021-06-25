@@ -83,7 +83,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 	private void writeClassInfoSummaryAndDetails(List<ClassInfo> classHistogram,
 			long totalInstances, long totalBytes, boolean heap, boolean sourceDisplayed)
 			throws IOException {
-		final List<ClassInfo> summaryClassHistogram = new ArrayList<ClassInfo>();
+		final List<ClassInfo> summaryClassHistogram = new ArrayList<>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {
 				break;
@@ -102,7 +102,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		writeShowHideLink(id, "#Details#");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("</div><div id='" + id + "' style='display:none;'>");
-		final List<ClassInfo> detailsClassHistogram = new ArrayList<ClassInfo>();
+		final List<ClassInfo> detailsClassHistogram = new ArrayList<>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {
 				detailsClassHistogram.add(classInfo);

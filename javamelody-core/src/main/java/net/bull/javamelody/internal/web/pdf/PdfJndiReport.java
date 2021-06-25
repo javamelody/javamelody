@@ -69,7 +69,7 @@ class PdfJndiReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Nom"));
 		headers.add(getString("Type"));
 		headers.add(getString("Value"));

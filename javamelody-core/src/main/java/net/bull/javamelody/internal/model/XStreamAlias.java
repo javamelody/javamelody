@@ -32,7 +32,7 @@ final class XStreamAlias {
 	}
 
 	static Map<String, Class<?>> getMap() {
-		final Map<String, Class<?>> result = new HashMap<String, Class<?>>();
+		final Map<String, Class<?>> result = new HashMap<>();
 		result.put("counter", Counter.class);
 		result.put("request", CounterRequest.class);
 		result.put("requestContext", CounterRequestContext.class);

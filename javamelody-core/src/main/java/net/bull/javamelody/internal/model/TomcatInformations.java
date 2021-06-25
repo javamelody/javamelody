@@ -46,9 +46,9 @@ public final class TomcatInformations implements Serializable {
 	private static final long serialVersionUID = -6145865427461051370L;
 
 	@SuppressWarnings("all")
-	private static final List<ObjectName> THREAD_POOLS = new ArrayList<ObjectName>();
+	private static final List<ObjectName> THREAD_POOLS = new ArrayList<>();
 	@SuppressWarnings("all")
-	private static final List<ObjectName> GLOBAL_REQUEST_PROCESSORS = new ArrayList<ObjectName>();
+	private static final List<ObjectName> GLOBAL_REQUEST_PROCESSORS = new ArrayList<>();
 
 	private static int mbeansInitAttemps;
 
@@ -111,7 +111,7 @@ public final class TomcatInformations implements Serializable {
 					mbeansInitAttemps++;
 				}
 			}
-			final List<TomcatInformations> tomcatInformationsList = new ArrayList<TomcatInformations>(
+			final List<TomcatInformations> tomcatInformationsList = new ArrayList<>(
 					THREAD_POOLS.size());
 			// rq: le processor correspondant au threadPool peut se retrouver selon
 			// threadPool.getKeyProperty("name").equals(globalRequestProcessor.getKeyProperty("name"))
@@ -119,11 +119,9 @@ public final class TomcatInformations implements Serializable {
 				tomcatInformationsList.add(new TomcatInformations(threadPool));
 			}
 			return tomcatInformationsList;
-		} catch (final InstanceNotFoundException e) {
-			// nécessaire pour JBoss 6.0 quand appelé depuis MonitoringFilter.destroy via
+		} catch (final InstanceNotFoundException | AttributeNotFoundException e) {
+			// catch InstanceNotFoundException nécessaire pour JBoss 6.0 quand appelé depuis MonitoringFilter.destroy via
 			// writeHtmlToLastShutdownFile
-			return Collections.emptyList();
-		} catch (final AttributeNotFoundException e) {
 			// issue 220 and end of issue 133:
 			// AttributeNotFoundException: No attribute called maxThreads (in some JBossAS or JBossWeb)
 			return Collections.emptyList();

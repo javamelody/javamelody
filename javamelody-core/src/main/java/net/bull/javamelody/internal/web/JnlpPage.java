@@ -67,7 +67,7 @@ public class JnlpPage {
 		println("      <j2se version='1.7+' max-heap-size='300m'/>");
 		final String jarFileUrl = getJarFileUrl();
 		println("      <jar href='" + jarFileUrl + "' />");
-		final Map<String, Object> properties = new LinkedHashMap<String, Object>();
+		final Map<String, Object> properties = new LinkedHashMap<>();
 		properties.put("javamelody.application", collector.getApplication());
 		properties.put("javamelody.collectorServer", collectorServer != null);
 		final String url;

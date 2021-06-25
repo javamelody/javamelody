@@ -28,7 +28,7 @@ import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -53,7 +53,7 @@ class Statsd extends MetricsPublisher {
 	private final DecimalFormat decimalFormat = new DecimalFormat("0.00",
 			DecimalFormatSymbols.getInstance(Locale.US));
 	private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-	private final Writer bufferWriter = new OutputStreamWriter(buffer, Charset.forName("UTF-8"));
+	private final Writer bufferWriter = new OutputStreamWriter(buffer, StandardCharsets.UTF_8);
 
 	Statsd(InetAddress host, int port, String prefix) {
 		super();
@@ -77,12 +77,16 @@ class Statsd extends MetricsPublisher {
 				address = statsdAddress;
 				port = DEFAULT_STATSD_PORT;
 			}
-			// contextPath est du genre "/testapp"
-			// hostName est du genre "www.host.com"
-			final String prefix = "javamelody." + contextPath.replace("/", "") + '.' + hostName
-					+ '.';
+
+			String statsdPrefix = Parameter.STATSD_PREFIX.getValue();
+			if (statsdPrefix == null) {
+				// contextPath est du genre "/testapp"
+				// hostName est du genre "www.host.com"
+				statsdPrefix = "javamelody." + contextPath.replace("/", "") + '.' + hostName + '.';
+			}
+
 			try {
-				return new Statsd(InetAddress.getByName(address), port, prefix);
+				return new Statsd(InetAddress.getByName(address), port, statsdPrefix);
 			} catch (final UnknownHostException e) {
 				throw new IllegalArgumentException("Invalid host: " + address, e);
 			}
@@ -105,8 +109,7 @@ class Statsd extends MetricsPublisher {
 			bufferWriter.flush();
 			final byte[] bytes = buffer.toByteArray();
 			final ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-			final DatagramChannel channel = createDatagramChannel();
-			try {
+			try (DatagramChannel channel = createDatagramChannel()) {
 				final int nbSentBytes = channel.send(byteBuffer, address);
 				if (bytes.length != nbSentBytes) {
 					final String msg = String.format(
@@ -114,8 +117,6 @@ class Statsd extends MetricsPublisher {
 							address.getHostName(), address.getPort(), nbSentBytes, bytes.length);
 					LOG.warn(msg, new IOException(msg));
 				}
-			} finally {
-				channel.close();
 			}
 		} catch (final ConnectException e) {
 			throw new IOException("Error connecting to StatsD at " + address.getHostName() + ':'

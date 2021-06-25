@@ -195,17 +195,19 @@ public abstract class HtmlAbstractReport {
 	public static String getCsrfTokenUrlPart() {
 		if (CSRF_PROTECTION_ENABLED) {
 			final HttpSession currentSession = SessionListener.getCurrentSession();
-			String csrfToken = (String) currentSession
-					.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME);
-			if (csrfToken == null) {
-				final byte[] bytes = new byte[16];
-				new SecureRandom().nextBytes(bytes);
-				csrfToken = new String(Base64Coder.encode(bytes));
-				// '+' would break in the url parameters
-				csrfToken = csrfToken.replace('+', '0').replace('/', '1');
-				currentSession.setAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME, csrfToken);
+			if (currentSession != null) {
+				String csrfToken = (String) currentSession
+						.getAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME);
+				if (csrfToken == null) {
+					final byte[] bytes = new byte[16];
+					new SecureRandom().nextBytes(bytes);
+					csrfToken = new String(Base64Coder.encode(bytes));
+					// '+' would break in the url parameters
+					csrfToken = csrfToken.replace('+', '0').replace('/', '1');
+					currentSession.setAttribute(SessionListener.CSRF_TOKEN_SESSION_NAME, csrfToken);
+				}
+				return "&amp;" + HttpParameter.TOKEN + '=' + csrfToken;
 			}
-			return "&amp;" + HttpParameter.TOKEN + '=' + csrfToken;
 		}
 		return "";
 	}

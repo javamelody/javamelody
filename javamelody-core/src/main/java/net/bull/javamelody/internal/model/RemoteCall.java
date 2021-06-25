@@ -166,7 +166,7 @@ class RemoteCall {
 	@SuppressWarnings("unchecked")
 	List<List<ConnectionInformations>> collectConnectionInformations() throws IOException {
 		// récupération à la demande des connections
-		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<List<ConnectionInformations>>();
+		final List<List<ConnectionInformations>> connectionInformations = new ArrayList<>();
 		final URL connectionsUrl = new URL(
 				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.CONNECTIONS);
 		final Object result = collectForUrl(connectionsUrl);
@@ -186,7 +186,7 @@ class RemoteCall {
 	Map<String, List<ProcessInformations>> collectProcessInformations() throws IOException {
 		// récupération à la demande des processus
 		final String title = I18N.getString("Processus");
-		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<String, List<ProcessInformations>>();
+		final Map<String, List<ProcessInformations>> processesByTitle = new LinkedHashMap<>();
 		final URL processUrl = new URL(
 				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.PROCESSES);
 		final Object result = collectForUrl(processUrl);
@@ -223,7 +223,7 @@ class RemoteCall {
 	Map<String, List<MBeanNode>> collectMBeans() throws IOException {
 		// récupération à la demande des MBeans
 		final String title = I18N.getString("MBeans");
-		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<String, List<MBeanNode>>();
+		final Map<String, List<MBeanNode>> mbeansByTitle = new LinkedHashMap<>();
 		final URL mbeansUrl = new URL(
 				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.MBEANS);
 		final Object result = collectForUrl(mbeansUrl);
@@ -290,7 +290,7 @@ class RemoteCall {
 	String collectSqlRequestExplainPlan(String sqlRequest) throws IOException {
 		final URL explainPlanUrl = new URL(
 				url.toString() + '&' + HttpParameter.PART + '=' + HttpPart.EXPLAIN_PLAN);
-		final Map<String, String> headers = new HashMap<String, String>();
+		final Map<String, String> headers = new HashMap<>();
 		headers.put(HttpParameter.REQUEST.getName(), sqlRequest);
 		if (cookies != null) {
 			headers.put("Cookie", cookies);

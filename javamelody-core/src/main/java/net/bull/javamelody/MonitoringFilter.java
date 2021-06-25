@@ -61,7 +61,7 @@ public class MonitoringFilter implements Filter {
 
 	private static boolean instanceCreated;
 
-	private static final List<String> CONTEXT_PATHS = new ArrayList<String>();
+	private static final List<String> CONTEXT_PATHS = new ArrayList<>();
 
 	private static URL unregisterApplicationNodeInCollectServerUrl;
 

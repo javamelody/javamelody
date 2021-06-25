@@ -24,7 +24,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,7 +43,6 @@ import net.bull.javamelody.internal.common.HttpPart;
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.Action;
 import net.bull.javamelody.internal.model.Collector;
-import net.bull.javamelody.internal.model.ConnectionInformations;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.CounterRequestAggregation;
@@ -54,15 +52,11 @@ import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
-import net.bull.javamelody.internal.model.MBeanNode;
 import net.bull.javamelody.internal.model.MBeans;
 import net.bull.javamelody.internal.model.MavenArtifact;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.ProcessInformations;
 import net.bull.javamelody.internal.model.Range;
-import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
-import net.bull.javamelody.internal.model.SessionInformations;
-import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.model.TransportFormat;
 import net.bull.javamelody.internal.model.VirtualMachine;
 import net.bull.javamelody.internal.web.RequestToMethodMapper.RequestAttribute;
@@ -78,7 +72,7 @@ public class SerializableController {
 	private static final String RANGE_KEY = "range";
 	private static final String JAVA_INFORMATIONS_LIST_KEY = "javaInformationsList";
 	private static final String MESSAGE_FOR_REPORT_KEY = "messageForReport";
-	private static final RequestToMethodMapper<SerializableController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<SerializableController>(
+	private static final RequestToMethodMapper<SerializableController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<>(
 			SerializableController.class);
 	private final Collector collector;
 
@@ -131,8 +125,7 @@ public class SerializableController {
 	@RequestPart(HttpPart.THREADS)
 	Serializable createThreadsSerializable(
 			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
-		return new ArrayList<ThreadInformations>(
-				javaInformationsList.get(0).getThreadInformationsList());
+		return new ArrayList<>(javaInformationsList.get(0).getThreadInformationsList());
 	}
 
 	@RequestPart(HttpPart.COUNTER_SUMMARY_PER_CLASS)
@@ -142,13 +135,13 @@ public class SerializableController {
 		final Counter counter = collector.getRangeCounter(range, counterName).clone();
 		final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 				.getRequestsAggregatedOrFilteredByClassName(requestId);
-		return new ArrayList<CounterRequest>(requestList);
+		return new ArrayList<>(requestList);
 	}
 
 	@RequestPart(HttpPart.CURRENT_REQUESTS)
 	Serializable createCurrentRequestsSerializable(
 			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
-		final Map<JavaInformations, List<CounterRequestContext>> result = new HashMap<JavaInformations, List<CounterRequestContext>>();
+		final Map<JavaInformations, List<CounterRequestContext>> result = new HashMap<>();
 		result.put(javaInformationsList.get(0), getCurrentRequests());
 		return (Serializable) result;
 	}
@@ -159,7 +152,7 @@ public class SerializableController {
 			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList,
 			@RequestAttribute(MESSAGE_FOR_REPORT_KEY) String messageForReport,
 			@RequestAttribute(RANGE_KEY) Range range) throws IOException {
-		final List<Serializable> result = new ArrayList<Serializable>();
+		final List<Serializable> result = new ArrayList<>();
 		result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList, range,
 				messageForReport));
 		result.addAll(getCurrentRequests());
@@ -169,7 +162,7 @@ public class SerializableController {
 	@RequestPart(HttpPart.JVM)
 	Serializable createJvmSerializable(
 			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
-		return new ArrayList<JavaInformations>(javaInformationsList);
+		return new ArrayList<>(javaInformationsList);
 	}
 
 	@RequestPart(HttpPart.SESSIONS)
@@ -178,7 +171,7 @@ public class SerializableController {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
 		if (sessionId == null) {
-			return new ArrayList<SessionInformations>(SessionListener.getAllSessionsInformations());
+			return new ArrayList<>(SessionListener.getAllSessionsInformations());
 		}
 		return SessionListener.getSessionInformationsBySessionId(sessionId);
 	}
@@ -187,7 +180,7 @@ public class SerializableController {
 	Serializable createHotspotsSerializable() {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		return new ArrayList<SampledMethod>(collector.getHotspots());
+		return new ArrayList<>(collector.getHotspots());
 	}
 
 	@RequestPart(HttpPart.HEAP_HISTO)
@@ -201,7 +194,7 @@ public class SerializableController {
 	Serializable createProcessesSerializable() throws IOException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		return new ArrayList<ProcessInformations>(ProcessInformations.buildProcessInformations());
+		return new ArrayList<>(ProcessInformations.buildProcessInformations());
 	}
 
 	@RequestPart(HttpPart.JNDI)
@@ -209,14 +202,14 @@ public class SerializableController {
 			throws NamingException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		return new ArrayList<JndiBinding>(JndiBinding.listBindings(path));
+		return new ArrayList<>(JndiBinding.listBindings(path));
 	}
 
 	@RequestPart(HttpPart.MBEANS)
 	Serializable createMBeansSerializable() throws JMException {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		return new ArrayList<MBeanNode>(MBeans.getAllMBeanNodes());
+		return new ArrayList<>(MBeans.getAllMBeanNodes());
 	}
 
 	@RequestPart(HttpPart.DEPENDENCIES)
@@ -230,7 +223,7 @@ public class SerializableController {
 				dependency.getLicenseUrlsByName();
 			}
 		}
-		return new TreeMap<String, MavenArtifact>(webappDependencies);
+		return new TreeMap<>(webappDependencies);
 	}
 
 	@RequestPart(HttpPart.LAST_VALUE)
@@ -247,7 +240,7 @@ public class SerializableController {
 			return lastValue;
 		}
 		final Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
-		final Map<String, Double> lastValues = new LinkedHashMap<String, Double>(jrobins.size());
+		final Map<String, Double> lastValues = new LinkedHashMap<>(jrobins.size());
 		for (final JRobin jrobin : jrobins) {
 			lastValues.put(jrobin.getName(), jrobin.getLastValue());
 		}
@@ -268,12 +261,12 @@ public class SerializableController {
 	Serializable createConnectionsSerializable() {
 		// par sécurité
 		Action.checkSystemActionsEnabled();
-		return new ArrayList<ConnectionInformations>(JdbcWrapper.getConnectionInformationsList());
+		return new ArrayList<>(JdbcWrapper.getConnectionInformationsList());
 	}
 
 	@RequestPart(HttpPart.WEBAPP_VERSIONS)
 	Serializable createWebappVersionsSerializable() {
-		return new LinkedHashMap<String, Date>(collector.getDatesByWebappVersions());
+		return new LinkedHashMap<>(collector.getDatesByWebappVersions());
 	}
 
 	@RequestPart(HttpPart.GRAPH)
@@ -337,7 +330,7 @@ public class SerializableController {
 
 	private List<CounterRequestContext> getCurrentRequests() {
 		final List<Counter> counters = collector.getCounters();
-		final List<Counter> newCounters = new ArrayList<Counter>();
+		final List<Counter> newCounters = new ArrayList<>();
 		for (final Counter counter : counters) {
 			final Counter cloneLight = new Counter(counter.getName(), counter.getStorageName(),
 					counter.getIconName(), counter.getChildCounterName());
@@ -351,12 +344,12 @@ public class SerializableController {
 	@RequestPart(HttpPart.CRASHES)
 	Serializable createCrashesSerializable(
 			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList) {
-		return new ArrayList<HsErrPid>(HsErrPid.getHsErrPidList(javaInformationsList));
+		return new ArrayList<>(HsErrPid.getHsErrPidList(javaInformationsList));
 	}
 
 	private Map<String, byte[]> convertJRobinsToImages(Collection<JRobin> jrobins, Range range,
 			int width, int height) throws IOException {
-		final Map<String, byte[]> images = new LinkedHashMap<String, byte[]>(jrobins.size());
+		final Map<String, byte[]> images = new LinkedHashMap<>(jrobins.size());
 		for (final JRobin jrobin : jrobins) {
 			final byte[] image = jrobin.graph(range, width, height);
 			images.put(jrobin.getName(), image);
@@ -367,7 +360,7 @@ public class SerializableController {
 	public Serializable createDefaultSerializable(List<JavaInformations> javaInformationsList,
 			Range range, String messageForReport) throws IOException {
 		final List<Counter> counters = collector.getRangeCounters(range);
-		final List<Serializable> serialized = new ArrayList<Serializable>(
+		final List<Serializable> serialized = new ArrayList<>(
 				counters.size() + javaInformationsList.size());
 		// on clone les counters avant de les sérialiser pour ne pas avoir de problèmes de concurrences d'accès
 		for (final Counter counter : counters) {

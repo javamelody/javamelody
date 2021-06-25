@@ -23,7 +23,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collections;
@@ -50,7 +50,7 @@ class InfluxDB extends MetricsPublisher {
 	private final DecimalFormat decimalFormat = new DecimalFormat("0.00",
 			DecimalFormatSymbols.getInstance(Locale.US));
 	private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-	private final Writer bufferWriter = new OutputStreamWriter(buffer, Charset.forName("UTF-8"));
+	private final Writer bufferWriter = new OutputStreamWriter(buffer, StandardCharsets.UTF_8);
 	private long lastTime;
 	private String lastTimestamp;
 

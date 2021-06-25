@@ -52,11 +52,8 @@ public class SpringRestTemplateInterceptor implements ClientHttpRequestIntercept
 			// we could add in httpRequest.getHeaders() a javamelody id
 			// to link, in the collector server, the callers in this jvm to the callees in the jvm called
 			return execution.execute(httpRequest, body);
-		} catch (final IOException e) {
+		} catch (final IOException | Error e) {
 			// IOException - in case of I/O errors
-			systemError = true;
-			throw e;
-		} catch (final Error e) {
 			systemError = true;
 			throw e;
 		} finally {

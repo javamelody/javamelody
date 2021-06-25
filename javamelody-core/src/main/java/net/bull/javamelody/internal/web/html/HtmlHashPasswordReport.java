@@ -58,7 +58,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 			writeln("</script>");
 			writeln("<br/><br/>");
 		}
-		writeln("<form action='' method='post' style='padding: 10px;'>");
+		writeln("<form class='hash' action='' method='post'>");
 		writeln("<label for='algorithm'>Algorithm:</label>");
 		writeln("<select name='" + HttpParameter.ALGORITHM.getName()
 				+ "' id='algorithm' required>");
@@ -84,7 +84,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 	}
 
 	private SortedSet<String> getSortedAlgorithms() {
-		return new TreeSet<String>(Security.getAlgorithms("MessageDigest"));
+		return new TreeSet<>(Security.getAlgorithms("MessageDigest"));
 	}
 
 	private String encodePassword(String algorithm, String password) throws IOException {

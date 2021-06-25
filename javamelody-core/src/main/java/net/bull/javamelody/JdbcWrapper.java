@@ -66,7 +66,7 @@ public final class JdbcWrapper {
 	static final AtomicInteger RUNNING_BUILD_COUNT = new AtomicInteger();
 	static final AtomicInteger BUILD_QUEUE_LENGTH = new AtomicInteger();
 	static final AtomicLong BUILD_QUEUE_WAITING_DURATIONS_SUM = new AtomicLong();
-	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<Integer, ConnectionInformations>();
+	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<>();
 
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
 
@@ -359,7 +359,7 @@ public final class JdbcWrapper {
 	}
 
 	public static List<ConnectionInformations> getConnectionInformationsList() {
-		final List<ConnectionInformations> result = new ArrayList<ConnectionInformations>(
+		final List<ConnectionInformations> result = new ArrayList<>(
 				USED_CONNECTION_INFORMATIONS.values());
 		Collections.sort(result, new ConnectionInformationsComparator());
 		return Collections.unmodifiableList(result);
@@ -665,8 +665,15 @@ public final class JdbcWrapper {
 			unwrap(dataSource, "delegate", dataSourceUnwrappedMessage);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
-			unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
-			unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
+			if (JdbcWrapperHelper.hasField(dataSource, "delegate")) {
+				// followup on issue #916, for weblogic 12.2.1.4.0
+				final Object delegate = JdbcWrapperHelper.getFieldValue(dataSource, "delegate");
+				unwrap(delegate, "jdbcCtx", dataSourceUnwrappedMessage);
+				unwrap(delegate, "driverInstance", dataSourceUnwrappedMessage);
+			} else {
+				unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
+				unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
+			}
 		} else if (isDbcpDataSource(dataSourceClassName)) {
 			unwrap(dataSource, "dataSource", dataSourceUnwrappedMessage);
 		}

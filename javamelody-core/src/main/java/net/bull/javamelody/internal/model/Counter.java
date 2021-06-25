@@ -111,11 +111,11 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	// on conserve childCounterName et pas childCounter pour assurer la synchronisation/clone et la sérialisation
 	private final String childCounterName;
 	@SuppressWarnings("all")
-	private final ConcurrentMap<String, CounterRequest> requests = new ConcurrentHashMap<String, CounterRequest>();
+	private final ConcurrentMap<String, CounterRequest> requests = new ConcurrentHashMap<>();
 	// note : même si rootCurrentContextsByThreadId n'est pas transient la map est normalement vide avant sérialisation
 	// (on garde en non transient pour ne pas avoir null après désérialisation ce qui pourrait donner des NPE)
 	@SuppressWarnings("all")
-	private final ConcurrentMap<Long, CounterRequestContext> rootCurrentContextsByThreadId = new ConcurrentHashMap<Long, CounterRequestContext>();
+	private final ConcurrentMap<Long, CounterRequestContext> rootCurrentContextsByThreadId = new ConcurrentHashMap<>();
 	private final LinkedList<CounterError> errors; // NOPMD
 	private Date startDate = new Date();
 	private int maxRequestsCount = MAX_REQUESTS_COUNT;
@@ -136,13 +136,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		/** {@inheritDoc} */
 		@Override
 		public int compare(CounterRequest request1, CounterRequest request2) {
-			if (request1.getDurationsSum() > request2.getDurationsSum()) {
-				return 1;
-			} else if (request1.getDurationsSum() < request2.getDurationsSum()) {
-				return -1;
-			} else {
-				return 0;
-			}
+			return Long.compare(request1.getDurationsSum(), request2.getDurationsSum());
 		}
 	}
 
@@ -156,13 +150,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		/** {@inheritDoc} */
 		@Override
 		public int compare(CounterRequest request1, CounterRequest request2) {
-			if (request1.getHits() > request2.getHits()) {
-				return 1;
-			} else if (request1.getHits() < request2.getHits()) {
-				return -1;
-			} else {
-				return 0;
-			}
+			return Long.compare(request1.getHits(), request2.getHits());
 		}
 	}
 
@@ -200,14 +188,8 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		/** {@inheritDoc} */
 		@Override
 		public int compare(CounterRequestContext context1, CounterRequestContext context2) {
-			if (context1.getDuration(timeOfSnapshot) > context2.getDuration(timeOfSnapshot)) {
-				return 1;
-			} else if (context1.getDuration(timeOfSnapshot) < context2
-					.getDuration(timeOfSnapshot)) {
-				return -1;
-			} else {
-				return 0;
-			}
+			return Integer.compare(context1.getDuration(timeOfSnapshot),
+					context2.getDuration(timeOfSnapshot));
 		}
 	}
 
@@ -256,7 +238,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		this.childCounterName = childCounterName;
 		this.contextThreadLocal = contextThreadLocal;
 		if (errorCounter) {
-			this.errors = new LinkedList<CounterError>();
+			this.errors = new LinkedList<>();
 		} else {
 			this.errors = null;
 		}
@@ -827,7 +809,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 		// de manière à ce que l'appelant n'ai pas à se préoccuper des synchronisations nécessaires
 		// Rq : l'Iterator sur ConcurrentHashMap.values() est garanti ne pas lancer ConcurrentModificationException
 		// même s'il y a des ajouts concurrents
-		final List<CounterRequest> result = new ArrayList<CounterRequest>(requests.size());
+		final List<CounterRequest> result = new ArrayList<>(requests.size());
 		for (final CounterRequest request : requests.values()) {
 			// on synchronize sur request en cas d'ajout en parallèle d'un hit sur cette request
 			synchronized (request) {
@@ -868,7 +850,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	 *  toutefois les contextes ne sont pas actuellement clonés dans cette méthode.
 	 */
 	List<CounterRequestContext> getOrderedRootCurrentContexts() {
-		final List<CounterRequestContext> contextList = new ArrayList<CounterRequestContext>(
+		final List<CounterRequestContext> contextList = new ArrayList<>(
 				rootCurrentContextsByThreadId.size());
 		for (final CounterRequestContext rootCurrentContext : rootCurrentContextsByThreadId
 				.values()) {
@@ -890,7 +872,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 			return Collections.emptyList();
 		}
 		synchronized (errors) {
-			return new ArrayList<CounterError>(errors);
+			return new ArrayList<>(errors);
 		}
 	}
 

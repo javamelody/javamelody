@@ -65,7 +65,7 @@ class FilterContext {
 	private final Timer timer;
 	private final SamplingProfiler samplingProfiler;
 	private final TimerTask collectTimerTask;
-	private final Set<ObjectName> jmxNames = new HashSet<ObjectName>();
+	private final Set<ObjectName> jmxNames = new HashSet<>();
 
 	private static final class CollectTimerTask extends TimerTask {
 		private final Collector collector;
@@ -228,13 +228,9 @@ class FilterContext {
 
 	private static void setDisplayedCounters(List<Counter> counters, String displayedCounters) {
 		for (final Counter counter : counters) {
-			if (counter.isJobCounter()) {
-				// le compteur "job" a toujours displayed=true s'il est présent,
-				// même s'il n'est pas dans la liste des "displayedCounters"
-				counter.setDisplayed(true);
-			} else {
-				counter.setDisplayed(false);
-			}
+			// le compteur "job" a toujours displayed=true s'il est présent,
+			// même s'il n'est pas dans la liste des "displayedCounters"
+			counter.setDisplayed(counter.isJobCounter());
 		}
 		if (!displayedCounters.isEmpty()) {
 			for (final String displayedCounter : displayedCounters.split(",")) {

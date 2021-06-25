@@ -80,7 +80,7 @@ public class TestHtmlJavaInformationsReport {
 	@Test
 	public void testTomcatInformations() throws IOException, JMException {
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		final List<ObjectName> mBeans = new ArrayList<>();
 		try {
 			mBeans.add(mBeanServer
 					.registerMBean(new ThreadPool(),

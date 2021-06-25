@@ -82,25 +82,19 @@ public class TestPdfOtherReport {
 	@Test
 	public void testWriteHeapHistogram() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final InputStream input = getClass().getResourceAsStream("/heaphisto.txt");
-		try {
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto.txt")) {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			pdfOtherReport.writeHeapHistogram(heapHistogram);
 			pdfOtherReport.close();
-		} finally {
-			input.close();
 		}
 		assertNotEmptyAndClear(output);
 
-		final InputStream input2 = getClass().getResourceAsStream("/heaphisto_jrockit.txt");
-		try {
+		try (InputStream input2 = getClass().getResourceAsStream("/heaphisto_jrockit.txt")) {
 			final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 			final HeapHistogram heapHistogram = new HeapHistogram(input2, true);
 			pdfOtherReport.writeHeapHistogram(heapHistogram);
 			pdfOtherReport.close();
-		} finally {
-			input2.close();
 		}
 		assertNotEmptyAndClear(output);
 	}
@@ -111,7 +105,7 @@ public class TestPdfOtherReport {
 	public void testWriteSessionInformations() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		final List<SessionInformations> sessions = new ArrayList<SessionInformations>();
+		final List<SessionInformations> sessions = new ArrayList<>();
 		sessions.add(new SessionInformations(new SessionTestImpl(true), false));
 		sessions.add(new SessionInformations(new SessionTestImpl(false), false));
 		final SessionTestImpl serializableButNotSession = new SessionTestImpl(true);
@@ -329,7 +323,7 @@ public class TestPdfOtherReport {
 		final Counter sqlCounter = new Counter("sql", "db.png");
 		final Counter httpCounter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter("error", "db.png");
-		final List<Counter> counters = new ArrayList<Counter>();
+		final List<Counter> counters = new ArrayList<>();
 		counters.add(httpCounter);
 		counters.add(sqlCounter);
 		counters.add(errorCounter);

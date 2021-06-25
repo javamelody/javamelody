@@ -196,12 +196,12 @@ public class PdfOtherReport {
 			document.open();
 
 			// on remplace les parentCounters
-			final List<CounterRequestContext> allCurrentRequests = new ArrayList<CounterRequestContext>();
+			final List<CounterRequestContext> allCurrentRequests = new ArrayList<>();
 			for (final List<CounterRequestContext> rootCurrentContexts : currentRequests.values()) {
 				allCurrentRequests.addAll(rootCurrentContexts);
 			}
 			CounterRequestContext.replaceParentCounters(allCurrentRequests, counters);
-			final List<PdfCounterReport> pdfCounterReports = new ArrayList<PdfCounterReport>();
+			final List<PdfCounterReport> pdfCounterReports = new ArrayList<>();
 			// ce range n'a pas d'importance pour ce pdf
 			final Range range = Period.TOUT.getRange();
 			for (final Counter counter : counters) {

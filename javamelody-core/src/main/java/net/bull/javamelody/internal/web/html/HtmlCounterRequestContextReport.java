@@ -58,7 +58,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 	public static class CounterRequestContextReportHelper {
 		private final List<CounterRequestContext> contexts;
 		private final boolean childHitsDisplayed;
-		private final Map<String, CounterRequest> counterRequestsByRequestName = new HashMap<String, CounterRequest>();
+		private final Map<String, CounterRequest> counterRequestsByRequestName = new HashMap<>();
 
 		public CounterRequestContextReportHelper(List<CounterRequestContext> contexts,
 				boolean childHitsDisplayed) {
@@ -69,7 +69,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		}
 
 		public List<int[]> getRequestValues() {
-			final List<int[]> result = new ArrayList<int[]>();
+			final List<int[]> result = new ArrayList<>();
 			final int contextsSize = contexts.size();
 			final int[] durationMeans = new int[contextsSize];
 			final int[] cpuTimes = new int[contextsSize];
@@ -158,12 +158,11 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 
 		this.rootCurrentContexts = rootCurrentContexts;
 		if (counterReportsByCounterName == null) {
-			this.counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
+			this.counterReportsByCounterName = new HashMap<>();
 		} else {
 			this.counterReportsByCounterName = counterReportsByCounterName;
 		}
-		this.threadInformationsByThreadId = new HashMap<Long, ThreadInformations>(
-				threadInformationsList.size());
+		this.threadInformationsByThreadId = new HashMap<>(threadInformationsList.size());
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			this.threadInformationsByThreadId.put(threadInformations.getId(), threadInformations);
 		}
@@ -304,7 +303,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				write(rootContext.getRemoteUser());
 			}
 		}
-		final List<CounterRequestContext> contexts = new ArrayList<CounterRequestContext>(3);
+		final List<CounterRequestContext> contexts = new ArrayList<>(3);
 		contexts.add(rootContext);
 		contexts.addAll(rootContext.getChildContexts());
 		final CounterRequestContextReportHelper counterRequestContextReportHelper = new CounterRequestContextReportHelper(

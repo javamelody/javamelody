@@ -77,7 +77,7 @@ class PdfHotspotsReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Methode_executee"));
 		headers.add(getString("percent_time"));
 		return headers;

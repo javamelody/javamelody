@@ -122,7 +122,7 @@ public class TestCollector {
 		} finally {
 			CacheManager.getInstance().shutdown();
 		}
-		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<>();
 		conf.setManagementEnabled(true);
 		conf.setStatisticsEnabled(true);
 		Caching.getCachingProvider().getCacheManager().createCache("cache", conf);
@@ -241,7 +241,7 @@ public class TestCollector {
 	@Test
 	public void testCollectTomcatInformations() throws JMException {
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		final List<ObjectName> mBeans = new ArrayList<>();
 		try {
 			mBeans.add(mBeanServer
 					.registerMBean(new ThreadPool(),
@@ -471,11 +471,8 @@ public class TestCollector {
 			collectorServer.addCollectorApplication(application, urls);
 			collectorServer.collectSessionInformations(application, null);
 			collectorServer.collectSessionInformations(application, "sessionId");
-			final Connection connection = TestDatabaseInformations.initH2();
-			try {
+			try (Connection connection = TestDatabaseInformations.initH2()) {
 				collectorServer.collectDatabaseInformations(application, 0);
-			} finally {
-				connection.close();
 			}
 			collectorServer.collectHeapHistogram(application);
 			collectorServer.collectHotspots(application);

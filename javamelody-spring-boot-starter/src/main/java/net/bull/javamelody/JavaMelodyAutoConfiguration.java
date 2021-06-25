@@ -43,6 +43,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.quartz.SchedulerFactoryBeanCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -51,6 +52,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -381,6 +383,27 @@ public class JavaMelodyAutoConfiguration {
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
 	public SpringElasticsearchOperationsBeanPostProcessor monitoringElasticsearchOperationsBeanPostProcessor() {
 		return new SpringElasticsearchOperationsBeanPostProcessor();
+	}
+
+	/**
+	 * Configure Spring's Schedulers for Quartz Scheduler
+	 * @return SchedulerFactoryBeanCustomizer
+	 */
+	@ConditionalOnClass(name = {
+			"org.springframework.boot.autoconfigure.quartz.SchedulerFactoryBeanCustomizer",
+			"org.springframework.scheduling.quartz.SchedulerFactoryBean",
+			"org.quartz.JobListener" })
+	@Bean
+	@ConditionalOnMissingBean
+	public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer() {
+		return new SchedulerFactoryBeanCustomizer() {
+			@Override
+			public void customize(SchedulerFactoryBean schedulerFactoryBean) {
+				final JobGlobalListener jobGlobalListener = new JobGlobalListener();
+				schedulerFactoryBean.setGlobalJobListeners(jobGlobalListener);
+				schedulerFactoryBean.setExposeSchedulerInRepository(true);
+			}
+		};
 	}
 
 	/**

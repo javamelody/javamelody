@@ -53,8 +53,8 @@ public class HeapHistogram implements Serializable {
 		final Scanner sc = new Scanner(in, "UTF-8");
 		final List<ClassInfo> classInfos = scan(sc, jrockit);
 
-		classes = new ArrayList<ClassInfo>();
-		permGenClasses = new ArrayList<ClassInfo>();
+		classes = new ArrayList<>();
+		permGenClasses = new ArrayList<>();
 
 		for (final ClassInfo classInfo : classInfos) {
 			if (classInfo.isPermGen()) {
@@ -81,8 +81,8 @@ public class HeapHistogram implements Serializable {
 	}
 
 	public void add(HeapHistogram second) {
-		final Map<String, ClassInfo> classesMap = new HashMap<String, ClassInfo>(1024);
-		final Map<String, ClassInfo> permGenMap = new HashMap<String, ClassInfo>(1024);
+		final Map<String, ClassInfo> classesMap = new HashMap<>(1024);
+		final Map<String, ClassInfo> permGenMap = new HashMap<>(1024);
 		for (final ClassInfo classInfo : classes) {
 			addClassInfo(classInfo, classesMap);
 		}
@@ -170,13 +170,7 @@ public class HeapHistogram implements Serializable {
 		/** {@inheritDoc} */
 		@Override
 		public int compare(ClassInfo classInfo1, ClassInfo classInfo2) {
-			if (classInfo1.getBytes() > classInfo2.getBytes()) {
-				return 1;
-			} else if (classInfo1.getBytes() < classInfo2.getBytes()) {
-				return -1;
-			} else {
-				return 0;
-			}
+			return Long.compare(classInfo1.getBytes(), classInfo2.getBytes());
 		}
 	}
 
@@ -193,7 +187,7 @@ public class HeapHistogram implements Serializable {
 	}
 
 	private List<ClassInfo> scan(Scanner sc, boolean jrockit) {
-		final Map<String, ClassInfo> classInfoMap = new HashMap<String, ClassInfo>(1024);
+		final Map<String, ClassInfo> classInfoMap = new HashMap<>(1024);
 		sc.useRadix(10);
 		skipHeader(sc, jrockit);
 
@@ -207,7 +201,7 @@ public class HeapHistogram implements Serializable {
 			final ClassInfo newClInfo = new ClassInfo(sc, jrockit);
 			addClassInfo(newClInfo, classInfoMap);
 		}
-		return new ArrayList<ClassInfo>(classInfoMap.values());
+		return new ArrayList<>(classInfoMap.values());
 	}
 
 	/**
@@ -216,7 +210,7 @@ public class HeapHistogram implements Serializable {
 	 */
 	public static class ClassInfo implements Serializable {
 		private static final long serialVersionUID = 6283636454450216347L;
-		private static final Map<Character, String> ARRAY_TYPES = new HashMap<Character, String>();
+		private static final Map<Character, String> ARRAY_TYPES = new HashMap<>();
 
 		static {
 			ARRAY_TYPES.put('Z', "boolean");
@@ -292,13 +286,11 @@ public class HeapHistogram implements Serializable {
 			try {
 				final Class<?> clazz = Class.forName(jvmName);
 				return findSource(clazz);
-			} catch (final LinkageError e) {
+			} catch (final LinkageError | ClassNotFoundException e) {
 				// dans jonas en OSGI, par exemple avec des classes Quartz, il peut survenir
 				// des LinkageError (rq: NoClassDefFoundError hérite également de LinkageError)
-				return null;
-			} catch (final ClassNotFoundException e) {
-				// on suppose qu'il y a une seule webapp et que la plupart des classes peuvent être chargées
-				// sinon il y a une exception et on retourne null
+				// et on suppose qu'il y a une seule webapp et que la plupart des classes peuvent être chargées
+				// sinon il y a une ClassNotFoundException et on retourne null
 				return null;
 			}
 		}

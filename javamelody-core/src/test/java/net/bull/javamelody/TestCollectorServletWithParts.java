@@ -72,12 +72,8 @@ public class TestCollectorServletWithParts {
 		final ServletContext context = createNiceMock(ServletContext.class);
 		expect(config.getServletContext()).andReturn(context).anyTimes();
 		collectorServlet = new CollectorServlet();
-		InputStream webXmlStream = null;
-		try {
-			webXmlStream = getClass().getResourceAsStream("/WEB-INF/web.xml");
-			InputStream webXmlStream2 = null;
-			try {
-				webXmlStream2 = context.getResourceAsStream("/WEB-INF/web.xml");
+		try (InputStream webXmlStream = getClass().getResourceAsStream("/WEB-INF/web.xml")) {
+			try (InputStream webXmlStream2 = context.getResourceAsStream("/WEB-INF/web.xml")) {
 				expect(webXmlStream2).andReturn(webXmlStream).anyTimes();
 				final String javamelodyDir = "/META-INF/maven/net.bull.javamelody/";
 				final String webapp = javamelodyDir + "javamelody-test-webapp/";
@@ -92,14 +88,6 @@ public class TestCollectorServletWithParts {
 				collectorServlet.init(config);
 				verify(config);
 				verify(context);
-			} finally {
-				if (webXmlStream2 != null) {
-					webXmlStream2.close();
-				}
-			}
-		} finally {
-			if (webXmlStream != null) {
-				webXmlStream.close();
 			}
 		}
 	}
@@ -121,7 +109,7 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testDoPart() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		// partParameter null: monitoring principal
 		parameters.put(HttpParameter.PART, null);
 		doPart(parameters);
@@ -159,7 +147,7 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testDoPartForSystemActions() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.PART, HttpPart.WEB_XML.getName());
 		doPart(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
@@ -201,7 +189,7 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testDoCompressedSerializable() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.FORMAT, "xml");
 		// partParameter null: monitoring principal
 		parameters.put(HttpParameter.PART, null);
@@ -241,7 +229,7 @@ public class TestCollectorServletWithParts {
 	@Test
 	public void testDoCompressedSerializableForSystemActions()
 			throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.FORMAT, "xml");
 		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		doPart(parameters);
@@ -273,7 +261,7 @@ public class TestCollectorServletWithParts {
 	 * @throws IOException e */
 	@Test
 	public void testAction() throws IOException, ServletException {
-		final Map<HttpParameter, String> parameters = new LinkedHashMap<HttpParameter, String>();
+		final Map<HttpParameter, String> parameters = new LinkedHashMap<>();
 		parameters.put(HttpParameter.APPLICATION, TEST);
 		parameters.put(HttpParameter.ACTION, Action.GC.toString());
 		doPart(parameters);

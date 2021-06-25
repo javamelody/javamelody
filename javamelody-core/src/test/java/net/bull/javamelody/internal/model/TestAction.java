@@ -183,7 +183,7 @@ public class TestAction {
 		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
 				.getCacheManager();
 		if (jcacheManager.getCache(cacheId) == null) {
-			final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+			final MutableConfiguration<Object, Object> conf = new MutableConfiguration<>();
 			conf.setManagementEnabled(true);
 			conf.setStatisticsEnabled(true);
 			jcacheManager.createCache(cacheId, conf);

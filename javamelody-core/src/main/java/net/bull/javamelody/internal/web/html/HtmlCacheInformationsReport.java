@@ -217,7 +217,7 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 				writeDirectly(htmlEncodeButNotSpace(myKey));
 				writeDirectly("</td>");
 				if (systemActionsEnabled) {
-					writeDirectly("<td class='noPrint' style='text-align: center;'>");
+					writeDirectly("<td class='noPrint containingIcon'>");
 					writeDirectly(
 							"<a href='?part=cacheKeys&amp;action=clear_cache_key&amp;cacheId=");
 					writeDirectly(cacheNameEncoded);

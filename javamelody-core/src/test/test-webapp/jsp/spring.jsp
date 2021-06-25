@@ -5,8 +5,8 @@
 <%@ page import="net.bull.javamelody.SpringTestFacade"%>
 
 <%
-ApplicationContext context = new ClassPathXmlApplicationContext( new String[] {
-		"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml"} );
+ApplicationContext context = new ClassPathXmlApplicationContext(
+		"net/bull/javamelody/monitoring-spring.xml", "spring-context.xml" );
 SpringTestFacade springTestFacade = (SpringTestFacade) context.getBean("springTestFacade");
 %>
 

@@ -49,9 +49,8 @@ public class TestSpringRestTemplateInterceptor {
 	public void testSpringAOP() {
 		final Counter springCounter = MonitoringProxy.getSpringCounter();
 		springCounter.clear();
-		final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
-				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME);
-		try {
+		try (ConfigurableApplicationContext context = new ClassPathXmlApplicationContext(
+				MONITORING_CONTEXT_FILENAME, TEST_CONTEXT_FILENAME)) {
 			final RestTemplate restTemplate = context.getBean(RestTemplate.class);
 			final String url = "https://gturnquist-quoters.cfapps.io/api/random";
 			springCounter.setDisplayed(false);
@@ -79,8 +78,6 @@ public class TestSpringRestTemplateInterceptor {
 					springRestTemplateBeanPostProcessor.getOrder());
 			springRestTemplateBeanPostProcessor.setOrder(1);
 			assertEquals("order", 1, springRestTemplateBeanPostProcessor.getOrder());
-		} finally {
-			context.close();
 		}
 	}
 }

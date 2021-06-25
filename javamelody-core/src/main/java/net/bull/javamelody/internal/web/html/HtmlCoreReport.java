@@ -67,7 +67,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private final Range range;
 	private final CollectorServer collectorServer;
 	private final long start = System.currentTimeMillis();
-	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<String, String>();
+	private final Map<String, String> menuTextsByAnchorName = new LinkedHashMap<>();
 
 	HtmlCoreReport(Collector collector, CollectorServer collectorServer,
 			List<JavaInformations> javaInformationsList, Range range, Writer writer) {
@@ -97,8 +97,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeAnchor("top", I18N.getString("Stats"));
 		writeSummary();
 		writeln("</h3>");
-		write("<a href='https://github.com/javamelody/javamelody/wiki/Donate'>");
-		writeln("<img class='noPrint' style='position: absolute; top: 15px; right: 10px; border: 0;' src='?resource=donate.gif' alt='Donate' /></a>");
+		write("<a class='donate' href='https://github.com/javamelody/javamelody/wiki/Donate'>");
+		writeln("<img class='noPrint' src='?resource=donate.gif' alt='Donate' /></a>");
 		writeln("<div align='center'>");
 		writeRefreshAndPeriodLinks(null, null);
 		writeGraphs();
@@ -131,7 +131,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 		new HtmlJavaInformationsReport(javaInformationsList, getWriter()).toHtml();
 
-		writeln("<h3 class='chapterTitle' style='clear:both;'><img src='?resource=threads.png' alt='#Threads#'/>");
+		writeln("<h3 class='chapterTitle'><img src='?resource=threads.png' alt='#Threads#'/>");
 		writeAnchor("threads", I18N.getString("Threads"));
 		writeln("#Threads#</h3>");
 		writeThreads();
@@ -169,7 +169,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeAlerts() throws IOException {
 		final String newJavamelodyVersion = UpdateChecker.getNewJavamelodyVersion();
 		if (newJavamelodyVersion != null) {
-			writeln("<div align='center' style='font-weight: bold;'>");
+			writeln("<div class='newVersion' align='center'>");
 			writeln("<img src='?resource=alert.png' alt='alert'/>");
 			writeDirectly(I18N.getFormattedString("version_alert", newJavamelodyVersion,
 					Parameters.JAVAMELODY_VERSION));
@@ -177,7 +177,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		}
 		final Throwable lastCollectorException = collector.getLastCollectorException();
 		if (lastCollectorException != null) {
-			writeln("<div style='font-weight: bold;'>");
+			writeln("<div class='alert'>");
 			writeln("<img src='?resource=alert.png' alt='alert'/>");
 			writeDirectly(htmlEncodeButNotSpace(lastCollectorException.toString()));
 			writeln("</div>");
@@ -199,7 +199,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				&& collectorServer.isApplicationDataAvailable(collector.getApplication())
 				&& javaInformationsList.size() < collectorServer
 						.getUrlsByApplication(collector.getApplication()).size()) {
-			writeln("<div style='font-weight: bold;'>");
+			writeln("<div class='alert'>");
 			writeln("<img src='?resource=alert.png' alt='alert'/> #some_node_unavailable#");
 			writeln("</div><br/>");
 		}
@@ -239,19 +239,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	}
 
 	private void writeMenu() throws IOException {
-		writeln("<script type='text/javascript'>");
-		writeln("function toggle(id) {");
-		writeln("var el = document.getElementById(id);");
-		writeln("if (el.getAttribute('class') == 'menuHide') {");
-		writeln("  el.setAttribute('class', 'menuShow');");
-		writeln("} else {");
-		writeln("  el.setAttribute('class', 'menuHide');");
-		writeln("} }");
-		writeln("</script>");
-
 		writeln("<div class='noPrint'> ");
 		writeln("<div id='menuBox' class='menuHide'>");
-		writeln("  <ul id='menuTab'><li><a href='javascript:toggle(\"menuBox\");'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
+		writeln("  <ul id='menuTab'><li><a href='javascript:toggleMenuBox();'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
 		writeln("  <div id='menuLinks'><div id='menuDeco'>");
 		for (final Map.Entry<String, String> entry : menuTextsByAnchorName.entrySet()) {
 			final String anchorName = entry.getKey();
@@ -288,7 +278,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 
 	private Map<String, HtmlCounterReport> writeCounters(List<Counter> counters)
 			throws IOException {
-		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<String, HtmlCounterReport>();
+		final Map<String, HtmlCounterReport> counterReportsByCounterName = new HashMap<>();
 		for (final Counter counter : counters) {
 			final HtmlCounterReport htmlCounterReport = writeCounter(counter);
 			counterReportsByCounterName.put(counter.getName(), htmlCounterReport);
@@ -382,15 +372,6 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<div align='right'>");
 			writeShowHideLink("detailsGraphs", "#Autres_courbes#");
 			writeln("<script type='text/javascript'>");
-			writeln("function loadImages(elementId) {");
-			writeln("  var descendents = document.getElementById(elementId).getElementsByTagName('*');");
-			writeln("  for (var i = 0; i < descendents.length; i++) {");
-			writeln("    var element = descendents[i];");
-			writeln("    if (element instanceof HTMLImageElement && element.src == '') {");
-			writeln("      element.src = element.dataset.src;");
-			writeln("    }");
-			writeln("  }");
-			writeln("}");
 			writeln("document.getElementById('detailsGraphsA').href=\"javascript:loadImages('detailsGraphs');showHide('detailsGraphs');\";");
 			writeln("</script>");
 			writeln(END_DIV);
@@ -817,7 +798,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
 		writeln("<div align='center'>");
-		final Collection<String> applications = new ArrayList<String>();
+		final Collection<String> applications = new ArrayList<>();
 		applications.addAll(Parameters.getCollectorUrlsByApplications().keySet());
 		applications.addAll(Parameters.getApplicationsByAggregationApplication().keySet());
 		if (applications.size() > 1
@@ -863,12 +844,12 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<a href='?application=" + application + "' class='tooltip'>");
 			if (lastCollectException == null) {
 				writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
-				writeln("<em style='text-align: left; font-size: 11px;'>");
+				writeln("<em class='applicationStatus'>");
 				writeln("#Application_disponible#");
 				writeln("</em>");
 			} else {
 				writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
-				writeln("<em style='text-align: left; font-size: 11px;'>");
+				writeln("<em class='applicationStatus'>");
 				writeln("#Application_indisponible#:<br/>");
 				writeDirectly(htmlEncode(lastCollectException.toString()));
 				writeDirectly("<br/>");
@@ -955,7 +936,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeDurationAndOverhead() throws IOException {
 		final long displayDuration = System.currentTimeMillis() - start;
 		writeln("<a name='bottom'></a>");
-		writeln("<br/><div style='font-size: 11px;'>");
+		writeln("<br/><div class='durationAndOverHead'>");
 		writeln("#temps_derniere_collecte#: " + collector.getLastCollectDuration() + " #ms#<br/>");
 		writeln("#temps_affichage#: " + displayDuration + " #ms#<br/>");
 		writeln("#Estimation_overhead_memoire#: < "

@@ -75,12 +75,9 @@ public class TestHtmlHeapHistogramReport {
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoSun() throws IOException {
-		final InputStream input = getClass().getResourceAsStream("/heaphisto.txt");
-		try {
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			report(heapHistogram);
-		} finally {
-			input.close();
 		}
 	}
 
@@ -88,12 +85,9 @@ public class TestHtmlHeapHistogramReport {
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoJdk9() throws IOException {
-		final InputStream input = getClass().getResourceAsStream("/heaphisto_jdk9.txt");
-		try {
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk9.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			report(heapHistogram);
-		} finally {
-			input.close();
 		}
 	}
 
@@ -101,12 +95,9 @@ public class TestHtmlHeapHistogramReport {
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoJdkEa() throws IOException {
-		final InputStream input = getClass().getResourceAsStream("/heaphisto_jdk-ea.txt");
-		try {
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jdk-ea.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, false);
 			report(heapHistogram);
-		} finally {
-			input.close();
 		}
 	}
 
@@ -114,12 +105,9 @@ public class TestHtmlHeapHistogramReport {
 	 * @throws IOException e */
 	@Test
 	public void testHeapHistoBEA() throws IOException {
-		final InputStream input = getClass().getResourceAsStream("/heaphisto_jrockit.txt");
-		try {
+		try (InputStream input = getClass().getResourceAsStream("/heaphisto_jrockit.txt")) {
 			final HeapHistogram heapHistogram = new HeapHistogram(input, true);
 			report(heapHistogram);
-		} finally {
-			input.close();
 		}
 	}
 

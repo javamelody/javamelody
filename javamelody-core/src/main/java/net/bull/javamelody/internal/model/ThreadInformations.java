@@ -93,9 +93,7 @@ public class ThreadInformations implements Serializable {
 		if (THREAD_ALLOCATED_BYTES_METHOD != null) {
 			try {
 				return (Long) THREAD_ALLOCATED_BYTES_METHOD.invoke(THREAD_BEAN, threadId);
-			} catch (final IllegalAccessException e) {
-				throw new IllegalArgumentException(e);
-			} catch (final InvocationTargetException e) {
+			} catch (final IllegalAccessException | InvocationTargetException e) {
 				throw new IllegalArgumentException(e);
 			}
 		}
@@ -117,16 +115,8 @@ public class ThreadInformations implements Serializable {
 				}
 			}
 			return null;
-		} catch (final IllegalAccessException e) {
-			return null;
-		} catch (final InvocationTargetException e) {
-			return null;
-		} catch (final NoSuchMethodException e) {
-			return null;
-		} catch (final SecurityException e) {
-			return null;
 		} catch (final Exception e) {
-			// pour java 9 car java.lang.reflect.InaccessibleObjectException:
+			// catch Exception pour java 9 car java.lang.reflect.InaccessibleObjectException:
 			// Unable to make public long com.sun.management.internal.HotSpotThreadImpl.getThreadAllocatedBytes(long) accessible:
 			// module jdk.management does not "exports com.sun.management.internal" to unnamed module
 			return null;

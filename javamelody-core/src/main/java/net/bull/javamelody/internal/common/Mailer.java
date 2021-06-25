@@ -112,7 +112,8 @@ public class Mailer {
 		// Le paramètre jndiSession n'est pas indiqué de type Session car le cast ne marcherait pas.
 		final Method getPropertiesMethod;
 		try {
-			getPropertiesMethod = jndiSession.getClass().getMethod("getProperties", (Class[]) null);
+			getPropertiesMethod = jndiSession.getClass().getMethod("getProperties",
+					(Class<?>[]) null);
 			return (Properties) getPropertiesMethod.invoke(jndiSession, (Object[]) null);
 		} catch (final NoSuchMethodException e) {
 			throw new IllegalArgumentException(e);
@@ -171,14 +172,11 @@ public class Mailer {
 		}
 		// authentification avec user et password si mail.smtp.auth=true (ou mail.smtps.auth=true)
 		if (Boolean.parseBoolean(session.getProperty("mail." + protocol + ".auth"))) {
-			final Transport tr = session.getTransport(protocol);
-			try {
+			try (Transport tr = session.getTransport(protocol)) {
 				tr.connect(session.getProperty("mail." + protocol + ".user"),
 						session.getProperty("mail." + protocol + ".password"));
 				msg.saveChanges(); // don't forget this
 				tr.sendMessage(msg, msg.getAllRecipients());
-			} finally {
-				tr.close();
 			}
 		} else {
 			Transport.send(msg);

@@ -133,7 +133,7 @@ public class TestPdfReport {
 
 		final JRobin jrobin = collector.getCounterJRobins().iterator().next();
 		final byte[] graph = jrobin.graph(Period.JOUR.getRange(), 50, 50);
-		final Map<String, byte[]> graphs = new HashMap<String, byte[]>();
+		final Map<String, byte[]> graphs = new HashMap<>();
 		graphs.put("1", graph);
 		graphs.put("2", graph);
 		graphs.put("3", graph);
@@ -199,7 +199,7 @@ public class TestPdfReport {
 
 		final javax.cache.CacheManager jcacheManager = Caching.getCachingProvider()
 				.getCacheManager();
-		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<Object, Object>();
+		final MutableConfiguration<Object, Object> conf = new MutableConfiguration<>();
 		conf.setManagementEnabled(true);
 		conf.setStatisticsEnabled(true);
 		jcacheManager.createCache(cacheName, conf);
@@ -260,7 +260,7 @@ public class TestPdfReport {
 
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
 			// (aléatoirement il y en a 2/10 qui font une erreur)
-			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<JobDetail, SimpleTrigger>();
+			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<>();
 			for (int i = 0; i < 10; i++) {
 				//Define a Trigger that will fire "now"
 				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
@@ -420,7 +420,7 @@ public class TestPdfReport {
 		assertNotEmptyAndClear(output);
 
 		// writeDeadlocks
-		final List<ThreadInformations> threads = new ArrayList<ThreadInformations>();
+		final List<ThreadInformations> threads = new ArrayList<>();
 		final Thread thread = Thread.currentThread();
 		threads.add(
 				new ThreadInformations(thread, null, 10, 10, false, Parameters.getHostAddress()));

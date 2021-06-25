@@ -49,9 +49,9 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
  */
 final class JdbcWrapperHelper {
 	private static final String MAX_ACTIVE_PROPERTY_NAME = "maxActive";
-	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<String, DataSource>();
-	private static final Map<String, DataSource> JNDI_DATASOURCES_BACKUP = new LinkedHashMap<String, DataSource>();
-	private static final Map<String, DataSource> REWRAPPED_DATASOURCES_BACKUP = new LinkedHashMap<String, DataSource>();
+	private static final Map<String, DataSource> SPRING_DATASOURCES = new LinkedHashMap<>();
+	private static final Map<String, DataSource> JNDI_DATASOURCES_BACKUP = new LinkedHashMap<>();
+	private static final Map<String, DataSource> REWRAPPED_DATASOURCES_BACKUP = new LinkedHashMap<>();
 	private static final BasicDataSourcesProperties TOMCAT_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties TOMCAT_JDBC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
@@ -64,7 +64,7 @@ final class JdbcWrapperHelper {
 	 * @author Emeric Vernat
 	 */
 	private static class BasicDataSourcesProperties {
-		private final Map<String, Map<String, Object>> properties = new LinkedHashMap<String, Map<String, Object>>();
+		private final Map<String, Map<String, Object>> properties = new LinkedHashMap<>();
 
 		BasicDataSourcesProperties() {
 			super();
@@ -88,7 +88,7 @@ final class JdbcWrapperHelper {
 		}
 
 		Map<String, Map<String, Object>> getDataSourcesProperties() {
-			final Map<String, Map<String, Object>> result = new LinkedHashMap<String, Map<String, Object>>();
+			final Map<String, Map<String, Object>> result = new LinkedHashMap<>();
 			for (final Map.Entry<String, Map<String, Object>> entry : properties.entrySet()) {
 				result.put(entry.getKey(), Collections.unmodifiableMap(entry.getValue()));
 			}
@@ -98,7 +98,7 @@ final class JdbcWrapperHelper {
 		void put(String dataSourceName, String key, Object value) {
 			Map<String, Object> dataSourceProperties = properties.get(dataSourceName);
 			if (dataSourceProperties == null) {
-				dataSourceProperties = new LinkedHashMap<String, Object>();
+				dataSourceProperties = new LinkedHashMap<>();
 				properties.put(dataSourceName, dataSourceProperties);
 			}
 			dataSourceProperties.put(key, value);
@@ -150,16 +150,16 @@ final class JdbcWrapperHelper {
 	static Map<String, DataSource> getJndiAndSpringDataSources() throws NamingException {
 		Map<String, DataSource> dataSources;
 		try {
-			dataSources = new LinkedHashMap<String, DataSource>(getJndiDataSources());
+			dataSources = new LinkedHashMap<>(getJndiDataSources());
 		} catch (final NoInitialContextException e) {
-			dataSources = new LinkedHashMap<String, DataSource>();
+			dataSources = new LinkedHashMap<>();
 		}
 		dataSources.putAll(SPRING_DATASOURCES);
 		return dataSources;
 	}
 
 	static Map<String, DataSource> getJndiDataSources() throws NamingException {
-		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(2);
+		final Map<String, DataSource> dataSources = new LinkedHashMap<>(2);
 		final String datasourcesParameter = Parameter.DATASOURCES.getValue();
 		if (datasourcesParameter == null) {
 			dataSources.putAll(getJndiDataSourcesAt("java:comp/env/jdbc"));
@@ -187,7 +187,7 @@ final class JdbcWrapperHelper {
 	private static Map<String, DataSource> getJndiDataSourcesAt(String jndiPrefix)
 			throws NamingException {
 		final InitialContext initialContext = new InitialContext();
-		final Map<String, DataSource> dataSources = new LinkedHashMap<String, DataSource>(2);
+		final Map<String, DataSource> dataSources = new LinkedHashMap<>(2);
 		try {
 			for (final NameClassPair nameClassPair : Collections
 					.list(initialContext.list(jndiPrefix))) {
@@ -486,8 +486,7 @@ final class JdbcWrapperHelper {
 			if (lock == null) {
 				// on utilise clear et non remove au cas où le host ne soit pas localhost dans server.xml
 				// (cf issue 105)
-				final Hashtable<String, Object> clone = new Hashtable<String, Object>(
-						readOnlyContexts);
+				final Hashtable<String, Object> clone = new Hashtable<>(readOnlyContexts);
 				readOnlyContexts.clear();
 				return clone;
 			}
@@ -557,7 +556,7 @@ final class JdbcWrapperHelper {
 	@SuppressWarnings("unchecked")
 	static <T> T createProxy(T object, InvocationHandler invocationHandler,
 			List<Class<?>> interfaces) {
-		final Class<? extends Object> objectClass = object.getClass();
+		final Class<?> objectClass = object.getClass();
 		// ce handler désencapsule les InvocationTargetException des 3 proxy
 		// avant : return (T) Proxy.newProxyInstance(objectClass.getClassLoader(), getObjectInterfaces(objectClass, interfaces), ih);
 		// maintenant (optimisé) :
@@ -578,7 +577,7 @@ final class JdbcWrapperHelper {
 		}
 	}
 
-	private static Constructor<?> getProxyConstructor(Class<? extends Object> objectClass,
+	private static Constructor<?> getProxyConstructor(Class<?> objectClass,
 			Class<?>[] interfacesArray) {
 		final ClassLoader classLoader = objectClass.getClassLoader();
 		try {
@@ -600,7 +599,7 @@ final class JdbcWrapperHelper {
 		// et connection.getClass().getInterfaces() est vide dans ce cas
 		final List<Class<?>> myInterfaces;
 		if (interfaces == null) {
-			myInterfaces = new ArrayList<Class<?>>(Arrays.asList(objectClass.getInterfaces()));
+			myInterfaces = new ArrayList<>(Arrays.asList(objectClass.getInterfaces()));
 			Class<?> classe = objectClass.getSuperclass();
 			while (classe != null) {
 				final Class<?>[] classInterfaces = classe.getInterfaces();

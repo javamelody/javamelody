@@ -127,7 +127,7 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 	}
 
 	private List<ThreadInformations> getDeadLockedThreads() {
-		final List<ThreadInformations> deadlockedThreads = new ArrayList<ThreadInformations>();
+		final List<ThreadInformations> deadlockedThreads = new ArrayList<>();
 		for (final ThreadInformations thread : threadInformationsList) {
 			if (thread.isDeadlocked()) {
 				deadlockedThreads.add(thread);

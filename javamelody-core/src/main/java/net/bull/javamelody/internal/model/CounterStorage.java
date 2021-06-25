@@ -118,22 +118,16 @@ public class CounterStorage {
 	}
 
 	static int writeToFile(Counter counter, File file) throws IOException {
-		final FileOutputStream out = new FileOutputStream(file);
-		try {
+		try (FileOutputStream out = new FileOutputStream(file)) {
 			final CounterOutputStream counterOutput = new CounterOutputStream(
 					new GZIPOutputStream(new BufferedOutputStream(out)));
-			final ObjectOutputStream output = new ObjectOutputStream(counterOutput);
-			try {
+			try (ObjectOutputStream output = new ObjectOutputStream(counterOutput)) {
 				output.writeObject(counter);
-			} finally {
 				// ce close libère les ressources du ObjectOutputStream et du GZIPOutputStream
-				output.close();
 			}
 			// retourne la taille sérialisée non compressée,
 			// qui est une estimation pessimiste de l'occupation mémoire
 			return counterOutput.dataLength;
-		} finally {
-			out.close();
 		}
 	}
 
@@ -155,21 +149,15 @@ public class CounterStorage {
 	}
 
 	static Counter readFromFile(File file) throws IOException {
-		final FileInputStream in = new FileInputStream(file);
-		try {
-			final ObjectInputStream input = TransportFormat
-					.createObjectInputStream(new GZIPInputStream(new BufferedInputStream(in)));
-			try {
+		try (FileInputStream in = new FileInputStream(file)) {
+			try (ObjectInputStream input = TransportFormat
+					.createObjectInputStream(new GZIPInputStream(new BufferedInputStream(in)))) {
 				// on retourne l'instance du counter lue
 				return (Counter) input.readObject();
-			} finally {
 				// ce close libère les ressources du ObjectInputStream et du GZIPInputStream
-				input.close();
 			}
 		} catch (final ClassNotFoundException e) {
 			throw new IOException(e.getMessage(), e);
-		} finally {
-			in.close();
 		}
 	}
 

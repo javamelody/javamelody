@@ -82,4 +82,59 @@ class HtmlInjectorServletResponseWrapper extends FilterServletResponseWrapper {
 		final String contentType = getContentType();
 		return contentType == null || contentType.contains("text/html");
 	}
+
+	/**
+	 * Ne fait rien
+	 * @param length int
+	 */
+	@Override
+	public void setContentLength(int length) {
+		// ne fait rien
+	}
+
+	/**
+	 * Ne fait rien
+	 * @param length long
+	 */
+	@Override
+	public void setContentLengthLong(long length) {
+		// ne fait rien
+	}
+
+	@Override
+	public void addHeader(String name, String value) {
+		if ("Content-Length".equalsIgnoreCase(name)) {
+			// ne fait rien
+		} else {
+			super.addHeader(name, value);
+		}
+	}
+
+	@Override
+	public void addIntHeader(String name, int value) {
+		if ("Content-Length".equalsIgnoreCase(name)) {
+			// ne fait rien
+		} else {
+			super.addIntHeader(name, value);
+		}
+	}
+
+	@Override
+	public void setHeader(String name, String value) {
+		if ("Content-Length".equalsIgnoreCase(name)) {
+			// ne fait rien
+		} else {
+			super.setHeader(name, value);
+		}
+	}
+
+	@Override
+	public void setIntHeader(String name, int value) {
+		if ("Content-Length".equalsIgnoreCase(name)) {
+			// ne fait rien
+		} else {
+			super.setIntHeader(name, value);
+		}
+	}
+
 }

@@ -148,10 +148,8 @@ public class CacheInformations implements Serializable {
 		try {
 			Class.forName("net.sf.ehcache.Cache");
 			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		} catch (final NoClassDefFoundError e) {
-			// cf issue 67
+		} catch (final ClassNotFoundException | NoClassDefFoundError e) {
+			// NoClassDefFoundError for issue 67
 			return false;
 		}
 	}
@@ -162,12 +160,12 @@ public class CacheInformations implements Serializable {
 		}
 		final List<CacheManager> allCacheManagers;
 		try {
-			allCacheManagers = new ArrayList<CacheManager>(CacheManager.ALL_CACHE_MANAGERS);
+			allCacheManagers = new ArrayList<>(CacheManager.ALL_CACHE_MANAGERS);
 		} catch (final NoSuchFieldError e) {
 			// nécessaire pour ehcache 1.2 ou avant
 			return Collections.emptyList();
 		}
-		final List<CacheInformations> result = new ArrayList<CacheInformations>();
+		final List<CacheInformations> result = new ArrayList<>();
 		for (final CacheManager cacheManager : allCacheManagers) {
 			final String[] cacheNames = cacheManager.getCacheNames();
 			try {
@@ -187,7 +185,7 @@ public class CacheInformations implements Serializable {
 	public static CacheInformations buildCacheInformationsWithKeys(String cacheId) {
 		assert EHCACHE_AVAILABLE;
 		assert cacheId != null;
-		final List<CacheManager> allCacheManagers = new ArrayList<CacheManager>(
+		final List<CacheManager> allCacheManagers = new ArrayList<>(
 				CacheManager.ALL_CACHE_MANAGERS);
 		for (final CacheManager cacheManager : allCacheManagers) {
 			final Ehcache ehcache = cacheManager.getEhcache(cacheId);
@@ -231,9 +229,7 @@ public class CacheInformations implements Serializable {
 			// getMemoryStoreObjectCount n'existe que depuis ehcache 1.6
 			Statistics.class.getMethod("getMemoryStoreObjectCount");
 			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		} catch (final NoSuchMethodException e) {
+		} catch (final ClassNotFoundException | NoSuchMethodException e) {
 			return false;
 		}
 	}
@@ -245,10 +241,8 @@ public class CacheInformations implements Serializable {
 			// getCacheConfiguration n'existe pas en ehcache 1.2
 			Ehcache.class.getMethod("getCacheConfiguration");
 			return false;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		} catch (final NoClassDefFoundError e) {
-			// cf issue 67
+		} catch (final ClassNotFoundException | NoClassDefFoundError e) {
+			// NoClassDefFoundError for issue 67
 			return false;
 		} catch (final NoSuchMethodException e) {
 			return true;

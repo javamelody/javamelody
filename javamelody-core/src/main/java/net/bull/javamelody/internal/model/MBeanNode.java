@@ -80,7 +80,7 @@ public class MBeanNode implements Serializable {
 		super();
 		this.name = name;
 		this.description = null;
-		this.children = new ArrayList<MBeanNode>();
+		this.children = new ArrayList<>();
 		this.attributes = null;
 	}
 

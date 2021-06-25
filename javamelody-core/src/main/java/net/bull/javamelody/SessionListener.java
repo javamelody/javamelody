@@ -64,13 +64,13 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 	private static final AtomicInteger SESSION_COUNT = new AtomicInteger();
 
 	@SuppressWarnings("all")
-	private static final List<String> CONTEXT_PATHS = new ArrayList<String>();
+	private static final List<String> CONTEXT_PATHS = new ArrayList<>();
 
 	// attention : this est mis en session, cette map doit donc restée statique
 	@SuppressWarnings("all")
-	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<String, HttpSession>();
+	private static final ConcurrentMap<String, HttpSession> SESSION_MAP_BY_ID = new ConcurrentHashMap<>();
 
-	private static final ThreadLocal<HttpSession> SESSION_CONTEXT = new ThreadLocal<HttpSession>();
+	private static final ThreadLocal<HttpSession> SESSION_CONTEXT = new ThreadLocal<>();
 
 	private static boolean instanceCreated;
 
@@ -238,8 +238,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 
 	public static List<SessionInformations> getAllSessionsInformations() {
 		final Collection<HttpSession> sessions = SESSION_MAP_BY_ID.values();
-		final List<SessionInformations> sessionsInformations = new ArrayList<SessionInformations>(
-				sessions.size());
+		final List<SessionInformations> sessionsInformations = new ArrayList<>(sessions.size());
 		for (final HttpSession session : sessions) {
 			try {
 				sessionsInformations.add(new SessionInformations(session, false));

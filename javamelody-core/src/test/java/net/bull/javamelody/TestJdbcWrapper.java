@@ -389,8 +389,7 @@ public class TestJdbcWrapper {
 		Connection connection = DriverManager.getConnection(H2_DATABASE_URL);
 		try {
 			connection = jdbcWrapper.createConnectionProxy(connection);
-			final Statement statement = connection.createStatement();
-			try {
+			try (Statement statement = connection.createStatement()) {
 				assertFalse(EQUALS, statement.equals(statement));
 				statement.hashCode();
 
@@ -412,8 +411,6 @@ public class TestJdbcWrapper {
 				} catch (final SQLException e) {
 					assertNotNull("ok", e);
 				}
-			} finally {
-				statement.close();
 			}
 		} finally {
 			connection.close();

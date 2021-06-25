@@ -95,7 +95,7 @@ class PdfProcessInformationsReport extends PdfAbstractTableReport {
 	}
 
 	private List<String> createHeaders() {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Utilisateur"));
 		headers.add(getString("PID"));
 		if (!windows) {

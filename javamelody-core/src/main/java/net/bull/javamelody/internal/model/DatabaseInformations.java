@@ -142,7 +142,7 @@ public class DatabaseInformations implements Serializable {
 		}
 
 		private List<String> addPrefix(List<String> requests) {
-			final List<String> list = new ArrayList<String>(requests.size());
+			final List<String> list = new ArrayList<>(requests.size());
 			final String prefix = this.toString().toLowerCase(Locale.ENGLISH) + '.';
 			for (final String requestName : requests) {
 				list.add(prefix + requestName);
@@ -178,7 +178,7 @@ public class DatabaseInformations implements Serializable {
 			final DatabaseMetaData metaData = connection.getMetaData();
 			final String databaseName = metaData.getDatabaseProductName();
 			final String url = metaData.getURL();
-			for (final Database database : Database.values()) {
+			for (final Database database : values()) {
 				if (database.isRecognized(databaseName, url)) {
 					if (database == MYSQL && metaData.getDatabaseMajorVersion() <= 4) {
 						// si mysql et version 4 alors c'est MYSQL4 et non MYSQL
@@ -255,8 +255,7 @@ public class DatabaseInformations implements Serializable {
 
 	private static String[][] executeRequest(Connection connection, String request,
 			List<?> parametersValues) throws SQLException {
-		final PreparedStatement statement = connection.prepareStatement(request);
-		try {
+		try (PreparedStatement statement = connection.prepareStatement(request)) {
 			if (parametersValues != null) {
 				int i = 1;
 				for (final Object parameterValue : parametersValues) {
@@ -274,17 +273,14 @@ public class DatabaseInformations implements Serializable {
 				throw new SQLException(message, e);
 			}
 			throw e;
-		} finally {
-			statement.close();
 		}
 	}
 
 	private static String[][] executeQuery(PreparedStatement statement) throws SQLException {
-		final ResultSet resultSet = statement.executeQuery();
-		try {
+		try (ResultSet resultSet = statement.executeQuery()) {
 			final ResultSetMetaData metaData = resultSet.getMetaData();
 			final int columnCount = metaData.getColumnCount();
-			final List<String[]> list = new ArrayList<String[]>();
+			final List<String[]> list = new ArrayList<>();
 			String[] values = new String[columnCount];
 			for (int i = 1; i <= columnCount; i++) {
 				values[i - 1] = metaData.getColumnName(i) + '\n' + metaData.getColumnTypeName(i)
@@ -300,8 +296,6 @@ public class DatabaseInformations implements Serializable {
 				list.add(values);
 			}
 			return list.toArray(new String[0][]);
-		} finally {
-			resultSet.close();
 		}
 	}
 
@@ -361,11 +355,8 @@ public class DatabaseInformations implements Serializable {
 					final String statementId = String.valueOf(sqlRequest.hashCode());
 					final String explainRequest = buildExplainRequest(sqlRequest, statementId);
 					// exécution de la demande
-					final Statement statement = connection.createStatement();
-					try {
+					try (Statement statement = connection.createStatement()) {
 						statement.execute(explainRequest);
-					} finally {
-						statement.close();
 					}
 
 					// récupération du résultat

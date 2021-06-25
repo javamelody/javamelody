@@ -125,7 +125,7 @@ public final class Main {
 		final Method mainMethod = launcher.getMethod("main", new Class<?>[] { String[].class });
 
 		// figure out the arguments
-		final List<String> arguments = new ArrayList<String>(Arrays.asList(args));
+		final List<String> arguments = new ArrayList<>(Arrays.asList(args));
 		arguments.add(0, "--warfile=" + me.getAbsolutePath());
 
 		// override the usage screen

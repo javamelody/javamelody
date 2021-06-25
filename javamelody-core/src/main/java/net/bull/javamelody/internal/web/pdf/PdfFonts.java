@@ -104,9 +104,7 @@ enum PdfFonts {
 					chineseBaseFont = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H",
 							BaseFont.NOT_EMBEDDED);
 				}
-			} catch (final DocumentException e) {
-				throw new IllegalStateException(e);
-			} catch (final IOException e) {
+			} catch (final DocumentException | IOException e) {
 				throw new IllegalStateException(e);
 			}
 		}
@@ -130,21 +128,15 @@ enum PdfFonts {
 			final Properties cjkEncodings = (Properties) cjkEncodingsField.get(null);
 
 			if (cjkFonts.isEmpty()) {
-				final InputStream is = BaseFont.getResourceStream(
-						BaseFont.RESOURCE_PATH + "cjkfonts.properties.renamedForIssue258");
-				try {
+				try (InputStream is = BaseFont.getResourceStream(
+						BaseFont.RESOURCE_PATH + "cjkfonts.properties.renamedForIssue258")) {
 					cjkFonts.load(is);
-				} finally {
-					is.close();
 				}
 			}
 			if (cjkEncodings.isEmpty()) {
-				final InputStream is = BaseFont.getResourceStream(
-						BaseFont.RESOURCE_PATH + "cjkencodings.properties.renamedForIssue258");
-				try {
+				try (InputStream is = BaseFont.getResourceStream(
+						BaseFont.RESOURCE_PATH + "cjkencodings.properties.renamedForIssue258")) {
 					cjkEncodings.load(is);
-				} finally {
-					is.close();
 				}
 			}
 		} catch (final Exception e) {
@@ -175,9 +167,7 @@ enum PdfFonts {
 					} finally {
 						input.close();
 					}
-				} catch (final IOException e) {
-					throw new IllegalStateException(e);
-				} catch (final DocumentException e) {
+				} catch (final IOException | DocumentException e) {
 					throw new IllegalStateException(e);
 				}
 			}

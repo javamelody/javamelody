@@ -57,7 +57,7 @@ abstract class CollectorDataMerge {
 	protected abstract void log(String msg);
 
 	int mergeDirectories() throws IOException {
-		final List<String> mergedFileNames = new ArrayList<String>();
+		final List<String> mergedFileNames = new ArrayList<>();
 		for (final File directory : sourceDirectories) {
 			final List<File> files = listFiles(directory);
 			for (final File file : files) {
@@ -67,7 +67,7 @@ abstract class CollectorDataMerge {
 						log("Excluding " + fileName);
 					} else {
 						mergedFileNames.add(fileName);
-						final List<File> filesToMerge = new ArrayList<File>();
+						final List<File> filesToMerge = new ArrayList<>();
 						for (final File directoryToMerge : sourceDirectories) {
 							final File fileToMerge = new File(directoryToMerge, fileName);
 							if (fileToMerge.exists()) {
@@ -203,7 +203,7 @@ abstract class CollectorDataMerge {
 	private void mergeStatistics(final List<File> sources, final File target) throws IOException {
 		Counter mergedCounter = null;
 		for (final File source : sources) {
-			Counter counter;
+			final Counter counter;
 			try {
 				counter = CounterStorage.readFromFile(source);
 			} catch (final IOException e) {

@@ -70,13 +70,11 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 		assert pdfDocumentFactory != null;
 
 		this.rootCurrentContexts = rootCurrentContexts;
-		this.counterReportsByCounterName = new HashMap<String, PdfCounterReport>(
-				pdfCounterReports.size());
+		this.counterReportsByCounterName = new HashMap<>(pdfCounterReports.size());
 		for (final PdfCounterReport counterReport : pdfCounterReports) {
 			counterReportsByCounterName.put(counterReport.getCounterName(), counterReport);
 		}
-		this.threadInformationsByThreadId = new HashMap<Long, ThreadInformations>(
-				threadInformationsList.size());
+		this.threadInformationsByThreadId = new HashMap<>(threadInformationsList.size());
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			this.threadInformationsByThreadId.put(threadInformations.getId(), threadInformations);
 		}
@@ -155,7 +153,7 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 
 	private List<String> createHeaders(List<CounterRequestContext> contexts,
 			boolean displayRemoteUser) {
-		final List<String> headers = new ArrayList<String>();
+		final List<String> headers = new ArrayList<>();
 		headers.add(getString("Thread"));
 		if (displayRemoteUser) {
 			headers.add(getString("Utilisateur"));
@@ -207,7 +205,7 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 			}
 		}
 
-		final List<CounterRequestContext> contexts = new ArrayList<CounterRequestContext>();
+		final List<CounterRequestContext> contexts = new ArrayList<>();
 		contexts.add(rootContext);
 		contexts.addAll(rootContext.getChildContexts());
 		writeRequests(contexts);

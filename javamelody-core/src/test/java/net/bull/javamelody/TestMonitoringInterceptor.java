@@ -77,9 +77,7 @@ public class TestMonitoringInterceptor {
 		public Method getMethod() {
 			try {
 				return TestMonitoringInterceptor.class.getMethod("testInvoke");
-			} catch (final SecurityException e) {
-				throw new IllegalStateException(e);
-			} catch (final NoSuchMethodException e) {
+			} catch (final SecurityException | NoSuchMethodException e) {
 				throw new IllegalStateException(e);
 			}
 		}

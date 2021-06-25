@@ -249,7 +249,7 @@ public class TestCounter {
 		verify(httpRequest);
 
 		final int errorsCount = errorCounter.getErrorsCount();
-		final List<CounterError> errors = new ArrayList<CounterError>();
+		final List<CounterError> errors = new ArrayList<>();
 		errors.add(new CounterError("erreur", null));
 		errors.add(new CounterError("erreur", "stacktrace"));
 		errorCounter.addErrors(errors);

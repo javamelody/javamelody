@@ -88,21 +88,16 @@ public final class PID {
 					tempFile.deleteOnExit();
 				}
 			}
-		} catch (final InterruptedException e) {
-			pid = e.toString();
-		} catch (final IOException e) {
+		} catch (final InterruptedException | IOException e) {
 			pid = e.toString();
 		}
 		return pid;
 	}
 
 	private static void extractGetPid(File tempFile) throws IOException {
-		final InputStream input = PID.class
-				.getResourceAsStream("/net/bull/javamelody/resource/getpids.exe");
-		try {
+		try (InputStream input = PID.class
+				.getResourceAsStream("/net/bull/javamelody/resource/getpids.exe")) {
 			InputOutput.pumpToFile(input, tempFile);
-		} finally {
-			input.close();
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class SessionTestImpl implements HttpSession {
 
 	public SessionTestImpl(boolean serializable) {
 		super();
-		attributes = new LinkedHashMap<String, Object>();
+		attributes = new LinkedHashMap<>();
 		if (serializable) {
 			attributes.put(SessionListener.SESSION_COUNTRY_KEY, "fr");
 			attributes.put(SessionListener.SESSION_REMOTE_ADDR, "localhost");

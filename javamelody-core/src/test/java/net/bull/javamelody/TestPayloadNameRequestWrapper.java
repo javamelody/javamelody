@@ -93,7 +93,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		}).anyTimes();
 
 		//headers
-		headers = new HashMap<String, String>();
+		headers = new HashMap<>();
 		final Capture<String> headerName = Capture.newInstance();
 		expect(request.getHeader(EasyMock.capture(headerName))).andAnswer(new IAnswer<String>() {
 			@Override
@@ -141,7 +141,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	}
 
 	Map<String, String[]> getParameterMap() throws IOException {
-		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+		final Map<String, String[]> parameterMap = new HashMap<>();
 
 		if (request.getQueryString() != null) {
 			final Map<String, String[]> queryParams = HttpUtils
@@ -162,7 +162,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 				final String[] queryValues = parameterMap.get(key);
 				final String[] bodyValues = bodyParams.get(key);
 
-				final List<String> values = new ArrayList<String>();
+				final List<String> values = new ArrayList<>();
 				if (queryValues != null) {
 					values.addAll(Arrays.asList(queryValues));
 				}
@@ -228,8 +228,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Should not have found name for HTTP GET", null,
-				wrapper.getPayloadRequestName());
+		assertNull("Should not have found name for HTTP GET", wrapper.getPayloadRequestName());
 
 		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
 	}
@@ -243,8 +242,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 		final PayloadNameRequestWrapper wrapper = new PayloadNameRequestWrapper(request);
 		wrapper.initialize();
 
-		assertEquals("Should not have found name for HTTP GET", null,
-				wrapper.getPayloadRequestName());
+		assertNull("Should not have found name for HTTP GET", wrapper.getPayloadRequestName());
 
 		assertEquals("Content was changed", body, slurp(wrapper.getInputStream()));
 	}

@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-objectfactory</artifactId>
-	<version>1.86.0-SNAPSHOT</version>
+	<version>1.88.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JavaMelody - Glassfish V3 ObjectFactory</name>
 	<description>Objectfactory for Glassfish V3</description>
 	<url>https://github.com/javamelody/javamelody/wiki/UserGuideAdvanced#monitoring-of-sql-requests-and-of-jdbc-connections-in-glassfish-v3</url>
 	<properties>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 </project>

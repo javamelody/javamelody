@@ -23,7 +23,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collections;
@@ -50,19 +50,19 @@ class Datadog extends MetricsPublisher {
 	private final DecimalFormat decimalFormat = new DecimalFormat("0.00",
 			DecimalFormatSymbols.getInstance(Locale.US));
 	private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-	private final Writer bufferWriter = new OutputStreamWriter(buffer, Charset.forName("UTF-8"));
+	private final Writer bufferWriter = new OutputStreamWriter(buffer, StandardCharsets.UTF_8);
 	private long lastTime;
 	private String lastTimestamp;
 	private boolean beginSeries;
 
-	Datadog(String datadogApiKey, String prefix, String hostAndTags) {
+	Datadog(String datadogApiKey, String datadogApiHost, String prefix, String hostAndTags) {
 		super();
 		assert datadogApiKey != null;
 		assert prefix != null;
 		assert hostAndTags != null;
 		try {
 			this.datadogUrl = new URL(
-					"https://app.datadoghq.com/api/v1/series?api_key=" + datadogApiKey);
+					"https://" + datadogApiHost + "/api/v1/series?api_key=" + datadogApiKey);
 		} catch (final MalformedURLException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -80,6 +80,11 @@ class Datadog extends MetricsPublisher {
 	static Datadog getInstance(String contextPath, String hostName) {
 		final String datadogApiKey = Parameter.DATADOG_API_KEY.getValue();
 		if (datadogApiKey != null) {
+			String datadogApiHost = Parameter.DATADOG_API_HOST.getValue();
+			if (datadogApiHost == null) {
+				datadogApiHost = "api.datadoghq.com";
+			}
+
 			assert contextPath != null;
 			assert hostName != null;
 			// contextPath est du genre "/testapp"
@@ -89,7 +94,7 @@ class Datadog extends MetricsPublisher {
 			// see https://help.datadoghq.com/hc/en-us/articles/203764705-What-are-valid-metric-names-
 			final String hostAndTags = "\"host\":\"" + hostName + "\",\"tags\":[\"application:"
 					+ contextPath + "\"]";
-			return new Datadog(datadogApiKey, prefix, hostAndTags);
+			return new Datadog(datadogApiKey, datadogApiHost, prefix, hostAndTags);
 		}
 		return null;
 	}

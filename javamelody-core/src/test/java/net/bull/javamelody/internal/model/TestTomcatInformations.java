@@ -25,7 +25,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -75,6 +77,21 @@ public class TestTomcatInformations {
 
 		/** {@inheritDoc} */
 		@Override
+		public Map<Object, Object> getmemoryUsage() {
+			return new LinkedHashMap<Object, Object>() {
+				private static final long serialVersionUID = 1L;
+
+				{
+					this.put("committed", 1);
+					this.put("init", 10);
+					this.put("max", 100);
+					this.put("used", 1000);
+				}
+			};
+		}
+
+		/** {@inheritDoc} */
+		@Override
 		public Object gettoStringException() {
 			return new Object() {
 				/** {@inheritDoc} */
@@ -108,6 +125,13 @@ public class TestTomcatInformations {
 		 * @return int
 		 */
 		int getmaxThreads();
+
+		/** {@inheritDoc} */
+		/**
+		 * attribut memoryUsage.
+		 * @return MemoryUsage
+		 */
+		Map<Object, Object> getmemoryUsage();
 
 		/**
 		 * attribut currentThreadsBusy.
@@ -255,7 +279,7 @@ public class TestTomcatInformations {
 		assertNotNull("buildTomcatInformationsList",
 				TomcatInformations.buildTomcatInformationsList());
 		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		final List<ObjectName> mBeans = new ArrayList<>();
 		mBeans.add(
 				mBeanServer
 						.registerMBean(new ThreadPool(),

@@ -39,7 +39,7 @@ import net.bull.javamelody.internal.common.HttpPart;
  * @author Emeric Vernat
  */
 class RequestToMethodMapper<T> {
-	private final Map<HttpPart, Method> methodsByPart = new HashMap<HttpPart, Method>();
+	private final Map<HttpPart, Method> methodsByPart = new HashMap<>();
 
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)

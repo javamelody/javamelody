@@ -48,24 +48,17 @@ import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Action;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
-import net.bull.javamelody.internal.model.ConnectionInformations;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.CounterRequestAggregation;
-import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JavaInformations;
-import net.bull.javamelody.internal.model.JndiBinding;
 import net.bull.javamelody.internal.model.LabradorRetriever;
-import net.bull.javamelody.internal.model.MBeanNode;
 import net.bull.javamelody.internal.model.Period;
-import net.bull.javamelody.internal.model.ProcessInformations;
 import net.bull.javamelody.internal.model.Range;
 import net.bull.javamelody.internal.model.RemoteCollector;
-import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
 import net.bull.javamelody.internal.model.SessionInformations;
-import net.bull.javamelody.internal.model.ThreadInformations;
 import net.bull.javamelody.internal.model.TransportFormat;
 import net.bull.javamelody.internal.web.html.HtmlAbstractReport;
 import net.bull.javamelody.internal.web.html.HtmlReport;
@@ -159,7 +152,7 @@ public class CollectorController { // NOPMD
 					final Range range = serializableController.getRangeForSerializable(req);
 					final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 							application);
-					final List<Object> serializable = new ArrayList<Object>(
+					final List<Object> serializable = new ArrayList<>(
 							(List<?>) serializableController.createDefaultSerializable(
 									javaInformationsList, range, messageForReport));
 					monitoringController.doCompressedSerializable(req, resp,
@@ -171,9 +164,6 @@ public class CollectorController { // NOPMD
 			}
 
 			doReport(req, resp, application);
-		} catch (final RuntimeException e) {
-			// catch RuntimeException pour éviter warning exception
-			writeMessage(req, resp, application, e.getMessage());
 		} catch (final Exception e) {
 			writeMessage(req, resp, application, e.getMessage());
 		}
@@ -370,11 +360,9 @@ public class CollectorController { // NOPMD
 		final SerializableController serializableController = new SerializableController(collector);
 		final Range range = serializableController.getRangeForSerializable(httpRequest);
 		if (HttpPart.THREADS.isPart(httpRequest)) {
-			return new ArrayList<List<ThreadInformations>>(
-					collectorServer.getThreadInformationsLists(application));
+			return new ArrayList<>(collectorServer.getThreadInformationsLists(application));
 		} else if (HttpPart.CURRENT_REQUESTS.isPart(httpRequest)) {
-			return new LinkedHashMap<JavaInformations, List<CounterRequestContext>>(
-					collectorServer.collectCurrentRequests(application));
+			return new LinkedHashMap<>(collectorServer.collectCurrentRequests(application));
 		} else if (HttpPart.EXPLAIN_PLAN.isPart(httpRequest)) {
 			final String sqlRequest = httpRequest.getHeader(HttpParameter.REQUEST.getName());
 			return collectorServer.collectSqlRequestExplainPlan(application, sqlRequest);
@@ -384,16 +372,16 @@ public class CollectorController { // NOPMD
 			final Counter counter = collector.getRangeCounter(range, counterName);
 			final List<CounterRequest> requestList = new CounterRequestAggregation(counter)
 					.getRequestsAggregatedOrFilteredByClassName(requestId);
-			return new ArrayList<CounterRequest>(requestList);
+			return new ArrayList<>(requestList);
 		} else if (HttpPart.APPLICATIONS.isPart(httpRequest)) {
 			// list all applications, with last exceptions if not available,
 			// use ?part=applications&format=json for example
-			final Map<String, Throwable> applications = new HashMap<String, Throwable>();
+			final Map<String, Throwable> applications = new HashMap<>();
 			for (final String app : Parameters.getCollectorUrlsByApplications().keySet()) {
 				applications.put(app, null);
 			}
 			applications.putAll(collectorServer.getLastCollectExceptionsByApplication());
-			return new HashMap<String, Throwable>(applications);
+			return new HashMap<>(applications);
 		} else if (HttpPart.JROBINS.isPart(httpRequest)
 				|| HttpPart.OTHER_JROBINS.isPart(httpRequest)) {
 			// pour UI Swing
@@ -412,7 +400,7 @@ public class CollectorController { // NOPMD
 		if (HttpPart.JVM.isPart(httpRequest)) {
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);
-			return new ArrayList<JavaInformations>(javaInformationsList);
+			return new ArrayList<>(javaInformationsList);
 		} else if (HttpPart.HEAP_HISTO.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
@@ -426,27 +414,24 @@ public class CollectorController { // NOPMD
 			if (sessionId != null && !sessionInformations.isEmpty()) {
 				return sessionInformations.get(0);
 			}
-			return new ArrayList<SessionInformations>(sessionInformations);
+			return new ArrayList<>(sessionInformations);
 		} else if (HttpPart.HOTSPOTS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			return new ArrayList<SampledMethod>(collectorServer.collectHotspots(application));
+			return new ArrayList<>(collectorServer.collectHotspots(application));
 		} else if (HttpPart.PROCESSES.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			return new LinkedHashMap<String, List<ProcessInformations>>(
-					collectorServer.collectProcessInformations(application));
+			return new LinkedHashMap<>(collectorServer.collectProcessInformations(application));
 		} else if (HttpPart.JNDI.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			final String path = HttpParameter.PATH.getParameterFrom(httpRequest);
-			return new ArrayList<JndiBinding>(
-					collectorServer.collectJndiBindings(application, path));
+			return new ArrayList<>(collectorServer.collectJndiBindings(application, path));
 		} else if (HttpPart.MBEANS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			return new LinkedHashMap<String, List<MBeanNode>>(
-					collectorServer.collectMBeans(application));
+			return new LinkedHashMap<>(collectorServer.collectMBeans(application));
 		} else if (HttpPart.DATABASE.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
@@ -456,14 +441,13 @@ public class CollectorController { // NOPMD
 		} else if (HttpPart.CONNECTIONS.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
-			return new ArrayList<List<ConnectionInformations>>(
-					collectorServer.collectConnectionInformations(application));
+			return new ArrayList<>(collectorServer.collectConnectionInformations(application));
 		} else if (HttpPart.CRASHES.isPart(httpRequest)) {
 			// par sécurité
 			Action.checkSystemActionsEnabled();
 			final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 					application);
-			return new ArrayList<HsErrPid>(HsErrPid.getHsErrPidList(javaInformationsList));
+			return new ArrayList<>(HsErrPid.getHsErrPidList(javaInformationsList));
 		}
 		return null;
 	}
@@ -574,7 +558,7 @@ public class CollectorController { // NOPMD
 		final String cacheIdParameter = HttpParameter.CACHE_ID.getParameterFrom(req);
 		final String cacheKeyParameter = HttpParameter.CACHE_KEY.getParameterFrom(req);
 		final List<URL> urls = getUrlsByApplication(application);
-		final List<URL> actionUrls = new ArrayList<URL>(urls.size());
+		final List<URL> actionUrls = new ArrayList<>(urls.size());
 		for (final URL url : urls) {
 			final StringBuilder actionUrl = new StringBuilder(url.toString());
 			actionUrl.append("&action=").append(actionParameter);

@@ -58,7 +58,7 @@ public final class Utils {
 	}
 
 	public static void initialize() {
-		for (final Object systemProperty : new HashSet<Object>(System.getProperties().keySet())) {
+		for (final Object systemProperty : new HashSet<>(System.getProperties().keySet())) {
 			if (systemProperty.toString().startsWith(Parameters.PARAMETER_SYSTEM_PREFIX)) {
 				System.getProperties().remove(systemProperty.toString());
 			}

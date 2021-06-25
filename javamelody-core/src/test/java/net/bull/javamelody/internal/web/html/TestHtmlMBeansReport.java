@@ -79,7 +79,7 @@ public class TestHtmlMBeansReport {
 	@Test
 	public void testToHtml() throws IOException, JMException {
 		final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		final List<ObjectName> mBeans = new ArrayList<ObjectName>();
+		final List<ObjectName> mBeans = new ArrayList<>();
 		try {
 			final ObjectInstance mBean1 = mBeanServer.registerMBean(new ThreadPool(),
 					new ObjectName("Catalina:type=ThreadPool"));

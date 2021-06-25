@@ -325,7 +325,7 @@ public class JavaInformations implements Serializable { // NOPMD
 	public static List<ThreadInformations> buildThreadInformationsList() {
 		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		final Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
-		final List<Thread> threads = new ArrayList<Thread>(stackTraces.keySet());
+		final List<Thread> threads = new ArrayList<>(stackTraces.keySet());
 
 		// si "1.6.0_01".compareTo(Parameters.JAVA_VERSION) > 0;
 		// on récupèrait les threads sans stack trace en contournant bug 6434648 avant 1.6.0_01
@@ -338,14 +338,13 @@ public class JavaInformations implements Serializable { // NOPMD
 		final boolean cpuTimeEnabled = threadBean.isThreadCpuTimeSupported()
 				&& threadBean.isThreadCpuTimeEnabled();
 		final long[] deadlockedThreads = getDeadlockedThreads(threadBean);
-		final List<ThreadInformations> threadInfosList = new ArrayList<ThreadInformations>(
-				threads.size());
+		final List<ThreadInformations> threadInfosList = new ArrayList<>(threads.size());
 		// hostAddress récupéré ici car il peut y avoir plus de 20000 threads
 		final String hostAddress = Parameters.getHostAddress();
 		for (final Thread thread : threads) {
 			final StackTraceElement[] stackTraceElements = stackTraces.get(thread);
 			final List<StackTraceElement> stackTraceElementList = stackTraceElements == null ? null
-					: new ArrayList<StackTraceElement>(Arrays.asList(stackTraceElements));
+					: new ArrayList<>(Arrays.asList(stackTraceElements));
 			final long cpuTimeMillis;
 			final long userTimeMillis;
 			if (cpuTimeEnabled) {
@@ -372,7 +371,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		}
 		final Thread[] threadsArray = new Thread[group.activeCount()];
 		group.enumerate(threadsArray, true);
-		final List<Thread> threads = new ArrayList<Thread>(threadsArray.length);
+		final List<Thread> threads = new ArrayList<>(threadsArray.length);
 		for (final Thread thread : threadsArray) {
 			// threadsArray may contain null if a thread has just died between activeCount and enumerate
 			if (thread != null) {
@@ -421,19 +420,16 @@ public class JavaInformations implements Serializable { // NOPMD
 			for (final Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
 				final String name = entry.getKey();
 				final DataSource dataSource = entry.getValue();
-				final Connection connection = dataSource.getConnection();
 				// on ne doit pas changer autoCommit pour la connection d'une DataSource
 				// (ou alors il faudrait remettre l'autoCommit après, issue 233)
 				// connection.setAutoCommit(false);
-				try {
+				try (Connection connection = dataSource.getConnection()) {
 					if (result.length() > 0) {
 						result.append("\n\n");
 					}
 					result.append(name).append(":\n");
 					appendDataBaseVersion(result, connection);
-				} finally {
 					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
-					connection.close();
 				}
 			}
 		} catch (final Exception e) {
@@ -645,31 +641,28 @@ public class JavaInformations implements Serializable { // NOPMD
 
 	public List<ThreadInformations> getThreadInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<ThreadInformations> result = new ArrayList<ThreadInformations>(
-				threadInformationsList);
+		final List<ThreadInformations> result = new ArrayList<>(threadInformationsList);
 		Collections.sort(result, new ThreadInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<CacheInformations> getCacheInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<CacheInformations> result = new ArrayList<CacheInformations>(
-				cacheInformationsList);
+		final List<CacheInformations> result = new ArrayList<>(cacheInformationsList);
 		Collections.sort(result, new CacheInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<JCacheInformations> getJCacheInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<JCacheInformations> result = new ArrayList<JCacheInformations>(
-				jcacheInformationsList);
+		final List<JCacheInformations> result = new ArrayList<>(jcacheInformationsList);
 		Collections.sort(result, new JCacheInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<JobInformations> getJobInformationsList() {
 		// on trie sur demande (si affichage)
-		final List<JobInformations> result = new ArrayList<JobInformations>(jobInformationsList);
+		final List<JobInformations> result = new ArrayList<>(jobInformationsList);
 		Collections.sort(result, new JobInformationsComparator());
 		return Collections.unmodifiableList(result);
 	}
@@ -687,7 +680,7 @@ public class JavaInformations implements Serializable { // NOPMD
 	public List<HsErrPid> getHsErrPidList() {
 		if (hsErrPidList != null) {
 			// on trie sur demande (si affichage)
-			final List<HsErrPid> result = new ArrayList<HsErrPid>(hsErrPidList);
+			final List<HsErrPid> result = new ArrayList<>(hsErrPidList);
 			Collections.sort(result, new HsErrPidComparator());
 			return Collections.unmodifiableList(result);
 		}

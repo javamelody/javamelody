@@ -47,7 +47,7 @@ public class SamplingProfiler {
 
 	private final String[] includedPackages;
 
-	private final Map<SampledMethod, SampledMethod> data = new HashMap<SampledMethod, SampledMethod>();
+	private final Map<SampledMethod, SampledMethod> data = new HashMap<>();
 
 	/**
 	 * Sampled method.
@@ -101,7 +101,7 @@ public class SamplingProfiler {
 
 		@Override
 		public int compareTo(SampledMethod method) {
-			return count < method.count ? 1 : count == method.count ? 0 : -1;
+			return Long.compare(method.count, count);
 		}
 
 		@Override
@@ -260,7 +260,7 @@ public class SamplingProfiler {
 	}
 
 	public synchronized List<SampledMethod> getHotspots(int rows) {
-		final List<SampledMethod> methods = new ArrayList<SampledMethod>(data.values());
+		final List<SampledMethod> methods = new ArrayList<>(data.values());
 		Collections.sort(methods);
 		return methods.subList(0, Math.min(rows, methods.size()));
 	}

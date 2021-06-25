@@ -372,6 +372,12 @@ public enum Parameter {
 	STATSD_ADDRESS("statsd-address"),
 
 	/**
+	 * Prefix of metrics that are sent to the <a href='https://github.com/etsy/statsd'>StatsD</a> server.
+	 * Default value is "javamelody.context.host." where context and host gets replaced by the actual values.
+	 */
+	STATSD_PREFIX("statsd-prefix"),
+
+	/**
 	 * Namespace to use in <a href='https://aws.amazon.com/cloudwatch/'>AWS CloudWatch</a> to send metrics,
 	 * for example "MyCompany/MyAppDomain" (null by default).
 	 */
@@ -392,7 +398,12 @@ public enum Parameter {
 	 * API key of the <a href='https://www.datadoghq.com/'>Datadog</a> to send metrics,
 	 * for example: 9775a026f1ca7d1c6c5af9d94d9595a4 (null by default).
 	 */
-	DATADOG_API_KEY("datadog-api-key");
+	DATADOG_API_KEY("datadog-api-key"),
+
+	/**
+	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'api.datadoghq.com' is default.
+	 */
+	DATADOG_API_HOST("datadog-api-host");
 
 	private final String code;
 

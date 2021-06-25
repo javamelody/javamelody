@@ -45,7 +45,7 @@ public class TestMetricsPublisher {
 	/** Test. */
 	@Test
 	public void test() {
-		final List<JavaInformations> javaInformationsList = new ArrayList<JavaInformations>();
+		final List<JavaInformations> javaInformationsList = new ArrayList<>();
 		javaInformationsList.add(new JavaInformations(null, false));
 		javaInformationsList.add(new JavaInformations(null, false));
 		assertEquals("getMetricsPublishers", 0,
