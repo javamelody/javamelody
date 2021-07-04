@@ -45,6 +45,11 @@ public class JavaMelodyConfigurationProperties {
 	 */
 	private String excludedDatasources;
 	/**
+	 * If monitoring based on @RestController, @Controller, @Service, @Async, @Scheduled, @MonitoredWithSpring,
+	 *  @FeignClient or on RestTemplate, MongoDatabaseFactory or ElasticsearchOperations should be enabled.
+	 */
+	private boolean springMonitoringEnabled = true;
+	/**
 	 * If /monitoring should be enabled for reports in the management http port instead of on the application http port.
 	 */
 	private boolean managementEndpointMonitoringEnabled;
@@ -82,6 +87,33 @@ public class JavaMelodyConfigurationProperties {
 	}
 
 	/**
+	 * Sets a comma-separated list of data source names which should be excluded from monitoring.
+	 *
+	 * @param excludedDatasources Data source names to exclude from monitoring.
+	 */
+	public void setExcludedDatasources(String excludedDatasources) {
+		this.excludedDatasources = excludedDatasources;
+	}
+
+	/**
+	 * If monitoring based on @RestController, @Controller, @Service, @Async, @Scheduled, @MonitoredWithSpring,
+	 *  @FeignClient or on RestTemplate, MongoDatabaseFactory or ElasticsearchOperations should be enabled.
+	 * @return true or false
+	 */
+	public boolean isSpringMonitoringEnabled() {
+		return springMonitoringEnabled;
+	}
+
+	/**
+	 * If monitoring based on @RestController, @Controller, @Service, @Async, @Scheduled, @MonitoredWithSpring,
+	 *  @FeignClient or on RestTemplate, MongoDatabaseFactory or ElasticsearchOperations should be enabled.
+	 * @param springMonitoringEnabled true or false
+	 */
+	public void setSpringMonitoringEnabled(boolean springMonitoringEnabled) {
+		this.springMonitoringEnabled = springMonitoringEnabled;
+	}
+
+	/**
 	 * Returns if /monitoring should be enabled for reports in the management http port instead of on the application http port.
 	 * @return true or false
 	 */
@@ -95,15 +127,6 @@ public class JavaMelodyConfigurationProperties {
 	 */
 	public void setManagementEndpointMonitoringEnabled(boolean managementEndpointEnabled) {
 		this.managementEndpointMonitoringEnabled = managementEndpointEnabled;
-	}
-
-	/**
-	 * Sets a comma-separated list of data source names which should be excluded from monitoring.
-	 *
-	 * @param excludedDatasources Data source names to exclude from monitoring.
-	 */
-	public void setExcludedDatasources(String excludedDatasources) {
-		this.excludedDatasources = excludedDatasources;
 	}
 
 	/**
