@@ -118,6 +118,7 @@ public enum Action {
 			.getInputArguments().contains("-XX:+DisableExplicitGC");
 
 	static final String JAVA_VENDOR = System.getProperty("java.vendor");
+	static final String JAVA_VM_VENDOR = System.getProperty("java.vm.vendor");
 
 	private static final String ALL = "all";
 
@@ -217,7 +218,7 @@ public enum Action {
 			}
 			break;
 		case HEAP_DUMP:
-			if (JAVA_VENDOR.contains("IBM")) {
+			if (JAVA_VENDOR.contains("IBM") || JAVA_VM_VENDOR.contains("OpenJ9")) {
 				ibmHeapDump();
 				messageForReport = I18N.getString("heap_dump_genere_ibm");
 			} else {
