@@ -28,8 +28,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.I18N;
@@ -47,7 +49,7 @@ public class CollectorServlet extends HttpServlet {
 	private static final long serialVersionUID = -2070469677921953224L;
 
 	@SuppressWarnings("all")
-	private static final Logger LOGGER = Logger.getLogger("javamelody");
+	private static final Logger LOGGER = LogManager.getLogger("javamelody");
 
 	@SuppressWarnings("all")
 	private transient HttpAuth httpAuth;
@@ -63,7 +65,8 @@ public class CollectorServlet extends HttpServlet {
 		if (!Parameter.LOG.getValueAsBoolean()) {
 			// si log désactivé dans serveur de collecte,
 			// alors pas de log, comme dans webapp
-			LOGGER.setLevel(Level.WARN);
+			Configurator.setLevel(LOGGER.getName(), Level.WARN);
+
 		}
 		// dans le serveur de collecte, on est sûr que log4j est disponible
 		LOGGER.info("initialization of the collector servlet of the monitoring");
