@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.bull.javamelody.swing.MMenuItem;
 import net.bull.javamelody.swing.print.MCsvLocalWriter;
@@ -84,14 +84,15 @@ class TablePopupMenu extends JPopupMenu {
 			printers.add(new MPdfWriter());
 		} catch (final ClassNotFoundException e) {
 			// l'export PDF ne sera pas disponible dans cette application
-			Logger.getLogger(TablePopupMenu.class).debug("Export PDF non disponible sans iText");
+			LoggerFactory.getLogger(TablePopupMenu.class)
+					.debug("Export PDF non disponible sans iText");
 		}
 		try {
 			Class.forName("com.lowagie.text.rtf.RtfWriter2");
 			printers.add(new MRtfWriter());
 		} catch (final ClassNotFoundException e) {
 			// l'export RTF ne sera pas disponible dans cette application
-			Logger.getLogger(TablePopupMenu.class)
+			LoggerFactory.getLogger(TablePopupMenu.class)
 					.debug("Export RTF non disponible sans iText-RTF");
 		}
 		printers.add(new MHtmlWriter());
@@ -101,7 +102,7 @@ class TablePopupMenu extends JPopupMenu {
 			printers.add(new MJsonWriter());
 		} catch (final ClassNotFoundException e) {
 			// l'export XML et JSON ne seront pas disponibles dans cette application
-			Logger.getLogger(TablePopupMenu.class)
+			LoggerFactory.getLogger(TablePopupMenu.class)
 					.debug("Exports XML et JSON non disponibles sans XStream et XPP3");
 		}
 		printers.add(new MJavaPrinter());

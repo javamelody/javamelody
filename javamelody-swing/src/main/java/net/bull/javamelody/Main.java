@@ -32,7 +32,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.Range;
@@ -135,7 +135,7 @@ public final class Main {
 	}
 
 	static void log(String message) {
-		Logger.getLogger(Main.class).info(message);
+		LoggerFactory.getLogger(Main.class).info(message);
 	}
 
 	/**
