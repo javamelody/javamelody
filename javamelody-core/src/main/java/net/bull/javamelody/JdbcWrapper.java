@@ -665,8 +665,15 @@ public final class JdbcWrapper {
 			unwrap(dataSource, "delegate", dataSourceUnwrappedMessage);
 		} else if (weblogic
 				&& "weblogic.jdbc.common.internal.RmiDataSource".equals(dataSourceClassName)) {
-			unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
-			unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
+			if (JdbcWrapperHelper.hasField(dataSource, "delegate")) {
+				// followup on issue #916, for weblogic 12.2.1.4.0
+				final Object delegate = JdbcWrapperHelper.getFieldValue(dataSource, "delegate");
+				unwrap(delegate, "jdbcCtx", dataSourceUnwrappedMessage);
+				unwrap(delegate, "driverInstance", dataSourceUnwrappedMessage);
+			} else {
+				unwrap(dataSource, "jdbcCtx", dataSourceUnwrappedMessage);
+				unwrap(dataSource, "driverInstance", dataSourceUnwrappedMessage);
+			}
 		} else if (isDbcpDataSource(dataSourceClassName)) {
 			unwrap(dataSource, "dataSource", dataSourceUnwrappedMessage);
 		}

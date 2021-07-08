@@ -105,9 +105,9 @@ class CacheInformationsPanel extends MelodyPanel {
 		myTable.addColumn("onDiskObjectCount", getString("Nb_objets_sur_disque"));
 		if (hitsRatioEnabled) {
 			myTable.addColumn("inMemoryHitsRatio",
-					"<html>" + getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
+					"<html>" + getString("Efficacite_cache_memoire").replace("\n", "<br/>"));
 			myTable.addColumn("hitsRatio",
-					"<html>" + getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+					"<html>" + getString("Efficacite_cache").replace("\n", "<br/>"));
 			// la hauteur des entêtes de colonnes est calculée selon la hauteur pour la première colonne
 			// (see BasicTableHeaderUI.getHeaderHeight()),
 			// donc on agrandit la hauteur de la première entête de colonne, pour qu'elle soit adaptée

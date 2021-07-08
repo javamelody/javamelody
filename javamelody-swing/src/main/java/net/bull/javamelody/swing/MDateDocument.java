@@ -68,8 +68,8 @@ public class MDateDocument extends PlainDocument {
 
 			final Locale locale = Locale.getDefault();
 			final String pattern = patternSb.toString();
-			final String pattern2 = pattern.replaceAll("y", "");
-			final String pattern3 = pattern2.replaceAll("M", "");
+			final String pattern2 = pattern.replace("y", "");
+			final String pattern3 = pattern2.replace("M", "");
 			final SimpleDateFormat myAlternateDateFormat2 = new SimpleDateFormat(pattern2, locale);
 			final SimpleDateFormat myAlternateDateFormat3 = new SimpleDateFormat(pattern3, locale);
 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+  <Properties>
+    <Property name="CONSOLE_LOG_PATTERN" value="%date{yyyyMMdd HH:mm:ss.SSS} %-5level [%thread] %-15.15logger{1.} - %msg%n"/>
+  </Properties>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <!-- log http request -->
+    <Logger name="javamelody" level="info" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+	<!-- internal log -->
+    <Logger name="net.bull.javamelody" level="info" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>

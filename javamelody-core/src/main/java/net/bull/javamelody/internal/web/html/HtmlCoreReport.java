@@ -783,8 +783,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
 		writeln("<div align='center'>");
-		final Collection<String> applications = new ArrayList<>();
-		applications.addAll(Parameters.getCollectorUrlsByApplications().keySet());
+		final Collection<String> applications = new ArrayList<>(
+				Parameters.getCollectorUrlsByApplications().keySet());
 		applications.addAll(Parameters.getApplicationsByAggregationApplication().keySet());
 		if (applications.size() > 1
 				|| !collectorServer.getLastCollectExceptionsByApplication().isEmpty()) {
@@ -831,7 +831,6 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
 				writeln("<em class='applicationStatus'>");
 				writeln("#Application_disponible#");
-				writeln("</em>");
 			} else {
 				writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
 				writeln("<em class='applicationStatus'>");
@@ -843,8 +842,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					writeDirectly(htmlEncode(stackTraceElement.toString()));
 					writeDirectly("<br/>");
 				}
-				writeln("</em>");
 			}
+			writeln("</em>");
 			writeln(application + "</a>");
 			i++;
 			if (tabularList) {

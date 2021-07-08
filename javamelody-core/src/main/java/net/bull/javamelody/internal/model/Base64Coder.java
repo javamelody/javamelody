@@ -33,7 +33,7 @@ import java.util.Arrays;
 public final class Base64Coder {
 
 	// The line separator string of the operating system.
-	private static final String SYSTEM_LINE_SEPARATOR = System.getProperty("line.separator");
+	private static final String SYSTEM_LINE_SEPARATOR = System.lineSeparator();
 
 	// Mapping table from 6-bit nibbles to Base64 characters.
 	private static final char[] MAP1 = new char[64];

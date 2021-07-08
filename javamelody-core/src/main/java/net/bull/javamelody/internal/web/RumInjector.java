@@ -68,7 +68,7 @@ public final class RumInjector implements HtmlToInject {
 		String tmp = requestName.substring(0, lastIndexOfSpace);
 		// replace each subpath by ".."
 		while (tmp.contains("//")) {
-			tmp = tmp.replaceAll("//", "/");
+			tmp = tmp.replace("//", "/");
 		}
 		tmp = tmp.replaceAll("/[^/]*", "/..");
 		// remove first subpath

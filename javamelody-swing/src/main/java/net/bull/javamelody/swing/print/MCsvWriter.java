@@ -140,7 +140,7 @@ public class MCsvWriter extends MPrinter {
 		// le séparateur des .csv (',' à l'américaine)
 		final NumberFormat decimalFormat = NumberFormat.getInstance(Locale.US);
 		decimalFormat.setGroupingUsed(false);
-		final String eol = System.getProperty("line.separator");
+		final String eol = System.lineSeparator();
 
 		// titres des colonnes
 		writeCsvHeader(table, out, csvSeparator);
@@ -192,7 +192,7 @@ public class MCsvWriter extends MPrinter {
 		// récupération des informations utiles
 		final int columnCount = table.getColumnModel().getColumnCount();
 
-		final String eol = System.getProperty("line.separator");
+		final String eol = System.lineSeparator();
 		if (table.getName() != null) {
 			String title = formatCsv(table.getName(), csvSeparator);
 			if (title.startsWith("ID")) {

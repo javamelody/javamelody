@@ -152,9 +152,9 @@ public class SerializableController {
 			@RequestAttribute(JAVA_INFORMATIONS_LIST_KEY) List<JavaInformations> javaInformationsList,
 			@RequestAttribute(MESSAGE_FOR_REPORT_KEY) String messageForReport,
 			@RequestAttribute(RANGE_KEY) Range range) throws IOException {
-		final List<Serializable> result = new ArrayList<>();
-		result.addAll((List<Serializable>) createDefaultSerializable(javaInformationsList, range,
-				messageForReport));
+		final List<Serializable> result = new ArrayList<>(
+				(List<Serializable>) createDefaultSerializable(javaInformationsList, range,
+						messageForReport));
 		result.addAll(getCurrentRequests());
 		return (Serializable) result;
 	}

@@ -69,9 +69,7 @@ public class CounterRequestContextData {
 		}
 		for (final CounterRequestContext context : contexts) {
 			allContexts.add(context);
-			for (final CounterRequestContext childContext : context.getChildContexts()) {
-				allContexts.add(childContext);
-			}
+			allContexts.addAll(context.getChildContexts());
 		}
 		final Map<String, CounterRequest> requestsById = mapAllRequestsById();
 		for (final CounterRequestContext context : allContexts) {

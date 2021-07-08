@@ -176,15 +176,13 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 			writeln("<a class='confirm' href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
 					+ "' data-confirm=\""
 					+ I18N.htmlEncode(getString("confirm_ramasse_miette"), false, false) + "\">");
-			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
-			writeln(separator);
 		} else {
 			writeln("<a class='alert' href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
 					+ "' data-alert=\""
 					+ I18N.htmlEncode(getString("ramasse_miette_desactive"), false, false) + "\">");
-			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
-			writeln(separator);
 		}
+		writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
+		writeln(separator);
 		writeln("<a class='confirm' href='?part=heaphisto&amp;action=heap_dump"
 				+ getCsrfTokenUrlPart() + "' data-confirm=\""
 				+ I18N.htmlEncode(getString("confirm_heap_dump"), false, false) + "\">");

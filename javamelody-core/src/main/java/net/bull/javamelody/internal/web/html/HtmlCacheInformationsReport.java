@@ -77,9 +77,9 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		write("<th class='sorttable_numeric'>#Nb_objets_sur_disque#</th>");
 		if (hitsRatioEnabled) {
 			write("<th class='sorttable_numeric'>");
-			write(getString("Efficacite_cache_memoire").replaceAll("\n", "<br/>"));
+			write(getString("Efficacite_cache_memoire").replace("\n", "<br/>"));
 			write("</th><th class='sorttable_numeric'>");
-			write(getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+			write(getString("Efficacite_cache").replace("\n", "<br/>"));
 			write("</th>");
 		}
 		if (configurationEnabled) {

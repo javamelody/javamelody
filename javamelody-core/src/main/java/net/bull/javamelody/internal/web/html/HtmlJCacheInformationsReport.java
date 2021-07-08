@@ -69,7 +69,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		write("<th>#Cache#</th>");
 		if (hitsRatioEnabled) {
 			write("<th class='sorttable_numeric'>");
-			write(getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+			write(getString("Efficacite_cache").replace("\n", "<br/>"));
 			write("</th>");
 		}
 		if (clearEnabled && systemActionsEnabled) {
