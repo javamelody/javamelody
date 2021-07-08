@@ -134,7 +134,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 			writeDirectly(HtmlSourceReport.addLinkToClassName(classInfoName));
 		} else {
 			// encodage nécessaire dans PermGen pour "<methodKlass>" par exemple
-			writeDirectly(classInfoName.replaceAll("[<]", "&lt;").replaceAll("[>]", "&gt;"));
+			writeDirectly(classInfoName.replace("<", "&lt;").replace(">", "&gt;"));
 		}
 		final String nextColumnAlignRight = "</td><td align='right'>";
 		writeDirectly(nextColumnAlignRight);
