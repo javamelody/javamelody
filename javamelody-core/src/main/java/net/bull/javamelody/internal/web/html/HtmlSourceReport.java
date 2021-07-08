@@ -185,7 +185,7 @@ class HtmlSourceReport extends HtmlAbstractReport {
 	}
 
 	static String htmlEncodeStackTraceElementAndTabs(String element) {
-		return htmlEncodeStackTraceElement(element).replaceAll("\t",
+		return htmlEncodeStackTraceElement(element).replace("\t",
 				"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 	}
 

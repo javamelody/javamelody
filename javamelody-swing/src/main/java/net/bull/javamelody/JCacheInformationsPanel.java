@@ -92,7 +92,7 @@ class JCacheInformationsPanel extends MelodyPanel {
 		myTable.addColumn("name", getString("Cache"));
 		if (hitsRatioEnabled) {
 			myTable.addColumn("hitsRatio",
-					"<html>" + getString("Efficacite_cache").replaceAll("\n", "<br/>"));
+					"<html>" + getString("Efficacite_cache").replace("\n", "<br/>"));
 			// la hauteur des entêtes de colonnes est calculée selon la hauteur pour la première colonne
 			// (see BasicTableHeaderUI.getHeaderHeight()),
 			// donc on agrandit la hauteur de la première entête de colonne, pour qu'elle soit adaptée

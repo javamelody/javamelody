@@ -78,7 +78,7 @@ class CounterErrorPanel extends MelodyPanel {
 					setToolTipText(null);
 				} else {
 					setToolTipText("<html>" + stackTrace.replace("[See nested", "\n[See nested")
-							.replaceAll("\n", "<br/>"));
+							.replace("\n", "<br/>"));
 				}
 			}
 			return this;
