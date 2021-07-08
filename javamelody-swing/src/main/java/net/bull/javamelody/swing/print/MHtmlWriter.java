@@ -95,7 +95,7 @@ public class MHtmlWriter extends MPrinter {
 			final boolean isSelection) throws IOException {
 		final Writer out = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 
-		final String eol = isSelection ? "\n" : System.getProperty("line.separator");
+		final String eol = isSelection ? "\n" : System.lineSeparator();
 		// eol = "\n" si sélection, "\r\n" sinon pour un fichier windows et "\n" pour un fichier unix
 
 		out.write("<!-- Fichier genere par ");

@@ -579,7 +579,7 @@ public final class MavenArtifact implements Serializable {
 		return sourceFilePathsByJarFileNames;
 	}
 
-	private static File getMavenArtifact(String filePath) throws IOException {
+	private static File getMavenArtifact(String filePath) {
 		if (filePath.contains("${")) {
 			// si le chemin contient des variables non résolues telles que ${project.version},
 			// ce n'est pas la peine de chercher
@@ -605,18 +605,14 @@ public final class MavenArtifact implements Serializable {
 					return new File(url);
 				}
 				mkdirs(file.getParentFile());
-				final OutputStream output = new FileOutputStream(file);
-				try {
+				try (OutputStream output = new FileOutputStream(file)) {
 					final LabradorRetriever labradorRetriever = new LabradorRetriever(new URL(url));
 					labradorRetriever.downloadTo(output);
 					// si trouvé, on arrête
 					break;
 				} catch (final IOException e) {
-					output.close();
 					InputOutput.deleteFile(file);
 					// si non trouvé, on continue avec le repo suivant s'il y en a un
-				} finally {
-					output.close();
 				}
 			}
 		}
@@ -626,7 +622,7 @@ public final class MavenArtifact implements Serializable {
 		return null;
 	}
 
-	public static File getTomcatSrcZipFile() throws IOException {
+	public static File getTomcatSrcZipFile() {
 		final String serverInfo = Parameters.getServletContext().getServerInfo();
 		if (!serverInfo.matches("Apache Tomcat/\\d+\\.\\d+\\.\\d+")) {
 			// si pas Tomcat ou si Tomcat version x.0.0.My, tant pis
@@ -643,15 +639,11 @@ public final class MavenArtifact implements Serializable {
 			final String url = TOMCAT_ARCHIVES + "tomcat-" + majorVersion + "/v" + version + "/src/"
 					+ fileName;
 			mkdirs(file.getParentFile());
-			final OutputStream output = new FileOutputStream(file);
-			try {
+			try (OutputStream output = new FileOutputStream(file)) {
 				final LabradorRetriever labradorRetriever = new LabradorRetriever(new URL(url));
 				labradorRetriever.downloadTo(output);
 			} catch (final IOException e) {
-				output.close();
 				InputOutput.deleteFile(file);
-			} finally {
-				output.close();
 			}
 		}
 		if (file.exists()) {
