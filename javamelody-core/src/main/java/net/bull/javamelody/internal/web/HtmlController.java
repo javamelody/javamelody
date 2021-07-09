@@ -65,8 +65,6 @@ import net.bull.javamelody.internal.web.html.HtmlReport;
  */
 public class HtmlController {
 	static final String HTML_BODY_FORMAT = "htmlbody";
-	private static final String CONTENT_SECURITY_POLICY_ENABLED = Parameter.CONTENT_SECURITY_POLICY_ENABLED
-			.getValue();
 	private static final String X_FRAME_OPTIONS = Parameter.X_FRAME_OPTIONS.getValue();
 	private static final RequestToMethodMapper<HtmlController> REQUEST_TO_METHOD_MAPPER = new RequestToMethodMapper<>(
 			HtmlController.class);
@@ -122,15 +120,6 @@ public class HtmlController {
 
 	public static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
 		httpResponse.setContentType("text/html; charset=UTF-8");
-		if (CONTENT_SECURITY_POLICY_ENABLED == null || Boolean.parseBoolean(CONTENT_SECURITY_POLICY_ENABLED)) {
-			final String analyticsId = Parameter.ANALYTICS_ID.getValue();
-			final boolean analyticsEnabled = (analyticsId != null
-					&& !"disabled".equals(analyticsId));
-			httpResponse.setHeader("Content-Security-Policy",
-					"default-src 'self'"
-							+ (analyticsEnabled ? " https://ssl.google-analytics.com" : "")
-							+ "; object-src 'none';");
-		}
 		if (X_FRAME_OPTIONS == null) {
 			// default value of X-Frame-Options is SAMEORIGIN
 			httpResponse.setHeader("X-Frame-Options", "SAMEORIGIN");

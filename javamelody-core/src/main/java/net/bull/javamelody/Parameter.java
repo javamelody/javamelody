@@ -212,11 +212,6 @@ public enum Parameter {
 	X_FRAME_OPTIONS("x-frame-options"),
 
 	/**
-	 * Parameter to enable or disable the Content Security Policy header (true by default).
-	 */
-	CONTENT_SECURITY_POLICY_ENABLED("content-security-policy-enabled"),
-
-	/**
 	 * Expression régulière (null par défaut) pour restreindre l'accès au monitoring à certaines adresses IP.
 	 */
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),

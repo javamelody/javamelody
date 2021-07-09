@@ -76,8 +76,8 @@ class HtmlJobInformationsReport extends HtmlAbstractReport {
 		table.endTable();
 		write("<div align='right' class='noPrint'>");
 		if (systemActionsEnabled) {
-			final String onClickConfirm = "' data-confirm=\"";
-			final String endOnClickConfirm = "\">";
+			final String onClickConfirm = "' data-confirm='";
+			final String endOnClickConfirm = "'>";
 			writeln("<a class='confirm' href='?action=pause_job&amp;jobId=all"
 					+ getCsrfTokenUrlPart() + onClickConfirm
 					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_pause_all_jobs"))
@@ -208,8 +208,8 @@ class HtmlJobInformationsReport extends HtmlAbstractReport {
 	private void writePauseJobAndResumeJobLinks(JobInformations jobInformations)
 			throws IOException {
 		write("</td> <td align='center' class='noPrint'>");
-		final String onClickConfirm = "' data-confirm=\"";
-		final String endOnClickConfirm = "\">";
+		final String onClickConfirm = "' data-confirm='";
+		final String endOnClickConfirm = "'>";
 		writeln("<a href='?action=pause_job&amp;jobId=" + jobInformations.getGlobalJobId()
 				+ getCsrfTokenUrlPart() + onClickConfirm
 				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_pause_job"))

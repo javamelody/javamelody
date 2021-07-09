@@ -180,7 +180,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 	}
 
 	private void writePrintedShowHideLink(String idToShow, String label) throws IOException {
-		writeDirectly("<a class=\"showHide\" href='' id='" + idToShow + "A' data-show-hide-id='"
+		writeDirectly("<a class='showHide' href='' id='" + idToShow + "A' data-show-hide-id='"
 				+ idToShow + "'><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
 	}

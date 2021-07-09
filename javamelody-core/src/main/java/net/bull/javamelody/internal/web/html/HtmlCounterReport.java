@@ -146,10 +146,10 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 			writeln("<a href='?action=clear_counter&amp;counter=" + counter.getName()
 					+ getCsrfTokenUrlPart() + "' title='"
 					+ getFormattedString("Vider_stats", counter.getName()) + '\'');
-			writeln("class='confirm noPrint' data-confirm=\""
+			writeln("class='confirm noPrint' data-confirm='"
 					+ htmlEncodeButNotSpaceAndNewLine(
 							getFormattedString("confirm_vider_stats", counter.getName()))
-					+ "\">#Reinitialiser#</a>");
+					+ "'>#Reinitialiser#</a>");
 		}
 		writeln("</div>");
 	}

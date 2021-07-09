@@ -138,9 +138,8 @@ public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "&amp;action=invalidate_sessions" + getCsrfTokenUrlPart()
-				+ "' class='confirm' data-confirm=\""
-				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_sessions"))
-				+ "\">");
+				+ "' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_sessions")) + "'>");
 		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_sessions#' title='#invalidate_sessions#' /> #invalidate_sessions#</a>");
 		writeln("</div>");
 	}
@@ -279,8 +278,8 @@ public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 		write("&amp;action=invalidate_session&amp;sessionId=");
 		write(urlEncode(session.getId()));
 		write(getCsrfTokenUrlPart());
-		write("' class='confirm' data-confirm=\""
-				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_session")) + "\">");
+		write("' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_session")) + "'>");
 		write("<img width='16' height='16' src='?resource=user-trash.png' alt='#invalidate_session#' title='#invalidate_session#' />");
 		write("</a>");
 	}

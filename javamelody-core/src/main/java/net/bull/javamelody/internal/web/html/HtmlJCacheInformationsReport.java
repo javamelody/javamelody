@@ -55,8 +55,8 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		}
 		if (clearEnabled && systemActionsEnabled) {
 			writeln("<a class='confirm' href='?action=clear_jcaches" + getCsrfTokenUrlPart()
-					+ "' data-confirm=\""
-					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_purge_caches")) + "\">");
+					+ "' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_purge_caches")) + "'>");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
@@ -113,7 +113,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 				// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 				writeDirectly("<a class='confirm' href='?action=clear_jcache&amp;cacheId="
 						+ urlEncode(jcacheInformations.getName()) + getCsrfTokenUrlPart()
-						+ "' data-confirm=\"" + confirmClearCache + "\">");
+						+ "' data-confirm='" + confirmClearCache + "'>");
 				final String title = htmlEncode(
 						getFormattedString("Purge_cache", jcacheInformations.getName()));
 				writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='"
@@ -204,9 +204,9 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 					writeDirectly("&amp;cacheKey=");
 					writeDirectly(urlEncode(myKey));
 					writeDirectly(csrfTokenUrlPart);
-					writeDirectly("' data-confirm=\"");
+					writeDirectly("' data-confirm='");
 					writeDirectly(confirmClearCache);
-					writeDirectly("\");\">");
+					writeDirectly("'>");
 					writeDirectly(
 							"<img src='?resource=user-trash.png' width='16' height='16' alt='");
 					writeDirectly(title);

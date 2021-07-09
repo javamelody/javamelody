@@ -40,7 +40,7 @@ class HtmlForms extends HtmlAbstractReport {
 
 	void writeCustomPeriodLinks(Map<String, Date> datesByWebappVersions, Range currentRange,
 			String graphName, String part) throws IOException {
-		writeln("<a class=\"customPeriod\" ");
+		writeln("<a class='customPeriod' ");
 		writeln("title='" + getFormattedString("Choisir_periode", getString("personnalisee"))
 				+ "'>");
 		writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> #personnalisee#</a>");
@@ -155,11 +155,11 @@ class HtmlForms extends HtmlAbstractReport {
 		} else {
 			final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			writeln(separator);
-			writeln("<a href=\"\"");
+			writeln("<a href=''");
 			writeln(" class='addApplication noPrint'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
 			writeln(separator);
 			if (applications.size() > 1) {
-				writeln("<a href=\"\"");
+				writeln("<a href=''");
 				writeln(" class='addAggregation noPrint'><img src='?resource=action_add.png' alt='#add_aggregation#'/> #add_aggregation#</a>");
 				writeln(separator);
 			}
@@ -167,8 +167,7 @@ class HtmlForms extends HtmlAbstractReport {
 					+ getCsrfTokenUrlPart() + "' class='confirm noPrint' ");
 			final String messageConfirmation = getFormattedString("confirm_remove_application",
 					currentApplication);
-			writeln("data-confirm=\"" + htmlEncodeButNotSpaceAndNewLine(messageConfirmation)
-					+ "\">");
+			writeln("data-confirm='" + htmlEncodeButNotSpaceAndNewLine(messageConfirmation) + "'>");
 			final String removeApplicationLabel = getFormattedString("remove_application",
 					currentApplication);
 			writeln("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel

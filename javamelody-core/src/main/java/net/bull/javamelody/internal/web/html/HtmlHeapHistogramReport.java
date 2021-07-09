@@ -174,19 +174,19 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		writeln(separator);
 		if (Action.GC_ENABLED) {
 			writeln("<a class='confirm' href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
-					+ "' data-confirm=\""
-					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "\">");
+					+ "' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "'>");
 		} else {
 			writeln("<a class='alert' href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
-					+ "' data-alert=\""
+					+ "' data-alert='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("ramasse_miette_desactive"))
-					+ "\">");
+					+ "'>");
 		}
 		writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 		writeln(separator);
 		writeln("<a class='confirm' href='?part=heaphisto&amp;action=heap_dump"
-				+ getCsrfTokenUrlPart() + "' data-confirm=\""
-				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "\">");
+				+ getCsrfTokenUrlPart() + "' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "'>");
 		writeln("<img src='?resource=heapdump.png' width='16' height='16' alt='#heap_dump#' /> #heap_dump#</a>");
 		writeln(separator);
 		writeln("</div>");

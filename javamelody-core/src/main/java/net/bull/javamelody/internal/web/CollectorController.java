@@ -313,7 +313,7 @@ public class CollectorController { // NOPMD
 		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(
-				"<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+				"<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 				writer);
 		writer.write("<a href='?part=");
 		writer.write(partParameter);
@@ -497,19 +497,10 @@ public class CollectorController { // NOPMD
 		return new PrintWriter(MonitoringController.getWriter(httpResponse));
 	}
 
-	private static void writeHtmlBegin(PrintWriter writer) {
-		writer.write(
-				"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage() + "'><head>"
-				+ "<title>Monitoring</title>"
-				+ "<script type='text/javascript' src='?resource=prototype.js'></script>"
-				+ "<script type='text/javascript' src='?resource=monitoring.js'></script>"
-				+ "</head><body>");
-	}
-
 	public static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writeHtmlBegin(writer);
+		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
+				+ "'><head><title>Monitoring</title></head><body>");
 		final Collection<String> applications = Collections.emptyList();
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, applications, writer);
 		writer.write("</body></html>");
@@ -519,7 +510,8 @@ public class CollectorController { // NOPMD
 	public static void writeDataUnavailableForApplication(String application,
 			HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writeHtmlBegin(writer);
+		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
+				+ "'><head><title>Monitoring</title></head><body>");
 		writer.write(
 				I18N.htmlEncode(I18N.getFormattedString("data_unavailable", application), false));
 		writer.write("<br/><br/>");
@@ -527,13 +519,13 @@ public class CollectorController { // NOPMD
 				+ I18N.getString("Retour") + "\"/> " + I18N.getString("Retour") + "</a>");
 		if (Parameters.getCollectorApplicationsFile().canWrite()) {
 			writer.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writer.write("<a class='confirm' href='?action=remove_application&amp;application="
+			writer.write("<a href='?action=remove_application&amp;application="
 					+ I18N.urlEncode(application) + HtmlAbstractReport.getCsrfTokenUrlPart()
 					+ "' ");
 			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
 					application);
-			writer.write(
-					"data-confirm=\"" + I18N.htmlEncode(messageConfirmation, false, false) + "\">");
+			writer.write("onclick=\"javascript:return confirm('"
+					+ I18N.urlEncode(messageConfirmation) + "');\">");
 			final String removeApplicationLabel = I18N.getFormattedString("remove_application",
 					application);
 			writer.write("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
@@ -546,11 +538,11 @@ public class CollectorController { // NOPMD
 	public static void showAlertAndRedirectTo(HttpServletResponse resp, String message,
 			String redirectTo) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writeHtmlBegin(writer);
-		writer.write("<span class='alertAndRedirect' data-alert='"
-				+ I18N.htmlEncode(message, false, false) + "' data-href='" + redirectTo
-				+ "'></span>");
-		writer.write("</body></html>");
+		writer.write("<script type='text/javascript'>alert('");
+		writer.write(I18N.urlEncode(message));
+		writer.write("');location.href='");
+		writer.write(redirectTo);
+		writer.write("';</script>");
 		writer.close();
 	}
 
