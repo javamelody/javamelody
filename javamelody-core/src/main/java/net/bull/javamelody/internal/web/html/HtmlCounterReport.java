@@ -147,8 +147,8 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 					+ getCsrfTokenUrlPart() + "' title='"
 					+ getFormattedString("Vider_stats", counter.getName()) + '\'');
 			writeln("class='confirm noPrint' data-confirm=\""
-					+ I18N.htmlEncode(getFormattedString("confirm_vider_stats", counter.getName()),
-							false, false)
+					+ htmlEncodeButNotSpaceAndNewLine(
+							getFormattedString("confirm_vider_stats", counter.getName()))
 					+ "\">#Reinitialiser#</a>");
 		}
 		writeln("</div>");

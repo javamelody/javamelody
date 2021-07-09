@@ -55,7 +55,7 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 		}
 		if (systemActionsEnabled) {
 			writeln("<a class='confirm' href='?action=clear_caches" + getCsrfTokenUrlPart()
-					+ "' data-confirm=\"" + I18N.htmlEncode("confirm_purge_caches", false, false)
+					+ "' data-confirm=\"" + htmlEncodeButNotSpaceAndNewLine("confirm_purge_caches")
 					+ "\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -130,9 +130,8 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 
 		if (systemActionsEnabled) {
 			write("<td align='center' class='noPrint'>");
-			final String confirmClearCache = I18N.htmlEncode(
-					getFormattedString("confirm_purge_cache", cacheInformations.getName()), false,
-					false);
+			final String confirmClearCache = htmlEncodeButNotSpaceAndNewLine(
+					getFormattedString("confirm_purge_cache", cacheInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 			writeDirectly("<a class='confirm' href='?action=clear_cache&amp;cacheId="
 					+ urlEncode(cacheInformations.getName()) + getCsrfTokenUrlPart()

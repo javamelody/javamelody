@@ -167,7 +167,8 @@ class HtmlForms extends HtmlAbstractReport {
 					+ getCsrfTokenUrlPart() + "' class='confirm noPrint' ");
 			final String messageConfirmation = getFormattedString("confirm_remove_application",
 					currentApplication);
-			writeln("data-confirm=\"" + I18N.htmlEncode(messageConfirmation, false, false) + "\">");
+			writeln("data-confirm=\"" + htmlEncodeButNotSpaceAndNewLine(messageConfirmation)
+					+ "\">");
 			final String removeApplicationLabel = getFormattedString("remove_application",
 					currentApplication);
 			writeln("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel

@@ -172,6 +172,15 @@ public abstract class HtmlAbstractReport {
 		return I18N.htmlEncode(text, false);
 	}
 
+	/**
+	 * Encode pour affichage en html, sans encoder les espaces en nbsp (insécables) et les retours chariots.
+	 * @param text message à encoder
+	 * @return String
+	 */
+	static String htmlEncodeButNotSpaceAndNewLine(String text) {
+		return I18N.htmlEncode(text, false, false);
+	}
+
 	public static String getCsrfTokenUrlPart() {
 		if (CSRF_PROTECTION_ENABLED) {
 			final HttpSession currentSession = SessionListener.getCurrentSession();

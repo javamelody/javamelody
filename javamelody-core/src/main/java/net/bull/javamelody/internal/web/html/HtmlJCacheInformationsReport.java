@@ -56,7 +56,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		if (clearEnabled && systemActionsEnabled) {
 			writeln("<a class='confirm' href='?action=clear_jcaches" + getCsrfTokenUrlPart()
 					+ "' data-confirm=\""
-					+ I18N.htmlEncode(getString("confirm_purge_caches"), false, false) + "\">");
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_purge_caches")) + "\">");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
@@ -108,9 +108,8 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		if (clearEnabled && systemActionsEnabled) {
 			write("<td align='center' class='noPrint'>");
 			if (jcacheInformations.isAvailableByApi()) {
-				final String confirmClearCache = I18N.htmlEncode(
-						getFormattedString("confirm_purge_cache", jcacheInformations.getName()),
-						false, false);
+				final String confirmClearCache = htmlEncodeButNotSpaceAndNewLine(
+						getFormattedString("confirm_purge_cache", jcacheInformations.getName()));
 				// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 				writeDirectly("<a class='confirm' href='?action=clear_jcache&amp;cacheId="
 						+ urlEncode(jcacheInformations.getName()) + getCsrfTokenUrlPart()

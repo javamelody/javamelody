@@ -289,7 +289,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<a href='?action=clear_counter&amp;counter=all" + getCsrfTokenUrlPart()
 					+ "' title='#Vider_toutes_stats#'");
 			writeln("class='confirm noPrint' data-confirm=\""
-					+ I18N.htmlEncode(getString("confirm_vider_toutes_stats"), false, false)
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_vider_toutes_stats"))
 					+ "\">#Reinitialiser_toutes_stats#</a>");
 			writeln(END_DIV);
 		}
@@ -334,7 +334,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				href = "?part=" + partToRedirectTo;
 			}
 			writeDirectly("<span class='alertAndRedirect' data-alert='"
-					+ I18N.htmlEncode(message, false, false) + "' data-href='" + href
+					+ htmlEncodeButNotSpaceAndNewLine(message) + "' data-href='" + href
 					+ "'></span>");
 		}
 	}
@@ -694,16 +694,17 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (isGcEnabled()) {
 			write("<a class='confirm' href='?action=gc" + getCsrfTokenUrlPart()
 					+ "' data-confirm=\""
-					+ I18N.htmlEncode(getString("confirm_ramasse_miette"), false, false) + "\">");
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "\">");
 		} else {
 			write("<a class='alert' href='?action=gc" + getCsrfTokenUrlPart() + "' data-alert=\""
-					+ I18N.htmlEncode(getString("ramasse_miette_desactive"), false, false) + "\">");
+					+ htmlEncodeButNotSpaceAndNewLine(getString("ramasse_miette_desactive"))
+					+ "\">");
 		}
 		write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 		writeln(separator);
 		write("<a class='confirm' href='?action=heap_dump" + getCsrfTokenUrlPart()
 				+ "' data-confirm=\""
-				+ I18N.htmlEncode(getString("confirm_heap_dump"), false, false) + "\">");
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "\">");
 		write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 		writeln(separator);
 		if (isHeapHistoEnabled()) {
@@ -714,7 +715,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (isSessionsEnabled()) {
 			write("<a class='confirm' href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
 					+ "' data-confirm=\""
-					+ I18N.htmlEncode(getString("confirm_invalidate_sessions"), false, false)
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_sessions"))
 					+ "\">");
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
