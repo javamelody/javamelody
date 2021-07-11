@@ -165,7 +165,7 @@ public class CollectorController { // NOPMD
 
 			doReport(req, resp, application);
 		} catch (final Exception e) {
-			writeMessage(req, resp, application, e.getMessage());
+			writeMessage(req, resp, application, String.valueOf(e.getMessage()));
 		}
 	}
 
