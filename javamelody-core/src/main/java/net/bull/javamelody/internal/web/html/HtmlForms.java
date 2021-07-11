@@ -155,12 +155,12 @@ class HtmlForms extends HtmlAbstractReport {
 		} else {
 			final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			writeln(separator);
-			writeln("<a href=''");
-			writeln(" class='showHide noPrint' data-show-hide-id='addApplication'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
+			writeln("<a href='' class='showHide noPrint' data-show-hide-id='addApplication'>");
+			writeln("<img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
 			writeln(separator);
 			if (applications.size() > 1) {
-				writeln("<a href=''");
-				writeln(" class='showHide noPrint' data-show-hide-id='addAggregation'><img src='?resource=action_add.png' alt='#add_aggregation#'/> #add_aggregation#</a>");
+				writeln("<a href='' class='showHide noPrint' data-show-hide-id='addAggregation'>");
+				writeln("<img src='?resource=action_add.png' alt='#add_aggregation#'/> #add_aggregation#</a>");
 				writeln(separator);
 			}
 			writeln("<a href='?action=remove_application&amp;application=" + currentApplication

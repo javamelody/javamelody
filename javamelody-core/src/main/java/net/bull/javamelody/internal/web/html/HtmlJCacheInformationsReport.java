@@ -160,7 +160,8 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 
 	private void writeBackAndRefreshLinksForCache(String cacheId) throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeDirectly("<a href='?part=jcacheKeys&amp;cacheId=" + urlEncode(cacheId) + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		writeln("</div>");

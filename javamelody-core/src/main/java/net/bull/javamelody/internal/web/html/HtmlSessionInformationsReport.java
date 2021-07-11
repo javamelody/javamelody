@@ -126,8 +126,7 @@ public class HtmlSessionInformationsReport extends HtmlAbstractReport {
 
 	private void writeBackAndRefreshLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a class='back' href=''>");
-		writeln("<img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln(A_HREF_PART_SESSIONS + "'>");
 		writeln("<img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
