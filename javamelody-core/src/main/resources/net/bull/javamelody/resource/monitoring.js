@@ -117,6 +117,11 @@ if(document.getElementById("ga-js")){
   		}
 	  });
 
+	  $$('.alertAndStop').invoke("observe", "click", function(event){
+	  	alert(this.getAttribute('data-alert'));
+  		event.preventDefault();
+	  });
+
 	  $$('.showHide').invoke("observe", "click", function(event){
 	  	var id = this.getAttribute("data-show-hide-id");
 	  	if(!id) id = this.id;

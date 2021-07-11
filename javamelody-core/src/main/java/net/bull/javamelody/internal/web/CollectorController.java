@@ -526,13 +526,13 @@ public class CollectorController { // NOPMD
 				+ I18N.getString("Retour") + "\"/> " + I18N.getString("Retour") + "</a>");
 		if (Parameters.getCollectorApplicationsFile().canWrite()) {
 			writer.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writer.write("<a class='confirm' href='?action=remove_application&amp;application="
+			writer.write("<a href='?action=remove_application&amp;application="
 					+ I18N.urlEncode(application) + HtmlAbstractReport.getCsrfTokenUrlPart()
 					+ "' ");
 			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
 					application);
-			writer.write(
-					"data-confirm='" + I18N.htmlEncode(messageConfirmation, false, false) + "'>");
+			writer.write("class='confirm' data-confirm='"
+					+ I18N.htmlEncode(messageConfirmation, false, false) + "'>");
 			final String removeApplicationLabel = I18N.getFormattedString("remove_application",
 					application);
 			writer.write("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel

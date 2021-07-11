@@ -54,8 +54,8 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			writeln("#caches_statistics_enable#<br/>");
 		}
 		if (systemActionsEnabled) {
-			writeln("<a class='confirm' href='?action=clear_caches" + getCsrfTokenUrlPart()
-					+ "' data-confirm='"
+			writeln("<a href='?action=clear_caches" + getCsrfTokenUrlPart()
+					+ "' class='confirm' data-confirm='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_purge_caches")) + "'>");
 			writeln("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#Purge_caches#\" /> #Purge_caches#</a>");
 			writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -133,9 +133,9 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 			final String confirmClearCache = htmlEncodeButNotSpaceAndNewLine(
 					getFormattedString("confirm_purge_cache", cacheInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly("<a class='confirm' href='?action=clear_cache&amp;cacheId="
+			writeDirectly("<a href='?action=clear_cache&amp;cacheId="
 					+ urlEncode(cacheInformations.getName()) + getCsrfTokenUrlPart()
-					+ "' data-confirm='" + confirmClearCache + "'>");
+					+ "' class='confirm' data-confirm='" + confirmClearCache + "'>");
 			final String title = htmlEncode(
 					getFormattedString("Purge_cache", cacheInformations.getName()));
 			writeDirectly("<img src='?resource=user-trash.png' width='16' height='16' alt='" + title
@@ -220,12 +220,12 @@ public class HtmlCacheInformationsReport extends HtmlAbstractReport {
 				if (systemActionsEnabled) {
 					writeDirectly("<td class='noPrint containingIcon'>");
 					writeDirectly(
-							"<a class='confirm' href='?part=cacheKeys&amp;action=clear_cache_key&amp;cacheId=");
+							"<a href='?part=cacheKeys&amp;action=clear_cache_key&amp;cacheId=");
 					writeDirectly(cacheNameEncoded);
 					writeDirectly("&amp;cacheKey=");
 					writeDirectly(urlEncode(myKey));
 					writeDirectly(csrfTokenUrlPart);
-					writeDirectly("' data-confirm='");
+					writeDirectly("' class='confirm' data-confirm='");
 					writeDirectly(confirmClearCache);
 					writeDirectly("'>");
 					writeDirectly(

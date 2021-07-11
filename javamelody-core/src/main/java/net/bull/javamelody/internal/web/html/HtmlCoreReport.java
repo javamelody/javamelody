@@ -692,17 +692,18 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (isGcEnabled()) {
-			write("<a class='confirm' href='?action=gc" + getCsrfTokenUrlPart() + "' data-confirm='"
+			write("<a href='?action=gc" + getCsrfTokenUrlPart() + "' class='confirm' data-confirm='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "'>");
 		} else {
-			write("<a class='alert' href='?action=gc" + getCsrfTokenUrlPart() + "' data-alert='"
+			write("<a href='?action=gc" + getCsrfTokenUrlPart()
+					+ "' class='alertAndStop' data-alert='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("ramasse_miette_desactive"))
 					+ "'>");
 		}
 		write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 		writeln(separator);
-		write("<a class='confirm' href='?action=heap_dump" + getCsrfTokenUrlPart()
-				+ "' data-confirm='"
+		write("<a href='?action=heap_dump" + getCsrfTokenUrlPart()
+				+ "' class='confirm' data-confirm='"
 				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "'>");
 		write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 		writeln(separator);
@@ -712,8 +713,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(separator);
 		}
 		if (isSessionsEnabled()) {
-			write("<a class='confirm' href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
-					+ "' data-confirm='"
+			write("<a href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
+					+ "' class='confirm' data-confirm='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_sessions"))
 					+ "'>");
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
