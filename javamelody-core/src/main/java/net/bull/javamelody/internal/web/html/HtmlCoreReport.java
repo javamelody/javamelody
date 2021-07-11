@@ -327,9 +327,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeMessageIfNotNull(String message, String partToRedirectTo,
 			String anchorNameForRedirect) throws IOException {
 		if (message != null) {
-			String href;
+			final String href;
 			if (partToRedirectTo == null) {
-				href = (anchorNameForRedirect == null) ? "?" : ("?#" + anchorNameForRedirect);
+				href = anchorNameForRedirect == null ? "?" : "?#" + anchorNameForRedirect;
 			} else {
 				href = "?part=" + partToRedirectTo;
 			}
