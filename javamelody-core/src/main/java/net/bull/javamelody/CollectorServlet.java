@@ -40,6 +40,7 @@ import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.CollectorServer;
 import net.bull.javamelody.internal.web.CollectorController;
 import net.bull.javamelody.internal.web.HttpAuth;
+import net.bull.javamelody.internal.web.MonitoringController;
 
 /**
  * Servlet de collecte utilisée uniquement pour le serveur de collecte ({@link CollectorServer}) séparé de l'application monitorée.
@@ -89,6 +90,11 @@ public class CollectorServlet extends HttpServlet {
 		}
 
 		final long start = System.currentTimeMillis();
+		final String resource = HttpParameter.RESOURCE.getParameterFrom(req);
+		if (resource != null) {
+			MonitoringController.doResource(resp, resource);
+			return;
+		}
 		final CollectorController collectorController = new CollectorController(collectorServer);
 		final String application = collectorController.getApplication(req, resp);
 		I18N.bindLocale(req.getLocale());

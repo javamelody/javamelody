@@ -185,7 +185,7 @@ public class HtmlJCacheInformationsReport extends HtmlAbstractReport {
 		}
 		final String cacheNameEncoded = urlEncode(jcacheInformations.getName());
 		final String csrfTokenUrlPart = getCsrfTokenUrlPart();
-		final String confirmClearCache = htmlEncodeButNotSpace(
+		final String confirmClearCache = htmlEncodeButNotSpaceAndNewLine(
 				getFormattedString("confirm_purge_cache", jcacheInformations.getName()));
 		final String title = htmlEncode(
 				getFormattedString("Purge_cache", jcacheInformations.getName()));

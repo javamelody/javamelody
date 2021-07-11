@@ -360,12 +360,18 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			write(value);
 			return;
 		}
+		final String id = "id" + graph;
 		// la classe tooltip est configurée dans la css de HtmlReport
-		write("<a class='tooltip' href='?part=graph&amp;graph=");
+		write("<a class='tooltip replaceImage' href='?part=graph&amp;graph=");
 		write(graph);
-		write("'>");
-		write("<em><img src='?graph=" + graph + "&width=100&height=50' id='");
-		write("id" + graph);
+		write("' data-img-id='");
+		write(id);
+		write("' data-img-src='?graph=");
+		write(graph);
+		write("&amp;width=100&amp;height=50'>");
+		// avant mouseover on prend une image qui sera mise en cache
+		write("<em><img src='?resource=systeminfo.png' id='");
+		write(id);
 		write("' alt='graph'/></em>");
 		// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
 		writeDirectly(value);
