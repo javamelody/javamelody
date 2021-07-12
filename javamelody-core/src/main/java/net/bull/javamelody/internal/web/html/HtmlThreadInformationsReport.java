@@ -237,12 +237,12 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			write("<a href='?action=send_thread_interrupt&amp;threadId=");
 			write(threadInformations.getGlobalThreadId());
 			write(getCsrfTokenUrlPart());
-			final String confirmSendThreadInterrupt = javascriptEncode(getFormattedString(
-					"confirm_send_thread_interrupt", threadInformations.getName()));
+			final String confirmSendThreadInterrupt = htmlEncodeButNotSpaceAndNewLine(
+					getFormattedString("confirm_send_thread_interrupt",
+							threadInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly("' onclick=\"javascript:return confirm('" + confirmSendThreadInterrupt
-					+ "');\">");
-			final String title = javascriptEncode(
+			writeDirectly("' class='confirm' data-confirm='" + confirmSendThreadInterrupt + "'>");
+			final String title = htmlEncodeButNotSpaceAndNewLine(
 					getFormattedString("send_thread_interrupt", threadInformations.getName()));
 			writeDirectly("<img width='16' height='16' src='?resource=action_interrupt.png' alt='"
 					+ title + "' title='" + title + "' />");
@@ -256,10 +256,10 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 			write("<a href='?action=kill_thread&amp;threadId=");
 			write(threadInformations.getGlobalThreadId());
 			write(getCsrfTokenUrlPart());
-			final String confirmKillThread = javascriptEncode(
+			final String confirmKillThread = htmlEncodeButNotSpaceAndNewLine(
 					getFormattedString("confirm_kill_thread", threadInformations.getName()));
 			// writeDirectly pour ne pas gérer de traductions si le nom contient '#'
-			writeDirectly("' onclick=\"javascript:return confirm('" + confirmKillThread + "');\">");
+			writeDirectly("' class='confirm' data-confirm='" + confirmKillThread + "'>");
 			final String title = htmlEncode(
 					getFormattedString("kill_thread", threadInformations.getName()));
 			writeDirectly("<img width='16' height='16' src='?resource=stop.png' alt='" + title

@@ -85,14 +85,14 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 		writeSizeAndLinks(requests, globalRequest);
 
 		// 3. détails par requêtes (non visible par défaut)
-		writeln("<div id='details" + counterName + "' style='display: none;'>");
+		writeln("<div id='details" + counterName + "' class='displayNone'>");
 		writeRequests(counterName, counter.getChildCounterName(), requests,
 				isRequestGraphDisplayed(counter), true, false);
 		writeln("</div>");
 
 		// 4. logs (non visible par défaut)
 		if (isErrorCounter()) {
-			writeln("<div id='logs" + counterName + "' style='display: none;'><div>");
+			writeln("<div id='logs" + counterName + "' class='displayNone'><div>");
 			new HtmlCounterErrorReport(counter, getWriter()).toHtml();
 			writeln("</div></div>");
 		}
@@ -146,9 +146,10 @@ public class HtmlCounterReport extends HtmlAbstractReport {
 			writeln("<a href='?action=clear_counter&amp;counter=" + counter.getName()
 					+ getCsrfTokenUrlPart() + "' title='"
 					+ getFormattedString("Vider_stats", counter.getName()) + '\'');
-			writeln("class='noPrint' onclick=\"javascript:return confirm('"
-					+ javascriptEncode(getFormattedString("confirm_vider_stats", counter.getName()))
-					+ "');\">#Reinitialiser#</a>");
+			writeln("class='confirm noPrint' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(
+							getFormattedString("confirm_vider_stats", counter.getName()))
+					+ "'>#Reinitialiser#</a>");
 		}
 		writeln("</div>");
 	}

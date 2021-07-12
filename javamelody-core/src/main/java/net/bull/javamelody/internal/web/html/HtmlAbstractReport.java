@@ -57,11 +57,9 @@ public abstract class HtmlAbstractReport {
 				writeDirectly("</thead><tbody>\n");
 			}
 			if (oddRow) {
-				writeDirectly(
-						"<tr class='odd' onmouseover=\"this.className='highlight'\" onmouseout=\"this.className='odd'\">\n");
+				writeDirectly("<tr class='odd'>\n");
 			} else {
-				writeDirectly(
-						"<tr onmouseover=\"this.className='highlight'\" onmouseout=\"this.className=''\">\n");
+				writeDirectly("<tr class='even'>\n");
 			}
 			oddRow = !oddRow; // NOPMD
 		}
@@ -107,8 +105,8 @@ public abstract class HtmlAbstractReport {
 	}
 
 	/**
-	 * Écrit un texte, puis un retour chariot, dans un flux en remplaçant dans le texte les clés entourées de deux '#'
-	 * par leurs traductions dans la locale courante.
+	 * Écrit un texte, puis un retour chariot, dans un flux en remplaçant dans le texte les clés
+	 * entourées de deux '#' par leurs traductions dans la locale courante.
 	 * @param html texte html avec éventuellement des #clé#
 	 * @throws IOException e
 	 */
@@ -128,7 +126,7 @@ public abstract class HtmlAbstractReport {
 	}
 
 	void writeShowHideLink(String idToShow, String label) throws IOException {
-		writeln("<a href=\"javascript:showHide('" + idToShow + "');\" class='noPrint' id='"
+		writeln("<a href='' class='showHide noPrint' data-show-hide-id='" + idToShow + "' id='"
 				+ idToShow + "A'><img id='" + idToShow
 				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
 	}
@@ -143,15 +141,6 @@ public abstract class HtmlAbstractReport {
 	}
 
 	/**
-	 * Retourne une traduction dans la locale courante et l'encode pour affichage en javascript.
-	 * @param key clé d'un libellé dans les fichiers de traduction
-	 * @return String
-	 */
-	static String getStringForJavascript(String key) {
-		return I18N.getStringForJavascript(key);
-	}
-
-	/**
 	 * Retourne une traduction dans la locale courante et insère les arguments aux positions {i}.
 	 * @param key clé d'un libellé dans les fichiers de traduction
 	 * @param arguments Valeur à inclure dans le résultat
@@ -159,15 +148,6 @@ public abstract class HtmlAbstractReport {
 	 */
 	static String getFormattedString(String key, Object... arguments) {
 		return I18N.getFormattedString(key, arguments);
-	}
-
-	/**
-	 * Encode pour affichage en javascript.
-	 * @param text message à encoder
-	 * @return String
-	 */
-	static String javascriptEncode(String text) {
-		return I18N.javascriptEncode(text);
 	}
 
 	static String urlEncode(String text) {
@@ -190,6 +170,15 @@ public abstract class HtmlAbstractReport {
 	 */
 	static String htmlEncodeButNotSpace(String text) {
 		return I18N.htmlEncode(text, false);
+	}
+
+	/**
+	 * Encode pour affichage en html, sans encoder les espaces en nbsp (insécables) et les retours chariots en br.
+	 * @param text message à encoder
+	 * @return String
+	 */
+	static String htmlEncodeButNotSpaceAndNewLine(String text) {
+		return I18N.htmlEncode(text, false, false);
 	}
 
 	public static String getCsrfTokenUrlPart() {

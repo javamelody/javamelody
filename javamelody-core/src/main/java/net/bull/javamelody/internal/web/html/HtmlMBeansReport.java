@@ -87,7 +87,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 			if (children != null) {
 				final String id = getNextId();
 				writePrintedShowHideLink(id, htmlEncodeButNotSpace(name));
-				writeln("<div id='" + id + "' style='display: none;' class='mbeanNode'><div>");
+				writeln("<div id='" + id + "' class='displayNone mbeanNode'><div>");
 				writeTree(children);
 				writeln("</div></div>");
 			} else {
@@ -103,7 +103,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 		if (indexOfComma != -1) {
 			mbeanName = mbeanName.substring(indexOfComma + 1);
 			writePrintedShowHideLink(mbeanId, htmlEncodeButNotSpace(mbeanName));
-			writeln("<div id='" + mbeanId + "' style='display: none;' class='mbeanNode'>");
+			writeln("<div id='" + mbeanId + "' class='displayNone mbeanNode'>");
 			// pas besoin d'ajouter un div pour le scroll-down, car les attributs sont
 			// dans une table
 			writeAttributes(mbean);
@@ -168,7 +168,7 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 
 	void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=mbeans'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (isPdfEnabled()) {
@@ -180,8 +180,8 @@ class HtmlMBeansReport extends HtmlAbstractReport {
 	}
 
 	private void writePrintedShowHideLink(String idToShow, String label) throws IOException {
-		writeDirectly("<a href=\"javascript:showHide('" + idToShow + "');\" id='" + idToShow
-				+ "A'><img id='" + idToShow + "Img' src='?resource=bullets/plus.png' alt=''/> "
-				+ label + "</a>");
+		writeDirectly("<a class='showHide' href='' id='" + idToShow + "A' data-show-hide-id='"
+				+ idToShow + "'><img id='" + idToShow
+				+ "Img' src='?resource=bullets/plus.png' alt=''/> " + label + "</a>");
 	}
 }
