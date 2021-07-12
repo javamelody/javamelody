@@ -288,9 +288,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<div align='right'>");
 			writeln("<a href='?action=clear_counter&amp;counter=all" + getCsrfTokenUrlPart()
 					+ "' title='#Vider_toutes_stats#'");
-			writeln("class='confirm noPrint' data-confirm=\""
+			writeln("class='confirm noPrint' data-confirm='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_vider_toutes_stats"))
-					+ "\">#Reinitialiser_toutes_stats#</a>");
+					+ "'>#Reinitialiser_toutes_stats#</a>");
 			writeln(END_DIV);
 		}
 
@@ -327,9 +327,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeMessageIfNotNull(String message, String partToRedirectTo,
 			String anchorNameForRedirect) throws IOException {
 		if (message != null) {
-			String href;
+			final String href;
 			if (partToRedirectTo == null) {
-				href = (anchorNameForRedirect == null) ? "?" : ("?#" + anchorNameForRedirect);
+				href = anchorNameForRedirect == null ? "?" : "?#" + anchorNameForRedirect;
 			} else {
 				href = "?part=" + partToRedirectTo;
 			}
@@ -692,19 +692,19 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
 		if (isGcEnabled()) {
-			write("<a class='confirm' href='?action=gc" + getCsrfTokenUrlPart()
-					+ "' data-confirm=\""
-					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "\">");
+			write("<a href='?action=gc" + getCsrfTokenUrlPart() + "' class='confirm' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "'>");
 		} else {
-			write("<a class='alert' href='?action=gc" + getCsrfTokenUrlPart() + "' data-alert=\""
+			write("<a href='?action=gc" + getCsrfTokenUrlPart()
+					+ "' class='alertAndStop' data-alert='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("ramasse_miette_desactive"))
-					+ "\">");
+					+ "'>");
 		}
 		write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 		writeln(separator);
-		write("<a class='confirm' href='?action=heap_dump" + getCsrfTokenUrlPart()
-				+ "' data-confirm=\""
-				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "\">");
+		write("<a href='?action=heap_dump" + getCsrfTokenUrlPart()
+				+ "' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "'>");
 		write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 		writeln(separator);
 		if (isHeapHistoEnabled()) {
@@ -713,10 +713,10 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(separator);
 		}
 		if (isSessionsEnabled()) {
-			write("<a class='confirm' href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
-					+ "' data-confirm=\""
+			write("<a href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
+					+ "' class='confirm' data-confirm='"
 					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_sessions"))
-					+ "\">");
+					+ "'>");
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
 			write("<a href='?part=sessions'>");

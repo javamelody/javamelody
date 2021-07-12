@@ -56,7 +56,6 @@ import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.LabradorRetriever;
-import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.Range;
 import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.internal.model.SessionInformations;
@@ -166,7 +165,7 @@ public class CollectorController { // NOPMD
 
 			doReport(req, resp, application);
 		} catch (final Exception e) {
-			writeMessage(req, resp, application, e.getMessage());
+			writeMessage(req, resp, application, String.valueOf(e.getMessage()));
 		}
 	}
 
@@ -471,23 +470,19 @@ public class CollectorController { // NOPMD
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 				application);
-		if (application == null || collector == null || javaInformationsList == null) {
+		if (application == null || collector == null || javaInformationsList == null
+				|| HttpParameter.PART.getParameterFrom(req) == null) {
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {
-			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partToRedirectTo;
-			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null
-					|| HttpParameter.PART.getParameterFrom(req) == null) {
-				partToRedirectTo = HttpParameter.PART.getParameterFrom(req);
+			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null) {
+				partToRedirectTo = I18N.urlEncode(HttpParameter.PART.getParameterFrom(req));
 			} else {
-				partToRedirectTo = HttpParameter.PART.getParameterFrom(req) + '&'
+				partToRedirectTo = I18N.urlEncode(HttpParameter.PART.getParameterFrom(req)) + '&'
 						+ HttpParameter.CACHE_ID + '='
-						+ HttpParameter.CACHE_ID.getParameterFrom(req);
+						+ I18N.urlEncode(HttpParameter.CACHE_ID.getParameterFrom(req));
 			}
-			// la période n'a pas d'importance pour writeMessageIfNotNull
-			new HtmlReport(collector, collectorServer, javaInformationsList, Period.TOUT, writer)
-					.writeMessageIfNotNull(message, partToRedirectTo);
-			writer.close();
+			showAlertAndRedirectTo(resp, message, "?part=" + partToRedirectTo);
 		}
 	}
 
@@ -507,12 +502,16 @@ public class CollectorController { // NOPMD
 				+ "</head><body>");
 	}
 
+	private static void writeHtmlEnd(final PrintWriter writer) {
+		writer.write("</body></html>");
+	}
+
 	public static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
 		writeHtmlBegin(writer);
 		final Collection<String> applications = Collections.emptyList();
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, applications, writer);
-		writer.write("</body></html>");
+		writeHtmlEnd(writer);
 		writer.close();
 	}
 
@@ -532,14 +531,14 @@ public class CollectorController { // NOPMD
 					+ "' ");
 			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
 					application);
-			writer.write(
-					"data-confirm=\"" + I18N.htmlEncode(messageConfirmation, false, false) + "\">");
+			writer.write("class='confirm' data-confirm='"
+					+ I18N.htmlEncode(messageConfirmation, false, false) + "'>");
 			final String removeApplicationLabel = I18N.getFormattedString("remove_application",
 					application);
 			writer.write("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
 					+ "\"/> " + removeApplicationLabel + "</a>");
 		}
-		writer.write("</body></html>");
+		writeHtmlEnd(writer);
 		writer.close();
 	}
 
@@ -550,7 +549,7 @@ public class CollectorController { // NOPMD
 		writer.write("<span class='alertAndRedirect' data-alert='"
 				+ I18N.htmlEncode(message, false, false) + "' data-href='" + redirectTo
 				+ "'></span>");
-		writer.write("</body></html>");
+		writeHtmlEnd(writer);
 		writer.close();
 	}
 

@@ -68,8 +68,12 @@ if(document.getElementById("ga-js")){
 	  });
 
 	  if(document.customPeriodForm) {
+		// On teste si l'élément <input type='date'> se transforme en <input type='text'
 		var test = document.createElement('input'); test.type = 'date';
+		// Si c'est le cas, cela signifie que l'élément (html5) n'est pas pris en charge
 		if(test.type === 'text') {
+		  // si pas html5, on vide le champ pattern car il n'est pas au bon format
+		  // et on affiche le format en langue du navigateur
 		  document.customPeriodForm.pattern.value = '';
 		  document.getElementById('customPeriodPattern').style.display='inline';
 		}
@@ -113,34 +117,15 @@ if(document.getElementById("ga-js")){
   		}
 	  });
 
+	  $$('.alertAndStop').invoke("observe", "click", function(event){
+	  	alert(this.getAttribute('data-alert'));
+  		event.preventDefault();
+	  });
+
 	  $$('.showHide').invoke("observe", "click", function(event){
 	  	var id = this.getAttribute("data-show-hide-id");
 	  	if(!id) id = this.id;
 	  	showHide(id);
-	  	event.preventDefault();
-	  });
-
-	  $$('.customPeriod').invoke("observe", "click", function(event){
-		showHide('customPeriod');
-		document.customPeriodForm.startDate.focus();
-	  	event.preventDefault();
-	  });
-
-	  $$('.addApplication').invoke("observe", "click", function(event){
-		showHide('addApplication');
-		document.appForm.appName.focus();
-	  	event.preventDefault();
-	  });
-
-	  $$('.addAggregation').invoke("observe", "click", function(event){
-		showHide('addAggregation');
-		document.aggregationForm.appName.focus();
-	  	event.preventDefault();
-	  });
-
-	  $$('.deploymentPeriod').invoke("observe", "click", function(event){
-		showHide('customPeriod');
-		document.customPeriodForm.startDate.focus();
 	  	event.preventDefault();
 	  });
 
@@ -157,15 +142,6 @@ if(document.getElementById("ga-js")){
 		  el.setAttribute('class', 'menuHide');
 		}
 	  	event.preventDefault();
-	  });
-
-	  $$('form').invoke("observe", "submit", function(event){
-		$(this).select("[required][data-required-message]").each(function(element){
-		  if(element.value.length == 0){
-		    alert(element.getAttribute("data-required-message"));
-		    event.preventDefault();
-		  }
-		});
 	  });
 
 	  $$('tr.odd,tr.even').invoke("observe", "mouseover", function(){

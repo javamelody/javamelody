@@ -65,8 +65,7 @@ public class HtmlSpringContextReport extends HtmlAbstractReport {
 
 	private void writeBackLink() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a class='back' href=''>");
-		writeln("<img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("</div>");
 	}
 

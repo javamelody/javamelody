@@ -40,7 +40,7 @@ class HtmlForms extends HtmlAbstractReport {
 
 	void writeCustomPeriodLinks(Map<String, Date> datesByWebappVersions, Range currentRange,
 			String graphName, String part) throws IOException {
-		writeln("<a class=\"customPeriod\" ");
+		writeln("<a class='showHide' data-show-hide-id='customPeriod' ");
 		writeln("title='" + getFormattedString("Choisir_periode", getString("personnalisee"))
 				+ "'>");
 		writeln("<img src='?resource=calendar.png' alt='#personnalisee#' /> #personnalisee#</a>");
@@ -155,20 +155,19 @@ class HtmlForms extends HtmlAbstractReport {
 		} else {
 			final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			writeln(separator);
-			writeln("<a href=\"\"");
-			writeln(" class='addApplication noPrint'><img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
+			writeln("<a href='' class='showHide noPrint' data-show-hide-id='addApplication'>");
+			writeln("<img src='?resource=action_add.png' alt='#add_application#'/> #add_application#</a>");
 			writeln(separator);
 			if (applications.size() > 1) {
-				writeln("<a href=\"\"");
-				writeln(" class='addAggregation noPrint'><img src='?resource=action_add.png' alt='#add_aggregation#'/> #add_aggregation#</a>");
+				writeln("<a href='' class='showHide noPrint' data-show-hide-id='addAggregation'>");
+				writeln("<img src='?resource=action_add.png' alt='#add_aggregation#'/> #add_aggregation#</a>");
 				writeln(separator);
 			}
 			writeln("<a href='?action=remove_application&amp;application=" + currentApplication
 					+ getCsrfTokenUrlPart() + "' class='confirm noPrint' ");
 			final String messageConfirmation = getFormattedString("confirm_remove_application",
 					currentApplication);
-			writeln("data-confirm=\"" + htmlEncodeButNotSpaceAndNewLine(messageConfirmation)
-					+ "\">");
+			writeln("data-confirm='" + htmlEncodeButNotSpaceAndNewLine(messageConfirmation) + "'>");
 			final String removeApplicationLabel = getFormattedString("remove_application",
 					currentApplication);
 			writeln("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
@@ -177,12 +176,10 @@ class HtmlForms extends HtmlAbstractReport {
 		}
 		writeln("<br/> <br/>");
 		writeln("<form name='appForm' method='post' action=''>");
-		writeln("<br/><b><label for='appName'>#app_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required data-required-message='"
-				+ htmlEncodeButNotSpace(getString("app_name_mandatory"))
-				+ "'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<b><label for='appUrls'>#app_urls#</label> :</b>&nbsp;&nbsp;<input type='text' size='50' id='appUrls' name='appUrls' required data-required-message='"
-				+ htmlEncodeButNotSpace(getString("app_urls_mandatory"))
-				+ "'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<br/><b><label for='appName'>#app_name_to_monitor#</label> :</b>&nbsp;&nbsp;");
+		writeln("<input type='text' size='15' id='appName' name='appName' required />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		writeln("<b><label for='appUrls'>#app_urls#</label> :</b>&nbsp;&nbsp;");
+		writeln("<input type='text' size='50' id='appUrls' name='appUrls' required />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<input type='submit' value='#add#'/><br/>");
 		writeln("#urls_sample# : <i>http://myhost/myapp/</i> #or# <i>http://host1/myapp/,http://host2/myapp/</i>");
 		writeln("<br/> <br/>");
@@ -193,9 +190,8 @@ class HtmlForms extends HtmlAbstractReport {
 			writeln("<div id='addAggregation' class='displayNone'>");
 			writeln("<br/> <br/>");
 			writeln("<form name='aggregationForm' method='post' action=''>");
-			writeln("<br/><b><label for='appName'>#aggregation_name_to_monitor#</label> :</b>&nbsp;&nbsp;<input type='text' size='15' id='appName' name='appName' required data-required-message='"
-					+ htmlEncodeButNotSpace(getString("app_name_mandatory"))
-					+ "' />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			writeln("<br/><b><label for='appName'>#aggregation_name_to_monitor#</label> :</b>&nbsp;&nbsp;");
+			writeln("<input type='text' size='15' id='appName' name='appName' required />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			writeln("<br/><b>#aggregated_apps# :</b>");
 			writeln("<table summary=''>");
 			for (final String application : applications) {

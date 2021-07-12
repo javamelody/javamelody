@@ -105,8 +105,8 @@ public abstract class HtmlAbstractReport {
 	}
 
 	/**
-	 * Écrit un texte, puis un retour chariot, dans un flux en remplaçant dans le texte les clés entourées de deux '#'
-	 * par leurs traductions dans la locale courante.
+	 * Écrit un texte, puis un retour chariot, dans un flux en remplaçant dans le texte les clés
+	 * entourées de deux '#' par leurs traductions dans la locale courante.
 	 * @param html texte html avec éventuellement des #clé#
 	 * @throws IOException e
 	 */
@@ -173,7 +173,7 @@ public abstract class HtmlAbstractReport {
 	}
 
 	/**
-	 * Encode pour affichage en html, sans encoder les espaces en nbsp (insécables) et les retours chariots.
+	 * Encode pour affichage en html, sans encoder les espaces en nbsp (insécables) et les retours chariots en br.
 	 * @param text message à encoder
 	 * @return String
 	 */

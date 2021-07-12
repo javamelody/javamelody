@@ -91,9 +91,9 @@ class HtmlHotspotsReport extends HtmlAbstractReport {
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("<a class='confirm' href='?part=hotspots&amp;action=clear_hotspots"
-				+ getCsrfTokenUrlPart() + "' data-confirm=\""
-				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_clear_hotspots")) + "\">");
+		writeln("<a href='?part=hotspots&amp;action=clear_hotspots" + getCsrfTokenUrlPart()
+				+ "' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_clear_hotspots")) + "'>");
 		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#clear_hotspots#' title='#clear_hotspots#' /> #clear_hotspots#</a>");
 		writeln("</div>");
 	}

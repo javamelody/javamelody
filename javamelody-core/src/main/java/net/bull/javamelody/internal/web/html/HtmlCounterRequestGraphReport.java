@@ -140,8 +140,8 @@ class HtmlCounterRequestGraphReport extends HtmlAbstractReport {
 			writeln("<div align='center'>");
 			writeln("<table summary=''><tr><td>");
 			final String graphNameEncoded = urlEncode(graphName);
-			writeln("<img class='synthèse' id='img' data-graph-name=\""
-					+ htmlEncodeButNotSpace(graphName) + "\" src='"
+			writeln("<img class='synthèse' id='img' data-graph-name='"
+					+ htmlEncodeButNotSpace(graphName) + "' src='"
 					+ "?width=960&amp;height=400&amp;graph=" + graphNameEncoded + "' alt='zoom'/>");
 			writeDirectly("<br/><div align='right' class='gray'>");
 			writeln("#graph_units#");

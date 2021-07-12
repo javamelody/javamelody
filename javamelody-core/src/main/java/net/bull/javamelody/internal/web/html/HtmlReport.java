@@ -193,6 +193,11 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("</style>");
 			writeln("<script type='text/javascript'>");
 			try (InputStream in = getClass()
+					.getResourceAsStream(Parameters.getResourcePath("prototype.js"))) {
+				final String monitoringJs = InputOutput.pumpToString(in, StandardCharsets.UTF_8);
+				writeDirectly(monitoringJs);
+			}
+			try (InputStream in = getClass()
 					.getResourceAsStream(Parameters.getResourcePath("monitoring.js"))) {
 				final String monitoringJs = InputOutput.pumpToString(in, StandardCharsets.UTF_8);
 				writeDirectly(monitoringJs);
@@ -200,6 +205,8 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("</script>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+			// prototype.js nécessaire pour monitoring.js, effects.js et slider.js
+			writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
 			writeln("<script type='text/javascript' src='?resource=monitoring.js'></script>");
 			if (THEMED_MONITORING_CSS != null) {
 				writeln("<link rel='stylesheet' href='?resource=themedMonitoring.css' type='text/css'/>");
@@ -209,8 +216,6 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
 		writeln("<script type='text/javascript' src='?resource=resizable_tables.js'></script>");
 		writeln("<script type='text/javascript' src='?resource=sorttable.js'></script>");
-		// prototype.js nécessaire pour effects.js et slider.js
-		writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
 		// Effect slidedown/slideup décrit ici http://madrobby.github.com/scriptaculous/effect-slidedown/
 		writeln("<script type='text/javascript' src='?resource=effects.js'></script>");
 		// open dialog (for java sources), http://www.p51labs.com/lightwindow/
