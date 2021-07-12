@@ -223,7 +223,6 @@ public class HtmlReport extends HtmlAbstractReport {
 		if (includeSlider) {
 			writeln("<script type='text/javascript' src='?resource=slider.js'></script>");
 		}
-		writeln("<script type='text/javascript' src='?resource=monitoring.js'></script>");
 		if (THEMED_MONITORING_JS != null) {
 			writeln("<script type='text/javascript' src='?resource=themedMonitoring.js'></script>");
 		}

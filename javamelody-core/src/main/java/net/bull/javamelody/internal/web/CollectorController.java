@@ -526,7 +526,7 @@ public class CollectorController { // NOPMD
 				+ I18N.getString("Retour") + "\"/> " + I18N.getString("Retour") + "</a>");
 		if (Parameters.getCollectorApplicationsFile().canWrite()) {
 			writer.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			writer.write("<a class='confirm' href='?action=remove_application&amp;application="
+			writer.write("<a href='?action=remove_application&amp;application="
 					+ I18N.urlEncode(application) + HtmlAbstractReport.getCsrfTokenUrlPart()
 					+ "' ");
 			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
