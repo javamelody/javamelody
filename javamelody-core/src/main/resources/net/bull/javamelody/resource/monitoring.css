@@ -663,6 +663,10 @@ code .comment .string {
   transform: rotate(-45deg);
 }
 
+.displayNone {
+	display: none;
+}
+
 .donate img {
 	position: absolute; top: 15px; right: 10px; border: 0;
 }

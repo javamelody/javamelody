@@ -207,17 +207,11 @@ public final class Main {
 		}
 		final File myself = File.createTempFile("javamelody", ".jar");
 		myself.deleteOnExit();
-		final InputStream is = Main.class.getProtectionDomain().getCodeSource().getLocation()
-				.openStream();
-		try {
-			final OutputStream os = new FileOutputStream(myself);
-			try {
+		try (InputStream is = Main.class.getProtectionDomain().getCodeSource().getLocation()
+				.openStream()) {
+			try (OutputStream os = new FileOutputStream(myself)) {
 				copyStream(is, os);
-			} finally {
-				os.close();
 			}
-		} finally {
-			is.close();
 		}
 		return myself;
 	}
@@ -266,16 +260,10 @@ public final class Main {
 			throw new IllegalStateException(
 					"JavaMelody has failed to create a temporary file in " + tmpdir, e);
 		}
-		final InputStream is = res.openStream();
-		try {
-			final OutputStream os = new FileOutputStream(tmp);
-			try {
+		try (InputStream is = res.openStream()) {
+			try (OutputStream os = new FileOutputStream(tmp)) {
 				copyStream(is, os);
-			} finally {
-				os.close();
 			}
-		} finally {
-			is.close();
 		}
 		tmp.deleteOnExit();
 		return tmp;

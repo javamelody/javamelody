@@ -48,14 +48,7 @@ class HtmlHashPasswordReport extends HtmlAbstractReport {
 			write("<label for='hash'>Hash:</label> ");
 			final String hash = encodePassword(algorithm, password);
 			writeln("<input type='text' id='hash' value='" + hash + "' size='80' />");
-			writeln("<button onclick='copyHash()'>Copy</button>");
-			writeln("<script type='text/javascript'>");
-			writeln("function copyHash() {");
-			writeln("document.getElementById('hash').select();");
-			writeln("document.getElementById('hash').setSelectionRange(0, 99999); /*For mobile devices*/");
-			writeln("document.execCommand('copy');");
-			writeln("}");
-			writeln("</script>");
+			writeln("<button class='copyHash'>Copy</button>");
 			writeln("<br/><br/>");
 		}
 		writeln("<form class='hash' action='' method='post'>");

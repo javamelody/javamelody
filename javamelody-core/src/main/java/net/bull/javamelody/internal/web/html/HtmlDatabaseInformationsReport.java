@@ -137,7 +137,7 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 
 	private void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		writeln("<a href='?part=database&amp;request="
@@ -151,7 +151,7 @@ class HtmlDatabaseInformationsReport extends HtmlAbstractReport {
 			write("<img src='?resource=pdf.png' alt='#PDF#'/> #PDF#</a>");
 		}
 		writeln(separator);
-		writeln("<select name='request' onchange=\"location.href='?part=database&amp;request='+options.selectedIndex;\">");
+		writeln("<select name='request' class='selectDatabaseReport'>");
 		int index = 0;
 		for (final String request : databaseInformations.getRequestNames()) {
 			write("<option value='");

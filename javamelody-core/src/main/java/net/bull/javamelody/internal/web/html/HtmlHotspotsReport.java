@@ -82,7 +82,7 @@ class HtmlHotspotsReport extends HtmlAbstractReport {
 
 	void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=hotspots'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (isPdfEnabled()) {
@@ -92,8 +92,8 @@ class HtmlHotspotsReport extends HtmlAbstractReport {
 		}
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		writeln("<a href='?part=hotspots&amp;action=clear_hotspots" + getCsrfTokenUrlPart()
-				+ "' onclick=\"javascript:return confirm('"
-				+ getStringForJavascript("confirm_clear_hotspots") + "');\">");
+				+ "' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_clear_hotspots")) + "'>");
 		writeln("<img width='16' height='16' src='?resource=user-trash.png' alt='#clear_hotspots#' title='#clear_hotspots#' /> #clear_hotspots#</a>");
 		writeln("</div>");
 	}

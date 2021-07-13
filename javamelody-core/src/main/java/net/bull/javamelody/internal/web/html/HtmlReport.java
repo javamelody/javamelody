@@ -58,8 +58,6 @@ import net.bull.javamelody.internal.model.SessionInformations;
  * @author Emeric Vernat
  */
 public class HtmlReport extends HtmlAbstractReport {
-	private static final String SCRIPT_BEGIN = "<script type='text/javascript'>";
-	private static final String SCRIPT_END = "</script>";
 	private static final URL THEMED_MONITORING_CSS = HtmlReport.class
 			.getResource("/net/bull/javamelody/resource/themedMonitoring.css");
 	private static final URL THEMED_MONITORING_JS = HtmlReport.class
@@ -106,7 +104,7 @@ public class HtmlReport extends HtmlAbstractReport {
 
 	public void writeLastShutdown() throws IOException {
 		writeHtmlHeader(false, true);
-		htmlCoreReport.toHtml(null, null);
+		htmlCoreReport.toHtml();
 		writeHtmlFooter();
 	}
 
@@ -195,6 +193,11 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("</style>");
 			writeln("<script type='text/javascript'>");
 			try (InputStream in = getClass()
+					.getResourceAsStream(Parameters.getResourcePath("prototype.js"))) {
+				final String monitoringJs = InputOutput.pumpToString(in, StandardCharsets.UTF_8);
+				writeDirectly(monitoringJs);
+			}
+			try (InputStream in = getClass()
 					.getResourceAsStream(Parameters.getResourcePath("monitoring.js"))) {
 				final String monitoringJs = InputOutput.pumpToString(in, StandardCharsets.UTF_8);
 				writeDirectly(monitoringJs);
@@ -202,6 +205,8 @@ public class HtmlReport extends HtmlAbstractReport {
 			writeln("</script>");
 		} else {
 			writeln("<link rel='stylesheet' href='?resource=monitoring.css' type='text/css'/>");
+			// prototype.js nécessaire pour monitoring.js, effects.js et slider.js
+			writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
 			writeln("<script type='text/javascript' src='?resource=monitoring.js'></script>");
 			if (THEMED_MONITORING_CSS != null) {
 				writeln("<link rel='stylesheet' href='?resource=themedMonitoring.css' type='text/css'/>");
@@ -211,8 +216,6 @@ public class HtmlReport extends HtmlAbstractReport {
 		writeln("<link type='image/png' rel='shortcut icon' href='?resource=systemmonitor.png' />");
 		writeln("<script type='text/javascript' src='?resource=resizable_tables.js'></script>");
 		writeln("<script type='text/javascript' src='?resource=sorttable.js'></script>");
-		// prototype.js nécessaire pour effects.js et slider.js
-		writeln("<script type='text/javascript' src='?resource=prototype.js'></script>");
 		// Effect slidedown/slideup décrit ici http://madrobby.github.com/scriptaculous/effect-slidedown/
 		writeln("<script type='text/javascript' src='?resource=effects.js'></script>");
 		// open dialog (for java sources), http://www.p51labs.com/lightwindow/
@@ -230,19 +233,9 @@ public class HtmlReport extends HtmlAbstractReport {
 	public void writeHtmlFooter() throws IOException {
 		final String analyticsId = Parameter.ANALYTICS_ID.getValue();
 		if (analyticsId != null && !"disabled".equals(analyticsId)) {
-			writeDirectly(SCRIPT_BEGIN);
 			writeDirectly(
-					"var gaJsHost = (('https:' == document.location.protocol) ? 'https://ssl.' : 'http://www.');\n");
-			writeDirectly(
-					"document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));\n");
-			writeDirectly(SCRIPT_END);
-			writeDirectly(SCRIPT_BEGIN);
-			writeDirectly(" try{\n");
-			writeDirectly("var pageTracker = _gat._getTracker('" + analyticsId + "');\n");
-			writeDirectly("pageTracker._trackPageview();\n");
-			writeDirectly("} catch(err) {}\n");
-			writeDirectly(SCRIPT_END);
-			writeDirectly("\n");
+					"<script type=\"text/javascript\" src=\"https://ssl.google-analytics.com/ga.js\" async=\"true\" id=\"ga-js\" data-analytics-id=\""
+							+ htmlEncodeButNotSpace(analyticsId) + "\"></script>");
 		}
 		writeln("</body></html>");
 	}

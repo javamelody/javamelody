@@ -45,9 +45,14 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.14.1</version>
 		</dependency>
 		<!-- Dépendance iText pour exports PDF -->
 		<dependency>
@@ -157,9 +162,11 @@
 										pattern="dd MMMM yyyy HH:mm:ss" locale="fr,FR" />
 								</tstamp>
 								<delete
+									file="target/javamelody-swing-tmp.jar" />
+								<delete
 									file="target/javamelody-swing-${project.version}.jar" />
 								<jar
-									destfile="target/javamelody-swing-${project.version}.jar">
+									destfile="target/javamelody-swing-tmp.jar">
 									<zipfileset dir="target/classes"
 										excludes="**/Thumbs.db" />
 									<zipfileset file="LICENSE" />
@@ -168,15 +175,16 @@
 										excludes="net/bull/javamelody/Main.class,com/lowagie/text/pdf/fonts/cmap_info.txt" />
 									<zipgroupfileset
 										dir="${project.build.directory}/dependency">
-										<include name="itext-2.1.7.jar" />
-										<include name="log4j-*.jar" />
-										<include name="xstream-*.jar" />
-										<include name="xmlpull-*.jar" />
-										<include name="ehcache-*.jar" />
-										<include name="quartz-*.jar" />
-										<include name="javax.servlet-api-*.jar" />
-										<include name="itext-rtf-*.jar" />
+										<include name="*.jar" />
+										<exclude name="${project.build.directory}/dependency/javamelody-core-${project.version}.jar" />
 									</zipgroupfileset>
+								</jar>
+								<!-- remove duplicate files for signing to work
+								(META-INF/DEPENDENCIES,META-INF/LICENSE,META-INF/NOTICE)-->
+								<jar
+									destfile="target/javamelody-swing-${project.version}.jar">
+									<zipfileset
+										src="target/javamelody-swing-tmp.jar" />
 									<manifest>
 										<attribute name="Built-By" value="${user.name}" />
 										<attribute name="Built-Date" value="${TODAY_FR}" />

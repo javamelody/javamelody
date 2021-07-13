@@ -101,7 +101,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		}
 		writeShowHideLink(id, "#Details#");
 		writeln("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-		writeln("</div><div id='" + id + "' style='display:none;'>");
+		writeln("</div><div id='" + id + "' class='displayNone'>");
 		final List<ClassInfo> detailsClassHistogram = new ArrayList<>();
 		for (final ClassInfo classInfo : classHistogram) {
 			if (classInfo.getBytes() * 100 / totalBytes == 0) {
@@ -134,7 +134,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 			writeDirectly(HtmlSourceReport.addLinkToClassName(classInfoName));
 		} else {
 			// encodage nécessaire dans PermGen pour "<methodKlass>" par exemple
-			writeDirectly(classInfoName.replaceAll("[<]", "&lt;").replaceAll("[>]", "&gt;"));
+			writeDirectly(classInfoName.replace("<", "&lt;").replace(">", "&gt;"));
 		}
 		final String nextColumnAlignRight = "</td><td align='right'>";
 		writeDirectly(nextColumnAlignRight);
@@ -162,7 +162,7 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 
 	private void writeLinks() throws IOException {
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln(separator);
 		writeln("<a href='?part=heaphisto'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
@@ -174,20 +174,19 @@ class HtmlHeapHistogramReport extends HtmlAbstractReport {
 		writeln(separator);
 		if (Action.GC_ENABLED) {
 			writeln("<a href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
-					+ "' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_ramasse_miette") + "');\">");
-			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
-			writeln(separator);
+					+ "' class='confirm' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "'>");
 		} else {
 			writeln("<a href='?part=heaphisto&amp;action=gc" + getCsrfTokenUrlPart()
-					+ "' onclick=\"javascript:alert('"
-					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
-			writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
-			writeln(separator);
+					+ "' class='alertAndStop' data-alert='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("ramasse_miette_desactive"))
+					+ "'>");
 		}
+		writeln("<img src='?resource=broom.png' width='16' height='16' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
+		writeln(separator);
 		writeln("<a href='?part=heaphisto&amp;action=heap_dump" + getCsrfTokenUrlPart()
-				+ "' onclick=\"javascript:return confirm('"
-				+ getStringForJavascript("confirm_heap_dump") + "');\">");
+				+ "' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "'>");
 		writeln("<img src='?resource=heapdump.png' width='16' height='16' alt='#heap_dump#' /> #heap_dump#</a>");
 		writeln(separator);
 		writeln("</div>");

@@ -182,7 +182,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeDirectly(htmlEncodeButNotSpace(lastCollectorException.toString()));
 			writeln("</div>");
 			writeShowHideLink("detailsLastCollectorException", "#Details#");
-			writeln("<div id='detailsLastCollectorException' style='display: none;'><div>");
+			writeln("<div id='detailsLastCollectorException' class='displayNone'><div>");
 			final StringWriter stackTraceWriter = new StringWriter(200);
 			lastCollectorException.printStackTrace(new PrintWriter(stackTraceWriter));
 			for (final String stackTraceElement : stackTraceWriter.toString().split("[\n\r]")) {
@@ -241,7 +241,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeMenu() throws IOException {
 		writeln("<div class='noPrint'> ");
 		writeln("<div id='menuBox' class='menuHide'>");
-		writeln("  <ul id='menuTab'><li><a href='javascript:toggleMenuBox();'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
+		writeln("  <ul id='menuTab'><li><a class='menuBoxToggle'><img id='menuToggle' src='?resource=menu.png' alt='menu' /></a></li></ul>");
 		writeln("  <div id='menuLinks'><div id='menuDeco'>");
 		for (final Map.Entry<String, String> entry : menuTextsByAnchorName.entrySet()) {
 			final String anchorName = entry.getKey();
@@ -288,9 +288,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<div align='right'>");
 			writeln("<a href='?action=clear_counter&amp;counter=all" + getCsrfTokenUrlPart()
 					+ "' title='#Vider_toutes_stats#'");
-			writeln("class='noPrint' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_vider_toutes_stats")
-					+ "');\">#Reinitialiser_toutes_stats#</a>");
+			writeln("class='confirm noPrint' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_vider_toutes_stats"))
+					+ "'>#Reinitialiser_toutes_stats#</a>");
 			writeln(END_DIV);
 		}
 
@@ -327,27 +327,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeMessageIfNotNull(String message, String partToRedirectTo,
 			String anchorNameForRedirect) throws IOException {
 		if (message != null) {
-			writeln("<script type='text/javascript'>");
-			// writeDirectly pour ne pas gérer de traductions si le message contient '#'
-			writeDirectly("alert(\"" + htmlEncodeButNotSpace(javascriptEncode(message)) + "\");");
-			writeln("");
-			// redirect vers une url évitant que F5 du navigateur ne refasse l'action au lieu de faire un refresh
+			final String href;
 			if (partToRedirectTo == null) {
-				if (anchorNameForRedirect == null) {
-					writeln("location.href = '?'");
-				} else {
-					writeln("if (location.href.indexOf('?') != -1) {");
-					writeDirectly(
-							"location.href = location.href.substring(0, location.href.indexOf('?')) + '#"
-									+ anchorNameForRedirect + "';");
-					writeln("} else {");
-					writeDirectly("location.href = '#" + anchorNameForRedirect + "';");
-					writeln("}");
-				}
+				href = anchorNameForRedirect == null ? "?" : "?#" + anchorNameForRedirect;
 			} else {
-				writeln("location.href = '?part=" + partToRedirectTo + '\'');
+				href = "?part=" + partToRedirectTo;
 			}
-			writeln("</script>");
+			writeDirectly("<span class='alertAndRedirect' data-alert='"
+					+ htmlEncodeButNotSpaceAndNewLine(message) + "' data-href='" + href
+					+ "'></span>");
 		}
 	}
 
@@ -371,11 +359,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (!otherJRobins.isEmpty()) {
 			writeln("<div align='right'>");
 			writeShowHideLink("detailsGraphs", "#Autres_courbes#");
-			writeln("<script type='text/javascript'>");
-			writeln("document.getElementById('detailsGraphsA').href=\"javascript:loadImages('detailsGraphs');showHide('detailsGraphs');\";");
-			writeln("</script>");
 			writeln(END_DIV);
-			writeln("<div id='detailsGraphs' style='display: none;'><div>");
+			writeln("<div id='detailsGraphs' class='displayNone'><div>");
 			writeGraphs(otherJRobins, true);
 			writeln("</div></div>");
 		}
@@ -416,7 +401,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeAllCurrentRequestsAsPart(
 			Map<JavaInformations, List<CounterRequestContext>> currentRequests) throws IOException {
 		writeln("<div  class='noPrint'>");
-		writeln("<a  href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln(SEPARATOR);
 		writeln("<a href='?part=currentRequests'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (isPdfEnabled()) {
@@ -457,7 +442,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeAllThreadsAsPart() throws IOException {
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln(separator);
 		writeln("<a href='?part=threads'><img src='?resource=action_refresh.png' alt='#Actualiser#'/> #Actualiser#</a>");
 		if (isPdfEnabled()) {
@@ -525,7 +510,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				final String id = "threads_" + i;
 				writeShowHideLink(id, "#Details#");
 				htmlThreadInformationsReport.writeDeadlocks();
-				writeln("<br/><br/><div id='" + id + "' style='display: none;'>");
+				writeln("<br/><br/><div id='" + id + "' class='displayNone'>");
 				htmlThreadInformationsReport.toHtml();
 
 				writeln("<div align='right' class='noPrint'><br/>");
@@ -549,7 +534,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	void writeCounterSummaryPerClass(String counterName, String requestId) throws IOException {
 		final Counter counter = collector.getRangeCounter(range, counterName);
 		writeln("<div class='noPrint'>");
-		writeln("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+		writeln("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 		writeln(SEPARATOR);
 		final String hrefStart = "<a href='?part=counterSummaryPerClass&amp;counter="
 				+ counter.getName()
@@ -647,7 +632,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(SEPARATOR);
 			final String id = "caches_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
+			writeln("<br/><br/><div id='" + id + "' class='displayNone'><div>");
 			new HtmlCacheInformationsReport(cacheInformationsList, getWriter()).toHtml();
 			writeln("</div></div><br/>");
 			i++;
@@ -669,7 +654,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(SEPARATOR);
 			final String id = "jcaches_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
+			writeln("<br/><br/><div id='" + id + "' class='displayNone'><div>");
 			new HtmlJCacheInformationsReport(jcacheInformationsList, getWriter()).toHtml();
 			writeln("</div></div><br/>");
 			i++;
@@ -691,7 +676,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln(SEPARATOR);
 			final String id = "job_" + i;
 			writeShowHideLink(id, "#Details#");
-			writeln("<br/><br/><div id='" + id + "' style='display: none;'><div>");
+			writeln("<br/><br/><div id='" + id + "' class='displayNone'><div>");
 			new HtmlJobInformationsReport(jobInformationsList, rangeJobCounter, getWriter())
 					.toHtml();
 			writeln("</div></div><br/>");
@@ -706,20 +691,20 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		// CHECKSTYLE:ON
 		writeln("<div align='center' class='noPrint'>");
 		final String separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
-		final String endOfOnClickConfirm = "');\">";
 		if (isGcEnabled()) {
-			write("<a href='?action=gc" + getCsrfTokenUrlPart()
-					+ "' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_ramasse_miette") + endOfOnClickConfirm);
+			write("<a href='?action=gc" + getCsrfTokenUrlPart() + "' class='confirm' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_ramasse_miette")) + "'>");
 		} else {
-			write("<a href='?action=gc" + getCsrfTokenUrlPart() + "' onclick=\"javascript:alert('"
-					+ getStringForJavascript("ramasse_miette_desactive") + "');return false;\">");
+			write("<a href='?action=gc" + getCsrfTokenUrlPart()
+					+ "' class='alertAndStop' data-alert='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("ramasse_miette_desactive"))
+					+ "'>");
 		}
 		write("<img src='?resource=broom.png' width='20' height='20' alt='#ramasse_miette#' /> #ramasse_miette#</a>");
 		writeln(separator);
 		write("<a href='?action=heap_dump" + getCsrfTokenUrlPart()
-				+ "' onclick=\"javascript:return confirm('"
-				+ getStringForJavascript("confirm_heap_dump") + endOfOnClickConfirm);
+				+ "' class='confirm' data-confirm='"
+				+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_heap_dump")) + "'>");
 		write("<img src='?resource=heapdump.png' width='20' height='20' alt=\"#heap_dump#\" /> #heap_dump#</a>");
 		writeln(separator);
 		if (isHeapHistoEnabled()) {
@@ -729,8 +714,9 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		}
 		if (isSessionsEnabled()) {
 			write("<a href='?action=invalidate_sessions" + getCsrfTokenUrlPart()
-					+ "' onclick=\"javascript:return confirm('"
-					+ getStringForJavascript("confirm_invalidate_sessions") + endOfOnClickConfirm);
+					+ "' class='confirm' data-confirm='"
+					+ htmlEncodeButNotSpaceAndNewLine(getString("confirm_invalidate_sessions"))
+					+ "'>");
 			write("<img src='?resource=user-trash.png' width='18' height='18' alt=\"#invalidate_sessions#\" /> #invalidate_sessions#</a>");
 			writeln(separator);
 			write("<a href='?part=sessions'>");
@@ -798,8 +784,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 	private void writeApplicationsLinks() throws IOException {
 		assert collectorServer != null;
 		writeln("<div align='center'>");
-		final Collection<String> applications = new ArrayList<>();
-		applications.addAll(Parameters.getCollectorUrlsByApplications().keySet());
+		final Collection<String> applications = new ArrayList<>(
+				Parameters.getCollectorUrlsByApplications().keySet());
 		applications.addAll(Parameters.getApplicationsByAggregationApplication().keySet());
 		if (applications.size() > 1
 				|| !collectorServer.getLastCollectExceptionsByApplication().isEmpty()) {
@@ -811,7 +797,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					writeAddAndRemoveApplicationLinks(collector.getApplication(), applications,
 							getWriter());
 				}
-				writeln("<div id='chooseApplication' style='display: none;'><div>&nbsp;&nbsp;&nbsp;");
+				writeln("<div id='chooseApplication' class='displayNone'><div>&nbsp;&nbsp;&nbsp;");
 				writeApplicationsLinks(applications, tabularList);
 				writeln("</div></div></td></tr></table>");
 			} else {
@@ -846,7 +832,6 @@ class HtmlCoreReport extends HtmlAbstractReport {
 				writeln("<img src='?resource=bullets/green.png' alt='#Application_disponible#'/>");
 				writeln("<em class='applicationStatus'>");
 				writeln("#Application_disponible#");
-				writeln("</em>");
 			} else {
 				writeln("<img src='?resource=bullets/red.png' alt='#Application_indisponible#'/>");
 				writeln("<em class='applicationStatus'>");
@@ -858,8 +843,8 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					writeDirectly(htmlEncode(stackTraceElement.toString()));
 					writeDirectly("<br/>");
 				}
-				writeln("</em>");
 			}
+			writeln("</em>");
 			writeln(application + "</a>");
 			i++;
 			if (tabularList) {
@@ -884,7 +869,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 		if (graphName == null) {
 			write("<a href='?' title='#Rafraichir#'>");
 		} else {
-			write("<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
+			write("<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>");
 			writeln(separator);
 			writeln("<a href='?'><img src='?resource=action_home.png' alt='#Page_principale#'/> #Page_principale#</a>");
 			writeln(separator);
@@ -954,15 +939,15 @@ class HtmlCoreReport extends HtmlAbstractReport {
 			writeln("<br/>");
 			writeShowHideLink("debuggingLogs", "Debugging logs");
 			writeln("<br/><br/>");
-			writeln("<div id='debuggingLogs' style='display: none;'>");
+			writeln("<div id='debuggingLogs' class='displayNone'>");
 			final List<String> debuggingLogs = LOG.getDebuggingLogs();
 			if (debuggingLogs.size() >= LOG.MAX_DEBUGGING_LOGS_COUNT) {
 				writeln("<div class='severe'>Only the last " + LOG.MAX_DEBUGGING_LOGS_COUNT
 						+ " messages are displayed</div>");
 			}
 			for (final String msg : debuggingLogs) {
-				writeDirectly(htmlEncodeButNotSpace(msg).replaceAll("[\t]",
-						"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+				writeDirectly(
+						htmlEncodeButNotSpace(msg).replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 				writeln("<br/>");
 			}
 			writeln(END_DIV);

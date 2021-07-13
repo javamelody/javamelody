@@ -36,7 +36,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.LOG;
@@ -50,7 +51,7 @@ import net.bull.javamelody.internal.web.MailReport;
  * @author Emeric Vernat
  */
 public class CollectorServer {
-	static final Logger LOGGER = Logger.getLogger("javamelody");
+	static final Logger LOGGER = LogManager.getLogger("javamelody");
 
 	private static final String JENKINS_NODES_SUFFIX = " (Jenkins nodes)";
 

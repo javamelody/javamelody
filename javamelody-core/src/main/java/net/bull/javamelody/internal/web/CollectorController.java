@@ -38,7 +38,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.HttpParameter;
@@ -55,7 +56,6 @@ import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.HsErrPid;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.LabradorRetriever;
-import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.Range;
 import net.bull.javamelody.internal.model.RemoteCollector;
 import net.bull.javamelody.internal.model.SessionInformations;
@@ -68,7 +68,7 @@ import net.bull.javamelody.internal.web.html.HtmlReport;
  * @author Emeric Vernat
  */
 public class CollectorController { // NOPMD
-	private static final Logger LOGGER = Logger.getLogger("javamelody");
+	private static final Logger LOGGER = LogManager.getLogger("javamelody");
 
 	private static final String COOKIE_NAME = "javamelody.application";
 
@@ -165,7 +165,7 @@ public class CollectorController { // NOPMD
 
 			doReport(req, resp, application);
 		} catch (final Exception e) {
-			writeMessage(req, resp, application, e.getMessage());
+			writeMessage(req, resp, application, String.valueOf(e.getMessage()));
 		}
 	}
 
@@ -312,7 +312,7 @@ public class CollectorController { // NOPMD
 		htmlReport.writeHtmlHeader();
 		writer.write("<div class='noPrint'>");
 		I18N.writelnTo(
-				"<a href='javascript:history.back()'><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+				"<a class='back' href=''><img src='?resource=action_back.png' alt='#Retour#'/> #Retour#</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 				writer);
 		writer.write("<a href='?part=");
 		writer.write(partParameter);
@@ -470,23 +470,19 @@ public class CollectorController { // NOPMD
 		final Collector collector = getCollectorByApplication(application);
 		final List<JavaInformations> javaInformationsList = getJavaInformationsByApplication(
 				application);
-		if (application == null || collector == null || javaInformationsList == null) {
+		if (application == null || collector == null || javaInformationsList == null
+				|| HttpParameter.PART.getParameterFrom(req) == null) {
 			showAlertAndRedirectTo(resp, message, "?");
 		} else {
-			final PrintWriter writer = createWriterFromOutputStream(resp);
 			final String partToRedirectTo;
-			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null
-					|| HttpParameter.PART.getParameterFrom(req) == null) {
-				partToRedirectTo = HttpParameter.PART.getParameterFrom(req);
+			if (HttpParameter.CACHE_ID.getParameterFrom(req) == null) {
+				partToRedirectTo = I18N.urlEncode(HttpParameter.PART.getParameterFrom(req));
 			} else {
-				partToRedirectTo = HttpParameter.PART.getParameterFrom(req) + '&'
+				partToRedirectTo = I18N.urlEncode(HttpParameter.PART.getParameterFrom(req)) + '&'
 						+ HttpParameter.CACHE_ID + '='
-						+ HttpParameter.CACHE_ID.getParameterFrom(req);
+						+ I18N.urlEncode(HttpParameter.CACHE_ID.getParameterFrom(req));
 			}
-			// la période n'a pas d'importance pour writeMessageIfNotNull
-			new HtmlReport(collector, collectorServer, javaInformationsList, Period.TOUT, writer)
-					.writeMessageIfNotNull(message, partToRedirectTo);
-			writer.close();
+			showAlertAndRedirectTo(resp, message, "?part=" + partToRedirectTo);
 		}
 	}
 
@@ -496,21 +492,33 @@ public class CollectorController { // NOPMD
 		return new PrintWriter(MonitoringController.getWriter(httpResponse));
 	}
 
+	private static void writeHtmlBegin(PrintWriter writer) {
+		writer.write(
+				"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage() + "'><head>"
+				+ "<title>Monitoring</title>"
+				+ "<script type='text/javascript' src='?resource=prototype.js'></script>"
+				+ "<script type='text/javascript' src='?resource=monitoring.js'></script>"
+				+ "</head><body>");
+	}
+
+	private static void writeHtmlEnd(final PrintWriter writer) {
+		writer.write("</body></html>");
+	}
+
 	public static void writeOnlyAddApplication(HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
-				+ "'><head><title>Monitoring</title></head><body>");
+		writeHtmlBegin(writer);
 		final Collection<String> applications = Collections.emptyList();
 		HtmlReport.writeAddAndRemoveApplicationLinks(null, applications, writer);
-		writer.write("</body></html>");
+		writeHtmlEnd(writer);
 		writer.close();
 	}
 
 	public static void writeDataUnavailableForApplication(String application,
 			HttpServletResponse resp) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<html lang='" + I18N.getCurrentLocale().getLanguage()
-				+ "'><head><title>Monitoring</title></head><body>");
+		writeHtmlBegin(writer);
 		writer.write(
 				I18N.htmlEncode(I18N.getFormattedString("data_unavailable", application), false));
 		writer.write("<br/><br/>");
@@ -523,25 +531,25 @@ public class CollectorController { // NOPMD
 					+ "' ");
 			final String messageConfirmation = I18N.getFormattedString("confirm_remove_application",
 					application);
-			writer.write("onclick=\"javascript:return confirm('"
-					+ I18N.javascriptEncode(messageConfirmation) + "');\">");
+			writer.write("class='confirm' data-confirm='"
+					+ I18N.htmlEncode(messageConfirmation, false, false) + "'>");
 			final String removeApplicationLabel = I18N.getFormattedString("remove_application",
 					application);
 			writer.write("<img src='?resource=action_delete.png' alt=\"" + removeApplicationLabel
 					+ "\"/> " + removeApplicationLabel + "</a>");
 		}
-		writer.write("</body></html>");
+		writeHtmlEnd(writer);
 		writer.close();
 	}
 
 	public static void showAlertAndRedirectTo(HttpServletResponse resp, String message,
 			String redirectTo) throws IOException {
 		final PrintWriter writer = createWriterFromOutputStream(resp);
-		writer.write("<script type='text/javascript'>alert('");
-		writer.write(I18N.javascriptEncode(message));
-		writer.write("');location.href='");
-		writer.write(redirectTo);
-		writer.write("';</script>");
+		writeHtmlBegin(writer);
+		writer.write("<span class='alertAndRedirect' data-alert='"
+				+ I18N.htmlEncode(message, false, false) + "' data-href='" + redirectTo
+				+ "'></span>");
+		writeHtmlEnd(writer);
 		writer.close();
 	}
 

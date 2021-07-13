@@ -84,7 +84,7 @@ public class MCsvLocalWriter extends MCsvWriter {
 		final String charset = System.getProperty("file.encoding");
 		final Writer out = new OutputStreamWriter(outputStream, charset);
 
-		final String eol = System.getProperty("line.separator");
+		final String eol = System.lineSeparator();
 
 		// titres des colonnes
 		writeCsvHeader(table, out, csvSeparator);
