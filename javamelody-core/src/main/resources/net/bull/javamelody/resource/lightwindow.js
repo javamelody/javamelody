@@ -458,7 +458,7 @@ lightwindow.prototype = {
 		}
 		
 		var container = url.substring(url.indexOf('#')+1);
-		if($(container)) {
+		if(container != '' && $(container)) {
 			$(container).setStyle({
 				display : 'none'
 			});
