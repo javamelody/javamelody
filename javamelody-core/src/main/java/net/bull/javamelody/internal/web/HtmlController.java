@@ -122,10 +122,10 @@ public class HtmlController {
 
 	public static BufferedWriter getWriter(HttpServletResponse httpResponse) throws IOException {
 		httpResponse.setContentType("text/html; charset=UTF-8");
-		if (CONTENT_SECURITY_POLICY_ENABLED == null || Boolean.parseBoolean(CONTENT_SECURITY_POLICY_ENABLED)) {
+		if (CONTENT_SECURITY_POLICY_ENABLED == null
+				|| Boolean.parseBoolean(CONTENT_SECURITY_POLICY_ENABLED)) {
 			final String analyticsId = Parameter.ANALYTICS_ID.getValue();
-			final boolean analyticsEnabled = (analyticsId != null
-					&& !"disabled".equals(analyticsId));
+			final boolean analyticsEnabled = analyticsId != null && !"disabled".equals(analyticsId);
 			httpResponse.setHeader("Content-Security-Policy",
 					"default-src 'self'"
 							+ (analyticsEnabled ? " https://ssl.google-analytics.com" : "")
