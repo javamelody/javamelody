@@ -192,6 +192,9 @@ public class HtmlJavaInformationsReport extends HtmlAbstractReport {
 			writeln(columnEnd);
 		}
 
+		write("<tr><td valign='top'>#Environment_variables#: </td><td>");
+		writeDirectly(htmlEncodeButNotSpace(javaInformations.getEnvironmentVariables()) + columnEnd);
+
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 
 		writeMemoryInformations(javaInformations.getMemoryInformations());

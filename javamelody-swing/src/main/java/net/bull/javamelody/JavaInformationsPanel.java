@@ -199,6 +199,9 @@ class JavaInformationsPanel extends MelodyPanel {
 			addValue(integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
 		}
 
+		addLabel(getString("Environment_variables"));
+		addValue(javaInformations.getEnvironmentVariables());
+
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 
 		writeMemoryInformations(javaInformations.getMemoryInformations());
