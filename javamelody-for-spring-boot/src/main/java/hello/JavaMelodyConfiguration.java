@@ -109,11 +109,11 @@ public class JavaMelodyConfiguration {
 		// https://github.com/javamelody/javamelody/wiki/UserGuide#6-optional-parameters
 		registrationBean.addInitParameter(Parameter.LOG.getCode(), Boolean.toString(true));
 		// to exclude images, css, fonts and js urls from the monitoring:
-		// javaMelody.addInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode(), "(/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)");
+		// registrationBean.addInitParameter(Parameter.URL_EXCLUDE_PATTERN.getCode(), "(/webjars/.*|/css/.*|/images/.*|/fonts/.*|/js/.*)");
 		// to add basic auth:
-		// javaMelody.addInitParameter(Parameter.AUTHORIZED_USERS.getCode(), "admin:pwd");
+		// registrationBean.addInitParameter(Parameter.AUTHORIZED_USERS.getCode(), "admin:pwd");
 		// to change the default storage directory:
-		// javaMelody.addInitParameter(Parameter.STORAGE_DIRECTORY.getCode(), "/tmp/javamelody");
+		// registrationBean.addInitParameter(Parameter.STORAGE_DIRECTORY.getCode(), "/tmp/javamelody");
 
 		// Set the URL patterns to activate the monitoring filter for.
 		registrationBean.addUrlPatterns("/*");
