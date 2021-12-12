@@ -106,6 +106,7 @@ class JpaNamingStrategy {
 				&& query.getClass().getName().startsWith("org.hibernate.");
 	}
 
+	@SuppressWarnings("deprecation")
 	private String getHibernateQueryRequestName(Query query) {
 		if (HIBERNATE_QUERY_CLASS != null) {
 			org.hibernate.query.Query<?> unwrappedQuery = (org.hibernate.query.Query<?>) query
