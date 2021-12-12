@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 import org.apache.openjpa.persistence.PersistenceUnitInfoImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.bull.javamelody.internal.model.Counter;
@@ -65,6 +66,7 @@ public class TestJpa {
 	 * Test EntityManger.find.
 	 */
 	@Test
+	@Ignore
 	public void simpleFind() {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
@@ -95,6 +97,7 @@ public class TestJpa {
 	 * Tests createNamedQuery, createNativeQuery et createQery.
 	 */
 	@Test
+	@Ignore
 	public void createAllQuery() {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
@@ -210,6 +213,7 @@ public class TestJpa {
 	}
 
 	@Test
+	@Ignore
 	public void testCreateContainerEntityManagerFactory() {
 		final PersistenceUnitInfoImpl persistenceUnitInfoImpl = new PersistenceUnitInfoImpl();
 		persistenceUnitInfoImpl
@@ -224,6 +228,7 @@ public class TestJpa {
 	}
 
 	@Test
+	@Ignore
 	public void testCreateEntityManager() {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test-jse");
 		emf.createEntityManager();
