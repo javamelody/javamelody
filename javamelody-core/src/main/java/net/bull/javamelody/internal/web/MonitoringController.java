@@ -161,6 +161,8 @@ public class MonitoringController {
 		}
 
 		doReport(httpRequest, httpResponse, Collections.singletonList(javaInformations));
+
+		httpResponse.flushBuffer();
 	}
 
 	public void doReport(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
@@ -247,6 +249,8 @@ public class MonitoringController {
 		final PrometheusController prometheusController = new PrometheusController(
 				javaInformationsList, collector, httpResponse.getWriter());
 		prometheusController.report(includeLastValue);
+
+		httpResponse.getWriter().flush();
 	}
 
 	public static void noCache(HttpServletResponse httpResponse) {
