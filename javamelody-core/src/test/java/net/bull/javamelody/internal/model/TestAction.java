@@ -96,7 +96,7 @@ public class TestAction {
 		counter.addRequest("test2", 1000, 900, 900, false, 1000);
 		counter.addRequest("test3", 10000, 1000, 1000, true, 10000);
 		final Collector collector = new Collector("test", Collections.singletonList(counter),
-				new SamplingProfiler());
+				Collections.<MBeanValueSelection> emptyList(), new SamplingProfiler());
 		final String counterName = counter.getName();
 		final String sessionId = "sessionId";
 		final String threadId = "threadId";

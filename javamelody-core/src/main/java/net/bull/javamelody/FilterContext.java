@@ -43,6 +43,7 @@ import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JobInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.MBeans;
 import net.bull.javamelody.internal.model.MavenArtifact;
 import net.bull.javamelody.internal.model.Period;
@@ -131,7 +132,9 @@ class FilterContext {
 
 			final List<Counter> counters = initCounters();
 			final String application = Parameters.getCurrentApplication();
-			this.collector = new Collector(application, counters, this.samplingProfiler);
+			final List<MBeanValueSelection> mbeanValues = Parameters.getMbeanValues();
+			this.collector = new Collector(application, counters, mbeanValues,
+					this.samplingProfiler);
 			this.collectTimerTask = new CollectTimerTask(collector);
 
 			initCollect();
