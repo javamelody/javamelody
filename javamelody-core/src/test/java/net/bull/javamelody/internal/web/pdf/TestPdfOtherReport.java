@@ -56,6 +56,7 @@ import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
 import net.bull.javamelody.internal.model.JndiBinding;
 import net.bull.javamelody.internal.model.MBeanNode;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.MBeans;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.ProcessInformations;
@@ -292,7 +293,8 @@ public class TestPdfOtherReport {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		final Counter counter = new Counter("services", null);
-		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter));
+		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		pdfOtherReport.writeCounterSummaryPerClass(collector, counter, null,
 				Period.TOUT.getRange());
 		assertNotEmptyAndClear(output);
@@ -305,7 +307,8 @@ public class TestPdfOtherReport {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfOtherReport pdfOtherReport = new PdfOtherReport(TEST_APP, output);
 		final Counter counter = new Counter("services", null);
-		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter));
+		final Collector collector = new Collector(TEST_APP, Arrays.asList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		final long timeOfSnapshot = System.currentTimeMillis();
 		final List<CounterRequestContext> requests = Collections.emptyList();
 		final JavaInformations javaInformations = new JavaInformations(null, true);
@@ -327,7 +330,8 @@ public class TestPdfOtherReport {
 		counters.add(httpCounter);
 		counters.add(sqlCounter);
 		counters.add(errorCounter);
-		final Collector collector = new Collector("test", counters);
+		final Collector collector = new Collector("test", counters,
+				Collections.<MBeanValueSelection> emptyList());
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 
 		httpCounter.bindContext("test 1", "complete test 1", null, -1, -1);

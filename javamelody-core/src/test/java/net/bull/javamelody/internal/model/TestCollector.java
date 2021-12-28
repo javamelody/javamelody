@@ -17,9 +17,11 @@
  */
 package net.bull.javamelody.internal.model;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,8 +32,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 
@@ -67,6 +71,65 @@ public class TestCollector {
 	// CHECKSTYLE:ON
 	private static final String TEST = "test";
 
+	/**
+	 * Interface for an Stub-MBean in Tests.
+	 */
+	public interface CustomInformationMBean {
+
+		/**
+		 * attribut transactionCount.
+		 * @return int
+		 */
+		int getTransactionCount();
+
+		/**
+		 * attribut cacheMisses.
+		 * @return long
+		 */
+		long getCacheMisses();
+
+		/**
+		 * attribut stringValue.
+		 * @return string
+		 */
+		String getStringValue();
+	}
+
+	public static class CustomInformation implements CustomInformationMBean {
+
+		private int transactionCount = 0;
+		private int cacheMisses = 0;
+		private String stringValue = "";
+
+		public void setTransactionCount(int transactionCount) {
+			this.transactionCount = transactionCount;
+		}
+
+		@Override
+		public int getTransactionCount() {
+			return transactionCount;
+		}
+
+		public void setCacheMisses(int cacheMisses) {
+			this.cacheMisses = cacheMisses;
+		}
+
+		@Override
+		public long getCacheMisses() {
+			return cacheMisses;
+		}
+
+		public void setStringValue(String stringValue) {
+			this.stringValue = stringValue;
+		}
+
+		@Override
+		public String getStringValue() {
+			return stringValue;
+		}
+
+	}
+
 	/** Before.
 	 * @throws IOException e */
 	@Before
@@ -93,7 +156,8 @@ public class TestCollector {
 
 	private Collector createCollectorWithOneCounter() {
 		final Counter counter = createCounter();
-		return new Collector("test collector", Collections.singletonList(counter));
+		return new Collector("test collector", Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 	}
 
 	/** Test. */
@@ -148,7 +212,7 @@ public class TestCollector {
 	public void testClearCounter() {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector",
-				Collections.singletonList(counter));
+				Collections.singletonList(counter), Collections.<MBeanValueSelection> emptyList());
 		counter.addRequest("test clear", 0, 0, 0, false, 1000);
 		collector.clearCounter(counter.getName());
 		if (counter.getRequestsCount() != 0) {
@@ -177,7 +241,8 @@ public class TestCollector {
 		final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
 		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
 		final Collector collector = new Collector(TEST,
-				Arrays.asList(counter, jspCounter, strutsCounter, jobCounter));
+				Arrays.asList(counter, jspCounter, strutsCounter, jobCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		if (collector.getCounters().size() == 0) {
 			fail("getCounters");
 		}
@@ -195,12 +260,14 @@ public class TestCollector {
 		collector
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
 		final Counter buildsCounter = new Counter(Counter.BUILDS_COUNTER_NAME, null);
-		new Collector(TEST, Collections.singletonList(buildsCounter))
-				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, false)));
+		new Collector(TEST, Collections.singletonList(buildsCounter),
+				Collections.<MBeanValueSelection> emptyList()).collectWithoutErrors(
+						Collections.singletonList(new JavaInformations(null, false)));
 		setProperty(Parameter.NO_DATABASE, "true");
 		try {
-			new Collector(TEST, Collections.singletonList(counter)).collectWithoutErrors(
-					Collections.singletonList(new JavaInformations(null, false)));
+			new Collector(TEST, Collections.singletonList(counter),
+					Collections.<MBeanValueSelection> emptyList()).collectWithoutErrors(
+							Collections.singletonList(new JavaInformations(null, false)));
 		} finally {
 			setProperty(Parameter.NO_DATABASE, null);
 		}
@@ -255,7 +322,8 @@ public class TestCollector {
 							.getObjectName());
 			TomcatInformations.initMBeans();
 			final Collector collector = new Collector(TEST,
-					Arrays.asList(new Counter("http", null)));
+					Arrays.asList(new Counter("http", null)),
+					Collections.<MBeanValueSelection> emptyList());
 			// first time to initialize against NOT_A_NUMBER
 			collector.collectWithoutErrors(
 					Collections.singletonList(new JavaInformations(null, true)));
@@ -270,12 +338,77 @@ public class TestCollector {
 		}
 	}
 
+	/**
+	 * Tests collection of values from Mbeans.
+	 * @throws JMException e 
+	 * @throws IOException e
+	 */
+	@Test
+	public void testCollectMBeanInformations() throws JMException, IOException {
+		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
+		final List<ObjectName> mBeans = new ArrayList<>();
+
+		final ObjectName beanName = new ObjectName("TestCollector:type=stubBean");
+		final CustomInformation mBean = new CustomInformation();
+
+		try {
+			mBeans.add(mBeanServer.registerMBean(mBean, beanName).getObjectName());
+
+			final MBeanValueSelection txCount = new MBeanValueSelection("Transaction count",
+					beanName, "TransactionCount");
+			final MBeanValueSelection cacheMisses = new MBeanValueSelection("Cache misses",
+					beanName, "CacheMisses");
+			final MBeanValueSelection stringValue = new MBeanValueSelection("String value",
+					beanName, "StringValue");
+
+			final Collector collector = new Collector(TEST, Collections.<Counter> emptyList(),
+					Arrays.asList(txCount, cacheMisses, stringValue));
+
+			mBean.setTransactionCount(10);
+			mBean.setCacheMisses(20);
+			collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+
+			// Check if JRobin for numeric values has been created
+			final Collection<JRobin> otherJRobins = collector.getOtherJRobins();
+			assertThat(otherJRobins.size(), is(2));
+
+			// and will be displayed
+			final Collection<JRobin> otherDiplayedRobins = collector.getDisplayedOtherJRobins();
+			assertThat(otherDiplayedRobins.size(), is(2));
+
+			// CheckValues
+			checkLastValues(collector, 10D, 20D);
+
+		} finally {
+			for (final ObjectName registeredMBean : mBeans) {
+				mBeanServer.unregisterMBean(registeredMBean);
+			}
+		}
+	}
+
+	private static void checkLastValues(Collector collector, double expectedTxCount,
+			double expectedCacheMisses) throws IOException {
+
+		final Collection<JRobin> otherJRobins = collector.getOtherJRobins();
+		assertThat(otherJRobins.size(), is(2));
+
+		final Iterator<JRobin> otherIt = otherJRobins.iterator();
+		assertTrue(otherIt.hasNext());
+		final JRobin jRobinTxCount = otherIt.next();
+		assertThat(jRobinTxCount.getLastValue(), is(expectedTxCount));
+
+		assertTrue(otherIt.hasNext());
+		final JRobin jRobinCacheMisses = otherIt.next();
+		assertThat(jRobinCacheMisses.getLastValue(), is(expectedCacheMisses));
+	}
+
 	/** Test. */
 	@Test
 	public void testRemoveRequest() {
 		final Counter counter = new Counter("error", null);
 		counter.setMaxRequestsCount(1);
-		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
+		final Collector collector = new Collector(TEST, Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 
 		// test removeRequest dans collectCounterData
 		counter.addRequest("test 1", 0, 0, 0, false, 1000);
@@ -312,7 +445,7 @@ public class TestCollector {
 	public void testGetCounterByName() {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector2",
-				Collections.singletonList(counter));
+				Collections.singletonList(counter), Collections.<MBeanValueSelection> emptyList());
 		assertNotNull("getCounterByName", collector.getCounterByName(counter.getName()));
 
 		assertNull("getCounterByName", collector.getCounterByName("unknown"));
@@ -323,7 +456,7 @@ public class TestCollector {
 	public void testGetCounterByRequestId() {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector("test collector3",
-				Collections.singletonList(counter));
+				Collections.singletonList(counter), Collections.<MBeanValueSelection> emptyList());
 		counter.addRequest("test request", 0, 0, 0, false, 1000);
 		final CounterRequest request = counter.getRequests().get(0);
 		assertEquals("getCounterByRequestId", counter, collector.getCounterByRequestId(request));
@@ -336,7 +469,8 @@ public class TestCollector {
 	@Test
 	public void testGetRangeCountersToBeDisplayed() throws IOException {
 		final Counter counter = createCounter();
-		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
+		final Collector collector = new Collector(TEST, Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		if (collector.getCounters().size() == 0) {
 			fail("getCounters");
 		}
@@ -365,7 +499,8 @@ public class TestCollector {
 	public void testGetRangeCounter() throws IOException {
 		final Counter counter = createCounter();
 		final Counter counter2 = new Counter("sql", null);
-		final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2));
+		final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2),
+				Collections.<MBeanValueSelection> emptyList());
 		collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
 		collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
 		try {
@@ -401,7 +536,8 @@ public class TestCollector {
 		// on provoque une erreur, mais elle ne doit pas remonter (seulement trace dans console)
 		setProperty(Parameter.STORAGE_DIRECTORY, "/???");
 		final Counter counter = createCounter();
-		final Collector collector2 = new Collector("test stop", Collections.singletonList(counter));
+		final Collector collector2 = new Collector("test stop", Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		counter.addRequest("test stop", 0, 0, 0, false, 1000);
 		collector2
 				.collectWithoutErrors(Collections.singletonList(new JavaInformations(null, true)));
@@ -433,10 +569,12 @@ public class TestCollector {
 	public void testCollectorSamplingProfiler() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler();
 		final List<Counter> counters = Collections.emptyList();
-		final Collector collector = new Collector("test", counters, samplingProfiler);
+		final Collector collector = new Collector("test", counters,
+				Collections.<MBeanValueSelection> emptyList(), samplingProfiler);
 		assertNotNull("getSamplingProfiler", collector.getSamplingProfiler());
 		assertNotNull("getHotspots", collector.getHotspots());
-		final Collector collector2 = new Collector("test", counters);
+		final Collector collector2 = new Collector("test", counters,
+				Collections.<MBeanValueSelection> emptyList());
 		assertNull("getSamplingProfiler", collector2.getSamplingProfiler());
 		try {
 			assertNull("getHotspots", collector2.getHotspots());

@@ -32,6 +32,7 @@ import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.SamplingProfiler;
 import net.bull.javamelody.internal.model.SamplingProfiler.SampledMethod;
@@ -74,7 +75,8 @@ public class TestHtmlHotspotsReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter counter = new Counter("test html report", null);
-		final Collector collector = new Collector("test", Collections.singletonList(counter));
+		final Collector collector = new Collector("test", Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		final Period period = Period.TOUT;
 		final HtmlReport htmlReport = new HtmlReport(collector, null, createJavaInformationsList(),
 				period, writer);

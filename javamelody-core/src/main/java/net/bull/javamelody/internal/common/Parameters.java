@@ -34,11 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.TransportFormat;
 
 /**
@@ -61,6 +66,8 @@ public final class Parameters {
 	private static final boolean PDF_ENABLED = computePdfEnabled();
 	private static Map<String, List<URL>> urlsByApplications;
 	private static Map<String, List<String>> applicationsByAggregationApplications;
+
+	private static final Pattern MBEAN_ATTRIBUTE_CONFIG = Pattern.compile("(.*)#(.*)#(.*)");
 
 	private static FilterConfig filterConfig;
 	private static ServletContext servletContext;
@@ -403,6 +410,60 @@ public final class Parameters {
 	 */
 	public static boolean isNoDatabase() {
 		return Parameter.NO_DATABASE.getValueAsBoolean();
+	}
+
+	/**
+	 * Returns mbean attribute selections that shall be monitored.
+	 * @return List<MBeanValueSelection>
+	 */
+	public static List<MBeanValueSelection> getMbeanValues() {
+		String values = Parameter.MBEAN_VALUES.getValue();
+		if (values == null) {
+			return Collections.emptyList();
+		}
+		return readMBeanValues(values);
+	}
+
+	private static List<MBeanValueSelection> readMBeanValues(final String values) {
+
+		if (values.trim().isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		final String[] parts = values.split("\\|");
+
+		final List<MBeanValueSelection> result = new ArrayList<>();
+
+		for (String part : parts) {
+
+			final Matcher matcher = MBEAN_ATTRIBUTE_CONFIG.matcher(part);
+
+			if (!matcher.matches()) {
+				throw new IllegalArgumentException("Invalid mBean configuration: " + part);
+			}
+
+			final String name = matcher.group(1);
+			final String objectName = matcher.group(2);
+			final String attributeName = matcher.group(3);
+			try {
+				final MBeanValueSelection selection = new MBeanValueSelection(name,
+						ObjectName.getInstance(objectName), attributeName);
+
+				// Test if mBean and attribute exists and skip those with error
+				try {
+					selection.getValue();
+					result.add(selection);
+				} catch (IllegalStateException e) {
+					LOG.warn("mBean attribute " + attributeName + " or mbean " + objectName
+							+ " does not exist.", e);
+				}
+
+			} catch (MalformedObjectNameException e) {
+				throw new IllegalArgumentException("Invalid object bean: " + objectName, e);
+			}
+		}
+
+		return result;
 	}
 
 	/**

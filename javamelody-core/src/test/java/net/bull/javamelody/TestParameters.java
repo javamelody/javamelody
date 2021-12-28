@@ -21,18 +21,24 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
@@ -40,7 +46,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.bull.javamelody.internal.common.Parameters;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
+import net.bull.javamelody.internal.model.MBeans;
 import net.bull.javamelody.internal.model.Period;
+import net.bull.javamelody.internal.model.TestCollector.CustomInformation;
 import net.bull.javamelody.internal.model.TransportFormat;
 
 /**
@@ -229,5 +238,57 @@ public class TestParameters {
 		assertFalse("isCounterHidden", Parameters.isCounterHidden("http"));
 		setProperty(Parameter.DISPLAYED_COUNTERS, "sql");
 		assertTrue("isCounterHidden", Parameters.isCounterHidden("http"));
+	}
+
+	/**
+	 * Tests parsing MbeanInformations.
+	 * @throws Exception e 
+	 */
+	@Test
+	public void testGetMBeanInformations() throws Exception {
+
+		final MBeanServer mBeanServer = MBeans.getPlatformMBeanServer();
+		final List<ObjectName> mBeans = new ArrayList<>();
+		final ObjectName beanName = new ObjectName("CustomBean:type=DatabaseEnvironment");
+		final CustomInformation mBean = new CustomInformation();
+
+		try {
+			mBeans.add(mBeanServer.registerMBean(mBean, beanName).getObjectName());
+
+			assertTrue(Parameters.getMbeanValues().isEmpty());
+
+			final String input = "Active transactions#CustomBean:type=DatabaseEnvironment#TransactionCount|Cache misses#CustomBean:type=DatabaseEnvironment#CacheMisses|NonExisting#NonExistingBean:type=missing#NonExisting";
+
+			setProperty(Parameter.MBEAN_VALUES, input);
+			final List<MBeanValueSelection> mbeanValues = Parameters.getMbeanValues();
+			assertThat(mbeanValues.size(), is(2));
+			MBeanValueSelection mBean01 = mbeanValues.get(0);
+			assertThat(mBean01.getName(), is("Active transactions"));
+			assertThat(mBean01.getAttributeName(), is("TransactionCount"));
+			assertThat(mBean01.getObjectName(),
+					is(new ObjectName("CustomBean:type=DatabaseEnvironment")));
+
+			MBeanValueSelection mBean02 = mbeanValues.get(1);
+			assertThat(mBean02.getName(), is("Cache misses"));
+			assertThat(mBean02.getAttributeName(), is("CacheMisses"));
+			assertThat(mBean02.getObjectName(),
+					is(new ObjectName("CustomBean:type=DatabaseEnvironment")));
+		} finally {
+			for (final ObjectName registeredMBean : mBeans) {
+				mBeanServer.unregisterMBean(registeredMBean);
+			}
+		}
+	}
+
+	/**
+	 * Tests parsing MbeanInformations.
+	 * @throws Exception e 
+	 */
+	@Test
+	public void testGetNoMBeanInformations() throws Exception {
+		assertTrue(Parameters.getMbeanValues().isEmpty());
+		final String input = "";
+		setProperty(Parameter.MBEAN_VALUES, input);
+		assertTrue(Parameters.getMbeanValues().isEmpty());
 	}
 }

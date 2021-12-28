@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -305,7 +306,8 @@ public class TestTomcatInformations {
 			}
 
 			final Counter counter = new Counter("http", null);
-			final Collector collector = new Collector("test", Arrays.asList(counter));
+			final Collector collector = new Collector("test", Arrays.asList(counter),
+					Collections.<MBeanValueSelection> emptyList());
 			final ServletContext context = createNiceMock(ServletContext.class);
 			expect(context.getServerInfo()).andReturn("Mock").anyTimes();
 			expect(context.getMajorVersion()).andReturn(3).anyTimes();

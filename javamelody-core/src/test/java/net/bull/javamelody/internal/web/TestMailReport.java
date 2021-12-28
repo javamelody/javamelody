@@ -40,6 +40,7 @@ import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.Period;
 
 /**
@@ -59,7 +60,8 @@ public class TestMailReport {
 		final Timer timer = new Timer("test timer", true);
 		try {
 			final Counter counter = new Counter("http", null);
-			final Collector collector = new Collector("test", Collections.singletonList(counter));
+			final Collector collector = new Collector("test", Collections.singletonList(counter),
+					Collections.<MBeanValueSelection> emptyList());
 			MailReport.scheduleReportMailForLocalServer(collector, timer);
 		} finally {
 			timer.cancel();
@@ -73,7 +75,8 @@ public class TestMailReport {
 	@Test
 	public void testSendReportMail() throws Exception {
 		final Counter counter = new Counter("http", null);
-		final Collector collector = new Collector("test", Collections.singletonList(counter));
+		final Collector collector = new Collector("test", Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		final List<JavaInformations> javaInformationslist = Collections
 				.singletonList(new JavaInformations(null, true));
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");

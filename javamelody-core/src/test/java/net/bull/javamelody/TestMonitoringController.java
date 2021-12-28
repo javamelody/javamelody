@@ -24,6 +24,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.web.MonitoringController;
 
 /**
@@ -64,7 +66,8 @@ public class TestMonitoringController {
 	@Test
 	public void testWriteHtmlToLastShutdownFile() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
+		final Collector collector = new Collector("test", Arrays.asList(sqlCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
 	}
 
@@ -72,7 +75,8 @@ public class TestMonitoringController {
 	@Test
 	public void testAddPdfContentTypeAndDisposition() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter));
+		final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse = createNiceMock(HttpServletResponse.class);
 		expect(httpRequest.getHeader("user-agent")).andReturn("Firefox").anyTimes();

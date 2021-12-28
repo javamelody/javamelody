@@ -105,7 +105,8 @@ public final class I18N {
 	 * @return String
 	 */
 	public static String getString(String key) {
-		return getResourceBundle().getString(key);
+		final ResourceBundle bundle = getResourceBundle();
+		return bundle.containsKey(key) ? bundle.getString(key) : key;
 	}
 
 	/**

@@ -360,7 +360,8 @@ public class RemoteCollector {
 				// clone, otherwise hits are counted twice in aggregations and aggregated
 				clonedCounters.add(counter.clone());
 			}
-			this.collector = new Collector(application, clonedCounters);
+			this.collector = new Collector(application, clonedCounters,
+					Collections.<MBeanValueSelection> emptyList());
 		} else {
 			for (final Counter newCounter : counters) {
 				final Counter counter = collector.getCounterByName(newCounter.getName());
