@@ -457,7 +457,7 @@ class PrometheusController {
 			printLong(MetricType.COUNTER, "transactions_count", "transactions count",
 					javaInformations.getTransactionCount());
 			printLong(MetricType.GAUGE, "connections_used_count", "used connections count",
-					javaInformations.getActiveConnectionCount());
+					javaInformations.getUsedConnectionCount());
 			printLong(MetricType.GAUGE, "connections_active_count", "active connections",
 					javaInformations.getActiveConnectionCount());
 			if (javaInformations.getMaxConnectionCount() > 0) {
