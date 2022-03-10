@@ -101,13 +101,16 @@ public final class JdbcWrapper {
 		// sans notre proxy pour pouvoir appeler les méthodes non standard du driver par ex.
 		private String requestName;
 		private final Statement statement;
+		private final Connection connection;
 
-		StatementInvocationHandler(String query, Statement statement) {
+		StatementInvocationHandler(String query, Statement statement, Connection connection) {
 			super();
 			assert statement != null;
+			assert connection != null;
 
 			this.requestName = query;
 			this.statement = statement;
+			this.connection = connection;
 		}
 
 		/** {@inheritDoc} */
@@ -152,6 +155,8 @@ public final class JdbcWrapper {
 				// sont appelées (et pas executeBatch()) alors la requête conservée est
 				// faussement celle du batch mais l'application cloche grave.
 				requestName = (String) args[0];
+			} else if ("getConnection".equals(methodName) && (args == null || args.length == 0)) {
+				return connection;
 			}
 
 			// ce n'est pas une méthode executeXxx du Statement
@@ -209,7 +214,8 @@ public final class JdbcWrapper {
 					} else {
 						requestName = null;
 					}
-					result = createStatementProxy(requestName, (Statement) result);
+					result = createStatementProxy(requestName, (Statement) result,
+							(Connection) proxy);
 				}
 				return result;
 			} finally {
@@ -851,7 +857,7 @@ public final class JdbcWrapper {
 		return Parameter.DISABLED.getValueAsBoolean();
 	}
 
-	Statement createStatementProxy(String query, Statement statement) {
+	Statement createStatementProxy(String query, Statement statement, Connection connection) {
 		assert statement != null;
 		// Si un proxy de connexion a été créé dans un driver jdbc et que par la suite le
 		// servletContext a un paramètre désactivant le monitoring, alors ce n'est pas grave
@@ -861,8 +867,8 @@ public final class JdbcWrapper {
 		// Rq : on ne réévalue pas le paramètre ici pour raison de performances sur la recherche
 		// dans les paramètres du système, du contexte et du filtre alors que dans 99.999999999%
 		// des exécutions il n'y a pas le paramètre.
-		final InvocationHandler invocationHandler = new StatementInvocationHandler(query,
-				statement);
+		final InvocationHandler invocationHandler = new StatementInvocationHandler(query, statement,
+				connection);
 		return createProxy(statement, invocationHandler);
 	}
 
