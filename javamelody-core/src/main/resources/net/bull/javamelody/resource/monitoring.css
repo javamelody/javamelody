@@ -102,7 +102,7 @@ table thead th:last-child {
 
 .wrappedText {
 	/* wrap very long words in requests and errors cells */
-	word-wrap: break-word;
+	word-wrap: anywhere;
 	word-break: break-all;
 }
 
