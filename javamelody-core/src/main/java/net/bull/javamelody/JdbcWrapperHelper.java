@@ -476,8 +476,8 @@ final class JdbcWrapperHelper {
 					.getDeclaredField("readOnlyContexts");
 			setFieldAccessible(field);
 			@SuppressWarnings("unchecked")
-			final Hashtable<String, Object> readOnlyContexts = (Hashtable<String, Object>) field
-					.get(null);
+			final Map<String, Object> readOnlyContexts = 
+                                (Map<String, Object>) field.get(null);
 			// la clé dans cette Hashtable est normalement
 			// "/Catalina/" + hostName + Parameters.getContextPath(servletContext) ;
 			// hostName vaut en général "localhost" (ou autre selon le Host dans server.xml)
