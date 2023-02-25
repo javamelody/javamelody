@@ -476,9 +476,8 @@ final class JdbcWrapperHelper {
 					.getDeclaredField("readOnlyContexts");
 			setFieldAccessible(field);
 			@SuppressWarnings("unchecked")
-			final Map<String, Object> readOnlyContexts = 
-                                (Map<String, Object>) field.get(null);
-			// la clé dans cette Hashtable est normalement
+			final Map<String, Object> readOnlyContexts = (Map<String, Object>) field.get(null);
+			// la clé dans cette Hashtable ou depuis 8.0.83/9.0.67 ConcurrentHashMap est normalement
 			// "/Catalina/" + hostName + Parameters.getContextPath(servletContext) ;
 			// hostName vaut en général "localhost" (ou autre selon le Host dans server.xml)
 			// et contextPath vaut "/myapp" par exemple ;
