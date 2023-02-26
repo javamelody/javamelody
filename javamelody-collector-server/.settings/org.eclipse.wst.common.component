@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-                        
+                            
+    
     
     
     
     
     <wb-module deploy-name="javamelody-collector-server">
-                                                
+                                                        
+        
         
         
         
         
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
-                                                
+                                                        
+        
         
         
         
         
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-                                                
+                                                        
+        
         
         
         
         
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="javamelody-core-1.92.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
+        <dependent-module archiveName="javamelody-core-1.93.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/" handle="module:/overlay/prj/javamelody-core?includes=LICENSE;JAVAMELODY-VERSION.properties;net/bull/javamelody/Main.class&amp;excludes=META-INF/MANIFEST.MF">
@@ -32,25 +36,29 @@
         <dependent-module deploy-path="/" handle="module:/overlay/slf/?includes=**/**&amp;excludes=META-INF/MANIFEST.MF">
             <dependency-type>consumes</dependency-type>
         </dependent-module>
-                                                
+                                                        
+        
         
         
         
         
         <property name="java-output-path"/>
-                                                
+                                                        
+        
         
         
         
         
         <property name="context-root" value="javamelody-collector-server"/>
-                                            
+                                                    
+    
     
     
     
     
     </wb-module>
-                    
+                        
+
 
 
 
