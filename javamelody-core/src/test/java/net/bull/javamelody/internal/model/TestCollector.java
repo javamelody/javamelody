@@ -44,6 +44,7 @@ import javax.management.ObjectName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -132,7 +133,7 @@ public class TestCollector {
 			Caching.getCachingProvider().getCacheManager().close();
 		}
 		final Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-		final JobDetail job = new JobDetail("job", null, JobTestImpl.class);
+		final JobDetail job = JobBuilder.newJob(JobTestImpl.class).withIdentity("job").build();
 		assertToStringNotEmpty("job", new JobInformations(job, null, scheduler));
 		assertToStringNotEmpty("connectionInfos", new ConnectionInformations());
 	}

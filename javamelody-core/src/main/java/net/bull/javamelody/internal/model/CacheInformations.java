@@ -17,19 +17,14 @@
  */
 package net.bull.javamelody.internal.model;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import net.bull.javamelody.internal.common.LOG;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Statistics;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.management.CacheStatistics;
 
@@ -39,16 +34,12 @@ import net.sf.ehcache.management.CacheStatistics;
  * il est donc de fait thread-safe.
  * Cet état est celui d'un cache à un instant t.
  * Les instances sont sérialisables pour pouvoir être transmises au serveur de collecte.
- * Pour l'instant seul ehcache est géré.
+ * Pour l'instant seul ehcache 2.7+ est géré.
  * @author Emeric Vernat
  */
 public class CacheInformations implements Serializable {
 	private static final long serialVersionUID = -3025833425994923286L;
 	private static final boolean EHCACHE_AVAILABLE = isEhcacheAvailable();
-	private static final boolean EHCACHE_2_7 = isEhcache27();
-	private static final boolean EHCACHE_1_6 = isEhcache16();
-	private static final boolean EHCACHE_1_2 = isEhcache12();
-	private static final boolean EHCACHE_1_2_X = isEhcache12x();
 
 	private final String name;
 	private final long inMemoryObjectCount;
@@ -71,82 +62,24 @@ public class CacheInformations implements Serializable {
 			this.cacheKeys = null;
 		}
 
-		if (EHCACHE_2_7) {
-			// Depuis ehcache 2.7.0, cache.getStatistics() retourne "StatisticsGateway" qui est nouvelle et plus "Statistics".
-			// CacheStatistics existe depuis ehcache 1.3.
-			final CacheStatistics statistics = new CacheStatistics(cache);
-			this.inMemoryObjectCount = statistics.getMemoryStoreObjectCount(); // ou cache.getStatistics().getLocalHeapSize() en v2.7.0
-			this.onDiskObjectCount = statistics.getDiskStoreObjectCount(); // ou cache.getStatistics().getLocalDiskSize() en v2.7.0
-			this.inMemoryHits = statistics.getInMemoryHits(); // ou cache.getStatistics().localHeapHitCount() en v2.7.0
-			this.cacheHits = statistics.getCacheHits(); // ou cache.getStatistics().cacheHitCount() en v2.7.0
-			this.cacheMisses = statistics.getCacheMisses(); // ou devrait être cache.getStatistics().cacheMissCount() en v2.7.0
-			// en raison du bug https://jira.terracotta.org/jira/browse/EHC-1010
-			// la valeur de l'efficacité du cache (hits/accesses) est fausse si ehcache 2.7.0
-			this.inMemoryPercentUsed = computeMemoryPercentUsed(cache);
-			this.configuration = buildConfiguration(cache);
-			return;
-		}
-
-		final Statistics statistics = cache.getStatistics();
-		assert statistics != null;
-		if (EHCACHE_1_6) {
-			// n'existent que depuis ehcache 1.6
-			this.inMemoryObjectCount = statistics.getMemoryStoreObjectCount();
-			this.onDiskObjectCount = statistics.getDiskStoreObjectCount();
-			// NB: en ehcache 1.2, la valeur de STATISTICS_ACCURACY_BEST_EFFORT n'était pas la même
-			assert statistics.getStatisticsAccuracy() == Statistics.STATISTICS_ACCURACY_BEST_EFFORT;
-		} else {
-			this.inMemoryObjectCount = cache.getMemoryStoreSize();
-			this.onDiskObjectCount = cache.getDiskStoreSize();
-		}
-		// la taille du cache en mémoire par cache.calculateInMemorySize() est trop lente
-		// pour être déterminée à chaque fois (1s pour 1Mo selon javadoc d'ehcache)
-		if (EHCACHE_1_2_X) {
-			// getInMemoryHits, getCacheHits et getCacheMisses n'existent pas en echache v1.2
-			// mais existent en v1.2.1 et v1.2.3 (présent dans hibernate v?) mais avec int comme résultat
-			// et existent depuis v1.2.4 mais avec long comme résultat
-			this.inMemoryHits = invokeStatisticsMethod(statistics, "getInMemoryHits");
-			this.cacheHits = invokeStatisticsMethod(statistics, "getCacheHits");
-			this.cacheMisses = invokeStatisticsMethod(statistics, "getCacheMisses");
-			// getCacheConfiguration et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
-			this.inMemoryPercentUsed = -1;
-			this.configuration = null;
-		} else if (EHCACHE_1_2) {
-			this.inMemoryHits = -1;
-			this.cacheHits = -1;
-			this.cacheMisses = -1;
-			this.inMemoryPercentUsed = -1;
-			this.configuration = null;
-		} else {
-			this.inMemoryHits = statistics.getInMemoryHits();
-			this.cacheHits = statistics.getCacheHits();
-			this.cacheMisses = statistics.getCacheMisses();
-			this.inMemoryPercentUsed = computeMemoryPercentUsed(cache);
-			this.configuration = buildConfiguration(cache);
-		}
-	}
-
-	// on ne doit pas référencer la classe Statistics dans les déclarations de méthodes (issue 335)
-	private static long invokeStatisticsMethod(Object statistics, String methodName) {
-		try {
-			// getInMemoryHits, getCacheHits et getCacheMisses existent en v1.2.1 et v1.2.3
-			// mais avec int comme résultat et existent depuis v1.2.4 avec long comme résultat
-			// donc on cast en Number et non en Integer ou en Long
-			final Number result = (Number) Statistics.class.getMethod(methodName, (Class<?>[]) null)
-					.invoke(statistics, (Object[]) null);
-			return result.longValue();
-		} catch (final NoSuchMethodException e) {
-			throw new IllegalArgumentException(e);
-		} catch (final InvocationTargetException e) {
-			throw new IllegalStateException(e.getCause());
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
+		// Depuis ehcache 2.7.0, cache.getStatistics() retourne "StatisticsGateway" qui est nouvelle et plus "Statistics".
+		// NB : cache.getStatistics() retourne une nouvelle instance à chaque fois et les perfs de cache.getStatistics() dépendent de cache.getStatisticsAccuracy()
+		// CacheStatistics existe depuis ehcache 1.3.
+		final CacheStatistics statistics = new CacheStatistics(cache);
+		this.inMemoryObjectCount = statistics.getMemoryStoreObjectCount(); // ou cache.getStatistics().getLocalHeapSize() en v2.7.0
+		this.onDiskObjectCount = statistics.getDiskStoreObjectCount(); // ou cache.getStatistics().getLocalDiskSize() en v2.7.0
+		this.inMemoryHits = statistics.getInMemoryHits(); // ou cache.getStatistics().localHeapHitCount() en v2.7.0
+		this.cacheHits = statistics.getCacheHits(); // ou cache.getStatistics().cacheHitCount() en v2.7.0
+		this.cacheMisses = statistics.getCacheMisses(); // ou devrait être cache.getStatistics().cacheMissCount() en v2.7.0
+		this.inMemoryPercentUsed = computeMemoryPercentUsed(cache);
+		this.configuration = buildConfiguration(cache);
 	}
 
 	private static boolean isEhcacheAvailable() {
 		try {
 			Class.forName("net.sf.ehcache.Cache");
+			// ehcache 2.7.0 existe depuis mars 2013, on ne gère plus ici les versions précédentes de ehcache
+			Class.forName("net.sf.ehcache.statistics.StatisticsGateway");
 			return true;
 		} catch (final ClassNotFoundException | NoClassDefFoundError e) {
 			// NoClassDefFoundError for issue 67
@@ -196,92 +129,29 @@ public class CacheInformations implements Serializable {
 		throw new IllegalArgumentException("Cache not found");
 	}
 
-	private static boolean isEhcache27() {
-		try {
-			final InputStream input = Class.forName("net.sf.ehcache.Ehcache")
-					.getResourceAsStream("/net/sf/ehcache/version.properties");
-			if (input != null) {
-				try {
-					try {
-						final Properties properties = new Properties();
-						properties.load(input);
-						final String version = properties.getProperty("version");
-						return "2.7".compareTo(version) <= 0 || "2.10".compareTo(version) <= 0;
-					} finally {
-						input.close();
-					}
-				} catch (final IOException e) { // NOPMD
-					// continue
-				}
-			}
-			// ce Class.forName est nécessaire sur le serveur de collecte
-			Class.forName("net.sf.ehcache.statistics.StatisticsGateway");
-			return true;
-		} catch (final ClassNotFoundException e) {
-			return false;
-		}
-	}
-
-	private static boolean isEhcache16() {
-		try {
-			// ce Class.forName est nécessaire sur le serveur de collecte
-			Class.forName("net.sf.ehcache.Statistics");
-			// getMemoryStoreObjectCount n'existe que depuis ehcache 1.6
-			Statistics.class.getMethod("getMemoryStoreObjectCount");
-			return true;
-		} catch (final ClassNotFoundException | NoSuchMethodException e) {
-			return false;
-		}
-	}
-
-	private static boolean isEhcache12() {
-		try {
-			// ce Class.forName est nécessaire sur le serveur de collecte
-			Class.forName("net.sf.ehcache.Ehcache");
-			// getCacheConfiguration n'existe pas en ehcache 1.2
-			Ehcache.class.getMethod("getCacheConfiguration");
-			return false;
-		} catch (final ClassNotFoundException | NoClassDefFoundError e) {
-			// NoClassDefFoundError for issue 67
-			return false;
-		} catch (final NoSuchMethodException e) {
-			return true;
-		}
-	}
-
-	private static boolean isEhcache12x() {
-		try {
-			// Statistics existe à partir d'ehcache 1.2.1
-			Class.forName("net.sf.ehcache.Statistics");
-			return isEhcache12();
-		} catch (final ClassNotFoundException e) {
-			return false;
-		}
-	}
-
 	// cache must not be typed,
 	// otherwise serialization would not work in the collector server or in jenkins scripts
 	private int computeMemoryPercentUsed(Object cache) {
-		final int maxElementsInMemory = ((Ehcache) cache).getCacheConfiguration()
-				.getMaxElementsInMemory();
+		final long maxElementsInMemory = ((Ehcache) cache).getCacheConfiguration()
+				.getMaxEntriesLocalHeap();
 		if (maxElementsInMemory == 0) {
 			// maxElementsInMemory peut être 0 (sans limite), cf issue 73
 			return -1;
 		}
-		return (int) (100 * inMemoryObjectCount / maxElementsInMemory);
+		return (int) (100L * inMemoryObjectCount / maxElementsInMemory);
 	}
 
 	// cache must not be typed,
 	// otherwise serialization would not work in the collector server or in jenkins scripts
+	@SuppressWarnings("deprecation")
 	private String buildConfiguration(Object cache) {
 		final StringBuilder sb = new StringBuilder();
-		// getCacheConfiguration() et getMaxElementsOnDisk() n'existent pas en ehcache 1.2
 		final CacheConfiguration config = ((Ehcache) cache).getCacheConfiguration();
-		sb.append("ehcache [maxElementsInMemory = ").append(config.getMaxElementsInMemory());
+		sb.append("ehcache [maxEntriesLocalHeap = ").append(config.getMaxEntriesLocalHeap());
 		final boolean overflowToDisk = config.isOverflowToDisk();
 		sb.append(", overflowToDisk = ").append(overflowToDisk);
 		if (overflowToDisk) {
-			sb.append(", maxElementsOnDisk = ").append(config.getMaxElementsOnDisk());
+			sb.append(", maxEntriesLocalDisk = ").append(config.getMaxEntriesLocalDisk());
 		}
 		final boolean eternal = config.isEternal();
 		sb.append(", eternal = ").append(eternal);

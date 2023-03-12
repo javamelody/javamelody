@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>1.6.2</version>
+			<version>2.10.9.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -158,15 +158,17 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>quartz</groupId>
+			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>1.5.2</version>
+			<version>2.3.2</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<artifactId>c3p0</artifactId>
+					<groupId>c3p0</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<!-- <dependency> <groupId>org.quartz-scheduler</groupId> <artifactId>quartz</artifactId>
-			<version>2.1.2</version> <optional>true</optional> <exclusions> <exclusion>
-			<artifactId>c3p0</artifactId> <groupId>c3p0</groupId> </exclusion> </exclusions>
-			</dependency> -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>

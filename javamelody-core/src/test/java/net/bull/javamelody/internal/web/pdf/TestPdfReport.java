@@ -23,13 +23,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -42,12 +40,14 @@ import javax.cache.configuration.MutableConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.quartz.CronTrigger;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.lowagie.text.Document;
@@ -235,21 +235,23 @@ public class TestPdfReport {
 			final Random random = new Random();
 
 			//Define a Trigger that will fire "later"
-			final JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-			final SimpleTrigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null,
-					new Date(System.currentTimeMillis() + random.nextInt(60000)));
-			trigger2.setRepeatInterval(2 * 24L * 60 * 60 * 1000);
+			final JobDetail job2 = JobBuilder.newJob(JobTestImpl.class)
+					.withIdentity("job" + random.nextInt()).build();
+			final Trigger trigger2 = TriggerBuilder.newTrigger()
+					.withIdentity("trigger" + random.nextInt())
+					.startAt(new Date(System.currentTimeMillis() + random.nextInt(60000)))
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInHours(48)
+							.repeatForever())
+					.build();
+
 			scheduler.scheduleJob(job2, trigger2);
-			scheduler.pauseJob(job2.getName(), job2.getGroup());
-			try {
-				final JobDetail job3 = new JobDetail("job" + random.nextInt(), null,
-						JobTestImpl.class);
-				final Trigger trigger3 = new CronTrigger("trigger" + random.nextInt(), null,
-						"0 0 0 * * ? 2030");
-				scheduler.scheduleJob(job3, trigger3);
-			} catch (final ParseException e) {
-				throw new IllegalStateException(e);
-			}
+			scheduler.pauseJob(job2.getKey());
+			final JobDetail job3 = JobBuilder.newJob(JobTestImpl.class)
+					.withIdentity("job" + random.nextInt()).build();
+			final Trigger trigger3 = TriggerBuilder.newTrigger()
+					.withIdentity("crontrigger" + random.nextInt())
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ? 2030")).build();
+			scheduler.scheduleJob(job3, trigger3);
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
 			// (mais "Aucun job" dans le counter)
@@ -260,30 +262,26 @@ public class TestPdfReport {
 
 			// on lance 10 jobs pour être à peu près sûr qu'il y en a un qui fait une erreur
 			// (aléatoirement il y en a 2/10 qui font une erreur)
-			final Map<JobDetail, SimpleTrigger> triggersByJob = new LinkedHashMap<>();
 			for (int i = 0; i < 10; i++) {
 				//Define a Trigger that will fire "now"
-				final JobDetail job = new JobDetail("job" + random.nextInt(), null,
-						JobTestImpl.class);
-				job.setDescription("description");
+				final JobDetail job = JobBuilder.newJob(JobTestImpl.class)
+						.withIdentity("job" + random.nextInt()).withDescription("description")
+						.build();
 
-				final SimpleTrigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null,
-						new Date());
+				final Trigger trigger = TriggerBuilder.newTrigger()
+						.withIdentity("trigger" + random.nextInt()).startNow()
+						// pour que les jobs restent en cours après la 1ère exécution
+						.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+								.withIntervalInMinutes(1).repeatForever())
+						.build();
 				//Schedule the job with the trigger
 				scheduler.scheduleJob(job, trigger);
-				triggersByJob.put(job, trigger);
 			}
 			// JobTestImpl fait un sleep de 2s au plus, donc on attend les jobs pour les compter
 			try {
 				Thread.sleep(3000);
 			} catch (final InterruptedException e) {
 				throw new IllegalStateException(e);
-			}
-
-			for (final Map.Entry<JobDetail, SimpleTrigger> entry : triggersByJob.entrySet()) {
-				// et on les relance pour qu'ils soient en cours
-				entry.getValue().setRepeatInterval(60000);
-				scheduler.scheduleJob(entry.getKey(), entry.getValue());
 			}
 
 			// JavaInformations doit être réinstancié pour récupérer les jobs
