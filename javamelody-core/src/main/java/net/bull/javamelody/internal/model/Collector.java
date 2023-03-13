@@ -49,6 +49,8 @@ public class Collector { // NOPMD
 	private final int periodMillis;
 	private final String application;
 	private final List<Counter> counters;
+	private List<MBeanValueSelection> mbeanValues;
+
 	private final SamplingProfiler samplingProfiler;
 	private final Map<String, JRobin> requestJRobinsById = new ConcurrentHashMap<>();
 	// les instances jrobins des compteurs sont créées à l'initialisation
@@ -82,24 +84,29 @@ public class Collector { // NOPMD
 	 * Constructeur.
 	 * @param application Code de l'application
 	 * @param counters Liste des counters
+	 * @param mbeanValues Liste des mbean values
 	 */
-	public Collector(String application, List<Counter> counters) {
-		this(application, counters, null);
+	public Collector(String application, List<Counter> counters,
+			List<MBeanValueSelection> mbeanValues) {
+		this(application, counters, mbeanValues, null);
 	}
 
 	/**
 	 * Constructeur.
 	 * @param application Code de l'application
 	 * @param counters Liste des counters
+	 * @param mbeanValues Liste des mbean values
 	 * @param samplingProfiler SamplingProfiler
 	 */
 	public Collector(String application, List<Counter> counters,
-			SamplingProfiler samplingProfiler) {
+			List<MBeanValueSelection> mbeanValues, SamplingProfiler samplingProfiler) {
 		super();
 		assert application != null;
 		assert counters != null;
+		assert mbeanValues != null;
 		this.application = application;
 		this.counters = Collections.unmodifiableList(new ArrayList<>(counters));
+		this.mbeanValues = Collections.unmodifiableList(new ArrayList<>(mbeanValues));
 		this.samplingProfiler = samplingProfiler;
 		// c'est le collector qui fixe le nom de l'application (avant la lecture des éventuels fichiers)
 		for (final Counter counter : counters) {
@@ -351,6 +358,9 @@ public class Collector { // NOPMD
 				collectOtherJavaInformations(javaInformationsList);
 				collectTomcatInformations(javaInformationsList);
 			}
+
+			collectMbeanInformations();
+
 			for (final Counter counter : counters) {
 				// counter.isDisplayed() peut changer pour spring, ejb, guice ou services selon l'utilisation
 				dayCountersByCounter.get(counter).setDisplayed(counter.isDisplayed());
@@ -390,6 +400,15 @@ public class Collector { // NOPMD
 		}
 
 		return memorySize;
+	}
+
+	private void collectMbeanInformations() throws IOException {
+		for (MBeanValueSelection value : this.mbeanValues) {
+			Long mBeanValue = value.getValue();
+			if (mBeanValue != null) {
+				addJRobinValue(getOtherJRobin(value.getName()), mBeanValue);
+			}
+		}
 	}
 
 	private void collectJavaInformations(List<JavaInformations> javaInformationsList)

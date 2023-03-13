@@ -37,6 +37,7 @@ import net.bull.javamelody.internal.model.Collector;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterError;
 import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.Period;
 
 /**
@@ -55,7 +56,8 @@ public class TestPdfCounterErrorReport {
 	@Test
 	public void testCounterError() throws IOException {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final Collector collector = new Collector("test", Collections.singletonList(errorCounter));
+		final Collector collector = new Collector("test", Collections.singletonList(errorCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final PdfReport pdfReport = new PdfReport(collector, false,

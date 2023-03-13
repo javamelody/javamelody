@@ -64,6 +64,7 @@ import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.TestCounter;
 import net.bull.javamelody.internal.model.ThreadInformations;
@@ -121,7 +122,8 @@ public class TestPdfReport {
 		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, 500, true, 10000);
-		final Collector collector = new Collector("test", counters);
+		final Collector collector = new Collector("test", counters,
+				Collections.<MBeanValueSelection> emptyList());
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(javaInformations);
@@ -302,7 +304,8 @@ public class TestPdfReport {
 		toPdf(collector, false, Collections.singletonList(javaInformations), graphs);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
+		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		myCounter.bindContext("my context", "my context", null, -1, -1);
 		toPdf(collector2, false, Collections.singletonList(javaInformations), graphs);
 
@@ -343,7 +346,8 @@ public class TestPdfReport {
 		final Counter counter = new Counter("http", "db.png");
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final List<Counter> counters = Arrays.asList(counter, errorCounter);
-		final Collector collector = new Collector(TEST_APP, counters);
+		final Collector collector = new Collector(TEST_APP, counters,
+				Collections.<MBeanValueSelection> emptyList());
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		final List<JavaInformations> javaInformationsList = Collections
@@ -454,7 +458,8 @@ public class TestPdfReport {
 	public void testSetters() throws Exception {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final List<Counter> counters = Arrays.asList(errorCounter);
-		final Collector collector = new Collector("test", counters);
+		final Collector collector = new Collector("test", counters,
+				Collections.<MBeanValueSelection> emptyList());
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final List<JavaInformations> javaInformationsList = Collections
 				.singletonList(javaInformations);

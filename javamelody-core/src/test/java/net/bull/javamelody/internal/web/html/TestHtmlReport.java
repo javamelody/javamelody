@@ -73,6 +73,7 @@ import net.bull.javamelody.internal.model.CounterRequest;
 import net.bull.javamelody.internal.model.CounterRequestContext;
 import net.bull.javamelody.internal.model.DatabaseInformations;
 import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.MBeans;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.ProcessInformations;
@@ -115,7 +116,8 @@ public class TestHtmlReport {
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = getJobCounter();
 		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
-				jspCounter, errorCounter, jobCounter));
+				jspCounter, errorCounter, jobCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		writer = new StringWriter();
 	}
 
@@ -229,7 +231,8 @@ public class TestHtmlReport {
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, null);
 
 		// cas counterReportsByCounterName.size() == 1
-		collector = new Collector("test", Arrays.asList(counter));
+		collector = new Collector("test", Arrays.asList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		final HtmlReport htmlReport2 = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		htmlReport2.toHtml(null, null);
@@ -429,7 +432,8 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
+		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter),
+				Collections.<MBeanValueSelection> emptyList());
 		myCounter.bindContext("my context", "my context", null, -1, -1);
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b", null);

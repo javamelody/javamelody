@@ -429,13 +429,13 @@ class PrometheusController {
 	private void reportOnLastValues() throws IOException {
 		Collection<JRobin> jrobins = collector.getDisplayedCounterJRobins();
 		for (final JRobin jrobin : jrobins) {
-			printDouble(MetricType.GAUGE, "last_value_" + camelToSnake(jrobin.getName()),
+			printDouble(MetricType.GAUGE, "last_value_" + sanitizeName(camelToSnake(jrobin.getName())),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 
 		jrobins = collector.getDisplayedOtherJRobins();
 		for (final JRobin jrobin : jrobins) {
-			printDouble(MetricType.GAUGE, "last_value_" + camelToSnake(jrobin.getName()),
+			printDouble(MetricType.GAUGE, "last_value_" + sanitizeName(camelToSnake(jrobin.getName())),
 					"javamelody value per minute", jrobin.getLastValue());
 		}
 	}

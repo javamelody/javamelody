@@ -39,6 +39,7 @@ import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.HeapHistogram;
 import net.bull.javamelody.internal.model.HeapHistogram.ClassInfo;
 import net.bull.javamelody.internal.model.JavaInformations;
+import net.bull.javamelody.internal.model.MBeanValueSelection;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.VirtualMachine;
 
@@ -125,7 +126,8 @@ public class TestHtmlHeapHistogramReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter counter = new Counter("test html report", null);
-		final Collector collector = new Collector("test", Collections.singletonList(counter));
+		final Collector collector = new Collector("test", Collections.singletonList(counter),
+				Collections.<MBeanValueSelection> emptyList());
 		final Period period = Period.TOUT;
 		final HtmlReport htmlReport = new HtmlReport(collector, null, createJavaInformationsList(),
 				period, writer);

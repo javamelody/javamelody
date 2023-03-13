@@ -345,6 +345,11 @@ public enum Parameter {
 	JMX_EXPOSE_ENABLED("jmx-expose-enabled"),
 
 	/**
+	 * Selection of mbean values that shall be monitored.
+	 */
+	MBEAN_VALUES("mbean-values"),
+
+	/**
 	 * Explicit name of the monitored application (in case the automatic name detection fails somehow).
 	 */
 	APPLICATION_NAME("application-name"),
