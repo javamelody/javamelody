@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.naming.NamingException;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
 import net.bull.javamelody.Utils;
 
 /**

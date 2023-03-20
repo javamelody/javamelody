@@ -32,15 +32,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.web.FilterServletOutputStream;
@@ -93,8 +92,8 @@ public class TestReportServlet {
 	private void doGet(Map<HttpParameter, String> parameters, boolean checkResultContent)
 			throws IOException, ServletException {
 		final ServletContext parametersContext = createNiceMock(ServletContext.class);
-		expect(parametersContext.getMajorVersion()).andReturn(2).anyTimes();
-		expect(parametersContext.getMinorVersion()).andReturn(5).anyTimes();
+		expect(parametersContext.getMajorVersion()).andReturn(5).anyTimes();
+		expect(parametersContext.getMinorVersion()).andReturn(0).anyTimes();
 		expect(parametersContext.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		expect(parametersContext.getServletContextName()).andReturn("test webapp").anyTimes();
 		expect(parametersContext.getServerInfo()).andReturn("mock").anyTimes();
@@ -110,8 +109,8 @@ public class TestReportServlet {
 				Parameters.PARAMETER_SYSTEM_PREFIX + Parameter.DISABLED.getCode())).andReturn(null)
 						.anyTimes();
 		expect(config.getInitParameter(Parameter.DISABLED.getCode())).andReturn(null).anyTimes();
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getContextPath()).andReturn(CONTEXT_PATH).anyTimes();
 		final FilterContext filterContext = new FilterContext("Classic");
 		expect(context.getAttribute(ReportServlet.FILTER_CONTEXT_KEY)).andReturn(filterContext)

@@ -17,8 +17,8 @@
  */
 package net.bull.javamelody.internal.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;

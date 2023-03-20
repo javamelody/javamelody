@@ -191,8 +191,7 @@ public class MBasicTable extends JTable {
 	@Override
 	protected void createDefaultRenderers() {
 		final Map<Class<?>, TableCellRenderer> map = getDefaultTableCellRenderers();
-		super.defaultRenderersByColumnClass = new Hashtable<Class<?>, TableCellRenderer>(
-				map.size());
+		super.defaultRenderersByColumnClass = new Hashtable<>(map.size());
 		super.defaultRenderersByColumnClass.putAll(map);
 	}
 

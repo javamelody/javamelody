@@ -44,7 +44,6 @@ import java.util.concurrent.Future;
 
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
-import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +57,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import jakarta.servlet.http.HttpSession;
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.JobTestImpl;
 import net.bull.javamelody.Parameter;

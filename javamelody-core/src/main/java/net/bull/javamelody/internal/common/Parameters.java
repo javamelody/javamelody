@@ -35,9 +35,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.model.TransportFormat;
 
@@ -81,10 +80,6 @@ public final class Parameters {
 	}
 
 	public static void initialize(ServletContext context) {
-		if ("1.6".compareTo(JAVA_VERSION) > 0) {
-			throw new IllegalStateException(
-					"La version java doit être 1.6 au minimum et non " + JAVA_VERSION);
-		}
 		servletContext = context;
 
 		dnsLookupsDisabled = Parameter.DNS_LOOKUPS_DISABLED.getValueAsBoolean();
@@ -450,43 +445,9 @@ public final class Parameters {
 			// ayant pour nom le contexte de la webapp et le nom du serveur
 			// pour pouvoir monitorer plusieurs webapps sur le même serveur et
 			// pour pouvoir stocker sur un répertoire partagé entre plusieurs serveurs
-			return getContextPath(servletContext) + '_' + getHostName();
+			return servletContext.getContextPath() + '_' + getHostName();
 		}
 		return null;
-	}
-
-	public static String getContextPath(ServletContext context) {
-		// cette méthode retourne le contextPath de la webapp
-		// en utilisant ServletContext.getContextPath si servlet api 2.5
-		// ou en se débrouillant sinon
-		// (on n'a pas encore pour l'instant de request pour appeler HttpServletRequest.getContextPath)
-		if (context.getMajorVersion() == 2 && context.getMinorVersion() >= 5
-				|| context.getMajorVersion() > 2) {
-			// api servlet 2.5 (Java EE 5) minimum pour appeler ServletContext.getContextPath
-			return context.getContextPath();
-		}
-		final URL webXmlUrl;
-		try {
-			webXmlUrl = context.getResource("/WEB-INF/web.xml");
-		} catch (final MalformedURLException e) {
-			throw new IllegalStateException(e);
-		}
-		String contextPath = webXmlUrl.toExternalForm();
-		contextPath = contextPath.substring(0, contextPath.indexOf("/WEB-INF/web.xml"));
-		final int indexOfWar = contextPath.indexOf(".war");
-		if (indexOfWar > 0) {
-			contextPath = contextPath.substring(0, indexOfWar);
-		}
-		// tomcat peut renvoyer une url commençant pas "jndi:/localhost"
-		// (v5.5.28, webapp dans un répertoire)
-		if (contextPath.startsWith("jndi:/localhost")) {
-			contextPath = contextPath.substring("jndi:/localhost".length());
-		}
-		final int lastIndexOfSlash = contextPath.lastIndexOf('/');
-		if (lastIndexOfSlash != -1) {
-			contextPath = contextPath.substring(lastIndexOfSlash);
-		}
-		return contextPath;
 	}
 
 	private static String getJavaMelodyVersion() {

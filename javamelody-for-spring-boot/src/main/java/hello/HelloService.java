@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class HelloService {
 	public String hello() {
-		return "Greetings from Spring Boot!";
+		return "Greetings from Spring Boot! <br/> Open <a href=monitoring>monitoring</a>";
 	}
 }

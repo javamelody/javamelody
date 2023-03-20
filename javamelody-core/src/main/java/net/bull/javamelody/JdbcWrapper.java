@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import net.bull.javamelody.internal.common.LOG;

@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,7 +41,10 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 import com.thoughtworks.xstream.security.NoTypePermission;
@@ -155,6 +159,28 @@ public enum TransportFormat {
 			xstream.registerLocalConverter(Counter.class, "requests", mapConverter);
 			xstream.registerLocalConverter(Counter.class, "rootCurrentContextsByThreadId",
 					mapConverter);
+			// CollectionConverter sait gérer de base ArrayList, HashSet et autres mais pas Collections.emptyList()
+			final CollectionConverter collectionConverter = new CollectionConverter(
+					xstream.getMapper()) {
+				@SuppressWarnings("rawtypes")
+				@Override
+				public boolean canConvert(Class type) {
+					// on pourrait accepter aussi les classes de Arrays.asList, List.of, etc
+					if (type != null) {
+						return Collections.emptyList().getClass().equals(type);
+					}
+					return super.canConvert(type);
+				}
+
+				@Override
+				public Object unmarshal(final HierarchicalStreamReader reader,
+						final UnmarshallingContext context) {
+					// selon context.getRequiredType(), on pourrait utiliser Collections.emptyList() ou Arrays.asList ou List.of etc,
+					// mais pour nous, Collections.emptyList() fera l'affaire
+					return Collections.emptyList();
+				}
+			};
+			xstream.registerConverter(collectionConverter);
 			return xstream;
 		}
 	}

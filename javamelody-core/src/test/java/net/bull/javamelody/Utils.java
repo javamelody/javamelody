@@ -21,14 +21,13 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-
 import org.jrobin.core.RrdBackendFactory;
 import org.jrobin.core.RrdException;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.JRobin;
 import net.bull.javamelody.internal.model.RrdNioBackendFactory;
@@ -66,8 +65,7 @@ public final class Utils {
 		JRobin.stop();
 		if (isQuartzSchedulerStarted()) {
 			try {
-				// shutdown seems needed at the moment in order that this job does not run forever:
-				// https://javamelody.ci.cloudbees.com/job/javamelody/
+				// shutdown seems needed at the moment in order that continuous integration does not run forever
 				StdSchedulerFactory.getDefaultScheduler().shutdown();
 			} catch (final SchedulerException e) {
 				throw new IllegalStateException(e);

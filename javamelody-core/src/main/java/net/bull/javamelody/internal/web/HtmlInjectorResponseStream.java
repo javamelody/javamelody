@@ -19,7 +19,7 @@ package net.bull.javamelody.internal.web;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Implémentation de ServletOutputStream qui fonctionne avec le HtmlInjectorServletResponseWrapper.

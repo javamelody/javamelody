@@ -33,7 +33,7 @@ import javax.cache.spi.CachingProvider;
 import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;

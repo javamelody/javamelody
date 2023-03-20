@@ -22,8 +22,8 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Implementation test de HttpSession.
@@ -122,7 +122,7 @@ public class SessionTestImpl implements HttpSession {
 	 *  @return HttpSessionContext */
 	@Override
 	@Deprecated
-	public javax.servlet.http.HttpSessionContext getSessionContext() {
+	public jakarta.servlet.http.HttpSessionContext getSessionContext() {
 		return null;
 	}
 

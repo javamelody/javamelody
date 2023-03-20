@@ -27,11 +27,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.servlet.ServletContext;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
 
@@ -52,8 +51,8 @@ public class TestRemoteCall {
 	public void testCollect() throws IOException {
 		Utils.setProperty(Parameters.PARAMETER_SYSTEM_PREFIX + "mockLabradorRetriever", "true");
 		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getServletContextName()).andReturn("test webapp").anyTimes();
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();

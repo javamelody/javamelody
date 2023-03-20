@@ -24,11 +24,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import javax.interceptor.InvocationContext;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.interceptor.InvocationContext;
 import net.bull.javamelody.internal.model.Counter;
 
 /**

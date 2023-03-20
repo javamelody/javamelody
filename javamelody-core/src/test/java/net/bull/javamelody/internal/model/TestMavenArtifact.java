@@ -34,13 +34,12 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletContext;
-
 import org.easymock.IAnswer;
 import org.jrobin.graph.RrdGraph;
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -115,8 +114,8 @@ public class TestMavenArtifact {
 		final URL jrobinJar = RrdGraph.class.getProtectionDomain().getCodeSource().getLocation();
 		expect(context.getResource("/WEB-INF/lib/jrobin-1.5.9.jar")).andReturn(jrobinJar)
 				.anyTimes();
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		replay(context);
 		Parameters.initialize(context);
 		final Map<String, MavenArtifact> webappDependencies = MavenArtifact.getWebappDependencies();

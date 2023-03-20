@@ -29,16 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpUtils;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -50,11 +43,14 @@ import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+
 /**
  * Unit test for {@link PayloadNameRequestWrapper}.
  * @author rpaterson
  */
-@SuppressWarnings("deprecation")
 public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 	private static final String CONTENT_TYPE_TEXT_XML = "text/xml";
 
@@ -120,60 +116,7 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 			}
 		});
 
-		//params
-		expect(request.getParameterMap()).andAnswer(new IAnswer<Map<String, String[]>>() {
-
-			Map<String, String[]> parameterMap;
-
-			@Override
-			public Map<String, String[]> answer() throws Throwable {
-
-				if (parameterMap == null) {
-
-					parameterMap = getParameterMap();
-				}
-
-				return parameterMap;
-			}
-		}).anyTimes();
-
 		replayAll();
-	}
-
-	Map<String, String[]> getParameterMap() throws IOException {
-		final Map<String, String[]> parameterMap = new HashMap<>();
-
-		if (request.getQueryString() != null) {
-			final Map<String, String[]> queryParams = HttpUtils
-					.parseQueryString(request.getQueryString());
-			parameterMap.putAll(queryParams);
-		}
-
-		if (request.getContentType() != null
-				&& request.getContentType().startsWith("application/x-www-form-urlencoded")) {
-			//get form params from body data
-			//note this consumes the inputstream!  But that's what happens on Tomcat
-			final Map<String, String[]> bodyParams = HttpUtils.parsePostData(body.length(),
-					request.getInputStream());
-
-			//merge body params and query params
-			for (final String key : bodyParams.keySet()) {
-
-				final String[] queryValues = parameterMap.get(key);
-				final String[] bodyValues = bodyParams.get(key);
-
-				final List<String> values = new ArrayList<>();
-				if (queryValues != null) {
-					values.addAll(Arrays.asList(queryValues));
-				}
-
-				values.addAll(Arrays.asList(bodyValues));
-
-				parameterMap.put(key, values.toArray(new String[0]));
-			}
-		} //end if form-encoded params in request body
-
-		return parameterMap;
 	}
 
 	ServletInputStream createServletOutputStream() {
