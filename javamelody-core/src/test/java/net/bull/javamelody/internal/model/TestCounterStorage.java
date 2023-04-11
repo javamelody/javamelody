@@ -17,13 +17,19 @@
  */
 package net.bull.javamelody.internal.model;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
+import java.util.zip.GZIPOutputStream;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -36,24 +42,26 @@ import net.bull.javamelody.internal.common.Parameters;
  * @author Emeric Vernat
  */
 public class TestCounterStorage {
-	
+
 	@Rule
-	public TemporaryFolder corruptedTempFile= new TemporaryFolder();
-	
+	public TemporaryFolder corruptedTempFile = new TemporaryFolder();
+
 	/** Test. */
 	@Before
 	public void setUp() {
 		Utils.initialize();
 	}
-	
+
 	@Test
 	public void testCorruptedFile() throws IOException {
 		File tempFile = corruptedTempFile.newFile("test.ser.gz");
-		try(ObjectOutputStream outputStream = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(tempFile)))){
+		try (ObjectOutputStream outputStream = new ObjectOutputStream(
+				new GZIPOutputStream(new FileOutputStream(tempFile)))) {
 			outputStream.writeObject("java melody");
 		}
-		Assert.isNull(CounterStorage.readFromFile(tempFile),"String object can not be cast to the Counter, but the result should be null");
-		Assert.isTrue(!tempFile.exists(),"corrupted file should be deleted");
+		assertNull("String object can not be cast to the Counter, but the result should be null",
+				CounterStorage.readFromFile(tempFile));
+		assertTrue("corrupted file should be deleted", !tempFile.exists());
 	}
 
 	/** Test.
