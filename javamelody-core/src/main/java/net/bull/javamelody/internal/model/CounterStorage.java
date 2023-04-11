@@ -159,7 +159,7 @@ public class CounterStorage {
 			}
 		} catch (final ClassNotFoundException e) {
 			throw new IOException(e.getMessage(), e);
-		} catch (final IllegalStateException e) {
+		} catch (final IllegalStateException | ClassCastException e) {
 			LOG.warn("could not deserialize " + file.getName()
 					+ " , corrupted file will be deleted.", e);
 			file.delete();
