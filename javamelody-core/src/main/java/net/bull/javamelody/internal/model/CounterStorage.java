@@ -35,6 +35,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import net.bull.javamelody.Parameter;
+import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 
 /**
@@ -158,6 +159,11 @@ public class CounterStorage {
 			}
 		} catch (final ClassNotFoundException e) {
 			throw new IOException(e.getMessage(), e);
+		}
+		catch (final RuntimeException e) {
+			LOG.warn("could not deserialize " + file.getName() + " , corrupted file will be deleted.",e);
+			file.delete();
+			return null;
 		}
 	}
 
