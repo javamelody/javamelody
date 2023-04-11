@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-                                
+                                    
+    
     
     
     
@@ -7,7 +8,8 @@
     
     
     <wb-module deploy-name="javamelody-test-webapp-2.0.0-SNAPSHOT">
-                                                                
+                                                                        
+        
         
         
         
@@ -15,7 +17,8 @@
         
         
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
-                                                                
+                                                                        
+        
         
         
         
@@ -26,7 +29,8 @@
         <dependent-module archiveName="javamelody-core-2.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/javamelody-core/javamelody-core">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-                                                                
+                                                                        
+        
         
         
         
@@ -34,7 +38,8 @@
         
         
         <property name="java-output-path"/>
-                                                                
+                                                                        
+        
         
         
         
@@ -42,7 +47,8 @@
         
         
         <property name="context-root" value="javamelody-test-webapp"/>
-                                                            
+                                                                    
+    
     
     
     
@@ -50,7 +56,8 @@
     
     
     </wb-module>
-                            
+                                
+
 
 
 

@@ -17,6 +17,7 @@
  */
 package net.bull.javamelody;
 
+import jakarta.annotation.Priority;
 import jakarta.ejb.MessageDriven;
 import jakarta.ejb.Stateful;
 import jakarta.ejb.Stateless;
@@ -33,6 +34,7 @@ import jakarta.interceptor.Interceptor;
  */
 @Interceptor
 @Monitored
+@Priority(value = Interceptor.Priority.APPLICATION)
 public class MonitoringCdiInterceptor extends MonitoringInterceptor {
 	private static final long serialVersionUID = 1L;
 }
