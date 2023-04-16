@@ -45,7 +45,7 @@ if exist javamelody-release rmdir /s /q javamelody-release
 mkdir javamelody-release
 cd javamelody-release
 
-git clone https://github.com/javamelody/javamelody
+git clone --branch 1.x https://github.com/javamelody/javamelody
 cd javamelody
 
 :: javamelody-core: mvn release
