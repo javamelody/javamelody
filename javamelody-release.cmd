@@ -117,7 +117,7 @@ echo - [Sonar](https://github.com/javamelody/sonar-javamelody^)
 echo - [Grails](http://www.grails.org/plugin/grails-melody^)
 ) > javamelody-release-notes.txt
 
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=javamelody -Dserver=github-release -DtagName=javamelody-core-%releaseVersion% -Dname="JavaMelody v%releaseVersion%" -DtargetCommitish=master -DreleaseNotes=javamelody-release-notes.txt -Dassets=target/javamelody-core-%releaseVersion%.jar,../javamelody-collector-server/target/javamelody-collector-server-%releaseVersion%.war || exit /B
+call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=javamelody -Dserver=github-release -DtagName=javamelody-core-%releaseVersion% -Dname="JavaMelody v%releaseVersion%" -DtargetCommitish=1.x -DreleaseNotes=javamelody-release-notes.txt -Dassets=target/javamelody-core-%releaseVersion%.jar,../javamelody-collector-server/target/javamelody-collector-server-%releaseVersion%.war || exit /B
 del javamelody-release-notes.txt
 cd ..
 
