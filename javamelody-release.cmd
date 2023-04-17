@@ -62,12 +62,13 @@ call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% |
 call mvn install source:jar javadoc:jar -DskipTests || exit /B
 )
 
+:: TODO migrate embedded server in collector server to jakarta ee and release collector server as 2.x ?
 :: package collector server: put release version in javamelody-collector-server/pom.xml and clean install
-echo.
-echo javamelody-collector-server ...
-cd ../javamelody-collector-server
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
+:: echo.
+:: echo javamelody-collector-server ...
+:: cd ../javamelody-collector-server
+:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+:: call mvn clean install || exit /B
 
 :: package spring boot starter: put release version in javamelody-spring-boot-starter/pom.xml and clean install
 echo.
@@ -83,8 +84,8 @@ cd ../javamelody-core
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-core-%releaseVersion%.jar || exit /B
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-core-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-core-%releaseVersion%-javadoc.jar -Dclassifier=javadoc || exit /B
-cd ../javamelody-collector-server
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-collector-server-%releaseVersion%.war || exit /B
+:: cd ../javamelody-collector-server
+:: call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-collector-server-%releaseVersion%.war || exit /B
 cd ../javamelody-spring-boot-starter
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%.jar || exit /B
 call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/javamelody-spring-boot-starter-%releaseVersion%-sources.jar -Dclassifier=sources || exit /B
@@ -106,7 +107,8 @@ echo                 ^<version^>%releaseVersion%^</version^>
 echo         ^</dependency^>
 echo ```
 echo - [javamelody-core-%releaseVersion%.jar](../../releases/download/javamelody-core-%releaseVersion%/javamelody-core-%releaseVersion%.jar^) : Jar for integration in a webapp
-echo - [javamelody-collector-server-%releaseVersion%.war](../../releases/download/javamelody-core-%releaseVersion%/javamelody-collector-server-%releaseVersion%.war^) : War of the optional collect server, not needed in most use cases
+::echo - [javamelody-collector-server-%releaseVersion%.war](../../releases/download/javamelody-core-%releaseVersion%/javamelody-collector-server-%releaseVersion%.war^) : War of the optional collect server, not needed in most use cases
+echo - War of the optional collect server is available from 1.x releases. It is not needed in most use cases.
 echo.
 echo **Plugins:**
 echo - [JIRA / Confluence / Bamboo / Bitbucket](../../wiki/AtlassianPlugin^)
@@ -117,7 +119,9 @@ echo - [Sonar](https://github.com/javamelody/sonar-javamelody^)
 echo - [Grails](http://www.grails.org/plugin/grails-melody^)
 ) > javamelody-release-notes.txt
 
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=javamelody -Dserver=github-release -DtagName=javamelody-core-%releaseVersion% -Dname="JavaMelody v%releaseVersion%" -DtargetCommitish=master -DreleaseNotes=javamelody-release-notes.txt -Dassets=target/javamelody-core-%releaseVersion%.jar,../javamelody-collector-server/target/javamelody-collector-server-%releaseVersion%.war || exit /B
+::call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=javamelody -Dserver=github-release -DtagName=javamelody-core-%releaseVersion% -Dname="JavaMelody v%releaseVersion%" -DtargetCommitish=master -DreleaseNotes=javamelody-release-notes.txt -Dassets=target/javamelody-core-%releaseVersion%.jar,../javamelody-collector-server/target/javamelody-collector-server-%releaseVersion%.war || exit /B
+
+call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=javamelody -Dserver=github-release -DtagName=javamelody-core-%releaseVersion% -Dname="JavaMelody v%releaseVersion%" -DtargetCommitish=master -DreleaseNotes=javamelody-release-notes.txt -Dassets=target/javamelody-core-%releaseVersion%.jar || exit /B
 del javamelody-release-notes.txt
 cd ..
 
@@ -147,77 +151,77 @@ git push || exit /B
 cd ../..
 
 :: monitoring-plugin: increment javamelody-core version in pom.xml and mvn release
-echo.
-echo monitoring-plugin ...
-git clone https://github.com/jenkinsci/monitoring-plugin
-cd monitoring-plugin
-call mvn versions:use-dep-version -Dincludes=net.bull.javamelody:javamelody-core -DdepVersion=%releaseVersion% -DgenerateBackupPoms=false || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m javamelody-core-%releaseVersion% || exit /B
-git push || exit /B
-call mvn release:prepare release:perform -Dtag=monitoring-%releaseVersion% -DreleaseVersion=%releaseVersion% -DdevelopmentVersion=%developmentVersion% || exit /B
-) else (
-call mvn clean install || exit /B
-)
-cd ..
+:: echo.
+:: echo monitoring-plugin ...
+:: git clone https://github.com/jenkinsci/monitoring-plugin
+:: cd monitoring-plugin
+:: call mvn versions:use-dep-version -Dincludes=net.bull.javamelody:javamelody-core -DdepVersion=%releaseVersion% -DgenerateBackupPoms=false || exit /B
+:: if /I NOT "%dryRun%" == "true" (
+:: git commit -a -m javamelody-core-%releaseVersion% || exit /B
+:: git push || exit /B
+:: call mvn release:prepare release:perform -Dtag=monitoring-%releaseVersion% -DreleaseVersion=%releaseVersion% -DdevelopmentVersion=%developmentVersion% || exit /B
+:: ) else (
+:: call mvn clean install || exit /B
+:: )
+:: cd ..
 
 :: jira-confluence-javamelody: increment version, clean install and github release
-echo.
-echo jira-confluence-javamelody ...
-git clone https://github.com/javamelody/jira-confluence-javamelody
-cd jira-confluence-javamelody
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m %releaseVersion% || exit /B
-git push || exit /B
-)
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=jira-confluence-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/jira-confluence-javamelody-%releaseVersion%.jar || exit /B
-cd ..
+:: echo.
+:: echo jira-confluence-javamelody ...
+:: git clone https://github.com/javamelody/jira-confluence-javamelody
+:: cd jira-confluence-javamelody
+:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+:: call mvn clean install || exit /B
+:: if /I NOT "%dryRun%" == "true" (
+:: git commit -a -m %releaseVersion% || exit /B
+:: git push || exit /B
+:: )
+:: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=jira-confluence-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/jira-confluence-javamelody-%releaseVersion%.jar || exit /B
+:: cd ..
 
 :: sonar-javamelody: increment version, clean install and github release
-echo.
-echo sonar-javamelody ...
-git clone https://github.com/javamelody/sonar-javamelody
-cd sonar-javamelody
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m %releaseVersion% || exit /B
-git push || exit /B
-)
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=sonar-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/sonar-javamelody-plugin-%releaseVersion%.jar || exit /B
-cd ..
+:: echo.
+:: echo sonar-javamelody ...
+:: git clone https://github.com/javamelody/sonar-javamelody
+:: cd sonar-javamelody
+:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+:: call mvn clean install || exit /B
+:: if /I NOT "%dryRun%" == "true" (
+:: git commit -a -m %releaseVersion% || exit /B
+:: git push || exit /B
+:: )
+:: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=sonar-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/sonar-javamelody-plugin-%releaseVersion%.jar || exit /B
+:: cd ..
 
 :: liferay-javamelody: increment version, clean install and github release
-echo.
-echo liferay-javamelody ...
-git clone https://github.com/javamelody/liferay-javamelody
-cd liferay-javamelody
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion%.0 || exit /B
-call mvn versions:use-dep-version -Dincludes=net.bull.javamelody:javamelody-core -DdepVersion=%releaseVersion% -DgenerateBackupPoms=false || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m %releaseVersion% || exit /B
-git push || exit /B
-)
-call mvn clean install || exit /B
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=liferay-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/liferay-javamelody-hook-%releaseVersion%.0.war || exit /B
-cd ..
+:: echo.
+:: echo liferay-javamelody ...
+:: git clone https://github.com/javamelody/liferay-javamelody
+:: cd liferay-javamelody
+:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion%.0 || exit /B
+:: call mvn versions:use-dep-version -Dincludes=net.bull.javamelody:javamelody-core -DdepVersion=%releaseVersion% -DgenerateBackupPoms=false || exit /B
+:: if /I NOT "%dryRun%" == "true" (
+:: git commit -a -m %releaseVersion% || exit /B
+:: git push || exit /B
+:: )
+:: call mvn clean install || exit /B
+:: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=liferay-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/liferay-javamelody-hook-%releaseVersion%.0.war || exit /B
+:: cd ..
 
 :: alfresco-javamelody: increment version, clean install, github release and deploy to https://oss.sonatype.org
-echo.
-echo alfresco-javamelody ...
-git clone https://github.com/javamelody/alfresco-javamelody
-cd alfresco-javamelody
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m %releaseVersion% || exit /B
-git push || exit /B
-)
-call mvn clean install || exit /B
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=alfresco-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
-cd ..
+:: echo.
+:: echo alfresco-javamelody ...
+:: git clone https://github.com/javamelody/alfresco-javamelody
+:: cd alfresco-javamelody
+:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+:: if /I NOT "%dryRun%" == "true" (
+:: git commit -a -m %releaseVersion% || exit /B
+:: git push || exit /B
+:: )
+:: call mvn clean install || exit /B
+:: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=alfresco-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
+:: call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
+:: cd ..
 
 :: clean-up after
 cd ..
