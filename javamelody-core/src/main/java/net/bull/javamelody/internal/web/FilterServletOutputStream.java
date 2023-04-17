@@ -20,8 +20,8 @@ package net.bull.javamelody.internal.web;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 
 /**
  * Output stream pour un filtre implémentant {@link ServletOutputStream} à partir d'un autre ServletOutputStream ou d'un OutputStream.

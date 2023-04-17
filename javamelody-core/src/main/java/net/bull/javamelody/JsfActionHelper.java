@@ -17,8 +17,8 @@
  */
 package net.bull.javamelody;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionListener;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.ActionListener;
 
 import net.bull.javamelody.internal.common.LOG;
 

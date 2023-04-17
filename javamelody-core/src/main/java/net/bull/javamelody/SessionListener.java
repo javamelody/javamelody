@@ -28,14 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionActivationListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionActivationListener;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
@@ -306,7 +305,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionActivati
 		// avant d'avoir une ExceptionInInitializerError pour la classe Parameters
 		System.getProperty("java.io.tmpdir");
 
-		final String contextPath = Parameters.getContextPath(event.getServletContext());
+		final String contextPath = event.getServletContext().getContextPath();
 		if (!instanceEnabled) {
 			if (!CONTEXT_PATHS.contains(contextPath)) {
 				// si jars dans tomcat/lib, il y a plusieurs instances mais dans des webapps différentes (issue 193)

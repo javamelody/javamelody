@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody.internal.common;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Enumération des paramètres dans les requêtes http.

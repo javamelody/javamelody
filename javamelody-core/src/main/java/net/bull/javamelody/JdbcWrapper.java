@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import net.bull.javamelody.internal.common.LOG;
@@ -688,7 +688,7 @@ public final class JdbcWrapper {
 	private void unwrap(Object parentObject, String fieldName, String unwrappedMessage)
 			throws IllegalAccessException {
 		final Object proxy = JdbcWrapperHelper.getFieldValue(parentObject, fieldName);
-		if (Proxy.isProxyClass(proxy.getClass())) {
+		if (proxy != null && Proxy.isProxyClass(proxy.getClass())) {
 			InvocationHandler invocationHandler = Proxy.getInvocationHandler(proxy);
 			if (invocationHandler instanceof DelegatingInvocationHandler) {
 				invocationHandler = ((DelegatingInvocationHandler) invocationHandler).getDelegate();

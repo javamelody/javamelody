@@ -28,11 +28,10 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Timer;
 
-import javax.servlet.ServletContext;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.Utils;
@@ -64,8 +63,8 @@ public class TestUpdateChecker {
 	@Test
 	public void testCheckForUpdate() throws IOException {
 		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(2).anyTimes();
-		expect(context.getMinorVersion()).andReturn(5).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
+		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getContextPath()).andReturn("/test").anyTimes();
 		replay(context);
 		Parameters.initialize(context);

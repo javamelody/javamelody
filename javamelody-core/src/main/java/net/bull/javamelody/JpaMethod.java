@@ -20,7 +20,7 @@ package net.bull.javamelody;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import javax.persistence.Query;
+import jakarta.persistence.Query;
 
 /**
  * @author Christoph Linder

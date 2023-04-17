@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.security.SecureRandom;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;

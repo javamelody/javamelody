@@ -89,8 +89,8 @@ class FilterContext {
 		this.applicationType = applicationType;
 
 		boolean initOk = false;
-		this.timer = new Timer("javamelody"
-				+ Parameters.getContextPath(Parameters.getServletContext()).replace('/', ' '),
+		this.timer = new Timer(
+				"javamelody" + Parameters.getServletContext().getContextPath().replace('/', ' '),
 				true);
 		try {
 			logSystemInformationsAndParameters();
@@ -366,7 +366,7 @@ class FilterContext {
 		LOG.debug("Java: " + System.getProperty("java.runtime.name") + ", "
 				+ System.getProperty("java.runtime.version"));
 		LOG.debug("Server: " + Parameters.getServletContext().getServerInfo());
-		LOG.debug("Webapp context: " + Parameters.getContextPath(Parameters.getServletContext()));
+		LOG.debug("Webapp context: " + Parameters.getServletContext().getContextPath());
 		LOG.debug("JavaMelody version: " + Parameters.JAVAMELODY_VERSION);
 		final String location = getJavaMelodyLocation();
 		if (location != null) {
@@ -412,7 +412,7 @@ class FilterContext {
 	private void initJmxExpose() {
 		final String packageName = getClass().getName().substring(0,
 				getClass().getName().length() - getClass().getSimpleName().length() - 1);
-		String webapp = Parameters.getContextPath(Parameters.getServletContext());
+		String webapp = Parameters.getServletContext().getContextPath();
 		if (webapp.length() >= 1 && webapp.charAt(0) == '/') {
 			webapp = webapp.substring(1);
 		}

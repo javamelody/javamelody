@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.SpringContext;
@@ -182,7 +182,7 @@ public class JavaInformations implements Serializable { // NOPMD
 			webappVersion = null;
 		} else {
 			serverInfo = servletContext.getServerInfo();
-			contextPath = Parameters.getContextPath(servletContext);
+			contextPath = servletContext.getContextPath();
 			contextDisplayName = servletContext.getServletContextName();
 			webappVersion = MavenArtifact.getWebappVersion();
 		}

@@ -13,32 +13,28 @@ scheduler.start();
 
 //Define job instance
 Random random = new Random();
-JobDetail job = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-job.setDescription("coucou\ncoucou");
 
+// Trigger the job to run now, and then repeat every 40 seconds
+
+JobDetail job = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random.nextInt()).withDescription("coucou\ncoucou").build();
+/* job.setDescription("coucou\ncoucou");
+ */
 //Define a Trigger that will fire "now"
-Trigger trigger = new SimpleTrigger("trigger" + random.nextInt(), null, 10000, 20 * 1000);
+Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger" + random.nextInt()).startNow().build();
 //Schedule the job with the trigger
 scheduler.scheduleJob(job, trigger);
-
-//Define a Trigger that will fire "later"
-JobDetail job2 = new JobDetail("job" + random.nextInt(), null, JobTestImpl.class);
-Trigger trigger3 = new SimpleTrigger("trigger" + random.nextInt(), null, new Date(System.currentTimeMillis()));
-scheduler.scheduleJob(job2, trigger3);
-Trigger trigger2 = new SimpleTrigger("trigger" + random.nextInt(), null, new Date(System.currentTimeMillis() + random.nextInt(60000)));
-trigger2.setJobGroup(job2.getGroup());
-trigger2.setJobName(job2.getName());
+Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("trigger" + random.nextInt()).forJob(job).startNow().build();
 scheduler.scheduleJob(trigger2);
 
-/* Test for Quartz v2:
-Random random = new Random();
-Scheduler sched  = StdSchedulerFactory.getDefaultScheduler();
-JobDetail job = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random.nextInt(), "group1").build();
-Trigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger"+ random.nextInt(), "group1").withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
-sched.scheduleJob(job, trigger);
-sched.start();
-*/
+//Define a Trigger that will fire "later"
+JobDetail job3 = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random.nextInt()).build();
+Trigger trigger3 = TriggerBuilder.newTrigger().withIdentity("trigger" + random.nextInt())
+	.startAt(new Date(System.currentTimeMillis() + 10000)).build();
+scheduler.scheduleJob(job3, trigger3);
 
+JobDetail job4 = JobBuilder.newJob(JobTestImpl.class).withIdentity("job" + random.nextInt()).build();
+Trigger trigger4 = TriggerBuilder.newTrigger().withIdentity("trigger"+ random.nextInt()).withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
+scheduler.scheduleJob(job4, trigger4);
 %>
 
 Jobs initialized

@@ -7,7 +7,7 @@
 
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-spring-boot-starter</artifactId>
-	<version>1.94.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>JavaMelody - Spring Boot Starter</name>
@@ -43,10 +43,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring.boot.version>2.6.5</spring.boot.version>
+		<spring.boot.version>3.0.4</spring.boot.version>
 	</properties>
 
 	<dependencyManagement>
@@ -122,7 +122,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<configuration>
 					<archive>
 						<manifestEntries>
@@ -149,7 +149,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.5.0</version>
 				<configuration>
 					<!-- doclint:none for Java 8 -->
 					<doclint>none</doclint>

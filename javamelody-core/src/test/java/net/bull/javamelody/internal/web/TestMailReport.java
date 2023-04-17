@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Timer;
 
 import javax.naming.NoInitialContextException;
-import javax.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -93,7 +93,7 @@ public class TestMailReport {
 		// sendReportMailForLocalServer
 		final String path = "path";
 		final ServletContext context = createNiceMock(ServletContext.class);
-		expect(context.getMajorVersion()).andReturn(3).anyTimes();
+		expect(context.getMajorVersion()).andReturn(5).anyTimes();
 		expect(context.getMinorVersion()).andReturn(0).anyTimes();
 		expect(context.getContextPath()).andReturn(path).anyTimes();
 		replay(context);

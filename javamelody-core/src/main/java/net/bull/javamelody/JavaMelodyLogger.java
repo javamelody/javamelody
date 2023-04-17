@@ -17,7 +17,7 @@
  */
 package net.bull.javamelody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Interface commune aux 3 implémentations de Loggers JavaMelody.

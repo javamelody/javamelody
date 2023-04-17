@@ -38,10 +38,11 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 import javax.naming.Referenceable;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * Classe utilitaire pour {@link JdbcWrapper}.
@@ -330,6 +331,7 @@ final class JdbcWrapperHelper {
 		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void pullTomcatDbcp2DataSourceProperties(String name, DataSource dataSource) {
 		// si tomcat et si dataSource standard, alors on récupère des infos
 		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcatDbcp2DataSource = (org.apache.tomcat.dbcp.dbcp2.BasicDataSource) dataSource;

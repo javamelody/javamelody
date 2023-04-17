@@ -20,12 +20,11 @@ package net.bull.javamelody;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import javax.ejb.MessageDriven;
-import javax.ejb.Stateful;
-import javax.ejb.Stateless;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
-
+import jakarta.ejb.MessageDriven;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.Stateless;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.InvocationContext;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;
@@ -35,7 +34,7 @@ import net.bull.javamelody.internal.model.Counter;
  * Il est destiné à un compteur pour les statistiques d'exécutions de méthodes sur les "façades métiers"
  * ( @{@link Stateless}, @{@link Stateful} ou @{@link MessageDriven} ).
  * Il peut être paramétré dans le fichier ejb-jar.xml pour certains ejb ou pour tous les ejb,
- * ou alors par l'annotation @{@link javax.interceptor.Interceptors} dans les sources java des implémentations d'ejb.
+ * ou alors par l'annotation @{@link jakarta.interceptor.Interceptors} dans les sources java des implémentations d'ejb.
  * @author Emeric Vernat
  */
 public class MonitoringInterceptor implements Serializable {

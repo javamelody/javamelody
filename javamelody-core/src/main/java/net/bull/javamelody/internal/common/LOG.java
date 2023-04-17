@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import net.bull.javamelody.JavaMelodyLogger;
 import net.bull.javamelody.Parameter;

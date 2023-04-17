@@ -34,7 +34,7 @@ import net.sf.ehcache.management.CacheStatistics;
  * il est donc de fait thread-safe.
  * Cet état est celui d'un cache à un instant t.
  * Les instances sont sérialisables pour pouvoir être transmises au serveur de collecte.
- * Pour l'instant seul ehcache 2.7+ est géré.
+ * Seul ehcache 2.7+ est géré ici. JCache est géré par {@link JCacheInformations}
  * @author Emeric Vernat
  */
 public class CacheInformations implements Serializable {
