@@ -961,14 +961,8 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.PROCESSES.getName());
 		monitoring(parameters);
-		boolean exception = false;
-		try {
-			parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
-			monitoring(parameters);
-		} catch (final Exception e) {
-			exception = true;
-		}
-		assertTrue("exception caused by NoInitialContextException", exception);
+		parameters.put(HttpParameter.PART, HttpPart.JNDI.getName());
+		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.MBEANS.getName());
 		monitoring(parameters);
 		parameters.put(HttpParameter.PART, HttpPart.COUNTER_SUMMARY_PER_CLASS.getName());

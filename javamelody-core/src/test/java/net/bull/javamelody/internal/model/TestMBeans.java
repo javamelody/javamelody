@@ -203,29 +203,16 @@ public class TestMBeans {
 				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
 		assertEquals(message, "{committed=1, init=10, max=100, used=1,000}",
 				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
-		if (System.getProperty("java.version").compareTo("17") > 0) {
-			I18N.bindLocale(Locale.FRANCE);
-			assertEquals(message, "1\u202f234",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-			assertEquals(message, "{committed=1, init=10, max=100, used=1\u202f000}",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
-			I18N.bindLocale(Locale.FRENCH);
-			assertEquals(message, "1\u202f234",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-			assertEquals(message, "{committed=1, init=10, max=100, used=1\u202f000}",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
-		} else {
-			I18N.bindLocale(Locale.FRANCE);
-			assertEquals(message, "1\u00a0234",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-			assertEquals(message, "{committed=1, init=10, max=100, used=1\u00a0000}",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
-			I18N.bindLocale(Locale.FRENCH);
-			assertEquals(message, "1\u00a0234",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
-			assertEquals(message, "{committed=1, init=10, max=100, used=1\u00a0000}",
-					find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
-		}
+		I18N.bindLocale(Locale.FRANCE);
+		assertEquals(message, "1\u00a0234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
+		assertEquals(message, "{committed=1, init=10, max=100, used=1\u00a0000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
+		I18N.bindLocale(Locale.FRENCH);
+		assertEquals(message, "1\u00a0234",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
+		assertEquals(message, "{committed=1, init=10, max=100, used=1\u00a0000}",
+				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "memoryUsage"));
 		I18N.bindLocale(Locale.ITALIAN);
 		assertEquals(message, "1.234",
 				find("Catalina", "ThreadPool2", "Catalina:type=ThreadPool2", "maxThreads"));
