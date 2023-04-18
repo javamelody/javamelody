@@ -62,7 +62,7 @@ public class CounterRequest implements Cloneable, Serializable {
 	/**
 	 * Interface du contexte d'une requête en cours.
 	 */
-	interface ICounterRequestContext {
+	public interface ICounterRequestContext {
 		/**
 		 * @return Nombre de hits du compteur fils pour ce contexte.
 		 */

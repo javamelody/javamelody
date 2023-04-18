@@ -24,7 +24,7 @@ import jakarta.ejb.Stateless;
 import jakarta.interceptor.Interceptor;
 
 /**
- * Intercepteur pour CDI & pour EJB 3.1 (Java EE 6+).
+ * Intercepteur pour CDI et pour EJB 3.1 (Java EE 6+).
  * Il est destiné à un compteur pour les statistiques d'exécutions de
  * méthodes @RequestScoped, @SessionScoped, @ApplicationScoped
  * ( ainsi que @{@link Stateless}, @{@link Stateful} ou @{@link MessageDriven} ).

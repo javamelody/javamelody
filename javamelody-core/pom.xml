@@ -454,14 +454,18 @@
 					<doclint>none</doclint>
 					<offlineLinks>
 						<offlineLink>
-							<url>http://docs.oracle.com/javase/8/docs/api/</url>
+							<url>https://docs.oracle.com/javase/8/docs/api/</url>
 							<location>${project.basedir}/javase/</location>
 						</offlineLink>
 						<offlineLink>
-							<url>http://docs.oracle.com/javaee/7/api/</url>
-							<location>${project.basedir}/javaee/</location>
+							<url>https://jakarta.ee/specifications/platform/9/apidocs//</url>
+							<location>${project.basedir}/jakartaee/</location>
 						</offlineLink>
 					</offlineLinks>
+					<detectJavaApiLink>false</detectJavaApiLink>
+					<additionalJOptions>
+						<additionalJOption>--add-exports=java.base/sun.nio.ch=ALL-UNNAMED</additionalJOption>
+					</additionalJOptions>
 				</configuration>
 			</plugin>
 		</plugins>
