@@ -984,6 +984,7 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.remove(HttpParameter.GRAPH);
 		parameters.put(HttpParameter.PART, "unknown part");
+		boolean exception = false;
 		try {
 			monitoring(parameters);
 		} catch (final Exception e) {
