@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=net.bull.javamelody.JavaMelodyAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=net.bull.javamelody.JavaMelodyAutoConfiguration,net.bull.javamelody.JavaMelodyDisabledAutoConfiguration
