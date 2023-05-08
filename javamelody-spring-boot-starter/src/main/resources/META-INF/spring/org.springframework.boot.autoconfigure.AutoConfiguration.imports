@@ -1,1 +1,2 @@
 net.bull.javamelody.JavaMelodyAutoConfiguration
+net.bull.javamelody.JavaMelodyDisabledAutoConfiguration
