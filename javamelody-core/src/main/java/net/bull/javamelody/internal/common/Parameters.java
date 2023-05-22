@@ -163,16 +163,21 @@ public final class Parameters {
 
 	private static void writeCollectorApplications() throws IOException {
 		final Properties properties = new Properties();
-		final String monitoringPath = getMonitoringPath();
+		final String dummyUrl = "http://localhost";
+		final String urlSuffix = parseUrls(dummyUrl).get(0).toString().substring(dummyUrl.length());
 		for (final Map.Entry<String, List<URL>> entry : urlsByApplications.entrySet()) {
 			final List<URL> urls = entry.getValue();
 			assert urls != null && !urls.isEmpty();
 			final StringBuilder sb = new StringBuilder();
 			for (final URL url : urls) {
 				final String urlString = url.toString();
-				// on enlève le suffixe ajouté précédemment dans parseUrl
-				final String webappUrl = urlString.substring(0,
-						urlString.lastIndexOf(monitoringPath));
+				// on enlève le suffixe ajouté précédemment dans parseUrls
+				String webappUrl = urlString.substring(0, urlString.lastIndexOf(urlSuffix));
+				if (webappUrl.length() + urlSuffix.length() < urlString.length()) {
+					// on remet l'éventuel queryString comme avant parseUrls
+					webappUrl += "?"
+							+ urlString.substring(webappUrl.length() + urlSuffix.length() + 1);
+				}
 				if (webappUrl.indexOf(',') != -1) {
 					throw new IOException("The URL should not contain a comma.");
 				}
@@ -279,10 +284,18 @@ public final class Parameters {
 		final List<URL> urls = new ArrayList<>(urlsArray.length);
 		for (final String s : urlsArray) {
 			String s2 = s.trim();
+			final String queryString;
+			if (s2.indexOf('?') != -1) {
+				// queryString is not url encoded here to create URL. URL encode it before if needed.
+				queryString = s2.substring(s2.indexOf('?') + 1);
+				s2 = s2.substring(0, s2.indexOf('?'));
+			} else {
+				queryString = null;
+			}
 			while (s2.endsWith("/")) {
 				s2 = s2.substring(0, s2.length() - 1);
 			}
-			final URL url = new URL(s2 + suffix);
+			final URL url = new URL(s2 + suffix + (queryString == null ? "" : "&" + queryString));
 			urls.add(url);
 		}
 		return urls;
