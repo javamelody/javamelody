@@ -767,6 +767,8 @@ public final class JdbcWrapper {
 		} else if (glassfish && ("com.sun.gjc.spi.jdbc40.ConnectionHolder40"
 				.equals(connection.getClass().getName())
 				|| "com.sun.gjc.spi.jdbc40.ConnectionWrapper40"
+						.equals(connection.getClass().getName())
+				|| "com.sun.gjc.spi.jdbc40.ProfiledConnectionWrapper40"
 						.equals(connection.getClass().getName()))) {
 			// pour glassfish,
 			// result instance de com.sun.gjc.spi.jdbc40.ConnectionHolder40
