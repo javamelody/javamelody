@@ -27,6 +27,7 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import javax.management.Attribute;
 
 /**
  * Accesseurs pour des MBeans particuliers.
