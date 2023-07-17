@@ -400,6 +400,11 @@ public enum Parameter {
 	INFLUXDB_URL("influxdb-url"),
 
 	/**
+	 * API token for InfluxDB authentication, which can be used instead of basic authentication with username and password or token in the InfluxDB URL (null by default).
+	 */
+	INFLUXDB_API_TOKEN("influxdb-api-token"),
+
+	/**
 	 * API key of the <a href='https://www.datadoghq.com/'>Datadog</a> to send metrics,
 	 * for example: 9775a026f1ca7d1c6c5af9d94d9595a4 (null by default).
 	 */
