@@ -170,12 +170,16 @@ final class MBeansAccessor {
 	}
     
     private static boolean isMbeanAllocatedBytesEnabled() {
-        try {
-            Attribute supported = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemorySupported");
-            Attribute enabled = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemoryEnabled");
-            return ((boolean) supported.getValue()) && ((boolean) enabled.getValue());
-        } catch (Exception ex) {
-            // ignored
+        if (getAttributesNames(THREADING).contains("ThreadAllocatedMemoryEnabled")) {
+            try {
+                final Attribute supported = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemorySupported");
+                if ((boolean) supported.getValue()) {
+                    final Attribute enabled = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemoryEnabled");
+                    return (boolean) enabled.getValue();
+                }
+            } catch (final JMException ex) {
+                throw new IllegalStateException(ex);
+            }
         }
         return false;
     }
