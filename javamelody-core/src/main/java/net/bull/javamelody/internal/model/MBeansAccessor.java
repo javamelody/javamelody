@@ -21,13 +21,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.management.Attribute;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.Attribute;
 
 /**
  * Accesseurs pour des MBeans particuliers.
@@ -41,6 +41,7 @@ final class MBeansAccessor {
 	private static final Set<String> OPERATING_SYSTEM_ATTRIBUTES = getAttributesNames(
 			OPERATING_SYSTEM);
 	private static final ObjectName THREADING = createObjectName("java.lang:type=Threading");
+	private static final boolean MBEAN_ALLOCATED_BYTES_ENABLED = isMbeanAllocatedBytesEnabled();
 	private static final String[] THREAD_ALLOCATED_BYTES_SIGNATURE = { long.class.getName(), };
 
 	private MBeansAccessor() {
@@ -119,7 +120,7 @@ final class MBeansAccessor {
 	}
 
 	static long getThreadAllocatedBytes(long threadId) {
-		if (!isMbeanAllocatedBytesEnabled()) {
+		if (!MBEAN_ALLOCATED_BYTES_ENABLED) {
 			return -1L;
 		}
 		try {
