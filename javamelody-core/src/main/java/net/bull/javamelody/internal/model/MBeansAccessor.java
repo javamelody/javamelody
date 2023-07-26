@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.management.Attribute;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
@@ -40,8 +41,7 @@ final class MBeansAccessor {
 	private static final Set<String> OPERATING_SYSTEM_ATTRIBUTES = getAttributesNames(
 			OPERATING_SYSTEM);
 	private static final ObjectName THREADING = createObjectName("java.lang:type=Threading");
-	private static final boolean MBEAN_ALLOCATED_BYTES_ENABLED = getAttributesNames(THREADING)
-			.contains("ThreadAllocatedMemoryEnabled");
+	private static final boolean MBEAN_ALLOCATED_BYTES_ENABLED = isMbeanAllocatedBytesEnabled();
 	private static final String[] THREAD_ALLOCATED_BYTES_SIGNATURE = { long.class.getName(), };
 
 	private MBeansAccessor() {
@@ -168,4 +168,19 @@ final class MBeansAccessor {
 			return Collections.emptySet();
 		}
 	}
+    
+    private static boolean isMbeanAllocatedBytesEnabled() {
+        if (getAttributesNames(THREADING).contains("ThreadAllocatedMemoryEnabled")) {
+            try {
+                final Attribute supported = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemorySupported");
+                if ((boolean) supported.getValue()) {
+                    final Attribute enabled = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemoryEnabled");
+                    return (boolean) enabled.getValue();
+                }
+            } catch (final JMException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        return false;
+    }
 }
