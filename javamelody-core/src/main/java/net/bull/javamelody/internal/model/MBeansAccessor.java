@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.management.Attribute;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
@@ -168,19 +167,18 @@ final class MBeansAccessor {
 			return Collections.emptySet();
 		}
 	}
-    
-    private static boolean isMbeanAllocatedBytesEnabled() {
-        if (getAttributesNames(THREADING).contains("ThreadAllocatedMemoryEnabled")) {
-            try {
-                final Attribute supported = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemorySupported");
-                if ((boolean) supported.getValue()) {
-                    final Attribute enabled = (Attribute) MBEAN_SERVER.getAttribute(THREADING, "ThreadAllocatedMemoryEnabled");
-                    return (boolean) enabled.getValue();
-                }
-            } catch (final JMException ex) {
-                throw new IllegalStateException(ex);
-            }
-        }
-        return false;
-    }
+
+	private static boolean isMbeanAllocatedBytesEnabled() {
+		if (getAttributesNames(THREADING).contains("ThreadAllocatedMemoryEnabled")) {
+			try {
+				final boolean supported = getAttribute(THREADING, "ThreadAllocatedMemorySupported");
+				if (supported) {
+					return getAttribute(THREADING, "ThreadAllocatedMemoryEnabled");
+				}
+			} catch (final JMException ex) {
+				throw new IllegalStateException(ex);
+			}
+		}
+		return false;
+	}
 }
