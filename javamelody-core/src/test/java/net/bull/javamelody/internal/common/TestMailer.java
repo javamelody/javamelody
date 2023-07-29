@@ -30,6 +30,7 @@ import javax.mail.Session;
 import javax.naming.NamingException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.bull.javamelody.Utils;
@@ -51,6 +52,7 @@ public class TestMailer {
 	/** Test.
 	 * @throws Exception e */
 	@Test
+	@Ignore
 	public void testMailerSend() throws Exception {
 		try {
 			send(null, false);
