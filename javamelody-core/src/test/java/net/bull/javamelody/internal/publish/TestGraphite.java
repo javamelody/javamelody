@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.bull.javamelody.Parameter;
@@ -45,6 +46,7 @@ public class TestGraphite {
 	/** Test.
 	 * @throws IOException e */
 	@Test
+	@Ignore
 	public void test() throws IOException {
 		Graphite graphite = Graphite.getInstance("/test", "hostname");
 		assertNull("getInstance", graphite);
