@@ -118,7 +118,7 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>jakarta.faces</artifactId>
-			<version>3.0.4</version>
+			<version>3.0.5</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.4.5</version>
+			<version>1.4.11</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -170,6 +170,12 @@
 			<artifactId>ehcache</artifactId>
 			<version>2.10.9.2</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>org.glassfish.jaxb</groupId>
+					<artifactId>jaxb-runtime</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ehcache</groupId>
@@ -216,7 +222,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>10.1.7</version>
+			<version>10.1.12</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -234,38 +240,38 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>10.1.7</version>
+			<version>10.1.12</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>6.1.7.Final</version>
+			<version>6.2.7.Final</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle spring web (qui inclus spring core, spring beans, spring aop) -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>6.0.6</version>
+			<version>6.0.11</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>6.0.6</version>
+			<version>6.0.11</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>6.0.6</version>
+			<version>6.0.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
-			<version>4.0.3</version>
+			<version>4.1.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -277,21 +283,21 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-elasticsearch</artifactId>
-			<version>5.0.3</version>
+			<version>5.1.2</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<!-- for Spring RestTemplate in unit tests -->
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.14.2</version>
+			<version>2.15.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Dépendance optionnelle google guice (aop) -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
-			<version>5.1.0</version>
+			<version>7.0.0</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance optionnelle xwork pour interceptor struts 2 -->
@@ -305,13 +311,13 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-cloudwatch</artifactId>
-			<version>1.12.420</version>
+			<version>1.12.531</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.12.420</version>
+			<version>1.12.531</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Dépendance JUnit -->
@@ -326,7 +332,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>2.1.214</version>
+			<version>2.2.220</version>
 			<!-- Utilisée uniquement pour l'exécution des tests unitaires -->
 			<scope>test</scope>
 		</dependency>
