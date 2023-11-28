@@ -345,7 +345,7 @@ public enum Action {
 	private String mailTest(Collector collector, CollectorServer collectorServer) {
 		// note: a priori, inutile de traduire cela
 		if (!Parameters.isPdfEnabled()) {
-			throw new IllegalStateException("itext classes not found: add the itext dependency");
+			throw new IllegalStateException("openpdf classes not found: add the openpdf dependency");
 		}
 		if (Parameter.MAIL_SESSION.getValue() == null) {
 			throw new IllegalStateException(
