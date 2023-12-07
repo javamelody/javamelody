@@ -19,10 +19,7 @@ package net.bull.javamelody.internal.web;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -44,6 +41,9 @@ public class HttpAuth {
 	private static final long LOCK_DURATION = 60L * 60 * 1000;
 
 	private final Pattern allowedAddrPattern;
+
+	private final List<String> allowedAddrRangesList;
+
 	/**
 	 * List of authorized people, when using the "authorized-users" parameter.
 	 */
@@ -57,6 +57,7 @@ public class HttpAuth {
 		super();
 		this.allowedAddrPattern = getAllowedAddrPattern();
 		this.authorizedUsers = getAuthorizedUsers();
+		this.allowedAddrRangesList = getAllowedAddrRangeList();
 	}
 
 	private static Pattern getAllowedAddrPattern() {
@@ -65,6 +66,14 @@ public class HttpAuth {
 		}
 		return null;
 	}
+
+    private static List<String> getAllowedAddrRangeList() {
+        if (Parameter.ALLOWED_ADDR_RANGE_LIST.getValue() != null) {
+            String[] parts = Parameter.ALLOWED_ADDR_RANGE_LIST.getValue().split(";");
+            return new ArrayList<>(Arrays.asList(parts));
+        }
+        return new ArrayList<>();
+    }
 
 	private static List<String> getAuthorizedUsers() {
 		// security based on user / password (BASIC auth)
@@ -86,7 +95,7 @@ public class HttpAuth {
 
 	public boolean isAllowed(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
-		if (!isRequestAllowed(httpRequest)) {
+        if (!isRequestAllowed(httpRequest) || !isIPAddressAllowed(httpRequest)) {
 			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return false;
@@ -109,6 +118,42 @@ public class HttpAuth {
 		return allowedAddrPattern == null
 				|| allowedAddrPattern.matcher(httpRequest.getRemoteAddr()).matches();
 	}
+
+    /**
+     * Validates if IP address of the httpRequest is allowed or not. Validation is made against list of allowed IP ranges.
+     *
+     * @param httpRequest request to be checked
+     * @return true if allowed, false otherwise
+     */
+    private boolean isIPAddressAllowed(HttpServletRequest httpRequest) {
+        if (allowedAddrRangesList.size() == 0) {
+            return true;
+        }
+
+        for (String cidrRange : allowedAddrRangesList) {
+            String[] parts = cidrRange.split("/");
+            String network = parts[0];
+            int netMask = Integer.parseInt(parts[1]);
+            long ipLong = ipToLong(httpRequest.getRemoteAddr());
+            long networkLong = ipToLong(network);
+
+            long broadcastLong = networkLong | (0xffffffffL << (32 - netMask));
+            if (ipLong >= networkLong && ipLong <= broadcastLong) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static long ipToLong(String ipAddress) {
+        String[] ipAddressInArray = ipAddress.split("\\.");
+        long result = 0;
+        for (int i = 0; i < ipAddressInArray.length; i++) {
+            int power = 3 - i;
+            result += Integer.parseInt(ipAddressInArray[i]) * Math.pow(256, power);
+        }
+        return result;
+    }
 
 	/**
 	 * Check if the user is authorized, when using the "authorized-users" parameter

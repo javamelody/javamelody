@@ -222,6 +222,11 @@ public enum Parameter {
 	ALLOWED_ADDR_PATTERN("allowed-addr-pattern"),
 
 	/**
+	 * List of allowed IP addresses ranges, CIDR notation only.
+	 */
+	ALLOWED_ADDR_RANGE_LIST("allowed-addr-range-list"),
+
+	/**
 	 * List of authorized users for BASIC auth, when you do no want to use a realm and "security-constraint" in web.xml.<br/>
 	 * Format : user:password, one by line or separated by comma <br/>
 	 * <pre>

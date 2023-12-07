@@ -44,6 +44,9 @@ public class TestHttpAuth {
 	private static final String USER_PWD = "user:pwd";
 	private static final String REMOTE_ADDR = "127.0.0.1"; // NOPMD
 
+	private static final String RANGE_KO = "192.168.1.0/24";
+	private static final String RANGE_OK = RANGE_KO + ";127.0.0.0/8";
+
 	/**
 	 * Initialisation.
 	 */
@@ -58,10 +61,26 @@ public class TestHttpAuth {
 	public void testIsAllowed() throws IOException {
 		assertTrue("no auth", isAllowed());
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, REMOTE_ADDR);
+		setProperty(Parameter.ALLOWED_ADDR_RANGE_LIST, null);
 		assertTrue("addr pattern", isAllowed());
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "none");
 		assertFalse("addr pattern", isAllowed());
+
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
+		setProperty(Parameter.ALLOWED_ADDR_RANGE_LIST, RANGE_KO);
+		assertFalse("allowed range", isAllowed());
+		setProperty(Parameter.ALLOWED_ADDR_RANGE_LIST, RANGE_OK);
+		assertTrue("allowed range", isAllowed());
+
+		setProperty(Parameter.ALLOWED_ADDR_RANGE_LIST, RANGE_KO);
+		setProperty(Parameter.ALLOWED_ADDR_PATTERN, REMOTE_ADDR);
+		assertFalse("allowed range", isAllowed());
+
+		setProperty(Parameter.ALLOWED_ADDR_RANGE_LIST, RANGE_OK);
+		assertTrue("allowed range", isAllowed());
+
+		setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
+		setProperty(Parameter.ALLOWED_ADDR_RANGE_LIST, null);
 		setProperty(Parameter.AUTHORIZED_USERS, USER_PWD);
 		assertFalse("authorized users", isAllowed(null));
 		assertFalse("authorized users", isAllowed("not BASIC"));
