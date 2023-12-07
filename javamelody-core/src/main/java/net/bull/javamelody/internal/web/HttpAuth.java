@@ -95,7 +95,7 @@ public class HttpAuth {
 
 	public boolean isAllowed(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 			throws IOException {
-        if (!isRequestAllowed(httpRequest) || !isIPAddressAllowed(httpRequest)) {
+		if (!isRequestAllowed(httpRequest) || !isIPAddressAllowed(httpRequest)) {
 			LOG.debug("Forbidden access to monitoring from " + httpRequest.getRemoteAddr());
 			httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden access");
 			return false;
