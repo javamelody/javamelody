@@ -1,4 +1,4 @@
-/*  Prototype JavaScript framework, version 1.7.3
+/*  Prototype JavaScript framework, version 1.7.3, with stripTags and unescapeHTML removed to avoid questions about CVE-2020-27511
  *  (c) 2005-2010 Sam Stephenson
  *
  *  Prototype is freely distributable under the terms of an MIT-style license.
@@ -620,9 +620,9 @@ Object.extend(String.prototype, (function() {
     return this.replace(/^\s+/, '').replace(/\s+$/, '');
   }
 
-  function stripTags() {
+  /*function stripTags() {
     return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?(\/)?>|<\/\w+>/gi, '');
-  }
+  }*/
 
   function stripScripts() {
     return this.replace(new RegExp(Prototype.ScriptFragment, 'img'), '');
@@ -644,9 +644,9 @@ Object.extend(String.prototype, (function() {
     return this.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  function unescapeHTML() {
+  /*function unescapeHTML() {
     return this.stripTags().replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
-  }
+  }*/
 
 
   function toQueryParams(separator) {
@@ -787,12 +787,12 @@ Object.extend(String.prototype, (function() {
     scan:           scan,
     truncate:       truncate,
     strip:          String.prototype.trim || strip,
-    stripTags:      stripTags,
+    /*stripTags:      stripTags,*/
     stripScripts:   stripScripts,
     extractScripts: extractScripts,
     evalScripts:    evalScripts,
     escapeHTML:     escapeHTML,
-    unescapeHTML:   unescapeHTML,
+    /*unescapeHTML:   unescapeHTML,*/
     toQueryParams:  toQueryParams,
     parseQuery:     toQueryParams,
     toArray:        toArray,
