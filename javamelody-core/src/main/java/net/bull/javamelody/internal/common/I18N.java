@@ -209,7 +209,7 @@ public final class I18N {
 		final DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(getCurrentLocale());
 		if (symbols.getGroupingSeparator() == '\u202f') {
 			// change le séparateur de milliers en France par le séparateur de milliers d'avant Java 13,
-			// pour les rapports PDF qui ne comprennent pas \u202f (en iText 2.1.7 ou openpdf 1.3.30)
+			// pour les rapports PDF qui ne comprennent pas \u202f (en OpenPDF 1.3.33)
 			symbols.setGroupingSeparator('\u00a0');
 		}
 		return symbols;
