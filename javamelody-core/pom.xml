@@ -201,7 +201,8 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>10.1.18</version>
+			<!-- 10.0.18 for java 8 compile -->
+			<version>10.0.18</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -219,7 +220,8 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>10.1.18</version>
+			<!-- 10.0.18 for java 8 compile -->
+			<version>10.0.18</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
