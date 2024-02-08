@@ -13,7 +13,7 @@
 
 	<properties>
 		<!-- Adapt this to a version found on https://search.maven.org/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-		<tomcat.version>10.1.12</tomcat.version>
+		<tomcat.version>10.1.18</tomcat.version>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
 		<javamelodyVersion>${project.version}</javamelodyVersion>
 
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
-			<version>1.3.30</version>
+			<version>1.3.39</version>
 		</dependency>
 	</dependencies>
 
