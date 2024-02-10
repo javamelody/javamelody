@@ -210,7 +210,9 @@ public final class MBeans {
 		for (final MBeanAttributeInfo attribute : attributeInfos) {
 			// on ne veut pas afficher l'attribut password, jamais
 			// (notamment, dans users tomcat ou dans datasources tomcat)
-			if (attribute.isReadable() && !"password".equalsIgnoreCase(attribute.getName())) {
+			// et on ne veut pas afficher l'attribut configurationAsProperties d'infinispan (issue 1180)
+			if (attribute.isReadable() && !"password".equalsIgnoreCase(attribute.getName())
+					&& !"configurationAsProperties".equalsIgnoreCase(attribute.getName())) {
 				attributeNames.add(attribute.getName());
 			}
 		}
