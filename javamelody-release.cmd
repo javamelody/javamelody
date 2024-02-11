@@ -147,19 +147,19 @@ git push || exit /B
 cd ../..
 
 :: monitoring-plugin: increment javamelody-core version in pom.xml and mvn release
-echo.
-echo monitoring-plugin ...
-git clone https://github.com/jenkinsci/monitoring-plugin
-cd monitoring-plugin
-call mvn versions:use-dep-version -Dincludes=net.bull.javamelody:javamelody-core -DdepVersion=%releaseVersion% -DgenerateBackupPoms=false || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m javamelody-core-%releaseVersion% || exit /B
-git push || exit /B
-call mvn release:prepare release:perform -Dtag=monitoring-%releaseVersion% -DreleaseVersion=%releaseVersion% -DdevelopmentVersion=%developmentVersion% || exit /B
-) else (
-call mvn clean install || exit /B
-)
-cd ..
+rem echo.
+rem echo monitoring-plugin ...
+rem git clone https://github.com/jenkinsci/monitoring-plugin
+rem cd monitoring-plugin
+rem call mvn versions:use-dep-version -Dincludes=net.bull.javamelody:javamelody-core -DdepVersion=%releaseVersion% -DgenerateBackupPoms=false || exit /B
+rem if /I NOT "%dryRun%" == "true" (
+rem git commit -a -m javamelody-core-%releaseVersion% || exit /B
+rem git push || exit /B
+rem call mvn release:prepare release:perform -Dtag=monitoring-%releaseVersion% -DreleaseVersion=%releaseVersion% -DdevelopmentVersion=%developmentVersion% || exit /B
+rem ) else (
+rem call mvn clean install || exit /B
+rem )
+rem cd ..
 
 :: jira-confluence-javamelody: increment version, clean install and github release
 echo.
