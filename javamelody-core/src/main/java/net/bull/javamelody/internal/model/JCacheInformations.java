@@ -113,7 +113,7 @@ public class JCacheInformations implements Serializable {
 						result.add(jcacheInformations);
 					}
 				}
-			} catch (final CacheException e) {
+			} catch (final Exception e) {
 				// issue 1197, if hazelcast 3.12.13 + xalan 2.7.3
 				LOG.warn(e.toString(), e);
 			}
