@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
-import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.spi.CachingProvider;
@@ -113,7 +112,7 @@ public class JCacheInformations implements Serializable {
 						result.add(jcacheInformations);
 					}
 				}
-			} catch (final CacheException e) {
+			} catch (final Exception e) {
 				// issue 1197, if hazelcast 3.12.13 + xalan 2.7.3
 				LOG.warn(e.toString(), e);
 			}
@@ -143,7 +142,7 @@ public class JCacheInformations implements Serializable {
 						}
 					}
 				}
-			} catch (final CacheException e) {
+			} catch (final Exception e) {
 				// issue 1197, if hazelcast 3.12.13 + xalan 2.7.3
 				LOG.warn(e.toString(), e);
 			}
