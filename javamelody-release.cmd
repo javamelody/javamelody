@@ -147,6 +147,7 @@ git push || exit /B
 cd ../..
 
 :: monitoring-plugin: increment javamelody-core version in pom.xml and mvn release
+rem needs java 17
 rem echo.
 rem echo monitoring-plugin ...
 rem git clone https://github.com/jenkinsci/monitoring-plugin
@@ -176,18 +177,19 @@ call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release
 cd ..
 
 :: sonar-javamelody: increment version, clean install and github release
-echo.
-echo sonar-javamelody ...
-git clone https://github.com/javamelody/sonar-javamelody
-cd sonar-javamelody
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-call mvn clean install || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m %releaseVersion% || exit /B
-git push || exit /B
-)
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=sonar-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/sonar-javamelody-plugin-%releaseVersion%.jar || exit /B
-cd ..
+rem needs java 11
+rem echo.
+rem echo sonar-javamelody ...
+rem git clone https://github.com/javamelody/sonar-javamelody
+rem cd sonar-javamelody
+rem call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+rem call mvn clean install || exit /B
+rem if /I NOT "%dryRun%" == "true" (
+rem git commit -a -m %releaseVersion% || exit /B
+rem git push || exit /B
+rem )
+rem call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=sonar-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/sonar-javamelody-plugin-%releaseVersion%.jar || exit /B
+rem cd ..
 
 :: liferay-javamelody: increment version, clean install and github release
 echo.
