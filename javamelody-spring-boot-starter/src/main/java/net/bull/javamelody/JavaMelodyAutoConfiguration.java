@@ -83,7 +83,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @Configuration
 @EnableConfigurationProperties(JavaMelodyConfigurationProperties.class)
-@ConditionalOnWebApplication
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "enabled", matchIfMissing = true)
 public class JavaMelodyAutoConfiguration {
 	/**
