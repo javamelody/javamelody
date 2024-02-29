@@ -196,6 +196,9 @@ class PdfJavaInformationsReport extends PdfAbstractReport {
 			addCell(getString("httpSessionsMeanAge") + ':');
 			addCell(integerFormat.format(javaInformations.getSessionMeanAgeInMinutes()));
 		}
+		addCell(getString("Environment_variables") + ':');
+		addCell(javaInformations.getEnvironmentVariables());
+
 		writeTomcatInformations(javaInformations.getTomcatInformationsList());
 		addCell(getString("Gestion_memoire") + ':');
 		writeMemoryInformations(javaInformations.getMemoryInformations());

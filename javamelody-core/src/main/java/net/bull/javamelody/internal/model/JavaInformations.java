@@ -85,6 +85,7 @@ public class JavaInformations implements Serializable { // NOPMD
 	private final String webappVersion;
 	private final Date startDate;
 	private final String jvmArguments;
+	private final String environmentVariables;
 	private final long freeDiskSpaceInTemp;
 	private final long usableDiskSpaceInTemp;
 	private final int threadCount;
@@ -188,6 +189,8 @@ public class JavaInformations implements Serializable { // NOPMD
 		}
 		startDate = START_DATE;
 		jvmArguments = buildJvmArguments();
+		environmentVariables = buildEnvironmentsVariables();
+
 		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		threadCount = threadBean.getThreadCount();
 		peakThreadCount = threadBean.getPeakThreadCount();
@@ -320,6 +323,14 @@ public class JavaInformations implements Serializable { // NOPMD
 			jvmArgs.deleteCharAt(jvmArgs.length() - 1);
 		}
 		return jvmArgs.toString();
+	}
+
+	private static String buildEnvironmentsVariables() {
+		final StringBuilder sysEnvVariables = new StringBuilder();
+		for (Map.Entry<String, String> sysEnvVariableEntry : System.getenv().entrySet()) {
+			sysEnvVariables.append(String.format("%s = %s\n", sysEnvVariableEntry.getKey(), sysEnvVariableEntry.getValue()));
+		}
+		return sysEnvVariables.toString();
 	}
 
 	public static List<ThreadInformations> buildThreadInformationsList() {
@@ -609,6 +620,10 @@ public class JavaInformations implements Serializable { // NOPMD
 
 	public String getJvmArguments() {
 		return jvmArguments;
+	}
+
+	public String getEnvironmentVariables() {
+		return environmentVariables;
 	}
 
 	public long getFreeDiskSpaceInTemp() {
