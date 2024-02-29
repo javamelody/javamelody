@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>2.5.6</version>
+			<version>5.2.22.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
