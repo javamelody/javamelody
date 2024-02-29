@@ -18,11 +18,13 @@
 package net.bull.javamelody.internal.web.pdf;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -265,20 +267,26 @@ public class PdfCoreReport extends PdfAbstractReport {
 				jrobinTable.addCell(image);
 			}
 		} else {
-			final Collection<JRobin> counterJRobins = collector.getDisplayedCounterJRobins();
-			if (counterJRobins.isEmpty()) {
-				return;
-			}
-			for (final JRobin jrobin : counterJRobins) {
-				// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
-				final Image image = Image
-						.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH, LARGE_GRAPH_HEIGHT));
-				jrobinTable.addCell(image);
-			}
+			addLargeGraphs(jrobinTable, collector.getDisplayedCounterJRobins());
+			addLargeGraphs(jrobinTable, collector.getDisplayedOtherJRobins());
 		}
 		newPage();
 		addToDocument(jrobinTable);
 		newPage();
+	}
+
+	private void addLargeGraphs(final PdfPTable jrobinTable,
+			final Collection<JRobin> counterJRobins)
+			throws BadElementException, MalformedURLException, IOException {
+		if (counterJRobins.isEmpty()) {
+			return;
+		}
+		for (final JRobin jrobin : counterJRobins) {
+			// la hauteur de l'image est prévue pour qu'il n'y ait pas de graph seul sur une page
+			final Image image = Image
+					.getInstance(jrobin.graph(range, LARGE_GRAPH_WIDTH, LARGE_GRAPH_HEIGHT));
+			jrobinTable.addCell(image);
+		}
 	}
 
 	private List<PdfCounterReport> writeCounters(List<Counter> counters)
