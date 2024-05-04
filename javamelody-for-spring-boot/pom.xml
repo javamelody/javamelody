@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>3.2.5</version>
 	</parent>
 
 	<groupId>net.bull.javamelody</groupId>
@@ -37,11 +37,12 @@
 			<version>${javamelody.version}</version>
 		</dependency>
 
-		<!-- Optional: openpdf (iText fork) dependency for PDF exports in JavaMelody -->
+		<!-- Optional: openpdf (iText fork) dependency for PDF exports in JavaMelody,
+		openpdf 1.4.1 is not compatible -->
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
-			<version>1.3.39</version>
+			<version>1.3.43</version>
 		</dependency>
 
 		<!-- Spring Boot Web Starter -->
