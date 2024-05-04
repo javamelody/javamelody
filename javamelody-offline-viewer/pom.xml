@@ -13,7 +13,7 @@
 
 	<properties>
 		<!-- Adapt this to a version found on https://search.maven.org/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-		<tomcat.version>10.1.18</tomcat.version>
+		<tomcat.version>10.1.23</tomcat.version>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
 		<javamelodyVersion>${project.version}</javamelodyVersion>
 
@@ -32,11 +32,12 @@
 			<artifactId>javamelody-core</artifactId>
 			<version>${javamelodyVersion}</version>
 		</dependency>
-		<!-- Optional: openpdf (iText fork) dependency for PDF exports in JavaMelody -->
+		<!-- Optional: openpdf (iText fork) dependency for PDF exports in JavaMelody,
+		openpdf 1.4.1 is not compatible -->
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
-			<version>1.3.39</version>
+			<version>1.3.43</version>
 		</dependency>
 	</dependencies>
 
@@ -46,7 +47,7 @@
 				<!-- Use "mvn package" then "java -Djavamelody.storage-directory=... 
 					-jar target/javamelody-viewer.jar" -->
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.7.1</version>
 				<configuration>
 					<finalName>javamelody-offline-viewer</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
@@ -73,7 +74,7 @@
 				<!-- Or use "mvn compile exec:java -Djavamelody.storage-directory=..." -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -88,7 +89,7 @@
 			<!-- Configuration compilation -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>3.13.0</version>
 				<configuration>
 					<source>8</source>
 					<target>8</target>
