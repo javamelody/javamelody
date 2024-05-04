@@ -46,12 +46,12 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.22.1</version>
+			<version>2.23.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.22.1</version>
+			<version>2.23.1</version>
 		</dependency>
 		<!-- Dépendance iText pour exports PDF -->
 		<dependency>
@@ -122,7 +122,7 @@
 			<!-- Configuration compilation -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>3.13.0</version>
 				<configuration>
 					<source>8</source>
 					<target>8</target>
@@ -133,7 +133,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.7.1</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
