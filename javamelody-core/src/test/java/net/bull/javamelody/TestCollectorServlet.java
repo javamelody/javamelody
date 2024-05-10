@@ -28,17 +28,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.web.FilterServletOutputStream;
 

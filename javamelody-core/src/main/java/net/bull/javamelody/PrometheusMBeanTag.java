@@ -22,7 +22,6 @@ import java.io.IOException;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.TagSupport;
-
 import net.bull.javamelody.internal.model.MBeans;
 
 public class PrometheusMBeanTag extends TagSupport {

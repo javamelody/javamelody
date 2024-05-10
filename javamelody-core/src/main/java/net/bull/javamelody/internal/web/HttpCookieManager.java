@@ -24,7 +24,6 @@ import java.util.Locale;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import net.bull.javamelody.internal.common.HttpParameter;
 import net.bull.javamelody.internal.common.I18N;
 import net.bull.javamelody.internal.model.Period;

@@ -30,7 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
-
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.I18N;
 

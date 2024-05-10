@@ -29,7 +29,6 @@ import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;

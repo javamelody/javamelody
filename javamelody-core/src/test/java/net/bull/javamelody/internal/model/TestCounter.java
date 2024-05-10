@@ -36,12 +36,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.Utils;
 
 /**

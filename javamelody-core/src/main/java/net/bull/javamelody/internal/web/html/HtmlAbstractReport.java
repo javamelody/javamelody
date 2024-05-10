@@ -22,7 +22,6 @@ import java.io.Writer;
 import java.security.SecureRandom;
 
 import jakarta.servlet.http.HttpSession;
-
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;

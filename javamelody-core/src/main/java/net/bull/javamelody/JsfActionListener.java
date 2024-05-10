@@ -20,7 +20,6 @@ package net.bull.javamelody;
 import jakarta.faces.component.ActionSource2;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
-
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.Counter;

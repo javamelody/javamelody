@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.common;
 import java.util.logging.Level;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import net.bull.javamelody.JavaMelodyLogger;
 
 /**

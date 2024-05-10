@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
-
 import net.bull.javamelody.internal.model.Counter;
 
 /**

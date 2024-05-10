@@ -27,11 +27,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collections;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.http.HttpServletRequest;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.model.Counter;
 import net.bull.javamelody.internal.model.CounterError;

@@ -22,7 +22,6 @@ import java.io.IOException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import net.bull.javamelody.internal.web.HtmlInjectorResponseStream.HtmlToInject;
 
 /**

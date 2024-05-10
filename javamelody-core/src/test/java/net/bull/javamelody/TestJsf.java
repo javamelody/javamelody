@@ -27,18 +27,18 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
 
+import org.junit.Test;
+
+import com.sun.faces.application.ApplicationFactoryImpl;
+import com.sun.faces.application.ApplicationImpl;
+import com.sun.faces.config.InitFacesContext;
+
 import jakarta.faces.FactoryFinder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.ActionListener;
 import jakarta.servlet.ServletContext;
-
-import org.junit.Test;
-
-import com.sun.faces.application.ApplicationFactoryImpl;
-import com.sun.faces.application.ApplicationImpl;
-import com.sun.faces.config.InitFacesContext;
 
 /**
  * Test unitaire pour JsfActionHelper et JsfActionListener.

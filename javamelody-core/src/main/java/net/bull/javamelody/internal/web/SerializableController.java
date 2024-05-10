@@ -33,9 +33,9 @@ import java.util.TreeMap;
 
 import javax.management.JMException;
 import javax.naming.NamingException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.HttpParameter;
