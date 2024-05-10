@@ -46,4 +46,16 @@
 		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 		<nature>ch.acanda.eclipse.pmd.builder.PMDNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/test/java</name>
+			<type>2</type>
+			<location>//C:/Projets/monitoring/javamelody/javamelody-core/src/test/java/</location>
+		</link>
+		<link>
+			<name>src/test/resources</name>
+			<type>2</type>
+			<location>//C:/Projets/monitoring/javamelody/javamelody-core/src/test/resources/</location>
+		</link>
+	</linkedResources>
 </projectDescription>
