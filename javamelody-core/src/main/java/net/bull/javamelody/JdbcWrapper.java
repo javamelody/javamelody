@@ -37,9 +37,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
 import javax.sql.DataSource;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.internal.common.LOG;
 import net.bull.javamelody.internal.common.Parameters;
 import net.bull.javamelody.internal.model.ConnectionInformations;
@@ -704,8 +704,7 @@ public final class JdbcWrapper {
 
 	Context createContextProxy(final Context context) {
 		assert context != null;
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Context>(
-				context) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<>(context) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */
@@ -724,7 +723,7 @@ public final class JdbcWrapper {
 	// pour weblogic
 	private Driver createDriverProxy(final Driver driver) {
 		assert driver != null;
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<Driver>(driver) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<>(driver) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */
@@ -802,8 +801,7 @@ public final class JdbcWrapper {
 	public DataSource createDataSourceProxy(String name, final DataSource dataSource) {
 		assert dataSource != null;
 		JdbcWrapperHelper.pullDataSourceProperties(name, dataSource);
-		final InvocationHandler invocationHandler = new AbstractInvocationHandler<DataSource>(
-				dataSource) {
+		final InvocationHandler invocationHandler = new AbstractInvocationHandler<>(dataSource) {
 			private static final long serialVersionUID = 1L;
 
 			/** {@inheritDoc} */

@@ -57,13 +57,13 @@ public final class MBeans {
 	public static final char ATTRIBUTES_SEPARATOR = '|';
 
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
-	private static final Comparator<MBeanNode> NODE_COMPARATOR = new Comparator<MBeanNode>() {
+	private static final Comparator<MBeanNode> NODE_COMPARATOR = new Comparator<>() {
 		@Override
 		public int compare(MBeanNode o1, MBeanNode o2) {
 			return o1.getName() != null ? o1.getName().compareTo(o2.getName()) : 0;
 		}
 	};
-	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = new Comparator<MBeanAttribute>() {
+	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = new Comparator<>() {
 		@Override
 		public int compare(MBeanAttribute o1, MBeanAttribute o2) {
 			return o1.getName().compareTo(o2.getName());

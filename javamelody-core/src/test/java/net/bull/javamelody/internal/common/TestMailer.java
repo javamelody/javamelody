@@ -61,7 +61,7 @@ public class TestMailer {
 		mailer.setSession(Session.getInstance(properties));
 		send(null, false);
 		send(null, true);
-		send(new ArrayList<File>(), false);
+		send(new ArrayList<>(), false);
 		send(Collections.singletonList(new File("nothing.txt")), false);
 		properties.put("mail.transport.protocol", "smtps");
 		mailer.setSession(Session.getInstance(properties));

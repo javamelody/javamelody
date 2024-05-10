@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.internal.common.LOG;
 
@@ -200,7 +199,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	 */
 	public Counter(String name, String iconName) {
 		// ici, pas de compteur fils
-		this(name, name, iconName, null, new ThreadLocal<CounterRequestContext>());
+		this(name, name, iconName, null, new ThreadLocal<>());
 	}
 
 	/**
@@ -211,8 +210,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	 * @param childCounterName Nom du compteur fils (par exemple: sql)
 	 */
 	public Counter(String name, String storageName, String iconName, String childCounterName) {
-		this(name, storageName, iconName, childCounterName,
-				new ThreadLocal<CounterRequestContext>());
+		this(name, storageName, iconName, childCounterName, new ThreadLocal<>());
 	}
 
 	/**
@@ -910,7 +908,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	public Counter clone() { // NOPMD
 		//CHECKSTYLE:ON
 		final Counter clone = new Counter(getName(), getStorageName(), getIconName(),
-				getChildCounterName(), new ThreadLocal<CounterRequestContext>());
+				getChildCounterName(), new ThreadLocal<>());
 		clone.application = getApplication();
 		clone.startDate = getStartDate();
 		clone.maxRequestsCount = getMaxRequestsCount();

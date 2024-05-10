@@ -356,9 +356,9 @@ public class TestHtmlReport {
 		htmlReport.writeProcesses(ProcessInformations
 				.buildProcessInformations(getClass().getResourceAsStream("/ps.txt"), false, false));
 		assertNotEmptyAndClear(writer);
-		HtmlReport.writeAddAndRemoveApplicationLinks(null, new ArrayList<String>(), writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks(null, new ArrayList<>(), writer);
 		assertNotEmptyAndClear(writer);
-		HtmlReport.writeAddAndRemoveApplicationLinks("test", new ArrayList<String>(), writer);
+		HtmlReport.writeAddAndRemoveApplicationLinks("test", new ArrayList<>(), writer);
 		assertNotEmptyAndClear(writer);
 		try (Connection connection = TestDatabaseInformations.initH2()) {
 			htmlReport.writeDatabase(new DatabaseInformations(0)); // h2.memory
@@ -395,7 +395,7 @@ public class TestHtmlReport {
 		final Connection connection = TestDatabaseInformations.initH2();
 		// une deuxième connexion créée sur un thread qui n'existera plus quand le rapport sera généré
 		final ExecutorService executorService = Executors.newFixedThreadPool(1);
-		final Callable<Connection> task = new Callable<Connection>() {
+		final Callable<Connection> task = new Callable<>() {
 			@Override
 			public Connection call() {
 				return TestDatabaseInformations.initH2();
@@ -437,7 +437,7 @@ public class TestHtmlReport {
 
 		final HtmlCounterRequestContextReport htmlCounterRequestContextReport = new HtmlCounterRequestContextReport(
 				collector2.getRootCurrentContexts(collector2.getCounters()), null,
-				new ArrayList<ThreadInformations>(), false, 500, writer);
+				new ArrayList<>(), false, 500, writer);
 		htmlCounterRequestContextReport.toHtml();
 		assertNotEmptyAndClear(writer);
 	}

@@ -315,8 +315,7 @@ public class HtmlReport extends HtmlAbstractReport {
 			throws IOException {
 		assert processesByTitle != null;
 		writeHtmlHeader();
-		new HtmlProcessInformationsReport(new ArrayList<ProcessInformations>(), getWriter())
-				.writeLinks();
+		new HtmlProcessInformationsReport(new ArrayList<>(), getWriter()).writeLinks();
 		for (final Map.Entry<String, List<ProcessInformations>> entry : processesByTitle
 				.entrySet()) {
 			final String title = entry.getKey();
@@ -368,7 +367,7 @@ public class HtmlReport extends HtmlAbstractReport {
 	public void writeMBeans(Map<String, List<MBeanNode>> mbeansByTitle) throws IOException {
 		assert mbeansByTitle != null;
 		writeHtmlHeader();
-		new HtmlMBeansReport(new ArrayList<MBeanNode>(), getWriter()).writeLinks();
+		new HtmlMBeansReport(new ArrayList<>(), getWriter()).writeLinks();
 		for (final Map.Entry<String, List<MBeanNode>> entry : mbeansByTitle.entrySet()) {
 			final String title = entry.getKey();
 			final List<MBeanNode> nodes = entry.getValue();

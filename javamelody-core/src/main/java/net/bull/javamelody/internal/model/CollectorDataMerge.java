@@ -41,7 +41,7 @@ abstract class CollectorDataMerge {
 	private final File targetDirectory;
 
 	// tri par dates décroissantes de fichiers
-	private static final Comparator<File> FILES_COMPARATOR = new Comparator<File>() {
+	private static final Comparator<File> FILES_COMPARATOR = new Comparator<>() {
 		@Override
 		public int compare(File o1, File o2) {
 			return (int) (o2.lastModified() - o1.lastModified());

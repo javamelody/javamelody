@@ -78,7 +78,7 @@ public class TestTomcatInformations {
 		/** {@inheritDoc} */
 		@Override
 		public Map<Object, Object> getmemoryUsage() {
-			return new LinkedHashMap<Object, Object>() {
+			return new LinkedHashMap<>() {
 				private static final long serialVersionUID = 1L;
 
 				{

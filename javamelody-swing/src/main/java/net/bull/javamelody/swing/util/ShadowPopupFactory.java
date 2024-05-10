@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.JApplet;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
@@ -475,11 +474,6 @@ public final class ShadowPopupFactory extends PopupFactory {
 					if (parent == null) {
 						parent = p;
 					}
-					break;
-				} else if (p instanceof JApplet) {
-					// Painting code stops at Applets, we don't want
-					// to add to a Component above an Applet otherwise
-					// you'll never see it painted.
 					break;
 				}
 			}

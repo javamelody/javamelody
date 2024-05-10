@@ -604,7 +604,7 @@ public final class JRobin {
 					lastUpdateTimesByPath.put(file.getPath(), getLastUpdateTime(file));
 				}
 			}
-			final Comparator<File> comparatorByLastUpdateTime = new Comparator<File>() {
+			final Comparator<File> comparatorByLastUpdateTime = new Comparator<>() {
 				@Override
 				public int compare(File o1, File o2) {
 					return lastUpdateTimesByPath.get(o1.getPath())

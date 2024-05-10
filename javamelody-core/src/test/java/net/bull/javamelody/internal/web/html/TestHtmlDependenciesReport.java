@@ -79,7 +79,7 @@ public class TestHtmlDependenciesReport {
 				.andReturn(Collections.singleton(javamelodyDir)).anyTimes();
 		expect(context.getResourcePaths(javamelodyDir)).andReturn(Collections.singleton(webapp))
 				.anyTimes();
-		final IAnswer<InputStream> answer = new IAnswer<InputStream>() {
+		final IAnswer<InputStream> answer = new IAnswer<>() {
 			@Override
 			public InputStream answer() throws Throwable {
 				return getClass().getResourceAsStream("/pom.xml");

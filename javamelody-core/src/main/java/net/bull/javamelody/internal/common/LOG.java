@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import net.bull.javamelody.JavaMelodyLogger;
 import net.bull.javamelody.Parameter;
 
@@ -171,7 +170,8 @@ public final class LOG {
 		if (loggerClass != null) {
 			final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 			try {
-				return JavaMelodyLogger.class.cast(tccl.loadClass(loggerClass).newInstance());
+				return JavaMelodyLogger.class
+						.cast(tccl.loadClass(loggerClass).getDeclaredConstructor().newInstance());
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
 			}

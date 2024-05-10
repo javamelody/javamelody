@@ -388,16 +388,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.13.0</version>
 				<configuration>
-					<source>8</source>
-					<target>8</target>
-					<fork>true</fork>
-					<!-- pour éviter warning dans Maven sur sun.nio.ch.DirectBuffer dans
-						RrdNioBackend -->
-					<compilerArgument>-XDignore.symbol.file=true -Xlint</compilerArgument>
-					<showWarnings>true</showWarnings>
-					<!-- pour éviter warning dans Maven sur sun.misc.BASE64Encoder dans
-						le test unitaire TestBase64Coder -->
-					<testCompilerArgument>-XDignore.symbol.file=true -Xlint</testCompilerArgument>
+					<source>11</source>
+					<target>11</target>
 				</configuration>
 			</plugin>
 			<plugin>

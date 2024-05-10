@@ -183,7 +183,7 @@ class ChartPanel extends MelodyPanel {
 		// setIcon appelle déjà revalidate() et repaint()
 		getImageLabel().setIcon(scaledImageIcon);
 		// SwingWorker pour recharger le graphique dans la bonne dimension en tâche de fond
-		final SwingWorker<byte[], Object> swingWorker = new SwingWorker<byte[], Object>() {
+		final SwingWorker<byte[], Object> swingWorker = new SwingWorker<>() {
 			@Override
 			protected byte[] doInBackground() throws IOException, InterruptedException {
 				return collectJRobin(value, width, height);

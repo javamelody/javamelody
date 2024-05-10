@@ -21,8 +21,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -540,14 +538,7 @@ final class JdbcWrapperHelper {
 	}
 
 	private static void setFieldAccessible(final Field field) {
-		AccessController.doPrivileged(new PrivilegedAction<Object>() { // pour findbugs
-			/** {@inheritDoc} */
-			@Override
-			public Object run() {
-				field.setAccessible(true);
-				return null;
-			}
-		});
+		field.setAccessible(true);
 	}
 
 	static void clearProxyCache() {

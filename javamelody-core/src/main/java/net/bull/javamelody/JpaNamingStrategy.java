@@ -107,7 +107,7 @@ class JpaNamingStrategy {
 
 	private String getHibernateQueryRequestName(Query query) {
 		if (HIBERNATE_QUERY_CLASS != null) {
-			org.hibernate.query.Query<?> unwrappedQuery = (org.hibernate.query.Query<?>) query
+			final org.hibernate.query.Query<?> unwrappedQuery = (org.hibernate.query.Query<?>) query
 					.unwrap(HIBERNATE_QUERY_CLASS);
 			return unwrappedQuery.getQueryString();
 		}

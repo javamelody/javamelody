@@ -197,7 +197,7 @@ public enum TransportFormat {
 
 		static void writeToGson(Serializable serializable, BufferedOutputStream bufferedOutput)
 				throws IOException {
-			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer = new JsonSerializer<StackTraceElement>() {
+			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer = new JsonSerializer<>() {
 				@Override
 				public JsonElement serialize(StackTraceElement src, Type typeOfSrc,
 						JsonSerializationContext context) {

@@ -312,9 +312,8 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport pdfCounterRequestContextReport = new PdfCounterRequestContextReport(
-				collector2.getRootCurrentContexts(collector2.getCounters()),
-				new ArrayList<PdfCounterReport>(), new ArrayList<ThreadInformations>(), false,
-				pdfDocumentFactory, document);
+				collector2.getRootCurrentContexts(collector2.getCounters()), new ArrayList<>(),
+				new ArrayList<>(), false, pdfDocumentFactory, document);
 		pdfCounterRequestContextReport.toPdf();
 		document.close();
 		assertNotEmptyAndClear(output);
@@ -436,8 +435,7 @@ public class TestPdfReport {
 		final Document document4 = pdfDocumentFactory.createDocument();
 		document4.open();
 		final PdfThreadInformationsReport report4 = new PdfThreadInformationsReport(
-				new ArrayList<ThreadInformations>(), stackTraceEnabled, pdfDocumentFactory,
-				document4);
+				new ArrayList<>(), stackTraceEnabled, pdfDocumentFactory, document4);
 		report4.toPdf();
 		report4.writeDeadlocks();
 		document4.close();

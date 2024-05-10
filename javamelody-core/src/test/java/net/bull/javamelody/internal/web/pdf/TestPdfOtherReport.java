@@ -39,11 +39,11 @@ import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContext;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.servlet.ServletContext;
 import net.bull.javamelody.SessionTestImpl;
 import net.bull.javamelody.Utils;
 import net.bull.javamelody.internal.common.Parameters;
@@ -170,8 +170,7 @@ public class TestPdfOtherReport {
 	@Test
 	public void testWriteHotspots() throws IOException {
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>(),
-				null);
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<>(), null);
 		final List<SampledMethod> emptyHotspots = samplingProfiler.getHotspots(100);
 		samplingProfiler.update();
 		final List<SampledMethod> hotspots = samplingProfiler.getHotspots(100);

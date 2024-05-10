@@ -36,8 +36,6 @@ import java.util.TimerTask;
 
 import org.jrobin.core.RrdFileBackend;
 
-import sun.nio.ch.DirectBuffer; // NOPMD
-
 /**
  * JRobin backend which is used to store RRD data to ordinary disk files
  * by using fast java.nio.* package. This is the default backend engine since JRobin 1.4.0.
@@ -109,20 +107,23 @@ public class RrdNioBackend extends RrdFileBackend {
 	private void unmapFile() {
 		if (byteBuffer != null) {
 			if (JAVA9_INVOKE_CLEANER == null || THE_UNSAFE == null) {
-				if (byteBuffer instanceof DirectBuffer) {
-					// for Java 8 and before
-					((DirectBuffer) byteBuffer).cleaner().clean();
-				}
-			} else {
-				// for Java 9 and later:
-				// sun.nio.ch.DirectBuffer methods are not accessible,
-				// so the new sun.misc.Unsafe.theUnsafe.invokeCleaner(ByteBuffer) is used.
-				// See https://bugs.openjdk.java.net/browse/JDK-8171377
+				// https://github.com/javamelody/javamelody/issues/1179
+				// for WildFly 29+, add "Dependencies: jdk.unsupported" in MANIFEST.MF of war file
 				try {
-					JAVA9_INVOKE_CLEANER.invoke(THE_UNSAFE, byteBuffer);
+					Class.forName("sun.misc.Unsafe");
 				} catch (final Exception e) {
 					throw new IllegalStateException(e);
 				}
+				throw new IllegalStateException("sun.misc.Unsafe unavailable to unmap file");
+			}
+			// for Java 9 and later:
+			// sun.nio.ch.DirectBuffer methods are not accessible,
+			// so the new sun.misc.Unsafe.theUnsafe.invokeCleaner(ByteBuffer) is used.
+			// See https://bugs.openjdk.java.net/browse/JDK-8171377
+			try {
+				JAVA9_INVOKE_CLEANER.invoke(THE_UNSAFE, byteBuffer);
+			} catch (final Exception e) {
+				throw new IllegalStateException(e);
 			}
 			byteBuffer = null;
 		}

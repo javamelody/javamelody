@@ -56,8 +56,7 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void test2() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<String>(),
-				null);
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(new ArrayList<>(), null);
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
 		samplingProfiler.clear();

@@ -54,7 +54,7 @@ public class TestCounterStorage {
 
 	@Test
 	public void testCorruptedFile() throws IOException {
-		File tempFile = corruptedTempFile.newFile("test.ser.gz");
+		final File tempFile = corruptedTempFile.newFile("test.ser.gz");
 		try (ObjectOutputStream outputStream = new ObjectOutputStream(
 				new GZIPOutputStream(new FileOutputStream(tempFile)))) {
 			outputStream.writeObject("java melody");

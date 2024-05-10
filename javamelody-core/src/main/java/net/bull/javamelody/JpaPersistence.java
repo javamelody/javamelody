@@ -18,8 +18,6 @@ package net.bull.javamelody;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -157,14 +155,8 @@ public class JpaPersistence implements PersistenceProvider {
 		final PersistenceProvider persistenceProvider = findDelegate(map);
 		final ClassLoader tccl = tccl();
 
-		final ClassLoader hack = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() { // pour findbugs
-			/** {@inheritDoc} */
-			@Override
-			public ClassLoader run() {
-				return new JpaOverridePersistenceXmlClassLoader(tccl,
-						persistenceProvider.getClass().getName());
-			}
-		});
+		final ClassLoader hack = new JpaOverridePersistenceXmlClassLoader(tccl,
+				persistenceProvider.getClass().getName());
 
 		Thread.currentThread().setContextClassLoader(hack);
 		try {
@@ -300,7 +292,8 @@ public class JpaPersistence implements PersistenceProvider {
 	}
 
 	private static PersistenceProvider newPersistence(final String name) throws Exception { // NOPMD
-		return PersistenceProvider.class.cast(tccl().loadClass(name).newInstance());
+		return PersistenceProvider.class
+				.cast(tccl().loadClass(name).getDeclaredConstructor().newInstance());
 	}
 
 	private static class ProviderAwareHandler implements InvocationHandler {
