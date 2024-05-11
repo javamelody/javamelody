@@ -79,7 +79,9 @@ public class TestBase64Coder {
 			final int len = rnd.nextInt(maxDataBlockLen + 1);
 			final byte[] b0 = new byte[len];
 			rnd.nextBytes(b0);
-			final String e1 = Base64Coder.encodeLines(b0);
+			// Base64Coder uses System.lineSeparator() but Mime Encoder uses CR LF (\r \n),
+			// so we replace for linux
+			final String e1 = Base64Coder.encodeLines(b0).replace(System.lineSeparator(), "\r\n");
 			final String e2 = Base64.getMimeEncoder().encodeToString(b0);
 			assertEquals("test3", e2, e1.trim());
 			final byte[] b1 = Base64Coder.decodeLines(e1);
