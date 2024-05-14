@@ -47,6 +47,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -396,10 +397,13 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer() {
-		return schedulerFactoryBean -> {
-			final JobGlobalListener jobGlobalListener = new JobGlobalListener();
-			schedulerFactoryBean.setGlobalJobListeners(jobGlobalListener);
-			schedulerFactoryBean.setExposeSchedulerInRepository(true);
+		return new SchedulerFactoryBeanCustomizer() {
+			@Override
+			public void customize(SchedulerFactoryBean schedulerFactoryBean) {
+				final JobGlobalListener jobGlobalListener = new JobGlobalListener();
+				schedulerFactoryBean.setGlobalJobListeners(jobGlobalListener);
+				schedulerFactoryBean.setExposeSchedulerInRepository(true);
+			}
 		};
 	}
 
