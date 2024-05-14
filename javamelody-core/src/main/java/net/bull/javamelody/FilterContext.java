@@ -322,11 +322,6 @@ class FilterContext {
 		// on branche le handler java.util.logging pour le counter de logs
 		LoggingHandler.getSingleton().register();
 
-		if (LOG.LOG4J_ENABLED) {
-			// si log4j est disponible on branche aussi l'appender pour le counter de logs
-			Log4JAppender.getSingleton().register();
-		}
-
 		if (LOG.LOG4J2_ENABLED) {
 			// si log4j2 est disponible on branche aussi l'appender pour le counter de logs
 			Log4J2Appender.getSingleton().register();
@@ -457,7 +452,7 @@ class FilterContext {
 
 				deregisterJdbcDriver();
 
-				// on enlève l'appender de logback, log4j et le handler de java.util.logging
+				// on enlève l'appender de logback, log4j2 et le handler de java.util.logging
 				deregisterLogs();
 
 				// on enlève le listener de jobs quartz
@@ -509,8 +504,8 @@ class FilterContext {
 		if (LOG.LOGBACK_ENABLED) {
 			LogbackAppender.getSingleton().deregister();
 		}
-		if (LOG.LOG4J_ENABLED) {
-			Log4JAppender.getSingleton().deregister();
+		if (LOG.LOG4J2_ENABLED) {
+			Log4J2Appender.getSingleton().deregister();
 		}
 		LoggingHandler.getSingleton().deregister();
 	}

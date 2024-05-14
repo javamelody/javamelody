@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.openjpa.persistence.PersistenceUnitInfoImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -71,7 +71,7 @@ public class TestJpa {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
 		} catch (final ClassNotFoundException e) {
-			Logger.getRootLogger().info(e.toString());
+			LogManager.getRootLogger().info(e.toString());
 			// si openjpa n'est pas disponible dans le classpath (test depuis Ant),
 			// on ne peut pas exécuter ce test
 			return;
@@ -102,7 +102,7 @@ public class TestJpa {
 		try {
 			Class.forName("org.apache.openjpa.persistence.PersistenceProviderImpl");
 		} catch (final ClassNotFoundException e) {
-			Logger.getRootLogger().info(e.toString());
+			LogManager.getRootLogger().info(e.toString());
 			// si openjpa n'est pas disponible dans le classpath (test depuis Ant),
 			// on ne peut pas exécuter ce test
 			return;
