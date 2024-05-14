@@ -37,8 +37,6 @@ import javax.naming.NoInitialContextException;
 import javax.naming.Referenceable;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
-
 import jakarta.servlet.ServletContext;
 
 /**
@@ -237,15 +235,9 @@ final class JdbcWrapperHelper {
 	static void pullDataSourceProperties(String name, DataSource dataSource) {
 		// CHECKSTYLE:ON
 		final String dataSourceClassName = dataSource.getClass().getName();
-		if ("org.apache.tomcat.dbcp.dbcp.BasicDataSource".equals(dataSourceClassName)
-				&& dataSource instanceof BasicDataSource) {
-			pullTomcatDbcpDataSourceProperties(name, dataSource);
-		} else if ("org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
+		if ("org.apache.tomcat.dbcp.dbcp2.BasicDataSource".equals(dataSourceClassName)
 				&& dataSource instanceof org.apache.tomcat.dbcp.dbcp2.BasicDataSource) {
 			pullTomcatDbcp2DataSourceProperties(name, dataSource);
-		} else if ("org.apache.commons.dbcp.BasicDataSource".equals(dataSourceClassName)
-				&& dataSource instanceof org.apache.commons.dbcp.BasicDataSource) {
-			pullCommonsDbcpDataSourceProperties(name, dataSource);
 		} else if ("org.apache.commons.dbcp2.BasicDataSource".equals(dataSourceClassName)
 				&& dataSource instanceof org.apache.commons.dbcp2.BasicDataSource) {
 			pullCommonsDbcp2DataSourceProperties(name, dataSource);
@@ -253,76 +245,6 @@ final class JdbcWrapperHelper {
 				&& dataSource instanceof org.apache.tomcat.jdbc.pool.DataSource) {
 			pullTomcatJdbcDataSourceProperties(name, dataSource);
 		}
-	}
-
-	private static void pullTomcatDbcpDataSourceProperties(String name, DataSource dataSource) {
-		// si tomcat et si dataSource standard, alors on récupère des infos
-		final BasicDataSource tomcatDbcpDataSource = (BasicDataSource) dataSource;
-		final BasicDataSourcesProperties properties = TOMCAT_BASIC_DATASOURCES_PROPERTIES;
-		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
-		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
-
-		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, tomcatDbcpDataSource.getMaxActive());
-		properties.put(name, "poolPreparedStatements",
-				tomcatDbcpDataSource.isPoolPreparedStatements());
-
-		properties.put(name, "defaultCatalog", tomcatDbcpDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", tomcatDbcpDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", tomcatDbcpDataSource.getDefaultReadOnly());
-		properties.put(name, "defaultTransactionIsolation",
-				tomcatDbcpDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", tomcatDbcpDataSource.getDriverClassName());
-		properties.put(name, "initialSize", tomcatDbcpDataSource.getInitialSize());
-		properties.put(name, "maxIdle", tomcatDbcpDataSource.getMaxIdle());
-		properties.put(name, "maxOpenPreparedStatements",
-				tomcatDbcpDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", tomcatDbcpDataSource.getMaxWait());
-		properties.put(name, "minEvictableIdleTimeMillis",
-				tomcatDbcpDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", tomcatDbcpDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun",
-				tomcatDbcpDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", tomcatDbcpDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", tomcatDbcpDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", tomcatDbcpDataSource.getTestWhileIdle());
-		properties.put(name, "timeBetweenEvictionRunsMillis",
-				tomcatDbcpDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", tomcatDbcpDataSource.getValidationQuery());
-	}
-
-	private static void pullCommonsDbcpDataSourceProperties(String name, DataSource dataSource) {
-		// si dbcp et si dataSource standard, alors on récupère des infos
-		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = (org.apache.commons.dbcp.BasicDataSource) dataSource;
-		final BasicDataSourcesProperties properties = DBCP_BASIC_DATASOURCES_PROPERTIES;
-		// basicDataSource.getNumActive() est en théorie égale à USED_CONNECTION_COUNT à un instant t,
-		// numIdle + numActive est le nombre de connexions ouvertes dans la bdd pour ce serveur à un instant t
-
-		// les propriétés généralement importantes en premier (se méfier aussi de testOnBorrow)
-		properties.put(name, MAX_ACTIVE_PROPERTY_NAME, dbcpDataSource.getMaxActive());
-		properties.put(name, "poolPreparedStatements", dbcpDataSource.isPoolPreparedStatements());
-
-		properties.put(name, "defaultCatalog", dbcpDataSource.getDefaultCatalog());
-		properties.put(name, "defaultAutoCommit", dbcpDataSource.getDefaultAutoCommit());
-		properties.put(name, "defaultReadOnly", dbcpDataSource.getDefaultReadOnly());
-		properties.put(name, "defaultTransactionIsolation",
-				dbcpDataSource.getDefaultTransactionIsolation());
-		properties.put(name, "driverClassName", dbcpDataSource.getDriverClassName());
-		properties.put(name, "initialSize", dbcpDataSource.getInitialSize());
-		properties.put(name, "maxIdle", dbcpDataSource.getMaxIdle());
-		properties.put(name, "maxOpenPreparedStatements",
-				dbcpDataSource.getMaxOpenPreparedStatements());
-		properties.put(name, "maxWait", dbcpDataSource.getMaxWait());
-		properties.put(name, "minEvictableIdleTimeMillis",
-				dbcpDataSource.getMinEvictableIdleTimeMillis());
-		properties.put(name, "minIdle", dbcpDataSource.getMinIdle());
-		properties.put(name, "numTestsPerEvictionRun", dbcpDataSource.getNumTestsPerEvictionRun());
-		properties.put(name, "testOnBorrow", dbcpDataSource.getTestOnBorrow());
-		properties.put(name, "testOnReturn", dbcpDataSource.getTestOnReturn());
-		properties.put(name, "testWhileIdle", dbcpDataSource.getTestWhileIdle());
-		properties.put(name, "timeBetweenEvictionRunsMillis",
-				dbcpDataSource.getTimeBetweenEvictionRunsMillis());
-		properties.put(name, "validationQuery", dbcpDataSource.getValidationQuery());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -362,6 +284,7 @@ final class JdbcWrapperHelper {
 		properties.put(name, "validationQuery", tomcatDbcp2DataSource.getValidationQuery());
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void pullCommonsDbcp2DataSourceProperties(String name, DataSource dataSource) {
 		// si dbcp et si dataSource standard, alors on récupère des infos
 		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = (org.apache.commons.dbcp2.BasicDataSource) dataSource;

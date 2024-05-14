@@ -26,7 +26,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -34,19 +33,16 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,72 +58,6 @@ public class TestJdbcWrapper {
 	private static final String EQUALS = "equals";
 	private JdbcDriver driver;
 	private JdbcWrapper jdbcWrapper;
-
-	private static final class MyDataSource implements DataSource {
-		private final BasicDataSource tomcatDataSource;
-
-		MyDataSource(BasicDataSource tomcatDataSource) {
-			this.tomcatDataSource = tomcatDataSource;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public <T> T unwrap(Class<T> iface) throws SQLException {
-			return null;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public boolean isWrapperFor(Class<?> iface) throws SQLException {
-			return false;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void setLoginTimeout(int seconds) throws SQLException {
-			tomcatDataSource.setLoginTimeout(seconds);
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void setLogWriter(PrintWriter out) throws SQLException {
-			tomcatDataSource.setLogWriter(out);
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public int getLoginTimeout() throws SQLException {
-			return tomcatDataSource.getLoginTimeout();
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public PrintWriter getLogWriter() throws SQLException {
-			return tomcatDataSource.getLogWriter();
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Connection getConnection(String username, String password) throws SQLException {
-			return tomcatDataSource.getConnection();
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public Connection getConnection() throws SQLException {
-			return tomcatDataSource.getConnection();
-		}
-
-		/**
-		 * Définition de la méthode getParentLogger ajoutée dans l'interface Driver en jdk 1.7.
-		 * @return Logger
-		 * @throws SQLFeatureNotSupportedException e
-		 */
-		@Override
-		public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-			return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-		}
-	}
 
 	/** Test.
 	 * @throws SQLException e */
@@ -191,26 +121,6 @@ public class TestJdbcWrapper {
 				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
 		assertEquals("getMaxConnectionCount1", 123, JdbcWrapper.getMaxConnectionCount());
 
-		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
-		dbcpDataSource.setUrl(H2_DATABASE_URL);
-		dbcpDataSource.setMaxActive(456);
-		final DataSource dbcpProxy = jdbcWrapper.createDataSourceProxy(dbcpDataSource);
-		assertNotNull("createDataSourceProxy2", dbcpProxy);
-		assertFalse("getBasicDataSourceProperties2",
-				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
-		assertEquals("getMaxConnectionCount2", 456, JdbcWrapper.getMaxConnectionCount());
-
-		final BasicDataSource tomcatDataSource = new BasicDataSource();
-		tomcatDataSource.setUrl(H2_DATABASE_URL);
-		tomcatDataSource.setMaxActive(789);
-		final DataSource tomcatProxy = jdbcWrapper.createDataSourceProxy("test", tomcatDataSource);
-		assertNotNull("createDataSourceProxy3", tomcatProxy);
-		assertNotNull("getLogWriter2", tomcatProxy.getLogWriter());
-		tomcatProxy.getConnection().close();
-		assertFalse("getBasicDataSourceProperties3",
-				JdbcWrapper.getBasicDataSourceProperties().isEmpty());
-		assertEquals("getMaxConnectionCount3", 789, JdbcWrapper.getMaxConnectionCount());
-
 		final org.apache.commons.dbcp2.BasicDataSource dbcp2DataSource = new org.apache.commons.dbcp2.BasicDataSource();
 		dbcp2DataSource.setUrl(H2_DATABASE_URL);
 		dbcp2DataSource.setMaxTotal(456);
@@ -223,9 +133,6 @@ public class TestJdbcWrapper {
 		final DataSource tomcat2Proxy = jdbcWrapper.createDataSourceProxy("test",
 				tomcat2DataSource);
 		assertNotNull("createDataSourceProxy3b", tomcat2Proxy);
-
-		final DataSource dataSource2 = new MyDataSource(tomcatDataSource);
-		jdbcWrapper.createDataSourceProxy(dataSource2);
 	}
 
 	private static void cleanUp() throws NoSuchFieldException, IllegalAccessException {
@@ -348,12 +255,6 @@ public class TestJdbcWrapper {
 	 * @throws Exception e */
 	@Test
 	public void testRewrapDataSource() throws Exception {
-		final BasicDataSource tomcatDataSource = new BasicDataSource();
-		tomcatDataSource.setUrl(H2_DATABASE_URL);
-		rewrapDataSource(tomcatDataSource);
-		final org.apache.commons.dbcp.BasicDataSource dbcpDataSource = new org.apache.commons.dbcp.BasicDataSource();
-		dbcpDataSource.setUrl(H2_DATABASE_URL);
-		rewrapDataSource(dbcpDataSource);
 		final org.apache.tomcat.dbcp.dbcp2.BasicDataSource tomcat2DataSource = new org.apache.tomcat.dbcp.dbcp2.BasicDataSource();
 		tomcat2DataSource.setUrl(H2_DATABASE_URL);
 		rewrapDataSource(tomcat2DataSource);
