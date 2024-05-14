@@ -20,9 +20,9 @@ package net.bull.javamelody;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.EventListener;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -47,7 +47,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -210,9 +209,9 @@ public class JavaMelodyAutoConfiguration {
 		// IMPORTANT: We cannot inject JavaMelodyConfigurationProperties here because of bean load order! Therefore we have
 		// to use that rather dirty way to inject the configuration value.
 		final SpringDataSourceBeanPostProcessor processor = new SpringDataSourceBeanPostProcessor();
-		if (excludedDatasources != null && excludedDatasources.trim().length() > 0) {
-			processor.setExcludedDatasources(
-					new HashSet<>(Arrays.asList(excludedDatasources.split(","))));
+		if (excludedDatasources != null && !excludedDatasources.trim().isEmpty()) {
+			processor
+					.setExcludedDatasources(new HashSet<>(List.of(excludedDatasources.split(","))));
 		}
 		return processor;
 	}
@@ -397,13 +396,10 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SchedulerFactoryBeanCustomizer schedulerFactoryBeanCustomizer() {
-		return new SchedulerFactoryBeanCustomizer() {
-			@Override
-			public void customize(SchedulerFactoryBean schedulerFactoryBean) {
-				final JobGlobalListener jobGlobalListener = new JobGlobalListener();
-				schedulerFactoryBean.setGlobalJobListeners(jobGlobalListener);
-				schedulerFactoryBean.setExposeSchedulerInRepository(true);
-			}
+		return schedulerFactoryBean -> {
+			final JobGlobalListener jobGlobalListener = new JobGlobalListener();
+			schedulerFactoryBean.setGlobalJobListeners(jobGlobalListener);
+			schedulerFactoryBean.setExposeSchedulerInRepository(true);
 		};
 	}
 

@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Spring Boot auto-configuration for disabled JavaMelody.
- *
+ * <p>
  * This class is picked up by the Spring Boot auto-configuration mechanism.
  * It disables JavaMelody initialization by the servlet container, when the Spring's property javamelody.enabled is false,
  * for the case when the webapp is deployed as war in a servlet container.
