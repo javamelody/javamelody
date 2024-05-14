@@ -194,8 +194,8 @@ public enum TransportFormat {
 
 		static void writeToGson(Serializable serializable, BufferedOutputStream bufferedOutput)
 				throws IOException {
-			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer =
-					(src, typeOfSrc, context) -> new JsonPrimitive(src.toString());
+			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer = (src,
+					typeOfSrc, context) -> new JsonPrimitive(src.toString());
 			final Gson gson = new GsonBuilder()
 					// .setPrettyPrinting() : prettyPrinting pas nécessaire avec un viewer de json
 					.registerTypeAdapter(StackTraceElement.class, stackTraceElementJsonSerializer)

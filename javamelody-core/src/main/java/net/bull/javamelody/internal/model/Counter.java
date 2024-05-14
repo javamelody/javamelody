@@ -101,19 +101,20 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 	/**
 	 * Comparateur pour ordonner les requêtes par sommes des durées décroissantes.
 	 */
-	static final Comparator<CounterRequest> COUNTER_REQUEST_COMPARATOR =
-			Comparator.comparingLong(CounterRequest::getDurationsSum).reversed();
+	static final Comparator<CounterRequest> COUNTER_REQUEST_COMPARATOR = Comparator
+			.comparingLong(CounterRequest::getDurationsSum).reversed();
 
 	/**
 	 * Comparateur pour ordonner les requêtes par nombres d'exécutions décroissants.
 	 */
-	private static final Comparator<CounterRequest> COUNTER_REQUEST_BY_HITS_COMPARATOR =
-			Comparator.comparingLong(CounterRequest::getHits).reversed();
+	private static final Comparator<CounterRequest> COUNTER_REQUEST_BY_HITS_COMPARATOR = Comparator
+			.comparingLong(CounterRequest::getHits).reversed();
 
 	/**
 	 * Comparateur pour ordonner les erreurs par heures d'exécution croissantes.
 	 */
-	private static final Comparator<CounterError> COUNTER_ERROR_COMPARATOR = Comparator.comparingLong(CounterError::getTime);
+	private static final Comparator<CounterError> COUNTER_ERROR_COMPARATOR = Comparator
+			.comparingLong(CounterError::getTime);
 
 	private static final String TRANSFORM_REPLACEMENT = "\\" + TRANSFORM_REPLACEMENT_CHAR;
 	private static final long serialVersionUID = 6759729262180992976L;

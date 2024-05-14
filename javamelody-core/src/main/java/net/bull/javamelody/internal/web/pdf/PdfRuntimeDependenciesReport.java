@@ -145,9 +145,9 @@ class PdfRuntimeDependenciesReport extends PdfAbstractReport {
 			// c'est un Set donc on ne compte une méthode 'a' appelée depuis une classe qu'une seule fois
 			// même si elle est appelée deux fois depuis la même classe
 			// ou même à un seul endroit mais avec des exécutions dans une boucle
-            Set<CounterRequest> childRequests = methodsCalledByCallerBeans.computeIfAbsent(callerBean,
-					k -> new HashSet<>());
-            for (final String childRequestId : childRequestIds) {
+			Set<CounterRequest> childRequests = methodsCalledByCallerBeans
+					.computeIfAbsent(callerBean, k -> new HashSet<>());
+			for (final String childRequestId : childRequestIds) {
 				// on ne regarde que les requêtes du même counter
 				// (pas sql, et pas guice si on est dans spring)
 				if (counter.isRequestIdFromThisCounter(childRequestId)) {

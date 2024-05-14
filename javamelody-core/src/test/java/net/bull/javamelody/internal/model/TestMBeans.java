@@ -118,7 +118,7 @@ public class TestMBeans {
 	@Test
 	public void testToString() {
 		final MBeanNode mBeanNode = new MBeanNode("name", "description",
-                List.of(new MBeanAttribute("name", "description", "formattedValue")));
+				List.of(new MBeanAttribute("name", "description", "formattedValue")));
 		assertNotNull("mbeanNode", mBeanNode);
 		assertNotNull("toString", mBeanNode.toString());
 		assertNotNull("getAttributes", mBeanNode.getAttributes());

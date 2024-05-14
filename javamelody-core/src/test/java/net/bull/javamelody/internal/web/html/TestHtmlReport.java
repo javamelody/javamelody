@@ -111,8 +111,8 @@ public class TestHtmlReport {
 		counter = new Counter("http", "dbweb.png", sqlCounter);
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = getJobCounter();
-		collector = new Collector("test", List.of(counter, sqlCounter, servicesCounter,
-				jspCounter, errorCounter, jobCounter));
+		collector = new Collector("test", List.of(counter, sqlCounter, servicesCounter, jspCounter,
+				errorCounter, jobCounter));
 		writer = new StringWriter();
 	}
 
@@ -339,11 +339,9 @@ public class TestHtmlReport {
 
 		htmlReport.writeSessionDetail("", null);
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeSessions(Collections.emptyList(), "message",
-				HttpPart.SESSIONS.getName());
+		htmlReport.writeSessions(Collections.emptyList(), "message", HttpPart.SESSIONS.getName());
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeSessions(Collections.emptyList(), null,
-				HttpPart.SESSIONS.getName());
+		htmlReport.writeSessions(Collections.emptyList(), null, HttpPart.SESSIONS.getName());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
 		assertNotEmptyAndClear(writer);
@@ -636,15 +634,13 @@ public class TestHtmlReport {
 	@Test
 	public void testHtmlCounterRequestContext() throws IOException {
 		// cas où counterReportsByCounterName est null
-		assertNotNull("HtmlCounterRequestContextReport",
-				new HtmlCounterRequestContextReport(Collections.emptyList(),
-						null, Collections.emptyList(), true, 500, writer));
+		assertNotNull("HtmlCounterRequestContextReport", new HtmlCounterRequestContextReport(
+				Collections.emptyList(), null, Collections.emptyList(), true, 500, writer));
 
 		// aucune requête en cours
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
-				Collections.emptyList(),
-				Collections.emptyMap(),
-				Collections.emptyList(), true, 500, writer);
+				Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), true, 500,
+				writer);
 		report.toHtml();
 		assertNotEmptyAndClear(writer);
 
@@ -653,8 +649,7 @@ public class TestHtmlReport {
 				.singletonList(new CounterRequestContext(sqlCounter, null, "Test", "Test", null,
 						null, -1, -1, "sessionId"));
 		final HtmlCounterRequestContextReport report2 = new HtmlCounterRequestContextReport(
-				counterRequestContexts, null, Collections.emptyList(), true, 0,
-				writer);
+				counterRequestContexts, null, Collections.emptyList(), true, 0, writer);
 		report2.toHtml();
 		assertNotEmptyAndClear(writer);
 

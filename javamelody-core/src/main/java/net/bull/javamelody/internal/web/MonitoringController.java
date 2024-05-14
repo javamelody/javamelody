@@ -204,8 +204,8 @@ public class MonitoringController {
 				final String path = HttpParameter.PATH.getParameterFrom(httpRequest);
 				doHsErrPid(httpResponse, javaInformationsList, path);
 			} else if (HttpParameter.REPORT.getParameterFrom(httpRequest) != null) {
-				final String reportName = URLDecoder
-						.decode(HttpParameter.REPORT.getParameterFrom(httpRequest), StandardCharsets.UTF_8);
+				final String reportName = URLDecoder.decode(
+						HttpParameter.REPORT.getParameterFrom(httpRequest), StandardCharsets.UTF_8);
 				doCustomReport(httpRequest, httpResponse, reportName);
 			} else {
 				doReportCore(httpRequest, httpResponse, javaInformationsList);
@@ -347,16 +347,17 @@ public class MonitoringController {
 			throws IOException {
 		// on enlève tout ".." dans le paramètre par sécurité
 		final String localResource = Parameters.getResourcePath(resource.replace("..", ""));
-		try (final InputStream resourceAsStream = MonitoringController.class.getResourceAsStream(localResource)) {
-            if (resourceAsStream == null) {
-                httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
-                return;
-            }
-            addHeadersForResource(httpResponse, localResource);
+		try (final InputStream resourceAsStream = MonitoringController.class
+				.getResourceAsStream(localResource)) {
+			if (resourceAsStream == null) {
+				httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+				return;
+			}
+			addHeadersForResource(httpResponse, localResource);
 
-            final OutputStream out = httpResponse.getOutputStream();
-            InputOutput.pump(resourceAsStream, out);
-        }
+			final OutputStream out = httpResponse.getOutputStream();
+			InputOutput.pump(resourceAsStream, out);
+		}
 	}
 
 	public static void addHeadersForResource(HttpServletResponse httpResponse, String resource) {
@@ -459,9 +460,9 @@ public class MonitoringController {
 		httpResponse.addHeader("Content-Disposition", "inline;filename=web.xml");
 		final InputStream in = getWebXmlAsStream();
 		if (in != null) {
-            try (in) {
-                InputOutput.pump(in, out);
-            }
+			try (in) {
+				InputOutput.pump(in, out);
+			}
 		}
 	}
 
@@ -473,9 +474,9 @@ public class MonitoringController {
 		httpResponse.addHeader("Content-Disposition", "inline;filename=pom.xml");
 		final InputStream in = MavenArtifact.getWebappPomXmlAsStream();
 		if (in != null) {
-            try (in) {
-                InputOutput.pump(in, out);
-            }
+			try (in) {
+				InputOutput.pump(in, out);
+			}
 		}
 	}
 

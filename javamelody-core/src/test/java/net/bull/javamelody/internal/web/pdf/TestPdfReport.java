@@ -376,9 +376,8 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
-				Collections.emptyList(),
-				Collections.emptyList(),
-				Collections.emptyList(), true, pdfDocumentFactory, document);
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), true,
+				pdfDocumentFactory, document);
 		report.toPdf();
 		report.setTimeOfSnapshot(System.currentTimeMillis());
 		report.writeContextDetails();

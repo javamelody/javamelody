@@ -37,8 +37,8 @@ import java.util.Scanner;
 public class HeapHistogram implements Serializable {
 	private static final long serialVersionUID = 2163916067335213382L;
 
-	private static final Comparator<ClassInfo> CLASS_INFO_COMPARATOR =
-			Comparator.comparingLong(ClassInfo::getBytes).reversed();
+	private static final Comparator<ClassInfo> CLASS_INFO_COMPARATOR = Comparator
+			.comparingLong(ClassInfo::getBytes).reversed();
 
 	@SuppressWarnings("all")
 	private final List<ClassInfo> classes;

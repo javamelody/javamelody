@@ -244,13 +244,13 @@ public final class Parameters {
 	}
 
 	private static void synchronizeAggregationApplications() {
-		for (final Iterator<List<String>> it1 = applicationsByAggregationApplications.values().iterator();
-			 it1.hasNext();) {
+		for (final Iterator<List<String>> it1 = applicationsByAggregationApplications.values()
+				.iterator(); it1.hasNext();) {
 			final List<String> aggregatedApplications = it1.next();
-            // on supprime les applications aggrégées inconnues
-            aggregatedApplications.removeIf(
-					aggregatedApplication -> !urlsByApplications.containsKey(aggregatedApplication)
-                    && !applicationsByAggregationApplications.containsKey(aggregatedApplication));
+			// on supprime les applications aggrégées inconnues
+			aggregatedApplications.removeIf(aggregatedApplication -> !urlsByApplications
+					.containsKey(aggregatedApplication)
+					&& !applicationsByAggregationApplications.containsKey(aggregatedApplication));
 			if (aggregatedApplications.isEmpty()) {
 				// application d'aggrégation vide, on la supprime
 				it1.remove();
@@ -466,10 +466,10 @@ public final class Parameters {
 
 		final Properties properties = new Properties();
 		try {
-            try (inputStream) {
-                properties.load(inputStream);
-                return properties.getProperty("version");
-            }
+			try (inputStream) {
+				properties.load(inputStream);
+				return properties.getProperty("version");
+			}
 		} catch (final IOException e) {
 			return e.toString();
 		}

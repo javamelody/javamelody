@@ -205,7 +205,8 @@ public class Collector { // NOPMD
 			}
 		}
 		if (rootCurrentContexts.size() > 1) {
-			rootCurrentContexts.sort(new CounterRequestContextComparator(System.currentTimeMillis()));
+			rootCurrentContexts
+					.sort(new CounterRequestContextComparator(System.currentTimeMillis()));
 
 			CounterRequestContext.replaceParentCounters(rootCurrentContexts, newParentCounters);
 		}
@@ -285,7 +286,7 @@ public class Collector { // NOPMD
 
 	public List<Counter> getRangeCountersToBeDisplayed(Range range) throws IOException {
 		final List<Counter> result = new ArrayList<>(getRangeCounters(range));
-        result.removeIf(counter -> !counter.isDisplayed() || counter.isJobCounter());
+		result.removeIf(counter -> !counter.isDisplayed() || counter.isJobCounter());
 		return Collections.unmodifiableList(result);
 	}
 

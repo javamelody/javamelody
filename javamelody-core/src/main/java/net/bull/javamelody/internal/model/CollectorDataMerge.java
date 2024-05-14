@@ -37,7 +37,8 @@ import net.bull.javamelody.internal.common.InputOutput;
  */
 abstract class CollectorDataMerge {
 	// tri par dates décroissantes de fichiers
-	private static final Comparator<File> FILES_COMPARATOR = (o1, o2) -> (int) (o2.lastModified() - o1.lastModified());
+	private static final Comparator<File> FILES_COMPARATOR = (o1,
+			o2) -> (int) (o2.lastModified() - o1.lastModified());
 
 	private final List<File> sourceDirectories;
 	private final File targetDirectory;

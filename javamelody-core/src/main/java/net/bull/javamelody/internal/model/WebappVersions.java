@@ -45,8 +45,8 @@ import net.bull.javamelody.internal.common.Parameters;
  * @author Emeric Vernat
  */
 class WebappVersions {
-	private static final Comparator<Map.Entry<String, Date>> WEBAPP_VERSIONS_VALUE_COMPARATOR =
-			new MapValueComparator<String, Date>().reversed();
+	private static final Comparator<Map.Entry<String, Date>> WEBAPP_VERSIONS_VALUE_COMPARATOR = new MapValueComparator<String, Date>()
+			.reversed();
 	private static final String VERSIONS_FILENAME = "versions.properties";
 	private static final String VERSIONS_DATE_PATTERN = "yyyy/MM/dd";
 

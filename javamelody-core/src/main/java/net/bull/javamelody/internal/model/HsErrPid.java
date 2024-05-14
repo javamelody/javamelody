@@ -34,14 +34,15 @@ public final class HsErrPid implements Serializable {
 	/**
 	 * Comparateur de HsErrPid par dates décroissantes.
 	 */
-	static final Comparator<HsErrPid> HS_ERR_PID_COMPARATOR = Comparator.comparing(HsErrPid::getDate).reversed();
+	static final Comparator<HsErrPid> HS_ERR_PID_COMPARATOR = Comparator
+			.comparing(HsErrPid::getDate).reversed();
 
 	private static final String XX_ERROR_FILE = "-XX:ErrorFile=";
 
 	private static final long serialVersionUID = 1L;
 
-	private static final FilenameFilter FILENAME_FILTER =
-			(dir, name) -> name.startsWith("hs_err_pid") && name.endsWith(".log");
+	private static final FilenameFilter FILENAME_FILTER = (dir,
+			name) -> name.startsWith("hs_err_pid") && name.endsWith(".log");
 
 	private final String file;
 

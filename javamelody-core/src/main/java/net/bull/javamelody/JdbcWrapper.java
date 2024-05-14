@@ -68,8 +68,8 @@ public final class JdbcWrapper {
 	static final AtomicLong BUILD_QUEUE_WAITING_DURATIONS_SUM = new AtomicLong();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<>();
 
-	static final Comparator<ConnectionInformations> CONNECTION_INFORMATIONS_COMPARATOR =
-			Comparator.comparing(ConnectionInformations::getOpeningDate);
+	static final Comparator<ConnectionInformations> CONNECTION_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(ConnectionInformations::getOpeningDate);
 
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
 

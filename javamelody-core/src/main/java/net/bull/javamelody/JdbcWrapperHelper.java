@@ -54,7 +54,8 @@ final class JdbcWrapperHelper {
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties TOMCAT_JDBC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 
-	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections.synchronizedMap(new WeakHashMap<>());
+	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections
+			.synchronizedMap(new WeakHashMap<>());
 
 	/**
 	 * Propriétés des BasicDataSources si elles viennent de Tomcat-DBCP ou de DBCP seul.
@@ -93,9 +94,9 @@ final class JdbcWrapperHelper {
 		}
 
 		void put(String dataSourceName, String key, Object value) {
-            final Map<String, Object> dataSourceProperties = properties.computeIfAbsent(dataSourceName,
-					k -> new LinkedHashMap<>());
-            dataSourceProperties.put(key, value);
+			final Map<String, Object> dataSourceProperties = properties
+					.computeIfAbsent(dataSourceName, k -> new LinkedHashMap<>());
+			dataSourceProperties.put(key, value);
 		}
 	}
 

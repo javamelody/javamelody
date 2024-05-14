@@ -215,7 +215,7 @@ public class SamplingProfiler {
 		// or final String key = element.getClassName() + '.' + element.getMethodName();
 		// or method = new SampledMethod(element.getClassName(), element.getMethodName());
 		SampledMethod method = this.data.computeIfAbsent(key, Function.identity());
-        // on pourrait incrémenter la valeur selon l'augmentation de cpuTime pour ce thread,
+		// on pourrait incrémenter la valeur selon l'augmentation de cpuTime pour ce thread,
 		// mais l'intervalle entre deux samples est probablement trop grand
 		// pour que le cpu du thread entre les deux intervalles ait un rapport avec cette méthode
 		method.incrementCount();

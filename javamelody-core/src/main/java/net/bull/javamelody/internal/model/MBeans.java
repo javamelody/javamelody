@@ -56,10 +56,10 @@ public final class MBeans {
 	public static final char ATTRIBUTES_SEPARATOR = '|';
 
 	private static final String JAVA_LANG_MBEAN_DESCRIPTION = "Information on the management interface of the MBean";
-	private static final Comparator<MBeanNode> NODE_COMPARATOR =
-			(node1, node2) -> node1.getName() != null ? node1.getName().compareTo(node2.getName()) : 0;
-	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR =
-			Comparator.comparing(MBeanAttribute::getName);
+	private static final Comparator<MBeanNode> NODE_COMPARATOR = (node1,
+			node2) -> node1.getName() != null ? node1.getName().compareTo(node2.getName()) : 0;
+	private static final Comparator<MBeanAttribute> ATTRIBUTE_COMPARATOR = Comparator
+			.comparing(MBeanAttribute::getName);
 	private final MBeanServer mbeanServer;
 
 	MBeans() {
@@ -210,7 +210,8 @@ public final class MBeans {
 		final String[] attributeNamesArray = attributeNames.toArray(new String[0]);
 		final List<MBeanAttribute> result = new ArrayList<>();
 		try {
-			final List<Attribute> attributes = mbeanServer.getAttributes(name, attributeNamesArray).asList();
+			final List<Attribute> attributes = mbeanServer.getAttributes(name, attributeNamesArray)
+					.asList();
 			for (final Attribute attribute : attributes) {
 				final Object value = convertValueIfNeeded(attribute.getValue());
 				final String attributeDescription = getAttributeDescription(attribute.getName(),
@@ -383,7 +384,8 @@ public final class MBeans {
 	}
 
 	public static String getConvertedAttributes(String jmxValueParameter) {
-		final List<String> mbeanAttributes = List.of(jmxValueParameter.split("[" + ATTRIBUTES_SEPARATOR + ']'));
+		final List<String> mbeanAttributes = List
+				.of(jmxValueParameter.split("[" + ATTRIBUTES_SEPARATOR + ']'));
 		final List<Object> jmxValues = getConvertedAttributes(mbeanAttributes);
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;

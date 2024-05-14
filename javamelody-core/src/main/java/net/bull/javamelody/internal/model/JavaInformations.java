@@ -59,14 +59,14 @@ public class JavaInformations implements Serializable { // NOPMD
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
 
-	private static final Comparator<ThreadInformations> THREAD_INFORMATIONS_COMPARATOR =
-			Comparator.comparing(ThreadInformations::getName, String.CASE_INSENSITIVE_ORDER);
-	private static final Comparator<CacheInformations> CACHE_INFORMATIONS_COMPARATOR =
-			Comparator.comparing(CacheInformations::getName, String.CASE_INSENSITIVE_ORDER);
-	private static final Comparator<JCacheInformations> JCACHE_INFORMATIONS_COMPARATOR =
-			Comparator.comparing(JCacheInformations::getName, String.CASE_INSENSITIVE_ORDER);
-	private static final Comparator<JobInformations> JOB_INFORMATIONS_COMPARATOR =
-			Comparator.comparing(JobInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<ThreadInformations> THREAD_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(ThreadInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<CacheInformations> CACHE_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(CacheInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<JCacheInformations> JCACHE_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(JCacheInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<JobInformations> JOB_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(JobInformations::getName, String.CASE_INSENSITIVE_ORDER);
 
 	private final MemoryInformations memoryInformations;
 	@SuppressWarnings("all")
@@ -369,13 +369,13 @@ public class JavaInformations implements Serializable { // NOPMD
 			// on commence par voir si le driver jdbc a été utilisé
 			// car s'il n'y a pas de datasource une exception est déclenchée
 			if (Parameters.getLastConnectUrl() != null) {
-                try (final Connection connection = DriverManager.getConnection(
+				try (final Connection connection = DriverManager.getConnection(
 						Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo())) {
-                    connection.setAutoCommit(false);
-                    appendDataBaseVersion(result, connection);
+					connection.setAutoCommit(false);
+					appendDataBaseVersion(result, connection);
 					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
-                }
-            }
+				}
+			}
 
 			// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 			// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)

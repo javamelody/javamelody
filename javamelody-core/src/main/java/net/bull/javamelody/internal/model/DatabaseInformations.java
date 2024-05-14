@@ -200,14 +200,14 @@ public class DatabaseInformations implements Serializable {
 	public DatabaseInformations(int selectedRequestIndex) throws SQLException, NamingException {
 		super();
 		this.selectedRequestIndex = selectedRequestIndex;
-        try (final Connection connection = getConnection()) {
-            assert connection != null;
-            database = Database.getDatabaseForConnection(connection);
-            requestNames = database.getRequestNames();
-            final String request = database
-                    .getRequestByName(requestNames.get(selectedRequestIndex));
-            result = executeRequest(connection, request, null);
-        }
+		try (final Connection connection = getConnection()) {
+			assert connection != null;
+			database = Database.getDatabaseForConnection(connection);
+			requestNames = database.getRequestNames();
+			final String request = database
+					.getRequestByName(requestNames.get(selectedRequestIndex));
+			result = executeRequest(connection, request, null);
+		}
 	}
 
 	public static int parseRequestIndex(String requestIndex) {

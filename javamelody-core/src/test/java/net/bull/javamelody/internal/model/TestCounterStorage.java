@@ -61,7 +61,7 @@ public class TestCounterStorage {
 		}
 		assertNull("String object can not be cast to the Counter, but the result should be null",
 				CounterStorage.readFromFile(tempFile));
-        assertFalse("corrupted file should be deleted", tempFile.exists());
+		assertFalse("corrupted file should be deleted", tempFile.exists());
 	}
 
 	/** Test.

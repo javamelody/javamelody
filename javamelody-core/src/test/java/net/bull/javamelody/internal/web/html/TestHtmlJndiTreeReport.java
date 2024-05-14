@@ -107,8 +107,9 @@ public class TestHtmlJndiTreeReport {
 		}
 		expect(enumeration.hasMore()).andReturn(true).times(7);
 		expect(enumeration.next()).andReturn(new Binding("test value", "test")).once();
-		expect(enumeration.next()).andReturn(new Binding("test value collection",
-				List.of("test collection", "test collection"))).once();
+		expect(enumeration.next()).andReturn(
+				new Binding("test value collection", List.of("test collection", "test collection")))
+				.once();
 		expect(enumeration.next())
 				.andReturn(new Binding("test context", createNiceMock(Context.class))).once();
 		expect(enumeration.next()).andReturn(new Binding("", "test")).once();

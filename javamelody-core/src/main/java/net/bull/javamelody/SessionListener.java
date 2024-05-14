@@ -57,8 +57,8 @@ public class SessionListener implements HttpSessionListener, HttpSessionIdListen
 	public static final String SESSION_REMOTE_USER = "javamelody.remoteUser";
 	public static final String SESSION_USER_AGENT = "javamelody.userAgent";
 
-	private static final Comparator<SessionInformations> SESSION_INFORMATIONS_COMPARATOR =
-			Comparator.comparing(SessionInformations::getLastAccess);
+	private static final Comparator<SessionInformations> SESSION_INFORMATIONS_COMPARATOR = Comparator
+			.comparing(SessionInformations::getLastAccess);
 
 	private static final String SESSION_ACTIVATION_KEY = "javamelody.sessionActivation";
 

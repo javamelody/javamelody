@@ -254,8 +254,7 @@ public class TestCollector {
 											"Catalina:type=GlobalRequestProcessor,name=jk-8009"))
 							.getObjectName());
 			TomcatInformations.initMBeans();
-			final Collector collector = new Collector(TEST,
-                    List.of(new Counter("http", null)));
+			final Collector collector = new Collector(TEST, List.of(new Counter("http", null)));
 			// first time to initialize against NOT_A_NUMBER
 			collector.collectWithoutErrors(
 					Collections.singletonList(new JavaInformations(null, true)));

@@ -180,8 +180,8 @@ public class CollectorServer {
 		for (final Map.Entry<String, List<URL>> entry : urlsByApplication.entrySet()) {
 			final String application = entry.getKey();
 			final List<URL> urls = entry.getValue();
-			final Future<?> future = executorService.submit(
-					() -> collectForApplicationWithoutErrors(application, urls));
+			final Future<?> future = executorService
+					.submit(() -> collectForApplicationWithoutErrors(application, urls));
 			futures.add(future);
 		}
 		return futures;

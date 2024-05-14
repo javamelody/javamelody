@@ -72,8 +72,8 @@ public class TestPdfJavaInformationsReport {
 											"Catalina:type=GlobalRequestProcessor,name=jk-8009"))
 							.getObjectName());
 			TomcatInformations.initMBeans();
-			final List<JavaInformations> myJavaInformationsList =
-					List.of(new JavaInformations(null, true));
+			final List<JavaInformations> myJavaInformationsList = List
+					.of(new JavaInformations(null, true));
 			final Document document = pdfDocumentFactory.createDocument();
 			document.open();
 			final PdfJavaInformationsReport pdfReport = new PdfJavaInformationsReport(
@@ -95,8 +95,8 @@ public class TestPdfJavaInformationsReport {
 											"Catalina:type=GlobalRequestProcessor,name=jk-8010"))
 							.getObjectName());
 			TomcatInformations.initMBeans();
-			final List<JavaInformations> myJavaInformationsList2 =
-					List.of(new JavaInformations(null, true));
+			final List<JavaInformations> myJavaInformationsList2 = List
+					.of(new JavaInformations(null, true));
 			final Document document2 = pdfDocumentFactory.createDocument();
 			document2.open();
 			final PdfJavaInformationsReport pdfReport2 = new PdfJavaInformationsReport(
@@ -106,8 +106,8 @@ public class TestPdfJavaInformationsReport {
 			assertNotEmptyAndClear(output);
 
 			jk8010.setrequestCount(1000);
-			final List<JavaInformations> myJavaInformationsList3 =
-					List.of(new JavaInformations(null, true));
+			final List<JavaInformations> myJavaInformationsList3 = List
+					.of(new JavaInformations(null, true));
 			final Document document3 = pdfDocumentFactory.createDocument();
 			document3.open();
 			final PdfJavaInformationsReport pdfReport3 = new PdfJavaInformationsReport(

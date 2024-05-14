@@ -156,10 +156,8 @@ public class TestCollectorServlet {
 		doPost(null, nullUrl, false);
 		doPost(null, nullUrl, true);
 		doPost(TEST, nullUrl, true);
-		doPost(TEST, List.of("http://localhost:8090/test", "http://localhost:8090/test"),
-				true);
-		doPost(TEST, List.of("https://localhost:8090/test", "http://localhost:8090/test"),
-				true);
+		doPost(TEST, List.of("http://localhost:8090/test", "http://localhost:8090/test"), true);
+		doPost(TEST, List.of("https://localhost:8090/test", "http://localhost:8090/test"), true);
 		doPost(TEST, List.of("ftp://localhost:8090/test"), true);
 		doPost(TEST, List.of("http://une url,pas une url"), true);
 	}

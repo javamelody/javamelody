@@ -66,8 +66,7 @@ public class TestHtmlSessionInformationsReport {
 				System.currentTimeMillis());
 		sessions.add(new SessionInformations(mySession, false));
 		final StringWriter writer = new StringWriter();
-		new HtmlSessionInformationsReport(Collections.emptyList(), writer)
-				.toHtml();
+		new HtmlSessionInformationsReport(Collections.emptyList(), writer).toHtml();
 		assertNotEmptyAndClear(writer);
 
 		try {

@@ -68,14 +68,13 @@ public class ConnectionInformations implements Serializable {
 		if (openingStackTrace == null) {
 			return Collections.emptyList();
 		}
-		final List<StackTraceElement> stackTrace = new ArrayList<>(
-				List.of(openingStackTrace));
+		final List<StackTraceElement> stackTrace = new ArrayList<>(List.of(openingStackTrace));
 		// on enlève les premiers éléments qui sont forcément ceux de javamelody
 		// (Thread.getStackTrace(), constructeur ConnectionInformations,
 		// JdbcWrapper.createConnectionProxy, appelant de createConnectionProxy...)
-        do {
-            stackTrace.remove(0);
-        } while (stackTrace.get(0).getClassName().startsWith(OWN_PACKAGE));
+		do {
+			stackTrace.remove(0);
+		} while (stackTrace.get(0).getClassName().startsWith(OWN_PACKAGE));
 		return stackTrace;
 	}
 

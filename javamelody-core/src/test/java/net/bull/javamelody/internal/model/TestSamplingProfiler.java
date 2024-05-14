@@ -93,7 +93,7 @@ public class TestSamplingProfiler {
 	@Test
 	public void testClassesInIncludeNoneMatching() {
 		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
-                List.of("not.matching.package,also.not.matching"));
+				List.of("not.matching.package,also.not.matching"));
 		assertEmptyHotspots(samplingProfiler);
 		samplingProfiler.update();
 		assertEmptyHotspots(samplingProfiler);
@@ -108,8 +108,8 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void testConstructor() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(
-				List.of("java", "javax."), null);
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(List.of("java", "javax."),
+				null);
 		assertEmptyHotspots(samplingProfiler);
 	}
 
@@ -118,8 +118,7 @@ public class TestSamplingProfiler {
 	 */
 	@Test
 	public void testConstructorInclude() {
-		final SamplingProfiler samplingProfiler = new SamplingProfiler(null,
-                List.of("net.bull"));
+		final SamplingProfiler samplingProfiler = new SamplingProfiler(null, List.of("net.bull"));
 		assertEmptyHotspots(samplingProfiler);
 	}
 
@@ -155,11 +154,11 @@ public class TestSamplingProfiler {
 		assertEquals("getCount", 0, sampledMethod.getCount());
 		assertEquals("equals", sampledMethod, sampledMethod);
 		assertEquals("equals", sampledMethod, sampledMethod1);
-        assertNotEquals("equals", sampledMethod, new SampledMethod("class1", "method2"));
-        assertNotEquals("equals", sampledMethod, new SampledMethod("class2", "method2"));
-        assertNotEquals("equals", sampledMethod, new Object());
+		assertNotEquals("equals", sampledMethod, new SampledMethod("class1", "method2"));
+		assertNotEquals("equals", sampledMethod, new SampledMethod("class2", "method2"));
+		assertNotEquals("equals", sampledMethod, new Object());
 		final Object object = null;
-        assertNotEquals("equals", object, sampledMethod);
+		assertNotEquals("equals", object, sampledMethod);
 		assertEquals("hashCode", sampledMethod.hashCode(), sampledMethod1.hashCode());
 		assertEquals("toString", sampledMethod.toString(), sampledMethod1.toString());
 		assertEquals("compareTo", 0, sampledMethod.compareTo(sampledMethod1));
