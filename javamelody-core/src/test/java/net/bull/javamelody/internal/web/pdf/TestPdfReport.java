@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,7 +116,7 @@ public class TestPdfReport {
 		final Counter counter = new Counter("http", "db.png", sqlCounter);
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = TestHtmlReport.getJobCounter();
-		final List<Counter> counters = Arrays.asList(counter, sqlCounter, errorCounter, jobCounter);
+		final List<Counter> counters = List.of(counter, sqlCounter, errorCounter, jobCounter);
 		counter.addRequest("test1", 0, 0, 0, false, 1000);
 		counter.addRequest("test2", 1000, 500, 500, false, 1000);
 		counter.addRequest("test3", 10000, 500, 500, true, 10000);
@@ -302,7 +301,7 @@ public class TestPdfReport {
 		toPdf(collector, false, Collections.singletonList(javaInformations), graphs);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
+		final Collector collector2 = new Collector("test 2", List.of(myCounter));
 		myCounter.bindContext("my context", "my context", null, -1, -1);
 		toPdf(collector2, false, Collections.singletonList(javaInformations), graphs);
 
@@ -341,7 +340,7 @@ public class TestPdfReport {
 		// counterName doit être http, sql ou ejb pour que les libellés de graph soient trouvés dans les traductions
 		final Counter counter = new Counter("http", "db.png");
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final List<Counter> counters = Arrays.asList(counter, errorCounter);
+		final List<Counter> counters = List.of(counter, errorCounter);
 		final Collector collector = new Collector(TEST_APP, counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -377,9 +376,9 @@ public class TestPdfReport {
 		final Document document = pdfDocumentFactory.createDocument();
 		document.open();
 		final PdfCounterRequestContextReport report = new PdfCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(),
-				Collections.<PdfCounterReport> emptyList(),
-				Collections.<ThreadInformations> emptyList(), true, pdfDocumentFactory, document);
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(), true, pdfDocumentFactory, document);
 		report.toPdf();
 		report.setTimeOfSnapshot(System.currentTimeMillis());
 		report.writeContextDetails();
@@ -451,7 +450,7 @@ public class TestPdfReport {
 	@Test
 	public void testSetters() throws Exception {
 		final Counter errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
-		final List<Counter> counters = Arrays.asList(errorCounter);
+		final List<Counter> counters = List.of(errorCounter);
 		final Collector collector = new Collector("test", counters);
 		final JavaInformations javaInformations = new JavaInformations(null, true);
 		final List<JavaInformations> javaInformationsList = Collections

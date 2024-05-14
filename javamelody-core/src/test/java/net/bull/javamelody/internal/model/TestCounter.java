@@ -350,13 +350,10 @@ public class TestCounter {
 	}
 
 	private static Thread bindRootContext(final Counter myCounter) {
-		final Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
-				myCounter.bindContext("second root context", "my context", null, -1, -1);
-			}
-		});
+		final Thread thread = new Thread(() ->
+            // bindContext avec un remoteUser pour avoir au moins un cas d'affichage de l'utilisateur
+            myCounter.bindContext("second root context", "my context", null, -1, -1)
+        );
 		thread.setDaemon(true);
 		thread.start();
 		return thread;

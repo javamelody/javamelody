@@ -31,7 +31,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -77,10 +76,8 @@ import net.bull.javamelody.internal.model.MBeans;
 import net.bull.javamelody.internal.model.Period;
 import net.bull.javamelody.internal.model.ProcessInformations;
 import net.bull.javamelody.internal.model.Range;
-import net.bull.javamelody.internal.model.SessionInformations;
 import net.bull.javamelody.internal.model.TestCounter;
 import net.bull.javamelody.internal.model.TestDatabaseInformations;
-import net.bull.javamelody.internal.model.ThreadInformations;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -114,7 +111,7 @@ public class TestHtmlReport {
 		counter = new Counter("http", "dbweb.png", sqlCounter);
 		errorCounter = new Counter(Counter.ERROR_COUNTER_NAME, null);
 		final Counter jobCounter = getJobCounter();
-		collector = new Collector("test", Arrays.asList(counter, sqlCounter, servicesCounter,
+		collector = new Collector("test", List.of(counter, sqlCounter, servicesCounter,
 				jspCounter, errorCounter, jobCounter));
 		writer = new StringWriter();
 	}
@@ -179,8 +176,8 @@ public class TestHtmlReport {
 	 * @throws IOException e */
 	@Test
 	public void testDoubleJavaInformations() throws IOException {
-		final List<JavaInformations> myJavaInformationsList = Arrays
-				.asList(new JavaInformations(null, true), new JavaInformations(null, true));
+		final List<JavaInformations> myJavaInformationsList = List
+				.of(new JavaInformations(null, true), new JavaInformations(null, true));
 		final HtmlReport htmlReport = new HtmlReport(collector, null, myJavaInformationsList,
 				Period.TOUT, writer);
 		htmlReport.toHtml(null, null);
@@ -229,7 +226,7 @@ public class TestHtmlReport {
 		setProperty(Parameter.WARNING_THRESHOLD_MILLIS, null);
 
 		// cas counterReportsByCounterName.size() == 1
-		collector = new Collector("test", Arrays.asList(counter));
+		collector = new Collector("test", List.of(counter));
 		final HtmlReport htmlReport2 = new HtmlReport(collector, null, javaInformationsList,
 				Period.TOUT, writer);
 		htmlReport2.toHtml(null, null);
@@ -342,10 +339,10 @@ public class TestHtmlReport {
 
 		htmlReport.writeSessionDetail("", null);
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), "message",
+		htmlReport.writeSessions(Collections.emptyList(), "message",
 				HttpPart.SESSIONS.getName());
 		assertNotEmptyAndClear(writer);
-		htmlReport.writeSessions(Collections.<SessionInformations> emptyList(), null,
+		htmlReport.writeSessions(Collections.emptyList(), null,
 				HttpPart.SESSIONS.getName());
 		assertNotEmptyAndClear(writer);
 		htmlReport.writeMBeans(MBeans.getAllMBeanNodes());
@@ -395,12 +392,7 @@ public class TestHtmlReport {
 		final Connection connection = TestDatabaseInformations.initH2();
 		// une deuxième connexion créée sur un thread qui n'existera plus quand le rapport sera généré
 		final ExecutorService executorService = Executors.newFixedThreadPool(1);
-		final Callable<Connection> task = new Callable<>() {
-			@Override
-			public Connection call() {
-				return TestDatabaseInformations.initH2();
-			}
-		};
+		final Callable<Connection> task = TestDatabaseInformations::initH2;
 		final Future<Connection> future = executorService.submit(task);
 		final Connection connection2 = future.get();
 		executorService.shutdown();
@@ -429,7 +421,7 @@ public class TestHtmlReport {
 		assertNotEmptyAndClear(writer);
 
 		final Counter myCounter = new Counter("http", null);
-		final Collector collector2 = new Collector("test 2", Arrays.asList(myCounter));
+		final Collector collector2 = new Collector("test 2", List.of(myCounter));
 		myCounter.bindContext("my context", "my context", null, -1, -1);
 		htmlReport = new HtmlReport(collector2, null, javaInformationsList, Period.SEMAINE, writer);
 		htmlReport.toHtml("message b", null);
@@ -645,14 +637,14 @@ public class TestHtmlReport {
 	public void testHtmlCounterRequestContext() throws IOException {
 		// cas où counterReportsByCounterName est null
 		assertNotNull("HtmlCounterRequestContextReport",
-				new HtmlCounterRequestContextReport(Collections.<CounterRequestContext> emptyList(),
-						null, Collections.<ThreadInformations> emptyList(), true, 500, writer));
+				new HtmlCounterRequestContextReport(Collections.emptyList(),
+						null, Collections.emptyList(), true, 500, writer));
 
 		// aucune requête en cours
 		final HtmlCounterRequestContextReport report = new HtmlCounterRequestContextReport(
-				Collections.<CounterRequestContext> emptyList(),
-				Collections.<String, HtmlCounterReport> emptyMap(),
-				Collections.<ThreadInformations> emptyList(), true, 500, writer);
+				Collections.emptyList(),
+				Collections.emptyMap(),
+				Collections.emptyList(), true, 500, writer);
 		report.toHtml();
 		assertNotEmptyAndClear(writer);
 
@@ -661,7 +653,7 @@ public class TestHtmlReport {
 				.singletonList(new CounterRequestContext(sqlCounter, null, "Test", "Test", null,
 						null, -1, -1, "sessionId"));
 		final HtmlCounterRequestContextReport report2 = new HtmlCounterRequestContextReport(
-				counterRequestContexts, null, Collections.<ThreadInformations> emptyList(), true, 0,
+				counterRequestContexts, null, Collections.emptyList(), true, 0,
 				writer);
 		report2.toHtml();
 		assertNotEmptyAndClear(writer);

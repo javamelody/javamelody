@@ -134,7 +134,7 @@ public class LabradorRetriever {
 	<T> T call() throws IOException {
 		if (shouldMock()) {
 			// ce générique doit être conservé pour la compilation javac en intégration continue
-			return this.<T> createMockResultOfCall();
+			return this.createMockResultOfCall();
 		}
 		final long start = System.currentTimeMillis();
 		int dataLength = -1;

@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 
 import org.junit.Before;
@@ -70,11 +70,11 @@ public class TestUpdateChecker {
 		Parameters.initialize(context);
 		verify(context);
 		final Collector collector = new Collector("test",
-				Arrays.asList(new Counter("http", null), new Counter("sql", null)));
+				List.of(new Counter("http", null), new Counter("sql", null)));
 		JRobin.initBackendFactory(new Timer(getClass().getSimpleName(), true));
 		assertNotNull("SessionListener", new SessionListener());
 		TestDatabaseInformations.initJdbcDriverParameters();
-		collector.collectWithoutErrors(Arrays.asList(new JavaInformations(null, true)));
+		collector.collectWithoutErrors(List.of(new JavaInformations(null, true)));
 		final String serverUrl = "http://dummy";
 		final UpdateChecker updateCheckerCollectorServer = UpdateChecker.createForTest(null,
 				UpdateChecker.COLLECTOR_SERVER_APPLICATION_TYPE, serverUrl);

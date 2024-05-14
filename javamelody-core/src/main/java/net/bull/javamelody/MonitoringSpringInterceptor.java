@@ -29,7 +29,7 @@ import net.bull.javamelody.internal.model.Counter;
 
 /**
  * Method interceptor that measures the duration of the intercepted call.
- *
+ * <p>
  * Inspired by Erik van Oosten (Java Simon, Licence LGPL)
  * @author Emeric Vernat
  */

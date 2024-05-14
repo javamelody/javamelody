@@ -23,7 +23,6 @@ import java.security.CodeSource;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -181,11 +180,11 @@ class FilterContext {
 		final List<Counter> counters;
 		if (JobInformations.QUARTZ_AVAILABLE) {
 			final Counter jobCounter = JobGlobalListener.getJobCounter();
-			counters = Arrays.asList(httpCounter, sqlCounter, jpaCounter, ejbCounter, springCounter,
+			counters = List.of(httpCounter, sqlCounter, jpaCounter, ejbCounter, springCounter,
 					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
 					errorCounter, logCounter, jobCounter);
 		} else {
-			counters = Arrays.asList(httpCounter, sqlCounter, jpaCounter, ejbCounter, springCounter,
+			counters = List.of(httpCounter, sqlCounter, jpaCounter, ejbCounter, springCounter,
 					guiceCounter, servicesCounter, strutsCounter, jsfCounter, jspCounter,
 					errorCounter, logCounter);
 		}
@@ -413,7 +412,7 @@ class FilterContext {
 		final String packageName = getClass().getName().substring(0,
 				getClass().getName().length() - getClass().getSimpleName().length() - 1);
 		String webapp = Parameters.getServletContext().getContextPath();
-		if (webapp.length() >= 1 && webapp.charAt(0) == '/') {
+		if (!webapp.isEmpty() && webapp.charAt(0) == '/') {
 			webapp = webapp.substring(1);
 		}
 		final List<Counter> counters = collector.getCounters();

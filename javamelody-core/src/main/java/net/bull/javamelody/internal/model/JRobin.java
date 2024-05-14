@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -604,14 +603,7 @@ public final class JRobin {
 					lastUpdateTimesByPath.put(file.getPath(), getLastUpdateTime(file));
 				}
 			}
-			final Comparator<File> comparatorByLastUpdateTime = new Comparator<>() {
-				@Override
-				public int compare(File o1, File o2) {
-					return lastUpdateTimesByPath.get(o1.getPath())
-							.compareTo(lastUpdateTimesByPath.get(o2.getPath()));
-				}
-			};
-			Collections.sort(rrdFiles, comparatorByLastUpdateTime);
+			rrdFiles.sort(Comparator.comparing(file -> lastUpdateTimesByPath.get(file.getPath())));
 			// delete least recently used rrd files until rrd disk usage < 20 MB
 			for (final File file : rrdFiles) {
 				if (diskUsage < maxRrdDiskUsage) {
@@ -687,7 +679,7 @@ public final class JRobin {
 		if (files == null) {
 			return Collections.emptyList();
 		}
-		return Arrays.asList(files);
+		return List.of(files);
 	}
 
 	private static RrdDbPool getRrdDbPool() throws IOException {

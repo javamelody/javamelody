@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * <p/>
  * If the name attribute is specified on a method it will override the method name part.
  * Default: the name of the method.
- *
+ * <p>
  * Inspired by Erik van Oosten (Java Simon, Licence LGPL)
  * @author Emeric Vernat
  */

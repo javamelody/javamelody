@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -224,7 +223,7 @@ public class CounterStorage {
 		if (files == null) {
 			return Collections.emptyList();
 		}
-		return Arrays.asList(files);
+		return List.of(files);
 	}
 
 	// cette méthode est utilisée dans l'ihm Swing

@@ -45,8 +45,8 @@ import net.bull.javamelody.internal.common.Parameters;
  * @author Emeric Vernat
  */
 class WebappVersions {
-	private static final Comparator<Map.Entry<String, Date>> WEBAPP_VERSIONS_VALUE_COMPARATOR = Collections
-			.reverseOrder(new MapValueComparator<String, Date>());
+	private static final Comparator<Map.Entry<String, Date>> WEBAPP_VERSIONS_VALUE_COMPARATOR =
+			new MapValueComparator<String, Date>().reversed();
 	private static final String VERSIONS_FILENAME = "versions.properties";
 	private static final String VERSIONS_DATE_PATTERN = "yyyy/MM/dd";
 
@@ -109,7 +109,7 @@ class WebappVersions {
 
 	Map<String, Date> getDatesByVersions() {
 		final List<Map.Entry<String, Date>> entries = new ArrayList<>(datesByVersions.entrySet());
-		Collections.sort(entries, WEBAPP_VERSIONS_VALUE_COMPARATOR);
+		entries.sort(WEBAPP_VERSIONS_VALUE_COMPARATOR);
 		final Map<String, Date> map = new LinkedHashMap<>();
 		for (final Map.Entry<String, Date> entry : entries) {
 			map.put(entry.getKey(), entry.getValue());

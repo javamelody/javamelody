@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.web.html;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +109,7 @@ class HtmlConnectionInformationsReport extends HtmlAbstractReport {
 		} else {
 			final StackTraceElement[] stackTrace = stackTracesByThread.get(thread);
 			writeTextWithStackTrace(thread.getName(),
-					stackTrace != null ? Arrays.asList(stackTrace) : null);
+					stackTrace != null ? List.of(stackTrace) : null);
 		}
 		write("</td>");
 	}

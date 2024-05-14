@@ -23,7 +23,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class TestMonitoringController {
 	@Test
 	public void testWriteHtmlToLastShutdownFile() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test", Arrays.asList(sqlCounter));
+		final Collector collector = new Collector("test", List.of(sqlCounter));
 		new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
 	}
 
@@ -71,7 +71,7 @@ public class TestMonitoringController {
 	@Test
 	public void testAddPdfContentTypeAndDisposition() {
 		final Counter sqlCounter = new Counter("sql", "db.png");
-		final Collector collector = new Collector("test collector", Arrays.asList(sqlCounter));
+		final Collector collector = new Collector("test collector", List.of(sqlCounter));
 		final HttpServletRequest httpRequest = createNiceMock(HttpServletRequest.class);
 		final HttpServletResponse httpResponse = createNiceMock(HttpServletResponse.class);
 		expect(httpRequest.getHeader("user-agent")).andReturn("Firefox").anyTimes();

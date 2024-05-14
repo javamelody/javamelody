@@ -39,7 +39,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
-import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,49 +71,25 @@ public class TestPayloadNameRequestWrapper extends EasyMockSupport {
 
 		//method
 		httpMethod = "POST";
-		expect(request.getMethod()).andAnswer(new IAnswer<String>() {
-			@Override
-			public String answer() throws Throwable {
-				return httpMethod;
-			}
-		}).anyTimes();
+		expect(request.getMethod()).andAnswer(() -> httpMethod).anyTimes();
 
 		//content type
 		contentType = "text/html";
-		expect(request.getContentType()).andAnswer(new IAnswer<String>() {
-			@Override
-			public String answer() throws Throwable {
-				return contentType;
-			}
-		}).anyTimes();
+		expect(request.getContentType()).andAnswer(() -> contentType).anyTimes();
 
 		//headers
 		headers = new HashMap<>();
 		final Capture<String> headerName = Capture.newInstance();
-		expect(request.getHeader(EasyMock.capture(headerName))).andAnswer(new IAnswer<String>() {
-			@Override
-			public String answer() throws Throwable {
-				return headers.get(headerName.getValue());
-			}
-		}).anyTimes();
+		expect(request.getHeader(EasyMock.capture(headerName)))
+				.andAnswer(() -> headers.get(headerName.getValue())).anyTimes();
 
 		//query string
 		queryString = null;
-		expect(request.getQueryString()).andAnswer(new IAnswer<String>() {
-			@Override
-			public String answer() throws Throwable {
-				return queryString;
-			}
-		}).anyTimes();
+		expect(request.getQueryString()).andAnswer(() -> queryString).anyTimes();
 
 		//body
 		body = "";
-		expect(request.getInputStream()).andAnswer(new IAnswer<ServletInputStream>() {
-			@Override
-			public ServletInputStream answer() throws Throwable {
-				return createServletOutputStream();
-			}
-		});
+		expect(request.getInputStream()).andAnswer(this::createServletOutputStream);
 
 		replayAll();
 	}

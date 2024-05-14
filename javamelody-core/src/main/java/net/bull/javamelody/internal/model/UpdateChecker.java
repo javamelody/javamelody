@@ -277,12 +277,10 @@ public final class UpdateChecker {
 	}
 
 	private String getDatabaseInfo(final Connection connection) throws SQLException {
-		try {
-			final DatabaseMetaData metaData = connection.getMetaData();
-			return metaData.getDatabaseProductName() + ' ' + metaData.getDatabaseProductVersion();
-		} finally {
-			connection.close();
-		}
+        try (connection) {
+            final DatabaseMetaData metaData = connection.getMetaData();
+            return metaData.getDatabaseProductName() + ' ' + metaData.getDatabaseProductVersion();
+        }
 	}
 
 	private static String encode(final String s) {

@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -55,8 +54,7 @@ final class JdbcWrapperHelper {
 	private static final BasicDataSourcesProperties DBCP_BASIC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 	private static final BasicDataSourcesProperties TOMCAT_JDBC_DATASOURCES_PROPERTIES = new BasicDataSourcesProperties();
 
-	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections
-			.synchronizedMap(new WeakHashMap<Class<?>, Constructor<?>>());
+	private static final Map<Class<?>, Constructor<?>> PROXY_CACHE = Collections.synchronizedMap(new WeakHashMap<>());
 
 	/**
 	 * Propriétés des BasicDataSources si elles viennent de Tomcat-DBCP ou de DBCP seul.
@@ -95,12 +93,9 @@ final class JdbcWrapperHelper {
 		}
 
 		void put(String dataSourceName, String key, Object value) {
-			Map<String, Object> dataSourceProperties = properties.get(dataSourceName);
-			if (dataSourceProperties == null) {
-				dataSourceProperties = new LinkedHashMap<>();
-				properties.put(dataSourceName, dataSourceProperties);
-			}
-			dataSourceProperties.put(key, value);
+            final Map<String, Object> dataSourceProperties = properties.computeIfAbsent(dataSourceName,
+					k -> new LinkedHashMap<>());
+            dataSourceProperties.put(key, value);
 		}
 	}
 
@@ -591,12 +586,12 @@ final class JdbcWrapperHelper {
 		// et connection.getClass().getInterfaces() est vide dans ce cas
 		final List<Class<?>> myInterfaces;
 		if (interfaces == null) {
-			myInterfaces = new ArrayList<>(Arrays.asList(objectClass.getInterfaces()));
+			myInterfaces = new ArrayList<>(List.of(objectClass.getInterfaces()));
 			Class<?> classe = objectClass.getSuperclass();
 			while (classe != null) {
 				final Class<?>[] classInterfaces = classe.getInterfaces();
 				if (classInterfaces.length > 0) {
-					final List<Class<?>> superInterfaces = Arrays.asList(classInterfaces);
+					final List<Class<?>> superInterfaces = List.of(classInterfaces);
 					// removeAll d'abord car il ne faut pas de doublon dans la liste
 					myInterfaces.removeAll(superInterfaces);
 					myInterfaces.addAll(superInterfaces);

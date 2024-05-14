@@ -19,6 +19,7 @@ package net.bull.javamelody.internal.model;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +37,9 @@ import java.util.Scanner;
 public class HeapHistogram implements Serializable {
 	private static final long serialVersionUID = 2163916067335213382L;
 
+	private static final Comparator<ClassInfo> CLASS_INFO_COMPARATOR =
+			Comparator.comparingLong(ClassInfo::getBytes).reversed();
+
 	@SuppressWarnings("all")
 	private final List<ClassInfo> classes;
 	@SuppressWarnings("all")
@@ -50,7 +54,7 @@ public class HeapHistogram implements Serializable {
 
 	public HeapHistogram(InputStream in, boolean jrockit) {
 		time = new Date();
-		final Scanner sc = new Scanner(in, "UTF-8");
+		final Scanner sc = new Scanner(in, StandardCharsets.UTF_8);
 		final List<ClassInfo> classInfos = scan(sc, jrockit);
 
 		classes = new ArrayList<>();
@@ -158,20 +162,8 @@ public class HeapHistogram implements Serializable {
 	}
 
 	private void sort() {
-		final Comparator<ClassInfo> classInfoReversedComparator = Collections
-				.reverseOrder(new ClassInfoComparator());
-		Collections.sort(permGenClasses, classInfoReversedComparator);
-		Collections.sort(classes, classInfoReversedComparator);
-	}
-
-	static final class ClassInfoComparator implements Comparator<ClassInfo>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(ClassInfo classInfo1, ClassInfo classInfo2) {
-			return Long.compare(classInfo1.getBytes(), classInfo2.getBytes());
-		}
+		permGenClasses.sort(CLASS_INFO_COMPARATOR);
+		classes.sort(CLASS_INFO_COMPARATOR);
 	}
 
 	private void skipHeader(Scanner sc, boolean jrockit) {

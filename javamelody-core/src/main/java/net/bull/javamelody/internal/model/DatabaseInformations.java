@@ -27,7 +27,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +73,7 @@ public class DatabaseInformations implements Serializable {
 		private final List<String> databaseNames;
 
 		Database(String... databaseNames) {
-			this.databaseNames = Arrays.asList(databaseNames);
+			this.databaseNames = List.of(databaseNames);
 		}
 
 		// CHECKSTYLE:OFF
@@ -83,14 +82,14 @@ public class DatabaseInformations implements Serializable {
 			final List<String> tmp;
 			switch (this) {
 			case POSTGRESQL:
-				tmp = Arrays.asList("pg_stat_activity", "pg_locks", "pg_database", "pg_tablespace",
+				tmp = List.of("pg_stat_activity", "pg_locks", "pg_database", "pg_tablespace",
 						"pg_stat_database", "pg_stat_user_tables", "pg_stat_user_indexes",
 						"pg_statio_user_tables", "pg_statio_user_indexes",
 						"pg_statio_user_sequences", "pg_settings");
 				break;
 			case MYSQL:
 			case MARIADB:
-				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
+				tmp = List.of("processlist", "databases", "variables", "global_status",
 						"innodb_status", "unusedIndexes", "longRunning", "tableStats",
 						"eventsWaits", "tableIoWaits", "indexIoWaits", "tableLockWaits",
 						"tablesWithoutPk", "perfDigests", "memory");
@@ -98,42 +97,42 @@ public class DatabaseInformations implements Serializable {
 			case MYSQL4:
 				// les noms des premières requêtes sont les mêmes, mais la requête SQL correspondant à "innodb_status"
 				// n'est pas identique entre MYSQL 5+ et MYSQL 4 (issue 195)
-				tmp = Arrays.asList("processlist", "databases", "variables", "global_status",
+				tmp = List.of("processlist", "databases", "variables", "global_status",
 						"innodb_status");
 				break;
 			case ORACLE:
-				tmp = Arrays.asList("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
+				tmp = List.of("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
 						"invalidObjects", "disabledConstraints", "tableStats", "instance",
 						"database", "nlsParameters", "tablespaceFreespace", "datafileIo",
 						"tablespaceExtents", "ratios", "parameters", "rollbackSegmentStatistics",
 						"statistics", "events");
 				break;
 			case DB2:
-				tmp = Arrays.asList("mon_current_sql", "mon_db_summary", "mon_lockwaits",
+				tmp = List.of("mon_current_sql", "mon_db_summary", "mon_lockwaits",
 						"mon_service_subclass_summary", "mon_current_uow", "mon_workload_summary",
 						"mon_get_connection", "current_queries");
 				break;
 			case H2:
-				tmp = Arrays.asList("memory", "sessions", "locks", "settings");
+				tmp = List.of("memory", "sessions", "locks", "settings");
 				break;
 			case HSQLDB:
-				tmp = Arrays.asList("system_sessions", "system_cacheinfo", "system_properties",
+				tmp = List.of("system_sessions", "system_cacheinfo", "system_properties",
 						"system_schemas");
 				break;
 			case SQLSERVER:
-				tmp = Arrays.asList("version", "connections");
+				tmp = List.of("version", "connections");
 				break;
 			case SYBASE:
-				tmp = Arrays.asList("sp_who", "connections", "sp_lock", "lock",
+				tmp = List.of("sp_who", "connections", "sp_lock", "lock",
 						"running_stored_procedure", "used_temporary_tables", "used_tables",
 						"sp_version");
 				break;
 			case INFORMIX:
-				tmp = Arrays.asList("version", "sessions", "resources_by_user", "current_queries",
+				tmp = List.of("version", "sessions", "resources_by_user", "current_queries",
 						"config");
 				break;
 			case SQLITE:
-				tmp = Arrays.asList("version", "database_list");
+				tmp = List.of("version", "database_list");
 				break;
 			default:
 				throw new IllegalStateException();
@@ -201,17 +200,14 @@ public class DatabaseInformations implements Serializable {
 	public DatabaseInformations(int selectedRequestIndex) throws SQLException, NamingException {
 		super();
 		this.selectedRequestIndex = selectedRequestIndex;
-		final Connection connection = getConnection();
-		assert connection != null;
-		try {
-			database = Database.getDatabaseForConnection(connection);
-			requestNames = database.getRequestNames();
-			final String request = database
-					.getRequestByName(requestNames.get(selectedRequestIndex));
-			result = executeRequest(connection, request, null);
-		} finally {
-			connection.close();
-		}
+        try (final Connection connection = getConnection()) {
+            assert connection != null;
+            database = Database.getDatabaseForConnection(connection);
+            requestNames = database.getRequestNames();
+            final String request = database
+                    .getRequestByName(requestNames.get(selectedRequestIndex));
+            result = executeRequest(connection, request, null);
+        }
 	}
 
 	public static int parseRequestIndex(String requestIndex) {

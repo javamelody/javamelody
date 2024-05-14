@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -262,7 +263,7 @@ class HtmlCoreReport extends HtmlAbstractReport {
 					continue;
 				}
 				writeDirectly("    <div class='menuButton'><a href='?report="
-						+ URLEncoder.encode(customReportName, "UTF-8") + "'>"
+						+ URLEncoder.encode(customReportName, StandardCharsets.UTF_8) + "'>"
 						+ htmlEncode(customReportName) + "</a></div>");
 				writeln("");
 			}

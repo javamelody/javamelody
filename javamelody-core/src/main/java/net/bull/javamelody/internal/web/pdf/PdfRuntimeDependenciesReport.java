@@ -19,7 +19,7 @@ package net.bull.javamelody.internal.web.pdf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -145,12 +145,9 @@ class PdfRuntimeDependenciesReport extends PdfAbstractReport {
 			// c'est un Set donc on ne compte une méthode 'a' appelée depuis une classe qu'une seule fois
 			// même si elle est appelée deux fois depuis la même classe
 			// ou même à un seul endroit mais avec des exécutions dans une boucle
-			Set<CounterRequest> childRequests = methodsCalledByCallerBeans.get(callerBean);
-			if (childRequests == null) {
-				childRequests = new HashSet<>();
-				methodsCalledByCallerBeans.put(callerBean, childRequests);
-			}
-			for (final String childRequestId : childRequestIds) {
+            Set<CounterRequest> childRequests = methodsCalledByCallerBeans.computeIfAbsent(callerBean,
+					k -> new HashSet<>());
+            for (final String childRequestId : childRequestIds) {
 				// on ne regarde que les requêtes du même counter
 				// (pas sql, et pas guice si on est dans spring)
 				if (counter.isRequestIdFromThisCounter(childRequestId)) {
@@ -199,7 +196,7 @@ class PdfRuntimeDependenciesReport extends PdfAbstractReport {
 			calledBeansSet.addAll(values.keySet());
 		}
 		final List<String> result = new ArrayList<>(calledBeansSet);
-		Collections.sort(result);
+		result.sort(Comparator.naturalOrder());
 		return result;
 	}
 
@@ -217,7 +214,7 @@ class PdfRuntimeDependenciesReport extends PdfAbstractReport {
 		writeHeader();
 
 		final List<String> callerBeans = new ArrayList<>(runtimeDependencies.keySet());
-		Collections.sort(callerBeans);
+		callerBeans.sort(Comparator.naturalOrder());
 		final PdfPCell defaultCell = getDefaultCell();
 		boolean odd = false;
 		for (final String callerBean : callerBeans) {

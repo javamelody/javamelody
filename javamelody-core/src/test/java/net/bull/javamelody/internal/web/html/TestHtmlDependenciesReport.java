@@ -27,9 +27,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,15 +79,10 @@ public class TestHtmlDependenciesReport {
 				.andReturn(Collections.singleton(javamelodyDir)).anyTimes();
 		expect(context.getResourcePaths(javamelodyDir)).andReturn(Collections.singleton(webapp))
 				.anyTimes();
-		final IAnswer<InputStream> answer = new IAnswer<>() {
-			@Override
-			public InputStream answer() throws Throwable {
-				return getClass().getResourceAsStream("/pom.xml");
-			}
-		};
+		final IAnswer<InputStream> answer = () -> getClass().getResourceAsStream("/pom.xml");
 		expect(context.getResourceAsStream(webapp + "pom.xml")).andAnswer(answer).anyTimes();
 		final Set<String> dependencies = new LinkedHashSet<>(
-				Arrays.asList("/WEB-INF/lib/jrobin-1.5.9.jar",
+				List.of("/WEB-INF/lib/jrobin-1.5.9.jar",
 						"/WEB-INF/lib/javamelody-core-1.65.0.jar", "/WEB-INF/lib/nothing.jar"));
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		expect(context.getMajorVersion()).andReturn(5).anyTimes();

@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -77,13 +77,13 @@ public class TestReportServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoGet() throws ServletException, IOException {
-		doGet(Collections.<HttpParameter, String> emptyMap(), true);
+		doGet(Collections.emptyMap(), true);
 
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
-			doGet(Collections.<HttpParameter, String> emptyMap(), false);
+			doGet(Collections.emptyMap(), false);
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
-			doGet(Collections.<HttpParameter, String> emptyMap(), false);
+			doGet(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
@@ -137,7 +137,7 @@ public class TestReportServlet {
 			}
 		}
 		expect(request.getHeaders("Accept-Encoding"))
-				.andReturn(Collections.enumeration(Arrays.asList("application/gzip"))).anyTimes();
+				.andReturn(Collections.enumeration(List.of("application/gzip"))).anyTimes();
 		final HttpServletResponse response = createNiceMock(HttpServletResponse.class);
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		expect(response.getOutputStream()).andReturn(new FilterServletOutputStream(output))

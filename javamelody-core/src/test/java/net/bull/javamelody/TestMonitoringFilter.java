@@ -37,7 +37,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -142,7 +141,7 @@ public class TestMonitoringFilter {// NOPMD
 		expect(context.getServerInfo()).andReturn("mockJetty").anyTimes();
 		// dependencies pour avoir des dépendances dans JavaInformations
 		final Set<String> dependencies = new LinkedHashSet<>(
-				Arrays.asList("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
+				List.of("/WEB-INF/lib/jrobin.jar", "/WEB-INF/lib/javamelody.jar"));
 		// et flags pour considérer que les ressources pom.xml et web.xml existent
 		JavaInformations.setWebXmlExistsAndPomXmlExists(true, true);
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
@@ -509,54 +508,54 @@ public class TestMonitoringFilter {// NOPMD
 	 * @throws IOException e */
 	@Test
 	public void testDoMonitoring() throws ServletException, IOException {
-		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.emptyMap());
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "html"));
 		monitoring(Collections.singletonMap(HttpParameter.FORMAT, "htmlbody"));
 		setProperty(Parameter.DISABLED, Boolean.TRUE.toString());
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.DISABLED, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.NO_DATABASE, Boolean.TRUE.toString());
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.emptyMap());
 		} finally {
 			setProperty(Parameter.NO_DATABASE, Boolean.FALSE.toString());
 		}
 		setProperty(Parameter.ALLOWED_ADDR_PATTERN, "256.*");
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, ".*");
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.ALLOWED_ADDR_PATTERN, null);
 		}
 		setProperty(Parameter.AUTHORIZED_USERS, "admin:password, ");
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 			setProperty(Parameter.AUTHORIZED_USERS, "");
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.AUTHORIZED_USERS, null);
 		}
 		setProperty(Parameter.MONITORING_PATH, "/admin/monitoring");
 		try {
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap(), false);
+			monitoring(Collections.emptyMap(), false);
 		} finally {
 			setProperty(Parameter.MONITORING_PATH, "/monitoring");
 		}
 		try {
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, Boolean.TRUE.toString());
 			setUp();
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.emptyMap());
 		} finally {
 			setProperty(Parameter.JMX_EXPOSE_ENABLED, null);
 		}
@@ -581,7 +580,7 @@ public class TestMonitoringFilter {// NOPMD
 
 			// simulate call to monitoring?resource=boomerang.min.js
 			monitoring(Collections.singletonMap(HttpParameter.RESOURCE, "boomerang.min.js"));
-			monitoring(Collections.<HttpParameter, String> emptyMap());
+			monitoring(Collections.emptyMap());
 			monitoring(Collections.singletonMap(HttpParameter.PART, HttpPart.RUM.getName()), false);
 
 			// simulate call to monitoring?part=rum to register RUM data
@@ -621,10 +620,10 @@ public class TestMonitoringFilter {// NOPMD
 		setProperty(Parameter.MAIL_SESSION, "testmailsession");
 		setProperty(Parameter.ADMIN_EMAILS, null);
 		setUp();
-		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.emptyMap());
 		setProperty(Parameter.ADMIN_EMAILS, "evernat@free.fr");
 		setUp();
-		monitoring(Collections.<HttpParameter, String> emptyMap());
+		monitoring(Collections.emptyMap());
 		setProperty(Parameter.MAIL_SESSION, null);
 		setProperty(Parameter.ADMIN_EMAILS, null);
 	}
@@ -1169,11 +1168,10 @@ public class TestMonitoringFilter {// NOPMD
 		final Random random = new Random();
 		if (random.nextBoolean()) {
 			expect(request.getHeaders("Accept-Encoding"))
-					.andReturn(Collections.enumeration(Arrays.asList("application/gzip")))
-					.anyTimes();
+					.andReturn(Collections.enumeration(List.of("application/gzip"))).anyTimes();
 		} else {
 			expect(request.getHeaders("Accept-Encoding"))
-					.andReturn(Collections.enumeration(Arrays.asList("text/html"))).anyTimes();
+					.andReturn(Collections.enumeration(List.of("text/html"))).anyTimes();
 		}
 		for (final Map.Entry<String, String> entry : parameters.entrySet()) {
 			if (HttpParameter.REQUEST.getName().equals(entry.getKey())) {

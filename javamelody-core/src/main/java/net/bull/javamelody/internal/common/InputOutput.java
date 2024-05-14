@@ -55,7 +55,7 @@ public final class InputOutput {
 	public static String pumpToString(InputStream input, Charset charset) throws IOException {
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		pump(input, out);
-		return out.toString(charset.name());
+		return out.toString(charset);
 	}
 
 	public static void pumpToFile(InputStream input, File file) throws IOException {

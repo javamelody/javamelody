@@ -68,6 +68,9 @@ public final class JdbcWrapper {
 	static final AtomicLong BUILD_QUEUE_WAITING_DURATIONS_SUM = new AtomicLong();
 	static final Map<Integer, ConnectionInformations> USED_CONNECTION_INFORMATIONS = new ConcurrentHashMap<>();
 
+	static final Comparator<ConnectionInformations> CONNECTION_INFORMATIONS_COMPARATOR =
+			Comparator.comparing(ConnectionInformations::getOpeningDate);
+
 	private static final int MAX_USED_CONNECTION_INFORMATIONS = 500;
 
 	// Cette variable sqlCounter conserve un état qui est global au filtre et à l'application (donc thread-safe).
@@ -77,17 +80,6 @@ public final class JdbcWrapper {
 	private boolean jboss;
 	private boolean glassfish;
 	private boolean weblogic;
-
-	static final class ConnectionInformationsComparator
-			implements Comparator<ConnectionInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(ConnectionInformations connection1, ConnectionInformations connection2) {
-			return connection1.getOpeningDate().compareTo(connection2.getOpeningDate());
-		}
-	}
 
 	/**
 	 * Handler de proxy d'un {@link Statement} jdbc.
@@ -367,7 +359,7 @@ public final class JdbcWrapper {
 	public static List<ConnectionInformations> getConnectionInformationsList() {
 		final List<ConnectionInformations> result = new ArrayList<>(
 				USED_CONNECTION_INFORMATIONS.values());
-		Collections.sort(result, new ConnectionInformationsComparator());
+		result.sort(CONNECTION_INFORMATIONS_COMPARATOR);
 		return Collections.unmodifiableList(result);
 	}
 

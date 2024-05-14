@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -547,9 +548,9 @@ public class MonitoringFilter implements Filter {
 		final URL registerUrl;
 		try {
 			registerUrl = new URL(collectServerUrl.toExternalForm() + "?appName="
-					+ URLEncoder.encode(appName, "UTF-8") + "&appUrls="
+					+ URLEncoder.encode(appName, StandardCharsets.UTF_8) + "&appUrls="
 					// "UTF-8" as said in javadoc
-					+ URLEncoder.encode(applicationNodeUrl.toExternalForm(), "UTF-8")
+					+ URLEncoder.encode(applicationNodeUrl.toExternalForm(), StandardCharsets.UTF_8)
 					+ "&action=registerNode");
 			unregisterApplicationNodeInCollectServerUrl = new URL(
 					registerUrl.toExternalForm().replace("registerNode", "unregisterNode"));

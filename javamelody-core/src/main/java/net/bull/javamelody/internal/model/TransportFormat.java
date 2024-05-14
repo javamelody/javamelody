@@ -29,16 +29,15 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -128,10 +127,8 @@ public enum TransportFormat {
 		static void writeToJson(Serializable serializable, BufferedOutputStream bufferedOutput)
 				throws IOException {
 			final XStream xstream = createXStream(true);
-			try {
+			try (bufferedOutput) {
 				xstream.toXML(serializable, bufferedOutput);
-			} finally {
-				bufferedOutput.close();
 			}
 		}
 
@@ -189,7 +186,7 @@ public enum TransportFormat {
 	// et qu'ainsi on ne dépende pas de GSON si on ne se sert pas du format gson
 	// ni de XStream si on ne se sert pas du format json
 	private static final class GsonIO {
-		private static final String GSON_CHARSET_NAME = "UTF-8";
+		private static final Charset GSON_CHARSET = StandardCharsets.UTF_8;
 
 		private GsonIO() {
 			super();
@@ -197,19 +194,13 @@ public enum TransportFormat {
 
 		static void writeToGson(Serializable serializable, BufferedOutputStream bufferedOutput)
 				throws IOException {
-			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer = new JsonSerializer<>() {
-				@Override
-				public JsonElement serialize(StackTraceElement src, Type typeOfSrc,
-						JsonSerializationContext context) {
-					return new JsonPrimitive(src.toString());
-				}
-			};
+			final JsonSerializer<StackTraceElement> stackTraceElementJsonSerializer =
+					(src, typeOfSrc, context) -> new JsonPrimitive(src.toString());
 			final Gson gson = new GsonBuilder()
 					// .setPrettyPrinting() : prettyPrinting pas nécessaire avec un viewer de json
 					.registerTypeAdapter(StackTraceElement.class, stackTraceElementJsonSerializer)
 					.create();
-			try (OutputStreamWriter writer = new OutputStreamWriter(bufferedOutput,
-					GSON_CHARSET_NAME)) {
+			try (OutputStreamWriter writer = new OutputStreamWriter(bufferedOutput, GSON_CHARSET)) {
 				gson.toJson(serializable, writer);
 			}
 		}

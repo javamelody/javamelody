@@ -20,7 +20,6 @@ package net.bull.javamelody.internal.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -37,16 +36,11 @@ import net.bull.javamelody.internal.common.InputOutput;
  * @author Emeric Vernat
  */
 abstract class CollectorDataMerge {
+	// tri par dates décroissantes de fichiers
+	private static final Comparator<File> FILES_COMPARATOR = (o1, o2) -> (int) (o2.lastModified() - o1.lastModified());
+
 	private final List<File> sourceDirectories;
 	private final File targetDirectory;
-
-	// tri par dates décroissantes de fichiers
-	private static final Comparator<File> FILES_COMPARATOR = new Comparator<>() {
-		@Override
-		public int compare(File o1, File o2) {
-			return (int) (o2.lastModified() - o1.lastModified());
-		}
-	};
 
 	CollectorDataMerge(List<File> sourceDirectories, File targetDirectory) {
 		super();
@@ -82,7 +76,7 @@ abstract class CollectorDataMerge {
 								InputOutput.copyFile(filesToMerge.get(0),
 										new File(targetDirectory, fileName));
 							} else {
-								Collections.sort(filesToMerge, FILES_COMPARATOR);
+								filesToMerge.sort(FILES_COMPARATOR);
 								mergeGraphs(filesToMerge, target);
 							}
 						} else if (fileName.endsWith(".ser.gz")) {
@@ -91,7 +85,7 @@ abstract class CollectorDataMerge {
 								InputOutput.copyFile(filesToMerge.get(0),
 										new File(targetDirectory, fileName));
 							} else {
-								Collections.sort(filesToMerge, FILES_COMPARATOR);
+								filesToMerge.sort(FILES_COMPARATOR);
 								mergeStatistics(filesToMerge, target);
 							}
 						} else {
@@ -230,6 +224,6 @@ abstract class CollectorDataMerge {
 		if (files == null) {
 			return Collections.emptyList();
 		}
-		return Arrays.asList(files);
+		return List.of(files);
 	}
 }

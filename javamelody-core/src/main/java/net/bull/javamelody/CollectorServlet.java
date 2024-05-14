@@ -20,7 +20,7 @@ package net.bull.javamelody;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
-import java.util.Arrays;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -174,10 +174,10 @@ public class CollectorServlet extends HttpServlet {
 			} else {
 				assert aggregatedApps != null;
 				collectorController.addCollectorAggregationApplication(appName,
-						Arrays.asList(aggregatedApps));
+						List.of(aggregatedApps));
 				LOGGER.info("aggregation application added: " + appName);
 				LOGGER.info("aggregated applications of the aggregation application: "
-						+ Arrays.asList(aggregatedApps));
+						+ List.of(aggregatedApps));
 			}
 			CollectorController.showAlertAndRedirectTo(resp,
 					I18N.getFormattedString("application_ajoutee", appName),

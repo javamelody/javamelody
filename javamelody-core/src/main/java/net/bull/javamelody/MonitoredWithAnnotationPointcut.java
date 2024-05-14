@@ -25,7 +25,7 @@ import org.springframework.aop.Pointcut;
 
 /**
  * Pointcut that identifies methods/classes with the {@link MonitoredWithSpring} annotation.
- *
+ * <p>
  * Inspired by Erik van Oosten (Java Simon, Licence LGPL)
  * @author Emeric Vernat
  */

@@ -29,7 +29,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -112,7 +111,7 @@ public class TestCollector {
 		assertToStringNotEmpty("java", new JavaInformations(null, false));
 		assertToStringNotEmpty("thread",
 				new ThreadInformations(Thread.currentThread(),
-						Arrays.asList(Thread.currentThread().getStackTrace()), 100, 1000, false,
+						List.of(Thread.currentThread().getStackTrace()), 100, 1000, false,
 						Parameters.getHostAddress()));
 		assertToStringNotEmpty("session", new SessionInformations(new SessionTestImpl(true), true));
 		assertToStringNotEmpty("memory", new MemoryInformations());
@@ -178,8 +177,8 @@ public class TestCollector {
 		final Counter strutsCounter = new Counter(Counter.STRUTS_COUNTER_NAME, null);
 		final Counter jobCounter = new Counter(Counter.JOB_COUNTER_NAME, null);
 		final Collector collector = new Collector(TEST,
-				Arrays.asList(counter, jspCounter, strutsCounter, jobCounter));
-		if (collector.getCounters().size() == 0) {
+				List.of(counter, jspCounter, strutsCounter, jobCounter));
+		if (collector.getCounters().isEmpty()) {
 			fail("getCounters");
 		}
 		counter.addRequest("test1", 0, 0, 0, false, 1000);
@@ -210,7 +209,7 @@ public class TestCollector {
 			fail("getLastCollectDuration");
 		}
 
-		if (collector.getCounterJRobins().size() == 0) {
+		if (collector.getCounterJRobins().isEmpty()) {
 			fail("getCounterJRobins");
 		}
 		final Range range = Period.JOUR.getRange();
@@ -256,7 +255,7 @@ public class TestCollector {
 							.getObjectName());
 			TomcatInformations.initMBeans();
 			final Collector collector = new Collector(TEST,
-					Arrays.asList(new Counter("http", null)));
+                    List.of(new Counter("http", null)));
 			// first time to initialize against NOT_A_NUMBER
 			collector.collectWithoutErrors(
 					Collections.singletonList(new JavaInformations(null, true)));
@@ -284,13 +283,13 @@ public class TestCollector {
 		for (int i = 0; i < 50; i++) {
 			counter.addRequest("test 3", 0, 0, 0, false, 1000);
 		}
-		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+		collector.collectWithoutErrors(Collections.emptyList());
 		if (counter.getRequestsCount() > 1) {
 			fail("removeRequest");
 		}
 		counter.addRequest("test 1", 0, 0, 0, false, 1000);
 		counter.addRequest("test 2", 0, 0, 0, false, 1000);
-		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+		collector.collectWithoutErrors(Collections.emptyList());
 		if (counter.getRequestsCount() > 1) {
 			fail("removeRequest");
 		}
@@ -302,7 +301,7 @@ public class TestCollector {
 		}
 		counter.addRequest("test 3", 0, 0, 0, false, 1000);
 		counter.addRequest("test 4", 0, 0, 0, false, 1000);
-		collector.collectWithoutErrors(Collections.<JavaInformations> emptyList());
+		collector.collectWithoutErrors(Collections.emptyList());
 		if (counter.getRequestsCount() > 1) {
 			fail("removeRequest");
 		}
@@ -338,7 +337,7 @@ public class TestCollector {
 	public void testGetRangeCountersToBeDisplayed() throws IOException {
 		final Counter counter = createCounter();
 		final Collector collector = new Collector(TEST, Collections.singletonList(counter));
-		if (collector.getCounters().size() == 0) {
+		if (collector.getCounters().isEmpty()) {
 			fail("getCounters");
 		}
 		final JavaInformations javaInformations = new JavaInformations(null, true);
@@ -366,7 +365,7 @@ public class TestCollector {
 	public void testGetRangeCounter() throws IOException {
 		final Counter counter = createCounter();
 		final Counter counter2 = new Counter("sql", null);
-		final Collector collector = new Collector(TEST, Arrays.asList(counter, counter2));
+		final Collector collector = new Collector(TEST, List.of(counter, counter2));
 		collector.getRangeCounter(Period.JOUR.getRange(), counter2.getName());
 		collector.getRangeCounter(Period.TOUT.getRange(), counter2.getName());
 		try {
@@ -393,7 +392,7 @@ public class TestCollector {
 	public void testStop() {
 		final Collector collector = createCollectorWithOneCounter();
 		collector.stop();
-		if (collector.getCounters().size() == 0) {
+		if (collector.getCounters().isEmpty()) {
 			fail("collector.getCounters() ne doit pas être vide après stop");
 		}
 		// on ne risque pas grand chose à tenter de détacher quelque chose que l'on a pas attacher

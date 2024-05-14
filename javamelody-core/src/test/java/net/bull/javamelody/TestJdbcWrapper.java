@@ -37,7 +37,6 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -308,13 +307,8 @@ public class TestJdbcWrapper {
 
 		assertEquals("proxy of proxy", connection, jdbcWrapper.createConnectionProxy(connection));
 
-		final InvocationHandler dummy = new InvocationHandler() {
-			@Override
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-				return null;
-			}
-		};
-		final List<Class<?>> interfaces = Arrays.asList(new Class<?>[] { Connection.class });
+		final InvocationHandler dummy = (proxy, method, args) -> null;
+		final List<Class<?>> interfaces = List.of(new Class<?>[] { Connection.class });
 		connection = DriverManager.getConnection(H2_DATABASE_URL);
 		try {
 			assertNotNull("createProxy", JdbcWrapper.createProxy(connection, dummy, interfaces));
@@ -451,8 +445,7 @@ public class TestJdbcWrapper {
 		final ConnectionInformations connectionInformations2 = new ConnectionInformations();
 		final List<ConnectionInformations> list = Arrays.asList(connectionInformations,
 				connectionInformations2);
-		final JdbcWrapper.ConnectionInformationsComparator comparator = new JdbcWrapper.ConnectionInformationsComparator();
-		Collections.sort(list, comparator);
+		list.sort(JdbcWrapper.CONNECTION_INFORMATIONS_COMPARATOR);
 	}
 
 	/** Test. */

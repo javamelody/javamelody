@@ -41,7 +41,6 @@ import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.SessionListener;
 import net.bull.javamelody.SpringContext;
 import net.bull.javamelody.internal.common.Parameters;
-import net.bull.javamelody.internal.model.HsErrPid.HsErrPidComparator;
 
 /**
  * Informations systèmes sur le serveur, sans code html de présentation.
@@ -53,11 +52,22 @@ import net.bull.javamelody.internal.model.HsErrPid.HsErrPidComparator;
  */
 public class JavaInformations implements Serializable { // NOPMD
 	public static final double HIGH_USAGE_THRESHOLD_IN_PERCENTS = 95d;
+
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final Date START_DATE = new Date();
 	private static final boolean SPRING_AVAILABLE = isSpringAvailable();
 	private static boolean localWebXmlExists = true; // true par défaut
 	private static boolean localPomXmlExists = true; // true par défaut
+
+	private static final Comparator<ThreadInformations> THREAD_INFORMATIONS_COMPARATOR =
+			Comparator.comparing(ThreadInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<CacheInformations> CACHE_INFORMATIONS_COMPARATOR =
+			Comparator.comparing(CacheInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<JCacheInformations> JCACHE_INFORMATIONS_COMPARATOR =
+			Comparator.comparing(JCacheInformations::getName, String.CASE_INSENSITIVE_ORDER);
+	private static final Comparator<JobInformations> JOB_INFORMATIONS_COMPARATOR =
+			Comparator.comparing(JobInformations::getName, String.CASE_INSENSITIVE_ORDER);
+
 	private final MemoryInformations memoryInformations;
 	@SuppressWarnings("all")
 	private final List<TomcatInformations> tomcatInformationsList;
@@ -105,50 +115,6 @@ public class JavaInformations implements Serializable { // NOPMD
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
 	private final boolean springBeanExists;
-
-	static final class ThreadInformationsComparator
-			implements Comparator<ThreadInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(ThreadInformations thread1, ThreadInformations thread2) {
-			return thread1.getName().compareToIgnoreCase(thread2.getName());
-		}
-	}
-
-	static final class CacheInformationsComparator
-			implements Comparator<CacheInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(CacheInformations cache1, CacheInformations cache2) {
-			return cache1.getName().compareToIgnoreCase(cache2.getName());
-		}
-	}
-
-	static final class JCacheInformationsComparator
-			implements Comparator<JCacheInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(JCacheInformations cache1, JCacheInformations cache2) {
-			return cache1.getName().compareToIgnoreCase(cache2.getName());
-		}
-	}
-
-	static final class JobInformationsComparator
-			implements Comparator<JobInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(JobInformations job1, JobInformations job2) {
-			return job1.getName().compareToIgnoreCase(job2.getName());
-		}
-	}
 
 	// CHECKSTYLE:OFF
 	public JavaInformations(ServletContext servletContext, boolean includeDetails) {
@@ -344,7 +310,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		for (final Thread thread : threads) {
 			final StackTraceElement[] stackTraceElements = stackTraces.get(thread);
 			final List<StackTraceElement> stackTraceElementList = stackTraceElements == null ? null
-					: new ArrayList<>(Arrays.asList(stackTraceElements));
+					: new ArrayList<>(List.of(stackTraceElements));
 			final long cpuTimeMillis;
 			final long userTimeMillis;
 			if (cpuTimeEnabled) {
@@ -403,16 +369,13 @@ public class JavaInformations implements Serializable { // NOPMD
 			// on commence par voir si le driver jdbc a été utilisé
 			// car s'il n'y a pas de datasource une exception est déclenchée
 			if (Parameters.getLastConnectUrl() != null) {
-				final Connection connection = DriverManager.getConnection(
-						Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo());
-				connection.setAutoCommit(false);
-				try {
-					appendDataBaseVersion(result, connection);
-				} finally {
+                try (final Connection connection = DriverManager.getConnection(
+						Parameters.getLastConnectUrl(), Parameters.getLastConnectInfo())) {
+                    connection.setAutoCommit(false);
+                    appendDataBaseVersion(result, connection);
 					// rollback inutile ici car on ne fait que lire les meta-data (+ cf issue 38)
-					connection.close();
-				}
-			}
+                }
+            }
 
 			// on cherche une datasource avec InitialContext pour afficher nom et version bdd + nom et version driver jdbc
 			// (le nom de la dataSource recherchée dans JNDI est du genre jdbc/Xxx qui est le nom standard d'une DataSource)
@@ -642,28 +605,28 @@ public class JavaInformations implements Serializable { // NOPMD
 	public List<ThreadInformations> getThreadInformationsList() {
 		// on trie sur demande (si affichage)
 		final List<ThreadInformations> result = new ArrayList<>(threadInformationsList);
-		Collections.sort(result, new ThreadInformationsComparator());
+		result.sort(THREAD_INFORMATIONS_COMPARATOR);
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<CacheInformations> getCacheInformationsList() {
 		// on trie sur demande (si affichage)
 		final List<CacheInformations> result = new ArrayList<>(cacheInformationsList);
-		Collections.sort(result, new CacheInformationsComparator());
+		result.sort(CACHE_INFORMATIONS_COMPARATOR);
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<JCacheInformations> getJCacheInformationsList() {
 		// on trie sur demande (si affichage)
 		final List<JCacheInformations> result = new ArrayList<>(jcacheInformationsList);
-		Collections.sort(result, new JCacheInformationsComparator());
+		result.sort(JCACHE_INFORMATIONS_COMPARATOR);
 		return Collections.unmodifiableList(result);
 	}
 
 	public List<JobInformations> getJobInformationsList() {
 		// on trie sur demande (si affichage)
 		final List<JobInformations> result = new ArrayList<>(jobInformationsList);
-		Collections.sort(result, new JobInformationsComparator());
+		result.sort(JOB_INFORMATIONS_COMPARATOR);
 		return Collections.unmodifiableList(result);
 	}
 
@@ -681,7 +644,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		if (hsErrPidList != null) {
 			// on trie sur demande (si affichage)
 			final List<HsErrPid> result = new ArrayList<>(hsErrPidList);
-			Collections.sort(result, new HsErrPidComparator());
+			result.sort(HsErrPid.HS_ERR_PID_COMPARATOR);
 			return Collections.unmodifiableList(result);
 		}
 		return null;

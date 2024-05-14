@@ -57,6 +57,9 @@ public class SessionListener implements HttpSessionListener, HttpSessionIdListen
 	public static final String SESSION_REMOTE_USER = "javamelody.remoteUser";
 	public static final String SESSION_USER_AGENT = "javamelody.userAgent";
 
+	private static final Comparator<SessionInformations> SESSION_INFORMATIONS_COMPARATOR =
+			Comparator.comparing(SessionInformations::getLastAccess);
+
 	private static final String SESSION_ACTIVATION_KEY = "javamelody.sessionActivation";
 
 	private static final long serialVersionUID = -1624944319058843901L;
@@ -75,23 +78,6 @@ public class SessionListener implements HttpSessionListener, HttpSessionIdListen
 	private static boolean instanceCreated;
 
 	private boolean instanceEnabled;
-
-	static final class SessionInformationsComparator
-			implements Comparator<SessionInformations>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(SessionInformations session1, SessionInformations session2) {
-			if (session1.getLastAccess().before(session2.getLastAccess())) {
-				return 1;
-			} else if (session1.getLastAccess().after(session2.getLastAccess())) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}
-	}
 
 	/**
 	 * Constructeur.
@@ -259,8 +245,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionIdListen
 
 	public static void sortSessions(List<SessionInformations> sessionsInformations) {
 		if (sessionsInformations.size() > 1) {
-			Collections.sort(sessionsInformations,
-					Collections.reverseOrder(new SessionInformationsComparator()));
+			sessionsInformations.sort(SESSION_INFORMATIONS_COMPARATOR);
 		}
 	}
 

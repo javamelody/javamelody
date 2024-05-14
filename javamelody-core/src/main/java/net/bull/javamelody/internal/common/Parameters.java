@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -234,7 +233,7 @@ public final class Parameters {
 					applications.put(property, parseUrls(value));
 				} else {
 					aggregationApplications.put(property,
-							new ArrayList<>(Arrays.asList(value.split(","))));
+							new ArrayList<>(List.of(value.split(","))));
 				}
 			}
 		}
@@ -245,18 +244,13 @@ public final class Parameters {
 	}
 
 	private static void synchronizeAggregationApplications() {
-		for (final Iterator<List<String>> it1 = applicationsByAggregationApplications.values()
-				.iterator(); it1.hasNext();) {
+		for (final Iterator<List<String>> it1 = applicationsByAggregationApplications.values().iterator();
+			 it1.hasNext();) {
 			final List<String> aggregatedApplications = it1.next();
-			for (final Iterator<String> it2 = aggregatedApplications.iterator(); it2.hasNext();) {
-				final String aggregatedApplication = it2.next();
-				if (!urlsByApplications.containsKey(aggregatedApplication)
-						&& !applicationsByAggregationApplications
-								.containsKey(aggregatedApplication)) {
-					// application aggrégée inconnue, on la supprime
-					it2.remove();
-				}
-			}
+            // on supprime les applications aggrégées inconnues
+            aggregatedApplications.removeIf(
+					aggregatedApplication -> !urlsByApplications.containsKey(aggregatedApplication)
+                    && !applicationsByAggregationApplications.containsKey(aggregatedApplication));
 			if (aggregatedApplications.isEmpty()) {
 				// application d'aggrégation vide, on la supprime
 				it1.remove();
@@ -472,12 +466,10 @@ public final class Parameters {
 
 		final Properties properties = new Properties();
 		try {
-			try {
-				properties.load(inputStream);
-				return properties.getProperty("version");
-			} finally {
-				inputStream.close();
-			}
+            try (inputStream) {
+                properties.load(inputStream);
+                return properties.getProperty("version");
+            }
 		} catch (final IOException e) {
 			return e.toString();
 		}

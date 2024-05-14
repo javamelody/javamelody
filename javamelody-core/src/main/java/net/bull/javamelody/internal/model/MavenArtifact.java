@@ -28,7 +28,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -684,7 +683,7 @@ public final class MavenArtifact implements Serializable {
 			}
 			return result;
 		}
-		return Arrays.asList(LOCAL_REPO.getPath(), MAVEN_CENTRAL);
+		return List.of(LOCAL_REPO.getPath(), MAVEN_CENTRAL);
 	}
 
 	private static String replaceProperty(String value, Map<String, String> properties) {

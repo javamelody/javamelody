@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -152,16 +152,16 @@ public class TestCollectorServlet {
 	 * @throws IOException e */
 	@Test
 	public void testDoPost() throws ServletException, IOException {
-		final List<String> nullUrl = Arrays.asList((String) null);
+		final List<String> nullUrl = Collections.singletonList(null);
 		doPost(null, nullUrl, false);
 		doPost(null, nullUrl, true);
 		doPost(TEST, nullUrl, true);
-		doPost(TEST, Arrays.asList("http://localhost:8090/test", "http://localhost:8090/test"),
+		doPost(TEST, List.of("http://localhost:8090/test", "http://localhost:8090/test"),
 				true);
-		doPost(TEST, Arrays.asList("https://localhost:8090/test", "http://localhost:8090/test"),
+		doPost(TEST, List.of("https://localhost:8090/test", "http://localhost:8090/test"),
 				true);
-		doPost(TEST, Arrays.asList("ftp://localhost:8090/test"), true);
-		doPost(TEST, Arrays.asList("http://une url,pas une url"), true);
+		doPost(TEST, List.of("ftp://localhost:8090/test"), true);
+		doPost(TEST, List.of("http://une url,pas une url"), true);
 	}
 
 	private void doPost(String appName, List<String> appUrlsList, boolean allowed)

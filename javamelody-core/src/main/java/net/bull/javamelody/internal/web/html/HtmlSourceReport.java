@@ -26,8 +26,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -42,9 +40,9 @@ import net.bull.javamelody.internal.model.MavenArtifact;
  */
 class HtmlSourceReport extends HtmlAbstractReport {
 	private static final File JDK_SRC_FILE = getJdkSrcFile();
-	private static final List<String> TOMCAT_PACKAGES = Collections.unmodifiableList(
-			Arrays.asList("org.apache.tomcat", "org.apache.catalina", "org.apache.coyote",
-					"org.apache.jasper", "org.apache.el", "org.apache.juli", "org.apache.naming"));
+	private static final List<String> TOMCAT_PACKAGES = List.of("org.apache.tomcat",
+			"org.apache.catalina", "org.apache.coyote", "org.apache.jasper", "org.apache.el",
+			"org.apache.juli", "org.apache.naming");
 
 	private final String source;
 

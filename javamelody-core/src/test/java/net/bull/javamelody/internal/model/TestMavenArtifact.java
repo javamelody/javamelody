@@ -28,9 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -101,14 +101,9 @@ public class TestMavenArtifact {
 				.andReturn(Collections.singleton(javamelodyDir)).anyTimes();
 		expect(context.getResourcePaths(javamelodyDir)).andReturn(Collections.singleton(webapp))
 				.anyTimes();
-		final IAnswer<InputStream> answer = new IAnswer<>() {
-			@Override
-			public InputStream answer() throws Throwable {
-				return getClass().getResourceAsStream("/pom.xml");
-			}
-		};
+		final IAnswer<InputStream> answer = () -> getClass().getResourceAsStream("/pom.xml");
 		expect(context.getResourceAsStream(webapp + "pom.xml")).andAnswer(answer).anyTimes();
-		final Set<String> dependencies = new LinkedHashSet<>(Arrays.asList(
+		final Set<String> dependencies = new LinkedHashSet<>(List.of(
 				"/WEB-INF/lib/jrobin-1.5.9.jar", "/WEB-INF/lib/javamelody-core-1.65.0.jar"));
 		expect(context.getResourcePaths("/WEB-INF/lib/")).andReturn(dependencies).anyTimes();
 		final URL jrobinJar = RrdGraph.class.getProtectionDomain().getCodeSource().getLocation();

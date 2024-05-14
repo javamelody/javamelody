@@ -35,7 +35,6 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
@@ -96,7 +95,7 @@ public final class Main {
 		//				System.setOut(ps);
 		//				System.setErr(ps);
 		//				// don't let winstone see this
-		//				final List myArgs = new ArrayList(Arrays.asList(args));
+		//				final List myArgs = new ArrayList(List.of(args));
 		//				myArgs.remove(i);
 		//				args = (String[]) myArgs.toArray(new String[myArgs.size()]);
 		//				break;
@@ -125,7 +124,7 @@ public final class Main {
 		final Method mainMethod = launcher.getMethod("main", new Class<?>[] { String[].class });
 
 		// figure out the arguments
-		final List<String> arguments = new ArrayList<>(Arrays.asList(args));
+		final List<String> arguments = new ArrayList<>(List.of(args));
 		arguments.add(0, "--warfile=" + me.getAbsolutePath());
 
 		// override the usage screen
