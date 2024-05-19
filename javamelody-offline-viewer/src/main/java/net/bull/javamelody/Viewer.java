@@ -70,24 +70,21 @@ public class Viewer {
 	}
 
 	private static void addShutdownHook(final File directoryToCleanup) {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				System.out.println("Cleaning up...");
-				try {
-					// stop is needed to remove locks on files such as the javamelody.lock file
-					EmbeddedServer.stop();
-				} catch (final Exception e) {
-					System.out.println(e.toString());
-				}
-				if (directoryToCleanup.exists()) {
-					for (final File file : directoryToCleanup.listFiles()) {
-						file.delete();
-					}
-					directoryToCleanup.delete();
-				}
-				System.out.println("Good bye");
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			System.out.println("Cleaning up...");
+			try {
+				// stop is needed to remove locks on files such as the javamelody.lock file
+				EmbeddedServer.stop();
+			} catch (final Exception e) {
+				System.out.println(e);
 			}
-		});
+			if (directoryToCleanup.exists()) {
+				for (final File file : directoryToCleanup.listFiles()) {
+					file.delete();
+				}
+				directoryToCleanup.delete();
+			}
+			System.out.println("Good bye");
+		}));
 	}
 }
