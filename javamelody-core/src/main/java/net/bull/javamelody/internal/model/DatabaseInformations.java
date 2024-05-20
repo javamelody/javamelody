@@ -53,7 +53,6 @@ public class DatabaseInformations implements Serializable {
 		// (inspirés par Hibernate)
 		POSTGRESQL("PostgreSQL"),
 		MYSQL("MySQL"),
-		MYSQL4("MySQL"),
 		MARIADB("MariaDB"),
 		ORACLE("Oracle"),
 		DB2("DB2 UDB for AS/400", "DB2/"),
@@ -93,12 +92,6 @@ public class DatabaseInformations implements Serializable {
 						"innodb_status", "unusedIndexes", "longRunning", "tableStats",
 						"eventsWaits", "tableIoWaits", "indexIoWaits", "tableLockWaits",
 						"tablesWithoutPk", "perfDigests", "memory");
-				break;
-			case MYSQL4:
-				// les noms des premières requêtes sont les mêmes, mais la requête SQL correspondant à "innodb_status"
-				// n'est pas identique entre MYSQL 5+ et MYSQL 4 (issue 195)
-				tmp = List.of("processlist", "databases", "variables", "global_status",
-						"innodb_status");
 				break;
 			case ORACLE:
 				tmp = List.of("sessions", "locks", "sqlTimes", "foreignKeysWithoutIndexes",
@@ -150,9 +143,6 @@ public class DatabaseInformations implements Serializable {
 		}
 
 		String getUrlIdentifier() {
-			if (this == MYSQL4) {
-				return MYSQL.toString().toLowerCase(Locale.ENGLISH);
-			}
 			return this.toString().toLowerCase(Locale.ENGLISH);
 		}
 
@@ -179,10 +169,6 @@ public class DatabaseInformations implements Serializable {
 			final String url = metaData.getURL();
 			for (final Database database : values()) {
 				if (database.isRecognized(databaseName, url)) {
-					if (database == MYSQL && metaData.getDatabaseMajorVersion() <= 4) {
-						// si mysql et version 4 alors c'est MYSQL4 et non MYSQL
-						return MYSQL4;
-					}
 					return database;
 				}
 			}
