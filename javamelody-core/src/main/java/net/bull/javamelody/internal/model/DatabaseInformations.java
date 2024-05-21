@@ -362,6 +362,20 @@ public class DatabaseInformations implements Serializable {
 						sb.delete(0, sb.indexOf("-"));
 					}
 					return sb.toString();
+				} else if (database == Database.POSTGRESQL
+						&& connection.getMetaData().getDatabaseMajorVersion() >= 16) {
+					// explain plan pour Postgresql 16 ou ultérieur
+					// https://www.cybertec-postgresql.com/en/explain-generic-plan-postgresql-16/
+					final String explainPlanRequest = "explain (generic_plan) "
+							+ normalizeRequestForExplain(sqlRequest).replace(':', '$');
+					final StringBuilder sb = new StringBuilder();
+					try (final Statement statement = connection.createStatement()) {
+						final ResultSet resultSet = statement.executeQuery(explainPlanRequest);
+						while (resultSet.next()) {
+							sb.append(resultSet.getString(1)).append('\n');
+						}
+					}
+					return sb.toString();
 				}
 			} finally {
 				if (!connection.getAutoCommit()) {
