@@ -255,7 +255,7 @@ public class DatabaseInformations implements Serializable {
 
 	private static String[][] executeRequest(Connection connection, String request,
 			List<?> parametersValues) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(request)) {
+		try (final PreparedStatement statement = connection.prepareStatement(request)) {
 			if (parametersValues != null) {
 				int i = 1;
 				for (final Object parameterValue : parametersValues) {
@@ -277,7 +277,7 @@ public class DatabaseInformations implements Serializable {
 	}
 
 	private static String[][] executeQuery(PreparedStatement statement) throws SQLException {
-		try (ResultSet resultSet = statement.executeQuery()) {
+		try (final ResultSet resultSet = statement.executeQuery()) {
 			final ResultSetMetaData metaData = resultSet.getMetaData();
 			final int columnCount = metaData.getColumnCount();
 			final List<String[]> list = new ArrayList<>();
@@ -353,14 +353,33 @@ public class DatabaseInformations implements Serializable {
 					// affichés simultanément, et en tout cas CounterRequest.getId() est trop long
 					// pour la table oracle par défaut (SYS.PLAN_TABLE$.STATEMENT_ID a une longueur de 30)
 					final String statementId = String.valueOf(sqlRequest.hashCode());
-					final String explainRequest = buildExplainRequest(sqlRequest, statementId);
+					// utilisation de la table PLAN_TABLE par défaut
+					// (il faut que cette table soit créée auparavant dans oracle
+					// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
+					// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
+					final String explainRequest = "explain plan set statement_id = '" + statementId
+							+ "' for " + normalizeRequestForExplain(sqlRequest);
 					// exécution de la demande
-					try (Statement statement = connection.createStatement()) {
+					try (final Statement statement = connection.createStatement()) {
 						statement.execute(explainRequest);
 					}
 
 					// récupération du résultat
-					return getPlanOutput(connection, statementId);
+					// table PLAN_TABLE par défaut et format par défaut
+					final String planTableRequest = "select * from table(dbms_xplan.display(null,?,null))";
+					final String[][] planTableOutput = executeRequest(connection, planTableRequest,
+							Collections.singletonList(statementId));
+					final StringBuilder sb = new StringBuilder();
+					for (final String[] row : planTableOutput) {
+						for (final String value : row) {
+							sb.append(value);
+						}
+						sb.append('\n');
+					}
+					if (sb.indexOf("-") != -1) {
+						sb.delete(0, sb.indexOf("-"));
+					}
+					return sb.toString();
 				}
 			} finally {
 				if (!connection.getAutoCommit()) {
@@ -372,7 +391,7 @@ public class DatabaseInformations implements Serializable {
 		return null;
 	}
 
-	private static String buildExplainRequest(String sqlRequest, String statementId) {
+	private static String normalizeRequestForExplain(String sqlRequest) {
 		// rq : il semble qu'une requête explain plan ne puisse avoir la requête en paramètre bindé
 		// (donc les requêtes "explain ..." seront ignorées dans JdbcWrapper)
 		int i = 1;
@@ -384,48 +403,22 @@ public class DatabaseInformations implements Serializable {
 			// transformées par SQL_TRANSFORM_PATTERN)
 			request = request.replace(Counter.TRANSFORM_REPLACEMENT_CHAR, '?');
 		}
-		// utilisation de la table PLAN_TABLE par défaut
-		// (il faut que cette table soit créée auparavant dans oracle
-		// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
-		// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
-		String explainRequest = "explain plan set statement_id = '" + statementId + "' for "
-				+ request;
 
 		// dans le cas où la requête contient ';' (requêtes multiples), je ne sais pas si explain
 		// plan considère que cela fait partie de la requête à analyser où si certaines versions
 		// d'oracle considèrent que cela vient après l'explain plan; par sécurité on interdit cela
-		if (explainRequest.indexOf(';') != -1) {
-			explainRequest = explainRequest.substring(0, explainRequest.indexOf(';'));
+		if (request.indexOf(';') != -1) {
+			request = request.substring(0, request.indexOf(';'));
 		}
 
 		// on remplace les paramètres bindés "?" par ":n"
-		int index = explainRequest.indexOf('?');
+		int index = request.indexOf('?');
 		while (index != -1) {
-			explainRequest = explainRequest.substring(0, index) + ':' + i
-					+ explainRequest.substring(index + 1);
+			request = request.substring(0, index) + ':' + i + request.substring(index + 1);
 			i++;
-			index = explainRequest.indexOf('?');
+			index = request.indexOf('?');
 		}
-		return explainRequest;
-	}
-
-	private static String getPlanOutput(Connection connection, String statementId)
-			throws SQLException {
-		// table PLAN_TABLE par défaut et format par défaut
-		final String planTableRequest = "select * from table(dbms_xplan.display(null,?, null))";
-		final String[][] planTableOutput = executeRequest(connection, planTableRequest,
-				Collections.singletonList(statementId));
-		final StringBuilder sb = new StringBuilder();
-		for (final String[] row : planTableOutput) {
-			for (final String value : row) {
-				sb.append(value);
-			}
-			sb.append('\n');
-		}
-		if (sb.indexOf("-") != -1) {
-			sb.delete(0, sb.indexOf("-"));
-		}
-		return sb.toString();
+		return request;
 	}
 
 	/** {@inheritDoc} */
