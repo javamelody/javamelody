@@ -370,9 +370,11 @@ public class DatabaseInformations implements Serializable {
 							+ normalizeRequestForExplain(sqlRequest).replace(':', '$');
 					final StringBuilder sb = new StringBuilder();
 					try (final Statement statement = connection.createStatement()) {
-						final ResultSet resultSet = statement.executeQuery(explainPlanRequest);
-						while (resultSet.next()) {
-							sb.append(resultSet.getString(1)).append('\n');
+						try (final ResultSet resultSet = statement
+								.executeQuery(explainPlanRequest)) {
+							while (resultSet.next()) {
+								sb.append(resultSet.getString(1)).append('\n');
+							}
 						}
 					}
 					return sb.toString();
