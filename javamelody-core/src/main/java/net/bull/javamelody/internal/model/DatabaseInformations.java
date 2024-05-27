@@ -36,6 +36,9 @@ import java.util.ResourceBundle;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.postgresql.jdbc.PgConnection;
+import org.postgresql.jdbc.PreferQueryMode;
+
 import net.bull.javamelody.JdbcWrapper;
 import net.bull.javamelody.Parameter;
 import net.bull.javamelody.internal.common.I18N;
@@ -47,6 +50,7 @@ import net.bull.javamelody.internal.common.Parameters;
  */
 public class DatabaseInformations implements Serializable {
 	private static final long serialVersionUID = -6105478981257689782L;
+	private static final boolean POSTGRESQL_DRIVER_AVAILABLE = isPostgresqlDriverAvailable();
 
 	enum Database {
 		// base de données connues avec les noms retournés par connection.getMetaData().getDatabaseProductName()
@@ -322,7 +326,7 @@ public class DatabaseInformations implements Serializable {
 				if (database == Database.ORACLE) {
 					// Si oracle, on demande le plan d'exécution avec la table PLAN_TABLE par défaut
 					// avec "explain plan set statement_id = <statement_id> for ..."
-					// (si mysql ou postgresql on pourrait faire "explain ...",
+					// (si mysql, on pourrait faire "explain ...",
 					// sauf que les paramètres bindés ne seraient pas acceptés
 					// et les requêtes update/insert/delete non plus).
 					// (si db2, la syntaxe serait "explain plan for ...")
@@ -340,7 +344,7 @@ public class DatabaseInformations implements Serializable {
 					// et elle peut être créée par : @$ORACLE_HOME/rdbms/admin/catplan.sql
 					// ou par @$ORACLE_HOME/rdbms/admin/utlxplan.sql si oracle 9g ou avant)
 					final String explainRequest = "explain plan set statement_id = '" + statementId
-							+ "' for " + normalizeRequestForExplain(sqlRequest);
+							+ "' for " + normalizeRequestForExplain(sqlRequest, ':');
 					// exécution de la demande
 					try (final Statement statement = connection.createStatement()) {
 						statement.execute(explainRequest);
@@ -362,22 +366,40 @@ public class DatabaseInformations implements Serializable {
 						sb.delete(0, sb.indexOf("-"));
 					}
 					return sb.toString();
-				} else if (database == Database.POSTGRESQL
+				} else if (database == Database.POSTGRESQL && POSTGRESQL_DRIVER_AVAILABLE
 						&& connection.getMetaData().getDatabaseMajorVersion() >= 16) {
-					// explain plan pour Postgresql 16 ou ultérieur
-					// https://www.cybertec-postgresql.com/en/explain-generic-plan-postgresql-16/
-					final String explainPlanRequest = "explain (generic_plan) "
-							+ normalizeRequestForExplain(sqlRequest).replace(':', '$');
-					final StringBuilder sb = new StringBuilder();
-					try (final Statement statement = connection.createStatement()) {
-						try (final ResultSet resultSet = statement
-								.executeQuery(explainPlanRequest)) {
-							while (resultSet.next()) {
-								sb.append(resultSet.getString(1)).append('\n');
+					// Si postgresql, on demande le plan d'exécution avec "explain (generic plan) ..."
+					final PgConnection pgConnection = connection.unwrap(PgConnection.class);
+					if (pgConnection != null) {
+						final PreferQueryMode preferQueryMode = pgConnection.getQueryExecutor()
+								.getPreferQueryMode();
+						try {
+							// given the parameters without values, explain (generic plan) should be executed as simple query
+							// and not as prepared query which is by default.
+							// (there is no other way than using postgresql "internal" api:
+							// not possible using jdbc api or postgresql "public" api)
+							pgConnection.getQueryExecutor()
+									.setPreferQueryMode(PreferQueryMode.SIMPLE);
+
+							// explain plan pour Postgresql 16 ou ultérieur
+							// https://www.cybertec-postgresql.com/en/explain-generic-plan-postgresql-16/
+							final String explainPlanRequest = "explain (generic_plan) "
+									+ normalizeRequestForExplain(sqlRequest, '$');
+							final StringBuilder sb = new StringBuilder();
+							try (final Statement statement = connection.createStatement()) {
+								try (final ResultSet resultSet = statement
+										.executeQuery(explainPlanRequest)) {
+									while (resultSet.next()) {
+										sb.append(resultSet.getString(1)).append('\n');
+									}
+								}
 							}
+							return sb.toString();
+						} finally {
+							// set back the connection preferQueryMode as before
+							pgConnection.getQueryExecutor().setPreferQueryMode(preferQueryMode);
 						}
 					}
-					return sb.toString();
 				}
 			} finally {
 				if (!connection.getAutoCommit()) {
@@ -389,7 +411,7 @@ public class DatabaseInformations implements Serializable {
 		return null;
 	}
 
-	private static String normalizeRequestForExplain(String sqlRequest) {
+	private static String normalizeRequestForExplain(String sqlRequest, char parameterChar) {
 		// rq : il semble qu'une requête explain plan ne puisse avoir la requête en paramètre bindé
 		// (donc les requêtes "explain ..." seront ignorées dans JdbcWrapper)
 		int i = 1;
@@ -409,14 +431,24 @@ public class DatabaseInformations implements Serializable {
 			request = request.substring(0, request.indexOf(';'));
 		}
 
-		// on remplace les paramètres bindés "?" par ":n"
+		// on remplace les paramètres bindés "?" par ":n" si oracle ou "$n" si postgresql
 		int index = request.indexOf('?');
 		while (index != -1) {
-			request = request.substring(0, index) + ':' + i + request.substring(index + 1);
+			request = request.substring(0, index) + parameterChar + i
+					+ request.substring(index + 1);
 			i++;
 			index = request.indexOf('?');
 		}
 		return request;
+	}
+
+	private static boolean isPostgresqlDriverAvailable() {
+		try {
+			Class.forName("org.postgresql.jdbc.PgConnection");
+			return true;
+		} catch (final ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	/** {@inheritDoc} */
