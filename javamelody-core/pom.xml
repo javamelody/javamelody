@@ -209,6 +209,12 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.3</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
 			<version>10.1.23</version>
