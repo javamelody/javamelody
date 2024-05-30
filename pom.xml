@@ -9,7 +9,7 @@
 	<name>JavaMelody</name>
 	<modules>
 		<module>javamelody-core</module>
-		<!--<module>javamelody-swing</module>-->
+		<module>javamelody-swing</module>
 		<module>javamelody-collector-server</module>
 		<module>javamelody-for-standalone</module>
 		<module>javamelody-spring-boot-starter</module>
