@@ -558,6 +558,18 @@ public class CollectorController { // NOPMD
 
 	private String forwardActionAndUpdateData(HttpServletRequest req, String application)
 			throws IOException {
+		final List<String> aggregatedApplications = Parameters.getApplicationsByAggregationApplication().get(application);
+		if (aggregatedApplications != null) {
+			String messageForReport = "";
+			// c'est une application d'agrégation, on forward sur chaque application agrégée
+			for (final String aggregatedApplication : aggregatedApplications) {
+				final String msg = forwardActionAndUpdateData(req, aggregatedApplication);
+				if (msg != null) {
+					messageForReport = msg;
+				}
+			}
+			return messageForReport;
+		}
 		final String actionParameter = HttpParameter.ACTION.getParameterFrom(req);
 		final String sessionIdParameter = HttpParameter.SESSION_ID.getParameterFrom(req);
 		final String threadIdParameter = HttpParameter.THREAD_ID.getParameterFrom(req);
