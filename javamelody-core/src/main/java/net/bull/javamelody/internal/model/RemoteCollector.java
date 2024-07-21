@@ -66,6 +66,10 @@ public class RemoteCollector {
 		this.aggregationApplication = isAggregationApplication();
 	}
 
+	void refreshAggregated() throws IOException {
+		this.aggregatedApplication = isAggregatedApplication();
+	}
+
 	String collectData() throws IOException {
 		return collectDataWithUrls(getURLs());
 	}
