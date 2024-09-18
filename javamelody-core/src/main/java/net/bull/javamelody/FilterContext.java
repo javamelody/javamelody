@@ -444,7 +444,10 @@ class FilterContext {
 		try {
 			try {
 				if (collector != null) {
-					new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
+					String createShutDownFile = Parameter.CREATE_LAST_SHUTDOWN_FILE.getValue();
+					if (createShutDownFile == null || Boolean.parseBoolean(createShutDownFile)) {
+						new MonitoringController(collector, null).writeHtmlToLastShutdownFile();
+					}
 				}
 			} finally {
 				//on rebind les dataSources initiales à la place des proxy
