@@ -47,7 +47,9 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	private final String completeRequestName;
 	private final transient HttpServletRequest httpRequest;
 	private final String remoteUser;
-	private final long threadId;
+	private final transient Thread thread;
+	private long threadId;
+	private String threadName;
 	// attention, si sérialisation vers serveur de collecte, la durée peut être impactée s'il y a désynchronisation d'horloge
 	private final long startTime;
 	private final long startCpuTime;
@@ -65,7 +67,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 			String remoteUser, long startCpuTime, long startAllocatedBytes, String sessionId) {
 		// CHECKSTYLE:ON
 		this(parentCounter, parentContext, requestName, completeRequestName, httpRequest,
-				remoteUser, Thread.currentThread().getId(), System.currentTimeMillis(),
+				remoteUser, Thread.currentThread(), System.currentTimeMillis(),
 				startCpuTime, startAllocatedBytes, sessionId);
 		if (parentContext != null) {
 			parentContext.setCurrentChildContext(this);
@@ -76,7 +78,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	// CHECKSTYLE:OFF
 	private CounterRequestContext(Counter parentCounter, CounterRequestContext parentContext, // NOPMD
 			String requestName, String completeRequestName, HttpServletRequest httpRequest,
-			String remoteUser, long threadId, long startTime, long startCpuTime,
+			String remoteUser, Thread thread, long startTime, long startCpuTime,
 			long startAllocatedBytes, String sessionId) {
 		// CHECKSTYLE:ON
 		super();
@@ -91,7 +93,14 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		this.completeRequestName = completeRequestName;
 		this.httpRequest = httpRequest;
 		this.remoteUser = remoteUser;
-		this.threadId = threadId;
+		this.thread = thread;
+		if (thread != null) {
+			this.threadId = thread.getId();
+			this.threadName = thread.getName();
+		} else {
+			this.threadId = -1L;
+			this.threadName = null;
+		}
 		this.startTime = startTime;
 		this.startCpuTime = startCpuTime;
 		this.startAllocatedBytes = startAllocatedBytes;
@@ -165,6 +174,21 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 
 	public String getRemoteUser() {
 		return remoteUser;
+	}
+
+	public Thread getThread() {
+		return thread;
+	}
+
+	public List<StackTraceElement> getThreadStackTrace() {
+		if (thread != null) {
+			return List.of(thread.getStackTrace());
+		}
+		return null;
+	}
+
+	public String getThreadName() {
+		return threadName;
 	}
 
 	public long getThreadId() {
@@ -330,7 +354,9 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		//				counter.getIconName(), counter.getChildCounterName(), null);
 		final CounterRequestContext clone = new CounterRequestContext(counter, parentContextClone,
 				getRequestName(), getCompleteRequestName(), httpRequest, getRemoteUser(),
-				getThreadId(), startTime, startCpuTime, startAllocatedBytes, sessionId);
+				getThread(), startTime, startCpuTime, startAllocatedBytes, sessionId);
+		clone.threadId = getThreadId();
+		clone.threadName = getThreadName();
 		clone.childHits = getChildHits();
 		clone.childDurationsSum = getChildDurationsSum();
 		final CounterRequestContext childContext = getCurrentChildContext();
@@ -349,8 +375,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	public String toString() {
 		return getClass().getSimpleName() + "[parentCounter=" + getParentCounter().getName()
 				+ ", completeRequestName=" + getCompleteRequestName() + ", threadId="
-				+ getThreadId() + ", startTime=" + startTime + ", childHits=" + getChildHits()
-				+ ", childDurationsSum=" + getChildDurationsSum() + ", childContexts="
-				+ getChildContexts() + ']';
+				+ getThreadId() + ", threadName=" + getThreadName() + ", startTime=" + startTime
+				+ ", childHits=" + getChildHits() + ", childDurationsSum=" + getChildDurationsSum()
+				+ ", childContexts=" + getChildContexts() + ']';
 	}
 }

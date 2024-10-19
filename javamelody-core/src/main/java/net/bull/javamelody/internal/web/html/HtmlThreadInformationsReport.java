@@ -198,8 +198,11 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 	}
 
 	void writeThreadWithStackTrace(ThreadInformations threadInformations) throws IOException {
-		final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
-		final String encodedName = htmlEncode(threadInformations.getName());
+		writeThreadWithStackTrace(threadInformations.getName(), threadInformations.getStackTrace());
+	}
+
+	void writeThreadWithStackTrace(String threadName, List<StackTraceElement> stackTrace) throws IOException {
+		final String encodedName = htmlEncode(threadName);
 		if (stackTrace != null && !stackTrace.isEmpty()) {
 			// même si stackTraceEnabled, ce thread n'a pas forcément de stack-trace
 			writeln("<div class='tooltip'>");
@@ -223,9 +226,12 @@ public class HtmlThreadInformationsReport extends HtmlAbstractReport {
 
 	void writeExecutedMethod(ThreadInformations threadInformations) throws IOException {
 		final String executedMethod = threadInformations.getExecutedMethod();
+		writeExecutedMethod(executedMethod);
+	}
+
+	void writeExecutedMethod(String executedMethod) throws IOException {
 		if (executedMethod != null && !executedMethod.isEmpty()) {
-			writeDirectly(HtmlSourceReport
-					.htmlEncodeStackTraceElement(threadInformations.getExecutedMethod()));
+			writeDirectly(HtmlSourceReport.htmlEncodeStackTraceElement(executedMethod));
 		} else {
 			writeDirectly("&nbsp;");
 		}
