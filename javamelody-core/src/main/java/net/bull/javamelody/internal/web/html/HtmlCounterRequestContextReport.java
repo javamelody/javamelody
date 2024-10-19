@@ -288,13 +288,17 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		// s'il y a plusieurs instances en cluster
 		final ThreadInformations threadInformations = threadInformationsByThreadId
 				.get(rootContext.getThreadId());
+		final List<StackTraceElement> stackTrace;
+		if (threadInformations == null) {
+			// soit un décalage n'a pas permis de récupérer le thread de ce context,
+			// soit ce thread est un thread virtuel (java 21)
+			stackTrace = rootContext.getThreadStackTrace();
+		} else {
+			stackTrace = threadInformations.getStackTrace();
+		}
 		write("<td valign='top'>");
 		final String espace = "&nbsp;";
-		if (threadInformations == null) {
-			write(espace); // un décalage n'a pas permis de récupérer le thread de ce context
-		} else {
-			htmlThreadInformationsReport.writeThreadWithStackTrace(threadInformations);
-		}
+		htmlThreadInformationsReport.writeThreadWithStackTrace(rootContext.getThreadName(), stackTrace);
 		if (displayRemoteUser) {
 			write("</td> <td valign='top'>");
 			if (rootContext.getRemoteUser() == null) {
@@ -321,14 +325,22 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		if (stackTraceEnabled) {
 			write("</td> <td valign='top'>");
 			if (threadInformations == null) {
-				write(espace); // un décalage n'a pas permis de récupérer le thread de ce context
+				// soit un décalage n'a pas permis de récupérer le thread de ce context,
+				// soit ce thread est un thread virtuel (java 21)
+				if (stackTrace != null && !stackTrace.isEmpty()) {
+					htmlThreadInformationsReport.writeExecutedMethod(stackTrace.get(0).toString());
+				} else {
+					write(espace);
+				}
 			} else {
 				htmlThreadInformationsReport.writeExecutedMethod(threadInformations);
 			}
 		}
 		if (threadInformations == null) {
+			// soit un décalage n'a pas permis de récupérer le thread de ce context,
+			// soit ce thread est un thread virtuel (java 21)
 			write("</td> <td class='noPrint'>");
-			write(espace); // un décalage n'a pas permis de récupérer le thread de ce context
+			write(espace);
 		} else {
 			htmlThreadInformationsReport.writeKillThread(threadInformations);
 		}

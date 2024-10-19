@@ -188,15 +188,7 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 	private void writeContext(CounterRequestContext rootContext, boolean displayRemoteUser)
 			throws DocumentException, IOException {
 		getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-		// attention, cela ne marcherait pas sur le serveur de collecte, à partir du seul threadId
-		// s'il y a plusieurs instances en cluster
-		final ThreadInformations threadInformations = threadInformationsByThreadId
-				.get(rootContext.getThreadId());
-		if (threadInformations == null) {
-			addCell(""); // un décalage n'a pas permis de récupérer le thread de ce context
-		} else {
-			addCell(threadInformations.getName());
-		}
+		addCell(rootContext.getThreadName());
 		if (displayRemoteUser) {
 			if (rootContext.getRemoteUser() == null) {
 				addCell("");
@@ -219,8 +211,19 @@ class PdfCounterRequestContextReport extends PdfAbstractTableReport {
 
 		if (stackTraceEnabled) {
 			getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+			// attention, cela ne marcherait pas sur le serveur de collecte, à partir du seul threadId
+			// s'il y a plusieurs instances en cluster
+			final ThreadInformations threadInformations = threadInformationsByThreadId
+					.get(rootContext.getThreadId());
 			if (threadInformations == null) {
-				addCell(""); // un décalage n'a pas permis de récupérer le thread de ce context
+				// soit un décalage n'a pas permis de récupérer le thread de ce context,
+				// soit ce thread est un thread virtuel (java 21)
+				final List<StackTraceElement> stackTrace = rootContext.getThreadStackTrace();
+				if (stackTrace != null && !stackTrace.isEmpty()) {
+					addCell(stackTrace.get(0).toString());
+				} else {
+					addCell("");
+				}
 			} else {
 				addCell(threadInformations.getExecutedMethod());
 			}
