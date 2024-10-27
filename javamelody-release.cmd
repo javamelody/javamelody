@@ -207,19 +207,19 @@ call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release
 cd ..
 
 :: alfresco-javamelody: increment version, clean install, github release and deploy to https://oss.sonatype.org
-echo.
-echo alfresco-javamelody ...
-git clone https://github.com/javamelody/alfresco-javamelody
-cd alfresco-javamelody
-call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
-if /I NOT "%dryRun%" == "true" (
-git commit -a -m %releaseVersion% || exit /B
-git push || exit /B
-)
-call mvn clean install || exit /B
-call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=alfresco-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
-call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
-cd ..
+:: echo.
+:: echo alfresco-javamelody ...
+:: git clone https://github.com/javamelody/alfresco-javamelody
+:: cd alfresco-javamelody
+:: call mvn versions:set -DgenerateBackupPoms=false -DnewVersion=%releaseVersion% || exit /B
+:: if /I NOT "%dryRun%" == "true" (
+:: git commit -a -m %releaseVersion% || exit /B
+:: git push || exit /B
+:: )
+:: call mvn clean install || exit /B
+:: call mvn com.ragedunicorn.tools.maven:github-release-maven-plugin:github-release -Ddraft=%dryRun% -Downer=javamelody -Drepository=alfresco-javamelody -Dserver=github-release -DtagName=%releaseVersion% -Dname=%releaseVersion% -DtargetCommitish=master -Dbody="Release notes: https://github.com/javamelody/javamelody/wiki/ReleaseNotes#%releaseVersion:.=%" -Dassets=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
+:: call mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=sonatype-nexus-staging -DpomFile=pom.xml -Dfile=target/alfresco-javamelody-addon-%releaseVersion%.amp || exit /B
+:: cd ..
 
 :: clean-up after
 cd ..
