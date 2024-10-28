@@ -182,7 +182,7 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 
 	public List<StackTraceElement> getThreadStackTrace() {
 		if (thread != null) {
-			return List.of(thread.getStackTrace());
+			return Collections.unmodifiableList(Arrays.asList(thread.getStackTrace()));
 		}
 		return null;
 	}
