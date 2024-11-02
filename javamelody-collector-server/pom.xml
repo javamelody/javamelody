@@ -91,9 +91,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
-			<version>11.0.22</version>
+			<groupId>org.eclipse.jetty.ee10</groupId>
+			<artifactId>jetty-ee10-webapp</artifactId>
+			<version>12.0.14</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -112,7 +112,7 @@
 							<includes>
 								<include>LICENSE</include>
 								<include>JAVAMELODY-VERSION.properties</include>
-								<!-- Main-Class to launch as "java -jar javamelody-xxx.war" with 
+								<!-- Main-Class to launch as "java -jar javamelody-collector-server-xxx.war" with
 									Winstone -->
 								<include>net/bull/javamelody/Main.class</include>
 							</includes>
@@ -124,7 +124,7 @@
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>Emeric Vernat</Implementation-Vendor>
 
-							<!-- Main-Class to launch as "java -jar javamelody-xxx.war" with Winstone -->
+							<!-- Main-Class to launch as "java -jar javamelody-collector-server-xxx.war" with Winstone -->
 							<Main-Class>net.bull.javamelody.Main</Main-Class>
 							<!-- Override user.name in Built-By -->
 							<Built-By>Emeric Vernat</Built-By>
@@ -133,10 +133,10 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- Use "mvn jetty:run" avec Java 11 -->
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>10.0.6</version>
+				<!-- Use "mvn jetty:run" -->
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-maven-plugin</artifactId>
+				<version>12.0.14</version>
 				<configuration>
 					<scan>10</scan>
 				</configuration>
