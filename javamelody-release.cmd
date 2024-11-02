@@ -110,7 +110,7 @@ echo - [javamelody-collector-server-%releaseVersion%.war](../../releases/downloa
 echo.
 echo **Plugins:**
 echo - [JIRA / Confluence / Bamboo / Bitbucket](../../wiki/AtlassianPlugin^)
-echo - [Jenkins](http://wiki.jenkins-ci.org/display/JENKINS/Monitoring^)
+echo - [Jenkins](https://plugins.jenkins.io/monitoring/^)
 echo - [Liferay](https://github.com/javamelody/liferay-javamelody^)
 echo - [Alfresco](https://github.com/javamelody/alfresco-javamelody^)
 echo - [Sonar](https://github.com/javamelody/sonar-javamelody^)
