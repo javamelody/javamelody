@@ -40,6 +40,7 @@ import net.bull.javamelody.internal.model.ThreadInformations;
  * @author Emeric Vernat
  */
 public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
+	private static final boolean JAVA_20_OR_LATER = "20".compareTo(Parameters.JAVA_VERSION) < 0;
 	private final List<CounterRequestContext> rootCurrentContexts;
 	private final Map<String, HtmlCounterReport> counterReportsByCounterName;
 	private final Map<Long, ThreadInformations> threadInformationsByThreadId;
@@ -272,7 +273,7 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		if (stackTraceEnabled) {
 			write("<th>#Methode_executee#</th>");
 		}
-		if (systemActionsEnabled) {
+		if (systemActionsEnabled && !JAVA_20_OR_LATER) {
 			writeln("<th class='noPrint'>#Tuer#</th>");
 		}
 		for (final CounterRequestContext context : contexts) {
@@ -336,13 +337,14 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 				htmlThreadInformationsReport.writeExecutedMethod(threadInformations);
 			}
 		}
-		if (threadInformations == null) {
-			// soit un décalage n'a pas permis de récupérer le thread de ce context,
-			// soit ce thread est un thread virtuel (java 21)
-			write("</td> <td class='noPrint'>");
-			write(espace);
-		} else {
-			htmlThreadInformationsReport.writeKillThread(threadInformations);
+		if (systemActionsEnabled && !JAVA_20_OR_LATER) {
+			if (threadInformations == null) {
+				// un décalage n'a pas permis de récupérer le thread de ce context,
+				write("</td> <td class='noPrint'>");
+				write(espace);
+			} else {
+				htmlThreadInformationsReport.writeKillThread(threadInformations);
+			}
 		}
 		write("</td>");
 	}
