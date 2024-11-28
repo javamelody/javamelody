@@ -299,7 +299,10 @@ public class HtmlCounterRequestContextReport extends HtmlAbstractReport {
 		}
 		write("<td valign='top'>");
 		final String espace = "&nbsp;";
-		htmlThreadInformationsReport.writeThreadWithStackTrace(rootContext.getThreadName(), stackTrace);
+		htmlThreadInformationsReport.writeThreadWithStackTrace(
+				rootContext.getThreadName() != null ? rootContext.getThreadName()
+						: Long.toString(rootContext.getThreadId()),
+				stackTrace);
 		if (displayRemoteUser) {
 			write("</td> <td valign='top'>");
 			if (rootContext.getRemoteUser() == null) {
