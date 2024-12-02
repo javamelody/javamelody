@@ -168,7 +168,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>6.1.6</version>
+			<version>6.1.14</version>
 		</dependency>
 		<dependency>
 			<!-- for Spring RestTemplate in unit tests -->
