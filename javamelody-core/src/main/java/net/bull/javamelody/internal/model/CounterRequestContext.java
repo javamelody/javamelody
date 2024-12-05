@@ -187,7 +187,11 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 	}
 
 	public String getThreadName() {
-		return threadName;
+		if (threadName != null) {
+			return threadName;
+		}
+		// threadName can be null in the collector server when monitoring an app using javamelody-core before 2.3.0
+		return Long.toString(threadId);
 	}
 
 	public long getThreadId() {
