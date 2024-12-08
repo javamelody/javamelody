@@ -36,7 +36,7 @@ import java.util.TimerTask;
 
 import org.jrobin.core.RrdFileBackend;
 
-import sun.nio.ch.DirectBuffer; // NOPMD
+//import sun.nio.ch.DirectBuffer; // NOPMD
 
 /**
  * JRobin backend which is used to store RRD data to ordinary disk files
@@ -109,10 +109,10 @@ public class RrdNioBackend extends RrdFileBackend {
 	private void unmapFile() {
 		if (byteBuffer != null) {
 			if (JAVA9_INVOKE_CLEANER == null || THE_UNSAFE == null) {
-				if (byteBuffer instanceof DirectBuffer) {
+				//if (byteBuffer instanceof DirectBuffer) {
 					// for Java 8 and before
-					((DirectBuffer) byteBuffer).cleaner().clean();
-				}
+				//	((DirectBuffer) byteBuffer).cleaner().clean();
+				//}
 			} else {
 				// for Java 9 and later:
 				// sun.nio.ch.DirectBuffer methods are not accessible,
