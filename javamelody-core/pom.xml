@@ -199,7 +199,7 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.20</version>
+			<version>1.4.21</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
