@@ -13,7 +13,7 @@
 
 	<properties>
 		<!-- Adapt this to a version found on https://search.maven.org/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-		<tomcat.version>10.1.31</tomcat.version>
+		<tomcat.version>10.1.34</tomcat.version>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
 		<javamelodyVersion>${project.version}</javamelodyVersion>
 
@@ -75,7 +75,7 @@
 				<!-- Or use "mvn compile exec:java -Djavamelody.storage-directory=..." -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<goals>
