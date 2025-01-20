@@ -405,8 +405,14 @@ public class MonitoringFilter implements Filter {
 
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
-		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
-				filterConfig.getServletContext());
+		try {
+			monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
+					filterConfig.getServletContext());
+		} catch (final Exception e) {
+			LOG.warn(e.toString(), e);
+			httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+			return;
+		}
 
 		if ("stop".equalsIgnoreCase(HttpParameter.COLLECTOR.getParameterFrom(httpRequest))) {
 			// on a été appelé par un serveur de collecte qui fera l'aggrégation dans le temps,

@@ -76,9 +76,14 @@ public class ReportServlet extends HttpServlet {
 		}
 		final Collector collector = filterContext.getCollector();
 		final MonitoringController monitoringController = new MonitoringController(collector, null);
-
-		monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
-				servletConfig.getServletContext());
+		try {
+			monitoringController.doActionIfNeededAndReport(httpRequest, httpResponse,
+					servletConfig.getServletContext());
+		} catch (final Exception e) {
+			LOG.warn(e.toString(), e);
+			httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+			return;
+		}
 
 		// Ici ReportServlet comme MonitoringFilter#doMonitoring
 		// par exemple pour serveur de collecte branché sur le management endpoint de Spring Boot (#1121).
