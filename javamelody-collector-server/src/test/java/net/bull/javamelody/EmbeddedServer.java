@@ -5,9 +5,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.InetAccessHandler;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
-import org.eclipse.jetty.util.resource.ResourceFactory;
-
-import java.net.URI;
 
 /**
  * Embedded http server including javamelody reports.
