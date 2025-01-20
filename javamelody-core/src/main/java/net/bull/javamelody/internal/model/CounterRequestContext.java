@@ -150,15 +150,20 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		if (httpRequest == null) {
 			return requestName;
 		}
-		final String bestMatchingPattern = (String) httpRequest
-				.getAttribute(SPRING_BEST_MATCHING_PATTERN_ATTRIBUTE);
-		if (bestMatchingPattern != null) {
-			final int indexOfSpace = requestName.indexOf(' ');
-			if (indexOfSpace != -1) {
-				// ajoute GET ou POST ou POST ajax ou autre après bestMatchingPattern
-				return bestMatchingPattern + requestName.substring(indexOfSpace);
+		try {
+			final String bestMatchingPattern = (String) httpRequest
+					.getAttribute(SPRING_BEST_MATCHING_PATTERN_ATTRIBUTE);
+			if (bestMatchingPattern != null) {
+				final int indexOfSpace = requestName.indexOf(' ');
+				if (indexOfSpace != -1) {
+					// ajoute GET ou POST ou POST ajax ou autre après bestMatchingPattern
+					return bestMatchingPattern + requestName.substring(indexOfSpace);
+				}
+				return bestMatchingPattern;
 			}
-			return bestMatchingPattern;
+		} catch (final IllegalStateException e) {
+			// getAttribute() on this current http request throws IllegalStateException if not current anymore (Tomcat)
+			return requestName;
 		}
 		return requestName;
 	}
@@ -356,6 +361,8 @@ public class CounterRequestContext implements ICounterRequestContext, Cloneable,
 		//		final Counter parentCounterClone = new Counter(counter.getName(), counter.getStorageName(),
 		//				counter.getIconName(), counter.getChildCounterName(), null);
 		final CounterRequestContext clone = new CounterRequestContext(counter, parentContextClone,
+				// si il y a un spring best matching pattern, alors ce getRequestName() le prend, mais c'est ok
+				// notamment pour un éventuel serveur de collecte
 				getRequestName(), getCompleteRequestName(), httpRequest, getRemoteUser(),
 				getThread(), startTime, startCpuTime, startAllocatedBytes, sessionId);
 		clone.threadId = getThreadId();
