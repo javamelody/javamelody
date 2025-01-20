@@ -846,8 +846,7 @@ public class Counter implements Cloneable, Serializable { // NOPMD
 
 	/**
 	 * @return Liste des contextes de requêtes courantes triées par durée écoulée décroissante,
-	 * 	la liste peut être utilisée sans synchronized et sans crainte d'accès concurrents,
-	 *  toutefois les contextes ne sont pas actuellement clonés dans cette méthode.
+	 * 	la liste peut être utilisée sans synchronized et sans crainte d'accès concurrents.
 	 */
 	List<CounterRequestContext> getOrderedRootCurrentContexts() {
 		final List<CounterRequestContext> contextList = new ArrayList<>(
