@@ -413,7 +413,12 @@ public enum Parameter {
 	/**
 	 * <a href='https://www.datadog.com/'>Datadog</a> host for accessing API. 'api.datadoghq.com' is default.
 	 */
-	DATADOG_API_HOST("datadog-api-host");
+	DATADOG_API_HOST("datadog-api-host"),
+
+	/**
+	 * If set to false no "last_shutdown.html" file is created when application is stopped
+	 */
+	CREATE_LAST_SHUTDOWN_FILE("create-last-shutdown-file");
 
 	private final String code;
 
