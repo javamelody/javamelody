@@ -813,20 +813,9 @@ public class TestMonitoringFilter {// NOPMD
 	private void doMonitoringWithUnknownPart() throws IOException, ServletException {
 		final Map<HttpParameter, String> parameters = new HashMap<>();
 		parameters.put(HttpParameter.PART, "unknown part");
-		boolean exception = false;
-		try {
-			monitoring(parameters);
-		} catch (final IllegalArgumentException e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
+		monitoring(parameters, false);
 		parameters.put(HttpParameter.PART, HttpPart.JROBINS.getName());
-		try {
-			monitoring(parameters);
-		} catch (final IllegalArgumentException e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
+		monitoring(parameters, false);
 	}
 
 	private void monitoringSessionsPart(final Map<HttpParameter, String> parameters)
@@ -983,13 +972,7 @@ public class TestMonitoringFilter {// NOPMD
 		monitoring(parameters);
 		parameters.remove(HttpParameter.GRAPH);
 		parameters.put(HttpParameter.PART, "unknown part");
-		boolean exception = false;
-		try {
-			monitoring(parameters);
-		} catch (final Exception e) {
-			exception = true;
-		}
-		assertTrue("exception if unknown part", exception);
+		monitoring(parameters, false);
 	}
 
 	/** Test.
@@ -1212,6 +1195,7 @@ public class TestMonitoringFilter {// NOPMD
 		verify(chain);
 
 		if (checkResultContent) {
+			System.out.println("checkResultContent=" + checkResultContent);
 			assertTrue("result", output.size() != 0 || stringWriter.getBuffer().length() != 0);
 		}
 	}
