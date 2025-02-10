@@ -13,7 +13,7 @@
 
 	<groupId>net.bull.javamelody</groupId>
 	<artifactId>javamelody-for-spring-boot</artifactId>
-	<version>1.9.4-SNAPSHOT</version>
+	<version>1.99.4-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>JavaMelody - Spring Boot Example</name>
