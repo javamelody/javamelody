@@ -34,6 +34,7 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -44,6 +45,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -85,6 +87,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableConfigurationProperties(JavaMelodyConfigurationProperties.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "enabled", matchIfMissing = true)
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class JavaMelodyAutoConfiguration {
 	/**
 	 * Name of the FilterRegistrationBean.
@@ -223,6 +226,7 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringAdvisor() {
 		return new MonitoringSpringAdvisor(monitoredWithSpringAnnotationPointcut);
 	}
@@ -233,6 +237,7 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(
 				new AnnotationMatchingPointcut(Service.class),
@@ -246,6 +251,7 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(
 				new AnnotationMatchingPointcut(Controller.class),
@@ -259,6 +265,7 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(
 				new AnnotationMatchingPointcut(RestController.class),
@@ -272,6 +279,7 @@ public class JavaMelodyAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringAsyncAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(asyncAnnotationPointcut,
 				monitoredWithSpringAnnotationPointcut, scheduledAnnotationPointcut);
@@ -284,6 +292,7 @@ public class JavaMelodyAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "scheduled-monitoring-enabled", matchIfMissing = true)
 	@ConditionalOnMissingBean(DefaultAdvisorAutoProxyCreator.class)
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringScheduledAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(scheduledAnnotationPointcut,
 				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut);
