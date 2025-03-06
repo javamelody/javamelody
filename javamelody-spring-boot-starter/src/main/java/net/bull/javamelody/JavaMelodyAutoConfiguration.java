@@ -46,6 +46,8 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -53,6 +55,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -240,7 +243,7 @@ public class JavaMelodyAutoConfiguration {
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringServiceAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(
-				new AnnotationMatchingPointcut(Service.class),
+				new AnnotationMatchingPointcut(Service.class, true),
 				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut,
 				scheduledAnnotationPointcut);
 	}
@@ -338,17 +341,17 @@ public class JavaMelodyAutoConfiguration {
 			protected String getRequestName(MethodInvocation invocation) {
 				final StringBuilder sb = new StringBuilder();
 				final Method method = invocation.getMethod();
-				final RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-				if (requestMapping != null) {
-					String[] path = requestMapping.value();
-					if (path.length == 0) {
-						path = requestMapping.path();
-					}
-					if (path.length > 0) {
+
+				final MergedAnnotations mergedAnnotations = MergedAnnotations.from(method, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
+				final MergedAnnotation<RequestMapping> requestMapping = mergedAnnotations.get(RequestMapping.class);
+				if(requestMapping.isPresent()) {
+					String[] path = requestMapping.getStringArray("path");
+					if(path.length > 0) {
 						sb.append(path[0]);
 						sb.append(' ');
-						if (requestMapping.method().length > 0) {
-							sb.append(requestMapping.method()[0].name());
+						final RequestMethod[] requestMethods = requestMapping.getEnumArray("method", RequestMethod.class);
+						if(requestMethods.length > 0) {
+							sb.append(requestMethods[0].name());
 						} else {
 							sb.append("GET");
 						}
