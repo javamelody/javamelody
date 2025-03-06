@@ -257,21 +257,7 @@ public class JavaMelodyAutoConfiguration {
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public MonitoringSpringAdvisor monitoringSpringControllerAdvisor() {
 		return createMonitoringSpringAdvisorWithExclusions(
-				new AnnotationMatchingPointcut(Controller.class),
-				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut,
-				scheduledAnnotationPointcut);
-	}
-
-	/**
-	 * Monitoring of beans having the {@link RestController} annotation.
-	 * @return MonitoringSpringAdvisor
-	 */
-	@Bean
-	@ConditionalOnProperty(prefix = JavaMelodyConfigurationProperties.PREFIX, name = "spring-monitoring-enabled", matchIfMissing = true)
-	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public MonitoringSpringAdvisor monitoringSpringRestControllerAdvisor() {
-		return createMonitoringSpringAdvisorWithExclusions(
-				new AnnotationMatchingPointcut(RestController.class),
+				new AnnotationMatchingPointcut(Controller.class, true),
 				monitoredWithSpringAnnotationPointcut, asyncAnnotationPointcut,
 				scheduledAnnotationPointcut);
 	}
