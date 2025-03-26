@@ -25,9 +25,10 @@ public class EmbeddedServer {
 	 * Start the server with a http port and optional javamelody parameters.
 	 * @param port Http port
 	 * @param parameters Optional javamelody parameters
+	 * @return MonitoringFilter
 	 * @throws Exception e
 	 */
-	public static void start(final int port, final Map<Parameter, String> parameters)
+	public static MonitoringFilter start(final int port, final Map<Parameter, String> parameters)
 			throws Exception {
 		// Init embedded tomcat
 		tomcat = new Tomcat();
@@ -44,11 +45,12 @@ public class EmbeddedServer {
 		Tomcat.addServlet(context, "default", new DefaultServlet());
 		context.addServletMappingDecoded("/", "default");
 
+		final MonitoringFilter monitoringFilter = new MonitoringFilter();
+		monitoringFilter.setApplicationType("Standalone");
+
 		// ServletContainerInitializer qui initialisera le filtre
 		final ServletContainerInitializer servletContainerInitializer = (c, ctx) -> {
 			// initialise le filtre pour activer le monitoring et pour afficher la page
-			final MonitoringFilter monitoringFilter = new MonitoringFilter();
-			monitoringFilter.setApplicationType("Standalone");
 			final Dynamic filter = ctx.addFilter("javamelody", monitoringFilter);
 			filter.addMappingForUrlPatterns(
 					EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST), false, "/*");
@@ -63,6 +65,8 @@ public class EmbeddedServer {
 		context.addServletContainerInitializer(servletContainerInitializer, null);
 
 		tomcat.start();
+
+		return monitoringFilter;
 	}
 
 	/**
