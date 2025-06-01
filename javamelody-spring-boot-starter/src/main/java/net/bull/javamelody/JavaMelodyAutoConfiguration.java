@@ -56,7 +56,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.DispatcherType;
@@ -328,15 +327,18 @@ public class JavaMelodyAutoConfiguration {
 				final StringBuilder sb = new StringBuilder();
 				final Method method = invocation.getMethod();
 
-				final MergedAnnotations mergedAnnotations = MergedAnnotations.from(method, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
-				final MergedAnnotation<RequestMapping> requestMapping = mergedAnnotations.get(RequestMapping.class);
-				if(requestMapping.isPresent()) {
+				final MergedAnnotations mergedAnnotations = MergedAnnotations.from(method,
+						MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
+				final MergedAnnotation<RequestMapping> requestMapping = mergedAnnotations
+						.get(RequestMapping.class);
+				if (requestMapping.isPresent()) {
 					String[] path = requestMapping.getStringArray("path");
-					if(path.length > 0) {
+					if (path.length > 0) {
 						sb.append(path[0]);
 						sb.append(' ');
-						final RequestMethod[] requestMethods = requestMapping.getEnumArray("method", RequestMethod.class);
-						if(requestMethods.length > 0) {
+						final RequestMethod[] requestMethods = requestMapping.getEnumArray("method",
+								RequestMethod.class);
+						if (requestMethods.length > 0) {
 							sb.append(requestMethods[0].name());
 						} else {
 							sb.append("GET");
