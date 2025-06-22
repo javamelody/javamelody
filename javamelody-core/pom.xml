@@ -211,13 +211,13 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.4</version>
+			<version>42.7.7</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>10.1.34</version>
+			<version>10.1.42</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -229,7 +229,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>10.1.34</version>
+			<version>10.1.42</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -242,19 +242,19 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>6.2.1</version>
+			<version>6.2.8</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>6.2.1</version>
+			<version>6.2.8</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>6.2.1</version>
+			<version>6.2.8</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
