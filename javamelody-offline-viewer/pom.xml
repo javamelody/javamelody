@@ -13,7 +13,7 @@
 
 	<properties>
 		<!-- Adapt this to a version found on https://search.maven.org/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
-		<tomcat.version>10.1.42</tomcat.version>
+		<tomcat.version>10.1.44</tomcat.version>
 		<!-- Adapt this to a version found on http://central.maven.org/maven2/net/bull/javamelody/javamelody-core/ -->
 		<javamelodyVersion>${project.version}</javamelodyVersion>
 
