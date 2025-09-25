@@ -217,7 +217,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-dbcp</artifactId>
-			<version>10.1.42</version>
+			<version>10.1.46</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -229,7 +229,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>10.1.42</version>
+			<version>10.1.46</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
